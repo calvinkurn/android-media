@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.google.android.exoplayer2.ui.PlayerView
@@ -31,13 +30,12 @@ import com.tokopedia.unifyprinciples.Typography
  */
 class CarouselVideoViewHolder(
     itemView: View,
-    private val listener: Listener,
+    private val listener: Listener
 ) : BaseViewHolder(itemView) {
 
     private var videoPlayer: FeedExoPlayer? = null
 
     private val playButtonVideo = itemView.findViewById<ImageUnify>(R.id.ic_play)
-    private val frameVideo = itemView.findViewById<ConstraintLayout>(R.id.frame_video)
     private val layoutVideo = itemView.findViewById<PlayerView>(R.id.layout_video)
     private val videoPreviewImage = itemView.findViewById<ImageUnify>(R.id.videoPreviewImage)
     private val llLihatProduct = itemView.findViewById<LinearLayout>(R.id.ll_lihat_product)
@@ -57,7 +55,7 @@ class CarouselVideoViewHolder(
 
     private val countDownTimer = object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
         override fun onTick(millisUntilFinished: Long) {
-
+            return
         }
 
         override fun onFinish() {
@@ -66,9 +64,10 @@ class CarouselVideoViewHolder(
     }
 
     init {
+        icPlay.setImageResource(R.drawable.bg_circle_play_button)
         itemView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(v: View) {
-
+                return
             }
 
             override fun onViewDetachedFromWindow(v: View) {
@@ -105,13 +104,12 @@ class CarouselVideoViewHolder(
         llLihatProduct?.setOnClickListener {
             listener.onLihatProductClicked(
                 this,
-                item,
+                item
             )
         }
         volumeIcon.setOnClickListener {
             toggleMute(item)
         }
-
     }
 
     private fun toggleMute(media: FeedXMedia) {
@@ -125,8 +123,11 @@ class CarouselVideoViewHolder(
 
     private fun changeVolumeIcon() {
         volumeIcon.setImageResource(
-            if (isMuted) R.drawable.ic_feed_volume_mute_large
-            else R.drawable.ic_feed_volume_up_large
+            if (isMuted) {
+                R.drawable.ic_feed_volume_mute_large
+            } else {
+                R.drawable.ic_feed_volume_up_large
+            }
         )
     }
 
@@ -159,7 +160,7 @@ class CarouselVideoViewHolder(
                 showVideoLoading()
             }
 
-            override fun onVideoReadyToPlay() {
+            override fun onVideoReadyToPlay(isPlaying: Boolean) {
                 hideVideoLoading()
                 timerView.visible()
                 var time = videoPlayer?.getExoPlayer()?.duration.orZero() / TIME_SECOND
@@ -236,15 +237,15 @@ class CarouselVideoViewHolder(
 
         fun create(
             parent: ViewGroup,
-            listener: Listener,
+            listener: Listener
         ) = CarouselVideoViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(
                     R.layout.item_post_video_new,
                     parent,
-                    false,
+                    false
                 ),
-            listener,
+            listener
         )
     }
 

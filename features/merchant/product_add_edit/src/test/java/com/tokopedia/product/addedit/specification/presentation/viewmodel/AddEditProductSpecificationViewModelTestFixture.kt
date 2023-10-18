@@ -13,7 +13,6 @@ import kotlinx.coroutines.test.resetMain
 import org.junit.Before
 import org.junit.Rule
 import org.junit.jupiter.api.AfterEach
-import kotlin.jvm.Throws
 
 @ExperimentalCoroutinesApi
 abstract class AddEditProductSpecificationViewModelTestFixture {
@@ -25,10 +24,12 @@ abstract class AddEditProductSpecificationViewModelTestFixture {
     lateinit var annotationCategoryUseCase: AnnotationCategoryUseCase
 
     protected val viewModel: AddEditProductSpecificationViewModel by lazy {
-        spyk(AddEditProductSpecificationViewModel(
+        spyk(
+            AddEditProductSpecificationViewModel(
                 CoroutineTestDispatchersProvider,
                 annotationCategoryUseCase
-        ))
+            )
+        )
     }
 
     @Before

@@ -1,15 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:versionCode="1"
-    android:versionName="1.0.0"
-    package="com.tokopedia.autocompletecomponent">
+    android:versionName="1.0.0">
 
     <application
         android:label="Auto Complete Instrumentation Test"
         tools:replace="android:label">
 
         <activity
-            android:name=".AutoCompleteActivityStub"
+            android:name="com.tokopedia.autocompletecomponent.AutoCompleteActivityStub"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
@@ -25,7 +24,7 @@
         </activity>
 
         <activity
-            android:name=".universal.UniversalSearchActivityStub"
+            android:name="com.tokopedia.autocompletecomponent.universal.UniversalSearchActivityStub"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
             <intent-filter>
@@ -41,15 +40,15 @@
         </activity>
 
         <activity
-            android:name=".initialstate.InitialStateActivityTest"
+            android:name="com.tokopedia.autocompletecomponent.initialstate.InitialStateActivityTest"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".suggestion.SuggestionActivityTest"
+            android:name="com.tokopedia.autocompletecomponent.suggestion.SuggestionActivityTest"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".AutoCompleteActivitySample"
+            android:name="com.tokopedia.autocompletecomponent.AutoCompleteActivitySample"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
     </application>

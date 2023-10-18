@@ -11,5 +11,4 @@ interface PromoNotEligibleActionListener {
     fun onButtonContinueClicked()
 
     fun onButtonChooseOtherPromo()
-
 }

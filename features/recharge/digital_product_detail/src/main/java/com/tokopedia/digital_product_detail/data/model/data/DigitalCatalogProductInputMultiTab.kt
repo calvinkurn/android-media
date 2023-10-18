@@ -39,7 +39,10 @@ data class RechargeCatalogProductInput(
     val product: RechargeCatalogProduct = RechargeCatalogProduct(),
     @SerializedName("filterTagComponents")
     @Expose
-    var filterTagComponents: List<TelcoFilterTagComponent> = emptyList()
+    var filterTagComponents: List<TelcoFilterTagComponent> = emptyList(),
+    @SerializedName("otherComponents")
+    @Expose
+    var otherComponents: List<TelcoOtherComponent> = emptyList(),
 )
 
 
@@ -192,6 +195,15 @@ data class TelcoFilterTagComponent(
     var filterTagDataCollections: List<FilterTagDataCollection> = emptyList()
 )
 
+data class TelcoOtherComponent(
+    @SerializedName("name")
+    @Expose
+    var name: String = "",
+    @SerializedName("data_collections")
+    @Expose
+    var otherComponentDataCollection: List<OtherComponentDataCollection> = emptyList()
+)
+
 data class DigitalCustomAttributes(
     @SerializedName("name")
     @Expose
@@ -218,3 +230,15 @@ data class FilterTagDataCollection(
         return typeFactory.type(this)
     }
 }
+
+data class OtherComponentDataCollection(
+    @SerializedName("id")
+    @Expose
+    val id: String = "",
+    @SerializedName("key")
+    @Expose
+    val key: String = "",
+    @SerializedName("value")
+    @Expose
+    val value: String = "",
+)

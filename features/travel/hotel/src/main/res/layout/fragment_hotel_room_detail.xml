@@ -21,14 +21,14 @@
                 android:id="@+id/room_detail_collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:contentScrim="@color/Unify_N0"
+                app:contentScrim="@color/Unify_NN0"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/room_detail_toolbar_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/Unify_N0"
+                    android:background="@color/Unify_NN0"
                     android:gravity="bottom"
                     app:layout_collapseMode="parallax"
                     app:layout_collapseParallaxMultiplier="0.6"
@@ -51,7 +51,7 @@
                         android:paddingEnd="@dimen/layout_lvl2"
                         android:paddingRight="@dimen/layout_lvl2"
                         android:paddingBottom="@dimen/spacing_lvl2"
-                        android:textColor="@color/Unify_R400"
+                        android:textColor="@color/Unify_RN400"
                         android:visibility="invisible"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/room_detail_images"
@@ -89,7 +89,7 @@
             android:id="@+id/container_room_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_NN0"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:visibility="gone">
 
@@ -114,7 +114,7 @@
                         android:layout_marginRight="@dimen/layout_lvl2"
                         android:layout_marginBottom="@dimen/layout_lvl2"
                         app:typographyType="heading_2"
-                        android:textColor="@color/Unify_N700_96"
+                        android:textColor="@color/Unify_NN950_96"
                         tools:text="Kamar Deluxe Double"/>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -130,7 +130,7 @@
                             android:layout_height="wrap_content"
                             android:lineSpacingExtra="@dimen/sp_6"
                             android:text="@string/hotel_room_detail_header_occupancy"
-                            android:textColor="@color/Unify_N700_68"
+                            android:textColor="@color/Unify_NN950_68"
                             app:typographyType="body_3"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -141,7 +141,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:lineSpacingExtra="@dimen/sp_6"
-                            android:textColor="@color/Unify_N700_68"
+                            android:textColor="@color/Unify_NN950_68"
                             app:typographyType="body_3"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/tv_room_detail_occupancy"
@@ -163,7 +163,7 @@
                             android:gravity="end"
                             android:lineSpacingExtra="@dimen/sp_6"
                             android:text="@string/hotel_room_room_left_text"
-                            android:textColor="@color/Unify_R500"
+                            android:textColor="@color/Unify_RN500"
                             android:visibility="gone"
                             app:typographyType="body_3"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -175,7 +175,7 @@
                         android:id="@+id/view"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/hotel_1dp"
-                        android:background="@color/Unify_N75" />
+                        android:background="@color/Unify_NN50" />
 
                     <LinearLayout
                         android:id="@+id/pay_at_hotel_container"
@@ -184,7 +184,7 @@
                         android:orientation="vertical"
                         android:visibility="gone"
                         android:padding="@dimen/layout_lvl2"
-                        android:background="@color/Unify_N100"
+                        android:background="@color/Unify_NN200"
                         tools:visibility="visible">
 
                         <com.tokopedia.unifyprinciples.Typography
@@ -193,7 +193,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/layout_lvl1"
                             android:lineSpacingExtra="@dimen/sp_6"
-                            android:textColor="@color/Unify_N700_96"
+                            android:textColor="@color/Unify_NN950_96"
                             app:typographyType="heading_4"
                             tools:text="@string/hotel_room_detail_pay_at_hotel" />
 
@@ -218,7 +218,7 @@
                                 app:typographyType="body_3"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
-                                android:textColor="@color/Unify_N700_68"
+                                android:textColor="@color/Unify_NN950_68"
                                 tools:text="Perlu jaminan kartu kredit" />
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -308,7 +308,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:elevation="@dimen/spacing_lvl2"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/layout_lvl2"
@@ -328,14 +328,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/hotel_room_detail_price_info"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_room_detail_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="heading_4"
                 tools:text="Rp 10.800.000"/>
 

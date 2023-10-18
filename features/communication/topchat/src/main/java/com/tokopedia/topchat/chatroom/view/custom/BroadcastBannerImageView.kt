@@ -14,8 +14,14 @@ class BroadcastBannerImageView : AppCompatImageView {
     private val topLeftRadius = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
     private val topRightRadius = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
     private val outerRadius = floatArrayOf(
-            topLeftRadius, topLeftRadius, topRightRadius, topRightRadius,
-            0f, 0f, 0f, 0f
+        topLeftRadius,
+        topLeftRadius,
+        topRightRadius,
+        topRightRadius,
+        0f,
+        0f,
+        0f,
+        0f
     )
 
     constructor(context: Context) : super(context)

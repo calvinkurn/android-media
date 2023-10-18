@@ -11,8 +11,11 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.CoroutineUtil.launchWithDelay
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.AddRecipeBookmarkUseCase
@@ -41,6 +44,8 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
+    getTargetedTickerUseCase: GetTargetedTickerUseCase,
+    affiliateService: NowAffiliateService,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     dispatchers: CoroutineDispatchers
 ) : BaseTokoNowViewModel(
@@ -48,6 +53,8 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
     updateCartUseCase,
     deleteCartUseCase,
     getMiniCartUseCase,
+    affiliateService,
+    getTargetedTickerUseCase,
     addressData,
     userSession,
     dispatchers
@@ -84,12 +91,23 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
 
     private var bookmarkJob: Job? = null
 
-    override fun setMiniCartData(miniCartData: MiniCartSimplifiedData) {
-        super.setMiniCartData(miniCartData)
-        updateProductQuantity(miniCartData)
+    init {
+        miniCartSource = MiniCartSource.TokonowRecipe
     }
 
-    fun checkAddressData() {
+    override fun onSuccessGetMiniCartData(miniCartData: MiniCartSimplifiedData) {
+        super.onSuccessGetMiniCartData(miniCartData)
+        updateProductQuantity(miniCartData)
+        _layoutList.postValue(layoutItemList)
+    }
+
+    fun onViewCreated() {
+        updateAddressData()
+        checkAddressData()
+        initAffiliateCookie()
+    }
+
+    private fun checkAddressData() {
         val shopId = addressData.getShopId()
 
         if (shopId == INVALID_SHOP_ID) {
@@ -170,16 +188,13 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
         showLoading()
         updateAddressData()
         checkAddressData()
+        getMiniCart()
     }
 
     fun showLoading() {
         layoutItemList.clear()
         layoutItemList.add(RecipeDetailLoadingUiModel)
         _layoutList.postValue(layoutItemList)
-    }
-
-    fun updateAddressData() {
-        addressData.updateLocalData()
     }
 
     fun setRecipeData(recipeId: String, slug: String) {
@@ -204,7 +219,7 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
             layoutItemList.add(recipeTab)
 
             miniCartData?.let {
-                setMiniCartData(it)
+                updateProductQuantity(it)
             }
 
             _isBookmarked.postValue(bookmarked)
@@ -217,23 +232,19 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
     }
 
     private fun getAddress() {
-        getAddressUseCase.getStateChosenAddress({
-            addressData.updateAddressData(it)
+        launchCatchError(block = {
+            val address = getAddressUseCase(GET_ADDRESS_SOURCE)
+            addressData.updateAddressData(address)
             checkAddressData()
-        }, {
+        }) {
             hideLoading()
             showError()
-        }, GET_ADDRESS_SOURCE)
+        }
     }
 
     private fun updateProductQuantity(miniCartData: MiniCartSimplifiedData) {
-        launchCatchError(block = {
-            layoutItemList.updateProductQuantity(miniCartData)
-            layoutItemList.updateDeletedProductQuantity(miniCartData)
-            _layoutList.postValue(layoutItemList)
-        }) {
-            // do nothing
-        }
+        layoutItemList.updateProductQuantity(miniCartData)
+        layoutItemList.updateDeletedProductQuantity(miniCartData)
     }
 
     private fun getRecipeTitle() = _recipeInfo.value?.title.orEmpty()

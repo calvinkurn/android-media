@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.topads.common.R
-import com.tokopedia.topads.common.data.util.showBidStateChangeConfirmationDialog
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -52,7 +51,7 @@ class TopadsAutoBidSwitchPartialLayout(
             it.setOnTouchListener { view, motionEvent ->
                 tracker?.autoBidSwitchClicked(it.isChecked)
                 if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                    context.showBidStateChangeConfirmationDialog(isBidAutomatic, {
+                    context.showBidStateChangeConfirmation(isBidAutomatic, {
                         if(isBidAutomatic)
                             tracker?.bidChangeToManualLanjuktanClicked()
                         else

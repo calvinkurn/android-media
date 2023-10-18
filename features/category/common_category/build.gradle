@@ -18,6 +18,11 @@ buildscript {
 }
 
 
+android {
+    namespace 'com.tokopedia.common_category'
+    testNamespace 'com.tokopedia.common_category.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
@@ -31,7 +36,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.filter)
     implementation projectOrAar(rootProject.ext.features.productCard)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.features.discoveryCommon)
     implementation projectOrAar(rootProject.ext.features.basemvvm)
     implementation projectOrAar(rootProject.ext.features.seamlessLoginCommon)
@@ -39,6 +44,8 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
+
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
 }
 
 project.ext {

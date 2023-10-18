@@ -17,7 +17,7 @@ import com.tokopedia.analyticsdebugger.websocket.data.local.entity.TopchatWebSoc
     entities = [
         PlayWebSocketLogEntity::class,
         TopchatWebSocketLogEntity::class,
-    ], version = 4
+    ], version = 5
 )
 abstract class WebSocketLogDatabase : RoomDatabase() {
 

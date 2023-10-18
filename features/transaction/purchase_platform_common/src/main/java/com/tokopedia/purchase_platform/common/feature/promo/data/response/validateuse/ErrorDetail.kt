@@ -4,6 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 data class ErrorDetail(
 
-	@field:SerializedName("message")
-	val message: String = ""
+    @field:SerializedName("message")
+    val message: String = ""
 )

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_product_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_product"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_product"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintBottom_toTopOf="@id/tv_variant"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/img_product"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            tools:text="Nike Air Force 1 Low White Red" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_variant"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintBottom_toBottomOf="@id/img_product"
+            app:layout_constraintEnd_toEndOf="@id/tv_product"
+            app:layout_constraintStart_toStartOf="@id/tv_product"
+            app:layout_constraintTop_toBottomOf="@id/tv_product"
+            app:typographyType="display_3"
+            tools:text="Varian: Red White" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@id/cl_product_info"
+        app:layout_constraintTop_toBottomOf="@id/cl_product_info">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_star_1"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            app:icon_name="STAR_FILLED" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_star_2"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            app:icon_name="STAR_FILLED" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_star_3"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            app:icon_name="STAR_FILLED" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_star_4"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            app:icon_name="STAR_FILLED" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_star_5"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            app:icon_name="STAR_FILLED" />
+
+    </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@id/ll_star"
+        app:layout_constraintStart_toEndOf="@id/ll_star"
+        app:layout_constraintTop_toTopOf="@id/ll_star"
+        app:typographyType="display_3"
+        tools:text="Hari ini" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_review"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_star"
+        app:typographyType="paragraph_3"
+        tools:text="Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga dari toko Juragan Sepatu. Agannya ramah banget terus dikasih b... Selengkapnya" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_media"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_review" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_like"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="8dp"
+        app:icon_name="THUMB"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_media" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_like_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/ic_like"
+        app:layout_constraintStart_toEndOf="@id/ic_like"
+        app:layout_constraintTop_toTopOf="@id/ic_like"
+        app:typographyType="display_3"
+        tools:text="3" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

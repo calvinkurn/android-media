@@ -1,5 +1,7 @@
 package com.tokopedia.tradein.view.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.Gravity
@@ -371,7 +373,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                 null,
                 newLightEnable = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                 )
             )
             findViewById<Typography>(R.id.exchange_price_text).show()
@@ -428,7 +430,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                 null,
                 newLightEnable = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_32
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_32
                 )
             )
             findViewById<Typography>(R.id.exchange_price_text).hide()
@@ -527,14 +529,14 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                     setTopTextColor(
                         MethodChecker.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                         )
                     )
                     setBottomTextSize(textSize)
                     setBottomTextColor(
                         MethodChecker.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                         )
                     )
                     setBottomTextStyle("bold")
@@ -601,8 +603,8 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
 
     companion object {
         const val CACHE_ID = "Trade in cache id"
-        const val LAKU6_ERROR_IMAGE = "https://images.tokopedia.net/img/android/res/singleDpi/tradein_sdk_error.png"
-        const val FRAUD_ERROR_IMAGE = "https://images.tokopedia.net/img/android/res/singleDpi/tradein_fraud.png"
+        const val LAKU6_ERROR_IMAGE = TokopediaImageUrl.LAKU6_ERROR_IMAGE
+        const val FRAUD_ERROR_IMAGE = TokopediaImageUrl.FRAUD_ERROR_IMAGE
 
         fun getFragmentInstance(cacheId: String): Fragment {
             val bundle = Bundle().apply {

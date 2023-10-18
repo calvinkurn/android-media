@@ -8,19 +8,21 @@ import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.data.createHomeLayoutData
 import com.tokopedia.tokopedianow.data.createHomeLayoutListForBannerOnly
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
+import com.tokopedia.tokopedianow.home.mapper.HomeHeaderMapper.createHomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
 
     @Test
@@ -47,7 +49,10 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
         val homeLayoutResponse = listOf(firstBanner)
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
 
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            removeAbleWidgets = listOf()
+        )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         onGetHomeLayoutData_thenReturn(listOf(secondBanner))
@@ -55,7 +60,7 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
         viewModel.onScroll(1, LocalCacheModel(), listOf())
 
         val layoutList = listOf(
-            TokoNowChooseAddressWidgetUiModel(id = "0"),
+            createHomeHeaderUiModel(),
             BannerDataModel(
                 channelModel = ChannelModel(
                     id = "2222",
@@ -103,7 +108,10 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
 
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            removeAbleWidgets = listOf()
+        )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.onScroll(index, LocalCacheModel(), listOf())
 
@@ -126,7 +134,10 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
 
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            removeAbleWidgets = listOf()
+        )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         val loadMoreLayoutResponse = listOf(
@@ -182,7 +193,10 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
 
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            removeAbleWidgets = listOf()
+        )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         val progressBar = HomeLayoutItemUiModel(
@@ -200,7 +214,10 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
     fun `when scroll home error should do nothing`() {
         onGetHomeLayoutData_thenReturn(createHomeLayoutListForBannerOnly())
 
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            removeAbleWidgets = listOf()
+        )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         onGetHomeLayoutData_thenReturn(MessageErrorException())

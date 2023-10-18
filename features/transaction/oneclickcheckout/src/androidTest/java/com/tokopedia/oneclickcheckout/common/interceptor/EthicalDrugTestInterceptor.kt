@@ -44,4 +44,3 @@ const val GET_EPHARMACY_CHECKOUT_DATA_RESPONSE_PATH =
 
 const val GET_EPHARMACY_CHECKOUT_DATA_EMPTY_RESPONSE_PATH =
     "ethicaldrug/one_click_checkout_get_epharmacy_checkout_data_empty_response.json"
-

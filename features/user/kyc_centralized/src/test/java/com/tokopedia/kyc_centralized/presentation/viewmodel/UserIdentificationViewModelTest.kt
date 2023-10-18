@@ -12,7 +12,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -37,7 +37,7 @@ class UserIdentificationViewModelTest {
     }
 
     @Test
-    fun `it should get the user project info`() = runBlockingTest {
+    fun `it should get the user project info`() = runTest {
         val expectedReturn =
             KycUserProjectInfoPojo()
         val expectedValue = Success(expectedReturn)
@@ -54,7 +54,7 @@ class UserIdentificationViewModelTest {
     }
 
     @Test
-    fun `it should throw error user project info`() = runBlockingTest {
+    fun `it should throw error user project info`() = runTest {
         val expectedReturn = Throwable("Oops")
         val expectedValue = Fail(expectedReturn)
         val testProjectId = 0

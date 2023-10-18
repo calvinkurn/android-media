@@ -16,9 +16,12 @@ object BiometricPromptHelper {
     }
 
     fun isBiometricAvailableActivity(context: Activity?): Boolean {
-        context?.let {
-            return BiometricManager.from(context).canAuthenticate(BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS
-        }
+        try {
+            context?.let {
+                return BiometricManager.from(context)
+                    .canAuthenticate(BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS
+            }
+        } catch (ignored: Exception) { }
         return false
     }
 

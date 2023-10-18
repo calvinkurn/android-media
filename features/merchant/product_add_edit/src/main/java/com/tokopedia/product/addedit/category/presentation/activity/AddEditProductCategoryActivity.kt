@@ -2,7 +2,6 @@ package com.tokopedia.product.addedit.category.presentation.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.product.addedit.R
@@ -18,7 +17,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXT
 import com.tokopedia.product.addedit.tracking.ProductCategoryTracking
 import com.tokopedia.user.session.UserSession
 
-class AddEditProductCategoryActivity : TabletAdaptiveActivity(), HasComponent<AddEditProductCategoryComponent>{
+class AddEditProductCategoryActivity : TabletAdaptiveActivity(), HasComponent<AddEditProductCategoryComponent> {
 
     private var huCategory: HeaderUnify? = null
 
@@ -45,9 +44,9 @@ class AddEditProductCategoryActivity : TabletAdaptiveActivity(), HasComponent<Ad
 
     override fun getComponent(): AddEditProductCategoryComponent {
         return DaggerAddEditProductCategoryComponent.builder()
-                .addEditProductComponent(AddEditProductComponentBuilder.getComponent(application))
-                .addEditProductCategoryModule(AddEditProductCategoryModule())
-                .build()
+            .addEditProductComponent(AddEditProductComponentBuilder.getComponent(application))
+            .addEditProductCategoryModule(AddEditProductCategoryModule())
+            .build()
     }
 
     override fun onBackPressed() {
@@ -59,10 +58,13 @@ class AddEditProductCategoryActivity : TabletAdaptiveActivity(), HasComponent<Ad
 
     private fun setupUi() {
         huCategory = findViewById(R.id.huCategory)
-        window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(
-            this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+        window?.decorView?.setBackgroundColor(
+            androidx.core.content.ContextCompat.getColor(
+                this,
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
+            )
+        )
         huCategory?.title = getString(R.string.label_title_category_picker)
         setSupportActionBar(huCategory)
     }
-
 }

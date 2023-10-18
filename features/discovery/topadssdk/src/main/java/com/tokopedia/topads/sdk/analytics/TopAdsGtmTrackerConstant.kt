@@ -12,6 +12,7 @@ internal object TopAdsGtmTrackerConstant {
     const val IDR = "IDR"
     const val IMPRESSIONS = "impressions"
     const val NONE_OTHER = "none/other"
+    const val DIMENSION40 = "dimension40"
     const val DIMENSION83 = "dimension83"
     const val DIMENSION90 = "dimension90"
     const val DIMENSION115 = "dimension115"
@@ -31,6 +32,6 @@ internal object TopAdsGtmTrackerConstant {
         const val VARIANT = "variant"
         const val CATEGORY = "category"
         const val LIST = "list"
-        const val POSITION = "position"
+        const val INDEX = "index"
     }
 }

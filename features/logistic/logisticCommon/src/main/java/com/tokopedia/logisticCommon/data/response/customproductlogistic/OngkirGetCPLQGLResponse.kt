@@ -3,17 +3,17 @@ package com.tokopedia.logisticCommon.data.response.customproductlogistic
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
-data class OngkirGetCPLQGLResponse (
+data class OngkirGetCPLQGLResponse(
     @SerializedName("ongkirGetCPLEditor")
     var response: OngkirGetCPLResponse = OngkirGetCPLResponse()
 )
 
-data class OngkirGetCPLResponse (
+data class OngkirGetCPLResponse(
     @SerializedName("data")
     var data: GetCPLData = GetCPLData()
 )
 
-data class GetCPLData (
+data class GetCPLData(
     @SerializedName("shipper_list")
     var shipperList: List<ShipperList> = listOf()
 )

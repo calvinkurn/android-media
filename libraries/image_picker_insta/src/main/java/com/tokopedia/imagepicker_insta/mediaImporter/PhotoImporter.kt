@@ -34,10 +34,6 @@ class PhotoImporter : MediaImporter {
         selectionBuilder.append(MediaStore.Files.FileColumns.MEDIA_TYPE)
         selectionBuilder.append("=")
         selectionBuilder.append(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
-        selectionBuilder.append(" OR ")
-        selectionBuilder.append(MediaStore.Files.FileColumns.MEDIA_TYPE)
-        selectionBuilder.append("=")
-        selectionBuilder.append(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
         selectionBuilder.append(")")
         selectionBuilder.append(" AND ")
         selectionBuilder.append(" ${MediaStore.Images.Media.SIZE} > 10 ")
@@ -59,8 +55,7 @@ class PhotoImporter : MediaImporter {
         if (directory.exists() && directory.isDirectory) {
 
             val supportedFileList = directory.listFiles()?.filter {
-                val filePath = it.absolutePath
-                isImageFile(filePath) || isVideoFile(filePath)
+                isImageFile(it.absolutePath)
             }
             if (!supportedFileList.isNullOrEmpty()) {
                 val folderData = FolderData(
@@ -164,7 +159,6 @@ class PhotoImporter : MediaImporter {
                 val projections = arrayOf(
                     MediaStore.Files.FileColumns.MEDIA_TYPE,
                     MediaStore.Images.Media.DATE_ADDED,
-                    MediaStore.Video.Media.DURATION,
                     MediaStore.Images.Media._ID
                 )
                 val selectionBuilder = getSelectionStringBuilder(folderName)

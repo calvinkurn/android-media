@@ -15,7 +15,7 @@
         {
           "creative_name": ".*",
           "creative_slot": ".*",
-          "item_id": ".*_.*_.*_.*",
+          "item_id": ".*_.*_.*_.*_.*",
           "item_name": "/ - p.* - dynamic channel mission widget - banner - .* - .* - .*"
         }
       ],
@@ -36,7 +36,7 @@
         {
           "creative_name": ".*",
           "creative_slot": ".*",
-          "item_id": ".*_.*_.*_.*",
+          "item_id": ".*_.*_.*_.*_.*",
           "item_name": "/ - p.* - dynamic channel mission widget - banner - .* - .* - .*"
         }
       ],
@@ -80,6 +80,7 @@
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "item_list": "/ - p.* - dynamic channel mission widget - product - .* - .* - .* - .* - .* - .*",
+      "item_list_name": "/ - p.* - dynamic channel mission widget - product - .* - .* - .* - .* - .* - .*",
       "items": [
         {
           "dimension40": "/ - p.* - dynamic channel mission widget - product - .* - .* - .* - .* - .* - .*",

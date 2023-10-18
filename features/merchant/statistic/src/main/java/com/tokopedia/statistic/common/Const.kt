@@ -1,5 +1,7 @@
 package com.tokopedia.statistic.common
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 /**
  * Created By @ilhamsuaib on 16/09/20
  */
@@ -37,10 +39,6 @@ object Const {
         const val OPERATIONAL_INSIGHT = "seller-statistic#wawasan-operasional"
     }
 
-    object RemoteConfigKey {
-        const val CUSTOM_DATE_FILTER_ENABLED = "android_sellerapp_statistic_custom_date_filter"
-    }
-
     object BottomSheet {
         const val TAG_MONTH_PICKER = "MonthPickerBottomSheet"
     }
@@ -69,6 +67,6 @@ object Const {
     }
 
     object Image {
-        const val IMG_EXCLUSIVE_IDENTIFIER = "https://images.tokopedia.net/img/android/statistic/img_stc_exclusive_identifier.png"
+        const val IMG_EXCLUSIVE_IDENTIFIER = TokopediaImageUrl.IMG_EXCLUSIVE_IDENTIFIER
     }
 }

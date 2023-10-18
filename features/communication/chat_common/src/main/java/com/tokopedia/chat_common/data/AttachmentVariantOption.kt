@@ -1,22 +1,18 @@
 package com.tokopedia.chat_common.data
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class AttachmentVariantOption(
-        @SerializedName("id") // ex:23454
-        @Expose
-        val id: String = "-1",
+    @SerializedName("id") // ex:23454
+    val id: String? = "-1",
 
-        @SerializedName("value")
-        @Expose
-        val value: String = "", // example: "White"
+    @SerializedName("value")
+    val value: String? = "", // example: "White"
 
-        @SerializedName("hex")
-        @Expose
-        val hex: String = ""// ex: # ff3303
+    @SerializedName("hex")
+    val hex: String? = "" // ex: # ff3303
 ) {
     fun isColor(): Boolean {
-        return hex.isNotEmpty()
+        return !hex.isNullOrBlank()
     }
 }

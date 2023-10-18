@@ -1,5 +1,7 @@
 package com.tokopedia.updateinactivephone.features.onboarding.regular
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
@@ -114,7 +116,7 @@ class InactivePhoneCaptureIdCardFragment : BaseInactivePhoneOnboardingFragment()
                 val gapWidth = DP_12.pxToDp(resources.displayMetrics)
                 val margin = DP_8.pxToDp(resources.displayMetrics)
                 val span = SpannableString(text)
-                val color = MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N100)
+                val color = MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
 
                 val bulletSpan: BulletSpan = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     BulletSpan(gapWidth, color, radius)
@@ -144,6 +146,6 @@ class InactivePhoneCaptureIdCardFragment : BaseInactivePhoneOnboardingFragment()
         private const val DP_4 = 4
         private const val DP_8 = 8
         private const val DP_12 = 12
-        private const val IMAGE_ID_CARD_SAMPLE = "https://images.tokopedia.net/img/android/user/inactive-phone/inactivephone_ktp.png"
+        private const val IMAGE_ID_CARD_SAMPLE = TokopediaImageUrl.IMAGE_ID_CARD_SAMPLE
     }
 }

@@ -3,13 +3,17 @@ package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoListWithMultipleClashingBoPromo
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
+import com.tokopedia.promocheckoutmarketplace.data.response.SectionTab
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommendationUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoTabUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
+import io.mockk.verify
+import org.junit.Assert
 import org.junit.Test
 
 class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
@@ -41,6 +45,23 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
     }
 
     @Test
+    fun `WHEN call reset promo with clashing promo THEN should clear the clashing promo`() {
+        // GIVEN
+        viewModel.setPromoListValue(GetPromoListDataProvider.provideCurrentSelectedPromoListResponseWithClashingData())
+
+        every { analytics.eventClickResetPromo(any()) } just Runs
+
+        // WHEN
+        viewModel.resetPromo()
+
+        // THEN
+        viewModel.promoListUiModel.value?.forEach {
+            assert(it is PromoListItemUiModel)
+            assert((it as PromoListItemUiModel).uiData.currentClashingPromo.size == 0)
+        }
+    }
+
+    @Test
     fun `WHEN call reset promo THEN fragment state should be no selected promo`() {
         // GIVEN
         viewModel.setPromoListValue(GetPromoListDataProvider.provideCurrentSelectedExpandedMerchantPromoData())
@@ -58,9 +79,11 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
     fun `WHEN call reset promo THEN promo recommendation should be enabled`() {
         // GIVEN
         viewModel.setPromoListValue(GetPromoListDataProvider.provideCurrentSelectedExpandedMerchantPromoData())
-        viewModel.setPromoRecommendationValue(PromoRecommendationUiModel(
+        viewModel.setPromoRecommendationValue(
+            PromoRecommendationUiModel(
                 uiData = PromoRecommendationUiModel.UiData().apply { promoCodes = listOf("THIRX598GSA7MADK2X7") },
-                uiState = PromoRecommendationUiModel.UiState())
+                uiState = PromoRecommendationUiModel.UiState()
+            )
         )
 
         every { analytics.eventClickResetPromo(any()) } just Runs
@@ -134,7 +157,7 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         assert(!(viewModel.promoListUiModel.value?.get(1) as PromoListItemUiModel).uiState.isSelected)
         assert(viewModel.fragmentUiModel.value?.uiState?.shouldShowTickerBoClashing == false)
     }
-    
+
     @Test
     fun `WHEN click selected BO clashing promo item but already selected other bo clashing promo THEN should show ticker BO clashing`() {
         // GIVEN
@@ -152,6 +175,7 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
 
         // WHEN
         viewModel.updatePromoListAfterClickPromoItem(promoListItemUiModel)
+        testDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
         assert(viewModel.fragmentUiModel.value?.uiState?.shouldShowTickerBoClashing == true)
@@ -226,9 +250,11 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         val promoListItemUiModel = data[1] as PromoListItemUiModel
         promoListItemUiModel.uiState.isRecommended = true
         viewModel.setPromoListValue(data)
-        viewModel.setPromoRecommendationValue(PromoRecommendationUiModel(
+        viewModel.setPromoRecommendationValue(
+            PromoRecommendationUiModel(
                 uiData = PromoRecommendationUiModel.UiData().apply { promoCodes = listOf("THIRX598GSA7MADK2X7") },
-                uiState = PromoRecommendationUiModel.UiState())
+                uiState = PromoRecommendationUiModel.UiState()
+            )
         )
 
         every { analytics.eventClickDeselectKupon(any(), any(), any()) } just Runs
@@ -246,9 +272,11 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         // GIVEN
         val data = GetPromoListDataProvider.provideCurrentSelectedExpandedGlobalPromoDataWithHeader()
         viewModel.setPromoListValue(data)
-        viewModel.setPromoRecommendationValue(PromoRecommendationUiModel(
+        viewModel.setPromoRecommendationValue(
+            PromoRecommendationUiModel(
                 uiData = PromoRecommendationUiModel.UiData().apply { promoCodes = listOf("THIRX598GSA7MADK2X7") },
-                uiState = PromoRecommendationUiModel.UiState())
+                uiState = PromoRecommendationUiModel.UiState()
+            )
         )
 
         every { analytics.eventClickPilihPromoRecommendation(any(), any()) } just Runs
@@ -268,13 +296,15 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         val preSelectedPromo = data[1] as PromoListItemUiModel
         preSelectedPromo.uiState.isSelected = true
         viewModel.setPromoListValue(data)
-        viewModel.setPromoRecommendationValue(PromoRecommendationUiModel(
-            uiData = PromoRecommendationUiModel.UiData().apply {
-                promoCodes = listOf(
-                    "PROMO1"
-                )
-            },
-                uiState = PromoRecommendationUiModel.UiState())
+        viewModel.setPromoRecommendationValue(
+            PromoRecommendationUiModel(
+                uiData = PromoRecommendationUiModel.UiData().apply {
+                    promoCodes = listOf(
+                        "PROMO1"
+                    )
+                },
+                uiState = PromoRecommendationUiModel.UiState()
+            )
         )
 
         every { analytics.eventClickPilihPromoRecommendation(any(), any()) } just Runs
@@ -286,6 +316,37 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         // THEN
         assert(!(viewModel.promoListUiModel.value?.get(1) as PromoListItemUiModel).uiState.isSelected)
         assert((viewModel.promoListUiModel.value?.get(2) as PromoListItemUiModel).uiState.isSelected)
+    }
+
+    @Test
+    fun `WHEN apply recommended promo has secondary promo THEN select secondary promo code`() {
+        // GIVEN
+        val response = GetPromoListDataProvider.provideGetPromoListResponseBoAndMvcSecondaryRecommended()
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
+        }
+        viewModel.getPromoList(PromoRequest(), "")
+
+        every { analytics.eventClickPilihPromoRecommendation(any(), any()) } just Runs
+        every { analytics.eventClickPilihOnRecommendation(any(), any(), any()) } just Runs
+
+        // WHEN
+        val initialSelectedPromoCount = viewModel.promoListUiModel.value?.count {
+            it is PromoListItemUiModel && it.uiState.isSelected
+        }
+        viewModel.applyRecommendedPromo()
+
+        // THEN
+        val selectedBoPromo = viewModel.promoListUiModel.value?.firstOrNull {
+            it is PromoListItemUiModel && it.uiState.isRecommended && it.uiState.isSelected && it.uiState.isBebasOngkir
+        }
+        val selectedMvcWithSecondaryPromo = viewModel.promoListUiModel.value?.firstOrNull {
+            it is PromoListItemUiModel && it.uiState.isRecommended && it.uiState.isSelected && it.uiData.useSecondaryPromo
+        }
+        assert(initialSelectedPromoCount == 0)
+        Assert.assertNotNull(selectedBoPromo)
+        Assert.assertNotNull(selectedMvcWithSecondaryPromo)
     }
 
     @Test
@@ -432,6 +493,7 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
 
         // WHEN
         viewModel.updatePromoListAfterClickPromoItem(selectedPromoItem)
+        testDispatchers.coroutineDispatcher.advanceUntilIdle()
 
         // THEN
         val lastModifiedData = viewModel.tmpUiModel.value as? Update<*>
@@ -473,4 +535,98 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         assert((lastModifiedData?.data as PromoListItemUiModel).uiData.errorMessage.isBlank())
     }
 
+    @Test
+    fun `WHEN click promo card with actionable CTA THEN should navigate applink`() {
+        // GIVEN
+        val response = GetPromoListDataProvider.provideGetPromoListResponseSuccessAllEligible()
+
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
+        }
+        coEvery { analytics.sendClickActivatedGopayCicilEvent(any(), any(), any(), any()) } just Runs
+
+        viewModel.getPromoList(PromoRequest(), "")
+
+        var selectedPromoItemWithActionableCTA: PromoListItemUiModel? = null
+        viewModel.promoListUiModel.value?.forEach {
+            if (it is PromoListItemUiModel && it.uiState.isContainActionableGopayCicilCTA) {
+                selectedPromoItemWithActionableCTA = it
+                return@forEach
+            }
+        }
+
+        // WHEN
+        viewModel.handlePromoListAfterClickPromoItem(selectedPromoItemWithActionableCTA!!, 0)
+
+        // THEN
+        val applinkData = viewModel.getActionableApplinkNavigation.value
+        assert(applinkData == selectedPromoItemWithActionableCTA?.uiData?.cta?.applink)
+    }
+
+    @Test
+    fun `WHEN click promo card with no actionable CTA and is unselected THEN should select the product`() {
+        // GIVEN
+        val response = GetPromoListDataProvider.provideGetPromoListResponseSuccessAllEligible()
+
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
+        }
+        every { analytics.eventClickSelectKupon(any(), any(), any()) } just Runs
+        every { analytics.sendClickActivatedGopayCicilEvent(any(), any(), any(), any()) } just Runs
+
+        viewModel.getPromoList(PromoRequest(), "")
+
+        var selectedPromoItemWithActionableCTA: PromoListItemUiModel? = null
+        viewModel.promoListUiModel.value?.forEach {
+            if (it is PromoListItemUiModel && !it.uiState.isContainActionableGopayCicilCTA && !it.uiState.isSelected) {
+                selectedPromoItemWithActionableCTA = it
+                return@forEach
+            }
+        }
+
+        var hasAnyPromoSelected = viewModel.isHasAnySelectedPromoItem()
+        assert(!hasAnyPromoSelected)
+
+        // WHEN
+        viewModel.handlePromoListAfterClickPromoItem(selectedPromoItemWithActionableCTA!!, 0)
+
+        // THEN
+        hasAnyPromoSelected = viewModel.isHasAnySelectedPromoItem()
+        assert(hasAnyPromoSelected)
+    }
+
+    @Test
+    fun `WHEN promo tab is changed THEN set current tab to selected tab`() {
+        // Given
+        val promoTabUiModel = PromoTabUiModel(
+            uiData = PromoTabUiModel.UiData(tabs = listOf(SectionTab(id = "1", title = "title"))),
+            uiState = PromoTabUiModel.UiState()
+        )
+
+        // When
+        viewModel.changeSelectedTab(promoTabUiModel)
+
+        // Then
+        assert(viewModel.promoTabUiModel.value == promoTabUiModel)
+    }
+
+    @Test
+    fun `WHEN app trigger onCleared THEN should cancel all use case JOBS`() {
+        // given
+        every { getCouponListRecommendationUseCase.cancelJobs() } just Runs
+        every { validateUseUseCase.cancelJobs() } just Runs
+        every { clearCacheAutoApplyUseCase.cancelJobs() } just Runs
+        every { getPromoSuggestionUseCase.cancelJobs() } just Runs
+
+        // when
+        viewModel.cancelAllJobs()
+
+        // then
+        verify { getCouponListRecommendationUseCase.cancelJobs() }
+        verify { validateUseUseCase.cancelJobs() }
+        verify { clearCacheAutoApplyUseCase.cancelJobs() }
+        verify { getPromoSuggestionUseCase.cancelJobs() }
+    }
 }

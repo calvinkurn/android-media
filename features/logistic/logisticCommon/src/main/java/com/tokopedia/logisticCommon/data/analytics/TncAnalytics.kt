@@ -15,7 +15,8 @@ object TncAnalytics : BaseTrackerConst() {
     private const val CATEGORY_EDIT_ADDRESS = "edit address page"
 
     fun onClickTnC(userId: String, category: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(if (category == CATEGORY_EDIT_ADDRESS) CLICK_LOGISTIC else CLICK_ADDRESS)
                 .appendEventCategory(category)
                 .appendEventAction(CLICK_TNC)
@@ -23,11 +24,13 @@ object TncAnalytics : BaseTrackerConst() {
                 .appendUserId(userId)
                 .appendBusinessUnit(if (category == CATEGORY_EDIT_ADDRESS) BUSINESS_UNIT_LOGISTIC else BUSINESS_UNIT_LOGISTIC_FULFILLMENT)
                 .appendCurrentSite(CurrentSite.DEFAULT)
-                .build())
+                .build()
+        )
     }
 
     fun onViewTnC(userId: String, category: String) {
-        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+        getTracker().sendGeneralEvent(
+            BaseTrackerBuilder()
                 .appendEvent(if (category == CATEGORY_EDIT_ADDRESS) VIEW_LOGISTIC else VIEW_ADDRESS)
                 .appendEventCategory(category)
                 .appendEventAction(VIEW_TNC)
@@ -35,6 +38,7 @@ object TncAnalytics : BaseTrackerConst() {
                 .appendUserId(userId)
                 .appendBusinessUnit(if (category == CATEGORY_EDIT_ADDRESS) BUSINESS_UNIT_LOGISTIC else BUSINESS_UNIT_LOGISTIC_FULFILLMENT)
                 .appendCurrentSite(CurrentSite.DEFAULT)
-                .build())
+                .build()
+        )
     }
 }

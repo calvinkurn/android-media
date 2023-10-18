@@ -61,8 +61,10 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
                 it.gatewayDetail?.howToUse?.let { howToUseDetail ->
                     listOfSteps = howToUseDetail.steps as ArrayList<String>
                 }
-                titleText =
-                    "${resources.getString(R.string.pay_later_how_to_use)} ${partnerName ?: ""}"
+                context?.let { context ->
+                    titleText =
+                        "${context.resources.getString(R.string.pay_later_how_to_use)} ${partnerName ?: ""}"
+                }
             }
 
 

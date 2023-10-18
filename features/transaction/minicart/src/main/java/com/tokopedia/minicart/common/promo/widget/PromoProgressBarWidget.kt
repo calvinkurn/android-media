@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.minicart.databinding.WidgetPromoProgressBarBinding
 import com.tokopedia.unifycomponents.BaseCustomView
 
-class PromoProgressBarWidget: BaseCustomView {
+class PromoProgressBarWidget : BaseCustomView {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)

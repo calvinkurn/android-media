@@ -19,7 +19,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class NotificationAnalytic @Inject constructor(
-        private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface
 ) {
     private val CURRENCY_IDR = "IDR"
     private val KEY_EVENT_LABEL = "eventLabel"
@@ -88,222 +88,230 @@ class NotificationAnalytic @Inject constructor(
     }
 
     fun trackProductImpression(
-            notification: NotificationUiModel,
-            product: ProductData,
-            position: Int
+        notification: NotificationUiModel,
+        product: ProductData,
+        position: Int
     ) {
         val products: List<ProductListImpressionProduct> = List(1) {
             ProductListImpressionProduct(
-                    id = product.productId.toString(),
-                    name = product.name,
-                    brand = null,
-                    category = "",
-                    variant = "",
-                    price = product.price,
-                    currency = CURRENCY_IDR,
-                    index = position.toLong(),
-                    list = LIST_NOTIFCENTER,
-                    dimension40 = null,
-                    dimension87 = null,
-                    dimension88 = null,
-                    stringCollection = mapOf(
-                            "dimension79" to product.shop.id
-                    )
+                id = product.productId.toString(),
+                name = product.name,
+                brand = null,
+                category = "",
+                variant = "",
+                price = product.price,
+                currency = CURRENCY_IDR,
+                index = position.toLong(),
+                list = LIST_NOTIFCENTER,
+                dimension40 = null,
+                dimension87 = null,
+                dimension88 = null,
+                stringCollection = mapOf(
+                    "dimension79" to product.shop.id
+                )
             )
         }
 
         val bundle = ProductListImpressionBundler.getBundle(
-                null,
-                products,
-                CurrentSite.MARKETPLACE,
-                Event.PRODUCT_VIEW,
-                EventCategory.NOTIFCENTER,
-                EventAction.VIEW_PRODUCT,
-                BusinessUnit.COMMUNICATION,
-                null,
-                InboxAnalyticCommon.createGeneralEvent(
-                        eventLabel = getEventLabel(notification)
-                )
+            null,
+            products,
+            CurrentSite.MARKETPLACE,
+            Event.PRODUCT_VIEW,
+            EventCategory.NOTIFCENTER,
+            EventAction.VIEW_PRODUCT,
+            BusinessUnit.COMMUNICATION,
+            null,
+            InboxAnalyticCommon.createGeneralEvent(
+                eventLabel = getEventLabel(notification)
+            )
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                ProductListImpressionBundler.KEY, bundle
+            ProductListImpressionBundler.KEY,
+            bundle
         )
     }
 
     fun trackProductClick(
-            notification: NotificationUiModel,
-            product: ProductData,
-            position: Int
+        notification: NotificationUiModel,
+        product: ProductData,
+        position: Int
     ) {
         val products: ArrayList<ProductListClickProduct> = arrayListOf(
-                ProductListClickProduct(
-                        id = product.productId.toString(),
-                        name = product.name,
-                        brand = null,
-                        category = "",
-                        variant = "",
-                        price = product.price,
-                        currency = CURRENCY_IDR,
-                        index = position.toLong(),
-                        keyDimension40 = "",
-                        stringCollection = hashMapOf(
-                                Product.KEY_LIST to LIST_NOTIFCENTER,
-                                "dimension79" to product.shop.id,
-                                "attribution" to ""
-                        )
+            ProductListClickProduct(
+                id = product.productId.toString(),
+                name = product.name,
+                brand = null,
+                category = "",
+                variant = "",
+                price = product.price,
+                currency = CURRENCY_IDR,
+                index = position.toLong(),
+                keyDimension40 = "",
+                stringCollection = hashMapOf(
+                    Product.KEY_LIST to LIST_NOTIFCENTER,
+                    "dimension79" to product.shop.id,
+                    "attribution" to ""
                 )
+            )
         )
 
         val bundle = ProductListClickBundler.getBundle(
-                LIST_NOTIFCENTER,
-                products,
-                EventCategory.NOTIFCENTER,
-                EventAction.CLICK_PRODUCT,
-                Event.PRODUCT_CLICK,
-                CurrentSite.MARKETPLACE,
-                BusinessUnit.COMMUNICATION,
-                null,
-                hashMapOf(
-                        KEY_EVENT_LABEL to getEventLabel(notification)
-                )
+            LIST_NOTIFCENTER,
+            products,
+            EventCategory.NOTIFCENTER,
+            EventAction.CLICK_PRODUCT,
+            Event.PRODUCT_CLICK,
+            CurrentSite.MARKETPLACE,
+            BusinessUnit.COMMUNICATION,
+            null,
+            hashMapOf(
+                KEY_EVENT_LABEL to getEventLabel(notification)
+            )
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                ProductListClickBundler.KEY, bundle
+            ProductListClickBundler.KEY,
+            bundle
         )
     }
 
     fun trackBumpReminder() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                InboxAnalyticCommon.createGeneralEvent(
-                        event = Event.CLICK_NOTIF_CENTER,
-                        eventCategory = EventCategory.NOTIFCENTER,
-                        eventAction = EventAction.CLICK_REMIND_ME,
-                        eventLabel = "ingatkan saya",
-                        businessUnit = BusinessUnit.COMMUNICATION,
-                        currentSite = CurrentSite.MARKETPLACE,
-                        userId = userSession.userId
-                )
+            InboxAnalyticCommon.createGeneralEvent(
+                event = Event.CLICK_NOTIF_CENTER,
+                eventCategory = EventCategory.NOTIFCENTER,
+                eventAction = EventAction.CLICK_REMIND_ME,
+                eventLabel = "ingatkan saya",
+                businessUnit = BusinessUnit.COMMUNICATION,
+                currentSite = CurrentSite.MARKETPLACE,
+                userId = userSession.userId
+            )
         )
     }
 
     fun trackDeleteReminder() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                InboxAnalyticCommon.createGeneralEvent(
-                        event = Event.CLICK_NOTIF_CENTER,
-                        eventCategory = EventCategory.NOTIFCENTER,
-                        eventAction = EventAction.CLICK_REMIND_ME,
-                        eventLabel = "hapus pengingat",
-                        businessUnit = BusinessUnit.COMMUNICATION,
-                        currentSite = CurrentSite.MARKETPLACE,
-                        userId = userSession.userId
-                )
+            InboxAnalyticCommon.createGeneralEvent(
+                event = Event.CLICK_NOTIF_CENTER,
+                eventCategory = EventCategory.NOTIFCENTER,
+                eventAction = EventAction.CLICK_REMIND_ME,
+                eventLabel = "hapus pengingat",
+                businessUnit = BusinessUnit.COMMUNICATION,
+                currentSite = CurrentSite.MARKETPLACE,
+                userId = userSession.userId
+            )
         )
     }
 
     fun trackLoadMoreNew() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                InboxAnalyticCommon.createGeneralEvent(
-                        event = Event.CLICK_NOTIF_CENTER,
-                        eventCategory = EventCategory.NOTIFCENTER,
-                        eventAction = EventAction.CLICK_SEE_MORE_NEW,
-                        eventLabel = "",
-                        businessUnit = BusinessUnit.COMMUNICATION,
-                        currentSite = CurrentSite.MARKETPLACE,
-                        userId = userSession.userId
-                )
+            InboxAnalyticCommon.createGeneralEvent(
+                event = Event.CLICK_NOTIF_CENTER,
+                eventCategory = EventCategory.NOTIFCENTER,
+                eventAction = EventAction.CLICK_SEE_MORE_NEW,
+                eventLabel = "",
+                businessUnit = BusinessUnit.COMMUNICATION,
+                currentSite = CurrentSite.MARKETPLACE,
+                userId = userSession.userId
+            )
         )
     }
 
     fun trackLoadMoreEarlier() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                InboxAnalyticCommon.createGeneralEvent(
-                        event = Event.CLICK_NOTIF_CENTER,
-                        eventCategory = EventCategory.NOTIFCENTER,
-                        eventAction = EventAction.CLICK_SEE_MORE_EARLIER,
-                        eventLabel = "",
-                        businessUnit = BusinessUnit.COMMUNICATION,
-                        currentSite = CurrentSite.MARKETPLACE,
-                        userId = userSession.userId
-                )
+            InboxAnalyticCommon.createGeneralEvent(
+                event = Event.CLICK_NOTIF_CENTER,
+                eventCategory = EventCategory.NOTIFCENTER,
+                eventAction = EventAction.CLICK_SEE_MORE_EARLIER,
+                eventLabel = "",
+                businessUnit = BusinessUnit.COMMUNICATION,
+                currentSite = CurrentSite.MARKETPLACE,
+                userId = userSession.userId
+            )
         )
     }
 
     fun trackClickSettingNotif() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                InboxAnalyticCommon.createGeneralEvent(
-                        event = Event.CLICK_NOTIF_CENTER,
-                        eventCategory = EventCategory.NOTIFCENTER,
-                        eventAction = EventAction.CLICK_NOTIF_SETTINGS,
-                        eventLabel = "",
-                        businessUnit = BusinessUnit.COMMUNICATION,
-                        currentSite = CurrentSite.MARKETPLACE,
-                        userId = userSession.userId
-                )
+            InboxAnalyticCommon.createGeneralEvent(
+                event = Event.CLICK_NOTIF_CENTER,
+                eventCategory = EventCategory.NOTIFCENTER,
+                eventAction = EventAction.CLICK_NOTIF_SETTINGS,
+                eventLabel = "",
+                businessUnit = BusinessUnit.COMMUNICATION,
+                currentSite = CurrentSite.MARKETPLACE,
+                userId = userSession.userId
+            )
         )
     }
 
     fun trackFilterClick(
-            filterType: Long,
-            filterName: String,
-            @RoleType
-            role: Int?
+        filterType: Long,
+        filterName: String,
+        @RoleType
+        role: Int?,
+        eventCategory: String = EventCategory.NOTIFCENTER
     ) {
         if (filterType == NotifcenterDetailUseCase.FILTER_NONE || role == null) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                InboxAnalyticCommon.createGeneralEvent(
-                        event = Event.CLICK_NOTIF_CENTER,
-                        eventCategory = EventCategory.NOTIFCENTER,
-                        eventAction = EventAction.CLICK_FILTER_REQUEST,
-                        eventLabel = filterName,
-                        businessUnit = BusinessUnit.COMMUNICATION,
-                        currentSite = CurrentSite.MARKETPLACE,
-                        userId = userSession.userId,
-                        userRole = getRoleString(role)
-                )
+            InboxAnalyticCommon.createGeneralEvent(
+                event = Event.CLICK_NOTIF_CENTER,
+                eventCategory = eventCategory,
+                eventAction = EventAction.CLICK_FILTER_REQUEST,
+                eventLabel = filterName,
+                businessUnit = BusinessUnit.COMMUNICATION,
+                currentSite = CurrentSite.MARKETPLACE,
+                userId = userSession.userId,
+                userRole = getRoleString(role)
+            )
         )
     }
 
     fun trackClickCtaWidget(
-            element: NotificationUiModel,
-            @RoleType
-            role: Int?
+        element: NotificationUiModel,
+        @RoleType
+        role: Int?,
+        eventCategory: String = EventCategory.NOTIFCENTER
     ) {
         if (role == null) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                InboxAnalyticCommon.createGeneralEvent(
-                        event = Event.CLICK_NOTIF_CENTER,
-                        eventCategory = EventCategory.NOTIFCENTER,
-                        eventAction = "${EventAction.CLICK_WIDGET_CTA} - ${element.widgetCtaText}",
-                        eventLabel = getEventLabelNotifWidget(element),
-                        businessUnit = BusinessUnit.COMMUNICATION,
-                        currentSite = CurrentSite.MARKETPLACE,
-                        userId = userSession.userId,
-                        userRole = getRoleString(role)
-                )
+            InboxAnalyticCommon.createGeneralEvent(
+                event = Event.CLICK_NOTIF_CENTER,
+                eventCategory = eventCategory,
+                eventAction = "${EventAction.CLICK_WIDGET_CTA} - ${element.widgetCtaText}",
+                eventLabel = getEventLabelNotifWidget(element),
+                businessUnit = BusinessUnit.COMMUNICATION,
+                currentSite = CurrentSite.MARKETPLACE,
+                userId = userSession.userId,
+                userRole = getRoleString(role)
+            )
         )
     }
 
-    fun trackExpandTimelineHistory(element: NotificationUiModel, role: Int?) {
+    fun trackExpandTimelineHistory(
+        element: NotificationUiModel,
+        role: Int?,
+        eventCategory: String = EventCategory.NOTIFCENTER
+    ) {
         if (role == null) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                InboxAnalyticCommon.createGeneralEvent(
-                        event = Event.CLICK_NOTIF_CENTER,
-                        eventCategory = EventCategory.NOTIFCENTER,
-                        eventAction = EventAction.CLICK_EXPAND_NOTIF,
-                        eventLabel = getEventLabelNotifWidget(element),
-                        businessUnit = BusinessUnit.COMMUNICATION,
-                        currentSite = CurrentSite.MARKETPLACE,
-                        userId = userSession.userId,
-                        userRole = getRoleString(role)
-                )
+            InboxAnalyticCommon.createGeneralEvent(
+                event = Event.CLICK_NOTIF_CENTER,
+                eventCategory = eventCategory,
+                eventAction = EventAction.CLICK_EXPAND_NOTIF,
+                eventLabel = getEventLabelNotifWidget(element),
+                businessUnit = BusinessUnit.COMMUNICATION,
+                currentSite = CurrentSite.MARKETPLACE,
+                userId = userSession.userId,
+                userRole = getRoleString(role)
+            )
         )
     }
 
     fun trackSuccessDoBuyAndAtc(
-            notification: NotificationUiModel,
-            product: ProductData,
-            data: DataModel,
-            eventAction: String
+        notification: NotificationUiModel,
+        product: ProductData,
+        data: DataModel,
+        eventAction: String
     ) {
         val dimen83 = if (product.hasFreeShipping()) {
             AddToCartExternalAnalytics.EE_VALUE_BEBAS_ONGKIR
@@ -312,39 +320,40 @@ class NotificationAnalytic @Inject constructor(
         }
         val itemBundle = Bundle().apply {
             putString(
-                    AddToCartExternalAnalytics.EE_PARAM_ITEM_ID,
-                    setValueOrDefault(data.productId.toString())
+                AddToCartExternalAnalytics.EE_PARAM_ITEM_ID,
+                setValueOrDefault(data.productId.toString())
             )
             putString(
-                    AddToCartExternalAnalytics.EE_PARAM_ITEM_NAME,
-                    setValueOrDefault(product.name)
+                AddToCartExternalAnalytics.EE_PARAM_ITEM_NAME,
+                setValueOrDefault(product.name)
             )
             putString(
-                    AddToCartExternalAnalytics.EE_PARAM_ITEM_BRAND,
-                    setValueOrDefault("")
+                AddToCartExternalAnalytics.EE_PARAM_ITEM_BRAND,
+                setValueOrDefault("")
             )
             putString(
-                    AddToCartExternalAnalytics.EE_PARAM_ITEM_CATEGORY,
-                    setValueOrDefault("")
+                AddToCartExternalAnalytics.EE_PARAM_ITEM_CATEGORY,
+                setValueOrDefault("")
             )
             putString(
-                    AddToCartExternalAnalytics.EE_PARAM_ITEM_VARIANT,
-                    setValueOrDefault("")
+                AddToCartExternalAnalytics.EE_PARAM_ITEM_VARIANT,
+                setValueOrDefault("")
             )
             putString(
-                    AddToCartExternalAnalytics.EE_PARAM_SHOP_ID,
-                    setValueOrDefault(data.shopId.toString())
+                AddToCartExternalAnalytics.EE_PARAM_SHOP_ID,
+                setValueOrDefault(data.shopId.toString())
             )
             putString(
-                    AddToCartExternalAnalytics.EE_PARAM_SHOP_NAME,
-                    setValueOrDefault(product.shop.name)
+                AddToCartExternalAnalytics.EE_PARAM_SHOP_NAME,
+                setValueOrDefault(product.shop.name)
             )
             putString(
-                    AddToCartExternalAnalytics.EE_PARAM_SHOP_TYPE, setValueOrDefault("")
+                AddToCartExternalAnalytics.EE_PARAM_SHOP_TYPE,
+                setValueOrDefault("")
             )
             putString(
-                    AddToCartExternalAnalytics.EE_PARAM_CATEGORY_ID,
-                    setValueOrDefault("")
+                AddToCartExternalAnalytics.EE_PARAM_CATEGORY_ID,
+                setValueOrDefault("")
             )
             putInt(AddToCartExternalAnalytics.EE_PARAM_QUANTITY, product.minOrder)
             putDouble(AddToCartExternalAnalytics.EE_PARAM_PRICE, product.price)
@@ -352,8 +361,8 @@ class NotificationAnalytic @Inject constructor(
             putString(AddToCartExternalAnalytics.EE_PARAM_URL, product.url)
             putString(AddToCartExternalAnalytics.EE_PARAM_DIMENSION_38, setValueOrDefault(""))
             putString(
-                    AddToCartExternalAnalytics.EE_PARAM_DIMENSION_45,
-                    setValueOrDefault(data.cartId)
+                AddToCartExternalAnalytics.EE_PARAM_DIMENSION_45,
+                setValueOrDefault(data.cartId)
             )
             putString(AddToCartExternalAnalytics.EE_PARAM_DIMENSION_83, dimen83)
             putString("dimension40", LIST_NOTIFCENTER)
@@ -364,27 +373,29 @@ class NotificationAnalytic @Inject constructor(
             putString(TrackAppUtils.EVENT_ACTION, eventAction)
             putString(TrackAppUtils.EVENT_LABEL, notification.getEventLabel())
             putParcelableArrayList(
-                    AddToCartExternalAnalytics.EE_VALUE_ITEMS, arrayListOf(itemBundle)
+                AddToCartExternalAnalytics.EE_VALUE_ITEMS,
+                arrayListOf(itemBundle)
             )
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                Event.ADD_TO_CART, eventDataLayer
+            Event.ADD_TO_CART,
+            eventDataLayer
         )
     }
 
     fun trackClickOrderListItem(role: Int?, order: OrderWidgetUiModel) {
         if (role == null) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                InboxAnalyticCommon.createGeneralEvent(
-                        event = Event.CLICK_NOTIF_CENTER,
-                        eventCategory = EventCategory.NOTIFCENTER,
-                        eventAction = EventAction.CLICK_ORDER_LIST_ITEM,
-                        eventLabel = getEventLabelNotifOrderListItem(role, order),
-                        businessUnit = BusinessUnit.COMMUNICATION,
-                        currentSite = CurrentSite.MARKETPLACE,
-                        userId = userSession.userId,
-                        userRole = getRoleString(role)
-                )
+            InboxAnalyticCommon.createGeneralEvent(
+                event = Event.CLICK_NOTIF_CENTER,
+                eventCategory = EventCategory.NOTIFCENTER,
+                eventAction = EventAction.CLICK_ORDER_LIST_ITEM,
+                eventLabel = getEventLabelNotifOrderListItem(role, order),
+                businessUnit = BusinessUnit.COMMUNICATION,
+                currentSite = CurrentSite.MARKETPLACE,
+                userId = userSession.userId,
+                userRole = getRoleString(role)
+            )
         )
     }
 
@@ -469,7 +480,8 @@ class NotificationAnalytic @Inject constructor(
     }
 
     private fun getImpressionWithoutLocationLabel(
-        templateKey: String, notificationId: String
+        templateKey: String,
+        notificationId: String
     ): String {
         return "$templateKey - $notificationId"
     }
@@ -482,7 +494,9 @@ class NotificationAnalytic @Inject constructor(
     private fun setValueOrDefault(value: String): String? {
         return if (value.isEmpty()) {
             AddToCartExternalAnalytics.EE_VALUE_NONE_OTHER
-        } else value
+        } else {
+            value
+        }
     }
 
     private fun getEventLabel(notification: NotificationUiModel): String {
@@ -506,5 +520,4 @@ class NotificationAnalytic @Inject constructor(
         private const val labelBuyer = "buyer"
         private const val labelSeller = "seller"
     }
-
 }

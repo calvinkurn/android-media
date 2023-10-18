@@ -17,7 +17,6 @@ object DigitalPDPConstant {
     const val MINIMUM_OPERATOR_PREFIX_LISTRIK = 1
     const val MINIMUM_VALID_NUMBER_LENGTH = 10
     const val MAXIMUM_VALID_NUMBER_LENGTH = 14
-    const val FIXED_PADDING_ADJUSTMENT = 70
     const val DEFAULT_ICON_RES = 0
 
     const val TELCO_PREFERENCES_NAME = "telco_preferences"
@@ -40,4 +39,16 @@ object DigitalPDPConstant {
 
     const val RECOMMENDATION_GQL_CHANNEL_NAME_PULSA = "pulsa_pdp_last_transaction"
     const val RECOMMENDATION_GQL_CHANNEL_NAME_DEFAULT = "recharge_pdp_last_trx_client_number"
+    const val PERSO_CHANNEL_NAME_INDOSAT_CHECK_BALANCE = "indosat_check_balance"
+    const val MCCM_CHANNEL_NAME = "recharge_pdp_mccm_new_layout"
+
+    const val OTHER_COMPONENT_APPLINK_OMNI = "applink_omni"
+    const val APPLINK_OMNI_DATA_CODE = "omni_applink_data_code"
+
+    const val EXTRA_CHECK_BALANCE_ACCESS_TOKEN = "indosat_check_balance_access_token"
+    const val INDOSAT_CHECK_BALANCE_TYPE_OTP = "otp"
+    const val INDOSAT_CHECK_BALANCE_TYPE_WIDGET = "widget"
+    const val INDOSAT_CHECK_BALANCE_TYPE_ERROR = "error"
+
+    const val CHECK_BALANCE_FAIL_THRESHOLD = 3
 }

@@ -25,12 +25,12 @@ class AddEditProductPreviewConstants {
         const val DETAIL_DATA_INDEX = 0
         const val DESCRIPTION_DATA_INDEX = 1
         const val SHIPMENT_DATA_INDEX = 2
-        const val REQUEST_CODE_SIZE = 3
         const val UPLOAD_DATA = 4
         const val BUNDLE_DRAFT_ID = "draftId"
         const val BUNDLE_PRODUCT_ID = "productId"
         const val BUNDLE_IS_PRODUCT_DUPLICATE = "isProductDuplicate"
         const val DELAY_CLOSE_ACTIVITY = 300L
+        const val TITLE_ERROR_UPLOAD_PRODUCT = "Error upload product"
         const val TITLE_ERROR_UPLOAD_IMAGE = "Error upload image"
         const val TITLE_ERROR_DOWNLOAD_IMAGE = "Error download image"
         const val TITLE_ERROR_SAVING_DRAFT = "Error saving draft"

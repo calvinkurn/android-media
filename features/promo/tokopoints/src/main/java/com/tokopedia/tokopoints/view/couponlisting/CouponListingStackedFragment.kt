@@ -21,6 +21,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.tokopoints.R
+import com.tokopedia.tokopoints.databinding.TpFragmentStackedCouponListingBinding
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokopointsQueryModule
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration
@@ -34,9 +35,9 @@ import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.tp_fragment_stacked_coupon_listing.*
-import kotlinx.android.synthetic.main.tp_fragment_stacked_coupon_listing.view.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedContract.View, View.OnClickListener, AdapterCallback, TokopointPerformanceMonitoringListener {
 
@@ -51,6 +52,8 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var redeemMessage: String = ""
 
+    private var binding by autoClearedNullable<TpFragmentStackedCouponListingBinding>()
+
     override val activityContext: Context?
         get() = activity
 
@@ -64,15 +67,15 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.tp_fragment_stacked_coupon_listing, container, false)
-        initViews(view)
-        return view
+        binding = TpFragmentStackedCouponListingBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViews()
         initListener()
-        ToasterHelper.showCouponClaimToast(redeemMessage,view)
+        ToasterHelper.showCouponClaimToast(redeemMessage, view)
     }
 
     override fun onResume() {
@@ -81,13 +84,17 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     }
 
     override fun showLoader() {
-        container?.displayedChild = CONTAINER_LOADER
-        swipe_refresh_layout?.isRefreshing = false
+        binding?.apply {
+            container.displayedChild = CONTAINER_LOADER
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     override fun hideLoader() {
-        container?.displayedChild = CONTAINER_DATA
-        swipe_refresh_layout?.isRefreshing = false
+        binding?.apply {
+            container.displayedChild = CONTAINER_DATA
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     override fun getScreenName(): String {
@@ -96,9 +103,9 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
 
     override fun initInjector() {
         DaggerTokopointBundleComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .tokopointsQueryModule(TokopointsQueryModule(requireActivity()))
-                .build().inject(this)
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .tokopointsQueryModule(TokopointsQueryModule(requireActivity()))
+            .build().inject(this)
     }
 
     override fun onClick(source: View) {
@@ -108,16 +115,19 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         }
     }
 
-    private fun initViews(view: View) {
-        mItemDecoration = SpacesItemDecoration(0,
-                activityContext!!.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                activityContext!!.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0))
-        if (view.recycler_view_coupons.itemDecorationCount > 0) {
-            view.recycler_view_coupons.removeItemDecoration(mItemDecoration!!)
+    private fun initViews() {
+        binding?.apply {
+            mItemDecoration = SpacesItemDecoration(
+                0,
+                activityContext!!.resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_0),
+                activityContext!!.resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_0)
+            )
+            if (recyclerViewCoupons.itemDecorationCount > 0) {
+                recyclerViewCoupons.removeItemDecoration(mItemDecoration!!)
+            }
+            recyclerViewCoupons.addItemDecoration(mItemDecoration!!)
+            recyclerViewCoupons.adapter = mAdapter
         }
-        view.recycler_view_coupons.addItemDecoration(mItemDecoration!!)
-        view.recycler_view_coupons.adapter = mAdapter
-
     }
 
     private fun initListener() {
@@ -135,7 +145,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
 
         stopPreparePagePerformanceMonitoring()
         startNetworkRequestPerformanceMonitoring()
-        swipe_refresh_layout.setOnRefreshListener {
+        binding?.swipeRefreshLayout?.setOnRefreshListener {
             val id = presenter.category
             id?.let { presenter.getCoupons(id) }
         }
@@ -144,32 +154,41 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         addInStackedObserverList()
     }
 
-    private fun addInStackedObserverList() = presenter.inStackedAdapter.observe(viewLifecycleOwner, Observer {
-        it?.let {
-            showCouponInStackBottomSheet(it)
+    private fun addInStackedObserverList() = presenter.inStackedAdapter.observe(
+        viewLifecycleOwner,
+        Observer {
+            it?.let {
+                showCouponInStackBottomSheet(it)
+            }
         }
-    })
+    )
 
-    private fun addListObserver() = presenter.startAdapter.observe(this.viewLifecycleOwner, Observer {
-        it?.let {
-            when (it) {
-                is Loading -> {
-                    mAdapter.resetAdapter()
-                    mAdapter.notifyDataSetChanged()
-                    mAdapter.startDataLoading()
-                }
-                is Success -> {
-                    stopNetworkRequestPerformanceMonitoring()
-                    startRenderPerformanceMonitoring()
-                    setOnRecyclerViewLayoutReady()
-                    mAdapter.onSuccess(it.data)
-                }
-                is ErrorMessage -> {
-                    mAdapter.onError()
+    private fun addListObserver() = presenter.startAdapter.observe(
+        this.viewLifecycleOwner,
+        Observer {
+            it?.let {
+                when (it) {
+                    is Loading -> {
+                        mAdapter.resetAdapter()
+                        mAdapter.notifyDataSetChanged()
+                        mAdapter.startDataLoading()
+                    }
+                    is Success -> {
+                        stopNetworkRequestPerformanceMonitoring()
+                        startRenderPerformanceMonitoring()
+                        setOnRecyclerViewLayoutReady()
+                        mAdapter.onSuccess(it.data)
+                    }
+                    is ErrorMessage -> {
+                        mAdapter.onError()
+                    }
+                    else -> {
+                        // no-op
+                    }
                 }
             }
         }
-    })
+    )
 
     override fun openWebView(url: String) {
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
@@ -181,7 +200,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         }
         requireView().findViewById<View>(R.id.button_continue).visibility = View.VISIBLE
 
-        container.displayedChild = CONTAINER_EMPTY
+        binding?.container?.displayedChild = CONTAINER_EMPTY
     }
 
     override fun onRetryPageLoad(pageNumber: Int) {}
@@ -202,15 +221,17 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     override fun onStartPageLoad(pageNumber: Int) {}
 
     override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
-        swipe_refresh_layout.isRefreshing = false
+        binding?.swipeRefreshLayout?.isRefreshing = false
     }
 
     override fun onError(pageNumber: Int) {
-        if (pageNumber == 1) {
-            container.displayedChild = CONTAINER_ERROR
-            server_error_view?.showErrorUi(NetworkDetector.isConnectedToInternet(appContext))
+        binding?.apply {
+            if (pageNumber == 1) {
+                container.displayedChild = CONTAINER_ERROR
+                serverErrorView.showErrorUi(NetworkDetector.isConnectedToInternet(appContext))
+            }
+            swipeRefreshLayout.isRefreshing = false
         }
-        swipe_refresh_layout.isRefreshing = false
     }
 
     fun showCouponInStackBottomSheet(data: TokoPointPromosEntity) {
@@ -228,35 +249,34 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
             recyclerView.addItemDecoration(mItemDecoration!!)
         }
 
-        val mStackedInadapter = CouponInStackBaseAdapter(object : AdapterCallback {
-            override fun onRetryPageLoad(pageNumber: Int) {
+        val mStackedInadapter = CouponInStackBaseAdapter(
+            object : AdapterCallback {
+                override fun onRetryPageLoad(pageNumber: Int) {
+                }
 
-            }
+                override fun onEmptyList(rawObject: Any) {
+                    closeableBottomSheetDialog.dismiss()
+                }
 
-            override fun onEmptyList(rawObject: Any) {
-                closeableBottomSheetDialog.dismiss()
-            }
+                override fun onStartFirstPageLoad() {
+                }
 
-            override fun onStartFirstPageLoad() {
+                override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
+                    closeableBottomSheetDialog.show(childFragmentManager, "")
+                }
 
-            }
+                override fun onStartPageLoad(pageNumber: Int) {
+                }
 
-            override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-                closeableBottomSheetDialog.show(childFragmentManager, "")
-            }
+                override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
+                }
 
-            override fun onStartPageLoad(pageNumber: Int) {
-
-            }
-
-            override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
-
-            }
-
-            override fun onError(pageNumber: Int) {
-                closeableBottomSheetDialog.dismiss()
-            }
-        }, data)
+                override fun onError(pageNumber: Int) {
+                    closeableBottomSheetDialog.dismiss()
+                }
+            },
+            data
+        )
 
         recyclerView.adapter = mStackedInadapter
         closeableBottomSheetDialog.apply {
@@ -273,7 +293,6 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         }
         closeableBottomSheetDialog.show(childFragmentManager, "")
         mStackedInadapter.startDataLoading()
-
     }
 
     override fun onDestroyView() {
@@ -283,12 +302,12 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-            val code = data?.getStringExtra(CommonConstant.EXTRA_COUPON_CODE) ?: ""
-            if (requestCode == REQUEST_CODE_STACKED_ADAPTER && resultCode == Activity.RESULT_OK) {
-                mAdapter.couponCodeVisible(code, false)
-            } else if (requestCode == REQUEST_CODE_STACKED_IN_ADAPTER && resultCode == Activity.RESULT_OK) {
-                mAdapter.couponStackedVisible()
-            }
+        val code = data?.getStringExtra(CommonConstant.EXTRA_COUPON_CODE) ?: ""
+        if (requestCode == REQUEST_CODE_STACKED_ADAPTER && resultCode == Activity.RESULT_OK) {
+            mAdapter.couponCodeVisible(code, false)
+        } else if (requestCode == REQUEST_CODE_STACKED_IN_ADAPTER && resultCode == Activity.RESULT_OK) {
+            mAdapter.couponStackedVisible()
+        }
     }
 
     companion object {
@@ -306,14 +325,14 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
 
     override fun startPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
-                COUPONLISTSTACK_TOKOPOINT_PLT_PREPARE_METRICS,
-                COUPONLISTSTACK_TOKOPOINT_PLT_NETWORK_METRICS,
-                COUPONLISTSTACK_TOKOPOINT_PLT_RENDER_METRICS,
-                0,
-                0,
-                0,
-                0,
-                null
+            COUPONLISTSTACK_TOKOPOINT_PLT_PREPARE_METRICS,
+            COUPONLISTSTACK_TOKOPOINT_PLT_NETWORK_METRICS,
+            COUPONLISTSTACK_TOKOPOINT_PLT_RENDER_METRICS,
+            0,
+            0,
+            0,
+            0,
+            null
         )
 
         pageLoadTimePerformanceMonitoring?.startMonitoring(COUPONLISTSTACK_TOKOPOINT_PLT)
@@ -346,7 +365,8 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     }
 
     private fun setOnRecyclerViewLayoutReady() {
-        recycler_view_coupons?.viewTreeObserver
+        binding?.apply {
+            recyclerViewCoupons.viewTreeObserver
                 ?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         if (pageLoadTimePerformanceMonitoring != null) {
@@ -354,8 +374,9 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
                             stopPerformanceMonitoring()
                         }
                         pageLoadTimePerformanceMonitoring = null
-                        recycler_view_coupons?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                        recyclerViewCoupons?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     }
                 })
+        }
     }
 }

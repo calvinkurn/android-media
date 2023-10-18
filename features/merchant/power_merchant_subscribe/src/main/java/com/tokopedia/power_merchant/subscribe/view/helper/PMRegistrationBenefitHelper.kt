@@ -48,8 +48,7 @@ object PMRegistrationBenefitHelper {
                 ),
                 getSpecialReleaseBenefit(context, Constant.PM_PRO_ULT_SPECIAL_RELEASE),
                 getProductBundlingBenefit(context, Constant.PM_PRO_ULT_PRODUCT_BUNDLING),
-                getFlashSaleBenefit(context),
-                getRewardBenefit(context)
+                getFlashSaleBenefit(context)
             )
         )
     }
@@ -71,8 +70,7 @@ object PMRegistrationBenefitHelper {
                 ),
                 getSpecialReleaseBenefit(context, Constant.PM_PRO_EXP_SPECIAL_RELEASE),
                 getProductBundlingBenefit(context, Constant.PM_PRO_EXP_PRODUCT_BUNDLING),
-                getFlashSaleBenefit(context),
-                getRewardBenefit(context)
+                getFlashSaleBenefit(context)
             )
         )
     }
@@ -97,8 +95,7 @@ object PMRegistrationBenefitHelper {
                 PMBenefitItemUiModel(
                     iconUrl = Constant.Image.IC_PM_FLASH_SALE,
                     benefitDescription = context.getString(R.string.pm_benefit_flash_sale)
-                ),
-                getRewardBenefit(context)
+                )
             )
         )
     }
@@ -118,13 +115,6 @@ object PMRegistrationBenefitHelper {
                 getSpecialReleaseBenefit(context, Constant.PM_SPECIAL_RELEASE),
                 getProductBundlingBenefit(context, Constant.PM_PRODUCT_BUNDLING)
             )
-        )
-    }
-
-    private fun getRewardBenefit(context: Context): PMBenefitItemUiModel {
-        return PMBenefitItemUiModel(
-            iconUrl = Constant.Image.IC_PM_CASH_BACK,
-            benefitDescription = context.getString(R.string.pm_benefit_reward)
         )
     }
 

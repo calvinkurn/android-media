@@ -55,7 +55,7 @@ object ProductThumbnailVariantTracking {
         userId: String
     ) {
         val action = "impression - product media variant thumbnail with image"
-        val itemName = "${data.variantCategoryKey} - ${data.variantId}"
+        val itemName = "${productInfo?.basic?.productID} - ${data.variantId}"
         val trackerId = "40921"
         val trackData = ComponentTrackDataModel(
             componentType = singleVariant?.type.orEmpty(),

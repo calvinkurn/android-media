@@ -1,0 +1,21 @@
+{
+  "data": {
+    "id": "b827103a-4ea8-49eb-8d42-908e8882f7a4",
+    "channel_id": "b0c80252-c6a6-40f1-a3ce-a9894a32ac6d",
+    "text": "Image Attachment",
+    "data": "{\"id\":\"gochat.picture\",\"message_id\":\"gochat.picture\",\"version\":1,\"message_text\":\"Image Attachment\",\"payload\":\"{\\\"duration_in_ms\\\":0,\\\"extension\\\":\\\"jpeg\\\",\\\"id\\\":\\\"1ff325bc-5991-43d6-b433-d4a69be13d15\\\"}\",\"tracking_id\":\"9dc8076f-5271-4b9b-920c-c6bcb268a09e\",\"is_canned\":false}",
+    "type": "extension",
+    "sender": {
+      "id": "835a69de-577e-4881-bf1d-4e3eed13c643",
+      "name": "bctiga",
+      "phone": "89676955972",
+      "country_code": "62",
+      "owner_id": "9075737",
+      "owner_type": "tokopedia_customer"
+    },
+    "sent_at": 1680712711756,
+    "request_id": "64ec12ef-2091-4f16-989c-90e66b2b1b09"
+  },
+  "success": true,
+  "errors": []
+}

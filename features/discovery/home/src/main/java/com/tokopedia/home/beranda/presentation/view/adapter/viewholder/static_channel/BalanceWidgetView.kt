@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
@@ -16,6 +17,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.balancewidget.BalanceWidgetTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceWidgetAdapter
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
+import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 
 /**
  * Created by yfsx on 3/1/21.
@@ -44,24 +47,26 @@ class BalanceWidgetView : FrameLayout {
     }
 
     init {
-        val view =
-            LayoutInflater.from(context).inflate(R.layout.layout_item_widget_balance_widget, this)
+        val layout = if(HomeRollenceController.isUsingAtf2Variant())
+            R.layout.layout_item_widget_balance_widget_atf2
+        else R.layout.layout_item_widget_balance_widget
+        val view = LayoutInflater.from(context).inflate(layout, this)
         rvBalance = view.findViewById(R.id.rv_balance_widget)
         this.itemView = view
         this.itemContext = view.context
     }
 
-    fun bind(element: HomeBalanceModel, listener: HomeCategoryListener?) {
+    fun bind(element: HomeBalanceModel, listener: HomeCategoryListener?, homeThematicUtil: HomeThematicUtil = HomeThematicUtil()) {
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_BALANCE_WIDGET_CUSTOMVIEW)
         this.listener = listener
-        renderWidget(element)
+        renderWidget(element, homeThematicUtil)
         BenchmarkHelper.endSystraceSection()
     }
 
-    private fun renderWidget(element: HomeBalanceModel) {
+    private fun renderWidget(element: HomeBalanceModel, homeThematicUtil: HomeThematicUtil) {
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
         if (balanceWidgetAdapter == null || rvBalance?.adapter == null) {
-            balanceWidgetAdapter = BalanceWidgetAdapter(BalanceWidgetTypeFactoryImpl(listener))
+            balanceWidgetAdapter = BalanceWidgetAdapter(BalanceWidgetTypeFactoryImpl(listener, homeThematicUtil))
             rvBalance?.layoutManager = layoutManager
             rvBalance?.adapter = balanceWidgetAdapter
         }
@@ -85,9 +90,13 @@ class BalanceWidgetView : FrameLayout {
         if (element.balanceDrawerItemModels.isNotEmpty()) {
             subscriptionPosition = element.balancePositionSubscriptions
             balanceWidgetAdapter?.setVisitables(listOf(element))
-            listener?.showBalanceWidgetCoachMark(element)
-            rvBalance?.post {
-                listener?.showBalanceWidgetCoachMark(element)
+            if(!HomeRollenceController.isUsingAtf2Variant()) {
+                listener?.showHomeCoachmark(true, element)
+                rvBalance?.post {
+                    listener?.showHomeCoachmark(true, element)
+                }
+            } else {
+                listener?.showHomeCoachmark(false, element)
             }
         } else {
             balanceWidgetAdapter?.setVisitables(listOf(BalanceWidgetFailedModel()))
@@ -102,5 +111,17 @@ class BalanceWidgetView : FrameLayout {
             }
         }
         return null
+    }
+
+    fun applyThematicColor() {
+        balanceWidgetAdapter?.let { adapter ->
+            adapter.list.forEachIndexed { index, visitable ->
+                try {
+                    if(visitable is HomeBalanceModel) {
+                        adapter.notifyItemChanged(index, bundleOf(HomeThematicUtil.PAYLOAD_APPLY_THEMATIC_COLOR to true))
+                    }
+                } catch (_: Exception) { }
+            }
+        }
     }
 }

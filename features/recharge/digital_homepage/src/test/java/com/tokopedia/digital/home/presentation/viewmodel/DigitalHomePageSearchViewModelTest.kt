@@ -208,7 +208,7 @@ class DigitalHomePageSearchViewModelTest {
 
     @Test
     fun cancelSearchAutoComplete_NotActive() {
-        coroutineRule.runBlockingTest {
+        coroutineRule.runTest {
             //given
             val job = Job()
             digitalHomePageSearchViewModel.job = job

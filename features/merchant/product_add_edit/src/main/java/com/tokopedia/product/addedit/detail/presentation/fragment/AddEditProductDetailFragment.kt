@@ -80,7 +80,6 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_USED
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_LENGTH_PRICE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.NEW_PRODUCT_INDEX
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PRICE_RECOMMENDATION_BANNER_URL
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_CATEGORY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE_IMPROVEMENT
@@ -93,6 +92,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.USED_PRODUCT_INDEX
 import com.tokopedia.product.addedit.detail.presentation.customview.TypoCorrectionView
 import com.tokopedia.product.addedit.detail.presentation.dialog.*
+import com.tokopedia.product.addedit.detail.presentation.model.CategoryMetadataInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PriceSuggestion
@@ -112,8 +112,6 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragmentArgs
 import com.tokopedia.product.addedit.specification.presentation.activity.AddEditProductSpecificationActivity
-import com.tokopedia.product.addedit.tooltip.model.NumericWithDescriptionTooltipModel
-import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.product.addedit.tracking.MediaImprovementTracker
 import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
 import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
@@ -196,13 +194,14 @@ class AddEditProductDetailFragment :
     // product category
     private var productCategoryId: String = ""
     private var productCategoryName: String = ""
+    private var productCategoryManifestInputModel: CategoryMetadataInputModel? = null
     private var productCategoryLayout: ViewGroup? = null
     private var productCategoryRecListView: ListUnify? = null
     private var productCategoryPickerButton: AppCompatTextView? = null
     private var categoryAlertDialog: DialogUnify? = null
     private var additionalInfoView: Typography? = null
     private var commissionInfoTipsView: TipsUnify? = null
-    private var disabledCategoryInfoView: ImageUnify? = null
+    private var disabledCategoryInfoView: IconUnify? = null
     private var categoryChangeBottomSheet: CategoryChangeBottomSheet? = null
 
     // product specification
@@ -623,6 +622,8 @@ class AddEditProductDetailFragment :
 
                     productCategoryId = categoryId.toString()
                     productCategoryName = categoryName ?: ""
+                    productCategoryManifestInputModel?.recommendationRank = Int.ZERO
+                    productCategoryManifestInputModel?.isFromRecommendation = false
 
                     val categoryRecommendationResult = viewModel.productCategoryRecommendationLiveData.value
                     val categoryList = if (categoryRecommendationResult != null && categoryRecommendationResult is Success) {
@@ -783,11 +784,11 @@ class AddEditProductDetailFragment :
     }
 
     private fun onFragmentResult() {
-        getNavigationResult(REQUEST_KEY_ADD_MODE)?.observe(viewLifecycleOwner, { bundle ->
+        getNavigationResult(REQUEST_KEY_ADD_MODE)?.observe(viewLifecycleOwner) { bundle ->
             setNavigationResult(bundle, REQUEST_KEY_ADD_MODE)
             removeNavigationResult(REQUEST_KEY_ADD_MODE)
             findNavController().navigateUp()
-        })
+        }
     }
 
     private fun sendDataBack() {
@@ -796,7 +797,7 @@ class AddEditProductDetailFragment :
             if (viewModel.isFirstMoved) {
                 inputAllDataInProductInputModel()
                 dataBackPressed = DETAIL_DATA
-                viewModel.productInputModel.requestCode = arrayOf(DETAIL_DATA, NO_DATA, NO_DATA)
+                viewModel.productInputModel.requestCode = arrayListOf(DETAIL_DATA, NO_DATA, NO_DATA)
             }
             setFragmentResultWithBundle(REQUEST_KEY_ADD_MODE, dataBackPressed)
         } else {
@@ -832,6 +833,7 @@ class AddEditProductDetailFragment :
             if (!productPictureList.isNullOrEmpty()) pictureList = productPictureList ?: listOf()
             if (productCategoryId.isNotBlank()) categoryId = productCategoryId
             if (productCategoryName.isNotBlank()) categoryName = productCategoryName
+            productCategoryManifestInputModel?.let { categoryMetadata = it }
             preorder.apply {
                 duration = preOrderDurationField.getTextIntOrZero()
                 timeUnit = selectedDurationPosition
@@ -1190,17 +1192,20 @@ class AddEditProductDetailFragment :
     }
 
     private fun subscribeToShopInfo() {
-        viewModel.shopInfo.observe(viewLifecycleOwner, { shopInfoResponse ->
+        viewModel.shopInfo.observe(viewLifecycleOwner) { shopInfoResponse ->
             val shopInfo = shopInfoResponse.shopInfoById.result.firstOrNull()
             shopInfo?.run {
                 val totalTxSuccess = shopInfo.shopStats.totalTxSuccess.toIntOrZero()
                 viewModel.shopTier = shopInfo.goldOSData.shopTier
-                viewModel.isFreeOfServiceFee = viewModel.isFreeOfServiceFee(totalTxSuccess, viewModel.shopTier)
+                viewModel.isFreeOfServiceFee =
+                    viewModel.isFreeOfServiceFee(totalTxSuccess, viewModel.shopTier)
                 if (viewModel.isFreeOfServiceFee) {
                     setupCommissionInfoTips(commissionInfoTipsView, viewModel.isFreeOfServiceFee)
                     if (viewModel.shopTier == ShopStatusLevelDef.LEVEL_OFFICIAL_STORE) {
                         commissionInfoTipsView?.hide()
-                    } else { commissionInfoTipsView?.show() }
+                    } else {
+                        commissionInfoTipsView?.animateExpand()
+                    }
                 } else {
                     // display commission info tips when drafting or editing
                     val categoryIdStr = viewModel.productInputModel.detailInputModel.categoryId
@@ -1210,10 +1215,10 @@ class AddEditProductDetailFragment :
                     }
                 }
             }
-        })
-        viewModel.shopInfoError.observe(viewLifecycleOwner, {
+        }
+        viewModel.shopInfoError.observe(viewLifecycleOwner) {
             AddEditProductErrorHandler.logExceptionToCrashlytics(it)
-        })
+        }
     }
 
     private fun subscribeToCommissionInfo() {
@@ -1469,7 +1474,7 @@ class AddEditProductDetailFragment :
         val isAdding = viewModel.isAdding || !isEditing
         val maxProductPhotoCount = viewModel.getMaxProductPhotos()
 
-        if (Rollence.getImagePickerRollence()) {
+        if (RemoteConfig.getImagePickerRemoteConfig(ctx)) {
             val pageSource = if (!isEditing) PageSource.AddProduct else PageSource.EditProduct
             doTracking(isEditing)
             val intent = ImagePickerAddEditNavigation.getIntentMultiplePicker(
@@ -1830,17 +1835,22 @@ class AddEditProductDetailFragment :
                 priceInput,
                 priceSuggestion
             )
-            priceSuggestionBottomSheet?.setShowListener {
-                (priceSuggestionBottomSheet?.dialog as BottomSheetDialog).behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                priceSuggestionBottomSheet?.bottomSheetWrapper?.parent?.parent?.requestLayout()
+
+            priceSuggestionBottomSheet?.let { bottomSheet ->
+                bottomSheet.setShowListener {
+                    bottomSheet.dialog?.let {
+                        (it as BottomSheetDialog).behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                    }
+                    bottomSheet.bottomSheetWrapper.parent?.parent?.requestLayout()
+                }
+                bottomSheet.setCloseClickListener {
+                    ProductEditMainTracking.sendClickPriceSuggestionPopUpCloseEvent(viewModel.isEditing)
+                    bottomSheet.dismiss()
+                }
+                bottomSheet.setClickListener(this)
+                bottomSheet.show(childFragmentManager)
+                ProductEditMainTracking.sendClickPriceSuggestionEntryPointEvent(viewModel.isEditing, productId)
             }
-            priceSuggestionBottomSheet?.setCloseClickListener {
-                ProductEditMainTracking.sendClickPriceSuggestionPopUpCloseEvent(viewModel.isEditing)
-                priceSuggestionBottomSheet?.dismiss()
-            }
-            priceSuggestionBottomSheet?.setClickListener(this)
-            priceSuggestionBottomSheet?.show(childFragmentManager)
-            ProductEditMainTracking.sendClickPriceSuggestionEntryPointEvent(viewModel.isEditing, productId)
         }
         // setup pelajari selengkapnya etc bottomsheet
         val productId = viewModel.productInputModel.productId.toString()
@@ -2132,27 +2142,6 @@ class AddEditProductDetailFragment :
         }
     }
 
-    private fun showProductPriceRecommendationTips() {
-        val tooltipBottomSheet = TooltipBottomSheet()
-        val tips: ArrayList<NumericWithDescriptionTooltipModel> = ArrayList()
-        val tooltipTitle = getString(R.string.title_price_recommendation_bottom_sheet)
-        val contentTitles = context?.resources?.getStringArray(R.array.array_price_recommendation_content_titles).orEmpty()
-        val contentDescriptions = context?.resources?.getStringArray(R.array.array_price_recommendation_content_descriptions).orEmpty()
-
-        contentTitles.forEachIndexed { index, title ->
-            val description = contentDescriptions.getOrNull(index).orEmpty()
-            tips.add(NumericWithDescriptionTooltipModel(title, description))
-        }
-
-        tooltipBottomSheet.apply {
-            setTitle(tooltipTitle)
-            setItemMenuList(tips)
-            setDividerVisible(false)
-            setBannerImage(PRICE_RECOMMENDATION_BANNER_URL)
-        }
-        tooltipBottomSheet.show(childFragmentManager, null)
-    }
-
     private fun enableWholesale() {
         val productPriceInput = productPriceField?.editText?.editableText
             .toString().replace(".", "")
@@ -2255,22 +2244,22 @@ class AddEditProductDetailFragment :
     }
 
     private fun showProductNameIconSuccess() {
-        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_G500, IconUnify.CHECK_CIRCLE)
+        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_GN500, IconUnify.CHECK_CIRCLE)
         productNameField?.isInputError = false
     }
 
     private fun showProductNameIconTypo() {
-        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_N700, IconUnify.INFORMATION)
+        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_NN950, IconUnify.INFORMATION)
         productNameField?.isInputError = false
     }
 
     private fun showProductNameIconNegative() {
-        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_Y300, IconUnify.INFORMATION)
+        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_YN300, IconUnify.INFORMATION)
         productNameField?.isInputError = false
     }
 
     private fun showProductNameIconError() {
-        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_R500, IconUnify.INFORMATION)
+        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_RN500, IconUnify.INFORMATION)
         productNameField?.isInputError = true
     }
 
@@ -2360,14 +2349,23 @@ class AddEditProductDetailFragment :
     private fun selectCategoryRecommendation(items: List<ListItemUnify>, position: Int) = productCategoryRecListView?.run {
         if (!hasCategoryFromPicker) {
             setSelected(items, position) {
-                val categoryId = it.getCategoryId().toString()
-                val categoryName = it.getCategoryName()
-                productCategoryId = categoryId
-                productCategoryName = categoryName
+                productCategoryId = it.getCategoryId().toString()
+                productCategoryName = it.getCategoryName()
                 getAnnotationCategory() // update annotation specification
                 true
             }
         }
+        productCategoryManifestInputModel = CategoryMetadataInputModel(
+            recommendationRank = position,
+            isFromRecommendation = true,
+            recommendationList = items.map {
+                CategoryMetadataInputModel.Recommendation(
+                    categoryID = it.getCategoryId(),
+                    confidenceScore = it.getConfidence(),
+                    precision = it.getPrecision()
+                )
+            }
+        )
     }
 
     private fun submitInput() {
@@ -2455,7 +2453,7 @@ class AddEditProductDetailFragment :
         val result = MediaPicker.result(data)
         val newUpdatedPhotos = viewModel.updateProductPhotos(
             result.editedImages.toMutableList(),
-            result.originalPaths.toMutableList()
+            result.selectedIncludeMedia.toMutableList()
         )
         productPictureList = newUpdatedPhotos.pictureList
         productPhotoAdapter?.setProductPhotoPaths(viewModel.productPhotoPaths)

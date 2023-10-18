@@ -7,7 +7,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.logisticcart.boaffordability.model.BoAffordabilityDataResponse
 import com.tokopedia.logisticcart.boaffordability.model.BoAffordabilityGqlResponse
-import com.tokopedia.logisticcart.boaffordability.model.BoAffordabilityResponse
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -25,12 +24,12 @@ class BoAffordabilityUseCase @Inject constructor(@ApplicationContext private val
     override suspend fun executeOnBackground(): BoAffordabilityDataResponse {
         val param = this.requestParam?.toBoAffordabilityMap(GlobalConfig.VERSION_NAME) ?: throw RuntimeException("Param must be initialized")
         val request = GraphqlRequest(
-                BoAffordabilityQuery(),
-                BoAffordabilityGqlResponse::class.java,
-                mapOf("input" to param)
+            BoAffordabilityQuery(),
+            BoAffordabilityGqlResponse::class.java,
+            mapOf("input" to param)
         )
         return gqlRepository.response(listOf(request))
-                .getData<BoAffordabilityGqlResponse>(BoAffordabilityGqlResponse::class.java).response.data
+            .getData<BoAffordabilityGqlResponse>(BoAffordabilityGqlResponse::class.java).response.data
     }
 
     companion object {

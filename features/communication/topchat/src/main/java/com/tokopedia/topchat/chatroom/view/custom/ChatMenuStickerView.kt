@@ -28,12 +28,12 @@ class ChatMenuStickerView : LinearLayout {
         fun getFragmentActivity(): FragmentActivity?
     }
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
     init {
         initViewLayout()
@@ -73,5 +73,4 @@ class ChatMenuStickerView : LinearLayout {
     companion object {
         private val LAYOUT = R.layout.partial_chat_menu_sticker_view
     }
-
 }

@@ -6,11 +6,12 @@ import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.stub.common.di.OtpComponentStub
 import com.tokopedia.otp.stub.verification.view.fragment.*
 import com.tokopedia.otp.verification.base.VerificationTest
-import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.data.OtpConstant
+import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.fragment.VerificationFragment
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 
 class VerificationActivityStub : VerificationActivity() {
 
@@ -30,8 +31,16 @@ class VerificationActivityStub : VerificationActivity() {
     }
 
     override fun goToVerificationMethodPage() {
+        disableDefaultOtp()
         val fragment = VerificationMethodFragmentStub.createInstance(createBundle())
         doFragmentTransaction(fragment, TAG_OTP_MODE, true)
+    }
+
+    fun disableDefaultOtp() {
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+            OtpConstant.KEY_DEFAULT_OTP_ROLLENCE,
+            ""
+        )
     }
 
     override fun generateVerificationFragment(modeListData: ModeListData, bundle: Bundle): VerificationFragment {

@@ -12,5 +12,4 @@ object DataProvider {
         val json = gson.fromJson(UnitTestFileUtils.getJsonFromAsset("assets/update_cart_success"), UpdateCartGqlResponse::class.java)
         return json.updateCartData
     }
-
 }

@@ -127,6 +127,9 @@ class PlayViewerVideoStateProcessor(
                 error = null
                 broadcastState(PlayViewerVideoState.End)
             }
+            else -> {
+                //no-op
+            }
         }
     }
 

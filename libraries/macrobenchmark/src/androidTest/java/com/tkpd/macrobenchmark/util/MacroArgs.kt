@@ -20,9 +20,11 @@ object MacroArgs {
     const val startupWarm = "warm"
     const val startupHot = "hot"
 
+    const val TKPD_PACKAGE_NAME = "com.tokopedia.tkpd"
+
     fun getCompilationMode(args: Bundle?): CompilationMode {
         val compilationMode = args?.getString(compilation) ?: ""
-        return when(compilationMode) {
+        return when (compilationMode) {
             compilationNone -> CompilationMode.None()
             compilationInterpreted -> CompilationMode.Interpreted
             compilationSpeed -> CompilationMode.DEFAULT
@@ -32,7 +34,7 @@ object MacroArgs {
 
     fun getStartupMode(args: Bundle?): StartupMode {
         val startupMode = args?.getString(startup) ?: ""
-        return when(startupMode) {
+        return when (startupMode) {
             startupCold -> StartupMode.COLD
             startupWarm -> StartupMode.WARM
             startupHot -> StartupMode.HOT
@@ -49,12 +51,12 @@ object MacroArgs {
     }
 
     fun useMock(args: Bundle?): Boolean {
-        val useMock = args?.getString(useMock)?:""
+        val useMock = args?.getString(useMock) ?: ""
         return useMock == "true"
     }
 
     fun isLogin(args: Bundle?): Boolean {
-        val isLogin = args?.getString(isLogin)?:""
+        val isLogin = args?.getString(isLogin) ?: ""
         return isLogin == "true"
     }
 }

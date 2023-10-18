@@ -70,7 +70,10 @@ open class ReplyChatGQLUseCase @Inject constructor(
             requestParams[PARAM_FILE_PATH] = param.filePath
         }
         requestParams[PARAM_SOURCE] = param.source
-        val parentReplyStr = generateParentReplyRequestPayload(param.parentReply)?.toString() ?: ""
+        val parentReplyStr = generateParentReplyRequestPayload(
+            param.parentReply,
+            param.source
+        )?.toString() ?: ""
         requestParams[PARAM_PARENT_REPLY] = parentReplyStr
         return requestParams
     }

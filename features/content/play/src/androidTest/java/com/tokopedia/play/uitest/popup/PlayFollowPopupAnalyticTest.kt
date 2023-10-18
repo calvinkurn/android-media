@@ -7,7 +7,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.test.cassava.containsEventAction
-import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.play.di.DaggerPlayTestComponent
 import com.tokopedia.play.di.PlayInjector
 import com.tokopedia.play.di.PlayTestModule
@@ -15,13 +14,13 @@ import com.tokopedia.play.di.PlayTestRepositoryModule
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
-import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.uitest.robot.PlayActivityRobot
 import com.tokopedia.play.view.storage.PagingChannel
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.test.application.annotations.CassavaTest

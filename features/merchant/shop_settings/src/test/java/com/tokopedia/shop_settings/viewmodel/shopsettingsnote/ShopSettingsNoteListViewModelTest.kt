@@ -3,13 +3,11 @@ package com.tokopedia.shop_settings.viewmodel.shopsettingsnote
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.coEvery
-import io.mockk.coVerify
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 
-class ShopSettingsNoteListViewModelTest: ShopSettingsNoteViewModelTestFixture() {
+class ShopSettingsNoteListViewModelTest : ShopSettingsNoteViewModelTestFixture() {
 
     private val id = "102"
 

@@ -11,6 +11,7 @@ import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.type.PiPState
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Rule
@@ -23,6 +24,9 @@ class PlayViewModelPiPTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val videoModelBuilder = PlayVideoModelBuilder()

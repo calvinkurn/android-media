@@ -35,7 +35,7 @@ class BottomSheetWishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.V
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            LAYOUT_MAIN_SECTION  -> {
+            LAYOUT_MAIN_SECTION -> {
                 val binding = AddWishlistCollectionMainSectionTextItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionMainItemViewHolder(
                     binding

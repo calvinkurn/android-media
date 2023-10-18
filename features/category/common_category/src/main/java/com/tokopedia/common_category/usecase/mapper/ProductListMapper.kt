@@ -33,7 +33,7 @@ class ProductListMapper {
                                 originalPrice = dataItem.product?.campaign?.originalPrice ?: "",
                                 priceRange = dataItem.product?.priceFormat ?: "",
                                 price = dataItem.product?.priceFormat ?: "",
-                                badges = dataItem.shop?.badges,
+                                badges = dataItem.shop.badges,
                                 isTopAds = true,
                                 rating = dataItem.product?.productRating ?: 0,
                                 countReview = getReviewCount(dataItem.product?.countReviewFormat

@@ -7,7 +7,7 @@ import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.metadata.CheckoutErrorMetadata
 
 data class CheckoutGeneralTokoFoodResponse(
-    @SerializedName("checkout_general_v2")
+    @SerializedName("checkout_cart_general")
     val checkoutGeneralTokoFood: CheckoutGeneralTokoFood = CheckoutGeneralTokoFood()
 )
 
@@ -23,8 +23,6 @@ data class CheckoutGeneralTokoFoodData(
     val success: Int = 0,
     @SerializedName("error")
     val error: String = "",
-    @SerializedName("error_state")
-    val errorState: Int = 0,
     @SerializedName("error_metadata")
     val errorMetadata: String = "",
     @SerializedName("message")

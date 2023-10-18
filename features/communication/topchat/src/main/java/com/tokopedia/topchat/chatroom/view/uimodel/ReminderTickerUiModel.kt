@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatroom.view.uimodel
 
-
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.domain.pojo.tickerreminder.TickerReminderPojo
@@ -28,42 +27,29 @@ data class ReminderTickerUiModel(
     @SerializedName("replyId")
     var replyId: String = "",
     @SerializedName("tickerType")
-    var tickerType: String = "",
+    var tickerType: String = ""
 ) : Visitable<TopChatTypeFactory> {
     val impressHolder = ImpressHolder()
-    var localId : String = ""
+    var localId: String = ""
 
     override fun type(typeFactory: TopChatTypeFactory): Int {
         return typeFactory.type(this)
     }
 
-    fun getTickerFeature(): String {
-        return when (featureId) {
-            FEATURE_ID_SRW -> FEATURE_SRW
-            FEATURE_ID_FRAUD -> FEATURE_FRAUD
-            else -> ""
-        }
-    }
-
     companion object {
-        private const val FEATURE_ID_SRW: Long = 1
-        private const val FEATURE_SRW = "srw_reminder"
-        private const val FEATURE_ID_FRAUD: Long = 2
-        private const val FEATURE_FRAUD = "fraud"
-
         fun mapToReminderTickerUiModel(reminderPojo: TickerReminderPojo): ReminderTickerUiModel {
             return ReminderTickerUiModel(
-                isEnable = reminderPojo.isEnable?: false,
-                isEnableClose = reminderPojo.isEnableClose?: false,
+                isEnable = reminderPojo.isEnable ?: false,
+                isEnableClose = reminderPojo.isEnableClose ?: false,
                 featureId = reminderPojo.featureId.orZero(),
-                mainText = reminderPojo.mainText?: "",
-                regexMessage = reminderPojo.regexMessage?: "",
-                subText = reminderPojo.subText?: "",
-                url = reminderPojo.url?: "",
-                urlLabel = reminderPojo.urlLabel?: "",
-                tickerType = reminderPojo.tickerType?: ""
+                mainText = reminderPojo.mainText ?: "",
+                regexMessage = reminderPojo.regexMessage ?: "",
+                subText = reminderPojo.subText ?: "",
+                url = reminderPojo.url ?: "",
+                urlLabel = reminderPojo.urlLabel ?: "",
+                tickerType = reminderPojo.tickerType ?: ""
             ).apply {
-                localId = reminderPojo.localId?: ""
+                localId = reminderPojo.localId ?: ""
             }
         }
     }

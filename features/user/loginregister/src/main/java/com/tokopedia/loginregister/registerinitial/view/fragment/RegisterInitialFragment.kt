@@ -43,7 +43,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SMART_
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.devicefingerprint.appauth.AppAuthWorker
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiConstant
 import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiWorker
@@ -58,22 +57,22 @@ import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RedefineInitialRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
+import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
+import com.tokopedia.loginregister.common.domain.pojo.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.domain.pojo.ProviderData
+import com.tokopedia.loginregister.common.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.error.getMessage
 import com.tokopedia.loginregister.common.utils.PhoneUtils
 import com.tokopedia.loginregister.common.utils.PhoneUtils.Companion.removeSymbolPhone
 import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
 import com.tokopedia.loginregister.common.view.PartialRegisterInputView
-import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
-import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheetListener
 import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.ProceedWithPhoneDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
-import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.databinding.FragmentInitialRegisterBinding
-import com.tokopedia.loginregister.discover.pojo.DiscoverData
-import com.tokopedia.loginregister.discover.pojo.ProviderData
+import com.tokopedia.loginregister.forbidden.ForbiddenActivity
 import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
@@ -95,7 +94,6 @@ import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
-import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -369,7 +367,7 @@ class RegisterInitialFragment :
 
         if (!GlobalConfig.isSellerApp()) {
             if (isShowBanner) {
-                registerInitialViewModel.getDynamicBannerData(DynamicBannerConstant.Page.REGISTER)
+                registerInitialViewModel.getDynamicBannerData()
             } else {
                 showTicker()
             }
@@ -425,14 +423,14 @@ class RegisterInitialFragment :
                 viewBinding?.register?.setColor(
                     MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
             }
             viewBinding?.register?.setBorderColor(
                 MethodChecker.getColor(
                     activity,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_32
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_32
                 )
             )
             viewBinding?.register?.setRoundCorner(REGISTER_BUTTON_CORNER_SIZE)
@@ -595,7 +593,7 @@ class RegisterInitialFragment :
     private fun onFailedGetProvider(throwable: Throwable) {
         if (isUsingRedefineRegisterEmailMandatoryOptionalVariant()) {
             registerInitialViewModel.setOtherMethodState(
-                OtherMethodState.Failed(context?.getString(R.string.default_request_error_unknown))
+                OtherMethodState.Failed(context?.getString(com.tokopedia.network.R.string.default_request_error_unknown))
             )
             bottomSheetOtherMethod?.setState(registerInitialViewModel.otherMethodState)
         }
@@ -1355,7 +1353,6 @@ class RegisterInitialFragment :
 
             SubmitDeviceWorker.scheduleWorker(requireContext(), true)
             DataVisorWorker.scheduleWorker(it, true)
-            AppAuthWorker.scheduleWorker(it, true)
             TwoFactorMluHelper.clear2FaInterval(it)
             initTokoChatConnection()
         }
@@ -1634,7 +1631,7 @@ class RegisterInitialFragment :
                 ds.isUnderlineText = false
                 ds.color = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             }
         }

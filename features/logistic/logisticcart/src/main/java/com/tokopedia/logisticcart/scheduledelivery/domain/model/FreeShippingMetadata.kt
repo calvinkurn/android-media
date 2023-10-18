@@ -14,7 +14,7 @@ class FreeShippingMetadata(
     @SerializedName("shipping_subsidy")
     val shippingSubsidy: Long = 0,
     @SerializedName("additional_data")
-    val additionalData: String = "",
+    val additionalData: String = ""
 ) : Parcelable {
 
     fun toJson(): String {

@@ -53,7 +53,7 @@ class CloseAccountTracker @Inject constructor() {
         )
     }
 
-    private fun sendData(data: Map<String, Any>){
+    private fun sendData(data: Map<String, Any>) {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
@@ -70,7 +70,8 @@ class CloseAccountTracker @Inject constructor() {
         private const val ACTION_VIEW_CLOSE_ACCOUNT_PAGE = "view close account page"
         private const val ACTION_CLICK_CLOSE_BUTTON = "click close button"
 
-        private const val CATEGORY_ACCOUNT_SETTING_CHANGE_PROFILE = "account setting - change profile"
+        private const val CATEGORY_ACCOUNT_SETTING_CHANGE_PROFILE =
+            "account setting - change profile"
         private const val CATEGORY_TUTUP_AKUN_BOTTOMSHEET_PAGE = "tutup akun bottomsheet page"
 
         const val LABEL_KLIK = "click"

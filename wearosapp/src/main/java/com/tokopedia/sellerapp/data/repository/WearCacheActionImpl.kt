@@ -1,12 +1,12 @@
 package com.tokopedia.sellerapp.data.repository
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerapp.data.datasource.local.NotificationRoomDataSource
 import com.tokopedia.sellerapp.data.datasource.local.OrderRoomDatasource
 import com.tokopedia.sellerapp.data.datasource.local.SummaryRoomDatasource
 import com.tokopedia.sellerapp.data.mapper.NotificationDataMapper
 import com.tokopedia.sellerapp.data.mapper.OrderDataMapper
 import com.tokopedia.sellerapp.data.mapper.SummaryDataMapper
+import com.tokopedia.sellerapp.presentation.viewmodel.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch

@@ -5,7 +5,7 @@ import rx.subjects.PublishSubject
 
 data class ShipmentScheduleDeliveryHolderData(
     val scheduleDeliveryUiModel: ScheduleDeliveryUiModel,
-    val position: Int,
+    val position: Int
 )
 
 data class ShipmentScheduleDeliveryMapData(

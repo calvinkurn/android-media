@@ -10,7 +10,9 @@ import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConst
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
@@ -24,8 +26,14 @@ class PartialProductItemViewHolder(
     partialProductItemViewStub: View?,
     private val listener: ProductViewListener,
     private val navigator: BuyerOrderDetailNavigator,
-    private var element: ProductListUiModel.ProductUiModel
+    private var element: ProductListUiModel.ProductUiModel,
+    private val bottomSheetListener: ShareProductBottomSheetListener
 ) : View.OnClickListener {
+
+    companion object {
+        const val CARD_ALPHA_NON_POF = 1f
+        const val CARD_ALPHA_POF = 0.5f
+    }
 
     private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
 
@@ -45,21 +53,30 @@ class PartialProductItemViewHolder(
         itemView?.findViewById<View>(R.id.itemBomDetailProductViewStub)
     private val btnBuyerOrderDetailBuyProductAgain =
         partialProductItemViewStub?.findViewById<UnifyButton>(R.id.btnBuyerOrderDetailBuyProductAgain)
+    private val btnShareProduct =
+        partialProductItemViewStub?.findViewById<IconUnify>(R.id.btnShareProduct)
 
     private val context = itemView?.context
 
     init {
         setupClickListeners()
+        setupCardProductAlpha(element.isPof)
         setupProductName(element.productName)
         setupProductQuantityAndPrice(element.quantity, element.priceText)
         setupProductNote(element.productNote)
         setupTotalPrice(element.totalPriceText)
         setupInsurance(element.insurance)
+        setupShareButton(element.productUrl)
+    }
+
+    private fun setupShareButton(productUrl: String?) {
+        if (productUrl?.isEmpty() == true) {
+            btnShareProduct?.hide()
+        }
     }
 
     fun bindProductItemPayload(
-        oldItem: ProductListUiModel.ProductUiModel,
-        newItem: ProductListUiModel.ProductUiModel
+        oldItem: ProductListUiModel.ProductUiModel, newItem: ProductListUiModel.ProductUiModel
     ) {
         container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
         this.element = newItem
@@ -79,7 +96,20 @@ class PartialProductItemViewHolder(
         if (oldItem.insurance != newItem.insurance) {
             setupInsurance(newItem.insurance)
         }
+
+        if (oldItem.isPof != newItem.isPof) {
+            setupCardProductAlpha(newItem.isPof)
+        }
+
         container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+    }
+
+    private fun setupCardProductAlpha(isPof: Boolean) {
+        container?.alpha = if (isPof) {
+            CARD_ALPHA_POF
+        } else {
+            CARD_ALPHA_NON_POF
+        }
     }
 
     private fun goToProductSnapshotPage() {
@@ -99,6 +129,7 @@ class PartialProductItemViewHolder(
     private fun setupClickListeners() {
         itemBomDetailProductViewStub?.setOnClickListener(this)
         btnBuyerOrderDetailBuyProductAgain?.setOnClickListener(this)
+        btnShareProduct?.setOnClickListener(this)
     }
 
     private fun setupProductName(productName: String) {
@@ -152,11 +183,17 @@ class PartialProductItemViewHolder(
         when (element.button.key) {
             BuyerOrderDetailActionButtonKey.BUY_AGAIN -> addToCart()
             BuyerOrderDetailActionButtonKey.SEE_SIMILAR_PRODUCTS -> seeSimilarProducts()
+            BuyerOrderDetailActionButtonKey.WARRANTY_CLAIM -> goToWarrantyClaim()
         }
     }
 
     private fun addToCart() {
         listener.onBuyAgainButtonClicked(element)
+    }
+
+    private fun goToWarrantyClaim() {
+        navigator.openAppLink(element.button.url, true)
+        BuyerOrderDetailTracker.eventClickWarrantyClaim(element.orderId)
     }
 
     private fun seeSimilarProducts() {
@@ -171,10 +208,19 @@ class PartialProductItemViewHolder(
         when (v?.id) {
             R.id.itemBomDetailProductViewStub -> goToProductSnapshotPage()
             R.id.btnBuyerOrderDetailBuyProductAgain -> onActionButtonClicked()
+            R.id.btnShareProduct -> openShareBottomSheet()
         }
+    }
+
+    private fun openShareBottomSheet() {
+        bottomSheetListener.onShareButtonClicked(element)
     }
 
     interface ProductViewListener {
         fun onBuyAgainButtonClicked(product: ProductListUiModel.ProductUiModel)
+    }
+
+    interface ShareProductBottomSheetListener {
+        fun onShareButtonClicked(element: ProductListUiModel.ProductUiModel)
     }
 }

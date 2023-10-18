@@ -1,5 +1,7 @@
 package com.tokopedia.tokopedianow.recipelist.presentation.viewholder
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -17,7 +19,7 @@ class RecipeEmptyStateViewHolder(
 ): AbstractViewHolder<RecipeEmptyStateUiModel>(itemView) {
 
     companion object {
-        private const val NO_DATA_IMAGE = "https://images.tokopedia.net/img/android/tokonow/no_data_recipe_search.png"
+        private const val NO_DATA_IMAGE = TokopediaImageUrl.NO_DATA_IMAGE
 
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_empty_state_recipe_list

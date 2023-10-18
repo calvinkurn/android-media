@@ -13,7 +13,7 @@ interface ShopHomeFlashSaleWidgetListener {
 
     fun onTimerFinished(model: ShopHomeFlashSaleUiModel)
 
-    fun onFlashSaleProductClicked(model: ShopHomeProductUiModel, widgetModel: ShopHomeFlashSaleUiModel, position: Int)
+    fun onFlashSaleProductClicked(model: ShopHomeProductUiModel, widgetModel: ShopHomeFlashSaleUiModel, position: Int, parentPosition: Int)
 
     fun onFlashSaleWidgetImpressed(model: ShopHomeFlashSaleUiModel, position: Int)
 
@@ -22,7 +22,8 @@ interface ShopHomeFlashSaleWidgetListener {
     fun onFlashSaleProductImpression(
         shopHomeProductUiModel: ShopHomeProductUiModel,
         flashSaleUiModel: ShopHomeFlashSaleUiModel?,
-        position: Int
+        position: Int,
+        parentPosition: Int
     )
 
     fun onProductAtcNonVariantQuantityEditorChanged(
@@ -44,4 +45,6 @@ interface ShopHomeFlashSaleWidgetListener {
         position: Int,
         name: String
     )
+
+    fun isForceLightModeColorOnShopFlashSaleWidget() : Boolean
 }

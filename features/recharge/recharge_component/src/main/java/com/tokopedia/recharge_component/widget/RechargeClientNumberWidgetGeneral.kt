@@ -379,7 +379,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(
         }
         val adapterInquiry = InquiryRechargeClientNumberAdapter()
         adapterInquiry.setListMainInfo(listInquiry)
-        binding?.clientNumberWidgetGeneralRvInquiryList.run {
+        binding.clientNumberWidgetGeneralRvInquiryList.run {
             adapter = adapterInquiry
             layoutManager = LinearLayoutManager(context)
         }

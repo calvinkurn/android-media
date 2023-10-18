@@ -18,6 +18,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.common.topupbills'
+    testNamespace 'com.tokopedia.common.topupbills.test'
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -41,6 +43,7 @@ android {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.commonDigital)
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.commonPayment)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)
@@ -49,7 +52,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.utils)
@@ -106,4 +108,4 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-//apply from: '../../../jacoco_task.gradle'
+apply from: '../../../jacoco_task.gradle'

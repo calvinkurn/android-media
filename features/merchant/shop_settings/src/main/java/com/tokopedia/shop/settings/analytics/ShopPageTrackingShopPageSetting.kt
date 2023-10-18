@@ -16,20 +16,28 @@ import com.tokopedia.shop.settings.analytics.ShopSettingsTrackingConstant.EVENT_
 import com.tokopedia.shop.settings.analytics.model.CustomDimensionShopPageSetting
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
-import java.util.HashMap
-
 
 object ShopPageTrackingShopPageSetting {
     private val tracker: ContextAnalytics by lazy { TrackApp.getInstance().gtm }
 
-    private fun sendGeneralEvent(event: String, category: String, action: String, label: String,
-                                   customDimensionShopPage: CustomDimensionShopPageSetting?) {
+    private fun sendGeneralEvent(
+        event: String,
+        category: String,
+        action: String,
+        label: String,
+        customDimensionShopPage: CustomDimensionShopPageSetting?
+    ) {
         val eventMap = createMap(event, category, action, label, customDimensionShopPage)
         tracker.sendGeneralEvent(eventMap)
     }
 
-    private fun createMap(event: String, category: String, action: String, label: String,
-                            customDimensionShopPage: CustomDimensionShopPageSetting?): HashMap<String, Any> {
+    private fun createMap(
+        event: String,
+        category: String,
+        action: String,
+        label: String,
+        customDimensionShopPage: CustomDimensionShopPageSetting?
+    ): HashMap<String, Any> {
         val eventMap = HashMap<String, Any>()
         eventMap[ShopSettingsTrackingConstant.EVENT] = event
         eventMap[ShopSettingsTrackingConstant.EVENT_CATEGORY] = category
@@ -42,92 +50,114 @@ object ShopPageTrackingShopPageSetting {
         }
         return eventMap
     }
-    
+
     fun clickBackArrow(customDimensionShopPage: CustomDimensionShopPageSetting?) {
-        sendGeneralEvent(EVENT_VALUE,
-                EVENT_CATEGORY_VALUE,
-                CLICK_BACK,
-                "",
-                customDimensionShopPage)
+        sendGeneralEvent(
+            EVENT_VALUE,
+            EVENT_CATEGORY_VALUE,
+            CLICK_BACK,
+            "",
+            customDimensionShopPage
+        )
     }
 
     fun clickShopDashboard(customDimensionShopPage: CustomDimensionShopPageSetting) {
-        sendGeneralEvent(EVENT_VALUE,
-                EVENT_CATEGORY_VALUE,
-                CLICK_SHOP_DASHBOARD,
-                "",
-                customDimensionShopPage)
+        sendGeneralEvent(
+            EVENT_VALUE,
+            EVENT_CATEGORY_VALUE,
+            CLICK_SHOP_DASHBOARD,
+            "",
+            customDimensionShopPage
+        )
     }
 
     fun clickChangeShopProfile(customDimensionShopPage: CustomDimensionShopPageSetting) {
-        sendGeneralEvent(EVENT_VALUE,
-                EVENT_CATEGORY_VALUE,
-                CLICK_CHANGE_SHOP_PROFILE,
-                "",
-                customDimensionShopPage)
+        sendGeneralEvent(
+            EVENT_VALUE,
+            EVENT_CATEGORY_VALUE,
+            CLICK_CHANGE_SHOP_PROFILE,
+            "",
+            customDimensionShopPage
+        )
     }
 
     fun clickChangeShopNote(customDimensionShopPage: CustomDimensionShopPageSetting) {
-        sendGeneralEvent(EVENT_VALUE,
-                EVENT_CATEGORY_VALUE,
-                CLICK_CHANGE_SHOP_NOTE,
-                "",
-                customDimensionShopPage)
+        sendGeneralEvent(
+            EVENT_VALUE,
+            EVENT_CATEGORY_VALUE,
+            CLICK_CHANGE_SHOP_NOTE,
+            "",
+            customDimensionShopPage
+        )
     }
 
     fun clickSetOpenShopTime(customDimensionShopPage: CustomDimensionShopPageSetting) {
-        sendGeneralEvent(EVENT_VALUE,
-                EVENT_CATEGORY_VALUE,
-                CLICK_SET_OPEN_SHOP_TIME,
-                "",
-                customDimensionShopPage)
+        sendGeneralEvent(
+            EVENT_VALUE,
+            EVENT_CATEGORY_VALUE,
+            CLICK_SET_OPEN_SHOP_TIME,
+            "",
+            customDimensionShopPage
+        )
     }
 
     fun clickSeeProduct(customDimensionShopPage: CustomDimensionShopPageSetting) {
-        sendGeneralEvent(EVENT_VALUE,
-                EVENT_CATEGORY_VALUE,
-                CLICK_SEE_PRODUCT,
-                "",
-                customDimensionShopPage)
+        sendGeneralEvent(
+            EVENT_VALUE,
+            EVENT_CATEGORY_VALUE,
+            CLICK_SEE_PRODUCT,
+            "",
+            customDimensionShopPage
+        )
     }
 
     fun clickAddAndEditEtalase(customDimensionShopPage: CustomDimensionShopPageSetting) {
-        sendGeneralEvent(EVENT_VALUE,
-                EVENT_CATEGORY_VALUE,
-                CLICK_ADD_AND_EDIT_ETALASE,
-                "",
-                customDimensionShopPage)
+        sendGeneralEvent(
+            EVENT_VALUE,
+            EVENT_CATEGORY_VALUE,
+            CLICK_ADD_AND_EDIT_ETALASE,
+            "",
+            customDimensionShopPage
+        )
     }
 
     fun clickPusatBantuan(customDimensionShopPage: CustomDimensionShopPageSetting) {
-        sendGeneralEvent(EVENT_VALUE,
-                EVENT_CATEGORY_VALUE,
-                CLICK_PUSAT_BANTUAN,
-                "",
-                customDimensionShopPage)
+        sendGeneralEvent(
+            EVENT_VALUE,
+            EVENT_CATEGORY_VALUE,
+            CLICK_PUSAT_BANTUAN,
+            "",
+            customDimensionShopPage
+        )
     }
 
     fun clickPusatSeller(customDimensionShopPage: CustomDimensionShopPageSetting) {
-        sendGeneralEvent(EVENT_VALUE,
-                EVENT_CATEGORY_VALUE,
-                CLICK_PUSAT_SELLER,
-                "",
-                customDimensionShopPage)
+        sendGeneralEvent(
+            EVENT_VALUE,
+            EVENT_CATEGORY_VALUE,
+            CLICK_PUSAT_SELLER,
+            "",
+            customDimensionShopPage
+        )
     }
 
     fun clickAddAndEditShopLocation(customDimensionShopPage: CustomDimensionShopPageSetting) {
-        sendGeneralEvent(EVENT_VALUE,
-                EVENT_CATEGORY_VALUE,
-                CLICK_ADD_AND_EDIT_SHOP_LOCATION,
-                "",
-                customDimensionShopPage)
+        sendGeneralEvent(
+            EVENT_VALUE,
+            EVENT_CATEGORY_VALUE,
+            CLICK_ADD_AND_EDIT_SHOP_LOCATION,
+            "",
+            customDimensionShopPage
+        )
     }
 
     fun clickSetShippingService(customDimensionShopPage: CustomDimensionShopPageSetting) {
-        sendGeneralEvent(EVENT_VALUE,
-                EVENT_CATEGORY_VALUE,
-                CLICK_SET_SHIPPING_SERVICE,
-                "",
-                customDimensionShopPage)
+        sendGeneralEvent(
+            EVENT_VALUE,
+            EVENT_CATEGORY_VALUE,
+            CLICK_SET_SHIPPING_SERVICE,
+            "",
+            customDimensionShopPage
+        )
     }
 }

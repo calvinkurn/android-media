@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="play_etalase_search_hint">Cari di toko %s</string>
-
-    <string name="play_product_not_found_title">Oops, produk nggak ditemukan</string>
-    <string name="play_product_not_found_desc">Coba kata kunci lain untuk menemukan produk yang kamu inginkan</string>
-
-    <string name="play_product_etalase_empty_title">Yaah, etalase produkmu masih kosong</string>
-    <string name="play_product_etalase_empty_desc">Ayo tambah produk dulu supaya bisa ditampilkan di etalase ini</string>
-
     <string name="play_permit_title">Aktifkan kamera &amp; mikrofon</string>
     <string name="play_permit_description">Untuk memulai live streaming, berikan akses kamera &amp; mikrofon di HP kamu.</string>
     <string name="play_permit_allow_camera">Aktifkan Akses Kamera</string>
@@ -25,6 +16,8 @@
     <string name="play_broadcast_end">Akhiri</string>
     <string name="play_batal">Batal</string>
     <string name="play_bro_next_action">Lanjut</string>
+    <string name="play_broadcaster_retry">Ulangi</string>
+    <string name="play_broadcaster_done">Selesai</string>
 
     <string name="play_prepare_broadcast_create_promo_title">Buat Promo</string>
     <string name="play_prepare_broadcast_edit_promo_title">Ubah Promo</string>
@@ -45,6 +38,11 @@
     <!--Cover-->
     <string name="play_prepare_cover_title_title">Tambah Cover</string>
     <string name="play_prepare_cover_title_header_description">Tambahkan cover yang kreatif supaya calon penontonmu jadi penasaran!</string>
+    <string name="play_prepare_cover_title_header_description_report_page">Karena kamu tidak tambah produk saat Live. Tapi kamu masih bisa upload gambar, lho.</string>
+    <string name="play_prepare_cover_title_choose_template_title">Tambah produk dulu, ya</string>
+    <string name="play_prepare_cover_title_choose_template_title_report_page">Yaah, belum bisa pilih template</string>
+    <string name="play_prepare_cover_title_choose_template_empty_description">Supaya foto produknya bisa ditampilkan di template cover pilihan untuk videomu.</string>
+    <string name="play_prepare_cover_title_choose_template_description">Pilih warna &amp; judul cover yang sesuai dengan keinginan dan isi konten videomu.</string>
     <string name="play_prepare_cover_title_default_title_label">Judul live streaming</string>
     <string name="play_prepare_cover_choose_from_gallery">Pilih dari galeri foto</string>
     <string name="play_prepare_cover_title_add_cover_label">Tambah Cover</string>
@@ -52,6 +50,14 @@
     <string name="play_prepare_cover_gallery_error_pixel_label">Oops, file foto minimal harus %1$dx%2$d piksel</string>
     <string name="play_prepare_cover_gallery_error_size_label">Oops, file foto maksimal harus %d MB</string>
     <string name="play_prepare_cover_gallery_error_not_found_label">Oops, file foto tidak ditemukan</string>
+    <string name="play_setup_cover_auto_generated_cover_coach_mark_title">Baru! Template untuk cover videomu ✨</string>
+    <string name="play_setup_cover_auto_generated_cover_coach_mark_description">Desain template cover-nya bisa disesuaikan dengan produk &amp; promo di videomu nanti, lho!</string>
+    <string name="play_setup_cover_auto_generated_cover_delete_cover_message">Template cover telah dihapus</string>
+    <string name="play_setup_cover_auto_generated_cover_error_load_message">Gagal memuat template cover</string>
+    <string name="play_setup_cover_upload_image_toaster">Berhasil ganti cover dari pilih template ke upload gambar!</string>
+    <string name="play_setup_cover_auto_generated_toaster">Berhasil ganti cover dari upload gambar ke pilih template!</string>
+    <string name="play_setup_cover_auto_generated_toaster_update_cover_from_product">Ada perubahan di tampilan template cover karena kamu mengubah produk</string>
+    <string name="play_setup_cover_auto_generated_toaster_delete_cover_from_product">Template cover dibatalkan karena kamu menghapus semua produk terpilih</string>
 
     <string name="play_camera_cancel_label">Cancel</string>
     <string name="play_camera_timer_label">Timer</string>
@@ -60,6 +66,7 @@
     <string name="play_camera_timer_10_label">10s</string>
     <string name="play_camera_get_ready_label">Siap-siap, ya! Live akan segera dimulai~</string>
 
+    <string name="play_label_delete">Hapus</string>
     <string name="play_label_save">Simpan</string>
 
     <string name="play_live_broadcast_stat_info_default">0</string>
@@ -90,11 +97,12 @@
     <string name="play_summary_title">Laporan Live</string>
     <string name="play_summary_button_post_video">Posting Video</string>
     <string name="play_summary_button_post_video_now">Posting Video Sekarang</string>
-    <string name="play_summary_total_game_participant"><![CDATA[Peserta Game <font color=#03AC0E>Lihat Detail</font></b>]]></string>
+    <string name="play_summary_total_game_participant"><![CDATA[Peserta Game <font color=#03AC0E>Lihat pemenang</font></b>]]></string>
     <string name="play_summary_total_view">Penonton</string>
     <string name="play_summary_total_likes">Menyukai</string>
-    <string name="play_summary_shop_visit">Mengunjungi Tokomu</string>
-    <string name="play_summary_product_visit">Mengunjungi Produkmu</string>
+    <string name="play_summary_shop_visit">Mengunjungi tokomu</string>
+    <string name="play_summary_profile_visit">Mengunjungi profilmu</string>
+    <string name="play_summary_product_visit">Melihat Produkmu</string>
     <string name="play_summary_atc">Ditambahkan Ke Keranjang</string>
     <string name="play_summary_purchased_product">Produk Dibeli</string>
     <string name="play_summary_new_followers">Followers Baru</string>
@@ -107,8 +115,6 @@
     <string name="play_storage_permission_rationale_title">Aktifkan akses foto, media, &amp; file</string>
     <string name="play_storage_permission_rationale_desc">Akses ini dibutuhkan untuk memudahkanmu saat tambah cover live streaming.</string>
     <string name="play_storage_permission_denied_error">Kamu harus mengaktifkan akses foto, media, &amp; file untuk dapat melanjutkan proses</string>
-
-    <string name="play_error_image_edit_text">Gambar/GIF tidak diperbolehkan</string>
 
     <string name="mock_super_long_text">Aku bergabung loh wau kok gabung keren abis wooo allala gabung terus dong</string>
 
@@ -151,6 +157,10 @@
 
     <string name="play_cancel_live_stream">Batalkan</string>
 
+    <!-- Product Tag -->
+    <string name="play_bro_product_tag_no_price">Rp -</string>
+    <string name="play_bro_pinned_coachmark_desc">Pasang pin di produk agar penonton tahu\nkalau lagi kamu membahasnya.</string>
+
     <!--Pinned Message-->
     <string name="play_bro_create_pinned_msg">Buat Pin Chat</string>
     <string name="play_bro_pinned_msg_form_title">Pin Chat</string>
@@ -161,58 +171,33 @@
     <!-- Action Bar Live -->
     <string name="play_bro_mock_room_title">Review Aksesoris Sepeda</string>
 
-    <!-- Product Tag -->
-    <string name="play_bro_product_tag_stock_empty">Stok Habis</string>
-    <string name="play_bro_product_tag_no_price">Rp -</string>
-    <string name="play_bro_product_discount_template">%d%%</string>
-
     <!-- New Preparation -->
     <string name="play_bro_title_label">Judul</string>
+    <string name="play_bro_title_label_bottom_sheet">Tambah Judul</string>
+    <string name="play_bro_setup_cover_title">Pilih Cover</string>
     <string name="play_bro_cover_label">Cover</string>
     <string name="play_bro_product_label">Produk</string>
     <string name="play_bro_schedule_label">Atur Jadwal</string>
+    <string name="play_bro_face_filter_label">Filter Wajah</string>
     <string name="play_bro_save">Simpan</string>
 
     <string name="play_bro_title_form_hint">Tulis Judul Live</string>
+    <string name="play_bro_title_form_hint_bottom_sheet">Isi Judul</string>
     <string name="play_bro_title_form_instruction">Buat judul yang kreatif dan bisa bikin calon penonton penasaran!</string>
 
     <string name="play_bro_cover_form_instruction">Pilih cover yang keren &amp; menarik perhatian, ya!</string>
+    <string name="play_bro_cover_form_instruction_bottom_sheet">Bisa upload gambar dari galeri atau otomatis tampilkan video yang berlangsung nanti sebagai cover.</string>
     <string name="play_bro_title_empty_error">Tulis judul kalau mau bikin Live atau jadwal baru, ya!</string>
     <string name="play_bro_cover_empty_error">Kamu perlu upload cover dulu, ya.</string>
+    <string name="play_bro_cover_setup_upload_image">Upload Gambar</string>
+    <string name="play_bro_cover_setup_choose_template">Pilih Template</string>
 
-    <!--Campaign & Etalase-->
-    <string name="play_bro_campaign_and_etalase">Campaign &amp; Etalase</string>
-    <string name="play_bro_campaign">Campaign</string>
-    <string name="play_bro_etalase">Etalase</string>
-    <string name="play_bro_upcoming_campaign">Mendatang</string>
-    <string name="play_bro_ongoing_campaign">Berlangsung</string>
-    <string name="play_bro_campaign_product_stock">%d Produk</string>
-    <string name="play_bro_etalase_product_stock">%d Barang</string>
-    <string name="play_bro_campaign_date_start_end">%s s.d.\n%s</string>
-    <string name="play_bro_etalase_sort">Urutkan</string>
-    <string name="play_bro_selected_product_title">Pilih produk (%d/%d)</string>
-    <string name="play_bro_product_stock">Stok %d</string>
-    <string name="play_bro_add_product">Tambah Produk</string>
-    <string name="play_bro_product_chooser_exit_dialog_title">Yakin ingin keluar?</string>
-    <string name="play_bro_product_chooser_exit_dialog_desc">Semua produk yang kamu pilih akan hilang jika keluar dari halaman ini.</string>
-    <string name="play_bro_product_chooser_stock">Stok %d</string>
-    <string name="play_bro_product_chooser_error_save">Produk gagal disimpan.</string>
-
-    <!-- Product Tag Summary -->
-    <string name="play_bro_product_summary_title">Produk terpilih</string>
-    <string name="play_bro_product_summary_title_with_count">Produk terpilih (%d/%d)</string>
-    <string name="play_bro_product_add_more">Tambah</string>
-    <string name="play_bro_product_summary_done">Selesai</string>
-    <string name="play_bro_product_summary_empty_title">Oops, kamu belum punya produk terpilih</string>
-    <string name="play_bro_product_summary_empty_description">Pilih produk untuk dijual selama live berlangsung.</string>
-    <string name="play_bro_product_summary_empty_action_text">Tambah Produk</string>
-    <string name="play_bro_product_summary_fail_to_delete_product">Produk gagal dihapus</string>
-    <string name="play_bro_product_summary_success_delete_product">%d produk telah dihapus.</string>
+    <string name="play_bro_default_error_message">Terjadi kesalahan</string>
 
     <!-- Post Video -->
     <string name="play_bro_add_tag_title">Tambah Tag</string>
-    <string name="play_bro_select_tag_title">Pilih tag agar videomu mudah ditemukan</string>
     <string name="play_bro_cant_post_video_message">Karena durasi kurang dari 60 detik, Live-mu tidak bisa di-posting jadi video.</string>
+    <string name="play_bro_select_tag_title">Video ini ceritanya tentang apa?</string>
 
     <!-- Tag Recommendation -->
     <string name="play_bro_tag_recommendation_error_title">Tag ini gagal ditampilkan</string>
@@ -256,23 +241,17 @@
     <string name="play_bro_switch_account_secondary_cta_shop_dialog">Ganti ke Profil Toko</string>
     <string name="play_bro_switch_account_secondary_cta_buyer_dialog">Ganti ke Profil Pembeli</string>
 
-    <!-- Pin Product -->
-    <string name="play_bro_pin">Pin</string>
-    <string name="play_bro_unpin">Lepas</string>
-    <string name="play_bro_pinned_product_info">Pin Dipasang</string>
-    <string name="play_bro_pinned_coachmark_desc">Pasang pin di produk agar penonton tahu\nkalau lagi kamu membahasnya.</string>
-    <string name="play_bro_pin_product_failed">Tunggu 5 detik untuk pin produk ya</string>
-    <string name="play_bro_custom_error_handler_msg">%s. Kode Error: (%s)</string>
-
-    <!-- Product Picker UGC -->
-    <string name="play_bro_max_selected_product_reached">Kamu udah pilih %d produk.</string>
-
     <!-- Banner -->
     <string name="play_bro_banner_shorts_title">Lebih asik buat video pendek</string>
     <string name="play_bro_banner_shorts_description">Buat video yang menarik &amp; inspiratif, yuk</string>
     <string name="play_bro_banner_shorts_coachmark_title">Baru! Bisa buat video pendek 🥳</string>
     <string name="play_bro_banner_shorts_coachmark_description">Buat video hingga 90 detik tentang produk jualanmu supaya banyak pembeli tertarik!</string>
-    
+    <string name="play_bro_banner_shorts_join_affiliate_title">Yuk, daftar Tokopedia Affiliate!</string>
+    <string name="play_bro_banner_shorts_join_affiliate_description">Biar bisa dapat komisi cuma dengan promosikan produk di videomu.</string>
+
+    <string name="play_bro_banner_performance_title">Cek performa di Wawasan Video</string>
+    <string name="play_bro_banner_performance_subtitle">Untuk analisa video yang lebih detail</string>
+
     <!-- Shorts -->
     <string name="play_shorts_next_action_label">Lanjut</string>
     <string name="play_shorts_toolbar_title">Buat video sebagai</string>
@@ -299,4 +278,37 @@
 
     <string name="play_shorts_summary_title">Upload Video</string>
     <string name="play_shorts_summary_upload_action">Upload Video</string>
+
+    <string name="play_title_bottom_sheet_hint">Promo menarik cuma hari ini!</string>
+
+    <string name="play_bro_custom_error_handler_msg">%s. Kode Error: (%s)</string>
+
+    <!-- shorts x affiliate -->
+    <string name="play_shorts_affiliate_tnc_title">Daftar Tokopedia Affiliate, yuk!</string>
+    <string name="play_shorts_affiliate_tnc_description">Supaya kamu bisa promosikan produk sambil ngonten di Tokopedia Play! Dapatkan komisi jika ada penonton yang beli produknya.</string>
+    <string name="play_shorts_affiliate_success_title">Hai %s, selamat bergabung di Tokopedia Affiliate!</string>
+    <string name="play_shorts_affiliate_success_description">Ayo bikin konten, tag produk yang mau kamu promosikan, &amp; dapat komisi jika ada yang beli!</string>
+    <string name="play_shorts_affiliate_success_description_learn_more">Penasaran tentang Tokopedia Affiliate? Pelajari di sini.</string>
+    <string name="play_shorts_affiliate_success_description_learn_more_action">Pelajari di sini.</string>
+    <string name="play_shorts_affiliate_success_button_next">Lanjut Buat Konten</string>
+    <string name="play_shorts_affiliate_success_tnc_web_link">https://www.tokopedia.com/help/article/syarat-ketentuan-tokopedia-affiliate</string>
+    <string name="play_shorts_affiliate_success_learn_more_web_link">https://affiliate.tokopedia.com</string>
+    <string name="play_shorts_affiliate_coach_mark_product_commission_title">Cek produk bertanda komisi di sini, ya</string>
+    <string name="play_shorts_affiliate_coach_mark_product_commission_subtitle">Tag produk di videonya biar bisa kamu promosikan supaya dapat komisi kalau ada yang beli.</string>
+
+    <!-- Play Broadcaster Beautification -->
+    <string name="play_broadcaster_face_filter_coachmark_title">Wow, kamu makin cakep aja nih 😍</string>
+    <string name="play_broadcaster_face_filter_coachmark_description">Ayo pakai filternya biar penampilanmu makin cakep, keren &amp; lebih pede di depan penonton!</string>
+    <string name="play_broadcaster_reset_filter">Reset Filter</string>
+    <string name="play_broadcaster_face_tab">Wajah</string>
+    <string name="play_broadcaster_makeup_tab">Makeup</string>
+    <string name="play_broadcaster_reset_filter_confirmation_title">Yakin mau reset filter?</string>
+    <string name="play_broadcaster_reset_filter_confirmation_description">Jika di-reset, maka akan kembali ke pengaturan filter semula.</string>
+    <string name="play_broadcaster_reset_filter_cancel">Batal</string>
+    <string name="play_broadcaster_reset_filter_confirm">Reset</string>
+    <string name="play_broadcaster_fail_download_filter">Oops, gagal mendownload filter</string>
+    <string name="play_broadcaster_fail_apply_filter">Oops, tidak dapat menampilkan filter</string>
+    <string name="play_broadcaster_fail_save_filter">Oops, gagal menyimpan filter</string>
+
+    <string name="play_shorts_content_tagging_description_template">Pilih maks. %d tag yang sesuai videomu supaya mudah ditemuin sama penonton yang tepat.</string>
 </resources>

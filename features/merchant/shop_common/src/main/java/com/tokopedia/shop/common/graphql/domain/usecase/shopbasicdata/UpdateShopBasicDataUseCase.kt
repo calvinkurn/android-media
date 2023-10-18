@@ -12,8 +12,8 @@ import java.util.HashMap
 import javax.inject.Inject
 
 class UpdateShopBasicDataUseCase @Inject constructor(
-        @ApplicationContext context: Context,
-        repository: GraphqlRepository
+    @ApplicationContext context: Context,
+    repository: GraphqlRepository
 ): GraphqlUseCase<ShopBasicDataMutation>(repository) {
     companion object {
         private const val NAME = "name"
@@ -26,11 +26,11 @@ class UpdateShopBasicDataUseCase @Inject constructor(
 
         @JvmStatic
         fun createRequestParam(
-                name: String?,
-                domain: String?,
-                tagLine: String?,
-                description: String?,
-                imgId: String?
+            name: String?,
+            domain: String?,
+            tagLine: String?,
+            description: String?,
+            imgId: String?
         ): RequestParams {
             val requestParams = RequestParams()
 

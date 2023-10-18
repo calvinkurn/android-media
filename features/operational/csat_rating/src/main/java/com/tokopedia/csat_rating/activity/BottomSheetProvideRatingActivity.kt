@@ -92,7 +92,7 @@ open class BottomSheetProvideRatingActivity : BaseSimpleActivity() {
             BaseFragmentProvideRating.PARAM_OPTIONS_CSAT
         ) ?: ArrayList()
         viewModel.setReasonList(reasonItemList)
-        val emojiState = intent?.getIntExtra(BaseFragmentProvideRating.CLICKED_EMOJI, 0)
+        val emojiState = intent?.getLongExtra(BaseFragmentProvideRating.CLICKED_EMOJI, 0)
             ?: BaseFragmentProvideRating.NO_EMOJI
         viewModel.setSelectedEmoji(emojiState)
         viewModel.setCsatTitle(intent?.getStringExtra(BaseFragmentProvideRating.CSAT_TITLE) ?: "")
@@ -255,7 +255,7 @@ open class BottomSheetProvideRatingActivity : BaseSimpleActivity() {
         return LinearLayoutManager(this)
     }
 
-    fun setFilterList(filterList: List<BadCsatReasonListItem>) {
+    private fun setFilterList(filterList: List<BadCsatReasonListItem>) {
         filterReview?.updateLayoutManager(getLayoutManager())
         val filterItems = ArrayList<QuickFilterItem>()
         var finishFilter: QuickFilterItem? = null
@@ -317,7 +317,7 @@ open class BottomSheetProvideRatingActivity : BaseSimpleActivity() {
         finish()
     }
 
-    fun getSelectedItem(): String {
+    private fun getSelectedItem(): String {
         var filters = ""
         for (filter in selectedOption) {
             filters += "$filter;"

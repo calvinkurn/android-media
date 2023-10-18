@@ -15,6 +15,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
+import com.tokopedia.play.PLAY_KEY_PAGE_SOURCE_NAME
 import com.tokopedia.play.PLAY_KEY_SOURCE_ID
 import com.tokopedia.play.PLAY_KEY_SOURCE_TYPE
 import com.tokopedia.play.R
@@ -58,6 +59,9 @@ class PlayViewerPiPView : ConstraintLayout {
                 PlayVideoState.Buffering -> onVideoBuffering()
                 PlayVideoState.Playing, PlayVideoState.Pause -> onVideoStarted()
                 PlayVideoState.Ended -> onVideoEnded()
+                else -> {
+                    //no-op
+                }
             }
         }
     }
@@ -136,7 +140,7 @@ class PlayViewerPiPView : ConstraintLayout {
         setBackgroundColor(
                 MethodChecker.getColor(rootView.context,
                         if (pipInfo.videoStream.orientation.isHorizontal) R.color.play_dms_background
-                        else R.color.transparent
+                        else com.tokopedia.universal_sharing.R.color.transparent
                 )
         )
     }
@@ -205,6 +209,7 @@ class PlayViewerPiPView : ConstraintLayout {
         val map = mutableMapOf<String, Any>().apply {
             if (pipInfo.source.id.isNotEmpty()) this[PLAY_KEY_SOURCE_ID] = pipInfo.source.id
             if (pipInfo.source.type.isNotEmpty()) this[PLAY_KEY_SOURCE_TYPE] = pipInfo.source.type
+            if (pipInfo.pageSourceName.isNotEmpty()) this[PLAY_KEY_PAGE_SOURCE_NAME] = pipInfo.pageSourceName
         }
 
         return UriUtil.buildUriAppendParams(

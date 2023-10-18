@@ -9,17 +9,19 @@ import android.text.TextUtils
 import android.text.format.DateUtils
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
+import com.tokopedia.bubbles.factory.BubblesFactoryImpl
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMNotificationUtils
+import com.tokopedia.notifications.factory.helper.BubbleTopChatNotificationHelper
 import com.tokopedia.notifications.model.ActionButton
 import com.tokopedia.notifications.model.BaseNotificationModel
 
 open class RichDefaultNotification internal constructor(
     context: Context,
-    baseNotificationModel: BaseNotificationModel
+    baseNotificationModel: BaseNotificationModel,
+    private val baseNotificationModelList: List<BaseNotificationModel>
 ) : BaseNotification(context, baseNotificationModel) {
-
 
     override fun createNotification(): Notification? {
         val builder = builder
@@ -48,6 +50,8 @@ open class RichDefaultNotification internal constructor(
             setActionButton(builder)
 
         setNotificationIcon(builder)
+
+        addBubbleChatAction(builder)
 
         return builder.build()
     }
@@ -197,4 +201,18 @@ open class RichDefaultNotification internal constructor(
         return headUpView
     }
 
+    private fun addBubbleChatAction(builder: NotificationCompat.Builder) {
+        if (baseNotificationModel.isEnableBubbleOnSellerTopChat(context)) {
+            val bubblesFactory = BubblesFactoryImpl(context)
+            val bubbleTopChatNotificationHelper = BubbleTopChatNotificationHelper(
+                CMNotificationFactory.getTopChatNotificationModelList(baseNotificationModelList),
+                bubblesFactory,
+                null
+            )
+            bubbleTopChatNotificationHelper.setupBubble(
+                builder,
+                baseNotificationModel
+            )
+        }
+    }
 }

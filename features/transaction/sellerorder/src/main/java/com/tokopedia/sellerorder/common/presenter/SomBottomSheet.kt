@@ -19,7 +19,7 @@ import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
 
-abstract class SomBottomSheet <T: ViewBinding> (
+abstract class SomBottomSheet<T : ViewBinding> (
     childViewsLayoutResourceId: Int,
     private val showOverlay: Boolean,
     private val showCloseButton: Boolean,
@@ -175,10 +175,10 @@ abstract class SomBottomSheet <T: ViewBinding> (
                 // noop
             }
 
-
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (newState == BottomSheetBehavior.STATE_EXPANDED) onBottomSheetExpanded()
-                else if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    onBottomSheetExpanded()
+                } else if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                     onBottomSheetHidden()
                     return
                 }
@@ -227,7 +227,9 @@ abstract class SomBottomSheet <T: ViewBinding> (
                 binding?.root?.hideKeyboard()
                 state = BottomSheetBehavior.STATE_HIDDEN
                 true
-            } else false
+            } else {
+                false
+            }
         }
     }
 

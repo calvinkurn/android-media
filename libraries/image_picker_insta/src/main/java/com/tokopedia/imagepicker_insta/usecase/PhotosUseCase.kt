@@ -14,8 +14,6 @@ import kotlinx.coroutines.flow.flow
 import java.io.File
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashSet
 
 class PhotosUseCase @Inject constructor() {
     private val photosImporter = PhotoImporter()
@@ -23,11 +21,6 @@ class PhotosUseCase @Inject constructor() {
     fun createAssetsFromFile(file: File, context: Context, queryConfiguration: QueryConfiguration): Asset? {
         if (photosImporter.isImageFile(file.absolutePath)) {
             return photosImporter.createPhotosDataFromInternalFile(file)
-        } else {
-            val videoMetaData = photosImporter.getVideoMetaData(file.absolutePath, context)
-            if (videoMetaData.isSupported) {
-                return photosImporter.createVideosDataFromInternalFile(file, videoMetaData.duration, queryConfiguration.videoMaxDuration)
-            }
         }
         return null
     }

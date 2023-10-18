@@ -12,20 +12,22 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
-                                                 private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<MiniCartData>() {
+class GetMiniCartListUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
+) : UseCase<MiniCartData>() {
 
     private var params: Map<String, Any>? = null
 
     fun setParams(shopIds: List<String>, isShopDirectPurchase: Boolean = false) {
         params = mapOf(
-                PARAM_KEY_LANG to PARAM_VALUE_ID,
-                PARAM_KEY_ADDITIONAL to mapOf(
-                        PARAM_KEY_SHOP_IDS to shopIds,
-                        KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
-                        PARAM_KEY_SOURCE to MiniCartSource.MiniCartBottomSheet.value,
-                        PARAM_KEY_SHOP_DIRECT_PURCHASE to isShopDirectPurchase
-                )
+            PARAM_KEY_LANG to PARAM_VALUE_ID,
+            PARAM_KEY_ADDITIONAL to mapOf(
+                PARAM_KEY_SHOP_IDS to shopIds,
+                KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+                PARAM_KEY_SOURCE to MiniCartSource.MiniCartBottomSheet.value,
+                PARAM_KEY_SHOP_DIRECT_PURCHASE to isShopDirectPurchase
+            )
         )
     }
 

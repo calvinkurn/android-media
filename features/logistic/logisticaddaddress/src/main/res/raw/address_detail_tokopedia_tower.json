@@ -1,0 +1,37 @@
+[
+  {
+    "data": {
+      "kero_get_address": {
+        "data": [
+          {
+            "addr_id": 4764876,
+            "receiver_name": "Anonymous",
+            "addr_name": "Tokopedia Tower",
+            "address_1": "Jalan Prof. Dr Satrio 123",
+            "address_2": "-6.221285299999999,106.8194558",
+            "postal_code": "12950",
+            "province": 13,
+            "city": 175,
+            "district": 2266,
+            "phone": "628777383727",
+            "province_name": "DKI Jakarta",
+            "city_name": "Jakarta Selatan",
+            "district_name": "Mampang Prapatan",
+            "status": 1,
+            "country": "Indonesia",
+            "latitude": "-6.221285299999999",
+            "longitude": "106.8194558",
+            "is_primary": false,
+            "is_active": false,
+            "is_whitelist": true,
+            "address_detail_street": "Jalan Prof. Dr Satrio 123",
+            "address_detail_notes": "Tokopedia Tower"
+          }
+        ],
+        "status": "OK",
+        "server_process_time": "",
+        "config": ""
+      }
+    }
+  }
+]

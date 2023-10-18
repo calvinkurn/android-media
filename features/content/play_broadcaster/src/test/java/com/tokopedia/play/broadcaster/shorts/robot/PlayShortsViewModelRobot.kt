@@ -1,22 +1,21 @@
 package com.tokopedia.play.broadcaster.shorts.robot
 
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
-import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
-import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
-import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.mockk
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.runBlockingTest
 import java.io.Closeable
 
@@ -28,6 +27,7 @@ class PlayShortsViewModelRobot(
     sharedPref: HydraSharedPreferences = mockk(relaxed = true),
     accountManager: PlayShortsAccountManager = mockk(relaxed = true),
     playShortsUploader: PlayShortsUploader = mockk(relaxed = true),
+    dataStore: PlayBroadcastDataStore = mockk(relaxed = true),
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
 ) : Closeable {
 
@@ -36,7 +36,20 @@ class PlayShortsViewModelRobot(
         sharedPref = sharedPref,
         accountManager = accountManager,
         playShortsUploader = playShortsUploader,
+        dataStore = dataStore,
     )
+
+    val title: String
+        get() = viewModel.title
+
+    val maxTitleCharacter: Int
+        get() = viewModel.maxTitleCharacter
+
+    val productSectionList: List<ProductTagSectionUiModel>
+        get() = viewModel.productSectionList
+
+    val maxProduct: Int
+        get() = viewModel.maxProduct
 
     val isAllMandatoryMenuChecked: Boolean
         get() = viewModel.isAllMandatoryMenuChecked
@@ -47,8 +60,14 @@ class PlayShortsViewModelRobot(
     val isAllowChangeAccount: Boolean
         get() = viewModel.isAllowChangeAccount
 
+    val accountList: List<ContentAccountUiModel>
+        get() = viewModel.accountList
+
     val tncList: List<TermsAndConditionUiModel>
         get() = viewModel.tncList
+
+    val isSelectedAccountAffiliate: Boolean
+        get() = viewModel.isSelectedAccountAffiliate
 
     fun setUp(fn: PlayShortsViewModelRobot.() -> Unit): PlayShortsViewModelRobot {
         fn()

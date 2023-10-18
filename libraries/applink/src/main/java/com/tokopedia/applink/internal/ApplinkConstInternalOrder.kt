@@ -77,6 +77,8 @@ object ApplinkConstInternalOrder {
 
     const val PATH_BUYER_ORDER_EXTENSION = "buyer-order-extension"
 
+    const val PATH_BUYER_PARTIAL_ORDER_FULFILLMENT = "buyer-partial-order-fulfillment"
+
     const val INTERNAL_SELLER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_SELLER"
 
     const val INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_ORDER"
@@ -187,6 +189,8 @@ object ApplinkConstInternalOrder {
 
     const val MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$PATH_BUYER_ORDER_EXTENSION"
 
+    const val MARKETPLACE_INTERNAL_BUYER_PARTIAL_ORDER_FULFILLMENT = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$PATH_BUYER_PARTIAL_ORDER_FULFILLMENT"
+
     const val ORDER_LIST_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_ORDER_LIST"
 
     const val MP_INTERNAL_CONFIRMED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=5"
@@ -210,5 +214,9 @@ object ApplinkConstInternalOrder {
         const val TOASTER_MESSAGE = "toaster_message"
         const val TOASTER_TYPE = "toaster_type"
         const val IS_ORDER_EXTENDED = "is_order_extended"
+    }
+
+    object PartialOrderFulfillmentKey {
+        const val TOASTER_MESSAGE = "pof_toaster_message"
     }
 }

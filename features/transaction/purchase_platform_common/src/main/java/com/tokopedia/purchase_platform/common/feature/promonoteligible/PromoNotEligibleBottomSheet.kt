@@ -8,8 +8,10 @@ import com.tokopedia.purchase_platform.common.R
 import com.tokopedia.purchase_platform.common.databinding.DialogPromoNotEligibleBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class PromoNotEligibleBottomSheet(var notEligiblePromoHolderDataList: ArrayList<NotEligiblePromoHolderdata>,
-                                  var actionListener: PromoNotEligibleActionListener) {
+class PromoNotEligibleBottomSheet(
+    var notEligiblePromoHolderDataList: ArrayList<NotEligiblePromoHolderdata>,
+    var actionListener: PromoNotEligibleActionListener
+) {
 
     var dismissListener: () -> Unit = {}
     private var bottomSheet: BottomSheetUnify? = null

@@ -7,18 +7,15 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.ViewTreeLifecycleOwner
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usercomponents.R
 import com.tokopedia.usercomponents.common.wrapper.UserComponentsStateResult
 import com.tokopedia.usercomponents.databinding.UiUserConsentBinding
@@ -26,28 +23,31 @@ import com.tokopedia.usercomponents.userconsent.analytics.UserConsentAnalytics
 import com.tokopedia.usercomponents.userconsent.common.*
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.CHECKLIST
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.CONSENT_OPT_IN
+import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.CONSENT_OPT_OUT
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.MANDATORY
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.NO_CHECKLIST
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.OPTIONAL
-import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.TERM_CONDITION
-import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.TERM_CONDITION_POLICY
 import com.tokopedia.usercomponents.userconsent.common.UserConsentType.*
-import com.tokopedia.usercomponents.userconsent.di.DaggerUserConsentComponent
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.usercomponents.userconsent.domain.submission.ConsentSubmissionParam
+import com.tokopedia.usercomponents.userconsent.domain.submission.ConsentSubmissionResponse
 import com.tokopedia.usercomponents.userconsent.domain.submission.Purpose
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeAdapter
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeViewHolder
 import javax.inject.Inject
 
-class UserConsentWidget : FrameLayout,
+class UserConsentWidget :
+    FrameLayout,
     UserConsentPurposeViewHolder.UserConsentPurposeListener,
-    UserConsentDescriptionDelegate
-{
+    UserConsentDescriptionDelegate {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private var viewModel: UserConsentViewModel? = null
+    private val viewModel: UserConsentViewModel? by lazy {
+        findViewTreeViewModelStoreOwner()?.let { viewModelOwner ->
+            ViewModelProvider(viewModelOwner, viewModelFactory)[UserConsentViewModel::class.java]
+        }
+    }
 
     @Inject
     lateinit var userConsentAnalytics: UserConsentAnalytics
@@ -62,21 +62,25 @@ class UserConsentWidget : FrameLayout,
     private var lifecycleOwner: LifecycleOwner? = null
     private var consentCollectionParam: ConsentCollectionParam? = null
     private var submissionParam = ConsentSubmissionParam()
-    private var collection: UserConsentCollectionDataModel.CollectionPointDataModel? = null
+    private var collection: CollectionPointDataModel? = null
     private var isErrorGetConsent = false
     private var needConsent: Boolean? = null
+    private var isConsentTypeInfo: Boolean = false
 
     private var userConsentDescription: UserConsentDescription? = null
     private var userConsentPurposeAdapter: UserConsentPurposeAdapter? = null
 
     private var onCheckedChangeListener: (Boolean) -> Unit = {}
     private var onAllCheckBoxCheckedListener: (Boolean) -> Unit = {}
-    private var onNeedConsentListener: (Boolean) -> Unit = {}
+    private var onDetailConsentListener: (Boolean, ConsentType) -> Unit = { _, _ -> }
+    private var onSubmitSuccessListener: (ConsentSubmissionResponse?) -> Unit = {}
+    private var onSubmitErrorListener: (Throwable) -> Unit = {}
+    private var onSubmitLoadingListener: () -> Unit = {}
     private var onFailedGetCollectionListener: (Throwable) -> Unit = {}
 
     /** set Default State if user got error when trying to get data collection from BE **/
     var defaultTemplate: UserConsentType = NONE
-    var hideWhenAlreadyHaveConsent: Boolean = false
+    var hideWhenAlreadySubmittedConsent: Boolean = false
     var tncPage = ""
     var privacyPage = ""
 
@@ -84,11 +88,11 @@ class UserConsentWidget : FrameLayout,
         setupView()
     }
 
-    constructor(context: Context, attributeSet: AttributeSet): super(context, attributeSet) {
+    constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet) {
         setupView(attributeSet)
     }
 
-    constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int): super(context, attributeSet, defStyleAttr) {
+    constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int) : super(context, attributeSet, defStyleAttr) {
         setupView(attributeSet)
     }
 
@@ -99,9 +103,16 @@ class UserConsentWidget : FrameLayout,
 
         viewBinding?.apply {
             singleConsent.apply {
-                checkboxPurposes.setOnCheckedChangeListener { buttonView, isChecked ->
+                checkboxPurposes.setOnCheckedChangeListener { _, isChecked ->
                     collection?.purposes?.let {
-                        userConsentAnalytics.trackOnPurposeCheck(isChecked, it)
+                        userConsentAnalytics.trackOnPurposeCheck(
+                            isChecked = isChecked,
+                            purposes = it,
+                            collectionId = consentCollectionParam?.collectionId.orEmpty()
+                        )
+                        it.forEach { purposeDataModel ->
+                            purposeDataModel.transactionType = if (isChecked) CONSENT_OPT_IN else CONSENT_OPT_OUT
+                        }
                     }
 
                     onCheckedChangeListener.invoke(isChecked)
@@ -117,21 +128,34 @@ class UserConsentWidget : FrameLayout,
 
     fun submitConsent() {
         collection?.purposes?.let {
-            userConsentAnalytics.trackOnActionButtonClicked(it)
+            userConsentAnalytics.trackOnActionButtonClicked(
+                purposes = it,
+                collectionId = consentCollectionParam?.collectionId.orEmpty()
+            )
         }
 
         if (needConsent != false) {
             submissionParam.collectionId = consentCollectionParam?.collectionId.orEmpty()
             submissionParam.version = consentCollectionParam?.version.orEmpty()
             submissionParam.default = isErrorGetConsent
-            submissionParam.dataElements = consentCollectionParam?.dataElements
+            submissionParam.dataElements = consentCollectionParam?.dataElements.orEmpty().toMutableList()
             submissionParam.purposes.clear()
             collection?.purposes?.forEach {
                 submissionParam.purposes.add(
                     Purpose(
                         purposeID = it.id,
-                        transactionType = CONSENT_OPT_IN,
+                        /*
+                        * default value of transactionType is OPT_OUT, because the first time show checkbox always uncheck
+                        * specially for consentTypeInfo (that no checkbox show) the value must be OPT_IN.
+                        */
+                        transactionType =
+                        if (isConsentTypeInfo) {
+                            CONSENT_OPT_IN
+                        } else {
+                            it.transactionType
+                        },
                         version = it.version,
+                        dataElementType = it.attribute.dataElementType
                     )
                 )
             }
@@ -141,10 +165,7 @@ class UserConsentWidget : FrameLayout,
 
     private fun initInjector() {
         context?.let {
-            DaggerUserConsentComponent.builder()
-                .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+            UserConsentComponentProvider.getUserConsentComponent(it)?.inject(this)
         }
     }
 
@@ -157,27 +178,24 @@ class UserConsentWidget : FrameLayout,
         )
 
         val consentType = typedArray.getInt(R.styleable.UserConsentWidget_defaultTemplate, -1)
-        defaultTemplate = when(consentType.toString()) {
+        defaultTemplate = when (consentType.toString()) {
             TNC_MANDATORY.value -> TNC_MANDATORY
             TNC_PRIVACY_MANDATORY.value -> TNC_PRIVACY_MANDATORY
             TNC_OPTIONAL.value -> TNC_OPTIONAL
             TNC_PRIVACY_OPTIONAL.value -> TNC_PRIVACY_OPTIONAL
             else -> NONE
         }
-        hideWhenAlreadyHaveConsent = typedArray.getBoolean(R.styleable.UserConsentWidget_hide_when_already_have_consent, false)
+        hideWhenAlreadySubmittedConsent = typedArray.getBoolean(R.styleable.UserConsentWidget_hide_when_already_submitted_consent, false)
 
         typedArray.recycle()
     }
 
-    private fun initViewModel(viewModelStoreOwner: ViewModelStoreOwner) {
-        val viewModelProvider = ViewModelProvider(viewModelStoreOwner, viewModelFactory)
-        viewModel = viewModelProvider.get(UserConsentViewModel::class.java)
-    }
-
     private fun initObserver() {
+        lifecycleOwner = ViewTreeLifecycleOwner.get(this)
+
         lifecycleOwner?.let {
             viewModel?.consentCollection?.observe(it) { result ->
-                when(result) {
+                when (result) {
                     is UserComponentsStateResult.Loading -> {
                         setLoader(true)
                     }
@@ -192,31 +210,80 @@ class UserConsentWidget : FrameLayout,
                         result.data?.let { data ->
                             collection = data.collectionPoints.first()
                             needConsent = collection?.needConsent
+                            val consentType = getConsentType()
                             if (needConsent == false) {
                                 this.hide()
+                            } else if (consentType == null) {
+                                showError()
                             } else {
-                                onSuccessGetConsentCollection()
+                                onSuccessGetConsentCollection(consentType)
                             }
-                            onNeedConsentListener.invoke(needConsent != false)
+                            consentType?.apply {
+                                onDetailConsentListener.invoke(needConsent != false, consentType)
+                            }
                         }
+                    }
+                }
+            }
+
+            viewModel?.submitResult?.observe(it) { result ->
+                when (result) {
+                    is UserComponentsStateResult.Success -> {
+                        onSubmitSuccessListener(result.data)
+                    }
+                    is UserComponentsStateResult.Fail -> {
+                        onSubmitErrorListener(result.error)
+                    }
+                    is UserComponentsStateResult.Loading -> {
+                        onSubmitLoadingListener()
                     }
                 }
             }
         }
     }
 
-    private fun onSuccessGetConsentCollection() {
+    private fun getConsentType(): ConsentType? {
+        return if (collection?.attributes?.collectionPointPurposeRequirement == MANDATORY) {
+            when (collection?.attributes?.collectionPointStatementOnlyFlag) {
+                NO_CHECKLIST -> {
+                    ConsentType.SingleInfo()
+                }
+                CHECKLIST -> {
+                    ConsentType.SingleChecklist()
+                }
+                else -> null
+            }
+        } else if (collection?.attributes?.collectionPointPurposeRequirement == OPTIONAL &&
+            collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST
+        ) {
+            ConsentType.MultipleChecklist()
+        } else {
+            null
+        }
+    }
+
+    private fun onSuccessGetConsentCollection(consentType: ConsentType?) {
         collection?.let {
-            userConsentAnalytics.trackOnConsentView(it.purposes)
-            userConsentDescription = UserConsentDescription(this, it)
+            userConsentAnalytics.trackOnConsentView(
+                purposes = it.purposes,
+                collectionId = consentCollectionParam?.collectionId.orEmpty()
+            )
+            userConsentDescription = UserConsentDescription(
+                delegate = this,
+                collectionDataModel = it,
+                collectionId = consentCollectionParam?.collectionId.orEmpty()
+            )
         }
 
-        renderView()
+        renderView(consentType)
     }
 
     fun generatePayloadData(): String {
         collection?.purposes?.let {
-            userConsentAnalytics.trackOnActionButtonClicked(it)
+            userConsentAnalytics.trackOnActionButtonClicked(
+                purposes = it,
+                collectionId = consentCollectionParam?.collectionId.orEmpty()
+            )
         }
 
         return if (needConsent == false) {
@@ -224,75 +291,76 @@ class UserConsentWidget : FrameLayout,
         } else {
             val purposes: MutableList<UserConsentPayload.PurposeDataModel> = mutableListOf()
             collection?.purposes?.forEach {
-                purposes.add(UserConsentPayload.PurposeDataModel(
-                    it.id,
-                    it.version,
-                    collection?.consentType.orEmpty()
-                ))
+                purposes.add(
+                    UserConsentPayload.PurposeDataModel(
+                        purposeId = it.id,
+                        version = it.version,
+                    /*
+                    * default value of transactionType is OPT_OUT, because the first time show checkbox always uncheck
+                    * specially for consentTypeInfo (that no checkbox show) the value must be OPT_IN.
+                    */
+                        transactionType =
+                        if (isConsentTypeInfo) {
+                            CONSENT_OPT_IN
+                        } else {
+                            it.transactionType
+                        },
+                        dataElementType = it.attribute.dataElementType
+                    )
+                )
+            }
+            val dataElements = mutableMapOf<String, String>()
+            consentCollectionParam?.dataElements?.forEach { it ->
+                dataElements[it.elementName] = it.elementValue
             }
             UserConsentPayload(
                 identifier = consentCollectionParam?.identifier.orEmpty(),
                 collectionId = collection?.id.orEmpty(),
-                dataElements = consentCollectionParam?.dataElements,
+                dataElements = dataElements,
                 default = isErrorGetConsent,
                 purposes = purposes
             ).toString()
         }
     }
 
-    private fun renderView() {
-        when {
-            collection?.attributes?.collectionPointPurposeRequirement == MANDATORY -> {
-                renderSinglePurpose()
+    private fun renderView(consentType: ConsentType?) {
+        isConsentTypeInfo = consentType is ConsentType.SingleInfo
+        when (consentType) {
+            is ConsentType.SingleInfo -> {
+                renderSinglePurposeInfo()
             }
-
-            collection?.attributes?.collectionPointPurposeRequirement == OPTIONAL &&
-            collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST -> {
+            is ConsentType.SingleChecklist -> {
+                renderSinglePurposeChecklist()
+            }
+            is ConsentType.MultipleChecklist -> {
                 renderMultiplePurpose()
+            }
+            else -> {
+                // no op
             }
         }
     }
 
-    private fun renderSinglePurpose() {
-        var purposeText = ""
-        if (collection?.purposes?.size.orZero() == NUMBER_ONE) {
-            purposeText = collection?.purposes?.first()?.attribute?.uiName.orEmpty()
-        } else {
-            collection?.purposes?.forEachIndexed { index, purposeDataModel ->
-                purposeText += when(index) {
-                    (collection?.purposes?.size.orZero() - NUMBER_ONE) -> {
-                        " & ${purposeDataModel.attribute.uiName}"
-                    }
-
-                    (collection?.purposes?.size.orZero() - NUMBER_TWO) -> {
-                        purposeDataModel.attribute.uiName
-                    }
-                    else -> {
-                        "${purposeDataModel.attribute.uiName}, "
-                    }
-                }
-            }
-        }
-
+    private fun renderSinglePurposeInfo() {
         viewBinding?.singleConsent?.apply {
-            if (collection?.attributes?.collectionPointStatementOnlyFlag == NO_CHECKLIST) {
-                checkboxPurposes.hide()
-                iconMandatoryInfo.show()
-            } else if (collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST) {
-                checkboxPurposes.show()
-                iconMandatoryInfo.hide()
-            }
+            checkboxPurposes.hide()
+            iconMandatoryInfo.show()
+        }
+        renderSinglePurpose()
+    }
 
-            if (collection?.attributes?.policyNoticeType == TERM_CONDITION) {
-                descriptionPurposes.text = userConsentDescription?.generateTermConditionSinglePurposeText(
-                    collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST,
-                    purposeText
-                )
-            } else if (collection?.attributes?.policyNoticeType == TERM_CONDITION_POLICY) {
-                descriptionPurposes.text = userConsentDescription?.generateTermConditionPolicySinglePurposeText(
-                    collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST,
-                    purposeText
-                )
+    private fun renderSinglePurposeChecklist() {
+        viewBinding?.singleConsent?.apply {
+            checkboxPurposes.show()
+            iconMandatoryInfo.hide()
+        }
+        renderSinglePurpose()
+    }
+
+    private fun renderSinglePurpose() {
+        viewBinding?.singleConsent?.apply {
+            collection?.attributes?.statementWording?.apply {
+                descriptionPurposes.text = userConsentDescription?.generateDescriptionSpannableText(this)
             }
 
             descriptionPurposes.movementMethod = LinkMovementMethod.getInstance()
@@ -302,10 +370,8 @@ class UserConsentWidget : FrameLayout,
     private fun renderMultiplePurpose() {
         if (collection?.purposes?.size.orZero() > NUMBER_ONE) {
             viewBinding?.multipleConsent?.apply {
-                if (collection?.attributes?.policyNoticeType == TERM_CONDITION) {
-                    textMainDescription.text = userConsentDescription?.generateTermConditionMultipleOptionalPurposeText()
-                } else if (collection?.attributes?.policyNoticeType == TERM_CONDITION_POLICY) {
-                    textMainDescription.text = userConsentDescription?.generateTermConditionPolicyMultipleOptionalPurposeText()
+                collection?.attributes?.statementWording?.apply {
+                    textMainDescription.text = userConsentDescription?.generateDescriptionSpannableText(this)
                 }
 
                 textMainDescription.movementMethod = LinkMovementMethod.getInstance()
@@ -319,7 +385,10 @@ class UserConsentWidget : FrameLayout,
     }
 
     private fun renderDefaultTemplate(consentType: UserConsentType) {
-        userConsentDescription = UserConsentDescription(this)
+        userConsentDescription = UserConsentDescription(
+            delegate = this,
+            collectionId = consentCollectionParam?.collectionId.orEmpty()
+        )
 
         viewBinding?.apply {
             setLoader(false)
@@ -328,7 +397,7 @@ class UserConsentWidget : FrameLayout,
             consentError.hide()
 
             singleConsent.apply {
-                when(consentType) {
+                when (consentType) {
                     TNC_MANDATORY -> {
                         iconMandatoryInfo.hide()
                         checkboxPurposes.show()
@@ -375,18 +444,20 @@ class UserConsentWidget : FrameLayout,
         }
     }
 
-    private fun showError(throwable: Throwable) {
+    private fun showError(throwable: Throwable? = null) {
         if (defaultTemplate == NONE) {
             viewBinding?.consentError?.apply {
                 title?.text = resources.getString(R.string.usercomponents_failed_load_data)
                 refreshBtn?.setOnClickListener {
                     consentCollectionParam?.let { param ->
-                        viewModel?.getConsentCollection(param, hideWhenAlreadyHaveConsent)
+                        viewModel?.getConsentCollection(param, hideWhenAlreadySubmittedConsent)
                     }
                 }
             }?.show()
 
-            onFailedGetCollectionListener.invoke(throwable)
+            throwable?.let {
+                onFailedGetCollectionListener.invoke(throwable)
+            }
         } else {
             renderDefaultTemplate(defaultTemplate)
         }
@@ -394,13 +465,23 @@ class UserConsentWidget : FrameLayout,
 
     override fun onCheckedChange(
         isChecked: Boolean,
-        purposeDataModel: UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel,
+        purposeDataModel: PurposeDataModel
     ) {
         onCheckedChangeListener.invoke(isChecked)
-        userConsentAnalytics.trackOnPurposeCheckOnOptional(isChecked, purposeDataModel)
+        userConsentAnalytics.trackOnPurposeCheckOnOptional(
+            isChecked = isChecked,
+            purposes = purposeDataModel,
+            collectionId = consentCollectionParam?.collectionId.orEmpty()
+        )
 
         val isAllChecked = userConsentPurposeAdapter?.listCheckBoxView?.all {
             it.isChecked
+        }
+
+        collection?.purposes?.forEach {
+            if (it.id == purposeDataModel.id) {
+                it.transactionType = if (isChecked) CONSENT_OPT_IN else CONSENT_OPT_OUT
+            }
         }
 
         onAllCheckBoxCheckedListener.invoke(isAllChecked == true)
@@ -441,50 +522,32 @@ class UserConsentWidget : FrameLayout,
     override val textAgreementDefaultTncPolicyOptional: String
         get() = context?.resources?.getString(R.string.user_consent_agreement_default_term_condition_policy_optional).orEmpty()
     override val unifyG500: Int
-        get() = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        get() = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
 
-    override fun openConsentPageDetail(pageId: String, type: String, tab: String) {
-        val urlPage = String.format(UserConsentConst.URL_CONSENT_DETAIL, pageId, type, tab)
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, urlPage)
-        context.startActivity(intent)
-    }
-
-    override fun openDefaultConsentPageDetail(url: String) {
+    override fun openWebview(url: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url)
         context.startActivity(intent)
     }
 
-    override fun openPrivacyPolicyPage() {
-        RouteManager.route(
-            context,
-            String.format(
-                STRING_FORMAT,
-                ApplinkConst.WEBVIEW,
-                "${TokopediaUrl.getInstance().MOBILEWEB}$PRIVACY_POLICY_PATH"
-            )
-        )
-    }
-
     fun load(
-        lifecycleOwner: LifecycleOwner,
-        viewModelStoreOwner: ViewModelStoreOwner,
         consentCollectionParam: ConsentCollectionParam
     ) {
-        this.lifecycleOwner = lifecycleOwner
         this.consentCollectionParam = consentCollectionParam
 
         invalidate()
-        initViewModel(viewModelStoreOwner)
         initObserver()
-        viewModel?.getConsentCollection(consentCollectionParam, hideWhenAlreadyHaveConsent)
+        viewModel?.getConsentCollection(consentCollectionParam, hideWhenAlreadySubmittedConsent)
     }
 
     fun onDestroy() {
+        removeConsentCollectionObserver()
+        lifecycleOwner = null
+    }
+
+    fun removeConsentCollectionObserver() {
         lifecycleOwner?.let {
             viewModel?.consentCollection?.removeObservers(it)
         }
-
-        lifecycleOwner = null
     }
     fun setOnCheckedChangeListener(listener: (Boolean) -> Unit) {
         onCheckedChangeListener = listener
@@ -498,8 +561,18 @@ class UserConsentWidget : FrameLayout,
         onFailedGetCollectionListener = listener
     }
 
-    fun setOnNeedConsentListener(listener: (Boolean) -> Unit) {
-        onNeedConsentListener = listener
+    fun setOnDetailConsentListener(listener: (Boolean, ConsentType) -> Unit) {
+        onDetailConsentListener = listener
+    }
+
+    fun setSubmitResultListener(
+        onSuccess: ((ConsentSubmissionResponse?) -> Unit),
+        onError: ((Throwable) -> Unit),
+        onLoading: (() -> Unit)
+    ) {
+        onSubmitSuccessListener = onSuccess
+        onSubmitErrorListener = onError
+        onSubmitLoadingListener = onLoading
     }
 
     fun isNeedConsent(): Boolean {
@@ -507,8 +580,6 @@ class UserConsentWidget : FrameLayout,
     }
 
     companion object {
-        private const val STRING_FORMAT = "%s?url=%s"
-        private const val PRIVACY_POLICY_PATH = "privacy?lang=id"
         private const val NUMBER_ONE = 1
         private const val NUMBER_TWO = 2
     }

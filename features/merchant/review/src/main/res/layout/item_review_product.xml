@@ -36,7 +36,7 @@
         android:id="@+id/icon_star"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        app:icon_color_light_enable="@color/Unify_Y300"
+        app:icon_color_light_enable="@color/Unify_YN300"
         app:icon_name="STAR_FILLED"
         app:layout_constraintBottom_toBottomOf="@id/text_rating"
         app:layout_constraintLeft_toLeftOf="@id/text_name"

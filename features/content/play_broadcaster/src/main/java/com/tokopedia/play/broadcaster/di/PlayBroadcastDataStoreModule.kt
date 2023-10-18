@@ -10,6 +10,8 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStoreImpl
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStoreImpl
+import com.tokopedia.play.broadcaster.data.datastore.ProductTagDataStore
+import com.tokopedia.play.broadcaster.data.datastore.ProductTagDataStoreImpl
 import com.tokopedia.play.broadcaster.data.datastore.TagsDataStore
 import com.tokopedia.play.broadcaster.data.datastore.TagsDataStoreImpl
 import com.tokopedia.play.broadcaster.data.datastore.TitleDataStore
@@ -47,4 +49,8 @@ abstract class PlayBroadcastDataStoreModule {
     @Binds
     @ActivityRetainedScope
     abstract fun bindInteractiveDataStore(dataStore: InteractiveDataStoreImpl): InteractiveDataStore
+
+    @Binds
+    @ActivityRetainedScope
+    abstract fun bindProductTagDataStore(dataStore: ProductTagDataStoreImpl): ProductTagDataStore
 }

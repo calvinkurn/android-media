@@ -1,7 +1,0 @@
-mutation checkCampaignNotifyMe($para: CheckCampaignNotifyMeRequest) {
-    checkCampaignNotifyMe(params: $para) {
-      success
-      message
-      error_message
-    }
- }

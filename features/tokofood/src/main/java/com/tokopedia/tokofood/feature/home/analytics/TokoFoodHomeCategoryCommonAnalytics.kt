@@ -5,7 +5,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.EMPTY_DATA
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
+import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
@@ -14,7 +14,7 @@ object TokoFoodHomeCategoryCommonAnalytics: BaseTrackerConst() {
 
     fun impressMerchant(userId: String?, destinationId: String?, merchant: Merchant, horizontalPosition: Int, isHome: Boolean): Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
-        val merchantAddress = if (merchant.addressLocality.isNotEmpty()) merchant.addressLocality else EMPTY_DATA
+        val merchantAddress = merchant.addressLocality.ifEmpty { EMPTY_DATA }
         val listPromotions = arrayListOf(
             Promotion(
                 creative = "${merchant.additionalData.topTextBanner} - ${merchant.promo}",
@@ -40,21 +40,21 @@ object TokoFoodHomeCategoryCommonAnalytics: BaseTrackerConst() {
             .build()
     }
 
-    fun getItemATC(data: CheckoutTokoFoodData): ArrayList<Bundle> {
+    fun getItemATC(data: CartGeneralCartListData): ArrayList<Bundle> {
         val itemBundles = arrayListOf<Bundle>()
         itemBundles.addAll(
-            data.availableSection.products.map {
+            data.data.getTokofoodBusinessData().getAvailableSectionProducts().map {
                 Bundle().apply {
                     putString(TokoFoodAnalytics.KEY_DIMENSION_45, it.cartId)
                     putString(Items.ITEM_BRAND, EMPTY_DATA)
                     putString(Items.ITEM_CATEGORY, EMPTY_DATA)
                     putString(Items.ITEM_ID, it.productId)
-                    putString(Items.ITEM_NAME, it.productName)
+                    putString(Items.ITEM_NAME, it.customResponse.name)
                     putString(Items.ITEM_VARIANT, it.productId)
                     putDouble(Items.PRICE, it.price)
                     putInt(TokoFoodAnalytics.KEY_QUANTITY, it.quantity)
-                    putString(TokoFoodAnalytics.KEY_SHOP_ID, data.shop.shopId)
-                    putString(TokoFoodAnalytics.KEY_SHOP_NAME, data.shop.name)
+                    putString(TokoFoodAnalytics.KEY_SHOP_ID, data.data.getTokofoodBusinessData().customResponse.shop.shopId)
+                    putString(TokoFoodAnalytics.KEY_SHOP_NAME, data.data.getTokofoodBusinessData().customResponse.shop.name)
                     putString(TokoFoodAnalytics.KEY_SHOP_TYPE, EMPTY_DATA)
                 }
             }
@@ -62,8 +62,8 @@ object TokoFoodHomeCategoryCommonAnalytics: BaseTrackerConst() {
         return itemBundles
     }
 
-    fun getProductIds(data: CheckoutTokoFoodData): String {
-        return data.availableSection.products.joinToString(",") {
+    fun getProductIds(data: CartGeneralCartListData): String {
+        return data.data.getTokofoodBusinessData().getAvailableSectionProducts().joinToString(",") {
             it.productId
         }
     }
@@ -72,7 +72,7 @@ object TokoFoodHomeCategoryCommonAnalytics: BaseTrackerConst() {
         val promotionBundle = arrayListOf<Bundle>()
         promotionBundle.add(
             Bundle().apply {
-                val merchantAddress = if (merchant.addressLocality.isNotEmpty()) merchant.addressLocality else EMPTY_DATA
+                val merchantAddress = merchant.addressLocality.ifEmpty { EMPTY_DATA }
                 putString(Promotion.CREATIVE_NAME, "")
                 putString(Promotion.CREATIVE_SLOT, (horizontalPosition + Int.ONE).toString())
                 putString(Promotion.ITEM_ID, "${merchant.id} - ${merchant.name}")

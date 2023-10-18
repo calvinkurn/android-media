@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.firebase.crashlytics'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'com.google.gms.google-services'
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply plugin: 'io.hansel.preprocessor'
@@ -16,10 +16,6 @@ buildscript {
     }
 }
 
-kapt {
-    correctErrorTypes = true
-    generateStubs = false
-}
 def isEnableMacrobenchmarkUtil() {
     if (project.hasProperty('enableMacrobenchmarkUtil')?: "false") {
         return "true";
@@ -27,6 +23,8 @@ def isEnableMacrobenchmarkUtil() {
     return "false";
 }
 android {
+    namespace 'com.tokopedia.tkpd'
+    testNamespace 'com.tokopedia.tkpd.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -75,6 +73,10 @@ android {
     }
     buildFeatures {
         buildConfig true
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
@@ -96,6 +98,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
 
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
@@ -103,7 +106,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.core_legacy)
     implementation projectOrAar(rootProject.ext.libraries.iris)
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.cassava
 
@@ -111,9 +113,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
-    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
-    implementation rootProject.ext.miscDependencies.autopatchbase
+    implementation rootProject.ext.composeDependencies.composeActivity
+    implementation rootProject.ext.unifyDependencies.nestComponents
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
 
     implementation rootProject.ext.playServicesDependencies.base
 
@@ -135,7 +139,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)
 
     /*
-        Do not remove this dependency, because we use it in Abstraction
+        Do not remove this dependency, because we use it for MQTT
      */
     implementation project(rootProject.ext.features.tokochat_config_common)
 

@@ -9,11 +9,13 @@ import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.mvcwidget.R
 import com.tokopedia.mvcwidget.multishopmvc.MvcMultiShopView
-import com.tokopedia.mvcwidget.multishopmvc.data.*
+import com.tokopedia.mvcwidget.multishopmvc.data.AdInfo
+import com.tokopedia.mvcwidget.multishopmvc.data.CatalogMVCWithProductsListItem
+import com.tokopedia.mvcwidget.multishopmvc.data.DataMapperMultiShopView
+import com.tokopedia.mvcwidget.multishopmvc.data.MultiShopModel
+import com.tokopedia.mvcwidget.multishopmvc.data.Productlist
 import com.tokopedia.mvcwidget.trackers.MvcTracker
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 
 class MerchantCouponListAdapter(
     val viewmodel: MerchantCouponViewModel,

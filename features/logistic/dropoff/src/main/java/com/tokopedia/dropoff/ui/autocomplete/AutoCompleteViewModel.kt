@@ -8,7 +8,12 @@ import com.tokopedia.dropoff.domain.mapper.AutoCompleteMapper
 import com.tokopedia.dropoff.ui.autocomplete.model.ValidatedDistrict
 import com.tokopedia.logisticCommon.domain.model.SavedAddress
 import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
-import com.tokopedia.logisticCommon.data.repository.KeroRepository
+import com.tokopedia.logisticCommon.domain.param.GetAddressParam
+import com.tokopedia.logisticCommon.domain.param.GetAutoCompleteParam
+import com.tokopedia.logisticCommon.domain.param.GetDistrictParam
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetAutoCompleteUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -17,8 +22,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AutoCompleteViewModel @Inject constructor(
-        private val repo: KeroRepository,
-        private val mapper: AutoCompleteMapper) : ViewModel() {
+    private val getAutoComplete: GetAutoCompleteUseCase,
+    private val getDistrict: GetDistrictUseCase,
+    private val getAddress: GetAddressUseCase,
+    private val mapper: AutoCompleteMapper
+) : ViewModel() {
 
     private val mAutoCompleteList = MutableLiveData<Result<List<SuggestedPlace>>>()
     val autoCompleteList: LiveData<Result<List<SuggestedPlace>>>
@@ -32,21 +40,21 @@ class AutoCompleteViewModel @Inject constructor(
 
     fun getAutoCompleteList(keyword: String) {
         viewModelScope.launch(onErrorAutoComplete) {
-            val autoComplete = repo.getAutoComplete(keyword, "")
+            val autoComplete = getAutoComplete(GetAutoCompleteParam(keyword = keyword))
             mAutoCompleteList.value = Success(mapper.mapAutoComplete(autoComplete))
         }
     }
 
     fun getLatLng(placeId: String) {
         viewModelScope.launch(onErrorGetLatLng) {
-            val latLng = repo.getDistrict(placeId)
+            val latLng = getDistrict(GetDistrictParam(placeId))
             mValidatedDistrict.value = Success(mapper.mapValidate(latLng))
         }
     }
 
     fun getSavedAddress() {
         viewModelScope.launch(onErrorGetAddress) {
-            val address = repo.getAddress()
+            val address = getAddress(GetAddressParam())
             mSavedAddress.value = Success(mapper.mapAddress(address))
         }
     }

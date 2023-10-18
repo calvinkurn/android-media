@@ -30,7 +30,6 @@ class InboxReputationDetailItemUiModel(
     var isReviewIsAnonymous: Boolean,
     var isProductDeleted: Boolean,
     val isReviewIsEdited: Boolean,
-    var revieweeName: String,
     val reviewerId: String,
     val isProductBanned: Boolean,
     private val productStatus: Int,

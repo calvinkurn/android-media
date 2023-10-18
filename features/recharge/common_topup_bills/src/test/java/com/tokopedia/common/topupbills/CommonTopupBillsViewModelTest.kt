@@ -1,6 +1,7 @@
 package com.tokopedia.common.topupbills
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
 import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryQuery
@@ -467,11 +468,11 @@ class CommonTopupBillsViewModelTest {
     }
 
     @Test
-    fun checkVoucher_callUseCaseExecute() = testCoroutineRule.runBlockingTest {
+    fun checkVoucher_callUseCaseExecute() = testCoroutineRule.runTest {
         every { digitalCheckVoucherUseCase.execute(any(), any()) } returns Unit
 
         topupBillsViewModel.checkVoucher("", PromoDigitalModel())
-        advanceTimeBy(1_000L)
+        testCoroutineRule.coroutineDispatcher.advanceTimeBy(1_000L)
 
         verify { digitalCheckVoucherUseCase.execute(any(), any()) }
     }

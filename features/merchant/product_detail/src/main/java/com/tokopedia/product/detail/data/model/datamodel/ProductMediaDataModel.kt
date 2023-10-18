@@ -1,9 +1,13 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
+import android.content.Context
 import android.os.Bundle
+import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.LoadableComponent
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 data class ProductMediaDataModel(
     val type: String = "",
@@ -13,8 +17,13 @@ data class ProductMediaDataModel(
     var variantOptionIdScrollAnchor: String = "",
     var shouldUpdateImage: Boolean = false,
     var shouldAnimateLabel: Boolean = true,
-    var containerType: MediaContainerType = MediaContainerType.Square
-) : DynamicPdpDataModel {
+    var containerType: MediaContainerType = MediaContainerType.Square,
+    var recommendation: ProductMediaRecomData = ProductMediaRecomData()
+) : DynamicPdpDataModel,
+    LoadableComponent by BlocksLoadableComponent(
+        isFinishedLoading = { false },
+        customBlocksName = "ProductMediaDataModel"
+    ) {
     companion object {
         const val VIDEO_TYPE = "video"
         const val IMAGE_TYPE = "image"
@@ -40,6 +49,10 @@ data class ProductMediaDataModel(
         } else {
             initialScrollPosition
         }
+    }
+
+    override fun isLoading(): Boolean {
+        return listOfMedia.isEmpty()
     }
 
     override val impressHolder: ImpressHolder = ImpressHolder()
@@ -110,6 +123,20 @@ data class ThumbnailDataModel(
 sealed class MediaContainerType(val type: String, val ratio: String) {
     object Square : MediaContainerType(type = "square", "H,1:1")
     object Portrait : MediaContainerType(type = "portrait", "H,4:5")
+}
+
+data class ProductMediaRecomData(
+    val lightIcon: String = "",
+    val darkIcon: String = "",
+    val iconText: String = ""
+) {
+    fun getIconUrl(context: Context): String {
+        return if (context.isDarkMode()) darkIcon else lightIcon
+    }
+
+    fun shouldShow(): Boolean {
+        return (darkIcon.isNotBlank() || lightIcon.isNotBlank()) && iconText.isNotBlank()
+    }
 }
 
 internal fun String?.asMediaContainerType(): MediaContainerType = when (this) {

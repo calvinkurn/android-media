@@ -86,18 +86,16 @@ data class GetReschedulePickupResponse(
                             val time: String = "",
 
                             @SerializedName("eta_pickup")
-                            val etaPickup: String = "",
+                            val etaPickup: String = ""
                         )
                     }
 
                     data class ReasonOption(
                         @SerializedName("reason")
                         val reason: String = ""
-                    ) {
-                    }
+                    )
                 }
             }
         }
-
     }
 }

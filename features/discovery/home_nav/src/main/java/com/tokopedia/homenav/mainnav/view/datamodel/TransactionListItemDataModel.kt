@@ -7,7 +7,7 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 data class TransactionListItemDataModel(
         val orderListModel: NavOrderListModel,
         val othersTransactionCount: Int = 0,
-        val isMePageUsingRollenceVariant: Boolean = false
+        val isMePageUsingRollenceVariant: Boolean = false,
 ): MainNavVisitable, ImpressHolder() {
     override fun id(): Any = "oderList"
 

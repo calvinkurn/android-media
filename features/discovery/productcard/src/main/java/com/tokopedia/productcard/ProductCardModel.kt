@@ -1,10 +1,8 @@
 package com.tokopedia.productcard
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.productcard.fashion.FashionStrategy
-import com.tokopedia.productcard.fashion.FashionStrategyControl
-import com.tokopedia.productcard.fashion.FashionStrategyLongImage
-import com.tokopedia.productcard.fashion.FashionStrategyReposition
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.productcard.layout.LayoutStrategyFactory
 import com.tokopedia.productcard.utils.LABEL_BEST_SELLER
 import com.tokopedia.productcard.utils.LABEL_CAMPAIGN
 import com.tokopedia.productcard.utils.LABEL_CATEGORY
@@ -15,14 +13,20 @@ import com.tokopedia.productcard.utils.LABEL_ETA
 import com.tokopedia.productcard.utils.LABEL_FULFILLMENT
 import com.tokopedia.productcard.utils.LABEL_GIMMICK
 import com.tokopedia.productcard.utils.LABEL_INTEGRITY
+import com.tokopedia.productcard.utils.LABEL_OVERLAY
 import com.tokopedia.productcard.utils.LABEL_PRICE
 import com.tokopedia.productcard.utils.LABEL_PRODUCT_STATUS
+import com.tokopedia.productcard.utils.LABEL_RIBBON
 import com.tokopedia.productcard.utils.LABEL_SHIPPING
 import com.tokopedia.productcard.utils.MIN_LABEL_VARIANT_COUNT
 import com.tokopedia.productcard.utils.MIN_QUANTITY_NON_VARIANT
+import com.tokopedia.productcard.utils.SlashPriceCashbackExperiment
 import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
 import com.tokopedia.productcard.utils.TYPE_VARIANT_CUSTOM
 import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
+import com.tokopedia.productcard.utils.rollenceRemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 
 data class ProductCardModel (
@@ -63,7 +67,6 @@ data class ProductCardModel (
         val stockBarLabelColor: String = "",
         val stockBarPercentage: Int = 0,
         val isOutOfStock: Boolean = false,
-        @Deprecated("determined from product card")
         val addToCardText: String = "",
         val shopRating: String = "",
         val isShopRatingYellow: Boolean = false,
@@ -80,8 +83,17 @@ data class ProductCardModel (
         val hasAddToCartWishlist: Boolean = false,
         val hasSimilarProductWishlist: Boolean = false,
         val customVideoURL : String = "",
-        val cardInteraction: Boolean = false,
+        @Deprecated("replaced with animateOnPress")
+        val cardInteraction: Boolean? = null,
         val productListType: ProductListType = ProductListType.CONTROL,
+        val isPortrait: Boolean = false,
+        val seeOtherProductText: String = "",
+        val isTopStockBar: Boolean = false,
+        val cardType: Int = CardUnify2.TYPE_SHADOW,
+        val animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
+        val pageSource: PageSource = PageSource.OTHER,
+        val abTestRemoteConfig: Lazy<RemoteConfig?> = rollenceRemoteConfig(),
+        val forceLightModeColor: Boolean = false,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -90,11 +102,18 @@ data class ProductCardModel (
     @Deprecated("replace with labelGroupList")
     var isProductWholesale: Boolean = false
 
-    internal val fashionStrategy: FashionStrategy = when (productListType) {
-        ProductListType.CONTROL -> FashionStrategyControl()
-        ProductListType.REPOSITION -> FashionStrategyReposition()
-        ProductListType.LONG_IMAGE -> FashionStrategyLongImage()
+    internal val layoutStrategy =
+        LayoutStrategyFactory.create(productListType, isTopStockBar, cardType)
+
+    private val slashedPriceCashbackExperiment by lazyThreadSafetyNone {
+        SlashPriceCashbackExperiment.get(abTestRemoteConfig)
     }
+
+    fun isOnSlashPriceCashbackExperiment() =
+        slashedPriceCashbackExperiment.isUnderExperiment(pageSource)
+
+    val showRibbon: Boolean
+        get() = getLabelRibbon()?.title?.isNotEmpty() == true
 
     val hasVideo : Boolean = customVideoURL.isNotBlank()
 
@@ -225,6 +244,14 @@ data class ProductCardModel (
         return findLabelGroup(LABEL_COST_PER_UNIT)
     }
 
+    fun getLabelOverlay(): LabelGroup? {
+        return findLabelGroup(LABEL_OVERLAY)
+    }
+
+    fun getLabelRibbon(): LabelGroup? {
+        return findLabelGroup(LABEL_RIBBON)
+    }
+
     fun willShowRatingAndReviewCount(): Boolean {
         return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0 && !willShowRating()
     }
@@ -238,6 +265,11 @@ data class ProductCardModel (
     }
 
     fun isShowDiscountOrSlashPrice() = discountPercentage.isNotEmpty() || slashedPrice.isNotEmpty()
+
+    fun showDiscountAsText(): Boolean = isOnSlashPriceCashbackExperiment()
+
+    fun isShowLabelPrice(): Boolean =
+        !isShowDiscountOrSlashPrice() || isOnSlashPriceCashbackExperiment()
 
     fun isShowFreeOngkirBadge() = freeOngkir.isActive && freeOngkir.imageUrl.isNotEmpty()
 
@@ -264,6 +296,14 @@ data class ProductCardModel (
                 && labelCampaign != null
                 && labelCampaign.title.isNotEmpty()
                 && labelCampaign.imageUrl.isNotEmpty()
+    }
+
+    fun isShowLabelOverlay(): Boolean {
+        val labelOverlay = getLabelOverlay()
+
+        return labelOverlay != null
+                && labelOverlay.title.isNotEmpty()
+                && (labelOverlay.imageUrl.isNotEmpty() || labelOverlay.type.isNotEmpty())
     }
 
     fun isShowLabelGimmick() =
@@ -294,15 +334,22 @@ data class ProductCardModel (
 
     fun willShowPrimaryButtonWishlist() = hasAddToCartWishlist || hasSimilarProductWishlist
 
+    fun willShowBigImage() : Boolean {
+        return productListType == ProductListType.LONG_IMAGE
+            || (productListType == ProductListType.PORTRAIT && isPortrait)
+    }
+
+    fun willShowButtonSeeOtherProduct() = seeOtherProductText.isNotEmpty()
+
     fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
         val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()
 
         if (isLabelVariantCountBelowMinimum(colorVariant, sizeVariant))
             return listOf()
 
-        val colorVariantTaken = fashionStrategy.getLabelVariantColorCount(colorVariant)
+        val colorVariantTaken = layoutStrategy.getLabelVariantColorCount(colorVariant)
         val sizeVariantTaken =
-            fashionStrategy.getLabelVariantSizeCount(this, colorVariantTaken)
+            layoutStrategy.getLabelVariantSizeCount(this, colorVariantTaken)
 
         return colorVariant.take(colorVariantTaken) +
                 sizeVariant.take(sizeVariantTaken) +
@@ -330,9 +377,9 @@ data class ProductCardModel (
                     colorVariant.add(element)
                 }
                 element.isSize() -> {
-                    val additionalSize = element.title.length + fashionStrategy.extraCharSpace
+                    val additionalSize = element.title.length + layoutStrategy.extraCharSpace
                     val isWithinCharLimit =
-                            (sizeVariantCount + additionalSize) <= fashionStrategy.sizeCharLimit
+                            (sizeVariantCount + additionalSize) <= layoutStrategy.sizeCharLimit
 
                     if (isWithinCharLimit) {
                         sizeVariant.add(element)
@@ -375,7 +422,77 @@ data class ProductCardModel (
         }
     }
 
+    override fun equals(other: Any?): Boolean {
+        return other is ProductCardModel
+            && this.productImageUrl == other.productImageUrl
+            && this.isWishlisted == other.isWishlisted
+            && this.isWishlistVisible == other.isWishlistVisible
+            && this.labelPromo == other.labelPromo
+            && this.shopImageUrl == other.shopImageUrl
+            && this.shopName == other.shopName
+            && this.productName == other.productName
+            && this.discountPercentage == other.discountPercentage
+            && this.slashedPrice == other.slashedPrice
+            && this.priceRange == other.priceRange
+            && this.formattedPrice == other.formattedPrice
+            && this.shopBadgeList == other.shopBadgeList
+            && this.shopLocation == other.shopLocation
+            && this.ratingCount == other.ratingCount
+            && this.reviewCount == other.reviewCount
+            && this.labelCredibility == other.labelCredibility
+            && this.labelOffers == other.labelOffers
+            && this.freeOngkir == other.freeOngkir
+            && this.isTopAds == other.isTopAds
+            && this.ratingString == other.ratingString
+            && this.hasThreeDots == other.hasThreeDots
+            && this.labelGroupList == other.labelGroupList
+            && this.hasDeleteProductButton == other.hasDeleteProductButton
+            && this.hasAddToCartButton == other.hasAddToCartButton
+            && this.hasRemoveFromWishlistButton == other.hasRemoveFromWishlistButton
+            && this.pdpViewCount == other.pdpViewCount
+            && this.stockBarLabel == other.stockBarLabel
+            && this.stockBarLabelColor == other.stockBarLabelColor
+            && this.stockBarPercentage == other.stockBarPercentage
+            && this.isOutOfStock == other.isOutOfStock
+            && this.addToCardText == other.addToCardText
+            && this.shopRating == other.shopRating
+            && this.isShopRatingYellow == other.isShopRatingYellow
+            && this.countSoldRating == other.countSoldRating
+            && this.hasNotifyMeButton == other.hasNotifyMeButton
+            && this.labelGroupVariantList == other.labelGroupVariantList
+            && this.addToCartButtonType == other.addToCartButtonType
+            && this.isWideContent == other.isWideContent
+            && this.variant == other.variant
+            && this.nonVariant == other.nonVariant
+            && this.hasSimilarProductButton == other.hasSimilarProductButton
+            && this.hasButtonThreeDotsWishlist == other.hasButtonThreeDotsWishlist
+            && this.hasAddToCartWishlist == other.hasAddToCartWishlist
+            && this.hasSimilarProductWishlist == other.hasSimilarProductWishlist
+            && this.customVideoURL == other.customVideoURL
+            && this.cardInteraction == other.cardInteraction
+            && this.productListType == other.productListType
+            && this.isPortrait == other.isPortrait
+            && this.seeOtherProductText == other.seeOtherProductText
+            && this.isTopStockBar == other.isTopStockBar
+            && this.cardType == other.cardType
+            && this.animateOnPress == other.animateOnPress
+            && this.pageSource == other.pageSource
+    }
+
     enum class ProductListType {
-        CONTROL, REPOSITION, LONG_IMAGE
+        CONTROL,
+        REPOSITION,
+        LONG_IMAGE,
+        GIMMICK,
+        PORTRAIT,
+        ETA,
+        BEST_SELLER,
+        FIXED_GRID,
+        LIST_VIEW,
+    }
+
+    enum class PageSource {
+        SEARCH,
+        OTHER,
     }
 }

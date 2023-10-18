@@ -1,5 +1,7 @@
 package com.tokopedia.top_ads_headline.data
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.top_ads_headline.R
@@ -9,7 +11,7 @@ import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-private const val SHOP_BADGE = "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+private const val SHOP_BADGE = TokopediaImageUrl.SHOP_BADGE
 
 class CpmModelMapper @Inject constructor(@ApplicationContext private val context: Context,
                                          private val userSession: UserSessionInterface) {

@@ -18,8 +18,10 @@ import com.tokopedia.topupbills.telco.common.fragment.DigitalBaseTelcoFragment
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<DigitalTelcoComponent>,
-        TopupBillsMenuBottomSheets.MenuListener {
+open abstract class BaseTelcoActivity :
+    BaseSimpleActivity(),
+    HasComponent<DigitalTelcoComponent>,
+    TopupBillsMenuBottomSheets.MenuListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -78,7 +80,7 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
     }
 
     override fun onPromoClicked() {
-        RouteManager.route(this, ApplinkConst.PROMO_LIST)
+        RouteManager.route(this, APPLINK_CONST_DEALS)
     }
 
     override fun onHelpClicked() {
@@ -98,24 +100,10 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
     fun setupAppBar() {
         (toolbar as HeaderUnify).transparentMode = true
         if (::menuTelco.isInitialized) {
-            menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
-                    com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_white)
-        }
-    }
-
-    fun onCollapseAppBar() {
-        (toolbar as HeaderUnify).transparentMode = false
-        if (::menuTelco.isInitialized) {
-            menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
-                    com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_black)
-        }
-    }
-
-    fun onExpandAppBar() {
-        (toolbar as HeaderUnify).transparentMode = true
-        if (::menuTelco.isInitialized) {
-            menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
-                    com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_white)
+            menuTelco.getItem(0).icon = ContextCompat.getDrawable(
+                this@BaseTelcoActivity,
+                com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_white
+            )
         }
     }
 
@@ -129,13 +117,13 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
     abstract fun sendTrackingDotsMenuTelco(userId: String)
 
     companion object {
-        const val REQUEST_CODE_LOGIN_TELCO = 10000
-
         const val PARAM_MENU_ID = "menu_id"
         const val PARAM_PRODUCT_ID = "product_id"
         const val PARAM_CLIENT_NUMBER = "client_number"
         const val PARAM_CATEGORY_ID = "category_id"
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
         const val TAG_TELCO_MENU = "menu_telco"
+
+        const val APPLINK_CONST_DEALS = "tokopedia://discovery/deals?activeTab=7&componentID=588"
     }
 }

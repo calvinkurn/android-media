@@ -87,7 +87,6 @@
             android:launchMode="singleTop"
             android:exported="false"
             android:allowEmbedded="true"
-            android:documentLaunchMode="always"
             android:resizeableActivity="true">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

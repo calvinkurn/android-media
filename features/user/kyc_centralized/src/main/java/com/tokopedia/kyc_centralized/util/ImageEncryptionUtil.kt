@@ -1,8 +1,8 @@
 package com.tokopedia.kyc_centralized.util
 
-import android.content.Context
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.kyc_centralized.ui.tokoKyc.form.KycUploadViewModel.Companion.KYC_USING_ENCRYPT
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -12,12 +12,14 @@ import javax.crypto.CipherOutputStream
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
+import javax.inject.Inject
 
-object ImageEncryptionUtil {
-    private const val TEMP_IMAGE_TAG = "temp_"
-    private const val SALT = "A%D*G-KaPdRgUkXp2s5v8y/B?E(H+MbQ"
-    private const val ALGORITHM = "AES/GCM/NoPadding"
-    private const val IV_SIZE = 128
+@ActivityScope
+class ImageEncryptionUtil @Inject constructor(private val remoteConfig: RemoteConfig) {
+    private val TEMP_IMAGE_TAG = "temp_"
+    private val SALT = "A%D*G-KaPdRgUkXp2s5v8y/B?E(H+MbQ"
+    private val ALGORITHM = "AES/GCM/NoPadding"
+    private val IV_SIZE = 128
 
     private fun getKey(): SecretKey? {
         var secretKey: SecretKey? = null
@@ -40,11 +42,11 @@ object ImageEncryptionUtil {
 
         val originalFile = File(originalFilePath)
         val copyFile = File(filePath, "$TEMP_IMAGE_TAG$imageName")
-        if(copyFile.exists()) {
+        if (copyFile.exists()) {
             copyFile.delete()
         }
 
-        //Create a copy of original file
+        // Create a copy of original file
         originalFile.copyTo(copyFile)
 
         return copyFile.path
@@ -69,8 +71,9 @@ object ImageEncryptionUtil {
     fun deleteFile(path: String) {
         val file = File(path)
 
-        if (file.exists())
+        if (file.exists()) {
             file.delete()
+        }
     }
 
     fun renameImageToOriginalFileName(path: String): String {
@@ -82,8 +85,9 @@ object ImageEncryptionUtil {
         val renameTo = imageName.replace(TEMP_IMAGE_TAG, "")
 
         val to = File(filePath, renameTo)
-        if (from.exists())
+        if (from.exists()) {
             from.renameTo(to)
+        }
 
         return to.path
     }
@@ -119,9 +123,9 @@ object ImageEncryptionUtil {
         }
     }
 
-    fun isUsingEncrypt(context: Context) : Boolean {
+    fun isUsingEncrypt(): Boolean {
         try {
-            return FirebaseRemoteConfigImpl(context).getBoolean(KYC_USING_ENCRYPT, true)
+            return remoteConfig.getBoolean(KYC_USING_ENCRYPT, true)
         } catch (e: Exception) {
             e.printStackTrace()
         }

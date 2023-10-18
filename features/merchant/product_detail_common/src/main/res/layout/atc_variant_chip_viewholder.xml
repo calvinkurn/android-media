@@ -1,16 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.ChipsUnify xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/atc_variant_chip"
+    android:id="@+id/atc_variant_chip_container"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginEnd="4dp"
-    android:gravity="center"
-    android:minWidth="40dp"
-    app:centerText="true"
-    app:chipSize="medium"
-    app:chipType="normal"
-    tools:chipImageSrc="@tools:sample/avatars"
-    tools:chipText="Hitam"
-    tools:showNewNotification="true" />
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ChipsUnify
+        android:id="@+id/atc_variant_chip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="6dp"
+        android:gravity="center"
+        android:minWidth="40dp"
+        app:centerText="true"
+        app:chipSize="medium"
+        app:chipType="normal"
+        tools:chipImageSrc="@tools:sample/avatars"
+        tools:chipText="Hitam" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/atc_variant_chip_promo_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_pdp_promo"
+        tools:visibility="visible"/>
+</FrameLayout>

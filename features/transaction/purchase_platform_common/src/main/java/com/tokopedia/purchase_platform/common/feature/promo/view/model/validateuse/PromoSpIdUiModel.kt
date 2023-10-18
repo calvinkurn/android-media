@@ -5,6 +5,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class PromoSpIdUiModel(
-        var uniqueId: String = "",
-        var mvcShippingBenefits: List<MvcShippingBenefitUiModel> = emptyList()
+    var uniqueId: String = "",
+    var mvcShippingBenefits: List<MvcShippingBenefitUiModel> = emptyList()
 ) : Parcelable

@@ -13,45 +13,6 @@ import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
-import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.common.data.model.*
-import com.tokopedia.shop.common.data.response.RestrictValidateRestriction
-import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
-import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
-import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
-import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
-import com.tokopedia.shop.common.domain.RestrictionEngineNplUseCase
-import com.tokopedia.shop.common.domain.interactor.*
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PRODUCT_LIST_RESULT_SOURCE
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
-import com.tokopedia.shop.common.util.ShopUtil
-import com.tokopedia.shop.common.util.ShopUtil.setElement
-import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
-import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
-import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
-import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper.mapRestrictionEngineResponseToModel
-import com.tokopedia.shop.product.view.datamodel.*
-import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
-import com.tokopedia.shop.sort.view.model.ShopProductSortModel
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
-import dagger.Lazy
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.withContext
-import rx.Subscriber
-import javax.inject.Inject
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
@@ -60,27 +21,78 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
+import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.SHARED_PREF_AFFILIATE_CHANNEL
+import com.tokopedia.shop.common.data.model.*
+import com.tokopedia.shop.common.data.response.RestrictValidateRestriction
+import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
+import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier
+import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
+import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
+import com.tokopedia.shop.common.domain.RestrictionEngineNplUseCase
+import com.tokopedia.shop.common.domain.interactor.*
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PRODUCT_LIST_RESULT_SOURCE
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.shopsort.GqlGetShopSortUseCase
+import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.util.ShopUtil.setElement
+import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
+import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderTickerData
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
+import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
+import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
+import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper.mapRestrictionEngineResponseToModel
+import com.tokopedia.shop.product.view.datamodel.*
+import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
+import com.tokopedia.shop.sort.view.model.ShopProductSortModel
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageProcessingUtil
+import dagger.Lazy
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import rx.Subscriber
+import javax.inject.Inject
 
-class ShopPageProductListResultViewModel @Inject constructor(private val userSession: UserSessionInterface,
-                                                             private val getShopInfoUseCase: GQLGetShopInfoUseCase,
-                                                             private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
-                                                             private val getShopProductUseCase: GqlGetShopProductUseCase,
-                                                             private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
-                                                             private val shopProductSortMapper: ShopProductSortMapper,
-                                                             private val dispatcherProvider: CoroutineDispatchers,
-                                                             private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
-                                                             private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
-                                                             private val restrictionEngineNplUseCase: RestrictionEngineNplUseCase,
-                                                             private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>,
-                                                             private val getFollowStatusUseCase: GetFollowStatusUseCase,
-                                                             private val gqlShopPageGetDynamicTabUseCase: GqlShopPageGetDynamicTabUseCase,
-                                                             private val addToCartUseCase: AddToCartUseCase,
-                                                             private val updateCartUseCase: UpdateCartUseCase,
-                                                             private val deleteCartUseCase: DeleteCartUseCase,
-                                                             private val sharedPreferences: SharedPreferences
-
-) : BaseViewModel(dispatcherProvider.main) {
+class ShopPageProductListResultViewModel @Inject constructor(
+    private val userSession: UserSessionInterface,
+    private val getShopInfoUseCase: GQLGetShopInfoUseCase,
+    private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
+    private val getShopProductUseCase: GqlGetShopProductUseCase,
+    private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
+    private val shopProductSortMapper: ShopProductSortMapper,
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
+    private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
+    private val restrictionEngineNplUseCase: RestrictionEngineNplUseCase,
+    private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>,
+    private val getFollowStatusUseCase: GetFollowStatusUseCase,
+    private val gqlShopPageGetDynamicTabUseCase: GqlShopPageGetDynamicTabUseCase,
+    private val addToCartUseCase: AddToCartUseCase,
+    private val updateCartUseCase: UpdateCartUseCase,
+    private val deleteCartUseCase: DeleteCartUseCase,
+    private val sharedPreferences: SharedPreferences,
+    @GqlGetShopInfoForHeaderUseCaseQualifier
+    private val gqlGetShopInfoForHeaderUseCase: Lazy<GQLGetShopInfoUseCase>,
+    private val affiliateEligibilityCheckUseCase: Lazy<AffiliateEligibilityCheckUseCase>,
+    ) : BaseViewModel(dispatcherProvider.main) {
 
     fun isMyShop(shopId: String) = userSession.shopId == shopId
 
@@ -135,6 +147,15 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     val shopAffiliateChannel: LiveData<String>
         get() = _shopAffiliateChannel
     private val _shopAffiliateChannel = MutableLiveData<String>()
+    val shopImagePath = MutableLiveData<String>()
+
+    private val _shopPageShopShareData = MutableLiveData<Result<ShopInfo>>()
+    val shopPageShopShareData: LiveData<Result<ShopInfo>>
+        get() = _shopPageShopShareData
+
+    private val _resultAffiliate = MutableLiveData<Result<GenerateAffiliateLinkEligibility>>()
+    val resultAffiliate: LiveData<Result<GenerateAffiliateLinkEligibility>>
+        get() = _resultAffiliate
 
     fun getShop(shopId: String, shopDomain: String = "", isRefresh: Boolean = false) {
         if (shopId.toIntOrZero() == 0 && shopDomain == "") return
@@ -777,6 +798,66 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         launchCatchError(dispatcherProvider.io, block = {
             val shopAffiliateChannel = sharedPreferences.getString(SHARED_PREF_AFFILIATE_CHANNEL, "")
             _shopAffiliateChannel.postValue(shopAffiliateChannel)
-        }){}
+        }) {}
+    }
+
+    fun getShopShareData(shopId: String, shopDomain: String, affiliateInput: AffiliateInput) {
+        launchCatchError(dispatcherProvider.io, block = {
+            val shopInfoData = asyncCatchError(
+                dispatcherProvider.io,
+                block = {
+                    getShopInfoHeader(
+                        shopId.toIntOrZero(),
+                        shopDomain
+                    )
+                },
+                onError = {
+                    null
+                }
+            )
+
+            val affiliate = asyncCatchError(
+                dispatcherProvider.io,
+                block = {
+                    AffiliateEligibilityCheckUseCase.createParam(affiliateInput)
+                    affiliateEligibilityCheckUseCase.get().executeOnBackground()
+                },
+                onError = {
+                    null
+                }
+            )
+
+
+            affiliate.await()?.let {
+                _resultAffiliate.value = Success(it)
+            }
+
+            shopInfoData.await()?.let { shopInfo ->
+                _shopPageShopShareData.postValue(Success(shopInfo))
+            }
+        }) {}
+    }
+
+    private suspend fun getShopInfoHeader(shopId: Int, shopDomain: String): ShopInfo {
+        gqlGetShopInfoForHeaderUseCase.get().params = GQLGetShopInfoUseCase.createParams(
+            if (shopId == 0) listOf() else listOf(shopId),
+            shopDomain,
+            source = GQLGetShopInfoUseCase.SHOP_PAGE_SOURCE,
+            fields = listOf(
+                GQLGetShopInfoUseCase.FIELD_CORE,
+                GQLGetShopInfoUseCase.FIELD_ASSETS,
+                GQLGetShopInfoUseCase.FIELD_LAST_ACTIVE,
+                GQLGetShopInfoUseCase.FIELD_LOCATION,
+                GQLGetShopInfoUseCase.FIELD_ALLOW_MANAGE,
+                GQLGetShopInfoUseCase.FIELD_IS_OWNER,
+                GQLGetShopInfoUseCase.FIELD_STATUS,
+                GQLGetShopInfoUseCase.FIELD_IS_OPEN,
+                GQLGetShopInfoUseCase.FIELD_CLOSED_INFO,
+                GQLGetShopInfoUseCase.FIELD_CREATE_INFO,
+                GQLGetShopInfoUseCase.FIELD_SHOP_SNIPPET,
+                GQLGetShopInfoUseCase.FIELD_BRANCH_LINK
+            )
+        )
+        return gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()
     }
 }

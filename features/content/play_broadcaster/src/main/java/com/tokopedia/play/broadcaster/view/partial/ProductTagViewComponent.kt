@@ -9,8 +9,9 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.ui.itemdecoration.ProductTagItemDecoration
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.carousel.ProductCarouselViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.PlayProductTagAdapter
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -66,7 +67,7 @@ class ProductTagViewComponent(
 
     private val adapterObserver = object : RecyclerView.AdapterDataObserver() {
         override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-            if (itemCount > 0) rvProductTag.smoothScrollToPosition(0)
+            if (itemCount > 0) rvProductTag.scrollToPosition(0)
         }
     }
 
@@ -128,7 +129,7 @@ class ProductTagViewComponent(
             holder?.let {
                 val coachMarkItem = arrayListOf(
                     CoachMark2Item(
-                        it.itemView.findViewById(R.id.view_pin_product),
+                        it.itemView.findViewById(contentproductpickerR.id.view_pin_product),
                         "",
                         getString(R.string.play_bro_pinned_coachmark_desc),
                         CoachMark2.POSITION_BOTTOM
@@ -155,6 +156,7 @@ class ProductTagViewComponent(
     fun onDestroy() {
         rvProductTag.removeOnScrollListener(scrollListener)
         adapter.unregisterAdapterDataObserver(adapterObserver)
+        coachMark.dismissCoachMark()
     }
 
     companion object {

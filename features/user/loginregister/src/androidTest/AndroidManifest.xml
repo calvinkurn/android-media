@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.tokopedia.loginregister"
     android:versionCode="1"
     android:versionName="1.0.0">
 
@@ -15,35 +14,35 @@
             android:value="true" />
 
         <activity
-            android:name=".login.behaviour.activity.LoginActivityStub"
+            android:name="com.tokopedia.loginregister.login.behaviour.activity.LoginActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".registerinitial.stub.RegisterInitialActivityStub"
+            android:name="com.tokopedia.loginregister.registerinitial.stub.RegisterInitialActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".login.behaviour.activity.ChooseAccountActivityStub"
+            android:name="com.tokopedia.loginregister.login.behaviour.activity.ChooseAccountActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".login.behaviour.activity.VerificationActivityStub"
+            android:name="com.tokopedia.loginregister.login.behaviour.activity.VerificationActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".login.behaviour.activity.ChooseAccountActivityStub"
+            android:name="com.tokopedia.loginregister.login.behaviour.activity.ChooseAccountActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".login.behaviour.activity.ChangeNameActivityStub"
+            android:name="com.tokopedia.loginregister.login.behaviour.activity.ChangeNameActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".login.behaviour.activity.RegisterInitialActivityStub"
+            android:name="com.tokopedia.loginregister.login.behaviour.activity.RegisterInitialActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".login.behaviour.activity.RegisterEmailActivityStub"
+            android:name="com.tokopedia.loginregister.login.behaviour.activity.RegisterEmailActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
     </application>

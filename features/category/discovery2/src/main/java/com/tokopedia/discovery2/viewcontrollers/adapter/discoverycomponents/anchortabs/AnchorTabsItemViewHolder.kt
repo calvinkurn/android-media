@@ -33,7 +33,7 @@ class AnchorTabsItemViewHolder(itemView: View, val fragment: Fragment) :
     private var shouldShowIcons = true
     private var horizontalTab = false
     private var parentListSize = MIN_CAROUSEL_LIST_SIZE
-    private lateinit var viewModel: AnchorTabsItemViewModel
+    private var viewModel: AnchorTabsItemViewModel? = null
     private val displayMetrics = Utils.getDisplayMetric(fragment.context)
     val observer = Observer<ScrollData> { data ->
         data?.let {
@@ -46,9 +46,9 @@ class AnchorTabsItemViewHolder(itemView: View, val fragment: Fragment) :
 
     init {
         itemView.setOnClickListener {
-            if (::viewModel.isInitialized) {
+            viewModel?.let { viewModel ->
                 val sectionID = viewModel.getSectionID()
-                if (sectionID.isNotEmpty()) {
+                if (sectionID.isNotEmpty() == true) {
                     (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackAnchorTabClick(viewModel.components)
                     fragment.scrollToSection(sectionID)
                 }
@@ -58,16 +58,18 @@ class AnchorTabsItemViewHolder(itemView: View, val fragment: Fragment) :
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as AnchorTabsItemViewModel
-        getSubComponent().inject(viewModel)
-        setupCardType()
-        setupView()
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().viewAnchorTabs(viewModel.components)
+        viewModel?.let { viewModel ->
+            getSubComponent().inject(viewModel)
+            setupCardType()
+            setupView()
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics().viewAnchorTabs(viewModel.components)
+        }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            (fragment as DiscoveryFragment).getScrollLiveData().observe(it,observer)
+            (fragment as DiscoveryFragment).getScrollLiveData().observe(it, observer)
         }
     }
 
@@ -77,8 +79,8 @@ class AnchorTabsItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun setupCardType() {
-        val listSize = viewModel.components.parentListSize.toZeroIfNull()
-        if(listSize <= 0 || listSize == parentListSize) return
+        val listSize = viewModel?.components?.parentListSize.toZeroIfNull()
+        if (listSize <= 0 || listSize == parentListSize) return
         try {
             if (listSize > QUADRUPLE_LIST_SIZE) {
                 if (parentListSize <= QUADRUPLE_LIST_SIZE) {
@@ -89,8 +91,8 @@ class AnchorTabsItemViewHolder(itemView: View, val fragment: Fragment) :
             } else {
                 setupTripleTypeView(listSize)
             }
-        }catch (e:Exception){
-
+        } catch (e: Exception) {
+            Utils.logException(e)
         }
         parentListSize = listSize
     }
@@ -137,10 +139,12 @@ class AnchorTabsItemViewHolder(itemView: View, val fragment: Fragment) :
             R.id.anchor_parent,
             ConstraintSet.END
         )
-        constraintSet.connect(R.id.anchor_text,
+        constraintSet.connect(
+            R.id.anchor_text,
             ConstraintSet.TOP,
             R.id.anchor_parent,
-            ConstraintSet.TOP)
+            ConstraintSet.TOP
+        )
         constraintSet.applyTo(anchorParent)
     }
 
@@ -154,9 +158,9 @@ class AnchorTabsItemViewHolder(itemView: View, val fragment: Fragment) :
         anchorParent.layoutParams = params
     }
 
-    private fun setupWidthOfItem(listSize: Int){
-        val widthOfItem = (displayMetrics.widthPixels - (2*(itemView.context.resources.getDimensionPixelSize(R.dimen.anchor_tab_padding))) - (2*listSize*(itemView.context.resources.getDimensionPixelSize(R.dimen.anchor_tab_card_padding))))/listSize
-        if(widthOfItem > 0) {
+    private fun setupWidthOfItem(listSize: Int) {
+        val widthOfItem = (displayMetrics.widthPixels - (2 * (itemView.context.resources.getDimensionPixelSize(R.dimen.anchor_tab_padding))) - (2 * listSize * (itemView.context.resources.getDimensionPixelSize(R.dimen.anchor_tab_card_padding)))) / listSize
+        if (widthOfItem > 0) {
             val params = anchorParent.layoutParams
             params.width = widthOfItem
             anchorParent.layoutParams = params
@@ -164,9 +168,9 @@ class AnchorTabsItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun setupView() {
-        anchorText.text = viewModel.getTitle()
+        anchorText.text = viewModel?.getTitle()
         setupImage()
-        if (viewModel.isSelected()) {
+        if (viewModel?.isSelected() == true) {
             anchorCard.cardType = CardUnify.TYPE_BORDER_ACTIVE
         } else {
             anchorCard.cardType = CardUnify.TYPE_SHADOW
@@ -174,13 +178,12 @@ class AnchorTabsItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun setupImage() {
-        val imageUrl = viewModel.getImageURLForView(horizontalTab, shouldShowIcons)
-        if (imageUrl.isNotEmpty()) {
+        val imageUrl = viewModel?.getImageURLForView(horizontalTab, shouldShowIcons)
+        if (imageUrl?.isNotEmpty() == true) {
             anchorImage.show()
             anchorImage.loadImage(imageUrl)
         } else {
             anchorImage.hide()
         }
     }
-
 }

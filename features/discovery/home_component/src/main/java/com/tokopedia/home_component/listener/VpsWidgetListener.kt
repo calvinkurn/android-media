@@ -9,7 +9,7 @@ import com.tokopedia.home_component.model.ChannelModel
 
 interface VpsWidgetListener {
 
-    fun onSeeAllClicked(channelModel: ChannelModel, position: Int)
+    fun onSeeAllClicked(channelModel: ChannelModel, applink: String, position: Int)
 
     fun onItemImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int)
 

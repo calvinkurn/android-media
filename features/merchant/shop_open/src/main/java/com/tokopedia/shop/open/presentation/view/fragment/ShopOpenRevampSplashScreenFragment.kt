@@ -46,7 +46,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context?.let {
-            shopOpenRevampTracking = ShopOpenRevampTracking(it)
+            shopOpenRevampTracking = ShopOpenRevampTracking()
         }
     }
 

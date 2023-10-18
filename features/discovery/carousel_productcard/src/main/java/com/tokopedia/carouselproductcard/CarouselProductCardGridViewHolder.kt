@@ -41,35 +41,40 @@ internal class CarouselProductCardGridViewHolder(
         val onItemThreeDotsClickListener = carouselProductCardModel.getOnItemThreeDotsClickListener()
         val onATCNonVariantClickListener = carouselProductCardModel.getOnATCNonVariantClickListener()
         val onAddVariantClickListener = carouselProductCardModel.getAddVariantClickListener()
+        val onSeeOtherProductClickListener = carouselProductCardModel.getSeeOtherClickListener()
 
         binding.carouselProductCardItem.setOnClickListener {
-            onItemClickListener?.onItemClick(productCardModel, adapterPosition)
+            onItemClickListener?.onItemClick(productCardModel, bindingAdapterPosition)
         }
 
-        onItemImpressedListener?.getImpressHolder(adapterPosition)?.let {
+        onItemImpressedListener?.getImpressHolder(bindingAdapterPosition)?.let {
             binding.carouselProductCardItem.setImageProductViewHintListener(it, object : ViewHintListener {
                 override fun onViewHint() {
-                    onItemImpressedListener.onItemImpressed(productCardModel, adapterPosition)
+                    onItemImpressedListener.onItemImpressed(productCardModel, bindingAdapterPosition)
                 }
             })
         }
 
         binding.carouselProductCardItem.setAddToCartOnClickListener {
-            onItemAddToCartListener?.onItemAddToCart(productCardModel, adapterPosition)
+            onItemAddToCartListener?.onItemAddToCart(productCardModel, bindingAdapterPosition)
         }
 
         binding.carouselProductCardItem.setThreeDotsOnClickListener {
-            onItemThreeDotsClickListener?.onItemThreeDotsClick(productCardModel, adapterPosition)
+            onItemThreeDotsClickListener?.onItemThreeDotsClick(productCardModel, bindingAdapterPosition)
         }
 
         binding.carouselProductCardItem.setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
             override fun onQuantityChanged(quantity: Int) {
-                onATCNonVariantClickListener?.onATCNonVariantClick(productCardModel, adapterPosition, quantity)
+                onATCNonVariantClickListener?.onATCNonVariantClick(productCardModel, bindingAdapterPosition, quantity)
             }
         })
 
         binding.carouselProductCardItem.setAddVariantClickListener {
-            onAddVariantClickListener?.onAddVariantClick(productCardModel, adapterPosition)
+            onAddVariantClickListener?.onAddVariantClick(productCardModel, bindingAdapterPosition)
+        }
+
+        binding.carouselProductCardItem.setSeeOtherProductOnClickListener {
+            onSeeOtherProductClickListener?.onSeeOtherProductClick(productCardModel, bindingAdapterPosition)
         }
     }
 

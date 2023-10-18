@@ -1,6 +1,9 @@
 package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.view.View
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
@@ -30,8 +33,8 @@ class CarouselMerchantVoucherViewHolder (
     private var binding: HomeBannerItemMerchantVoucherBinding? by viewBinding()
     companion object{
         val LAYOUT = R.layout.home_banner_item_merchant_voucher
-        private const val BACKGROUND_MVC_WHITE = "https://images.tokopedia.net/img/android/home/mvc_light_mode.png"
-        private const val BACKGROUND_MVC_DARK = "https://images.tokopedia.net/img/android/home/mvc_dark_mode.png"
+        private const val BACKGROUND_MVC_WHITE = TokopediaImageUrl.BACKGROUND_MVC_WHITE
+        private const val BACKGROUND_MVC_DARK = TokopediaImageUrl.BACKGROUND_MVC_DARK
     }
 
     override fun bind(element: CarouselMerchantVoucherDataModel) {
@@ -40,17 +43,17 @@ class CarouselMerchantVoucherViewHolder (
 
     private fun setLayout(element: CarouselMerchantVoucherDataModel){
         if (itemView.context.isDarkMode()) {
-            binding?.imageDividerVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N150))
+            binding?.imageDividerVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
             binding?.imageBackgroundVoucher?.loadImageNoRounded(
                 BACKGROUND_MVC_DARK,
-                com.tokopedia.home_component.R.drawable.placeholder_grey
+                com.tokopedia.topads.sdk.R.drawable.placeholder_grey
             )
         }
         else {
-            binding?.imageDividerVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
+            binding?.imageDividerVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50))
             binding?.imageBackgroundVoucher?.loadImageNormal(
                 BACKGROUND_MVC_WHITE,
-                com.tokopedia.home_component.R.drawable.placeholder_grey
+                com.tokopedia.topads.sdk.R.drawable.placeholder_grey
             )
         }
         binding?.shopName?.text = element.shopName.parseAsHtml()
@@ -62,18 +65,18 @@ class CarouselMerchantVoucherViewHolder (
             binding?.shopName?.setMargin(4f.toDpInt(), 7f.toDpInt(), 0f.toDpInt(), 0f.toDpInt())
             binding?.imageBadge?.loadImageNoRounded(
                 element.iconBadge,
-                com.tokopedia.home_component.R.drawable.placeholder_grey,
+                com.tokopedia.topads.sdk.R.drawable.placeholder_grey,
                 listener = object : ImageHandler.ImageLoaderStateListener {
-                    override fun successLoad() {}
+                    override fun successLoad(view: ImageView?) {}
 
-                    override fun failedLoad() {
+                    override fun failedLoad(view: ImageView?) {
                         failedLoadShopBadge()
                     }
                 })
         } else {
             failedLoadShopBadge()
         }
-        binding?.imageProduct?.loadImageNoRounded(element.imageProduct, com.tokopedia.home_component.R.drawable.placeholder_grey)
+        binding?.imageProduct?.loadImageNoRounded(element.imageProduct, com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
         binding?.containerShop?.setOnClickListener {
             element.merchantVoucherComponentListener.onShopClicked(element, adapterPosition)
         }

@@ -6,8 +6,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class CrossSellRequest(
-        @SerializedName("main_vertical_id")
-        var mainVerticalId: Long = 1,
-        @SerializedName("items")
-        var listItem: ArrayList<CrossSellItemRequestModel> = arrayListOf()
+    @SerializedName("main_vertical_id")
+    var mainVerticalId: Long = 1,
+    @SerializedName("items")
+    var listItem: ArrayList<CrossSellItemRequestModel> = arrayListOf()
 ) : Parcelable

@@ -140,7 +140,7 @@ class MvcMultiShopView @JvmOverloads constructor(
                 }
             }
         }
-        tvShopName?.text = item.shopName
+        tvShopName?.text = MethodChecker.fromHtml(item.shopName).toString()
         tvCashBackTitle?.text = item.cashBackTitle
         tvCashBackValue?.text = item.cashBackValue
         tvCouponCount?.text = item.couponCount
@@ -151,7 +151,7 @@ class MvcMultiShopView @JvmOverloads constructor(
             parentContainer?.background?.colorFilter = PorterDuffColorFilter(
                 MethodChecker.getColor(
                     parentContainer?.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700
+                    R.color.mvc_widget_dms_31353b
                 ),
                 PorterDuff.Mode.SRC_IN
             )

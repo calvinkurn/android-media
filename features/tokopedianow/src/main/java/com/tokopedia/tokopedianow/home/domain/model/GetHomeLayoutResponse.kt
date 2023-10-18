@@ -39,6 +39,9 @@ data class HomeLayoutResponse(
     @SerializedName("categoryPersona")
     val categoryPersona: String = "",
     @Expose
+    @SerializedName("styleParam")
+    val styleParam: String = "",
+    @Expose
     @SerializedName("layout")
     val layout: String = "",
     @Expose

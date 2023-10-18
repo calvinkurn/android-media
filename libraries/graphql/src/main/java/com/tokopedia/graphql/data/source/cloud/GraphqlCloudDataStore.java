@@ -42,9 +42,13 @@ import retrofit2.Response;
 import rx.Observable;
 
 import static com.tokopedia.akamai_bot_lib.UtilsKt.getAkamaiQuery;
+import static com.tokopedia.akamai_bot_lib.UtilsKt.getQueryListFromQueryString;
 import static com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER;
 import static com.tokopedia.graphql.util.Const.QUERY_HASHING_HEADER;
 import static com.tokopedia.graphql.util.Const.TKPD_AKAMAI;
+import static com.tokopedia.graphql.util.TopAdsTrackingIdUtilsKt.STATUS_QUERY;
+import static com.tokopedia.graphql.util.TopAdsTrackingIdUtilsKt.TOP_ADS_TRACKING_KEY;
+import static com.tokopedia.graphql.util.TopAdsTrackingIdUtilsKt.getRegisteredGqlForTopAds;
 
 /**
  * Retrieve the response from Cloud and dump the same in disk if cache was enable by consumer.
@@ -99,6 +103,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
 
         //akamai query Logic
         putAkamaiHeader(header, requests);
+        putTopAdsTrackingHeader(header, requests);
 
         String url = requests.get(0).getUrl();
         if(TextUtils.isEmpty(url)){
@@ -131,6 +136,25 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
         if (!TextUtils.isEmpty(akamaiQuery)) {
             header.put(AKAMAI_SENSOR_DATA_HEADER, GraphqlClient.getFunction().getAkamaiValue());
             header.put(TKPD_AKAMAI, akamaiQuery);
+        }
+    }
+
+    public void putTopAdsTrackingHeader(Map<String, String> header, List<GraphqlRequest> requests) {
+        boolean isQueryWhiteListed = false;
+        for (GraphqlRequest req:requests){
+            List<String> list = getQueryListFromQueryString(req.getQuery());
+            for(String temp : list){
+                if (temp.startsWith(STATUS_QUERY) || getRegisteredGqlForTopAds().contains(temp)){
+                    isQueryWhiteListed = true;
+                    break;
+                }
+            }
+        }
+        if (isQueryWhiteListed) {
+            String newHeader = GraphqlClient.getFunction().getTopAdsHeader();
+            if (newHeader!= null && !newHeader.isEmpty()) {
+                header.put(TOP_ADS_TRACKING_KEY, newHeader);
+            }
         }
     }
 

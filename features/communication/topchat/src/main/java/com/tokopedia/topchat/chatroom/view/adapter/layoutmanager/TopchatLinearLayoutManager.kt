@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 
 class TopchatLinearLayoutManager : LinearLayoutManager {
 
-    constructor(context: Context?) : super(context)
+    constructor(context: Context) : super(context)
     constructor(context: Context?, orientation: Int, reverseLayout: Boolean) : super(
         context,
         orientation,
@@ -19,5 +19,4 @@ class TopchatLinearLayoutManager : LinearLayoutManager {
         defStyleAttr: Int,
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
-
 }

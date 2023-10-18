@@ -12,7 +12,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowChipViewHolder(
     itemView: View,
-    private val listener: ChipListener
+    private val listener: ChipListener?
 ) : AbstractViewHolder<TokoNowChipUiModel>(itemView) {
 
     companion object {
@@ -27,6 +27,16 @@ class TokoNowChipViewHolder(
         renderImage(chip)
         renderChipType(chip)
         setOnClickListener(chip)
+    }
+
+    override fun bind(chip: TokoNowChipUiModel, payloads: MutableList<Any>) {
+        if(payloads.firstOrNull() == true) {
+            renderChipType(chip)
+        }
+    }
+
+    fun setChipType(type: String) {
+        binding?.root?.chipType = type
     }
 
     private fun renderTitle(chip: TokoNowChipUiModel) {
@@ -55,7 +65,7 @@ class TokoNowChipViewHolder(
 
     private fun setOnClickListener(chip: TokoNowChipUiModel) {
         binding?.root?.setOnClickListener {
-            listener.onClickChipItem(chip)
+            listener?.onClickChipItem(chip)
         }
     }
 

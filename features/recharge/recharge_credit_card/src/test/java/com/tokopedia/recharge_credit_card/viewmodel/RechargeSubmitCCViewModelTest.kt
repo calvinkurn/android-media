@@ -11,6 +11,7 @@ import com.tokopedia.recharge_credit_card.datamodel.CCRedirectUrlResponse
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCSignature
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCSignatureReponse
 import com.tokopedia.recharge_credit_card.usecase.RechargeSubmitCcUseCase
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
@@ -29,6 +30,9 @@ class RechargeSubmitCCViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val testCoroutineRule = UnconfinedTestRule()
 
     @MockK
     lateinit var graphqlRepository: GraphqlRepository

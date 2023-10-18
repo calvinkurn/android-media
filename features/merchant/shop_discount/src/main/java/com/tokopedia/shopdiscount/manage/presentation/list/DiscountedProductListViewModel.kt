@@ -12,7 +12,6 @@ import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
 import com.tokopedia.shopdiscount.manage.domain.usecase.DeleteDiscountUseCase
 import com.tokopedia.shopdiscount.manage.domain.usecase.GetSlashPriceProductListUseCase
-import com.tokopedia.shopdiscount.select.domain.entity.ReservableProduct
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -23,7 +22,7 @@ class DiscountedProductListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getSlashPriceProductListUseCase: GetSlashPriceProductListUseCase,
     private val deleteDiscountUseCase: DeleteDiscountUseCase,
-    private val reserveProductUseCase : MutationDoSlashPriceProductReservationUseCase,
+    private val reserveProductUseCase: MutationDoSlashPriceProductReservationUseCase,
     private val productMapper: ProductMapper,
     private val updateDiscountRequestMapper: UpdateDiscountRequestMapper
 ) : BaseViewModel(dispatchers.main) {
@@ -41,11 +40,11 @@ class DiscountedProductListViewModel @Inject constructor(
         get() = _reserveProduct
 
     private var totalProduct = 0
-    private var selectedProduct : Product? = null
+    private var selectedProduct: Product? = null
     private var isOnMultiSelectMode = false
     private var shouldDisableProductSelection = false
     private var requestId = ""
-    private var selectedProductIds : MutableList<String> = mutableListOf()
+    private var selectedProductIds: MutableList<String> = mutableListOf()
 
     fun getSlashPriceProducts(
         page: Int,
@@ -77,13 +76,12 @@ class DiscountedProductListViewModel @Inject constructor(
             val (totalProduct, formattedProduct) = result
             val productData = ProductData(totalProduct, formattedProduct)
             _products.value = Success(productData)
-
         }, onError = {
-            _products.value = Fail(it)
-        })
+                _products.value = Fail(it)
+            })
     }
 
-    fun deleteDiscount(discountStatusId: Int, productIds : List<String>) {
+    fun deleteDiscount(discountStatusId: Int, productIds: List<String>) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 deleteDiscountUseCase.setParams(
@@ -94,13 +92,12 @@ class DiscountedProductListViewModel @Inject constructor(
             }
 
             _deleteDiscount.value = Success(result.doSlashPriceStop.responseHeader.success)
-
         }, onError = {
-            _deleteDiscount.value = Fail(it)
-        })
+                _deleteDiscount.value = Fail(it)
+            })
     }
 
-    fun reserveProduct(requestId: String, productIds : List<String>) {
+    fun reserveProduct(requestId: String, productIds: List<String>) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 val request = updateDiscountRequestMapper.map(requestId, productIds)
@@ -109,13 +106,12 @@ class DiscountedProductListViewModel @Inject constructor(
             }
 
             _reserveProduct.value = Success(result.doSlashPriceProductReservation.responseHeader.success)
-
         }, onError = {
-            _reserveProduct.value = Fail(it)
-        })
+                _reserveProduct.value = Fail(it)
+            })
     }
 
-    fun setTotalProduct(totalProduct : Int) {
+    fun setTotalProduct(totalProduct: Int) {
         this.totalProduct = totalProduct
     }
 
@@ -127,7 +123,7 @@ class DiscountedProductListViewModel @Inject constructor(
         this.selectedProduct = selectedProduct
     }
 
-    fun getSelectedProduct() : Product?  {
+    fun getSelectedProduct(): Product? {
         return selectedProduct
     }
 
@@ -147,11 +143,11 @@ class DiscountedProductListViewModel @Inject constructor(
         return shouldDisableProductSelection
     }
 
-    fun enableMultiSelect(products : List<Product>) : List<Product> {
+    fun enableMultiSelect(products: List<Product>): List<Product> {
         return products.map { it.copy(shouldDisplayCheckbox = true) }
     }
 
-    fun disableMultiSelect(products : List<Product>) : List<Product> {
+    fun disableMultiSelect(products: List<Product>): List<Product> {
         return products.map {
             it.copy(
                 shouldDisplayCheckbox = false,
@@ -181,7 +177,7 @@ class DiscountedProductListViewModel @Inject constructor(
         }
     }
 
-    fun getSelectedProductIds() : List<String> {
+    fun getSelectedProductIds(): List<String> {
         return selectedProductIds
     }
 
@@ -189,7 +185,7 @@ class DiscountedProductListViewModel @Inject constructor(
         return selectedProductIds.size
     }
 
-    fun addProductToSelection(product : Product) {
+    fun addProductToSelection(product: Product) {
         this.selectedProductIds.add(product.id)
     }
 
@@ -201,11 +197,11 @@ class DiscountedProductListViewModel @Inject constructor(
         this.selectedProductIds.clear()
     }
 
-    fun getRequestId() : String {
+    fun getRequestId(): String {
         return requestId
     }
 
-    fun setRequestId(requestId : String) {
+    fun setRequestId(requestId: String) {
         this.requestId = requestId
     }
 }

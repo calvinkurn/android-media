@@ -9,12 +9,20 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.notifications.common.*
+import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.common.CMRemoteConfigUtils
+import com.tokopedia.notifications.common.IrisAnalyticsEvents
+import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository
+import com.tokopedia.notifications.di.DaggerCMNotificationComponent
+import com.tokopedia.notifications.di.module.NotificationModule
+import com.tokopedia.notifications.domain.TokoChatPushNotifCallbackUseCase
 import com.tokopedia.notifications.factory.BaseNotification
 import com.tokopedia.notifications.factory.CMNotificationFactory
 import com.tokopedia.notifications.factory.custom_notifications.ReplyChatNotification
@@ -27,8 +35,12 @@ import com.tokopedia.notifications.utils.NotificationSettingsUtils
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.json.JSONObject
+import java.util.*
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
-
+import kotlin.jvm.internal.Intrinsics.Kotlin
 
 class PushController(val context: Context) : CoroutineScope {
 
@@ -44,6 +56,23 @@ class PushController(val context: Context) : CoroutineScope {
         get() = cmRemoteConfigUtils.getBooleanRemoteConfig(AUTO_REDIRECTION_REMOTE_CONFIG_KEY, false)
 
     private val userSession by lazy { UserSession(context.applicationContext) }
+
+    @Inject
+    lateinit var tokoChatPushNotifCallbackUseCase: TokoChatPushNotifCallbackUseCase
+
+    init {
+        initInjector()
+    }
+
+    private fun initInjector() {
+        DaggerCMNotificationComponent.builder()
+            .baseAppComponent(
+                (context.applicationContext as BaseMainApplication).baseAppComponent
+            )
+            .notificationModule(NotificationModule(context))
+            .build()
+            .inject(this)
+    }
 
     fun handleProcessedPushPayload(aidlApiBundle : Bundle?,
                                    baseNotificationModel: BaseNotificationModel,
@@ -61,9 +90,23 @@ class PushController(val context: Context) : CoroutineScope {
     }
 
     private fun notificationDeliveryValidation(model: BaseNotificationModel) {
-        if (userSession.isLoggedIn) {
-            if (userSession.userId == model.userId) {
+        model.pushPayloadExtra?.userType?.let {
+            if (it == DEVICE) {
                 handleNotificationBundle(model)
+            } else {
+                validateUserId(model)
+            }
+        } ?: kotlin.run {
+            validateUserId(model)
+        }
+    }
+
+    private fun validateUserId(model: BaseNotificationModel) {
+        if (userSession.isLoggedIn) {
+            model.userId?.let {
+                if (userSession.userId == it) {
+                    handleNotificationBundle(model)
+                }
             }
         } else {
             handleNotificationBundle(model)
@@ -107,7 +150,6 @@ class PushController(val context: Context) : CoroutineScope {
     }
 
     private suspend fun onLivePushPayloadReceived(baseNotificationModel: BaseNotificationModel) {
-
         var updatedBaseNotificationModel: BaseNotificationModel? = null
         if (baseNotificationModel.type == CMConstant.NotificationType.DELETE_NOTIFICATION) {
             baseNotificationModel.status = NotificationStatus.COMPLETED
@@ -123,12 +165,27 @@ class PushController(val context: Context) : CoroutineScope {
             baseNotificationModel.status = NotificationStatus.ACTIVE
         } else {
             baseNotificationModel.status = NotificationStatus.COMPLETED
+            sendPushExpiryEventAndLog(baseNotificationModel)
         }
         updatedBaseNotificationModel?.let {
             PushRepository.getInstance(context)
                     .insertNotificationModel(updatedBaseNotificationModel)
         } ?: PushRepository.getInstance(context)
                 .insertNotificationModel(baseNotificationModel)
+    }
+
+    private fun sendPushExpiryEventAndLog(baseNotificationModel: BaseNotificationModel) {
+        IrisAnalyticsEvents.sendPushEvent(
+            context,
+            IrisAnalyticsEvents.PUSH_EXPIRED,
+            baseNotificationModel
+        )
+        try {
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                mapOf("type" to "exception",
+                    "err" to "PUSH_PAYLOAD_EXPIRED",
+                    "data" to baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
+        }catch (_: Exception){}
     }
 
     private suspend fun onOfflinePushPayloadReceived(baseNotificationModel: BaseNotificationModel) {
@@ -140,7 +197,6 @@ class PushController(val context: Context) : CoroutineScope {
                 baseNotificationModel.status = NotificationStatus.COMPLETED
             }
             PushRepository.getInstance(context).pushDataStore.insertNotification(baseNotificationModel)
-
         } else {
             baseNotificationModel.status = NotificationStatus.PENDING
             val updatedBaseNotificationModel = ImageDownloadManager.downloadImages(context, baseNotificationModel)
@@ -170,21 +226,26 @@ class PushController(val context: Context) : CoroutineScope {
         notificationManager.cancel(baseNotificationModel.notificationId)
         baseNotificationModel.status = NotificationStatus.COMPLETED
         PushRepository.getInstance(context).updateNotificationModel(baseNotificationModel)
+        sendPushExpiryEventAndLog(baseNotificationModel)
     }
 
-    private fun createAndPostNotification(baseNotificationModel: BaseNotificationModel) {
+    private suspend fun createAndPostNotification(baseNotificationModel: BaseNotificationModel) {
         try {
+            val pushNotificationList = runCatching {
+                PushRepository.getInstance(context).getNotification()
+            }.getOrDefault(arrayListOf())
             val baseNotification = CMNotificationFactory
-                    .getNotification(context.applicationContext, baseNotificationModel)
+                .getNotification(context.applicationContext, baseNotificationModel, pushNotificationList)
             if (checkOtpPushNotif(baseNotificationModel.appLink)) {
                 goToOtpPushNotifReceiver(baseNotificationModel.appLink)
             } else if (null != baseNotification) {
                 val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 val notification = baseNotification.createNotification()
                 if (baseNotification is ReplyChatNotification) {
-                    handleReplyChatPushNotification(notificationManager, baseNotification, notification)
+                    handleReplyChatPushNotification(notificationManager, baseNotification, notification, baseNotificationModel)
                 } else {
                     notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
+                    sendPushRenderedEventToIris(baseNotificationModel)
                 }
                 val isNougatAndAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
                 if (isNougatAndAbove) {
@@ -206,10 +267,12 @@ class PushController(val context: Context) : CoroutineScope {
     private fun handleReplyChatPushNotification(
         notificationManager: NotificationManager,
         replyChatNotification: ReplyChatNotification,
-        notification: Notification?
+        notification: Notification?,
+        baseNotificationModel: BaseNotificationModel
     ) {
         val notificationId = getNotificationIdReplyChat(replyChatNotification)
         notificationManager.notify(notificationId, notification)
+        sendPushRenderedEventToIris(baseNotificationModel)
     }
 
     private fun getNotificationIdReplyChat(replyChatNotification: ReplyChatNotification): Int {
@@ -249,7 +312,7 @@ class PushController(val context: Context) : CoroutineScope {
         context.startActivities(arrayOf(intentHome, intent))
     }
 
-    private fun postEventForLiveNotification(baseNotificationModel: BaseNotificationModel){
+    private fun postEventForLiveNotification(baseNotificationModel: BaseNotificationModel) {
         if (baseNotificationModel.notificationMode == NotificationMode.OFFLINE) return
         if (baseNotificationModel.type == CMConstant.NotificationType.SILENT_PUSH &&
             NotificationManagerCompat.from(context).areNotificationsEnabled()
@@ -260,20 +323,36 @@ class PushController(val context: Context) : CoroutineScope {
                 baseNotificationModel
             )
         } else {
-            checkNotificationChannelAndSendEvent(baseNotificationModel);
+            checkNotificationChannelAndSendEvent(baseNotificationModel)
         }
     }
 
-    private fun checkNotificationChannelAndSendEvent(baseNotificationModel: BaseNotificationModel){
-        when (NotificationSettingsUtils(context).checkNotificationsModeForSpecificChannel(
-            baseNotificationModel.channelName
-        )) {
+    private fun sendPushRenderedEventToIris(baseNotificationModel: BaseNotificationModel) {
+        if (NotificationSettingsUtils(context).checkNotificationsModeForSpecificChannel(
+                baseNotificationModel.channelName
+            ) == NotificationSettingsUtils.NotificationMode.ENABLED
+        ) {
+            IrisAnalyticsEvents.sendPushEvent(
+                context,
+                IrisAnalyticsEvents.PUSH_RENDERED,
+                baseNotificationModel
+            )
+        }
+    }
+
+    private fun checkNotificationChannelAndSendEvent(baseNotificationModel: BaseNotificationModel) {
+        when (
+            NotificationSettingsUtils(context).checkNotificationsModeForSpecificChannel(
+                baseNotificationModel.channelName
+            )
+        ) {
             NotificationSettingsUtils.NotificationMode.ENABLED -> {
                 IrisAnalyticsEvents.sendPushEvent(
                     context,
                     IrisAnalyticsEvents.PUSH_RECEIVED,
                     baseNotificationModel
                 )
+                trackTokoChatPushNotification(baseNotificationModel)
             }
             NotificationSettingsUtils.NotificationMode.DISABLED,
             NotificationSettingsUtils.NotificationMode.CHANNEL_DISABLED -> {
@@ -286,8 +365,30 @@ class PushController(val context: Context) : CoroutineScope {
         }
     }
 
+    private fun trackTokoChatPushNotification(baseNotificationModel: BaseNotificationModel) {
+        launch {
+            try {
+                if (baseNotificationModel.customValues.isNullOrEmpty())  return@launch
+                val tokochatPNId = JSONObject(baseNotificationModel.customValues ?: "")
+                    .optString(CMConstant.CustomValuesKeys.TOKOCHAT_PN_ID)
+                if (!tokochatPNId.isNullOrEmpty()) {
+                    tokoChatPushNotifCallbackUseCase(
+                        TokoChatPushNotifCallbackUseCase.Param(
+                            pushNotifId = tokochatPNId,
+                            timestamp = Date().toFormattedString(formatTimeStamp)
+                        )
+                    )
+                }
+            } catch (throwable: Throwable) {
+                throwable.printStackTrace()
+            }
+        }
+    }
+
     companion object {
+        private const val DEVICE = "device"
         const val ANDROID_12_SDK_VERSION = 31
         const val AUTO_REDIRECTION_REMOTE_CONFIG_KEY = "android_user_otp_push_notif_auto_redirection"
+        private const val formatTimeStamp = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
     }
 }

@@ -30,7 +30,11 @@ data class P2RatesEstimate(
 
     @SerializedName("productMetadata")
     @Expose
-    val productMetadata: List<ProductMetadata> = emptyList()
+    val productMetadata: List<ProductMetadata> = emptyList(),
+
+    @SerializedName("shipmentPlus")
+    @Expose
+    val shipmentPlus: ShipmentPlus? = null
 )
 
 data class P2RatesEstimateData(
@@ -96,7 +100,11 @@ data class P2RatesEstimateData(
 
     @SerializedName("isScheduled")
     @Expose
-    val isScheduled: Boolean = false
+    val isScheduled: Boolean = false,
+
+    @SerializedName("boBadge")
+    @Expose
+    val boBadge: BoBadge = BoBadge()
 )
 
 data class P2RatesError(
@@ -162,5 +170,58 @@ data class Ticker(
 
     @SerializedName("message")
     @Expose
-    val message: String = ""
+    val message: String = "",
+
+    @SerializedName("color")
+    @Expose
+    val color: String = "",
+
+    @SerializedName("link")
+    @Expose
+    val link: String = "",
+
+    @SerializedName("action")
+    @Expose
+    val action: String = ""
+)
+
+data class BoBadge(
+    @SerializedName("imageURL")
+    @Expose
+    val imageUrl: String = "",
+
+    @SerializedName("isUsingPadding")
+    @Expose
+    val isUsingPadding: Boolean = true,
+
+    @SerializedName("imageHeight")
+    @Expose
+    val imageHeight: Int = 0
+)
+
+data class ShipmentPlus(
+    @SerializedName("isShow")
+    @Expose
+    val isShow: Boolean = false,
+    @SerializedName("logoUrl")
+    @Expose
+    val logoUrl: String = "",
+    @SerializedName("logoUrlDark")
+    @Expose
+    val logoUrlDark: String = "",
+    @SerializedName("bgUrl")
+    @Expose
+    val bgUrl: String = "",
+    @SerializedName("bgUrlDark")
+    @Expose
+    val bgUrlDark: String = "",
+    @SerializedName("text")
+    @Expose
+    val text: String = "",
+    @SerializedName("action")
+    @Expose
+    val action: String = "",
+    @SerializedName("actionLink")
+    @Expose
+    val actionLink: String = ""
 )

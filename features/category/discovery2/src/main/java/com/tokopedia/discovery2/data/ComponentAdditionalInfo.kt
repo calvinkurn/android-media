@@ -10,6 +10,10 @@ data class ComponentAdditionalInfo(
         var nextPage: String?,
         @SerializedName("total_product")
         val totalProductData: TotalProductData?,
+        @SerializedName("redirection")
+        val redirection: Redirection? = null,
+        @SerializedName("timer")
+        val timer: Timer? = null
 )
 
 data class TotalProductData(
@@ -19,4 +23,27 @@ data class TotalProductData(
         val productCountText: String? = null,
         @SerializedName("product_count_wording")
         val productCountWording: String? = null,
+)
+
+data class Redirection(
+    @SerializedName("image_url")
+    val image: String? = "",
+    @SerializedName("title")
+    val title: String? = "",
+    @SerializedName("body_text")
+    val bodyText: String? = "",
+    @SerializedName("link")
+    val link: String? = "",
+    @SerializedName("applink")
+    val applink: String? = "",
+    @SerializedName("cta_text")
+    val ctaText: String? = null,
+)
+data class Timer(
+    @SerializedName("enabled")
+    val enabled: Boolean = false,
+    @SerializedName("start_date")
+    val startTime: String? = null,
+    @SerializedName("end_date")
+    val endTime: String? = null
 )

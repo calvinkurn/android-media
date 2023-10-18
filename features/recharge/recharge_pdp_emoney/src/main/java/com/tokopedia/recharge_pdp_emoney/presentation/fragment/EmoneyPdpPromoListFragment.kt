@@ -51,7 +51,7 @@ class EmoneyPdpPromoListFragment : BaseDaggerFragment(), TopupBillsPromoListWidg
 
     private fun renderView() {
         val promoData = arguments?.getParcelableArrayList<TopupBillsPromo>(EXTRA_PROMOS)
-                ?: arrayListOf()
+            ?: arrayListOf()
         binding.emoneyPdpPromoListWidget.setPromoList(promoData)
 
         val showTitle = arguments?.getBoolean(EXTRA_SHOW_TITLE) ?: false
@@ -61,7 +61,7 @@ class EmoneyPdpPromoListFragment : BaseDaggerFragment(), TopupBillsPromoListWidg
         binding.emoneyPdpPromoListWidget.setListener(this)
     }
 
-    override fun onCopiedPromoCode(promoId: String, voucherCode: String) {
+    override fun onCopiedPromoCode(promoId: String, voucherCode: String, position: Int) {
         binding.emoneyPdpPromoListWidget.notifyPromoItemChanges(promoId)
 
         activity?.let {
@@ -72,15 +72,16 @@ class EmoneyPdpPromoListFragment : BaseDaggerFragment(), TopupBillsPromoListWidg
                 it.promoCode = voucherCode
             }
             view?.run {
-                Toaster.build(this,
-                        getString(com.tokopedia.common.topupbills.R.string.common_topup_voucher_code_already_copied),
-                        Snackbar.LENGTH_LONG).show()
+                Toaster.build(
+                    this,
+                    getString(com.tokopedia.common.topupbills.R.string.common_topup_voucher_code_already_copied),
+                    Snackbar.LENGTH_LONG
+                ).show()
             }
         }
     }
 
     override fun onTrackImpressionPromoList(topupBillsTrackPromoList: List<TopupBillsTrackPromo>) {
-
     }
 
     override fun onClickItemPromo(topupBillsPromo: TopupBillsPromo, position: Int) {

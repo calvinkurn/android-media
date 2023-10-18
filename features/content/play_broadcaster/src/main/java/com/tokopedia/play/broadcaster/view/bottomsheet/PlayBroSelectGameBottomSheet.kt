@@ -104,6 +104,9 @@ class PlayBroSelectGameBottomSheet @Inject constructor(
         viewModel.submitAction(PlayBroadcastAction.ClickGameOption(gameType))
         when (gameType) {
             is GameType.Quiz -> analytic.onClickGameOption( viewModel.channelId, viewModel.channelTitle, KEY_QUIZ_ANALYTIC)
+            else -> {
+                //no-op
+            }
         }
         dismiss()
     }

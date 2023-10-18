@@ -1,0 +1,59 @@
+{
+  "GetCollectionPointWithConsent": {
+    "success": true,
+    "refId": "9fd8fd82-04be-42c7-98aa-a0b79a0dc05e",
+    "errorMessages": [],
+    "collectionPoints": [
+      {
+        "id": "1f829d46-e138-42b6-8bcc-d74ada5ada04",
+        "version": "1",
+        "consentType": "CONDITIONALTRIGGER",
+        "purposes": [
+          {
+            "id": "335b7bfc-f1f5-4c05-a9fd-2249560a974e",
+            "label": "Chat to Driver Consent",
+            "description": "Provide buyer consent to start conversation with driver at the first time",
+            "version": "1",
+            "purposeType": "STANDARD",
+            "attributes": {
+              "uiName": "untuk Chat Driver lewat Tokopedia."
+            }
+          }
+        ],
+        "notices": [],
+        "attributes": {
+          "requirementType": "mandatory",
+          "usingCheckbox": "checklist",
+          "policyNoticeType": "termconditionpolicy",
+          "tncPageID": "a-2391",
+          "externalPartyPrivacyPolicy": "",
+          "externalPartyTnC": "",
+          "statementWording": {
+            "template": "Saya menyetujui #tnc serta #privacy #purpose.",
+            "attributes": [
+              {
+                "key": "#tnc",
+                "type": "hyperlink",
+                "text": "Syarat \u0026 Ketentuan",
+                "link": "https://www.tokopedia.com/consent?id\u003da-2391\u0026type\u003d2\u0026tab\u003dtnc"
+              },
+              {
+                "key": "#privacy",
+                "type": "hyperlink",
+                "text": "Kebijakan Privasi",
+                "link": "https://www.tokopedia.com/consent?id\u003da-2391\u0026type\u003d2\u0026tab\u003dprivacy"
+              },
+              {
+                "key": "#purpose",
+                "type": "plain",
+                "text": "untuk Chat Driver lewat Tokopedia",
+                "link": ""
+              }
+            ]
+          }
+        },
+        "needConsent": false
+      }
+    ]
+  }
+}

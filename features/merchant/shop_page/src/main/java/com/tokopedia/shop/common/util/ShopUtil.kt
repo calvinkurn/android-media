@@ -2,23 +2,28 @@ package com.tokopedia.shop.common.util
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.text.TextUtils
 import androidx.core.content.ContextCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.media.loader.common.Properties
+import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_KEY
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
+import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_RE_IMAGINED
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENAWARAN
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENGIRIMAN
-import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PER_PAGE_NON_TABLET
 import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PER_PAGE_TABLET
 import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
@@ -30,14 +35,16 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.SHOP_NAME_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.TYPE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.USER_ID_KEY
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 object ShopUtil {
-    fun getProductPerPage(context: Context?): Int {
-        return context?.let {
-            if (DeviceScreenInfo.isTablet(context)) {
+    var isFoldableAndHorizontalScreen: Boolean = false
+    var isFoldable: Boolean = true
+
+    fun getProductPerPage(context: Context?): Int{
+        return context?.let{
+            if(DeviceScreenInfo.isTablet(context)){
                 DEFAULT_PER_PAGE_TABLET
             } else {
                 DEFAULT_PER_PAGE_NON_TABLET
@@ -101,13 +108,6 @@ object ShopUtil {
         )
     }
 
-    fun isUsingNewShareBottomSheet(context: Context): Boolean {
-        return UniversalShareBottomSheet.isCustomSharingEnabled(
-            context,
-            ShopPageConstant.ENABLE_SHOP_PAGE_UNIVERSAL_BOTTOM_SHEET
-        )
-    }
-
     fun <E> MutableList<E>.setElement(index: Int, element: E) {
         if (index in 0 until size) {
             set(index, element)
@@ -153,5 +153,34 @@ object ShopUtil {
 
     fun String.isUrlJson(): Boolean {
         return endsWith(".json")
+    }
+
+    fun parseColorFromHexString(colorHex: String): Int {
+        return try {
+            Color.parseColor(colorHex)
+        } catch (e: Exception) {
+            //TODO need to add default color from unify, but need to pass context on param
+            FirebaseCrashlytics.getInstance().recordException(e)
+            Int.ZERO
+        }
+    }
+
+    fun joinDash(vararg s: String?): String {
+        return TextUtils.join(" - ", s)
+    }
+
+    fun formatPrice(displayedPrice: String): String {
+        return if (!TextUtils.isEmpty(displayedPrice)) {
+            displayedPrice.replace("\\D".toRegex(), "")
+        } else {
+            ""
+        }
+    }
+
+    fun isEnableShopPageReImagined(context: Context?): Boolean {
+        return FirebaseRemoteConfigImpl(context).getBoolean(
+            RemoteConfigKey.ENABLE_SHOP_PAGE_REIMAGINED,
+            true
+        )
     }
 }

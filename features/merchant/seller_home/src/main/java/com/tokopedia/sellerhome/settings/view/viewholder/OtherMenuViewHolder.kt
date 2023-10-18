@@ -20,15 +20,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking
 import com.tokopedia.seller.menu.common.analytics.sendClickShopNameTracking
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoClickNextButtonTracking
@@ -38,7 +37,6 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopStatusUiModel
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
 import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapter
 import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapterTypeFactory
@@ -61,7 +59,6 @@ class OtherMenuViewHolder(
     private val lifecycleOwner: LifecycleOwner?,
     private val userSession: UserSessionInterface,
     private var listener: Listener,
-    private val isNewSeller: Boolean
 ) : LifecycleObserver {
 
     companion object {
@@ -87,6 +84,7 @@ class OtherMenuViewHolder(
     private var headerShopNextButton: IconUnify? = null
     private var headerShopShareButton: IconUnify? = null
     private var shopStatusCurvedImage: AppCompatImageView? = null
+    private var imgAnnivToped: ImageUnify? = null
     private var shopAvatarImage: ImageUnify? = null
     private var shopNameTextView: Typography? = null
     private var shopNextButton: IconUnify? = null
@@ -239,6 +237,10 @@ class OtherMenuViewHolder(
         }
     }
 
+    fun setTopAdsShop(isUsed: Boolean){
+        otherMenuAdapter?.addIklanTopadsMenu(isUsed)
+    }
+
     private fun initView() {
         view?.run {
             contentMotionLayout = findViewById(R.id.motion_layout_sah_new_other)
@@ -251,6 +253,7 @@ class OtherMenuViewHolder(
             headerShopNextButton = findViewById(R.id.ic_sah_new_other_header_name)
             headerShopShareButton = findViewById(R.id.ic_sah_new_other_header_share)
             shopStatusCurvedImage = findViewById(R.id.iv_sah_new_other_curved_header)
+            imgAnnivToped = findViewById(R.id.imgAnnivToped)
             shopAvatarImage = findViewById(R.id.iv_sah_new_other_shop_avatar)
             shopNameTextView = findViewById(R.id.tv_sah_new_other_shop_name)
             shopNextButton = findViewById(R.id.iv_sah_new_other_shop_name)
@@ -449,44 +452,30 @@ class OtherMenuViewHolder(
     }
 
     private fun setShopStatus() {
-        val imageResourceUrl: String
+        val imageResource: Int
         val headerBackgroundResource: Int
+
         when {
             userSession.isShopOfficialStore -> {
-                imageResourceUrl = SellerHomeConst.Images.BG_SAH_OTHER_CURVED_HEADER_THEMATIC_OS
+                imageResource = R.drawable.bg_sah_new_other_curved_header_os
                 headerBackgroundResource = R.drawable.bg_sah_new_other_header_os
             }
             userSession.isGoldMerchant -> {
-                imageResourceUrl = SellerHomeConst.Images.BG_SAH_OTHER_CURVED_HEADER_THEMATIC_PM
+                imageResource = R.drawable.bg_sah_new_other_curved_header_pm
                 headerBackgroundResource = R.drawable.bg_sah_new_other_header_pm
             }
             else -> {
-                imageResourceUrl = SellerHomeConst.Images.BG_SAH_OTHER_CURVED_HEADER_THEMATIC_RM
+                imageResource = R.drawable.bg_sah_new_other_curved_header_rm
                 headerBackgroundResource = R.drawable.bg_sah_new_other_header_rm
             }
         }
-        shopStatusCurvedImage?.loadImage(imageResourceUrl) {
-            listener(onSuccess = { _, _ ->
-                shopStatusCurvedImage?.visible()
-            })
+
+        shopStatusCurvedImage?.setImageResource(imageResource)
+        imgAnnivToped?.loadImage(TokopediaImageUrl.IMG_14TH_ANNIV_TOPED) {
+            setPlaceHolder(-1)
         }
+
         otherMenuHeader?.setBackgroundResource(headerBackgroundResource)
-    }
-
-    private fun setShopStatusNewSellerBackground() {
-
-        val imageResourceId: Int = when {
-            userSession.isShopOfficialStore -> {
-                R.drawable.bg_sah_new_other_curved_header_os
-            }
-            userSession.isGoldMerchant -> {
-                R.drawable.bg_sah_new_other_curved_header_pm
-            }
-            else -> {
-                R.drawable.bg_sah_new_other_curved_header_rm
-            }
-        }
-        shopStatusCurvedImage?.setImageResource(imageResourceId)
     }
 
     fun setInitialValues() {
@@ -498,11 +487,7 @@ class OtherMenuViewHolder(
     private fun setHeaderValues() {
         setShopAvatar()
         setShopName()
-        if (isNewSeller) {
-            setShopStatusNewSellerBackground()
-        } else {
-            setShopStatus()
-        }
+        setShopStatus()
     }
 
     private fun setInitialBalanceInfoLoading() {

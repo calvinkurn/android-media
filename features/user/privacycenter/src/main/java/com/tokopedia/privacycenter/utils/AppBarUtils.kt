@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.utils.view.binding.internal.findRootView
+import com.tokopedia.privacycenter.R
 
 fun Activity.getResColor(@ColorRes color: Int): Int {
     return ContextCompat.getColor(this, color)
@@ -52,8 +53,8 @@ fun Activity.getIdColor(getWhite: Boolean): Int {
 // true for white, false for black
 fun getColor(getWhite: Boolean): Int {
     return if (getWhite) {
-        android.R.color.white
+        R.color.privacycenter_dms_white
     } else {
-        android.R.color.black
+        R.color.privacycenter_dms_black
     }
 }

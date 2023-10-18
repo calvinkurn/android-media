@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdditionalData
 import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerFragment.Companion.EXTRA_ADDITIONAL_DATA
 
-class CreditCardPickerActivity: BaseSimpleActivity() {
+class CreditCardPickerActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
         val additionalData = intent.getParcelableExtra<OrderPaymentCreditCardAdditionalData>(EXTRA_ADDITIONAL_DATA)

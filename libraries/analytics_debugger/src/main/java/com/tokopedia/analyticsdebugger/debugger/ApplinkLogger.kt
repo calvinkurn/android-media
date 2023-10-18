@@ -2,17 +2,14 @@ package com.tokopedia.analyticsdebugger.debugger
 
 import android.content.Context
 import android.text.TextUtils
-
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.ApplinkLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.domain.model.ApplinkLogModel
-import com.tokopedia.analyticsdebugger.debugger.helper.NotificationHelper
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.ApplinkDebuggerActivity
+import com.tokopedia.analyticsdebugger.util.NotificationHelper
 import com.tokopedia.config.GlobalConfig
-
 import rx.Subscriber
 import rx.schedulers.Schedulers
-
 
 class ApplinkLogger private constructor(private val context: Context) : ApplinkLoggerInterface {
     private val dbSource: ApplinkLogDBSource
@@ -39,7 +36,6 @@ class ApplinkLogger private constructor(private val context: Context) : ApplinkL
     }
 
     override fun save() {
-
         if (TextUtils.isEmpty(applink)) {
             return
         }
@@ -78,7 +74,6 @@ class ApplinkLogger private constructor(private val context: Context) : ApplinkL
     private fun defaultSubscriber(): Subscriber<in Boolean> {
         return object : Subscriber<Boolean>() {
             override fun onCompleted() {
-
             }
 
             override fun onError(e: Throwable) {
@@ -117,27 +112,21 @@ class ApplinkLogger private constructor(private val context: Context) : ApplinkL
                     get() = false
 
                 override fun startTrace(applink: String) {
-
                 }
 
                 override fun appendTrace(trace: String) {
-
                 }
 
                 override fun save() {
-
                 }
 
                 override fun wipe() {
-
                 }
 
                 override fun openActivity() {
-
                 }
 
                 override fun enableNotification(status: Boolean) {
-
                 }
             }
         }

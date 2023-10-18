@@ -18,12 +18,13 @@ public class TrackPushNotificationUseCase extends UseCase<TrackPushNotificationE
     private Context context;
     private GraphqlUseCase gqlUseCase;
 
-    private final String PARAM_TRANSACTION_ID = "trans_id";
-    private final String PARAM_RECIPIENT_ID = "recipient_id";
+    public static final String PARAM_TRANSACTION_ID = "trans_id";
+    public static final String PARAM_RECIPIENT_ID = "recipient_id";
     private final String PARAM_STATUS = "status";
 
     public static final String STATUS_DELIVERED = "delivered";
     public static final String STATUS_CLICKED = "clicked";
+    public static final String STATUS_DISMISSED = "dismissed";
     public static final String STATUS_DROPPED = "dropped";
 
     public TrackPushNotificationUseCase(Context context, GraphqlUseCase gqlUseCase) {

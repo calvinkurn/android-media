@@ -56,16 +56,18 @@ class TokoNowRecipeIngredientFragment : Fragment(), RecipeProductListener, OutOf
         super.onAttach(context)
     }
 
-    override fun deleteCartItem(productId: String) {
-        recipeDetailView?.deleteCartItem(productId)
+    override fun onCartQuantityChanged(
+        productId: String,
+        shopId: String,
+        quantity: Int,
+        stock: Int,
+        isVariant: Boolean
+    ) {
+        recipeDetailView?.onCartQuantityChanged(productId, shopId, quantity, stock, isVariant)
     }
 
-    override fun onQuantityChanged(productId: String, shopId: String, quantity: Int) {
-        recipeDetailView?.onQuantityChanged(productId, shopId, quantity)
-    }
-
-    override fun addItemToCart(productId: String, shopId: String, quantity: Int) {
-        recipeDetailView?.addItemToCart(productId, shopId, quantity)
+    override fun createAffiliateLink(url: String): String {
+        return recipeDetailView?.createAffiliateLink(url).orEmpty()
     }
 
     override fun onClickChangeAddress() {

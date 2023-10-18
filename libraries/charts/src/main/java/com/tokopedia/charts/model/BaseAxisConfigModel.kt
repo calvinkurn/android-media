@@ -15,4 +15,5 @@ internal interface BaseAxisConfigModel {
     val mLabelPosition: Int
     val axisMinimum: Float
     val labelFormatter: LabelFormatter
+    val textColor: Int
 }

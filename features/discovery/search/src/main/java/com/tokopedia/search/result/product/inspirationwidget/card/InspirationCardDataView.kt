@@ -27,11 +27,7 @@ data class InspirationCardDataView(
     companion object {
         fun create(data: SearchProductModel.InspirationWidgetData): InspirationCardDataView {
             return InspirationCardDataView(
-                data = InspirationWidgetDataView(
-                    title = data.title,
-                    type = data.type,
-                    position = data.position,
-                ),
+                data = InspirationWidgetDataView.create(data),
                 optionCardData = data
                     .inspirationWidgetOptions
                     .mapToInspirationCardOptionDataView(data.type),

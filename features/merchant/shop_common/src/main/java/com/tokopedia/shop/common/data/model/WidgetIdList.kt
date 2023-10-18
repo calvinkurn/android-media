@@ -15,6 +15,9 @@ data class WidgetIdList(
     @SerializedName("widgetName")
     val widgetName: String = "",
 
+    @SerializedName("isFestivity")
+    val isFestivity: Boolean = false,
+
     @SerializedName("header")
     val header: Header = Header()
 )

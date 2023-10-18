@@ -4,21 +4,27 @@ import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
+import androidx.lifecycle.viewModelScope
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.media.editor.data.repository.BitmapCreationRepository
 import com.tokopedia.media.editor.data.repository.SaveImageRepository
+import com.tokopedia.media.editor.ui.uimodel.BitmapCreation
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
-import com.tokopedia.media.editor.utils.getTokopediaCacheDir
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
 class EditorViewModel @Inject constructor(
     private val saveImageRepository: SaveImageRepository,
-    private val addLogoFilterRepository: AddLogoFilterRepository,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val bitmapCreationRepository: BitmapCreationRepository,
+    private val coroutineDispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
     private var _editStateList = mutableMapOf<String, EditorUiModel>()
@@ -29,6 +35,9 @@ class EditorViewModel @Inject constructor(
 
     private var _editorParam = MutableLiveData<EditorParam>()
     val editorParam: LiveData<EditorParam> get() = _editorParam
+
+    private var _editorResult = MutableLiveData<List<String?>>()
+    val editorResult: LiveData<List<String?>> = _editorResult
 
     fun setEditorParam(data: EditorParam) {
         _editorParam.postValue(data)
@@ -74,10 +83,6 @@ class EditorViewModel @Inject constructor(
         return _editStateList[urlKey]
     }
 
-    fun cleanImageCache() {
-        saveImageRepository.clearEditorCache()
-    }
-
     fun undoState(activeImageUrl: String): EditorUiModel? {
         getEditState(activeImageUrl)?.let {
             val imageEditStateCount = it.editList.size
@@ -99,42 +104,46 @@ class EditorViewModel @Inject constructor(
         return null
     }
 
-    fun saveToGallery(dataList: List<EditorUiModel>, onFinish: (result: List<String>) -> Unit) {
-        // store list image of camera picker that need to be saved
-        val cameraImageList = mutableListOf<String>()
-        val pickerCameraCacheDir = getTokopediaCacheDir()
+    fun finishPage(
+        dataList: List<EditorUiModel>
+    ) {
+        viewModelScope.launch(coroutineDispatchers.io) {
+            val filteredData = dataList.map {
+                if (it.isImageEdited()) {
+                    // base image
+                    val flattenBitmap = it.getImageUrl()
 
-        val filteredData = dataList.map {
-            if (it.isImageEdited()) {
-                // if use 'add logo' feature then need to flatten image first
-                it.getOverlayLogoValue()?.let { overlayData ->
-                    addLogoFilterRepository.flattenImage(
-                        it.getImageUrl(),
-                        overlayData.overlayLogoUrl,
-                        it.getOriginalUrl()
-                    )
-                } ?: run {
-                    it.getImageUrl()
-                }
-            } else {
-                it.getOriginalUrl().apply {
-                    if (contains(pickerCameraCacheDir) && !contains(PICKER_URL_FILE_CODE)) {
-                        cameraImageList.add(it.getImageUrl())
+                    val addTextFlatten = async {
+                        it.getOverlayTextValue()?.textImagePath?.let { textImagePath ->
+                            return@async saveImageRepository.flattenImage(
+                                it.getImageUrl(),
+                                textImagePath,
+                                it.getOriginalUrl()
+                            )
+                        } ?: flattenBitmap
                     }
+
+                    val addLogoFlatten = async {
+                        addTextFlatten.await()?.let { addTextResult ->
+                            it.getOverlayLogoValue()?.let { overlayData ->
+                                return@async saveImageRepository.flattenImage(
+                                    addTextResult,
+                                    overlayData.overlayLogoUrl,
+                                    it.getOriginalUrl()
+                                )
+                            } ?: addTextResult
+                        }
+                    }
+
+                    addLogoFlatten.await()
+                } else {
+                    ""
                 }
-                ""
             }
-        }
 
-        // save camera image that didn't have edit state
-        if (cameraImageList.size != 0) {
-            saveImageRepository.saveToGallery(cameraImageList) {}
-        }
-
-        saveImageRepository.saveToGallery(
-            filteredData
-        ) {
-            onFinish(it)
+            withContext(coroutineDispatchers.main) {
+                _editorResult.value = filteredData
+            }
         }
     }
 
@@ -150,6 +159,23 @@ class EditorViewModel @Inject constructor(
 
     fun isShopAvailable(): Boolean {
         return userSession.hasShop()
+    }
+
+    fun isMemoryOverflow(width: Int, height: Int): Boolean {
+        return bitmapCreationRepository.isBitmapOverflow(width, height)
+    }
+
+    fun cropImage(source: Bitmap, cropRotateUiModel: EditorCropRotateUiModel): Bitmap? {
+        val (offsetX, offsetY, imageWidth, imageHeight) = cropRotateUiModel
+        return bitmapCreationRepository.createBitmap(
+            BitmapCreation.cropBitmap(
+                source,
+                x = offsetX,
+                y = offsetY,
+                width = imageWidth,
+                height = imageHeight
+            )
+        )
     }
 
     private fun updateEditedItem(originalUrl: String) {

@@ -23,7 +23,10 @@ import androidx.annotation.StringDef
     TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC,
     TokoNowLayoutType.PRODUCT_RECOM_OOC,
     TokoNowLayoutType.MEDIUM_PLAY_WIDGET,
-    TokoNowLayoutType.SMALL_PLAY_WIDGET
+    TokoNowLayoutType.SMALL_PLAY_WIDGET,
+    TokoNowLayoutType.COUPON_CLAIM,
+    TokoNowLayoutType.CHIP_CAROUSEL,
+    TokoNowLayoutType.BUNDLING_WIDGET
 )
 annotation class TokoNowLayoutType {
     companion object {
@@ -42,5 +45,8 @@ annotation class TokoNowLayoutType {
         const val MIX_LEFT_CAROUSEL_ATC = "left_carousel_atc"
         const val MEDIUM_PLAY_WIDGET = "play_carousel"
         const val SMALL_PLAY_WIDGET = "play_carousel_small"
+        const val COUPON_CLAIM = "coupon_claim"
+        const val CHIP_CAROUSEL = "chip_carousel"
+        const val BUNDLING_WIDGET = "bundling_widget"
     }
 }

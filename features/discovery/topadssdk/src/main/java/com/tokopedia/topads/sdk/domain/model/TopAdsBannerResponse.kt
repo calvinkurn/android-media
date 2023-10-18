@@ -1,6 +1,5 @@
 package com.tokopedia.topads.sdk.domain.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class TopAdsBannerResponse(
@@ -82,7 +81,9 @@ data class TopAdsBannerResponse(
             @SerializedName("pagination")
             val pagination: Pagination?,
             @SerializedName("total_data")
-            val totalData: Int = 0
+            val totalData: Int = 0,
+            @SerializedName("auto_scroll")
+            val autoScroll: AutoScroll = AutoScroll()
         ) {
             class Pagination(
                 @SerializedName("current_page")
@@ -91,6 +92,13 @@ data class TopAdsBannerResponse(
                 val kind: String? = "",
                 @SerializedName("next_page_token")
                 val nextPageToken: String? = ""
+            )
+
+            class AutoScroll(
+                @SerializedName("enable")
+                val enable: Boolean = false,
+                @SerializedName("timer")
+                val timer: Int = 0
             )
         }
     }

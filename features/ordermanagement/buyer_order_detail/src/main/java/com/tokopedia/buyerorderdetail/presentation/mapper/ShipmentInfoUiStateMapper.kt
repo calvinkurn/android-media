@@ -7,6 +7,7 @@ import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
+import com.tokopedia.buyerorderdetail.presentation.model.OwocBomDetailSectionUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.SimpleCopyableKeyValueUiModel
@@ -89,6 +90,8 @@ object ShipmentInfoUiStateMapper {
     ): ShipmentInfoUiState {
         return ShipmentInfoUiState.HasData.Showing(
             mapShipmentInfoUiModel(
+                buyerOrderDetailData.additionalData.groupOrderData,
+                buyerOrderDetailData.groupType,
                 buyerOrderDetailData.shipment,
                 buyerOrderDetailData.meta,
                 buyerOrderDetailData.orderId,
@@ -109,6 +112,8 @@ object ShipmentInfoUiStateMapper {
     }
 
     private fun mapShipmentInfoUiModel(
+        owocSection: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BomAdditionalData.GroupOrderData?,
+        groupType: String,
         shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment,
         meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta,
         orderId: String,
@@ -120,13 +125,17 @@ object ShipmentInfoUiStateMapper {
         userSession: UserSessionInterface
     ): ShipmentInfoUiModel {
         return ShipmentInfoUiModel(
+            owocInfoUiModel = mapOwocBomDetailSectionUiModel(
+                owocSection,
+                groupType
+            ),
             awbInfoUiModel = mapAwbInfoUiModel(
                 shipment.shippingRefNum,
                 orderStatusId,
                 orderId,
                 resourceProvider
             ),
-            courierDriverInfoUiModel = mapCourierDriverInfoUiModel(shipment.driver),
+            courierDriverInfoUiModel = mapCourierDriverInfoUiModel(shipment),
             driverTippingInfoUiModel = mapDriverTippingInfoUiModel(
                 driverTippingInfo,
                 resourceProvider
@@ -143,6 +152,21 @@ object ShipmentInfoUiStateMapper {
                 BuyerOrderDetailMiscConstant.TICKER_KEY_SHIPPING_INFO
             )
         )
+    }
+
+    private fun mapOwocBomDetailSectionUiModel(
+        owocSection: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BomAdditionalData.GroupOrderData?,
+        groupType: String
+    ): OwocBomDetailSectionUiModel? {
+        return owocSection?.let {
+            OwocBomDetailSectionUiModel(
+                txId = owocSection.txId,
+                groupType = groupType,
+                sectionTitle = owocSection.title,
+                sectionDesc = owocSection.description,
+                imageUrl = owocSection.iconUrl
+            )
+        }
     }
 
     private fun mapAwbInfoUiModel(
@@ -162,14 +186,30 @@ object ShipmentInfoUiStateMapper {
     }
 
     private fun mapCourierDriverInfoUiModel(
-        driver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Driver
+        shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment
     ): ShipmentInfoUiModel.CourierDriverInfoUiModel {
+        val driver = shipment.driver
+        val buttonList = mapDriverButtonUiModel(shipment.buttons)
         return ShipmentInfoUiModel.CourierDriverInfoUiModel(
             name = driver.name,
             phoneNumber = driver.phone,
             photoUrl = driver.photoUrl,
-            plateNumber = driver.licenseNumber
+            plateNumber = driver.licenseNumber,
+            buttonList = buttonList
         )
+    }
+
+    private fun mapDriverButtonUiModel(
+        buttons: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Button>
+    ): List<ShipmentInfoUiModel.CourierDriverInfoUiModel.Button> {
+        return buttons.map { button ->
+            ShipmentInfoUiModel.CourierDriverInfoUiModel.Button(
+                key = button.key,
+                icon = button.icon,
+                actionValue = button.actionType,
+                value = button.value
+            )
+        }
     }
 
     private fun mapDriverTippingInfoUiModel(

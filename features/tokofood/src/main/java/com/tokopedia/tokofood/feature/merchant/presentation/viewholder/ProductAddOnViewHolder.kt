@@ -5,7 +5,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.TokofoodItemAddOnLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.ProductOptionAdapter

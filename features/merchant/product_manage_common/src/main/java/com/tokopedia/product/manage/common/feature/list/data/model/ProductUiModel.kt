@@ -37,7 +37,10 @@ data class ProductUiModel(
     val notifyMeOOSWording: String,
     val isEmptyStock: Boolean,
     val isStockGuaranteed: Boolean,
-    val isTobacco: Boolean
+    val isTobacco: Boolean,
+    val isDTInbound: Boolean,
+    val isArchived: Boolean,
+    val isInGracePeriod: Boolean,
 ) : Visitable<ProductManageAdapterFactory> {
     override fun type(typeFactory: ProductManageAdapterFactory): Int {
         return typeFactory.type(this)

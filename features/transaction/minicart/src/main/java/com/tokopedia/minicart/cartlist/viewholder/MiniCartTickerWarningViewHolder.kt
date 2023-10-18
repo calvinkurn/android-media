@@ -5,8 +5,8 @@ import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerWarningUiModel
 import com.tokopedia.minicart.databinding.ItemMiniCartTickerWarningBinding
 
-class MiniCartTickerWarningViewHolder(private val viewBinding: ItemMiniCartTickerWarningBinding)
-    : AbstractViewHolder<MiniCartTickerWarningUiModel>(viewBinding.root) {
+class MiniCartTickerWarningViewHolder(private val viewBinding: ItemMiniCartTickerWarningBinding) :
+    AbstractViewHolder<MiniCartTickerWarningUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_mini_cart_ticker_warning
@@ -17,5 +17,4 @@ class MiniCartTickerWarningViewHolder(private val viewBinding: ItemMiniCartTicke
             tickerInformation.setHtmlDescription(element.warningMessage)
         }
     }
-
 }

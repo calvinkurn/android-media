@@ -1,5 +1,7 @@
 package com.tokopedia.otp.verification.view.fragment.miscalll
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -121,7 +123,7 @@ open class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed 
     }
 
     companion object {
-        private const val URL_IMG_ON_BOARDING_NEW = "https://images.tokopedia.net/img/android/user/miscall/ic_miscall_onboarding_2.png"
+        private const val URL_IMG_ON_BOARDING_NEW = TokopediaImageUrl.URL_IMG_ON_BOARDING_NEW
 
         fun createInstance(bundle: Bundle?): Fragment {
             val fragment = OnboardingMiscallFragment()

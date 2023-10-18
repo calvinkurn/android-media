@@ -21,6 +21,7 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
+import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTrackingModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -41,7 +42,7 @@ import kotlinx.coroutines.launch
  * Created by misael on 14/07/22
  * Use the same template as telco postpaid and copied from on [DigitalTelcoPostpaidFragment].
  * */
-class DigitalSignalFragment: DigitalBaseTelcoFragment() {
+class DigitalSignalFragment : DigitalBaseTelcoFragment() {
 
     private lateinit var signalClientNumberWidget: DigitalSignalClientNumberWidget
     private lateinit var mainContainer: CoordinatorLayout
@@ -64,6 +65,14 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
 
     override var menuId = 0
     override var categoryId = 0
+
+    override fun onUpdateMultiCheckout() {
+        //do nothing
+    }
+
+    override fun onTrackMultiCheckoutAtc(atc: DigitalAtcTrackingModel) {
+        //do nothing
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,17 +123,19 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
             setTextFieldStaticLabel(context.getString(R.string.digital_client_label_signal))
         }
         appBarSpacer.hide()
-
     }
 
     override fun getClientInputNumber(): DigitalClientNumberWidget = signalClientNumberWidget
 
     private fun initViewPager() {
-        val pagerAdapter = TelcoTabAdapter(this, object : TelcoTabAdapter.Listener {
-            override fun getTabList(): List<TelcoTabItem> {
-                return telcoTabViewModel.getAll()
+        val pagerAdapter = TelcoTabAdapter(
+            this,
+            object : TelcoTabAdapter.Listener {
+                override fun getTabList(): List<TelcoTabItem> {
+                    return telcoTabViewModel.getAll()
+                }
             }
-        })
+        )
         viewPager.adapter = pagerAdapter
         viewPager.registerOnPageChangeCallback(viewPagerCallback)
         tabLayout.customTabMode = TabLayout.MODE_FIXED
@@ -132,11 +143,11 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
         tabLayout.getUnifyTabLayout()
             .addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabReselected(p0: TabLayout.Tab?) {
-                    //do nothing
+                    // do nothing
                 }
 
                 override fun onTabUnselected(p0: TabLayout.Tab?) {
-                    //do nothing
+                    // do nothing
                 }
 
                 override fun onTabSelected(p0: TabLayout.Tab) {
@@ -153,8 +164,11 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
             setTrackingOnTabMenu(listMenu[position].title)
 
             val tabs = telcoTabViewModel.getAll()
-            if (tabs[position].title == TelcoComponentName.PROMO) sendImpressionPromo()
-            else sendImpressionRecents()
+            if (tabs[position].title == TelcoComponentName.PROMO) {
+                sendImpressionPromo()
+            } else {
+                sendImpressionRecents()
+            }
         }
     }
 
@@ -181,7 +195,7 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
                 separator.hide()
                 tabLayout.hide()
             }
-            //initiate impression promo
+            // initiate impression promo
             sendImpressionPromo()
         } else {
             separator.hide()
@@ -194,21 +208,24 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
         performChange()
         val newItems = telcoTabViewModel.createIdSnapshot()
         viewPager.adapter?.let {
-            DiffUtil.calculateDiff(object : DiffUtil.Callback() {
-                override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                    oldItems[oldItemPosition] == newItems[newItemPosition]
+            DiffUtil.calculateDiff(
+                object : DiffUtil.Callback() {
+                    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                        oldItems[oldItemPosition] == newItems[newItemPosition]
 
-                override fun getOldListSize(): Int {
-                    return oldItems.size
-                }
+                    override fun getOldListSize(): Int {
+                        return oldItems.size
+                    }
 
-                override fun getNewListSize(): Int {
-                    return newItems.size
-                }
+                    override fun getNewListSize(): Int {
+                        return newItems.size
+                    }
 
-                override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                    areItemsTheSame(oldItemPosition, newItemPosition)
-            }, true).dispatchUpdatesTo(it)
+                    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                        areItemsTheSame(oldItemPosition, newItemPosition)
+                },
+                true
+            ).dispatchUpdatesTo(it)
         }
     }
 
@@ -305,7 +322,7 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
         })
 
         signalClientNumberWidget.setPostpaidListener(object : ClientNumberPostpaidListener {
-            override fun enquiryNumber() {
+            override fun mainButtonClick() {
                 if (signalClientNumberWidget.getInputNumber().isEmpty()) {
                     signalClientNumberWidget.setErrorInputNumber(getString(R.string.telco_number_invalid_empty_string))
                 } else if (userSession.isLoggedIn) {
@@ -314,6 +331,14 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
                 } else {
                     navigateToLoginPage()
                 }
+            }
+
+            override fun secondaryButtonClick() {
+               //do nothing
+            }
+
+            override fun onCloseCoachMark() {
+                //do nothing
             }
         })
     }
@@ -374,6 +399,9 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
                 TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL -> {
                     topupAnalytics.eventInputNumberManual(categoryId, operatorName)
                 }
+                else -> {
+                    // no op
+                }
             }
         }
     }
@@ -389,14 +417,6 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
     }
 
     override fun onLoadingAtc(showLoading: Boolean) {
-        // do nothing
-    }
-
-    override fun onCollapseAppBar() {
-        // do nothing
-    }
-
-    override fun onExpandAppBar() {
         // do nothing
     }
 
@@ -429,7 +449,8 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
         if (operatorName.isNotEmpty()) {
             topupAnalytics.clickEnhanceCommerceRecentTransaction(
                 topupBillsRecommendation,
-                operatorName, topupBillsRecommendation.position
+                operatorName,
+                topupBillsRecommendation.position
             )
         }
     }

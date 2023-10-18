@@ -3,7 +3,6 @@ package com.tokopedia.tokofood.feature.purchase.promopage.presentation.viewholde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodPromoListHeaderBinding
-import com.tokopedia.tokofood.feature.purchase.promopage.presentation.TokoFoodPromoActionListener
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.uimodel.TokoFoodPromoHeaderUiModel
 
 class TokoFoodPromoHeaderViewHolder(private val viewBinding: ItemTokofoodPromoListHeaderBinding)

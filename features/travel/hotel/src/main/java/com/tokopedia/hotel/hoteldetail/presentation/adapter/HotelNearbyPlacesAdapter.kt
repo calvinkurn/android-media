@@ -14,7 +14,8 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 class HotelNearbyPlacesAdapter(private var placeNearby: List<HotelItemNearbyPlace>) : RecyclerView.Adapter<HotelNearbyPlacesAdapter.HotelNearbyPlacesViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HotelNearbyPlacesViewHolder = HotelNearbyPlacesViewHolder(
-            ItemHotelNearbyLandmarkPlaceBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        ItemHotelNearbyLandmarkPlaceBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    )
 
     override fun getItemCount(): Int = placeNearby.size
 
@@ -22,7 +23,7 @@ class HotelNearbyPlacesAdapter(private var placeNearby: List<HotelItemNearbyPlac
         holder.bind(placeNearby[position])
     }
 
-    class HotelNearbyPlacesViewHolder(val binding: ItemHotelNearbyLandmarkPlaceBinding) : RecyclerView.ViewHolder(binding?.root) {
+    class HotelNearbyPlacesViewHolder(val binding: ItemHotelNearbyLandmarkPlaceBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(element: HotelItemNearbyPlace) {
             with(binding) {

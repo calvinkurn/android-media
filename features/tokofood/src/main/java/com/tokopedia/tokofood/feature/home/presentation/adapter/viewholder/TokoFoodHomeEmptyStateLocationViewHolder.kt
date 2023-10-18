@@ -1,5 +1,7 @@
 package com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
@@ -26,9 +28,9 @@ class TokoFoodHomeEmptyStateLocationViewHolder (
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_empty_state_location
 
-        const val IMG_STATIC_URI_NO_PIN_POIN = "https://images.tokopedia.net/img/ic-tokofood_home_no_pin_poin.png"
-        const val IMG_STATIC_URI_NO_ADDRESS = "https://images.tokopedia.net/img/ic_tokofood_home_no_address.png"
-        const val IMG_STATIC_URI_OUT_OF_COVERAGE = "https://images.tokopedia.net/img/ic_tokofood_home_out_of_coverage.png"
+        const val IMG_STATIC_URI_NO_PIN_POIN = TokopediaImageUrl.IMG_STATIC_URI_NO_PIN_POIN
+        const val IMG_STATIC_URI_NO_ADDRESS = TokopediaImageUrl.IMG_STATIC_URI_NO_ADDRESS
+        const val IMG_STATIC_URI_OUT_OF_COVERAGE = TokopediaImageUrl.IMG_STATIC_URI_OUT_OF_COVERAGE
         private const val ERROR_STATE_OUT_OF_COVERAGE = "error state out of coverage"
         private const val ERROR_STATE_NO_PIN_POIN = "error state no pinpoint"
         private const val ERROR_STATE_NO_ADDRESS = "error state no address"

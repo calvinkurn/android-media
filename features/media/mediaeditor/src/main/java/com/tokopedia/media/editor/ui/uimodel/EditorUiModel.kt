@@ -43,8 +43,7 @@ class EditorUiModel(
             if (editList.isNotEmpty()) {
                 // if auto crop is enable, check if image is cropped / already have target ratio
                 // if image already have target ratio, then limit is same as no crop
-                val editStateData = editList.first()
-                if (editStateData.originalRatio == editStateData.cropRotateValue.getRatio()) {
+                if (!editList.first().cropRotateValue.isAutoCrop) {
                     UNDO_LIMIT_NON_CROP
                 } else {
                     UNDO_LIMIT_AUTO_CROP
@@ -106,6 +105,20 @@ class EditorUiModel(
             if (index > maxStateLimit) return@forEachIndexed
             if (editorDetailUiModel.addLogoValue.overlayLogoUrl.isNotEmpty()) {
                 searchResult = editorDetailUiModel.addLogoValue
+            }
+        }
+
+        return searchResult
+    }
+
+    fun getOverlayTextValue(): EditorAddTextUiModel? {
+        val maxStateLimit = (editList.size - 1) - backValue
+        var searchResult: EditorAddTextUiModel? = null
+
+        editList.forEachIndexed { index, editorDetailUiModel ->
+            if (index > maxStateLimit) return@forEachIndexed
+            if (editorDetailUiModel.addTextValue?.textImagePath?.isNotEmpty() == true) {
+                searchResult = editorDetailUiModel.addTextValue
             }
         }
 

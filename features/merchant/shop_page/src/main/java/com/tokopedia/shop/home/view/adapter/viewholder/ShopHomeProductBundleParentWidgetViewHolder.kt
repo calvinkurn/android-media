@@ -9,13 +9,16 @@ import com.tokopedia.productbundlewidget.model.*
 import com.tokopedia.productbundlewidget.presentation.ProductBundleWidgetView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
 import com.tokopedia.shop.databinding.ItemShopHomeProductBundleParentWidgetBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -24,12 +27,14 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ShopHomeProductBundleParentWidgetViewHolder(
     itemView: View,
     private val multipleProductBundleListener: MultipleProductBundleListener,
-    private val singleProductBundleListener: SingleProductBundleListener
+    private val singleProductBundleListener: SingleProductBundleListener,
+    shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeProductBundleListUiModel>(itemView), ProductBundleWidgetListener {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_product_bundle_parent_widget
+        private const val BUNDLE_RV_MARGIN_TOP = 6f
     }
 
     private val viewBinding: ItemShopHomeProductBundleParentWidgetBinding? by viewBinding()
@@ -50,6 +55,9 @@ class ShopHomeProductBundleParentWidgetViewHolder(
     }
 
     override fun bind(element: ShopHomeProductBundleListUiModel) {
+        val isFestivity = element.isFestivity
+        val isOverrideWidgetTheme = element.header.isOverrideTheme
+
         bundleListUiModel = element
         shopId = element.productBundleList.firstOrNull()?.shopId.orEmpty()
         warehouseId = element.productBundleList.firstOrNull()?.warehouseId.orEmpty()
@@ -69,18 +77,67 @@ class ShopHomeProductBundleParentWidgetViewHolder(
         productBundleWidgetView?.setListener(this)
         productBundleWidgetView?.setTitleText(bundleWidgetTitle)
         productBundleWidgetView?.getBundleData(param)
+        productBundleWidgetView?.setIsOverrideWidgetTheme(isOverrideWidgetTheme)
+        productBundleWidgetView?.setBundlingCarouselTopMargin(BUNDLE_RV_MARGIN_TOP.dpToPx().toInt())
+
+        checkFestivity(isFestivity = isFestivity)
+        configColorTheme(
+            isFestivity = isFestivity,
+            isOverrideWidgetTheme = isOverrideWidgetTheme,
+            colorSchema = element.header.colorSchema
+        )
+    }
+
+    private fun configColorTheme(isFestivity: Boolean, isOverrideWidgetTheme: Boolean, colorSchema: ShopPageColorSchema) {
+        if (isFestivity) {
+            configFestivity()
+        } else {
+            if (isOverrideWidgetTheme) {
+                configReimaginedColor(colorSchema)
+            } else {
+                configNonFestivity()
+            }
+        }
+    }
+
+    private fun checkFestivity(isFestivity: Boolean) {
+        if (isFestivity) {
+            configFestivity()
+        } else {
+            configNonFestivity()
+        }
+    }
+
+    private fun configFestivity() {
+        val festivityTextColorRes = com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+        productBundleWidgetView?.setTitleTextColor(festivityTextColorRes)
+    }
+
+    private fun configNonFestivity() {
+        val defaultTitleColorRes = com.tokopedia.unifyprinciples.R.color.Unify_NN950
+        productBundleWidgetView?.setTitleTextColor(defaultTitleColorRes)
+    }
+
+    private fun configReimaginedColor(colorSchema: ShopPageColorSchema) {
+        val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        productBundleWidgetView?.setTitleTextColor(titleColor)
     }
 
     override fun onBundleProductClicked(
         bundle: BundleUiModel,
         selectedMultipleBundle: BundleDetailUiModel,
-        selectedProduct: BundleProductUiModel
+        selectedProduct: BundleProductUiModel,
+        itemPosition: Int
     ) {
-        val selectedShopHomeBundleUiModel = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(selectedMultipleBundle)
+        val selectedShopHomeBundleUiModel = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(
+            selectedMultipleBundle,
+            bundleListUiModel
+        )
         val selectedShopHomeProductUiModel = ShopPageHomeMapper.mapToShopHomeBundleProductUiModel(selectedProduct)
         when (bundle.bundleType) {
             BundleTypes.MULTIPLE_BUNDLE -> {
                 handleMultipleBundleClickEvent(
+                    bundleUiModel = bundle,
                     selectedBundle = selectedMultipleBundle,
                     selectedProduct = selectedProduct,
                     selectedShopHomeBundleUiModel = selectedShopHomeBundleUiModel,
@@ -89,6 +146,7 @@ class ShopHomeProductBundleParentWidgetViewHolder(
             }
             BundleTypes.SINGLE_BUNDLE -> {
                 handleSingleBundleClickEvent(
+                    bundleUiModel = bundle,
                     selectedBundle = selectedMultipleBundle,
                     selectedProduct = selectedProduct,
                     selectedShopHomeBundleUiModel = selectedShopHomeBundleUiModel,
@@ -99,30 +157,35 @@ class ShopHomeProductBundleParentWidgetViewHolder(
     }
 
     override fun impressionMultipleBundle(
+        bundle: BundleUiModel,
         selectedMultipleBundle: BundleDetailUiModel,
         bundlePosition: Int
     ) {
-        val selectedBundle = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(selectedMultipleBundle)
+        val selectedBundle = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(selectedMultipleBundle, bundleListUiModel)
         multipleProductBundleListener.impressionProductBundleMultiple(
             shopId = shopId,
             warehouseId = warehouseId,
             selectedMultipleBundle = selectedBundle,
-            bundleName = getBundleName(bundleListUiModel, selectedBundle.bundleId),
-            bundleType = getBundleType(bundleListUiModel, selectedBundle.bundleId),
+            bundleName = bundle.bundleName,
+            bundleType = bundle.bundleType.toString(),
             bundlePosition = adapterPosition
         )
     }
 
     override fun impressionMultipleBundleProduct(
+        bundle: BundleUiModel,
         selectedProduct: BundleProductUiModel,
         selectedBundle: BundleDetailUiModel
     ) {
         val selectedBundleProduct = ShopPageHomeMapper.mapToShopHomeBundleProductUiModel(selectedProduct)
-        val selectedMultipleBundle = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(selectedBundle)
+        val selectedMultipleBundle = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(
+            selectedBundle,
+            bundleListUiModel
+        )
         multipleProductBundleListener.impressionProductItemBundleMultiple(
             selectedProduct = selectedBundleProduct,
             selectedMultipleBundle = selectedMultipleBundle,
-            bundleName = getBundleName(bundleListUiModel, selectedBundle.bundleId),
+            bundleName = bundle.bundleName,
             bundlePosition = adapterPosition,
             widgetTitle = bundleWidgetTitle,
             widgetName = bundleWidgetName,
@@ -136,7 +199,10 @@ class ShopHomeProductBundleParentWidgetViewHolder(
         bundleName: String
     ) {
         val selectedProductVariant = ShopPageHomeMapper.mapToShopHomeBundleProductUiModel(selectedProduct)
-        val selectedSingleBundle = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(selectedBundle)
+        val selectedSingleBundle = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(
+            selectedBundle,
+            bundleListUiModel
+        )
         singleProductBundleListener.onTrackSingleVariantChange(
             selectedProduct = selectedProductVariant,
             selectedSingleBundle = selectedSingleBundle,
@@ -147,9 +213,13 @@ class ShopHomeProductBundleParentWidgetViewHolder(
     override fun impressionSingleBundle(
         selectedBundle: BundleDetailUiModel,
         selectedProduct: BundleProductUiModel,
-        bundleName: String
+        bundleName: String,
+        bundlePosition: Int
     ) {
-        val selectedSingleBundle = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(selectedBundle)
+        val selectedSingleBundle = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(
+            selectedBundle,
+            bundleListUiModel
+        )
         val selectedBundleProduct = ShopPageHomeMapper.mapToShopHomeBundleProductUiModel(selectedProduct)
         singleProductBundleListener.impressionProductBundleSingle(
             shopId = shopId,
@@ -164,25 +234,8 @@ class ShopHomeProductBundleParentWidgetViewHolder(
         )
     }
 
-    private fun getBundleName(
-        bundleListUiModel: ShopHomeProductBundleListUiModel?,
-        bundleId: String
-    ): String {
-        return bundleListUiModel?.productBundleList?.firstOrNull {
-            it.bundleGroupId == bundleId
-        }?.bundleName.orEmpty()
-    }
-
-    private fun getBundleType(
-        bundleListUiModel: ShopHomeProductBundleListUiModel?,
-        bundleId: String
-    ): String {
-        return bundleListUiModel?.productBundleList?.firstOrNull {
-            it.bundleGroupId == bundleId
-        }?.bundleType.orEmpty()
-    }
-
     private fun handleMultipleBundleClickEvent(
+        bundleUiModel: BundleUiModel,
         selectedBundle: BundleDetailUiModel,
         selectedProduct: BundleProductUiModel,
         selectedShopHomeBundleUiModel: ShopHomeProductBundleDetailUiModel,
@@ -193,8 +246,8 @@ class ShopHomeProductBundleParentWidgetViewHolder(
             warehouseId = warehouseId,
             selectedProduct = selectedShopHomeProductUiModel,
             selectedMultipleBundle = selectedShopHomeBundleUiModel,
-            bundleName = getBundleName(bundleListUiModel, selectedBundle.bundleId),
-            bundleType = getBundleType(bundleListUiModel, selectedBundle.bundleId),
+            bundleName = bundleUiModel.bundleName,
+            bundleType = bundleUiModel.bundleType.toString(),
             bundlePosition = adapterPosition,
             widgetTitle = bundleWidgetTitle,
             widgetName = bundleWidgetName,
@@ -203,6 +256,7 @@ class ShopHomeProductBundleParentWidgetViewHolder(
     }
 
     private fun handleSingleBundleClickEvent(
+        bundleUiModel: BundleUiModel,
         selectedBundle: BundleDetailUiModel,
         selectedProduct: BundleProductUiModel,
         selectedShopHomeBundleUiModel: ShopHomeProductBundleDetailUiModel,
@@ -213,12 +267,21 @@ class ShopHomeProductBundleParentWidgetViewHolder(
             warehouseId = warehouseId,
             selectedProduct = selectedShopHomeProductUiModel,
             selectedSingleBundle = selectedShopHomeBundleUiModel,
-            bundleName = getBundleName(bundleListUiModel, selectedBundle.bundleId),
+            bundleName = bundleUiModel.bundleName,
             bundlePosition = selectedBundle.products.indexOf(selectedProduct),
             widgetTitle = bundleWidgetTitle,
             widgetName = bundleWidgetName,
             productItemPosition = adapterPosition,
-            bundleType = getBundleType(bundleListUiModel, selectedBundle.bundleId)
+            bundleType = bundleUiModel.bundleType.toString()
         )
+    }
+
+    private fun getBundleType(
+        bundleListUiModel: ShopHomeProductBundleListUiModel?,
+        bundleId: String
+    ): String {
+        return bundleListUiModel?.productBundleList?.firstOrNull {
+            it.bundleGroupId == bundleId
+        }?.bundleType.orEmpty()
     }
 }

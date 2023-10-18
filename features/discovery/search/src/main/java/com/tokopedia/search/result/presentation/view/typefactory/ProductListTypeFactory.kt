@@ -22,10 +22,12 @@ import com.tokopedia.search.result.product.inspirationbundle.InspirationProductB
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
-import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeDataView
+import com.tokopedia.search.result.product.inspirationwidget.filter.InspirationFilterDataView
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordCardView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductItemDataView
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.result.product.violation.ViolationDataView
 
@@ -50,11 +52,13 @@ interface ProductListTypeFactory {
     fun type(chooseAddressDataView: ChooseAddressDataView): Int
     fun type(bannerDataView: BannerDataView): Int
     fun type(lastFilterDataView: LastFilterDataView): Int
-    fun type(sizeDataView: InspirationSizeDataView): Int
+    fun type(sizeDataView: InspirationFilterDataView): Int
     fun type(violationView: ViolationDataView) : Int
     fun type(inspirationProductBundleDataView: InspirationProductBundleDataView) : Int
     fun type(sameSessionRecommendationDataView: SameSessionRecommendationDataView) : Int
     fun type(inspirationListAtcDataView: InspirationListAtcDataView): Int
     fun type(adsLowOrganicTitleDataView: AdsLowOrganicTitleDataView): Int
+    fun type(inspirationKeywordCardView: InspirationKeywordCardView): Int
+    fun type(inspirationProductCardView: InspirationProductItemDataView): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

@@ -1,10 +1,8 @@
 package com.tokopedia.play.broadcaster.data.datastore
 
 import androidx.lifecycle.LiveData
-import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.data.type.OverwriteMode
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
-import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -14,17 +12,22 @@ import java.util.*
 import javax.inject.Inject
 
 class PlayBroadcastSetupDataStoreImpl @Inject constructor(
-        private val coverDataStore: CoverDataStore,
-        private val titleDataStore: TitleDataStore,
-        private val tagsDataStore: TagsDataStore,
-        private val scheduleDataStore: BroadcastScheduleDataStore,
-        private val interactiveDataStore: InteractiveDataStore,
+    private val coverDataStore: CoverDataStore,
+    private val titleDataStore: TitleDataStore,
+    private val tagsDataStore: TagsDataStore,
+    private val scheduleDataStore: BroadcastScheduleDataStore,
+    private val interactiveDataStore: InteractiveDataStore,
+    private val productTagDataStore: ProductTagDataStore,
 ) : PlayBroadcastSetupDataStore,
     TitleDataStore by titleDataStore,
     TagsDataStore by tagsDataStore,
-    InteractiveDataStore by interactiveDataStore {
+    InteractiveDataStore by interactiveDataStore,
+    ProductTagDataStore by productTagDataStore {
 
-    override fun overwrite(dataStore: PlayBroadcastSetupDataStore, modeExclusion: List<OverwriteMode>) {
+    override fun overwrite(
+        dataStore: PlayBroadcastSetupDataStore,
+        modeExclusion: List<OverwriteMode>
+    ) {
         if (!modeExclusion.contains(OverwriteMode.Cover)) {
             overwriteCoverDataStore(dataStore)
         }
@@ -52,6 +55,10 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
         return interactiveDataStore
     }
 
+    override fun getProductTagDataStore(): ProductTagDataStore {
+        return productTagDataStore
+    }
+
     private fun overwriteCoverDataStore(dataStore: CoverDataStore) {
         dataStore.getSelectedCover()?.let(::setFullCover)
     }
@@ -77,6 +84,10 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
         return coverDataStore.getObservableSelectedCover()
     }
 
+    override fun getSelectedCoverAsFlow(): Flow<PlayCoverUiModel> {
+        return coverDataStore.getSelectedCoverAsFlow()
+    }
+
     override fun getSelectedCover(): PlayCoverUiModel? {
         return coverDataStore.getSelectedCover()
     }
@@ -89,7 +100,10 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
         coverDataStore.updateCoverState(state)
     }
 
-    override suspend fun uploadSelectedCover(authorId: String, channelId: String): NetworkResult<Unit> {
+    override suspend fun uploadSelectedCover(
+        authorId: String,
+        channelId: String
+    ): NetworkResult<Unit> {
         return coverDataStore.uploadSelectedCover(authorId, channelId)
     }
 
@@ -115,7 +129,10 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
         scheduleDataStore.setBroadcastSchedule(scheduleDate)
     }
 
-    override suspend fun updateBroadcastSchedule(channelId: String, scheduledTime: Date): NetworkResult<Unit> {
+    override suspend fun updateBroadcastSchedule(
+        channelId: String,
+        scheduledTime: Date
+    ): NetworkResult<Unit> {
         return scheduleDataStore.updateBroadcastSchedule(channelId, scheduledTime)
     }
 

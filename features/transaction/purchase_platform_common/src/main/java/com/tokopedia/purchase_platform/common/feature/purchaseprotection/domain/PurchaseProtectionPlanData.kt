@@ -5,19 +5,19 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class PurchaseProtectionPlanData(
-        var isProtectionAvailable: Boolean = false,
-        var protectionTypeId: Int = 0,
-        var protectionPricePerProduct: Int = 0,
-        var protectionPrice: Double = 0.0,
-        var protectionTitle: String = "",
-        var protectionSubtitle: String = "",
-        var protectionLinkText: String = "",
-        var protectionLinkUrl: String = "",
-        var isProtectionOptIn: Boolean = false,
-        var isProtectionCheckboxDisabled: Boolean = false,
-        var unit: String = "",
-        var source: String = "",
-        var stateChecked: Int = 0
+    var isProtectionAvailable: Boolean = false,
+    var protectionTypeId: Int = 0,
+    var protectionPricePerProduct: Int = 0,
+    var protectionPrice: Double = 0.0,
+    var protectionTitle: String = "",
+    var protectionSubtitle: String = "",
+    var protectionLinkText: String = "",
+    var protectionLinkUrl: String = "",
+    var isProtectionOptIn: Boolean = false,
+    var isProtectionCheckboxDisabled: Boolean = false,
+    var unit: String = "",
+    var source: String = "",
+    var stateChecked: Int = 0
 ) : Parcelable {
 
     companion object {
@@ -27,5 +27,4 @@ data class PurchaseProtectionPlanData(
 
         const val SOURCE_READINESS = "readiness"
     }
-
 }

@@ -14,8 +14,9 @@ class ActivationPageTouchListener(private val goToInfoPage: (String) -> Boolean)
         val text: Any = widget.text
         if (text is Spanned) {
             val action = event.action
-            if (action == MotionEvent.ACTION_UP
-                    || action == MotionEvent.ACTION_DOWN) {
+            if (action == MotionEvent.ACTION_UP ||
+                action == MotionEvent.ACTION_DOWN
+            ) {
                 var x = event.x.toInt()
                 var y = event.y.toInt()
                 x -= widget.totalPaddingLeft

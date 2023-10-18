@@ -64,4 +64,21 @@ interface PlayWidgetInListLargeAnalyticListener {
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
     ) {}
+
+    /**
+     * Others
+     */
+    fun onClickMoreActionChannel(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        verticalWidgetPosition: Int,
+    ) {}
+
+    fun onClickDeleteChannel(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        verticalWidgetPosition: Int,
+    ) {}
 }

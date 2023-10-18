@@ -10,8 +10,9 @@ data class PlayWidgetConfigUiModel(
     val autoPlayAmount: Int, // maximum card with auto play
     val maxAutoPlayCellularDuration: Int, // maximum video duration, only used for non-wifi user
     val maxAutoPlayWifiDuration: Int, // maximum video duration,
-    val businessWidgetPosition: Int,
+    val businessWidgetPosition: Int
 ) {
+
     companion object {
         val Empty: PlayWidgetConfigUiModel
             get() = PlayWidgetConfigUiModel(
@@ -21,7 +22,7 @@ data class PlayWidgetConfigUiModel(
                 autoPlayAmount = 0,
                 maxAutoPlayCellularDuration = 0,
                 maxAutoPlayWifiDuration = 0,
-                businessWidgetPosition = 0,
+                businessWidgetPosition = 0
             )
     }
 }

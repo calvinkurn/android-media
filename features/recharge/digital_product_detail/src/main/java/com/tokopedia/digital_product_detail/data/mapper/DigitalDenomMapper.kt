@@ -3,8 +3,8 @@ package com.tokopedia.digital_product_detail.data.mapper
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogProductInputMultiTab
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCustomAttributes
 import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomModel
-import com.tokopedia.digital_product_detail.data.model.data.PersoRecommendationData
-import com.tokopedia.digital_product_detail.data.model.data.PersoRecommendationItem
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPersoData
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPersoItem
 import com.tokopedia.digital_product_detail.data.model.data.RechargeCatalogDataCollection
 import com.tokopedia.digital_product_detail.data.model.data.RechargeProduct
 import com.tokopedia.digital_product_detail.di.DigitalPDPScope
@@ -26,13 +26,11 @@ class DigitalDenomMapper @Inject constructor() {
 
         return InputMultiTabDenomModel(
             getDenomFullMapper(productsDenom?.text, dataCollectionProduct),
-            getDenomFullMapper(dataCollectionMCCM?.firstOrNull()?.name,
-                dataCollectionMCCM),
+            inputMultiTab.multitabData.productInputs.firstOrNull()?.otherComponents ?: emptyList(),
             inputMultiTab.multitabData.productInputs.firstOrNull()?.filterTagComponents ?: emptyList(),
             isRefresheedFilter
         )
     }
-
 
     fun mapMultiTabGridDenom(inputMultiTab: DigitalCatalogProductInputMultiTab): DenomMCCMModel {
         val productsDenom = inputMultiTab.multitabData.productInputs.firstOrNull()?.product
@@ -54,11 +52,32 @@ class DigitalDenomMapper @Inject constructor() {
         return getProductDataCollection(product?.dataCollections)?.firstOrNull()?.products?.firstOrNull()
     }
 
-    fun mapDigiPersoToRecommendation(data: PersoRecommendationData, isBigRecommendation: Boolean): RecommendationWidgetModel {
+    fun mapDigiPersoToRecommendation(data: DigitalPersoData, isBigRecommendation: Boolean): RecommendationWidgetModel {
         return RecommendationWidgetModel(
             title = data.title,
             recommendations = data.items.map { digiPersoToRecommendationCard(it, isBigRecommendation) }
         )
+    }
+
+    fun mapDigiPersoToMCCMProducts(data: DigitalPersoData): DenomWidgetModel {
+        return if (!data.items.isNullOrEmpty()) {
+            val firstProduct = data.items.first()
+            val denomList: MutableList<DenomData> = mutableListOf()
+            denomList.addAll(
+                data.items.map {
+                    digiPersoToMCCMItems(it)
+                }
+            )
+            val denomWidgetModel = DenomWidgetModel(
+                mainTitle = data.title,
+                imageBackgroundUrl = firstProduct.mediaURL,
+                imageBackgroundUrlDarkMode = firstProduct.mediaURLDarkMode,
+                listDenomData = denomList
+            )
+            return denomWidgetModel
+        } else {
+            return DenomWidgetModel()
+        }
     }
 
     private fun getMainDataCollections(inputMultiTab: DigitalCatalogProductInputMultiTab): Pair<List<RechargeCatalogDataCollection>?, List<RechargeCatalogDataCollection>?> {
@@ -67,7 +86,7 @@ class DigitalDenomMapper @Inject constructor() {
     }
 
     private fun getProductDataCollection(dataCollections: List<RechargeCatalogDataCollection>?): List<RechargeCatalogDataCollection>? {
-       return dataCollections?.filterNot {
+        return dataCollections?.filterNot {
             it.clusterType.contains(CLUSTER_MCCM_TYPE, true)
         }
     }
@@ -82,45 +101,51 @@ class DigitalDenomMapper @Inject constructor() {
         val denomList: MutableList<DenomData> = mutableListOf()
         if (!rechargeDataCollections.isNullOrEmpty()) {
             rechargeDataCollections.forEach {
-                denomList.addAll(it.products.map {
-                    rechargeToDenomMapperGrid(it)
-                })
+                denomList.addAll(
+                    it.products.map {
+                        rechargeToDenomMapperGrid(it)
+                    }
+                )
             }
         }
 
-        return DenomWidgetModel(title?: "", listDenomData = denomList)
+        return DenomWidgetModel(title ?: "", listDenomData = denomList)
     }
 
-    private fun getDenomFullMapper(title:String?, rechargeDataCollections: List<RechargeCatalogDataCollection>?): DenomWidgetModel {
-      val denomList: MutableList<DenomData> = mutableListOf()
+    private fun getDenomFullMapper(title: String?, rechargeDataCollections: List<RechargeCatalogDataCollection>?): DenomWidgetModel {
+        val denomList: MutableList<DenomData> = mutableListOf()
         if (!rechargeDataCollections.isNullOrEmpty()) {
             rechargeDataCollections.forEach {
-                denomList.addAll(it.products.map {
-                    rechargeToDenomMapperFull(it)
-                })
+                denomList.addAll(
+                    it.products.map {
+                        rechargeToDenomMapperFull(it)
+                    }
+                )
             }
         }
 
-        return DenomWidgetModel(title?: "", listDenomData = denomList)
+        return DenomWidgetModel(title ?: "", listDenomData = denomList)
     }
-    
+
     private fun rechargeToDenomMapperGrid(rechargeProduct: RechargeProduct): DenomData {
-        return rechargeProduct?.let {
+        return rechargeProduct.let {
             DenomData(
                 id = it.id,
                 status = it.attributes.status,
                 promoStatus = if (it.attributes.productPromo != null) PROMO_STATUS_TRUE else PROMO_STATUS_FALSE,
                 categoryId = it.attributes.categoryId,
                 operatorId = it.attributes.operatorId,
-                isSpecialPromo = if (it.attributes.productLabels.isNotEmpty())
+                isSpecialPromo = if (it.attributes.productLabels.isNotEmpty()) {
                     it.attributes.productLabels[0].equals(SPECIAL_PROMO_LABEL, true)
-                else false,
+                } else {
+                    false
+                },
                 title = it.attributes.desc,
-                price = if(!it.attributes.productPromo?.newPrice.isNullOrEmpty()) it.attributes.productPromo?.newPrice ?: EMPTY_PRICE else it.attributes.price,
-                pricePlain = if(it.attributes.productPromo?.newPricePlain.isMoreThanZero()) it.attributes.productPromo?.newPricePlain ?: EMPTY_PRICE_PLAIN else it.attributes.pricePlain,
+                price = if (!it.attributes.productPromo?.newPrice.isNullOrEmpty()) it.attributes.productPromo?.newPrice ?: EMPTY_PRICE else it.attributes.price,
+                pricePlain = if (it.attributes.productPromo?.newPricePlain.isMoreThanZero()) it.attributes.productPromo?.newPricePlain ?: EMPTY_PRICE_PLAIN else it.attributes.pricePlain,
                 specialLabel = it.attributes.productLabels.firstOrNull() ?: "",
-                slashPrice = if(!it.attributes.productPromo?.newPrice.isNullOrEmpty()) it.attributes.price  else "",
-                slashPricePlain = if(it.attributes.productPromo?.newPricePlain.isMoreThanZero()) it.attributes.pricePlain else EMPTY_PRICE_PLAIN,
+                slashPrice = if (!it.attributes.productPromo?.newPrice.isNullOrEmpty()) it.attributes.price else "",
+                slashPricePlain = if (it.attributes.productPromo?.newPricePlain.isMoreThanZero()) it.attributes.pricePlain else EMPTY_PRICE_PLAIN,
                 discountLabel = it.attributes.productPromo?.discount ?: "",
                 activePeriod = getMapCustomAttributes(it.attributes.customAttributes, PRODUCT_PULSA_EXPIRE)
             )
@@ -135,17 +160,27 @@ class DigitalDenomMapper @Inject constructor() {
                 promoStatus = if (it.attributes.productPromo != null) PROMO_STATUS_TRUE else PROMO_STATUS_FALSE,
                 categoryId = it.attributes.categoryId,
                 operatorId = it.attributes.operatorId,
-                isSpecialPromo = if (it.attributes.productLabels.isNotEmpty())
+                isSpecialPromo = if (it.attributes.productLabels.isNotEmpty()) {
                     it.attributes.productLabels[0].equals(
                         SPECIAL_PROMO_LABEL,
                         true
                     )
-                else false,
+                } else {
+                    false
+                },
                 title = it.attributes.desc,
-                price = if (!it.attributes.productPromo?.newPrice.isNullOrEmpty()) it.attributes.productPromo?.newPrice
-                    ?: EMPTY_PRICE else it.attributes.price,
-                pricePlain = if (it.attributes.productPromo?.newPricePlain.isMoreThanZero()) it.attributes.productPromo?.newPricePlain
-                    ?: EMPTY_PRICE_PLAIN else it.attributes.pricePlain,
+                price = if (!it.attributes.productPromo?.newPrice.isNullOrEmpty()) {
+                    it.attributes.productPromo?.newPrice
+                        ?: EMPTY_PRICE
+                } else {
+                    it.attributes.price
+                },
+                pricePlain = if (it.attributes.productPromo?.newPricePlain.isMoreThanZero()) {
+                    it.attributes.productPromo?.newPricePlain
+                        ?: EMPTY_PRICE_PLAIN
+                } else {
+                    it.attributes.pricePlain
+                },
                 specialLabel = it.attributes.productLabels.firstOrNull() ?: "",
                 slashPrice = if (!it.attributes.productPromo?.newPrice.isNullOrEmpty()) it.attributes.price else "",
                 slashPricePlain = if (it.attributes.productPromo?.newPricePlain.isMoreThanZero()) it.attributes.pricePlain else EMPTY_PRICE_PLAIN,
@@ -165,9 +200,8 @@ class DigitalDenomMapper @Inject constructor() {
         }?.firstOrNull()?.value ?: ""
     }
 
-
     private fun digiPersoToRecommendationCard(
-        data: PersoRecommendationItem,
+        data: DigitalPersoItem,
         isBigRecommendation: Boolean
     ): RecommendationCardWidgetModel {
         return data.let {
@@ -188,6 +222,29 @@ class DigitalDenomMapper @Inject constructor() {
                 productExpired = if (isBigRecommendation) it.label2 else "",
                 specialLabel = if (isBigRecommendation) it.label3 else "",
                 itemType = it.trackingData.itemType
+            )
+        }
+    }
+
+    private fun digiPersoToMCCMItems(perso: DigitalPersoItem): DenomData {
+        return perso.let {
+            DenomData(
+                id = it.trackingData.productId,
+                categoryId = it.trackingData.categoryId,
+                operatorId = it.trackingData.operatorId,
+                isSpecialPromo = true,
+                title = it.title,
+                price = it.price,
+                pricePlain = it.pricePlain.toInt(),
+                slashPrice = it.slashedPrice,
+                slashPricePlain = it.slashedPricePlain.toInt(),
+                isShowChevron = !it.descriptions.isNullOrEmpty(),
+                quotaInfo = it.label1,
+                expiredDays = it.label2,
+                discountLabel = it.discount,
+                productDescriptions = it.descriptions,
+                itemType = it.trackingData.itemType,
+                specialLabel = it.campaignLabelText
             )
         }
     }

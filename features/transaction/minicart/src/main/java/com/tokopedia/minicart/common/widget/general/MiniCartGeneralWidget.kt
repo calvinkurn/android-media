@@ -37,7 +37,9 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
 
 class MiniCartGeneralWidget @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     @Inject
@@ -104,7 +106,8 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
         }
         // Init Chat Button
         val chatIcon = getIconUnifyDrawable(
-            context, IconUnify.CHAT,
+            context,
+            IconUnify.CHAT,
             ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         )
         binding.miniCartTotalAmount.setAdditionalButton(chatIcon)
@@ -158,7 +161,8 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
                             override fun onRefreshErrorPage() {
                                 showMiniCartChatListBottomSheet(fragment)
                             }
-                        })
+                        }
+                    )
                 }
             } else {
                 showGlobalErrorNoConnection(fragment)
@@ -183,7 +187,8 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
                     override fun onRefreshErrorPage() {
                         showMiniCartChatListBottomSheet(fragment)
                     }
-                })
+                }
+            )
         }
     }
 
@@ -312,8 +317,12 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
      * Function to initialize the widget
      */
     fun initialize(
-        shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener,
-        isShopDirectPurchase: Boolean = true, source: MiniCartSource, page: MiniCartAnalytics.Page
+        shopIds: List<String>,
+        fragment: Fragment,
+        listener: MiniCartWidgetListener,
+        isShopDirectPurchase: Boolean = true,
+        source: MiniCartSource,
+        page: MiniCartAnalytics.Page
     ) {
         if (viewModel == null) {
             initializeView(fragment)
@@ -351,8 +360,12 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
      */
     fun showMiniCartChatListBottomSheet(fragment: Fragment) {
         viewModel?.let {
-            miniCartChatListBottomSheet.show(fragment.context, fragment.parentFragmentManager,
-                fragment.viewLifecycleOwner, it)
+            miniCartChatListBottomSheet.show(
+                fragment.context,
+                fragment.parentFragmentManager,
+                fragment.viewLifecycleOwner,
+                it
+            )
         }
     }
 

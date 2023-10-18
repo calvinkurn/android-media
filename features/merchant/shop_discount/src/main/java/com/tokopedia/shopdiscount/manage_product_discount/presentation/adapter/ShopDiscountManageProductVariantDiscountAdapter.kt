@@ -7,7 +7,7 @@ import com.tokopedia.shopdiscount.common.adapter.ShopDiscountDiffUtilCallback
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_product_discount.data.uimodel.ShopDiscountManageProductVariantItemUiModel
 import com.tokopedia.shopdiscount.manage_product_discount.util.ShopDiscountManageProductVariantMapper
-import java.util.*
+import java.util.Date
 
 class ShopDiscountManageProductVariantDiscountAdapter(
     typeFactory: ShopDiscountManageProductVariantDiscountTypeFactoryImpl
@@ -70,5 +70,4 @@ class ShopDiscountManageProductVariantDiscountAdapter(
             Date(it)
         }
     }
-
 }

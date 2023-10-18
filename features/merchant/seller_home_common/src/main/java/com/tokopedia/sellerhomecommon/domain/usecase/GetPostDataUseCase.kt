@@ -10,8 +10,8 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.PostMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
-import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.GetPostDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.ParamPostWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
 import com.tokopedia.usecase.RequestParams
@@ -90,13 +90,16 @@ class GetPostDataUseCase(
 
         fun getRequestParams(
             dataKey: List<TableAndPostDataKey>,
-            dynamicParameter: DynamicParameterModel
+            startDate: String,
+            endDate: String
         ): RequestParams = RequestParams.create().apply {
 
             val dataKeys = dataKey.map {
                 DataKeyModel(
                     key = it.dataKey,
-                    jsonParams = dynamicParameter.copy(
+                    jsonParams = ParamPostWidgetModel(
+                        startDate = startDate,
+                        endDate = endDate,
                         limit = it.maxData,
                         postFilter = it.filter
                     ).toJsonString(),

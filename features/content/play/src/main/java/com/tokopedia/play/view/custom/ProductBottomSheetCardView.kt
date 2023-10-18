@@ -1,11 +1,13 @@
 package com.tokopedia.play.view.custom
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.widget.FrameLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -15,21 +17,28 @@ import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ViewProductBottomSheetCardBinding
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.isShowRating
+import com.tokopedia.play.view.uimodel.isShowSoldQuantity
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.isUpcoming
 import com.tokopedia.play_common.util.extension.buildSpannedString
-import com.tokopedia.unifycomponents.CardUnify
 
 /**
  * Created by kenny.hadisaputra on 19/08/22
  */
-class ProductBottomSheetCardView(
-    context: Context,
-    attrs: AttributeSet?
-) : CardUnify(context, attrs) {
+class ProductBottomSheetCardView: FrameLayout {
+
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     private val binding = ViewProductBottomSheetCardBinding.inflate(
         LayoutInflater.from(context),
-        this,
+        this, true
     )
 
     private val imageRadius =
@@ -52,6 +61,7 @@ class ProductBottomSheetCardView(
         mListener = listener
     }
 
+    @SuppressLint("ResourceType")
     fun setItem(item: PlayProductUiModel.Product, section: ProductSectionUiModel.Section) {
         binding.ivProductImage.loadImageRounded(item.imageUrl, imageRadius)
         binding.tvProductTitle.text = item.title
@@ -109,11 +119,16 @@ class ProductBottomSheetCardView(
             mListener?.onButtonTransactionProduct(this, item, section, lastButton.type.toAction)
         }
 
-        setOnClickListener {
+        binding.layoutRibbon.showWithCondition(item.label.rankFmt.isNotBlank())
+        binding.layoutRibbon.rankFmt = item.label.rankFmt
+        binding.layoutRibbon.setRibbonColors(item.label.rankColors)
+        binding.layoutRibbon.startAnimation()
+
+        binding.cardPlayPinned.setOnClickListener {
             if (!item.applink.isNullOrEmpty()) mListener?.onClicked(this, item, section)
         }
 
-        //Buttons
+        // Buttons
         binding.btnProductFirst.showWithCondition(item.buttons.isNotEmpty())
         binding.btnProductSecond.showWithCondition(item.buttons.isNotEmpty())
 
@@ -122,6 +137,23 @@ class ProductBottomSheetCardView(
 
         binding.btnProductFirst.generateButton(firstButton.color)
         binding.btnProductSecond.generateButton(lastButton.color)
+
+        binding.lblProductNumber.showWithCondition(item.isNumerationShown)
+        binding.lblProductNumber.text = item.number
+
+        //Social Proof
+        if (section.config.type.isUpcoming) {
+            binding.ivPlayProductStars.hide()
+            binding.tvPlayRatingAndSoldQuantity.hide()
+        } else {
+            binding.ivPlayProductStars.showWithCondition(item.isShowRating)
+            binding.tvPlayRatingAndSoldQuantity.show()
+            binding.tvPlayRatingAndSoldQuantity.text = buildString {
+                append(item.rating)
+                append(if (item.isShowSoldQuantity && item.isShowRating) " | " else "")
+                append(item.soldQuantity)
+            }
+        }
     }
 
     private fun getInfo(item: PlayProductUiModel.Product): CharSequence {
@@ -133,7 +165,9 @@ class ProductBottomSheetCardView(
 
             if (item.stock !is StockAvailable ||
                 item.stock.stock > STOCK_THRESHOLD
-            ) return@buildSpannedString
+            ) {
+                return@buildSpannedString
+            }
 
             if (item.isPinned) {
                 val separator = context.getString(R.string.play_product_pinned_info_separator)
@@ -155,14 +189,14 @@ class ProductBottomSheetCardView(
         fun onClicked(
             view: ProductBottomSheetCardView,
             product: PlayProductUiModel.Product,
-            section: ProductSectionUiModel.Section,
+            section: ProductSectionUiModel.Section
         )
 
         fun onButtonTransactionProduct(
             view: ProductBottomSheetCardView,
             product: PlayProductUiModel.Product,
             section: ProductSectionUiModel.Section,
-            action: ProductAction,
+            action: ProductAction
         )
     }
 }

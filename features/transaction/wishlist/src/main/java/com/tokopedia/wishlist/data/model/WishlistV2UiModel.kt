@@ -127,7 +127,8 @@ data class WishlistV2UiModel(
     ) {
         data class OptionCleanerBottomsheet(
             var name: String = "",
-            var description: String = "")
+            var description: String = ""
+        )
 
         data class ButtonCleanBottomSheet(
             var text: String = ""

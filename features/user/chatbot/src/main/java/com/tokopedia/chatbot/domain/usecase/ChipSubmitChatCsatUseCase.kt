@@ -18,9 +18,8 @@ class ChipSubmitChatCsatUseCase @Inject constructor(
 
     fun chipSubmitChatCsat(
         onSuccess: (ChipSubmitChatCsatResponse) -> Unit,
-        onError: kotlin.reflect.KFunction2<Throwable, String, Unit>,
-        chipSubmitChatCsatInput: ChipSubmitChatCsatInput,
-        messageId: String
+        onError: (Throwable) -> Unit,
+        chipSubmitChatCsatInput: ChipSubmitChatCsatInput
     ) {
         try {
             this.setTypeClass(ChipSubmitChatCsatResponse::class.java)
@@ -30,13 +29,13 @@ class ChipSubmitChatCsatUseCase @Inject constructor(
             this.execute(
                 { result ->
                     onSuccess(result)
-                }, { error ->
-                    onError(error, messageId)
+                },
+                { error ->
+                    onError(error)
                 }
             )
-
         } catch (throwable: Throwable) {
-            onError(throwable, messageId)
+            onError(throwable)
         }
     }
 
@@ -45,5 +44,4 @@ class ChipSubmitChatCsatUseCase @Inject constructor(
         requestParams[INPUT] = chipSubmitChatCsatInput
         return requestParams
     }
-
 }

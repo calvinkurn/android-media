@@ -9,8 +9,8 @@ import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.domain.usecase.*
-import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
+import com.tokopedia.shopadmin.common.util.AccessId
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

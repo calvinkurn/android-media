@@ -1106,6 +1106,7 @@
       {
         "title": "Unknown type should not be shown",
         "type": "unknown_random_type",
+        "layout": "unknown_random_type",
         "position": 4,
         "options": [
           {
@@ -1127,6 +1128,7 @@
       {
         "title": "Position < 0 should not be shown",
         "type": "category",
+        "layout": "category",
         "position": -1,
         "options": [
           {
@@ -1148,6 +1150,7 @@
       {
         "title": "Coba produk dengan kategori ini :",
         "type": "category",
+        "layout": "category",
         "position": 8,
         "options": [
           {
@@ -1169,6 +1172,7 @@
       {
         "title": "Coba filter dengan Cara Penutupan:",
         "type": "annotation",
+        "layout": "annotation",
         "position": 16,
         "options": [
           {
@@ -1190,6 +1194,7 @@
       {
         "title": "",
         "type": "curated",
+        "layout": "curated",
         "position": 18,
         "options": [
           {
@@ -1204,6 +1209,7 @@
       {
         "title": "Coba tambahin kata kunci di pencarianmu:",
         "type": "guided",
+        "layout": "guided",
         "position": 20,
         "options": [
           {

@@ -29,4 +29,12 @@ pembeli buat nge-posting di Feed!</string>
 
     <string name="imagepicker_media_not_found_error">File tidak ditemukan.</string>
 
+    <!--Feed Video Upload Depreciation-->
+    <string name="title_feed_new_video_uploader"><![CDATA[Upload video lebih cepat & mudah\ndi fitur Play Video]]></string>
+    <string name="desc_feed_new_video_uploader">Kamu sudah tidak bisa upload video di sini.\nYuk, cobain fitur Play Video sekarang!</string>
+    <string name="label_feed_new_video">Buat Video</string>
+    <string name="label_ok">Oke</string>
+    <string name="pref_feed_new_video_uploader">pref_feed_new_video_uploader</string>
+    <string name="pref_key_feed_new_video_uploader">key_feed_new_video_uploader</string>
+
 </resources>

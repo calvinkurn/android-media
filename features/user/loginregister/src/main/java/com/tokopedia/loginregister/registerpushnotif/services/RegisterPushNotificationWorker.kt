@@ -12,8 +12,8 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.logger.utils.globalScopeLaunch
 import com.tokopedia.loginregister.login.data.SignResult
-import com.tokopedia.loginregister.login.domain.RegisterPushNotificationParamsModel
-import com.tokopedia.loginregister.login.domain.RegisterPushNotificationUseCase
+import com.tokopedia.loginregister.registerpushnotif.domain.RegisterPushNotificationParamsModel
+import com.tokopedia.loginregister.registerpushnotif.domain.RegisterPushNotificationUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterPushNotifData
 import com.tokopedia.loginregister.registerpushnotif.di.DaggerRegisterPushNotificationComponent
 import com.tokopedia.loginregister.registerpushnotif.di.RegisterPushNotificationModule

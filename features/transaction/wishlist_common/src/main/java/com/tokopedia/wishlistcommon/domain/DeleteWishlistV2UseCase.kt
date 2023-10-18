@@ -29,7 +29,8 @@ class DeleteWishlistV2UseCase @Inject constructor(private val gqlRepository: Gra
 
     fun setParams(productId: String, userId: String) {
         params = mapOf(
-                PRODUCT_ID to productId,
-                USER_ID to userId)
+            PRODUCT_ID to productId,
+            USER_ID to userId
+        )
     }
 }

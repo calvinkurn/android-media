@@ -1,6 +1,7 @@
 package com.tokopedia.pushnotif.factory;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.graphics.Bitmap;
 import androidx.core.app.NotificationCompat;
@@ -33,7 +34,8 @@ public class GeneralNotificationFactory extends BaseNotificationFactory {
                 .bigText(applinkNotificationModel.getDesc()));
         if (ApplinkNotificationHelper.allowGroup())
             builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
-        builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), Constant.NotificationId.GENERAL, notificationId));
+        PendingIntent pendingContentIntent = createPendingIntent(applinkNotificationModel.getApplinks(), Constant.NotificationId.GENERAL, notificationId, applinkNotificationModel);
+        builder.setContentIntent(pendingContentIntent);
         builder.setAutoCancel(true);
 
         if (isAllowBell()) {

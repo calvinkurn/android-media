@@ -9,11 +9,14 @@ import com.tokopedia.tokopedianow.recipelist.base.viewmodel.BaseTokoNowRecipeLis
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.view.RecipeListView
 import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeViewHolder
+import com.tokopedia.user.session.UserSessionInterface
 
 class RecipeListListener(
     private val view: RecipeListView,
     private val analytics: RecipeListAnalytics,
-    private val viewModel: BaseTokoNowRecipeListViewModel
+    private val viewModel: BaseTokoNowRecipeListViewModel,
+    private val userSession: UserSessionInterface,
+    private val directToLoginPage: () -> Unit
 ) : RecipeViewHolder.RecipeItemListener {
 
     override fun onClickItem(recipe: RecipeUiModel, position: Int) {
@@ -34,28 +37,32 @@ class RecipeListListener(
     }
 
     override fun onClickBookmark(recipe: RecipeUiModel, position: Int, isBookmarked: Boolean) {
-        if (isBookmarked) {
-            viewModel.addRecipeBookmark(
-                recipeId = recipe.id,
-                position = position,
-                title = recipe.title
-            )
+        if (userSession.isLoggedIn) {
+            if (isBookmarked) {
+                viewModel.addRecipeBookmark(
+                    recipeId = recipe.id,
+                    position = position,
+                    title = recipe.title
+                )
 
-            analytics.clickBookmarkRecipe(
-                recipeId = recipe.id,
-                recipeTitle = recipe.title
-            )
+                analytics.clickBookmarkRecipe(
+                    recipeId = recipe.id,
+                    recipeTitle = recipe.title
+                )
+            } else {
+                viewModel.removeRecipeBookmark(
+                    recipeId = recipe.id,
+                    position = position,
+                    title = recipe.title
+                )
+
+                analytics.clickUnBookmarkRecipe(
+                    recipeId = recipe.id,
+                    recipeTitle = recipe.title
+                )
+            }
         } else {
-            viewModel.removeRecipeBookmark(
-                recipeId = recipe.id,
-                position = position,
-                title = recipe.title
-            )
-
-            analytics.clickUnBookmarkRecipe(
-                recipeId = recipe.id,
-                recipeTitle = recipe.title
-            )
+            directToLoginPage()
         }
     }
 

@@ -11,7 +11,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
@@ -19,7 +18,7 @@ import com.tokopedia.play.ui.promosheet.adapter.MerchantVoucherAdapter
 import com.tokopedia.play.ui.promosheet.itemdecoration.MerchantVoucherItemDecoration
 import com.tokopedia.play.ui.promosheet.viewholder.MerchantVoucherNewViewHolder
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
-import com.tokopedia.play_common.viewcomponent.ViewComponent
+import com.tokopedia.play_common.viewcomponent.BottomSheetViewComponent
 
 /**
  * @author by astidhiyaa on 25/11/21
@@ -27,9 +26,8 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
 class ShopCouponSheetViewComponent(
     container: ViewGroup,
     private val listener: Listener
-) : ViewComponent(container, R.id.cl_shop_coupon_sheet) {
+) : BottomSheetViewComponent(container, R.id.cl_shop_coupon_sheet) {
 
-    private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
     private val rvVoucherList: RecyclerView = findViewById(R.id.rv_voucher_list)
     private val tvSheetTitle: TextView = findViewById(com.tokopedia.play_common.R.id.tv_sheet_title)
     private val clVoucherEmpty: ConstraintLayout = findViewById(R.id.cl_product_empty)
@@ -103,14 +101,6 @@ class ShopCouponSheetViewComponent(
         }
 
         tvSheetTitle.text = getString(R.string.play_title_coupon)
-    }
-
-    override fun show() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-    override fun hide() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     fun setVoucherList(voucherList: List<PlayVoucherUiModel>) {

@@ -1,9 +1,7 @@
 package com.tokopedia.product.manage.stub.feature
 
 import android.content.Context
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.product.manage.stub.common.di.component.BaseAppComponentStubInstance
-import com.tokopedia.product.manage.stub.common.di.component.DaggerBaseAppComponentStub
 import com.tokopedia.product.manage.stub.common.di.component.DaggerProductManageComponentStub
 import com.tokopedia.product.manage.stub.common.di.component.ProductManageComponentStub
 

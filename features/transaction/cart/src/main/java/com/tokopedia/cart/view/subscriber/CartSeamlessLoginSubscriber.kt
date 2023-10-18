@@ -18,5 +18,4 @@ class CartSeamlessLoginSubscriber(private val view: ICartListView?) : SeamlessLo
             currentView.showToastMessageRed(msg)
         }
     }
-
 }

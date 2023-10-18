@@ -78,6 +78,9 @@ class TargetPromotionsDialogViewModel @Inject constructor(@Named(MAIN)
             LiveDataResult.STATUS.SUCCESS -> {
                 performShowToast(it)
             }
+            else -> {
+                //no-op
+            }
         }
     }
 

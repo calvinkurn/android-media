@@ -38,7 +38,7 @@ object LogisticUserConsentHelper {
                 ds.isUnderlineText = false
                 ds.color = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             }
         }
@@ -49,7 +49,7 @@ object LogisticUserConsentHelper {
         val lastIndex = firstIndex.plus("Syarat & Ketentuan".length)
 
         val consentText = SpannableString(tncDescription).apply {
-            setSpan(onTermsAndConditionClicked, firstIndex,  lastIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(onTermsAndConditionClicked, firstIndex, lastIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             setSpan(boldSpan, firstIndex, lastIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
 

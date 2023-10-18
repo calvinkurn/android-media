@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:cardBackgroundColor="@color/Unify_N0"
+    app:cardBackgroundColor="@color/Unify_NN0"
     app:cardCornerRadius="6dp"
     app:cardElevation="0dp"
     app:cardPreventCornerOverlap="false"

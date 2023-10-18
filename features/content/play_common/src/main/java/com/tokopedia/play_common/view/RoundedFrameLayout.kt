@@ -2,10 +2,8 @@ package com.tokopedia.play_common.view
 
 import android.content.Context
 import android.graphics.Canvas
-import android.os.Build
 import android.util.AttributeSet
 import android.widget.FrameLayout
-import androidx.annotation.RequiresApi
 import com.tokopedia.play_common.R
 
 /**
@@ -19,7 +17,12 @@ open class RoundedFrameLayout : FrameLayout {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         initAttrs(context, attrs)
     }
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         initAttrs(context, attrs)
     }
 
@@ -76,7 +79,6 @@ open class RoundedFrameLayout : FrameLayout {
         requestLayout()
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun setRoundedOutlineProvider() {
         outlineProvider = roundedHelper.getOutlineProvider()
         clipToOutline = true

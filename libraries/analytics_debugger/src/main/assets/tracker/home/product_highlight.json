@@ -33,6 +33,7 @@
       "eventCategory": "homepage",
       "currentSite": "tokopediamarketplace",
       "item_list": ".*",
+      "item_list_name": ".*",
       "screenName": "/",
       "event": "view_item_list",
       "userId" : ".*",

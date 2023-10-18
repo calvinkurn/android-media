@@ -63,6 +63,10 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         it.detailInputModel.wholesaleList.isNotEmpty()
     }
 
+    val isSingleProductVariant = Transformations.map(productInputModel) {
+        it.variantInputModel.isSingleProductVariant()
+    }
+
     val isEditMode: Boolean get() = productInputModel.getValueOrDefault().productId.orZero() > 0
 
     private var inputFieldSize = 0
@@ -362,7 +366,6 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         val priceString = productVariant.price.toString()
         val isPrimary = productVariant.isPrimary
         val combination = productVariant.combination
-
         return VariantDetailInputLayoutModel(
                 price = InputPriceUtil.formatProductPriceInput(priceString),
                 isActive = productVariant.status == STATUS_ACTIVE_STRING,
@@ -373,7 +376,9 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 isSkuFieldVisible = isSkuFieldVisible,
                 unitValueLabel = unitValueLabel,
                 isPrimary = isPrimary,
-                combination = combination)
+                combination = combination,
+                hasDTStock = productVariant.hasDTStock,
+                isCampaignActive = productVariant.isCampaign)
     }
 
     fun getInputDataValidStatus() = !inputLayoutModelMap.any {

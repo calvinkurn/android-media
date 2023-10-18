@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
 
 buildscript {
     repositories {
@@ -15,6 +14,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.tokochat'
+    testNamespace 'com.tokopedia.tokochat.test'
     buildFeatures {
         viewBinding true
     }
@@ -40,8 +41,15 @@ android {
     buildFeatures {
         buildConfig true
     }
-
-
+    sourceSets {
+        main {
+            res {
+                srcDirs 'src/main/res',
+                        'src/main/res/layouts/chatroom',
+                        'src/main/res/layouts/chatlist'
+            }
+        }
+    }
     testOptions {
         unitTests.all {
             jacoco {
@@ -49,6 +57,7 @@ android {
                 excludes = ['jdk.internal.*']
             }
         }
+        animationsDisabled = true
     }
 }
 
@@ -56,6 +65,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.tokochat_config_common)
     implementation projectOrAar(rootProject.ext.features.tokochat_common)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
+    implementation projectOrAar(rootProject.ext.features.usercomponents)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
@@ -63,7 +74,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.iris)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
@@ -73,6 +83,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
@@ -97,9 +108,12 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.miscDependencies.liveDataKtx
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.coreKtx
     implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.miscDependencies.workManager
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.playServicesDependencies.maps
@@ -107,6 +121,10 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
+
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
@@ -127,6 +145,7 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.testCoreKtx
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)

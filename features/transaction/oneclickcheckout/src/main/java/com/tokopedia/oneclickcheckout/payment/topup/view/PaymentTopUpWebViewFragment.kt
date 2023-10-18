@@ -83,9 +83,9 @@ class PaymentTopUpWebViewFragment : BaseDaggerFragment() {
         val url = arguments?.getString(EXTRA_URL, "") ?: ""
         if (url.isNotEmpty()) {
             val finalUrl = Uri.parse(url).buildUpon()
-                    .appendQueryParameter(QUERY_IS_HIDE_DIGITAL, isHideDigital())
-                    .appendQueryParameter(QUERY_BACK_URL, getRedirectUrl())
-                    .build().toString()
+                .appendQueryParameter(QUERY_IS_HIDE_DIGITAL, isHideDigital())
+                .appendQueryParameter(QUERY_BACK_URL, getRedirectUrl())
+                .build().toString()
             loadWebView(finalUrl)
         } else {
             observeOvoTopUpUrl()
@@ -161,8 +161,12 @@ class PaymentTopUpWebViewFragment : BaseDaggerFragment() {
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.build(it, throwable?.message
-                            ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
+                    Toaster.build(
+                        it,
+                        throwable?.message
+                            ?: DEFAULT_ERROR_MESSAGE,
+                        type = Toaster.TYPE_ERROR
+                    ).show()
                 }
             }
         }

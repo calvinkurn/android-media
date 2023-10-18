@@ -13,6 +13,9 @@ import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitabl
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.di.HomeScope
+import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
+import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.smart_recycler_helper.SmartExecutors
@@ -23,12 +26,15 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import dagger.Module
 import dagger.Provides
 
-@Module(includes = [
-    HomeDataSourceModule::class,
-    HomeDatabaseModule::class,
-    HomeMapperModule::class,
-    HomeUseCaseModule::class
-])
+@Module(
+    includes = [
+        HomeDataSourceModule::class,
+        HomeDatabaseModule::class,
+        HomeMapperModule::class,
+        HomeUseCaseModule::class,
+        HomeRateLimiterModule::class
+    ]
+)
 class HomeModule {
 
     @HomeScope
@@ -46,7 +52,14 @@ class HomeModule {
     @HomeScope
     @Provides
     fun provideUserSession(
-            @ApplicationContext context: Context?): UserSessionInterface = UserSession(context)
+        @ApplicationContext context: Context?
+    ): UserSessionInterface = UserSession(context)
+
+    @HomeScope
+    @Provides
+    fun provideHomePrefController(
+        @ApplicationContext context: Context?
+    ): HomePrefController = HomePrefController(context)
 
     @Provides
     fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
@@ -57,7 +70,7 @@ class HomeModule {
 
     @Provides
     @HomeScope
-    fun provideHomeVisitableFactory(userSessionInterface: UserSessionInterface?, remoteConfig: RemoteConfig): HomeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface!!, remoteConfig, HomeDefaultDataSource())
+    fun provideHomeVisitableFactory(userSessionInterface: UserSessionInterface?, homePrefController: HomePrefController, remoteConfig: RemoteConfig): HomeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface!!, homePrefController, remoteConfig, HomeDefaultDataSource())
 
     @Provides
     @HomeScope
@@ -72,4 +85,14 @@ class HomeModule {
     fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
         return LocalCacheHandler(context, CacheUtil.KEY_POPUP_INTRO_OVO_CACHE)
     }
+
+    @HomeScope
+    @Provides
+    fun provideHomeRemoteConfigController(
+        remoteConfig: RemoteConfig
+    ): HomeRemoteConfigController = HomeRemoteConfigController(remoteConfig)
+
+    @HomeScope
+    @Provides
+    fun provideHomeThematicUtil(): HomeThematicUtil = HomeThematicUtil()
 }

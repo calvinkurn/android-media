@@ -16,7 +16,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.utils.MediaException
+import com.tokopedia.media.loader.data.MediaException
 import com.tokopedia.media.loader.wrapper.MediaDataSource
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.R

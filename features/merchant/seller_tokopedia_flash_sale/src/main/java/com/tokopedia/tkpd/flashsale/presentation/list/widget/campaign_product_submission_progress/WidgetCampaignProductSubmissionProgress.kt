@@ -14,13 +14,13 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsWidgetCampaignProductSubmissionProgressLayoutBinding
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionProgress
 import com.tokopedia.tkpd.flashsale.presentation.list.widget.campaign_product_submission_progress.adapter.delegate.CampaignProductSubmissionProgressItemDelegate
 import com.tokopedia.tkpd.flashsale.presentation.list.widget.campaign_product_submission_progress.adapter.viewholder.CampaignProductSubmissionProgressItemViewHolder
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.seller_tokopedia_flash_sale.R
 
 class WidgetCampaignProductSubmissionProgress(
     context: Context, attrs: AttributeSet

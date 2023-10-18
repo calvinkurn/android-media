@@ -4,14 +4,16 @@ import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
-import com.tokopedia.play.broadcaster.type.OriginalPrice
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
-import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.seller.model.OriginalPrice
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatusUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.seller.model.etalase.EtalaseUiModel
+import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
+import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 
 /**
@@ -23,6 +25,7 @@ class ShortsUiModelBuilder {
         shortsId: String = "123",
         shortsAllowed: Boolean = true,
         isBanned: Boolean = false,
+        hasContent: Boolean = false,
         tncList: List<TermsAndConditionUiModel> = listOf(),
         maxTaggedProduct: Int = 30,
         maxTitleCharacter: Int = 24,
@@ -35,6 +38,7 @@ class ShortsUiModelBuilder {
         maxTaggedProduct = maxTaggedProduct,
         maxTitleCharacter = maxTitleCharacter,
         shortsVideoSourceId = shortsVideoSourceId,
+        hasContent = hasContent,
     )
 
     fun buildAccountListModel(
@@ -134,7 +138,7 @@ class ShortsUiModelBuilder {
     ): List<ProductTagSectionUiModel> {
         return List(1) {
             ProductTagSectionUiModel("", CampaignStatus.Ongoing, List(size) { productCounter ->
-                ProductUiModel(productCounter.toString(), "Product $it", "", 1, OriginalPrice("Rp1000.00", 1000.0))
+                ProductUiModel(productCounter.toString(), "Product $it", false, "", 0, false,"", 1, OriginalPrice("Rp1000.00", 1000.0), PinProductUiModel.Empty, "")
             })
         }
     }
@@ -150,18 +154,25 @@ class ShortsUiModelBuilder {
     }
 
     fun buildTags(
-        size: Int = 3
-    ): Set<PlayTagUiModel> {
-        return mutableSetOf<PlayTagUiModel>().apply {
-            repeat(size) {
-                add(
-                    PlayTagUiModel(
-                        tag = "Tag $it",
-                        isChosen = false,
+        size: Int = 3,
+        minTags: Int = 1,
+        maxTags: Int = 2,
+    ): PlayTagUiModel {
+        return PlayTagUiModel(
+            tags = mutableSetOf<PlayTagItem>().apply {
+                repeat(size) {
+                    add(
+                        PlayTagItem(
+                            tag = "Tag $it",
+                            isChosen = false,
+                            isActive = true,
+                        )
                     )
-                )
-            }
-        }
+                }
+            },
+            minTags = minTags,
+            maxTags = maxTags,
+        )
     }
 
     fun buildLastTaggedProducts(

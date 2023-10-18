@@ -40,9 +40,9 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
+import com.tokopedia.universal_sharing.util.UniversalShareConst
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -50,7 +50,6 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.date.DateUtil
 import kotlinx.android.synthetic.main.activity_flight_search.*
-import java.util.*
 
 /**
  * @author by furqan on 06/04/2020
@@ -238,7 +237,7 @@ open class FlightSearchActivity :
         val imageView = ImageView(this)
         val param = LinearLayout.LayoutParams(DIMEN_24_IN_PX, DIMEN_24_IN_PX)
         imageView.layoutParams = param
-        imageView.setImage(R.drawable.ic_flight_edit, CORNER_RADIUS)
+        imageView.setImageResource(R.drawable.ic_flight_edit)
 
         val imageViewShare = IconUnify(this)
         val paramShare = LinearLayout.LayoutParams(DIMEN_24_IN_PX, DIMEN_24_IN_PX)
@@ -248,7 +247,7 @@ open class FlightSearchActivity :
 
         wrapper.addView(imageView)
         wrapper.addView(imageViewShare)
-        wrapper.tag = TAG_CHANGE_BUTTON
+        imageView.tag = TAG_CHANGE_BUTTON
         imageView.setOnClickListener {
             showChangeSearchBottomSheet()
         }
@@ -286,7 +285,7 @@ open class FlightSearchActivity :
         val subtitle = "$dateString | $passengerString"
         flight_search_header.title = title
         flight_search_header.subtitle = subtitle
-        flight_search_header.subheaderView?.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+        flight_search_header.subheaderView?.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
 
         supportActionBar?.elevation = 0f
     }
@@ -320,7 +319,7 @@ open class FlightSearchActivity :
                         shareTracker.trackClickShareChannel(
                             flightSearchPassDataModel.searchRequestId,
                             shareModel.channel ?: "",
-                            UniversalShareBottomSheet.KEY_IMAGE_DEFAULT,
+                            UniversalShareConst.ImageType.KEY_IMAGE_DEFAULT,
                             FlightAnalyticsCategory.DG_FLIGHT_PAGE,
                             FlightAnalyticsTrackerId.CLICK_CHANNEL,
                             FlightAnalyticsDefaults.DIGITAL_CURRENT_SITE
@@ -617,7 +616,6 @@ open class FlightSearchActivity :
         private val DIMEN_24_IN_PX = 24.toPx()
         private val DIMEN_4_IN_PX = 4.toPx()
         private val DIMEN_14_IN_PX = 14.toPx()
-        private const val CORNER_RADIUS = 8f
         private const val IMG_FLIGHT_SHARE = "https://images.tokopedia.net/img/flight/img/img_flight_thumbnail_share.jpg"
         private const val EEE_DD_MMM_YYYY = "EEE, dd MMM yyyy"
         private const val EEEE_DD_MMM_YY = "EEEE, dd MMM yyyy"

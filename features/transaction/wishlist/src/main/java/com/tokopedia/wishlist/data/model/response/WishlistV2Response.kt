@@ -59,94 +59,95 @@ data class WishlistV2Response(
         ) {
             data class Item(
 
-				@SerializedName("original_price")
-					val originalPrice: String = "",
+                @SerializedName("original_price")
+                val originalPrice: String = "",
 
-				@SerializedName("label_group")
-					val labelGroup: List<LabelGroupItem> = emptyList(),
+                @SerializedName("label_group")
+                val labelGroup: List<LabelGroupItem> = emptyList(),
 
-				@SerializedName("shop")
-					val shop: Shop = Shop(),
+                @SerializedName("shop")
+                val shop: Shop = Shop(),
 
-				@SerializedName("price_fmt")
-					val priceFmt: String = "",
+                @SerializedName("price_fmt")
+                val priceFmt: String = "",
 
-				@SerializedName("available")
-					val available: Boolean = false,
+                @SerializedName("available")
+                val available: Boolean = false,
 
-				@SerializedName("rating")
-					val rating: String = "",
+                @SerializedName("rating")
+                val rating: String = "",
 
-				@SerializedName("original_price_fmt")
-					val originalPriceFmt: String = "",
+                @SerializedName("original_price_fmt")
+                val originalPriceFmt: String = "",
 
-				@SerializedName("discount_percentage")
-					val discountPercentage: Int = -1,
+                @SerializedName("discount_percentage")
+                val discountPercentage: Int = -1,
 
-				@SerializedName("default_child_id")
-					val defaultChildId: String = "",
+                @SerializedName("default_child_id")
+                val defaultChildId: String = "",
 
-				@SuppressLint("Invalid Data Type")
-					@SerializedName("price")
-					val price: String = "",
+                @SuppressLint("Invalid Data Type")
+                @SerializedName("price")
+                val price: String = "",
 
-				@SuppressLint("Invalid Data Type") @SerializedName("wholesale_price")
+                @SuppressLint("Invalid Data Type")
+                @SerializedName("wholesale_price")
                 val wholesalePrice: List<WholesalePriceItem> = emptyList(),
 
-				@SerializedName("id")
-					val id: String = "",
+                @SerializedName("id")
+                val id: String = "",
 
-				@SerializedName("buttons")
-					val buttons: Buttons = Buttons(),
+                @SerializedName("buttons")
+                val buttons: Buttons = Buttons(),
 
-				@SerializedName("image_url")
-					val imageUrl: String = "",
+                @SerializedName("image_url")
+                val imageUrl: String = "",
 
-				@SerializedName("discount_percentage_fmt")
-					val discountPercentageFmt: String = "",
+                @SerializedName("discount_percentage_fmt")
+                val discountPercentageFmt: String = "",
 
-				@SerializedName("wishlist_id")
-					val wishlistId: String = "",
+                @SerializedName("wishlist_id")
+                val wishlistId: String = "",
 
-				@SerializedName("variant_name")
-					val variantName: String = "",
+                @SerializedName("variant_name")
+                val variantName: String = "",
 
-				@SerializedName("label_stock")
-					val labelStock: String = "",
+                @SerializedName("label_stock")
+                val labelStock: String = "",
 
-				@SerializedName("url")
-					val url: String = "",
+                @SerializedName("url")
+                val url: String = "",
 
-				@SerializedName("label_status")
-					val labelStatus: String = "",
+                @SerializedName("label_status")
+                val labelStatus: String = "",
 
-				@SerializedName("labels")
-					val labels: List<String> = emptyList(),
+                @SerializedName("labels")
+                val labels: List<String> = emptyList(),
 
-				@SerializedName("badges")
-					val badges: List<BadgesItem> = emptyList(),
+                @SerializedName("badges")
+                val badges: List<BadgesItem> = emptyList(),
 
-				@SerializedName("name")
-					val name: String = "",
+                @SerializedName("name")
+                val name: String = "",
 
-				@SerializedName("min_order")
-					val minOrder: String = "",
+                @SerializedName("min_order")
+                val minOrder: String = "",
 
-				@SerializedName("bebas_ongkir")
-					val bebasOngkir: BebasOngkir = BebasOngkir(),
+                @SerializedName("bebas_ongkir")
+                val bebasOngkir: BebasOngkir = BebasOngkir(),
 
-				@SerializedName("category")
-					val category: List<CategoryItem> = emptyList(),
+                @SerializedName("category")
+                val category: List<CategoryItem> = emptyList(),
 
-				@SerializedName("preorder")
-					val preorder: Boolean = false,
+                @SerializedName("preorder")
+                val preorder: Boolean = false,
 
-				@SerializedName("sold_count")
-					val soldCount: String = ""
-			) {
-				data class LabelGroupItem(
-						@SerializedName("position")
-						val position: String = "",
+                @SerializedName("sold_count")
+                val soldCount: String = ""
+            ) {
+                data class LabelGroupItem(
+                    @SerializedName("position")
+                    val position: String = "",
 
                     @SerializedName("title")
                     val title: String = "",

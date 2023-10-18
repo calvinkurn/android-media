@@ -18,6 +18,7 @@ import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.play.core.splitcompat.SplitCompat
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -31,7 +32,6 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.common.extension.collectWhenResumed
@@ -42,6 +42,7 @@ import com.tokopedia.review.feature.media.detail.presentation.fragment.ReviewDet
 import com.tokopedia.review.feature.media.detail.presentation.uimodel.ReviewDetailUiModel
 import com.tokopedia.review.feature.media.gallery.base.presentation.fragment.ReviewMediaGalleryFragment
 import com.tokopedia.review.feature.media.gallery.detailed.di.DetailedReviewMediaGalleryComponentInstance
+import com.tokopedia.review.feature.media.gallery.detailed.di.component.DetailedReviewMediaGalleryComponent
 import com.tokopedia.review.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.bottomsheet.ActionMenuBottomSheet
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.ActionMenuBottomSheetUiState
@@ -63,7 +64,10 @@ import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
+class DetailedReviewMediaGalleryActivity :
+    AppCompatActivity(),
+    CoroutineScope,
+    HasComponent<DetailedReviewMediaGalleryComponent> {
 
     companion object {
         const val TOASTER_KEY_ERROR_GET_REVIEW_MEDIA = "ERROR_GET_REVIEW_MEDIA"
@@ -78,8 +82,13 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     lateinit var dispatchers: CoroutineDispatchers
 
     @Inject
+    lateinit var reviewDetailTracker: ReviewDetailTracker
+
+    @Inject
     @DetailedReviewMediaGalleryViewModelFactory
     lateinit var detailedReviewMediaGalleryViewModelFactory: ViewModelProvider.Factory
+
+    private var sharedComponent: DetailedReviewMediaGalleryComponent? = null
 
     private var binding by viewBinding(ActivityDetailedReviewMediaGalleryBinding::bind)
 
@@ -173,7 +182,9 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
             !e.isAboveCounter() && gestureDetector?.onTouchEvent(e) == true
         ) {
             true
-        } else super.dispatchTouchEvent(e)
+        } else {
+            super.dispatchTouchEvent(e)
+        }
     }
 
     override fun onBackPressed() {
@@ -184,8 +195,20 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         }
     }
 
+    override fun getComponent(): DetailedReviewMediaGalleryComponent {
+        return sharedComponent ?: initializeSharedComponent()
+    }
+
+    private fun initializeSharedComponent(): DetailedReviewMediaGalleryComponent {
+        val pageSource = intent.extras?.getInt(ReviewMediaGalleryRouter.EXTRAS_PAGE_SOURCE) ?: ReviewMediaGalleryRouter.PageSource.REVIEW
+        return DetailedReviewMediaGalleryComponentInstance.create(
+            context = this,
+            pageSource = pageSource
+        ).also { sharedComponent = it }
+    }
+
     private fun initInjector() {
-        DetailedReviewMediaGalleryComponentInstance.getInstance(this).inject(this)
+        initializeSharedComponent().inject(this)
     }
 
     private fun initUiState(savedInstanceState: Bundle?) {
@@ -328,7 +351,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
             combine(
                 sharedReviewMediaGalleryViewModel.orientationUiState,
                 sharedReviewMediaGalleryViewModel.overlayVisibility,
-                sharedReviewMediaGalleryViewModel.currentReviewDetail,
+                sharedReviewMediaGalleryViewModel.currentReviewDetail
             ) { orientationUiState, overlayVisibility, currentReviewDetail ->
                 Triple(orientationUiState, overlayVisibility, currentReviewDetail)
             }
@@ -361,7 +384,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     private fun collectOrientationUiStateUpdate() {
         collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.orientationUiState) {
-            requestedOrientation = when(it.orientation) {
+            requestedOrientation = when (it.orientation) {
                 OrientationUiState.Orientation.LANDSCAPE -> {
                     enableFullscreen()
                     ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
@@ -520,7 +543,13 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     private fun finishActivity() {
         if (sharedReviewMediaGalleryViewModel.hasSuccessToggleLikeStatus()) {
-            setResult(Activity.RESULT_OK)
+            setResult(
+                Activity.RESULT_OK,
+                ReviewMediaGalleryRouter.setResultData(
+                    sharedReviewMediaGalleryViewModel.getFeedbackId(),
+                    sharedReviewMediaGalleryViewModel.getLikeStatus(),
+                )
+            )
         }
         finish()
     }
@@ -540,7 +569,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
         private fun getActionMenuBottomSheet(): ActionMenuBottomSheet {
             return actionMenuBottomSheet ?: getAddedActionMenuBottomSheet()
-            ?: createActionMenuBottomSheet()
+                ?: createActionMenuBottomSheet()
         }
 
         fun showActionMenuBottomSheet() {
@@ -568,7 +597,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
             connectivityManager.unregisterNetworkCallback(callback)
         }
 
-        private inner class Callback: ConnectivityManager.NetworkCallback() {
+        private inner class Callback : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 sharedReviewMediaGalleryViewModel.updateWifiConnectivityStatus(connected = true)
             }
@@ -581,7 +610,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     private inner class AutoHideOverlayHandler {
         private val timer by lazy(LazyThreadSafetyMode.NONE) {
-            object: CountDownTimer(AUTO_HIDE_OVERLAY_DURATION, AUTO_HIDE_OVERLAY_DURATION) {
+            object : CountDownTimer(AUTO_HIDE_OVERLAY_DURATION, AUTO_HIDE_OVERLAY_DURATION) {
                 override fun onTick(millisUntilFinished: Long) {
                     // noop
                 }
@@ -640,7 +669,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
                     .toString()
             )
             if (routed) {
-                ReviewDetailTracker.trackClickReviewerName(
+                reviewDetailTracker.trackClickReviewerName(
                     sharedReviewMediaGalleryViewModel.isFromGallery(),
                     sharedReviewMediaGalleryViewModel.currentReviewDetail.value?.feedbackID.orEmpty(),
                     userId,

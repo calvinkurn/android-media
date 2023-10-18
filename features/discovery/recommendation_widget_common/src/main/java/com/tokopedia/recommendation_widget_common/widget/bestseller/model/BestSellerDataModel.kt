@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.widget.bestseller.model
 
 import android.os.Bundle
+import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -24,8 +25,10 @@ data class BestSellerDataModel(
         val height: Int = 0,
         var chipsPosition: Int = 1,
         var dividerType: Int = 0,
-        var dividerSize: Int = 1
+        var dividerSize: Int = 1,
+        val channelHeader: ChannelHeader = ChannelHeader()
 ) : RecommendationVisitable{
+
     override fun visitableId(): String? {
         return id
     }
@@ -34,13 +37,16 @@ data class BestSellerDataModel(
         return b is BestSellerDataModel && b.title == title &&
                 b.pageName == pageName &&
                 b.seeMoreAppLink == seeMoreAppLink &&
+                b.recommendationItemList.isNotEmpty() &&
                 b.recommendationItemList === recommendationItemList &&
                 b.recommendationItemList.containsAll(recommendationItemList)
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
         if(b is BestSellerDataModel){
-            if(!b.recommendationItemList.containsAll(recommendationItemList) || (recommendationItemList.isEmpty() && b.recommendationItemList.isNotEmpty())){
+            if(b.recommendationItemList.isEmpty()) {
+                return Bundle().apply { putBoolean(BEST_SELLER_EMPTY_STATE, true) }
+            } else if(!b.recommendationItemList.containsAll(recommendationItemList) || (recommendationItemList.isEmpty() && b.recommendationItemList.isNotEmpty())){
                 return Bundle().apply { putBoolean(BEST_SELLER_UPDATE_RECOMMENDATION, true) }
             } else if(b.recommendationItemList !== recommendationItemList){
                 return Bundle().apply { putBoolean(BEST_SELLER_HIDE_LOADING_RECOMMENDATION, true) }
@@ -55,5 +61,6 @@ data class BestSellerDataModel(
     companion object{
         const val BEST_SELLER_UPDATE_RECOMMENDATION = "UPDATE_RECOMMENDATION"
         const val BEST_SELLER_HIDE_LOADING_RECOMMENDATION = "HIDE_LOADING_RECOMMENDATION"
+        const val BEST_SELLER_EMPTY_STATE = "EMPTY_STATE"
     }
 }

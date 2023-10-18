@@ -22,7 +22,7 @@ class OrderTrackingDiffUtilCallback(
         return oldItems.getOrNull(oldItemPosition) == newItems.getOrNull(newItemPosition)
     }
 
-    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any {
         val oldItem = oldItems.getOrNull(oldItemPosition)
         val newItem = newItems.getOrNull(newItemPosition)
         return Pair(oldItem, newItem)

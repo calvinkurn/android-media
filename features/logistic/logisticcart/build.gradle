@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
-apply plugin: 'kotlin-kapt'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'io.hansel.preprocessor.module'
 
@@ -10,6 +9,8 @@ kapt {
 }
 
 android {
+    namespace 'com.tokopedia.logisticcart'
+    testNamespace 'com.tokopedia.logisticcart.test'
     buildFeatures {
         viewBinding true
     }
@@ -30,10 +31,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
-    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.utils)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.track)
 
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
     implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)
@@ -50,9 +51,6 @@ dependencies {
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
-        exclude group: "com.android.support"
-    }
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.dagger
@@ -69,6 +67,8 @@ dependencies {
     //--------------------- Testing Library Section ---------------------//
     //-------------------------------------------------------------------//
     testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
     //-------------------------------------------------------------------//
 }
 

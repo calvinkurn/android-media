@@ -55,7 +55,7 @@ class MiniCartSimplifiedWidget : BaseCustomView {
     private var widgetListener: MiniCartSimplifiedWidgetListener? = null
 
     private var binding: WidgetMiniCartSimplifiedBinding =
-            WidgetMiniCartSimplifiedBinding.inflate(LayoutInflater.from(context), this, true)
+        WidgetMiniCartSimplifiedBinding.inflate(LayoutInflater.from(context), this, true)
     private var promoProgressBar: PromoProgressBarWidget = PromoProgressBarWidget(context)
 
     private var animationDebounceJob: Job? = null
@@ -67,9 +67,17 @@ class MiniCartSimplifiedWidget : BaseCustomView {
     /*
     * Function to initialize the widget
     * */
-    fun initialize(shopIds: List<String>, promoId: String, promoCode: String,
-                   businessUnit: String, currentSite: String, source: MiniCartSource, fragment: Fragment,
-                   pageSource: MiniCartAnalytics.Page, listener: MiniCartSimplifiedWidgetListener) {
+    fun initialize(
+        shopIds: List<String>,
+        promoId: String,
+        promoCode: String,
+        businessUnit: String,
+        currentSite: String,
+        source: MiniCartSource,
+        fragment: Fragment,
+        pageSource: MiniCartAnalytics.Page,
+        listener: MiniCartSimplifiedWidgetListener
+    ) {
         if (viewModel == null) {
             val application = fragment.activity?.application
             initializeInjector(application)
@@ -89,9 +97,9 @@ class MiniCartSimplifiedWidget : BaseCustomView {
     private fun initializeInjector(baseAppComponent: Application?) {
         if (baseAppComponent is BaseMainApplication) {
             DaggerMiniCartWidgetComponent.builder()
-                    .baseAppComponent(baseAppComponent.baseAppComponent)
-                    .build()
-                    .inject(this)
+                .baseAppComponent(baseAppComponent.baseAppComponent)
+                .build()
+                .inject(this)
         }
     }
 
@@ -274,15 +282,15 @@ class MiniCartSimplifiedWidget : BaseCustomView {
                 fragment.view?.let {
                     Toaster.toasterCustomBottomHeight = TOASTER_BOTTOM_HEIGHT.toPx()
                     Toaster.build(
-                            it,
-                            ErrorHandler.getErrorMessage(
-                                    it.context,
-                                    throwable,
-                                    ErrorHandler.Builder().withErrorCode(false).build()
-                            ),
-                            Toaster.LENGTH_SHORT,
-                            Toaster.TYPE_ERROR,
-                            actionText = context.getString(R.string.mini_cart_cta_ok)
+                        it,
+                        ErrorHandler.getErrorMessage(
+                            it.context,
+                            throwable,
+                            ErrorHandler.Builder().withErrorCode(false).build()
+                        ),
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_ERROR,
+                        actionText = context.getString(R.string.mini_cart_cta_ok)
                     ).show()
                 }
             }
@@ -320,13 +328,13 @@ class MiniCartSimplifiedWidget : BaseCustomView {
         val miniCartSimplifiedData = viewModel?.miniCartSimplifiedData?.value ?: return
         val validateUseMvcData = viewModel?.validateUseMvcData?.value ?: return
         analytics.eventClickCheckCart(
-                basketSize = miniCartSimplifiedData.miniCartWidgetData.totalProductPrice.toString(),
-                isFulfilled = validateUseMvcData.progressPercentage >= 100,
-                shopId = viewModel?.currentShopIds?.joinToString() ?: "",
-                pageSource = viewModel?.currentPageSource,
-                businessUnit = viewModel?.currentBusinessUnit ?: "",
-                currentSite = viewModel?.currentSite ?: "",
-                trackerId = null
+            basketSize = miniCartSimplifiedData.miniCartWidgetData.totalProductPrice.toString(),
+            isFulfilled = validateUseMvcData.progressPercentage >= 100,
+            shopId = viewModel?.currentShopIds?.joinToString() ?: "",
+            pageSource = viewModel?.currentPageSource,
+            businessUnit = viewModel?.currentBusinessUnit ?: "",
+            currentSite = viewModel?.currentSite ?: "",
+            trackerId = null
         )
         sendEventMvcProgressBarImpression(isClickCheckCart = true)
     }
@@ -336,11 +344,11 @@ class MiniCartSimplifiedWidget : BaseCustomView {
             val miniCartSimplifiedData = viewModel?.miniCartSimplifiedData?.value ?: return
             val validateUseMvcData = viewModel?.validateUseMvcData?.value ?: return
             analytics.eventMvcProgressBarImpression(
-                    basketSize = miniCartSimplifiedData.miniCartWidgetData.totalProductPrice.toString(),
-                    promoPercentage = validateUseMvcData.progressPercentage.toString(),
-                    shopId = viewModel?.currentShopIds?.joinToString() ?: "",
-                    businessUnit = viewModel?.currentBusinessUnit ?: "",
-                    currentSite = viewModel?.currentSite ?: ""
+                basketSize = miniCartSimplifiedData.miniCartWidgetData.totalProductPrice.toString(),
+                promoPercentage = validateUseMvcData.progressPercentage.toString(),
+                shopId = viewModel?.currentShopIds?.joinToString() ?: "",
+                businessUnit = viewModel?.currentBusinessUnit ?: "",
+                currentSite = viewModel?.currentSite ?: ""
             )
             viewModel?.isFirstValidate = false
         }

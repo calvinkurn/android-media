@@ -47,7 +47,7 @@ class CampaignTypeBottomSheet : BottomSheetUnify() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val viewBinding = BottomsheetCampaignTypeLayoutBinding.inflate(inflater, container, false)
         binding = viewBinding
-        setTitle(getString(R.string.campaign_type))
+        setTitle(getString(R.string.cl_campaign_type))
         setChild(viewBinding.root)
         clearContentPadding = true
         return super.onCreateView(inflater, container, savedInstanceState)

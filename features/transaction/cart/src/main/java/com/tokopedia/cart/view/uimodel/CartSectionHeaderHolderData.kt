@@ -5,6 +5,6 @@ package com.tokopedia.cart.view.uimodel
  */
 
 data class CartSectionHeaderHolderData(
-        var title: String = "",
-        var showAllAppLink: String = ""
+    var title: String = "",
+    var showAllAppLink: String = ""
 )

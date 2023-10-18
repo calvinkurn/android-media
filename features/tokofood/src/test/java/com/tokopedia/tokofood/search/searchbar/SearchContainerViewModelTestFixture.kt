@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.tokofood.feature.search.container.presentation.viewmodel.SearchContainerViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import org.junit.Before
 import org.junit.Rule
 
@@ -13,7 +14,7 @@ open class SearchContainerViewModelTestFixture {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
+    val coroutineTestRule = UnconfinedTestRule()
 
     protected lateinit var viewModel: SearchContainerViewModel
 

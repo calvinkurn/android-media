@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivPovConfirmReject"
+        android:layout_width="280dp"
+        android:layout_height="210dp"
+        android:layout_marginTop="8dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tvPofConfirmRejectTitle"
+        app:layout_constraintTop_toTopOf="parent"
+        android:scaleType="fitXY"
+        app:unify_image_type="rect"
+        app:unify_image_corner_radius="0" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPofConfirmRejectTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivPovConfirmReject"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="heading_2"
+        android:textColor="@color/Unify_NN950"
+        android:text="@string/buyer_order_detail_pof_confirm_reject_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPofConfirmRejectDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvPofConfirmRejectTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="paragraph_2"
+        android:textColor="@color/Unify_NN600"
+        android:text="@string/buyer_order_detail_pof_confirm_reject_desc" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSecondaryBack"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintEnd_toStartOf="@id/guidelineBtn"
+        app:layout_constraintTop_toBottomOf="@id/tvPofConfirmRejectDesc"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonSize="medium"
+        android:textColor="@color/Unify_NN600"
+        android:text="@string/buyer_order_detail_pof_confirm_reject_btn_secondary" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnPrimaryCancellation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvPofConfirmRejectDesc"
+        app:layout_constraintStart_toEndOf="@id/guidelineBtn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonSize="medium"
+        android:textColor="@color/Unify_NN0"
+        android:text="@string/buyer_order_detail_pof_confirm_reject_btn_primary" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

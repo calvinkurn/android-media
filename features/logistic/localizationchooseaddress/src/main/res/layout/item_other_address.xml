@@ -23,8 +23,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/txt_other_address"
                 app:layout_constraintVertical_chainStyle="packed"
-                app:icon_color_light_enable="@color/Unify_G500"
-                app:icon_color_night_enable="@color/Unify_G500"
+                app:icon_color_light_enable="@color/Unify_GN500"
+                app:icon_color_night_enable="@color/Unify_GN500"
                 app:icon_name="CHEVRON_RIGHT"
                 android:background="@drawable/bg_circle_more"
                 tools:ignore="ContentDescription"
@@ -44,7 +44,7 @@
                 app:typographyType="display_3"
                 app:typographyWeight="bold"
                 android:text="@string/cek_alamat_lainnya"
-                android:textColor="@color/Unify_G500"
+                android:textColor="@color/Unify_GN500"
                 android:gravity="center"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

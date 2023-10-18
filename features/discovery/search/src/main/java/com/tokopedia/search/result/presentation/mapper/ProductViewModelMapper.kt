@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.mapper
 
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -21,6 +22,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.product.banner.BannerDataView
 import com.tokopedia.search.result.product.broadmatch.RelatedDataView
+import com.tokopedia.search.result.product.changeview.ViewType
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
@@ -41,6 +43,7 @@ class ProductViewModelMapper {
         keyword: String,
         isLocalSearchRecommendation: Boolean,
         externalReference: String,
+        newCardType: String = "",
     ): ProductDataView {
         val (searchProductHeader, searchProductData) = searchProductModel.searchProduct
 
@@ -59,13 +62,14 @@ class ProductViewModelMapper {
             keyword,
             externalReference,
         )
+        val productListType = newCardType.ifBlank { searchProductModel.getProductListType() }
         productDataView.productList = convertToProductItemDataViewList(
             lastProductItemPosition,
             searchProductData.productList,
             pageTitle,
             dimension90,
             isLocalSearchRecommendation,
-            searchProductModel.getProductListType(),
+            productListType,
             externalReference,
             searchProductData.keywordIntention,
             searchProductModel.isShowButtonAtc,
@@ -99,7 +103,11 @@ class ProductViewModelMapper {
         )
         productDataView.additionalParams = searchProductHeader.additionalParams
         productDataView.autocompleteApplink = searchProductData.autocompleteApplink
-        productDataView.defaultView = searchProductHeader.defaultView
+        val isListViewExperiment = searchProductModel.getProductListType() == SearchConstant.ProductListType.LIST_VIEW
+        productDataView.defaultView = if (isListViewExperiment) ViewType.LIST.value else ViewType.SMALL_GRID.value
+        productDataView.gridType = searchProductModel.getProductListType().takeIf {
+            it == SearchConstant.ProductListType.FIXED_GRID
+        } ?: ""
         productDataView.bannerDataView = BannerDataView.create(
             searchProductData.banner,
             keyword,
@@ -203,6 +211,7 @@ class ProductViewModelMapper {
         productItem.keywordIntention = keywordIntention
         productItem.showButtonAtc = showButtonAtc
         productItem.parentId = productModel.parentId
+        productItem.isPortrait = productModel.isPortrait
         return productItem
     }
 

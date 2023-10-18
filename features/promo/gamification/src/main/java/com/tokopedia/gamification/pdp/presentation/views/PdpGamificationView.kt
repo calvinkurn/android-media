@@ -173,7 +173,7 @@ class PdpGamificationView : LinearLayout {
                             }, delay)
                         } else {
                             val oldSize = dataList.size
-                            if (oldSize == 0 && it.data?.isNullOrEmpty()) {
+                            if (oldSize == 0 && it.data.isNullOrEmpty()) {
                                 viewModel.useEmptyShopId = true
                                 viewModel.shopId = ""
                                 viewModel.getProducts(0)
@@ -183,6 +183,9 @@ class PdpGamificationView : LinearLayout {
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     hidePdp()
+                }
+                else -> {
+                    //no-op
                 }
             }
         })

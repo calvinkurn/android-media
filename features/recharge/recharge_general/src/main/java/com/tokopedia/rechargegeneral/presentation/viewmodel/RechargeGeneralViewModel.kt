@@ -15,9 +15,12 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
 import com.tokopedia.rechargegeneral.model.AddSmartBills
 import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicInput
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
+import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
+import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralDppoConsentUiModel
 import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSelectData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -28,6 +31,8 @@ import javax.inject.Inject
 
 class RechargeGeneralViewModel @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
+    private val getDppoConsentUseCase: GetDppoConsentUseCase,
+    private val rechargeGeneralMapper: RechargeGeneralMapper,
     private val dispatcher: CoroutineDispatchers
 ) :
     BaseViewModel(dispatcher.io) {
@@ -43,6 +48,10 @@ class RechargeGeneralViewModel @Inject constructor(
     private val mutableAddBills = MutableLiveData<Result<AddSmartBills>>()
     val addBills: LiveData<Result<AddSmartBills>>
         get() = mutableAddBills
+
+    private val mutableDppoConsent = MutableLiveData<Result<RechargeGeneralDppoConsentUiModel>>()
+    val dppoConsent: LiveData<Result<RechargeGeneralDppoConsentUiModel>>
+        get() = mutableDppoConsent
 
     var productListJob: Job? = null
 
@@ -69,8 +78,7 @@ class RechargeGeneralViewModel @Inject constructor(
         productListJob?.cancel()
         productListJob = launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(rawQuery, RechargeGeneralDynamicInput.Response::class.java, mapParams)
-            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
+            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
             val data = withContext(dispatcher.io) {
                 graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeGeneralDynamicInput.Response>()
@@ -103,6 +111,16 @@ class RechargeGeneralViewModel @Inject constructor(
             mutableAddBills.postValue(Success(data))
         }) {
             mutableAddBills.postValue(Fail(it))
+        }
+    }
+
+    fun getDppoConsent(categoryId: Int) {
+        launchCatchError(block = {
+            val data = getDppoConsentUseCase.execute(categoryId)
+            val uiData = rechargeGeneralMapper.mapDppoConsentToUiModel(data)
+            mutableDppoConsent.postValue(Success(uiData))
+        }) {
+            mutableDppoConsent.postValue(Fail(it))
         }
     }
 

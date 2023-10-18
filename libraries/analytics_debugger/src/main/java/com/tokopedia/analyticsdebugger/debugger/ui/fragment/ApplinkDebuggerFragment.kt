@@ -6,20 +6,21 @@ import android.view.*
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.debugger.di.AnalyticsDebuggerComponent
 import com.tokopedia.analyticsdebugger.debugger.di.DaggerAnalyticsDebuggerComponent
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.ApplinkDebuggerDetailActivity
 import com.tokopedia.analyticsdebugger.debugger.ui.adapter.ApplinkDebuggerTypeFactory
+import com.tokopedia.analyticsdebugger.debugger.ui.presenter.ApplinkDebugger
+import javax.inject.Inject
 
 class ApplinkDebuggerFragment : BaseSearchListFragment<Visitable<*>, ApplinkDebuggerTypeFactory>(), com.tokopedia.analyticsdebugger.debugger.ui.presenter.ApplinkDebugger.View {
 
     private var buttonSearch: Button? = null
 
-    var presenter: com.tokopedia.analyticsdebugger.debugger.ui.presenter.ApplinkDebugger.Presenter? = null
+    @Inject
+    lateinit var presenter: ApplinkDebugger.Presenter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_analytics_debugger, container, false)
@@ -36,9 +37,9 @@ class ApplinkDebuggerFragment : BaseSearchListFragment<Visitable<*>, ApplinkDebu
         super.onViewCreated(view, savedInstanceState)
         buttonSearch!!.setOnClickListener { v ->
             if (TextUtils.isEmpty(searchInputView.searchText)) {
-                presenter?.reloadData()
+                presenter.reloadData()
             } else {
-                presenter?.search(searchInputView.searchText)
+                presenter.search(searchInputView.searchText)
             }
         }
         searchInputView.setSearchHint("Cari")
@@ -46,7 +47,7 @@ class ApplinkDebuggerFragment : BaseSearchListFragment<Visitable<*>, ApplinkDebu
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter?.detachView()
+        presenter.detachView()
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
@@ -55,7 +56,7 @@ class ApplinkDebuggerFragment : BaseSearchListFragment<Visitable<*>, ApplinkDebu
 
     override fun loadInitialData() {
         showLoading()
-        presenter?.reloadData()
+        presenter.reloadData()
     }
 
     override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
@@ -63,7 +64,7 @@ class ApplinkDebuggerFragment : BaseSearchListFragment<Visitable<*>, ApplinkDebu
     }
 
     override fun loadData(page: Int) {
-        presenter?.loadMore()
+        presenter.loadMore()
     }
 
     override fun getAdapterTypeFactory(): ApplinkDebuggerTypeFactory {
@@ -77,18 +78,10 @@ class ApplinkDebuggerFragment : BaseSearchListFragment<Visitable<*>, ApplinkDebu
     }
 
     override fun initInjector() {
-        val component = DaggerAnalyticsDebuggerComponent
-                .builder()
-                .baseAppComponent(
-                        (requireActivity().application as BaseMainApplication).baseAppComponent
-                ).build()
-
-        injectToFragment(component)
-        presenter?.attachView(this)
-    }
-
-    private fun injectToFragment(component: AnalyticsDebuggerComponent) {
-        presenter = component.applinkPresenter
+        val component = DaggerAnalyticsDebuggerComponent.builder()
+            .context(activity!!.application).build()
+        component.inject(this)
+        presenter.attachView(this)
     }
 
     override fun getScreenName(): String {
@@ -96,11 +89,10 @@ class ApplinkDebuggerFragment : BaseSearchListFragment<Visitable<*>, ApplinkDebu
     }
 
     override fun onSearchSubmitted(text: String) {
-        presenter?.search(text)
+        presenter.search(text)
     }
 
     override fun onSearchTextChanged(text: String) {
-
     }
 
     override fun onLoadMoreCompleted(visitables: List<Visitable<*>>) {
@@ -118,7 +110,7 @@ class ApplinkDebuggerFragment : BaseSearchListFragment<Visitable<*>, ApplinkDebu
     }
 
     override fun onDeleteCompleted() {
-        presenter?.reloadData()
+        presenter.reloadData()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -128,7 +120,7 @@ class ApplinkDebuggerFragment : BaseSearchListFragment<Visitable<*>, ApplinkDebu
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.applink_action_menu_delete) {
-            presenter?.deleteAll()
+            presenter.deleteAll()
             return true
         }
         return super.onOptionsItemSelected(item)

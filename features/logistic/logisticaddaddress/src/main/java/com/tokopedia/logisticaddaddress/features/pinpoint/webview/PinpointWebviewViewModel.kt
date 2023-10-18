@@ -7,17 +7,16 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.logisticCommon.data.constant.PinpointSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.logisticCommon.data.repository.KeroRepository
+import com.tokopedia.logisticCommon.domain.param.GetDistrictGeoCodeParam
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictGeoCodeUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.SaveAddressMapper
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.analytics.AddAddressPinpointTracker
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.analytics.EditAddressPinpointTracker
 import kotlinx.coroutines.launch
-import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 class PinpointWebviewViewModel @Inject constructor(
-    private val repo: KeroRepository,
-    private val saveAddressMapper: SaveAddressMapper
+    private val getDistrictGeoCode: GetDistrictGeoCodeUseCase
 ) : ViewModel() {
 
     private val _pinpointState = MutableLiveData<PinpointWebviewState>()
@@ -32,7 +31,12 @@ class PinpointWebviewViewModel @Inject constructor(
         val param = "$lat,$long"
         viewModelScope.launch {
             try {
-                val districtData = repo.getDistrictGeocode(param)
+                val districtData = getDistrictGeoCode(
+                    GetDistrictGeoCodeParam(
+                        latLng = param,
+                        isManageAddressFlow = source != null
+                    )
+                )
                 val data = districtData.keroMapsAutofill.data
                 locationPass?.let {
                     it.cityName = data.cityName
@@ -41,7 +45,7 @@ class PinpointWebviewViewModel @Inject constructor(
                     it.districtName = data.districtName
                 }
                 if (saveAddressDataModel != null) {
-                    saveAddressDataModel = saveAddressMapper.map(data, null, saveAddressDataModel)
+                    saveAddressDataModel = SaveAddressMapper.map(data, null, saveAddressDataModel)
                 }
                 sendSuccessTracker()
                 _pinpointState.value = PinpointWebviewState.AddressDetailResult.Success(
@@ -50,7 +54,7 @@ class PinpointWebviewViewModel @Inject constructor(
                     lat,
                     long
                 )
-            } catch (e: Throwable) {
+            } catch (@Suppress("SwallowedException") e: Throwable) {
                 sendFailedTracker()
                 _pinpointState.value =
                     PinpointWebviewState.AddressDetailResult.Fail(e.message)
@@ -142,7 +146,7 @@ class PinpointWebviewViewModel @Inject constructor(
         data.takeIf { value -> value.isNotEmpty() }?.run {
             try {
                 source = PinpointSource.valueOf(this)
-            } catch (e: IllegalArgumentException) {
+            } catch (@Suppress("SwallowedException") e: IllegalArgumentException) {
                 // no op
             }
         }

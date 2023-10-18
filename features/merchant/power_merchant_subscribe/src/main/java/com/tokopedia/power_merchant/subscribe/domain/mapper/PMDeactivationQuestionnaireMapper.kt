@@ -18,29 +18,62 @@ class PMDeactivationQuestionnaireMapper @Inject constructor() {
     }
 
     private fun generateQuestionsData(
-            questionnaireData: QuestionnaireData
+        questionnaireData: QuestionnaireData
     ): List<QuestionnaireUiModel> {
         val numOfQuestions = questionnaireData.data.questionList.size
-        return questionnaireData.data.questionList.mapIndexed { index, question ->
-            return@mapIndexed when (question.questionType) {
+        val questionList = mutableListOf<QuestionnaireUiModel>()
+
+        questionnaireData.data.questionList.forEachIndexed { index, question ->
+            when (question.questionType) {
                 QuestionnaireUiModel.TYPE_MULTIPLE_OPTION -> {
-                    createMultipleOptionQuestion(question, index != numOfQuestions.minus(1))
+                    questionList.add(
+                        createMultipleOptionQuestion(
+                            question,
+                            index != numOfQuestions.minus(1)
+                        )
+                    )
                 }
-                else -> QuestionnaireUiModel.QuestionnaireRatingUiModel(question.question)
+                QuestionnaireUiModel.TYPE_SINGLE_OPTION -> {
+                    questionList.add(createSingleOptionQuestion(question))
+                }
+                QuestionnaireUiModel.TYPE_RATE -> {
+                    questionList.add(createRatingOptionQuestion(question))
+                }
+                else -> {
+                    return@forEachIndexed
+                }
             }
         }
+        return questionList.toList()
     }
 
     private fun createMultipleOptionQuestion(
-            questionData: Question,
-            showItemDivider: Boolean
+        questionData: Question,
+        showItemDivider: Boolean
     ): QuestionnaireUiModel.QuestionnaireMultipleOptionUiModel {
         return QuestionnaireUiModel.QuestionnaireMultipleOptionUiModel(
-                question = questionData.question,
-                options = questionData.option.map {
-                    QuestionnaireOptionUiModel(it.value)
-                },
-                showItemDivider = showItemDivider
+            question = questionData.question,
+            options = questionData.option.map {
+                QuestionnaireOptionUiModel(it.value, imageURL = it.imageURL)
+            },
+            showItemDivider = showItemDivider
         )
+    }
+
+    private fun createSingleOptionQuestion(
+        questionData: Question
+    ): QuestionnaireUiModel.QuestionnaireSingleOptionUiModel {
+        return QuestionnaireUiModel.QuestionnaireSingleOptionUiModel(
+            question = questionData.question,
+            options = questionData.option.map {
+                QuestionnaireOptionUiModel(text = it.value)
+            }
+        )
+    }
+
+    private fun createRatingOptionQuestion(
+        questionData: Question
+    ): QuestionnaireUiModel.QuestionnaireRatingUiModel {
+        return QuestionnaireUiModel.QuestionnaireRatingUiModel(questionData.question)
     }
 }

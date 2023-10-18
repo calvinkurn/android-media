@@ -34,6 +34,18 @@ data class GetProductTagSummarySectionResponse(
         @SerializedName("productName")
         val productName: String = "",
 
+        @SerializedName("hasCommission")
+        val hasCommission: Boolean = false,
+
+        @SerializedName("commissionFmt")
+        val commissionFmt: String = "",
+
+        @SerializedName("commission")
+        val commission: Long = 0,
+
+        @SerializedName("extraCommission")
+        val extraCommission: Boolean = false,
+
         @SerializedName("imageURL")
         val imageURL: String = "",
 
@@ -61,5 +73,8 @@ data class GetProductTagSummarySectionResponse(
 
         @SerializedName("is_pinnable")
         val isPinnable: Boolean = false,
+
+        @SerializedName("product_number")
+        val productNumber: Int = 0,
     )
 }

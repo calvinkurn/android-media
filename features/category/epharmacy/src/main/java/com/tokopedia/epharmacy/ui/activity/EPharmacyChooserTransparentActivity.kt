@@ -1,5 +1,7 @@
 package com.tokopedia.epharmacy.ui.activity
 
+import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -24,6 +26,7 @@ class EPharmacyChooserTransparentActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(binding.root)
         super.onCreate(savedInstanceState)
+        adjustOrientation()
         extractParameters()
         openBottomSheet()
     }
@@ -37,5 +40,11 @@ class EPharmacyChooserTransparentActivity : BaseActivity() {
 
     private fun openBottomSheet() {
         EPharmacyChooserBottomSheet.newInstance(enableImageURL, groupId, enablerName, consultationSourceId).show(supportFragmentManager, EPharmacyChooserBottomSheet::class.simpleName)
+    }
+
+    private fun adjustOrientation() {
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
     }
 }

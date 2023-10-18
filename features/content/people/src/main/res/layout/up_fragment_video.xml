@@ -22,7 +22,7 @@
             android:layout_marginHorizontal="@dimen/unify_space_12"
             android:clipToPadding="false"
             android:paddingBottom="@dimen/user_profile_margin_8"
-            tools:listitem="@layout/up_item_user_post" />
+            tools:listitem="@layout/up_item_user_post_channel" />
 
         <include layout="@layout/up_shimmer_user_post" />
 

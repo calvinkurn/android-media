@@ -5,59 +5,68 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tkpd.remoteresourcerequest.view.DeferredImageView
-        android:id="@+id/affiliate_no_product_bought_iv"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:gravity="center"
-        android:paddingTop="@dimen/unify_space_48"
-        android:visibility="gone"
-        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_never_bought_product.png"
-        app:imageDpiSupportType="singleDpi"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        android:layout_height="wrap_content">
 
-    <com.tkpd.remoteresourcerequest.view.DeferredImageView
-        android:id="@+id/affiliate_no_product_seen_iv"
-        android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:gravity="center"
-        android:paddingTop="@dimen/unify_space_48"
-        android:visibility="gone"
-        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_product_not_found.png"
-        app:imageDpiSupportType="singleDpi"
-        app:layout_constraintTop_toBottomOf="@+id/affiliate_no_product_bought_iv"
-        tools:visibility="visible" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/recommended_global_error"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:gravity="center"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/affiliate_no_product_seen_iv"
-        tools:visibility="visible" />
+            <com.tkpd.remoteresourcerequest.view.DeferredImageView
+                android:id="@+id/affiliate_no_product_bought_iv"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:gravity="center"
+                android:paddingTop="48dp"
+                android:visibility="gone"
+                app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_never_bought_product.png"
+                app:imageDpiSupportType="singleDpi"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
+
+            <com.tkpd.remoteresourcerequest.view.DeferredImageView
+                android:id="@+id/affiliate_no_product_seen_iv"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:gravity="center"
+                android:paddingTop="48dp"
+                android:visibility="gone"
+                app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_product_not_found.png"
+                app:imageDpiSupportType="singleDpi"
+                app:layout_constraintTop_toBottomOf="@+id/affiliate_no_product_bought_iv"
+                tools:visibility="visible" />
+
+            <com.tokopedia.globalerror.GlobalError
+                android:id="@+id/recommended_global_error"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/affiliate_no_product_seen_iv"
+                tools:visibility="visible" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/swipe_refresh_layout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone"
-        >
+        tools:visibility="gone">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recommended_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginTop="8dp"
             tools:itemCount="4"
             tools:listitem="@layout/affiliate_staggered_product_card_item_layout"
-            tools:orientation="vertical"
-            />
+            tools:orientation="vertical" />
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 

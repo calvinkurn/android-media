@@ -17,7 +17,6 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.devicefingerprint.appauth.AppAuthWorker
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.globalerror.GlobalError
@@ -27,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.error.getMessage
+import com.tokopedia.loginregister.common.utils.BasicIdlingResource
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.databinding.FragmentRedefineRegisterInputPhoneBinding
 import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants
@@ -66,6 +66,9 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
             RedefineRegisterInputPhoneViewModel::class.java
         )
     }
+
+    @Inject
+    lateinit var idlingResource: BasicIdlingResource
 
     @Inject
     lateinit var firebaseRemoteConfig: RemoteConfig
@@ -263,6 +266,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
+                    idlingResource.decrement()
                     val messageError = it.throwable.getMessage(requireActivity())
                     redefineRegisterEmailAnalytics.sendClickOnButtonDaftarEmailEvent(
                         RedefineRegisterEmailAnalytics.ACTION_FAILED,
@@ -429,7 +433,6 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         activity?.let {
             SubmitDeviceWorker.scheduleWorker(requireContext(), true)
             DataVisorWorker.scheduleWorker(it, true)
-            AppAuthWorker.scheduleWorker(it, true)
             TwoFactorMluHelper.clear2FaInterval(it)
             initTokoChatConnection()
         }

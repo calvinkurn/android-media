@@ -1,13 +1,9 @@
 package com.tokopedia.tokopedianow.searchcategory.presentation.adapter
 
-import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowListAdapter
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.OnStickySingleHeaderListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView

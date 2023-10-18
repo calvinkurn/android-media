@@ -53,7 +53,5 @@ class PromoCheckoutDecoration @Inject constructor() : RecyclerView.ItemDecoratio
                 outRect.bottom = 0
             }
         }
-
     }
-
 }

@@ -8,4 +8,5 @@ import dagger.Component
 @Component(modules = [TokoFoodViewModelModule::class, TokoFoodModule::class], dependencies = [BaseAppComponent::class])
 interface TokoFoodComponent {
     fun inject(activity: BaseTokofoodActivity)
+
 }

@@ -3,30 +3,30 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.observe
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
+import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrderTrackingTypeFactory
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapter
 import com.tokopedia.tokofood.feature.ordertracking.presentation.toolbar.OrderTrackingToolbarHandler
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderStatusLiveTrackingUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingEstimationUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.flow.collect
-
 
 class TokoFoodOrderLiveTrackingFragment(
     private val binding: FragmentTokofoodOrderTrackingBinding?,
     private val viewModel: TokoFoodOrderTrackingViewModel,
     private val orderTrackingAdapter: OrderTrackingAdapter,
     private val toolbarHandler: OrderTrackingToolbarHandler?,
-    private val initializeUnReadCounter: (String) -> Unit,
-): LifecycleObserver {
+    private val initializeUnReadCounter: (String) -> Unit
+) : LifecycleObserver {
 
     private var lifecycleOwner: LifecycleOwner? = null
 
@@ -67,7 +67,36 @@ class TokoFoodOrderLiveTrackingFragment(
             orderTrackingAdapter.updateLiveTrackingItem(orderTrackingStatusInfoUiModel)
             orderTrackingAdapter.updateEtaLiveTracking(estimationUiModel)
             orderTrackingAdapter.updateLiveTrackingItem(estimationUiModel)
+            updateDriverSectionUiModel(driverSectionUiModel)
             orderTrackingAdapter.updateLiveTrackingItem(invoiceOrderNumberUiModel)
+        }
+    }
+
+    private fun updateDriverSectionUiModel(driverSectionUiModel: DriverSectionUiModel?) {
+        val etaLiveTrackingIndex =
+            orderTrackingAdapter.list.indexOfFirst { it is OrderTrackingEstimationUiModel }
+        val driverSectionIndex =
+            orderTrackingAdapter.list.indexOfFirst { it is DriverSectionUiModel }
+        val newList = orderTrackingAdapter.list.toMutableList()
+        driverSectionUiModel?.let { driverSectionModel ->
+            if (etaLiveTrackingIndex != RecyclerView.NO_POSITION) {
+                if (driverSectionIndex == RecyclerView.NO_POSITION) {
+                    newList.add(
+                        etaLiveTrackingIndex + Int.ONE,
+                        driverSectionModel
+                    )
+                } else {
+                    newList.set(
+                        driverSectionIndex,
+                        driverSectionModel
+                    )
+                }
+
+                val updateNewItems = newList as? List<BaseOrderTrackingTypeFactory>
+                updateNewItems?.let {
+                    orderTrackingAdapter.updateOrderTracking(it.toList())
+                }
+            }
         }
     }
 

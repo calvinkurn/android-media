@@ -3,7 +3,7 @@ package com.tokopedia.seller.menu.presentation.uimodel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.seller.menu.common.constant.AdminFeature
+import com.tokopedia.shopadmin.common.util.AdminFeature
 
 class OrderSectionTitleUiModel(
         title: String? = null,
@@ -20,6 +20,6 @@ class OrderSectionTitleUiModel(
             if (isShopOwner) {
                 ApplinkConst.SELLER_HISTORY
             } else {
-                UriUtil.buildUri(ApplinkConstInternalSellerapp.ADMIN_AUTHORIZE, AdminFeature.ORDER_HISTORY)
+                UriUtil.buildUri(ApplinkConstInternalSellerapp.ADMIN_AUTHORIZE, com.tokopedia.shopadmin.common.util.AdminFeature.ORDER_HISTORY)
             }
 }

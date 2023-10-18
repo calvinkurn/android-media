@@ -9,7 +9,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class SaleEndStateViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
-    private lateinit var emptyStateViewModel: SaleEndStateViewModel
+    private var emptyStateViewModel: SaleEndStateViewModel? = null
     private var saleStateCTa: TextView = itemView.findViewById(R.id.saleStateCTA)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {

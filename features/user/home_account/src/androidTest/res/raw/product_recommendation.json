@@ -1,0 +1,1332 @@
+{
+  "productRecommendationWidget": {
+    "data": [
+      {
+        "tID": "mCTbykm_XzlRlRjTS5Qo-jYoLKg\u003d",
+        "source": "custom",
+        "title": "Rekomendasi Untuk Anda",
+        "subtitle": "",
+        "foreignTitle": "Recommendation For You",
+        "widgetUrl": "",
+        "pageName": "account",
+        "seeMoreAppLink": "",
+        "layoutType": "Custom-vertical",
+        "pagination": {
+          "currentPage": 1,
+          "nextPage": 2,
+          "prevPage": -1,
+          "hasNext": true
+        },
+        "campaign": {
+          "appLandingPageLink": "",
+          "landingPageLink": "",
+          "thematicID": 0,
+          "assets": {
+            "banner": {
+              "apps": ""
+            }
+          }
+        },
+        "recommendation": [
+          {
+            "id": 309057241,
+            "name": "Wardah Paket Haji \u0026 Umrah - Non Alkohol - Non Fragrance",
+            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Paket Perawatan Wajah",
+            "url": "https://www.tokopedia.com/wardah-official/wardah-paket-haji-umrah-non-alkohol-non-fragrance?src\u003dtopads",
+            "appUrl": "tokopedia://product/309057241?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosyaHpJfHpUDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosKOH_1fHAUhbm-srcHi6sUaHAnDUMVj9RosQR-BUst7HpyXHse7o_1pHAyfoprO6AeDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7H1OJz_VozJ1h_1zVH1OJz_VozJ1FZ3BRqujp1SByH7ND3uxGqMVAZ_g-qj1O_c2VHJYJqR26qj1p_1z-8JOkyp-681BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-Hu2I1MWgqMoN_3jF8BB9zMBHuVVR_uzzPJY1e_-o1pnp3jzqq1Y139BgucoN3_-Vq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBG8MzIHcBHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z_Co8BBO_32zHJN1u92ozVja_S2sH1YJ13BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z_VvzJBO_jz-81NkgpovzJ7O_1zSHjONZsjibm-Orfua9fBjUstiHpyfHAyfoZUDUSoBrRo2QfNwq3ei6i-s8IxtgJoguBHRHBY1ou-wPAVbzcWF6jVee_jhyjukyuzGesHF1Mgj3juyP3ViyOCDP1z0Q3Bkb3Oo_ceRHfJpH3yF69xk_7YwQSnR11ND3sV7zBVOP3eh63zyufoU8MDf3SPZgf2N1O2xQ1xgQ_CfoVuNzOBzuVxRoseagAxEZ9BB13NeQRVUojdpHI2sr_gpy_-vH3Wo1jNBZJxD11Fd_1h_UiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pyhbAehoiF7HsuPbm-X9foxQMz2gcV7guYxgIHi6sURHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sJOH_yRbm-FrMBsguYiq3ei6sUaHAnDUMP5y3hwq3ei6soY?sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026management_type\u003d1\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fwardah-official%2Fwardah-paket-haji-umrah-non-alkohol-non-fragrance%3Fsrc%3Dtopads\u0026src\u003drecom_widget_account\u0026t\u003dandroid\u0026dv\u003dandroid-3.150\u0026page\u003d1\u0026ob\u003d0",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosyaHpJfHpUDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosKOH_1fHAUhbm-srcHi6sUaHAnDUMVj9RosQR-BUst7HpyXHse7o_1pHAyfoprO6AeDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7H1OJz_VozJ1h_1zVH1OJz_VozJ1FZ3BRqujp1SByH7ND3uxGqMVAZ_g-qj1O_c2VHJYJqR26qj1p_1z-8JOkyp-681BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-Hu2I1MWgqMoN_3jF8BB9zMBHuVVR_uzzPJY1e_-o1pnp3jzqq1Y139BgucoN3_-Vq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBG8MzIHcBHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z_Co8BBO_32zHJN1u92ozVja_S2sH1YJ13BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z_VvzJBO_jz-81NkgpovzJ7O_1zSHjONZsjibm-Orfua9fBjUstiHpyfHAyfoZUDUSoBrRo2QfNwq3ei6i-s8IxtgJoguBHRHBY1ou-wPAVbzcWF6jVee_jhyjukyuzGesHF1Mgj3juyP3ViyOCDP1z0Q3Bkb3Oo_ceRHfJpH3yF69xk_7YwQSnR11ND3sV7zBVOP3eh63zyufoU8MDf3SPZgf2N1O2xQ1xgQ_CfoVuNzOBzuVxRoseagAxEZ9BB13NeQRVUojdpHI2sr_gpy_-vH3Wo1jNBZJxD11Fd_1h_UiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pyhbAehoiF7HsuPbm-X9foxQMz2gcV7guYxgIHi6sURHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sJOH_yRbm-FrMBsguYiq3ei6sUaHAnDUMP5y3hwq3ei6soY?t\u003dandroid\u0026page\u003d1\u0026ob\u003d0\u0026product_id\u003d309057241\u0026management_type\u003d1\u0026src\u003drecom_widget_account\u0026uid\u003d3660665\u0026dv\u003dandroid-3.150\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fwardah-official%2Fwardah-paket-haji-umrah-non-alkohol-non-fragrance%3Fsrc%3Dtopads\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syfHsHhosHabm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_ydo_JOosnaHZFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbfxJqMO01Z4aHAUpbp156m4OofJOyMeRoaOMgMHNb_ziHfHW63y76m7fHsrf6AnFy_uxyfJXrcNSUiFiy3zwrfo5rM1i6sepoidaoAeOo_HFosyRop1domFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1peh_1zVH1OJz_VozJ1h_1zVH1OJz_C-q9P23_oZ8uKp_Mhg3J2ky1o-ojBkz_uHqj1F_7z08jNkz_oozJBd_32sHjNNZ9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1jh3jPZqOBkyRBoq_CE3uPcq1h119PouVV7_OzCHjO_HAoqzV22_Ozg8uB1yRBgHju2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq12EgJrFq1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-HJOE39uoqBJF_Bzu8jOJ3_-68MHh_7zzq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-H1YJZ9u6zJBN_M2SH7YJ__uozcra_9BG6ZUDUSupg9-wq3ei6iUposyFosyOUiFirfuprfB5QBY2gmUEUMod8cxjeOB31pra9OeO1BY7H1WJqRnEeuCC6_Viz32xuJ2mHpCZgMzqzuxOy3-s1chOzcWWq3tWQ1OHgArpy_HhgsnN8c2v_OYXrAPz_MhqH9zc19uOgAJNgVx9y7xEqpgqPO-SqSB_3MVWZVBWHIy7u9BI3uV13IrfoA-j6I2-83uzQBC5r1Kf_sHF8MohoSoxHj4hq7OZ_MuUZchz_Axo_VHibm-xQcri6i-pg3VayfKibm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-X9foxQMz2gcV7guYxgIHi6sURHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEH_1hosrDUSCaq3oB9f-2gmUEHsUFHmFigfYxQVY2gmUEHR7?dv\u003dandroid-3.150\u0026t\u003dandroid\u0026page\u003d1\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026src\u003drecom_widget_account\u0026ob\u003d0\u0026management_type\u003d1",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/5/8/57a5bd77-ffc9-4b3c-9f48-6276800a5aca.png",
+            "price": "Rp138.600",
+            "priceInt": 138600,
+            "discountPercentage": 30,
+            "slashedPrice": "Rp198.000",
+            "slashedPriceInt": 198000,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 3404093,
+              "name": "Wardah Official",
+              "city": "Jakarta Selatan",
+              "isGold": false,
+              "isOfficial": true
+            },
+            "departmentId": 425,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 1 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 192,
+            "ratingAverage": "4.9",
+            "recommendationType": "search",
+            "stock": 187,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 3649920340,
+            "name": "USAMS T40 Adapter Charger Fast Charge Digital Display QC3.0 PD 20W",
+            "categoryBreadcrumbs": "Handphone \u0026 Tablet/Aksesoris Handphone/Charger Handphone",
+            "url": "https://www.tokopedia.com/usamsidofficial/usams-t40-adapter-charger-fast-charge-digital-display-qc3-0-pd-20w-adaptert40-disc?src\u003dtopads",
+            "appUrl": "tokopedia://product/3649920340?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_nfoA1aHA1hbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_ydo_JOosnaHZFiyRCsUsth6AnFbm-xgVYpyfYagZUEoAJpbsKpHpHNHs1do_yd6_KDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BE_c2sP7OEyRPo8MoR_92sP7OEyRPo8jO2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1N91MWqz7jp_32-PJ7azMxgq_nF_1zVHJh1qRP6qju7_s-zHBBkqp-oQ11p_3O6qJB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1NJz92HqMPE_92oo1Oku_z6uVj7_OzSq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-8jNJ19uo8Bja_OzsH7OEgRBoqjOE_92gq3gzv_7ibm-Orfua9fBjUstiHpyfHAyfoZUDUSoBrRo2QfNwq3ei6i-s8IxtgJoguBHRHBY1ou-wPAVbzcWF6jVee_jhyjukyuzGesHF1Mgj3juyP3ViyOCDP1z0Q3Bkb3Oo_ceRHfJpH3yF69xk_7YwQSnR11ND3sV7zBVOP3eh63zyufoU8MDf3SPZgf2N1O2xQ1xgQ_CfoVuNzOBzuVxRoseagAxEZ9BB13NeQRVUojdpHI2sr_gpy_-vH3Wo1jNBZJxD11Fd_1h_UiFiy3hSUstiyfhOrRzBrBYfHBYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pyObAyfbArF9ZFiQBYsy3Njq3zxPcuwy3zpUstaopnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstao_nDUSCaq3oB9f-2gmUEH_KFHmFigfYxQVY2gmUEHR7?management_type\u003d1\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fusamsidofficial%2Fusams-t40-adapter-charger-fast-charge-digital-display-qc3-0-pd-20w-adaptert40-disc%3Fsrc%3Dtopads\u0026src\u003drecom_widget_account\u0026ob\u003d0\u0026t\u003dandroid\u0026page\u003d1\u0026dv\u003dandroid-3.150\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_nfoA1aHA1hbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_ydo_JOosnaHZFiyRCsUsth6AnFbm-xgVYpyfYagZUEoAJpbsKpHpHNHs1do_yd6_KDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BE_c2sP7OEyRPo8MoR_92sP7OEyRPo8jO2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1N91MWqz7jp_32-PJ7azMxgq_nF_1zVHJh1qRP6qju7_s-zHBBkqp-oQ11p_3O6qJB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1NJz92HqMPE_92oo1Oku_z6uVj7_OzSq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-8jNJ19uo8Bja_OzsH7OEgRBoqjOE_92gq3gzv_7ibm-Orfua9fBjUstiHpyfHAyfoZUDUSoBrRo2QfNwq3ei6i-s8IxtgJoguBHRHBY1ou-wPAVbzcWF6jVee_jhyjukyuzGesHF1Mgj3juyP3ViyOCDP1z0Q3Bkb3Oo_ceRHfJpH3yF69xk_7YwQSnR11ND3sV7zBVOP3eh63zyufoU8MDf3SPZgf2N1O2xQ1xgQ_CfoVuNzOBzuVxRoseagAxEZ9BB13NeQRVUojdpHI2sr_gpy_-vH3Wo1jNBZJxD11Fd_1h_UiFiy3hSUstiyfhOrRzBrBYfHBYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pyObAyfbArF9ZFiQBYsy3Njq3zxPcuwy3zpUstaopnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstao_nDUSCaq3oB9f-2gmUEH_KFHmFigfYxQVY2gmUEHR7?dv\u003dandroid-3.150\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fusamsidofficial%2Fusams-t40-adapter-charger-fast-charge-digital-display-qc3-0-pd-20w-adaptert40-disc%3Fsrc%3Dtopads\u0026t\u003dandroid\u0026product_id\u003d3649920340\u0026management_type\u003d1\u0026page\u003d1\u0026ob\u003d0\u0026uid\u003d3660665\u0026src\u003drecom_widget_account",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJFoseOHsnOHZFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6sUDUSz2Q31i6sJf6A1ho_yFHsJDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHZ4Obpr56_yRgAyFHAnWHsujgZ77osefb_K7oc1WH_J7gAgjHcUOHpVjbM2FgaUDUMVj9RosQR-BUst7H_HX6AHpHpjao_KOosKN6mFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z92HqMoR_92sP7OEyRPo8MoR_92sP7OE_3BHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY2_BPZqO2IZ_ooqjB7__-cqVB2HACozJ1F_Vz0P7Nkz9z6HBJa3320HjOWz_ooQ1NtZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_jzV8jhkgR2o8j7O_32uoJN13_zvucP2_JoG8Bja69BqusBE3BPc8ujagfBvq1BE_jzzP1OE3_-vucHp_92S81Ok_92o8BB2gBJYvZUDUSupg9-wq3ei6iUposyFosyOUiFirfuprfB5QBY2gmUEUMod8cxjeOB31pra9OeO1BY7H1WJqRnEeuCC6_Viz32xuJ2mHpCZgMzqzuxOy3-s1chOzcWWq3tWQ1OHgArpy_HhgsnN8c2v_OYXrAPz_MhqH9zc19uOgAJNgVx9y7xEqpgqPO-SqSB_3MVWZVBWHIy7u9BI3uV13IrfoA-j6I2-83uzQBC5r1Kf_sHF8MohoSoxHj4hq7OZ_MuUZchz_Axo_VHibm-xQcri6i-sQIupPcua9Rya9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-X9foxQMz2gcV7guYxgIHi6sURHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHs1Fbm-FrMBsguYiq3ei6sJdHAnDUMP5y3hwq3ei6soY?management_type\u003d1\u0026dv\u003dandroid-3.150\u0026src\u003drecom_widget_account\u0026page\u003d1\u0026t\u003dandroid\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026ob\u003d0",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/5/7/967d6000-25de-4646-844e-114d6d0b531d.jpg",
+            "price": "Rp109.000",
+            "priceInt": 109000,
+            "discountPercentage": 60,
+            "slashedPrice": "Rp275.000",
+            "slashedPriceInt": 275000,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 9843521,
+              "name": "USAMS ID Official",
+              "city": "Tangerang",
+              "isGold": false,
+              "isOfficial": true
+            },
+            "departmentId": 70,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 7.1 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 4119,
+            "ratingAverage": "4.9",
+            "recommendationType": "cluster_v2_recentview",
+            "stock": 99,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 6868368879,
+            "name": "KEPALA CHARGER BASEUS 65W GAN FAST CHARGER 4.0 3.0 PD AFC SCP TYPE C - Gan 5 Pro 65W",
+            "categoryBreadcrumbs": "Handphone \u0026 Tablet/Aksesoris Handphone/Charger Handphone",
+            "url": "https://www.tokopedia.com/baseus/kepala-charger-baseus-65w-gan-fast-charger-4-0-3-0-pd-afc-scp-type-c-gan-5-pro-65w?src\u003dtopads",
+            "appUrl": "tokopedia://product/6868368879?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEoArNHpJfH_jDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosKOH_1fHAUhbm-srcHi6sUOHAnDUMVj9RosQR-BUst7HpJXopHOH_JN6Aea6_na6AyDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7H7YJgRB6qMrO_BzuHjN1e_uo8jVdZ3BRqujp1SByH7ND3uxGqMVAZ_g-qBuO_S2-o1O13_-6qBja_M2gHjNk3_--q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ323qO2I1MB68jBN_Vz6qVB9Z9z6zJVd_jHFo1OJ39xHucz0_MO-o1NkZMx68j2k3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32z8jO_oAoo8Bud_uz0oJNJZ_uozJj7_MB-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32u8jO_oIx6zcod_BzC8jN1_92o8MPdZ3dFvZUDUSupg9-wq3ei6iUposyFosyOUiFirfuprfB5QBY2gmUEUMod8cxjeOB31pra9OeO1BY7H1WJqRnEeuCC6_Viz32xuJ2mHpCZgMzqzuxOy3-s1chOzcWWq3tWQ1OHgArpy_HhgsnN8c2v_OYXrAPz_MhqH9zc19uOgAJNgVx9y7xEqpgqPO-SqSB_3MVWZVBWHIy7u9BI3uV13IrfoA-j6I2-83uzQBC5r1Kf_sHF8MohoSoxHj4hq7OZ_MuUZchz_Axo_VHibm-xQcri6i-ag9zxrMPBPVYxgIHibm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-sy9zwq3zpUs2Qos1DosyDopCPbm-X9foxQMz2gcV7guYxgIHi6sURHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUS-BPcVagfu7q3NS9fVjraUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUOHmFirI-2yfuwyMBjUstao_nFbm-SQfVD9fBjUstpwe?r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fbaseus%2Fkepala-charger-baseus-65w-gan-fast-charger-4-0-3-0-pd-afc-scp-type-c-gan-5-pro-65w%3Fsrc%3Dtopads\u0026src\u003drecom_widget_account\u0026page\u003d1\u0026t\u003dandroid\u0026ob\u003d0\u0026dv\u003dandroid-3.150\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026management_type\u003d1",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEoArNHpJfH_jDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosKOH_1fHAUhbm-srcHi6sUOHAnDUMVj9RosQR-BUst7HpJXopHOH_JN6Aea6_na6AyDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7H7YJgRB6qMrO_BzuHjN1e_uo8jVdZ3BRqujp1SByH7ND3uxGqMVAZ_g-qBuO_S2-o1O13_-6qBja_M2gHjNk3_--q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ323qO2I1MB68jBN_Vz6qVB9Z9z6zJVd_jHFo1OJ39xHucz0_MO-o1NkZMx68j2k3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32z8jO_oAoo8Bud_uz0oJNJZ_uozJj7_MB-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32u8jO_oIx6zcod_BzC8jN1_92o8MPdZ3dFvZUDUSupg9-wq3ei6iUposyFosyOUiFirfuprfB5QBY2gmUEUMod8cxjeOB31pra9OeO1BY7H1WJqRnEeuCC6_Viz32xuJ2mHpCZgMzqzuxOy3-s1chOzcWWq3tWQ1OHgArpy_HhgsnN8c2v_OYXrAPz_MhqH9zc19uOgAJNgVx9y7xEqpgqPO-SqSB_3MVWZVBWHIy7u9BI3uV13IrfoA-j6I2-83uzQBC5r1Kf_sHF8MohoSoxHj4hq7OZ_MuUZchz_Axo_VHibm-xQcri6i-ag9zxrMPBPVYxgIHibm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-sy9zwq3zpUs2Qos1DosyDopCPbm-X9foxQMz2gcV7guYxgIHi6sURHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUS-BPcVagfu7q3NS9fVjraUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUOHmFirI-2yfuwyMBjUstao_nFbm-SQfVD9fBjUstpwe?sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026page\u003d1\u0026ob\u003d0\u0026management_type\u003d1\u0026t\u003dandroid\u0026src\u003drecom_widget_account\u0026uid\u003d3660665\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fbaseus%2Fkepala-charger-baseus-65w-gan-fast-charger-4-0-3-0-pd-afc-scp-type-c-gan-5-pro-65w%3Fsrc%3Dtopads\u0026product_id\u003d6868368879\u0026dv\u003dandroid-3.150",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6seR6_HhosJNbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHaFiPcBWgZUEH_ydo_JOosnaHZFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbOghyMoW_Z4aHAUpbpJ5Hs15opUN63ox6AKWysK7ya77y_e7b_jpgseWyM1pHsxB6cusg3HFbM2FgaUDUMVj9RosQR-BUst7HpJXopHOH_JN6Aea6_na6AyDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7H7YJgRB6qMrO_BzuHjN1e_uo8jVdZ3BRqujp1SByH7ND3uxGqMVAZ_g-qBuO_S2-o1O13_-6qBja_M2gHjNk3_--q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ323qO2I1MB68jBN_Vz6qVB9Z9z6zJVd_jHFo1OJ39xHucz0_MO-o1NkZMx68j2k3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32z8jO_oAoo8Bud_uz0oJNJZ_uozJj7_MB-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32u8jO_oIx6zcod_BzC8jN1_92o8MPdZ3dFvZUDUSupg9-wq3ei6iUposyFosyOUiFirfuprfB5QBY2gmUEUMod8cxjeOB31pra9OeO1BY7H1WJqRnEeuCC6_Viz32xuJ2mHpCZgMzqzuxOy3-s1chOzcWWq3tWQ1OHgArpy_HhgsnN8c2v_OYXrAPz_MhqH9zc19uOgAJNgVx9y7xEqpgqPO-SqSB_3MVWZVBWHIy7u9BI3uV13IrfoA-j6I2-83uzQBC5r1Kf_sHF8MohoSoxHj4hq7OZ_MuUZchz_Axo_VHibm-xQcri6i-ag9zxrMPBPVYxgIHibm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-X9foxQMz2gcV7guYxgIHi6sURHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-ag9zxrMPBPcBXgOYxgIHi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHs1Fbm-FrMBsguYiq3ei6sUOHAnDUMP5y3hwq3ei6soY?sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026ob\u003d0\u0026dv\u003dandroid-3.150\u0026src\u003drecom_widget_account\u0026management_type\u003d1\u0026t\u003dandroid\u0026page\u003d1",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/1/25/7299ca88-b84c-4a44-93f4-be328e8ecec0.jpg",
+            "price": "Rp319.000",
+            "priceInt": 319000,
+            "discountPercentage": 77,
+            "slashedPrice": "Rp1.399.000",
+            "slashedPriceInt": 1399000,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 2175534,
+              "name": "Baseus Official Store",
+              "city": "Tangerang",
+              "isGold": false,
+              "isOfficial": true
+            },
+            "departmentId": 70,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 22 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Super Gadget Day",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2023/5/8/0512e829-e390-41a5-9815-31cb939cede5.png"
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 12134,
+            "ratingAverage": "4.9",
+            "recommendationType": "shop_recentview",
+            "stock": 36,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1797450755,
+            "name": "BUNDLING KEPALA CHARGER TYPE C PD BASEUS QUICK CHARGER 20W IPHONE 12 - Hitam",
+            "categoryBreadcrumbs": "Handphone \u0026 Tablet/Aksesoris Handphone/Charger Handphone",
+            "url": "https://www.tokopedia.com/baseus/bundling-kepala-charger-type-c-pd-baseus-quick-charger-20w-iphone-12-hitam?src\u003dtopads",
+            "appUrl": "tokopedia://product/1797450755?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_nR6_J7HArdbm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_ydo_JOosnaHZFiyRCsUstao_nFbm-xgVYpyfYagZUEoAUNbs1N6AedHAjdoAKpHsrDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7P7YJz9Boqj7a_32SHjY1z_uvzJONZ3BRqujp1SByH7ND3uxGqMVAZ_g-qBuO_jz0HJN1e_V6zcDF_BzCH1NJqpC617BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-Hu2I1MWgqMoN_3jF8BB9zMBHuVVR_uzzPJY1e_-o1pnp3jzqq1Y139BgucoN3_-Vq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBGgjNkuMgozsxR3I2-8JNEu_Vo8B-M3I2mgjOc6IPy8jV2_JoG8Bja69BqusB2yf7NHfHau3Bvq1jF_320P1N1qpz6zcPR_OzSHJYJ_9B681BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qj77_3j7HjOkz_ovuJJO_M2-H1NkyR2-QsnYUiFiP9oBrBY2gmUEUsHfosnfos1ibm-pg9opq3YX9fBjUstiyRxdqczA3ug_op-wuAuZ9RehZ7z0rA2C1JJNH3-VqMV1ZjUpHV-MgV2V3IuxyMoeQIuJqfO2qiOW_1hjopoxHpVMHABdqjYv9fNFoOV6QVthPJgzP9ujH_Bj3VPsZI20oB2R1MPk8uoqy3OU337FPszu81Pg1uzyPpy7HMed8jBNguVX1cYhZAg6HpCEyRJfrfJa_pV0_u-6g1xUQVVH6JOH1aUDUMVDgaUEUSotQRCwrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMoxPVY2gIHi6BDfoZFfoiFRHV7DUMNwyfVXgcBjy9zB9fVjraUEHsrFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHs1Fbm-FrMBsguYiq3ei6sUOHAnDUMP5y3hwq3ei6soY?sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026page\u003d1\u0026t\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fbaseus%2Fbundling-kepala-charger-type-c-pd-baseus-quick-charger-20w-iphone-12-hitam%3Fsrc%3Dtopads\u0026src\u003drecom_widget_account\u0026ob\u003d0\u0026dv\u003dandroid-3.150\u0026management_type\u003d1",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_nR6_J7HArdbm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_ydo_JOosnaHZFiyRCsUstao_nFbm-xgVYpyfYagZUEoAUNbs1N6AedHAjdoAKpHsrDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7P7YJz9Boqj7a_32SHjY1z_uvzJONZ3BRqujp1SByH7ND3uxGqMVAZ_g-qBuO_jz0HJN1e_V6zcDF_BzCH1NJqpC617BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-Hu2I1MWgqMoN_3jF8BB9zMBHuVVR_uzzPJY1e_-o1pnp3jzqq1Y139BgucoN3_-Vq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBGgjNkuMgozsxR3I2-8JNEu_Vo8B-M3I2mgjOc6IPy8jV2_JoG8Bja69BqusB2yf7NHfHau3Bvq1jF_320P1N1qpz6zcPR_OzSHJYJ_9B681BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qj77_3j7HjOkz_ovuJJO_M2-H1NkyR2-QsnYUiFiP9oBrBY2gmUEUsHfosnfos1ibm-pg9opq3YX9fBjUstiyRxdqczA3ug_op-wuAuZ9RehZ7z0rA2C1JJNH3-VqMV1ZjUpHV-MgV2V3IuxyMoeQIuJqfO2qiOW_1hjopoxHpVMHABdqjYv9fNFoOV6QVthPJgzP9ujH_Bj3VPsZI20oB2R1MPk8uoqy3OU337FPszu81Pg1uzyPpy7HMed8jBNguVX1cYhZAg6HpCEyRJfrfJa_pV0_u-6g1xUQVVH6JOH1aUDUMVDgaUEUSotQRCwrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMoxPVY2gIHi6BDfoZFfoiFRHV7DUMNwyfVXgcBjy9zB9fVjraUEHsrFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHs1Fbm-FrMBsguYiq3ei6sUOHAnDUMP5y3hwq3ei6soY?t\u003dandroid\u0026src\u003drecom_widget_account\u0026ob\u003d0\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026page\u003d1\u0026management_type\u003d1\u0026uid\u003d3660665\u0026dv\u003dandroid-3.150\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fbaseus%2Fbundling-kepala-charger-type-c-pd-baseus-quick-charger-20w-iphone-12-hitam%3Fsrc%3Dtopads\u0026product_id\u003d1797450755",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJFopjhoAnR6mFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6seDUSz2Q31i6sJf6A1ho_yFHsJDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHZ4RbpJ5ocgBgAoxopHWo3oMoi77yfujb_jFy3yWgAPMgcHOH_giHsBBbSCXgaUDUMVj9RosQR-BUst7HsjXo_jdoAKF6_K76AHaoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1pzR_7zV81Ok__-oqMra_OzVo1YJ_9B-q9P23_oZ8uKp_Mhg3J2ky1o-ojBku9u6zcDF_BzCH1NJqpC6uJJh_jz0HJN_Z9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1jh3jPZqOBkyRBoq_CE3uPcq1h119PouVV7_OzCHjO_HAoqzV22_Ozg8uB1yRBgHju2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq12M_M23gjOc6IPy8jBd_S2uH1OE1Mgy8j-M_1ydPOxEe3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z_CoqMWO_Bz0oJNJgRPvucrF_7zo81NNZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBk__zoq_ea_32VH7Y1e_u6qjjh_M2s8jBXHA7ibm-Orfua9fBjUstiHpyfHAyfoZUDUSoBrRo2QfNwq3ei6i-s8IxtgJoguBHRHBY1ou-wPAVbzcWF6jVee_jhyjukyuzGesHF1Mgj3juyP3ViyOCDP1z0Q3Bkb3Oo_ceRHfJpH3yF69xk_7YwQSnR11ND3sV7zBVOP3eh63zyufoU8MDf3SPZgf2N1O2xQ1xgQ_CfoVuNzOBzuVxRoseagAxEZ9BB13NeQRVUojdpHI2sr_gpy_-vH3Wo1jNBZJxD11Fd_1h_UiFiy3hSUstirfx5rVYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiQBYsy3Njq3zxPcuwy3zpUstaopnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUOHmFirI-2yfuwyMBjUstao_nFbm-SQfVD9fBjUstpwe?src\u003drecom_widget_account\u0026ob\u003d0\u0026t\u003dandroid\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026page\u003d1\u0026dv\u003dandroid-3.150\u0026management_type\u003d1",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/7/1/4fed3a73-5cf6-4ced-90af-d7fdc516b29e.png",
+            "price": "Rp139.000",
+            "priceInt": 139000,
+            "discountPercentage": 65,
+            "slashedPrice": "Rp399.000",
+            "slashedPriceInt": 399000,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 2175534,
+              "name": "Baseus Official Store",
+              "city": "Tangerang",
+              "isGold": false,
+              "isOfficial": true
+            },
+            "departmentId": 70,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 26 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Super Gadget Day",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2023/5/8/0512e829-e390-41a5-9815-31cb939cede5.png"
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 12986,
+            "ratingAverage": "4.9",
+            "recommendationType": "shop_recentview",
+            "stock": 37,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 2179006714,
+            "name": "KEPALA CHARGER BASEUS QUICK CHARGING TYPEC DUAL USB 30W PD FAST CHARGE - Hitam",
+            "categoryBreadcrumbs": "Handphone \u0026 Tablet/Aksesoris Handphone/Charger Handphone",
+            "url": "https://www.tokopedia.com/baseus/kepala-charger-baseus-quick-charging-typec-dual-usb-30w-pd-fast-charge-hitam?src\u003dtopads",
+            "appUrl": "tokopedia://product/2179006714?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_UNHAnOosKabm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_ydo_JOosnaHZFiyRCsUstao_nFbm-xgVYpyfYagZUEoAUdbsrFHpHRH_HdH_rao_rpbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAoAooqjBE_Ozz81Oke_z6zVBN_92o81B2PfBgHO-N3Ao6QVByZM2xe7jfZ32zP1OJu9PouVJF_M2zoJOJZ92ouVVEZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWqzO-2_S2-81h1_Mxgu7B7_jzC8JNAHAuozVBd_Vzjq7NWZ_u6qj2t_S2GqBB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBD6A-6usxR3I2mgjOkz_o6uVuE_jyNgjOc6IPy8j-M_1o-r7BX_M2iH72D3A-G83UpgI2q17jfZ32z81YAoAoozJOE_S2V8jYJz_ooqB1p_9B-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32gH1Y_oA-oqj1O_M2C81Oku9Po8juEZ3dFvZUDUSupg9-wq3ei6iUposyFosyOUiFirfuprfB5QBY2gmUEUMod8cxjeOB31pra9OeO1BY7H1WJqRnEeuCC6_Viz32xuJ2mHpCZgMzqzuxOy3-s1chOzcWWq3tWQ1OHgArpy_HhgsnN8c2v_OYXrAPz_MhqH9zc19uOgAJNgVx9y7xEqpgqPO-SqSB_3MVWZVBWHIy7u9BI3uV13IrfoA-j6I2-83uzQBC5r1Kf_sHF8MohoSoxHj4hq7OZ_MuUZchz_Axo_VHibm-xQcri6i-pqcYF9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-sy9zwq3zpUs2Qos1DosyDopCPbm-X9foxQMz2gcV7guYxgIHi6sURHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUOHmFirI-2yfuwyMBjUstao_nFbm-SQfVD9fBjUstpwe?ob\u003d0\u0026dv\u003dandroid-3.150\u0026page\u003d1\u0026src\u003drecom_widget_account\u0026t\u003dandroid\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fbaseus%2Fkepala-charger-baseus-quick-charging-typec-dual-usb-30w-pd-fast-charge-hitam%3Fsrc%3Dtopads\u0026management_type\u003d1",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_UNHAnOosKabm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_ydo_JOosnaHZFiyRCsUstao_nFbm-xgVYpyfYagZUEoAUdbsrFHpHRH_HdH_rao_rpbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAoAooqjBE_Ozz81Oke_z6zVBN_92o81B2PfBgHO-N3Ao6QVByZM2xe7jfZ32zP1OJu9PouVJF_M2zoJOJZ92ouVVEZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWqzO-2_S2-81h1_Mxgu7B7_jzC8JNAHAuozVBd_Vzjq7NWZ_u6qj2t_S2GqBB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBD6A-6usxR3I2mgjOkz_o6uVuE_jyNgjOc6IPy8j-M_1o-r7BX_M2iH72D3A-G83UpgI2q17jfZ32z81YAoAoozJOE_S2V8jYJz_ooqB1p_9B-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32gH1Y_oA-oqj1O_M2C81Oku9Po8juEZ3dFvZUDUSupg9-wq3ei6iUposyFosyOUiFirfuprfB5QBY2gmUEUMod8cxjeOB31pra9OeO1BY7H1WJqRnEeuCC6_Viz32xuJ2mHpCZgMzqzuxOy3-s1chOzcWWq3tWQ1OHgArpy_HhgsnN8c2v_OYXrAPz_MhqH9zc19uOgAJNgVx9y7xEqpgqPO-SqSB_3MVWZVBWHIy7u9BI3uV13IrfoA-j6I2-83uzQBC5r1Kf_sHF8MohoSoxHj4hq7OZ_MuUZchz_Axo_VHibm-xQcri6i-pqcYF9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-sy9zwq3zpUs2Qos1DosyDopCPbm-X9foxQMz2gcV7guYxgIHi6sURHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUOHmFirI-2yfuwyMBjUstao_nFbm-SQfVD9fBjUstpwe?page\u003d1\u0026t\u003dandroid\u0026dv\u003dandroid-3.150\u0026src\u003drecom_widget_account\u0026management_type\u003d1\u0026product_id\u003d2179006714\u0026ob\u003d0\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fbaseus%2Fkepala-charger-baseus-quick-charging-typec-dual-usb-30w-pd-fast-charge-hitam%3Fsrc%3Dtopads\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026uid\u003d3660665",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJa6_nFo_ydHiFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6s1DUSz2Q31i6sJf6A1ho_yFHsJDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHZ4NbpUpbpjdo_Cj6_oMb_xBg3eWocuMgZ7No31Ob3gx631Fg3-s6_KFHaNFQMribm-xgVYpyfYagZUEoAUdbsrFHpHRH_HdH_rao_rpbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAoAooqjBE_Ozz81Oke_z6zVBN_92o81B2PfBgHO-N3Ao6QVByZM2xe7jfZ32zP1OJu9PouVJF_M2zoJOJZ92ouVVEZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWqzO-2_S2-81h1_Mxgu7B7_jzC8JNAHAuozVBd_Vzjq7NWZ_u6qj2t_S2GqBB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBD6A-6usxR3I2mgjOkz_o6uVuE_jyNgjOc6IPy8j-M_1o-r7BX_M2iH72D3A-G83UpgI2q17jfZ32z81YAoAoozJOE_S2V8jYJz_ooqB1p_9B-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32gH1Y_oA-oqj1O_M2C81Oku9Po8juEZ3dFvZUDUSupg9-wq3ei6iUposyFosyOUiFirfuprfB5QBY2gmUEUMod8cxjeOB31pra9OeO1BY7H1WJqRnEeuCC6_Viz32xuJ2mHpCZgMzqzuxOy3-s1chOzcWWq3tWQ1OHgArpy_HhgsnN8c2v_OYXrAPz_MhqH9zc19uOgAJNgVx9y7xEqpgqPO-SqSB_3MVWZVBWHIy7u9BI3uV13IrfoA-j6I2-83uzQBC5r1Kf_sHF8MohoSoxHj4hq7OZ_MuUZchz_Axo_VHibm-xQcri6i-pqcYF9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-X9foxQMz2gcV7guYxgIHi6sURHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHs1Fbm-FrMBsguYiq3ei6sUOHAnDUMP5y3hwq3ei6soY?dv\u003dandroid-3.150\u0026page\u003d1\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026t\u003dandroid\u0026management_type\u003d1\u0026ob\u003d0\u0026src\u003drecom_widget_account",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/9/23/9850d93f-8eed-4efe-95e5-fa9e0ebc9803.png",
+            "price": "Rp149.000",
+            "priceInt": 149000,
+            "discountPercentage": 69,
+            "slashedPrice": "Rp480.000",
+            "slashedPriceInt": 480000,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 2175534,
+              "name": "Baseus Official Store",
+              "city": "Tangerang",
+              "isGold": false,
+              "isOfficial": true
+            },
+            "departmentId": 70,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 20 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Super Gadget Day",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2022/12/1/4d3f8e43-a1f7-4b4c-94db-a7b8aa28178d.png"
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 10533,
+            "ratingAverage": "4.9",
+            "recommendationType": "shop_recentview",
+            "stock": 40,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 3806198269,
+            "name": "RING TEMPERED GLASS Camera Cover Pelindung Kamera Samsung S22 ULTRA",
+            "categoryBreadcrumbs": "Handphone \u0026 Tablet/Aksesoris Handphone/Lensa Kamera Handphone",
+            "url": "https://www.tokopedia.com/central168/ring-tempered-glass-camera-cover-pelindung-kamera-samsung-s22-ultra-green-s22ultra?src\u003dtopads",
+            "appUrl": "tokopedia://product/3806198269?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_1pHsJNHAj7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEoiFiPcBWgZUEH_ydo_JOosnaHZFiyRCsUstaHAnFbm-xgVYpyfYagZUEoAUFbsUhopJOHpJfo_jdopjDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H7oJY1e_z6qMrh_OzgoJYJz_u6ucDOZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjBO_S2sH7NEypo68MHp_S2sH7NEypo681BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-Hu2I1MWgqMoN_3jF8BB9zMBHuVVR_uzzPJY1e_-o1pnp3jzqq1Y139BgucoN3_-Vq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBG8MzIHcBHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z_CoqjVO_32VH7O1u92ouVjh_OzSH7Y_Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBk__u68_zN_7zVo1Nku92oqMPE_7z0H1N2Zsjibm-Orfua9fBjUstiHpyfHAyfoZUDUSoBrRo2QfNwq3ei6i-s8IxtgJoguBHRHBY1ou-wPAVbzcWF6jVee_jhyjukyuzGesHF1Mgj3juyP3ViyOCDP1z0Q3Bkb3Oo_ceRHfJpH3yF69xk_7YwQSnR11ND3sV7zBVOP3eh63zyufoU8MDf3SPZgf2N1O2xQ1xgQ_CfoVuNzOBzuVxRoseagAxEZ9BB13NeQRVUojdpHI2sr_gpy_-vH3Wo1jNBZJxD11Fd_1h_UiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pyObAyfbAHFopCPbm-X9foxQMz2gcV7guYxgIHi6sURHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6seFH_jObm-SrMYOrVYpPI-xPcuS8ZUE3pJDHB7DUSCaq3oB9f-2gmUEHsnFHmFigfYxQVY2gmUEHR7?dv\u003dandroid-3.150\u0026management_type\u003d1\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fcentral168%2Fring-tempered-glass-camera-cover-pelindung-kamera-samsung-s22-ultra-green-s22ultra%3Fsrc%3Dtopads\u0026src\u003drecom_widget_account\u0026ob\u003d0\u0026t\u003dandroid\u0026page\u003d1",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_1pHsJNHAj7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEoiFiPcBWgZUEH_ydo_JOosnaHZFiyRCsUstaHAnFbm-xgVYpyfYagZUEoAUFbsUhopJOHpJfo_jdopjDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H7oJY1e_z6qMrh_OzgoJYJz_u6ucDOZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjBO_S2sH7NEypo68MHp_S2sH7NEypo681BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-Hu2I1MWgqMoN_3jF8BB9zMBHuVVR_uzzPJY1e_-o1pnp3jzqq1Y139BgucoN3_-Vq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBG8MzIHcBHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z_CoqjVO_32VH7O1u92ouVjh_OzSH7Y_Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBk__u68_zN_7zVo1Nku92oqMPE_7z0H1N2Zsjibm-Orfua9fBjUstiHpyfHAyfoZUDUSoBrRo2QfNwq3ei6i-s8IxtgJoguBHRHBY1ou-wPAVbzcWF6jVee_jhyjukyuzGesHF1Mgj3juyP3ViyOCDP1z0Q3Bkb3Oo_ceRHfJpH3yF69xk_7YwQSnR11ND3sV7zBVOP3eh63zyufoU8MDf3SPZgf2N1O2xQ1xgQ_CfoVuNzOBzuVxRoseagAxEZ9BB13NeQRVUojdpHI2sr_gpy_-vH3Wo1jNBZJxD11Fd_1h_UiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pyObAyfbAHFopCPbm-X9foxQMz2gcV7guYxgIHi6sURHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6seFH_jObm-SrMYOrVYpPI-xPcuS8ZUE3pJDHB7DUSCaq3oB9f-2gmUEHsnFHmFigfYxQVY2gmUEHR7?sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026src\u003drecom_widget_account\u0026management_type\u003d1\u0026page\u003d1\u0026uid\u003d3660665\u0026product_id\u003d3806198269\u0026ob\u003d0\u0026t\u003dandroid\u0026dv\u003dandroid-3.150\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fcentral168%2Fring-tempered-glass-camera-cover-pelindung-kamera-samsung-s22-ultra-green-s22ultra%3Fsrc%3Dtopads",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJOHpUh6_nNomFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6syDUSz2Q31i6sJf6A1ho_yFHsJDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHa4pbpH5gMJ7gsBMy_JWoMVsoa77opzBb3UhgcHWHfosofUNHs-jo31dbM2FgaUDUMVj9RosQR-BUst7HsnXHsJRH_1pH_yO6_KR6ZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoepe7_OzCoJNkgpVvuVj7_7zVo1N1qpu-q9P23_oZ8uKp_Mhg3J2ky1o-ojBkZ9u68MHp_S2sH7NEypo68MHp_S2sH7NNZ9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1jh3jPZqOBkyRBoq_CE3uPcq1h119PouVV7_OzCHjO_HAoqzV22_Ozg8uB1yRBgHju2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq12EgJrFq1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-HJOke9uoqj1p_uzu8jO13_Vvucrp_Oo-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32oo1NNoIBvzJ1O_M2u8jOkgR2vzcDh_MBG6ZUDUSupg9-wq3ei6iUposyFosyOUiFirfuprfB5QBY2gmUEUMod8cxjeOB31pra9OeO1BY7H1WJqRnEeuCC6_Viz32xuJ2mHpCZgMzqzuxOy3-s1chOzcWWq3tWQ1OHgArpy_HhgsnN8c2v_OYXrAPz_MhqH9zc19uOgAJNgVx9y7xEqpgqPO-SqSB_3MVWZVBWHIy7u9BI3uV13IrfoA-j6I2-83uzQBC5r1Kf_sHF8MohoSoxHj4hq7OZ_MuUZchz_Axo_VHibm-xQcri6i-pg3VayfKibm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-X9foxQMz2gcV7guYxgIHi6sURHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAnh6_1DUMPaQRuF9Ro7rMV7g3PNUs2QHZFa9ZFirI-2yfuwyMBjUstaHAnFbm-SQfVD9fBjUstpwe?ob\u003d0\u0026management_type\u003d1\u0026dv\u003dandroid-3.150\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026page\u003d1\u0026t\u003dandroid\u0026src\u003drecom_widget_account",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/3/3/fa4f9fa1-6ac7-474e-b1dc-3cc7b922d5e8.jpg",
+            "price": "Rp79.990",
+            "priceInt": 79990,
+            "discountPercentage": 33,
+            "slashedPrice": "Rp120.000",
+            "slashedPriceInt": 120000,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 2129372,
+              "name": "GENNEXT OFFICIAL STORE",
+              "city": "Jakarta Pusat",
+              "isGold": false,
+              "isOfficial": true
+            },
+            "departmentId": 3070,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 590",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 334,
+            "ratingAverage": "4.9",
+            "recommendationType": "search",
+            "stock": 875,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 5050216549,
+            "name": "PUFF CASE SOFTCASE IPHONE 7 PLUS 8 PLUS X XR XS MAX 11 PRO MAX",
+            "categoryBreadcrumbs": "Handphone \u0026 Tablet/Aksesoris Handphone/Soft Case Handphone",
+            "url": "https://www.tokopedia.com/youngproid/puff-case-softcase-iphone-7-plus-8-plus-x-xr-xs-max-11-pro-max-black-ip-7",
+            "appUrl": "tokopedia://product/5050216549",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d69\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003daccount\u0026pid\u003d5050216549\u0026pos\u003d1\u0026recommendation\u003dcluster_v2_recentview\u0026rectype\u003dcluster_v2_recentview\u0026redirect\u003dhttps://www.tokopedia.com/youngproid/puff-case-softcase-iphone-7-plus-8-plus-x-xr-xs-max-11-pro-max-black-ip-7?catid0069\u003d%26ref\u003daccount_pa1_po1%26src\u003dr3cluster_v2_recentview\u0026tid\u003dmCTbykm_XzlRlRjTS5Qo-jYoLKg\u003d\u0026uid\u003d3660665\u0026unique_id\u003d\u0026utime\u003d1685156021\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/7/27/64734845-937c-4470-89c2-f8c4f8ae8c74.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/7/27/64734845-937c-4470-89c2-f8c4f8ae8c74.jpg",
+            "price": "Rp 15.900",
+            "priceInt": 15900,
+            "discountPercentage": 36,
+            "slashedPrice": "Rp 25.000",
+            "slashedPriceInt": 25000,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 7337210,
+              "name": "YOUNGPRO INDONESIA",
+              "city": "Jakarta Utara",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 69,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "Terjual 100+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 4,
+            "countReview": 41,
+            "ratingAverage": "4.1",
+            "recommendationType": "cluster_v2_recentview",
+            "stock": 93,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 5050216490
+          },
+          {
+            "id": 1070771926,
+            "name": "Majalah Yazhou Zhoukan,(The internation Chinese Newsweekly)",
+            "categoryBreadcrumbs": "Buku/Majalah/Majalah Politik, Ekonomi, dan Bisnis",
+            "url": "https://www.tokopedia.com/afufu/majalah-yazhou-zhoukan-the-internation-chinese-newsweekly",
+            "appUrl": "tokopedia://product/1070771926",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d3349\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003daccount\u0026pid\u003d1070771926\u0026pos\u003d2\u0026recommendation\u003dbest_seller\u0026rectype\u003dbest_seller\u0026redirect\u003dhttps://www.tokopedia.com/afufu/majalah-yazhou-zhoukan-the-internation-chinese-newsweekly?catid3349\u003d%26ref\u003daccount_pa1_po2%26src\u003dr3best_seller\u0026tid\u003dmCTbykm_XzlRlRjTS5Qo-jYoLKg\u003d\u0026uid\u003d3660665\u0026unique_id\u003d\u0026utime\u003d1685156021\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/5/26/19dd254c-c1c6-4f2c-81e3-fb3d701fe1c6.png",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/5/26/19dd254c-c1c6-4f2c-81e3-fb3d701fe1c6.png",
+            "price": "Rp 30.000",
+            "priceInt": 30000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 6175668,
+              "name": "Toko Chandra A",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 3349,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "Terjual 500+",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 370,
+            "ratingAverage": "5.0",
+            "recommendationType": "best_seller",
+            "stock": 57,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 6941093643,
+            "name": "TV SAMSUNG CRYSTAL UHD 4K SMART TV 75 INCH 75BU8000 75BU80 BU8000",
+            "categoryBreadcrumbs": "Elektronik/TV \u0026 Aksesoris/Televisi",
+            "url": "https://www.tokopedia.com/moedem/tv-samsung-crystal-uhd-4k-smart-tv-75-inch-75bu8000-75bu80-bu8000",
+            "appUrl": "tokopedia://product/6941093643",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d3918\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003daccount\u0026pid\u003d6941093643\u0026pos\u003d3\u0026recommendation\u003dgraph_embedding\u0026rectype\u003dgraph_embedding\u0026redirect\u003dhttps://www.tokopedia.com/moedem/tv-samsung-crystal-uhd-4k-smart-tv-75-inch-75bu8000-75bu80-bu8000?catid3918\u003d%26ref\u003daccount_pa1_po3%26src\u003dr3graph_embedding\u0026tid\u003dmCTbykm_XzlRlRjTS5Qo-jYoLKg\u003d\u0026uid\u003d3660665\u0026unique_id\u003d\u0026utime\u003d1685156021\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/11/11/c9b11683-194a-49cb-9bf4-dd56e59892a4.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/11/11/c9b11683-194a-49cb-9bf4-dd56e59892a4.jpg",
+            "price": "Rp 16.999.000",
+            "priceInt": 16999000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 4138026,
+              "name": "Zein electronik",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 3918,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "Terjual 4",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant",
+                "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 1,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding",
+            "stock": 3,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 3939943267,
+            "name": "PAFON Giko Dress - Black",
+            "categoryBreadcrumbs": "Fashion Wanita/Dress/Maxi Dress",
+            "url": "https://www.tokopedia.com/pafon/pafon-giko-dress-black-m",
+            "appUrl": "tokopedia://product/3939943267",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d1765\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003daccount\u0026pid\u003d3939943267\u0026pos\u003d4\u0026recommendation\u003dcluster_v2_recentview\u0026rectype\u003dcluster_v2_recentview\u0026redirect\u003dhttps://www.tokopedia.com/pafon/pafon-giko-dress-black-m?catid1765\u003d%26ref\u003daccount_pa1_po4%26src\u003dr3cluster_v2_recentview\u0026tid\u003dmCTbykm_XzlRlRjTS5Qo-jYoLKg\u003d\u0026uid\u003d3660665\u0026unique_id\u003d\u0026utime\u003d1685156021\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/1/4/a80422be-cbac-46f5-87db-617d8a2f8cc6.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/1/4/a80422be-cbac-46f5-87db-617d8a2f8cc6.jpg",
+            "price": "Rp 338.000",
+            "priceInt": 338000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 12988963,
+              "name": "PAFON Official Shop",
+              "city": "Jakarta Pusat",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 1765,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "Terjual 50+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 15,
+            "ratingAverage": "4.9",
+            "recommendationType": "cluster_v2_recentview",
+            "stock": 17,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 2666696294
+          },
+          {
+            "id": 870821277,
+            "name": "CAR CHARGER BASEUS 30W TYPE-C PD3.0+USB QUICK CHARGE 4.0",
+            "categoryBreadcrumbs": "Handphone \u0026 Tablet/Aksesoris Handphone/Charger Mobil",
+            "url": "https://www.tokopedia.com/baseusautolife/car-charger-baseus-30w-type-c-pd3-0-usb-quick-charge-4-0-hitam?src\u003dtopads",
+            "appUrl": "tokopedia://product/870821277?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEo_rhopJ7HsnDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstRbm-7q3OBUsthosKOH_1fHAUhbm-srcHi6sJRo_nDUMVj9RosQR-BUst7H_jXoAKhoAUpopj76_HNoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1pzN_1zzoJO1qRB68Mod_1zSHJOE__z-q9P23_oZ8uKp_Mhg3J2ky1o-ojBk19u6zJBE_92SP7NEZ_-6qMD7_32g81B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qBg03jPZq1NEZ9BHuJNt3uP-PJNJe9x6epnO_1zg8Jh1gcW6Q1jO_M2GqJNEZM2g17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qBVd_OH7HJYJz_Coqj7p_Ozzo1OEqp--q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBo8Bja_c2So1OJZ_-ozJ1a_uzzo1OJ__V-QsnYUiFiP9oBrBY2gmUEUsHfosnfos1ibm-pg9opq3YX9fBjUstiyRxdqczA3ug_op-wuAuZ9RehZ7z0rA2C1JJNH3-VqMV1ZjUpHV-MgV2V3IuxyMoeQIuJqfO2qiOW_1hjopoxHpVMHABdqjYv9fNFoOV6QVthPJgzP9ujH_Bj3VPsZI20oB2R1MPk8uoqy3OU337FPszu81Pg1uzyPpy7HMed8jBNguVX1cYhZAg6HpCEyRJfrfJa_pV0_u-6g1xUQVVH6JOH1aUDUMVDgaUEUMoDP9o7g9-wPs-wrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMoxPVY2gIHi6BDfoZFfoiFf6V7DUMNwyfVXgcBjy9zB9fVjraUEHsrFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHs1Fbm-FrMBsguYiq3ei6sJRo_nDUMP5y3hwq3ei6soY?sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026dv\u003dandroid-3.150\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fbaseusautolife%2Fcar-charger-baseus-30w-type-c-pd3-0-usb-quick-charge-4-0-hitam%3Fsrc%3Dtopads\u0026src\u003drecom_widget_account\u0026ob\u003d0\u0026page\u003d1\u0026management_type\u003d1\u0026t\u003dandroid",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEo_rhopJ7HsnDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstRbm-7q3OBUsthosKOH_1fHAUhbm-srcHi6sJRo_nDUMVj9RosQR-BUst7H_jXoAKhoAUpopj76_HNoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1pzN_1zzoJO1qRB68Mod_1zSHJOE__z-q9P23_oZ8uKp_Mhg3J2ky1o-ojBk19u6zJBE_92SP7NEZ_-6qMD7_32g81B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qBg03jPZq1NEZ9BHuJNt3uP-PJNJe9x6epnO_1zg8Jh1gcW6Q1jO_M2GqJNEZM2g17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qBVd_OH7HJYJz_Coqj7p_Ozzo1OEqp--q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBo8Bja_c2So1OJZ_-ozJ1a_uzzo1OJ__V-QsnYUiFiP9oBrBY2gmUEUsHfosnfos1ibm-pg9opq3YX9fBjUstiyRxdqczA3ug_op-wuAuZ9RehZ7z0rA2C1JJNH3-VqMV1ZjUpHV-MgV2V3IuxyMoeQIuJqfO2qiOW_1hjopoxHpVMHABdqjYv9fNFoOV6QVthPJgzP9ujH_Bj3VPsZI20oB2R1MPk8uoqy3OU337FPszu81Pg1uzyPpy7HMed8jBNguVX1cYhZAg6HpCEyRJfrfJa_pV0_u-6g1xUQVVH6JOH1aUDUMVDgaUEUMoDP9o7g9-wPs-wrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMoxPVY2gIHi6BDfoZFfoiFf6V7DUMNwyfVXgcBjy9zB9fVjraUEHsrFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHs1Fbm-FrMBsguYiq3ei6sJRo_nDUMP5y3hwq3ei6soY?product_id\u003d870821277\u0026dv\u003dandroid-3.150\u0026page\u003d1\u0026ob\u003d0\u0026management_type\u003d1\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fbaseusautolife%2Fcar-charger-baseus-30w-type-c-pd3-0-usb-quick-charge-4-0-hitam%3Fsrc%3Dtopads\u0026t\u003dandroid\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026uid\u003d3660665\u0026src\u003drecom_widget_account",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s1RH_rhoAUFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoaFiPcBWgZUEH_ydo_JOosnaHZFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbOghyMoW_Z4aHAUhbp15HsK5gsPBgMJdoMeWosUFyi77H_nhb3UhH_1WHMgsose7gAnhoAJabSCXgaUDUMVj9RosQR-BUst7H_jXoAKhoAUpopj76_HNoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1pzN_1zzoJO1qRB68Mod_1zSHJOE__z-q9P23_oZ8uKp_Mhg3J2ky1o-ojBk19u6zJBE_92SP7NEZ_-6qMD7_32g81B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qBg03jPZq1NEZ9BHuJNt3uP-PJNJe9x6epnO_1zg8Jh1gcW6Q1jO_M2GqJNEZM2g17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qBVd_OH7HJYJz_Coqj7p_Ozzo1OEqp--q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBo8Bja_c2So1OJZ_-ozJ1a_uzzo1OJ__V-QsnYUiFiP9oBrBY2gmUEUsHfosnfos1ibm-pg9opq3YX9fBjUstiyRxdqczA3ug_op-wuAuZ9RehZ7z0rA2C1JJNH3-VqMV1ZjUpHV-MgV2V3IuxyMoeQIuJqfO2qiOW_1hjopoxHpVMHABdqjYv9fNFoOV6QVthPJgzP9ujH_Bj3VPsZI20oB2R1MPk8uoqy3OU337FPszu81Pg1uzyPpy7HMed8jBNguVX1cYhZAg6HpCEyRJfrfJa_pV0_u-6g1xUQVVH6JOH1aUDUMVDgaUEUMoDP9o7g9-wPs-wrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMNwyfVXgcBjy9zB9fVjraUEHsrFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstao_nDUSCaq3oB9f-2gmUEH_rOHmFigfYxQVY2gmUEHR7?management_type\u003d1\u0026dv\u003dandroid-3.150\u0026ob\u003d0\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026src\u003drecom_widget_account\u0026page\u003d1\u0026t\u003dandroid",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/5/28/f7efa86d-620b-4101-b115-2fc644d01412.png",
+            "price": "Rp73.320",
+            "priceInt": 73320,
+            "discountPercentage": 72,
+            "slashedPrice": "Rp258.000",
+            "slashedPriceInt": 258000,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 8647341,
+              "name": "Baseus Auto Life",
+              "city": "Tangerang",
+              "isGold": false,
+              "isOfficial": true
+            },
+            "departmentId": 68,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 22 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Kejar Diskon WIB",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2023/5/14/e85c9a09-9f6d-480a-b182-4858c2bd6b4d.png"
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 11934,
+            "ratingAverage": "4.9",
+            "recommendationType": "cluster_v2_recentview",
+            "stock": 25,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 8922324615,
+            "name": "Charger Samsung 45W Type C To C Super Fast Charging S20 ultra note 10+",
+            "categoryBreadcrumbs": "Handphone \u0026 Tablet/Aksesoris Handphone/Charger Handphone",
+            "url": "https://www.tokopedia.com/electroplatinum/charger-samsung-45w-type-c-to-c-super-fast-charging-s20-ultra-note-10-25watt?src\u003dtopads",
+            "appUrl": "tokopedia://product/8922324615?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEopjF6AHaHsnDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstdbm-7q3OBUsthosKOH_1fHAUhbm-srcHi6sHFo_nDUMVj9RosQR-BUst7H_eXHAnNo_n7HAUhoAyRbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAoAzvzVJO_BzuH7N1Z9BouJBE_7z0HJB2PfBgHO-N3Ao6QVByZM2xe7jfZ32uP1NJe_V6zJJh_jzCH1NJe_V6zJJhZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWqzO-2_S2-81h1_Mxgu7B7_jzC8JNAHAuozVBd_Vzjq7NWZ_u6qj2t_S2GqBB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qBVd_jH7P7OJqpVozVVR_32VHJNkyfBHe72E3_UN8u23692qu7gN3_-Sq1Y2Z92vzVBO_uzSP7NEz9PoucDF_jzoH1NAZsjibm-Orfua9fBjUstiHpyfHAyfoZUDUSoBrRo2QfNwq3ei6i-s8IxtgJoguBHRHBY1ou-wPAVbzcWF6jVee_jhyjukyuzGesHF1Mgj3juyP3ViyOCDP1z0Q3Bkb3Oo_ceRHfJpH3yF69xk_7YwQSnR11ND3sV7zBVOP3eh63zyufoU8MDf3SPZgf2N1O2xQ1xgQ_CfoVuNzOBzuVxRoseagAxEZ9BB13NeQRVUojdpHI2sr_gpy_-vH3Wo1jNBZJxD11Fd_1h_UiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pyObAyfbArF9ZFiQBYsy3Njq3zxPcuwy3zpUstaopnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst7oseN6ZFirI-2yfuwyMBjUstpHA1Fbm-SQfVD9fBjUstpwe?management_type\u003d1\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026src\u003drecom_widget_account\u0026page\u003d1\u0026ob\u003d0\u0026t\u003dandroid\u0026dv\u003dandroid-3.150\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Felectroplatinum%2Fcharger-samsung-45w-type-c-to-c-super-fast-charging-s20-ultra-note-10-25watt%3Fsrc%3Dtopads",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEopjF6AHaHsnDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstdbm-7q3OBUsthosKOH_1fHAUhbm-srcHi6sHFo_nDUMVj9RosQR-BUst7H_eXHAnNo_n7HAUhoAyRbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAoAzvzVJO_BzuH7N1Z9BouJBE_7z0HJB2PfBgHO-N3Ao6QVByZM2xe7jfZ32uP1NJe_V6zJJh_jzCH1NJe_V6zJJhZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWqzO-2_S2-81h1_Mxgu7B7_jzC8JNAHAuozVBd_Vzjq7NWZ_u6qj2t_S2GqBB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qBVd_jH7P7OJqpVozVVR_32VHJNkyfBHe72E3_UN8u23692qu7gN3_-Sq1Y2Z92vzVBO_uzSP7NEz9PoucDF_jzoH1NAZsjibm-Orfua9fBjUstiHpyfHAyfoZUDUSoBrRo2QfNwq3ei6i-s8IxtgJoguBHRHBY1ou-wPAVbzcWF6jVee_jhyjukyuzGesHF1Mgj3juyP3ViyOCDP1z0Q3Bkb3Oo_ceRHfJpH3yF69xk_7YwQSnR11ND3sV7zBVOP3eh63zyufoU8MDf3SPZgf2N1O2xQ1xgQ_CfoVuNzOBzuVxRoseagAxEZ9BB13NeQRVUojdpHI2sr_gpy_-vH3Wo1jNBZJxD11Fd_1h_UiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pyObAyfbArF9ZFiQBYsy3Njq3zxPcuwy3zpUstaopnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst7oseN6ZFirI-2yfuwyMBjUstpHA1Fbm-SQfVD9fBjUstpwe?src\u003drecom_widget_account\u0026page\u003d1\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Felectroplatinum%2Fcharger-samsung-45w-type-c-to-c-super-fast-charging-s20-ultra-note-10-25watt%3Fsrc%3Dtopads\u0026management_type\u003d1\u0026product_id\u003d8922324615\u0026dv\u003dandroid-3.150\u0026t\u003dandroid\u0026ob\u003d0\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026uid\u003d3660665",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6srNHAKpHsUFbm-xgVY789CBUsthbm-FQRo2PcB5QiUE6mFiPcBWgZUEH_ydo_JOosnaHZFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbOghyMoW_Z4aHAUpbpH56ZYxoMUay_Hf6m7a6_JNb_e7yfHWyMHOyi7FoACBg_j7HfzBHsHXqSCSUiFiy3zwrfo5rM1i6sehomdFHAjOHAeFHsJ7osrDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H7oJYJ1_u6uV1p_Bz-81O1Z92vzcDFZ3BRqujp1SByH7ND3uxGqMVAZ_g-qBuO_jzCH1NJe_V6zJJh_jzCH1NJe_V-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ323qO2I1MB68jBN_Vz6qVB9Z9z6zJVd_jHFo1OJ39xHucz0_MO-o1NkZMx68j2k3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk19x6epzR_1z0H1OJ19Poqj1F_M2sq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-8jYJ39uoucPR_S2VP7O1qpC6zJ7h_joG6ZUDUSupg9-wq3ei6iUposyFosyOUiFirfuprfB5QBY2gmUEUMod8cxjeOB31pra9OeO1BY7H1WJqRnEeuCC6_Viz32xuJ2mHpCZgMzqzuxOy3-s1chOzcWWq3tWQ1OHgArpy_HhgsnN8c2v_OYXrAPz_MhqH9zc19uOgAJNgVx9y7xEqpgqPO-SqSB_3MVWZVBWHIy7u9BI3uV13IrfoA-j6I2-83uzQBC5r1Kf_sHF8MohoSoxHj4hq7OZ_MuUZchz_Axo_VHibm-xQcri6i-pg3VayfKibm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-X9foxQMz2gcV7guYxgIHi6sURHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAy76_jDUSCaq3oB9f-2gmUEHpnOHmFigfYxQVY2gmUEHR7?ob\u003d0\u0026page\u003d1\u0026dv\u003dandroid-3.150\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026src\u003drecom_widget_account\u0026management_type\u003d1\u0026t\u003dandroid",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/3/9/a6b2a368-2919-44cc-bc5b-040ee943de23.jpg",
+            "price": "Rp150.000",
+            "priceInt": 150000,
+            "discountPercentage": 70,
+            "slashedPrice": "Rp500.000",
+            "slashedPriceInt": 500000,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 5069737,
+              "name": "electro platinum",
+              "city": "Jakarta Barat",
+              "isGold": false,
+              "isOfficial": false
+            },
+            "departmentId": 70,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "Terjual 13 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 1590,
+            "ratingAverage": "4.9",
+            "recommendationType": "search",
+            "stock": 10959,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1959740648,
+            "name": "Charger Samsung Super Fast Charging Original Adaptor Type C To 25W 45W",
+            "categoryBreadcrumbs": "Handphone \u0026 Tablet/Aksesoris Handphone/Charger Handphone",
+            "url": "https://www.tokopedia.com/iova/charger-samsung-super-fast-charging-original-adaptor-type-c-to-25w-45w-25w-adap-kbl-3a-hitam?src\u003dtopads",
+            "appUrl": "tokopedia://product/1959740648?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_JFopep6_U7bm-xgVY789CBUsthbm-FQRo2PcB5QiUE6ZFiPcBWgZUEH_ydo_JOosnaHZFiyRCsUsthopnFbm-xgVYpyfYagZUEoAJfbsHNoseaosJaoAyh6_KDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7H1Nk1_Vo8Mod_BzsH7N1ypCvuco2_JoGqMzUZMgsHBgtyfO6Q7BkQfBo8_eO_1z-HJOEqRPoqBVE_OzC81NJ13BHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY2_BPZqO2IZ_ooqjB7__-cqVB2HACozJ1F_Vz0P7Nkz9z6HBJa3320HjOWz_ooQ1NtZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2ypoZPJB2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1NJz_-Hqj7O_M2z81Nkz9B6zVBd_OzSq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-H1OJqRuo8BuN_32SHJO1z926qjBN_uzuq3gzv_7ibm-Orfua9fBjUstiHpyfHAyfoZUDUSoBrRo2QfNwq3ei6i-s8IxtgJoguBHRHBY1ou-wPAVbzcWF6jVee_jhyjukyuzGesHF1Mgj3juyP3ViyOCDP1z0Q3Bkb3Oo_ceRHfJpH3yF69xk_7YwQSnR11ND3sV7zBVOP3eh63zyufoU8MDf3SPZgf2N1O2xQ1xgQ_CfoVuNzOBzuVxRoseagAxEZ9BB13NeQRVUojdpHI2sr_gpy_-vH3Wo1jNBZJxD11Fd_1h_UiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pyObAyfbArF9ZFiQBYsy3Njq3zxPcuwy3zpUstaopnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst7oA1hHiFirI-2yfuwyMBjUsthopnFbm-SQfVD9fBjUstpwe?src\u003drecom_widget_account\u0026t\u003dandroid\u0026dv\u003dandroid-3.150\u0026management_type\u003d1\u0026page\u003d1\u0026ob\u003d0\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fiova%2Fcharger-samsung-super-fast-charging-original-adaptor-type-c-to-25w-45w-25w-adap-kbl-3a-hitam%3Fsrc%3Dtopads",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_JFopep6_U7bm-xgVY789CBUsthbm-FQRo2PcB5QiUE6ZFiPcBWgZUEH_ydo_JOosnaHZFiyRCsUsthopnFbm-xgVYpyfYagZUEoAJfbsHNoseaosJaoAyh6_KDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7H1Nk1_Vo8Mod_BzsH7N1ypCvuco2_JoGqMzUZMgsHBgtyfO6Q7BkQfBo8_eO_1z-HJOEqRPoqBVE_OzC81NJ13BHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY2_BPZqO2IZ_ooqjB7__-cqVB2HACozJ1F_Vz0P7Nkz9z6HBJa3320HjOWz_ooQ1NtZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2ypoZPJB2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1NJz_-Hqj7O_M2z81Nkz9B6zVBd_OzSq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-H1OJqRuo8BuN_32SHJO1z926qjBN_uzuq3gzv_7ibm-Orfua9fBjUstiHpyfHAyfoZUDUSoBrRo2QfNwq3ei6i-s8IxtgJoguBHRHBY1ou-wPAVbzcWF6jVee_jhyjukyuzGesHF1Mgj3juyP3ViyOCDP1z0Q3Bkb3Oo_ceRHfJpH3yF69xk_7YwQSnR11ND3sV7zBVOP3eh63zyufoU8MDf3SPZgf2N1O2xQ1xgQ_CfoVuNzOBzuVxRoseagAxEZ9BB13NeQRVUojdpHI2sr_gpy_-vH3Wo1jNBZJxD11Fd_1h_UiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pyObAyfbArF9ZFiQBYsy3Njq3zxPcuwy3zpUstaopnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst7oA1hHiFirI-2yfuwyMBjUsthopnFbm-SQfVD9fBjUstpwe?t\u003dandroid\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026dv\u003dandroid-3.150\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fiova%2Fcharger-samsung-super-fast-charging-original-adaptor-type-c-to-25w-45w-25w-adap-kbl-3a-hitam%3Fsrc%3Dtopads\u0026management_type\u003d1\u0026uid\u003d3660665\u0026src\u003drecom_widget_account\u0026page\u003d1\u0026ob\u003d0\u0026product_id\u003d1959740648",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJhHAr7HpjaomFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6sjDUSz2Q31i6sJf6A1ho_yFHsJDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHa4ObpJNbfgMysgxo_JFb_Khg_jWoc-xya7dysjpb3JOg3ydgceFoAKFyiNFQMribm-xgVYpyfYagZUEoAJfbsHNoseaosJaoAyh6_KDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7H1Nk1_Vo8Mod_BzsH7N1ypCvuco2_JoGqMzUZMgsHBgtyfO6Q7BkQfBo8_eO_1z-HJOEqRPoqBVE_OzC81NJ13BHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY2_BPZqO2IZ_ooqjB7__-cqVB2HACozJ1F_Vz0P7Nkz9z6HBJa3320HjOWz_ooQ1NtZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2ypoZPJB2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1NJz_-Hqj7O_M2z81Nkz9B6zVBd_OzSq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-H1OJqRuo8BuN_32SHJO1z926qjBN_uzuq3gzv_7ibm-Orfua9fBjUstiHpyfHAyfoZUDUSoBrRo2QfNwq3ei6i-s8IxtgJoguBHRHBY1ou-wPAVbzcWF6jVee_jhyjukyuzGesHF1Mgj3juyP3ViyOCDP1z0Q3Bkb3Oo_ceRHfJpH3yF69xk_7YwQSnR11ND3sV7zBVOP3eh63zyufoU8MDf3SPZgf2N1O2xQ1xgQ_CfoVuNzOBzuVxRoseagAxEZ9BB13NeQRVUojdpHI2sr_gpy_-vH3Wo1jNBZJxD11Fd_1h_UiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiQBYsy3Njq3zxPcuwy3zpUstaopnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6se7o_Jabm-FrMBsguYiq3ei6sJRHAnDUMP5y3hwq3ei6soY?page\u003d1\u0026dv\u003dandroid-3.150\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026management_type\u003d1\u0026t\u003dandroid\u0026src\u003drecom_widget_account\u0026ob\u003d0",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/5/19/ffb6a510-81e9-4bac-8b93-a5ef8dd0480b.png",
+            "price": "Rp125.000",
+            "priceInt": 125000,
+            "discountPercentage": 29,
+            "slashedPrice": "Rp175.000",
+            "slashedPriceInt": 175000,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 11102871,
+              "name": "iova original",
+              "city": "Depok",
+              "isGold": false,
+              "isOfficial": false
+            },
+            "departmentId": 70,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "Terjual 6.4 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 3448,
+            "ratingAverage": "4.9",
+            "recommendationType": "search",
+            "stock": 163,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 5026034311,
+            "name": "BASEUS GAN5 PRO 100W FAST CHARGER HANDPHONE ADAPTOR LAPTOP USB TYPE C",
+            "categoryBreadcrumbs": "Handphone \u0026 Tablet/Aksesoris Handphone/Charger Handphone",
+            "url": "https://www.tokopedia.com/baseus/baseus-gan5-pro-100w-fast-charger-handphone-adaptor-laptop-usb-type-c-hitam?src\u003dtopads",
+            "appUrl": "tokopedia://product/5026034311?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_KOHAnhHsydbm-xgVY789CBUsthbm-FQRo2PcB5QiUEH_nDUSz2Q31i6sJf6A1ho_yFHsJDUMoFyaUEHs1FHmFiy3zwrfo5rM1i6sehoZd7oAjh6AyOopHN6AKNbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oAoozVjF_7zzHjNJz_-o8MPN_32u8jB2PfBgHO-N3Ao6QVByZM2xe7jfZ32sP1N1ypV68B1p_BzsH1NEu_o6ucHaZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWqzO-2_S2-81h1_Mxgu7B7_jzC8JNAHAuozVBd_Vzjq7NWZ_u6qj2t_S2GqBB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBD6A-6usxR3I2mgjOkz_o6uVuE_jyNgjOc6IPy8j-M_1o-r7BX_M2iH72D3A-G83UpgI2q17jfZ32z8JN_oAC6zcWd_7zgH1NE__uvzcrOZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_jzg8JhkZ_-68jVd_7zVHJN1e_-o8ju2gBJYvZUDUSupg9-wq3ei6iUposyFosyOUiFirfuprfB5QBY2gmUEUMod8cxjeOB31pra9OeO1BY7H1WJqRnEeuCC6_Viz32xuJ2mHpCZgMzqzuxOy3-s1chOzcWWq3tWQ1OHgArpy_HhgsnN8c2v_OYXrAPz_MhqH9zc19uOgAJNgVx9y7xEqpgqPO-SqSB_3MVWZVBWHIy7u9BI3uV13IrfoA-j6I2-83uzQBC5r1Kf_sHF8MohoSoxHj4hq7OZ_MuUZchz_Axo_VHibm-xQcri6i-pqcYF9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-sy9zwq3zpUs2Qos1DosyDopCPbm-X9foxQMz2gcV7guYxgIHi6sURHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sehosrpbm-FrMBsguYiq3ei6sUOHAnDUMP5y3hwq3ei6soY?dv\u003dandroid-3.150\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fbaseus%2Fbaseus-gan5-pro-100w-fast-charger-handphone-adaptor-laptop-usb-type-c-hitam%3Fsrc%3Dtopads\u0026t\u003dandroid\u0026src\u003drecom_widget_account\u0026page\u003d1\u0026ob\u003d0\u0026management_type\u003d1\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_KOHAnhHsydbm-xgVY789CBUsthbm-FQRo2PcB5QiUEH_nDUSz2Q31i6sJf6A1ho_yFHsJDUMoFyaUEHs1FHmFiy3zwrfo5rM1i6sehoZd7oAjh6AyOopHN6AKNbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oAoozVjF_7zzHjNJz_-o8MPN_32u8jB2PfBgHO-N3Ao6QVByZM2xe7jfZ32sP1N1ypV68B1p_BzsH1NEu_o6ucHaZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWqzO-2_S2-81h1_Mxgu7B7_jzC8JNAHAuozVBd_Vzjq7NWZ_u6qj2t_S2GqBB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBD6A-6usxR3I2mgjOkz_o6uVuE_jyNgjOc6IPy8j-M_1o-r7BX_M2iH72D3A-G83UpgI2q17jfZ32z8JN_oAC6zcWd_7zgH1NE__uvzcrOZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_jzg8JhkZ_-68jVd_7zVHJN1e_-o8ju2gBJYvZUDUSupg9-wq3ei6iUposyFosyOUiFirfuprfB5QBY2gmUEUMod8cxjeOB31pra9OeO1BY7H1WJqRnEeuCC6_Viz32xuJ2mHpCZgMzqzuxOy3-s1chOzcWWq3tWQ1OHgArpy_HhgsnN8c2v_OYXrAPz_MhqH9zc19uOgAJNgVx9y7xEqpgqPO-SqSB_3MVWZVBWHIy7u9BI3uV13IrfoA-j6I2-83uzQBC5r1Kf_sHF8MohoSoxHj4hq7OZ_MuUZchz_Axo_VHibm-xQcri6i-pqcYF9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-sy9zwq3zpUs2Qos1DosyDopCPbm-X9foxQMz2gcV7guYxgIHi6sURHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sehosrpbm-FrMBsguYiq3ei6sUOHAnDUMP5y3hwq3ei6soY?management_type\u003d1\u0026page\u003d1\u0026src\u003drecom_widget_account\u0026uid\u003d3660665\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fbaseus%2Fbaseus-gan5-pro-100w-fast-charger-handphone-adaptor-laptop-usb-type-c-hitam%3Fsrc%3Dtopads\u0026t\u003dandroid\u0026product_id\u003d5026034311\u0026dv\u003dandroid-3.150\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026ob\u003d0",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJdo_nFH_Uf6mFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6sJFbm-7q3OBUsthosKOH_1fHAUhbm-Fy9ztUstiq3OxgfupbSz5qfYFg3z2yZNXg9e5q3OSbfoxyfxBbpHFHmOpr9uxrM15uSViyfOobpUFHsH5HZ4aom4dypxxHpjayi7Ry_eab_efg_KWy_uigm77HcoBosndosURo_rXqSCSUiFiy3zwrfo5rM1i6sehoZd7oAjh6AyOopHN6AKNbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oAoozVjF_7zzHjNJz_-o8MPN_32u8jB2PfBgHO-N3Ao6QVByZM2xe7jfZ32sP1N1ypV68B1p_BzsH1NEu_o6ucHaZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWqzO-2_S2-81h1_Mxgu7B7_jzC8JNAHAuozVBd_Vzjq7NWZ_u6qj2t_S2GqBB_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBD6A-6usxR3I2mgjOkz_o6uVuE_jyNgjOc6IPy8j-M_1o-r7BX_M2iH72D3A-G83UpgI2q17jfZ32z8JN_oAC6zcWd_7zgH1NE__uvzcrOZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_jzg8JhkZ_-68jVd_7zVHJN1e_-o8ju2gBJYvZUDUSupg9-wq3ei6iUposyFosyOUiFirfuprfB5QBY2gmUEUMod8cxjeOB31pra9OeO1BY7H1WJqRnEeuCC6_Viz32xuJ2mHpCZgMzqzuxOy3-s1chOzcWWq3tWQ1OHgArpy_HhgsnN8c2v_OYXrAPz_MhqH9zc19uOgAJNgVx9y7xEqpgqPO-SqSB_3MVWZVBWHIy7u9BI3uV13IrfoA-j6I2-83uzQBC5r1Kf_sHF8MohoSoxHj4hq7OZ_MuUZchz_Axo_VHibm-xQcri6i-pqcYF9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-X9foxQMz2gcV7guYxgIHi6sURHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAJfopHDUSCaq3oB9f-2gmUEHs1FHmFigfYxQVY2gmUEHR7?src\u003drecom_widget_account\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026ob\u003d0\u0026management_type\u003d1\u0026page\u003d1\u0026t\u003dandroid\u0026dv\u003dandroid-3.150",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/1/24/8c8a392b-7a42-46e8-a5bd-40ce60862757.jpg",
+            "price": "Rp489.000",
+            "priceInt": 489000,
+            "discountPercentage": 71,
+            "slashedPrice": "Rp1.659.000",
+            "slashedPriceInt": 1659000,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 2175534,
+              "name": "Baseus Official Store",
+              "city": "Tangerang",
+              "isGold": false,
+              "isOfficial": true
+            },
+            "departmentId": 70,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 645",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 328,
+            "ratingAverage": "4.9",
+            "recommendationType": "shop_recentview",
+            "stock": 894,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 9523687768,
+            "name": "Adapter Samsung 45W Original 100% Super Fast Charging Adaptor Type C",
+            "categoryBreadcrumbs": "Handphone \u0026 Tablet/Aksesoris Tablet/Charger Tablet",
+            "url": "https://www.tokopedia.com/vippremium/adapter-samsung-45w-original-100-super-fast-charging-adaptor-type-c-adaptor-45w?src\u003dtopads",
+            "appUrl": "tokopedia://product/9523687768?src\u003dtopads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_rFHAep6_Kfbm-xgVY789CBUsthbm-FQRo2PcB5QiUEH_JDUSz2Q31i6sJf6A1ho_yFHsJDUMoFyaUEHsJFHmFiy3zwrfo5rM1i6sehoZdaHsnpopnhH_yR6AydoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ323qO2I1MB68jBN_Vz6qVB9Z9z6zJVd_jHFo1OJ39xHucz0_MO-o1NkZMx68j2k3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk19x61pzN_32C8jNEe9xouVjp_7zgoJN_Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBku9xoq_ea_jzzH1Nku_Vo8BVN_7zoo1BXHA7ibm-Orfua9fBjUstiHpyfHAyfoZUDUSoBrRo2QfNwq3ei6i-s8IxtgJoguBHRHBY1ou-wPAVbzcWF6jVee_jhyjukyuzGesHF1Mgj3juyP3ViyOCDP1z0Q3Bkb3Oo_ceRHfJpH3yF69xk_7YwQSnR11ND3sV7zBVOP3eh63zyufoU8MDf3SPZgf2N1O2xQ1xgQ_CfoVuNzOBzuVxRoseagAxEZ9BB13NeQRVUojdpHI2sr_gpy_-vH3Wo1jNBZJxD11Fd_1h_UiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pyObAURoaFa6AVPbm-X9foxQMz2gcV7guYxgIHi6sURHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUR6Anfbm-FrMBsguYiq3ei6sUhHAnDUMP5y3hwq3ei6soY?sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fvippremium%2Fadapter-samsung-45w-original-100-super-fast-charging-adaptor-type-c-adaptor-45w%3Fsrc%3Dtopads\u0026src\u003drecom_widget_account\u0026ob\u003d0\u0026management_type\u003d1\u0026dv\u003dandroid-3.150\u0026page\u003d1\u0026t\u003dandroid",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_rFHAep6_Kfbm-xgVY789CBUsthbm-FQRo2PcB5QiUEH_JDUSz2Q31i6sJf6A1ho_yFHsJDUMoFyaUEHsJFHmFiy3zwrfo5rM1i6sehoZdaHsnpopnhH_yR6AydoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ323qO2I1MB68jBN_Vz6qVB9Z9z6zJVd_jHFo1OJ39xHucz0_MO-o1NkZMx68j2k3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk19x61pzN_32C8jNEe9xouVjp_7zgoJN_Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBku9xoq_ea_jzzH1Nku_Vo8BVN_7zoo1BXHA7ibm-Orfua9fBjUstiHpyfHAyfoZUDUSoBrRo2QfNwq3ei6i-s8IxtgJoguBHRHBY1ou-wPAVbzcWF6jVee_jhyjukyuzGesHF1Mgj3juyP3ViyOCDP1z0Q3Bkb3Oo_ceRHfJpH3yF69xk_7YwQSnR11ND3sV7zBVOP3eh63zyufoU8MDf3SPZgf2N1O2xQ1xgQ_CfoVuNzOBzuVxRoseagAxEZ9BB13NeQRVUojdpHI2sr_gpy_-vH3Wo1jNBZJxD11Fd_1h_UiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pyObAURoaFa6AVPbm-X9foxQMz2gcV7guYxgIHi6sURHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUR6Anfbm-FrMBsguYiq3ei6sUhHAnDUMP5y3hwq3ei6soY?t\u003dandroid\u0026management_type\u003d1\u0026dv\u003dandroid-3.150\u0026src\u003drecom_widget_account\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026uid\u003d3660665\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fvippremium%2Fadapter-samsung-45w-original-100-super-fast-charging-adaptor-type-c-adaptor-45w%3Fsrc%3Dtopads\u0026page\u003d1\u0026product_id\u003d9523687768\u0026ob\u003d0",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJRHAn7HpjdoiFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6sJhbm-7q3OBUsthosKOH_1fHAUhbm-Fy9ztUstiq3OxgfupbSz5qfYFg3z2yZNXg9e5q3OSbfoxyfxBbpHFHmOpr9uxrM15uSViyfOobpUFHsH5oZ4RbfuxgszMHsnFb_HpopyWoAJ7yZOxg3Jpb_xBHp1hy3y76_eagZNkrcribm-xgVYpyfYagZUEoAJObsUaHAHRHAJhosrdosKObm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qBg03jPZq1NEZ9BHuJNt3uP-PJNJe9x6epnO_1zg8Jh1gcW6Q1jO_M2GqJNEZM2g17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-QjdFyBo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32z8JN_oIBoqjVE_S2C8JO13_ovzVj7_Bo-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32u8JO2oA-6zVJh_M2uH1OE19BvzJ7OZ3dFvZUDUSupg9-wq3ei6iUposyFosyOUiFirfuprfB5QBY2gmUEUMod8cxjeOB31pra9OeO1BY7H1WJqRnEeuCC6_Viz32xuJ2mHpCZgMzqzuxOy3-s1chOzcWWq3tWQ1OHgArpy_HhgsnN8c2v_OYXrAPz_MhqH9zc19uOgAJNgVx9y7xEqpgqPO-SqSB_3MVWZVBWHIy7u9BI3uV13IrfoA-j6I2-83uzQBC5r1Kf_sHF8MohoSoxHj4hq7OZ_MuUZchz_Axo_VHibm-xQcri6i-pg3VayfKibm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-X9foxQMz2gcV7guYxgIHi6sURHmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsrdHAyDUSCaq3oB9f-2gmUEHsJFHmFigfYxQVY2gmUEHR7?management_type\u003d1\u0026dv\u003dandroid-3.150\u0026t\u003dandroid\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026page\u003d1\u0026src\u003drecom_widget_account\u0026ob\u003d0",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/5/7/eaf4f200-3376-414a-aea3-8e351af4942e.jpg",
+            "price": "Rp108.500",
+            "priceInt": 108500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 14310816,
+              "name": "VIP PREMIUM",
+              "city": "Jakarta Barat",
+              "isGold": false,
+              "isOfficial": false
+            },
+            "departmentId": 281,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 1.3 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "gimmick",
+                "title": "Produk Terbaru",
+                "type": "textDarkOrange",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 226,
+            "ratingAverage": "4.9",
+            "recommendationType": "search",
+            "stock": 6193,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 3576838476,
+            "name": "SAMSUNG 75BU8000 CRYSTAL UHD 4K SMART TV 75 Inch UA75BU8000KXXD 75BU",
+            "categoryBreadcrumbs": "Elektronik/TV \u0026 Aksesoris/Televisi",
+            "url": "https://www.tokopedia.com/ibanelektronik/samsung-75bu8000-crystal-uhd-4k-smart-tv-75-inch-ua75bu8000kxxd-75bu",
+            "appUrl": "tokopedia://product/3576838476",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_1fopjN6_jfbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_ydo_JOosnaHZFiyRCsUsthHs1Fbm-xgVYpyfYagZUEHpJpbsyRH_eOo_KhoAHd6_1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWu_oquJJO_S2jqJh1z92vz7O7_jzu8JONH3xo8jBR_VPo8VBW392gHBBN_92uP7O2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk_9xo8_ea_S2VHJN1u_zouVVE_7z0H1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OE19xHqjBR_S2sH1Okz9Pozcrh_M2oq3gzv_7ibm-Orfua9fBjUstiHpyfHAyfoZUDUSoBrRo2QfNwq3ei6i-s8IxtgJoguBHRHBY1ou-wPAVbzcWF6jVee_jhyjukyuzGesHF1Mgj3juyP3ViyOCDP1z0Q3Bkb3Oo_ceRHfJpH3yF69xk_7YwQSnR11ND3sV7zBVOP3eh63zyufoU8MDf3SPZgf2N1O2xQ1xgQ_CfoVuNzOBzuVxRoseagAxEZ9BB13NeQRVUojdpHI2sr_gpy_-vH3Wo1jNBZJxD11Fd_1h_UiFiy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiQSuWyMua9fYM9fVjraUEoaFiQSuWyMua9fVjrOYag9Ji6sUFbm-sy9zwq3zpUs2QosnDos1ObAHNH_xPbm-X9foxQMz2gcV7guYxgIHi6srDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-pQcY7PcBXgOYirMYRrf1ibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstOHAnNoaFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-OgZFirI-2yfuwyMBjUsthHs1Fbm-SQfVD9fBjUstpwe?t\u003dandroid\u0026dv\u003dandroid-3.150\u0026is_search\u003d1\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fibanelektronik%2Fsamsung-75bu8000-crystal-uhd-4k-smart-tv-75-inch-ua75bu8000kxxd-75bu%3Fsrc%3Dtopads\u0026src\u003drecom_widget_account\u0026keywords\u003drecom\u0026page\u003d1\u0026management_type\u003d2",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_1fopjN6_jfbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_ydo_JOosnaHZFiyRCsUsthHs1Fbm-xgVYpyfYagZUEHpJpbsyRH_eOo_KhoAHd6_1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWu_oquJJO_S2jqJh1z92vz7O7_jzu8JONH3xo8jBR_VPo8VBW392gHBBN_92uP7O2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk_9xo8_ea_S2VHJN1u_zouVVE_7z0H1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OE19xHqjBR_S2sH1Okz9Pozcrh_M2oq3gzv_7ibm-Orfua9fBjUstiHpyfHAyfoZUDUSoBrRo2QfNwq3ei6i-s8IxtgJoguBHRHBY1ou-wPAVbzcWF6jVee_jhyjukyuzGesHF1Mgj3juyP3ViyOCDP1z0Q3Bkb3Oo_ceRHfJpH3yF69xk_7YwQSnR11ND3sV7zBVOP3eh63zyufoU8MDf3SPZgf2N1O2xQ1xgQ_CfoVuNzOBzuVxRoseagAxEZ9BB13NeQRVUojdpHI2sr_gpy_-vH3Wo1jNBZJxD11Fd_1h_UiFiy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiQSuWyMua9fYM9fVjraUEoaFiQSuWyMua9fVjrOYag9Ji6sUFbm-sy9zwq3zpUs2QosnDos1ObAHNH_xPbm-X9foxQMz2gcV7guYxgIHi6srDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-pQcY7PcBXgOYirMYRrf1ibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstOHAnNoaFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-OgZFirI-2yfuwyMBjUsthHs1Fbm-SQfVD9fBjUstpwe?dv\u003dandroid-3.150\u0026t\u003dandroid\u0026src\u003drecom_widget_account\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fibanelektronik%2Fsamsung-75bu8000-crystal-uhd-4k-smart-tv-75-inch-ua75bu8000kxxd-75bu%3Fsrc%3Dtopads\u0026is_search\u003d1\u0026product_id\u003d3576838476\u0026page\u003d1\u0026uid\u003d3660665\u0026keywords\u003drecom\u0026management_type\u003d2\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJOosrN6_jNoiFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6s1DUSz2Q31i6sJf6A1ho_yFHsJDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFbOghyMoW_Z4aHAUabpJFbpUpbpzjHpepg3gxb3eaHcyWocoigi7NHsxjb3y7H_rdHcusH3JRyZNkrcribm-xgVYpyfYagZUEHpJpbsyRH_eOo_KhoAHd6_1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWu_oquJJO_S2jqJh1z92vz7O7_jzu8JONH3xo8jBR_VPo8VBW392gHBBN_92uP7O2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk_9xo8_ea_S2VHJN1u_zouVVE_7z0H1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OE19xHqjBR_S2sH1Okz9Pozcrh_M2oq3gzv_7ibm-Orfua9fBjUstiHpyfHAyfoZUDUSoBrRo2QfNwq3ei6i-s8IxtgJoguBHRHBY1ou-wPAVbzcWF6jVee_jhyjukyuzGesHF1Mgj3juyP3ViyOCDP1z0Q3Bkb3Oo_ceRHfJpH3yF69xk_7YwQSnR11ND3sV7zBVOP3eh63zyufoU8MDf3SPZgf2N1O2xQ1xgQ_CfoVuNzOBzuVxRoseagAxEZ9BB13NeQRVUojdpHI2sr_gpy_-vH3Wo1jNBZJxD11Fd_1h_UiFiy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiQSuWyMua9fYM9fVjraUEoaFiQSuWyMua9fVjrOYag9Ji6sUFbm-X9foxQMz2gcV7guYxgIHi6srDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDirfh5PIz2QMPwyS-5PRoBUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6s1FHAjRbm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBbm-FrMBsguYiq3ei6sJao_nDUMP5y3hwq3ei6soY?dv\u003dandroid-3.150\u0026t\u003dandroid\u0026page\u003d1\u0026sid\u003dcxxhdCYVS72_T5R_t1KDkp%3AAPA91bEjaTJB30RfdZEXuabcPluDkmij-mMLd73a31f09xjOO_np7QNlZ1tFQuud19dXWcHzk6ZwRgjySZamHYm0v4UyGYQTXw642d8zIyeQnPoqH6N30zcq6sa2O1kMRNeHHlQL8MLS\u0026keywords\u003drecom\u0026src\u003drecom_widget_account\u0026is_search\u003d1\u0026management_type\u003d2",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/10/23/4d343efa-d20f-4cbf-928d-f41780ec1a7a.jpg",
+            "price": "Rp 16.499.000",
+            "priceInt": 16499000,
+            "discountPercentage": 24,
+            "slashedPrice": "Rp 21.599.000",
+            "slashedPriceInt": 21599000,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 6856251,
+              "name": "IbanElektronik",
+              "city": "Kota Bekasi",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 3918,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 1",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 1,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding",
+            "stock": 4,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 8761955192,
+            "name": "Samsung 75CU8000 TV LED Smart TV 4K Crystal UHD 75 Inch",
+            "categoryBreadcrumbs": "Elektronik/TV \u0026 Aksesoris/Televisi",
+            "url": "https://www.tokopedia.com/jwinelectronic/samsung-75cu8000-tv-led-smart-tv-4k-crystal-uhd-75-inch",
+            "appUrl": "tokopedia://product/8761955192",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d3918\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003daccount\u0026pid\u003d8761955192\u0026pos\u003d6\u0026recommendation\u003dgraph_embedding\u0026rectype\u003dgraph_embedding\u0026redirect\u003dhttps://www.tokopedia.com/jwinelectronic/samsung-75cu8000-tv-led-smart-tv-4k-crystal-uhd-75-inch?catid3918\u003d%26ref\u003daccount_pa1_po6%26src\u003dr3graph_embedding\u0026tid\u003dmCTbykm_XzlRlRjTS5Qo-jYoLKg\u003d\u0026uid\u003d3660665\u0026unique_id\u003d\u0026utime\u003d1685156021\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/3/25/326b9891-e125-4fe0-b969-aec1f1f04acd.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/3/25/326b9891-e125-4fe0-b969-aec1f1f04acd.jpg",
+            "price": "Rp 17.799.000",
+            "priceInt": 17799000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 4115922,
+              "name": "Jwin Electronic",
+              "city": "Jakarta Pusat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 3918,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 6",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 6,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding",
+            "stock": 14,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1046463507,
+            "name": "BASEUS CAR HOLDER DASHBOARD BIG MOUTH MOBILE PHONE CAR MOUNT",
+            "categoryBreadcrumbs": "Handphone \u0026 Tablet/Aksesoris Handphone/Mount Handphone",
+            "url": "https://www.tokopedia.com/baseusautolife/baseus-car-holder-dashboard-big-mouth-mobile-phone-car-mount-hitam",
+            "appUrl": "tokopedia://product/1046463507",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d73\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003daccount\u0026pid\u003d1046463507\u0026pos\u003d7\u0026recommendation\u003dcluster_v2_recentview\u0026rectype\u003dcluster_v2_recentview\u0026redirect\u003dhttps://www.tokopedia.com/baseusautolife/baseus-car-holder-dashboard-big-mouth-mobile-phone-car-mount-hitam?catid0073\u003d%26ref\u003daccount_pa1_po7%26src\u003dr3cluster_v2_recentview\u0026tid\u003dmCTbykm_XzlRlRjTS5Qo-jYoLKg\u003d\u0026uid\u003d3660665\u0026unique_id\u003d\u0026utime\u003d1685156021\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/5/11/aeb35f7d-6e97-4f65-a0e1-0171f6dcd95c.png",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/5/11/aeb35f7d-6e97-4f65-a0e1-0171f6dcd95c.png",
+            "price": "Rp 99.000",
+            "priceInt": 99000,
+            "discountPercentage": 50,
+            "slashedPrice": "Rp 199.000",
+            "slashedPriceInt": 199000,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 8647341,
+              "name": "Baseus Auto Life",
+              "city": "Kota Tangerang",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 73,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 4 rb+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 2535,
+            "ratingAverage": "4.8",
+            "recommendationType": "cluster_v2_recentview",
+            "stock": 97,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 1046463502
+          },
+          {
+            "id": 3282324709,
+            "name": "SAMSUNG CRYSTAL UHD 4K SMART TV 75 INCH 75BU8000",
+            "categoryBreadcrumbs": "Elektronik/TV \u0026 Aksesoris/Televisi",
+            "url": "https://www.tokopedia.com/samsungofficialstorebdg/samsung-crystal-uhd-4k-smart-tv-75-inch-75bu8000",
+            "appUrl": "tokopedia://product/3282324709",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d3918\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003daccount\u0026pid\u003d3282324709\u0026pos\u003d8\u0026recommendation\u003dgraph_embedding\u0026rectype\u003dgraph_embedding\u0026redirect\u003dhttps://www.tokopedia.com/samsungofficialstorebdg/samsung-crystal-uhd-4k-smart-tv-75-inch-75bu8000?catid3918\u003d%26ref\u003daccount_pa1_po8%26src\u003dr3graph_embedding\u0026tid\u003dmCTbykm_XzlRlRjTS5Qo-jYoLKg\u003d\u0026uid\u003d3660665\u0026unique_id\u003d\u0026utime\u003d1685156021\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/7/4/f8b17e0b-92ba-4cb4-8e36-1843dc357897.png",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/7/4/f8b17e0b-92ba-4cb4-8e36-1843dc357897.png",
+            "price": "Rp 17.999.000",
+            "priceInt": 17999000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 11294456,
+              "name": "Samsung Official Store Bandung",
+              "city": "Kota Bandung",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 3918,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 5",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 4,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding",
+            "stock": 1,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 7762992278,
+            "name": "SAMSUNG 75BU8000 75 Inch Crystal UHD 4K Smart TV",
+            "categoryBreadcrumbs": "Elektronik/TV \u0026 Aksesoris/Televisi",
+            "url": "https://www.tokopedia.com/braderelektronik/samsung-75bu8000-75-inch-crystal-uhd-4k-smart-tv",
+            "appUrl": "tokopedia://product/7762992278",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d3918\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003daccount\u0026pid\u003d7762992278\u0026pos\u003d9\u0026recommendation\u003dgraph_embedding\u0026rectype\u003dgraph_embedding\u0026redirect\u003dhttps://www.tokopedia.com/braderelektronik/samsung-75bu8000-75-inch-crystal-uhd-4k-smart-tv?catid3918\u003d%26ref\u003daccount_pa1_po9%26src\u003dr3graph_embedding\u0026tid\u003dmCTbykm_XzlRlRjTS5Qo-jYoLKg\u003d\u0026uid\u003d3660665\u0026unique_id\u003d\u0026utime\u003d1685156021\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/2/1/63fa7840-1ac5-4379-bb61-f34596e08711.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/2/1/63fa7840-1ac5-4379-bb61-f34596e08711.jpg",
+            "price": "Rp 16.590.000",
+            "priceInt": 16590000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 15201599,
+              "name": "Brader Elektronik",
+              "city": "Jakarta Timur",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 3918,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "Terjual 1",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 1,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding",
+            "stock": 4,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -15,7 +15,7 @@
         android:layout_marginHorizontal="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:text="@string/digital_cart_user_price_info"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="display_2"
         app:typographyWeight="bold" />
 

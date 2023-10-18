@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
-apply plugin: 'kotlin-kapt'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 
 android {
     defaultConfig {
@@ -21,6 +20,12 @@ android {
     buildFeatures {
         buildConfig = false
     }
+
+    configurations {
+        androidTestImplementation {
+            exclude group: 'com.google.firebase', module: 'firebase-perf'
+        }
+    }
 }
 
 dependencies {
@@ -32,6 +37,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.rechargePdpEmoney)
     implementation projectOrAar(rootProject.ext.features.payment)
     implementation projectOrAar(rootProject.ext.features.thankYouNative)
+    implementation projectOrAar(rootProject.ext.features.sessioncommon)
 
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.baseList)

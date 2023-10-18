@@ -5,13 +5,12 @@
     android:layout_height="match_parent"
     android:background="@color/Unify_NN0">
 
-
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/affiliate_background_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="96dp"
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="gone"
-        app:srcCompat="@drawable/affiliate_background" />
+        app:unify_image_url_src="https://images.tokopedia.net/img/android/res/singleDpi/affiliate/top_illustration.png"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

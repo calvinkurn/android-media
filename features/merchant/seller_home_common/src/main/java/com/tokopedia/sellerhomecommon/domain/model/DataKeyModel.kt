@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhomecommon.domain.model
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -8,13 +7,8 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class DataKeyModel(
-    @Expose
-    @SerializedName("key")
-    val key: String,
-    @Expose
-    @SerializedName("parameters")
-    val jsonParams: String = "{}",
+    @SerializedName("key") val key: String,
+    @SerializedName("parameters") val jsonParams: String = "{}",
 
-    @Transient
-    val maxDisplay: Int = 0
+    @Transient val maxDisplay: Int = 0
 )

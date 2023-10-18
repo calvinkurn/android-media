@@ -5,6 +5,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageSections
 
 interface RechargeHomepageItemListener {
     fun loadRechargeSectionData(sectionID: String)
+    fun loadRechargeSectionDataWithLoadedParam(sectionID: String, isLoaded: Boolean)
     fun onRechargeSectionEmpty(sectionID: String)
 
     fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item)

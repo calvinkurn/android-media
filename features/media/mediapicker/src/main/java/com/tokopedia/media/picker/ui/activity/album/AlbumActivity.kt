@@ -103,6 +103,7 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
             setResult(RESULT_OK, Intent().apply {
                 putExtra(INTENT_BUCKET_ID, album.id)
                 putExtra(INTENT_BUCKET_NAME, album.name)
+                putExtra(INTENT_BUCKET_COUNT, album.count)
             })
 
             finish()
@@ -121,6 +122,7 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
     companion object {
         const val INTENT_BUCKET_ID = "bucket_id"
         const val INTENT_BUCKET_NAME = "bucket_name"
+        const val INTENT_BUCKET_COUNT = "bucket_count"
 
         fun start(fragment: Fragment, reqCode: Int) {
             fragment.startActivityForResult(
@@ -131,11 +133,12 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
             )
         }
 
-        fun getIntentResult(intent: Intent?): Pair<Long, String> {
-            val bucketId = intent?.getLongExtra(INTENT_BUCKET_ID, 0)?: -1
-            val bucketName = intent?.getStringExtra(INTENT_BUCKET_NAME)?: ""
+        fun getIntentResult(intent: Intent?): Triple<Long, String, Int> {
+            val bucketId = intent?.getLongExtra(INTENT_BUCKET_ID, 0) ?: -1
+            val bucketName = intent?.getStringExtra(INTENT_BUCKET_NAME) ?: ""
+            val bucketCount = intent?.getIntExtra(INTENT_BUCKET_COUNT, 0) ?: 0
 
-            return Pair(bucketId, bucketName)
+            return Triple(bucketId, bucketName, bucketCount)
         }
     }
 

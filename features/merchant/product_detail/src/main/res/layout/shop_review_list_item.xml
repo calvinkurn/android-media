@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="292dp"
+    android:layout_height="112dp"
+    app:card_type="border">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/shopReviewListImage"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_type="circle" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shopReviewListName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/shopReviewListImage"
+            app:layout_constraintTop_toTopOf="@+id/shopReviewListImage"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            tools:text="Karina" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shopReviewListTitleDot"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:text="@string/product_detail_discussion_dot"
+            android:textColor="@color/Unify_NN500"
+            app:layout_constraintStart_toEndOf="@+id/shopReviewListName"
+            app:layout_constraintTop_toTopOf="@+id/shopReviewListName"
+            app:typographyType="display_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shopReviewListUserTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_TN600"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/shopReviewListTitleDot"
+            app:layout_constraintTop_toTopOf="@+id/shopReviewListName"
+            app:typographyType="display_3"
+            tools:text="Juara Ulasan Laptop &amp; Gadasdf asdf asdf asdf asdf asdf" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shopReviewListUserSubTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/shopReviewListImage"
+            app:layout_constraintTop_toBottomOf="@id/shopReviewListName"
+            app:typographyType="display_3"
+            tools:text="6 ulasan lengkap • 6 terbantu" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shopReviewListReviewText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/shopReviewListUserSubTitle"
+            app:typographyType="paragraph_2"
+            tools:text="Saya sangat puas sekali!! Abangnya cepet respon, packaging rapih dan ga pelit bubble wrap." />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify2>

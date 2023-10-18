@@ -21,7 +21,7 @@ class DeleteWishlistCollectionItemsUseCase @Inject constructor(
         return repository.request(DeleteWishlistCollectionItemsMutation(), toMap(params))
     }
 
-    override fun graphqlQuery(): String  = query
+    override fun graphqlQuery(): String = query
 
     private fun toMap(productIds: List<String>): Map<String, Any> = mapOf(
         listProductId to productIds

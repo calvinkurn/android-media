@@ -14,6 +14,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.discovery2'
+    testNamespace 'com.tokopedia.discovery2.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -31,11 +33,13 @@ android {
 dependencies {
 
     // Features Dependency
+    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.searchbar)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.basemvvm)
+    implementation projectOrAar(rootProject.ext.features.homeComponent)
     implementation projectOrAar(rootProject.ext.libraries.circularViewPager)
     implementation projectOrAar(rootProject.ext.features.categoryNavBottomSheet)
     implementation projectOrAar(rootProject.ext.features.playWidget)
@@ -56,9 +60,10 @@ dependencies {
     api projectOrAar(rootProject.ext.features.promoMvcWidget)
     implementation projectOrAar(rootProject.ext.features.questWidget)
     implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
+    implementation projectOrAar(rootProject.ext.features.affiliateSDK)
+    implementation projectOrAar(rootProject.ext.features.carouselProductCard)
 
     // Libraries Dependency
-    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
@@ -69,8 +74,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation projectOrAar(rootProject.ext.libraries.applink)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
@@ -85,6 +91,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.sortFilter
+    implementation rootProject.ext.unifyDependencies.viewAllCard
 
     // tkpdInternalLibDependencies Dependency
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
@@ -97,6 +104,7 @@ dependencies {
     // miscDependencies Dependency
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.lottie
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
@@ -106,6 +114,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.robolectric
     testImplementation project(rootProject.ext.libraries.unitTest)
     androidTestImplementation rootProject.ext.testDependencies.assertJCore
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid

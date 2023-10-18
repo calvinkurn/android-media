@@ -5,8 +5,6 @@
     android:id="@+id/shcUnificationCommonErrorView"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:layout_marginTop="64dp"
-    android:layout_marginBottom="64dp"
     android:visibility="gone"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"

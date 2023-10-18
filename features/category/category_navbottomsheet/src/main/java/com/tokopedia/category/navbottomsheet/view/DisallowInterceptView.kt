@@ -6,15 +6,15 @@ import android.view.MotionEvent
 import android.widget.LinearLayout
 
 class DisallowInterceptView : LinearLayout {
-    constructor(context: Context?) : super(context) {
+    constructor(context: Context) : super(context) {
         requestDisallowInterceptTouchEvent(true)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         requestDisallowInterceptTouchEvent(true)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         requestDisallowInterceptTouchEvent(true)
     }
 

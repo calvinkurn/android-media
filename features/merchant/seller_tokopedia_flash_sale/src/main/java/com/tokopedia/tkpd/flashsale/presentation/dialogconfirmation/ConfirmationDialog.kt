@@ -2,8 +2,8 @@ package com.tokopedia.tkpd.flashsale.presentation.dialogconfirmation
 
 import android.content.Context
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.seller_tokopedia_flash_sale.R
+import com.tokopedia.unifycomponents.UnifyButton
 
 class ConfirmationDialog(context: Context) {
     private val dialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)

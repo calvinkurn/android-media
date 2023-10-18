@@ -21,6 +21,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.tokopoints.R
+import com.tokopedia.tokopoints.databinding.TpActivityStackedCouponListBinding
 import com.tokopedia.tokopoints.di.BundleModule
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
@@ -31,7 +32,7 @@ import com.tokopedia.tokopoints.view.model.CouponFilterItem
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.TAB_SETUP_DELAY_MS
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.tp_activity_stacked_coupon_list.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivityContract.View, HasComponent<TokopointBundleComponent> {
@@ -42,6 +43,8 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
 
     @Inject
     internal lateinit var factory: ViewModelFactory
+
+    private var binding: TpActivityStackedCouponListBinding? by viewBinding()
 
     private val mPresenter: StackedCouponActivtyViewModel by lazy { ViewModelProviders.of(this, factory)[StackedCouponActivtyViewModel::class.java] }
 
@@ -76,24 +79,31 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
     }
 
     private fun addObserver() {
-        mPresenter.couponFilterViewModel.observe(this, Observer {
-            it.let {
-                when (it) {
-                    is Loading -> showLoading()
-                    is ErrorMessage -> onError(it.data, NetworkDetector.isConnectedToInternet(this@CouponListingStackedActivity))
-                    is Success -> {
-                        hideLoading()
-                        onSuccess(it.data.filter.categories)
+        mPresenter.couponFilterViewModel.observe(
+            this,
+            Observer {
+                it.let {
+                    when (it) {
+                        is Loading -> showLoading()
+                        is ErrorMessage -> onError(it.data, NetworkDetector.isConnectedToInternet(this@CouponListingStackedActivity))
+                        is Success -> {
+                            hideLoading()
+                            onSuccess(it.data.filter.categories)
+                        }
+                        else -> {
+                            // no-op
+                        }
                     }
                 }
             }
-        })
+        )
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
-        //Intermittent crash on Marshmallow
+        // Intermittent crash on Marshmallow
         try {
-            setContentView(layoutRes)
+            binding = TpActivityStackedCouponListBinding.inflate(layoutInflater)
+            setContentView(binding?.root)
         } catch (e: Exception) {
             finish()
             return
@@ -106,9 +116,9 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
             supportActionBar?.title = this.title
         }
         updateTitle(getString(R.string.tp_label_my_coupon_new))
-        server_error_view.setErrorButtonClickListener(View.OnClickListener {
+        binding?.serverErrorView?.setErrorButtonClickListener {
             mPresenter.getFilter()
-        })
+        }
         initViews()
     }
 
@@ -125,21 +135,22 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
     }
 
     private fun initInjector() =
-            DaggerTokopointBundleComponent.builder()
-                    .bundleModule(BundleModule(bundle ?: Bundle()))
-                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                    .tokopointsQueryModule(TokopointsQueryModule(this))
-                    .build()
-
+        DaggerTokopointBundleComponent.builder()
+            .bundleModule(BundleModule(bundle ?: Bundle()))
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .tokopointsQueryModule(TokopointsQueryModule(this))
+            .build()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
             mPresenter.getFilter()
         } else if ((requestCode == REQUEST_CODE_STACKED_IN_ADAPTER || requestCode == REQUEST_CODE_STACKED_ADAPTER) && resultCode == Activity.RESULT_OK) {
-            val fragemnt = mAdapter?.getRegisteredFragment(view_pager_sort_type.currentItem)
-            data?.let {
-                fragemnt?.onActivityResult(requestCode, resultCode, it)
+            binding?.apply {
+                val fragment = mAdapter?.getRegisteredFragment(viewPagerSortType.currentItem)
+                data?.let {
+                    fragment?.onActivityResult(requestCode, resultCode, it)
+                }
             }
         } else {
             finish()
@@ -147,16 +158,15 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
     }
 
     override fun showLoading() {
-        container?.displayedChild = 0
+        binding?.container?.displayedChild = 0
     }
 
     override fun hideLoading() {
-        container?.displayedChild = 1
+        binding?.container?.displayedChild = 1
     }
 
     override fun onSuccess(data: List<CouponFilterItem>) {
-
-        view_pager_sort_type?.apply {
+        binding?.viewPagerSortType?.apply {
             mAdapter = StackedCouponFilterPagerAdapter(supportFragmentManager, data)
 
             adapter = mAdapter
@@ -165,7 +175,6 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
 
             addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                 override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-
                 }
 
                 override fun onPageSelected(position: Int) {
@@ -176,16 +185,16 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
                             presenter.getCoupons(data[position].id)
                         }
                     }
-                    AnalyticsTrackerUtil.sendEvent(activityContext,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA,
-                            "click " + data[position],
-                            "")
+                    AnalyticsTrackerUtil.sendEvent(
+                        activityContext,
+                        AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                        AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA,
+                        "click " + data[position],
+                        ""
+                    )
                 }
 
-
                 override fun onPageScrollStateChanged(state: Int) {
-
                 }
             })
 
@@ -197,13 +206,14 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
                 }
             }, TAB_SETUP_DELAY_MS.toLong())
         }
-        //Setting up sort types tabsK
-
+        // Setting up sort types tabsK
     }
 
     override fun onError(error: String, hasInternet: Boolean) {
-        container?.displayedChild = 2
-        server_error_view.showErrorUi(hasInternet)
+        binding?.apply {
+            container.displayedChild = 2
+            serverErrorView.showErrorUi(hasInternet)
+        }
     }
 
     override fun getStringRaw(id: Int): String {
@@ -215,10 +225,12 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
     }
 
     fun loadFirstTab(categoryId: Int) {
-        val fragment = mAdapter?.getRegisteredFragment(view_pager_sort_type.currentItem) as CouponListingStackedFragment?
-        fragment?.apply {
-            if (isAdded) {
-                presenter.getCoupons(categoryId)
+        binding?.viewPagerSortType?.apply {
+            val fragment = mAdapter?.getRegisteredFragment(currentItem) as? CouponListingStackedFragment?
+            fragment?.apply {
+                if (isAdded) {
+                    presenter.getCoupons(categoryId)
+                }
             }
         }
     }

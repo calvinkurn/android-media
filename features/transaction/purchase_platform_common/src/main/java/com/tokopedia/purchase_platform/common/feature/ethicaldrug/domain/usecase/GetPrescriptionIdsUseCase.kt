@@ -20,13 +20,13 @@ class GetPrescriptionIdsUseCase @Inject constructor(private val gql: GraphqlUseC
         gql.clearCache()
         gql.addRequest(gqlRequest)
         return gql.getExecuteObservable(null)
-                .map {
-                    val response: GetPrescriptionIdsResponse? = it.getData<GetPrescriptionIdsResponse>(GetPrescriptionIdsResponse::class.java)
-                    response
-                            ?: throw MessageErrorException(it.getError(GetPrescriptionIdsResponse::class.java)[0].message)
-                }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .map {
+                val response: GetPrescriptionIdsResponse? = it.getData<GetPrescriptionIdsResponse>(GetPrescriptionIdsResponse::class.java)
+                response
+                    ?: throw MessageErrorException(it.getError(GetPrescriptionIdsResponse::class.java)[0].message)
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     private fun getRequestParams(

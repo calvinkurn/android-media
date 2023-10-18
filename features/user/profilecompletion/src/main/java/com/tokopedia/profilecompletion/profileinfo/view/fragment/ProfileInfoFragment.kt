@@ -28,10 +28,15 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addphone.data.analitycs.AddPhoneNumberTracker
@@ -39,7 +44,11 @@ import com.tokopedia.profilecompletion.changebiousername.view.ChangeBioUsernameF
 import com.tokopedia.profilecompletion.common.webview.ProfileSettingWebViewActivity
 import com.tokopedia.profilecompletion.databinding.FragmentProfileInfoBinding
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
-import com.tokopedia.profilecompletion.profileinfo.data.*
+import com.tokopedia.profilecompletion.profileinfo.data.Detail
+import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoConstants
+import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoData
+import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoError
+import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoUiModel
 import com.tokopedia.profilecompletion.profileinfo.domain.UrlSettingProfileConst
 import com.tokopedia.profilecompletion.profileinfo.tracker.CloseAccountTracker
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
@@ -59,6 +68,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.isUsingNightModeResources
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
@@ -93,7 +103,8 @@ class ProfileInfoFragment : BaseDaggerFragment(),
     @Inject
     lateinit var closeAccountTracker: CloseAccountTracker
 
-    @Inject lateinit var userSessionDataStore: Lazy<UserSessionDataStore>
+    @Inject
+    lateinit var userSessionDataStore: Lazy<UserSessionDataStore>
 
     private val binding: FragmentProfileInfoBinding? by viewBinding()
 
@@ -152,6 +163,26 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         binding?.profileInfoImageSubtitle?.setOnClickListener(editPhotoListener)
         setProfilePicture()
         initListener()
+
+        binding?.itemProfileManagement?.imgTitle?.loadImageWithoutPlaceholder(
+            if (isUsingNightModeResources()) {
+                getString(R.string.img_profile_management_entry_point_night)
+            } else {
+                getString(R.string.img_profile_management_entry_point_light)
+            }
+        )
+
+        val isProfileManagementM1Activated = isProfileManagementM1Activated()
+
+        val label = if (isProfileManagementM1Activated) {
+            ProfileInfoTracker.LABEL_M1
+        } else {
+            ""
+        }
+        tracker.sendViewOnInfoProfilePageEvent(label)
+
+        binding?.itemProfileManagement?.root?.showWithCondition(isProfileManagementM1Activated)
+        binding?.fragmentInfoDivider2?.showWithCondition(isProfileManagementM1Activated)
     }
 
     private fun initListener() {
@@ -159,13 +190,31 @@ class ProfileInfoFragment : BaseDaggerFragment(),
             closeAccountTracker.trackClickCloseAccount(CloseAccountTracker.LABEL_KLIK)
             checkFinancialAssets()
         }
+
+        binding?.itemProfileManagement?.root?.setOnClickListener {
+            tracker.sendClickOnGotoProfileEntryPointEvent()
+            goToProfileManagement()
+        }
+    }
+
+    private fun goToProfileManagement() {
+        val intent = RouteManager.getIntent(requireActivity(), ApplinkConstInternalUserPlatform.PROFILE_MANAGEMENT)
+        startActivity(intent)
+    }
+
+    private fun isProfileManagementM1Activated(): Boolean {
+        return RemoteConfigInstance.getInstance()
+            .abTestPlatform
+            .getString(KEY_ROLLENCE_PROFILE_MANAGEMENT_M1)
+            .isNotEmpty()
     }
 
     private fun setProfilePicture() {
         lifecycleScope.launch {
             try {
-                var profilePicture = userSessionDataStore.get().getProfilePicture().toBlocking().ifEmpty { userSession.profilePicture  }
-                if(profilePicture != userSession.profilePicture) {
+                var profilePicture = userSessionDataStore.get().getProfilePicture().toBlocking()
+                    .ifEmpty { userSession.profilePicture }
+                if (profilePicture != userSession.profilePicture) {
                     profilePicture = userSession.profilePicture
                     logDataStoreError("profilePicture", DIFFERENT_EXCEPTION)
                 }
@@ -175,7 +224,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
                 logDataStoreError("profilePicture", e)
             }
         }
-}
+    }
 
     private fun logDataStoreError(field: String, e: Throwable) {
         ServerLogger.log(
@@ -728,13 +777,19 @@ class ProfileInfoFragment : BaseDaggerFragment(),
 
     private fun goToAddDob() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_BOD)
-        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_BOD_TITLE, getString(R.string.profile_info_title_add_bod))
+        intent.putExtra(
+            ApplinkConstInternalUserPlatform.PARAM_BOD_TITLE,
+            getString(R.string.profile_info_title_add_bod)
+        )
         startActivityForResult(intent, REQUEST_CODE_ADD_BOD)
     }
 
     private fun goToChangeDob(bod: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_BOD)
-        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_BOD_TITLE, getString(R.string.profile_info_title_change_bod))
+        intent.putExtra(
+            ApplinkConstInternalUserPlatform.PARAM_BOD_TITLE,
+            getString(R.string.profile_info_title_change_bod)
+        )
         intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_BOD, bod)
         startActivityForResult(intent, REQUEST_CODE_EDIT_BOD)
     }
@@ -766,7 +821,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         RouteManager.route(
             context,
             "${ApplinkConst.WEBVIEW}?${WEBVIEW_PARAM_HIDE_TITLEBAR}&${WEBVIEW_PARAM_BACK_PRESSED_DISABLED}&url=" +
-                    TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CLOSE_ACCOUNT_PATH)
+                TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CLOSE_ACCOUNT_PATH)
         )
     }
 
@@ -791,11 +846,16 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         private const val GENDER_FEMALE = 2
         private const val TAG_BOTTOM_SHEET_CLOSE_ACCOUNT = "bottom sheet close account"
         private const val EMPTY_STRING = ""
-        private const val WEBVIEW_PARAM_HIDE_TITLEBAR = "${com.tokopedia.webview.KEY_TITLEBAR}=false"
-        private const val WEBVIEW_PARAM_BACK_PRESSED_DISABLED = "${com.tokopedia.webview.KEY_BACK_PRESSED_ENABLED}=false"
+        private const val WEBVIEW_PARAM_HIDE_TITLEBAR =
+            "${com.tokopedia.webview.KEY_TITLEBAR}=false"
+        private const val WEBVIEW_PARAM_BACK_PRESSED_DISABLED =
+            "${com.tokopedia.webview.KEY_BACK_PRESSED_ENABLED}=false"
         private const val TOKOPEDIA_CLOSE_ACCOUNT_PATH = "user/close-account"
         private const val LIMIT_STACKTRACE = 1000
-        private val DIFFERENT_EXCEPTION = Throwable(message = "Value is different from User Session")
+        private val DIFFERENT_EXCEPTION =
+            Throwable(message = "Value is different from User Session")
+
+        private const val KEY_ROLLENCE_PROFILE_MANAGEMENT_M1= "M1_Profile_Mgmt"
 
         fun createInstance(): ProfileInfoFragment {
             return ProfileInfoFragment()

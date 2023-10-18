@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_11"
         android:gravity="bottom"
-        android:text="@string/topads_hari_ini"
+        android:text="@string/topads_common_date_today"
         app:typographyWeight="bold"
         android:textColor="@color/Unify_NN1000"
         app:layout_constraintBottom_toBottomOf="@id/date_image"

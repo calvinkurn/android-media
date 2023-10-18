@@ -12,7 +12,8 @@ class PinPreference @Inject constructor(@ApplicationContext val context: Context
     private val KEY_TEMP_CONFIRM_PIN = "temp_confirm_pin_flow"
     private val KEY_TEMP_HASH = "temp_hash_pin_flow"
 
-    val sharedPreferences: SharedPreferences = context.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE)
+    val sharedPreferences: SharedPreferences =
+        context.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE)
 
     fun setTempPin(pin: String) {
         sharedPreferences.edit().putString(KEY_TEMP_PIN, pin).apply()

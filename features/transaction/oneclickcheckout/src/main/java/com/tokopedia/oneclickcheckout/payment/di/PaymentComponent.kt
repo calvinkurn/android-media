@@ -8,7 +8,7 @@ import dagger.Component
 
 @PaymentScope
 @Component(modules = [PaymentModule::class, PaymentViewModelModule::class], dependencies = [BaseAppComponent::class])
-interface PaymentComponent{
+interface PaymentComponent {
     fun inject(paymentListingActivity: PaymentListingActivity)
     fun inject(paymentListingFragment: PaymentListingFragment)
     fun inject(paymentTopUpWebViewFragment: PaymentTopUpWebViewFragment)

@@ -10,7 +10,6 @@ import com.tokopedia.sellerapp.presentation.viewmodel.data.FakeGetNotificationUs
 import com.tokopedia.sellerapp.presentation.viewmodel.data.FakeOrderUseCase
 import com.tokopedia.sellerapp.presentation.viewmodel.data.FakeSummaryUseCase
 import com.tokopedia.sellerapp.presentation.viewmodel.util.MainDispatcherRule
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi

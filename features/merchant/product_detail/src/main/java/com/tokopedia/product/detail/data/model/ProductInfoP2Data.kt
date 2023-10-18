@@ -2,16 +2,18 @@ package com.tokopedia.product.detail.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
+import com.tokopedia.product.detail.data.model.bmgm.BMGMData
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
-import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.usp.UniqueSellingPointTokoCabang
 import com.tokopedia.product.detail.common.data.model.warehouse.NearestWarehouseResponse
+import com.tokopedia.product.detail.data.model.bottom_sheet_edu.BottomSheetEduData
+import com.tokopedia.product.detail.data.model.bottom_sheet_edu.asUiModel
 import com.tokopedia.product.detail.data.model.custom_info_title.CustomInfoTitle
+import com.tokopedia.product.detail.data.model.dynamiconeliner.DynamicOneLiner
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.generalinfo.ObatKeras
@@ -20,12 +22,18 @@ import com.tokopedia.product.detail.data.model.navbar.NavBar
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.review.MostHelpfulReviewData
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
+import com.tokopedia.product.detail.data.model.review.ProductReviewImageListQuery
 import com.tokopedia.product.detail.data.model.shop.ProductShopBadge
 import com.tokopedia.product.detail.data.model.shopFinishRate.ShopFinishRate
 import com.tokopedia.product.detail.data.model.shop_additional.ProductShopAdditional
+import com.tokopedia.product.detail.data.model.shop_review.ShopReviewData
+import com.tokopedia.product.detail.data.model.shop_review.asUiModel
+import com.tokopedia.product.detail.data.model.social_proof.SocialProofData
+import com.tokopedia.product.detail.data.model.social_proof.asUiModel
 import com.tokopedia.product.detail.data.model.ticker.ProductTicker
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopscore.ProductShopRatingQuery
@@ -126,11 +134,7 @@ data class ProductInfoP2Data(
 
     @SerializedName("reviewImage")
     @Expose
-    var reviewImage: ImageReviewGqlResponse.ProductReviewImageListQuery = ImageReviewGqlResponse.ProductReviewImageListQuery(),
-
-    @SerializedName("bundleInfo")
-    @Expose
-    var bundleInfoList: List<BundleInfo> = emptyList(),
+    var reviewImage: ProductReviewImageListQuery = ProductReviewImageListQuery(),
 
     @SerializedName("rating")
     @Expose
@@ -162,7 +166,27 @@ data class ProductInfoP2Data(
 
     @SerializedName("customInfoTitle")
     @Expose
-    val customInfoTitle: List<CustomInfoTitle> = emptyList()
+    val customInfoTitle: List<CustomInfoTitle> = emptyList(),
+
+    @SerializedName("socialProofComponent")
+    @Expose
+    val socialProof: List<SocialProofData> = emptyList(),
+
+    @SerializedName("reviewList")
+    @Expose
+    val shopReview: ShopReviewData = ShopReviewData(),
+
+    @SerializedName("bottomSheetEdu")
+    @Expose
+    val bottomSheetEdu: BottomSheetEduData = BottomSheetEduData(),
+
+    @SerializedName("dynamicOneLiner")
+    @Expose
+    val dynamicOneLiner: List<DynamicOneLiner> = emptyList(),
+
+    @SerializedName("bmgm")
+    @Expose
+    val bmgm: BMGMData = BMGMData()
 ) {
     data class Response(
         @SerializedName("pdpGetData")
@@ -170,3 +194,42 @@ data class ProductInfoP2Data(
         var response: ProductInfoP2Data = ProductInfoP2Data()
     )
 }
+
+fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
+    shopInfo = shopInfo,
+    shopSpeed = shopSpeed.hour,
+    shopChatSpeed = shopChatSpeed.messageResponseTime,
+    shopRating = shopRating.ratingScore,
+    productView = productView,
+    wishlistCount = wishlistCount,
+    shopBadge = shopBadge.badge,
+    shopCommitment = shopCommitment.shopCommitment,
+    productPurchaseProtectionInfo = productPurchaseProtectionInfo,
+    validateTradeIn = validateTradeIn,
+    cartRedirection = cartRedirection.data.associateBy({ it.productId }, { it }),
+    nearestWarehouseInfo = nearestWarehouseInfo.associateBy({ it.productId }, { it.warehouseInfo }),
+    upcomingCampaigns = upcomingCampaigns.associateBy { it.productId ?: "" },
+    productFinancingRecommendationData = productFinancingRecommendationData,
+    productFinancingCalculationData = productFinancingCalculationData,
+    ratesEstimate = ratesEstimate,
+    restrictionInfo = restrictionInfo,
+    bebasOngkir = bebasOngkir,
+    uspImageUrl = uspTokoCabangData.uspBoe.uspIcon,
+    merchantVoucherSummary = merchantVoucherSummary,
+    helpfulReviews = mostHelpFulReviewData.list,
+    imageReview = DynamicProductDetailMapper.generateImageReview(reviewImage),
+    alternateCopy = cartRedirection.alternateCopy,
+    rating = rating,
+    ticker = ticker,
+    navBar = navBar,
+    shopFinishRate = shopFinishRate.finishRate,
+    shopAdditional = shopAdditional,
+    arInfo = arInfo,
+    obatKeras = obatKeras,
+    customInfoTitle = customInfoTitle,
+    socialProof = socialProof.asUiModel(),
+    shopReview = shopReview.asUiModel(),
+    bottomSheetEdu = bottomSheetEdu.asUiModel(),
+    dynamicOneLiner = dynamicOneLiner,
+    bmgm = bmgm
+)

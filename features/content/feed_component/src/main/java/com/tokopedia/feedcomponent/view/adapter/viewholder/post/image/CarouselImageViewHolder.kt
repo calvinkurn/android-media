@@ -20,6 +20,8 @@ import com.tokopedia.feedcomponent.view.widget.FlashSaleRilisanCampaignOngoingVi
 import com.tokopedia.feedcomponent.view.widget.FlashSaleRilisanCampaignUpcomingView
 import com.tokopedia.feedcomponent.view.widget.PostTagView
 import com.tokopedia.feedcomponent.view.widget.listener.FeedCampaignListener
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 
@@ -101,9 +103,13 @@ class CarouselImageViewHolder(
         }
 
         likeAnim.setImageDrawable(
-            MethodChecker.getDrawable(
+            getIconUnifyDrawable(
                 itemView.context,
-                R.drawable.ic_thumb_filled
+                IconUnify.THUMB_FILLED,
+                MethodChecker.getColor(
+                    itemView.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White,
+                )
             )
         )
 
@@ -203,7 +209,7 @@ class CarouselImageViewHolder(
         }
     }
 
-    private fun showHideFlashSaleRsUpcomingCampaignCard(feedXCard: FeedXCard){
+    private fun showHideFlashSaleRsUpcomingCampaignCard(feedXCard: FeedXCard) {
         flashSaleViewCardUpcoming.setupTimer(feedXCard.campaign.endTime) {
             fstListener?.onTimerFinishUpcoming()
         }
@@ -218,7 +224,7 @@ class CarouselImageViewHolder(
         flashSaleViewCardOngoing.hide()
     }
 
-    private fun showHideFlashSaleRsOngoingCampaignCard(feedXCard: FeedXCard,  media: FeedXMedia){
+    private fun showHideFlashSaleRsOngoingCampaignCard(feedXCard: FeedXCard, media: FeedXMedia) {
         flashSaleViewCardOngoing.setupTimer(feedXCard.campaign.endTime) {
             fstListener?.onTimerFinishOngoing()
         }
@@ -229,7 +235,6 @@ class CarouselImageViewHolder(
         )
         flashSaleViewCardOngoing.showWithCondition(feedXCard.isTypeProductHighlight)
         flashSaleViewCardUpcoming.hide()
-
     }
 
     fun updateAsgcButton(){
@@ -296,7 +301,7 @@ class CarouselImageViewHolder(
                 .inflate(
                     R.layout.item_post_image_new,
                     parent,
-                    false,
+                    false
                 ),
             dataSource,
             listener,

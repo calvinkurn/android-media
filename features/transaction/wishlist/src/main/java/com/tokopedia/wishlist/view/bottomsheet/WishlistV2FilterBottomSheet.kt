@@ -22,7 +22,8 @@ class WishlistV2FilterBottomSheet : BottomSheetUnify() {
         private const val SELECTION_TYPE = "selection_type"
 
         @JvmStatic
-        fun newInstance(title: String, selectionType: Int): WishlistV2FilterBottomSheet { return WishlistV2FilterBottomSheet().apply {
+        fun newInstance(title: String, selectionType: Int): WishlistV2FilterBottomSheet {
+            return WishlistV2FilterBottomSheet().apply {
                 val bundle = Bundle()
                 bundle.putString(TITLE_BOTTOMSHEET, title)
                 bundle.putInt(SELECTION_TYPE, selectionType)

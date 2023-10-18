@@ -1,6 +1,5 @@
 package com.tokopedia.product.addedit.common
 
-import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.os.Bundle
@@ -8,7 +7,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.Guideline
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible

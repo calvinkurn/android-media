@@ -6,9 +6,11 @@ import com.tokopedia.minicart.cartlist.MiniCartListActionListener
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
 import com.tokopedia.minicart.databinding.ItemMiniCartAccordionBinding
 
-class MiniCartAccordionViewHolder(private val viewBinding: ItemMiniCartAccordionBinding,
-                                  private val listener: MiniCartListActionListener)
-    : AbstractViewHolder<MiniCartAccordionUiModel>(viewBinding.root) {
+class MiniCartAccordionViewHolder(
+    private val viewBinding: ItemMiniCartAccordionBinding,
+    private val listener: MiniCartListActionListener
+) :
+    AbstractViewHolder<MiniCartAccordionUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_mini_cart_accordion
@@ -31,5 +33,4 @@ class MiniCartAccordionViewHolder(private val viewBinding: ItemMiniCartAccordion
             }
         }
     }
-
 }

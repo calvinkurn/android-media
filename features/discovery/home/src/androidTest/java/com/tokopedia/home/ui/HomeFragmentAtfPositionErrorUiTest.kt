@@ -13,11 +13,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeAtfPositionErrorResponseConfig
-import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_ATF_ERROR_POSITION_COUNT
-import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_DYNAMIC_CHANNEL_COUNT
-import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_HEADER_COUNT
-import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_RECOMMENDATION_TAB_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.setupAbTestRemoteConfig
+import com.tokopedia.home.ui.HomeMockValueHelper.setupAtfRefactorConfig
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.test.application.annotations.UiTest
@@ -36,8 +33,6 @@ import org.junit.Test
 class HomeFragmentAtfPositionErrorUiTest {
     private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val totalData =
-        MOCK_HEADER_COUNT + MOCK_ATF_ERROR_POSITION_COUNT + MOCK_DYNAMIC_CHANNEL_COUNT + MOCK_RECOMMENDATION_TAB_COUNT
 
     @get:Rule
     var activityRule = object : ActivityTestRule<InstrumentationHomeRevampTestActivity>(
@@ -50,6 +45,7 @@ class HomeFragmentAtfPositionErrorUiTest {
             setupGraphqlMockResponse(HomeAtfPositionErrorResponseConfig())
             disableCoachMark(context)
             setupAbTestRemoteConfig()
+            setupAtfRefactorConfig(false)
             super.beforeActivityLaunched()
         }
     }
@@ -60,7 +56,7 @@ class HomeFragmentAtfPositionErrorUiTest {
             activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(
             recyclerView = recyclerView,
-            limitCountToIdle = totalData
+            limitCountToIdle = 1
         )
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
     }
@@ -71,7 +67,7 @@ class HomeFragmentAtfPositionErrorUiTest {
     }
 
     @Test
-    fun testAtfContentError() {
+    fun testOldAtfContentError() {
         assertAtfContentError()
     }
 
@@ -84,12 +80,6 @@ class HomeFragmentAtfPositionErrorUiTest {
          * Assert home content to match given mock value with atf position error
          */
         onView(withId(R.id.home_fragment_recycler_view)).check(matches(isDisplayed()))
-        onView(withId(R.id.home_fragment_recycler_view)).check(
-            CommonAssertion.RecyclerViewItemCountAssertion(
-                totalData
-            )
-        )
-
         onView(withId(R.id.home_fragment_recycler_view)).check(
             CommonAssertion.RecyclerViewItemTypeAssertion(
                 itemViewType = HomeAtfErrorViewHolder.LAYOUT,

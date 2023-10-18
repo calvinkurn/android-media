@@ -4,15 +4,13 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.Matrix
 import android.net.Uri
 import android.util.AttributeSet
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.values
 import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
-import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel.Companion.EMPTY_RATIO
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.media.editor.ui.uimodel.ProcessedBitmapModel
 import com.tokopedia.media.editor.utils.getUCropTempResultPath
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.view.TransformImageView
@@ -58,7 +56,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         rotateNumber: Int,
         initialRotateNumber: Int,
         data: EditorDetailUiModel,
-        onCropFinish: (cropResult: Bitmap) -> Unit,
+        onCropFinish: (cropData: ProcessedBitmapModel) -> Unit,
     ) {
         val bitmap = cropImageView.drawable.toBitmap()
 
@@ -93,7 +91,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
                     val scaleY = scale.second
 
                     onCropFinish(
-                        getProcessedBitmap(
+                        ProcessedBitmapModel(
                             bitmap,
                             offsetX,
                             offsetY,
@@ -117,89 +115,6 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
                 override fun onCropFailure(t: Throwable) {}
             }
         )
-    }
-
-    // crop function that support mirroring feature
-    fun getProcessedBitmap(
-        originalBitmap: Bitmap,
-        offsetX: Int,
-        offsetY: Int,
-        imageWidth: Int,
-        imageHeight: Int,
-        finalRotationDegree: Float,
-        sliderValue: Float,
-        rotateNumber: Int,
-        data: EditorDetailUiModel?,
-        translateX: Float,
-        translateY: Float,
-        imageScale: Float,
-        isRotate: Boolean,
-        isCrop: Boolean,
-        scaleX: Float,
-        scaleY: Float,
-        isNormalizeY: Boolean = false
-    ): Bitmap {
-        val originalWidth = originalBitmap.width
-        val originalHeight = originalBitmap.height
-
-        val matrix = Matrix()
-
-        matrix.preScale(scaleX, scaleY)
-        matrix.postRotate(
-            finalRotationDegree,
-            (offsetX + (imageWidth / 2f)),
-            (offsetY + (imageHeight / 2f))
-        )
-
-        val rotatedBitmap = Bitmap.createBitmap(
-            originalBitmap,
-            0,
-            0,
-            originalWidth,
-            originalHeight,
-            matrix,
-            true
-        )
-
-        var normalizeX = offsetX
-        var normalizeY = offsetY
-
-        if (scaleX == -1f) {
-            normalizeX = rotatedBitmap.width - (offsetX + imageWidth)
-        }
-
-        // used only on ucrop result re-cropped for get mirror effect
-        if (scaleY == -1f && isNormalizeY) {
-            normalizeY = rotatedBitmap.height - (offsetY + imageHeight)
-        }
-
-        // set crop area on data that will be pass to landing pass for state
-        val imageRatio = data?.let {
-            if (it.cropRotateValue.cropRatio == EMPTY_RATIO) {
-                Pair(imageWidth, imageHeight)
-            } else {
-                it.cropRotateValue.cropRatio
-            }
-        }
-        data?.cropRotateValue = EditorCropRotateUiModel(
-            normalizeX,
-            normalizeY,
-            imageWidth,
-            imageHeight,
-            imageScale,
-            translateX,
-            translateY,
-            scaleX,
-            scaleY,
-            sliderValue,
-            rotateNumber,
-            isRotate = isRotate,
-            isCrop = isCrop,
-            croppedSourceWidth = originalWidth,
-            cropRatio = imageRatio ?: EMPTY_RATIO
-        )
-
-        return Bitmap.createBitmap(rotatedBitmap, normalizeX, normalizeY, imageWidth, imageHeight)
     }
 
     @SuppressLint("ClickableViewAccessibility")

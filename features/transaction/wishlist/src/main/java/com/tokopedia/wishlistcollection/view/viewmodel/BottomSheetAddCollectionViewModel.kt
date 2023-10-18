@@ -41,8 +41,8 @@ class BottomSheetAddCollectionViewModel @Inject constructor(
                 _collectionsBottomSheet.value = Fail(Throwable())
             }
         }, onError = {
-            _collectionsBottomSheet.value = Fail(it)
-        })
+                _collectionsBottomSheet.value = Fail(it)
+            })
     }
 
     fun saveToWishlistCollection(param: AddWishlistCollectionsHostBottomSheetParams) {
@@ -54,7 +54,7 @@ class BottomSheetAddCollectionViewModel @Inject constructor(
                 _saveItemToCollections.value = Fail(Throwable())
             }
         }, onError = {
-            _saveItemToCollections.value = Fail(it)
-        })
+                _saveItemToCollections.value = Fail(it)
+            })
     }
 }

@@ -6,8 +6,6 @@ import com.tokopedia.mvcwidget.usecases.CatalogMVCListUseCase
 import com.tokopedia.mvcwidget.usecases.FollowShopUseCase
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.tokomember.usecase.MembershipRegisterUseCase
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineDispatcher
@@ -32,15 +30,30 @@ class MvcDetailViewModel @Inject constructor(@Named(IO) workerDispatcher: Corout
     var shopId: String = ""
     var productId: String = ""
     var source: Int = MvcSource.DEFAULT
+    var additionalParamJson: String = ""
     var membershipRegistrationSuccessMessage = ""
 
-    fun getListData(shopId: String, productId: String = "", source: Int = MvcSource.DEFAULT) {
+    fun getListData(
+        shopId: String,
+        productId: String = "",
+        source: Int = MvcSource.DEFAULT,
+        additionalParamJson: String = ""
+    ) {
         this.shopId = shopId
         this.productId = productId
         this.source = source
+        this.additionalParamJson = additionalParamJson
+
         launchCatchError(block = {
             listLiveData.postValue(LiveDataResult.loading())
-            val response = catalogMVCListUseCase.getResponse(catalogMVCListUseCase.getQueryParams(shopId, productId, source))
+            val response = catalogMVCListUseCase.getResponse(
+                catalogMVCListUseCase.getQueryParams(
+                    shopId,
+                    productId,
+                    source,
+                    additionalParamJson
+                )
+            )
             membershipRegistrationSuccessMessage = response?.data?.toasterSuccessMessage ?: ""
             if (response != null) {
                 membershipCardID = response.data?.followWidget?.membershipCardID
@@ -64,7 +77,7 @@ class MvcDetailViewModel @Inject constructor(@Named(IO) workerDispatcher: Corout
                         )
                     )
                     getMvcSummary()
-                    getListData(shopId, productId, source)
+                    getListData(shopId, productId, source, additionalParamJson)
                 } else {
                     membershipLiveData.postValue(LiveDataResult.error(Exception(ERROR_MSG)))
                 }
@@ -93,7 +106,7 @@ class MvcDetailViewModel @Inject constructor(@Named(IO) workerDispatcher: Corout
             val success = response?.followShop?.success
             if (success == true) {
                 followLiveData.postValue(LiveDataResult.success(membershipRegistrationSuccessMessage))
-                getListData(shopId)
+                getListData(shopId = shopId, additionalParamJson = additionalParamJson)
             } else {
                 followLiveData.postValue(LiveDataResult.error(Exception(ERROR_MSG)))
             }

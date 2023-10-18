@@ -45,7 +45,7 @@ class ProductStockReminderAdapter(
 
     fun setItems(data: List<ProductStockReminderUiModel>) {
         this.dataProducts = data
-        notifyDataSetChanged()
+        notifyItemRangeChanged(Int.ZERO, this.dataProducts.size)
     }
 
     fun clearItems() {

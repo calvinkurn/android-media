@@ -11,11 +11,11 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.wishlist.R
-import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlist.databinding.CollectionWishlistItemBinding
 import com.tokopedia.wishlist.util.WishlistV2Consts.SPEC_0
 import com.tokopedia.wishlist.util.WishlistV2Consts.SPEC_2
 import com.tokopedia.wishlist.util.WishlistV2Utils
+import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.util.WishlistCollectionUtils.clickWithDebounce
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
@@ -25,36 +25,38 @@ class WishlistCollectionItemViewHolder(
     private val actionListener: WishlistCollectionAdapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
     var isAllWishlist = false
-        fun bind(item: WishlistCollectionTypeLayoutData, position: Int) {
-            if (item.dataObject is GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.CollectionsItem) {
-                binding.root.clickWithDebounce {
-                    actionListener?.onCollectionItemClicked(item.dataObject.id)
-                }
-                binding.cardCollectionItem.clickWithDebounce {
-                    actionListener?.onCollectionItemClicked(item.dataObject.id)
-                }
-                binding.cardCollectionItem.cardType = CardUnify2.TYPE_SHADOW
-                binding.collectionTitle.text = item.dataObject.name
-                binding.collectionDesc.text = "${item.dataObject.totalItem} ${item.dataObject.itemText}"
-                if (item.dataObject.indicator.title.isNotEmpty()) {
-                    binding.labelDesc.visible()
-                    binding.labelDesc.text = item.dataObject.indicator.title
-                } else {
-                    binding.labelDesc.gone()
-                }
-                if (item.dataObject.name == SEMUA_WISHLIST) {
-                    isAllWishlist = true
-                    binding.collectionKebabMenu.gone()
-                } else {
-                    if (position == 1) actionListener?.onFirstCollectionItemBind(
+    fun bind(item: WishlistCollectionTypeLayoutData, position: Int) {
+        if (item.dataObject is GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.CollectionsItem) {
+            binding.root.clickWithDebounce {
+                actionListener?.onCollectionItemClicked(item.dataObject.id)
+            }
+            binding.cardCollectionItem.clickWithDebounce {
+                actionListener?.onCollectionItemClicked(item.dataObject.id)
+            }
+            binding.cardCollectionItem.cardType = CardUnify2.TYPE_SHADOW
+            binding.collectionTitle.text = item.dataObject.name
+            binding.collectionDesc.text = "${item.dataObject.totalItem} ${item.dataObject.itemText}"
+            if (item.dataObject.indicator.title.isNotEmpty()) {
+                binding.labelDesc.visible()
+                binding.labelDesc.text = item.dataObject.indicator.title
+            } else {
+                binding.labelDesc.gone()
+            }
+            if (item.dataObject.name == SEMUA_WISHLIST) {
+                isAllWishlist = true
+                binding.collectionKebabMenu.gone()
+            } else {
+                if (position == 1) {
+                    actionListener?.onFirstCollectionItemBind(
                         binding.collectionKebabMenu,
                         item.dataObject.id,
                         item.dataObject.name,
                         item.dataObject.actions,
                         item.dataObject.indicator.title
                     )
-                    binding.collectionKebabMenu.visible()
-                    binding.collectionKebabMenu.setOnClickListener {
+                }
+                binding.collectionKebabMenu.visible()
+                binding.collectionKebabMenu.setOnClickListener {
                     actionListener?.onKebabMenuClicked(
                         item.dataObject.id,
                         item.dataObject.name,

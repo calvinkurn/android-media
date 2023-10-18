@@ -28,9 +28,8 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
-
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -113,7 +112,7 @@ class ManageProductViewModelTest {
     fun `when accessing incompleteProducts, will filter and map the data from products accordingly`() {
         runBlocking {
             with(viewModel) {
-                //set products value
+                // set products value
                 val campaignId: Long = 1001
                 val listType = 0
                 val pagination = Pagination(
@@ -130,7 +129,7 @@ class ManageProductViewModelTest {
                 } returns generateIncompleteProduct()
                 getProducts(campaignId, listType)
 
-                //expected to have 1 product that is incomplete
+                // expected to have 1 product that is incomplete
                 val expected = 1
                 val actual = incompleteProducts.getOrAwaitValue().size
 
@@ -506,7 +505,7 @@ class ManageProductViewModelTest {
     }
 
     @Test
-    fun `when buttton proceed is tapped, tracker will be sent` () {
+    fun `when buttton proceed is tapped, tracker will be sent`() {
         runBlocking {
             with(viewModel) {
                 onButtonProceedTapped()
@@ -592,7 +591,6 @@ class ManageProductViewModelTest {
         )
     )
 
-
     private fun generateCampaignUiModel() = CampaignUiModel(
         campaignId = 1001,
         campaignName = "Flash Sale Toko",
@@ -623,6 +621,7 @@ class ManageProductViewModelTest {
         packageInfo = PackageInfo(
             packageId = 0,
             packageName = "VPS"
-        )
+        ),
+        isOosImprovement = true
     )
 }

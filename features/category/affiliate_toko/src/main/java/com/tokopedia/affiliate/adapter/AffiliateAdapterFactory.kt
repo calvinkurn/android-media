@@ -26,6 +26,9 @@ import com.tokopedia.affiliate.ui.viewholder.AffiliateCommisionThickDivderItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateCommissionDetailsItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateDataCardShimmerItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateDateFilterVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateDiscoBannerListFooterVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateDiscoBannerListVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateDiscoBannerVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateEduCategoryChipVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationArticleRVVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationArticleTopicRVVH
@@ -41,8 +44,8 @@ import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationSocialVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationTutorialRVVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationTutorialVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateHeaderItemVH
-import com.tokopedia.affiliate.ui.viewholder.AffiliateHomeUserDataVH
-import com.tokopedia.affiliate.ui.viewholder.AffiliateHomeUserListDataVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateAdpUserDataVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateAdpUserListDataVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateNoPromoItemFoundVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliatePerformaSharedProductCardsItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliatePerformanceChipRVVH
@@ -68,6 +71,9 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommisionThickDi
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommissionItemModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDataPlatformShimmerModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateFilterModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDiscoBannerListFooterUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDiscoBannerListUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDiscoBannerUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEduCategoryChipModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleRVUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleTopicRVUiModel
@@ -147,8 +153,8 @@ class AffiliateAdapterFactory(
             AffiliateTransactionHistoryItemVH.LAYOUT -> AffiliateTransactionHistoryItemVH(parent)
             AffiliateCommissionDetailsItemVH.LAYOUT -> AffiliateCommissionDetailsItemVH(parent, affiliateInfoClickInterfaces)
             AffiliateCommisionDivderItemVH.LAYOUT -> AffiliateCommisionDivderItemVH(parent)
-            AffiliateHomeUserDataVH.LAYOUT -> AffiliateHomeUserDataVH(parent, onPerformaGridClick)
-            AffiliateHomeUserListDataVH.LAYOUT -> AffiliateHomeUserListDataVH(parent, onPerformaGridClick)
+            AffiliateAdpUserDataVH.LAYOUT -> AffiliateAdpUserDataVH(parent, onPerformaGridClick)
+            AffiliateAdpUserListDataVH.LAYOUT -> AffiliateAdpUserListDataVH(parent, onPerformaGridClick)
             AffiliateDateFilterVH.LAYOUT -> AffiliateDateFilterVH(parent, onDateRangeClickInterface)
             AffiliateNoPromoItemFoundVH.LAYOUT -> AffiliateNoPromoItemFoundVH(parent, bottomNavBarClickListener)
             AffiliateCommisionThickDivderItemVH.LAYOUT -> AffiliateCommisionThickDivderItemVH(parent)
@@ -172,6 +178,9 @@ class AffiliateAdapterFactory(
             AffiliateEducationSeeAllVH.LAYOUT -> AffiliateEducationSeeAllVH(parent, educationSeeAllCardClickInterface)
             AffiliateEduCategoryChipVH.LAYOUT -> AffiliateEduCategoryChipVH(parent, affiliateEduCategoryChipClick)
             AffiliateSSAShopItemVH.LAYOUT -> AffiliateSSAShopItemVH(parent, productClickInterface)
+            AffiliateDiscoBannerVH.LAYOUT -> AffiliateDiscoBannerVH(parent, promotionClickInterface)
+            AffiliateDiscoBannerListVH.LAYOUT -> AffiliateDiscoBannerListVH(parent, promotionClickInterface)
+            AffiliateDiscoBannerListFooterVH.LAYOUT -> AffiliateDiscoBannerListFooterVH(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -217,11 +226,11 @@ class AffiliateAdapterFactory(
     }
 
     override fun type(viewModel: AffiliateUserPerformanceModel): Int {
-        return AffiliateHomeUserDataVH.LAYOUT
+        return AffiliateAdpUserDataVH.LAYOUT
     }
 
     override fun type(viewModel: AffiliateUserPerformanceListModel): Int {
-        return AffiliateHomeUserListDataVH.LAYOUT
+        return AffiliateAdpUserListDataVH.LAYOUT
     }
 
     override fun type(viewModel: AffiliateDateFilterModel): Int {
@@ -341,4 +350,14 @@ class AffiliateAdapterFactory(
 
     override fun type(viewModel: AffiliateSSAShopUiModel): Int =
         AffiliateSSAShopItemVH.LAYOUT
+
+    override fun type(viewModel: AffiliateDiscoBannerUiModel): Int =
+        AffiliateDiscoBannerVH.LAYOUT
+
+    override fun type(viewModel: AffiliateDiscoBannerListUiModel): Int =
+        AffiliateDiscoBannerListVH.LAYOUT
+
+    override fun type(viewModel: AffiliateDiscoBannerListFooterUiModel): Int =
+        AffiliateDiscoBannerListFooterVH.LAYOUT
+
 }

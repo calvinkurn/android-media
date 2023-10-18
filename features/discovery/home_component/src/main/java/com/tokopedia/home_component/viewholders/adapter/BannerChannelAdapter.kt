@@ -96,6 +96,8 @@ interface BannerItemListener {
     fun onImpressed(position: Int)
     fun onLongPress() { }
     fun onRelease() { }
+    fun isDrag(): Boolean = false
+    fun onTouchEvent(motionEvent: MotionEvent) { }
 }
 
-data class BannerItemModel(val id: Int, val url: String) : ImpressHolder()
+data class BannerItemModel(val id: Int, val url: String, val position: Int = 0) : ImpressHolder()

@@ -26,9 +26,9 @@
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_NN0"
                 android:fitsSystemWindows="true"
-                app:contentScrim="@color/Unify_N0"
+                app:contentScrim="@color/Unify_NN0"
                 app:layout_scrollFlags="scroll|enterAlways">
 
                 <include

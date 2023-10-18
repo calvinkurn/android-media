@@ -2,8 +2,8 @@ package com.tokopedia.shop.common.constant
 
 object ShopPageGqlQueryConstant {
     private val BASE_QUERY_GET_SHOP_PRODUCT = """
-            query getShopProduct(${'$'}shopId: String!,${'$'}filter: ProductListFilter!){
-              GetShopProduct(shopID:${'$'}shopId, filter:${'$'}filter){
+            query getShopProduct(${'$'}shopId: String!, ${'$'}filter: ProductListFilter!, ${'$'}source: String!){
+              GetShopProduct(shopID:${'$'}shopId, filter:${'$'}filter, source:${'$'}source){
                 %1s
               }
             }
@@ -40,6 +40,7 @@ object ShopPageGqlQueryConstant {
                     reviewCount
                     rating
                     viewCount
+                    averageRating
                   }
                   campaign{
                     hide_gimmick

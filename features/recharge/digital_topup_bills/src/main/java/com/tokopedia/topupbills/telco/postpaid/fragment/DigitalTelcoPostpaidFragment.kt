@@ -20,6 +20,8 @@ import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
@@ -29,6 +31,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
+import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTrackingModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -50,9 +53,9 @@ import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_digital_telco_postpaid.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.tokopedia.common_digital.R as common_digitalR
 
 /**
  * Created by nabillasabbaha on 06/05/19.
@@ -71,6 +74,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var separator: View
     private var rechargeProductFromSlice: String = ""
     private var traceStop = false
+    private var isAlreadyTrackImpressionMultiButton = false
     private var operatorSelected: RechargePrefix? = null
         set(value) {
             field = value
@@ -137,11 +141,14 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun getClientInputNumber(): DigitalClientNumberWidget = postpaidClientNumberWidget
 
     private fun initViewPager() {
-        val pagerAdapter = TelcoTabAdapter(this, object : TelcoTabAdapter.Listener {
-            override fun getTabList(): List<TelcoTabItem> {
-                return telcoTabViewModel.getAll()
+        val pagerAdapter = TelcoTabAdapter(
+            this,
+            object : TelcoTabAdapter.Listener {
+                override fun getTabList(): List<TelcoTabItem> {
+                    return telcoTabViewModel.getAll()
+                }
             }
-        })
+        )
         viewPager.adapter = pagerAdapter
         viewPager.registerOnPageChangeCallback(viewPagerCallback)
         tabLayout.customTabMode = TabLayout.MODE_FIXED
@@ -149,11 +156,11 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         tabLayout.getUnifyTabLayout()
             .addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabReselected(p0: TabLayout.Tab?) {
-                    //do nothing
+                    // do nothing
                 }
 
                 override fun onTabUnselected(p0: TabLayout.Tab?) {
-                    //do nothing
+                    // do nothing
                 }
 
                 override fun onTabSelected(p0: TabLayout.Tab) {
@@ -170,8 +177,11 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             setTrackingOnTabMenu(listMenu[position].title)
 
             val tabs = telcoTabViewModel.getAll()
-            if (tabs[position].title == TelcoComponentName.PROMO) sendImpressionPromo()
-            else sendImpressionRecents()
+            if (tabs[position].title == TelcoComponentName.PROMO) {
+                sendImpressionPromo()
+            } else {
+                sendImpressionRecents()
+            }
         }
     }
 
@@ -199,7 +209,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 separator.hide()
                 tabLayout.hide()
             }
-            //initiate impression promo
+            // initiate impression promo
             sendImpressionPromo()
         } else {
             separator.hide()
@@ -212,21 +222,24 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         performChange()
         val newItems = telcoTabViewModel.createIdSnapshot()
         viewPager.adapter?.let {
-            DiffUtil.calculateDiff(object : DiffUtil.Callback() {
-                override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                    oldItems[oldItemPosition] == newItems[newItemPosition]
+            DiffUtil.calculateDiff(
+                object : DiffUtil.Callback() {
+                    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                        oldItems[oldItemPosition] == newItems[newItemPosition]
 
-                override fun getOldListSize(): Int {
-                    return oldItems.size
-                }
+                    override fun getOldListSize(): Int {
+                        return oldItems.size
+                    }
 
-                override fun getNewListSize(): Int {
-                    return newItems.size
-                }
+                    override fun getNewListSize(): Int {
+                        return newItems.size
+                    }
 
-                override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                    areItemsTheSame(oldItemPosition, newItemPosition)
-            }, true).dispatchUpdatesTo(it)
+                    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                        areItemsTheSame(oldItemPosition, newItemPosition)
+                },
+                true
+            ).dispatchUpdatesTo(it)
         }
     }
 
@@ -275,7 +288,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun getCheckoutView(): TopupBillsCheckoutWidget? {
-        return telco_buy_widget
+        return buyWidget
     }
 
     override fun initAddToCartViewModel() {
@@ -342,89 +355,58 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
                 if (isFavoriteContact) {
                     topupAnalytics.clickFavoriteContactAutoComplete(
-                        categoryId, operatorName, userSession.userId
+                        categoryId,
+                        operatorName,
+                        userSession.userId
                     )
                 } else {
                     topupAnalytics.clickFavoriteNumberAutoComplete(
-                        categoryId, operatorName, userSession.userId
+                        categoryId,
+                        operatorName,
+                        userSession.userId
                     )
-                }
-            }
-        })
-
-        enquiryViewModel.enquiryResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> enquirySuccess(it.data)
-                is Fail -> {
-                    enquiryFailed(it.throwable)
                 }
             }
         })
 
         postpaidClientNumberWidget.setPostpaidListener(object : ClientNumberPostpaidListener {
-            override fun enquiryNumber() {
+            override fun mainButtonClick() {
                 if (postpaidClientNumberWidget.getInputNumber().isEmpty()) {
                     postpaidClientNumberWidget.setErrorInputNumber(getString(R.string.telco_number_invalid_empty_string))
                 } else if (userSession.isLoggedIn) {
-                    getEnquiryNumber()
+                    initialProcessTransaction()
                 } else {
                     navigateToLoginPage()
                 }
             }
+
+            override fun secondaryButtonClick() {
+                addToCartViewModel.setAtcMultiCheckoutParam()
+                if (postpaidClientNumberWidget.getInputNumber().isEmpty()) {
+                    postpaidClientNumberWidget.setErrorInputNumber(getString(R.string.telco_number_invalid_empty_string))
+                } else if (userSession.isLoggedIn) {
+                    initialProcessTransaction()
+                } else {
+                    navigateToLoginPage()
+                }
+            }
+
+            override fun onCloseCoachMark() {
+                commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
+                    categoryName, loyaltyStatus
+                )
+            }
+
         })
     }
 
-    fun getEnquiryNumber() {
+    fun initialProcessTransaction() {
         operatorSelected?.let { selectedOperator ->
             topupAnalytics.eventClickCheckEnquiry(categoryId, operatorName, userSession.userId)
             postpaidClientNumberWidget.setLoadingButtonEnquiry(true)
-            enquiryViewModel.getEnquiry(
-                CommonTopupBillsGqlQuery.rechargeInquiry,
-                selectedOperator.operator.attributes.defaultProductId.toString(),
-                postpaidClientNumberWidget.getInputNumber()
-            )
-        }
-    }
-
-    private fun enquirySuccess(enquiryData: TelcoEnquiryData) {
-        postpaidClientNumberWidget.setLoadingButtonEnquiry(false)
-        tabLayout.hide()
-        separator.hide()
-        viewPager.hide()
-        setCheckoutPassData(enquiryData)
-        postpaidClientNumberWidget.showEnquiryResultPostpaid(enquiryData)
-
-        price = enquiryData.enquiry.attributes.pricePlain
-        buyWidget.setTotalPrice(enquiryData.enquiry.attributes.price)
-        buyWidget.setVisibilityLayout(true)
-    }
-
-    private fun enquiryFailed(throwable: Throwable) {
-        var error = throwable
-
-        when (error.message) {
-            DigitalTelcoEnquiryViewModel.NULL_RESPONSE -> error =
-                MessageErrorException(getString(com.tokopedia.common.topupbills.R.string.common_topup_enquiry_error))
-            DigitalTelcoEnquiryViewModel.GRPC_ERROR_MSG_RESPONSE -> error =
-                MessageErrorException(getString(com.tokopedia.common.topupbills.R.string.common_topup_enquiry_grpc_error_msg))
-        }
-
-        val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
-            requireContext(),
-            error,
-            ErrorHandler.Builder()
-                .className(this::class.java.simpleName)
-                .build()
-        )
-
-        postpaidClientNumberWidget.setLoadingButtonEnquiry(false)
-        view?.run {
-            Toaster.build(
-                this,
-                errorMessage.orEmpty(),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_ERROR
-            ).show()
+            setCheckoutPassData()
+            setCheckoutPassData()
+            processTransaction()
         }
     }
 
@@ -434,19 +416,18 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         postpaidClientNumberWidget.resetEnquiryResult()
     }
 
-    private fun setCheckoutPassData(telcoEnquiryData: TelcoEnquiryData) {
-        telcoEnquiryData?.run {
-            operatorSelected?.run {
-                checkoutPassData = getDefaultCheckoutPassDataBuilder()
-                    .categoryId(categoryId.toString())
-                    .clientNumber(postpaidClientNumberWidget.getInputNumber())
-                    .isPromo("0")
-                    .operatorId(operator.id)
-                    .productId(operator.attributes.defaultProductId)
-                    .utmCampaign(categoryId.toString())
-                    .build()
-            }
-        }
+    private fun setCheckoutPassData() {
+         operatorSelected?.run {
+             checkoutPassData = getDefaultCheckoutPassDataBuilder()
+                 .categoryId(categoryId.toString())
+                 .clientNumber(postpaidClientNumberWidget.getInputNumber())
+                 .isPromo("0")
+                 .operatorId(operator.id)
+                 .productId(operator.attributes.defaultProductId)
+                 .utmCampaign(categoryId.toString())
+                 .build()
+         }
+
     }
 
     override fun renderProductFromCustomData(isDelayed: Boolean) {
@@ -499,6 +480,9 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 InputNumberActionType.CONTACT_HOMEPAGE -> {
                     topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
                 }
+                else -> {
+                    // no op
+                }
             }
         }
     }
@@ -513,14 +497,35 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
+    override fun onUpdateMultiCheckout() {
+        postpaidClientNumberWidget.showMulticheckoutButtonSupport(topupBillsViewModel.multiCheckoutButtons)
+        if (!isAlreadyTrackImpressionMultiButton) {
+            isAlreadyTrackImpressionMultiButton = true
+            commonMultiCheckoutAnalytics.onImpressMultiCheckoutButtons(
+                categoryName,
+                multiCheckoutButtonImpressTrackerButtonType(topupBillsViewModel.multiCheckoutButtons),
+                userSession.userId
+            )
+        }
+    }
+
+    override fun onTrackMultiCheckoutAtc(atc: DigitalAtcTrackingModel) {
+        commonMultiCheckoutAnalytics.onClickMultiCheckout(
+            categoryName,
+            operatorName,
+            atc.channelId,
+            userSession.userId,
+            multiCheckoutButtonPromotionTracker(topupBillsViewModel.multiCheckoutButtons)
+        )
+    }
+
     override fun onLoadingAtc(showLoading: Boolean) {
-        buyWidget.onBuyButtonLoading(showLoading)
+        postpaidClientNumberWidget.setLoadingButtonEnquiry(showLoading)
     }
 
     override fun redirectErrorUnVerifiedNumber(error: ErrorAtc) {
         view?.let {
-
-            fun redirectError(error: ErrorAtc){
+            fun redirectError(error: ErrorAtc) {
                 if (error.atcErrorPage.buttons.first().actionType == AtcErrorButton.TYPE_PHONE_VERIFICATION) {
                     RouteManager.getIntent(context, error.appLinkUrl).apply {
                         startActivityForResult(this, REQUEST_CODE_VERIFY_NUMBER)
@@ -530,13 +535,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 }
             }
 
-            if (error.appLinkUrl.isNotEmpty()){
+            if (error.appLinkUrl.isNotEmpty()) {
                 Toaster.build(
                     it,
                     error.title,
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.common_digital.R.string.digital_common_button_toaster)
+                    getString(common_digitalR.string.digital_common_button_toaster)
                 ) {
                     redirectError(error)
                 }.show()
@@ -545,19 +550,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     it,
                     error.title,
                     Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR,
+                    Toaster.TYPE_ERROR
                 ).show()
             }
-
         }
-    }
-
-    override fun onCollapseAppBar() {
-        //do nothing
-    }
-
-    override fun onExpandAppBar() {
-        //do nothing
     }
 
     override fun setInputNumberFromContact(contactNumber: String) {
@@ -597,7 +593,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         if (operatorName.isNotEmpty()) {
             topupAnalytics.clickEnhanceCommerceRecentTransaction(
                 topupBillsRecommendation,
-                operatorName, topupBillsRecommendation.position
+                operatorName,
+                topupBillsRecommendation.position
             )
         }
     }

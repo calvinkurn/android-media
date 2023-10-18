@@ -10,17 +10,26 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.text.SpannableString
 import android.text.Spanned
+import android.text.method.LinkMovementMethod
 import android.text.style.StyleSpan
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailTickerType
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 object Utils {
     private const val STRING_BUTTON_TYPE_ALTERNATE = "alternate"
@@ -41,8 +50,15 @@ object Utils {
         }
     }
 
+    fun Throwable.getGlobalErrorType(): Int {
+        return when (this) {
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> GlobalError.NO_CONNECTION
+            else -> GlobalError.SERVER_ERROR
+        }
+    }
+
     fun getColoredIndicator(context: Context, colorHex: String): Drawable? {
-        val color = parseUnifyColorHex(context, colorHex, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        val color = parseUnifyColorHex(context, colorHex, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         val drawable = MethodChecker.getDrawable(context, R.drawable.ic_buyer_order_status_indicator)
         val filter: ColorFilter = LightingColorFilter(
             ContextCompat.getColor(

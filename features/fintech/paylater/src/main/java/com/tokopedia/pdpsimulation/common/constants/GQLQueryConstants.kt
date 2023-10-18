@@ -7,6 +7,12 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
         tenure
         text
         small_text
+        promo_name
+        label {
+          text
+          text_color
+          bg_color
+        }
         sections {
           title
           is_collapsible
@@ -23,6 +29,14 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
               }
               payment_gateway_code
             }
+            new_rate
+            previous_rate
+            price_section { 
+                prefix
+                installment_per_month 
+                tenure
+                original_per_month
+              }
             installment_per_month
             installment_per_month_ceil
             tenure
@@ -41,6 +55,11 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
               status
               header
             }
+            ticker {
+              is_shown
+              type
+              content
+            }
             cta {
               name
               android_url
@@ -58,12 +77,19 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
             }
             installment_details {
               header
+              ticker {
+                ticker_wordings
+                image
+              }
               content {
                 title
+                title_formatted_light
+                title_formatted_dark
                 value
                 type
               }
             }
+            promo_name
           }
         }
       } 
@@ -109,6 +135,7 @@ const val GQL_PAYLATER_ACTIVATION = """
       data {
       gateway_id
       payment_gateway_code
+      gateway_code
       gateway_name
       subtitle
       subtitle2
@@ -120,19 +147,36 @@ const val GQL_PAYLATER_ACTIVATION = """
       reason_long
       user_state
       user_balance_amt
+      additional_information {
+        image
+        title
+        bottom_sheet {
+          show
+          image
+          title
+          description
+        }
+      }
       detail {
+        promo_name
+        new_rate
+        previous_rate
         tenure
         tenure_disable
         label
         chip_title
         monthly_installment
         description
+        chip_subtitle_light
+        chip_subtitle_dark
         installment_details {
           header
           content {
             title
             value
             type
+            title_formatted_light
+            title_formatted_dark
           }
         }
       }

@@ -3,7 +3,6 @@ package com.tokopedia.home_component.viewholders
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
@@ -22,15 +21,17 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by frenzel
  */
-class VpsWidgetViewHolder (itemView: View,
-                           val vpsWidgetListener: VpsWidgetListener?,
-                           val homeComponentListener: HomeComponentListener?,
-                           val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null): AbstractViewHolder<VpsDataModel>(itemView) {
+class VpsWidgetViewHolder(
+    itemView: View,
+    val vpsWidgetListener: VpsWidgetListener?,
+    val homeComponentListener: HomeComponentListener?
+) : AbstractViewHolder<VpsDataModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.global_dc_vps_widget
     }
     private val binding: GlobalDcVpsWidgetBinding? by viewBinding()
+    private val recyclerView by lazy { binding?.recycleList }
     private val layoutManager: GridLayoutManager by lazy { GridLayoutManager(itemView.context, VpsWidgetTabletConfiguration.getSpanCount(itemView.context)) }
     private val adapter: VpsWidgetAdapter by lazy { VpsWidgetAdapter(vpsWidgetListener, adapterPosition, isCacheData) }
 
@@ -48,15 +49,18 @@ class VpsWidgetViewHolder (itemView: View,
     }
 
     private fun setHeaderComponent(element: VpsDataModel) {
-        binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
-            override fun onSeeAllClick(link: String) {
-                vpsWidgetListener?.onSeeAllClicked(element.channelModel, adapterPosition)
-            }
+        binding?.homeComponentHeaderView?.setChannel(
+            element.channelModel,
+            object : HeaderListener {
+                override fun onSeeAllClick(link: String) {
+                    vpsWidgetListener?.onSeeAllClicked(element.channelModel, link, adapterPosition)
+                }
 
-            override fun onChannelExpired(channelModel: ChannelModel) {
-                homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
+                override fun onChannelExpired(channelModel: ChannelModel) {
+                    homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
+                }
             }
-        })
+        )
     }
 
     private fun setChannelDivider(element: VpsDataModel) {
@@ -78,15 +82,15 @@ class VpsWidgetViewHolder (itemView: View,
     }
 
     private fun initRV() {
-        parentRecyclerViewPool?.let { binding?.homeComponentVpsRv?.setRecycledViewPool(parentRecyclerViewPool) }
-        binding?.homeComponentVpsRv?.layoutManager = layoutManager
+        recyclerView?.layoutManager = layoutManager
     }
 
     private fun initItems(element: VpsDataModel) {
         adapter.addData(element)
-        binding?.homeComponentVpsRv?.adapter = adapter
+        recyclerView?.adapter = adapter
         adapter.notifyDataSetChanged()
-        if (binding?.homeComponentVpsRv?.itemDecorationCount == 0)
-            binding?.homeComponentVpsRv?.addItemDecoration(VpsWidgetSpacingItemDecoration())
+        if (recyclerView?.itemDecorationCount == 0) {
+            recyclerView?.addItemDecoration(VpsWidgetSpacingItemDecoration())
+        }
     }
 }

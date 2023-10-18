@@ -9,7 +9,8 @@ import com.tokopedia.profilecompletion.di.ActivityComponentFactory
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.profileinfo.view.fragment.ProfileInfoFragment
 
-open class ProfileInfoActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
+open class ProfileInfoActivity : BaseSimpleActivity(),
+    HasComponent<ProfileCompletionSettingComponent> {
 
     override fun getNewFragment(): Fragment {
         return ProfileInfoFragment.createInstance()

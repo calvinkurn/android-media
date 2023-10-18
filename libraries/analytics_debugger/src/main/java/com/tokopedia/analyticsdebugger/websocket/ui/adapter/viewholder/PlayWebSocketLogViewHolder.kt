@@ -16,6 +16,7 @@ class PlayWebSocketLogViewHolder(itemView: View): WebSocketViewHolder(itemView) 
     private val tvDateTime = itemView.findViewById<Typography>(R.id.tv_websocket_log_date_time)
     private val tvChannelId = itemView.findViewById<Typography>(R.id.tv_websocket_log_channel_id)
     private val tvGcToken = itemView.findViewById<Typography>(R.id.tv_websocket_log_gc_token)
+    private val tvHeader = itemView.findViewById<Typography>(R.id.tv_websocket_log_header_info)
 
     override fun bind(model: WebSocketLogUiModel, listener: ((WebSocketLogUiModel) -> Unit)?) {
         tvTitle.text = model.event
@@ -25,6 +26,7 @@ class PlayWebSocketLogViewHolder(itemView: View): WebSocketViewHolder(itemView) 
             tvSource.text = model.play.source
             tvChannelId.text = model.play.channelId
             tvGcToken.text = model.play.gcToken
+            tvHeader.text = model.play.header
         }
         
         itemView.setOnClickListener { 

@@ -12,7 +12,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkContentPosition
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.MAX_LENGTH_STOCK_INPUT
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
@@ -25,8 +27,9 @@ import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 
 class VariantDetailFieldsViewHolder(
     itemView: View?,
-    private val variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener
-): AbstractViewHolder<VariantDetailFieldsUiModel>(itemView) {
+    private val variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener,
+    private val enableVariantStatusChange: Boolean
+) : AbstractViewHolder<VariantDetailFieldsUiModel>(itemView) {
 
     interface VariantDetailFieldsViewHolderListener {
         fun onStatusSwitchChanged(isChecked: Boolean, adapterPosition: Int)
@@ -35,6 +38,8 @@ class VariantDetailFieldsViewHolder(
         fun onSkuInputTextChanged(skuInput: String, adapterPosition: Int)
         fun onWeightInputTextChanged(weightInput: String, adapterPosition: Int): VariantDetailInputLayoutModel
         fun onCoachmarkDismissed()
+        fun onDisablingVariantDT(position: Int)
+        fun onDisablingVariantCampaign(position: Int)
     }
 
     private var unitValueLabel: AppCompatTextView? = null
@@ -46,6 +51,8 @@ class VariantDetailFieldsViewHolder(
 
     private var visitablePosition = 0
     private var isPriceFieldEdited = false
+    private var hasDTStock = false
+    private var isCampaignActive = false
 
     init {
         unitValueLabel = itemView?.findViewById(R.id.tv_unit_value_label)
@@ -135,7 +142,18 @@ class VariantDetailFieldsViewHolder(
     private fun setupStatusSwitchListener(variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener) {
         statusSwitch?.setOnClickListener {
             val isChecked = statusSwitch?.isChecked ?: false
-            variantDetailFieldsViewHolderListener.onStatusSwitchChanged(isChecked, visitablePosition)
+            if (isCampaignActive) {
+                statusSwitch?.isChecked = true
+                variantDetailFieldsViewHolderListener.onDisablingVariantCampaign(visitablePosition)
+                return@setOnClickListener
+            }
+            // put back last state if isChecked value
+            if (!isChecked && !enableVariantStatusChange && hasDTStock) {
+                statusSwitch?.isChecked = true
+                variantDetailFieldsViewHolderListener.onDisablingVariantDT(visitablePosition)
+            } else {
+                variantDetailFieldsViewHolderListener.onStatusSwitchChanged(isChecked, visitablePosition)
+            }
         }
     }
 
@@ -174,10 +192,12 @@ class VariantDetailFieldsViewHolder(
             priceField?.textFieldInput?.isEnabled = variantDetailInputLayoutModel.priceEditEnabled
 
             // show weight coachmark
-            if (visitablePosition == COACHMARK_ADAPTER_POSITION && displayWeightCoachmark){
+            if (visitablePosition == COACHMARK_ADAPTER_POSITION && displayWeightCoachmark) {
                 showCoachmark()
                 displayWeightCoachmark = false
             }
+            hasDTStock = variantDetailInputLayoutModel.hasDTStock
+            isCampaignActive = variantDetailInputLayoutModel.isCampaignActive
         }
     }
 

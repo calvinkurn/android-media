@@ -8,8 +8,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.ProgressMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
-import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.GetProgressDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.ParamProgressWidgetModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -76,7 +76,7 @@ class GetProgressDataUseCase constructor(
             val dataKeys = dataKey.map {
                 DataKeyModel(
                     key = it,
-                    jsonParams = DynamicParameterModel(date = date).toJsonString()
+                    jsonParams = ParamProgressWidgetModel(date = date).toJsonString()
                 )
             }
             putObject(DATA_KEYS, dataKeys)

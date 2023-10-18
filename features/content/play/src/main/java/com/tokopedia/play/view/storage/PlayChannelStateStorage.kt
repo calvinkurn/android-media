@@ -18,7 +18,7 @@ class PlayChannelStateStorage {
         playPageMap[channelId] = channelData
     }
 
-    fun getChannelList() = playPageMap.keys.toList()
+    fun getChannelList() = playPageMap.values.toList()
 
     fun clearData() = playPageMap.clear()
 }

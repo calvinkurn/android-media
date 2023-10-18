@@ -23,13 +23,6 @@ object MvcLockedToProductSortListFactory {
         SORT_NAME_LOWEST_PRICE to SORT_VALUE_LOWEST_PRICE
     )
 
-    fun getSortListData(selectedSortId: String): List<MvcLockedToProductSortUiModel> {
-        return sortMap.map {
-            val isSelected = it.value == selectedSortId
-            MvcLockedToProductSortUiModel(it.key, it.value, isSelected)
-        }
-    }
-
     fun getDefaultSortData(): MvcLockedToProductSortUiModel {
         return MvcLockedToProductSortUiModel(
             SORT_NAME_DEFAULT,

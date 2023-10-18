@@ -4,22 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/list_page"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_56"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp">
+    android:layout_height="56dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Penjualan"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"
+        tools:text="Penjualan" />
 
-    <RadioButton
+    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
         android:id="@+id/radio_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,8 +26,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.DividerUnify
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_width="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="1dp"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

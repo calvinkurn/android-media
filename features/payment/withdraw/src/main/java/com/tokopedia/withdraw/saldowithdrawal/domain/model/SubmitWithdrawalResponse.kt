@@ -8,42 +8,69 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class SubmitWithdrawalResponse(
-        @SerializedName("process_time")
-        val processTime: Float? = null,
-        @SerializedName("message")
-        val messageArrayList: ArrayList<String>? = null,
-        @SerializedName("status")
-        val status: String? = null,
-        @SerializedName("message_error")
-        val messageErrorStr: String? = null,
-        @SerializedName("withdrawalNote")
-        val withdrawalNote: String? = null,
-        @SerializedName("errorCode")
-        val errorCode: String? = null,
-        @SerializedName("joinPromptMessageResponse")
-        val joinPromptMessageResponse: JoinPromptMessageResponse? = null) : Parcelable
+    @SerializedName("process_time")
+    val processTime: Float? = null,
+    @SerializedName("message")
+    val messageArrayList: ArrayList<String>? = null,
+    @SerializedName("status")
+    val status: String? = null,
+    @SerializedName("message_error")
+    val messageErrorStr: String? = null,
+    @SerializedName("withdrawalNote")
+    val withdrawalNote: String? = null,
+    @SerializedName("errorCode")
+    val errorCode: String? = null,
+    @SerializedName("joinPromptMessageResponse")
+    val joinPromptMessageResponse: JoinPromptMessageResponse? = null,
+    @SerializedName("title")
+    val title: String? = null,
+    @SerializedName("description")
+    val description: String? = null,
+    @SerializedName("header")
+    val header: String? = null,
+    @SerializedName("ctaLink")
+    val ctaLink: String? = null,
+    @SerializedName("ctaWording")
+    val ctaWording: String? = null,
+    @SerializedName("image")
+    val image: String? = null
+) : Parcelable {
+    fun shouldRedirectToThankYouPage(): Boolean {
+        return status == STATUS_SUCCESS || status == STATUS_INVALID_DATA
+    }
+
+    fun isSuccess(): Boolean {
+        return status == STATUS_SUCCESS
+    }
+
+    companion object {
+        private const val STATUS_SUCCESS = "success"
+        private const val STATUS_INVALID_DATA = "invalid_data"
+    }
+}
 
 data class JoinPromptMessageResponse(
-        @SerializedName("title")
-        val title: String,
-        @SerializedName("desc")
-        val description: String,
-        @SerializedName("actionLink")
-        val actionLink: String,
-        @SerializedName("actionText")
-        val actionText: String,
-        @SerializedName("isSuccess")
-        val isSuccess: Boolean,
-        @SerializedName("statusCode")
-        val statusCode: Int
+    @SerializedName("title")
+    val title: String,
+    @SerializedName("desc")
+    val description: String,
+    @SerializedName("actionLink")
+    val actionLink: String,
+    @SerializedName("actionText")
+    val actionText: String,
+    @SerializedName("isSuccess")
+    val isSuccess: Boolean,
+    @SerializedName("statusCode")
+    val statusCode: Int
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readByte() != 0.toByte(),
-            parcel.readInt()) {
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readByte() != 0.toByte(),
+        parcel.readInt()
+    ) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -71,7 +98,7 @@ data class JoinPromptMessageResponse(
 }
 
 data class GQLSubmitWithdrawalResponse(
-        @SerializedName("richieSubmitWithdrawal")
-        @Expose
-        val submitWithdrawalResponse: SubmitWithdrawalResponse
+    @SerializedName("richieSubmitWithdrawal")
+    @Expose
+    val submitWithdrawalResponse: SubmitWithdrawalResponse
 )

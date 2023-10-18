@@ -20,10 +20,14 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.qrscanner'
+    testNamespace 'com.tokopedia.qrscanner.test'
+}
+
 dependencies {
 
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
-    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.coreNetwork)

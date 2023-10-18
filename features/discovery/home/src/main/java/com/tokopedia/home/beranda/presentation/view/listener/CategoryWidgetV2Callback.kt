@@ -26,11 +26,11 @@ class CategoryWidgetV2Callback(
     }
 
     override fun onImpressCategoryWidget(channelModel: ChannelModel) {
-        homeCategoryListener.putEEToIris(
+        homeCategoryListener.getTrackingQueueObj()?.putEETracking(
             CategoryWidgetTracking.getCategoryWidgetBannerImpression(
                 channelModel.channelGrids,
                 homeCategoryListener.userId,
-                true,
+                false,
                 channelModel
             ) as HashMap<String, Any>
         )

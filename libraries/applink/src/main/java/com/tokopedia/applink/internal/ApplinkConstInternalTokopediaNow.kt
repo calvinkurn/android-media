@@ -33,8 +33,17 @@ object ApplinkConstInternalTokopediaNow {
     @JvmField
     val SEARCH = "$INTERNAL_TOKOPEDIA_NOW/search"
 
+    /* old category applink - TokoNowCategoryActivity */
     @JvmField
-    val CATEGORY = "$INTERNAL_TOKOPEDIA_NOW/category"
+    val OLD_CATEGORY = "$INTERNAL_TOKOPEDIA_NOW/category"
+
+    /* new category applink - TokoNowCategoryActivity */
+    @JvmField
+    val CATEGORY = "$INTERNAL_TOKOPEDIA_NOW/category/l1"
+
+    /* TokoNowCategoryL2Activity */
+    @JvmField
+    val CATEGORY_L2 = "$INTERNAL_TOKOPEDIA_NOW/category/l2"
 
     //TokoNowRepurchaseActivity
     @JvmField
@@ -71,4 +80,8 @@ object ApplinkConstInternalTokopediaNow {
     //TokoNowRecipeSearchIngredientActivity
     @JvmField
     val RECIPE_INGREDIENT_BOTTOM_SHEET = "$INTERNAL_TOKOPEDIA_NOW/recipe/ingredient-bottomsheet"
+
+    //TokoNowBuyerCommunicationActivity
+    @JvmField
+    val BUYER_COMMUNICATION_BOTTOM_SHEET = "$INTERNAL_TOKOPEDIA_NOW/buyer-communication"
 }

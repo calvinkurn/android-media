@@ -17,8 +17,13 @@ class OvoTopUpWebViewViewModel @Inject constructor(private val getOvoTopUpUrlUse
 
     fun getOvoTopUpUrl(redirectUrl: String, customerData: OrderPaymentOvoCustomerData) {
         _ovoTopUpUrl.value = OccState.Loading
-        getOvoTopUpUrlUseCase.execute(customerData.name, customerData.email, customerData.msisdn, redirectUrl,
-                { url -> _ovoTopUpUrl.value = OccState.Success(url) },
-                { throwable -> _ovoTopUpUrl.value = OccState.Failed(Failure(throwable)) })
+        getOvoTopUpUrlUseCase.execute(
+            customerData.name,
+            customerData.email,
+            customerData.msisdn,
+            redirectUrl,
+            { url -> _ovoTopUpUrl.value = OccState.Success(url) },
+            { throwable -> _ovoTopUpUrl.value = OccState.Failed(Failure(throwable)) }
+        )
     }
 }

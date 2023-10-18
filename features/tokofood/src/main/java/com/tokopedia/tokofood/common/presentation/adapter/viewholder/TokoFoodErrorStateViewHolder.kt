@@ -33,8 +33,8 @@ class TokoFoodErrorStateViewHolder (
     }
 
     private fun setGlobalErrorState(throwable: Throwable) {
-        val typeError = when{
-            throwable is UnknownHostException -> GlobalError.NO_CONNECTION
+        val typeError = when (throwable) {
+            is UnknownHostException -> GlobalError.NO_CONNECTION
             else -> GlobalError.SERVER_ERROR
         }
 

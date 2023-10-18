@@ -2,14 +2,14 @@ package com.tokopedia.sellerorder.common.presenter.bottomsheet
 
 import android.content.Context
 import android.view.View
-import com.google.firebase.crashlytics.internal.common.CommonUtils.hideKeyboard
+import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.databinding.BottomsheetCancelOrderBinding
 
 class SomOrderEditAwbBottomSheet(
-        context: Context
+    context: Context
 ) : SomBottomSheet<BottomsheetCancelOrderBinding>(LAYOUT, true, true, false, false, false, SomConsts.TITLE_UBAH_RESI, context, true) {
 
     companion object {
@@ -29,12 +29,12 @@ class SomOrderEditAwbBottomSheet(
             tfCancelNotes.setMessage(context.getString(R.string.change_no_resi_notes))
             tfCancelNotes.textFieldInput.hint = context.getString(R.string.change_no_resi_hint)
             btnCancelOrderCanceled.setOnClickListener {
-                hideKeyboard(context, tfCancelNotes.rootView)
+                tfCancelNotes.rootView.hideKeyboard()
                 dismiss()
             }
             btnCancelOrderConfirmed.text = context.getString(R.string.change_no_resi_btn_ubah)
             btnCancelOrderConfirmed.setOnClickListener {
-                hideKeyboard(context, tfCancelNotes.rootView)
+                tfCancelNotes.rootView.hideKeyboard()
                 dismiss()
                 listener?.onEditAwbButtonClicked(tfCancelNotes.textFieldInput.text.toString())
             }

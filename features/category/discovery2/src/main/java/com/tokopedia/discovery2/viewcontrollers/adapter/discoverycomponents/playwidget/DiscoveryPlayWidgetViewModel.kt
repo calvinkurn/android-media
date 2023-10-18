@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.usecase.coroutines.Fail
@@ -131,8 +130,8 @@ class DiscoveryPlayWidgetViewModel(val application: Application, val components:
                 reminderType
             )
 
-            when (val success = playWidgetTools.mapWidgetToggleReminder(response)) {
-                success -> {
+            when (playWidgetTools.mapWidgetToggleReminder(response)) {
+                true -> {
                     _reminderObservable.postValue(Success(reminderType))
                 }
                 else -> {

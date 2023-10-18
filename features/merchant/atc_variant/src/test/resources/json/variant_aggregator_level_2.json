@@ -1841,57 +1841,57 @@
           "name": "warna",
           "option": [
             {
+              "productVariantOptionID": "254079",
               "hex": "#1d6cbb",
               "picture": {
                 "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg",
                 "url100": "",
                 "url200": ""
               },
-              "productVariantOptionID": "254079",
               "value": "Biru",
               "variantUnitValueID": "5"
             },
             {
+              "productVariantOptionID": "254080",
               "hex": "#ff0016",
               "picture": {
                 "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg",
                 "url100": "",
                 "url200": ""
               },
-              "productVariantOptionID": "254080",
               "value": "Merah",
               "variantUnitValueID": "9"
             },
             {
+              "productVariantOptionID": "254081",
               "hex": "#ffff00",
               "picture": {
                 "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg",
                 "url100": "",
                 "url200": ""
               },
-              "productVariantOptionID": "254081",
               "value": "Kuning",
               "variantUnitValueID": "13"
             },
             {
+              "productVariantOptionID": "254082",
               "hex": "#006400",
               "picture": {
                 "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg",
                 "url100": "",
                 "url200": ""
               },
-              "productVariantOptionID": "254082",
               "value": "Hijau",
               "variantUnitValueID": "18"
             },
             {
+              "productVariantOptionID": "254083",
               "hex": "#bf00ff",
               "picture": {
                 "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg",
                 "url100": "",
                 "url200": ""
               },
-              "productVariantOptionID": "254083",
               "value": "Ungu",
               "variantUnitValueID": "19"
             }
@@ -1904,57 +1904,57 @@
           "name": "ukuran",
           "option": [
             {
+              "productVariantOptionID": "254084",
               "hex": "",
               "picture": {
                 "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg",
                 "url100": "",
                 "url200": ""
               },
-              "productVariantOptionID": "254084",
               "value": "S",
               "variantUnitValueID": "440"
             },
             {
+              "productVariantOptionID": "254085",
               "hex": "",
               "picture": {
                 "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg",
                 "url100": "",
                 "url200": ""
               },
-              "productVariantOptionID": "254085",
               "value": "M",
               "variantUnitValueID": "441"
             },
             {
+              "productVariantOptionID": "254086",
               "hex": "",
               "picture": {
                 "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg",
                 "url100": "",
                 "url200": ""
               },
-              "productVariantOptionID": "254086",
               "value": "L",
               "variantUnitValueID": "442"
             },
             {
+              "productVariantOptionID": "254087",
               "hex": "",
               "picture": {
                 "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg",
                 "url100": "",
                 "url200": ""
               },
-              "productVariantOptionID": "254087",
               "value": "XL",
               "variantUnitValueID": "443"
             },
             {
+              "productVariantOptionID": "254088",
               "hex": "",
               "picture": {
                 "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg",
                 "url100": "",
                 "url200": ""
               },
-              "productVariantOptionID": "254088",
               "value": "XXL",
               "variantUnitValueID": "444"
             }

@@ -30,7 +30,7 @@ class EditAddressRevampTest {
 
     @get:Rule
     var permissionRule: GrantPermissionRule =
-            GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+        GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
@@ -45,9 +45,10 @@ class EditAddressRevampTest {
         AddAddressInterceptor.setupGraphqlMockResponse(context)
         logisticInterceptor.autoCompleteResponsePath = getRawString(context, R.raw.autocomplete_tokopedia_tower)
         logisticInterceptor.getDistrictResponsePath = getRawString(context, R.raw.get_district_tokopedia_tower)
-        logisticInterceptor.getAddressResponsePath = getRawString(context, R.raw.address_detail)
+        logisticInterceptor.getAddressResponsePath = getRawString(context, R.raw.address_detail_tokopedia_tower)
         logisticInterceptor.pinPointValidationResponsePath = getRawString(context, R.raw.pinpoint_validation)
         logisticInterceptor.editAddressResponsePath = getRawString(context, R.raw.editaddress_success_response)
+        logisticInterceptor.getCollectionPointResponsePath = getRawString(context, R.raw.get_collection_point_edit)
         IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
     }
 
@@ -61,9 +62,9 @@ class EditAddressRevampTest {
         val queryPath = "tracker/logistic/editaddress_user_revamp_positive.json"
         editAddressRevamp {
             launchWithParam(context, mActivityTestRule)
+            fillReceiver(RECEIVER)
             fillAddress(ADDRESS)
             fillPhoneNumber(PHONE)
-            fillReceiver(RECEIVER)
             onClickChangePinpoint()
             onClickCariUlangAlamat()
             searchAddressStreet(KEYWORD)
@@ -73,7 +74,6 @@ class EditAddressRevampTest {
             hasPassedAnalytics(cassavaTestRule, queryPath)
         }
     }
-
 
     companion object {
         const val KEYWORD = "Tokopedia"

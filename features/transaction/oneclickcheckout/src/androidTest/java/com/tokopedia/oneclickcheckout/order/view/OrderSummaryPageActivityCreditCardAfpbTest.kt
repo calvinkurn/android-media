@@ -10,7 +10,6 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.interceptor.CREDIT_CARD_TENOR_LIST_ALL_ENABLED_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_CREDIT_CARD_AFPB_PAYMENT_FEE_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_CREDIT_CARD_AFPB_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
@@ -62,34 +61,33 @@ class OrderSummaryPageActivityCreditCardAfpbTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-
             assertInstallmentRevamp("Bayar Penuh")
 
             assertPayment("Rp516.000", "Bayar")
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp500.000",
-                        shippingPrice = "Rp16.000",
-                        insurancePrice = "Rp0",
-                        totalPrice = "Rp516.000",
-                        isInstallment = true,
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 0.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp500.000",
+                    shippingPrice = "Rp16.000",
+                    insurancePrice = "Rp0",
+                    totalPrice = "Rp516.000",
+                    isInstallment = true,
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 0.0,
+                            showTooltip = true
                         )
+                    )
                 )
                 closeBottomSheet()
             }
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }
@@ -102,7 +100,6 @@ class OrderSummaryPageActivityCreditCardAfpbTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-
             assertInstallmentRevamp("Bayar Penuh")
 
             clickChangeInstallmentRevamp {
@@ -115,27 +112,27 @@ class OrderSummaryPageActivityCreditCardAfpbTest {
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp500.000",
-                        shippingPrice = "Rp16.000",
-                        insurancePrice = "Rp0",
-                        totalPrice = "Rp517.899",
-                        isInstallment = true,
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 1899.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp500.000",
+                    shippingPrice = "Rp16.000",
+                    insurancePrice = "Rp0",
+                    totalPrice = "Rp517.899",
+                    isInstallment = true,
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 1899.0,
+                            showTooltip = true
                         )
+                    )
                 )
                 closeBottomSheet()
             }
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }
@@ -148,7 +145,6 @@ class OrderSummaryPageActivityCreditCardAfpbTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-
             assertInstallmentRevamp("Bayar Penuh")
 
             paymentInterceptor.customCreditCardTenorListResponsePath = CREDIT_CARD_TENOR_LIST_ALL_ENABLED_RESPONSE_PATH
@@ -164,27 +160,27 @@ class OrderSummaryPageActivityCreditCardAfpbTest {
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp1.000.000",
-                        shippingPrice = "Rp16.000",
-                        insurancePrice = "Rp0",
-                        totalPrice = "Rp1.020.599",
-                        isInstallment = true,
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 4599.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp1.000.000",
+                    shippingPrice = "Rp16.000",
+                    insurancePrice = "Rp0",
+                    totalPrice = "Rp1.020.599",
+                    isInstallment = true,
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 4599.0,
+                            showTooltip = true
                         )
+                    )
                 )
                 closeBottomSheet()
             }
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }
@@ -197,7 +193,6 @@ class OrderSummaryPageActivityCreditCardAfpbTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-
             assertInstallmentRevamp("Bayar Penuh")
 
             paymentInterceptor.customCreditCardTenorListThrowable = IOException()
@@ -219,27 +214,27 @@ class OrderSummaryPageActivityCreditCardAfpbTest {
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp1.000.000",
-                        shippingPrice = "Rp16.000",
-                        insurancePrice = "Rp0",
-                        totalPrice = "Rp1.020.599",
-                        isInstallment = true,
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 4599.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp1.000.000",
+                    shippingPrice = "Rp16.000",
+                    insurancePrice = "Rp0",
+                    totalPrice = "Rp1.020.599",
+                    isInstallment = true,
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 4599.0,
+                            showTooltip = true
                         )
+                    )
                 )
                 closeBottomSheet()
             }
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }

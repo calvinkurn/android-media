@@ -101,11 +101,11 @@ object ChooseProductUiMapper {
         }
     }
 
-    fun isExceedMaxProduct(productCount: Int): Boolean {
+    private fun isExceedMaxProduct(productCount: Int): Boolean {
         return productCount.orZero() >= MAX_PRODUCT_SELECTION
     }
 
-    fun isExceedMaxQuota(
+    private fun isExceedMaxQuota(
         productCount: Int, 
         maxProduct: Int,
         remainingQuota: Int,

@@ -1,12 +1,17 @@
 package com.tokopedia.campaign.utils.extension
 
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
+import androidx.annotation.ColorRes
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.dpToPx
 
 private const val DEFAULT_SCROLL_ANIMATION_DURATION = 200
+private const val CORNER_RADIUS = 8F
 
 //region Toaster Error
 fun View?.showToasterError(throwable: Throwable, ctaText: String = "") {
@@ -133,5 +138,16 @@ private fun View?.showToasterWithCta(message: String, ctaText: String) {
         anchorView = this@showToasterWithCta
         show()
     }
+}
+//endregion
+
+//region View background drawing
+fun View.applyRoundedRectangle(@ColorRes colorId: Int, cornerRadius: Float = CORNER_RADIUS) {
+    val colorBg = MethodChecker.getColor(context, colorId)
+    val drawable = GradientDrawable()
+    val corner = cornerRadius.dpToPx()
+    drawable.setColor(colorBg)
+    drawable.cornerRadius = corner
+    background = drawable
 }
 //endregion

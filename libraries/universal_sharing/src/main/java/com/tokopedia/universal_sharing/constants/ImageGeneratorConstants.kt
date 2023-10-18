@@ -1,7 +1,7 @@
 package com.tokopedia.universal_sharing.constants
 
 class ImageGeneratorConstants {
-    object ImageGeneratorSourceId{
+    object ImageGeneratorSourceId {
         const val PDP = "gFZoml"
         const val AB_TEST_PDP = "wmVUzt"
         const val FS_TOKO = "tJHYeb"
@@ -10,7 +10,7 @@ class ImageGeneratorConstants {
         const val WISHLIST_COLLECTION = "yxIvgB"
         const val SHOP_PAGE = "LSfHao"
     }
-    object ImageGeneratorKeys{
+    object ImageGeneratorKeys {
         const val PRODUCT_IMAGE_URL = "product_image_url"
         const val PRODUCT_PRICE = "product_price"
         const val PRODUCT_TITLE = "product_title"
@@ -23,6 +23,8 @@ class ImageGeneratorConstants {
         const val HAS_CAMPAIGN = "has_campaign"
         const val CAMPAIGN_DISCOUNT = "campaign_discount"
         const val CAMPAIGN_NAME_PDP = "campaign_name"
+        const val PERSONALIZED_CAMPAIGN_INFO = "campaign_info"
+        const val HAS_RIBBON = "has_ribbon"
         const val SHOP_LOGO = "shop-logo"
         const val SHOP_NAME = "shop-name"
         const val SHOP_NAME_UNDERSCORE = "shop_name"
@@ -59,6 +61,8 @@ class ImageGeneratorConstants {
         const val VOUCHER_CASHBACK_PERCENTAGE = "voucher_cashback_percentage"
         const val VOUCHER_NOMINAL_AMOUNT = "voucher_nominal_amount"
         const val VOUCHER_NOMINAL_SYMBOL = "voucher_nominal_symbol"
+        const val VOUCHER_DISCOUNT_TYPE = "voucher_discount_type"
+        const val VOUCHER_DISCOUNT_PERCENTAGE = "voucher_discount_percentage"
         const val SHOP_LOGO_MVC = "shop_logo"
         const val SHOP_NAME_MVC = "shop_name"
         const val VOUCHER_CODE = "voucher_code"
@@ -96,7 +100,7 @@ class ImageGeneratorConstants {
         const val SHOP_INFO_LABEL_3 = "info_3_label"
         const val SHOP_IS_HEADLESS = "is_headless"
     }
-    object ImageGeneratorPlatforms{
+    object ImageGeneratorPlatforms {
         const val WHATSAPP = "wa"
         const val INSTAGRAM_FEED = "ig-feed"
         const val TELEGRAM = "telegram"
@@ -106,24 +110,24 @@ class ImageGeneratorConstants {
         const val FACEBOOK_STORY = "fb-story"
         const val INSTAGRAM_STORY = "ig-story"
     }
-    object VoucherVisibility{
+    object VoucherVisibility {
         const val PUBLIC = "public"
         const val PRIVATE = "private"
     }
-    object VoucherBenefitType{
+    object VoucherBenefitType {
         const val CASHBACK = "cashback"
         const val GRATIS_ONGKIR = "gratis-ongkir"
         const val DISCOUNT = "diskon"
     }
-    object CashbackType{
+    object CashbackType {
         const val PERCENTAGE = "percentage"
         const val NOMINAL = "nominal"
     }
-    object VoucherNominalSymbol{
+    object VoucherNominalSymbol {
         const val RB = "rb"
         const val JT = "jt"
     }
-    object AUDIENCE_TARGET{
+    object AUDIENCE_TARGET {
         const val ALL_USERS = "all-users"
         const val NEW_FOLLOWER = "new-follower"
         const val NEW_USER = "new-user"

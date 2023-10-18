@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.CycleInterpolator
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -27,6 +28,7 @@ class UploadPrescriptionViewHolder(
         @JvmStatic
         val ITEM_VIEW_UPLOAD = R.layout.item_upload_prescription
         const val EPharmacyAppLink = "tokopedia://epharmacy/"
+        const val EPharmacyCountImageUrl = TokopediaImageUrl.E_PHARMACY_COUNT_IMAGE_URL
         const val EPharmacyMiniConsultationAppLink = "tokopedia://epharmacy/attach-prescription/"
         private const val VIBRATION_ANIMATION_DURATION = 1250
         private const val VIBRATION_ANIMATION_TRANSLATION_X = -10

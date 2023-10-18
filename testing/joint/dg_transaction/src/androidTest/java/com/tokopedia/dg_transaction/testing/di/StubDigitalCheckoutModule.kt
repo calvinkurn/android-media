@@ -1,10 +1,10 @@
 package com.tokopedia.dg_transaction.testing.di
 
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
-import com.tokopedia.dg_transaction.testing.response.rest.DigitalRestCheckoutMockResponse
 import com.tokopedia.dg_transaction.testing.response.rest.RestRepositoryStub
 import com.tokopedia.digital_checkout.di.DigitalCartCheckoutQualifier
 import com.tokopedia.digital_checkout.di.DigitalCheckoutScope
@@ -17,7 +17,6 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.Interceptor
-
 
 /** Changes from the original:
  * - Does not include akamai interceptor injector (deleted, due to unexpected error)
@@ -37,7 +36,8 @@ class StubDigitalCheckoutModule {
     @Provides
     @DigitalCheckoutScope
     @DigitalCartCheckoutQualifier
-    fun provideDigitalCheckoutInterceptor(digitalInterceptor: DigitalInterceptor
+    fun provideDigitalCheckoutInterceptor(
+        digitalInterceptor: DigitalInterceptor
     ): ArrayList<Interceptor> {
         val listInterceptor = arrayListOf<Interceptor>()
         listInterceptor.add(digitalInterceptor)
@@ -48,9 +48,7 @@ class StubDigitalCheckoutModule {
     @Provides
     @DigitalCheckoutScope
     fun provideRestRepositoryStub(): RestRepositoryStub {
-        return RestRepositoryStub().apply {
-            responses = DigitalRestCheckoutMockResponse().getMockResponse()
-        }
+        return RestRepositoryStub()
     }
 
     @Provides
@@ -65,4 +63,8 @@ class StubDigitalCheckoutModule {
     @DigitalCheckoutScope
     @Provides
     fun provideGraphqlUseCase(): GraphqlUseCase = GraphqlUseCase()
+
+    @DigitalCheckoutScope
+    @Provides
+    fun provideGson(): Gson = Gson()
 }

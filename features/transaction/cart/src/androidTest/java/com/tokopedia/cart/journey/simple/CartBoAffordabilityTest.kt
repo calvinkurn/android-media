@@ -1,5 +1,7 @@
 package com.tokopedia.cart.journey.simple
 
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cart.robot.cartPage
@@ -19,20 +21,35 @@ import org.junit.Test
 class CartBoAffordabilityTest {
 
     @get:Rule
-    var activityRule = object : IntentsTestRule<CartActivity>(CartActivity::class.java, false, false) {
-        override fun beforeActivityLaunched() {
-            super.beforeActivityLaunched()
-            InstrumentationAuthHelper.loginInstrumentationTestUser1()
+    var activityRule =
+        object : IntentsTestRule<CartActivity>(CartActivity::class.java, false, false) {
+            override fun beforeActivityLaunched() {
+                super.beforeActivityLaunched()
+                InstrumentationAuthHelper.loginInstrumentationTestUser1()
+            }
         }
-    }
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Before
     fun setup() {
         setupGraphqlMockResponse {
-            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_bo_affordability_response), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(ONGKIR_GET_FREE_SHIPPING_KEY, InstrumentationMockHelper.getRawString(context, R.raw.ongkir_get_free_shipping_success_afford_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(
+                GET_CART_LIST_KEY,
+                InstrumentationMockHelper.getRawString(
+                    context,
+                    R.raw.cart_bo_affordability_response
+                ),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
+            addMockResponse(
+                CART_SHOP_GROUP_TICKER_AGGREGATOR_KEY,
+                InstrumentationMockHelper.getRawString(
+                    context,
+                    R.raw.cart_shop_group_ticker_aggregator_bo_afford_success_response
+                ),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
         }
     }
 
@@ -40,27 +57,36 @@ class CartBoAffordabilityTest {
     fun tickerVisibilityTest() {
         activityRule.launchActivity(null)
 
+        val cartRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_cart)
+
         cartPage {
             waitForData()
 
             assertMainContent()
 
-            assertCartShopViewHolderOnPosition(3) {
+            assertCartShopBottomViewHolderOnPosition(6) {
                 // given checked shop & enable bo affordability, then should show ticker
-                assertShowBoAffordabilityTicker()
+                assertShowCartShopGroupTicker()
             }
-            assertCartShopViewHolderOnPosition(4) {
+            scrollRecyclerViewToPosition(cartRecyclerView, 9)
+            assertCartShopBottomViewHolderOnPosition(9) {
                 // given unchecked shop & enable bo affordability, then should not show ticker
-                assertNotShowBoAffordabilityTicker()
+                assertNotShowCartShopGroupTicker()
             }
-            assertCartShopViewHolderOnPosition(5) {
+            scrollRecyclerViewToPosition(cartRecyclerView, 12)
+            assertCartShopBottomViewHolderOnPosition(12) {
                 // given checked shop & disable bo affordability, then should not show ticker
-                assertNotShowBoAffordabilityTicker()
+                assertNotShowCartShopGroupTicker()
             }
 
             // Prevent glide crash
             Thread.sleep(2000)
         }
+    }
+
+    private fun scrollRecyclerViewToPosition(recyclerView: RecyclerView, position: Int) {
+        val layoutManager = recyclerView.layoutManager as GridLayoutManager
+        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
     }
 
     @After
@@ -70,6 +96,6 @@ class CartBoAffordabilityTest {
 
     companion object {
         const val GET_CART_LIST_KEY = "cart_revamp"
-        const val ONGKIR_GET_FREE_SHIPPING_KEY = "ongkirGetFreeShipping"
+        const val CART_SHOP_GROUP_TICKER_AGGREGATOR_KEY = "cartShopGroupTickerAggregator"
     }
 }

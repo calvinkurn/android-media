@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -19,6 +18,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.ViewModelProvider
 import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoTracker
@@ -51,6 +51,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 import com.tokopedia.topchat.chatroom.view.fragment.StickerFragment
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomFlexModeListener
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatRoomWebSocketViewModel
 import com.tokopedia.topchat.chattemplate.view.customview.TopChatTemplateSeparatedView
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX
@@ -60,13 +61,19 @@ import com.tokopedia.topchat.common.util.ViewUtil.FLAT_STATE
 import com.tokopedia.topchat.common.util.ViewUtil.HALF_OPEN_STATE
 import com.tokopedia.topchat.common.util.ViewUtil.getFoldingFeatureState
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
 
 open class TopChatRoomActivity :
     BaseChatToolbarActivity(),
     HasComponent<ChatComponent>,
     StickerFragment.Listener,
     TopChatRoomFlexModeListener {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel: TopChatRoomWebSocketViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[TopChatRoomWebSocketViewModel::class.java]
+    }
 
     private var chatComponent: ChatComponent? = null
 
@@ -106,7 +113,7 @@ open class TopChatRoomActivity :
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
-        if (!currentActiveChat.isNullOrEmpty()) {
+        if (!currentActiveChat.isNullOrEmpty() && isAllowedFlexMode()) {
             handleIntentChatRoomWithMessageId()
         }
         if (intent != null && intent.extras != null) {
@@ -115,12 +122,11 @@ open class TopChatRoomActivity :
             if (role == null) {
                 role = intent.getIntExtra(Constant.CHAT_USER_ROLE_KEY, RoleType.BUYER)
             }
-            if (currentActiveChat == null) {
+            if (currentActiveChat == null && isAllowedFlexMode()) {
                 currentActiveChat = intent.getStringExtra(Constant.CHAT_CURRENT_ACTIVE)
             } else {
                 // open another chatroom, remove attachment & reset web socket
                 bundle.putBoolean(Constant.CHAT_REMOVE_ATTACHMENT, true)
-                bundle.putBoolean(Constant.CHAT_RESET_WEBSOCKET, true)
             }
         }
 
@@ -133,9 +139,15 @@ open class TopChatRoomActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(null)
+        initInjector()
         bindViews()
+        setupLifeCycleObserver()
         setupFragments(savedInstanceState)
         initWindowBackground()
+    }
+
+    private fun initInjector() {
+        component.inject(this)
     }
 
     override fun getComponent(): ChatComponent {
@@ -149,6 +161,10 @@ open class TopChatRoomActivity :
             .build().also {
                 chatComponent = it
             }
+    }
+
+    private fun setupLifeCycleObserver() {
+        this.lifecycle.addObserver(viewModel)
     }
 
     override fun getTagFragment(): String = ""
@@ -522,10 +538,10 @@ open class TopChatRoomActivity :
             setDisplayShowHomeEnabled(true)
             setHomeButtonEnabled(true)
 
-            val upArrow = MethodChecker.getDrawable(applicationContext, com.tokopedia.chat_common.R.drawable.ic_action_back)
+            val upArrow = MethodChecker.getDrawable(applicationContext, com.tokopedia.abstraction.R.drawable.ic_action_back)
             if (upArrow != null) {
                 upArrow.setColorFilter(
-                    MethodChecker.getColor(this@TopChatRoomActivity, com.tokopedia.unifyprinciples.R.color.Unify_N500),
+                    MethodChecker.getColor(this@TopChatRoomActivity, com.tokopedia.unifyprinciples.R.color.Unify_NN600),
                     PorterDuff.Mode.SRC_ATOP
                 )
                 this.setHomeAsUpIndicator(upArrow)
@@ -594,13 +610,6 @@ open class TopChatRoomActivity :
             return
         } else {
             super.onBackPressed()
-        }
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        if (::chatRoomFragment.isInitialized) {
-            chatRoomFragment.setupAttachmentsPreview(intent?.extras)
         }
     }
 

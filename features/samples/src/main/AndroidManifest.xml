@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.samples">
+
+    <application android:hardwareAccelerated="true">
+        <activity android:name=".foldables.FoldableActivity" />
+        <activity android:name=".foldables.FoldableFragmentsActivity" />
+        <activity android:name=".foldables.ExoPlayerSampleActivity" />
+    </application>
+
+</manifest>

@@ -12,7 +12,8 @@ import com.tokopedia.productbundlewidget.model.BundleTypes
 import com.tokopedia.productbundlewidget.model.BundleUiModel
 
 class ProductBundleMultipleAdapter(
-    private val listener: ProductBundleAdapterListener?
+    private val listener: ProductBundleAdapterListener?,
+    private val isOverrideWidgetTheme: Boolean
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var bundleProducts: List<BundleProductUiModel> = listOf()
@@ -37,9 +38,9 @@ class ProductBundleMultipleAdapter(
         val bundleProduct = bundleProducts.getOrNull(position) ?: BundleProductUiModel()
         when (holder) {
             is ProductBundleMultiplePackageViewHolder ->
-                holder.bind(bundleProduct, ::onViewImpression, ::onClickImpression)
+                holder.bind(bundleProduct, ::onViewImpression, ::onClickImpression, isOverrideWidgetTheme)
             is ProductBundleMultiplePackageGroupViewHolder ->
-                holder.bind(bundleProductGrouped, ::onMoreProductClick)
+                holder.bind(bundleProductGrouped, ::onMoreProductClick, isOverrideWidgetTheme)
         }
     }
 
@@ -66,6 +67,12 @@ class ProductBundleMultipleAdapter(
     private fun onViewImpression(position: Int) {
         bundleProducts.getOrNull(position)?.let { product ->
             listener?.impressionProductItemBundleMultiple(
+                product,
+                bundleDetail,
+                position
+            )
+            listener?.impressionProductItemBundleMultiple(
+                bundle,
                 product,
                 bundleDetail,
                 position

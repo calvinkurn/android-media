@@ -10,10 +10,12 @@ import com.tokopedia.atc_common.data.model.request.ProductDetail
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
+import com.tokopedia.product_bundle.common.data.model.response.ShopInformation
 import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
 import com.tokopedia.product_bundle.common.util.DiscountUtil
 import com.tokopedia.product_bundle.single.presentation.constant.SingleBundleInfoConstants.BUNDLE_QTY
@@ -34,6 +36,9 @@ class SingleProductBundleViewModel @Inject constructor(
         private val addToCartBundleUseCase: AddToCartBundleUseCase,
         private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher.main) {
+
+    private var shopInfo: ShopInformation? = null
+    private var bundleTotalSold: Int = 0
 
     private val mSingleProductBundleUiModel = MutableLiveData<SingleProductBundleUiModel>()
     val singleProductBundleUiModel: LiveData<SingleProductBundleUiModel>
@@ -88,6 +93,24 @@ class SingleProductBundleViewModel @Inject constructor(
             mSingleProductBundleUiModel.value = bundleModel
             mPageError.value = SingleProductBundleErrorEnum.NO_ERROR
         }
+    }
+
+    fun setShopInfo(shopInfo: ShopInformation) {
+        this.shopInfo = shopInfo
+    }
+
+    fun getShopInfo(): ShopInformation? {
+        return this.shopInfo
+    }
+
+    fun setBundleTotalSold(bundleInfo: List<BundleInfo>) {
+        bundleTotalSold = bundleInfo.sumOf {
+            it.bundleStats.totalSold.toIntSafely()
+        }
+    }
+
+    fun getBundleTotalSold(): Int {
+        return bundleTotalSold
     }
 
     fun getVariantText(selectedProductVariant: ProductVariant, selectedProductId: String): String {

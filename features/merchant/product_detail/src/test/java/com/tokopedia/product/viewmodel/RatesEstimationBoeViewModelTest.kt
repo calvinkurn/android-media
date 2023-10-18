@@ -3,10 +3,8 @@ package com.tokopedia.product.viewmodel
 import com.tokopedia.product.estimasiongkir.data.model.DeliveryService
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
 import com.tokopedia.product.estimasiongkir.data.model.ScheduledDeliveryRatesModel
-import com.tokopedia.product.estimasiongkir.data.model.shipping.Product
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingHeaderDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingServiceDataModel
-import com.tokopedia.product.estimasiongkir.data.model.shipping.Service
 import com.tokopedia.product.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.product.estimasiongkir.data.model.v3.RatesModel
 import com.tokopedia.product.estimasiongkir.data.model.v3.ServiceModel
@@ -15,6 +13,7 @@ import com.tokopedia.product.estimasiongkir.usecase.GetRatesEstimateUseCase
 import com.tokopedia.product.estimasiongkir.usecase.GetScheduledDeliveryRatesUseCase
 import com.tokopedia.product.estimasiongkir.view.viewmodel.RatesEstimationBoeViewModel
 import com.tokopedia.product.util.BaseProductViewModelTest
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -38,6 +37,9 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
     private lateinit var userSessionInterface: UserSessionInterface
 
     @RelaxedMockK
+    private lateinit var remoteConfig: RemoteConfig
+
+    @RelaxedMockK
     private lateinit var scheduledDeliveryUseCase: GetScheduledDeliveryRatesUseCase
 
     private val viewModel: RatesEstimationBoeViewModel by lazy {
@@ -45,6 +47,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             ratesUseCase,
             scheduledDeliveryUseCase,
             userSessionInterface,
+            remoteConfig,
             CoroutineTestDispatchersProvider
         )
     }
@@ -410,7 +413,6 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
         Assert.assertTrue((viewModel.ratesVisitableResult.value as Success).data.size == 1)
     }
 
-
     @Test
     fun `on scheduled delivery success`() {
         viewModel.ratesVisitableResult.observeForever { }
@@ -423,7 +425,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             scheduledDeliveryUseCase.execute(any(), any(), true)
         } returns scheduledDeliveryResponse
 
-        viewModel.setRatesRequest(RatesEstimateRequest())
+        viewModel.setRatesRequest(RatesEstimateRequest(isScheduled = true))
 
         coVerify {
             ratesUseCase.executeOnBackground(any(), any())
@@ -447,7 +449,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             scheduledDeliveryUseCase.execute(any(), any(), true)
         } returns scheduledDeliveryResponse
 
-        viewModel.setRatesRequest(RatesEstimateRequest())
+        viewModel.setRatesRequest(RatesEstimateRequest(isScheduled = true))
 
         coVerify {
             ratesUseCase.executeOnBackground(any(), any())
@@ -455,6 +457,4 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
 
         Assert.assertNotNull(viewModel.ratesVisitableResult.value is Fail)
     }
-
-
 }

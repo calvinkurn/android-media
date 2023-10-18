@@ -7,8 +7,7 @@
             android:name=".page.presentation.activity.CampaignListActivity"
             android:configChanges="orientation"
             android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

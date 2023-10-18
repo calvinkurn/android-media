@@ -1,8 +1,11 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-parcelize'
 
 android {
+    namespace 'com.tokopedia.topads.dashboard'
+    testNamespace 'com.tokopedia.topads.dashboard.test'
     buildFeatures {
         viewBinding true
     }
@@ -26,10 +29,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.datePickerRange)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.webview)
-    implementation projectOrAar(rootProject.ext.features.topAdsHeadlineUseCase)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
 
@@ -42,6 +44,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.calendar
     implementation rootProject.ext.unifyDependencies.accordion
     implementation rootProject.ext.unifyDependencies.coach_mark
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.graphql)
@@ -57,6 +60,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     implementation projectOrAar(rootProject.ext.libraries.charts)
+    implementation rootProject.ext.miscDependencies.lottie
+    implementation rootProject.ext.unifyDependencies.empty_state
+    implementation rootProject.ext.unifyDependencies.global_error
 
     //test
     testImplementation rootProject.ext.testDependencies.mockk
@@ -66,6 +72,7 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {

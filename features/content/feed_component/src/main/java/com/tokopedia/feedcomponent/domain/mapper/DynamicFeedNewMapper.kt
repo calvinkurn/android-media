@@ -5,11 +5,11 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCardDataItem
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXHome
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -29,7 +29,11 @@ const val TYPE_IMAGE = "image"
 
 object DynamicFeedNewMapper {
 
-    fun map(feedXHome: FeedXHome, cursor: String, shouldShowNewTopadsOnly:Boolean): DynamicFeedDomainModel {
+    fun map(
+        feedXHome: FeedXHome,
+        cursor: String,
+        shouldShowNewTopadsOnly: Boolean
+    ): DynamicFeedDomainModel {
         val posts: MutableList<Visitable<*>> = ArrayList()
         var firstPageCursor = ""
 
@@ -44,15 +48,19 @@ object DynamicFeedNewMapper {
                         mapShopRecommendation(posts)
                     }
                 }
+
                 TYPE_FEED_X_CARD_BANNERS -> {
                     mapCardBanner(posts, it.items)
                 }
+
                 TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT -> {
                     mapCardHighlight(posts, it)
                 }
+
                 TYPE_FEED_X_CARD_POST -> {
                     mapCardPost(posts, it)
                 }
+
                 TYPE_FEED_X_CARD_PLAY -> {
                     mapCardVOD(posts, it)
                 }
@@ -68,22 +76,27 @@ object DynamicFeedNewMapper {
     }
 
     private fun mapCardPost(posts: MutableList<Visitable<*>>, feedXCard: FeedXCard) {
-        val dynamicPostUiModel = DynamicPostUiModel(feedXCard.copyPostData(), mapPostTracking(feedXCard))
+        val dynamicPostUiModel =
+            DynamicPostUiModel(feedXCard.copyPostData(), mapPostTracking(feedXCard))
         posts.add(dynamicPostUiModel)
     }
+
     private fun mapCardVOD(posts: MutableList<Visitable<*>>, feedXCard: FeedXCard) {
         val dynamicPostUiModel = DynamicPostUiModel(feedXCard.copyPostData())
         posts.add(dynamicPostUiModel)
     }
 
 
-    private fun mapCardHeadline(posts: MutableList<Visitable<*>>, shouldShowNewTopadsOnly: Boolean) {
+    private fun mapCardHeadline(
+        posts: MutableList<Visitable<*>>,
+        shouldShowNewTopadsOnly: Boolean
+    ) {
         val headLinePge = TopAdsHeadlineActivityCounter.page++
         val topadsHeadlineUiModel = TopadsHeadlineUiModel(topadsHeadLinePage = headLinePge)
         val topadsHeadlineUiModelV2 = TopadsHeadLineV2Model(topadsHeadLinePage = headLinePge)
         if (!shouldShowNewTopadsOnly)
             posts.add(topadsHeadlineUiModel)
-            posts.add(topadsHeadlineUiModelV2)
+        posts.add(topadsHeadlineUiModelV2)
 
     }
 
@@ -99,9 +112,11 @@ object DynamicFeedNewMapper {
         val bannerList: MutableList<BannerItemModel> = ArrayList()
         items.forEach { media ->
             val id = media.id
-            bannerList.add(BannerItemModel(
+            bannerList.add(
+                BannerItemModel(
                     id, media.coverUrl, media.appLink
-            ))
+                )
+            )
         }
     }
 
@@ -111,6 +126,7 @@ object DynamicFeedNewMapper {
             posts.add(dynamicPostUiModel)
         }
     }
+
     private fun mapPostTracking(feed: FeedXCard): TrackingPostModel {
         val media = feed.media.firstOrNull()
         val mediaType = media?.type ?: ""
@@ -120,17 +136,17 @@ object DynamicFeedNewMapper {
         val recomId = feed.id.toLongOrZero()
 
         return TrackingPostModel(
-                feed.type,
-                feed.typename,
-                "",
-                mediaType,
-                mediaUrl,
-                tagsType,
-                feed.appLink,
-                authorId,
-                feed.id,
-                feed.media.size,
-                recomId
+            feed.type,
+            feed.typename,
+            "",
+            mediaType,
+            mediaUrl,
+            tagsType,
+            feed.appLink,
+            authorId,
+            feed.id,
+            feed.media.size,
+            recomId
         )
     }
 

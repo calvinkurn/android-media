@@ -34,11 +34,13 @@ object PersistentEvent {
 
 object IrisAnalyticsEvents {
     const val PUSH_RECEIVED = "pushReceived"
+    const val PUSH_RENDERED = "pushRendered"
     const val DEVICE_NOTIFICATION_OFF = "device_notification_off"
     const val PUSH_CLICKED = "pushClicked"
     const val PUSH_DISMISSED = "pushDismissed"
     const val PUSH_CANCELLED = "pushCancelled"
     const val PUSH_DELETED = "pushDeleted"
+    const val PUSH_EXPIRED = "pushExpired"
     const val INAPP_RECEIVED = "inappReceived"
     const val INAPP_CLICKED = "inappClicked"
     const val INAPP_DISMISSED = "inappDismissed"
@@ -101,7 +103,7 @@ object IrisAnalyticsEvents {
 
     fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel) {
         if (baseNotificationModel.isTest) return
-        val irisAnalytics = IrisAnalytics(context)
+        val irisAnalytics = IrisAnalytics.getInstance(context)
         val values = addBaseValues(context, eventName, baseNotificationModel)
         if (baseNotificationModel.isAmplification) {
             values[LABEL] = AMPLIFICATION
@@ -115,6 +117,9 @@ object IrisAnalyticsEvents {
             return
         val irisAnalytics = IrisAnalytics.Companion.getInstance(context.applicationContext)
         val values = addBaseValues(context, eventName, baseNotificationModel)
+        if (baseNotificationModel.isAmplification) {
+            values[LABEL] = AMPLIFICATION
+        }
         if (elementID != null) {
             values[CLICKED_ELEMENT_ID] = elementID
         }
@@ -166,7 +171,7 @@ object IrisAnalyticsEvents {
 
     fun sendAmplificationInAppEvent(context: Context, eventName: String, cmInApp: CMInApp) {
         if (cmInApp.isTest) return
-        val irisAnalytics = IrisAnalytics(context)
+        val irisAnalytics = IrisAnalytics.getInstance(context)
         trackEvent(context, irisAnalytics, addBaseValues(context, eventName, cmInApp).apply {
             put(LABEL, AMPLIFICATION)
         })
@@ -264,7 +269,9 @@ object IrisAnalyticsEvents {
             INAPP_DISMISSED,
             PUSH_RECEIVED,
             PUSH_CLICKED,
+            PUSH_RENDERED,
             PUSH_DISMISSED,
+            PUSH_EXPIRED,
             DEVICE_NOTIFICATION_OFF
         )
 
@@ -285,8 +292,10 @@ object IrisAnalyticsEvents {
             INAPP_DISMISSED,
             PUSH_RECEIVED,
             PUSH_CLICKED,
+            PUSH_RENDERED,
             PUSH_DISMISSED,
-            PUSH_CANCELLED
+            PUSH_CANCELLED,
+            PUSH_EXPIRED
         )
 
         if (!shopId.isNullOrBlank() && (eventName in allowedEvents)) {

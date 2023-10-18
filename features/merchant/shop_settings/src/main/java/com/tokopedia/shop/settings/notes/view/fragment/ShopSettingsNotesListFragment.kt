@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.settings.R
@@ -38,9 +38,9 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-
-class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNoteFactory>(),
-        ShopNoteViewHolder.OnShopNoteViewHolderListener {
+class ShopSettingsNotesListFragment :
+    BaseListFragment<ShopNoteUiModel, ShopNoteFactory>(),
+    ShopNoteViewHolder.OnShopNoteViewHolderListener {
 
     @Inject
     lateinit var viewModel: ShopSettingsNoteListViewModel
@@ -73,14 +73,14 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
-    override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
+    override fun getSwipeRefreshLayoutResourceId() = com.tokopedia.baselist.R.id.swipe_refresh_layout
 
     override fun initInjector() {
         activity?.let {
             DaggerShopSettingsComponent.builder()
-                    .baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
-                    .build()
-                    .inject(this)
+                .baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
         }
     }
 
@@ -151,13 +151,12 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyModel = EmptyModel()
-        emptyModel.iconRes = R.drawable.ic_tree_empty_state
+        emptyModel.urlRes = TokopediaImageUrl.EMPTY_DATA_URL
         emptyModel.title = getString(R.string.shop_has_no_notes)
         emptyModel.content = getString(R.string.shop_notes_info)
         emptyModel.buttonTitleRes = R.string.add_note
         emptyModel.callback = object : BaseEmptyViewHolder.Callback {
             override fun onEmptyContentItemTextClicked() {
-
             }
 
             override fun onEmptyButtonClicked() {
@@ -173,13 +172,17 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
     }
 
     override fun onItemClicked(shopNoteUiModel: ShopNoteUiModel) {
-        //no-op
+        // no-op
     }
 
     private fun goToEditNote(shopNoteUiModel: ShopNoteUiModel) {
         context?.let {
-            val intent = ShopSettingsNotesAddEditActivity.createIntent(it,
-                    shopNoteUiModel.terms, true, shopNoteUiModel)
+            val intent = ShopSettingsNotesAddEditActivity.createIntent(
+                it,
+                shopNoteUiModel.terms,
+                true,
+                shopNoteUiModel
+            )
             startActivityForResult(intent, REQUEST_CODE_EDIT_NOTE)
         }
     }
@@ -201,8 +204,12 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
             }
         }
         context?.let {
-            val intent = ShopSettingsNotesAddEditActivity.createIntent(it,
-                    isTerms, false, ShopNoteUiModel())
+            val intent = ShopSettingsNotesAddEditActivity.createIntent(
+                it,
+                isTerms,
+                false,
+                ShopNoteUiModel()
+            )
             startActivityForResult(intent, REQUEST_CODE_ADD_NOTE)
         }
     }
@@ -259,7 +266,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
                     view?.let {
                         Toaster.make(it, getString(R.string.success_add_note), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
                     }
-                } else if (requestCode == REQUEST_CODE_EDIT_NOTE){
+                } else if (requestCode == REQUEST_CODE_EDIT_NOTE) {
                     view?.let {
                         Toaster.make(it, getString(R.string.success_edit_note), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
                     }
@@ -335,14 +342,14 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
 
     private fun observeData() {
         observe(viewModel.getNote) {
-            when(it) {
+            when (it) {
                 is Success -> onSuccessGetShopNotes(it.data)
                 is Fail -> onErrorGetShopNotes(it.throwable)
             }
         }
 
         observe(viewModel.deleteNote) {
-            when(it) {
+            when (it) {
                 is Success -> onSuccessDeleteShopNote(it.data)
                 is Fail -> onErrorDeleteShopNote(it.throwable)
             }

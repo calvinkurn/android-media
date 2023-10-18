@@ -3,6 +3,8 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cla
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.Properties
+import com.tokopedia.discovery2.usecase.ClaimCouponUseCase
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -25,6 +27,7 @@ class ClaimCouponViewModelTest {
     private val viewModel: ClaimCouponViewModel by lazy {
         spyk(ClaimCouponViewModel(application, componentsItem, 99))
     }
+    private val claimCouponUseCase: ClaimCouponUseCase = mockk()
 
     @Before
     @Throws(Exception::class)
@@ -44,7 +47,6 @@ class ClaimCouponViewModelTest {
         assert(viewModel.components == componentsItem)
     }
 
-
     /**************************** onAttachToViewHolder() *******************************************/
 
     @Test
@@ -53,8 +55,11 @@ class ClaimCouponViewModelTest {
             val list = mockk<ArrayList<ComponentsItem>>(relaxed = true)
             every { componentsItem.getComponentsItem() } returns list
             every { componentsItem.id } returns "s"
+            val properties = Properties(categorySlug = "abc,jasd,kahfsd")
+            every { componentsItem.properties } returns properties
             every { componentsItem.pageEndPoint } returns "s"
-            coEvery { viewModel.claimCouponUseCase.getClickCouponData(any(),any()) } returns mockk()
+            viewModel.claimCouponUseCase = claimCouponUseCase
+            coEvery { claimCouponUseCase.getClickCouponData(any(),any(),any()) } returns mockk()
 
             viewModel.onAttachToViewHolder()
 
@@ -63,7 +68,6 @@ class ClaimCouponViewModelTest {
     }
 
     /**************************** onAttachToViewHolder() *******************************************/
-
 
     @After
     fun shutDown() {

@@ -3,6 +3,7 @@ package com.tokopedia.notifications.settings
 import android.Manifest
 import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.os.Build
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentActivity
+import com.tokopedia.notifications.common.NotificationSettingsGtmEvents
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -19,7 +21,7 @@ class NotificationGeneralPromptLifecycleCallbacks : Application.ActivityLifecycl
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         val activityName = activity::class.java.simpleName
         val userSession = createUserSession(activity)
-
+        sendDevicePushPermissionStatusEvent(userSession, activity, activityName)
         if (activity !is FragmentActivity
             || isActivityExcludedFromGeneralPrompt(activityName)
             || isFirstTimeUserToOnBoarding(activityName, userSession)) return
@@ -28,7 +30,7 @@ class NotificationGeneralPromptLifecycleCallbacks : Application.ActivityLifecycl
         val repo = NotificationGeneralPromptSharedPreferences(activity.applicationContext)
         val prompt = NotificationGeneralPrompt(
             isNotificationPermissionDenied,
-            notificationGeneralPromptView(activity),
+            notificationGeneralPromptView(activity, ""),
             repo,
             FirebaseRemoteConfigImpl(activity.applicationContext)
         )
@@ -36,6 +38,18 @@ class NotificationGeneralPromptLifecycleCallbacks : Application.ActivityLifecycl
         prompt.showNotification()
 
         activity.application.unregisterActivityLifecycleCallbacks(this)
+    }
+
+    private fun sendDevicePushPermissionStatusEvent(userSession:UserSessionInterface, context: Context?, activityName: String){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            (activityName == CUSTOMER_APP_FIRST_ACTIVITY || (activityName == SELLER_APP_FIRST_ACTIVITY))) {
+            context?.let {
+                NotificationSettingsGtmEvents(
+                    userSession,
+                    context.applicationContext
+                ).sendAppPushPermissionStatusEvent(it)
+            }
+        }
     }
 
     private fun createUserSession(activity: Activity): UserSessionInterface =
@@ -56,11 +70,13 @@ class NotificationGeneralPromptLifecycleCallbacks : Application.ActivityLifecycl
         else
             false
 
-    private fun notificationGeneralPromptView(activity: FragmentActivity) =
+    fun notificationGeneralPromptView(activity: FragmentActivity, pageName: String) =
         object : NotificationGeneralPromptView {
-            override fun show() {
+            override fun show(isReminderPrompt: Boolean) {
                 Handler(Looper.getMainLooper()).postDelayed({
-                    NotificationGeneralPromptBottomSheet().show(
+                    val generalPromptBottomSheet = NotificationGeneralPromptBottomSheet()
+                    generalPromptBottomSheet.initVariables(isReminderPrompt, pageName)
+                    generalPromptBottomSheet.show(
                         activity.supportFragmentManager,
                         NotificationGeneralPromptBottomSheet.TAG
                     )
@@ -82,6 +98,7 @@ class NotificationGeneralPromptLifecycleCallbacks : Application.ActivityLifecycl
 
     companion object {
         private const val CUSTOMER_APP_FIRST_ACTIVITY = "MainParentActivity"
+        private const val SELLER_APP_FIRST_ACTIVITY = "SellerHomeActivity"
         private val exceptionActivityList = listOf(
             "SplashScreenActivity",
             "SellerOnboardingActivity",

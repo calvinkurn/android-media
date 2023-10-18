@@ -27,6 +27,7 @@
       "eventAction": "impression - product - topads",
       "eventLabel": ".+",
       "item_list": "/searchproduct - topads productlist - \\d+ - component:.+",
+      "item_list_name": "/searchproduct - topads productlist - \\d+ - component:.+",
       "sessionIris": ".+",
       "businessUnit": "Ads Solution",
       "currentSite": "tokopediamarketplace",
@@ -38,7 +39,7 @@
           "item_brand": ".+",
           "item_variant": ".+",
           "item_category": ".+",
-          "index": "\\d*.\\d*",
+          "index": "[0-9]+",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
           "dimension40": "/searchproduct - topads productlist - \\d+ - component:.+",
           "dimension83": "bebas ongkir extra|bebas ongkir|none / other",
@@ -54,6 +55,7 @@
       "eventAction": "impression - product",
       "eventLabel": ".+",
       "item_list": "/searchproduct - organic - \\d+ - component:.+|/searchproduct - organic ads - \\d+ - component:.+",
+      "item_list_name": "/searchproduct - organic - \\d+ - component:.+|/searchproduct - organic ads - \\d+ - component:.+",
       "sessionIris": ".+",
       "businessUnit": "search",
       "currentSite": "tokopediamarketplace",
@@ -66,7 +68,7 @@
           "item_category": ".+",
           "item_variant": ".+",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
-          "index": "\\d*.\\d*",
+          "index": "[0-9]+",
           "dimension40": "/searchproduct - organic - \\d+ - component:.+|/searchproduct - organic ads - \\d+ - component:.+",
           "dimension61": ".+",
           "dimension79": ".+",
@@ -79,7 +81,9 @@
           "dimension99": ".*",
           "dimension100": ".*",
           "dimension115": ".*",
-          "dimension131": ".*"
+          "dimension131": ".*",
+          "dimension56": ".+",
+          "dimension58": ".+"
         }
       ]
     },
@@ -100,7 +104,7 @@
           "item_brand": ".+",
           "item_variant": ".+",
           "item_category": ".+",
-          "index": "\\d*.\\d*",
+          "index": "[0-9]+",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
           "dimension40": ".*",
           "dimension83": "bebas ongkir extra|bebas ongkir|none / other",
@@ -129,7 +133,7 @@
           "item_category": ".+",
           "item_variant": ".+",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
-          "index": "\\d*.\\d*",
+          "index": "[0-9]+",
           "dimension40": "/searchproduct - organic - \\d+ - component:.+|/searchproduct - organic ads - \\d+ - component:.+",
           "dimension61": ".+",
           "dimension79": ".+",
@@ -142,7 +146,9 @@
           "dimension99": ".*",
           "dimension100": ".*",
           "dimension115": ".*",
-          "dimension131": ".*"
+          "dimension131": ".*",
+          "dimension56": ".+",
+          "dimension58": ".+"
         }
       ]
     },
@@ -170,7 +176,7 @@
       "event": "add_to_cart",
       "eventAction": "add to cart - product",
       "eventCategory": "srp_search",
-      "eventLabel": ".*",
+      "eventLabel": ".+",
       "sessionIris": ".+",
       "businessUnit": "search",
       "currentSite": "tokopediamarketplace",
@@ -182,7 +188,20 @@
           "item_name": ".+",
           "item_variant": ".*",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
-          "quantity": ".+"
+          "quantity": ".+",
+          "dimension131": "none",
+          "index": "[0-9]+",
+          "shop_name": ".+",
+          "list": "/searchproduct - organic - \\d+ - component:.+|/searchproduct - organic ads - \\d+ - component:.+",
+          "dimension115": ".*",
+          "dimension87": "search result",
+          "shop_id": ".+",
+          "dimension45": ".+",
+          "dimension56": ".+",
+          "dimension88": "search - product",
+          "dimension61": ".+",
+          "shop_type": "none / other",
+          "dimension58": ".+"
         }
       ]
     },
@@ -190,7 +209,7 @@
       "event": "add_to_cart",
       "eventAction": "add to cart - product - topads",
       "eventCategory": "srp_search",
-      "eventLabel": ".*",
+      "eventLabel": ".+",
       "sessionIris": ".+",
       "businessUnit": "search",
       "currentSite": "tokopediamarketplace",
@@ -202,7 +221,20 @@
           "item_name": ".+",
           "item_variant": ".*",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
-          "quantity": ".+"
+          "quantity": ".+",
+          "dimension131": "none",
+          "index": "[0-9]+",
+          "shop_name": ".+",
+          "list": "/searchproduct - organic - \\d+ - component:.+|/searchproduct - organic ads - \\d+ - component:.+",
+          "dimension115": ".*",
+          "dimension87": "search result",
+          "shop_id": ".+",
+          "dimension45": ".+",
+          "dimension56": ".+",
+          "dimension88": "search - product",
+          "dimension61": ".+",
+          "shop_type": "none / other",
+          "dimension58": ".+"
         }
       ]
     }

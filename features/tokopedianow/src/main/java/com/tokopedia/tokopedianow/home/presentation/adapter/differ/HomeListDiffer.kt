@@ -5,8 +5,10 @@ import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 
@@ -20,6 +22,8 @@ class HomeListDiffer : BaseTokopediaNowDiffer() {
 
         return if (oldItem is HomeProductRecomUiModel && newItem is HomeProductRecomUiModel) {
             oldItem.id == newItem.id
+        } else if (oldItem is HomeProductCarouselChipsUiModel && newItem is HomeProductCarouselChipsUiModel) {
+            oldItem.id == newItem.id
         } else if (oldItem is HomeLeftCarouselAtcUiModel && newItem is HomeLeftCarouselAtcUiModel) {
             oldItem.id == newItem.id
         } else if (oldItem is HomeComponentVisitable && newItem is HomeComponentVisitable) {
@@ -29,6 +33,8 @@ class HomeListDiffer : BaseTokopediaNowDiffer() {
         } else if (oldItem is TokoNowCategoryMenuUiModel && newItem is TokoNowCategoryMenuUiModel) {
             oldItem.id == newItem.id
         } else if (oldItem is HomeSharingReferralWidgetUiModel && newItem is HomeSharingReferralWidgetUiModel) {
+            oldItem.id == newItem.id
+        } else if (oldItem is HomeHeaderUiModel && newItem is HomeHeaderUiModel) {
             oldItem.id == newItem.id
         } else {
             oldItem == newItem

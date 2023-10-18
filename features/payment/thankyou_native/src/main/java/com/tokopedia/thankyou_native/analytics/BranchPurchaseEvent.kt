@@ -1,5 +1,7 @@
 package com.tokopedia.thankyou_native.analytics
 
+import android.text.TextUtils
+import androidx.compose.ui.unit.TextUnit
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -16,6 +18,9 @@ import com.tokopedia.user.session.UserSessionInterface
 
 const val CATEGORY_LEVEL_ONE_EGOLD = "egold"
 const val CATEGORY_LEVEL_ONE_PURCHASE_PROTECTION = "purchase-protection"
+const val DIGITAL_PLUS_IDENTIFIER = "PULSA_PLUS"
+const val MARKETPLACE_PLUS_IDENTIFIER = "PLUS"
+
 class BranchPurchaseEvent(val userSession: UserSessionInterface,
                           val thanksPageData: ThanksPageData) {
 
@@ -27,6 +32,7 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
             sendBranchEvent(linkerCommerceData)
             sendGoPayBranchEvent(thanksPageData, shopOrder)
         }
+        sendSubscribePlusEvent(thanksPageData)
     }
 
     private fun sendGoPayBranchEvent(
@@ -34,7 +40,9 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
         shopOrder: ShopOrder
     ) {
         val goPayEventList = thanksPageData.paymentDetails?.filter {
-            it.gatewayCode == GATEWAY_CODE_PEMUDA || it.gatewayCode == GATEWAY_CODE_PEMUDA_PAYLATER
+            it.gatewayCode == GATEWAY_CODE_PEMUDA ||
+            it.gatewayCode == GATEWAY_CODE_PEMUDA_PAYLATER ||
+            it.gatewayCode == GATEWAT_CODE_PEMUDA_CICIL
         }
         goPayEventList?.forEach { paymentDetail ->
             val linkerCommerceData = LinkerCommerceData()
@@ -115,9 +123,67 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
                         linkerCommerceData))
     }
 
+    private fun sendBranchEvent(linkerCommerceData: LinkerCommerceData, branchEventType: Int) {
+        LinkerManager.getInstance()
+            .sendEvent(LinkerUtils.createGenericRequest(branchEventType,
+                linkerCommerceData))
+    }
+
+    private fun sendSubscribePlusEvent(thanksPageData: ThanksPageData){
+        when(getProductTypeForBranch()){
+            LinkerConstants.PRODUCTTYPE_DIGITAL -> {
+                //check profile_code = PULSA_PLUS
+                if(!TextUtils.isEmpty(thanksPageData.profileCode) &&
+                    thanksPageData.profileCode == DIGITAL_PLUS_IDENTIFIER){
+                    //send subscribe plus event
+                    val linkerCommerceData = getLinkerCommerceData(getLinkerUserData(),
+                        getPaymentDataForSubscribePlus(thanksPageData, thanksPageData.amount.toString(),
+                            LinkerConstants.PRODUCTTYPE_DIGITAL))
+                    sendBranchEvent(linkerCommerceData, LinkerConstants.EVENT_SUBSCRIBE_PLUS)
+                }
+            }
+            LinkerConstants.PRODUCTTYPE_MARKETPLACE -> {
+                //check payment_items have item_name containing PLUS
+                val iterator = thanksPageData.paymentItems?.iterator()
+                if (iterator != null) {
+                    while (iterator.hasNext()){
+                        val paymentItem = iterator.next()
+                        if(paymentItem.itemName == MARKETPLACE_PLUS_IDENTIFIER){
+                            // send subscribe plus event
+                            val linkerCommerceData = getLinkerCommerceData(getLinkerUserData(),
+                                getPaymentDataForSubscribePlus(thanksPageData, paymentItem.amount.toString(),
+                                    LinkerConstants.PRODUCTTYPE_MARKETPLACE))
+                            sendBranchEvent(linkerCommerceData, LinkerConstants.EVENT_SUBSCRIBE_PLUS)
+                            break
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getPaymentDataForSubscribePlus(thanksPageData: ThanksPageData,
+                                               revenue: String, productType: String) : PaymentData{
+        val paymentData = PaymentData()
+        paymentData.isFromNative = true
+        paymentData.setPaymentId(thanksPageData.paymentID)
+        paymentData.setProductType(productType)
+        paymentData.isNewBuyer = thanksPageData.isNewUser
+        paymentData.isMonthlyNewBuyer = thanksPageData.isMonthlyNewUser
+        paymentData.revenue = revenue
+        return paymentData
+    }
+
+    private fun getLinkerCommerceData(userData: UserData, paymentData: PaymentData): LinkerCommerceData{
+        val linkerCommerceData = LinkerCommerceData()
+        linkerCommerceData.userData = userData
+        linkerCommerceData.paymentData = paymentData
+        return linkerCommerceData
+    }
+
     companion object {
         const val GATEWAY_CODE_PEMUDA = "PEMUDA"
         const val GATEWAY_CODE_PEMUDA_PAYLATER = "PEMUDAPAYLATER"
-
+        const val GATEWAT_CODE_PEMUDA_CICIL = "PEMUDACICIL"
     }
 }

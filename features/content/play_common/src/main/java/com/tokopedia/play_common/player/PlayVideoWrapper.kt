@@ -35,7 +35,7 @@ import kotlin.properties.Delegates
 class PlayVideoWrapper private constructor(
     private val context: Context,
     private val exoPlayerCreator: ExoPlayerCreator = DefaultExoPlayerCreator(context),
-    private val liveRoomMetricsCommon: PlayLiveRoomMetricsCommon = PlayLiveRoomMetricsCommon(),
+    private val liveRoomMetricsCommon: PlayLiveRoomMetricsCommon = PlayLiveRoomMetricsCommon()
 ) {
 
     class Builder(
@@ -81,7 +81,6 @@ class PlayVideoWrapper private constructor(
                 parsedException.isBehindLiveWindowException ||
                 parsedException.isInvalidResponseCodeException
             ) {
-
                 val prepareState = currentPrepareState
                 if (prepareState is PlayVideoPrepareState.Prepared) {
                     stop()
@@ -103,7 +102,7 @@ class PlayVideoWrapper private constructor(
                     playUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
             } else {
-                //For now it's the same as the defined exception above
+                // For now it's the same as the defined exception above
                 val prepareState = currentPrepareState
                 if (prepareState is PlayVideoPrepareState.Prepared) {
                     release()
@@ -150,7 +149,7 @@ class PlayVideoWrapper private constructor(
     fun getVideoStateFlow() = callbackFlow<PlayVideoState> {
         val listener = object : Listener {
             override fun onPlayerStateChanged(state: PlayVideoState) {
-                try { offer(state) } catch (e: Throwable) {}
+                try { trySend(state) } catch (e: Throwable) {}
             }
         }
 
@@ -176,7 +175,6 @@ class PlayVideoWrapper private constructor(
         val prepareState = currentPrepareState
         if (currentUri == null) playerModel = initVideoPlayer(playerModel, bufferControl)
         if (prepareState is PlayVideoPrepareState.Unprepared || currentUri != uri) {
-
             val lastPosition = startPosition ?: if (prepareState is PlayVideoPrepareState.Unprepared && !prepareState.previousType.isLive && currentUri == uri) prepareState.lastPosition else null
 
             val resetState = if (prepareState is PlayVideoPrepareState.Unprepared && currentUri == uri) prepareState.resetState else true
@@ -218,26 +216,27 @@ class PlayVideoWrapper private constructor(
 
     fun stop(resetState: Boolean = true) {
         val prepareState = currentPrepareState
-        if (prepareState is PlayVideoPrepareState.Prepared)
+        if (prepareState is PlayVideoPrepareState.Prepared) {
             currentPrepareState = PlayVideoPrepareState.Unprepared(
-                    previousUri = prepareState.uri,
-                    previousType = if (isVideoLive()) PlayVideoType.Live else PlayVideoType.VOD,
-                    lastPosition = when (prepareState.positionHandle) {
-                        VideoPositionHandle.Handled -> getCurrentPosition()
-                        is VideoPositionHandle.NotHandled -> prepareState.positionHandle.lastPosition
-                    },
-                    resetState = resetState
+                previousUri = prepareState.uri,
+                previousType = if (isVideoLive()) PlayVideoType.Live else PlayVideoType.VOD,
+                lastPosition = when (prepareState.positionHandle) {
+                    VideoPositionHandle.Handled -> getCurrentPosition()
+                    is VideoPositionHandle.NotHandled -> prepareState.positionHandle.lastPosition
+                },
+                resetState = resetState
             )
+        }
 
         videoPlayer.stop()
     }
     //endregion
 
     private fun getDefaultPrepareState() = PlayVideoPrepareState.Unprepared(
-            previousUri = null,
-            previousType = PlayVideoType.Unknown,
-            lastPosition = null,
-            resetState = true
+        previousUri = null,
+        previousType = PlayVideoType.Unknown,
+        lastPosition = null,
+        resetState = true
     )
 
     fun isPlaying(): Boolean = videoPlayer.isPlaying
@@ -267,7 +266,7 @@ class PlayVideoWrapper private constructor(
 
     private fun setRepeatMode(videoPlayer: SimpleExoPlayer, shouldRepeat: Boolean) = synchronized(this) {
         isRepeated = shouldRepeat
-        videoPlayer.repeatMode = if(shouldRepeat) Player.REPEAT_MODE_ALL else Player.REPEAT_MODE_OFF
+        videoPlayer.repeatMode = if (shouldRepeat) Player.REPEAT_MODE_ALL else Player.REPEAT_MODE_OFF
     }
 
     fun isVideoRepeat(): Boolean {
@@ -314,7 +313,7 @@ class PlayVideoWrapper private constructor(
     fun getDownstreamBandwidth(): Float {
         val convertedTransferredData = transferredData.toFloat() / MBPS_DIVIDER.toFloat()
         val timeOffset = endTime - startTime
-        return if(timeOffset > 0) floor(convertedTransferredData) else 0.0f
+        return if (timeOffset > 0) floor(convertedTransferredData) else 0.0f
     }
 
     private fun getErrorHandlingPolicy(): LoadErrorHandlingPolicy {
@@ -358,9 +357,9 @@ class PlayVideoWrapper private constructor(
      */
     private fun initAudioAttributes(): AudioAttributes {
         return AudioAttributes.Builder()
-                .setContentType(C.CONTENT_TYPE_MOVIE)
-                .setUsage(C.USAGE_MEDIA)
-                .build()
+            .setContentType(C.CONTENT_TYPE_MOVIE)
+            .setUsage(C.USAGE_MEDIA)
+            .build()
     }
 
     private fun initCustomLoadControl(bufferControl: PlayBufferControl): PlayVideoLoadControl {

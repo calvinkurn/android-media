@@ -18,8 +18,8 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
     private var visibleContainer = firstContainer
     private var invisibleContainer = secondContainer
     private var isAnimationStarted = false
-    private var animatorSet:AnimatorSet?=null
-    private var timer:Timer?=null
+    private var animatorSet: AnimatorSet? = null
+    private var timer: Timer? = null
     var isTokomember = false
 
     private val animListener = object :Animator.AnimatorListener{
@@ -53,20 +53,20 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
         }
     }
 
-    fun checkToCancelTimer(){
+    fun checkToCancelTimer() {
         firstContainer.get()?.addOnAttachStateChangeListener(onAttachListener)
     }
 
     private fun animateView() {
-        if(isTokomember){
+        if (isTokomember) {
             isAnimationStarted = true
 
             setDataIntoViews()
-            animateTwoViews(visibleContainer,invisibleContainer)
+            animateTwoViews(visibleContainer, invisibleContainer)
         }
     }
 
-    private fun setDataIntoViews(){
+    private fun setDataIntoViews() {
         if (!::animatedInfoList.isInitialized) return
 
         val visibleDataPos = if (currentPositionAnimationInfo == animatedInfoList.size) 0 else currentPositionAnimationInfo
@@ -75,51 +75,53 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
 
         visibleContainer.get()?.setData(animatedInfoList[visibleDataPos])
         invisibleContainer.get()?.setData(animatedInfoList[invisibleDataPos])
-
     }
 
-    fun stopAnimation(){
+    fun stopAnimation() {
         timer?.cancel()
         reset()
     }
 
-    fun startTimer(){
+    fun startTimer() {
         val START_DELAY = 3000L
         val INTERVAL = START_DELAY
 
-        if(timer == null){
+        if (timer == null) {
             setDataIntoViews()
         }
         timer?.cancel()
         timer = Timer()
-        timer?.scheduleAtFixedRate(object :TimerTask(){
-            override fun run() {
-                visibleContainer.get()?.post {
-                    animateView()
+        timer?.scheduleAtFixedRate(
+            object : TimerTask() {
+                override fun run() {
+                    visibleContainer.get()?.post {
+                        animateView()
+                    }
                 }
-            }
-        },START_DELAY,INTERVAL)
+            },
+            START_DELAY, INTERVAL
+        )
     }
 
-    private fun afterAnimationComplete(){
-        if(!isTokomember) return
+    private fun afterAnimationComplete() {
+        if (!isTokomember) return
         if (!::animatedInfoList.isInitialized) return
 
-        //switch container reference
+        // switch container reference
         val tempContainer = visibleContainer
         visibleContainer = invisibleContainer
         invisibleContainer = tempContainer
 
-        //increment pos
+        // increment pos
         currentPositionAnimationInfo += 1
 
-        //reset position
-        if (currentPositionAnimationInfo == animatedInfoList.size)
+        // reset position
+        if (currentPositionAnimationInfo == animatedInfoList.size) {
             currentPositionAnimationInfo = 0
+        }
     }
 
     private fun reset() {
-
         firstContainer.get()?.clearAnimation()
         secondContainer.get()?.clearAnimation()
 
@@ -147,12 +149,12 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
                 val alphaAnimPropTwo = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
                 val alphaAnimObjTwo: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(v2, alphaAnimPropTwo)
 
-                val translateAnimPropTwo = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, dpToPx(48),0f)
+                val translateAnimPropTwo = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, dpToPx(48), 0f)
                 val translateAnimObjTwo: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(v2, translateAnimPropTwo)
                 translateAnimObjTwo.addListener(animListener)
 
                 animatorSet = AnimatorSet()
-                animatorSet?.playTogether(alphaAnimObjOne,translateAnimObjOne,alphaAnimObjTwo,translateAnimObjTwo)
+                animatorSet?.playTogether(alphaAnimObjOne, translateAnimObjOne, alphaAnimObjTwo, translateAnimObjTwo)
                 animatorSet?.duration = 600L
                 animatorSet?.start()
             }

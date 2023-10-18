@@ -1,5 +1,5 @@
 package com.tokopedia.cart.view.uimodel
 
 data class CartChooseAddressHolderData(
-        val hostFragment: String = "cart"
+    val hostFragment: String = "cart"
 )

@@ -7,7 +7,6 @@ import com.tokopedia.graphql.domain.example.GetNoParamFlowUseCase
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.mockk
-import junit.framework.Assert
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.test.TestCoroutineDispatcher

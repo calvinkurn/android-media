@@ -1,5 +1,7 @@
 package com.tokopedia.epharmacy.utils
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 const val EXTRA_ORDER_ID_LONG = "extra_order_id_long"
 const val EXTRA_CHECKOUT_ID_STRING = "extra_checkout_id_string"
 const val EXTRA_ENTRY_POINT_STRING = "extra_entry_point_string"
@@ -60,8 +62,8 @@ const val EPHARMACY_CHOOSER_APPLINK = "tokopedia://epharmacy/chooser/"
 const val DATA_TYPE = "data_type"
 const val ENABLER_NAME = "enabler_name"
 
-const val EPHARMACY_BOTTOM_SHEET_BOTTOM_TNC_IMAGE_URL = "https://images.tokopedia.net/img/green-waves.png"
-const val EPHARMACY_BOTTOM_SHEET_BOTTOM_IMAGE_URL = "https://images.tokopedia.net/img/miniconsul-toped-illustration.png"
+const val EPHARMACY_BOTTOM_SHEET_BOTTOM_TNC_IMAGE_URL = TokopediaImageUrl.EPHARMACY_BOTTOM_SHEET_BOTTOM_TNC_IMAGE_URL
+const val EPHARMACY_BOTTOM_SHEET_BOTTOM_IMAGE_URL = TokopediaImageUrl.EPHARMACY_BOTTOM_SHEET_BOTTOM_IMAGE_URL
 const val EPHARMACY_PDP_INFO_DATA_TYPE = "obat_keras_info"
 
 const val EPHARMACY_TICKER_BACKGROUND = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_mini_consult_ticker_background.png"
@@ -106,4 +108,4 @@ const val UPLOAD_PAGE_SOURCE_PAP = "PAP"
 const val OUTSIDE_WORKING_HOURS_SOURCE = "outside_working_hours"
 const val WORKING_HOURS_SOURCE = "working_hours"
 const val EPHARMACY_HALF_ALPHA = 0.5f
-const val EPHARMACY_FULL_ALPHA = 0.5f
+const val EPHARMACY_FULL_ALPHA = 1.0f

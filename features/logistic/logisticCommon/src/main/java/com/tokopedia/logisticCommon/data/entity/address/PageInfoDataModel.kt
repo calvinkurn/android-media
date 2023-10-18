@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
  */
 
 @Parcelize
-data class PageInfoDataModel (
-        var ticker: String = "",
-        var buttonLabel: String = ""
+data class PageInfoDataModel(
+    var ticker: String = "",
+    var buttonLabel: String = ""
 ) : Parcelable

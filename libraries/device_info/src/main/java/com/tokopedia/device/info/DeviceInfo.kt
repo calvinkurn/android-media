@@ -55,14 +55,16 @@ object DeviceInfo {
 
     @JvmStatic
     fun isEmulated(): Boolean {
-        return (Build.FINGERPRINT.startsWith("generic")
-                || Build.FINGERPRINT.startsWith("unknown")
-                || Build.MODEL.contains("google_sdk")
-                || Build.MODEL.contains("Emulator")
-                || Build.MODEL.contains("Android SDK built for x86")
-                || Build.MANUFACTURER.contains("Genymotion")
-                || Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic")
-                || "google_sdk" == Build.PRODUCT)
+        return (
+            Build.FINGERPRINT.startsWith("generic") ||
+                Build.FINGERPRINT.startsWith("unknown") ||
+                Build.MODEL.contains("google_sdk") ||
+                Build.MODEL.contains("Emulator") ||
+                Build.MODEL.contains("Android SDK built for x86") ||
+                Build.MANUFACTURER.contains("Genymotion") ||
+                Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic") ||
+                "google_sdk" == Build.PRODUCT
+            )
     }
 
     @JvmStatic
@@ -71,10 +73,11 @@ object DeviceInfo {
         val mTimeZone = mCalendar.timeZone
         val mGMTOffset = mTimeZone.rawOffset
         val offset = TimeUnit.HOURS.convert(mGMTOffset.toLong(), TimeUnit.MILLISECONDS)
-        return if (offset < 0)
+        return if (offset < 0) {
             "GMT" + TimeUnit.HOURS.convert(mGMTOffset.toLong(), TimeUnit.MILLISECONDS)
-        else
+        } else {
             "GMT+" + TimeUnit.HOURS.convert(mGMTOffset.toLong(), TimeUnit.MILLISECONDS)
+        }
     }
 
     private fun checkRootMethod1(): Boolean {
@@ -134,26 +137,6 @@ object DeviceInfo {
     }
 
     @JvmStatic
-    fun logIdentifier(context: Context, source: String) {
-        GlobalScope.launch {
-            try {
-                val hasFID = !getFirebaseId().isNullOrBlank()
-                ServerLogger.log(
-                    Priority.P2,
-                    "DEVICE_UNIQUE_ID",
-                    mapOf(
-                        "type" to "ads_id_empty",
-                        "source" to source,
-                        "hasUUID" to hasUuid(context).toString(),
-                        "hasFID" to hasFID.toString()
-                    )
-                )
-            } catch (ignored: Exception) {
-            }
-        }
-    }
-
-    @JvmStatic
     fun hasUuid(context: Context): Boolean {
         return try {
             val uuid = getUUID(context)
@@ -191,16 +174,9 @@ object DeviceInfo {
         } else {
             // try catch to get error Fatal Exception: java.lang.NoClassDefFoundError in android 5 Samsung
             try {
-                getAdsIdSuspend(
-                    context, ({ adsId ->
-                        if (adsId.isEmpty()) {
-                            logIdentifier(context, "DeviceInfo")
-                        }
-                    }))
-                ""
-            } catch (e: Exception) {
-                ""
-            }
+                getAdsIdSuspend(context)
+            } catch (ignored: Exception) { }
+            ""
         }
     }
 
@@ -255,7 +231,7 @@ object DeviceInfo {
 
     private fun trimGoogleAdId(googleAdsId: String): String {
         val sb =
-            StringBuilder(googleAdsId.length) //we know this is the capacity so we initialise with it:
+            StringBuilder(googleAdsId.length) // we know this is the capacity so we initialise with it:
         for (element in googleAdsId) {
             when (element) {
                 '\u2013', '\u2014', '\u2015' -> sb.append('-')
@@ -310,7 +286,7 @@ object DeviceInfo {
         cacheAdsId = adsId
     }
 
-    private fun enabledBackgroundCommit(): Boolean {
+    fun enabledBackgroundCommit(): Boolean {
         return true
     }
 
@@ -344,4 +320,3 @@ object DeviceInfo {
         return deviceInfoCache.getImei()
     }
 }
-

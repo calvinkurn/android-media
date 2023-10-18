@@ -101,6 +101,9 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
                         it.data.points.reward,
                         it.data.tier.nameDesc,
                         it.data.tier.eggImageUrl)
+                else -> {
+                    //no-op
+                }
             }
         }
     })
@@ -117,6 +120,9 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
                     stopRenderPerformanceMonitoring()
                     stopPerformanceMonitoring()
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
     })
@@ -126,6 +132,9 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             when (it) {
                 is Success -> onSuccessBanners(it.data.banners)
                 is ErrorMessage -> onErrorBanners(it.data)
+                else -> {
+                    //no-op
+                }
             }
         }
     })

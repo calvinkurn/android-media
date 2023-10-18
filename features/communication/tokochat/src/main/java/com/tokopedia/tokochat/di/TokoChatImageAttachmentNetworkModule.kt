@@ -2,7 +2,7 @@ package com.tokopedia.tokochat.di
 
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
+import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
@@ -12,6 +12,7 @@ import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.tokochat.data.repository.api.TokoChatDownloadImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatImageApi
+import com.tokopedia.tokochat.data.repository.api.TokoChatUploadImageApi
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -98,5 +99,13 @@ object TokoChatImageAttachmentNetworkModule {
     @Provides
     fun provideTokoChatImageApiDownload(@Named(RETROFIT_TOKOCHAT_DOWNLOAD_IMAGE) retrofit: Retrofit): TokoChatDownloadImageApi {
         return retrofit.create(TokoChatDownloadImageApi::class.java)
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideTokoChatUploadImageApi(
+        @TokoChatQualifier retrofit: Retrofit
+    ): TokoChatUploadImageApi {
+        return retrofit.create(TokoChatUploadImageApi::class.java)
     }
 }

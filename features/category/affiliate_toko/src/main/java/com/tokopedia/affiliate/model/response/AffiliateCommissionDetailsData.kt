@@ -2,18 +2,15 @@ package com.tokopedia.affiliate.model.response
 
 import com.google.gson.annotations.SerializedName
 
-
 data class AffiliateCommissionDetailsData(
     @SerializedName("getAffiliateCommissionDetail")
     var getAffiliateCommissionDetail: GetAffiliateCommissionDetail?
 ) {
 
-
     data class GetAffiliateCommissionDetail(
         @SerializedName("Data")
-        var `data`: Data?
+        var commissionDetailData: Data?
     ) {
-
 
         data class Data(
             @SerializedName("CardDetail")
@@ -45,7 +42,6 @@ data class AffiliateCommissionDetailsData(
 
         ) {
 
-
             data class CardDetail(
                 @SerializedName("CardPrice")
                 var cardPrice: Int?,
@@ -62,9 +58,10 @@ data class AffiliateCommissionDetailsData(
                 @SerializedName("ShopBadge")
                 var shopBadge: String?,
                 @SerializedName("ShopName")
-                var shopName: String?
+                var shopName: String?,
+                @SerializedName("Hyperlink")
+                var hyperlink: Hyperlink?
             ) {
-
 
                 data class Image(
                     @SerializedName("AndroidURL")
@@ -76,8 +73,18 @@ data class AffiliateCommissionDetailsData(
                     @SerializedName("MobileURL")
                     var mobileURL: String?
                 )
-            }
 
+                data class Hyperlink(
+                    @SerializedName("AndroidURL")
+                    var androidURL: String?,
+                    @SerializedName("DesktopURL")
+                    var desktopURL: String?,
+                    @SerializedName("IosURL")
+                    var iosURL: String?,
+                    @SerializedName("MobileURL")
+                    var mobileURL: String?
+                )
+            }
 
             data class Detail(
                 @SerializedName("DetailDescription")
@@ -94,7 +101,7 @@ data class AffiliateCommissionDetailsData(
                 var detailTooltip: String?,
                 @SerializedName("AdvancedTooltip")
                 var advanceTooltip: List<Tooltip?>?
-            ){
+            ) {
                 data class Tooltip(
                     @SerializedName("TooltipType")
                     var tooltipType: String?,
@@ -105,7 +112,7 @@ data class AffiliateCommissionDetailsData(
                     @SerializedName("TextSize")
                     var textSize: Int?,
                     @SerializedName("TooltipText")
-                    var tooltipText: String?,
+                    var tooltipText: String?
                 )
             }
             data class Error(
@@ -118,7 +125,6 @@ data class AffiliateCommissionDetailsData(
                 @SerializedName("Message")
                 var message: String?
             ) {
-
 
                 data class CtaLink(
                     @SerializedName("AndroidURL")

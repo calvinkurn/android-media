@@ -1,13 +1,13 @@
 package com.tokopedia.digital_product_detail.presentation.viewmodel
 
-import com.tokopedia.common.topupbills.favoritepdp.data.mapper.DigitalPersoMapper
+import com.tokopedia.common.topupbills.favoritepdp.data.mapper.FavoritePersoMapper
 import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
-import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
+import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
+import com.tokopedia.digital_product_detail.data.mapper.DigitalPersoMapper
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
-import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.digital_product_detail.presentation.data.PulsaDataFactory
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -17,16 +17,18 @@ import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert
 import org.junit.Test
-
 
 @ExperimentalCoroutinesApi
 class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     private val dataFactory = PulsaDataFactory()
     private val mapperFactory = DigitalDenomMapper()
-    private val persoMapperFactory = DigitalPersoMapper()
+    private val persoMapperFactory = FavoritePersoMapper()
     private val mapAtcFactory = DigitalAtcMapper()
+    private val digitalPersoMapperFactory = DigitalPersoMapper()
 
     @Test
     fun `given menuDetail loading state then should get loading state`() {
@@ -64,10 +66,10 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `when getting recommendation should run and give success result`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getRecommendationData()
             val mappedResponse =
-                mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, false)
+                mapperFactory.mapDigiPersoToRecommendation(response.digitalPersoData, false)
             onGetRecommendation_thenReturn(mappedResponse)
 
             viewModel.getRecommendations(listOf(), listOf())
@@ -78,7 +80,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `when getting recommendation should run and give fail result`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             onGetRecommendation_thenReturn(NullPointerException())
 
             viewModel.getRecommendations(listOf(), listOf())
@@ -129,6 +131,64 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
     }
 
     @Test
+    fun `when getting rechargeCheckBalance should run and give success result`() {
+        val response = dataFactory.getRechargeCheckBalanceData()
+        val mappedResponse = digitalPersoMapperFactory.mapDigiPersoToCheckBalanceModel(response.digitalPersoData)
+        onGetRechargeCheckBalance_thenReturn(mappedResponse)
+
+        viewModel.getRechargeCheckBalance(listOf(), listOf())
+        verifyGetRechargeCheckBalanceRepoGetCalled()
+        verifyGetRechargeCheckBalanceSuccess(mappedResponse)
+    }
+
+    @Test
+    fun `when getting rechargeCheckBalance should run and givefail result`() {
+        val exception = MessageErrorException("Tokopedia")
+        onGetRechargeCheckBalance_thenReturn(exception)
+
+        viewModel.getRechargeCheckBalance(listOf(), listOf())
+        verifyGetRechargeCheckBalanceRepoGetCalled()
+        verifyGetRechargeCheckBalanceFail()
+    }
+
+    @Test
+    fun `given rechargeCheckBalance loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setRechargeCheckBalanceLoading()
+        verifyGetRechargeCheckBalanceLoading(loadingResponse)
+    }
+
+    @Test
+    fun `when saveRechargeUserAccessToken called should run and give success result`() {
+        val response = dataFactory.saveRechargeUserAccessToken()
+        val mappedResponse = digitalPersoMapperFactory.mapSaveAccessTokenToAccessTokenResultModel(response.rechargeSaveTelcoUserBalanceAccessToken)
+        onSaveRechargeUserAccessToken(mappedResponse)
+
+        viewModel.saveRechargeUserAccessToken("", "")
+        verifySaveRechargeUserAccessTokenSuccess(mappedResponse)
+        verifySaveRechargeUserAccessTokenGetCalled()
+    }
+
+    @Test
+    fun `when saveRechargeUserAccessToken called should run and give fail result`() {
+        val exception = MessageErrorException("Tokopedia")
+        onSaveRechargeUserAccessToken(exception)
+
+        viewModel.saveRechargeUserAccessToken("", "")
+        verifySaveRechargeUserAccessTokenGetCalled()
+        verifySaveRechargeUserAccessTokenFail()
+    }
+
+    @Test
+    fun `given save loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setRechargeUserAccessTokenLoading()
+        verifySaveRechargeUserAccessTokenLoading(loadingResponse)
+    }
+
+    @Test
     fun `given catalogPrefixSelect loading state then should get loading state`() {
         val loadingResponse = RechargeNetworkResult.Loading
 
@@ -138,7 +198,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `when getting catalogPrefixSelect should run and give success result`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getPrefixOperatorData()
             onGetPrefixOperator_thenReturn(response)
 
@@ -151,7 +211,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `when getting catalogPrefixSelect should run and give success fail`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             onGetPrefixOperator_thenReturn(NullPointerException())
 
             viewModel.getPrefixOperator(MENU_ID)
@@ -197,7 +257,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `given empty validator when validateClientNumber should set isEligibleToBuy true`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getPrefixOperatorEmptyValData()
             onGetPrefixOperator_thenReturn(response)
 
@@ -212,7 +272,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `given non-empty validator when validateClientNumber with valid number should set isEligibleToBuy true`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getPrefixOperatorData()
             onGetPrefixOperator_thenReturn(response)
 
@@ -227,7 +287,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `given non-empty validator when validateClientNumber with non-valid number should set isEligibleToBuy false`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getPrefixOperatorData()
             onGetPrefixOperator_thenReturn(response)
 
@@ -242,7 +302,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `given validateClientNumber running when cancelValidatorJob called, the job should be cancelled`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             viewModel.validateClientNumber(PulsaDataFactory.VALID_CLIENT_NUMBER)
             viewModel.cancelValidatorJob()
             verifyValidatorJobIsCancelled()
@@ -322,7 +382,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `given layoutType is match & other condition fulfilled when call isAutoSelectedProduct should return true`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             // use empty validator to make isEligibleToBuy true
             val response = dataFactory.getPrefixOperatorEmptyValData()
             onGetPrefixOperator_thenReturn(response)
@@ -345,7 +405,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `given isEligibleToBuy true & other condition fulfilled when isAutoSelectedProduct should return true`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             // use empty validator & dummy selectedProduct to make isEligibleToBuy true
             val response = dataFactory.getPrefixOperatorEmptyValData()
             onGetPrefixOperator_thenReturn(response)
@@ -360,7 +420,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `given isEligibleToBuy false & other condition fulfilled when isAutoSelectedProduct should return false`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             // use empty validator & dummy selectedProduct to make isEligibleToBuy true
             val response = dataFactory.getPrefixOperatorData()
             onGetPrefixOperator_thenReturn(response)
@@ -377,7 +437,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `given selectedGridProduct pos less than 0 & other condition fulfilled when isAutoSelectedProduct should return false`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             // use empty validator & empty selectedProduct to make position < 0
             val response = dataFactory.getPrefixOperatorEmptyValData()
             onGetPrefixOperator_thenReturn(response)
@@ -395,7 +455,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `when getting catalogInputMultitab should run and give success result`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getCatalogInputMultiTabData()
             val mappedResponse = mapperFactory.mapMultiTabGridDenom(response)
             onGetCatalogInputMultitab_thenReturn(mappedResponse)
@@ -416,7 +476,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `when getting catalogInputMultitab should run and give error result`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val errorResponse = MessageErrorException("")
             onGetCatalogInputMultitab_thenReturn(errorResponse)
 
@@ -463,10 +523,17 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
     }
 
     @Test
+    fun `when cancelCheckBalanceJob called the job should be cancelled and live data should not emit value`() {
+        viewModel.checkBalanceJob = Job()
+        viewModel.cancelCheckBalanceJob()
+        verifyGetRechargeCheckBalanceIsCancelled()
+    }
+
+    @Test
     fun `when cancelRecommendationJob called the job should be cancelled and live data should not emit`() {
         val response = dataFactory.getRecommendationData()
         val mappedResponse =
-            mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
+            mapperFactory.mapDigiPersoToRecommendation(response.digitalPersoData, true)
         onGetRecommendation_thenReturn(mappedResponse)
 
         viewModel.getRecommendations(listOf(), listOf())
@@ -493,27 +560,38 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         val response = mapAtcFactory.mapAtcToResult(dataFactory.getAddToCartData())
         onGetAddToCart_thenReturn(response)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartSuccess(response)
     }
 
     @Test
-    fun `when getting addToCart should run and return notNull error from gql`(){
+    fun `when getting addToCartMultiCheckout should run and return success`() {
+        val response = mapAtcFactory.mapAtcToResult(dataFactory.getAddToCartData())
+        onGetAddToCartMultiChekout_thenReturn(response)
+
+        viewModel.setAtcMultiCheckoutParam()
+        viewModel.addToCart(RequestBodyIdentifier(), "")
+        verifyAddToCartMultiCheckoutRepoGetCalled()
+        verifyAddToCartMultiChekoutSuccess(response)
+    }
+
+    @Test
+    fun `when getting addToCart should run and return notNull error from gql`() {
         val error = dataFactory.getErrorAtcFromGql()
         onGetAddToCart_thenReturn(error)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", true)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartErrorNotEmpty(dataFactory.getErrorAtc())
     }
 
     @Test
-    fun `when getting addToCart should run and return DigitalAtcErrorException when get error atc`(){
+    fun `when getting addToCart should run and return DigitalAtcErrorException when get error atc`() {
         val error = DigitalAtcErrorException(dataFactory.errorAtcResponse)
         onGetAddToCart_thenReturn(error)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartErrorNotEmpty(dataFactory.getErrorAtc())
     }
@@ -525,7 +603,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         val errorMessageException = MessageErrorException(errorMessage)
         onGetAddToCart_thenReturn(errorResponseException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartError(errorMessageException)
     }
@@ -537,7 +615,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         val errorMessageException = MessageErrorException(errorMessage)
         onGetAddToCart_thenReturn(errorResponseException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartError(errorMessageException)
     }
@@ -547,7 +625,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         val errorMessageException = MessageErrorException()
         onGetAddToCart_thenReturn(errorMessageException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartErrorExceptions(errorMessageException)
     }
@@ -581,7 +659,6 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         viewModel.setAutoSelectedDenom(mappedResponse.denomWidgetModel.listDenomData, idDenom)
 
         verifySelectedProductSuccess(selectedDenom)
-
     }
 
     @Test
@@ -599,7 +676,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `given empty clientNumberThrottleJob when calling runThrottleJob should init new job`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             viewModel.clientNumberThrottleJob = null
             viewModel.runThrottleJob {
                 // Simulate nothing
@@ -610,7 +687,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `given non-empty clientNumberThrottleJob when wait for DELAY_CLIENT_NUMBER_TRANSITION the job should done`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             viewModel.runThrottleJob {
                 // Simulate nothing
             }
@@ -621,7 +698,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `given clientNumberThrottleJob running when calling another job should not init job`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             viewModel.runThrottleJob {
                 // Simulate nothing
             }
@@ -637,7 +714,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `given clientNumberThrottleJob completed when calling another job should init new job`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             viewModel.runThrottleJob {
                 // Simulate nothing
             }
@@ -691,6 +768,24 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         val expectedResult = viewModel.isEmptyDenomMCCM(listDenom, listMccm)
 
         verifyDenomAndMCCMIsEmpty(expectedResult)
+    }
+
+    @Test
+    fun `given checkBalanceFailCounter is zero, isCheckBalanceFailedMoreThanThreeTimes should return false`() {
+        viewModel.checkBalanceFailCounter = 0
+
+        val actualResult = viewModel.isCheckBalanceFailedMoreThanThreeTimes()
+        Assert.assertTrue(viewModel.checkBalanceFailCounter == 0)
+        Assert.assertFalse(actualResult)
+    }
+
+    @Test
+    fun `given checkBalanceFailCounter is three, isCheckBalanceFailedMoreThanThreeTimes should return true`() {
+        viewModel.checkBalanceFailCounter = 3
+
+        val actualResult = viewModel.isCheckBalanceFailedMoreThanThreeTimes()
+        Assert.assertTrue(viewModel.checkBalanceFailCounter == 3)
+        Assert.assertTrue(actualResult)
     }
 
     companion object {

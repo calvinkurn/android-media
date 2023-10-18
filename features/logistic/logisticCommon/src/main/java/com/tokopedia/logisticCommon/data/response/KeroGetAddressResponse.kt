@@ -4,12 +4,12 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class KeroGetAddressResponse(
-    
+
     @SerializedName("data")
     val data: Data = KeroGetAddressResponse.Data()
 ) {
     data class Data(
-        
+
         @SerializedName("kero_get_address")
         val keroGetAddress: KeroGetAddress = KeroGetAddress()
     ) {

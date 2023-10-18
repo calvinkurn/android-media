@@ -9,7 +9,6 @@ import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking.Label.
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.BUSINESS_UNIT
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.CURRENT_SITE
-import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.Category.TOP_NAV
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.Category.TOP_NAV_TOKO_NOW
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.EVENT
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.EVENT_ACTION
@@ -27,12 +26,10 @@ import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Com
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_VOICE_SEARCH
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.INITIAL_STATE_CANCEL_SEARCH
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.INITIAL_STATE_MANUAL_ENTER
-import com.tokopedia.discovery.common.analytics.SearchComponentTrackingRollence
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.iris.Iris
-import com.tokopedia.remoteconfig.RollenceKey.AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING
-import com.tokopedia.remoteconfig.RollenceKey.AUTOCOMPLETE_SUGGESTION_COMPONENT_TRACKING
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.user.session.UserSessionInterface
 
 open class AutoCompleteTracking(
@@ -47,7 +44,6 @@ open class AutoCompleteTracking(
     object Action {
         const val CLICK_CARI = "Click Cari"
         const val CLICK_SEARCH_SEARCH_BAR = "click - search - search bar"
-        const val CLICK_SEARCH = "click - search"
         const val CLICK_SEARCH_BAR = "click search bar"
     }
 
@@ -55,8 +51,11 @@ open class AutoCompleteTracking(
         const val PRODUCT_SEARCH = "Product Search"
     }
 
+    private val analytics: Analytics
+        get() = TrackApp.getInstance().gtm
+
     open fun eventInitiateSearchSession(dimension90: String) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+        analytics.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
                 EVENT, CLICK_SEARCH,
                 EVENT_ACTION, CLICK_SEARCH_BAR,
@@ -70,7 +69,7 @@ open class AutoCompleteTracking(
     }
 
     open fun eventSearchShortcut() {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+        analytics.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
                 EVENT, LONG_CLICK,
                 EVENT_CATEGORY, LONG_PRESS,
@@ -85,40 +84,38 @@ open class AutoCompleteTracking(
         keyword: String,
         pageSource: String,
         searchResultApplink: String,
-        fallback: () -> Unit,
     ) {
-        SearchComponentTrackingRollence.click(
-            searchComponentTracking(
-                keyword = keyword,
-                componentId = INITIAL_STATE_MANUAL_ENTER,
-                dimension90 = pageSource,
-                applink = searchResultApplink,
-            ),
-            AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING,
-            fallback,
+        eventClickSearchComponentTracking(
+            keyword, pageSource, searchResultApplink, INITIAL_STATE_MANUAL_ENTER
         )
+    }
+
+    private fun eventClickSearchComponentTracking(
+        keyword: String,
+        pageSource: String,
+        searchResultApplink: String,
+        componentId: String,
+    ) {
+        searchComponentTracking(
+            keyword = keyword,
+            componentId = componentId,
+            dimension90 = pageSource,
+            applink = searchResultApplink,
+        ).click(analytics)
     }
 
     open fun eventClickSubmitAutoComplete(
         keyword: String,
         pageSource: String,
-        searchResultApplink: String,
-        fallback: () -> Unit,
+        searchResultApplink: String
     ) {
-        SearchComponentTrackingRollence.click(
-            searchComponentTracking(
-                keyword = keyword,
-                componentId = AUTO_COMPLETE_MANUAL_ENTER,
-                dimension90 = pageSource,
-                applink = searchResultApplink,
-            ),
-            AUTOCOMPLETE_SUGGESTION_COMPONENT_TRACKING,
-            fallback,
+        eventClickSearchComponentTracking(
+            keyword, pageSource, searchResultApplink, AUTO_COMPLETE_MANUAL_ENTER
         )
     }
 
     open fun eventClickSubmitTokoNow(label: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
+        analytics.sendGeneralEvent(
             DataLayer.mapOf(
                 EVENT, CLICK_TOKO_NOW,
                 EVENT_CATEGORY, TOP_NAV_TOKO_NOW,
@@ -130,21 +127,12 @@ open class AutoCompleteTracking(
         )
     }
 
-    open fun eventClickSubmit(label: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            CLICK_SEARCH,
-            TOP_NAV,
-            Action.CLICK_SEARCH,
-            label
-        )
-    }
-
     open fun eventClickDiscoveryVoiceSearch(label: String, pageSource: String) {
         searchComponentTracking(
             keyword = label,
             componentId = AUTO_COMPLETE_VOICE_SEARCH,
             dimension90 = pageSource,
-        ).click(TrackApp.getInstance().gtm)
+        ).click(analytics)
     }
 
     open fun eventImpressDiscoveryVoiceSearch(pageSource: String) {
@@ -156,7 +144,6 @@ open class AutoCompleteTracking(
 
     open fun eventCancelSearch(query: String, pageSource: String) {
         val componentId = getCancelSearchComponentId(query)
-        val analytics = TrackApp.getInstance().gtm
 
         searchComponentTracking(
             keyword = query,

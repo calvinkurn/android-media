@@ -3,7 +3,7 @@ package com.tokopedia.talk.feature.sellersettings.common.navigation
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
-import androidx.navigation.fragment.NavHostFragment.findNavController
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.navigation.fragment.findNavController
 
 object NavigationController {

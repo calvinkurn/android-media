@@ -116,6 +116,8 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
                         partner {
                           id
                           name
+                          type
+                          thumbnail_url
                         }
                         app_link
                         web_link
@@ -129,6 +131,8 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
                     next_cursor
                     is_autoplay
                     max_autoplay_in_cell
+                    is_autorefresh
+                    autorefresh_timer
                   }
                 }
             }

@@ -31,8 +31,8 @@ import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConst
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.SendgiftPlt.Companion.SENDGIFT_TOKOPOINT_PLT_RENDER_METRICS
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.util.*
-import javax.inject.Inject
 import com.tokopedia.unifycomponents.TextFieldUnify
+import javax.inject.Inject
 
 class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, View.OnClickListener, TextWatcher, TokopointPerformanceMonitoringListener {
     private var mContainerMain: ViewFlipper? = null
@@ -81,7 +81,7 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
         val ivCancelInitial = getView()!!.findViewById<ImageView>(com.tokopedia.tokopoints.R.id.iv_cancel)
         val ivCancelPreConfirm = getView()!!.findViewById<ImageView>(com.tokopedia.tokopoints.R.id.iv_cancel_preconfirmation)
         ivCancelInitial.setOnClickListener { dismiss() }
-        ivCancelPreConfirm.setOnClickListener {  dismiss() }
+        ivCancelPreConfirm.setOnClickListener { dismiss() }
         mWrapperEmail?.textFieldInput?.addTextChangedListener(this)
         mWrapperNote?.textFieldInput?.addTextChangedListener(this)
         mBtnSendGift?.setOnClickListener(View.OnClickListener { view: View -> onClick(view) })
@@ -96,44 +96,56 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
         addPreValidationObserver()
     }
 
-    private fun addPreValidationObserver() = mViewModel.prevalidateLiveData.observe(this, Observer {
-        it?.let {
-            when (it) {
-                is Loading -> showLoading()
-                is ErrorMessage -> {
-                    hideLoading()
-                    if (it.data.isNotEmpty()) {
-                        onErrorPreValidate(it.data)
+    private fun addPreValidationObserver() = mViewModel.prevalidateLiveData.observe(
+        this,
+        Observer {
+            it?.let {
+                when (it) {
+                    is Loading -> showLoading()
+                    is ErrorMessage -> {
+                        hideLoading()
+                        if (it.data.isNotEmpty()) {
+                            onErrorPreValidate(it.data)
+                        }
+                    }
+                    is Success -> {
+                        stopNetworkRequestPerformanceMonitoring()
+                        startRenderPerformanceMonitoring()
+                        hideLoading()
+                        openPreConfirmationWindow()
+                        stopRenderPerformanceMonitoring()
+                        stopPerformanceMonitoring()
+                    }
+                    else -> {
+                        // no-op
                     }
                 }
-                is Success -> {
-                    stopNetworkRequestPerformanceMonitoring()
-                    startRenderPerformanceMonitoring()
-                    hideLoading()
-                    openPreConfirmationWindow()
-                    stopRenderPerformanceMonitoring()
-                    stopPerformanceMonitoring()
-                }
             }
         }
-    })
+    )
 
-    private fun addSendGiftObserver() = mViewModel.sendGiftLiveData.observe(this, Observer {
-        it?.let {
-            when (it) {
-                is Loading -> showLoadingSendNow()
-                is Success -> {
-                    hideLoadingSendNow()
-                    val title = if (it.data.title is Int) getString(it.data.title) else it.data.title.toString()
-                    val message = if (it.data.messsage is Int) getString(it.data.messsage) else it.data.messsage.toString()
-                    showPopup(title, message, it.data.success)
-                }
-                is ErrorMessage -> {
-                    hideLoadingSendNow()
+    private fun addSendGiftObserver() = mViewModel.sendGiftLiveData.observe(
+        this,
+        Observer {
+            it?.let {
+                when (it) {
+                    is Loading -> showLoadingSendNow()
+                    is Success -> {
+                        hideLoadingSendNow()
+                        val title = if (it.data.title is Int) getString(it.data.title) else it.data.title.toString()
+                        val message = if (it.data.messsage is Int) getString(it.data.messsage) else it.data.messsage.toString()
+                        showPopup(title, message, it.data.success)
+                    }
+                    is ErrorMessage -> {
+                        hideLoadingSendNow()
+                    }
+                    else -> {
+                        // no-op
+                    }
                 }
             }
         }
-    })
+    )
 
     override fun onClick(view: View) {
         if (view.id == com.tokopedia.tokopoints.R.id.button_send) {
@@ -147,14 +159,18 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
             if (arguments == null || activity == null) {
                 return
             }
-            mViewModel.sendGift(arguments!!.getInt(CommonConstant.EXTRA_COUPON_ID),
-                    mWrapperEmail?.textFieldInput?.text.toString(),
-                    mWrapperNote?.textFieldInput?.text.toString())
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KIRIM_KUPON,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_KIRIM_SEKARANG,
-                    couponTitle)
+            mViewModel.sendGift(
+                arguments!!.getInt(CommonConstant.EXTRA_COUPON_ID),
+                mWrapperEmail?.textFieldInput?.text.toString(),
+                mWrapperNote?.textFieldInput?.text.toString()
+            )
+            AnalyticsTrackerUtil.sendEvent(
+                context,
+                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                AnalyticsTrackerUtil.CategoryKeys.POPUP_KIRIM_KUPON,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_KIRIM_SEKARANG,
+                couponTitle
+            )
         }
     }
 
@@ -245,7 +261,7 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
             val tvTitle = viewSentSuccess.findViewById<TextView>(com.tokopedia.tokopoints.R.id.tv_title)
             val tvContent = viewSentSuccess.findViewById<TextView>(com.tokopedia.tokopoints.R.id.content)
             val btnSuccess = viewSentSuccess.findViewById<TextView>(com.tokopedia.tokopoints.R.id.btn_sentSuccess)
-            btnSuccess.setOnClickListener {  requireActivity().finish() }
+            btnSuccess.setOnClickListener { requireActivity().finish() }
             tvTitle.text = title
             tvContent.text = message
             adb.setView(viewSentSuccess)
@@ -254,8 +270,8 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
             val tvContent = viewSentFail.findViewById<TextView>(com.tokopedia.tokopoints.R.id.content)
             val tvRoute = viewSentFail.findViewById<TextView>(com.tokopedia.tokopoints.R.id.tv_route)
             val btnFailed = viewSentFail.findViewById<TextView>(com.tokopedia.tokopoints.R.id.btn_sentFail)
-            btnFailed.setOnClickListener {  requireActivity().finish() }
-            tvRoute.setOnClickListener {  RouteManager.route(this.context, ApplinkConst.TOKOPEDIA_REWARD) }
+            btnFailed.setOnClickListener { requireActivity().finish() }
+            tvRoute.setOnClickListener { RouteManager.route(this.context, ApplinkConst.TOKOPEDIA_REWARD) }
             tvTitle.text = title
             tvContent.text = message
             adb.setView(viewSentFail)
@@ -269,10 +285,10 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
         if (charSequence.length == 0) {
             mBtnSendGift!!.isEnabled = false
-            mBtnSendGift!!.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+            mBtnSendGift!!.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_32))
         } else {
             mBtnSendGift!!.isEnabled = true
-            mBtnSendGift!!.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y500))
+            mBtnSendGift!!.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_YN500))
         }
     }
 
@@ -296,14 +312,14 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
 
     override fun startPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
-                SENDGIFT_TOKOPOINT_PLT_PREPARE_METRICS,
-                SENDGIFT_TOKOPOINT_PLT_NETWORK_METRICS,
-                SENDGIFT_TOKOPOINT_PLT_RENDER_METRICS,
-                0,
-                0,
-                0,
-                0,
-                null
+            SENDGIFT_TOKOPOINT_PLT_PREPARE_METRICS,
+            SENDGIFT_TOKOPOINT_PLT_NETWORK_METRICS,
+            SENDGIFT_TOKOPOINT_PLT_RENDER_METRICS,
+            0,
+            0,
+            0,
+            0,
+            null
         )
 
         pageLoadTimePerformanceMonitoring?.startMonitoring(SENDGIFT_TOKOPOINT_PLT)

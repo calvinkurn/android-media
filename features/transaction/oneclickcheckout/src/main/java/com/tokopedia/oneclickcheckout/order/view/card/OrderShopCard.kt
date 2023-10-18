@@ -12,9 +12,11 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import java.text.NumberFormat
 import java.util.*
 
-class OrderShopCard(private val binding: CardOrderShopBinding,
-                    private val listener: OrderShopCardListener,
-                    private val orderSummaryAnalytics: OrderSummaryAnalytics) : RecyclerView.ViewHolder(binding.root) {
+class OrderShopCard(
+    private val binding: CardOrderShopBinding,
+    private val listener: OrderShopCardListener,
+    private val orderSummaryAnalytics: OrderSummaryAnalytics
+) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
         const val VIEW_TYPE = 2

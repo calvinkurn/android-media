@@ -10,7 +10,12 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
+import io.mockk.verify
+import io.mockk.verifyOrder
 import org.junit.Test
 import rx.Observable
 
@@ -30,12 +35,10 @@ class AddToCartTest : BaseCartTest() {
                 success = 1
             }
         }
-        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
@@ -46,7 +49,6 @@ class AddToCartTest : BaseCartTest() {
             view.triggerSendEnhancedEcommerceAddToCartSuccess(addToCartDataModel, productModel)
             view.showToastMessageGreen(addToCartDataModel.data.message[0])
         }
-
     }
 
     @Test
@@ -60,7 +62,8 @@ class AddToCartTest : BaseCartTest() {
                 add(errorMessage)
             }
         }
-        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
@@ -86,12 +89,10 @@ class AddToCartTest : BaseCartTest() {
             }
         }
 
-        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
@@ -115,7 +116,8 @@ class AddToCartTest : BaseCartTest() {
             }
         }
 
-        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
@@ -125,14 +127,14 @@ class AddToCartTest : BaseCartTest() {
         verify {
             view.showToastMessageRed(addToCartDataModel.errorMessage[0])
         }
-
     }
 
     @Test
     fun `WHEN add to cart recent view item failed with exception THEN should render error`() {
         // GIVEN
         val exception = IllegalStateException("Add to cart error with exception")
-        every { addToCartUseCase.createObservable(any()) } returns Observable.error(exception)
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } throws exception
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
@@ -158,12 +160,10 @@ class AddToCartTest : BaseCartTest() {
             }
         }
 
-        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
 
         every { userSessionInterface.userId } returns "123"
 
@@ -191,7 +191,8 @@ class AddToCartTest : BaseCartTest() {
             }
         }
 
-        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
@@ -232,12 +233,10 @@ class AddToCartTest : BaseCartTest() {
                 success = 1
             }
         }
-        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
@@ -277,7 +276,8 @@ class AddToCartTest : BaseCartTest() {
                 add(errorMessage)
             }
         }
-        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
@@ -303,12 +303,10 @@ class AddToCartTest : BaseCartTest() {
                 success = 1
             }
         }
-        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
         every { userSessionInterface.userId } returns "123"
 
         cartListPresenter.detachView()
@@ -321,5 +319,4 @@ class AddToCartTest : BaseCartTest() {
             view.showProgressLoading()
         }
     }
-
 }

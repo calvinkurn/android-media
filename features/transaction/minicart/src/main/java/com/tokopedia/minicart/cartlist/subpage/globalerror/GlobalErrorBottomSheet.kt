@@ -13,12 +13,13 @@ import javax.inject.Inject
 
 class GlobalErrorBottomSheet @Inject constructor() {
 
-    fun show(fragmentManager: FragmentManager,
-             context: Context,
-             defaultType: Int = GlobalError.SERVER_ERROR,
-             outOfService: OutOfService? = null,
-             listener: GlobalErrorBottomSheetActionListener? = null) {
-
+    fun show(
+        fragmentManager: FragmentManager,
+        context: Context,
+        defaultType: Int = GlobalError.SERVER_ERROR,
+        outOfService: OutOfService? = null,
+        listener: GlobalErrorBottomSheetActionListener? = null
+    ) {
         val bottomSheet = BottomSheetUnify()
         bottomSheet.showCloseIcon = true
         bottomSheet.showHeader = true
@@ -30,11 +31,13 @@ class GlobalErrorBottomSheet @Inject constructor() {
         bottomSheet.show(fragmentManager, "Mini Cart Global Error")
     }
 
-    private fun renderGlobalError(viewBinding: LayoutBottomsheetMiniCartGlobalErrorBinding,
-                                  outOfService: OutOfService?,
-                                  listener: GlobalErrorBottomSheetActionListener?,
-                                  bottomSheet: BottomSheetUnify,
-                                  defaultType: Int) {
+    private fun renderGlobalError(
+        viewBinding: LayoutBottomsheetMiniCartGlobalErrorBinding,
+        outOfService: OutOfService?,
+        listener: GlobalErrorBottomSheetActionListener?,
+        bottomSheet: BottomSheetUnify,
+        defaultType: Int
+    ) {
         with(viewBinding) {
             if (outOfService != null) {
                 when (outOfService.id) {

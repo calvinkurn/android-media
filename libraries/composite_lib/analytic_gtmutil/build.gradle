@@ -1,6 +1,11 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
+android {
+    namespace 'com.tokopedia.gtmutil'
+    testNamespace 'com.tokopedia.gtmutil.test'
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

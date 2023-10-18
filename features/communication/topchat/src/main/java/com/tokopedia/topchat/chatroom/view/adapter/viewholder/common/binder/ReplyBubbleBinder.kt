@@ -12,7 +12,7 @@ object ReplyBubbleBinder {
         return ViewUtil.generateBackgroundWithShadow(
             view = view,
             backgroundColor = R.color.topchat_bg_dms_right_bubble_reply,
-            strokeColor = R.color.topchat_bg_dms_right_bubble,
+            strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_GN50,
             strokeWidth = R.dimen.dp_topchat_2,
             strokePaddingBottom = 27f.toPx().toInt(),
             topLeftRadius = R.dimen.dp_topchat_20,

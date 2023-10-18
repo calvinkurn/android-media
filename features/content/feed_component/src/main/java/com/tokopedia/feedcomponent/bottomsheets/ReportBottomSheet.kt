@@ -4,13 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.databinding.BottomsheetReportBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottomsheet_report.*
 
 class ReportBottomSheet : BottomSheetUnify() {
+
+    private var _binding: BottomsheetReportBinding? = null
+    private val binding: BottomsheetReportBinding
+        get() = _binding!!
+
     private var onReportOptionsClick: OnReportOptionsClick? = null
     private var isClicked = 0
     private var reasonType: String = ""
@@ -18,8 +22,6 @@ class ReportBottomSheet : BottomSheetUnify() {
     var onDismiss: (() -> Unit)? = null
     var onClosedClicked: (() -> Unit)? = null
     private var dismissedByClosing = false
-
-
 
     companion object {
         private const val SPAM = 1
@@ -39,11 +41,12 @@ class ReportBottomSheet : BottomSheetUnify() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val contentView = View.inflate(context, R.layout.bottomsheet_report, null)
-        setChild(contentView)
-        setTitle(getString(R.string.feed_report_comment))
-        return super.onCreateView(inflater, container, savedInstanceState)
+    ): View {
+        _binding = BottomsheetReportBinding.inflate(layoutInflater)
+        setChild(binding.root)
+        setTitle(getString(com.tokopedia.content.common.R.string.feed_report_comment))
+
+        return binding.root
     }
 
     private fun sendReport() {
@@ -54,48 +57,49 @@ class ReportBottomSheet : BottomSheetUnify() {
     private fun getReason() {
         when (isClicked) {
             TYPE1 -> {
-                reasonType = getString(R.string.feed_common_reason_type_spam)
-                reasonDesc = getString(R.string.feed_common_reason_desc_spam)
+                reasonType = getString(com.tokopedia.content.common.R.string.feed_common_reason_type_spam)
+                reasonDesc = getString(com.tokopedia.content.common.R.string.feed_common_reason_desc_spam)
             }
             TYPE2 -> {
-                reasonType = getString(R.string.feed_common_reason_type_abuse)
-                reasonDesc = getString(R.string.feed_common_reason_desc_abuse)
+                reasonType = getString(com.tokopedia.content.common.R.string.feed_common_reason_type_abuse)
+                reasonDesc = getString(com.tokopedia.content.common.R.string.feed_common_reason_desc_abuse)
             }
             TYPE3 -> {
-                reasonType = getString(R.string.feed_common_reason_type_inappropriate)
-                reasonDesc = getString(R.string.feed_common_reason_desc_inappropriate)
+                reasonType = getString(com.tokopedia.content.common.R.string.feed_common_reason_type_inappropriate)
+                reasonDesc = getString(com.tokopedia.content.common.R.string.feed_common_reason_desc_inappropriate)
             }
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        report_subtext1?.setOnClickListener {
-            setSpamCase()
-        }
-        report_subtext1_icon?.setOnClickListener {
-            setSpamCase()
-        }
-        report_subtext2?.setOnClickListener {
-            setAbuseCase()
-        }
-        report_subtext2_icon?.setOnClickListener {
-            setAbuseCase()
-        }
-        report_subtext3?.setOnClickListener {
-            setInappropriateCase()
-        }
-        report_subtext3_icon?.setOnClickListener {
-            setInappropriateCase()
-        }
-        setCloseClickListener {
-            dismissedByClosing = true
-            onClosedClicked?.invoke()
-            dismiss()
-        }
-        setOnDismissListener {
-            if (!dismissedByClosing)
-                onDismiss?.invoke()
+        with(binding) {
+            reportSubtext1.setOnClickListener {
+                setSpamCase()
+            }
+            reportSubtext1Icon.setOnClickListener {
+                setSpamCase()
+            }
+            reportSubtext2.setOnClickListener {
+                setAbuseCase()
+            }
+            reportSubtext2Icon.setOnClickListener {
+                setAbuseCase()
+            }
+            reportSubtext3.setOnClickListener {
+                setInappropriateCase()
+            }
+            reportSubtext3Icon.setOnClickListener {
+                setInappropriateCase()
+            }
+            setCloseClickListener {
+                dismissedByClosing = true
+                onClosedClicked?.invoke()
+                dismiss()
+            }
+            setOnDismissListener {
+                if (!dismissedByClosing) onDismiss?.invoke()
+            }
         }
     }
 
@@ -114,10 +118,15 @@ class ReportBottomSheet : BottomSheetUnify() {
         sendReport()
     }
 
-     fun setFinalView() {
-        layout1?.gone()
-        layout2?.gone()
-        layout3.visible()
+     fun setFinalView() = with(binding) {
+        layout1.gone()
+        layout2.root.gone()
+        layout3.root.visible()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     interface OnReportOptionsClick {

@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatlist.view.adapter.typefactory.ChatListTypeFactory
-import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder.Companion.BUYER_TAG
 import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder.Companion.OFFICIAL_TAG
 import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder.Companion.SELLER_TAG
@@ -33,10 +32,12 @@ data class ItemChatListPojo(
     val lastReplyMessage: String get() = attributes?.lastReplyMessage ?: ""
     val thumbnail: String get() = attributes?.contact?.thumbnail ?: ""
     val name: String get() = attributes?.contact?.contactName ?: ""
+    val id: String get() = attributes?.contact?.contactId ?: ""
     val isPinned: Boolean get() = attributes?.pinStatus == 1
     val totalUnread: String get() = attributes?.unreadReply?.toString() ?: ""
     var isActive: Boolean = false
         private set
+    val labelIcon: String get() = attributes?.labelIcon ?: ""
 
     override fun type(typeFactory: ChatListTypeFactory): Int {
         return typeFactory.type(this)
@@ -48,7 +49,7 @@ data class ItemChatListPojo(
 
     fun hasUnreadItem(): Boolean {
         attributes?.let {
-            return it.readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
+            return it.readStatus == STATE_CHAT_UNREAD
         }
         return false
     }
@@ -105,5 +106,4 @@ data class ItemChatListPojo(
     fun markAsInactive() {
         this.isActive = false
     }
-
 }

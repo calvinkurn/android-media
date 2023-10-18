@@ -2,14 +2,16 @@ package com.tokopedia.play.broadcaster.ui.action
 
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
-import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import java.util.*
+import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
-import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
+import java.util.*
 
 /**
  * Created by jegul on 12/10/21
@@ -20,17 +22,17 @@ sealed interface PlayBroadcastAction {
     data class SetPinnedMessage(val message: String) : PlayBroadcastAction
     object CancelEditPinnedMessage : PlayBroadcastAction
 
-    data class SetCover(val cover: PlayCoverUiModel) : PlayBroadcastAction
     data class SetProduct(val productTagSectionList: List<ProductTagSectionUiModel>) :
         PlayBroadcastAction
 
     data class SetSchedule(val date: Date) : PlayBroadcastAction
     object DeleteSchedule : PlayBroadcastAction
-    object SuccessOnBoardingUGC: PlayBroadcastAction
-    data class GetConfiguration(val selectedType: String = TYPE_UNKNOWN): PlayBroadcastAction
-    data class SwitchAccount(val needLoading: Boolean = true): PlayBroadcastAction
+    object SuccessOnBoardingUGC : PlayBroadcastAction
+    data class GetConfiguration(val selectedType: String = TYPE_UNKNOWN) : PlayBroadcastAction
+    data class SwitchAccount(val needLoading: Boolean = true) : PlayBroadcastAction
 
-    object ExitLive : PlayBroadcastAction
+    data class GetTickerBottomSheetConfig(val page: TickerBottomSheetPage) : PlayBroadcastAction
+    data class SetLiveToVodPref(val type: TickerBottomSheetType, val page: TickerBottomSheetPage) : PlayBroadcastAction
 
     /** Game */
     data class ClickGameOption(val gameType: GameType) : PlayBroadcastAction
@@ -69,4 +71,21 @@ sealed interface PlayBroadcastAction {
     data class ClickPinProduct(val product: ProductUiModel) : PlayBroadcastAction
 
     data class BroadcastStateChanged(val state: PlayBroadcasterState) : PlayBroadcastAction
+
+    data class SetCoverUploadedSource(
+        val source: Int
+    ) : PlayBroadcastAction
+
+    object SetShowSetupCoverCoachMark : PlayBroadcastAction
+    object ResetUploadState : PlayBroadcastAction
+
+    /** Beautification */
+    object ResetBeautification : PlayBroadcastAction
+
+    data class SelectFaceFilterOption(val faceFilter: FaceFilterUiModel) : PlayBroadcastAction
+    data class ChangeFaceFilterValue(val newValue: Int) : PlayBroadcastAction
+
+    data class SelectPresetOption(val preset: PresetFilterUiModel) : PlayBroadcastAction
+    data class ChangePresetValue(val newValue: Int) : PlayBroadcastAction
+    object RemoveBeautificationMenu : PlayBroadcastAction
 }

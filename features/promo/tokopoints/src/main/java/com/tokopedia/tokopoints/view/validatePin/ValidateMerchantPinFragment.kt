@@ -78,11 +78,14 @@ class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinCon
         addSwipeObserver()
     }
 
-    private fun addSwipeObserver() = mViewModel.swipeCouponLiveData.observe(this, Observer {
+    private fun addSwipeObserver() = mViewModel.swipeCouponLiveData.observe(this.viewLifecycleOwner, Observer {
         it?.let {
             when (it) {
                 is Success -> onSuccess(it.data)
                 is ErrorMessage -> onError(it.data)
+                else -> {
+                    //no-op
+                }
             }
         }
     })

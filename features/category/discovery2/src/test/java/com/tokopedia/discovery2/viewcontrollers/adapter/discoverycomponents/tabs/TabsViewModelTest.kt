@@ -9,12 +9,22 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.usecase.tabsusecase.DynamicTabsUseCase
 import com.tokopedia.user.session.UserSession
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.OfTypeMatcher
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkConstructor
+import io.mockk.spyk
+import io.mockk.unmockkConstructor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 class TabsViewModelTest {
 
@@ -22,7 +32,7 @@ class TabsViewModelTest {
     val rule = InstantTaskExecutorRule()
     private val componentsItem: ComponentsItem = mockk(relaxed = true)
     private val application: Application = mockk()
-    private var context:Context = mockk()
+    private var context: Context = mockk()
     private val viewModel: TabsViewModel = spyk(TabsViewModel(application, componentsItem, 99))
 
     private val dynamicTabsUseCase: DynamicTabsUseCase by lazy {
@@ -43,7 +53,7 @@ class TabsViewModelTest {
     @Test
     fun `test for useCase`() {
         val viewModel: TabsViewModel =
-                spyk(TabsViewModel(application, componentsItem, 99))
+            spyk(TabsViewModel(application, componentsItem, 99))
 
         val dynamicTabsUseCase = mockk<DynamicTabsUseCase>()
         viewModel.dynamicTabsUseCase = dynamicTabsUseCase
@@ -52,32 +62,36 @@ class TabsViewModelTest {
     }
 
 
-
     @Test
-    fun `test for position passed`(){
+    fun `test for position passed`() {
         assert(viewModel.position == 99)
     }
 
     @Test
-    fun `test for application`(){
+    fun `test for application`() {
         assert(viewModel.application === application)
     }
 
     @Test
-    fun `test for reInitTabComponentData`(){
+    fun `test for reInitTabComponentData`() {
         viewModel.reInitTabComponentData()
 
         assert(viewModel.reInitTabComponentData() == componentsItem.reInitComponentItems())
     }
 
     @Test
-    fun `test for reInitTabTargetComponents`(){
+    fun `test for reInitTabTargetComponents`() {
         viewModel.dynamicTabsUseCase = dynamicTabsUseCase
-        coEvery { dynamicTabsUseCase.updateTargetProductComponent(any(),any()) } returns true
+        coEvery { dynamicTabsUseCase.updateTargetProductComponent(any(), any()) } returns true
 
         viewModel.reInitTabTargetComponents()
 
-        assert(dynamicTabsUseCase.updateTargetProductComponent(componentsItem.id, componentsItem.pageEndPoint))
+        assert(
+            dynamicTabsUseCase.updateTargetProductComponent(
+                componentsItem.id,
+                componentsItem.pageEndPoint
+            )
+        )
     }
 
     /**************************** test for Login *******************************************/
@@ -87,6 +101,7 @@ class TabsViewModelTest {
 
         assert(!viewModel.isUserLoggedIn())
     }
+
     @Test
     fun `isUser Logged in when isLoggedIn is true`() {
         every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns true
@@ -174,7 +189,7 @@ class TabsViewModelTest {
         every { componentsItem.properties } returns tempProperties
         val componentItemList = arrayListOf<ComponentsItem>()
         every { componentsItem.getComponentsItem() } returns componentItemList
-        coEvery { dynamicTabsUseCase.getTabData(any(),any())}  returns true
+        coEvery { dynamicTabsUseCase.getTabData(any(), any()) } returns true
 
         viewModel.onAttachToViewHolder()
 
@@ -188,7 +203,7 @@ class TabsViewModelTest {
         every { componentsItem.properties } returns tempProperties
         val componentItemList = arrayListOf<ComponentsItem>()
         every { componentsItem.getComponentsItem() } returns componentItemList
-        coEvery { dynamicTabsUseCase.getTabData(any(),any())}  returns false
+        coEvery { dynamicTabsUseCase.getTabData(any(), any()) } returns false
 
         viewModel.onAttachToViewHolder()
 
@@ -202,7 +217,7 @@ class TabsViewModelTest {
         every { componentsItem.properties } returns tempProperties
         val componentItemList = arrayListOf<ComponentsItem>()
         every { componentsItem.getComponentsItem() } returns componentItemList
-        coEvery { dynamicTabsUseCase.getTabData(any(),any())}  throws Exception("Error")
+        coEvery { dynamicTabsUseCase.getTabData(any(), any()) } throws Exception("Error")
 
         viewModel.onAttachToViewHolder()
 
@@ -243,7 +258,7 @@ class TabsViewModelTest {
         componentItemList.add(componentsItem)
         every { componentsItem.getComponentsItem() } returns componentItemList
 
-        assert(!viewModel.setSelectedState(0,true))
+        assert(!viewModel.setSelectedState(0, true))
     }
 
     @Test
@@ -256,7 +271,7 @@ class TabsViewModelTest {
         componentItemList.add(componentsItem)
         every { componentsItem.getComponentsItem() } returns componentItemList
 
-        assert(viewModel.setSelectedState(0,true))
+        assert(viewModel.setSelectedState(0, true))
     }
 
     @Test
@@ -264,7 +279,15 @@ class TabsViewModelTest {
         val list = ArrayList<DataItem>()
         every { componentsItem.data } returns list
 
-        assert(viewModel.setSelectedState(0,true))
+        assert(viewModel.setSelectedState(0, true))
+    }
+
+    @Test
+    fun `test for is tabs opened in catgeory page`() {
+        every { componentsItem.isFromCategory } returns true
+        assert(viewModel.isFromCategory())
+        every { componentsItem.isFromCategory } returns false
+        assert(!viewModel.isFromCategory())
     }
 
 

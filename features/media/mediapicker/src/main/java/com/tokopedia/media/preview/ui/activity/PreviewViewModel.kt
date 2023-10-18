@@ -18,13 +18,13 @@ import javax.inject.Inject
 class PreviewViewModel @Inject constructor(
     private val imageCompressor: ImageCompressionRepository,
     private val mediaSaver: SaveToGalleryRepository,
-    dispatchers: CoroutineDispatchers,
-    private val paramCache: PickerCacheManager
+    dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
     private val _files = MutableSharedFlow<List<MediaUiModel>>()
 
     private var _isLoading = MutableLiveData<Boolean>()
+
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     // get all files
@@ -39,7 +39,7 @@ class PreviewViewModel @Inject constructor(
     private val videoCameraFiles: Flow<List<String>> =
         _files.map { files ->
             files
-                .filter { it.file?.isVideo() == true && it.isFromPickerCamera }
+                .filter { it.file?.isVideo() == true && it.isCacheFile }
                 .map { it.file }
                 .map { it?.path.toEmptyStringIfNull() }
         }
@@ -48,7 +48,7 @@ class PreviewViewModel @Inject constructor(
     private val imageCameraFiles: Flow<List<String>> =
         _files.map { files ->
             files
-                .filter { it.file?.isImage() == true && it.isFromPickerCamera }
+                .filter { it.file?.isImage() == true && it.isCacheFile }
                 .map { it.file }
                 .map { it?.path.toEmptyStringIfNull() }
     }
@@ -59,30 +59,34 @@ class PreviewViewModel @Inject constructor(
             .map { imageCompressor.compress(it) }
             .flowOn(dispatchers.computation)
 
+    private val selectedIncludedMedia = _files.map { files ->
+        files.mapNotNull { it.sourcePath }
+    }
+
     val result = combine(
         originalFiles,
         videoCameraFiles,
         imageCameraFiles,
-        compressedImages
-    ) { originalFiles, videoCameraFiles, imageCameraFiles, compressedImages ->
+        compressedImages,
+        selectedIncludedMedia
+    ) { originalFiles, videoCameraFiles, imageCameraFiles, compressedImages, selectedIncludedMedia ->
         _isLoading.value = false
 
         /*
         * dispatch to local device gallery
         * for video and image comes from camera picker
         * */
-        if (!paramCache.get().isEditorEnabled()) {
-            imageCameraFiles
-                .plus(videoCameraFiles)
-                .forEach {
-                    mediaSaver.dispatch(it)
-                }
-        }
+        imageCameraFiles
+            .plus(videoCameraFiles)
+            .forEach {
+                mediaSaver.dispatch(it)
+            }
 
         PickerResult(
             originalPaths = originalFiles,
             videoFiles = videoCameraFiles,
-            compressedImages = compressedImages
+            compressedImages = compressedImages,
+            selectedIncludeMedia = selectedIncludedMedia
         )
     }.shareIn(
         viewModelScope,

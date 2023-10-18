@@ -182,19 +182,19 @@ class DealsHomeActivityTest {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(BANNER_POSITION)
         viewHolder?.let {
-            CommonActions.clickOnEachItemRecyclerView(it.itemView, R.id.banner_recyclerview, 0)
+            CommonActions.clickOnEachItemRecyclerView(it.itemView, com.tokopedia.banner.R.id.banner_recyclerview, 0)
         }
         Thread.sleep(2000)
         onView(withId(R.id.recycler_view)).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(BANNER_POSITION,
-                        CommonActions.clickChildViewWithId(R.id.banner_see_all))
+                        CommonActions.clickChildViewWithId(com.tokopedia.banner.R.id.banner_see_all))
         )
     }
 
     private fun impressionOnLayout() {
         Thread.sleep(3000)
         try {
-            onView(withId(R.id.btn_ok_dialog)).perform(click())
+            onView(withId(com.tokopedia.design.R.id.btn_ok_dialog)).perform(click())
         } catch (e: Exception) {
         }
     }

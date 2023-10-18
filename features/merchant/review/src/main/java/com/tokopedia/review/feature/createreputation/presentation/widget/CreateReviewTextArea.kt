@@ -21,8 +21,6 @@ import com.tokopedia.review.databinding.WidgetCreateReviewTextAreaBinding
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewTextAreaTextUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaUiState
 import com.tokopedia.reviewcommon.uimodel.StringRes
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 
 class CreateReviewTextArea @JvmOverloads constructor(
     context: Context,
@@ -160,8 +158,7 @@ class CreateReviewTextArea @JvmOverloads constructor(
 
     fun updateUi(
         uiState: CreateReviewTextAreaUiState,
-        source: CreateReviewTextAreaTextUiModel.Source,
-        continuation: Continuation<Unit>
+        source: CreateReviewTextAreaTextUiModel.Source
     ) {
         this.sourceName = source
         when(uiState) {
@@ -169,13 +166,10 @@ class CreateReviewTextArea @JvmOverloads constructor(
             is CreateReviewTextAreaUiState.Showing -> binding.showTextArea(uiState)
         }
         if (sourceName == CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA) {
-            animateShow(onAnimationEnd = {
-                continuation.resume(Unit)
-            })
+            animateShow()
         } else {
             binding.root.makeMatchParent()
             binding.layoutTextArea.root.makeMatchParent()
-            continuation.resume(Unit)
         }
     }
 

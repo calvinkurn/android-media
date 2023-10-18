@@ -34,7 +34,7 @@ class NotificationGeneralPromptTest {
         notificationGeneralPrompt.showNotification()
 
         verify {
-            view.show()
+            view.show(false)
         }
     }
 
@@ -47,7 +47,7 @@ class NotificationGeneralPromptTest {
         notificationGeneralPrompt.showNotification()
 
         verify (exactly = 0) {
-            view.show()
+            view.show(false)
         }
     }
 
@@ -67,7 +67,7 @@ class NotificationGeneralPromptTest {
 
         notificationGeneralPrompt.showNotification()
 
-        verify (exactly = 2) { view.show() }
+        verify (exactly = 2) { view.show(false) }
     }
 
     private fun setupRemoteConfigTimeGap() {
@@ -99,6 +99,6 @@ class NotificationGeneralPromptTest {
 
         notificationGeneralPrompt.showNotification()
 
-        verify (exactly = IGNORE_PROMPT_LIMIT) { view.show() }
+        verify (exactly = IGNORE_PROMPT_LIMIT) { view.show(false) }
     }
 }

@@ -5,14 +5,15 @@ import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.AddOnUiModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toCollection
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class UiLogicTest : BaseAddOnTest() {
 
     @Test
-    fun `WHEN has saved add on state and has no changed add on selection state THEN ui state should be STATE_DISMISS_BOTTOM_SHEET`() = runBlockingTest {
+    fun `WHEN has saved add on state and has no changed add on selection state THEN ui state should be STATE_DISMISS_BOTTOM_SHEET`() = runTest {
         // Given
         viewModel.hasSavedState = true
         viewModel.updateFragmentUiModel(
@@ -24,7 +25,7 @@ class UiLogicTest : BaseAddOnTest() {
 
         // store the result
         val result = mutableListOf<UiEvent>()
-        val job = launch {
+        val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.uiEvent.toCollection(result)
         }
 
@@ -37,7 +38,7 @@ class UiLogicTest : BaseAddOnTest() {
     }
 
     @Test
-    fun `WHEN has saved add on state and has changed add on selection state to false THEN ui state should be STATE_SHOW_CLOSE_DIALOG_CONFIRMATION`() = runBlockingTest {
+    fun `WHEN has saved add on state and has changed add on selection state to false THEN ui state should be STATE_SHOW_CLOSE_DIALOG_CONFIRMATION`() = runTest {
         // Given
         viewModel.hasSavedState = true
         viewModel.updateFragmentUiModel(
@@ -49,7 +50,7 @@ class UiLogicTest : BaseAddOnTest() {
 
         // store the result
         val result = mutableListOf<UiEvent>()
-        val job = launch {
+        val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.uiEvent.toCollection(result)
         }
 
@@ -62,7 +63,7 @@ class UiLogicTest : BaseAddOnTest() {
     }
 
     @Test
-    fun `WHEN has saved add on state and has changed add on selection state to true THEN ui state should be STATE_SHOW_CLOSE_DIALOG_CONFIRMATION`() = runBlockingTest {
+    fun `WHEN has saved add on state and has changed add on selection state to true THEN ui state should be STATE_SHOW_CLOSE_DIALOG_CONFIRMATION`() = runTest {
         // Given
         viewModel.hasSavedState = true
         viewModel.updateFragmentUiModel(
@@ -74,7 +75,7 @@ class UiLogicTest : BaseAddOnTest() {
 
         // store the result
         val result = mutableListOf<UiEvent>()
-        val job = launch {
+        val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.uiEvent.toCollection(result)
         }
 
@@ -87,7 +88,7 @@ class UiLogicTest : BaseAddOnTest() {
     }
 
     @Test
-    fun `WHEN has saved add on state and has changed receiver name state THEN ui state should be STATE_SHOW_CLOSE_DIALOG_CONFIRMATION`() = runBlockingTest {
+    fun `WHEN has saved add on state and has changed receiver name state THEN ui state should be STATE_SHOW_CLOSE_DIALOG_CONFIRMATION`() = runTest {
         // Given
         viewModel.hasSavedState = true
         viewModel.updateFragmentUiModel(
@@ -99,7 +100,7 @@ class UiLogicTest : BaseAddOnTest() {
 
         // store the result
         val result = mutableListOf<UiEvent>()
-        val job = launch {
+        val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.uiEvent.toCollection(result)
         }
 
@@ -112,7 +113,7 @@ class UiLogicTest : BaseAddOnTest() {
     }
 
     @Test
-    fun `WHEN has saved add on state and has changed sender name state THEN ui state should be STATE_SHOW_CLOSE_DIALOG_CONFIRMATION`() = runBlockingTest {
+    fun `WHEN has saved add on state and has changed sender name state THEN ui state should be STATE_SHOW_CLOSE_DIALOG_CONFIRMATION`() = runTest {
         // Given
         viewModel.hasSavedState = true
         viewModel.updateFragmentUiModel(
@@ -124,7 +125,7 @@ class UiLogicTest : BaseAddOnTest() {
 
         // store the result
         val result = mutableListOf<UiEvent>()
-        val job = launch {
+        val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.uiEvent.toCollection(result)
         }
 
@@ -137,7 +138,7 @@ class UiLogicTest : BaseAddOnTest() {
     }
 
     @Test
-    fun `WHEN has saved add on state and has changed note state THEN ui state should be STATE_SHOW_CLOSE_DIALOG_CONFIRMATION`() = runBlockingTest {
+    fun `WHEN has saved add on state and has changed note state THEN ui state should be STATE_SHOW_CLOSE_DIALOG_CONFIRMATION`() = runTest {
         // Given
         viewModel.hasSavedState = true
         viewModel.updateFragmentUiModel(
@@ -149,7 +150,7 @@ class UiLogicTest : BaseAddOnTest() {
 
         // store the result
         val result = mutableListOf<UiEvent>()
-        val job = launch {
+        val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.uiEvent.toCollection(result)
         }
 
@@ -162,7 +163,7 @@ class UiLogicTest : BaseAddOnTest() {
     }
 
     @Test
-    fun `WHEN has no saved add on state and has changed add on selection state THEN ui state should be STATE_DISMISS_BOTTOM_SHEET`() = runBlockingTest {
+    fun `WHEN has no saved add on state and has changed add on selection state THEN ui state should be STATE_DISMISS_BOTTOM_SHEET`() = runTest {
         // Given
         viewModel.hasSavedState = false
         viewModel.updateFragmentUiModel(
@@ -174,7 +175,7 @@ class UiLogicTest : BaseAddOnTest() {
 
         // store the result
         val result = mutableListOf<UiEvent>()
-        val job = launch {
+        val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.uiEvent.toCollection(result)
         }
 
@@ -187,7 +188,7 @@ class UiLogicTest : BaseAddOnTest() {
     }
 
     @Test
-    fun `WHEN has no saved add on state and has changed receiver name state THEN ui state should be STATE_SHOW_CLOSE_DIALOG_CONFIRMATION`() = runBlockingTest {
+    fun `WHEN has no saved add on state and has changed receiver name state THEN ui state should be STATE_SHOW_CLOSE_DIALOG_CONFIRMATION`() = runTest {
         // Given
         viewModel.hasSavedState = false
         viewModel.updateFragmentUiModel(
@@ -199,7 +200,7 @@ class UiLogicTest : BaseAddOnTest() {
 
         // store the result
         val result = mutableListOf<UiEvent>()
-        val job = launch {
+        val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.uiEvent.toCollection(result)
         }
 
@@ -212,7 +213,7 @@ class UiLogicTest : BaseAddOnTest() {
     }
 
     @Test
-    fun `WHEN has no saved add on state and has changed sender name state THEN ui state should be STATE_SHOW_CLOSE_DIALOG_CONFIRMATION`() = runBlockingTest {
+    fun `WHEN has no saved add on state and has changed sender name state THEN ui state should be STATE_SHOW_CLOSE_DIALOG_CONFIRMATION`() = runTest {
         // Given
         viewModel.hasSavedState = false
         viewModel.updateFragmentUiModel(
@@ -224,7 +225,7 @@ class UiLogicTest : BaseAddOnTest() {
 
         // store the result
         val result = mutableListOf<UiEvent>()
-        val job = launch {
+        val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.uiEvent.toCollection(result)
         }
 
@@ -237,7 +238,7 @@ class UiLogicTest : BaseAddOnTest() {
     }
 
     @Test
-    fun `WHEN has no saved add on state and has changed note state THEN ui state should be STATE_SHOW_CLOSE_DIALOG_CONFIRMATION`() = runBlockingTest {
+    fun `WHEN has no saved add on state and has changed note state THEN ui state should be STATE_SHOW_CLOSE_DIALOG_CONFIRMATION`() = runTest {
         // Given
         viewModel.hasSavedState = false
         viewModel.updateFragmentUiModel(
@@ -249,7 +250,7 @@ class UiLogicTest : BaseAddOnTest() {
 
         // store the result
         val result = mutableListOf<UiEvent>()
-        val job = launch {
+        val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.uiEvent.toCollection(result)
         }
 

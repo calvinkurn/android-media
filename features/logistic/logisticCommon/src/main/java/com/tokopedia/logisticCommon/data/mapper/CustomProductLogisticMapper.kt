@@ -99,7 +99,7 @@ class CustomProductLogisticMapper @Inject constructor() {
                     logo = it.logo,
                     description = description,
                     isActive = isShipperActive,
-                    shipperProduct = shipperProducts,
+                    shipperProduct = shipperProducts
                 )
                 allShipperData.add(shipperCplModel)
             }

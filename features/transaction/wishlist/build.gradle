@@ -1,13 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
-apply plugin: 'kotlin-kapt'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'io.hansel.preprocessor.module'
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
 
 buildscript {
     repositories {
@@ -21,6 +15,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.wishlist'
+    testNamespace 'com.tokopedia.wishlist.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -41,6 +37,7 @@ android {
 
 dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.dialog
@@ -63,7 +60,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.linker)
     implementation projectOrAar(rootProject.ext.libraries.logger)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
@@ -82,6 +78,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.carouselProductCard)
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
+    implementation projectOrAar(rootProject.ext.features.affiliateSDK)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig

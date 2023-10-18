@@ -62,7 +62,7 @@ sealed class PostItemUiModel(
         override var postItemId: String = String.EMPTY,
         val stateMediaUrl: String = String.EMPTY,
         val stateText: String = String.EMPTY,
-        val shouldShowUnderLine: Boolean = false
+        var shouldShowUnderLine: Boolean = false
     ) : PostItemUiModel(
         title,
         appLink,

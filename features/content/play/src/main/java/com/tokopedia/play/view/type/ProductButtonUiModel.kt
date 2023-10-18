@@ -93,6 +93,9 @@ fun UnifyButton.generateButton(color: ProductButtonColor){
             buttonType = UnifyButton.Type.MAIN
             isEnabled = false
         }
+        else -> {
+            //no-op
+        }
     }
 }
 

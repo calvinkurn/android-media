@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="32dp" android:height="32dp" android:viewportWidth="32" android:viewportHeight="32">
+    <path android:fillColor="@color/Unify_NN900" android:pathData="M26.67 5.67h-3V4a1 1 0 0 0-2 0v1.67H10.33V4a1 1 0 0 0-2 0v1.67h-3A2.33 2.33 0 0 0 3 8v17.33a2.34 2.34 0 0 0 2.33 2.34h21.34A2.34 2.34 0 0 0 29 25.33V8a2.33 2.33 0 0 0-2.33-2.33zm-21.34 2h21.34A0.33 0.33 0 0 1 27 8v4.33H5V8a0.33 0.33 0 0 1 0.33-0.33zm21.34 18H5.33A0.34 0.34 0 0 1 5 25.33v-11h22v11a0.34 0.34 0 0 1-0.33 0.34z"/>
+    <path android:pathData="M0 0h32v32H0V0z"/>
+</vector>

@@ -27,7 +27,7 @@
         tools:text="Legoland Malaysia in Johor Bahru Admissnistration"
         app:typographyWeight="bold"
         app:typographyType="body_1"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_constraintTop_toBottomOf="@+id/tg_event_checkout_date"
         app:layout_constraintLeft_toLeftOf="parent"

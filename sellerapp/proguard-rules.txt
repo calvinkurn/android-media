@@ -214,11 +214,6 @@
 
 -keep public class com.android.installreferrer.** { *; }
 
-#keep for security purposes. This library has already been obfuscated.
--keep class com.tkpd.util.Base64.** { *; }
-
-
-
 # Keep Class com.tokopedia
 -keep class * extends com.tokopedia.design.base.BaseCustomView { *; }
 #discovery
@@ -319,3 +314,12 @@ public static com.tokopedia.stability.ChangeDelegate *;
     # Keep the public no-argument constructor while allowing other methods to be optimized.
     <init>();
 }
+
+# Byteplus
+-keep class com.bytedance.labcv.effectsdk.** {*;}
+-keep class com.bef.effectsdk.* {*;}
+-keep class com.bytedance.labcv.licenselibrary.** {*;}
+
+# kyc ds sdk
+-keep class com.gojek.ojosdk.** {*;}
+-keepclassmembers enum com.gojek.kyc.** {*;}

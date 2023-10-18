@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         app:typographyType="heading_2"
         app:typographyWeight="bold"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:gravity="center"
         android:text="@string/bs_membership_title"/>
 

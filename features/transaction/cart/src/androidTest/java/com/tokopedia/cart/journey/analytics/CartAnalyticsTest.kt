@@ -4,11 +4,11 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.cart.robot.cartPage
 import com.tokopedia.cart.test.R
 import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cart.view.CartIdlingResource
-import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -54,7 +54,7 @@ class CartAnalyticsTest {
         cartPage {
             clickBuyButton()
             waitForData()
-        } validateAnalytics  {
+        } validateAnalytics {
             hasPassedAnalytics(cassavaRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
         }
 
@@ -69,10 +69,9 @@ class CartAnalyticsTest {
     }
 
     companion object {
-        private const val GET_CART_LIST_KEY = "cart_revamp_v3"
+        private const val GET_CART_LIST_KEY = "cart_revamp_v4"
         private const val UPDATE_CART_KEY = "update_cart_v2"
 
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/cart.json"
     }
-
 }

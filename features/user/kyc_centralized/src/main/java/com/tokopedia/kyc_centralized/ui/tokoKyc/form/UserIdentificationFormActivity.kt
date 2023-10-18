@@ -32,10 +32,12 @@ import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.KycCleanupStorageWorker
 import com.tokopedia.kyc_centralized.ui.tokoKyc.form.stepper.UserIdentificationStepperModel
+import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_2
 import com.tokopedia.utils.file.FileUtil
 import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * @author by alvinatin on 02/11/18.
@@ -48,11 +50,15 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
     private var kycType = ""
     private var analytics: UserIdentificationCommonAnalytics? = null
 
+    @Inject
+    lateinit var kycSharedPreference: KycSharedPreference
+
     interface Listener {
         fun trackOnBackPressed()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
         intent?.data?.let {
             projectId = it.getQueryParameter(PARAM_PROJECT_ID)?.toIntOrZero() ?: KycStatus.DEFAULT.code
             kycType = it.getQueryParameter(PARAM_KYC_TYPE).orEmpty()
@@ -63,7 +69,8 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
             kycType = intent?.extras?.getString(PARAM_KYC_TYPE).orEmpty()
         }
 
-        analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
+        val kycFlowType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
+        analytics = UserIdentificationCommonAnalytics.createInstance(projectId, kycFlowType)
         stepperModel = if (savedInstanceState != null) {
             savedInstanceState.getParcelable(STEPPER_MODEL_EXTRA)
         } else {
@@ -73,7 +80,7 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
         toolbar.setTitleTextColor(
             MethodChecker.getColor(
                 this,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
             )
         )
         KycCleanupStorageWorker.scheduleWorker(this, externalCacheDir?.absolutePath + FILE_NAME_KYC)
@@ -221,7 +228,7 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
         val gapWidth = dpToPx(GAP_WIDTH)
         val color = ResourcesCompat.getColor(
             resources,
-            com.tokopedia.unifyprinciples.R.color.Unify_N100,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN200,
             null
         )
         val bulletSpan: BulletSpan

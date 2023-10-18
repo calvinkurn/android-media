@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class TickerInfoUiModel(
-        var uniqueId: String = "",
-        var statusCode: Int = -1,
-        var message: String = ""
+    var uniqueId: String = "",
+    var statusCode: Int = -1,
+    var message: String = ""
 ) : Parcelable

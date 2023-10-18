@@ -11,7 +11,6 @@ object ProductManageCommonConstant {
     const val EXTRA_UPDATE_VARIANTS_MAP = "extra_update_variants_map"
     const val EXTRA_UPDATE_IS_STOCK_CHANGED = "extra_update_is_stock_changed"
     const val EXTRA_UPDATE_IS_STATUS_CHANGED = "extra_update_is_status_changed"
-    const val EXTRA_ERROR_MESSAGE = "extra_error_message"
     const val EXTRA_SOURCE = "extra_source"
 
 }

@@ -7,6 +7,6 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class RatesApiGqlResponse(
-        @SerializedName("ratesV3Api")
-        val ratesData: RatesData
+    @SerializedName("ratesV3Api")
+    val ratesData: RatesData
 )

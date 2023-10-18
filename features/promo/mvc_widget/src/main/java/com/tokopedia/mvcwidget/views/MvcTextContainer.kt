@@ -1,13 +1,11 @@
 package com.tokopedia.mvcwidget.views
 
-import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.text.Html
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import com.bumptech.glide.Glide
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.mvcwidget.R

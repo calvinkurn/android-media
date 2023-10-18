@@ -17,4 +17,4 @@ data class CheckPinV2Param(
     @SuppressLint("Invalid Data Type")
     @SerializedName("user_id")
     val userId: Int = 0
-): GqlParam
+) : GqlParam

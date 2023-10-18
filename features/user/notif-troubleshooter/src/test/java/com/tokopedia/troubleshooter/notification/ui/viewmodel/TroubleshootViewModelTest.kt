@@ -13,6 +13,7 @@ import com.tokopedia.troubleshooter.notification.data.domain.GetTroubleshootStat
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationSendTroubleshoot
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationTroubleshoot
 import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManager
+import com.tokopedia.troubleshooter.notification.data.service.googleplay.PlayServicesManager
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationChannelManager
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationCompatManager
 import com.tokopedia.troubleshooter.notification.data.service.ringtone.RingtoneModeService
@@ -29,7 +30,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -46,6 +47,7 @@ class TroubleshootViewModelTest {
     private val instanceManager: FirebaseInstanceManager = mockk(relaxed = true)
     private val ringtoneMode: RingtoneModeService = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
+    private val playServicesManager: PlayServicesManager = mockk(relaxed = true)
 
     private val notificationStatus: Observer<Boolean> = mockk(relaxed = true)
     private val notificationSetting: Observer<Result<UserSettingUIView>> = mockk(relaxed = true)
@@ -55,6 +57,7 @@ class TroubleshootViewModelTest {
     private val troubleshootError: Observer<Throwable> = mockk(relaxed = true)
     private val tokenObserver: Observer<Result<String>> = mockk(relaxed = true)
     private val dndMode: Observer<Boolean> = mockk(relaxed = true)
+    private val playServicesObserver: Observer<Result<Boolean>> = mockk(relaxed = true)
 
     private val dispatcherProvider = CoroutineTestDispatchersProvider
 
@@ -71,7 +74,8 @@ class TroubleshootViewModelTest {
                 instanceManager,
                 ringtoneMode,
                 userSession,
-                dispatcherProvider
+                dispatcherProvider,
+                playServicesManager
         )
 
         viewModel.notificationStatus.observeForever(notificationStatus)
@@ -82,6 +86,7 @@ class TroubleshootViewModelTest {
         viewModel.troubleshootError.observeForever(troubleshootError)
         viewModel.token.observeForever(tokenObserver)
         viewModel.dndMode.observeForever(dndMode)
+        viewModel.playServicesSetting.observeForever(playServicesObserver)
     }
 
     @Test fun `it should return notification status as true`() {
@@ -102,7 +107,7 @@ class TroubleshootViewModelTest {
         verify { notificationStatus.onChanged(expectedValue) }
     }
 
-    @Test fun `it should troubleshoot push notification properly`() = runBlockingTest {
+    @Test fun `it should troubleshoot push notification properly`() = runTest {
         val expectedValue = NotificationTroubleshoot().notificationSendTroubleshoot
 
         coEvery {
@@ -115,7 +120,7 @@ class TroubleshootViewModelTest {
         viewModel.troubleshootSuccess isEqualsTo expectedValue
     }
 
-    @Test fun `it should cannot troubleshoot`() = runBlockingTest {
+    @Test fun `it should cannot troubleshoot`() = runTest {
         val expectedValue = Throwable()
 
         coEvery { troubleshootUseCase(Unit) } throws expectedValue
@@ -224,7 +229,7 @@ class TroubleshootViewModelTest {
     }
 
     @Test fun `it should return seller settings properly`() {
-        runBlockingTest {
+        runTest {
             mockkStatic(GlobalConfig::class)
 
             val response = FileUtils.parse<UserNotificationResponse>(
@@ -245,7 +250,7 @@ class TroubleshootViewModelTest {
     }
 
     @Test fun `it should return user settings as buyer and have shop properly`() {
-        runBlockingTest {
+        runTest {
             mockkStatic(GlobalConfig::class)
 
             val response = FileUtils.parse<UserNotificationResponse>(
@@ -285,7 +290,7 @@ class TroubleshootViewModelTest {
         verify { notificationSetting.onChanged(expectedValue) }
     }
 
-    @Test fun `it should cannot get user settings`() = runBlockingTest {
+    @Test fun `it should cannot get user settings`() = runTest {
         val expectedValue = Throwable()
 
         coEvery {
@@ -301,6 +306,19 @@ class TroubleshootViewModelTest {
         every { ringtoneMode.isRing() } returns RingtoneState.Normal
         viewModel.soundNotification()
         verify { notificationRingtoneUri.onChanged(any()) }
+    }
+
+    @Test fun `it should return enable state if google play services is present`() {
+        every { playServicesManager.isPlayServiceExist() } returns true
+        viewModel.playServicesSetting()
+        verify { playServicesObserver.onChanged(any()) }
+    }
+
+    @Test fun `it should return disable state if google play services is absent`() {
+        val expectedValue = Fail(Throwable(""))
+        every { playServicesManager.isPlayServiceExist() } returns false
+        viewModel.playServicesSetting()
+        viewModel.playServicesSetting.value isEqualsTo expectedValue
     }
 
     @Test fun `it should return enabled state of do not disturb mode`() {

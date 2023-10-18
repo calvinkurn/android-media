@@ -24,6 +24,7 @@ import com.tokopedia.pdpCheckout.testing.product.detail.ProductDetailRobot
 import com.tokopedia.pdpCheckout.testing.product.detail.RESPONSE_P1_PATH
 import com.tokopedia.pdpCheckout.testing.product.detail.RESPONSE_P2_DATA_PATH
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -31,6 +32,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@CassavaTest
 class PdpOccJourneyTest {
 
     @get:Rule
@@ -39,7 +41,7 @@ class PdpOccJourneyTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @get:Rule
-    var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = false)
+    var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = true)
 
     private val productDetailInterceptor = ProductDetailInterceptor()
     private var idlingResource: IdlingResource? = null
@@ -71,7 +73,6 @@ class PdpOccJourneyTest {
         activityRule.launchActivity(ProductDetailActivity.createIntent(context, 123))
 
         ProductDetailRobot().apply {
-            Thread.sleep(5_000)
             clickBeliLangsungOcc()
         }
 

@@ -2,14 +2,14 @@
     <item android:id="@android:id/background">
         <shape>
             <corners android:radius="15dp"/>
-            <gradient android:angle="90" android:endColor="@color/Unify_N0" android:startColor="@color/Unify_N50"/>
+            <gradient android:angle="90" android:endColor="@color/Unify_NN0" android:startColor="@color/Unify_NN50"/>
         </shape>
     </item>
     <item android:id="@android:id/progress">
         <clip>
             <shape>
                 <corners android:radius="15dp"/>
-                <gradient android:angle="90" android:endColor="@color/Unify_R100" android:startColor="@color/Unify_R100"/>
+                <gradient android:angle="90" android:endColor="@color/Unify_RN100" android:startColor="@color/Unify_RN100"/>
             </shape>
         </clip>
     </item>

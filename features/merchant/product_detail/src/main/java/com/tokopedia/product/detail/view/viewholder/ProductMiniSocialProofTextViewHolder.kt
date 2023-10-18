@@ -3,9 +3,9 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofItemDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofItemType
+import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
@@ -35,13 +35,13 @@ class ProductMiniSocialProofTextViewHolder(
 
     private fun generateSingleView(socialProof: ProductMiniSocialProofItemDataModel): String {
         return when (socialProof.key) {
-            ProductMiniSocialProofDataModel.PAYMENT_VERIFIED -> {
+            ProductMiniSocialProofStockDataModel.PAYMENT_VERIFIED -> {
                 view.context.getString(R.string.terjual_single_text_template_builder, socialProof.formattedCount)
             }
-            ProductMiniSocialProofDataModel.WISHLIST -> {
+            ProductMiniSocialProofStockDataModel.WISHLIST -> {
                 view.context.getString(R.string.wishlist_single_text_template_builder, socialProof.formattedCount)
             }
-            ProductMiniSocialProofDataModel.VIEW_COUNT -> {
+            ProductMiniSocialProofStockDataModel.VIEW_COUNT -> {
                 view.context.getString(R.string.view_single_text__template_builder, socialProof.formattedCount)
             }
             else -> {
@@ -52,13 +52,13 @@ class ProductMiniSocialProofTextViewHolder(
 
     private fun generateFirstSocialProofText(socialProof: ProductMiniSocialProofItemDataModel): String {
         return when (socialProof.key) {
-            ProductMiniSocialProofDataModel.PAYMENT_VERIFIED -> {
+            ProductMiniSocialProofStockDataModel.PAYMENT_VERIFIED -> {
                 view.context.getString(R.string.label_terjual_builder, socialProof.formattedCount)
             }
-            ProductMiniSocialProofDataModel.WISHLIST -> {
+            ProductMiniSocialProofStockDataModel.WISHLIST -> {
                 view.context.getString(R.string.label_wishlist_builder, socialProof.formattedCount)
             }
-            ProductMiniSocialProofDataModel.VIEW_COUNT -> {
+            ProductMiniSocialProofStockDataModel.VIEW_COUNT -> {
                 view.context.getString(R.string.label_view_builder, socialProof.formattedCount)
             }
             else -> {

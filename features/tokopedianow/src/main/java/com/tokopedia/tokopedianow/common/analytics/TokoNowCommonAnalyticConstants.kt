@@ -13,11 +13,7 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_SELECT_CONTENT = "select_content"
         const val EVENT_VIEW_ITEM = "view_item"
         const val EVENT_VIEW_ITEM_LIST = "view_item_list"
-        const val EVENT_PRODUCT_VIEW = "productView"
-        const val EVENT_PRODUCT_CLICK = "productClick"
-        const val EVENT_NAME_ADD_TO_CART = "addToCart"
         const val EVENT_ADD_TO_CART = "add_to_cart"
-        const val EVENT_NAME_REMOVE_FROM_CART = "removeFromCart"
         const val EVENT_REMOVE_FROM_CART = "remove_from_cart"
         const val EVENT_OPEN_SCREEN = "openScreen"
         const val EVENT_VIEW_PG_IRIS = "viewPGIris"
@@ -30,6 +26,7 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_PROMO_CLICK = "promoClick"
         const val EVENT_VIEW_IRIS = "viewIris"
         const val EVENT_CLICK = "click"
+        const val EVENT_CLICK_TOP_NAV = "clickTopNav"
     }
 
     object CATEGORY{
@@ -40,6 +37,7 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_CATEGORY_TOKOPEDIA_REPURCHASE_PAGE = "tokonow repurchase page"
         const val EVENT_CATEGORY_TOP_NAV_TOKOPEDIA_NOW = "top nav - tokopedia now"
         const val EVENT_CATEGORY_TOKONOW_HOMEPAGE = "tokonow - homepage"
+        const val EVENT_CATEGORY_TOKONOW_RECOM_HOMEPAGE = "tokonow - recom homepage"
     }
 
     object KEY {
@@ -49,6 +47,8 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_PROMOTIONS = "promotions"
         const val KEY_CREATIVE_NAME = "creative_name"
         const val KEY_CREATIVE_SLOT = "creative_slot"
+        const val KEY_DIMENSION_117 = "dimension117"
+        const val KEY_DIMENSION_118 = "dimension118"
         const val KEY_DIMENSION_104 = "dimension104"
         const val KEY_DIMENSION_100 = "dimension100"
         const val KEY_DIMENSION_38 = "dimension38"
@@ -61,6 +61,7 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_DIMENSION_45 = "dimension45"
         const val KEY_DIMENSION_90 = "dimension90"
         const val KEY_DIMENSION_96 = "dimension96"
+        const val KEY_DIMENSION_98 = "dimension98"
         const val KEY_QUANTITY = "quantity"
         const val KEY_SHOP_ID = "shop_id"
         const val KEY_SHOP_NAME = "shop_name"
@@ -92,12 +93,18 @@ object TokoNowCommonAnalyticConstants {
         const val BUSINESS_UNIT_PHYSICAL_GOODS = "Physical Goods"
         const val BUSINESS_UNIT_SHARING_EXPERIENCE = "sharingexperience"
         const val BUSINESS_UNIT_PLAY = "play"
+        const val BUSINESS_UNIT_GROCERIES = "Groceries"
+        const val BUSINESS_UNIT_HOME_AND_BROWSE = "home & browse"
         const val SCREEN_NAME_TOKONOW_OOC = "tokonow ooc - "
         const val PAGE_NAME_TOKOPEDIA_NOW = "tokopedia now"
         const val DEFAULT_NULL_VALUE = "null"
         const val DEFAULT_CATEGORY_ID = "0"
         const val DEFAULT_EMPTY_VALUE = ""
         const val DEFAULT_HEADER_CATEGORY_MENU = "Cek kategori lainnya"
+        const val ITEM_LIST_SLASH_TOKONOW = "/tokonow"
+        const val ITEM_LIST_PRODUCT_CARD = "product card"
+        const val ITEM_LIST_SIMILAR_PRODUCT_RECOM = "similar product recom"
+        const val NULL = "null"
     }
 
     object ACTION{
@@ -116,6 +123,7 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_ACTION_IMPRESSION_CATEGORY_MENU_WIDGET = "impression category menu widget"
         const val EVENT_ACTION_CLICK_CATEGORY_MENU_WIDGET = "click category menu widget"
         const val EVENT_ACTION_CLICK_SEE_ALL_CATEGORY = "click lihat semua category menu"
+        const val EVENT_ACTION_IMPRESSION_PAGINATION = "view pagination"
     }
 
     object TRACKER_ID{

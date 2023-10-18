@@ -126,7 +126,11 @@ class AddEditProductEditingAnalyticTest {
 
     @After
     fun tearDown() {
-        activityRule.activity.finishAndRemoveTask()
+        try {
+            activityRule.activity.finishAndRemoveTask()
+        } catch (_: Exception) {
+            // no-op
+        }
     }
 
     private fun testEditDetail() {

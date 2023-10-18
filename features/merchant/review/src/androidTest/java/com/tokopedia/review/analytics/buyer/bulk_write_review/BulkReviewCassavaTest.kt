@@ -103,7 +103,7 @@ class BulkReviewCassavaTest : CassavaTestFixture() {
             actionOnRecyclerViewItem(
                 R.id.rv_bulk_review_items,
                 1,
-                clickChildViewWithId(com.tokopedia.reputation.common.R.id.anim_2_create_review)
+                clickChildViewWithId(com.tokopedia.reputation.common.R.id.anim_3_create_review)
             )
         } assertTest {
             performClose(activityRule)
@@ -117,7 +117,7 @@ class BulkReviewCassavaTest : CassavaTestFixture() {
             actionOnRecyclerViewItem(
                 R.id.rv_bulk_review_items,
                 1,
-                clickChildViewWithId(com.tokopedia.reputation.common.R.id.anim_2_create_review)
+                clickChildViewWithId(com.tokopedia.reputation.common.R.id.anim_3_create_review)
             )
             clickRecyclerViewItem(R.id.rv_bulk_review_bad_rating_category, 0)
         } assertTest {
@@ -224,7 +224,7 @@ class BulkReviewCassavaTest : CassavaTestFixture() {
                     clickChildViewWithId(R.id.ic_bulk_review_remove)
                 )
             }
-            clickRecyclerViewItem(R.id.rv_bulk_review_mini_action, 0)
+            clickAction(R.id.bulk_review_mini_action_testimony)
         } assertTest {
             performClose(activityRule)
             validateWithTimeout(cassavaTestRule, TRACKER_ADD_TESTIMONY_MINI_ACTION_CLICK)
@@ -243,7 +243,7 @@ class BulkReviewCassavaTest : CassavaTestFixture() {
                     clickChildViewWithId(R.id.ic_bulk_review_remove)
                 )
             }
-            clickRecyclerViewItem(R.id.rv_bulk_review_mini_action, 1)
+            clickAction(R.id.bulk_review_mini_action_attachment)
         } assertTest {
             performClose(activityRule)
             validateWithTimeout(cassavaTestRule, TRACKER_ADD_ATTACHMENT_MINI_ACTION_CLICK)

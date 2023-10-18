@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.detail.data.util.CenterLayoutManager
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.databinding.WidgetProductDetailNavigationBinding
@@ -14,10 +15,22 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 
-class ProductDetailNavigation(
-    context: Context,
-    attributeSet: AttributeSet
-) : FrameLayout(context, attributeSet), NavigationListener {
+class ProductDetailNavigation : FrameLayout, NavigationListener {
+    constructor(context: Context) : super(context) {
+        init()
+    }
+
+    constructor(context: Context, attrSet: AttributeSet) : super(context, attrSet) {
+        init()
+    }
+
+    constructor(context: Context, attrSet: AttributeSet, defStyleAttr: Int) : super(
+        context,
+        attrSet,
+        defStyleAttr
+    ) {
+        init()
+    }
 
     companion object {
         private const val REMOTE_CONFIG_KEY_ENABLE_BLOCKING_TOUCH =
@@ -70,19 +83,23 @@ class ProductDetailNavigation(
         }
     }
 
-    private val binding = WidgetProductDetailNavigationBinding.inflate(LayoutInflater.from(context))
-    private val view = binding.root
+    private var binding : WidgetProductDetailNavigationBinding? = null
 
-    private val navigationTab = binding.pdpNavigationTab
-    private val backToTop = binding.pdpBackToTop
+    private var navigationTab : NavigationTab? = null
+    private var backToTop : BackToTopButton? = null
 
     private val remoteConfig = FirebaseRemoteConfigImpl(context)
     private val enableBlockingTouch = getEnableBlockingTouch(remoteConfig)
 
     private var listener: DynamicProductDetailListener? = null
 
-    init {
-        addView(view)
+    private fun init() {
+        WidgetProductDetailNavigationBinding.inflate(LayoutInflater.from(context)).also {
+            binding = it
+            navigationTab = it.pdpNavigationTab
+            backToTop = it.pdpBackToTop
+            addView(it.root)
+        }
     }
 
     fun start(
@@ -94,18 +111,24 @@ class ProductDetailNavigation(
         this.listener = listener
 
         val config = getConfiguration(offsetY, items.firstOrNull())
-        navigationTab.start(recyclerView, items, enableBlockingTouch, this, config)
-        backToTop.start(recyclerView, enableBlockingTouch, this, config)
+        navigationTab?.start(recyclerView, items, enableBlockingTouch, this, config)
+        backToTop?.start(recyclerView, enableBlockingTouch, this, config)
     }
 
     fun stop(recyclerView: RecyclerView) {
-        navigationTab.stop(recyclerView)
-        backToTop.stop(recyclerView)
+        navigationTab?.stop(recyclerView)
+        backToTop?.stop(recyclerView)
     }
 
     fun updateItemPosition() {
-        navigationTab.updateItemPosition()
+        navigationTab?.updateItemPosition()
     }
+
+    fun disableNavigationScrollUpListener() {
+        navigationTab?.disableScrollUpListener()
+    }
+
+    fun getNavigationTabHeight() = navigationTab?.height.orZero()
 
     private fun getConfiguration(offsetY: Int, firstItem: NavigationTab.Item?): Configuration {
         return if (firstItem?.componentName == ProductDetailConstant.MEDIA) {
@@ -130,12 +153,12 @@ class ProductDetailNavigation(
 
     override fun onClickNavigationTab(position: Int, label: String) {
         listener?.onClickProductDetailnavigation(position + 1, label)
-        backToTop.onClickTab()
+        backToTop?.onClickTab()
     }
 
     override fun onClickBackToTop(position: Int, label: String) {
         listener?.onClickProductDetailnavigation(position, label)
-        navigationTab.onClickBackToTop()
+        navigationTab?.onClickBackToTop()
     }
 
     sealed class Configuration {

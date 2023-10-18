@@ -4,9 +4,13 @@ import android.content.SharedPreferences
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.campaign.entity.RemoteTicker
+import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
 import com.tokopedia.campaign.utils.constant.DateConstant
+import com.tokopedia.campaign.utils.constant.TickerConstant
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -14,9 +18,19 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tkpd.flashsale.data.mapper.FlashSaleMonitorSubmitProductSseMapper
 import com.tokopedia.tkpd.flashsale.data.request.DoFlashSaleProductSubmissionRequest
 import com.tokopedia.tkpd.flashsale.data.response.SSEStatus
-import com.tokopedia.tkpd.flashsale.domain.entity.*
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionProgress
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionSseResult.Status.IN_PROGRESS
-import com.tokopedia.tkpd.flashsale.domain.usecase.*
+import com.tokopedia.tkpd.flashsale.domain.entity.ProductDeleteResult
+import com.tokopedia.tkpd.flashsale.domain.entity.ProductSubmissionResult
+import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
+import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductDeleteUseCase
+import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductSubmissionUseCase
+import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductSubmitAcknowledgeUseCase
+import com.tokopedia.tkpd.flashsale.domain.usecase.FlashSaleTkpdProductSubmissionMonitoringSse
+import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleDetailForSellerUseCase
+import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductSubmissionProgressUseCase
+import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleReservedProductListUseCase
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.ValueConstant.ONE_SECOND_DELAY
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.ValueConstant.SHARED_PREF_MANAGE_PRODUCT_LIST_COACH_MARK
 import com.tokopedia.tkpd.flashsale.presentation.detail.helper.ProductCriteriaHelper
@@ -28,7 +42,12 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.Flash
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.FlashSaleManageProductListUiState
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -41,6 +60,7 @@ class FlashSaleManageProductListViewModel @Inject constructor(
     private val doFlashSaleProductSubmissionUseCase: DoFlashSaleProductSubmissionUseCase,
     private val flashSaleTkpdProductSubmissionMonitoringSse: FlashSaleTkpdProductSubmissionMonitoringSse,
     private val sharedPreferences: SharedPreferences,
+    private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
     private val getFlashSaleProductSubmissionProgressUseCase: GetFlashSaleProductSubmissionProgressUseCase,
     private val flashSaleMonitorSubmitProductSseMapper: FlashSaleMonitorSubmitProductSseMapper,
     private val doFlashSaleProductSubmitAcknowledgeUseCase: DoFlashSaleProductSubmitAcknowledgeUseCase
@@ -87,6 +107,9 @@ class FlashSaleManageProductListViewModel @Inject constructor(
             is FlashSaleManageProductListUiEvent.UpdateProductData -> {
                 updateProductData(event.productData)
             }
+            is FlashSaleManageProductListUiEvent.GetTickerData -> {
+                getTickerData(event.rollenceValueList)
+            }
         }
     }
 
@@ -95,14 +118,18 @@ class FlashSaleManageProductListViewModel @Inject constructor(
             val updatedProductListData = currentState.listDelegateItem
                 .filterIsInstance<FlashSaleManageProductListItem>()
                 .indexOfFirst {
-                    it.product?.productId == productData.productId
+                    it.product.productId == productData.productId
                 }.let { idx ->
-                    currentState.listDelegateItem.toMutableList().apply {
-                        set(
-                            idx, FlashSaleManageProductListItem(
-                                productData
+                    if(idx >= Int.ZERO) {
+                        currentState.listDelegateItem.toMutableList().apply {
+                            set(
+                                idx, FlashSaleManageProductListItem(
+                                    productData
+                                )
                             )
-                        )
+                        }
+                    } else {
+                        currentState.listDelegateItem
                     }
                 }
             updateUiState {
@@ -183,9 +210,7 @@ class FlashSaleManageProductListViewModel @Inject constructor(
         val mappedListProductSubmission =
             mutableListOf<DoFlashSaleProductSubmissionRequest.ProductData>().apply {
                 productList.onEach {
-                    it.product?.let { productData ->
-                        addAll(productData.toFlashSaleProductSubmissionProductData())
-                    }
+                    addAll(it.product.toFlashSaleProductSubmissionProductData())
                 }
             }
         val requestParam = DoFlashSaleProductSubmissionUseCase.Param(
@@ -216,11 +241,15 @@ class FlashSaleManageProductListViewModel @Inject constructor(
 
     private fun checkShouldEnableButtonSubmit() {
         launchCatchError(dispatchers.io, {
-            val isEnableSubmitButton =
+            val listCurrentItem =
                 currentState.listDelegateItem.filterIsInstance<FlashSaleManageProductListItem>()
-                    .all {
-                        it.product?.isDiscounted() == true
-                    }
+            val isEnableSubmitButton = if (listCurrentItem.isEmpty()) {
+                false
+            } else {
+                listCurrentItem.all {
+                    it.product.isDiscounted()
+                }
+            }
             _uiEffect.emit(
                 FlashSaleManageProductListUiEffect.ConfigSubmitButton(
                     isEnableSubmitButton
@@ -246,11 +275,13 @@ class FlashSaleManageProductListViewModel @Inject constructor(
                 _uiEffect.emit(FlashSaleManageProductListUiEffect.ShowToasterSuccessDelete)
                 val deletedProduct =
                     currentState.listDelegateItem.filterIsInstance<FlashSaleManageProductListItem>()
-                        .first {
-                            it.product?.productId == productData.productId
+                        .firstOrNull {
+                            it.product.productId == productData.productId
                         }
                 val updatedData = currentState.listDelegateItem.toMutableList().apply {
-                    remove(deletedProduct)
+                    deletedProduct?.let {
+                        remove(it)
+                    }
                 }
                 updateUiState {
                     it.copy(
@@ -293,6 +324,29 @@ class FlashSaleManageProductListViewModel @Inject constructor(
         )
     }
 
+    private fun getTickerData(rollenceValueList: List<String>) {
+        launchCatchError(dispatchers.io, {
+            val targetParams: List<GetTargetedTickerUseCase.Param.Target> = listOf(
+                GetTargetedTickerUseCase.Param.Target(
+                    type = GetTargetedTickerUseCase.KEY_TYPE_ROLLENCE_NAME,
+                    values = rollenceValueList
+                )
+            )
+            val tickerParams = GetTargetedTickerUseCase.Param(
+                page = TickerConstant.REMOTE_TICKER_KEY_FLASH_SALE_TOKOPEDIA_MANAGE_PRODUCT,
+                targets = targetParams
+            )
+            val data = getTickerListData(tickerParams)
+            updateUiState {
+                it.copy(
+                    showTicker = data.isNotEmpty(),
+                    tickerList = data
+                )
+            }
+        }) {
+        }
+    }
+
     private fun getCampaignDetailBottomSheetData(campaignId: String) {
         launchCatchError(dispatchers.io, {
             val data = getCampaignDetailData(campaignId)
@@ -313,6 +367,10 @@ class FlashSaleManageProductListViewModel @Inject constructor(
 
     private suspend fun getCampaignDetailData(campaignId: String): FlashSale {
         return getFlashSaleDetailForSellerUseCase.execute(campaignId.toLongOrZero())
+    }
+
+    private suspend fun getTickerListData(param: GetTargetedTickerUseCase.Param): List<RemoteTicker> {
+        return getTargetedTickerUseCase.execute(param = param)
     }
 
     private fun getTimelineData(flashSale: FlashSale): MutableList<TimelineStepModel> {

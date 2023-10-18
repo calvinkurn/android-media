@@ -15,7 +15,6 @@ import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.epharmacy.utils.TrackerId.Companion.OPEN_SCREEN_ID
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -37,9 +36,6 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ePharmacyComponent.inject(this)
-        if (!remoteConfig.getBoolean(RemoteConfigKey.ENABLE_EPHARMACY_UPLOAD_PAGE, true)) {
-            this.finish()
-        }
         super.onCreate(savedInstanceState)
         setPageTitle()
     }

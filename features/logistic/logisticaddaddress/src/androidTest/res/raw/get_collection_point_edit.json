@@ -1,0 +1,69 @@
+[
+  {
+    "data": {
+      "GetCollectionPoint": {
+        "success": true,
+        "refId": "8324d1da-02bb-494c-b76c-b778cc7a3178",
+        "errorMessages": [],
+        "collectionPoints": [
+          {
+            "id": "01203d44-15c8-46f5-aed2-77e92dd4e625",
+            "version": "3",
+            "consentType": "CONDITIONALTRIGGER",
+            "purposes": [
+              {
+                "id": "3569e8be-339d-4107-af6d-309facaf45af",
+                "label": "Address Management Testing",
+                "description": "Purpose for add new address feature",
+                "version": "2",
+                "purposeType": "STANDARD",
+                "attributes": {
+                  "uiName": "untuk menambahkan alamat",
+                  "uiDescription": "",
+                  "alwaysMandatory": "mandatory",
+                  "personalDataType": [
+                    "Address ID",
+                    "Full Name",
+                    "Phone Number",
+                    "Full Address"
+                  ]
+                }
+              }
+            ],
+            "notices": [],
+            "attributes": {
+              "collectionPointPurposeRequirement": "mandatory",
+              "collectionPointStatementOnlyFlag": "no_checklist",
+              "policyNoticeType": "termconditionpolicy",
+              "PolicyNoticeTnCPageID": "a-2331",
+              "PolicyNoticePolicyPageID": "",
+              "statementWording": {
+                "template": "Saya menyetujui #tnc serta #privacy #purpose.",
+                "attributes": [
+                  {
+                    "key": "#tnc",
+                    "type": "hyperlink",
+                    "text": "Syarat \u0026 Ketentuan",
+                    "link": "https://www.tokopedia.com/consent?id\u003da-2331\u0026type\u003d2\u0026tab\u003dtnc"
+                  },
+                  {
+                    "key": "#privacy",
+                    "type": "hyperlink",
+                    "text": "Kebijakan Privasi",
+                    "link": "https://www.tokopedia.com/consent?id\u003da-2331\u0026type\u003d2\u0026tab\u003dprivacy"
+                  },
+                  {
+                    "key": "#purpose",
+                    "type": "plain",
+                    "text": "untuk menambahkan alamat",
+                    "link": ""
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+]

@@ -9,10 +9,10 @@ import android.text.style.ClickableSpan
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.otp.R
-import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.pin.PinUnify
+import com.tokopedia.unifyprinciples.R as RUnify
 
 open class PinVerificationFragment : VerificationFragment() {
 
@@ -20,7 +20,11 @@ open class PinVerificationFragment : VerificationFragment() {
         super.initView()
         viewBound.pin?.type = PinUnify.TYPE_HIDDEN
 
-        if (otpData.otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE) {
+        /* track otp pin when used as 1FA or 2FA */
+        if (otpData.otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE ||
+            otpData.otpType == OtpConstant.OtpType.OTP_LOGIN_PHONE_NUMBER ||
+            otpData.otpType == OtpConstant.OtpType.ADD_BANK_ACCOUNT
+        ) {
             analytics.trackGenerateOtp(otpData, modeListData, true)
         }
     }
@@ -43,22 +47,22 @@ open class PinVerificationFragment : VerificationFragment() {
 
     private fun setForgotPinFooterSpan(message: String, spannable: Spannable) {
         spannable.setSpan(
-                object : ClickableSpan() {
-                    override fun onClick(view: View) {
-                        viewModel.done = true
-                        val data = otpData
-                        data.otpType = OtpConstant.OtpType.RESET_PIN
-                        (activity as VerificationActivity).goToMethodPageResetPin(data)
-                    }
+            object : ClickableSpan() {
+                override fun onClick(view: View) {
+                    viewModel.done = true
+                    val data = otpData
+                    data.otpType = OtpConstant.OtpType.RESET_PIN
+                    (activity as VerificationActivity).goToMethodPageResetPin(data)
+                }
 
-                    override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
-                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-                    }
-                },
-                message.indexOf(getString(R.string.forgot_pin)),
-                message.indexOf(getString(R.string.forgot_pin)) + getString(R.string.forgot_pin).length,
-                0
+                override fun updateDrawState(ds: TextPaint) {
+                    ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
+                    ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                }
+            },
+            message.indexOf(getString(R.string.forgot_pin)),
+            message.indexOf(getString(R.string.forgot_pin)) + getString(R.string.forgot_pin).length,
+            0
         )
     }
 

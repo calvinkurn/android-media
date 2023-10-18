@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeMyBillsBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeMyBillsEntrypointBinding
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeMyBillsTripleEntrypointBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardCustomLastItemBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardsUnifyBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeRecommendationBannerBinding
@@ -19,6 +20,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
 import com.tokopedia.digital.home.model.RechargeHomepageDualBannersModel
 import com.tokopedia.digital.home.model.RechargeHomepageFavoriteModel
 import com.tokopedia.digital.home.model.RechargeHomepageMyBillsEntryPointModel
+import com.tokopedia.digital.home.model.RechargeHomepageMyBillsTripleEntryPointsModel
 import com.tokopedia.digital.home.model.RechargeHomepageMyBillsWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageOfferingWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageProductBannerModel
@@ -44,6 +46,7 @@ import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepa
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageLegoBannerViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageLoadingViewholder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageMyBillsEntryPointWidgetViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageMyBillsWidgetViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageOfferingWidgetViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductBannerViewHolder
@@ -62,21 +65,8 @@ import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicL
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminderWidgetCallback
 import com.tokopedia.home_component.HomeComponentTypeFactory
-import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
-import com.tokopedia.home_component.visitable.BannerDataModel
-import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
-import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.home_component.visitable.DynamicLegoBannerSixAutoDataModel
-import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
-import com.tokopedia.home_component.visitable.FeaturedShopDataModel
-import com.tokopedia.home_component.visitable.Lego4AutoDataModel
-import com.tokopedia.home_component.visitable.MixLeftDataModel
-import com.tokopedia.home_component.visitable.MixTopDataModel
-import com.tokopedia.home_component.visitable.ProductHighlightDataModel
-import com.tokopedia.home_component.visitable.QuestWidgetModel
-import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 
 class RechargeHomepageAdapterTypeFactory(
@@ -165,64 +155,19 @@ class RechargeHomepageAdapterTypeFactory(
     fun type(myBillsEntryPointWidget: RechargeHomepageMyBillsEntryPointModel): Int =
         RechargeHomepageMyBillsEntryPointWidgetViewHolder.LAYOUT
 
+    fun type(myBillsTripleEntryPointWidget: RechargeHomepageMyBillsTripleEntryPointsModel): Int =
+        RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder.LAYOUT
+
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return RechargeHomepageLegoBannerViewHolder.LAYOUT
-    }
-
-    override fun type(lego4AutoDataModel: Lego4AutoDataModel): Int {
-        return 0
-    }
-
-    override fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int {
-        return 0
     }
 
     override fun type(reminderWidgetModel: ReminderWidgetModel): Int {
         return ReminderWidgetViewHolder.LAYOUT
     }
 
-    override fun type(featuredShopDataModel: FeaturedShopDataModel): Int {
-        return 0
-    }
-
-    override fun type(mixLeftDataModel: MixLeftDataModel): Int {
-        return 0
-    }
-
-    override fun type(mixTopDataModel: MixTopDataModel): Int {
-        return 0
-    }
-
-    override fun type(productHighlightDataModel: ProductHighlightDataModel): Int {
-        return 0
-    }
-
-    override fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int {
-        return 0
-    }
-
-    override fun type(bannerDataModel: BannerDataModel): Int {
-        return BannerComponentViewHolder.LAYOUT
-    }
-
     override fun type(viewModel: LoadingModel): Int {
         return RechargeHomepageLoadingViewholder.LAYOUT
-    }
-
-    override fun type(dynamicLegoBannerSixAutoDataModel: DynamicLegoBannerSixAutoDataModel): Int {
-        return -1
-    }
-
-    override fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int {
-        return -1
-    }
-
-    override fun type(featuredBrandDataModel: FeaturedBrandDataModel): Int {
-        return 0
-    }
-
-    override fun type(questWidgetModel: QuestWidgetModel): Int {
-        return -1
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -350,6 +295,17 @@ class RechargeHomepageAdapterTypeFactory(
                     false
                 )
                 RechargeHomepageMyBillsEntryPointWidgetViewHolder(
+                    binding,
+                    listener
+                )
+            }
+            RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder.LAYOUT -> {
+                val binding = ViewRechargeHomeMyBillsTripleEntrypointBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent as ViewGroup,
+                    false
+                )
+                RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder(
                     binding,
                     listener
                 )

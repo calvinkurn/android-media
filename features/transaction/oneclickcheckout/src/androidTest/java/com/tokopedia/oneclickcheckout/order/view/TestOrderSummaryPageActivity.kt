@@ -6,12 +6,12 @@ import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.di.TestOrderSummaryPageModule
 
 // For running OrderSummaryPageActivity with TestOrderSummaryPageModule
-class TestOrderSummaryPageActivity: OrderSummaryPageActivity() {
+class TestOrderSummaryPageActivity : OrderSummaryPageActivity() {
 
     override fun getComponent(): OrderSummaryPageComponent {
         return DaggerOrderSummaryPageComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .orderSummaryPageModule(TestOrderSummaryPageModule(this))
-                .build()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .orderSummaryPageModule(TestOrderSummaryPageModule(this))
+            .build()
     }
 }

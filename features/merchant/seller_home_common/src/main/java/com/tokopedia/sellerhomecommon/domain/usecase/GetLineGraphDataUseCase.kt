@@ -9,7 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.LineGraphMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
-import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.GetLineGraphDataResponse
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.usecase.RequestParams
@@ -75,12 +75,12 @@ class GetLineGraphDataUseCase(
 
         fun getRequestParams(
             dataKey: List<String>,
-            dynamicParameter: DynamicParameterModel
+            dynamicParam: ParamCommonWidgetModel
         ): RequestParams = RequestParams.create().apply {
             val dataKeys = dataKey.map {
                 DataKeyModel(
                     key = it,
-                    jsonParams = dynamicParameter.toJsonString()
+                    jsonParams = dynamicParam.toJsonString()
                 )
             }
             putObject(DATA_KEYS, dataKeys)

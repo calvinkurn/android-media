@@ -10,8 +10,10 @@ import android.widget.LinearLayout
 import androidx.annotation.DimenRes
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -40,17 +42,21 @@ import com.tokopedia.digital_checkout.data.DigitalPromoCheckoutPageConst.EXTRA_C
 import com.tokopedia.digital_checkout.data.DigitalPromoCheckoutPageConst.EXTRA_PROMO_DIGITAL_MODEL
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
+import com.tokopedia.digital_checkout.data.model.CollectionPointMetadata
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
+import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 import com.tokopedia.digital_checkout.databinding.FragmentDigitalCheckoutPageBinding
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
 import com.tokopedia.digital_checkout.presentation.adapter.DigitalCartDetailInfoAdapter
 import com.tokopedia.digital_checkout.presentation.adapter.DigitalMyBillsAdapter
 import com.tokopedia.digital_checkout.presentation.adapter.vh.MyBillsActionListener
+import com.tokopedia.digital_checkout.presentation.bottomsheet.DigitalPlusMoreInfoBottomSheet
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCartInputPriceWidget
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutSimpleWidget
 import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DeviceUtil.generateATokenRechargeCheckout
+import com.tokopedia.digital_checkout.utils.DigitalCheckoutUtil
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
@@ -73,9 +79,6 @@ import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.build
@@ -83,7 +86,11 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
+import com.tokopedia.usercomponents.userconsent.domain.submission.DataElements
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tokopedia.resources.common.R as CommonRes
 
@@ -108,6 +115,9 @@ class DigitalCartFragment :
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var gson: Gson
+
     @Suppress("LateinitUsage")
     private lateinit var cartDetailInfoAdapter: DigitalCartDetailInfoAdapter
 
@@ -116,14 +126,15 @@ class DigitalCartFragment :
 
     private val viewModel by viewModels<DigitalCartViewModel> { viewModelFactory }
     private val addToCartViewModel by viewModels<DigitalAddToCartViewModel> { viewModelFactory }
-    private val remoteConfig: RemoteConfig by lazy(LazyThreadSafetyMode.NONE) {
-        FirebaseRemoteConfigImpl(context)
-    }
     private var binding by autoClearedNullable<FragmentDigitalCheckoutPageBinding>()
 
     private var cartPassData: DigitalCheckoutPassData? = null
     private var digitalSubscriptionParams: DigitalSubscriptionParams = DigitalSubscriptionParams()
     private var isATCFailed: Boolean = false
+
+    private var renderCrossSellConsentJob: Job? = null
+    private var renderProductConsentJob: Job? = null
+    private var productCollectionPointMetadata = CollectionPointMetadata()
 
     override fun getScreenName(): String = ""
 
@@ -227,9 +238,7 @@ class DigitalCartFragment :
         passData.idemPotencyKey = generateATokenRechargeCheckout(requireContext())
         addToCartViewModel.addToCart(
             passData,
-            getDigitalIdentifierParam(),
-            digitalSubscriptionParams,
-            remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
+            getDigitalIdentifierParam()
         )
     }
 
@@ -381,6 +390,13 @@ class DigitalCartFragment :
             )
         }
 
+        val ifSubscriptionCheckboxDisabled = cartInfo.attributes.fintechProduct.firstOrNull {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT
+        }?.checkBoxDisabled
+        if (ifSubscriptionCheckboxDisabled == true) {
+            binding?.checkoutBottomViewWidget?.hideCrossSellConsent()
+        }
+
         renderMyBillsLayout(cartInfo)
 
         binding?.let {
@@ -393,10 +409,18 @@ class DigitalCartFragment :
             if (!digitalSubscriptionParams.isSubscribed) {
                 renderPostPaidPopup(cartInfo.attributes.postPaidPopupAttribute)
             }
-
-            val isGoToPlusCheckout = cartInfo.collectionPointId.isNotEmpty()
-            it.checkoutBottomViewWidget.isGoToPlusCheckout = isGoToPlusCheckout
-            it.checkoutBottomViewWidget.isCheckoutButtonEnabled = !isGoToPlusCheckout
+            if (cartInfo.collectionPointId.isNotEmpty()) {
+                productCollectionPointMetadata = CollectionPointMetadata(
+                    cartInfo.collectionPointId,
+                    cartInfo.collectionPointVersion
+                )
+                renderProductConsentWidget(
+                    productCollectionPointMetadata,
+                    cartInfo.collectionDataElements
+                )
+                it.checkoutBottomViewWidget.showProductConsent()
+                it.checkoutBottomViewWidget.isCheckoutButtonEnabled = false
+            }
         }
     }
 
@@ -409,7 +433,15 @@ class DigitalCartFragment :
 
             // render fintechProduct & subscription
             if (param.isSubscriptionChecked) myBillsAdapter.setActiveSubscriptions()
-            if (param.fintechProducts.isNotEmpty()) myBillsAdapter.setActiveFintechProducts(param.fintechProducts)
+            if (param.crossSellProducts.isNotEmpty()) {
+                val fintechProducts = hashMapOf<String, FintechProduct>()
+                param.crossSellProducts.forEach {
+                    if (!it.value.isSubscription) {
+                        fintechProducts[it.key] = it.value.product
+                    }
+                }
+                myBillsAdapter.setActiveFintechProducts(fintechProducts)
+            }
         }
     }
 
@@ -440,10 +472,20 @@ class DigitalCartFragment :
             showPromoTicker()
 
             it.checkoutBottomViewWidget.setCheckoutButtonListener {
-                viewModel.proceedToCheckout(
-                    getDigitalIdentifierParam(),
-                    remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
-                )
+                if (it.checkoutBottomViewWidget.isProductConsentWidgetVisible()) {
+                    val consentPayload = it.checkoutBottomViewWidget.getProductConsentPayload()
+                    viewModel.updateProductConsentPayload(consentPayload)
+                }
+                if ((
+                    viewModel.requestCheckoutParam.isSubscriptionChecked &&
+                        it.checkoutBottomViewWidget.isProductConsentWidgetVisible()
+                    ) ||
+                    it.checkoutBottomViewWidget.isCrossSellConsentWidgetVisible()
+                ) {
+                    val consentPayload = it.checkoutBottomViewWidget.getCrossSellConsentPayload()
+                    viewModel.updateSubscriptionMetadata(consentPayload)
+                }
+                viewModel.proceedToCheckout(getDigitalIdentifierParam())
             }
 
             it.checkoutBottomViewWidget.setOnClickConsentListener { url ->
@@ -605,10 +647,12 @@ class DigitalCartFragment :
                 }
                 PaymentConstant.PAYMENT_FAILED -> {
                     showToastMessage(getString(R.string.digital_cart_alert_payment_canceled_or_failed))
+                    resetCrossSellData()
                     getCartAfterCheckout()
                 }
                 PaymentConstant.PAYMENT_CANCELLED -> {
                     showToastMessage(getString(R.string.digital_cart_alert_payment_canceled))
+                    resetCrossSellData()
                     getCartAfterCheckout()
                 }
                 else -> getCartAfterCheckout()
@@ -665,7 +709,99 @@ class DigitalCartFragment :
             getOperatorName(),
             userSession.userId
         )
-        viewModel.onSubscriptionChecked(isChecked)
+        binding?.run {
+            handleCrossSellConsent(fintechProduct, isChecked)
+            viewModel.onSubscriptionChecked(fintechProduct, isChecked)
+        }
+    }
+
+    private fun handleCrossSellConsent(fintechProduct: FintechProduct, isSubscriptionChecked: Boolean) {
+        binding?.run {
+            if (isSubscriptionChecked) {
+                val collectionPointMetadata = getCollectionPointData(fintechProduct)
+                if (collectionPointMetadata.collectionPointId.isNotEmpty()) {
+                    if (!hasProductConsent()) {
+                        checkoutBottomViewWidget.isCheckoutButtonEnabled = false
+                        checkoutBottomViewWidget.showCrossSellConsent()
+                    }
+                    renderCrossSellConsentWidget(collectionPointMetadata, !hasProductConsent())
+                }
+            } else {
+                renderCrossSellConsentJob?.cancel()
+                if (!hasProductConsent()) {
+                    checkoutBottomViewWidget.isCheckoutButtonEnabled = true
+                }
+                checkoutBottomViewWidget.hideCrossSellConsent()
+            }
+        }
+    }
+
+    private fun getCollectionPointData(fintechProduct: FintechProduct): CollectionPointMetadata {
+        try {
+            var map: Map<String, Any> = hashMapOf()
+            map = gson.fromJson(fintechProduct.crossSellMetadata, map.javaClass)
+
+            val metadataKey = map[KEY_METADATA]
+            if (metadataKey != null && metadataKey.toString().length > Int.ZERO) {
+                return gson.fromJson(metadataKey.toString(), CollectionPointMetadata::class.java)
+            }
+        } catch (e: Exception) {
+            DigitalCheckoutUtil.logExceptionToCrashlytics(e)
+        }
+
+        return CollectionPointMetadata()
+    }
+
+    private fun renderCrossSellConsentWidget(
+        collectionPointData: CollectionPointMetadata,
+        isEnableCheckoutButtonInteraction: Boolean
+    ) {
+        binding?.run {
+            if (collectionPointData.collectionPointId.isNotEmpty()) {
+                renderCrossSellConsentJob?.cancel()
+                renderCrossSellConsentJob = lifecycleScope.launch {
+                    val consentParam = ConsentCollectionParam(
+                        collectionId = collectionPointData.collectionPointId,
+                        version = collectionPointData.collectionPointVersion,
+                        identifier = userSession.userId
+                    )
+                    checkoutBottomViewWidget.setCrossSellConsentWidget(
+                        viewLifecycleOwner,
+                        this@DigitalCartFragment,
+                        consentParam,
+                        isEnableCheckoutButtonInteraction
+                    )
+                }
+            }
+        }
+    }
+
+    private fun renderProductConsentWidget(
+        collectionPointData: CollectionPointMetadata,
+        collectionDataElements: List<RechargeGetCart.CollectionDataElements>
+    ) {
+        binding?.run {
+            if (collectionPointData.collectionPointId.isNotEmpty()) {
+                renderProductConsentJob?.cancel()
+                renderProductConsentJob = lifecycleScope.launch {
+                    val consentParam = ConsentCollectionParam(
+                        collectionId = collectionPointData.collectionPointId,
+                        version = collectionPointData.collectionPointVersion,
+                        dataElements = collectionDataElements.map {
+                            DataElements(it.key, it.value)
+                        }.toMutableList(),
+                        identifier = userSession.userId
+                    )
+
+                    checkoutBottomViewWidget.setProductConsentWidget(
+                        viewLifecycleOwner,
+                        this@DigitalCartFragment,
+                        consentParam,
+                        collectionDataElements.isNotEmpty()
+                    )
+                }
+            }
+        }
     }
 
     override fun onSubscriptionImpression(fintechProduct: FintechProduct) {
@@ -683,7 +819,13 @@ class DigitalCartFragment :
             getCategoryName(),
             getOperatorName()
         )
-        renderSubscriptionMoreInfoBottomSheet()
+        binding?.checkoutBottomViewWidget?.let {
+            if (isGotoPlus()) {
+                renderPlusSubscriptionMoreInfoBottomSheet()
+            } else {
+                renderSubscriptionMoreInfoBottomSheet()
+            }
+        }
     }
 
     override fun onTebusMurahImpression(fintechProduct: FintechProduct, position: Int) {
@@ -886,6 +1028,11 @@ class DigitalCartFragment :
         }
     }
 
+    private fun renderPlusSubscriptionMoreInfoBottomSheet() {
+        val bottomSheet = DigitalPlusMoreInfoBottomSheet()
+        bottomSheet.show(childFragmentManager)
+    }
+
     private fun renderSubscriptionMoreInfoBottomSheet() {
         context?.let {
             val linearLayout = LinearLayout(it)
@@ -928,6 +1075,11 @@ class DigitalCartFragment :
         }
     }
 
+    private fun resetCrossSellData() {
+        viewModel.requestCheckoutParam.isSubscriptionChecked = false
+        viewModel.requestCheckoutParam.crossSellProducts = hashMapOf()
+    }
+
     private fun getPromoDigitalModel(): PromoDigitalModel =
         viewModel.getPromoDigitalModel(cartPassData, getPriceInput())
 
@@ -957,6 +1109,14 @@ class DigitalCartFragment :
         isATCFailed = true
     }
 
+    private fun isGotoPlus(): Boolean {
+        return getCategoryName().lowercase() == GOTO_PLUS_CATEGORY_NAME
+    }
+
+    private fun hasProductConsent(): Boolean {
+        return productCollectionPointMetadata.collectionPointId.isNotEmpty()
+    }
+
     companion object {
 
         const val ARG_PASS_DATA = "ARG_PASS_DATA"
@@ -967,10 +1127,15 @@ class DigitalCartFragment :
         private const val EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER =
             "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER"
 
+        private const val KEY_METADATA = "metadata"
+
         private const val REQUEST_VERIFY_PHONE_NUMBER = 1012
         private const val REQUEST_CODE_LOGIN = 1013
         private const val REQUEST_CODE_OTP = 1001
         const val OTP_TYPE_CHECKOUT_DIGITAL = 16
+        private const val GOTO_PLUS_CATEGORY_ID = "129"
+        private const val GOTO_PLUS_OPERATOR_ID = "9475"
+        private const val GOTO_PLUS_CATEGORY_NAME = "plus"
 
         private const val DEFAULT_ANDROID_DEVICE_ID = 5
         private const val ZERO_DOUBLE = 0.0

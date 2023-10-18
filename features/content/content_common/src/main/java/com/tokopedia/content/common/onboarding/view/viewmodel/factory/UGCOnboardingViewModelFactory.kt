@@ -27,7 +27,7 @@ class UGCOnboardingViewModelFactory @AssistedInject constructor(
         ): UGCOnboardingViewModelFactory
     }
 
-    override fun <T : ViewModel?> create(
+    override fun <T : ViewModel> create(
         key: String,
         modelClass: Class<T>,
         handle: SavedStateHandle

@@ -1,11 +1,13 @@
 package com.tokopedia.search.result.product.broadmatch
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelatedProduct
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
+import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
 import com.tokopedia.search.result.presentation.model.StockBarDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option.Product
@@ -41,6 +43,7 @@ data class BroadMatchItemDataView(
     val discountPercentage: Int = 0,
     val externalReference: String = "",
     val stockBarDataView: StockBarDataView = StockBarDataView(),
+    val warehouseID: String = "",
 ) : ImpressHolder(), Wishlistable {
 
     override fun setWishlist(productID: String, isWishlisted: Boolean) {
@@ -59,9 +62,12 @@ data class BroadMatchItemDataView(
             "variant", "none / other",
             "list", carouselProductType.getDataLayerList(isOrganicAds, componentId),
             "position", position,
+            "dimension40", carouselProductType.getDataLayerList(isOrganicAds, componentId),
             "dimension90", dimension90,
             "dimension115", labelGroupDataList.getFormattedPositionName(),
-            "dimension131", externalReference.orNone()
+            "dimension131", externalReference.orNone(),
+            "dimension56", warehouseID.ifNullOrBlank { "0" },
+            "dimension58", hasFulfillment(labelGroupDataList).toString(),
         )
     }
 
@@ -107,6 +113,7 @@ data class BroadMatchItemDataView(
             dimension90 = dimension90,
             componentId = otherRelatedProduct.componentId,
             externalReference = externalReference,
+            warehouseID = otherRelatedProduct.warehouseIdDefault,
         )
 
         fun create(
@@ -141,6 +148,7 @@ data class BroadMatchItemDataView(
             discountPercentage = product.discountPercentage,
             externalReference = externalReference,
             stockBarDataView = product.stockBarDataView,
+            warehouseID = product.warehouseID,
         )
     }
 }

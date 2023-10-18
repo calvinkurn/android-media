@@ -25,8 +25,8 @@
         android:layout_width="@dimen/dp_20"
         android:layout_height="@dimen/dp_20"
         app:icon_name="INFORMATION"
-        app:icon_color_light_enable="@color/Unify_N700_68"
-        app:icon_color_night_enable="@color/Unify_N700_68"
+        app:icon_color_light_enable="@color/Unify_NN950_68"
+        app:icon_color_night_enable="@color/Unify_NN950_68"
         app:layout_constraintTop_toTopOf="@id/transaction_komisi_header"
         app:layout_constraintLeft_toRightOf="@id/transaction_komisi_header"/>
 

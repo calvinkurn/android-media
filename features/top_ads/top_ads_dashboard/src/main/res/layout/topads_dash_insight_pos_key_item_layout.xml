@@ -22,7 +22,7 @@
             app:layout_constraintWidth_percent=".66"
             app:typographyType="heading_5"
             tools:text="@tools:sample/lorem"
-            tools:textColor="@color/Unify_N700_96"
+            tools:textColor="@color/Unify_NN950_96"
             tools:textStyle="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/keywordName"
             app:typographyType="heading_6"
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtSearch"
             app:typographyType="heading_6"
@@ -51,7 +51,7 @@
             android:id="@+id/txtSavings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toEndOf="@id/txtSearch"
             app:layout_constraintEnd_toStartOf="@id/btnTambah"
             app:layout_constraintTop_toTopOf="@+id/txtSearch"
@@ -62,7 +62,7 @@
             android:id="@+id/txtSavingsValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:layout_constraintStart_toStartOf="@id/txtSavings"
             app:layout_constraintTop_toTopOf="@+id/textSearchValue"
             app:typographyType="heading_6"
@@ -88,7 +88,7 @@
             android:paddingStart="8dp"
             android:paddingLeft="8dp"
             app:typographyType="body_3"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintTop_toBottomOf="@id/textSearchValue"
             tools:text="Potensi tampil +500 kali / bulan" />
 

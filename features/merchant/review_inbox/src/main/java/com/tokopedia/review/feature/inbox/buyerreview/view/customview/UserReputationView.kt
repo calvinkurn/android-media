@@ -13,7 +13,6 @@ import android.widget.LinearLayout
 import androidx.appcompat.content.res.AppCompatResources
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.review.inbox.R
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -21,7 +20,7 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * @author by stevenfredian on 8/16/17.
  */
-class UserReputationView : BaseCustomView {
+class UserReputationView : com.tokopedia.unifycomponents.BaseCustomView {
 
     private var percentageTextView: Typography? = null
     private var imageViewIcon: ImageView? = null

@@ -14,7 +14,6 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -80,7 +79,7 @@ class ReturnToShipperViewModelTest {
             GetGeneralInfoRtsResponse(
                 GetGeneralInfoRtsResponse.GetGeneralInfoRts(
                     status = 200,
-                    messageError = errorMessage,
+                    messageError = errorMessage
                 )
             )
         )
@@ -106,7 +105,7 @@ class ReturnToShipperViewModelTest {
             GetGeneralInfoRtsResponse(
                 GetGeneralInfoRtsResponse.GetGeneralInfoRts(
                     status = 400,
-                    messageError = errorMessage,
+                    messageError = errorMessage
                 )
             )
         )
@@ -213,7 +212,7 @@ class ReturnToShipperViewModelTest {
         val mockResponse = spyk(
             ReqGeneralInfoRtsResponse(
                 ReqGeneralInfoRtsResponse.ReqGeneralInfoRts(
-                    status = 400,
+                    status = 400
                 )
             )
         )

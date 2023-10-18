@@ -11,5 +11,7 @@ data class DeleteAddressParam(
     @SerializedName("inputAddressId")
     val inputAddressId: Long,
     @SerializedName("isTokonowRequest")
-    val isTokonowRequest: Boolean
+    val isTokonowRequest: Boolean,
+    @SerializedName("consent_json")
+    val consentJson: String
 ) : GqlParam

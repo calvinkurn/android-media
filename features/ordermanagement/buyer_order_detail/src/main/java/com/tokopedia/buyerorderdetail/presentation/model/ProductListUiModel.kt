@@ -5,13 +5,20 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 
 data class ProductListUiModel(
     val productList: List<ProductUiModel>,
+    val productBmgmList: List<ProductBmgmSectionUiModel>,
     val productBundlingList: List<ProductBundlingUiModel>,
+    val productUnFulfilledList: List<ProductUiModel>?,
+    val productFulfilledHeaderLabel: ProductPofHeaderLabelUiModel?,
+    val productUnfulfilledHeaderLabel: ProductPofHeaderLabelUiModel?,
     val productListHeaderUiModel: ProductListHeaderUiModel,
     val addonsListUiModel: AddonsListUiModel?,
-    val productListToggleUiModel: ProductListToggleUiModel?
+    val productListToggleUiModel: ProductListToggleUiModel?,
+    val tickerInfo: TickerUiModel?
 ) {
 
     fun getAllProduct(): List<ProductUiModel> {
@@ -51,13 +58,18 @@ data class ProductListUiModel(
         val productId: String,
         val productName: String,
         val productNote: String,
+        val productUrl: String,
         val productThumbnailUrl: String,
         val quantity: Int,
         val totalPrice: String,
         val totalPriceText: String,
         val isProcessing: Boolean = false,
         val addonsListUiModel: AddonsListUiModel? = null,
-        val insurance: Insurance? = null
+        val insurance: Insurance? = null,
+        val isPof: Boolean = false,
+        val shopId: String? = null,
+        val shopName: String? = null,
+        val shopType: Int? = null,
     ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
@@ -104,6 +116,24 @@ data class ProductListUiModel(
 
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
+        }
+    }
+
+    data class ProductPofHeaderLabelUiModel(
+        val title: String,
+        val quantity: String,
+        val isUnfulfilled: Boolean
+    ) : BaseVisitableUiModel {
+        override fun shouldShow(context: Context?): Boolean {
+            return title.isNotBlank() || quantity.isNotBlank()
+        }
+
+        override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
+            return null
+        }
+
+        override fun type(typeFactory: BuyerOrderDetailTypeFactory): Int {
+            return typeFactory.type(this)
         }
     }
 }

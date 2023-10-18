@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.home.domain.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
-internal object GetRepurchaseWidget: GqlQueryInterface {
+internal object GetRepurchaseWidget : GqlQueryInterface {
 
     private const val OPERATION_NAME = "TokonowRepurchaseWidget"
 
@@ -12,8 +12,8 @@ internal object GetRepurchaseWidget: GqlQueryInterface {
 
     override fun getQuery(): String {
         return """
-        query $OPERATION_NAME(${'$'}warehouseID: String!, ${'$'}queryParam: String!) {
-            $OPERATION_NAME(warehouseID:${'$'}warehouseID, queryParam:${'$'}queryParam) {
+        query $OPERATION_NAME(${'$'}warehouses: [WarehousePerService!], ${'$'}queryParam: String!) {
+            $OPERATION_NAME(warehouses:${'$'}warehouses, queryParam:${'$'}queryParam) {
                 header {
                     process_time
                     messages
@@ -22,6 +22,8 @@ internal object GetRepurchaseWidget: GqlQueryInterface {
                 }
                 data {
                     title
+                    subtitle
+                    subtitleColor
                     listProduct {
                         id
                         name
@@ -57,7 +59,7 @@ internal object GetRepurchaseWidget: GqlQueryInterface {
                 }
             }
        }
-       """.trimIndent()
+        """.trimIndent()
     }
 
     override fun getTopOperationName(): String {

@@ -2,6 +2,8 @@ package com.tokopedia.discovery.common.utils
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.CustomDimension.DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL
+import com.tokopedia.discovery.common.constants.SearchConstant.CustomDimension.DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL_SHOP
+import com.tokopedia.discovery.common.constants.SearchConstant.CustomDimension.DIMENSION_90_GLOBAL_MPS
 
 object Dimension90Utils {
 
@@ -24,6 +26,21 @@ object Dimension90Utils {
                     ".$LOCAL_SEARCH" +
                     ".${pageId.orNone()}"
             searchRef.isNotEmpty() -> searchRef
+            else -> searchParameter.getDefaultDimension90(pageTitle, navSource, pageId)
+        }
+    }
+
+    private fun Map<String, Any>.getDefaultDimension90(
+        pageTitle: String,
+        navSource: String,
+        pageId: String,
+    ): String {
+        return when(get(SearchApiConst.ACTIVE_TAB)) {
+             SearchApiConst.ACTIVE_TAB_MPS -> pageTitle.orNone() +
+                ".${navSource.orNone()}" +
+                ".$DIMENSION_90_GLOBAL_MPS" +
+                ".${pageId.orNone()}"
+             SearchApiConst.ACTIVE_TAB_SHOP -> DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL_SHOP
             else -> DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL
         }
     }

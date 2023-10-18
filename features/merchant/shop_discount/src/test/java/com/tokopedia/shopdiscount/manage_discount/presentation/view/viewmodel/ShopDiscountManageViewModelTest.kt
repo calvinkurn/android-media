@@ -17,11 +17,10 @@ import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetup
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.VALUE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.domain.GetSlashPriceSetupProductListUseCase
 import com.tokopedia.shopdiscount.manage_discount.domain.MutationSlashPriceProductSubmissionUseCase
-import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountConstant.GET_SETUP_PRODUCT_LIST_DELAY
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.utils.constant.DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
-import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.StandardTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.toString
@@ -29,6 +28,8 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -50,7 +51,7 @@ class ShopDiscountManageViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     @get:Rule
-    val testCoroutineRule = CoroutineTestRule()
+    val testCoroutineRule = StandardTestRule()
 
     private val mockRequestId = "12345"
     private val mockSelectedProductVariantId = ""
@@ -84,7 +85,7 @@ class ShopDiscountManageViewModelTest {
 
     @Test
     fun `When success get setup product list data on create mode, should return success result and matched with mock data`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getSlashPriceSetupProductListUseCase.executeOnBackground()
             } returns getSlashPriceSetupProductListMockResponse()
@@ -94,7 +95,7 @@ class ShopDiscountManageViewModelTest {
                 mockModeCreate,
                 mockSlashPriceStatus
             )
-            advanceTimeBy(GET_SETUP_PRODUCT_LIST_DELAY)
+            advanceUntilIdle()
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Success)
         }
@@ -102,7 +103,7 @@ class ShopDiscountManageViewModelTest {
 
     @Test
     fun `When success get setup product list data on update mode, then should return success result and enable variant`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getSlashPriceSetupProductListUseCase.executeOnBackground()
             } returns getSlashPriceSetupProductListMockResponse()
@@ -112,7 +113,7 @@ class ShopDiscountManageViewModelTest {
                 mockModeUpdate,
                 mockSlashPriceStatus
             )
-            advanceTimeBy(GET_SETUP_PRODUCT_LIST_DELAY)
+            advanceUntilIdle()
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Success)
             assert((liveDataValue as Success).data.listSetupProductData.any {
@@ -125,7 +126,7 @@ class ShopDiscountManageViewModelTest {
 
     @Test
     fun `When success get setup product list data on create mode with abusive product variants, then should return success result with disabled variant`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getSlashPriceSetupProductListUseCase.executeOnBackground()
             } returns getSlashPriceSetupProductListMockResponseWithAbusiveVariant()
@@ -135,7 +136,7 @@ class ShopDiscountManageViewModelTest {
                 mockModeCreate,
                 mockSlashPriceStatus
             )
-            advanceTimeBy(GET_SETUP_PRODUCT_LIST_DELAY)
+            advanceUntilIdle()
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Success)
             assert((liveDataValue as Success).data.listSetupProductData.any {
@@ -148,7 +149,7 @@ class ShopDiscountManageViewModelTest {
 
     @Test
     fun `When success get setup product list data on create mode with default start date and end date, then should return success result with null start date and end date`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getSlashPriceSetupProductListUseCase.executeOnBackground()
             } returns getSlashPriceSetupProductListMockResponseWithDefaultStartDate()
@@ -158,7 +159,7 @@ class ShopDiscountManageViewModelTest {
                 mockModeCreate,
                 mockSlashPriceStatus
             )
-            advanceTimeBy(GET_SETUP_PRODUCT_LIST_DELAY)
+            advanceUntilIdle()
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Success)
             assert((liveDataValue as Success).data.listSetupProductData.any {
@@ -169,7 +170,7 @@ class ShopDiscountManageViewModelTest {
 
     @Test
     fun `When success get setup product list data on update mode with value error, then should return success result with product value error type`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getSlashPriceSetupProductListUseCase.executeOnBackground()
             } returns getSlashPriceSetupProductListMockResponseValueError()
@@ -179,7 +180,7 @@ class ShopDiscountManageViewModelTest {
                 mockModeUpdate,
                 mockSlashPriceStatus
             )
-            advanceTimeBy(GET_SETUP_PRODUCT_LIST_DELAY)
+            advanceUntilIdle()
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Success)
             assert((liveDataValue as Success).data.listSetupProductData.any {
@@ -190,7 +191,7 @@ class ShopDiscountManageViewModelTest {
 
     @Test
     fun `When success get setup product list with variant data on update mode with value error, then should return success result with product value error type`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getSlashPriceSetupProductListUseCase.executeOnBackground()
             } returns getSlashPriceSetupProductListWithVariantMockResponseValueError()
@@ -200,7 +201,7 @@ class ShopDiscountManageViewModelTest {
                 mockModeUpdate,
                 mockSlashPriceStatus
             )
-            advanceTimeBy(GET_SETUP_PRODUCT_LIST_DELAY)
+            advanceUntilIdle()
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Success)
             assert((liveDataValue as Success).data.listSetupProductData.any {
@@ -211,7 +212,7 @@ class ShopDiscountManageViewModelTest {
 
     @Test
     fun `When success get setup product list with all variant abusive data, then should return all abusive error`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getSlashPriceSetupProductListUseCase.executeOnBackground()
             } returns getSlashPriceSetupProductListWithVariantAbusiveMockResponseValueError()
@@ -221,7 +222,7 @@ class ShopDiscountManageViewModelTest {
                 mockModeUpdate,
                 mockSlashPriceStatus
             )
-            advanceTimeBy(GET_SETUP_PRODUCT_LIST_DELAY)
+            advanceUntilIdle()
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Success)
             assert((liveDataValue as Success).data.listSetupProductData.any {
@@ -232,7 +233,7 @@ class ShopDiscountManageViewModelTest {
 
     @Test
     fun `When success get setup product list with value error and product not discounted, then should return no error`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getSlashPriceSetupProductListUseCase.executeOnBackground()
             } returns getSlashPriceSetupProductListMockResponseValueErrorAndNoDiscount()
@@ -242,7 +243,7 @@ class ShopDiscountManageViewModelTest {
                 mockModeUpdate,
                 mockSlashPriceStatus
             )
-            advanceTimeBy(GET_SETUP_PRODUCT_LIST_DELAY)
+            advanceUntilIdle()
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Success)
             assert((liveDataValue as Success).data.listSetupProductData.any {
@@ -253,7 +254,7 @@ class ShopDiscountManageViewModelTest {
 
     @Test
     fun `When success get setup product list with start date error, product discounted and start date error type, then should return no error`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getSlashPriceSetupProductListUseCase.executeOnBackground()
             } returns getSlashPriceSetupProductListMockResponseStartDateErrorNoDiscountAndErrorTypeStartDate()
@@ -263,7 +264,7 @@ class ShopDiscountManageViewModelTest {
                 mockModeUpdate,
                 mockSlashPriceStatus
             )
-            advanceTimeBy(GET_SETUP_PRODUCT_LIST_DELAY)
+            advanceUntilIdle()
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Success)
             assert((liveDataValue as Success).data.listSetupProductData.any {
@@ -274,7 +275,7 @@ class ShopDiscountManageViewModelTest {
 
     @Test
     fun `When success get setup product list with correct start date, product discounted and start date error type, then should return no error`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getSlashPriceSetupProductListUseCase.executeOnBackground()
             } returns getSlashPriceSetupProductListMockResponseCorrectStartDateNoDiscountAndErrorTypeStartDate()
@@ -284,7 +285,7 @@ class ShopDiscountManageViewModelTest {
                 mockModeUpdate,
                 mockSlashPriceStatus
             )
-            advanceTimeBy(GET_SETUP_PRODUCT_LIST_DELAY)
+            advanceUntilIdle()
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Success)
             assert((liveDataValue as Success).data.listSetupProductData.any {
@@ -295,7 +296,7 @@ class ShopDiscountManageViewModelTest {
 
     @Test
     fun `When success get setup product list variant with start date error, product discounted and start date error type, then should return no error`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getSlashPriceSetupProductListUseCase.executeOnBackground()
             } returns getSlashPriceSetupProductListVariantMockResponseStartDateErrorNoDiscountAndErrorTypeStartDate()
@@ -305,7 +306,7 @@ class ShopDiscountManageViewModelTest {
                 mockModeUpdate,
                 mockSlashPriceStatus
             )
-            advanceTimeBy(GET_SETUP_PRODUCT_LIST_DELAY)
+            advanceUntilIdle()
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Success)
             assert((liveDataValue as Success).data.listSetupProductData.any {
@@ -316,7 +317,7 @@ class ShopDiscountManageViewModelTest {
 
     @Test
     fun `When success get setup product list variant with correct start date, product discounted and start date error type, then should return no error`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getSlashPriceSetupProductListUseCase.executeOnBackground()
             } returns getSlashPriceSetupProductListVariantMockResponseCorrectStartDateNoDiscountAndErrorTypeStartDate()
@@ -326,7 +327,7 @@ class ShopDiscountManageViewModelTest {
                 mockModeUpdate,
                 mockSlashPriceStatus
             )
-            advanceTimeBy(GET_SETUP_PRODUCT_LIST_DELAY)
+            advanceUntilIdle()
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Success)
             assert((liveDataValue as Success).data.listSetupProductData.any {
@@ -338,7 +339,7 @@ class ShopDiscountManageViewModelTest {
 
     @Test
     fun `When success get setup product list with r2 abusive error and product discounted, then should return r2 error`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getSlashPriceSetupProductListUseCase.executeOnBackground()
             } returns getSlashPriceSetupProductListMockResponseR2ErrorWithDiscount()
@@ -348,7 +349,7 @@ class ShopDiscountManageViewModelTest {
                 mockModeUpdate,
                 mockSlashPriceStatus
             )
-            advanceTimeBy(GET_SETUP_PRODUCT_LIST_DELAY)
+            advanceUntilIdle()
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Success)
             assert((liveDataValue as Success).data.listSetupProductData.any {
@@ -359,7 +360,7 @@ class ShopDiscountManageViewModelTest {
 
     @Test
     fun `When success get setup product list with no r2 abusive error and product discounted, then should return no error`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getSlashPriceSetupProductListUseCase.executeOnBackground()
             } returns getSlashPriceSetupProductListMockResponseNoR2WithDiscount()
@@ -369,7 +370,7 @@ class ShopDiscountManageViewModelTest {
                 mockModeUpdate,
                 mockSlashPriceStatus
             )
-            advanceTimeBy(GET_SETUP_PRODUCT_LIST_DELAY)
+            advanceUntilIdle()
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Success)
             assert((liveDataValue as Success).data.listSetupProductData.any {
@@ -380,7 +381,7 @@ class ShopDiscountManageViewModelTest {
 
     @Test
     fun `When success get setup product list with r2 abusive error and no product discount, then should return no error`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getSlashPriceSetupProductListUseCase.executeOnBackground()
             } returns getSlashPriceSetupProductListMockResponseR2AbusiveWithNoDiscount()
@@ -390,7 +391,7 @@ class ShopDiscountManageViewModelTest {
                 mockModeUpdate,
                 mockSlashPriceStatus
             )
-            advanceTimeBy(GET_SETUP_PRODUCT_LIST_DELAY)
+            advanceUntilIdle()
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Success)
             assert((liveDataValue as Success).data.listSetupProductData.any {
@@ -401,7 +402,7 @@ class ShopDiscountManageViewModelTest {
 
     @Test
     fun `When success get setup product list variant with r2 abusive error and product discounted, then should return r2 error`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getSlashPriceSetupProductListUseCase.executeOnBackground()
             } returns getSlashPriceSetupProductListVariantMockResponseR2ErrorWithDiscount()
@@ -411,7 +412,7 @@ class ShopDiscountManageViewModelTest {
                 mockModeUpdate,
                 mockSlashPriceStatus
             )
-            advanceTimeBy(GET_SETUP_PRODUCT_LIST_DELAY)
+            advanceUntilIdle()
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Success)
             assert((liveDataValue as Success).data.listSetupProductData.any {
@@ -422,7 +423,7 @@ class ShopDiscountManageViewModelTest {
 
     @Test
     fun `When success get setup product list variant with partial abusive error, then should return abusive partial error`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getSlashPriceSetupProductListUseCase.executeOnBackground()
             } returns getSlashPriceSetupProductListVariantMockResponsePartialAbusiveError()
@@ -432,7 +433,7 @@ class ShopDiscountManageViewModelTest {
                 mockModeUpdate,
                 mockSlashPriceStatus
             )
-            advanceTimeBy(GET_SETUP_PRODUCT_LIST_DELAY)
+            advanceUntilIdle()
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Success)
             assert((liveDataValue as Success).data.listSetupProductData.any {
@@ -443,7 +444,7 @@ class ShopDiscountManageViewModelTest {
 
     @Test
     fun `When success get setup product list with multiple warehouse, then multi loc should be true`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getSlashPriceSetupProductListUseCase.executeOnBackground()
             } returns getSlashPriceSetupProductListMockResponseMultiWarehouse()
@@ -453,7 +454,7 @@ class ShopDiscountManageViewModelTest {
                 mockModeUpdate,
                 mockSlashPriceStatus
             )
-            advanceTimeBy(GET_SETUP_PRODUCT_LIST_DELAY)
+            advanceUntilIdle()
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Success)
             assert((liveDataValue as Success).data.listSetupProductData.any {
@@ -464,7 +465,7 @@ class ShopDiscountManageViewModelTest {
 
     @Test
     fun `When success get setup product list variant with multiple warehouse, then multi loc should be true`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getSlashPriceSetupProductListUseCase.executeOnBackground()
             } returns getSlashPriceSetupProductListVariantMockResponseMultiWarehouse()
@@ -474,7 +475,7 @@ class ShopDiscountManageViewModelTest {
                 mockModeUpdate,
                 mockSlashPriceStatus
             )
-            advanceTimeBy(GET_SETUP_PRODUCT_LIST_DELAY)
+            advanceUntilIdle()
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Success)
             assert((liveDataValue as Success).data.listSetupProductData.any {
@@ -970,7 +971,7 @@ class ShopDiscountManageViewModelTest {
 
     @Test
     fun `When error get setup product list data on create mode, should return fail result`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             coEvery {
                 getSlashPriceSetupProductListUseCase.executeOnBackground()
             } throws Exception()
@@ -980,7 +981,7 @@ class ShopDiscountManageViewModelTest {
                 mockModeCreate,
                 mockSlashPriceStatus
             )
-            advanceTimeBy(GET_SETUP_PRODUCT_LIST_DELAY)
+            advanceUntilIdle()
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Fail)
         }
@@ -1331,7 +1332,7 @@ class ShopDiscountManageViewModelTest {
     }
 
     @Test
-    fun `When call submitProductDiscount with mode create is success, then should return success result`() {
+    fun `When call submitProductDiscount with mode create is success, then should return success result`() = runTest {
         coEvery {
             mutationSlashPriceProductSubmissionUseCase.executeOnBackground()
         } returns DoSlashPriceProductSubmissionResponse()
@@ -1339,12 +1340,13 @@ class ShopDiscountManageViewModelTest {
             getMockListSetupProductDataWithDiscountAndNoError(),
             mockModeCreate
         )
+        advanceUntilIdle()
         val liveData = viewModel.resultSubmitProductSlashPriceLiveData.value
         assert(liveData is Success)
     }
 
     @Test
-    fun `When call submitProductDiscount with mode update is success, then should return success result`() {
+    fun `When call submitProductDiscount with mode update is success, then should return success result`() = runTest {
         coEvery {
             mutationSlashPriceProductSubmissionUseCase.executeOnBackground()
         } returns DoSlashPriceProductSubmissionResponse()
@@ -1352,12 +1354,13 @@ class ShopDiscountManageViewModelTest {
             getMockListSetupProductDataWithDiscountAndNoError(),
             mockModeUpdate
         )
+        advanceUntilIdle()
         val liveData = viewModel.resultSubmitProductSlashPriceLiveData.value
         assert(liveData is Success)
     }
 
     @Test
-    fun `When call submitProductDiscount is error, then should return fail result`() {
+    fun `When call submitProductDiscount is error, then should return fail result`() = runTest{
         coEvery {
             mutationSlashPriceProductSubmissionUseCase.executeOnBackground()
         } throws Exception()
@@ -1365,12 +1368,13 @@ class ShopDiscountManageViewModelTest {
             getMockListSetupProductDataWithDiscountAndNoError(),
             mockModeUpdate
         )
+        advanceUntilIdle()
         val liveData = viewModel.resultSubmitProductSlashPriceLiveData.value
         assert(liveData is Fail)
     }
 
     @Test
-    fun `When call deleteSlashPriceProduct with mode create is success, then should return success result`() {
+    fun `When call deleteSlashPriceProduct with mode create is success, then should return success result`() = runTest{
         coEvery {
             mutationDoSlashPriceProductReservationUseCase.executeOnBackground()
         } returns DoSlashPriceProductReservationResponse()
@@ -1380,12 +1384,13 @@ class ShopDiscountManageViewModelTest {
             mockRequestId,
             mockModeCreate
         )
+        advanceUntilIdle()
         val liveData = viewModel.resultDeleteSlashPriceProductLiveData.value
         assert(liveData is Success)
     }
 
     @Test
-    fun `When call deleteSlashPriceProduct with mode update is success, then should return success result`() {
+    fun `When call deleteSlashPriceProduct with mode update is success, then should return success result`() = runTest{
         coEvery {
             mutationDoSlashPriceProductReservationUseCase.executeOnBackground()
         } returns DoSlashPriceProductReservationResponse()
@@ -1395,12 +1400,13 @@ class ShopDiscountManageViewModelTest {
             mockRequestId,
             mockModeUpdate
         )
+        advanceUntilIdle()
         val liveData = viewModel.resultDeleteSlashPriceProductLiveData.value
         assert(liveData is Success)
     }
 
     @Test
-    fun `When call deleteSlashPriceProduct is error, then should return fail result`() {
+    fun `When call deleteSlashPriceProduct is error, then should return fail result`() = runTest{
         coEvery {
             mutationDoSlashPriceProductReservationUseCase.executeOnBackground()
         } throws Exception()
@@ -1410,6 +1416,7 @@ class ShopDiscountManageViewModelTest {
             mockRequestId,
             mockModeUpdate
         )
+        advanceUntilIdle()
         val liveData = viewModel.resultDeleteSlashPriceProductLiveData.value
         assert(liveData is Fail)
     }

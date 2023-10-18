@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
@@ -19,6 +18,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.brizzi'
+    testNamespace 'com.tokopedia.brizzi.test'
+}
+
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.brizzi
 
@@ -26,11 +30,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.commonElectronicMoney)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.logger)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation projectOrAar(rootProject.ext.libraries.network)

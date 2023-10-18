@@ -1,6 +1,7 @@
 package com.tokopedia.notifications.di.module
 
 import android.content.Context
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -16,6 +17,7 @@ import com.tokopedia.notifications.di.scope.CMNotificationContext
 import com.tokopedia.notifications.di.scope.CMNotificationScope
 import com.tokopedia.notifications.domain.AmplificationUseCase
 import com.tokopedia.notifications.domain.AttributionUseCase
+import com.tokopedia.notifications.domain.TokoChatPushNotifCallbackUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -93,4 +95,12 @@ import com.tokopedia.graphql.domain.GraphqlUseCase as RxUseCase
         )
     }
 
+    @Provides
+    @CMNotificationScope
+    fun provideTokoChatPushNotifCallbackUseCase(
+        repository: GraphqlRepository,
+        dispatchers: CoroutineDispatchers
+    ): TokoChatPushNotifCallbackUseCase {
+        return TokoChatPushNotifCallbackUseCase(repository, dispatchers)
+    }
 }

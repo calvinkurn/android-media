@@ -29,6 +29,4 @@ object CheckoutFingerprintUtil {
             null
         }
     }
-
-
 }

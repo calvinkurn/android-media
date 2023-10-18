@@ -22,8 +22,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataBottomSheet
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
@@ -47,7 +48,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -222,7 +222,9 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     val addOnUiModels = customListAdapter?.getCustomListItems()?.map { it.addOnUiModel }
                     val quantity = binding?.qeuProductQtyEditor?.getValue().orZero()
-                    updateSubtotalPriceLabel(addOnUiModels, quantity)
+                    if (quantity > Int.ZERO) {
+                        updateSubtotalPriceLabel(addOnUiModels, quantity)
+                    }
                 }
                 override fun afterTextChanged(p0: Editable?) {}
             })
@@ -310,17 +312,26 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                     UiEvent.EVENT_HIDE_LOADING_ADD_TO_CART, UiEvent.EVENT_HIDE_LOADING_UPDATE_TO_CART -> {
                         binding?.atcButton?.isLoading = false
                         hideKeyboard()
+                        (it.data as? String)?.let { message ->
+                            showToaster(message)
+                        }
                         parentFragmentManager.popBackStack()
                     }
                     UiEvent.EVENT_PHONE_VERIFICATION -> {
                         binding?.atcButton?.isLoading = false
-                        val bottomSheetData = it.data as? CartTokoFoodBottomSheet
+                        val bottomSheetData = it.data as? CartListBusinessDataBottomSheet
                         bottomSheetData?.run {
                             if (isShowBottomSheet) {
                                 val bottomSheet = PhoneNumberVerificationBottomSheet.createInstance(bottomSheetData = this)
                                 bottomSheet.setClickListener(this@OrderCustomizationFragment)
                                 bottomSheet.show(childFragmentManager)
                             }
+                        }
+                    }
+                    UiEvent.EVENT_FAILED_ADD_TO_CART, UiEvent.EVENT_FAILED_UPDATE_CART -> {
+                        binding?.atcButton?.isLoading = false
+                        it.throwable?.message?.let { errorMessage ->
+                            showErrorToaster(errorMessage)
                         }
                     }
                 }
@@ -360,12 +371,35 @@ class OrderCustomizationFragment : BaseMultiFragment(),
     }
 
     private fun showErrorMessage() {
+        val message =  getString(com.tokopedia.tokofood.R.string.text_error_product_custom_selection)
         view?.let { view ->
             Toaster.build(
                 view = view,
-                text = getString(com.tokopedia.tokofood.R.string.text_error_product_custom_selection),
+                text = message,
                 duration = Toaster.LENGTH_SHORT,
                 type = Toaster.TYPE_NORMAL
+            ).show()
+        }
+    }
+
+    private fun showToaster(toasterMessage: String) {
+        view?.let { view ->
+            Toaster.build(
+                view = view,
+                text = toasterMessage,
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_NORMAL
+            ).show()
+        }
+    }
+
+    private fun showErrorToaster(errorMessage: String) {
+        view?.let { view ->
+            Toaster.build(
+                view = view,
+                text = errorMessage,
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_ERROR
             ).show()
         }
     }

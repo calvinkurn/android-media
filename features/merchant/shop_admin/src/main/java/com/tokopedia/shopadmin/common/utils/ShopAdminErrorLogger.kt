@@ -12,6 +12,7 @@ object ShopAdminErrorLogger {
     const val SHOP_ADMIN_INFO_ERROR = "Shop Admin Info error"
     const val UPDATE_USER_PROFILE_ERROR = "Update User Profile error"
     const val VALIDATE_ADMIN_EMAIL_ERROR = "Update User Profile error"
+    const val ERROR_GET_ADMIN_ACCESS_ROLE = "Error when get admin access role."
 
     fun logToCrashlytic(message: String, cause: Throwable?) {
         if (!GlobalConfig.isAllowDebuggingTools()) {

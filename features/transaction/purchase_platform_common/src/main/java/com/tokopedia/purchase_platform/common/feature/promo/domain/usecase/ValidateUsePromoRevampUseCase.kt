@@ -14,8 +14,10 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class ValidateUsePromoRevampUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
-                                                        private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<ValidateUsePromoRevampUiModel>() {
+class ValidateUsePromoRevampUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
+) : UseCase<ValidateUsePromoRevampUiModel>() {
 
     private var paramValidateUse: ValidateUsePromoRequest? = null
 
@@ -33,20 +35,18 @@ class ValidateUsePromoRevampUseCase @Inject constructor(@ApplicationContext priv
 
     private fun getParams(validateUsePromoRequest: ValidateUsePromoRequest): Map<String, Any?> {
         return mapOf(
-                PARAM_PARAMS to mapOf(
-                        PARAM_PROMO to validateUsePromoRequest
-                ),
-                KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+            PARAM_PARAMS to mapOf(
+                PARAM_PROMO to validateUsePromoRequest
+            ),
+            KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
         )
     }
 
     @GqlQuery(QUERY_VALIDATE_USE, VALIDATE_USE_QUERY)
     override suspend fun executeOnBackground(): ValidateUsePromoRevampUiModel {
         val param = paramValidateUse?.copy() ?: throw RuntimeException("Param has not been initialized")
-
         val request = GraphqlRequest(ValidateUseQuery(), ValidateUseResponse::class.java, getParams(param))
         val validateUseGqlResponse = graphqlRepository.response(listOf(request)).getSuccessData<ValidateUseResponse>()
-
         return ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(validateUseGqlResponse.validateUsePromoRevamp)
     }
 }

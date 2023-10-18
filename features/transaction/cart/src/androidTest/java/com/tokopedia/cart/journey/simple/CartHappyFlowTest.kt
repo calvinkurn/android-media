@@ -56,10 +56,10 @@ class CartHappyFlowTest {
             assertTickerAnnouncementViewHolder(position = 1)
 
             scrollRecyclerViewToPosition(recyclerView = cartRecyclerView, position = 2)
-            assertFirstCartShopViewHolder(
-                    view = activityRule.activity.findViewById(R.id.parent_view),
-                    position = 3,
-                    shopIndex = 0
+            assertFirstCartGroupViewHolder(
+                view = activityRule.activity.findViewById(R.id.parent_view),
+                position = 3,
+                shopIndex = 0
             )
 
             // Prevent glide crash

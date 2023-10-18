@@ -12,7 +12,6 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -22,6 +21,10 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.logisticCommon.data.constant.PodConstant
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.logisticorder.R
@@ -38,7 +41,7 @@ import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.utils.TippingConstant.OPEN
 import com.tokopedia.logisticorder.utils.TippingConstant.REFUND_TIP
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_PAYMENT
-import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TO_GOJEK
+import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TIPPING
 import com.tokopedia.logisticorder.utils.TippingConstant.WAITING_PAYMENT
 import com.tokopedia.logisticorder.utils.isHypen
 import com.tokopedia.logisticorder.utils.toHyphenIfEmptyOrNull
@@ -46,6 +49,7 @@ import com.tokopedia.logisticorder.view.bottomsheet.DriverInfoBottomSheet
 import com.tokopedia.logisticorder.view.bottomsheet.DriverTippingBottomSheet
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -66,6 +70,37 @@ import javax.inject.Inject
 
 class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImageClicked {
 
+    companion object {
+        private const val PER_SECOND = 1000
+        private const val LIVE_TRACKING_VIEW_REQ = 1
+        private const val NEW_DRIVER_COUNT_DOWN = 5L
+        private const val INVALID_ORDER_STATUS = 501
+        private const val ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID"
+        private const val ARGUMENTS_ORDER_TX_ID = "ARGUMENTS_ORDER_TX_ID"
+        private const val ARGUMENTS_GROUP_TYPE = "ARGUMENTS_GROUP_TYPE"
+        private const val ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL"
+        private const val ARGUMENTS_CALLER = "ARGUMENTS_CALLER"
+        private const val ICON_OPEN_TIPPING_GOJEK = TokopediaImageUrl.ICON_OPEN_TIPPING_GOJEK
+
+        fun createFragment(
+            orderId: String?,
+            orderTxId: String?,
+            groupType: Int?,
+            liveTrackingUrl: String?,
+            caller: String?
+        ): TrackingPageFragment {
+            return TrackingPageFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARGUMENTS_ORDER_ID, orderId)
+                    putString(ARGUMENTS_ORDER_TX_ID, orderTxId)
+                    putInt(ARGUMENTS_GROUP_TYPE, groupType ?: 0)
+                    putString(ARGUMENTS_TRACKING_URL, liveTrackingUrl)
+                    putString(ARGUMENTS_CALLER, caller)
+                }
+            }
+        }
+    }
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -73,12 +108,14 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
     lateinit var userSession: UserSessionInterface
 
     private val viewModel: TrackingPageViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(TrackingPageViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory)[TrackingPageViewModel::class.java]
     }
 
     private var binding by autoClearedNullable<FragmentTrackingPageBinding>()
 
     private var mOrderId: String? = null
+    private var mOrderTxId: String? = null
+    private var mGroupType: Int? = null
     private var mTrackingUrl: String? = null
     private var mCaller: String? = null
     private var mCountDownTimer: CountDownTimer? = null
@@ -96,12 +133,18 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         super.onCreate(savedInstanceState)
         if (arguments != null) {
             mOrderId = arguments?.getString(ARGUMENTS_ORDER_ID)
+            mOrderTxId = arguments?.getString(ARGUMENTS_ORDER_TX_ID)
+            mGroupType = arguments?.getInt(ARGUMENTS_GROUP_TYPE)
             mTrackingUrl = arguments?.getString(ARGUMENTS_TRACKING_URL)
             mCaller = arguments?.getString(ARGUMENTS_CALLER)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentTrackingPageBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -119,22 +162,28 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         }
     }
 
+    override fun onImageItemClicked(imageId: String, orderId: Long, description: String) {
+        navigateToPodActivity(imageId, orderId, description)
+    }
+
     private fun initObserver() {
-        viewModel.trackingData.observe(viewLifecycleOwner, Observer {
+        viewModel.trackingData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     hideLoading()
                     populateView(it.data)
                 }
+
                 is Fail -> {
                     hideLoading()
                     showError(it.throwable)
                 }
+
                 else -> showLoading()
             }
-        })
+        }
 
-        viewModel.retryAvailability.observe(viewLifecycleOwner, Observer {
+        viewModel.retryAvailability.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     val avail = it.data.retryAvailability
@@ -147,38 +196,35 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                         setRetryButton(false, 0L)
                     }
                 }
+
                 is Fail -> {
                     showSoftError(it.throwable)
                 }
             }
-        })
+        }
 
-        viewModel.retryBooking.observe(viewLifecycleOwner, Observer {
+        viewModel.retryBooking.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> startSuccessCountdown()
                 is Fail -> showError(it.throwable)
             }
-        })
-
+        }
     }
 
     private fun fetchData() {
-        mOrderId?.let { viewModel.getTrackingData(it) }
-        if ((!mTrackingUrl.isNullOrEmpty()) && mCaller != null && mCaller.equals("seller", ignoreCase = true)) {
-            mOrderId?.let { viewModel.retryAvailability(it) }
+        mOrderId?.let { orderId ->
+            viewModel.getTrackingData(orderId, mOrderTxId, mGroupType)
+
+            if ((!mTrackingUrl.isNullOrEmpty()) && mCaller != null && mCaller.equals("seller", ignoreCase = true)) {
+                viewModel.retryAvailability(orderId)
+            }
         }
     }
 
     private fun populateView(trackingDataModel: TrackingDataModel) {
         val model = trackingDataModel.trackOrder
-        binding?.referenceNumber?.text = model.shippingRefNum.toHyphenIfEmptyOrNull()
         setDeliveryDate(model.detail.sendDate)
-        binding?.storeName?.text = model.detail.shipperName.toHyphenIfEmptyOrNull()
-        binding?.storeAddress?.text = model.detail.shipperCity.toHyphenIfEmptyOrNull()
-        binding?.serviceCode?.text = model.detail.serviceCode.toHyphenIfEmptyOrNull()
-        binding?.buyerName?.text = model.detail.receiverName.toHyphenIfEmptyOrNull()
-        binding?.buyerLocation?.text = model.detail.receiverCity.toHyphenIfEmptyOrNull()
-        binding?.currentStatus?.text = model.status.toHyphenIfEmptyOrNull()
+        setTextInfo(model)
         setEtaDetail(model.detail.eta)
         setDriverInfo(trackingDataModel)
         initialHistoryView()
@@ -187,17 +233,64 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         setLiveTrackingButton(model)
         setTicketInfoCourier(trackingDataModel.page)
         initClickToCopy(model.shippingRefNum.toHyphenIfEmptyOrNull())
+        setHeader(trackingDataModel)
+    }
+
+    private fun setHeader(model: TrackingDataModel) {
+        binding?.headerTrackingPage?.let { header ->
+            model.page.contactUsUrl.takeIf { it.isNotEmpty() }?.let { url ->
+                val cleanedUrl = HtmlLinkHelper(requireContext(), url).spannedString
+                header.addRightIcon(0).apply {
+                    clearImage()
+                    setImageDrawable(
+                        getIconUnifyDrawable(
+                            context,
+                            IconUnify.CALL_CENTER
+                        )
+                    )
+
+                    setOnClickListener {
+                        RouteManager.route(
+                            activity,
+                            "${ApplinkConst.WEBVIEW}?url=$cleanedUrl"
+                        )
+                    }
+                }
+            }
+            header.setNavigationOnClickListener {
+                activity?.finish()
+            }
+        }
+    }
+
+    private fun setTextInfo(model: TrackOrderModel) {
+        binding?.let {
+            it.referenceNumber.text = model.shippingRefNum.toHyphenIfEmptyOrNull()
+
+            it.storeName.text = model.detail.shipperName.toHyphenIfEmptyOrNull()
+            it.storeAddress.text = model.detail.shipperCity
+
+            it.serviceCode.text = model.detail.serviceCode.toHyphenIfEmptyOrNull()
+
+            it.buyerName.text = model.detail.receiverName.toHyphenIfEmptyOrNull()
+            it.buyerLocation.text = model.detail.receiverCity
+
+            it.currentStatus.text = model.status.toHyphenIfEmptyOrNull()
+        }
     }
 
     private fun setDeliveryDate(sendDate: String) {
         var date: String = sendDate
-        if (sendDate.isNotEmpty()) date = DateUtil.formatDate("yyyy-MM-dd", "dd MMMM yyyy", sendDate)
+        if (sendDate.isNotEmpty()) {
+            date =
+                DateUtil.formatDate("yyyy-MM-dd", "dd MMMM yyyy", sendDate)
+        }
         binding?.deliveryDate?.text = date.toHyphenIfEmptyOrNull()
     }
 
     private fun setDriverInfo(data: TrackingDataModel) {
         val tippingData = data.tipping
-        if (tippingData.status == OPEN || tippingData.status == WAITING_PAYMENT || tippingData.status == SUCCESS_PAYMENT || tippingData.status == SUCCESS_TO_GOJEK || tippingData.status == REFUND_TIP) {
+        if (tippingData.status == OPEN || tippingData.status == WAITING_PAYMENT || tippingData.status == SUCCESS_PAYMENT || tippingData.status == SUCCESS_TIPPING || tippingData.status == REFUND_TIP) {
             setTippingData(data)
             binding?.tippingGojekLayout?.root?.visibility = View.VISIBLE
             binding?.dividerTippingGojek?.visibility = View.VISIBLE
@@ -227,11 +320,13 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
 
     private fun goToCallIntent(phoneNumber: String) {
         val callIntent = Intent(Intent.ACTION_DIAL).apply {
-            this.data = Uri.parse("tel:${phoneNumber}")
+            this.data = Uri.parse("tel:$phoneNumber")
         }
         try {
             startActivity(callIntent)
-        } catch (e: ActivityNotFoundException) {}
+        } catch (_: ActivityNotFoundException) {
+            // no-op
+        }
     }
 
     private fun setTippingData(data: TrackingDataModel) {
@@ -251,7 +346,10 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                             com.tokopedia.unifyprinciples.R.color.Unify_NN0
                         )
                     )
-                    val textColor = MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+                    val textColor = MethodChecker.getColor(
+                        ctx,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                    )
                     tippingText.setTextColor(textColor)
                     tippingDescription.setTextColor(textColor)
                 }
@@ -279,7 +377,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
             }
 
             btnTipping.text = when (tippingData.status) {
-                SUCCESS_PAYMENT, SUCCESS_TO_GOJEK -> getString(R.string.btn_tipping_success_text)
+                SUCCESS_PAYMENT, SUCCESS_TIPPING -> getString(R.string.btn_tipping_success_text)
                 WAITING_PAYMENT -> getString(R.string.btn_tipping_waiting_payment_text)
                 REFUND_TIP -> getString(R.string.btn_tipping_refund_text)
                 else -> getString(R.string.btn_tipping_open_text)
@@ -293,15 +391,18 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
             }
             btnTipping.setOnClickListener {
                 when (tippingData.status) {
-                    SUCCESS_PAYMENT, SUCCESS_TO_GOJEK, OPEN -> {
+                    SUCCESS_PAYMENT, SUCCESS_TIPPING, OPEN -> {
                         DriverTippingBottomSheet().show(parentFragmentManager, mOrderId, data)
                     }
+
                     WAITING_PAYMENT -> {
                         RouteManager.route(context, ApplinkConst.PMS)
                     }
+
                     REFUND_TIP -> {
                         RouteManager.route(context, ApplinkConst.SALDO)
                     }
+
                     else -> {
                         // no ops
                     }
@@ -377,18 +478,18 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
 
     private fun showEtaBottomSheet(description: String) {
         val delayedEtaBottomSheetFragment = DelayedEtaBottomSheetFragment.newInstance(description)
-        parentFragmentManager?.run {
-            delayedEtaBottomSheetFragment.show(this, "")
-        }
+        delayedEtaBottomSheetFragment.show(parentFragmentManager, "")
     }
 
     private fun initTimer(remainingSeconds: Long) {
         if (remainingSeconds <= 0) return
         val timeInMillis = remainingSeconds * 1000
-        val strFormat = if (context != null) context?.getString(R.string.retry_dateline_info) else ""
+        val strFormat =
+            if (context != null) context?.getString(R.string.retry_dateline_info) else ""
         mOrderId?.let {
             OrderAnalyticsOrderTracking.eventViewLabelTungguRetry(
-                DateUtils.formatElapsedTime(timeInMillis / 1000), it
+                DateUtils.formatElapsedTime(timeInMillis / 1000),
+                it
             )
         }
         mCountDownTimer = object : CountDownTimer(timeInMillis, PER_SECOND.toLong()) {
@@ -422,13 +523,12 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                 }
 
                 override fun onCompleted() {
-                    //no-op
+                    // no-op
                 }
 
                 override fun onError(e: Throwable) {
                     showError(e)
                 }
-
             })
     }
 
@@ -443,8 +543,10 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
             binding?.trackingHistory?.visibility = View.GONE
         } else {
             binding?.trackingHistory?.visibility = View.VISIBLE
-            binding?.trackingHistory?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            binding?.trackingHistory?.adapter = TrackingHistoryAdapter(model.trackHistory, userSession, mOrderId?.toLong(), this)
+            binding?.trackingHistory?.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            binding?.trackingHistory?.adapter =
+                TrackingHistoryAdapter(model.trackHistory, userSession, mOrderId?.toLong(), this)
         }
     }
 
@@ -457,14 +559,20 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                 val message = ArrayList<TickerData>()
                 for (item in page.additionalInfo) {
                     val formattedDes = formatTitleHtml(item.notes, item.urlDetail, item.urlText)
-                    message.add(TickerData(item.title, formattedDes, Ticker.TYPE_ANNOUNCEMENT, true))
+                    message.add(
+                        TickerData(
+                            item.title,
+                            formattedDes,
+                            Ticker.TYPE_ANNOUNCEMENT,
+                            true
+                        )
+                    )
                 }
                 val tickerPageAdapter = TickerPagerAdapter(context, message)
-                tickerPageAdapter?.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                tickerPageAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                     override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                        openWebViewFromTicker(linkUrl)
                     }
-
                 })
                 binding?.tickerInfoCourier?.addPagerView(tickerPageAdapter, message)
             } else {
@@ -479,16 +587,19 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                 binding?.tickerInfoCourier?.tickerShape = Ticker.SHAPE_LOOSE
                 binding?.tickerInfoCourier?.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                        openWebViewFromTicker(linkUrl)
                     }
 
                     override fun onDismiss() {
-                        //no-op
+                        // no-op
                     }
-
                 })
             }
         }
+    }
+
+    private fun openWebViewFromTicker(linkUrl: CharSequence) {
+        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$linkUrl")
     }
 
     private fun setEmptyHistoryView(model: TrackOrderModel) {
@@ -496,7 +607,8 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
             binding?.emptyUpdateNotification?.visibility = View.VISIBLE
             binding?.notificationText?.text = getString(R.string.warning_courier_invalid)
             binding?.notificationHelpStep?.visibility = View.VISIBLE
-            binding?.notificationHelpStep?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            binding?.notificationHelpStep?.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             binding?.notificationHelpStep?.adapter = EmptyTrackingNotesAdapter()
         } else if (model.orderStatus == INVALID_ORDER_STATUS || model.change == 0 || model.trackHistory.isEmpty()) {
             binding?.emptyUpdateNotification?.visibility = View.VISIBLE
@@ -532,32 +644,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         return String.format("%s <a href=\"%s\">%s</a>", desc, urlText, url)
     }
 
-    companion object {
-        private const val PER_SECOND = 1000
-        private const val LIVE_TRACKING_VIEW_REQ = 1
-        private const val NEW_DRIVER_COUNT_DOWN = 5L
-        private const val INVALID_ORDER_STATUS = 501
-        private const val ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID"
-        private const val ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL"
-        private const val ARGUMENTS_CALLER = "ARGUMENTS_CALLER"
-        private const val ICON_OPEN_TIPPING_GOJEK = "https://images.tokopedia.net/img/android/tipping/Group 3125093.png"
-
-        fun createFragment(orderId: String?, liveTrackingUrl: String?, caller: String?): TrackingPageFragment {
-            return TrackingPageFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARGUMENTS_ORDER_ID, orderId)
-                    putString(ARGUMENTS_TRACKING_URL, liveTrackingUrl)
-                    putString(ARGUMENTS_CALLER, caller)
-                }
-            }
-        }
-    }
-
-    override fun onImageItemClicked(imageId: String, orderId: Long, description: String) {
-        navigateToPodActivity(imageId, orderId, description)
-    }
-
-    //POD: navigate to pod activity
+    // POD: navigate to pod activity
     private fun navigateToPodActivity(imageId: String, orderId: Long, description: String) {
         val appLink = Uri.parse(ApplinkConstInternalLogistic.PROOF_OF_DELIVERY).buildUpon()
             .appendQueryParameter(PodConstant.QUERY_IMAGE_ID, imageId)
@@ -570,7 +657,6 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
     }
 
     private fun initClickToCopy(referenceNumber: String) {
-
         if (referenceNumber.isHypen()) {
             binding?.referenceNumberCopy?.visibility = View.GONE
         } else {
@@ -578,16 +664,18 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                 onTextCopied(getString(R.string.label_copy_reference_number), referenceNumber)
             }
         }
-
-
     }
 
     private fun onTextCopied(label: String, str: String) {
-        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboardManager =
+            context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.setPrimaryClip(ClipData.newPlainText(label, str))
-        Toaster.build(requireView(), getString(R.string.success_copy_reference_number), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+        Toaster.build(
+            requireView(),
+            getString(R.string.success_copy_reference_number),
+            Toaster.LENGTH_SHORT,
+            Toaster.TYPE_NORMAL
+        )
             .show()
     }
-
-
 }

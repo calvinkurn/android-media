@@ -16,5 +16,7 @@ data class DepositAmount(
         @SerializedName("amount")
         val amount: Int = 0,
         @SerializedName("amount_fmt")
-        val amountFmt: String = ""
+        val amountFmt: String = "",
+        @SerializedName("amount_html")
+        val amountHtml: String = ""
 )

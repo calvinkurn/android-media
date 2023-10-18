@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -42,7 +42,7 @@ class MerchantCouponViewmodelTest {
     @ExperimentalCoroutinesApi
     @Test
     fun `getMerchantCouponData for success data`() {
-        runBlockingTest {
+        runTest {
             val couponObserver = mockk<Observer<LiveDataResult<MerchantCouponData>>>() {
                 every { onChanged(any()) } just Runs
             }

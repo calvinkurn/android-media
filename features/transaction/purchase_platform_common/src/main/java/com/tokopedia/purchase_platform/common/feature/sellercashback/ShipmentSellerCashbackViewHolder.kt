@@ -26,5 +26,4 @@ class ShipmentSellerCashbackViewHolder(itemView: View, private val sellerCashbac
         @JvmField
         val ITEM_VIEW_SELLER_CASHBACK = R.layout.item_seller_cashback
     }
-
 }

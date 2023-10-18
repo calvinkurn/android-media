@@ -29,12 +29,14 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
+class LoginByQrFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var analytics: TrackingOtpUtil
 
@@ -87,18 +89,21 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     private fun checkLogin() {
-        if(!userSession.isLoggedIn) {
+        if (!userSession.isLoggedIn) {
             goToLogin()
         }
     }
 
     private fun initObserver() {
-        viewModel.verifyQrResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessVerifyQr().invoke(it.data)
-                is Fail -> onFailedVerifyQr().invoke(it.throwable)
+        viewModel.verifyQrResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> onSuccessVerifyQr().invoke(it.data)
+                    is Fail -> onFailedVerifyQr().invoke(it.throwable)
+                }
             }
-        })
+        )
     }
 
     private fun initView() {
@@ -139,11 +144,11 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
                 activity?.finish()
             } else {
                 goToResult(
-                        verifyQrData.imglink,
-                        verifyQrData.messageTitle,
-                        verifyQrData.messageBody,
-                        verifyQrData.buttonType,
-                        verifyQrData.status
+                    verifyQrData.imglink,
+                    verifyQrData.messageTitle,
+                    verifyQrData.messageBody,
+                    verifyQrData.buttonType,
+                    verifyQrData.status
                 )
             }
         }

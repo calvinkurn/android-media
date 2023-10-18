@@ -1,12 +1,19 @@
 package com.tokopedia.notifications.model
 
+import android.content.Context
+import android.net.Uri
+import android.os.Build
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifications.model.WebHookParams.Companion.getWebHookData
 import com.tokopedia.notifications.model.WebHookParams.Companion.webHookToJson
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -193,7 +200,35 @@ data class BaseNotificationModel(
         } ?: false
     }
 
+    fun isEnableBubbleOnSellerTopChat(context: Context): Boolean {
+        return GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
+            isTopChatOn() && getShouldEnableBubbleOnTopChat(context)
+    }
+
+    fun isTopChatOn(): Boolean {
+        return try {
+            val uri = Uri.parse(appLink)
+            when (uri.host) {
+                TOPCHAT -> {
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            false
+        }
+    }
+
+    private fun getShouldEnableBubbleOnTopChat(context: Context): Boolean {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        return remoteConfig.getBoolean(RemoteConfigKey.BUBBLE_TOPCHAT_CM, true)
+    }
+
     companion object {
         private const val REPLY_TYPE_CHAT = "Chat"
+        private const val TOPCHAT = "topchat"
     }
 }

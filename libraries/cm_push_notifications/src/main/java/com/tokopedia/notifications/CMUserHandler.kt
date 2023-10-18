@@ -3,14 +3,9 @@ package com.tokopedia.notifications
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.text.TextUtils
 import android.util.Log
-import com.google.android.gms.ads.identifier.AdvertisingIdClient
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException
-import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.abstraction.constant.TkpdCache
+import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -26,7 +21,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import rx.Subscriber
-import java.io.IOException
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
@@ -49,50 +43,6 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
                     .take(CMConstant.TimberTags.MAX_LIMIT), "data" to ""))
         })
     }
-
-    private val googleAdId: String
-        get() {
-            val localCacheHandler = LocalCacheHandler(mContext, TkpdCache.ADVERTISINGID)
-            val adsId = localCacheHandler.getString(TkpdCache.Key.KEY_ADVERTISINGID)
-
-            if (adsId != null && !TextUtils.isEmpty(adsId.trim { it <= ' ' })) {
-                return adsId
-            } else {
-                val adInfo: AdvertisingIdClient.Info?
-                try {
-                    adInfo = AdvertisingIdClient.getAdvertisingIdInfo(mContext)
-                } catch (e: IOException) {
-                    ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                            mapOf("type" to "exception", "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
-                                    "data" to ""))
-                    e.printStackTrace()
-                    return ""
-                } catch (e: GooglePlayServicesNotAvailableException) {
-                    ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                            mapOf("type" to "exception", "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
-                                    "data" to ""))
-                    e.printStackTrace()
-                    return ""
-                } catch (e: GooglePlayServicesRepairableException) {
-                    ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                            mapOf("type" to "exception", "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
-                                    "data" to ""))
-                    e.printStackTrace()
-                    return ""
-                }
-
-                if (adInfo != null) {
-                    val adID = adInfo.id
-
-                    if (!TextUtils.isEmpty(adID)) {
-                        localCacheHandler.putString(TkpdCache.Key.KEY_ADVERTISINGID, adID)
-                        localCacheHandler.applyEditor()
-                    }
-                    return adID
-                }
-            }
-            return ""
-        }
 
     private val userId: String
         get() {
@@ -139,7 +89,7 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
 
             if (CMNotificationUtils.checkTokenValidity(token)) return
 
-            val gAdId = googleAdId
+            val gAdId = DeviceInfo.getAdsId(mContext)
             val appVersionName = CMNotificationUtils.getCurrentAppVersionName(mContext)
             val applicationName = CMNotificationUtils.getApplicationName(mContext)
             if (applicationName == CMNotificationUtils.SELLER_APP_NAME && !CMPushNotificationManager.instance.sellerAppCmAddTokenEnabled)

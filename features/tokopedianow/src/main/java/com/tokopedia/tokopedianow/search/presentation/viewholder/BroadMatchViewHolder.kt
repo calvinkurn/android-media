@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.search.presentation.viewholder
 
+import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -7,10 +8,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
-import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowBroadmatchBinding
 import com.tokopedia.tokopedianow.search.presentation.listener.BroadMatchListener
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
@@ -20,7 +21,7 @@ class BroadMatchViewHolder(
     itemView: View,
     private val listener: BroadMatchListener
 ): AbstractViewHolder<BroadMatchDataView>(itemView),
-    TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener,
+    ProductCardCompactCarouselView.ProductCardCompactCarouselBasicListener,
     TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
 {
     companion object {
@@ -57,7 +58,7 @@ class BroadMatchViewHolder(
 
     private fun ItemTokopedianowBroadmatchBinding.setItems(
         items: List<Visitable<*>>,
-        seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null
+        seeMoreModel: ProductCardCompactCarouselSeeMoreUiModel? = null
     ) {
         productCardCarousel.bindItems(
             items = items,
@@ -76,7 +77,7 @@ class BroadMatchViewHolder(
     }
 
     private fun ItemTokopedianowBroadmatchBinding.setListener(
-        productCardCarouselListener: TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener,
+        productCardCarouselListener: ProductCardCompactCarouselView.ProductCardCompactCarouselListener,
         headerCarouselListener: TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
     ) {
         productCardCarousel.setListener(
@@ -89,7 +90,7 @@ class BroadMatchViewHolder(
 
     override fun onProductCardClicked(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         listener.onBroadMatchItemClicked(
             broadMatchItemDataView = product,
@@ -99,7 +100,7 @@ class BroadMatchViewHolder(
 
     override fun onProductCardImpressed(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) {
         listener.onBroadMatchItemImpressed(
             broadMatchItemDataView = product,
@@ -109,7 +110,7 @@ class BroadMatchViewHolder(
 
     override fun onProductCardQuantityChanged(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel,
         quantity: Int
     ) {
         listener.onBroadMatchItemATCNonVariant(
@@ -119,14 +120,21 @@ class BroadMatchViewHolder(
         )
     }
 
-    override fun onSeeMoreClicked(seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel) {
+    override fun onSeeMoreClicked(seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel) {
         listener.onBroadMatchSeeAllClicked(
             title = seeMoreUiModel.headerName,
             appLink = seeMoreUiModel.appLink
         )
     }
 
-    override fun onSeeAllClicked(headerName: String, appLink: String) {
+    override fun onProductCardAddToCartBlocked() = listener.onBroadMatchAddToCartBlocked()
+
+    override fun onSeeAllClicked(
+        context: Context,
+        headerName: String,
+        appLink: String,
+        widgetId: String
+    ) {
         listener.onBroadMatchSeeAllClicked(
             title = headerName,
             appLink = appLink
@@ -137,6 +145,6 @@ class BroadMatchViewHolder(
 
     override fun onProductCardAddVariantClicked(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: ProductCardCompactCarouselItemUiModel
     ) { /* nothing to do */ }
 }

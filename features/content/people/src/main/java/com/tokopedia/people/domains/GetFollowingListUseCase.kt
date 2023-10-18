@@ -45,34 +45,39 @@ class GetFollowingListUseCase @Inject constructor(
         const val QUERY_NAME = "GetFollowingListUseCaseQuery"
         const val QUERY = """
                 query ProfileFollowingList(
-                    ${"$$KEY_USERNAME"}: String!, 
-                    ${"$$KEY_CURSOR"}: String!, 
-                    ${"$$KEY_LIMIT"}: Int!
-                ) {
-                  feedXProfileFollowingList(req: {
-                    $KEY_USERNAME: ${"$$KEY_USERNAME"}, 
-                    $KEY_CURSOR: ${"$$KEY_CURSOR"}, 
-                    $KEY_LIMIT: ${"$$KEY_LIMIT"}
-                }) {
-                    followings {
-                      profile {
-                        userID
-                        encryptedUserID
-                        imageCover
-                        name
-                        username
-                        biography
-                        sharelink {
-                          weblink
-                          applink
-                        }
-                        badges
-                      }
-                      isFollow
-                    }
-                    newCursor
-                  }
+            ${"$$KEY_USERNAME"}: String!, 
+            ${"$$KEY_CURSOR"}: String!, 
+            ${"$$KEY_LIMIT"}: Int!) {
+              feedXProfileHeader($KEY_USERNAME: ${"$$KEY_USERNAME"}) {
+                stats {
+                    totalFollowerFmt
+                    totalFollowingFmt
                 }
+              }
+              feedXProfileFollowingList(req: {
+                  $KEY_USERNAME: ${"$$KEY_USERNAME"}, 
+                  $KEY_CURSOR: ${"$$KEY_CURSOR"}, 
+                  $KEY_LIMIT: ${"$$KEY_LIMIT"}
+              }) {
+                followings {
+                  profile {
+                    userID
+                    encryptedUserID
+                    imageCover
+                    name
+                    username
+                    biography
+                    sharelink {
+                      weblink
+                      applink
+                    }
+                    badges
+                  }
+                  isFollow
+                }
+                newCursor
+              }
+            }
         """
     }
 }

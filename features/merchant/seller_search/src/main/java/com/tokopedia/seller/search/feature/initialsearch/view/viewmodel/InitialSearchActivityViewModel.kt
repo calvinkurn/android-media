@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.seller.search.common.domain.GetSellerSearchPlaceholderUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -18,8 +18,8 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class InitialSearchActivityViewModel @Inject constructor(
-        private val getPlaceholderUseCase: GetSellerSearchPlaceholderUseCase,
-        private val dispatchers: CoroutineDispatchers
+    private val getPlaceholderUseCase: GetSellerSearchPlaceholderUseCase,
+    private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     val searchPlaceholder: LiveData<Result<String>>
@@ -31,7 +31,6 @@ class InitialSearchActivityViewModel @Inject constructor(
     val searchKeyword: LiveData<String>
         get() = _searchKeyword
 
-
     val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
 
     init {
@@ -42,8 +41,8 @@ class InitialSearchActivityViewModel @Inject constructor(
         launchCatchError(block = {
             val placeholder = withContext(dispatchers.io) {
                 getPlaceholderUseCase.executeOnBackground()
-                        .response
-                        .sentence
+                    .response
+                    .sentence
             }
             _searchPlaceholder.value = Success(placeholder)
         }) {
@@ -52,17 +51,17 @@ class InitialSearchActivityViewModel @Inject constructor(
     }
 
     fun getTypingSearch(keyword: String) {
-        queryChannel.offer(keyword)
+        queryChannel.trySend(keyword)
     }
 
     private fun getSearchKeyword() {
         viewModelScope.launch {
             queryChannel.asFlow()
-                    .debounce(DEBOUNCE_DELAY_MILLIS)
-                    .distinctUntilChanged()
-                    .collectLatest {
-                        _searchKeyword.value = it
-                    }
+                .debounce(DEBOUNCE_DELAY_MILLIS)
+                .distinctUntilChanged()
+                .collectLatest {
+                    _searchKeyword.value = it
+                }
         }
     }
 

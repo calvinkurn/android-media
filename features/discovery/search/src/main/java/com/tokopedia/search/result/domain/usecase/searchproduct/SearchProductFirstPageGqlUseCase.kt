@@ -85,7 +85,7 @@ class SearchProductFirstPageGqlUseCase(
                 searchLogger.logSearchDebug(query, getSortFilterParamsString(searchProductParams))
             }
 
-        val topAdsImageViewModelObservable = createTopAdsImageViewModelObservable(query)
+        val topAdsImageViewModelObservable = createTopAdsImageViewModelObservable(query, requestParams)
 
         return Observable.zip(
             gqlSearchProductObservable,
@@ -168,16 +168,22 @@ class SearchProductFirstPageGqlUseCase(
             mapOf(GQL.KEY_PARAMS to params)
         )
 
-    private fun createTopAdsImageViewModelObservable(query: String): Observable<List<TopAdsImageViewModel>> {
-        return Observable.create<List<TopAdsImageViewModel>>({ emitter ->
-            try {
-                launch { emitTopAdsImageViewData(emitter, query) }
-            }
-            catch (throwable: Throwable) {
-                searchLogger.logTDNError(throwable)
-                emitter.onNext(listOf())
-            }
-        }, BUFFER).tdnTimeout()
+    private fun createTopAdsImageViewModelObservable(
+        query: String,
+        requestParams: RequestParams,
+    ): Observable<List<TopAdsImageViewModel>> {
+        return if(requestParams.isSkipTdnBanner()) {
+            Observable.just(emptyList())
+        } else {
+            Observable.create<List<TopAdsImageViewModel>>({ emitter ->
+                try {
+                    launch { emitTopAdsImageViewData(emitter, query) }
+                } catch (throwable: Throwable) {
+                    searchLogger.logTDNError(throwable)
+                    emitter.onNext(listOf())
+                }
+            }, BUFFER).tdnTimeout()
+        }
     }
 
     private suspend fun emitTopAdsImageViewData(emitter: Emitter<List<TopAdsImageViewModel>>, query: String) {
@@ -375,6 +381,7 @@ class SearchProductFirstPageGqlUseCase(
                                     value
                                     color
                                 }
+                                warehouse_id_default
                             }
                             card_button {
                                 title
@@ -402,8 +409,12 @@ class SearchProductFirstPageGqlUseCase(
                 searchInspirationWidget(params:${'$'}params){
                     data {
                         title
+                        header_title
+                        header_subtitle
+                        layout
                         type
                         position
+                        input_type
                         options {
                             text
                             img
@@ -411,11 +422,13 @@ class SearchProductFirstPageGqlUseCase(
                             color
                             applink
                             component_id
-                            filters {
+                            multi_filters {
                               title
                               key
                               name
                               value
+                              val_min
+                              val_max
                             }
                         }
                         tracking_option

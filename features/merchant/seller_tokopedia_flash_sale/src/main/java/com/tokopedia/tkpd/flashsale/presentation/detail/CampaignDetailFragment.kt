@@ -20,15 +20,37 @@ import com.tokopedia.campaign.utils.constant.DateConstant.DATE_TIME_SECOND_PRECI
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_YEAR_PRECISION
 import com.tokopedia.campaign.utils.constant.DateConstant.TIME_MINUTE_PRECISION_WITH_TIMEZONE
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant
-import com.tokopedia.campaign.utils.extension.*
+import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
+import com.tokopedia.campaign.utils.extension.doOnDelayFinished
+import com.tokopedia.campaign.utils.extension.showToaster
+import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.formatTo
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setTextColorCompat
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
-import com.tokopedia.seller_tokopedia_flash_sale.databinding.*
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsCdpBodyBinding
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsCdpHeaderBinding
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsCdpOngoingMidBinding
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsCdpRegisteredMidBinding
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsCdpUpcomingBodyBinding
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsCdpUpcomingMidBinding
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentCampaignDetailBinding
 import com.tokopedia.tkpd.flashsale.common.bottomsheet.sse_submission_error.FlashSaleProductListSseSubmissionErrorBottomSheet
 import com.tokopedia.tkpd.flashsale.common.dialog.FlashSaleProductSseSubmissionDialog
 import com.tokopedia.tkpd.flashsale.common.dialog.FlashSaleProductSseSubmissionProgressDialog
@@ -37,7 +59,11 @@ import com.tokopedia.tkpd.flashsale.common.extension.toCalendar
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionSseResult
-import com.tokopedia.tkpd.flashsale.domain.entity.enums.*
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.DetailBottomSheetType
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleListPageTab
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.UpcomingCampaignStatus
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.isFlashSaleAvailable
 import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.ProductCheckBottomSheet
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.ChooseProductActivity
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
@@ -195,6 +221,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        applyUnifyBackgroundColor()
         init()
         setupProductSubmissionCount()
         setupChooseProductRedirection()
@@ -672,7 +699,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 setTextColor(
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_R500
+                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
                     )
                 )
             }
@@ -776,7 +803,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             when (flashSale.status) {
                 FlashSaleStatus.NO_REGISTERED_PRODUCT -> {
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
-                    tgCampaignStatus.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                    tgCampaignStatus.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN700)
                 }
                 FlashSaleStatus.WAITING_FOR_SELECTION -> {
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_ORANGE)
@@ -792,7 +819,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 }
                 else -> {
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
-                    tgCampaignStatus.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                    tgCampaignStatus.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN700)
                 }
             }
             tickerHeader.gone()
@@ -959,8 +986,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private fun onShowOrHideItemCheckBox() {
         val oldItems = productAdapter.getItems().filterIsInstance<WaitingForSelectionItem>()
         val newItems =
-            oldItems.map { it.copy(isCheckBoxShown = !it.isCheckBoxShown, isSelected = false) }
-        val isShown = newItems[Int.ZERO].isCheckBoxShown
+            oldItems.map { it.copy(isCheckBoxShown = !it.isCheckBoxShown) }
+        val isShown = newItems.firstOrNull()?.isCheckBoxShown ?: false
         productAdapter.submit(newItems)
         viewModel.setCheckBoxStateStatus(isShown)
 
@@ -974,6 +1001,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 tpgSelectedProductCount.invisible()
                 tpgProductCount.visible()
                 btnSelectAllProduct.text = getString(R.string.stfs_choose_all_product_label)
+                viewModel.removeAllSelectedItems()
             }
         }
         setupRegisteredButton(isShown)
@@ -1101,7 +1129,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         ongoingCdpHeaderBinding?.run {
             imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
             tgCampaignStatus.apply {
-                setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN700)
                 text = flashSale.statusText
             }
         }
@@ -1242,7 +1270,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 setTextColor(
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_R500
+                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
                     )
                 )
             }

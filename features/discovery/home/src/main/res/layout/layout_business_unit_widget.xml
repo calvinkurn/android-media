@@ -38,14 +38,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-                app:tabBackground="@color/Unify_N0"
+                app:tabBackground="@color/Unify_NN0"
                 app:tabPaddingBottom="6dp"
-                app:tabIndicatorColor="@color/Unify_G500"
-                app:tabSelectedTextColor="@color/Unify_G500"
+                app:tabIndicatorColor="@color/Unify_GN500"
+                app:tabSelectedTextColor="@color/Unify_GN500"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:tabTextColor="@color/Unify_N200"/>
+                app:tabTextColor="@color/Unify_NN500"/>
 
             <View
                 android:id="@+id/divider_tab_layout"
@@ -113,5 +113,5 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         tools:visibility="visible"
-        tools:background="@color/Unify_B500"/>
+        tools:background="@color/Unify_BN500"/>
 </LinearLayout>

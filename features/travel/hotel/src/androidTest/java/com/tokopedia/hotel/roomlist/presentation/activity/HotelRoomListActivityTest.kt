@@ -67,7 +67,7 @@ class HotelRoomListActivityTest {
                 RecyclerViewActions.actionOnItemAtPosition<RoomListViewHolder>(0, CommonActions.clickChildViewWithId(R.id.image_banner)))
 
         Thread.sleep(3000)
-        onView(withId(R.id.btn_arrow_back)).perform(click())
+        onView(withId(com.tokopedia.imagepreviewslider.R.id.btn_arrow_back)).perform(click())
 
         Thread.sleep(3000)
     }
@@ -89,7 +89,7 @@ class HotelRoomListActivityTest {
             onView(withId(R.id.room_detail_images)).perform(click())
 
             Thread.sleep(3000)
-            onView(withId(R.id.btn_arrow_back)).perform(click())
+            onView(withId(com.tokopedia.imagepreviewslider.R.id.btn_arrow_back)).perform(click())
 
             Thread.sleep(3000)
             onView(withId(R.id.room_detail_button)).perform(click())

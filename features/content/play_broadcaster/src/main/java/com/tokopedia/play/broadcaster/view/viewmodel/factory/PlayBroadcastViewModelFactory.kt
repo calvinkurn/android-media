@@ -23,7 +23,7 @@ class PlayBroadcastViewModelFactory @AssistedInject constructor(
         fun create(activity: FragmentActivity): PlayBroadcastViewModelFactory
     }
 
-    override fun <T : ViewModel?> create(
+    override fun <T : ViewModel> create(
         key: String,
         modelClass: Class<T>,
         handle: SavedStateHandle

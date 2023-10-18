@@ -4,18 +4,24 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter.MyViewHolder
 import com.tokopedia.pdp.fintech.domain.datamodel.ChipsData
-import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.pdp.fintech.helper.Utils.returnRouteObject
 import com.tokopedia.pdp.fintech.helper.Utils.safeLet
 import com.tokopedia.pdp.fintech.helper.Utils.setListOfData
 import com.tokopedia.pdp.fintech.listner.WidgetClickListner
 import com.tokopedia.pdp_fintech.R
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 import java.util.*
@@ -56,6 +62,18 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
         }
         else
             holder.cardContainer.visibility = View.GONE
+
+        if (itemCount == Int.ONE) {
+            holder.cardContainer.layoutParams = MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            (holder.cardContainer.layoutParams as MarginLayoutParams).rightMargin = 10.toPx()
+            holder.cardContainer.requestLayout()
+            holder.rightChevron.show()
+        } else {
+            holder.cardContainer.layoutParams = MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            (holder.cardContainer.layoutParams as MarginLayoutParams).rightMargin = 0.toPx()
+            holder.cardContainer.requestLayout()
+            holder.rightChevron.hide()
+        }
     }
 
     private fun setHeaderData(it: String,
@@ -83,7 +101,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
         holder: MyViewHolder
     ) {
         when {
-            it.equals("green", true) -> {
+            it.equals(COLOR_GREEN_STRING, true) -> {
                 holder.subheaderPartner.setTextColor(
                     ContextCompat.getColor(
                         context,
@@ -92,11 +110,20 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
                 )
                 holder.subheaderPartner.weightType = Typography.BOLD
             }
+            it.equals(COLOR_BLUE_STRING, true) -> {
+                holder.subheaderPartner.setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_BN500
+                    )
+                )
+                holder.subheaderPartner.weightType = Typography.BOLD
+            }
             else -> {
                 holder.subheaderPartner.setTextColor(
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
                     )
                 )
                 holder.subheaderPartner.weightType = Typography.REGULAR
@@ -153,6 +180,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
         val subheaderPartner = itemView.findViewById<Typography>(R.id.chipSubHeader)
         val dummyView = itemView.findViewById<View>(R.id.dummyViewForMargin)
         val cardContainer = itemView.findViewById<View>(R.id.pdp_fintech_card_container)
+        val rightChevron = itemView.findViewById<IconUnify>(R.id.icChevronRight)
 
         init {
 
@@ -179,6 +207,8 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
     companion object {
         // Do not inflate if gatway id is 0
         const val GATEWAY_ID_SEE_MORE = "0"
+        const val COLOR_BLUE_STRING = "blue"
+        const val COLOR_GREEN_STRING = "green"
     }
 
 }

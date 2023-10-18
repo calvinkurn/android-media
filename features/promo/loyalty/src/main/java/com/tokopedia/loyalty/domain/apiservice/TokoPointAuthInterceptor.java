@@ -4,10 +4,10 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
-import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointErrorResponse;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
 import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
 
@@ -48,7 +48,7 @@ public class TokoPointAuthInterceptor extends TkpdAuthInterceptor {
             String path, String strParam, String method, String authKey, String contentTypeHeader
     ) {
         return AuthHelper.generateHeadersWithPath(
-                path, strParam, method, authKey, contentTypeHeader, userSession.getUserId(), userSession
+                path, strParam, method, authKey, contentTypeHeader, userSession.getUserId(), userSession,  getHeaderTheme()
         );
     }
 }

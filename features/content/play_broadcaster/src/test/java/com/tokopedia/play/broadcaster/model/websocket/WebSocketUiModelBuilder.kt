@@ -1,18 +1,17 @@
 package com.tokopedia.play.broadcaster.model.websocket
 
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.play.broadcaster.domain.model.LiveDuration
-import com.tokopedia.play.broadcaster.type.OriginalPrice
+import com.tokopedia.content.product.picker.seller.model.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.EventUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play_common.domain.model.interactive.QuizResponse
+import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.play_common.model.dto.interactive.InteractiveType
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
@@ -317,7 +316,13 @@ class WebSocketUiModelBuilder {
                     price = OriginalPrice(
                         price = "Rp 60.000",
                         priceNumber = 60000.0,
-                    )
+                    ),
+                    number = "0",
+                    hasCommission = false,
+                    commission = 0L,
+                    commissionFmt = "",
+                    extraCommission = false,
+                    pinStatus = PinProductUiModel.Empty,
                 )
             }
         )

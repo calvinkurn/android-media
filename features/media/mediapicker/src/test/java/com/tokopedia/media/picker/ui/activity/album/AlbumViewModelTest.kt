@@ -4,14 +4,11 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.media.picker.data.entity.Album
 import com.tokopedia.media.picker.data.repository.BucketAlbumRepository
 import com.tokopedia.media.util.test
-import com.tokopedia.picker.common.uimodel.AlbumUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import org.junit.Test
 

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/spacing_lvl3"
-    android:background="@color/Unify_T400"
+    android:background="@color/Unify_TN400"
     tools:ignore="Overdraw">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -19,7 +19,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:text="@string/home_reminder_title"
-        android:textColor="@color/Unify_N0"
+        android:textColor="@color/Unify_NN0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/ic_close_reminder_recommendation"
         app:layout_constraintTop_toTopOf="parent"

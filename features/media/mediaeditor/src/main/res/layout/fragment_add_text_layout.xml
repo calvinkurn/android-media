@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parent_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_NN50">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/add_text_fragment_img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toTopOf="@id/action_btn_container"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- layout text position -->
+    <LinearLayout
+        android:id="@+id/position_button_left"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/editor_text_position_bg"
+        android:gravity="center"
+        android:maxWidth="72dp"
+        android:maxHeight="72dp"
+        android:minWidth="32dp"
+        android:minHeight="32dp"
+        android:visibility="gone"
+        android:weightSum="1"
+        app:layout_constraintBottom_toBottomOf="@id/add_text_fragment_img"
+        app:layout_constraintLeft_toLeftOf="@id/add_text_fragment_img"
+        app:layout_constraintTop_toTopOf="@id/add_text_fragment_img">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            app:icon_color_light_enable="@color/Unify_NN0"
+            app:icon_name="TAP" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/position_button_top"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/editor_text_position_bg"
+        android:gravity="center"
+        android:maxWidth="72dp"
+        android:maxHeight="72dp"
+        android:minWidth="32dp"
+        android:minHeight="32dp"
+        android:visibility="gone"
+        android:weightSum="1"
+        app:layout_constraintLeft_toLeftOf="@id/add_text_fragment_img"
+        app:layout_constraintRight_toRightOf="@id/add_text_fragment_img"
+        app:layout_constraintTop_toTopOf="@id/add_text_fragment_img">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            app:icon_color_light_enable="@color/Unify_NN0"
+            app:icon_name="TAP" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/position_button_right"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/editor_text_position_bg"
+        android:gravity="center"
+        android:maxWidth="72dp"
+        android:maxHeight="72dp"
+        android:minWidth="32dp"
+        android:minHeight="32dp"
+        android:visibility="gone"
+        android:weightSum="1"
+        app:layout_constraintBottom_toBottomOf="@id/add_text_fragment_img"
+        app:layout_constraintRight_toRightOf="@id/add_text_fragment_img"
+        app:layout_constraintTop_toTopOf="@id/add_text_fragment_img">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            app:icon_color_light_enable="@color/Unify_NN0"
+            app:icon_name="TAP" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/position_button_bottom"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/editor_text_position_bg"
+        android:gravity="center"
+        android:maxWidth="72dp"
+        android:maxHeight="72dp"
+        android:minWidth="32dp"
+        android:minHeight="32dp"
+        android:visibility="gone"
+        android:weightSum="1"
+        app:layout_constraintBottom_toBottomOf="@id/add_text_fragment_img"
+        app:layout_constraintLeft_toLeftOf="@id/add_text_fragment_img"
+        app:layout_constraintRight_toRightOf="@id/add_text_fragment_img">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            app:icon_color_light_enable="@color/Unify_NN0"
+            app:icon_name="TAP" />
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/overlay_add_text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        android:elevation="1dp"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/add_text_fragment_img"
+        app:layout_constraintLeft_toLeftOf="@id/add_text_fragment_img"
+        app:layout_constraintRight_toRightOf="@id/add_text_fragment_img"
+        app:layout_constraintTop_toTopOf="@id/add_text_fragment_img" />
+
+    <LinearLayout
+        android:id="@+id/action_btn_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_NN0"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/editor_button_title_cancel"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="text" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_save"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/editor_button_title_save"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="ghost" />
+
+    </LinearLayout>
+    <!-- ========== ==========  ==========  ==========  -->
+
+    <View
+        android:id="@+id/background_overlay_text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/Unify_NN1000_44"
+        android:elevation="1dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/color_alignment_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:elevation="2dp"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/alignment_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:icon_color_light_enable="@color/Unify_NN0"
+            app:icon_name="FORMAT_CENTER" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/text_color"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            app:icon_color_light_enable="@color/Unify_NN0" />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/add_text_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:elevation="2dp"
+        android:gravity="center"
+        android:hint="@string/add_text_overlay_input_placeholder"
+        android:padding="16dp"
+        android:textColor="@color/Unify_NN0"
+        android:textColorHint="@color/Unify_NN0"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/bottom_barrier"
+        app:layout_constraintTop_toBottomOf="@id/color_alignment_container" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/bottom_barrier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="font_selection_container, font_color_container" />
+
+    <LinearLayout
+        android:id="@+id/font_selection_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:elevation="2dp"
+        android:minHeight="1dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/font_color_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:elevation="2dp"
+        android:minHeight="1dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

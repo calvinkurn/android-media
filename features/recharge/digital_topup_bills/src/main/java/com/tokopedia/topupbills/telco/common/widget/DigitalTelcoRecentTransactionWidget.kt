@@ -5,9 +5,9 @@ import android.util.AttributeSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.topupbills.telco.common.adapter.TelcoRecentNumbersAdapter
 import com.tokopedia.common.topupbills.widget.TopupBillsRecentNumberListener
 import com.tokopedia.common.topupbills.widget.TopupBillsRecentTransactionWidget
-import com.tokopedia.topupbills.telco.common.adapter.TelcoRecentNumbersAdapter
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -31,7 +31,7 @@ class DigitalTelcoRecentTransactionWidget @JvmOverloads constructor(@NotNull con
         adapter.setListener(object : TelcoRecentNumbersAdapter.ActionListener {
             override fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, position: Int) {
                 listenerTelco.onClickRecentNumber(topupBillsRecommendation, topupBillsRecommendation.categoryId,
-                        position)
+                    position)
             }
         })
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {

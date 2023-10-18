@@ -1,21 +1,17 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-parcelize'
-apply plugin: 'kotlin-kapt'
 
 android {
+    namespace 'com.tokopedia.attachproduct'
+    testNamespace 'com.tokopedia.attachproduct.test'
     buildFeatures {
         viewBinding true
     }
     defaultConfig {
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
-}
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
 }
 
 buildscript {

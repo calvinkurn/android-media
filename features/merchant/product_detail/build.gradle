@@ -1,16 +1,27 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-parcelize'
-apply plugin: 'kotlin-kapt'
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
 
 android {
+    namespace 'com.tokopedia.product.detail'
+    testNamespace 'com.tokopedia.product.detail.test'
+
+    def pathSources = "src/main/res/"
+    sourceSets {
+        main {
+            res.srcDirs = [
+                    pathSources,
+                    pathSources + 'detail',
+                    pathSources + 'detail/a_plus_content',
+                    pathSources + 'detail/bmgm'
+            ]
+        }
+        androidTest {
+            resources.srcDirs += "$projectDir/src/androidTest/resources"
+        }
+    }
 
     sourceSets.each {
         it.java.srcDirs += "src/$it.name/kotlin"
@@ -37,7 +48,6 @@ android {
         viewBinding true
         buildConfig true
     }
-
 }
 
 buildscript {
@@ -54,12 +64,12 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
@@ -68,8 +78,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
+    implementation projectOrAar(rootProject.ext.libraries.subViewModel)
 
-    implementation projectOrAar(rootProject.ext.features.gallery)
     implementation projectOrAar(rootProject.ext.features.pdpPaylaterWidget)
     implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
@@ -79,7 +89,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.searchbar)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
-    implementation projectOrAar(rootProject.ext.features.topAdsDetailSheet)
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     implementation projectOrAar(rootProject.ext.features.affiliateCommon)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
@@ -99,12 +108,12 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.features.carouselProductCard)
     implementation projectOrAar(rootProject.ext.features.attachcommon)
-    implementation projectOrAar(rootProject.ext.features.variantCommon)
     implementation projectOrAar(rootProject.ext.libraries.analyticAnnotationCentral)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation projectOrAar(rootProject.ext.features.minicart)
     implementation projectOrAar(rootProject.ext.features.affiliateSDK)
     implementation projectOrAar(rootProject.ext.features.productServiceWidget)
+    implementation projectOrAar(rootProject.ext.features.storiesWidget)
     implementation rootProject.ext.miscDependencies.viewPager2
     implementation rootProject.ext.miscDependencies.liveDataKtx
     implementation rootProject.ext.miscDependencies.rxAndroid
@@ -115,6 +124,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.dialog
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

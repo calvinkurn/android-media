@@ -373,16 +373,6 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         refreshPage()
     }
 
-    override fun onErrorFavoriteShop(errorMessage: String?) {
-        if (activity != null) NetworkErrorHelper.showSnackbar(activity, errorMessage)
-    }
-
-    override fun onSuccessFavoriteShop() {
-        adapter.header?.revieweeBadgeSellerUiModel?.isFavorited =
-            if (adapter.header?.revieweeBadgeSellerUiModel?.isFavorited == 1) 0 else 1
-        adapter.notifyItemChanged(0)
-    }
-
     override fun onDeleteReviewResponse(element: InboxReputationDetailItemUiModel) {
         showLoadingDialog()
         inboxReputationDetailViewModel.deleteReviewResponse(element.reviewId)

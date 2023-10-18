@@ -30,7 +30,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.BottomSheets.BottomSheetDismissListener
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
-import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -51,7 +50,6 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.adapter.AddToCartDoneAdapter
 import com.tokopedia.product.detail.view.adapter.AddToCartDoneTypeFactory
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
-import com.tokopedia.product.detail.view.util.createProductCardOptionsModel
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneAddedProductViewHolder
 import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -78,10 +76,10 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import javax.inject.Inject
 
 open class AddToCartDoneBottomSheet :
-        BottomSheetDialogFragment(),
-        AddToCartDoneAddedProductViewHolder.AddToCartDoneAddedProductListener,
-        HasComponent<ProductDetailComponent>,
-        RecommendationListener {
+    BottomSheetDialogFragment(),
+    AddToCartDoneAddedProductViewHolder.AddToCartDoneAddedProductListener,
+    HasComponent<ProductDetailComponent>,
+    RecommendationListener {
 
     companion object {
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
@@ -141,7 +139,6 @@ open class AddToCartDoneBottomSheet :
         slashedPrice = parentView.findViewById(R.id.slashed_price)
         price = parentView.findViewById(R.id.price)
         addToCartButton = parentView.findViewById(R.id.btn_add_to_cart)
-
     }
 
     @SuppressLint("RestrictedApi")
@@ -199,12 +196,16 @@ open class AddToCartDoneBottomSheet :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        handleProductCardOptionsActivityResult(requestCode, resultCode, data,
-                object : ProductCardOptionsWishlistCallback {
-                    override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
-                        handleWishlistAction(productCardOptionsModel)
-                    }
-                })
+        handleProductCardOptionsActivityResult(
+            requestCode,
+            resultCode,
+            data,
+            object : ProductCardOptionsWishlistCallback {
+                override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                    handleWishlistAction(productCardOptionsModel)
+                }
+            }
+        )
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -262,82 +263,94 @@ open class AddToCartDoneBottomSheet :
     }
 
     private fun observeAtcStatus() {
-        addToCartDoneViewModel.addToCartLiveData.observe(this, Observer { result ->
-            addToCartButton.isLoading = false
-            if (result is Success) {
-                stateAtcView.visible()
-                addToCartButton.hide()
-            } else if (result is Fail) {
-                dialog?.run {
-                    Toaster.toasterCustomBottomHeight = resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_80)
-                    Toaster.make(findViewById(android.R.id.content),
+        addToCartDoneViewModel.addToCartLiveData.observe(
+            this,
+            Observer { result ->
+                addToCartButton.isLoading = false
+                if (result is Success) {
+                    stateAtcView.visible()
+                    addToCartButton.hide()
+                } else if (result is Fail) {
+                    dialog?.run {
+                        Toaster.toasterCustomBottomHeight = context.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_80)
+                        Toaster.make(
+                            findViewById(android.R.id.content),
                             ProductDetailErrorHandler.getErrorMessage(context, result.throwable),
                             Snackbar.LENGTH_LONG,
                             Toaster.TYPE_ERROR
-                    )
-
+                        )
+                    }
                 }
             }
-        })
+        )
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun observeRecommendationProduct() {
-        addToCartDoneViewModel.recommendationProduct.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    viewShimmeringLoading.hide()
-                    atcDoneAdapter.clearAllElements()
-                    val abValue = getRemoteConfig()?.getString(abNewPdpAfterAtcKey)
-                    if (abValue?.isNotEmpty() == true && abValue != oldVariantPDP) {
-                        atcDoneAdapter.addElement(AddToCartDoneRecommendationCarouselDataModel(mapRecommendationWidgetToAddToCartRecommendationDataModel(it.data.first()), addedProductDataModel?.shopId
-                                ?: -1))
-                    } else {
-                        for (res in it.data) {
-                            atcDoneAdapter.addElement(AddToCartDoneRecommendationDataModel(res))
+        addToCartDoneViewModel.recommendationProduct.observe(
+            this,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        viewShimmeringLoading.hide()
+                        atcDoneAdapter.clearAllElements()
+                        val abValue = getRemoteConfig()?.getString(abNewPdpAfterAtcKey)
+                        if (abValue?.isNotEmpty() == true && abValue != oldVariantPDP) {
+                            atcDoneAdapter.addElement(
+                                AddToCartDoneRecommendationCarouselDataModel(
+                                    mapRecommendationWidgetToAddToCartRecommendationDataModel(it.data.first()),
+                                    addedProductDataModel?.shopId
+                                        ?: -1
+                                )
+                            )
+                        } else {
+                            for (res in it.data) {
+                                atcDoneAdapter.addElement(AddToCartDoneRecommendationDataModel(res))
+                            }
                         }
+                        atcDoneAdapter.addElement(0, addedProductDataModel)
+                        atcDoneAdapter.notifyDataSetChanged()
                     }
-                    atcDoneAdapter.addElement(0, addedProductDataModel)
-                    atcDoneAdapter.notifyDataSetChanged()
-                }
-                is Fail -> {
-                    showToasterRequestError(
+                    is Fail -> {
+                        showToasterRequestError(
                             it.throwable,
                             View.OnClickListener {
                                 getRecommendationProduct()
                             }
-                    )
+                        )
+                    }
                 }
+                configBottomSheetHeight()
             }
-            configBottomSheetHeight()
-        })
+        )
     }
 
     private fun mapRecommendationWidgetToAddToCartRecommendationDataModel(recommendationWidget: RecommendationWidget): AddToCartDoneRecommendationWidgetDataModel {
         return AddToCartDoneRecommendationWidgetDataModel(
-                title = recommendationWidget.title,
-                currentPage = recommendationWidget.currentPage,
-                foreignTitle = recommendationWidget.foreignTitle,
-                hasNext = recommendationWidget.hasNext,
-                layoutType = recommendationWidget.layoutType,
-                nextPage = recommendationWidget.nextPage,
-                pageName = recommendationWidget.pageName,
-                prevPage = recommendationWidget.prevPage,
-                recommendationItemList = recommendationWidget.recommendationItemList.map { AddToCartDoneRecommendationItemDataModel(it) },
-                seeMoreAppLink = recommendationWidget.seeMoreAppLink,
-                source = recommendationWidget.source,
-                tid = recommendationWidget.tid,
-                widgetUrl = recommendationWidget.widgetUrl
+            title = recommendationWidget.title,
+            currentPage = recommendationWidget.currentPage,
+            foreignTitle = recommendationWidget.foreignTitle,
+            hasNext = recommendationWidget.hasNext,
+            layoutType = recommendationWidget.layoutType,
+            nextPage = recommendationWidget.nextPage,
+            pageName = recommendationWidget.pageName,
+            prevPage = recommendationWidget.prevPage,
+            recommendationItemList = recommendationWidget.recommendationItemList.map { AddToCartDoneRecommendationItemDataModel(it) },
+            seeMoreAppLink = recommendationWidget.seeMoreAppLink,
+            source = recommendationWidget.source,
+            tid = recommendationWidget.tid,
+            widgetUrl = recommendationWidget.widgetUrl
         )
     }
 
     private fun showToasterRequestError(throwable: Throwable, onClickListener: View.OnClickListener) {
         dialog?.run {
             Toaster.showErrorWithAction(
-                    findViewById(android.R.id.content),
-                    ErrorHandler.getErrorMessage(this.context, throwable),
-                    Snackbar.LENGTH_INDEFINITE,
-                    getString(com.tokopedia.abstraction.R.string.title_try_again),
-                    onClickListener
+                findViewById(android.R.id.content),
+                ErrorHandler.getErrorMessage(this.context, throwable),
+                Snackbar.LENGTH_INDEFINITE,
+                getString(com.tokopedia.abstraction.R.string.title_try_again),
+                onClickListener
             )
         }
     }
@@ -385,9 +398,9 @@ open class AddToCartDoneBottomSheet :
 
     private fun goToPDP(item: RecommendationItem, position: Int) {
         RouteManager.getIntent(
-                activity,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                item.productId.toString()
+            activity,
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            item.productId.toString()
         ).run {
             putExtra(PDP_EXTRA_UPDATED_POSITION, position)
             startActivityForResult(this, REQUEST_FROM_PDP)
@@ -399,22 +412,22 @@ open class AddToCartDoneBottomSheet :
         if (item.isTopAds) {
             context?.run {
                 TopAdsUrlHitter(className).hitClickUrl(
-                        this,
-                        item.clickUrl,
-                        item.productId.toString(),
-                        item.name,
-                        item.imageUrl
+                    this,
+                    item.clickUrl,
+                    item.productId.toString(),
+                    item.name,
+                    item.imageUrl
                 )
             }
         }
         addedProductDataModel?.productId?.let {
             DynamicProductDetailTracking.Click.eventAddToCartRecommendationClick(
-                    item,
-                    item.position,
-                    addToCartDoneViewModel.isLoggedIn(),
-                    item.pageName,
-                    item.header,
-                    it
+                item,
+                item.position,
+                addToCartDoneViewModel.isLoggedIn(),
+                item.pageName,
+                item.header,
+                it
             )
         }
         if (position.size > 1) {
@@ -429,40 +442,35 @@ open class AddToCartDoneBottomSheet :
         if (item.isTopAds) {
             context?.run {
                 TopAdsUrlHitter(className).hitImpressionUrl(
-                        this,
-                        item.trackerImageUrl,
-                        item.productId.toString(),
-                        item.name,
-                        item.imageUrl
+                    this,
+                    item.trackerImageUrl,
+                    item.productId.toString(),
+                    item.name,
+                    item.imageUrl
                 )
             }
         }
         addedProductDataModel?.productId?.let {
             DynamicProductDetailTracking.Recommendation.eventAddToCartRecommendationImpression(
-                    item.position,
-                    item,
-                    addToCartDoneViewModel.isLoggedIn(),
-                    item.pageName,
-                    item.header,
-                    it,
-                    trackingQueue
+                item.position,
+                item,
+                addToCartDoneViewModel.isLoggedIn(),
+                item.pageName,
+                item.header,
+                it,
+                trackingQueue
             )
         }
     }
 
-    override fun onThreeDotsClick(item: RecommendationItem, vararg position: Int) {
-        recomWishlistItem = item
-        showProductCardOptions(
-                this,
-                item.createProductCardOptionsModel(position[0]))
-    }
-
     override fun onWishlistV2Click(
         item: RecommendationItem,
-        isAddWishlist: Boolean) {
+        isAddWishlist: Boolean
+    ) {
         if (isAddWishlist) {
-            addToCartDoneViewModel.addWishListV2(item.productId.toString(),
-                object: WishlistV2ActionListener{
+            addToCartDoneViewModel.addWishListV2(
+                item.productId.toString(),
+                object : WishlistV2ActionListener {
                     override fun onErrorAddWishList(throwable: Throwable, productId: String) {
                         val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
                         view.showToasterError(message = errorMsg)
@@ -484,32 +492,35 @@ open class AddToCartDoneBottomSheet :
 
                     override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
                     override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) {}
-                })
-        } else {
-            addToCartDoneViewModel.removeWishListV2(item.productId.toString(), object: WishlistV2ActionListener{
-                override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
-
-                override fun onSuccessAddWishlist(result: AddToWishlistV2Response.Data.WishlistAddV2, productId: String) {}
-
-                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
-                    val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
-                    view?.let { v ->
-                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
-                    }
                 }
+            )
+        } else {
+            addToCartDoneViewModel.removeWishListV2(
+                item.productId.toString(),
+                object : WishlistV2ActionListener {
+                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
 
-                override fun onSuccessRemoveWishlist(
-                    result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
-                    productId: String
-                ) {
-                    context?.let { context ->
+                    override fun onSuccessAddWishlist(result: AddToWishlistV2Response.Data.WishlistAddV2, productId: String) {}
+
+                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                        val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
                         view?.let { v ->
-                            AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
+                            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                        }
+                    }
+
+                    override fun onSuccessRemoveWishlist(
+                        result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                        productId: String
+                    ) {
+                        context?.let { context ->
+                            view?.let { v ->
+                                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
+                            }
                         }
                     }
                 }
-
-            })
+            )
         }
     }
 
@@ -534,12 +545,12 @@ open class AddToCartDoneBottomSheet :
                 addToCartDoneViewModel.addToCart(dataModel)
                 addedProductDataModel?.productId?.let {
                     DynamicProductDetailTracking.Click.eventAddToCartRecommendationATCClick(
-                            item,
-                            item.position,
-                            addToCartDoneViewModel.isLoggedIn(),
-                            item.pageName,
-                            item.header,
-                            it
+                        item,
+                        item.position,
+                        addToCartDoneViewModel.isLoggedIn(),
+                        item.pageName,
+                        item.header,
+                        it
                     )
                 }
             }
@@ -547,8 +558,10 @@ open class AddToCartDoneBottomSheet :
     }
 
     override fun onButtonGoToCartClicked() {
-        DynamicProductDetailTracking.Click.eventAtcClickLihat(addedProductDataModel?.productId
-                ?: "")
+        DynamicProductDetailTracking.Click.eventAtcClickLihat(
+            addedProductDataModel?.productId
+                ?: ""
+        )
         goToCart()
     }
 
@@ -572,8 +585,11 @@ open class AddToCartDoneBottomSheet :
     private fun showToasterWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         if (wishlistResult.isAddWishlist) {
             val msg = wishlistResult.messageV2.ifEmpty {
-                if (wishlistResult.isSuccess) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-                else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+                if (wishlistResult.isSuccess) {
+                    getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+                } else {
+                    getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+                }
             }
 
             var typeToaster = TYPE_NORMAL
@@ -583,7 +599,6 @@ open class AddToCartDoneBottomSheet :
             if (wishlistResult.ctaTextV2.isNotEmpty()) ctaText = wishlistResult.ctaTextV2
 
             view.showToaster(message = msg, typeToaster = typeToaster, ctaText = ctaText, ctaListener = { goToWishlist() })
-
         } else {
             var msg = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
             if (wishlistResult.messageV2.isNotEmpty()) msg = wishlistResult.messageV2
@@ -599,15 +614,18 @@ open class AddToCartDoneBottomSheet :
 
     private fun showToasterErrorWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         val msg = wishlistResult.messageV2.ifEmpty {
-            if (wishlistResult.isAddWishlist) getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
-            else getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
+            if (wishlistResult.isAddWishlist) {
+                getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+            } else {
+                getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
+            }
         }
 
         val ctaText = wishlistResult.ctaTextV2
         val ctaAction = wishlistResult.ctaActionV2
 
         view?.showToasterError(message = msg, ctaText = ctaText, ctaListener = {
-          if (ctaAction == OPEN_WISHLIST) goToWishlist()
+            if (ctaAction == OPEN_WISHLIST) goToWishlist()
         })
     }
 
@@ -629,8 +647,7 @@ open class AddToCartDoneBottomSheet :
     }
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
-            .baseAppComponent(
-                    (activity?.applicationContext as BaseMainApplication).baseAppComponent
-            ).build()
-
+        .baseAppComponent(
+            (activity?.applicationContext as BaseMainApplication).baseAppComponent
+        ).build()
 }

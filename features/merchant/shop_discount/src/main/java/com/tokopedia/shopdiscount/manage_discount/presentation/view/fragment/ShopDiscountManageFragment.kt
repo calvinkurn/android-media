@@ -54,7 +54,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class ShopDiscountManageFragment : BaseDaggerFragment(),
+class ShopDiscountManageFragment :
+    BaseDaggerFragment(),
     ShopDiscountSetupProductItemViewHolder.Listener,
     ShopDiscountManageDiscountGlobalErrorViewHolder.Listener {
 
@@ -96,6 +97,7 @@ class ShopDiscountManageFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
     @Inject
     lateinit var tracker: ShopDiscountTracker
 
@@ -192,7 +194,7 @@ class ShopDiscountManageFragment : BaseDaggerFragment(),
         buttonSubmit?.apply {
             isEnabled = false
             setOnClickListener {
-                if(buttonSubmit?.isLoading == false) {
+                if (buttonSubmit?.isLoading == false) {
                     showButtonSubmitLoading()
                     submitProductDiscount()
                 }
@@ -241,8 +243,9 @@ class ShopDiscountManageFragment : BaseDaggerFragment(),
             R.drawable.shop_discount_manage_discount_bg_line_separator
         )
         val dividerItemDecoration = ShopDiscountDividerItemDecoration(dividerDrawable)
-        if (itemDecorationCount > 0)
+        if (itemDecorationCount > 0) {
             removeItemDecorationAt(0)
+        }
         addItemDecoration(dividerItemDecoration)
     }
 
@@ -260,7 +263,7 @@ class ShopDiscountManageFragment : BaseDaggerFragment(),
     }
 
     private fun observeResultDeleteSlashPriceProductLiveData() {
-        viewModel.resultDeleteSlashPriceProductLiveData.observe(viewLifecycleOwner, {
+        viewModel.resultDeleteSlashPriceProductLiveData.observe(viewLifecycleOwner) {
             hideLoading()
             when (it) {
                 is Success -> {
@@ -283,7 +286,7 @@ class ShopDiscountManageFragment : BaseDaggerFragment(),
                     showToasterError(errorMessage)
                 }
             }
-        })
+        }
     }
 
     private fun updateProductList() {
@@ -328,7 +331,7 @@ class ShopDiscountManageFragment : BaseDaggerFragment(),
     }
 
     private fun observeResultSubmitProductSlashPriceLiveData() {
-        viewModel.resultSubmitProductSlashPriceLiveData.observe(viewLifecycleOwner, {
+        viewModel.resultSubmitProductSlashPriceLiveData.observe(viewLifecycleOwner) {
             hideButtonSubmitLoading()
             when (it) {
                 is Success -> {
@@ -363,7 +366,7 @@ class ShopDiscountManageFragment : BaseDaggerFragment(),
                     showToasterError(errorMessage)
                 }
             }
-        })
+        }
     }
 
     private fun checkProductDiscountStartDateError() {
@@ -397,17 +400,17 @@ class ShopDiscountManageFragment : BaseDaggerFragment(),
     }
 
     private fun observeEnableButtonSubmitLiveData() {
-        viewModel.enableButtonSubmitLiveData.observe(viewLifecycleOwner, {
+        viewModel.enableButtonSubmitLiveData.observe(viewLifecycleOwner) {
             buttonSubmit?.isEnabled = it
-        })
+        }
     }
 
     private fun observeBulkApplyProductListResult() {
-        viewModel.updatedProductListData.observe(viewLifecycleOwner, {
+        viewModel.updatedProductListData.observe(viewLifecycleOwner) {
             clearProductListData()
             setListSetupProductData(it)
             checkButtonSubmit()
-        })
+        }
     }
 
     private fun checkButtonSubmit() {
@@ -419,7 +422,7 @@ class ShopDiscountManageFragment : BaseDaggerFragment(),
     }
 
     private fun observeSetupProductListLiveData() {
-        viewModel.setupProductListLiveData.observe(viewLifecycleOwner, {
+        viewModel.setupProductListLiveData.observe(viewLifecycleOwner) {
             hideLoading()
             when (it) {
                 is Success -> {
@@ -439,7 +442,7 @@ class ShopDiscountManageFragment : BaseDaggerFragment(),
                     showErrorState(it.throwable)
                 }
             }
-        })
+        }
     }
 
     private fun configTickerAbusiveProducts() {
@@ -461,7 +464,6 @@ class ShopDiscountManageFragment : BaseDaggerFragment(),
 
                     override fun onDismiss() {
                     }
-
                 })
             } else {
                 hide()
@@ -471,9 +473,11 @@ class ShopDiscountManageFragment : BaseDaggerFragment(),
 
     private fun redirectToWebView(linkUrl: CharSequence) {
         RouteManager.route(
-            context, String.format(
+            context,
+            String.format(
                 "%s?url=%s",
-                ApplinkConst.WEBVIEW, linkUrl.toString()
+                ApplinkConst.WEBVIEW,
+                linkUrl.toString()
             )
         )
     }
@@ -582,10 +586,11 @@ class ShopDiscountManageFragment : BaseDaggerFragment(),
     }
 
     override fun onClickManageDiscount(model: ShopDiscountSetupProductUiModel.SetupProductData) {
-        if (model.productStatus.isVariant)
+        if (model.productStatus.isVariant) {
             redirectToManageProductVariantDiscountPage(model)
-        else
+        } else {
             redirectToManageProductDiscountPage(model)
+        }
     }
 
     private fun redirectToManageProductVariantDiscountPage(model: ShopDiscountSetupProductUiModel.SetupProductData) {
@@ -704,5 +709,4 @@ class ShopDiscountManageFragment : BaseDaggerFragment(),
             selectedSlashPriceStatusId
         )
     }
-
 }

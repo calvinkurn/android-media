@@ -17,7 +17,6 @@
         android:maxWidth="19.5dp"
         android:src="@drawable/circle_red"
         android:visibility="visible"
-        tools:src="@drawable/ic_chat_icon_account"
         android:contentDescription="icon" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -27,7 +26,7 @@
         android:gravity="center_horizontal"
         android:lineSpacingExtra="@dimen/sp_topchat_4"
         android:maxLines="1"
-        android:textColor="@color/Unify_N300"
+        android:textColor="@color/Unify_NN500"
         app:typographyType="display_2"
         app:typographyWeight="bold"
         tools:text="Update (99+)" />

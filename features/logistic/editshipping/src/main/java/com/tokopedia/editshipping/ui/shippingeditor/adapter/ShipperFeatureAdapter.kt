@@ -1,19 +1,24 @@
 package com.tokopedia.editshipping.ui.shippingeditor.adapter
 
-import android.view.View
+import android.annotation.SuppressLint
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.editshipping.R
+import com.tokopedia.editshipping.databinding.LabelFeatureItemsBinding
 import com.tokopedia.editshipping.domain.model.shippingEditor.FeatureInfoModel
-import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.unifycomponents.Label
 
-class ShipperFeatureAdapter: RecyclerView.Adapter<ShipperFeatureAdapter.ShipperLabelViewHolder>() {
+class ShipperFeatureAdapter : RecyclerView.Adapter<ShipperFeatureAdapter.ShipperLabelViewHolder>() {
 
     private val featureData = mutableListOf<FeatureInfoModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShipperLabelViewHolder {
-        return ShipperLabelViewHolder(parent.inflateLayout(R.layout.label_feature_items))
+        return ShipperLabelViewHolder(
+            LabelFeatureItemsBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun getItemCount(): Int {
@@ -24,18 +29,17 @@ class ShipperFeatureAdapter: RecyclerView.Adapter<ShipperFeatureAdapter.ShipperL
         holder.bindData(featureData[position])
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setData(data: List<FeatureInfoModel>) {
         featureData.clear()
         featureData.addAll(data)
         notifyDataSetChanged()
     }
 
-
-    inner class ShipperLabelViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        private val labelFeature = itemView.findViewById<Label>(R.id.lbl_feature_item)
-
+    inner class ShipperLabelViewHolder(private val binding: LabelFeatureItemsBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bindData(data: FeatureInfoModel) {
-            labelFeature.text = data.header
+            binding.lblFeatureItem.text = data.header
         }
     }
 }

@@ -5,10 +5,15 @@ import com.tokopedia.addongifting.addonbottomsheet.data.getaddonbyproduct.GetAdd
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonbyproduct.RequestData
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonbyproduct.SourceRequest
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonsavedstate.GetAddOnSavedStateRequest
-import com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate.*
 import com.tokopedia.addongifting.addonbottomsheet.view.uimodel.AddOnUiModel
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnDataRequest
+import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnMetadataRequest
+import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnNoteRequest
+import com.tokopedia.purchase_platform.common.feature.addons.data.request.AddOnRequest
+import com.tokopedia.purchase_platform.common.feature.addons.data.request.CartProduct
+import com.tokopedia.purchase_platform.common.feature.addons.data.request.SaveAddOnStateRequest
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
 
 object AddOnRequestMapper {
@@ -19,7 +24,9 @@ object AddOnRequestMapper {
                 var parentId = ""
                 parentId = if (it.productParentId.isNotEmpty() && it.productParentId.toLongOrZero() > 0) {
                     it.productParentId
-                } else it.productId
+                } else {
+                    it.productId
+                }
                 AddOnByProductRequest().apply {
                     productId = parentId
                     warehouseId = addOnProductData.availableBottomSheetData.warehouseId
@@ -45,11 +52,11 @@ object AddOnRequestMapper {
         return GetAddOnSavedStateRequest().apply {
             source = addOnProductData.source
             addOnKeys = listOf(
-                    if (addOnProductData.availableBottomSheetData.isTokoCabang) {
-                        "${addOnProductData.availableBottomSheetData.cartString}-0"
-                    } else {
-                        "${addOnProductData.availableBottomSheetData.cartString}-${addOnProductData.availableBottomSheetData.products.firstOrNull()?.cartId ?: ""}"
-                    }
+                if (addOnProductData.availableBottomSheetData.isTokoCabang) {
+                    "${addOnProductData.availableBottomSheetData.cartString}-0"
+                } else {
+                    "${addOnProductData.availableBottomSheetData.cartString}-${addOnProductData.availableBottomSheetData.products.firstOrNull()?.cartId ?: ""}"
+                }
             )
         }
     }
@@ -58,45 +65,45 @@ object AddOnRequestMapper {
         return SaveAddOnStateRequest().apply {
             source = addOnProductData.source
             addOns = listOf(
-                    AddOnRequest().apply {
-                        if (addOnProductData.availableBottomSheetData.isTokoCabang) {
-                            addOnKey = "${addOnProductData.availableBottomSheetData.cartString}-0"
-                            addOnLevel = AddOnConstant.ADD_ON_LEVEL_ORDER
-                        } else {
-                            addOnKey = "${addOnProductData.availableBottomSheetData.cartString}-${addOnProductData.availableBottomSheetData.products.firstOrNull()?.cartId}"
-                            addOnLevel = AddOnConstant.ADD_ON_LEVEL_PRODUCT
-                        }
-                        cartProducts = addOnProductData.availableBottomSheetData.products.map {
-                            CartProduct().apply {
-                                cartId = it.cartId.toLongOrZero()
-                                productId = it.productId.toLongOrZero()
-                                warehouseId = addOnProductData.availableBottomSheetData.warehouseId.toLongOrZero()
-                                productName = it.productName
-                                productImageUrl = it.productImageUrl
-                                productParentId = it.productParentId
-                            }
-                        }
-                        if (addOnUiModel.isAddOnSelected) {
-                            addOnData = listOf(
-                                    AddOnDataRequest().apply {
-                                        addOnId = addOnUiModel.addOnId.toLongOrZero()
-                                        addOnQty = addOnUiModel.addOnQty
-                                        addOnMetadata = AddOnMetadataRequest().apply {
-                                            addOnNote = AddOnNoteRequest().apply {
-                                                isCustomNote = addOnUiModel.isCustomNote
-                                                to = addOnUiModel.addOnNoteTo
-                                                from = addOnUiModel.addOnNoteFrom
-                                                notes = addOnUiModel.addOnNote
-                                            }
-                                        }
-                                    }
-                            )
-                        } else {
-                            addOnData = emptyList()
+                AddOnRequest().apply {
+                    if (addOnProductData.availableBottomSheetData.isTokoCabang) {
+                        addOnKey = "${addOnProductData.availableBottomSheetData.cartString}-0"
+                        addOnLevel = AddOnConstant.ADD_ON_LEVEL_ORDER
+                    } else {
+                        addOnKey = "${addOnProductData.availableBottomSheetData.cartString}-${addOnProductData.availableBottomSheetData.products.firstOrNull()?.cartId}"
+                        addOnLevel = AddOnConstant.ADD_ON_LEVEL_PRODUCT
+                    }
+                    cartProducts = addOnProductData.availableBottomSheetData.products.map {
+                        CartProduct().apply {
+                            cartId = it.cartId.toLongOrZero()
+                            productId = it.productId.toLongOrZero()
+                            warehouseId = addOnProductData.availableBottomSheetData.warehouseId.toLongOrZero()
+                            productName = it.productName
+                            productImageUrl = it.productImageUrl
+                            productParentId = it.productParentId
                         }
                     }
+                    if (addOnUiModel.isAddOnSelected) {
+                        addOnData = listOf(
+                            AddOnDataRequest().apply {
+                                addOnId = addOnUiModel.addOnId.toLongOrZero()
+                                addOnQty = addOnUiModel.addOnQty
+                                addOnUniqueId = addOnUiModel.addOnUniqueId
+                                addOnMetadata = AddOnMetadataRequest().apply {
+                                    addOnNote = AddOnNoteRequest().apply {
+                                        isCustomNote = addOnUiModel.isCustomNote
+                                        to = addOnUiModel.addOnNoteTo
+                                        from = addOnUiModel.addOnNoteFrom
+                                        notes = addOnUiModel.addOnNote
+                                    }
+                                }
+                            }
+                        )
+                    } else {
+                        addOnData = emptyList()
+                    }
+                }
             )
         }
     }
-
 }

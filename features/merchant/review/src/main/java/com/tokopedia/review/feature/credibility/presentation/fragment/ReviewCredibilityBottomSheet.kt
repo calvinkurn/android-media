@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -54,15 +56,19 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), ReviewCredibilityFooter
     private val viewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(requireActivity(), viewModelFactory).get(ReviewCredibilityViewModel::class.java)
     }
+    private val bottomSheetCallback = createBottomSheetCallback()
 
     private var binding by viewBinding(BottomsheetReviewCredibilityBinding::bind)
+
+    init {
+        initBottomSheetParams()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
         initData(savedInstanceState)
         initUiStateCollector()
-        initBottomSheetParams()
     }
 
     override fun onCreateView(
@@ -74,6 +80,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), ReviewCredibilityFooter
             inflater, container, false
         ).apply { binding = this }.root
         setChild(view)
+        setShowListener(::onBottomSheetShowed)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -195,6 +202,9 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), ReviewCredibilityFooter
 
     private fun initBottomSheetParams() {
         showKnob = true
+        isDragable = true
+        isHideable = true
+        isSkipCollapseState = true
         showCloseIcon = false
         showHeader = false
     }
@@ -282,5 +292,23 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), ReviewCredibilityFooter
         knobView.showWithCondition(show)
         bottomSheetHeader.showWithCondition(show.not())
         bottomSheetClose.showWithCondition(show.not())
+    }
+
+    private fun onBottomSheetShowed() {
+        bottomSheet.removeBottomSheetCallback(bottomSheetCallback)
+        bottomSheet.addBottomSheetCallback(bottomSheetCallback)
+    }
+
+    private fun createBottomSheetCallback(): BottomSheetCallback {
+        return object: BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    dismiss()
+                    activity?.finish()
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        }
     }
 }

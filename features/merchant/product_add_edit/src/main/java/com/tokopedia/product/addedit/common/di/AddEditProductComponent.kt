@@ -4,8 +4,8 @@ import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
 import okhttp3.logging.HttpLoggingInterceptor

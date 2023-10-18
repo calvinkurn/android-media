@@ -22,9 +22,9 @@ class BroadcastCampaignLabelView : LinearLayout {
     private var startDateIcon: ImageView? = null
     private var startDateText: Typography? = null
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
@@ -36,7 +36,6 @@ class BroadcastCampaignLabelView : LinearLayout {
         defStyleAttr: Int,
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
-
 
     init {
         initViewInflation()
@@ -93,8 +92,8 @@ class BroadcastCampaignLabelView : LinearLayout {
 
     private fun bindDescColor(banner: ImageAnnouncementUiModel) {
         val colorRes = when (banner.statusCampaign) {
-            CampaignStatus.ENDED -> com.tokopedia.unifyprinciples.R.color.Unify_N700_96
-            else -> com.tokopedia.unifyprinciples.R.color.Unify_N0
+            CampaignStatus.ENDED -> com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+            else -> com.tokopedia.unifyprinciples.R.color.Unify_NN0
         }
         val color = MethodChecker.getColor(context, colorRes)
         desc?.setTextColor(color)
@@ -102,9 +101,9 @@ class BroadcastCampaignLabelView : LinearLayout {
 
     private fun bindLabelBackgroundColor(banner: ImageAnnouncementUiModel) {
         val colorRes = when {
-            banner.hasEndedCampaign() -> com.tokopedia.unifyprinciples.R.color.Unify_T200
+            banner.hasEndedCampaign() -> com.tokopedia.unifyprinciples.R.color.Unify_TN100
             banner.isHideBanner -> R.drawable.bg_chat_broadcast_campaign_label_without_banner
-            else -> com.tokopedia.unifyprinciples.R.color.Unify_R500
+            else -> com.tokopedia.unifyprinciples.R.color.Unify_RN500
         }
         setBackgroundResource(colorRes)
     }

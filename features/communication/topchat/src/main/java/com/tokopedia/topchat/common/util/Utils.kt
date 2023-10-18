@@ -4,19 +4,15 @@ import android.app.Activity
 import android.graphics.Color
 import android.os.Build
 import android.text.method.LinkMovementMethod
-import android.view.Display
+import androidx.core.app.ActivityCompat
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import java.util.*
 
 object Utils {
 
@@ -75,20 +71,9 @@ object Utils {
         }
     }
 
-    //this bubble will be shown within sellerapp, OS version 11/above, and if rollence enabled
+    // this bubble will be shown within sellerapp and OS version 11/above
     fun isBubbleChatEnabled() =
-        GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
-            && getIsBubbleChatRollenceEnabled() && getShouldBubbleChatEnabled()
-
-    private fun getIsBubbleChatRollenceEnabled(): Boolean {
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, String.EMPTY
-            ) == RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
-        } catch (e: Exception) {
-            true
-        }
-    }
+        GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && getShouldBubbleChatEnabled()
 
     fun getShouldBubbleChatEnabled(): Boolean {
         return true
@@ -96,20 +81,10 @@ object Utils {
 
     fun Activity?.isFromBubble(): Boolean {
         return try {
-            this?.let {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    isLaunchedFromBubble
-                } else {
-                    val displayId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        display?.displayId
-                    } else {
-                        @Suppress("DEPRECATION")
-                        windowManager.defaultDisplay.displayId
-                    }
-                    displayId != Display.DEFAULT_DISPLAY
-                }
+            this?.let { activity ->
+                ActivityCompat.isLaunchedFromBubble(activity)
             } ?: false
-        } catch (e: Exception) {
+        } catch (ignored: Throwable) {
             false
         }
     }
@@ -122,5 +97,9 @@ object Utils {
         htmlString.urlList.getOrNull(Int.ZERO)?.setOnClickListener {
             onClick()
         }
+    }
+
+    fun getBuildVersion(): Int {
+        return Build.VERSION.SDK_INT
     }
 }

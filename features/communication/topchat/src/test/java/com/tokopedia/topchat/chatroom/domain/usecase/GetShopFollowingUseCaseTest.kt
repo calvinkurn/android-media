@@ -14,7 +14,6 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.jupiter.api.assertThrows
 
 class GetShopFollowingUseCaseTest {
     @get:Rule
@@ -35,13 +34,13 @@ class GetShopFollowingUseCaseTest {
 
     @Test
     fun should_get_shop_following_when_successfully_get_data() {
-        //Given
+        // Given
         val resultData = ResultItem(FavoriteData(alreadyFavorited = 1))
         val expectedResult = ShopFollowingPojo(
             shopInfoById = ShopInfoById(arrayListOf(resultData))
         )
 
-        //Then
+        // Then
         runBlocking {
             repository.stubRepository(expectedResult, onError = mapOf())
             val result = useCase.invoke(testShopId)
@@ -49,17 +48,15 @@ class GetShopFollowingUseCaseTest {
         }
     }
 
-    @Test
+    @Test(expected = Throwable::class)
     fun should_get_throwable_when_failed_to_get_data() {
-        //Given
+        // Given
         val expectedResult = Throwable("Oops!")
         repository.stubRepositoryAsThrow(expectedResult)
 
-        //Then
-        assertThrows<Throwable> {
-            runBlocking {
-                useCase.invoke(testShopId)
-            }
+        // Then
+        runBlocking {
+            useCase.invoke(testShopId)
         }
     }
 }

@@ -10,7 +10,7 @@ import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.utils.extension.parseTo
 import com.tokopedia.shopdiscount.utils.extension.toCalendar
 import com.tokopedia.utils.date.DateUtil
-import java.util.*
+import java.util.Date
 
 object ShopDiscountDatePicker {
 
@@ -80,5 +80,4 @@ object ShopDiscountDatePicker {
             }
         }
     }
-
 }

@@ -2,6 +2,7 @@ package com.tokopedia.talk.feature.sellersettings.settings.presentation.viewmode
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
@@ -18,6 +19,9 @@ abstract class TalkSettingsViewModelTestFixture {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val taskRule = CoroutineTestRule()
 
     @Before
     fun setup() {

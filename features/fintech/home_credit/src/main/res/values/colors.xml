@@ -2,4 +2,6 @@
 <resources>
     <color name="hc_dms_black_99">#99000000</color>
     <color name="hc_dms_text_shadow">#80000000</color>
+    <color name="hc_dms_camera_overlay">#CC2E3137</color>
+    <color name="hc_dms_overlay">#00000000</color>
 </resources>

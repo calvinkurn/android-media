@@ -5,10 +5,8 @@ import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
-import com.tokopedia.createpost.common.di.qualifier.CreatePostCommonDispatchers
 import com.tokopedia.createpost.common.di.qualifier.SubmitPostCoroutineScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -30,21 +28,8 @@ import kotlinx.coroutines.CoroutineScope
  * @author by milhamj on 9/26/18.
  */
 @Module(includes = [VideoUploaderModule::class])
-class CreatePostCommonModule(private val context: Context) {
+class CreatePostCommonModule {
 
-    @Provides
-    @ActivityContext
-    fun provideActivityContext(): Context {
-        return context
-    }
-
-    @Provides
-    @ApplicationContext
-    fun provideApplicationContext(): Context {
-        return context.applicationContext
-    }
-
-    @Provides
     @CreatePostScope
     fun provideAffiliateAnalytics(userSessionInterface: UserSessionInterface): AffiliateAnalytics {
         return AffiliateAnalytics(userSessionInterface)
@@ -97,16 +82,9 @@ class CreatePostCommonModule(private val context: Context) {
 
     @Provides
     @CreatePostScope
-    @CreatePostCommonDispatchers
-    fun provideCoroutineDispatchers(): CoroutineDispatchers {
-        return CoroutineDispatchersProvider
-    }
-
-    @Provides
-    @CreatePostScope
     @SubmitPostCoroutineScope
     fun provideSubmitPostCoroutineScope(
-        @CreatePostCommonDispatchers dispatchers: CoroutineDispatchers
+        dispatchers: CoroutineDispatchers
     ): CoroutineScope {
         return CoroutineScope(dispatchers.io)
     }

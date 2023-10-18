@@ -1,14 +1,13 @@
 package com.tokopedia.product.addedit.common.util
 
-import com.tokopedia.mediauploader.common.data.mapper.UploaderErrorCodeMapper.state as uploaderErrorState
 import com.tokopedia.mediauploader.common.data.mapper.UploaderErrorCodeMapper.CommonErrorState
-import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException
 import com.tokopedia.network.exception.MessageErrorException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import com.tokopedia.mediauploader.common.data.mapper.UploaderErrorCodeMapper.state as uploaderErrorState
 
 object AddEditProductUploadErrorHandler {
     private const val ERROR_NO_INTERNET = "noInternet"
@@ -34,7 +33,8 @@ object AddEditProductUploadErrorHandler {
         } else if (e is UnknownHostException || e is SocketTimeoutException || e is ConnectException) {
             ERROR_NO_INTERNET
         } else if (e is RuntimeException && e.getLocalizedMessage() != null &&
-                e.getLocalizedMessage() != "" && e.getLocalizedMessage().length <= MAX_LENGTH_ERROR_MESSAGE) {
+            e.getLocalizedMessage() != "" && e.getLocalizedMessage().length <= MAX_LENGTH_ERROR_MESSAGE
+        ) {
             try {
                 val code = e.getLocalizedMessage() ?: "0"
                 when (code.toInt()) {
@@ -44,7 +44,7 @@ object AddEditProductUploadErrorHandler {
                     ResponseStatus.SC_SERVICE_UNAVAILABLE -> {
                         ERROR_UNDER_MAINTENANCE
                     }
-                    ResponseStatus.SC_REQUEST_TIMEOUT, ResponseStatus.SC_GATEWAY_TIMEOUT ->{
+                    ResponseStatus.SC_REQUEST_TIMEOUT, ResponseStatus.SC_GATEWAY_TIMEOUT -> {
                         ERROR_FULL_VISITOR
                     }
                     else -> ERROR_UNKNOWN
@@ -63,11 +63,12 @@ object AddEditProductUploadErrorHandler {
 
     fun isServerTimeout(e: Throwable?): Boolean {
         return if (e is RuntimeException && e.getLocalizedMessage() != null &&
-                e.getLocalizedMessage() != "" && e.getLocalizedMessage().length <= MAX_LENGTH_ERROR_MESSAGE) {
+            e.getLocalizedMessage() != "" && e.getLocalizedMessage().length <= MAX_LENGTH_ERROR_MESSAGE
+        ) {
             try {
                 val code = e.getLocalizedMessage() ?: "0"
                 when (code.toInt()) {
-                    ResponseStatus.SC_REQUEST_TIMEOUT ->{
+                    ResponseStatus.SC_REQUEST_TIMEOUT -> {
                         true
                     }
                     else -> false

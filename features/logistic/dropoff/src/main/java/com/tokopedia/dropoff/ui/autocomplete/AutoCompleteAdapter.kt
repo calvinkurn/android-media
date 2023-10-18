@@ -3,10 +3,10 @@ package com.tokopedia.dropoff.ui.autocomplete
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.dropoff.R
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.dropoff.databinding.ItemAutocompleteResultBinding
 import com.tokopedia.logisticCommon.domain.model.*
-import kotlinx.android.synthetic.main.item_autocomplete_result.view.*
 
 class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -15,8 +15,15 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+
         return when (viewType) {
-            R.layout.item_autocomplete_result -> ResultViewHolder(view)
+            R.layout.item_autocomplete_result -> ResultViewHolder(
+                ItemAutocompleteResultBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
             R.layout.item_autocomplete_no_result -> NoResultViewHolder(view)
             R.layout.item_autocomplete_header -> HeaderViewHolder(view)
             else -> ShimmeringViewHolder(view)
@@ -87,18 +94,21 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private inner class NoResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     private inner class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
     private inner class ShimmeringViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-    private inner class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+    private inner class ResultViewHolder(val binding: ItemAutocompleteResultBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bindAutoComplete(item: SuggestedPlace) {
-            itemView.tv_autocomplete_title.text = item.mainText
-            itemView.tv_autocomplete_desc.text = item.secondaryText
-            itemView.setOnClickListener { listener?.onResultClicked(item) }
+            binding.tvAutocompleteTitle.text = item.mainText
+            binding.tvAutocompleteDesc.text = item.secondaryText
+            binding.root.setOnClickListener { listener?.onResultClicked(item) }
         }
 
         fun bindSavedAddress(item: SavedAddress) {
-            itemView.tv_autocomplete_title.text = item.addrName
-            itemView.tv_autocomplete_desc.text = item.address1
-            itemView.setOnClickListener { listener?.onResultClicked(item) }
+            binding.tvAutocompleteTitle.text = item.addrName
+            binding.tvAutocompleteDesc.text = item.address1
+            binding.root.setOnClickListener { listener?.onResultClicked(item) }
         }
     }
 }

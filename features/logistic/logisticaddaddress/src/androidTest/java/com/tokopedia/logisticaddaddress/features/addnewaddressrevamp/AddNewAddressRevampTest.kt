@@ -28,7 +28,7 @@ class AddNewAddressRevampTest {
 
     @get:Rule
     var permissionRule: GrantPermissionRule =
-            GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+        GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
@@ -44,6 +44,7 @@ class AddNewAddressRevampTest {
         logisticInterceptor.autoCompleteResponsePath = getRawString(context, R.raw.autocomplete_tokopedia_tower)
         logisticInterceptor.getDistrictResponsePath = getRawString(context, R.raw.get_district_tokopedia_tower)
         logisticInterceptor.saveAddressResponsePath = getRawString(context, R.raw.save_address_success)
+        logisticInterceptor.getCollectionPointResponsePath = getRawString(context, R.raw.get_collection_point_add)
         IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
     }
 
@@ -64,11 +65,11 @@ class AddNewAddressRevampTest {
             fillAddress(ADDRESS)
             fillReceiver(RECEIVER)
             fillPhoneNumber(PHONE)
+            checkTermsAndCondition()
         } submit {
             hasPassedAnalytics(cassavaTestRule, queryPath)
         }
     }
-
 
     @Test
     fun addAddress_fromCart() {
@@ -82,6 +83,7 @@ class AddNewAddressRevampTest {
             fillAddress(ADDRESS)
             fillReceiver(RECEIVER)
             fillPhoneNumber(PHONE)
+            checkTermsAndCondition()
         } submit {
             hasPassedAnalytics(cassavaTestRule, queryPath)
         }
@@ -99,6 +101,7 @@ class AddNewAddressRevampTest {
             fillAddress(ADDRESS)
             fillReceiver(RECEIVER)
             fillPhoneNumber(PHONE)
+            checkTermsAndCondition()
         } submit {
             hasPassedAnalytics(cassavaTestRule, queryPath)
         }

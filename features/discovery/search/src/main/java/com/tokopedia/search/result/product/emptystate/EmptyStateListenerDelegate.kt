@@ -1,19 +1,15 @@
 package com.tokopedia.search.result.product.emptystate
 
 import android.content.Context
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
-import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
-import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
 import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.QueryKeyProvider
-import com.tokopedia.search.utils.addFilterOrigin
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
+import com.tokopedia.search.utils.manualFilterToggleMap
 
 class EmptyStateListenerDelegate(
     context: Context?,
@@ -40,7 +36,9 @@ class EmptyStateListenerDelegate(
 
     override fun resetFilters() {
         filterController.resetAllFilters()
-        parameterListener.refreshSearchParameter(filterController.getParameter())
+
+        val queryParams = filterController.getParameter() + manualFilterToggleMap()
+        parameterListener.refreshSearchParameter(queryParams)
         parameterListener.reloadData()
     }
 }

@@ -212,18 +212,18 @@ class PlayFeedVideoTabViewModel@Inject constructor(
                     _reminderObservable.postValue(Success(playWidgetFeedReminderInfoData))
                 } else {
                     if (reminderType == PlayWidgetReminderType.Reminded) {
-                        _reminderObservable.postValue(Fail(CustomUiMessageThrowable(com.tokopedia.feedcomponent.R.string.feed_video_tab_failed_to_set_reminder_text)))
+                        _reminderObservable.postValue(Fail(CustomUiMessageThrowable(com.tokopedia.content.common.R.string.feed_video_tab_failed_to_set_reminder_text)))
                     } else {
-                        _reminderObservable.postValue(Fail(CustomUiMessageThrowable(com.tokopedia.feedcomponent.R.string.feed_video_tab_failed_to_unset_reminder_text)))
+                        _reminderObservable.postValue(Fail(CustomUiMessageThrowable(com.tokopedia.content.common.R.string.feed_video_tab_failed_to_unset_reminder_text)))
                     }
                 }
             }) { throwable ->
                 when (throwable) {
                     is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
                         if (reminderType == PlayWidgetReminderType.Reminded) {
-                            _reminderObservable.postValue(Fail(CustomUiMessageThrowable(com.tokopedia.feedcomponent.R.string.feed_video_tab_failed_to_set_reminder_text)))
+                            _reminderObservable.postValue(Fail(CustomUiMessageThrowable(com.tokopedia.content.common.R.string.feed_video_tab_failed_to_set_reminder_text)))
                         } else {
-                            _reminderObservable.postValue(Fail(CustomUiMessageThrowable(com.tokopedia.feedcomponent.R.string.feed_video_tab_failed_to_unset_reminder_text)))
+                            _reminderObservable.postValue(Fail(CustomUiMessageThrowable(com.tokopedia.content.common.R.string.feed_video_tab_failed_to_unset_reminder_text)))
                         }
                     }
                     else -> {

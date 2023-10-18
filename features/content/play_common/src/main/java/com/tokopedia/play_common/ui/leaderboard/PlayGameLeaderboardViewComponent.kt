@@ -10,7 +10,6 @@ import androidx.core.view.ViewCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -25,7 +24,7 @@ import com.tokopedia.play_common.view.quiz.QuizChoiceViewHolder
 import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
-import com.tokopedia.play_common.viewcomponent.ViewComponent
+import com.tokopedia.play_common.viewcomponent.BottomSheetViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
 import java.lang.Exception
 
@@ -35,19 +34,13 @@ import java.lang.Exception
 class PlayGameLeaderboardViewComponent(
     container: ViewGroup,
     listener: Listener
-) : ViewComponent(container, R.id.cl_leaderboard_sheet) {
+) : BottomSheetViewComponent(container, R.id.cl_leaderboard_sheet) {
     private val rvLeaderboard: RecyclerView = findViewById(R.id.rv_leaderboard)
     private val errorView: ConstraintLayout = findViewById(R.id.cl_leaderboard_error)
     private val llPlaceholder: LinearLayout = findViewById(R.id.ll_leaderboard_placeholder)
     private val tvSheetTitle: TextView = findViewById(R.id.tv_sheet_title)
     private val ivSheetClose: ImageView = findViewById(R.id.iv_sheet_close)
     private val btnRefreshError: UnifyButton = findViewById(R.id.btn_action_leaderboard_error)
-
-    private val bottomSheetBehavior = try {
-        BottomSheetBehavior.from(rootView)
-    } catch (e: IllegalArgumentException) {
-        null
-    }
 
     private val leaderboardAdapterObserver = object : RecyclerView.AdapterDataObserver() {
         override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
@@ -163,18 +156,6 @@ class PlayGameLeaderboardViewComponent(
     private fun showBtnLoader(shouldShow: Boolean) {
         btnRefreshError.isLoading = shouldShow
         btnRefreshError.isClickable = !shouldShow
-    }
-
-    override fun show() {
-        if (bottomSheetBehavior != null) {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        } else super.show()
-    }
-
-    override fun hide() {
-        if (bottomSheetBehavior != null) {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        } else super.hide()
     }
 
     private fun registerAdapterObserver() {

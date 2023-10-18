@@ -1,7 +1,6 @@
 package com.tokopedia.tokofood.feature.merchant.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.tokofood.common.di.TokoFoodModule
 import com.tokopedia.tokofood.common.di.TokoFoodScope
 import com.tokopedia.tokofood.feature.merchant.presentation.fragment.ManageLocationFragment

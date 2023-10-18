@@ -1,4 +1,4 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="80dp" android:height="21dp" android:viewportWidth="80" android:viewportHeight="21">
-    <path android:pathData="M0 14.992c0-2.84 2.115-5.237 4.933-5.59l64.949-8.135C75.254 0.595 80 4.783 80 10.197v1.428c0 4.97-4.03 9-9 9H5.633C2.523 20.625 0 18.103 0 14.992z" android:fillColor="@color/Unify_N75"/>
-    <path android:pathData="M1.23 15.039c0-2.17 1.604-4.006 3.755-4.297L19.692 8.75v10.625H5.567c-2.395 0-4.337-1.941-4.337-4.336zM20.923 8.75l18.461-2.5v13.125H20.923V8.75zm19.692-2.5l18.462-2.5v15.625H40.615V6.25zm19.693-2.5l9.388-1.271c4.8-0.65 9.073 3.082 9.073 7.927v0.969c0 4.418-3.582 8-8 8H60.308V3.75z" android:fillColor="@color/Unify_G400"/>
+    <path android:pathData="M0 14.992c0-2.84 2.115-5.237 4.933-5.59l64.949-8.135C75.254 0.595 80 4.783 80 10.197v1.428c0 4.97-4.03 9-9 9H5.633C2.523 20.625 0 18.103 0 14.992z" android:fillColor="@color/Unify_NN50"/>
+    <path android:pathData="M1.23 15.039c0-2.17 1.604-4.006 3.755-4.297L19.692 8.75v10.625H5.567c-2.395 0-4.337-1.941-4.337-4.336zM20.923 8.75l18.461-2.5v13.125H20.923V8.75zm19.692-2.5l18.462-2.5v15.625H40.615V6.25zm19.693-2.5l9.388-1.271c4.8-0.65 9.073 3.082 9.073 7.927v0.969c0 4.418-3.582 8-8 8H60.308V3.75z" android:fillColor="@color/Unify_GN500"/>
 </vector>

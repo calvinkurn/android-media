@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parentLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginTop="8dp"
+    app:card_type="shadow">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:minHeight="150dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_layout_product_detail"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginVertical="@dimen/dp_6"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginEnd="-40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/product_logo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:loader_type="rect" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/product_line1"
+            android:layout_width="120dp"
+            android:layout_height="15dp"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_16"
+            app:layout_constraintStart_toEndOf="@id/guideline2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_corner_radius="8dp"
+            app:loader_type="line" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/product_line2"
+            android:layout_width="100dp"
+            android:layout_height="15dp"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toEndOf="@id/guideline2"
+            app:layout_constraintTop_toBottomOf="@id/product_line1"
+            app:loader_corner_radius="8dp"
+            app:loader_type="line" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/product_line3"
+            android:layout_width="120dp"
+            android:layout_height="15dp"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="24dp"
+            app:layout_constraintStart_toEndOf="@id/guideline2"
+            app:layout_constraintTop_toBottomOf="@id/product_line2"
+            app:loader_corner_radius="8dp"
+            app:loader_type="line" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/product_line4"
+            android:layout_width="100dp"
+            android:layout_height="15dp"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toEndOf="@id/guideline2"
+            app:layout_constraintTop_toBottomOf="@id/product_line3"
+            app:loader_corner_radius="8dp"
+            app:loader_type="line" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".3" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".4" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</com.tokopedia.unifycomponents.CardUnify2>

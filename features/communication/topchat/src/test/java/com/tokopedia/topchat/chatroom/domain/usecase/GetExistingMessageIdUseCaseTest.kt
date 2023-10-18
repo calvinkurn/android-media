@@ -14,7 +14,6 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.jupiter.api.assertThrows
 
 class GetExistingMessageIdUseCaseTest {
 
@@ -38,14 +37,14 @@ class GetExistingMessageIdUseCaseTest {
 
     @Test
     fun should_get_message_id_when_successfully_get_data() {
-        //Given
+        // Given
         val expectedMessageId = "567"
         val expectedResult = GetExistingMessageIdPojo().apply {
             this.chatExistingChat.messageId = expectedMessageId
         }
         val params = GetExistingMessageIdUseCase.Param(testShopId, testUserId, source)
 
-        //Then
+        // Then
         runBlocking {
             repository.stubRepository(expectedResult, onError = mapOf())
             val result = useCase(params)
@@ -53,19 +52,15 @@ class GetExistingMessageIdUseCaseTest {
         }
     }
 
-    @Test
+    @Test(expected = Throwable::class)
     fun should_get_throwable_when_failed_to_get_data() {
-        //Given
+        // Given
         val params = GetExistingMessageIdUseCase.Param(testShopId, testUserId, source)
         val expectedResult = Throwable("Oops!")
         repository.stubRepositoryAsThrow(expectedResult)
 
-        //Then
-        assertThrows<Throwable> {
-            runBlocking {
-                useCase.invoke(params)
-            }
+        runBlocking {
+            useCase.invoke(params)
         }
     }
-
 }

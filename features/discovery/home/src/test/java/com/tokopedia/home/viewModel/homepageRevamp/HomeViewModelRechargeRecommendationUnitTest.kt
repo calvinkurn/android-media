@@ -18,7 +18,7 @@ import org.junit.Test
  * Created by Lukas on 14/05/20.
  */
 
-class HomeViewModelRechargeRecommendationUnitTest{
+class HomeViewModelRechargeRecommendationUnitTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
     private val getHomeUseCase = mockk<HomeDynamicChannelUseCase>(relaxed = true)
@@ -31,73 +31,84 @@ class HomeViewModelRechargeRecommendationUnitTest{
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `When recharge recommendation usecase success on declineRechargeRecommendationItem then homeDataModel should not contains reminderWidgetModel`(){
-        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(
-                ReminderWidgetModel(
+    fun `When recharge recommendation usecase success on declineRechargeRecommendationItem then homeDataModel should not contains reminderWidgetModel`() {
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
+                list = listOf(
+                    ReminderWidgetModel(
                         id = mockId,
                         data = mockReminderModel,
                         source = ReminderEnum.RECHARGE
+                    )
                 )
-        )))
+            )
+        )
         getHomeRechargeUseCase.givenOnDeclineRechargeRecommendationSuccess()
         homeViewModel = createHomeViewModel(
-                getHomeUseCase = getHomeUseCase,
-                homeRechargeRecommendationUseCase = getHomeRechargeUseCase
+            getHomeUseCase = getHomeUseCase,
+            homeRechargeRecommendationUseCase = getHomeRechargeUseCase
         )
         homeViewModel.declineRechargeRecommendationItem(mapOf())
         homeViewModel.homeDataModel.findWidget<ReminderWidgetModel>(
-                actionOnFound = { model, index ->
-                    Assert.assertTrue(false)
-                },
-                actionOnNotFound = {
-                    Assert.assertTrue(true)
-                }
+            actionOnFound = { model, index ->
+                Assert.assertTrue(false)
+            },
+            actionOnNotFound = {
+                Assert.assertTrue(true)
+            }
         )
     }
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `When recharge recommendation usecase failed on declineRechargeRecommendationItem then homeDataModel should not contains reminderWidgetModel`(){
-        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(
-                ReminderWidgetModel(
+    fun `When recharge recommendation usecase failed on declineRechargeRecommendationItem then homeDataModel should not contains reminderWidgetModel`() {
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
+                list = listOf(
+                    ReminderWidgetModel(
                         id = mockId,
                         data = mockReminderModel,
                         source = ReminderEnum.RECHARGE
+                    )
                 )
-        )))
+            )
+        )
         getHomeRechargeUseCase.givenOnDeclineRechargeRecommendationError()
         homeViewModel = createHomeViewModel(
-                getHomeUseCase = getHomeUseCase,
-                homeRechargeRecommendationUseCase = getHomeRechargeUseCase
+            getHomeUseCase = getHomeUseCase,
+            homeRechargeRecommendationUseCase = getHomeRechargeUseCase
         )
         homeViewModel.declineRechargeRecommendationItem(mapOf())
         homeViewModel.homeDataModel.findWidget<ReminderWidgetModel>(
-                actionOnFound = { model, index ->
-                    Assert.assertTrue(false)
-                },
-                actionOnNotFound = {
-                    Assert.assertTrue(true)
-                }
+            actionOnFound = { model, index ->
+                Assert.assertTrue(false)
+            },
+            actionOnNotFound = {
+                Assert.assertTrue(true)
+            }
         )
     }
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `When no recharge recommendation on declineRechargeRecommendationItem then homeDataModel should not delete any model`(){
-        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(
-                ReminderWidgetModel(
+    fun `When no recharge recommendation on declineRechargeRecommendationItem then homeDataModel should not delete any model`() {
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
+                list = listOf(
+                    ReminderWidgetModel(
                         id = mockId,
                         data = mockReminderModel,
                         source = ReminderEnum.SALAM
+                    )
                 )
-        )))
+            )
+        )
         getHomeRechargeUseCase.givenOnDeclineRechargeRecommendationSuccess()
         homeViewModel = createHomeViewModel(
-                getHomeUseCase = getHomeUseCase,
-                homeRechargeRecommendationUseCase = getHomeRechargeUseCase
+            getHomeUseCase = getHomeUseCase,
+            homeRechargeRecommendationUseCase = getHomeRechargeUseCase
         )
         homeViewModel.declineRechargeRecommendationItem(mapOf())
         Assert.assertTrue(homeViewModel.homeDataModel.list.size == 1)
     }
 }
-

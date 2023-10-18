@@ -12,8 +12,8 @@ import androidx.annotation.FloatRange
 import com.tokopedia.kotlin.extensions.view.hide
 import kotlin.math.min
 
-class QuestProgressBar
-    : View {
+class QuestProgressBar :
+    View {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
@@ -56,16 +56,18 @@ class QuestProgressBar
         canvas.drawArc(rect, startAngle, angle, false, paint)
     }
 
-    private fun calculateAngle(progress: Float):Float {
+    private fun calculateAngle(progress: Float): Float {
         return if (progress == 0F) {
             5F
-        } else maxAngle / maxProgress * progress
+        } else {
+            maxAngle / maxProgress * progress
+        }
     }
 
     fun setProgress(@FloatRange(from = 5.0, to = 100.0) progress: Float) {
         setAnimationProgress(progress)
         invalidate()
-        if(progress == 100f){
+        if (progress == 100f) {
             this.hideProgressBar = true
         }
     }
@@ -95,8 +97,9 @@ class QuestProgressBar
     private fun setAnimationProgress(progress: Float) {
         val animator = ValueAnimator.ofInt(5, calculateAngle(progress).toInt())
         animator.duration = 2000
-        animator.addUpdateListener { animation ->  angle =
-            (animation.animatedValue as Int).toFloat()
+        animator.addUpdateListener { animation ->
+            angle =
+                (animation.animatedValue as Int).toFloat()
             invalidate()
         }
         
@@ -117,13 +120,11 @@ class QuestProgressBar
 
             override fun onAnimationRepeat(p0: Animator) {
             }
-
         })
         animator.start()
-
     }
 }
 
-interface ProgressCompletionListener{
+interface ProgressCompletionListener {
     fun showCompletionAnimation()
 }

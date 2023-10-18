@@ -5,7 +5,7 @@ import com.tokopedia.graphql.data.GqlParam
 
 data class SaveReschedulePickupParam(
     @SerializedName("input")
-    val input: MpLogisticInsertReschedulePickupInputs = MpLogisticInsertReschedulePickupInputs(),
+    val input: MpLogisticInsertReschedulePickupInputs = MpLogisticInsertReschedulePickupInputs()
 ) : GqlParam {
     data class MpLogisticInsertReschedulePickupInputs(
         @SerializedName("order_ids")
@@ -15,6 +15,6 @@ data class SaveReschedulePickupParam(
         @SerializedName("time")
         val time: String = "",
         @SerializedName("reason")
-        val reason: String = "",
+        val reason: String = ""
     ) : GqlParam
 }

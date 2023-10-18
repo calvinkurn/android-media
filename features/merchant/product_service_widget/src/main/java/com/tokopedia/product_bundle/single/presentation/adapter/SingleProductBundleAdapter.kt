@@ -1,5 +1,7 @@
 package com.tokopedia.product_bundle.single.presentation.adapter
 
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -40,7 +42,12 @@ class SingleProductBundleAdapter(
                     preorderDurationWording
                 )
             }
-            notifyDataSetChanged()
+            val mainLooper = Looper.getMainLooper()
+            mainLooper?.run {
+                Handler(this).post {
+                    notifyDataSetChanged()
+                }
+            }
         }
         viewHolder.spinnerItemVariant.setOnClickListener {
             val position = viewHolder.adapterPosition
@@ -59,8 +66,10 @@ class SingleProductBundleAdapter(
         holder.bindData(data[position], selectedData[position])
     }
 
-    fun setData(data: List<SingleProductBundleItem>,
-                selectedData: List<SingleProductBundleSelectedItem>) {
+    fun setData(
+        data: List<SingleProductBundleItem>,
+        selectedData: List<SingleProductBundleSelectedItem>
+    ) {
         this.data = data
         this.selectedData = selectedData
         listener.onDataChanged(getSelectedData(), getSelectedProductVariant())

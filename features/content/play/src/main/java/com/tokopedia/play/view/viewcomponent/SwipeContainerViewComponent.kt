@@ -35,6 +35,7 @@ class SwipeContainerViewComponent(
     init {
         vpFragment.offscreenPageLimit = 1
         vpFragment.adapter = adapter
+        vpFragment.orientation = ViewPager2.ORIENTATION_VERTICAL
 
         vpFragment.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
 

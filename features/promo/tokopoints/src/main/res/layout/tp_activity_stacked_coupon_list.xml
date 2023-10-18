@@ -28,11 +28,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:tabIndicatorColor="@color/Unify_G400"
+            app:tabIndicatorColor="@color/Unify_GN500"
             app:tabMode="scrollable"
-            app:tabSelectedTextColor="@color/Unify_G500"
+            app:tabSelectedTextColor="@color/Unify_GN500"
             app:tabTextAppearance="@style/TokoPointsTabs"
-            app:tabTextColor="@color/Unify_N700_44" />
+            app:tabTextColor="@color/Unify_NN950_44" />
     </com.google.android.material.appbar.AppBarLayout>
 
 

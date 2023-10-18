@@ -60,7 +60,8 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     override fun initInjector() = getComponent(PmsComponent::class.java).inject(this)
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         return inflater.inflate(R.layout.fragment_payment_list, container, false)
@@ -112,6 +113,9 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
                     ErrorHandler.getErrorMessage(context, it.throwable),
                     Toaster.TYPE_ERROR
                 )
+                else -> {
+                    // no op
+                }
             }
         }
         viewModel.cancelPaymentLiveData.observe(viewLifecycleOwner) {
@@ -121,6 +125,9 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
                     ErrorHandler.getErrorMessage(context, it.throwable),
                     Toaster.TYPE_ERROR
                 )
+                else -> {
+                    // no op
+                }
             }
         }
     }
@@ -129,7 +136,9 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         if (data.isSuccess == true) {
             showToast(data.message, Toaster.TYPE_NORMAL)
             onRefresh()
-        } else showToast(data.message, Toaster.TYPE_ERROR)
+        } else {
+            showToast(data.message, Toaster.TYPE_ERROR)
+        }
     }
 
     // show cancel detail dialog
@@ -137,9 +146,11 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         data.cancelDetailData?.let { detailData ->
             val descriptionMessage = viewModel.getCancelDescriptionMessage(detailData)
             context?.let {
-                val title = if (data.productName == null)
+                val title = if (data.productName == null) {
                     it.getString(R.string.payment_cancel_title_default)
-                else "Yakin ingin batalkan ${data.productName}?"
+                } else {
+                    "Yakin ingin batalkan ${data.productName}?"
+                }
 
                 val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                 dialog.setTitle(title)
@@ -209,9 +220,11 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
 
     private fun openCompletePaymentWeb(model: BasePaymentModel) {
         sendEventToAnalytics(PmsEvents.CompletePayment(model))
-        startActivity(Intent(activity, CompletePayment::class.java).apply {
-            putExtra(COMPLETE_PAYMENT_URL_KEY, (model as CreditCardPaymentModel).paymentUrl)
-        })
+        startActivity(
+            Intent(activity, CompletePayment::class.java).apply {
+                putExtra(COMPLETE_PAYMENT_URL_KEY, (model as CreditCardPaymentModel).paymentUrl)
+            }
+        )
     }
 
     private fun openInvoiceDetail(model: BasePaymentModel) {
@@ -229,7 +242,9 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
             if (it.size > 1) {
                 sendEventToAnalytics(PmsEvents.WaitingCardClickEvent("combine"))
                 showCombinedTransactionDetail(model)
-            } else openInvoiceDetail(model)
+            } else {
+                openInvoiceDetail(model)
+            }
         }
     }
 
@@ -294,5 +309,4 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         viewModel.getPaymentListCount()
         loadDeferredTransactions()
     }
-
 }

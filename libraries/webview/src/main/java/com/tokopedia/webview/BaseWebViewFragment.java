@@ -66,6 +66,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.RouteManagerKt;
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech;
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.globalerror.GlobalError;
@@ -83,6 +84,7 @@ import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
+import com.tokopedia.webview.jsinterface.PartnerWebAppInterface;
 import com.tokopedia.webview.jsinterface.PrintWebPageInterface;
 
 import java.io.ByteArrayOutputStream;
@@ -121,12 +123,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String KEY_CLEAR_CACHE = "android_webview_clear_cache";
     private static final String LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment";
     private static final String GOJEK_APP_LINK = "https://gojek.link/goclub/membership?source=toko_status_match";
+    private static final String GOFOOD_LINK = "https://gofood.link/";
 
     String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
     private static final int REQUEST_CODE_LOGIN = 1233;
     private static final int REQUEST_CODE_LOGOUT = 1234;
     private static final int REQUEST_CODE_LIVENESS = 1235;
+    private static final int REQUEST_CODE_PARTNER_KYC = 1236;
     private static final int LOGIN_GPLUS = 458;
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String KOL_URL = "tokopedia.com/content";
@@ -276,15 +280,18 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             swipeRefreshLayout.setOnRefreshListener(this::reloadPage);
         }
 
-        Boolean isEnablePrintJsInterface = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_WEBVIEW_PRINT_JS_INTERFACE, true);
-
         webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");
-        if (isEnablePrintJsInterface) {
-            webView.addJavascriptInterface(new PrintWebPageInterface(getActivity(), webView), ANDROID_PRINT_JS_INTERFACE);
+        webView.addJavascriptInterface(new PrintWebPageInterface(getActivity(), webView), ANDROID_PRINT_JS_INTERFACE);
+
+        boolean isEnablePartnerKycJsInterface = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_WEBVIEW_PARTNER_KYC_JS_INTERFACE, true);
+        if (isEnablePartnerKycJsInterface) {
+            webView.addJavascriptInterface(new PartnerWebAppInterface(this::routeToPartnerKyc), "CameraPicker");
         }
+        addJavascriptInterface(webView);
         WebSettings webSettings = webView.getSettings();
-        webSettings.setUserAgentString(webSettings.getUserAgentString() + " Mobile webview ");
+        String identifierUserAgent = getIdentifierUserAgent();
+        webSettings.setUserAgentString(webSettings.getUserAgentString() + identifierUserAgent);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setDomStorageEnabled(true);
@@ -298,6 +305,20 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             webView.setWebContentsDebuggingEnabled(true);
         }
         return view;
+    }
+
+    private String getIdentifierUserAgent() {
+        String identifierUserAgent;
+        if (GlobalConfig.isSellerApp()) {
+            identifierUserAgent = " Sellerapp Tokopedia Mobile webview ";
+        } else {
+            identifierUserAgent = " Tokopedia Mobile webview ";
+        }
+        return identifierUserAgent;
+    }
+
+    protected void addJavascriptInterface(WebView webView) {
+        // please use this function to bind android code to javascript
     }
 
     protected int getLayout() {
@@ -323,23 +344,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (isTokopediaUrl) {
             webView.requestFocus();
             webView.loadAuthUrl(url, new UserSession(getContext()));
-        } else if(isWhitelisted(url)) {
+        } else if(WebViewHelper.isUrlWhitelisted(getContext(), url)) {
             webView.requestFocus();
             webView.loadAuthUrl(url, null);
         } else {
             redirectToNativeBrowser();
-        }
-    }
-
-    private boolean isWhitelisted(String mUrl) {
-        try {
-            if (getActivity() instanceof BaseSimpleWebViewActivity) {
-                BaseSimpleWebViewActivity baseSimpleWebViewActivity = (BaseSimpleWebViewActivity) getActivity();
-                return baseSimpleWebViewActivity.isDomainWhitelisted(baseSimpleWebViewActivity.getDomainName(baseSimpleWebViewActivity.getBaseDomain(mUrl)));
-            }
-            return false;
-        } catch (Exception ex) {
-            return false;
         }
     }
 
@@ -428,6 +437,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         List<String> images = MediaPicker.INSTANCE.result(intent).getOriginalPaths();
                         if(!images.isEmpty()){
                             results = new Uri[]{Uri.parse(FILE_PREFIX + images.get(0))};
+                            Context context = getContext();
+                            if (context != null) {
+                                boolean isDisableGalleryPicker = WebViewHelper.isWhitelistDisableGalleryPicker(context, webView.getUrl());
+                                if (isDisableGalleryPicker) {
+                                    results = new Uri[]{Uri.parse(FILE_PREFIX + images.get(0)), Uri.parse("true")};
+                                }
+                            }
                         }
                     }
                 }
@@ -467,6 +483,24 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (requestCode == REQUEST_CODE_LOGOUT && resultCode == RESULT_OK) {
             hasMoveToNativePage = true;
             startActivity(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN));
+        }
+
+        if (requestCode == REQUEST_CODE_PARTNER_KYC && resultCode == Activity.RESULT_OK) {
+            proceedPartnerKyc(intent);
+        }
+
+    }
+
+    private void proceedPartnerKyc(Intent intent) {
+        String imageFilePath = intent.getStringExtra(ApplinkConstInternalFintech.FILE_PATH);
+        String type = intent.getStringExtra(ApplinkConstInternalFintech.TYPE);
+
+        if (!TextUtils.isEmpty(imageFilePath)) {
+            String imageBase64 = WebViewHelper.INSTANCE.getBase64FromImagePath(imageFilePath);
+            if (imageBase64 != null) {
+                String formattedImageBase64 = imageBase64.replace("\n", "");
+                WebViewHelper.INSTANCE.finishTakePicture(type, formattedImageBase64, webView);
+            }
         }
     }
 
@@ -555,23 +589,50 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
             uploadMessageAfterLolipop = filePathCallback;
 
-            Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
-            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
-            contentSelectionIntent.setType("*/*");
-            Intent[] intentArray = new Intent[0];
-            if(getContext() != null){
-                intentArray = new Intent[1];
-                Intent mediaPickerIntent =  WebViewHelper.INSTANCE.getMediaPickerIntent(getContext());
-                intentArray[0] = mediaPickerIntent;
+            if (getContext() != null) {
+                boolean disableGalleryPicker = WebViewHelper.isWhitelistDisableGalleryPicker(getContext(), webView.getUrl());
+                Intent mediaPickerIntent = WebViewHelper.INSTANCE.getMediaPickerIntent(
+                        getContext(),
+                        hasVideo(fileChooserParams),
+                        disableGalleryPicker
+                );
+
+                if (disableGalleryPicker) {
+                    startActivityForResult(mediaPickerIntent, ATTACH_FILE_REQUEST);
+                } else {
+                    Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                    contentSelectionIntent.setType("*/*");
+                    Intent[] intentArray = new Intent[0];
+                    if (getContext() != null) {
+                        intentArray = new Intent[1];
+                        intentArray[0] = mediaPickerIntent;
+                    }
+
+                    Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
+                    chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
+                    chooserIntent.putExtra(Intent.EXTRA_TITLE, "File Chooser");
+                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
+                    startActivityForResult(chooserIntent, ATTACH_FILE_REQUEST);
+                }
+            }
+            return true;
+        }
+
+        private boolean hasVideo(WebChromeClient.FileChooserParams fileChooserParams) {
+            String[] acceptTypes = fileChooserParams.getAcceptTypes();
+            boolean hasVideo = false;
+
+            if (acceptTypes != null) {
+                for (String type : acceptTypes) {
+                    if (type != null && type.contains("video")) {
+                        hasVideo = true;
+                        break;
+                    }
+                }
             }
 
-            Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
-            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
-            chooserIntent.putExtra(Intent.EXTRA_TITLE, "File Chooser");
-            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
-            startActivityForResult(chooserIntent, ATTACH_FILE_REQUEST);
-            return true;
-
+            return hasVideo;
         }
 
         @Override
@@ -587,7 +648,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                     String decodedUrl = Uri.decode(url).toLowerCase();
                     if (!TextUtils.isEmpty(title)
                             && Uri.parse(title).getScheme() == null
-                            && (isKolUrl(decodedUrl) || isPrintAwbUrl(decodedUrl))) {
+                            && (isKolUrl(decodedUrl) || isPrintAwbUrl(decodedUrl) ||
+                            WebViewHelper.isScpUrl(getContext(), decodedUrl))) {
                         actionBar.setTitle(title);
                     } else if ((TextUtils.isEmpty(activityTitle) || activityTitle.equals(DEFAULT_TITLE))
                             && !isHelpUrl(decodedUrl)) {
@@ -648,6 +710,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     class MyWebViewClient extends WebViewClient {
+        @Override
+        public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
+            super.doUpdateVisitedHistory(view, url, isReload);
+            Activity activityInstance = getActivity();
+            if (activityInstance instanceof BaseSimpleWebViewActivity) {
+                ((BaseSimpleWebViewActivity) activityInstance).updateToolbarVisibility(url);
+            }
+        }
+
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
@@ -714,7 +785,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String requestUrl) {
-            if (hasCheckOverrideAtInitialization(requestUrl)) return false;
+            if (hasCheckOverrideAtInitialization(requestUrl) && !shouldReloadContactUsUrl(requestUrl)) return false;
             boolean overrideUrl = BaseWebViewFragment.this.shouldOverrideUrlLoading(view, requestUrl);
             checkActivityFinish();
             return overrideUrl;
@@ -801,6 +872,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return url.contains(HELP_URL);
     }
 
+    public Boolean shouldReloadContactUsUrl(String url) {
+        if (!userSession.isLoggedIn()) return false;
+        if (getContext() != null) {
+            return WebViewHelper.shouldReloadContactUsUrl(getContext(), url);
+        }
+        return false;
+    }
+
     // to be overridden
     protected void webViewClientShouldInterceptRequest(WebView view, WebResourceRequest request) {
         //noop
@@ -822,6 +901,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (uri.getHost() == null) {
             return false;
         }
+
+        if (webView != null && shouldReloadContactUsUrl(url)){
+            launchWebviewForNewUrl(url);
+            return true;
+        }
+
         if (isBriIntent(uri)) {
             return handlingBriIntent(url);
         }
@@ -836,7 +921,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             e.printStackTrace();
         }
 
-        if (url.endsWith(".pdf") && url.startsWith("http")) {
+        if (handlePdfUri(uri)) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.parse(decode(uri.toString().replace(GOOGLE_DOCS_PDF_URL, "")))
                     , "application/pdf");
@@ -950,6 +1035,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
+    }
+
+    private boolean handlePdfUri(Uri uri) {
+        // Handle e-pharmacy pdf & regular pdf url
+        return (uri.getPath().endsWith(".pdf") || url.endsWith(".pdf")) && url.startsWith("http");
     }
 
     private boolean handleWebUrlLogin(Uri uri) {
@@ -1121,7 +1211,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     private boolean isExternalAppLink(String url) {
-        return url.contains(LINK_AJA_APP_LINK) || url.contains(GOJEK_APP_LINK);
+        return url.contains(LINK_AJA_APP_LINK) || url.contains(GOJEK_APP_LINK) || url.contains(GOFOOD_LINK);
     }
 
     // If back pressed is disabled and the webview has moved to a native page,
@@ -1157,6 +1247,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (globalError != null) {
             globalError.setVisibility(View.GONE);
         }
+        if (shouldReloadContactUsUrl(url)){
+            launchWebviewForNewUrl(url);
+            return;
+        }
         webView.reload();
     }
 
@@ -1168,5 +1262,19 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public interface OnLocationRequestListener {
         void onLocationPermissionRequested(GeolocationPermissions.Callback callback, String origin);
     }
+
+    private void routeToPartnerKyc(String docType, String lang) {
+        String applink = "";
+        if (docType.equalsIgnoreCase(ApplinkConstInternalFintech.TYPE_KTP)) {
+            applink = ApplinkConst.HOME_CREDIT_KTP_WITHOUT_TYPE;
+        } else {
+            applink = ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE;
+        }
+
+        Intent intent = RouteManager.getIntent(getActivity(), applink);
+        intent.putExtra(ApplinkConstInternalFintech.isV2, true);
+        startActivityForResult(intent, REQUEST_CODE_PARTNER_KYC);
+    }
+
 
 }

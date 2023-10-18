@@ -5,6 +5,7 @@ import androidx.fragment.app.testing.launchFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.SavedStateHandle
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
@@ -15,27 +16,28 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
-import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalyticImpl
 import com.tokopedia.play.broadcaster.helper.analyticUserSession
 import com.tokopedia.play.broadcaster.setup.ProductSetupContainer
-import com.tokopedia.play.broadcaster.setup.product.analytic.ProductChooserAnalyticManager
-import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
-import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSortBottomSheet
-import com.tokopedia.play.broadcaster.setup.product.view.viewholder.ProductListViewHolder
-import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
+import com.tokopedia.content.product.picker.seller.analytic.manager.ProductChooserAnalyticManager
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductChooserBottomSheet
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductSortBottomSheet
+import com.tokopedia.content.product.picker.seller.view.viewholder.ProductListViewHolder
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.content.test.espresso.delay
 import io.mockk.mockk
-import com.tokopedia.dialog.R as unifyDialogR
-import com.tokopedia.unifycomponents.R as unifyR
+import com.tokopedia.dialog.R as dialogR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
+import com.tokopedia.empty_state.R as empty_stateR
 
 /**
  * Created by kenny.hadisaputra on 02/03/22
  */
 class ProductChooserRobot(
     listener: ProductChooserBottomSheet.Listener? = null,
-    viewModel: (SavedStateHandle) -> PlayBroProductSetupViewModel = {
+    viewModel: (SavedStateHandle) -> ContentProductPickerSellerViewModel = {
         productSetupViewModel(handle = it)
     },
 ) {
@@ -48,7 +50,7 @@ class ProductChooserRobot(
         }
     }
 
-    val scenario = launchFragment(themeResId = R.style.AppTheme) {
+    val scenario = launchFragment(themeResId = empty_stateR.style.AppTheme) {
         ProductSetupContainer(viewModel, onAttach) {
             when (it) {
                 ProductSortBottomSheet::class.java.name -> {
@@ -78,39 +80,40 @@ class ProductChooserRobot(
 
     fun close() = chainable {
         onView(
-            ViewMatchers.withId(unifyR.id.bottom_sheet_close)
+            ViewMatchers.withId(unifycomponentsR.id.bottom_sheet_close)
         ).perform(click())
     }
 
     fun confirmClose() {
         onView(
-            ViewMatchers.withId(unifyDialogR.id.dialog_btn_secondary)
+            ViewMatchers.withId(dialogR.id.dialog_btn_secondary)
         ).perform(click())
     }
 
     fun cancelClose() {
         onView(
-            ViewMatchers.withId(unifyDialogR.id.dialog_btn_primary)
+            ViewMatchers.withId(dialogR.id.dialog_btn_primary)
         ).perform(click())
     }
 
     fun selectProduct(position: Int = 0) = chainable {
         onView(
-            ViewMatchers.withId(R.id.rv_products)
+            ViewMatchers.withId(contentproductpickerR.id.rv_products)
         ).perform(RecyclerViewActions.actionOnItemAtPosition<ProductListViewHolder.Product>(
             position, click())
         )
     }
 
     fun saveProducts() = chainable {
+        closeSoftKeyboard()
         onView(
-            ViewMatchers.withId(R.id.btn_next)
+            ViewMatchers.withId(contentproductpickerR.id.btn_next)
         ).perform(click())
     }
 
     fun clickSortChips() {
         onView(
-            ViewMatchers.withId(R.id.chips_sort)
+            ViewMatchers.withId(contentproductpickerR.id.chips_sort)
         ).perform(click())
 
         delay(300)
@@ -118,19 +121,19 @@ class ProductChooserRobot(
 
     fun clickEtalaseCampaignChips() {
         onView(
-            ViewMatchers.withId(R.id.chips_etalase)
+            ViewMatchers.withId(contentproductpickerR.id.chips_etalase)
         ).perform(click())
     }
 
     fun searchKeyword(keyword: String) {
         onView(
-            ViewMatchers.withId(R.id.et_search)
+            ViewMatchers.withId(contentproductpickerR.id.et_search)
         ).perform(typeText(keyword))
     }
 
     fun selectSort(position: Int) {
         onView(
-            ViewMatchers.withId(R.id.rv_sort)
+            ViewMatchers.withId(contentproductpickerR.id.rv_sort)
         ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
             position, click())
         )
@@ -138,13 +141,13 @@ class ProductChooserRobot(
 
     fun saveSort() {
         onView(
-            ViewMatchers.withId(unifyR.id.bottom_sheet_action)
+            ViewMatchers.withId(unifycomponentsR.id.bottom_sheet_action)
         ).perform(click())
     }
 
     fun assertBottomSheet(isOpened: Boolean) {
         onView(
-            ViewMatchers.withId(unifyR.id.bottom_sheet_close)
+            ViewMatchers.withId(unifycomponentsR.id.bottom_sheet_close)
         ).check(
             if (isOpened) ViewAssertions.matches(isDisplayed())
             else doesNotExist()
@@ -153,7 +156,7 @@ class ProductChooserRobot(
 
     fun assertExitDialog(isShown: Boolean) {
         onView(
-            ViewMatchers.withText(context.getString(R.string.play_bro_product_chooser_exit_dialog_title))
+            ViewMatchers.withText(context.getString(contentproductpickerR.string.product_chooser_exit_dialog_title))
         ).check(
             if (isShown) ViewAssertions.matches(isDisplayed())
             else doesNotExist()

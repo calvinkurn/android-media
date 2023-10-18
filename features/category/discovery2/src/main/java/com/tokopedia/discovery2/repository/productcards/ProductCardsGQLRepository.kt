@@ -4,6 +4,7 @@ import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.data.ComponentAdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataResponse
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT
@@ -15,18 +16,21 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), ProductCardsRepository {
-    override suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): Pair<ArrayList<ComponentsItem>,String?>{
+    override suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): Pair<ArrayList<ComponentsItem>, ComponentAdditionalInfo?>{
         val response = (getGQLData(GQL_COMPONENT,
                 DataResponse::class.java, Utils.getComponentsGQLParams(componentId, pageEndPoint, Utils.getQueryString(queryParamterMap)), GQL_COMPONENT_QUERY_NAME) as DataResponse)
 
         val componentData = response.data.component?.data
         val componentProperties = response.data.component?.properties
         val creativeName = response.data.component?.creativeName ?: ""
-        val nextPage = response.data.component?.compAdditionalInfo?.nextPage
+        val additionalInfo = response.data.component?.compAdditionalInfo
         val componentItem  = getComponent(componentId, pageEndPoint)
         val componentsListSize = componentItem?.getComponentsItem()?.size ?: 0
         val list = withContext(Dispatchers.Default) {
             when (productComponentName) {
+            ComponentNames.ProductCardColumnList.componentName -> {
+                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardColumnList.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
+            }
             ComponentNames.ProductCardRevamp.componentName -> {
                 if (componentProperties?.template == Constant.ProductTemplate.LIST) {
                     DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.MasterProductCardItemList.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
@@ -37,8 +41,13 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
             ComponentNames.ProductCardSingle.componentName -> {
                 DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardSingleItem.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
             }
-            ComponentNames.ProductCardCarousel.componentName ->
-                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardCarouselItem.componentName, componentProperties, creativeName, parentListSize = componentsListSize)
+            ComponentNames.ProductCardCarousel.componentName ->{
+                if(componentProperties?.template == Constant.ProductTemplate.LIST){
+                    DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardCarouselItemList.componentName, componentProperties, creativeName, parentListSize = componentsListSize)
+                }else{
+                    DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardCarouselItem.componentName, componentProperties, creativeName, parentListSize = componentsListSize)
+                }
+            }
             ComponentNames.ProductCardSprintSale.componentName ->
                 DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardSprintSaleItem.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
             ComponentNames.ProductCardSprintSaleCarousel.componentName ->
@@ -51,6 +60,6 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
 
             }
         }
-        return Pair(list,nextPage)
+        return Pair(list,additionalInfo)
     }
 }

@@ -4,9 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addongifting.addonbottomsheet.domain.usecase.GetAddOnByProductUseCase
 import com.tokopedia.addongifting.addonbottomsheet.domain.usecase.GetAddOnSavedStateUseCase
-import com.tokopedia.addongifting.addonbottomsheet.domain.usecase.SaveAddOnStateUseCase
 import com.tokopedia.addongifting.addonbottomsheet.view.AddOnViewModel
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
@@ -17,7 +17,10 @@ abstract class BaseAddOnTest {
     var getAddOnSavedStateUseCase: GetAddOnSavedStateUseCase = mockk()
     var saveAddOnStateUseCase: SaveAddOnStateUseCase = mockk()
 
-    private var dispatcher: CoroutineDispatchers = CoroutineTestDispatchersProvider
+    @get:Rule
+    val testCoroutineRule = UnconfinedTestRule()
+
+    private var dispatcher: CoroutineDispatchers = testCoroutineRule.dispatchers
     lateinit var viewModel: AddOnViewModel
 
     @get: Rule
@@ -27,5 +30,4 @@ abstract class BaseAddOnTest {
     fun setUp() {
         viewModel = AddOnViewModel(dispatcher, getAddOnByProductUseCase, getAddOnSavedStateUseCase, saveAddOnStateUseCase)
     }
-
 }

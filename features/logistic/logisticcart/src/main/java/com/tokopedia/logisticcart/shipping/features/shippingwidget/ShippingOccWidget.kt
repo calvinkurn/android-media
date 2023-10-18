@@ -245,10 +245,10 @@ class ShippingOccWidget : ConstraintLayout {
     ) {
         binding?.apply {
             tvShippingCourier.text = "$shipperName (${
-            CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                shippingPrice,
-                false
-            ).removeDecimalSuffix()
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    shippingPrice,
+                    false
+                ).removeDecimalSuffix()
             })"
             if (eta.isNotEmpty()) {
                 tvShippingCourierEta.text = eta
@@ -330,7 +330,7 @@ class ShippingOccWidget : ConstraintLayout {
                     ForegroundColorSpan(
                         ContextCompat.getColor(
                             it,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                     ),
                     errorMessage.length + 1,
@@ -415,7 +415,7 @@ class ShippingOccWidget : ConstraintLayout {
                     ForegroundColorSpan(
                         ContextCompat.getColor(
                             it,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                     ),
                     errorDescription.length + 1,
@@ -459,8 +459,8 @@ class ShippingOccWidget : ConstraintLayout {
                 tvShippingCourier.text = formattedFreeShippingChosenCourierTitle
             } else {
                 tvShippingCourier.text = "$shipperName (${
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingPrice ?: 0, false)
-                    .removeDecimalSuffix()
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingPrice ?: 0, false)
+                        .removeDecimalSuffix()
                 })"
             }
             if (shippingEta.isNullOrBlank()) {

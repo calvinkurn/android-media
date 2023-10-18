@@ -15,9 +15,13 @@ class UpdatePromoSummaryDataTest : BaseCartTest() {
     @Test
     fun `WHEN update promo summary data THEN summary transaction should be updated`() {
         // GIVEN
-        val lastApplyUiModel = LastApplyUiModel(additionalInfo = LastApplyAdditionalInfoUiModel(usageSummaries = listOf(
-                LastApplyUsageSummariesUiModel()
-        )))
+        val lastApplyUiModel = LastApplyUiModel(
+            additionalInfo = LastApplyAdditionalInfoUiModel(
+                usageSummaries = listOf(
+                    LastApplyUsageSummariesUiModel()
+                )
+            )
+        )
         val cartData = CartData(promo = CartPromoData(lastApplyPromo = LastApplyPromo(lastApplyPromoData = LastApplyPromoData(codes = listOf("ABC"), listVoucherOrders = listOf(VoucherOrders())))))
         cartListPresenter.setCartListData(cartData)
 
@@ -27,5 +31,4 @@ class UpdatePromoSummaryDataTest : BaseCartTest() {
         // THEN
         assert(cartListPresenter.getPromoSummaryUiModel() != null)
     }
-
 }

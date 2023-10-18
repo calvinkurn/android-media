@@ -41,7 +41,7 @@ open class UserConsentDebugFragment: BaseDaggerFragment() {
         viewBinding?.buttonAction?.setOnClickListener {
             viewBinding?.sampleUserConsent?.submitConsent()
         }
-        viewBinding?.sampleUserConsent?.setOnNeedConsentListener { needConsent ->
+        viewBinding?.sampleUserConsent?.setOnDetailConsentListener { needConsent, consentType ->
             viewBinding?.buttonAction?.showWithCondition(needConsent)
         }
     }
@@ -51,7 +51,7 @@ open class UserConsentDebugFragment: BaseDaggerFragment() {
             collectionId = collectionId,
             version = version
         )
-        viewBinding?.sampleUserConsent?.load(viewLifecycleOwner, this, consentParam)
+        viewBinding?.sampleUserConsent?.load(consentParam)
     }
 
     override fun onDestroy() {

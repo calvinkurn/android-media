@@ -31,9 +31,8 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
-
 
 class SetPeriodBottomSheet : BottomSheetUnify() {
 
@@ -97,7 +96,6 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
         setupBottomSheet(inflater, container)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
-
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
         binding = BottomsheetSetPeriodBinding.inflate(inflater, container, false)
@@ -290,7 +288,6 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
                 selectChip(chipOneYearPeriod)
             }
         }
-
     }
 
     private fun resetChipType() {
@@ -315,7 +312,6 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
                 selectChip(chipSixMonthPeriod)
             }
         }
-
     }
 
     private fun setupOneMonthPeriodChipListener() {
@@ -331,7 +327,6 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
                 selectChip(chipOneMonthPeriod)
             }
         }
-
     }
 
     private fun setupCustomSelectionPeriodChipListener() {
@@ -341,7 +336,6 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
                 selectChip(chipCustomSelection)
             }
         }
-
     }
 
     private fun displayStartDateTimePicker() {
@@ -378,7 +372,6 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
                     resetChipType()
                     selectChip(binding?.chipCustomSelection)
                 }
-
             }
         )
     }
@@ -405,5 +398,4 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
         binding?.chipOneMonthPeriod?.gone()
         binding?.chipCustomSelection?.gone()
     }
-
 }

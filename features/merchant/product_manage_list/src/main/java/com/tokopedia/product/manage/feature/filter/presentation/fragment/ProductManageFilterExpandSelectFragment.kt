@@ -14,7 +14,6 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
-import com.tokopedia.product.manage.databinding.FragmentProductManageFilterSearchBinding
 import com.tokopedia.product.manage.databinding.FragmentProductManageFilterSelectBinding
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.di.DaggerProductManageFilterComponent

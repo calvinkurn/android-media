@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckoutmarketplace.GetPromoLastSeenDataProvider.provideGetPromoLastSeenSuccessEmpty
 import com.tokopedia.promocheckoutmarketplace.GetPromoLastSeenDataProvider.provideGetPromoLastSeenSuccessWithData
 import com.tokopedia.promocheckoutmarketplace.data.response.GetPromoSuggestionResponse
@@ -11,66 +12,87 @@ class PromoCheckoutViewModelGetPromoLastSeenTest : BasePromoCheckoutViewModelTes
 
     @Test
     fun `WHEN get promo last seen and success THEN get promo last seen response should not be null`() {
-        //given
+        // given
         val response = provideGetPromoLastSeenSuccessWithData()
 
         coEvery { getPromoSuggestionUseCase.execute(any(), any()) } answers {
             firstArg<(GetPromoSuggestionResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoSuggestion()
 
-        //then
+        // then
         assertNotNull(viewModel.getPromoSuggestionResponse.value)
     }
 
     @Test
     fun `WHEN get promo last seen and success with not empty data THEN get promo last seen response state should be show promo last seen`() {
-        //given
+        // given
         val response = provideGetPromoLastSeenSuccessWithData()
 
         coEvery { getPromoSuggestionUseCase.execute(any(), any()) } answers {
             firstArg<(GetPromoSuggestionResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoSuggestion()
 
-        //then
+        // then
         assert(viewModel.getPromoSuggestionResponse.value?.state == GetPromoSuggestionAction.ACTION_SHOW)
     }
 
     @Test
     fun `WHEN get promo last seen and success with not empty data THEN promo last seen data should not be empty`() {
-        //given
+        // given
         val response = provideGetPromoLastSeenSuccessWithData()
 
         coEvery { getPromoSuggestionUseCase.execute(any(), any()) } answers {
             firstArg<(GetPromoSuggestionResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoSuggestion()
 
-        //then
+        // then
         assert(viewModel.getPromoSuggestionResponse.value?.data?.uiData?.promoSuggestionItemUiModelList?.isNotEmpty() == true)
     }
 
     @Test
     fun `WHEN get promo last seen and success with empty data THEN get promo last seen response state should not be show promo last seen`() {
-        //given
+        // given
         val response = provideGetPromoLastSeenSuccessEmpty()
 
         coEvery { getPromoSuggestionUseCase.execute(any(), any()) } answers {
             firstArg<(GetPromoSuggestionResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoSuggestion()
 
-        //then
+        // then
         assert(viewModel.getPromoSuggestionResponse.value?.state != GetPromoSuggestionAction.ACTION_SHOW)
     }
 
+    @Test
+    fun `WHEN get promo last seen failed THEN should update state to release lock flag`() {
+        // given: promo data available
+        val response = provideGetPromoLastSeenSuccessWithData()
+        coEvery { getPromoSuggestionUseCase.execute(any(), any()) } answers {
+            firstArg<(GetPromoSuggestionResponse) -> Unit>().invoke(response)
+        }
+        viewModel.getPromoSuggestion()
+
+        // given: retry
+        val throwable = MessageErrorException("Tokopedia")
+        coEvery { getPromoSuggestionUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        // when
+        viewModel.getPromoSuggestion()
+
+        // then
+        assert(viewModel.getPromoSuggestionResponse.value?.state == GetPromoSuggestionAction.ACTION_RELEASE_LOCK_FLAG)
+    }
 }

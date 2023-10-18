@@ -29,12 +29,14 @@ class FlightSelectPassengerBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-
-        bottomSheetHeader.setPadding(
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2),
+        context?.let { context ->
+            bottomSheetHeader.setPadding(
+                context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2),
                 bottomSheetHeader.top,
                 bottomSheetWrapper.right,
-                bottomSheetHeader.bottom)
+                bottomSheetHeader.bottom
+            )
+        }
         bottomSheetWrapper.setPadding(0,
                 bottomSheetWrapper.paddingTop,
                 0,
@@ -45,7 +47,9 @@ class FlightSelectPassengerBottomSheet : BottomSheetUnify() {
         showCloseIcon = true
         showKnob = false
         isDragable = true
-        setTitle(getString(R.string.select_passenger_toolbar_title))
+        context?.let { context ->
+            setTitle(context.resources.getString(R.string.select_passenger_toolbar_title))
+        }
 
         mChildView = View.inflate(requireContext(), R.layout.bottom_sheet_flight_select_passenger, null)
         setChild(mChildView)
@@ -63,7 +67,10 @@ class FlightSelectPassengerBottomSheet : BottomSheetUnify() {
             setupQuantity(it)
         }
 
-        tickerPassengerInfo.setHtmlDescription(getString(R.string.select_passenger_infant_greater_than_adult_error_message))
+        context?.let { context ->
+            tickerPassengerInfo.setHtmlDescription(context.resources.getString(R.string.select_passenger_infant_greater_than_adult_error_message))
+        }
+
         qtyFlightPassengerAdult.editText.isFocusable = false
         qtyFlightPassengerChild.editText.isFocusable = false
         qtyFlightPassengerInfant.editText.isFocusable = false
@@ -160,7 +167,9 @@ class FlightSelectPassengerBottomSheet : BottomSheetUnify() {
     }
 
     private fun showErrorMessage(@StringRes resId: Int) {
-        Toaster.build(mChildView, getString(resId), Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+        context?.let { context ->
+            Toaster.build(mChildView, context.resources.getString(resId), Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+        }
     }
 
     private fun validatePassenger(passengers: FlightPassengerModel): Boolean {

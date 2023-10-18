@@ -6,9 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.shopdiscount.manage_discount.data.request.DoSlashPriceProductSubmissionRequest
-import com.tokopedia.shopdiscount.manage_discount.data.request.GetSlashPriceSetupProductListRequest
 import com.tokopedia.shopdiscount.manage_discount.data.response.DoSlashPriceProductSubmissionResponse
-import com.tokopedia.shopdiscount.manage_discount.data.response.GetSlashPriceSetupProductListResponse
 import javax.inject.Inject
 
 class MutationSlashPriceProductSubmissionUseCase @Inject constructor(

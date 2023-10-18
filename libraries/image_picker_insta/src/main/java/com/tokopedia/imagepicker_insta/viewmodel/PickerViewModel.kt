@@ -3,29 +3,24 @@ package com.tokopedia.imagepicker_insta.viewmodel
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.imagepicker_insta.LiveDataResult
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.imagepicker_insta.models.ImageAdapterData
-import com.tokopedia.imagepicker_insta.models.MediaVmMData
-import com.tokopedia.imagepicker_insta.models.QueryConfiguration
-import com.tokopedia.imagepicker_insta.models.FolderData
-import com.tokopedia.imagepicker_insta.models.ZoomInfo
-import com.tokopedia.imagepicker_insta.models.MediaUseCaseData
-import com.tokopedia.imagepicker_insta.models.MediaImporterData
-import com.tokopedia.imagepicker_insta.usecase.CropUseCase
 import com.tokopedia.content.common.usecase.GetContentFormUseCase
+import com.tokopedia.imagepicker_insta.LiveDataResult
+import com.tokopedia.imagepicker_insta.models.*
+import com.tokopedia.imagepicker_insta.usecase.CropUseCase
+import com.tokopedia.imagepicker_insta.usecase.FeedVideoDepreciationUseCase
 import com.tokopedia.imagepicker_insta.usecase.PhotosUseCase
 import com.tokopedia.imagepicker_insta.util.AlbumUtil
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.StorageUtil
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
@@ -54,6 +49,8 @@ class PickerViewModel(
     @Inject
     lateinit var getContentFormUseCase: GetContentFormUseCase
 
+    @Inject lateinit var feedVideoDepreciationUseCase: FeedVideoDepreciationUseCase
+
     val photosFlow: MutableStateFlow<LiveDataResult<MediaVmMData>> = MutableStateFlow(LiveDataResult.loading())
     val selectedMediaUriLiveData: MutableLiveData<LiveDataResult<List<Uri>>> = MutableLiveData()
     val folderFlow :MutableStateFlow<LiveDataResult<List<FolderData>>> = MutableStateFlow(LiveDataResult.loading())
@@ -76,6 +73,13 @@ class PickerViewModel(
 
     val isAllowChangeAccount: Boolean
         get() = contentAccountList.size > 1 && contentAccountList.find { it.isUserPostEligible } != null
+
+    val isUserFirstTimeVisit: Boolean
+        get() = feedVideoDepreciationUseCase.isFirstTimeVisit()
+
+    fun setFirstTimeUserVisit() {
+        feedVideoDepreciationUseCase.setFirstTimeVisit()
+    }
 
     fun getFolderData() {
         launchCatchError(block = {

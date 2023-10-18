@@ -1,14 +1,8 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
 
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
@@ -26,6 +20,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.shop.open'
+    testNamespace 'com.tokopedia.shop.open.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -46,13 +42,13 @@ android {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.coreNetwork)
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
@@ -62,6 +58,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.usersession)

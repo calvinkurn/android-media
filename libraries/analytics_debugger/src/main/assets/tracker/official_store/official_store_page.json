@@ -200,6 +200,7 @@
       "eventCategory": "os microsite",
       "item_list": "/official-store/.* - dynamic channel top carousel - .*|/official-store/.* - dynamic channel left carousel - .*",
       "event": "view_item_list",
+      "item_list_name": "/official-store/.* - dynamic channel top carousel - .*|/official-store/.* - dynamic channel left carousel - .*",
       "sessionIris" : ".*",
       "businessUnit" : "home & browse",
       "userId" : ".*",
@@ -365,6 +366,7 @@
     },
     {
       "eventCategory": ".*",
+      "item_list_name": ".*",
       "item_list": ".*",
       "event": "view_item_list",
       "eventAction": "impression - product recommendation",

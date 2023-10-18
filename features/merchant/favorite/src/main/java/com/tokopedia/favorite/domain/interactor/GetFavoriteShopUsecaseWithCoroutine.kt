@@ -37,8 +37,8 @@ class GetFavoriteShopUseCaseWithCoroutine
 
     override suspend fun executeOnBackground(): FavoriteShop {
         val isFirstPage =
-                requestParams.getBoolean(GetFavoriteShopUsecase.KEY_IS_FIRST_PAGE, false)
-        requestParams.clearValue(GetFavoriteShopUsecase.KEY_IS_FIRST_PAGE)
+                requestParams.getBoolean(KEY_IS_FIRST_PAGE, false)
+        requestParams.clearValue(KEY_IS_FIRST_PAGE)
         val paramsAllInString = requestParams.paramsAllValueInString
         return if (isFirstPage) {
             favoriteRepository.suspendGetFirstPageFavoriteShop(paramsAllInString)

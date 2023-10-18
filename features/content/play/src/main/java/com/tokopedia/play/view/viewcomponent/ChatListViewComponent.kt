@@ -20,4 +20,8 @@ class ChatListViewComponent(
     fun setChatList(chatList: List<PlayChatUiModel>) {
         playChatListView.setChatList(chatList)
     }
+
+    fun setMaxHeight(height: Float) {
+        playChatListView.setMaxHeight(height)
+    }
 }

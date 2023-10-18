@@ -17,9 +17,9 @@ import android.util.Log
 import android.util.SparseIntArray
 import android.view.KeyEvent
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
@@ -34,6 +34,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -64,19 +65,20 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.component.Dialog
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_REQUEST_CODE
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
-import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.orFalse
@@ -84,22 +86,28 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hasValue
+import com.tokopedia.kotlin.extensions.view.ifNull
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.utils.URLGenerator.generateURLSessionLogin
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.pdp.fintech.view.PdpFintechWidget.Companion.ACTIVATION_LINKINING_FLOW
+import com.tokopedia.pdp.fintech.view.PdpFintechWidget.Companion.PARAM_CATEGORY_ID
+import com.tokopedia.pdp.fintech.view.PdpFintechWidget.Companion.PARAM_PARENT_ID
 import com.tokopedia.pdp.fintech.view.bottomsheet.GopayLinkBenefitBottomSheet.Companion.ACTIVATION_BOTTOMSHEET_DETAIl
 import com.tokopedia.pdp.fintech.view.bottomsheet.GopayLinkBenefitBottomSheet.Companion.ACTIVATION_WEBVIEW_LINK
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
@@ -109,11 +117,11 @@ import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.error.PlayWidgetException
 import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.AtcVariantHelper
-import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.PostAtcHelper
 import com.tokopedia.product.detail.common.ProductCartHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
@@ -126,7 +134,6 @@ import com.tokopedia.product.detail.common.ProductEducationalHelper
 import com.tokopedia.product.detail.common.ProductTrackingCommon
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.SingleClick
-import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
@@ -134,21 +141,21 @@ import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
+import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.common.data.model.constant.TopAdsShopCategoryTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
-import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMultilocation
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
+import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
-import com.tokopedia.product.detail.common.extensions.ifNull
+import com.tokopedia.product.detail.common.postatc.PostAtcParams
 import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
@@ -163,13 +170,17 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoAnnotationTrackData
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
+import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.ui.OneTimeMethodEvent
@@ -179,6 +190,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailAlreadySwipe
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateAffiliateShareData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateImageGeneratorData
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generatePersonalizedData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateProductShareData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequestRates
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.zeroIfEmpty
@@ -191,8 +203,8 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.CLICK_TYPE_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PAGE_NUMBER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_X_SOURCE
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_VERTICAL_LOADING
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PLAY_CAROUSEL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOVE_WISHLIST
@@ -202,10 +214,12 @@ import com.tokopedia.product.detail.data.util.VariantMapper
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.di.ProductDetailComponent
-import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
+import com.tokopedia.product.detail.tracking.APlusContentTracking
+import com.tokopedia.product.detail.tracking.BMGMTracking
 import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
+import com.tokopedia.product.detail.tracking.DynamicOneLinerTracking
 import com.tokopedia.product.detail.tracking.GeneralInfoTracker
 import com.tokopedia.product.detail.tracking.GeneralInfoTracking
 import com.tokopedia.product.detail.tracking.OneLinersTracking
@@ -213,9 +227,13 @@ import com.tokopedia.product.detail.tracking.PageErrorTracker
 import com.tokopedia.product.detail.tracking.PageErrorTracking
 import com.tokopedia.product.detail.tracking.ProductArTrackerData
 import com.tokopedia.product.detail.tracking.ProductArTracking
+import com.tokopedia.product.detail.tracking.ProductDetailInfoTracking
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracker
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracking
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
+import com.tokopedia.product.detail.tracking.ProductDetailStoriesWidgetTrackerBuilder
+import com.tokopedia.product.detail.tracking.ProductShopReviewTracking
+import com.tokopedia.product.detail.tracking.ProductSocialProofTracking
 import com.tokopedia.product.detail.tracking.ProductThumbnailVariantTracking
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_ADS_TRACKER
@@ -229,6 +247,7 @@ import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtilCallback
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
+import com.tokopedia.product.detail.view.bottomsheet.ProductMediaRecomBottomSheetManager
 import com.tokopedia.product.detail.view.bottomsheet.ShopStatusInfoBottomSheet
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.fragment.partialview.TokoNowButtonData
@@ -239,13 +258,12 @@ import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHelper
 import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
-import com.tokopedia.product.detail.view.util.createProductCardOptionsModel
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
-import com.tokopedia.product.detail.view.util.getIntentImagePreviewWithoutDownloadButton
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
+import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
-import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet
 import com.tokopedia.product.detail.view.widget.NavigationTab
@@ -261,11 +279,17 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
+import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
+import com.tokopedia.recommendation_widget_common.extension.DEFAULT_QTY_1
+import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_RECOM_ATC
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTracking
+import com.tokopedia.recommendation_widget_common.widget.global.recommendationWidgetViewModel
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
+import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewTracker
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet.ViewToViewBottomSheet
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
@@ -273,29 +297,36 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
-import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
+import com.tokopedia.stories.widget.NoAnimateAnimationStrategy
+import com.tokopedia.stories.widget.NoCoachMarkStrategy
+import com.tokopedia.stories.widget.StoriesWidgetManager
+import com.tokopedia.stories.widget.domain.StoriesEntryPoint
+import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.model.PdpParamModel
+import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
@@ -305,7 +336,6 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
-import kotlinx.coroutines.flow.collect
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
@@ -323,7 +353,6 @@ open class DynamicProductDetailFragment :
     BaseProductDetailFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(),
     DynamicProductDetailListener,
     AtcVariantListener,
-    ProductAccessRequestDialogFragment.Listener,
     PartialButtonActionListener,
     ProductDetailBottomSheetListener,
     PartialButtonShopFollowersListener,
@@ -335,6 +364,7 @@ open class DynamicProductDetailFragment :
         private const val DEBOUNCE_CLICK = 750
         private const val TOOLBAR_TRANSITION_START = 10
         private const val TOOLBAR_TRANSITION_RANGES = 50
+        private const val TOPADS_PERFORMANCE_CURRENT_SITE = "pdp"
 
         fun newInstance(
             productId: String? = null,
@@ -437,14 +467,15 @@ open class DynamicProductDetailFragment :
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var fragmentFactory: FragmentFactory
+    lateinit var affiliateCookieHelper: dagger.Lazy<AffiliateCookieHelper>
 
     private var sharedViewModel: ProductDetailSharedViewModel? = null
     private var screenshotDetector: ScreenshotDetector? = null
 
     private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(DynamicProductDetailViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory)[DynamicProductDetailViewModel::class.java]
     }
+    private val recommendationWidgetViewModel by recommendationWidgetViewModel()
 
     private val nplFollowersButton: PartialButtonShopFollowersView? by lazy {
         binding?.baseBtnFollow?.root?.run {
@@ -463,9 +494,6 @@ open class DynamicProductDetailFragment :
 
     // This productId is only use for backend hit
     private var productId: String? = null
-
-    // this product id will be assign after thumbnail variant selected, it will use when open vbs
-    private var productIdThumbnailSelected: String? = null
     private var productKey: String? = null
     private var shopDomain: String? = null
     private var affiliateString: String? = null
@@ -478,7 +506,6 @@ open class DynamicProductDetailFragment :
     private var trackerListNamePdp: String? = ""
     private var warehouseId: String? = null
     private var doActivityResult = true
-    private var shouldFireVariantTracker = true
     private var recomWishlistItem: RecommendationItem? = null
     private var pdpUiUpdater: PdpUiUpdater? = PdpUiUpdater(mutableMapOf())
     private var alreadyPerformSellerMigrationAction = false
@@ -490,13 +517,13 @@ open class DynamicProductDetailFragment :
     private var uuid = ""
     private var urlQuery: String = ""
     private var affiliateChannel: String = ""
-    private var alreadyShowMultilocBottomSheet: Boolean = false
     private var verticalRecommendationTrackDataModel: ComponentTrackDataModel? = null
     private var campaignId: String = ""
     private var variantId: String = ""
 
     // Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
+    private var isAffiliateShareIcon = false
 
     // View
     private lateinit var actionButtonView: PartialButtonActionView
@@ -511,7 +538,8 @@ open class DynamicProductDetailFragment :
             viewModel.userId,
             playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
                 setListener(this@DynamicProductDetailFragment)
-            }
+            },
+            affiliateCookieHelper.get(),
         )
     }
     private val adapter by lazy {
@@ -525,12 +553,20 @@ open class DynamicProductDetailFragment :
     private var buttonActionType: Int = 0
     private var isTopadsDynamicsSlottingAlreadyCharged = false
 
-    private val tradeinDialog: ProductAccessRequestDialogFragment? by lazy {
-        setupTradeinDialog()
-    }
-
-    private val topAdsDetailSheet: TopAdsDetailSheet? by lazy {
-        TopAdsDetailSheet.newInstance()
+    private val tradeInDialog: DialogUnify by lazy {
+        DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(R.string.pdp_tradein_text_request_access))
+            setDescription(getString(R.string.pdp_tradein_text_permission_description))
+            setPrimaryCTAText(getString(R.string.pdp_tradein_allow))
+            setSecondaryCTAText(getString(R.string.pdp_tradein_back))
+            setPrimaryCTAClickListener {
+                viewModel.clearCacheP2Data()
+                goToTradeInHome()
+            }
+            setSecondaryCTAClickListener {
+                dismiss()
+            }
+        }
     }
 
     private val recommendationCarouselPositionSavedState = SparseIntArray()
@@ -546,6 +582,15 @@ open class DynamicProductDetailFragment :
     }
 
     private val compositeSubscription by lazy { CompositeSubscription() }
+
+    private val mStoriesWidgetManager by storiesManager(StoriesEntryPoint.ProductDetail) {
+        setScrollingParent(binding?.rvPdp)
+        setAnimationStrategy(NoAnimateAnimationStrategy())
+        setCoachMarkStrategy(NoCoachMarkStrategy())
+        setTrackerBuilder(
+            ProductDetailStoriesWidgetTrackerBuilder.create(productId.orEmpty(), getUserSession())
+        )
+    }
 
     private val scrollListener by lazy {
         navToolbar?.let {
@@ -572,6 +617,10 @@ open class DynamicProductDetailFragment :
         }
     }
 
+    private val productMediaRecomBottomSheetManager by lazyThreadSafetyNone {
+        ProductMediaRecomBottomSheetManager(childFragmentManager, this)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initBtnAction()
@@ -582,7 +631,7 @@ open class DynamicProductDetailFragment :
 
         if (!viewModel.isUserSessionActive) initStickyLogin(view)
         screenshotDetector = context?.let {
-            UniversalShareBottomSheet.createAndStartScreenShotDetector(
+            SharingUtil.createAndStartScreenShotDetector(
                 it,
                 this,
                 this,
@@ -655,13 +704,10 @@ open class DynamicProductDetailFragment :
         observeToggleFavourite()
         observeToggleNotifyMe()
         observeRecommendationProduct()
-        observeImageVariantPartialyChanged()
         observeAddToCart()
-        observeInitialVariantData()
         observeSingleVariantData()
-        observeonVariantClickedData()
         observeOnThumbnailVariantSelected()
-        observeATCTokonowData()
+        observeATCRecomData()
         observeATCTokonowResetCard()
         observeATCRecomTokonowNonLogin()
         observeATCRecomSendTracker()
@@ -677,6 +723,18 @@ open class DynamicProductDetailFragment :
         observePlayWidget()
         observeVerticalRecommendation()
         observeOneTimeMethod()
+        observeProductMediaRecomData()
+        observeBottomSheetEdu()
+        observeAffiliateEligibility()
+    }
+
+    private fun observeBottomSheetEdu() {
+        viewLifecycleOwner.observe(viewModel.showBottomSheetEdu) {
+            val url = it?.appLink ?: return@observe
+            viewModel.changeOneTimeMethod(
+                event = OneTimeMethodEvent.ImpressGeneralEduBs(appLink = url)
+            )
+        }
     }
 
     private fun observeOneTimeMethod() {
@@ -691,13 +749,8 @@ open class DynamicProductDetailFragment :
                             shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: ""
                         )
                     }
-                    is OneTimeMethodEvent.HitVariantTracker -> {
-                        DynamicProductDetailTracking.Click.onVariantLevel1Clicked(
-                            viewModel.getDynamicProductInfoP1,
-                            pdpUiUpdater?.productOptionalVariantDataModel,
-                            viewModel.variantData,
-                            getComponentPositionBeforeUpdate(pdpUiUpdater?.productOptionalVariantDataModel)
-                        )
+                    is OneTimeMethodEvent.ImpressGeneralEduBs -> {
+                        goToEducational(url = it.event.appLink)
                     }
                     else -> {
                         // noop
@@ -707,10 +760,17 @@ open class DynamicProductDetailFragment :
         }
     }
 
+    private fun observeProductMediaRecomData() {
+        viewModel.productMediaRecomBottomSheetState.observe(viewLifecycleOwner) {
+            productMediaRecomBottomSheetManager.updateState(it)
+        }
+    }
+
     override fun loadData(forceRefresh: Boolean) {
         if (productId != null || (productKey != null && shopDomain != null)) {
             context?.let {
                 (it as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
+                EmbraceMonitoring.startMoments(ProductDetailConstant.PDP_RESULT_TRACE_P2_DATA)
                 viewModel.getProductP1(
                     ProductParams(
                         productId = productId,
@@ -757,7 +817,6 @@ open class DynamicProductDetailFragment :
         uuid = UUID.randomUUID().toString()
         firstOpenPage = true
         super.onCreate(savedInstanceState)
-        childFragmentManager.fragmentFactory = fragmentFactory
 
         ProductDetailServerLogger.logBreadCrumbFirstOpenPage(
             productId,
@@ -780,7 +839,6 @@ open class DynamicProductDetailFragment :
         super.onPause()
         trackVideoState()
         if (::trackingQueue.isInitialized) {
-            trackingQueue.sendAll()
             if (alreadyHitSwipeTracker != null) {
                 alreadyHitSwipeTracker = DynamicProductDetailAlreadyHit
             }
@@ -796,8 +854,12 @@ open class DynamicProductDetailFragment :
     }
 
     private fun reloadFintechWidget() {
-        if (pdpUiUpdater == null || pdpUiUpdater?.fintechWidgetMap == null) return
-        if (pdpUiUpdater?.fintechWidgetMap?.isLoggedIn != viewModel.isUserSessionActive) {
+        if (pdpUiUpdater == null || (pdpUiUpdater?.fintechWidgetMap == null &&
+                pdpUiUpdater?.fintechWidgetV2Map == null)
+        ) return
+        if (pdpUiUpdater?.fintechWidgetMap?.isLoggedIn != viewModel.isUserSessionActive ||
+            pdpUiUpdater?.fintechWidgetV2Map?.isLoggedIn != viewModel.isUserSessionActive
+        ) {
             productId?.let {
                 pdpUiUpdater?.updateFintechDataWithProductId(
                     it,
@@ -936,22 +998,15 @@ open class DynamicProductDetailFragment :
                     when (viewModel.talkLastAction) {
                         is DynamicProductDetailTalkGoToWriteDiscussion -> goToWriteActivity()
                         is DynamicProductDetailTalkGoToReplyDiscussion -> goToReplyActivity((viewModel.talkLastAction as DynamicProductDetailTalkGoToReplyDiscussion).questionId)
+                        else -> {
+                            // no-op
+                        }
                     }
                 }
             }
             ProductDetailConstant.REQUEST_CODE_REPORT -> {
                 if (resultCode == Activity.RESULT_OK) {
                     view?.showToasterSuccess(getString(R.string.success_to_report))
-                }
-            }
-            ProductDetailConstant.REQUEST_CODE_IMAGE_PREVIEW -> {
-                if (data != null) {
-                    val isWishlisted = data.getBooleanExtra(
-                        ImagePreviewPdpActivity.RESPONSE_CODE_IMAGE_RPEVIEW,
-                        false
-                    )
-                    pdpUiUpdater?.updateWishlistData(isWishlisted)
-                    updateUi()
                 }
             }
             ProductDetailConstant.REQUEST_CODE_SHOP_INFO -> {
@@ -995,11 +1050,6 @@ open class DynamicProductDetailFragment :
                         }
                     }
                 )
-            }
-            MvcView.REQUEST_CODE -> {
-                if (resultCode == MvcView.RESULT_CODE_OK && doActivityResult) {
-                    onSwipeRefresh()
-                }
             }
             REQUEST_CODE_ADD_WISHLIST_COLLECTION -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
@@ -1084,7 +1134,21 @@ open class DynamicProductDetailFragment :
     }
 
     private fun reloadMiniCart() {
-        if (viewModel.getDynamicProductInfoP1 == null || context == null || viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == false || firstOpenPage == true || !viewModel.isUserSessionActive) return
+        val hasQuantityEditor =
+            viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true ||
+                (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
+                ?.data
+                ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
+
+        if (viewModel.getDynamicProductInfoP1 == null ||
+            context == null ||
+            !hasQuantityEditor ||
+            firstOpenPage == true ||
+            !viewModel.isUserSessionActive
+        ) {
+            return
+        }
+
         val data = viewModel.getDynamicProductInfoP1
         viewModel.getMiniCart(data?.basic?.shopID ?: "")
     }
@@ -1164,6 +1228,37 @@ open class DynamicProductDetailFragment :
         }
     }
 
+    override fun onAnnotationOpenProductInfoSheet(
+        extParam: String,
+        trackData: ProductDetailInfoAnnotationTrackData
+    ) {
+        val activity = activity ?: return
+
+        ProductDetailInfoHelper.showBottomSheetInfo(
+            fragmentActivity = activity,
+            daggerComponent = productDaggerComponent,
+            listener = this,
+            p1Data = viewModel.getDynamicProductInfoP1,
+            sizeChartImageUrl = viewModel.variantData?.sizeChart,
+            infoData = pdpUiUpdater?.productDetailInfoData ?: ProductDetailInfoDataModel(),
+            forceRefresh = shouldRefreshProductInfoBottomSheet,
+            isOpenSpecification = false,
+            annotationExtParam = extParam
+        )
+
+        ProductDetailInfoTracking.onClickAnnotationGeneric(
+            trackDataModel = trackData.copy(userId = viewModel.userId),
+            productInfo = viewModel.getDynamicProductInfoP1
+        )
+    }
+
+    override fun onAnnotationGenericImpression(trackData: ProductDetailInfoAnnotationTrackData) {
+        ProductDetailInfoTracking.onImpressionAnnotationGeneric(
+            trackDataModel = trackData.copy(userId = viewModel.userId),
+            productInfo = viewModel.getDynamicProductInfoP1
+        )
+    }
+
     override fun getParentViewModelStoreOwner(): ViewModelStore {
         return viewModelStore
     }
@@ -1176,12 +1271,13 @@ open class DynamicProductDetailFragment :
      * ImpressionComponent
      */
     override fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel) {
-        val purchaseProtectionUrl = if (componentTrackDataModel.componentName
-            == ProductDetailConstant.PRODUCT_PROTECTION
-        ) {
-            getPurchaseProtectionUrl()
-        } else {
-            ""
+        val purchaseProtectionUrl = when (componentTrackDataModel.componentName) {
+            ProductDetailConstant.PRODUCT_PROTECTION -> getPurchaseProtectionUrl()
+            else -> ""
+        }
+        val promoId = when (componentTrackDataModel.componentName) {
+            ProductDetailConstant.SHIPMENT_V2 -> getShipmentPlusText()
+            else -> ""
         }
 
         DynamicProductDetailTracking.Impression
@@ -1192,7 +1288,8 @@ open class DynamicProductDetailFragment :
                 componentName = "",
                 purchaseProtectionUrl = purchaseProtectionUrl,
                 userId = viewModel.userId,
-                lcaWarehouseId = getLcaWarehouseId()
+                lcaWarehouseId = getLcaWarehouseId(),
+                promoId = promoId
             )
     }
 
@@ -1496,18 +1593,6 @@ open class DynamicProductDetailFragment :
     }
 
     private fun onTradeinClickedAfter(componentTrackDataModel: ComponentTrackDataModel? = null) {
-        if (pdpUiUpdater?.productSingleVariant == null) {
-            val isVariant = viewModel.getDynamicProductInfoP1?.data?.variant?.isVariant ?: false
-            val isPartialySelected =
-                pdpUiUpdater?.productOptionalVariantDataModel?.isPartialySelected()
-                    ?: false
-
-            if (isVariant && isPartialySelected) {
-                showErrorVariantUnselected()
-                return
-            }
-        }
-
         if (!viewModel.isUserSessionActive) {
             doLoginWhenUserClickButton()
             return
@@ -1529,7 +1614,7 @@ open class DynamicProductDetailFragment :
             componentTrackDataModel
         )
 
-        goToTradein()
+        tradeInDialog.show()
     }
 
     private fun generateCommonTracker(): CommonTracker? {
@@ -1544,6 +1629,10 @@ open class DynamicProductDetailFragment :
     private fun getPurchaseProtectionUrl(): String {
         return viewModel.p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.linkURL
             ?: ""
+    }
+
+    private fun getShipmentPlusText(): String {
+        return viewModel.getP2ShipmentPlusByProductId()?.text.orEmpty()
     }
 
     private fun getPPTitleName(): String {
@@ -1630,14 +1719,34 @@ open class DynamicProductDetailFragment :
         goToApplink(appLink)
     }
 
+    override fun onRecomAddToCartClick(
+        recommendationWidget: RecommendationWidget,
+        recomItem: RecommendationItem,
+        adapterPosition: Int,
+        itemPosition: Int
+    ) {
+        doActionOrLogin({
+            viewModel.atcRecomNonVariant(recomItem, recomItem.minOrder)
+        })
+    }
+
     override fun onRecomAddToCartNonVariantQuantityChangedClick(
+        recommendationWidget: RecommendationWidget,
         recomItem: RecommendationItem,
         quantity: Int,
         adapterPosition: Int,
         itemPosition: Int
     ) {
         pdpUiUpdater?.updateCurrentQuantityRecomItem(recomItem)
-        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
+        viewModel.onAtcRecomNonVariantQuantityChanged(
+            recomItem,
+            quantity,
+            RecommendationNowAffiliateData(
+                affiliateUniqueId,
+                affiliateChannel,
+                recommendationWidget.affiliateTrackerId
+            )
+        )
     }
 
     override fun onRecomAddVariantClick(
@@ -1730,18 +1839,6 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    override fun onThreeDotsClick(
-        recomItem: RecommendationItem,
-        adapterPosition: Int,
-        carouselPosition: Int
-    ) {
-        recomWishlistItem = recomItem
-        showProductCardOptions(
-            this,
-            recomItem.createProductCardOptionsModel(adapterPosition)
-        )
-    }
-
     override fun getParentRecyclerViewPool(): RecyclerView.RecycledViewPool? {
         return getRecyclerView()?.recycledViewPool
     }
@@ -1750,22 +1847,26 @@ open class DynamicProductDetailFragment :
         return recommendationCarouselPositionSavedState
     }
 
-    override fun loadTopads(pageName: String) {
+    override fun loadTopads(pageName: String, queryParam: String, thematicId: String) {
         val p1 = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
         viewModel.loadRecommendation(
             pageName = pageName,
             productId = p1.basic.productID,
             isTokoNow = p1.basic.isTokoNow,
-            miniCart = viewModel.p2Data.value?.miniCart
+            miniCart = viewModel.p2Data.value?.miniCart,
+            queryParam = queryParam,
+            thematicId = thematicId
         )
     }
 
-    override fun loadViewToView(pageName: String) {
+    override fun loadViewToView(pageName: String, queryParam: String, thematicId: String) {
         val p1 = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
         viewModel.loadViewToView(
             pageName = pageName,
             productId = p1.basic.productID,
-            isTokoNow = p1.basic.isTokoNow
+            isTokoNow = p1.basic.isTokoNow,
+            queryParam = queryParam,
+            thematicId = thematicId
         )
     }
 
@@ -1842,15 +1943,9 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onReviewClick() {
-        viewModel.getDynamicProductInfoP1?.run {
-            DynamicProductDetailTracking.Iris.eventReviewClickedIris(
-                this,
-                deeplinkUrl,
-                basic.shopName
-            )
-            DynamicProductDetailTracking.Moengage.sendMoEngageClickReview(this)
-            goToReviewDetail(basic.productID, getProductName)
-        }
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+        socialProofRatingTracking()
+        goToReviewDetail(productInfo.basic.productID, productInfo.getProductName)
     }
 
     override fun onSeeReviewCredibility(
@@ -1948,18 +2043,25 @@ open class DynamicProductDetailFragment :
         goToRecommendation()
     }
 
-    override fun onMerchantVoucherSummaryClicked(shopId: String, source: Int, productId: String) {
-        context?.let {
-            startActivityForResult(
-                TransParentActivity.getIntent(
-                    it,
-                    shopId,
-                    source,
-                    productId = productId
-                ),
-                MvcView.REQUEST_CODE
-            )
+    private val mvcLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == MvcView.RESULT_CODE_OK && doActivityResult) {
+            onSwipeRefresh()
         }
+    }
+
+    override fun onMerchantVoucherSummaryClicked(
+        @MvcSource source: Int,
+        uiModel: ProductMerchantVoucherSummaryDataModel.UiModel
+    ) {
+        val mContext = context ?: return
+        val intent = TransParentActivity.getIntent(
+            context = mContext,
+            shopId = uiModel.shopId,
+            source = source,
+            productId = uiModel.productIdMVC,
+            additionalParamJson = uiModel.additionalData
+        )
+        mvcLauncher.launch(intent)
     }
 
     override fun isOwner(): Boolean = viewModel.isShopOwner()
@@ -1984,6 +2086,8 @@ open class DynamicProductDetailFragment :
             startActivityForResult(bottomsheetIntent, RQUEST_CODE_ACTIVATE_GOPAY)
         } else {
             val intent = RouteManager.getIntent(context, redirectionUrl)
+            intent.putExtra(PARAM_PARENT_ID, fintechRedirectionWidgetDataClass.parentId)
+            intent.putExtra(PARAM_CATEGORY_ID, fintechRedirectionWidgetDataClass.categoryId)
             startActivityForResult(intent, RQUEST_CODE_UPDATE_FINTECH_WIDGET)
         }
     }
@@ -2180,28 +2284,22 @@ open class DynamicProductDetailFragment :
         scrollToPosition(getComponentPosition(pdpUiUpdater?.productTradeinMap))
     }
 
-    override fun onAccept() {
-        viewModel.clearCacheP2Data()
-        goToTradeInHome()
-    }
-
-    override fun onDecline() {}
-
     override fun getProductFragmentManager(): FragmentManager {
         return childFragmentManager
     }
 
     override fun showAlertCampaignEnded() {
-        activity?.let {
-            Dialog(it, Dialog.Type.LONG_PROMINANCE).apply {
-                setTitle(getString(R.string.campaign_expired_title))
-                setDesc(getString(R.string.campaign_expired_descr))
-                setBtnCancel(getString(com.tokopedia.abstraction.R.string.close))
-                setOnCancelClickListener {
-                    onSwipeRefresh()
-                    dismiss()
-                }
-            }.show()
+        val mActivity = activity ?: return
+
+        DialogUnify(mActivity, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(R.string.campaign_expired_title))
+            setDescription(getString(R.string.campaign_expired_descr))
+            setPrimaryCTAText(getString(com.tokopedia.abstraction.R.string.close))
+            setPrimaryCTAClickListener {
+                onSwipeRefresh()
+                dismiss()
+            }
+            show()
         }
     }
 
@@ -2217,6 +2315,17 @@ open class DynamicProductDetailFragment :
         } catch (throwable: Throwable) {
             false
         }
+    }
+
+    override fun onShowProductMediaRecommendationClicked() {
+        val productMediaRecomBasicInfo = viewModel.getDynamicProductInfoP1?.data?.productMediaRecomBasicInfo
+        val basicData = viewModel.getDynamicProductInfoP1?.basic
+        viewModel.showProductMediaRecomBottomSheet(
+            title = productMediaRecomBasicInfo?.bottomsheetTitle.orEmpty(),
+            pageName = productMediaRecomBasicInfo?.recommendation.orEmpty(),
+            productId = basicData?.productID.orEmpty(),
+            isTokoNow = basicData?.isTokoNow.orFalse()
+        )
     }
 
     private fun trackingEventSuccessRemoveFromWishlist(componentTrackDataModel: ComponentTrackDataModel) {
@@ -2265,16 +2374,7 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onDiscussionClicked(componentTrackDataModel: ComponentTrackDataModel?) {
-        viewModel.getDynamicProductInfoP1?.run {
-            DynamicProductDetailTracking.Iris.eventDiscussionClickedIris(
-                this,
-                deeplinkUrl,
-                basic.shopName,
-                componentTrackDataModel ?: ComponentTrackDataModel()
-            )
-            DynamicProductDetailTracking.Moengage.sendMoEngageClickDiskusi(this)
-        }
-
+        socialProofTalkTracking(trackData = componentTrackDataModel)
         disscussionClicked()
     }
 
@@ -2294,8 +2394,7 @@ open class DynamicProductDetailFragment :
                     it,
                     componentTrackDataModel,
                     viewModel.userId,
-                    pdpUiUpdater?.productOptionalVariantDataModel?.isPartialySelected()?.not()
-                        ?: false,
+                    isVariantSelected = pdpUiUpdater?.productSingleVariant != null,
                     totalAvailableVariants
                 )
             }
@@ -2400,7 +2499,7 @@ open class DynamicProductDetailFragment :
             }) { throwable ->
                 view?.showToasterError(
                     throwable.message ?: "",
-                    ctaText = getString(com.tokopedia.design.R.string.oke)
+                    ctaText = getString(com.tokopedia.product.detail.common.R.string.pdp_common_oke)
                 )
                 logException(throwable)
             }
@@ -2528,28 +2627,14 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun observeImageVariantPartialyChanged() {
-        viewLifecycleOwner.observe(viewModel.updatedImageVariant) {
-            pdpUiUpdater?.updateVariantData(it.first)
-            pdpUiUpdater?.updateMediaScrollPosition(it.second)
-            updateUi()
-        }
-    }
-
-    private fun observeonVariantClickedData() {
-        viewLifecycleOwner.observe(viewModel.onVariantClickedData) {
-            updateVariantDataAndUi(it)
-        }
-    }
-
     private fun observeOnThumbnailVariantSelected() {
         viewLifecycleOwner.observe(viewModel.onThumbnailVariantSelectedData) {
             updateThumbnailVariantDataAndUi(it)
         }
     }
 
-    private fun observeATCTokonowData() {
-        viewLifecycleOwner.observe(viewModel.atcRecomTokonow) { data ->
+    private fun observeATCRecomData() {
+        viewLifecycleOwner.observe(viewModel.atcRecom) { data ->
             data.doSuccessOrFail({
                 if (it.data.isNotEmpty()) {
                     view?.showToasterSuccess(it.data)
@@ -2565,13 +2650,21 @@ open class DynamicProductDetailFragment :
     }
 
     private fun observeATCRecomSendTracker() {
-        viewLifecycleOwner.observe(viewModel.atcRecomTokonowSendTracker) { data ->
+        viewLifecycleOwner.observe(viewModel.atcRecomTracker) { data ->
             data.doSuccessOrFail({
-                DynamicProductDetailTracking.Click.eventClickRecomAddToCart(
-                    it.data,
-                    viewModel.userId,
-                    it.data.minOrder
-                )
+                if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow.orFalse()) {
+                    DynamicProductDetailTracking.Click.eventClickRecomAddToCart(
+                        it.data,
+                        viewModel.userId,
+                        it.data.minOrder
+                    )
+                } else {
+                    RecommendationCarouselTracking.sendEventAtcClick(
+                        it.data,
+                        viewModel.userId,
+                        it.data.minOrder.coerceAtLeast(DEFAULT_QTY_1)
+                    )
+                }
             }, {})
         }
     }
@@ -2598,17 +2691,12 @@ open class DynamicProductDetailFragment :
         doSomethingAfterVariantUpdated: (() -> Unit)? = null
     ) {
         val singleVariant = pdpUiUpdater?.productSingleVariant
-        val optionalVariant = pdpUiUpdater?.productOptionalVariantDataModel
-        val selectedChild = viewModel.getChildOfVariantSelected(
-            singleVariant = singleVariant,
-            optionalVariant = optionalVariant
-        )
+        val selectedChild = viewModel.getChildOfVariantSelected(singleVariant = singleVariant)
+        val title = selectedChild?.subText.ifNullOrBlank { getVariantString() }
 
-        pdpUiUpdater?.updateVariantData(variantProcessedData)
+        pdpUiUpdater?.updateVariantData(title = title, processedVariant = variantProcessedData)
         pdpUiUpdater?.updateMediaScrollPosition(selectedChild?.optionIds?.firstOrNull())
-
         updateProductInfoOnVariantChanged(selectedChild)
-        addVariantSelectedTracker()
 
         updateUi()
         doSomethingAfterVariantUpdated?.invoke()
@@ -2622,7 +2710,6 @@ open class DynamicProductDetailFragment :
 
         viewModel.updateDynamicProductInfoData(updatedDynamicProductInfo)
         productId = updatedDynamicProductInfo?.basic?.productID
-        productIdThumbnailSelected = productId
 
         val boeData = viewModel.getBebasOngkirDataByProductId()
         productId?.let { productId ->
@@ -2642,13 +2729,13 @@ open class DynamicProductDetailFragment :
         pdpUiUpdater?.updateTicker(selectedTicker)
 
         pdpUiUpdater?.updateShipmentData(
-            viewModel.getP2RatesEstimateByProductId(),
+            viewModel.getP2RatesEstimateDataByProductId(),
             viewModel.getMultiOriginByProductId().isFulfillment,
             viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
             boeData,
-            viewModel.getUserLocationCache()
+            viewModel.getUserLocationCache(),
+            viewModel.getP2ShipmentPlusByProductId()
         )
-        pdpUiUpdater?.updateProductBundlingData(viewModel.p2Data.value, selectedChild?.productId)
 
         renderRestrictionBottomSheet(
             viewModel.p2Data.value?.restrictionInfo ?: RestrictionInfoResponse()
@@ -2667,39 +2754,39 @@ open class DynamicProductDetailFragment :
             productId ?: "",
             viewModel.p2Data.value?.arInfo ?: ProductArInfo()
         )
+
+        // update BMGM data
+        viewModel.getP2()?.bmgm?.let {
+            pdpUiUpdater?.updateBMGMSneakPeak(productId = productId.orEmpty(), bmgm = it)
+        }
     }
 
     /**
      * update product UI on thumbnail variant changed
      */
     private fun updateThumbnailVariantDataAndUi(singleVariant: ProductSingleVariantDataModel?) {
-        val selectedChild = viewModel.getChildOfVariantSelected(
-            singleVariant = singleVariant,
-            optionalVariant = null // because thumb variant is not optional variant but single variant
-        )
+        val selectedChild = viewModel.getChildOfVariantSelected(singleVariant = singleVariant)
         val optionId = selectedChild?.optionIds?.firstOrNull().orEmpty()
-        pdpUiUpdater?.updateSingleVariant(singleVariant)
+        val title = selectedChild?.subText.ifNullOrBlank { getVariantString() }
+        val singleVariantUpdated = singleVariant?.copy(title = title)
+
+        pdpUiUpdater?.updateSingleVariant(singleVariantUpdated)
         pdpUiUpdater?.updateMediaScrollPosition(optionId)
 
-        // store the product id to this variable to open vbs later
-        productIdThumbnailSelected = selectedChild?.productId.ifNull { productId.orEmpty() }
+        if (selectedChild != null) {
+            updateProductInfoOnVariantChanged(selectedChild)
+        }
 
         scrollThumbnailVariant()
 
         updateUi()
     }
 
-    private fun addVariantSelectedTracker() {
-        if (pdpUiUpdater?.productOptionalVariantDataModel?.isPartialySelected() == false) {
-            viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.HitVariantTracker)
-        }
-    }
-
     private fun updateButtonState() {
         viewModel.getDynamicProductInfoP1?.let {
             val cartTypeData = viewModel.getCartTypeByProductId()
             val selectedMiniCartItem =
-                if (it.basic.isTokoNow && cartTypeData?.availableButtons?.firstOrNull()
+                if (it.basic.isTokoNow && cartTypeData?.availableButtonsPriority?.firstOrNull()
                     ?.isCartTypeDisabledOrRemindMe() == false
                 ) {
                     viewModel.getMiniCartItem()
@@ -2711,7 +2798,7 @@ open class DynamicProductDetailFragment :
                 viewModel.p2Data.value?.getTotalStockMiniCartByParentId(it.data.variant.parentID)
 
             val shouldShowTokoNow = it.basic.isTokoNow &&
-                cartTypeData?.availableButtons?.firstOrNull()
+                cartTypeData?.availableButtonsPriority?.firstOrNull()
                 ?.isCartTypeDisabledOrRemindMe() == false &&
                 (totalStockAtcVariant != 0 || selectedMiniCartItem != null)
 
@@ -2744,20 +2831,19 @@ open class DynamicProductDetailFragment :
     private fun observeSingleVariantData() {
         viewLifecycleOwner.observe(viewModel.singleVariantData) { variantCategory ->
             if (variantCategory == null) {
-                pdpUiUpdater?.removeComponent(ProductDetailConstant.VARIANT_OPTIONS)
                 pdpUiUpdater?.removeComponent(ProductDetailConstant.MINI_VARIANT_OPTIONS)
                 updateUi()
                 return@observe
             }
             val listOfVariantLevelOne = listOf(variantCategory)
-            pdpUiUpdater?.updateVariantData(listOfVariantLevelOne)
+            val landingSubText = viewModel.variantData?.landingSubText.ifNullOrBlank {
+                getVariantString()
+            }
+            pdpUiUpdater?.updateVariantData(
+                title = landingSubText,
+                processedVariant = listOfVariantLevelOne
+            )
             updateUi()
-        }
-    }
-
-    private fun observeInitialVariantData() {
-        viewLifecycleOwner.observe(viewModel.initialVariantData) {
-            pdpUiUpdater?.updateVariantData(it)
         }
     }
 
@@ -2891,7 +2977,8 @@ open class DynamicProductDetailFragment :
     private fun observeP2Data() {
         viewLifecycleOwner.observe(viewModel.p2Data) {
             val boeData = viewModel.getBebasOngkirDataByProductId()
-            val ratesData = viewModel.getP2RatesEstimateByProductId()
+            val ratesData = viewModel.getP2RatesEstimateDataByProductId()
+            val shipmentPlus = viewModel.getP2ShipmentPlusByProductId()
 
             shareProductInstance?.updateAffiliate(it.shopInfo.statusInfo.shopStatus)
 
@@ -2913,15 +3000,42 @@ open class DynamicProductDetailFragment :
                     uuid = uuid,
                     affiliateChannel = affiliateChannel
                 )
-            }
 
-            onSuccessGetDataP2(it, boeData, ratesData)
+                mStoriesWidgetManager.updateStories(listOf(p1.basic.shopID))
+            }
+            onSuccessGetDataP2(it, boeData, ratesData, shipmentPlus)
+            checkAffiliateEligibility(it.shopInfo)
             getProductDetailActivity()?.stopMonitoringP2Data()
             ProductDetailServerLogger.logBreadCrumbSuccessGetDataP2(
                 isSuccess = it.shopInfo.shopCore.shopID.isNotEmpty()
             )
             stickyLoginView?.loadContent()
+            getRecyclerView()?.addOneTimeGlobalLayoutListener {
+                EmbraceMonitoring.stopMoments(ProductDetailConstant.PDP_RESULT_TRACE_P2_DATA)
+            }
         }
+    }
+
+    private fun observeAffiliateEligibility() {
+        viewModel.resultAffiliate.observe(viewLifecycleOwner) {
+            if (it is Success && it.data.eligibleCommission?.isEligible.orFalse()) {
+                updateToolbarShareAffiliate()
+            }
+        }
+    }
+
+    private fun checkAffiliateEligibility(shopInfo: ShopInfo) {
+        if (isShareAffiliateIconEnabled() && !GlobalConfig.isSellerApp()) {
+            viewModel.getDynamicProductInfoP1?.let { dataP1 ->
+                val affiliateInput = generateAffiliateShareData(dataP1, shopInfo, viewModel.variantData)
+                viewModel.checkAffiliateEligibility(affiliateInput)
+            }
+        }
+    }
+
+    override fun removeComponent(componentName: String) {
+        pdpUiUpdater?.removeComponent(componentName)
+        updateUi()
     }
 
     override fun showArCoachMark(view: ConstraintLayout?) {
@@ -2981,12 +3095,19 @@ open class DynamicProductDetailFragment :
                         true
                     )
                     if (enableComparisonWidget) {
-                        if (it.data.layoutType == RecommendationTypeConst.TYPE_COMPARISON_WIDGET) {
-                            pdpUiUpdater?.updateComparisonDataModel(it.data)
-                            updateUi()
-                        } else {
-                            pdpUiUpdater?.updateRecommendationData(it.data)
-                            updateUi()
+                        when (it.data.layoutType) {
+                            RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET -> {
+                                pdpUiUpdater?.updateComparisonBpcDataModel(it.data)
+                                updateUi()
+                            }
+                            RecommendationTypeConst.TYPE_COMPARISON_WIDGET -> {
+                                pdpUiUpdater?.updateComparisonDataModel(it.data)
+                                updateUi()
+                            }
+                            else -> {
+                                pdpUiUpdater?.updateRecommendationData(it.data)
+                                updateUi()
+                            }
                         }
                     } else {
                         pdpUiUpdater?.updateRecommendationData(it.data)
@@ -3069,12 +3190,15 @@ open class DynamicProductDetailFragment :
 
         if (recommendationWidget.hasNext) {
             addEndlessScrollListener {
-                val page =
-                    pdpUiUpdater?.getVerticalRecommendationNextPage(recommendationWidget.pageName)
+                val page = pdpUiUpdater?.getVerticalRecommendationNextPage(recommendationWidget.pageName)
+                val placeholderData = pdpUiUpdater?.getVerticalRecommendationPlaceholder(recommendationWidget.pageName)
+
                 viewModel.getVerticalRecommendationData(
                     recommendationWidget.pageName,
                     page,
-                    productId
+                    productId,
+                    queryParam = placeholderData?.queryParam.orEmpty(),
+                    thematicId = placeholderData?.thematicId.orEmpty()
                 )
             }
         } else {
@@ -3087,7 +3211,7 @@ open class DynamicProductDetailFragment :
         removeEndlessScrollListener()
     }
 
-    private fun onSuccessAtcTokoNow(result: AddToCartDataModel) {
+    private fun showAtcSuccessToaster(result: AddToCartDataModel) {
         view?.showToasterSuccess(
             result.data.message.firstOrNull().orEmpty(),
             ctaText = getString(R.string.label_oke_pdp)
@@ -3099,7 +3223,7 @@ open class DynamicProductDetailFragment :
     private fun onSuccessAtc(result: AddToCartDataModel) {
         val cartId = result.data.cartId
         if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
-            onSuccessAtcTokoNow(result)
+            showAtcSuccessToaster(result)
             return
         }
 
@@ -3128,7 +3252,7 @@ open class DynamicProductDetailFragment :
             }
             ProductDetailCommonConstant.ATC_BUTTON -> {
                 sendTrackingATC(cartId)
-                showAddToCartDoneBottomSheet(result.data.cartId)
+                showAddToCartDoneBottomSheet(result.data)
             }
             ProductDetailCommonConstant.TRADEIN_AFTER_DIAGNOSE -> {
                 // Same with OCS but should send devideId
@@ -3164,7 +3288,7 @@ open class DynamicProductDetailFragment :
             ),
             productInfo = viewModel.getDynamicProductInfoP1,
             boType = boData.boType,
-            ratesEstimateData = viewModel.getP2RatesEstimateByProductId(),
+            ratesEstimateData = viewModel.getP2RatesEstimateDataByProductId(),
             buyerDistrictId = viewModel.getUserLocationCache().district_id,
             sellerDistrictId = viewModel.getMultiOriginByProductId().districtId,
             lcaWarehouseId = getLcaWarehouseId()
@@ -3220,7 +3344,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun updateUi() {
-        val newData = pdpUiUpdater?.getCurrentDataModels().orEmpty()
+        val newData = pdpUiUpdater?.getCurrentDataModels(viewModel.isAPlusContentExpanded()).orEmpty()
         submitList(newData)
     }
 
@@ -3238,7 +3362,16 @@ open class DynamicProductDetailFragment :
         renderVariant(viewModel.variantData)
 
         pdpUiUpdater?.updateDataP1(productInfo, true)
-        pdpUiUpdater?.updateInitialMedia(productInfo.data.media, productInfo.data.containerType)
+        pdpUiUpdater?.updateInitialMedia(
+            productInfo.data.media,
+            productInfo.data.containerType,
+            productInfo.data.productMediaRecomBasicInfo
+        )
+        pdpUiUpdater?.updateInitialAPlusContent(
+            productInfo = productInfo,
+            userID = viewModel.userId,
+            aPlusContentExpanded = viewModel.isAPlusContentExpanded()
+        )
         actionButtonView.setButtonP1(productInfo.data.preOrder)
 
         if ((productInfo.basic.category.isAdult && !viewModel.isUserSessionActive) ||
@@ -3256,15 +3389,8 @@ open class DynamicProductDetailFragment :
         }
 
         setupProductVideoCoordinator()
-        submitInitialList(pdpUiUpdater?.mapOfData?.values?.toList().orEmpty())
-        showWarehouseChangeBs(productInfo.basic.productMultilocation)
-    }
-
-    private fun showWarehouseChangeBs(productMultiloc: ProductMultilocation) {
-        if (productMultiloc.isReroute && !alreadyShowMultilocBottomSheet) {
-            goToApplink(productMultiloc.eduLink.applink)
-        }
-        alreadyShowMultilocBottomSheet = true
+        recommendationWidgetViewModel?.refresh()
+        submitInitialList(pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty())
     }
 
     private fun setupProductVideoCoordinator() {
@@ -3278,11 +3404,11 @@ open class DynamicProductDetailFragment :
     }
 
     private fun showOrHideButton() {
-        if (viewModel.shouldHideFloatingButton() && !viewModel.isShopOwner()) {
-            actionButtonView.visibility = !viewModel.shouldHideFloatingButton()
-            return
-        }
-        if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
+        actionButtonView.visibility = !viewModel.shouldHideFloatingButton()
+        val shouldBeProcess = actionButtonView.visibility &&
+            viewModel.getShopInfo().isShopInfoNotEmpty()
+
+        if (shouldBeProcess) {
             val shopStatus = viewModel.getShopInfo().statusInfo.shopStatus
             val shouldShowSellerButtonByShopType =
                 shopStatus != ShopStatusDef.DELETED && shopStatus != ShopStatusDef.MODERATED_PERMANENTLY
@@ -3292,9 +3418,7 @@ open class DynamicProductDetailFragment :
                 actionButtonView.visibility =
                     viewModel.getShopInfo().statusInfo.shopStatus == ShopStatusDef.OPEN
             }
-            return
         }
-        actionButtonView.visibility = true
     }
 
     private fun renderRestrictionBottomSheet(data: RestrictionInfoResponse) {
@@ -3321,7 +3445,8 @@ open class DynamicProductDetailFragment :
     private fun onSuccessGetDataP2(
         it: ProductInfoP2UiData,
         boeData: BebasOngkirImage,
-        ratesData: P2RatesEstimateData?
+        ratesData: P2RatesEstimateData?,
+        shipmentPlus: ShipmentPlus?
     ) {
         val minimumShippingPriceP2 = ratesData?.cheapestShippingPrice ?: 0.0
         if (minimumShippingPriceP2 != 0.0) {
@@ -3340,7 +3465,8 @@ open class DynamicProductDetailFragment :
             viewModel.getMultiOriginByProductId().isFulfillment,
             viewModel.getDynamicProductInfoP1?.data?.isCod ?: false,
             boeData,
-            viewModel.getUserLocationCache()
+            viewModel.getUserLocationCache(),
+            shipmentPlus
         )
 
         if (it.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
@@ -3445,39 +3571,24 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun goToTradein() {
-        tradeinDialog?.let { dialog ->
-            showImmediately(getProductFragmentManager(), "ACCESS REQUEST") {
-                dialog
-            }
-        }
-    }
-
-    override fun onVariantGuideLineClicked(url: String) {
-        activity?.let {
-            DynamicProductDetailTracking.Click.onVariantGuideLineClicked(
-                viewModel.getDynamicProductInfoP1,
-                pdpUiUpdater?.productOptionalVariantDataModel,
-                getComponentPosition(pdpUiUpdater?.productOptionalVariantDataModel)
-            )
-            startActivity(getIntentImagePreviewWithoutDownloadButton(it, arrayListOf(url)))
-        }
-    }
-
-    override fun getStockWording(): String {
-        val variantStockWording = viewModel.getDynamicProductInfoP1?.data?.stock?.stockWording ?: ""
-        val isPartialySelected = pdpUiUpdater?.productOptionalVariantDataModel?.isPartialySelected()
-            ?: false
-
-        return if (isPartialySelected) "" else variantStockWording
-    }
-
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state: Int) {
-        if (pdpUiUpdater?.productSingleVariant != null) {
+        if (variantOptions.isEmpty()) { // lihat semua label clicked
             goToAtcVariant()
-        } else {
-            selectVariantInPdp(variantOptions, state)
+        } else { // chip variant clicked
+            onVariantContinuationToVBS(variantOptions)
+            goToAtcVariant()
         }
+    }
+
+    /**
+     * Update variant selected but not refresh the pdp UI
+     * and also get product id which clicked to passing to VBS
+     */
+    private fun onVariantContinuationToVBS(variantOptions: VariantOptionWithAttribute) {
+        pdpUiUpdater?.updateVariantOneLevel(variantOptions = variantOptions)
+        val singleVariant = pdpUiUpdater?.productSingleVariant ?: return
+        val child = viewModel.getChildOfVariantSelected(singleVariant)
+        productId = child?.productId
     }
 
     override fun onThumbnailVariantSelected(variantId: String, categoryKey: String) {
@@ -3510,21 +3621,26 @@ open class DynamicProductDetailFragment :
         )
     }
 
-    private fun selectVariantInPdp(variantOptions: VariantOptionWithAttribute, state: Int) {
-        if (state == VariantConstant.STATE_SELECTED || state == VariantConstant.STATE_SELECTED_EMPTY) return
-        pdpUiUpdater?.updateVariantSelected(
-            variantOptions.variantId,
-            variantOptions.variantCategoryKey
-        )
-        val isPartialySelected = pdpUiUpdater?.productOptionalVariantDataModel?.isPartialySelected()
-            ?: false
-        viewModel.onVariantClicked(
-            viewModel.variantData,
-            pdpUiUpdater?.productOptionalVariantDataModel?.mapOfSelectedVariant,
-            isPartialySelected,
-            variantOptions.level,
-            variantOptions.variantId
-        )
+    override fun onProductMediaRecomBottomSheetDismissed() {
+        viewModel.dismissProductMediaRecomBottomSheet()
+    }
+
+    override fun onToggleAPlus(expanded: Boolean, trackerData: APlusImageUiModel.TrackerData) {
+        viewModel.setAPlusContentExpandedState(expanded)
+        pdpUiUpdater?.updateAPlusContentMediaOnExpandedStateChange(viewModel.isAPlusContentExpanded())
+        updateUi()
+        if (!viewModel.isAPlusContentExpanded()) {
+            val seeMorePosition = adapter.getSeeMoreAPlusTogglePosition()
+            if (seeMorePosition != RecyclerView.NO_POSITION) {
+                binding?.pdpNavigation?.disableNavigationScrollUpListener()
+                snapScrollToPosition(position = seeMorePosition)
+            }
+        }
+        APlusContentTracking.trackClickExpandCollapseToggle(trackerData)
+    }
+
+    override fun onImpressAPlus(trackerData: APlusImageUiModel.TrackerData) {
+        APlusContentTracking.trackImpressAPlusMedia(trackerData, trackingQueue)
     }
 
     private fun goToAtcVariant(customCartRedirection: Map<String, CartTypeData>? = null) {
@@ -3547,18 +3663,13 @@ open class DynamicProductDetailFragment :
                         saveAfterClose = false
                         cartTypeData = customCartRedirection
                     }
-                    // if pdp show single variant with thumbnail type, so product id from [productIdThumbnailSelected]
-                    // otherwise [productId]
-                    val isFromThumbnailVariant =
-                        pdpUiUpdater?.productSingleVariant?.isThumbnailType.orFalse()
-                    val pid = if (isFromThumbnailVariant) productIdThumbnailSelected else productId
 
                     viewModel.clearCacheP2Data()
 
                     AtcVariantHelper.pdpToAtcVariant(
                         context = ctx,
                         pageSource = VariantPageSource.PDP_PAGESOURCE,
-                        productId = pid.orEmpty(),
+                        productId = productId.orEmpty(),
                         productInfoP1 = p1,
                         warehouseId = warehouseId.orEmpty(),
                         pdpSession = p1.pdpSession,
@@ -3584,64 +3695,122 @@ open class DynamicProductDetailFragment :
     }
 
     private fun renderVariant(data: ProductVariant?) {
-        val shouldRenderSingleVariant = pdpUiUpdater?.productSingleVariant != null
-
-        if (data == null || !data.hasChildren) {
-            pdpUiUpdater?.removeComponent(ProductDetailConstant.VARIANT_OPTIONS)
+        if (data == null || !data.hasChildren || data.errorCode > 0) {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.MINI_VARIANT_OPTIONS)
         } else {
-            if (shouldRenderSingleVariant) {
-                pdpUiUpdater?.removeComponent(ProductDetailConstant.VARIANT_OPTIONS)
-            } else {
-                pdpUiUpdater?.removeComponent(ProductDetailConstant.MINI_VARIANT_OPTIONS)
-            }
-
-            if (data.errorCode > 0) {
-                pdpUiUpdater?.updateVariantError()
-                updateUi()
-            } else { // ignore auto-select variant when first load pdp in thumbnail variant
-                val selectedOptionIds = determineInitialOptionId(productId)
-                viewModel.processVariant(
-                    data,
-                    selectedOptionIds,
-                    shouldRenderSingleVariant
-                )
-            }
+            // ignore auto-select variant when first load pdp in thumbnail variant
+            val selectedOptionIds = determineInitialOptionId(productId)
+            viewModel.processVariant(
+                data,
+                selectedOptionIds
+            )
         }
     }
 
-    private fun determineInitialOptionId(productId: String?): MutableMap<String, String> {
+    private fun determineInitialOptionId(productId: String?): Map<String, String> {
         // thumbnail variant not auto-select when first open pdp or refresh event
-        if (pdpUiUpdater?.productSingleVariant?.isThumbnailType == true) {
-            return mutableMapOf()
+        val singleVariant = pdpUiUpdater?.productSingleVariant ?: return emptyMap()
+        if (singleVariant.isThumbnailType) {
+            return emptyMap()
+        }
+        val variantData = viewModel.variantData ?: return emptyMap()
+        val selectedChild = variantData.children.firstOrNull { it.productId == productId.orEmpty() }
+        singleVariant.mapOfSelectedVariant = DynamicProductDetailMapper.determineSelectedOptionIds(
+            variantData,
+            selectedChild
+        )
+
+        // thumbnail variant not auto-select when first open pdp or refresh event
+        // but variant lvl-2 keep selected
+        if (singleVariant.isThumbnailType) {
+            singleVariant.mapOfSelectedVariant.keys.firstOrNull()?.let {
+                singleVariant.mapOfSelectedVariant[it] = ""
+            }
         }
 
-        viewModel.variantData?.let {
-            pdpUiUpdater?.productOptionalVariantDataModel?.apply {
-                mapOfSelectedVariant = AtcVariantMapper.mapVariantIdentifierToHashMap(it)
-            }
-            pdpUiUpdater?.productSingleVariant?.apply {
-                val selectedChild = it.children.firstOrNull { it.productId == productId ?: "" }
-                mapOfSelectedVariant = DynamicProductDetailMapper.determineSelectedOptionIds(
-                    it,
-                    selectedChild
-                )
-            }
-        }
-        return pdpUiUpdater?.productOptionalVariantDataModel?.mapOfSelectedVariant
-            ?: pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant ?: mutableMapOf()
+        pdpUiUpdater?.updateSingleVariant(singleVariant)
+
+        return singleVariant.mapOfSelectedVariant
     }
 
-    private fun showAddToCartDoneBottomSheet(cartId: String) {
-        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+    private fun showAddToCartDoneBottomSheet(cartDataModel: DataModel) {
+        val cartRedirData = viewModel.p2Data.value?.cartRedirection?.get(cartDataModel.productId)
+        val postAtcLayout = cartRedirData?.postAtcLayout
+
+        val remoteNewATC = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_POST_ATC_PDP, true)
+        if (postAtcLayout?.showPostAtc == true && remoteNewATC) {
+            showGlobalPostATC(cartDataModel, cartDataModel.productId, postAtcLayout)
+        } else {
+            showOldPostATC(cartDataModel.cartId)
+        }
+    }
+
+    private fun showGlobalPostATC(
+        cartDataModel: DataModel,
+        productId: String,
+        postAtcLayout: PostAtcLayout
+    ) {
         val context = context ?: return
+
+        val addonsIds = cartDataModel.addOns.groupBy(
+            keySelector = { it.status },
+            valueTransform = { it.id }
+        )
+
+        val addons = PostAtcParams.Addons(
+            deselectedAddonsIds = addonsIds[2] ?: emptyList(),
+            isFulfillment = cartDataModel.isFulfillment,
+            selectedAddonsIds = addonsIds[1] ?: emptyList(),
+            warehouseId = cartDataModel.warehouseId,
+            quantity = cartDataModel.quantity
+        )
+
+        val postAtcParams = PostAtcParams(
+            cartId = cartDataModel.cartId,
+            layoutId = postAtcLayout.layoutId,
+            pageSource = PostAtcParams.Source.PDP.name,
+            session = postAtcLayout.postAtcSession,
+            addons = addons
+        )
+
         PostAtcHelper.start(
             context,
-            productInfo.basic.productID,
-            cartId = cartId,
-            pageSource = PostAtcHelper.Source.PDP,
-            layoutId = productInfo.basic.postAtcLayout.layoutId
+            productId,
+            postAtcParams
         )
+    }
+
+    private fun showOldPostATC(cartId: String) {
+        viewModel.getDynamicProductInfoP1?.let {
+            val addToCartDoneBottomSheet = AddToCartDoneBottomSheet()
+            val productName = it.getProductName
+            val productImageUrl = it.data.getFirstProductImage()
+            val addedProductDataModel = AddToCartDoneAddedProductDataModel(
+                it.basic.productID,
+                productName,
+                productImageUrl,
+                it.data.variant.isVariant,
+                it.basic.getShopId(),
+                viewModel.getBebasOngkirDataByProductId().imageURL,
+                cartId = if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) "" else cartId
+            )
+            val bundleData = Bundle()
+            bundleData.putParcelable(
+                AddToCartDoneBottomSheet.KEY_ADDED_PRODUCT_DATA_MODEL,
+                addedProductDataModel
+            )
+            addToCartDoneBottomSheet.arguments = bundleData
+            addToCartDoneBottomSheet.setDismissListener {
+                shouldShowCartAnimation = true
+                updateCartNotification()
+            }
+            fragmentManager?.let {
+                addToCartDoneBottomSheet.show(
+                    it,
+                    AddToCartDoneBottomSheet::class.simpleName
+                )
+            }
+        }
     }
 
     override fun openShipmentClickedBottomSheet(
@@ -3695,9 +3864,12 @@ open class DynamicProductDetailFragment :
                     addressId = viewModel.getUserLocationCache().address_id,
                     warehouseId = viewModel.getMultiOriginByProductId().id,
                     orderValue = it.data.price.value.roundToIntOrZero(),
-                    boMetadata = viewModel.p2Data.value?.getRatesEstimateBoMetadata(productId) ?: "",
-                    productMetadata = viewModel.p2Data.value?.getRatesProductMetadata(productId) ?: "",
-                    categoryId = it.basic.category.id
+                    boMetadata = viewModel.p2Data.value?.getRatesEstimateBoMetadata(productId)
+                        ?: "",
+                    productMetadata = viewModel.p2Data.value?.getRatesProductMetadata(productId)
+                        ?: "",
+                    categoryId = it.basic.category.id,
+                    isScheduled = isScheduled
                 )
             )
             shouldRefreshShippingBottomSheet = false
@@ -3731,7 +3903,7 @@ open class DynamicProductDetailFragment :
 
     private fun openShipmentBottomSheetWhenError(): Boolean {
         context?.let {
-            val rates = viewModel.getP2RatesEstimateByProductId()
+            val rates = viewModel.getP2RatesEstimateDataByProductId()
             val bottomSheetData = viewModel.getP2RatesBottomSheetData()
 
             if (rates?.p2RatesError?.isEmpty() == true || rates?.p2RatesError?.firstOrNull()?.errorCode == 0 || bottomSheetData == null) return false
@@ -3817,23 +3989,24 @@ open class DynamicProductDetailFragment :
     private fun onClickShareProduct() {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             DynamicProductDetailTracking.Click.eventClickPdpShare(
-                productInfo.basic.productID,
-                viewModel.userId,
-                zeroIfEmpty(productInfo.data.campaign.campaignID),
-                zeroIfEmpty(pdpUiUpdater?.productBundlingData?.bundleInfo?.bundleId)
+                productId = productInfo.basic.productID,
+                userId = viewModel.userId,
+                campaignId = zeroIfEmpty(productInfo.data.campaign.campaignID),
+                bundleId = "0",
+                isAffiliateShareIcon = isAffiliateShareIcon
             )
             shareProduct(productInfo)
         }
     }
 
-    private fun shareProduct(dynamicProductInfoP1: DynamicProductInfoP1? = null) {
+    private fun shareProduct(dynamicProductInfoP1: DynamicProductInfoP1? = null, path: String? = null) {
         val productInfo = dynamicProductInfoP1 ?: viewModel.getDynamicProductInfoP1
         if (productInfo != null) {
             val productData = generateProductShareData(
-                productInfo,
-                viewModel.userId,
-                viewModel.getShopInfo().shopCore.url,
-                pdpUiUpdater?.productBundlingData?.bundleInfo?.bundleId ?: "0"
+                productInfo = productInfo,
+                userId = viewModel.userId,
+                shopUrl = viewModel.getShopInfo().shopCore.url,
+                bundleId = "0"
             )
 
             val shopInfo =
@@ -3848,8 +4021,9 @@ open class DynamicProductDetailFragment :
 
     private fun checkAndExecuteReferralAction(
         productData: ProductData,
-        affiliateData: AffiliatePDPInput,
-        imageGeneratorData: PdpParamModel
+        affiliateData: AffiliateInput,
+        imageGeneratorData: PdpParamModel,
+        path: String? = null
     ) {
         val fireBaseRemoteMsgGuest =
             remoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "")
@@ -3871,13 +4045,13 @@ open class DynamicProductDetailFragment :
                 return
             }
         }
-        executeProductShare(productData, affiliateData, imageGeneratorData)
+        executeProductShare(productData, affiliateData, imageGeneratorData, path)
     }
 
     private fun doReferralShareAction(
         productData: ProductData,
         fireBaseRemoteMsg: String,
-        affiliateData: AffiliatePDPInput,
+        affiliateData: AffiliateInput,
         imageGeneratorData: PdpParamModel
     ) {
         val actionCreator = object : ActionCreator<String, Int> {
@@ -3917,19 +4091,20 @@ open class DynamicProductDetailFragment :
 
     private fun executeProductShare(
         productData: ProductData,
-        affiliateData: AffiliatePDPInput,
-        imageGeneratorData: PdpParamModel
+        affiliateData: AffiliateInput,
+        imageGeneratorData: PdpParamModel,
+        path: String? = null
     ) {
         val enablePdpCustomSharing = remoteConfig.getBoolean(
             REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING,
             REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
         )
-        if (UniversalShareBottomSheet.isCustomSharingEnabled(context) && enablePdpCustomSharing) {
+        if (SharingUtil.isCustomSharingEnabled(context) && enablePdpCustomSharing) {
             val description = pdpUiUpdater?.productDetailInfoData?.getDescription()?.take(100)
                 ?.replace("(\r\n|\n)".toRegex(), " ")
                 ?: ""
             productData.productShareDescription = "$description..."
-            executeUniversalShare(productData, affiliateData, imageGeneratorData)
+            executeUniversalShare(productData, affiliateData, imageGeneratorData, path)
         } else {
             executeNativeShare(productData)
         }
@@ -3947,13 +4122,17 @@ open class DynamicProductDetailFragment :
 
     private fun executeUniversalShare(
         productData: ProductData,
-        affiliateData: AffiliatePDPInput,
-        imageGeneratorData: PdpParamModel
+        affiliateData: AffiliateInput,
+        imageGeneratorData: PdpParamModel,
+        path: String? = null
     ) {
         activity?.let {
             val imageUrls = pdpUiUpdater?.mediaMap?.listOfMedia
                 ?.filter { it.type == ProductMediaDataModel.IMAGE_TYPE }
                 ?.map { it.urlOriginal } ?: emptyList()
+            val personalizedCampaignModel = viewModel.getDynamicProductInfoP1?.let { product ->
+                generatePersonalizedData(product, viewModel.p2Data.value)
+            } ?: PersonalizedCampaignModel()
 
             shareProductInstance?.showUniversalShareBottomSheet(
                 fragmentManager = it.supportFragmentManager,
@@ -3968,7 +4147,9 @@ open class DynamicProductDetailFragment :
                 },
                 postBuildImg = { hideProgressDialog() },
                 screenshotDetector,
-                imageGeneratorData
+                imageGeneratorData,
+                personalizedCampaignModel,
+                screenshotPath = path
             )
         }
     }
@@ -3983,6 +4164,10 @@ open class DynamicProductDetailFragment :
         }
     }
 
+    override fun getBlocksPerformanceTrace(): BlocksPerformanceTrace? {
+        return getProductDetailActivity()?.getBlocksPerformanceMonitoring()
+    }
+
     override fun reportProductFromComponent(componentTrackDataModel: ComponentTrackDataModel?) {
         reportProduct({
             DynamicProductDetailTracking.Click.eventClickReportFromComponent(
@@ -3994,11 +4179,7 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onBuyerPhotosClicked(componentTrackDataModel: ComponentTrackDataModel?) {
-        DynamicProductDetailTracking.Click.eventClickBuyerPhotosClicked(
-            viewModel.getDynamicProductInfoP1,
-            viewModel.userId,
-            componentTrackDataModel ?: ComponentTrackDataModel()
-        )
+        socialProofMediaTracking(trackData = componentTrackDataModel)
         goToReviewImagePreview()
     }
 
@@ -4132,12 +4313,15 @@ open class DynamicProductDetailFragment :
             boType = boType,
             affiliateUniqueId = affiliateUniqueId,
             uuid = uuid,
-            ratesEstimateData = viewModel.getP2RatesEstimateByProductId(),
+            ratesEstimateData = viewModel.getP2RatesEstimateDataByProductId(),
             buyerDistrictId = viewModel.getUserLocationCache().district_id,
             sellerDistrictId = viewModel.getMultiOriginByProductId().districtId,
             lcaWarehouseId = getLcaWarehouseId(),
             campaignId = campaignId,
-            variantId = variantId
+            variantId = variantId,
+            offerId = viewModel.getP2()?.bmgm?.data?.firstOrNull {
+                it.productIDs.contains(productId)
+            }?.offerId.orEmpty()
         )
     }
 
@@ -4205,7 +4389,7 @@ open class DynamicProductDetailFragment :
     private fun onErrorRemoveWishList(errorMsg: String?) {
         view?.showToasterError(
             getErrorMessage(errorMsg),
-            ctaText = getString(com.tokopedia.design.R.string.oke)
+            ctaText = getString(com.tokopedia.product.detail.common.R.string.pdp_common_oke)
         )
     }
 
@@ -4221,7 +4405,7 @@ open class DynamicProductDetailFragment :
     private fun onErrorAddWishList(errorMessage: String?) {
         view?.showToasterError(
             getErrorMessage(errorMessage),
-            ctaText = getString(com.tokopedia.design.R.string.oke)
+            ctaText = getString(com.tokopedia.product.detail.common.R.string.pdp_common_oke)
         )
     }
 
@@ -4293,11 +4477,11 @@ open class DynamicProductDetailFragment :
             )
 
             setIcon(
-                IconBuilder()
+                IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.PDP))
                     .addIcon(IconList.ID_SEARCH, disableRouteManager = true) {
                         goToApplink(getLocalSearchApplink())
                     }
-                    .addIcon(getShareIcon()) {
+                    .addIcon(IconList.ID_SHARE) {
                         onClickShareProduct()
                     }
                     .addIcon(IconList.ID_CART) {}
@@ -4310,16 +4494,19 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun getShareIcon(): Int {
-        val isAbTestEnabled = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.PDP_SHOW_SHARE_AFFILIATE
-        ) == RollenceKey.PDP_SHOW_SHARE_AFFILIATE
-
-        if (isAbTestEnabled) {
-            return IconList.ID_SHARE_AB_TEST
-        } else {
-            return IconList.ID_SHARE
+    private fun updateToolbarShareAffiliate() {
+        if (isShareAffiliateIconEnabled() && !GlobalConfig.isSellerApp()) {
+            isAffiliateShareIcon = true
+            navToolbar?.updateIcon(IconList.ID_SHARE, IconList.ID_SHARE_AB_TEST) ?: return
         }
+    }
+
+    private fun isShareAffiliateIconEnabled(): Boolean {
+        val isAbTestEnabled = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.AFFILIATE_SHARE_ICON
+        ) == RollenceKey.AFFILIATE_SHARE_ICON
+
+        return isAbTestEnabled
     }
 
     private fun getDarkToolbarIconColor(): Int = ContextCompat.getColor(
@@ -4437,7 +4624,7 @@ open class DynamicProductDetailFragment :
             UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
         val secondAppLink = ApplinkConstInternalTopAds.TOPADS_MP_ADS_CREATION
         if (GlobalConfig.isSellerApp()) {
-            RouteManager.route(context,secondAppLink,productId)
+            RouteManager.route(context, secondAppLink, productId)
         } else {
             if (secondAppLink.isEmpty()) {
                 goToPdpSellerApp()
@@ -4461,7 +4648,7 @@ open class DynamicProductDetailFragment :
             viewModel.getDynamicProductInfoP1
         )
         if (GlobalConfig.isSellerApp()) {
-            showTopAdsBottomSheet()
+            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_SEE_ADS_PERFORMANCE, productId, TOPADS_PERFORMANCE_CURRENT_SITE)
         } else {
             goToPdpSellerApp()
         }
@@ -4591,24 +4778,11 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun showTopAdsBottomSheet() {
-        context?.let {
-            context?.let {
-                topAdsDetailSheet?.show(
-                    childFragmentManager,
-                    topAdsGetProductManage.data.adType,
-                    topAdsGetProductManage.data.adId,
-                    viewModel.p2Login.value?.topAdsGetShopInfo?.category ?: 0
-                )
-            }
-        }
-    }
-
-    private fun clickButtonWhenVariantTokonow(isVariant: Boolean) {
+    private fun clickButtonWhenVariantTokonow() {
         if (buttonActionType == ProductDetailCommonConstant.CHECK_WISHLIST_BUTTON) {
             DynamicProductDetailTracking.Click.eventClickOosButton(
                 binding?.partialLayoutButtonAction?.btnBuyNow?.text.toString(),
-                isVariant,
+                true,
                 viewModel.getDynamicProductInfoP1,
                 viewModel.userId
             )
@@ -4626,12 +4800,8 @@ open class DynamicProductDetailFragment :
         buttonActionType = buttonAction
         context?.let {
             val isVariant = viewModel.getDynamicProductInfoP1?.data?.variant?.isVariant ?: false
-            val isPartialySelected =
-                pdpUiUpdater?.productOptionalVariantDataModel?.isPartialySelected()
-                    ?: false
-
             if (isVariant && pdpUiUpdater?.productSingleVariant != null) {
-                clickButtonWhenVariantTokonow(isVariant)
+                clickButtonWhenVariantTokonow()
                 return@let
             }
 
@@ -4661,22 +4831,6 @@ open class DynamicProductDetailFragment :
                 return@let
             }
 
-            if (isVariant && isPartialySelected) {
-                if (pdpUiUpdater?.productOptionalVariantDataModel?.listOfVariantCategory == null) {
-                    view.showToasterError(
-                        getString(R.string.variant_failed_load),
-                        ctaText = getString(R.string.product_refresh),
-                        ctaMaxWidth = 500,
-                        ctaListener = {
-                            onSwipeRefresh()
-                        }
-                    )
-                } else {
-                    showErrorVariantUnselected()
-                }
-                return@let
-            }
-
             if (openShipmentBottomSheetWhenError()) return@let
 
             hitAtc(buttonAction)
@@ -4692,26 +4846,6 @@ open class DynamicProductDetailFragment :
             viewModel.buttonActionText
         )
         goToLogin()
-    }
-
-    private fun showErrorVariantUnselected() {
-        DynamicProductDetailTracking.Click.onVariantErrorPartialySelected(
-            viewModel.getDynamicProductInfoP1,
-            buttonActionType
-        )
-        scrollToPosition(getComponentPosition(pdpUiUpdater?.productOptionalVariantDataModel))
-        val variantErrorMessage =
-            if (viewModel.variantData?.getVariantsIdentifier()?.isEmpty() == true) {
-                getString(com.tokopedia.product.detail.common.R.string.add_to_cart_error_variant)
-            } else {
-                getString(
-                    com.tokopedia.product.detail.common.R.string.add_to_cart_error_variant_builder,
-                    viewModel.variantData?.getVariantsIdentifier()
-                        ?: ""
-                )
-            }
-
-        view?.showToasterError(variantErrorMessage, ctaText = getString(R.string.label_oke_pdp))
     }
 
     private fun buyAfterTradeinDiagnose(deviceId: String) {
@@ -4993,7 +5127,7 @@ open class DynamicProductDetailFragment :
 
     private fun updateActionButtonShadow() {
         if (stickyLoginView?.isShowing() == true) {
-            actionButtonView.setBackground(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            actionButtonView.setBackground(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         } else {
             val drawable = context?.let { _context ->
                 ContextCompat.getDrawable(
@@ -5058,21 +5192,11 @@ open class DynamicProductDetailFragment :
     private fun updateProductId() {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             productId = productInfo.basic.productID
-            productIdThumbnailSelected = productId // reset when p1 refresh
         }
     }
 
     private fun hasTopAds() =
         topAdsGetProductManage.data.adId.isNotEmpty() && topAdsGetProductManage.data.adId != "0"
-
-    private fun setupTradeinDialog(): ProductAccessRequestDialogFragment {
-        val accessDialog = ProductAccessRequestDialogFragment()
-        accessDialog.setBodyText(getString(R.string.pdp_tradein_text_permission_description))
-        accessDialog.setTitle(getString(R.string.pdp_tradein_text_request_access))
-        accessDialog.setNegativeButton("")
-        accessDialog.setListener(this)
-        return accessDialog
-    }
 
     private fun assignDeviceId() {
         viewModel.deviceId = TradeInUtils.getDeviceId(context)
@@ -5150,7 +5274,7 @@ open class DynamicProductDetailFragment :
         val dataModel = pdpUiUpdater?.notifyMeMap
         view?.showToasterError(
             getErrorMessage(t),
-            ctaText = getString(com.tokopedia.design.R.string.oke)
+            ctaText = getString(com.tokopedia.product.detail.common.R.string.pdp_common_oke)
         )
         if (dataModel != null) {
             pdpUiUpdater?.updateNotifyMeButton(dataModel.notifyMe)
@@ -5239,9 +5363,7 @@ open class DynamicProductDetailFragment :
                     .appendQueryParameter(PARAM_APPLINK_SHOP_ID, it.basic.shopID)
                     .appendQueryParameter(
                         PARAM_APPLINK_IS_VARIANT_SELECTED,
-                        pdpUiUpdater?.productOptionalVariantDataModel?.isPartialySelected()?.not()
-                            .orFalse()
-                            .toString()
+                        (pdpUiUpdater?.productSingleVariant != null).toString()
                     )
                     .appendQueryParameter(
                         PARAM_APPLINK_AVAILABLE_VARIANT,
@@ -5275,8 +5397,7 @@ open class DynamicProductDetailFragment :
                     .appendQueryParameter(ProductDetailConstant.PARAM_PRODUCT_ID, it)
                     .appendQueryParameter(
                         PARAM_APPLINK_IS_VARIANT_SELECTED,
-                        pdpUiUpdater?.productOptionalVariantDataModel?.isPartialySelected()?.not()
-                            .orFalse().toString()
+                        (pdpUiUpdater?.productSingleVariant != null).toString()
                     )
                     .appendQueryParameter(
                         PARAM_APPLINK_AVAILABLE_VARIANT,
@@ -5313,14 +5434,6 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun getAbTestPlatform(): AbTestPlatform? {
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform
-        } catch (e: java.lang.IllegalStateException) {
-            null
-        }
-    }
-
     // Will be delete soon
     override fun isNavOld(): Boolean = GlobalConfig.isSellerApp()
 
@@ -5328,8 +5441,8 @@ open class DynamicProductDetailFragment :
         return trackingQueue
     }
 
-    override fun getVariantString(): String {
-        return viewModel.variantData?.getVariantCombineIdentifier() ?: ""
+    private fun getVariantString(): String {
+        return viewModel.variantData?.getVariantCombineIdentifier().orEmpty()
     }
 
     private fun navAbTestCondition(navMainApp: () -> Unit = {}, navSellerApp: () -> Unit = {}) {
@@ -5573,37 +5686,6 @@ open class DynamicProductDetailFragment :
         )
     }
 
-    override fun onClickCheckBundling(
-        bundleId: String,
-        bundleType: String,
-        componentTrackDataModel: ComponentTrackDataModel
-    ) {
-        val productInfoP1 = viewModel.getDynamicProductInfoP1
-        DynamicProductDetailTracking.ProductBundling.eventClickCheckBundlePage(
-            bundleId,
-            bundleType,
-            productInfoP1,
-            componentTrackDataModel
-        )
-        val productId = productInfoP1?.basic?.productID
-        val appLink =
-            UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE, productId)
-        val parameterizedAppLink = Uri.parse(appLink).buildUpon()
-            .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_BUNDLE_ID, bundleId)
-            .appendQueryParameter(
-                ApplinkConstInternalMechant.QUERY_PARAM_PAGE_SOURCE,
-                ApplinkConstInternalMechant.SOURCE_PDP
-            )
-            .appendQueryParameter(
-                ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID,
-                viewModel.getMultiOriginByProductId().id
-            )
-            .build()
-            .toString()
-        val intent = RouteManager.getIntent(requireContext(), parameterizedAppLink)
-        startActivity(intent)
-    }
-
     override fun onClickActionButtonBundling(
         bundleId: String,
         bundleType: String,
@@ -5636,8 +5718,8 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    override fun screenShotTaken() {
-        shareProduct()
+    override fun screenShotTaken(path: String) {
+        shareProduct(path = path)
     }
 
     override fun onWidgetShouldRefresh(view: PlayWidgetView) {
@@ -5646,6 +5728,11 @@ open class DynamicProductDetailFragment :
 
     override fun onWidgetOpenAppLink(view: View, appLink: String) {
         goToApplink(appLink)
+    }
+
+    override fun onWidgetError(view: PlayWidgetView, error: PlayWidgetException) {
+        pdpUiUpdater?.removeComponent(PLAY_CAROUSEL)
+        updateUi()
     }
 
     override fun onToggleReminderClicked(
@@ -5776,6 +5863,22 @@ open class DynamicProductDetailFragment :
         return remoteConfig
     }
 
+    override fun getProductInfo(): DynamicProductInfoP1? {
+        return viewModel.getDynamicProductInfoP1
+    }
+
+    override fun getTrackingQueueInstance(): TrackingQueue {
+        return trackingQueue
+    }
+
+    override fun getStoriesWidgetManager(): StoriesWidgetManager {
+        return mStoriesWidgetManager
+    }
+
+    override fun getUserSession(): UserSessionInterface {
+        return viewModel.userSessionInterface
+    }
+
     override fun onImpressStockAssurance(
         componentTrackDataModel: ComponentTrackDataModel,
         label: String
@@ -5818,8 +5921,17 @@ open class DynamicProductDetailFragment :
         productKey.orEmpty()
     )
 
-    override fun startVerticalRecommendation(pageName: String) {
-        viewModel.getVerticalRecommendationData(pageName = pageName, productId = productId)
+    override fun startVerticalRecommendation(
+        pageName: String,
+        queryParam: String,
+        thematicId: String
+    ) {
+        viewModel.getVerticalRecommendationData(
+            pageName = pageName,
+            productId = productId,
+            queryParam = queryParam,
+            thematicId = thematicId
+        )
     }
 
     override fun onImpressRecommendationVertical(componentTrackDataModel: ComponentTrackDataModel) {
@@ -5834,12 +5946,12 @@ open class DynamicProductDetailFragment :
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        DynamicProductDetailTracking.ViewToView.eventImpressViewToView(
+        ViewToViewTracker.eventImpressViewToView(
             position = itemPosition,
             product = data.recommendationData,
-            pageName = data.recommendationData.pageName,
+            androidPageName = ViewToViewTracker.PAGE_PDP,
             pageTitle = title,
-            viewModel.getDynamicProductInfoP1,
+            viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
             viewModel.userId,
             trackingQueue
         )
@@ -5851,12 +5963,12 @@ open class DynamicProductDetailFragment :
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        DynamicProductDetailTracking.ViewToView.eventClickViewToView(
+        ViewToViewTracker.eventClickViewToView(
             position = itemPosition,
             product = data.recommendationData,
-            pageName = data.recommendationData.pageName,
+            androidPageName = ViewToViewTracker.PAGE_PDP,
             pageTitle = title,
-            viewModel.getDynamicProductInfoP1,
+            viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
             viewModel.userId
         )
         val activity = activity ?: return
@@ -5866,15 +5978,15 @@ open class DynamicProductDetailFragment :
         ) {
             ViewToViewBottomSheet.newInstance(
                 activity.classLoader,
-                fragmentFactory,
+                childFragmentManager.fragmentFactory,
                 data,
                 viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
             )
         }
     }
 
-    override fun onViewToViewReload(pageName: String) {
-        loadViewToView(pageName)
+    override fun onViewToViewReload(pageName: String, queryParam: String, thematicId: String) {
+        loadViewToView(pageName = pageName, queryParam = queryParam, thematicId = thematicId)
     }
 
     override fun onImpressScheduledDelivery(
@@ -5889,6 +6001,131 @@ open class DynamicProductDetailFragment :
             labels,
             common,
             componentTrackDataModel
+        )
+    }
+
+    override fun onClickShipmentPlusBanner(
+        link: String,
+        trackerData: ShipmentPlusData.TrackerData,
+        componentTrackDataModel: ComponentTrackDataModel?
+    ) {
+        ShipmentTracking.sendClickShipmentPlusBanner(
+            trackerData = trackerData,
+            common = generateCommonTracker(),
+            component = componentTrackDataModel
+        )
+        val processedLink = if (link.startsWith(ProductDetailConstant.HTTP_PREFIX)) {
+            UriUtil
+                .buildUriAppendParam(
+                    ApplinkConst.WEBVIEW,
+                    mapOf(ProductDetailConstant.WEBVIEW_URL_PARAM to link)
+                )
+        } else {
+            link
+        }
+        goToApplink(processedLink)
+    }
+
+    override fun onSocialProofItemImpression(socialProof: SocialProofUiModel) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+        ProductSocialProofTracking.onImpression(uiModel = socialProof, productInfo = productInfo)
+    }
+
+    override fun onSocialProofItemClickTracking(
+        identifier: SocialProofUiModel.Identifier,
+        trackData: ComponentTrackDataModel?
+    ) {
+        when (identifier) {
+            SocialProofUiModel.Identifier.Talk -> socialProofTalkTracking(trackData = trackData)
+            SocialProofUiModel.Identifier.Media -> socialProofMediaTracking(trackData = trackData)
+            SocialProofUiModel.Identifier.NewProduct -> socialProofNewProductTracking(trackData = trackData)
+            SocialProofUiModel.Identifier.Rating -> socialProofRatingTracking()
+            SocialProofUiModel.Identifier.ShopRating -> socialProofShopRatingTracking(trackData = trackData)
+            else -> {
+                // no-ops
+            }
+        }
+    }
+
+    private fun socialProofTalkTracking(trackData: ComponentTrackDataModel?) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+
+        ProductSocialProofTracking.onTalkClicked(
+            deepLink = deeplinkUrl,
+            productInfo = productInfo,
+            trackDataModel = trackData
+        )
+    }
+
+    private fun socialProofMediaTracking(trackData: ComponentTrackDataModel?) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+
+        ProductSocialProofTracking.onMediaClicked(
+            productInfo = productInfo,
+            userId = viewModel.userId,
+            trackDataModel = trackData ?: ComponentTrackDataModel()
+        )
+    }
+
+    private fun socialProofNewProductTracking(trackData: ComponentTrackDataModel?) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+
+        ProductSocialProofTracking.onNewProductClicked(
+            productInfo = productInfo,
+            trackDataModel = trackData
+        )
+    }
+
+    private fun socialProofRatingTracking() {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+        ProductSocialProofTracking.onRatingClicked(
+            deepLink = deeplinkUrl,
+            productInfo = productInfo
+        )
+    }
+
+    private fun socialProofShopRatingTracking(trackData: ComponentTrackDataModel?) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+
+        ProductSocialProofTracking.onShopRatingClicked(
+            productInfo = productInfo,
+            trackDataModel = trackData
+        )
+    }
+
+    override fun onShopReviewSeeMore(
+        appLink: String,
+        eventLabel: String,
+        trackData: ComponentTrackDataModel?
+    ) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+
+        goToApplink(url = appLink)
+        ProductShopReviewTracking.onItemClicked(
+            productInfo = productInfo,
+            trackDataModel = trackData,
+            eventLabel = eventLabel
+        )
+    }
+
+    override fun onClickDynamicOneLiner(title: String, component: ComponentTrackDataModel) {
+        val commonTracker = generateCommonTracker() ?: return
+        DynamicOneLinerTracking.onClickDynamicOneliner(
+            title,
+            commonTracker,
+            component
+        )
+    }
+
+    override fun onBMGMClicked(title: String, offerId: String, component: ComponentTrackDataModel) {
+        val commonTracker = generateCommonTracker() ?: return
+
+        BMGMTracking.onClicked(
+            title = title,
+            offerId = offerId,
+            commonTracker = commonTracker,
+            component = component,
+            trackingQueue = trackingQueue
         )
     }
 }

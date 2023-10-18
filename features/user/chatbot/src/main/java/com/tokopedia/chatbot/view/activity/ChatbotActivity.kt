@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.view.activity
 
+import RemoteConfigHelper
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -12,6 +13,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.chatbot2.view.fragment.ChatbotFragment2
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.view.fragment.ChatbotFragment
 import com.tokopedia.chatbot.view.util.isInDarkMode
@@ -27,26 +29,50 @@ class ChatbotActivity : BaseChatToolbarActivity() {
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
-        val list = intent?.data?.let {
+        var list = emptyList<String>()
+        var pageSource = ""
+        var isChatbotActive = ""
+        intent?.data?.let {
             bundle.putString(DEEP_LINK_URI, it.toString())
-            UriUtil.destructureUri(
+            list = UriUtil.destructureUri(
                 ApplinkConstInternalGlobal.CHAT_BOT + "/{id}",
                 it,
                 true
             )
+            pageSource = it.getQueryParameter("page_source").orEmpty()
+            isChatbotActive = it.getQueryParameter("is_chatbot_active").orEmpty()
+            bundle.putString(PAGE_SOURCE, pageSource)
+            if (isChatbotActive.isEmpty() || isChatbotActive=="true")
+                bundle.putBoolean(IS_CHATBOT_ACTIVE, true)
+            else
+                bundle.putBoolean(IS_CHATBOT_ACTIVE, false)
         }
         if (!list.isNullOrEmpty()) {
             bundle.putString(MESSAGE_ID, list[0])
         }
-        val fragment = ChatbotFragment()
-        fragment.arguments = bundle
-        return fragment
+
+        val state = remoteConfigForChatbotMVVM()
+        return if (state) {
+            val fragment = ChatbotFragment2()
+            fragment.arguments = bundle
+            fragment
+        } else {
+            val fragment = ChatbotFragment()
+            fragment.arguments = bundle
+            fragment
+        }
+    }
+
+    private fun remoteConfigForChatbotMVVM(): Boolean {
+        return RemoteConfigHelper.isRemoteConfigForMVVM(this)
     }
 
     companion object {
 
         const val MESSAGE_ID = "message_id"
+        const val PAGE_SOURCE = "page_source"
         const val DEEP_LINK_URI = "deep_link_uri"
+        const val IS_CHATBOT_ACTIVE = "is_chatbot_active"
     }
 
     override fun onResume() {
@@ -60,12 +86,12 @@ class ChatbotActivity : BaseChatToolbarActivity() {
         PushNotification.setIsChatBotWindowOpen(false)
     }
 
-    override fun getChatHeaderLayout(): Int = R.layout.chatbot_header_layout
+    override fun getChatHeaderLayout(): Int = R.layout.customview_chatbot_header_layout
 
     override fun setupToolbar() {
         super.setupToolbar()
         supportActionBar?.run {
-            setBackgroundDrawable(ColorDrawable(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)))
+            setBackgroundDrawable(ColorDrawable(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0)))
         }
         val userAvatar = findViewById<ImageView>(R.id.user_avatar)
         userAvatar.apply {

@@ -284,29 +284,29 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
                 val drawable = getIconUnifyDrawable(
                     context,
                     com.tokopedia.iconunify.R.drawable.iconunify_information,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
                 spStatusInfoIcon!!.setImageDrawable(drawable)
                 spKYCStatusLayout!!.background =
-                    resources.getDrawable(com.tokopedia.saldodetails.R.drawable.sp_bg_rounded_corners_green)
+                    context.resources.getDrawable(com.tokopedia.saldodetails.R.drawable.sp_bg_rounded_corners_green)
             } else if (boxType.equals(WARNING, ignoreCase = true)) {
                 val drawable = getIconUnifyDrawable(
                     context,
                     com.tokopedia.iconunify.R.drawable.iconunify_information,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Y300
+                    com.tokopedia.unifyprinciples.R.color.Unify_YN300
                 )
                 spStatusInfoIcon!!.setImageDrawable(drawable)
                 spKYCStatusLayout!!.background =
-                    resources.getDrawable(com.tokopedia.saldodetails.R.drawable.bg_rounded_corner_warning)
+                    context.resources.getDrawable(com.tokopedia.saldodetails.R.drawable.bg_rounded_corner_warning)
             } else if (boxType.equals(DANGER, ignoreCase = true)) {
                 val drawable = getIconUnifyDrawable(
                     context,
                     com.tokopedia.iconunify.R.drawable.iconunify_information,
-                    com.tokopedia.unifyprinciples.R.color.Unify_R200
+                    com.tokopedia.unifyprinciples.R.color.Unify_RN200
                 )
                 spStatusInfoIcon!!.setImageDrawable(drawable)
                 spKYCStatusLayout!!.background =
-                    resources.getDrawable(com.tokopedia.saldodetails.R.drawable.bg_rounded_corner_danger)
+                    context.resources.getDrawable(com.tokopedia.saldodetails.R.drawable.bg_rounded_corner_danger)
             }
         }
     }
@@ -336,7 +336,9 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
                 try {
                     anchorLabel.setTextColor(Color.parseColor(gqlAnchorListResponse.color))
                 } catch (e: Exception) {
-                    anchorLabel.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                    context?.let { context ->
+                        anchorLabel.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                    }
                 }
 
                 anchorLabel.setOnClickListener { v ->
@@ -417,10 +419,12 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
 
     private fun onSaldoStatusUpdateSuccess(newState: Boolean) {
         originalSwitchState = newState
-        NetworkErrorHelper.showGreenSnackbarShort(
-            activity,
-            resources.getString(com.tokopedia.saldodetails.R.string.saldo_status_updated_success)
-        )
+        context?.let { context ->
+            NetworkErrorHelper.showGreenSnackbarShort(
+                activity,
+                context.resources.getString(com.tokopedia.saldodetails.R.string.saldo_status_updated_success)
+            )
+        }
     }
 
     interface InteractionListener {

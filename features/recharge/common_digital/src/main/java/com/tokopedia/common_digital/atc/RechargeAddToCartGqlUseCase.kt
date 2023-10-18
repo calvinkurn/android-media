@@ -34,7 +34,8 @@ class RechargeAddToCartGqlUseCase @Inject constructor(graphqlRepository: Graphql
     fun setParams(
         digitalCheckoutPassData: DigitalCheckoutPassData,
         userId: String,
-        digitalIdentifierParam: RequestBodyIdentifier
+        digitalIdentifierParam: RequestBodyIdentifier,
+        atcMultiCheckoutParam: String = ""
     ) {
         lateinit var requestParams: RechargeATCRequest
 
@@ -43,7 +44,7 @@ class RechargeAddToCartGqlUseCase @Inject constructor(graphqlRepository: Graphql
         digitalCheckoutPassData.clientNumber?.let {
             fieldList.add(
                 RechargeATCField(
-                    name = DigitalAddToCartRestUseCase.PARAM_CLIENT_NUMBER,
+                    name = PARAM_CLIENT_NUMBER,
                     value = it
                 )
             )
@@ -52,7 +53,7 @@ class RechargeAddToCartGqlUseCase @Inject constructor(graphqlRepository: Graphql
             if (it.isNotEmpty()) {
                 fieldList.add(
                     RechargeATCField(
-                        name = DigitalAddToCartRestUseCase.PARAM_ZONE_ID,
+                        name = PARAM_ZONE_ID,
                         value = it
                     )
                 )
@@ -72,13 +73,19 @@ class RechargeAddToCartGqlUseCase @Inject constructor(graphqlRepository: Graphql
             ),
             instantCheckout = digitalCheckoutPassData.instantCheckout == VALUE_INSTANT_CHECKOUT_ID,
             ipAddress = DeviceUtil.localIpAddress,
-            productId = if (!digitalCheckoutPassData.productId.isNullOrEmpty())
-                digitalCheckoutPassData.productId?.toLong() ?: 0 else 0,
+            productId = if (!digitalCheckoutPassData.productId.isNullOrEmpty()) {
+                digitalCheckoutPassData.productId?.toLong() ?: 0
+            } else {
+                0
+            },
             userAgent = DeviceUtil.userAgentForApiCall,
             userId = userId.toLong(),
-            orderId = if (!digitalCheckoutPassData.orderId.isNullOrEmpty())
-                digitalCheckoutPassData.orderId?.toLong() ?: 0 else 0,
-            atcSource = digitalCheckoutPassData.atcSource ?: ""
+            orderId = if (!digitalCheckoutPassData.orderId.isNullOrEmpty()) {
+                digitalCheckoutPassData.orderId?.toLong() ?: 0
+            } else {
+                0
+            },
+            atcSource = if (atcMultiCheckoutParam.isNotEmpty()) atcMultiCheckoutParam else digitalCheckoutPassData.atcSource ?: ""
         )
 
         setRequestParams(mapOf(PARAMS_KEY to requestParams))
@@ -94,6 +101,8 @@ class RechargeAddToCartGqlUseCase @Inject constructor(graphqlRepository: Graphql
 
         private const val PARAMS_KEY = "request"
         private const val RECHARGE_MODULE_NAME = "recharge"
+        private const val PARAM_CLIENT_NUMBER = "client_number"
+        private const val PARAM_ZONE_ID = "zone_id"
 
         const val QUERY_NAME_RECHARGE_ATC = "RechargeAddToCartQuery"
         const val QUERY_RECHARGE_ATC = """
@@ -103,6 +112,8 @@ class RechargeAddToCartGqlUseCase @Inject constructor(graphqlRepository: Graphql
                       type
                       id
                       attributes {
+                        redirect_url
+                        channel_id
                         user_id
                         client_number
                         title
@@ -154,5 +165,4 @@ class RechargeAddToCartGqlUseCase @Inject constructor(graphqlRepository: Graphql
                 }
             """
     }
-
 }

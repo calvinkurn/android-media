@@ -4,20 +4,26 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.mapper.EpharmacyInfoUiStateMapper
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
+import com.tokopedia.buyerorderdetail.presentation.mapper.ScpRewardsMedalTouchPointWidgetMapper
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -83,6 +89,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
             // reload
             createSuccessGetBuyerOrderDetailDataResult {
+                advanceUntilIdle()
                 uiStateBeforeSuccessReloading = uiStates.last()
             }
 
@@ -111,6 +118,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
             getBuyerOrderDetailData()
             viewModel.finishOrder()
+            advanceUntilIdle()
 
             coVerify {
                 finishOrderUseCase.execute(expectedParams)
@@ -130,7 +138,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
             getBuyerOrderDetailData()
             viewModel.finishOrder()
-            advanceTimeBy(2000L)
+            advanceUntilIdle()
 
             assertTrue(viewModel.finishOrderResult.value is Success)
         }
@@ -148,7 +156,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
             getBuyerOrderDetailData()
             viewModel.finishOrder()
-            advanceTimeBy(2000L)
+            advanceUntilIdle()
 
             assertTrue(viewModel.finishOrderResult.value is Success)
         }
@@ -157,18 +165,21 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `finishOrder should failed when orderId is invalid and use case throw an exception`() =
         runCollectingUiState {
-            val expectedErrorMessage = "Tidak dapat menyelesaikan pesanan, silahkan muat ulang dan coba lagi!"
+            val expectedErrorMessage =
+                "Tidak dapat menyelesaikan pesanan, silahkan muat ulang dan coba lagi!"
             val expectedException = MessageErrorException(expectedErrorMessage)
-            val orderStatusShowingState = mockk<OrderStatusUiState.HasData.Showing>(relaxed = true) {
-                every { data.orderStatusHeaderUiModel.orderStatusId } returns "600"
-                every { data.orderStatusHeaderUiModel.orderId } returns orderId
-            }
+            val orderStatusShowingState =
+                mockk<OrderStatusUiState.HasData.Showing>(relaxed = true) {
+                    every { data.orderStatusHeaderUiModel.orderStatusId } returns "600"
+                    every { data.orderStatusHeaderUiModel.orderId } returns orderId
+                }
 
             createSuccessGetBuyerOrderDetailDataResult()
             createFailedFinishOrderResult(expectedException)
             mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
                 getBuyerOrderDetailData()
                 viewModel.finishOrder()
+                advanceUntilIdle()
 
                 val result = viewModel.finishOrderResult.value as Fail
                 assertTrue(result.throwable is MessageErrorException)
@@ -195,9 +206,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `addSingleToCart should success when atc use case return expected data`() =
         runCollectingUiState {
-            val productListShowingState = mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
-                every { data.productListHeaderUiModel.shopId } returns shopId
-            }
+            val productListShowingState =
+                mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
+                    every { data.productListHeaderUiModel.shopId } returns shopId
+                }
 
             createSuccessGetBuyerOrderDetailDataResult()
             createSuccessATCResult()
@@ -215,9 +227,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `addSingleToCart should failed when atc use case throw an exception`() =
         runCollectingUiState {
-            val productListShowingState = mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
-                every { data.productListHeaderUiModel.shopId } returns shopId
-            }
+            val productListShowingState =
+                mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
+                    every { data.productListHeaderUiModel.shopId } returns shopId
+                }
 
             createSuccessGetBuyerOrderDetailDataResult()
             createFailedATCResult()
@@ -235,21 +248,23 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `addMultipleToCart should execute UseCase with expected params when UI state is equals to Showing`() =
         runCollectingUiState {
-            val productListShowingState = mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
-                every { data.productListHeaderUiModel.shopId } returns shopId
-                every { data.getAllProduct() } returns listOf(product)
-            }
-            val mockGetBuyerOrderDetailResult = mockk<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>(relaxed = true) {
-                every { details?.nonBundles } returns listOf(
-                    GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle(
-                        productId = product.productId,
-                        productName = product.productName,
-                        price = product.price,
-                        quantity = product.quantity,
-                        notes = product.productNote
+            val productListShowingState =
+                mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
+                    every { data.productListHeaderUiModel.shopId } returns shopId
+                    every { data.getAllProduct() } returns listOf(product)
+                }
+            val mockGetBuyerOrderDetailResult =
+                mockk<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>(relaxed = true) {
+                    every { details?.nonBundles } returns listOf(
+                        GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle(
+                            productId = product.productId,
+                            productName = product.productName,
+                            price = product.price,
+                            quantity = product.quantity,
+                            notes = product.productNote
+                        )
                     )
-                )
-            }
+                }
 
             createSuccessGetBuyerOrderDetailDataResult(
                 getBuyerOrderDetailResult = mockGetBuyerOrderDetailResult
@@ -266,21 +281,23 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `addMultipleToCart should success when atc use case return expected data`() =
         runCollectingUiState {
-            val productListShowingState = mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
-                every { data.productListHeaderUiModel.shopId } returns shopId
-                every { data.productList } returns listOf(product)
-            }
-            val mockGetBuyerOrderDetailResult = mockk<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>(relaxed = true) {
-                every { details?.nonBundles } returns listOf(
-                    GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle(
-                        productId = product.productId,
-                        productName = product.productName,
-                        price = product.price,
-                        quantity = product.quantity,
-                        notes = product.productNote
+            val productListShowingState =
+                mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
+                    every { data.productListHeaderUiModel.shopId } returns shopId
+                    every { data.productList } returns listOf(product)
+                }
+            val mockGetBuyerOrderDetailResult =
+                mockk<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>(relaxed = true) {
+                    every { details?.nonBundles } returns listOf(
+                        GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle(
+                            productId = product.productId,
+                            productName = product.productName,
+                            price = product.price,
+                            quantity = product.quantity,
+                            notes = product.productNote
+                        )
                     )
-                )
-            }
+                }
 
             createSuccessGetBuyerOrderDetailDataResult(
                 getBuyerOrderDetailResult = mockGetBuyerOrderDetailResult
@@ -302,17 +319,18 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             every { data.productListHeaderUiModel.shopId } returns shopId
             every { data.productList } returns listOf(product)
         }
-        val mockGetBuyerOrderDetailResult = mockk<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>(relaxed = true) {
-            every { details?.nonBundles } returns listOf(
-                GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle(
-                    productId = product.productId,
-                    productName = product.productName,
-                    price = product.price,
-                    quantity = product.quantity,
-                    notes = product.productNote
+        val mockGetBuyerOrderDetailResult =
+            mockk<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>(relaxed = true) {
+                every { details?.nonBundles } returns listOf(
+                    GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle(
+                        productId = product.productId,
+                        productName = product.productName,
+                        price = product.price,
+                        quantity = product.quantity,
+                        notes = product.productNote
+                    )
                 )
-            )
-        }
+            }
 
         createSuccessGetBuyerOrderDetailDataResult(
             getBuyerOrderDetailResult = mockGetBuyerOrderDetailResult
@@ -331,21 +349,23 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `addMultipleToCart should failed when atc use case throw an exception`() =
         runCollectingUiState {
-            val productListShowingState = mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
-                every { data.productListHeaderUiModel.shopId } returns shopId
-                every { data.productList } returns listOf(product)
-            }
-            val mockGetBuyerOrderDetailResult = mockk<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>(relaxed = true) {
-                every { details?.nonBundles } returns listOf(
-                    GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle(
-                        productId = product.productId,
-                        productName = product.productName,
-                        price = product.price,
-                        quantity = product.quantity,
-                        notes = product.productNote
+            val productListShowingState =
+                mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
+                    every { data.productListHeaderUiModel.shopId } returns shopId
+                    every { data.productList } returns listOf(product)
+                }
+            val mockGetBuyerOrderDetailResult =
+                mockk<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>(relaxed = true) {
+                    every { details?.nonBundles } returns listOf(
+                        GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle(
+                            productId = product.productId,
+                            productName = product.productName,
+                            price = product.price,
+                            quantity = product.quantity,
+                            notes = product.productNote
+                        )
                     )
-                )
-            }
+                }
 
             createSuccessGetBuyerOrderDetailDataResult(
                 getBuyerOrderDetailResult = mockGetBuyerOrderDetailResult
@@ -377,9 +397,13 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `collapseProductList should collapse product list`() =
         runCollectingUiState {
-            val productListShowingState = mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
-                every { data.productList } returns listOf(mockk(relaxed = true), mockk(relaxed = true))
-            }
+            val productListShowingState =
+                mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
+                    every { data.productList } returns listOf(
+                        mockk(relaxed = true),
+                        mockk(relaxed = true)
+                    )
+                }
             createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 getBuyerOrderDetailData()
@@ -395,9 +419,13 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `expandProductList should expand product list`() =
         runCollectingUiState {
-            val productListShowingState = mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
-                every { data.productList } returns listOf(mockk(relaxed = true), mockk(relaxed = true))
-            }
+            val productListShowingState =
+                mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
+                    every { data.productList } returns listOf(
+                        mockk(relaxed = true),
+                        mockk(relaxed = true)
+                    )
+                }
             createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 getBuyerOrderDetailData()
@@ -411,9 +439,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     fun `getSecondaryActionButtons should return list of ActionButton when UI state is equals to Showing`() =
         runCollectingUiState {
             val actionButton = mockk<ActionButtonsUiModel.ActionButton>(relaxed = true)
-            val actionButtonsShowingState = mockk<ActionButtonsUiState.HasData.Showing>(relaxed = true) {
-                every { data.secondaryActionButtons } returns listOf(actionButton)
-            }
+            val actionButtonsShowingState =
+                mockk<ActionButtonsUiState.HasData.Showing>(relaxed = true) {
+                    every { data.secondaryActionButtons } returns listOf(actionButton)
+                }
 
             createSuccessGetBuyerOrderDetailDataResult()
             mockActionButtonsUiStateMapper(showingState = actionButtonsShowingState) {
@@ -435,34 +464,260 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         }
 
     @Test
-    fun `EpharmacyInfoUiState should catch error when EpharmacyInfoUiStateMapper throwing crash`() = runCollectingUiState {
-        createSuccessGetBuyerOrderDetailDataResult()
+    fun `EpharmacyInfoUiState should catch error when EpharmacyInfoUiStateMapper throwing crash`() =
+        runCollectingUiState {
+            createSuccessGetBuyerOrderDetailDataResult()
 
-        every { EpharmacyInfoUiStateMapper.map(any(), any()) } throws Throwable("Error")
+            every { EpharmacyInfoUiStateMapper.map(any(), any()) } throws Throwable("Error")
 
-        getBuyerOrderDetailData()
+            getBuyerOrderDetailData()
 
-        // if error happen in ephar mapper, return empty data so the section not showing
-        assertTrue(it.last() is BuyerOrderDetailUiState.HasData.Showing)
-        assertTrue(
-            (it.last() as BuyerOrderDetailUiState.HasData.Showing)
-                .epharmacyInfoUiState.data
-                .isEmptyData()
-        )
-    }
+            // if error happen in ephar mapper, return empty data so the section not showing
+            assertTrue(it.last() is BuyerOrderDetailUiState.HasData.Showing)
+            assertTrue(
+                (it.last() as BuyerOrderDetailUiState.HasData.Showing)
+                    .epharmacyInfoUiState.data
+                    .isEmptyData()
+            )
+        }
 
     @Test
     fun `getProducts should return list of products when UI state is Showing`() =
         runCollectingUiState {
-            val productListShowingState = mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
-                every { data.productList } returns listOf(product)
-            }
+            val productListShowingState =
+                mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
+                    every { data.productList } returns listOf(product)
+                }
 
             createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
                 getBuyerOrderDetailData()
 
                 assertEquals(product, viewModel.getProducts().firstOrNull())
+            }
+        }
+
+    @Test
+    fun `given bmgmResponse and bundlingResponse, when getProducts then should return list of products when UI state is Showing`() =
+        runCollectingUiState { buyerDetailUiState ->
+
+            val bmgmDetailsResponse =
+                ProductBmgmSectionUiModel(
+                    bmgmId = "1:3:0",
+                    bmgmName = "offers - Beli2DiskonDiskon30%",
+                    totalPrice = 400000.00,
+                    totalPriceText = "Rp400.000",
+                    totalPriceReductionInfoText = "Rp100.000",
+                    bmgmIconUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2A.jpg",
+                    bmgmItemList = listOf(
+                        ProductBmgmSectionUiModel.ProductUiModel(
+                            orderId = "556574",
+                            orderDetailId = "2150865420",
+                            productName = "Power Bank Original - Pink",
+                            thumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
+                            price = 75000.00,
+                            productPriceText = "Rp 75.000",
+                            quantity = 2,
+                            productNote = "ukurannya 43 ya"
+                        ),
+                        ProductBmgmSectionUiModel.ProductUiModel(
+                            orderId = "556575",
+                            orderDetailId = "2150865421",
+                            productName = "Power Bank Original - Blue",
+                            thumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
+                            price = 85000.00,
+                            productPriceText = "Rp 85.000",
+                            quantity = 2,
+                            productNote = "ukurannya 44 ya"
+                        )
+                    )
+                )
+
+            val bundlingDetailsResponse =
+                ProductListUiModel.ProductBundlingUiModel(
+                    bundleName = "bundling - Beli2DiskonDiskon30%",
+                    bundleId = "1:5:0",
+                    totalPriceText = "Rp600.000",
+                    totalPrice = 200.000,
+                    bundleIconUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2A.jpg",
+                    bundleItemList = listOf(
+                        ProductListUiModel.ProductUiModel(
+                            button = ActionButtonsUiModel.ActionButton(
+                                key = "test_buy_again_button_key",
+                                label = "Beli Lagi",
+                                popUp = ActionButtonsUiModel.ActionButton.PopUp(
+                                    actionButton = emptyList(),
+                                    body = "",
+                                    title = ""
+                                ),
+                                variant = "ghost",
+                                type = "main",
+                                url = ""
+                            ),
+                            category = "Pakaian Atas",
+                            categoryId = "13",
+                            orderDetailId = "20531238",
+                            orderStatusId = "220",
+                            orderId = "166835036",
+                            price = 500000.0,
+                            priceText = "Rp500.000",
+                            productId = "2147819914",
+                            productName = "Hengpong jadul",
+                            productNote = "Test product note",
+                            productThumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/5/28/ab64b25e-a59f-4938-a08b-c49ec140eb43.jpg",
+                            quantity = 1,
+                            totalPrice = "500000",
+                            totalPriceText = "Rp500.000",
+                            isProcessing = false,
+                            productUrl = ""
+                        ),
+                        ProductListUiModel.ProductUiModel(
+                            button = ActionButtonsUiModel.ActionButton(
+                                key = "test_buy_again_button_key",
+                                label = "Beli Lagi",
+                                popUp = ActionButtonsUiModel.ActionButton.PopUp(
+                                    actionButton = emptyList(),
+                                    body = "",
+                                    title = ""
+                                ),
+                                variant = "ghost",
+                                type = "main",
+                                url = ""
+                            ),
+                            category = "Pakaian Bawah",
+                            categoryId = "14",
+                            orderDetailId = "20531239",
+                            orderStatusId = "221",
+                            orderId = "166835038",
+                            price = 550000.0,
+                            priceText = "Rp540.000",
+                            productId = "2147819915",
+                            productName = "Hengpongs jadul",
+                            productNote = "Test product note 1",
+                            productThumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/5/28/ab64b25e-a59f-4938-a08b-c49ec140eb43.jpg",
+                            quantity = 5,
+                            totalPrice = "550000",
+                            totalPriceText = "Rp550.000",
+                            isProcessing = false,
+                            productUrl = ""
+                        )
+                    )
+                )
+
+            val productListShowingState =
+                mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
+                    every { data.productBmgmList } returns listOf(bmgmDetailsResponse)
+                    every { data.productBundlingList } returns listOf(bundlingDetailsResponse)
+                }
+
+            createSuccessGetBuyerOrderDetailDataResult()
+            mockProductListUiStateMapper(showingState = productListShowingState) {
+                getBuyerOrderDetailData()
+
+                val actualBundlingUiModel =
+                    buyerDetailUiState.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)
+                        .last().productListUiState.data.productBundlingList.first()
+                assert(bundlingDetailsResponse.totalPrice == actualBundlingUiModel.totalPrice)
+                assertEquals(bundlingDetailsResponse.bundleId, actualBundlingUiModel.bundleId)
+                assertEquals(bundlingDetailsResponse.bundleName, actualBundlingUiModel.bundleName)
+                assertEquals(bundlingDetailsResponse.bundleIconUrl, actualBundlingUiModel.bundleIconUrl)
+                assert(
+                    bundlingDetailsResponse.totalPrice == actualBundlingUiModel.totalPrice
+                )
+                bundlingDetailsResponse.bundleItemList.forEachIndexed { index, productUiModel ->
+                    assertEquals(
+                        productUiModel.orderId,
+                        actualBundlingUiModel.bundleItemList[index].orderId
+                    )
+                    assertEquals(
+                        productUiModel.orderDetailId,
+                        actualBundlingUiModel.bundleItemList[index].orderDetailId
+                    )
+                    assertEquals(
+                        productUiModel.productName,
+                        actualBundlingUiModel.bundleItemList[index].productName
+                    )
+                    assertEquals(
+                        productUiModel.productUrl,
+                        actualBundlingUiModel.bundleItemList[index].productUrl
+                    )
+                    assertTrue(productUiModel.price == actualBundlingUiModel.bundleItemList[index].price)
+                    assertEquals(
+                        productUiModel.priceText,
+                        actualBundlingUiModel.bundleItemList[index].priceText
+                    )
+                    assertEquals(
+                        productUiModel.quantity,
+                        actualBundlingUiModel.bundleItemList[index].quantity
+                    )
+                    assertEquals(
+                        productUiModel.productNote,
+                        actualBundlingUiModel.bundleItemList[index].productNote
+                    )
+                }
+
+                val actualBmgmUiModel =
+                    buyerDetailUiState.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)
+                        .last().productListUiState.data.productBmgmList.first()
+                assertTrue(bmgmDetailsResponse.totalPrice == actualBmgmUiModel.totalPrice)
+                assertEquals(bmgmDetailsResponse.bmgmId, actualBmgmUiModel.bmgmId)
+                assertEquals(bmgmDetailsResponse.bmgmName, actualBmgmUiModel.bmgmName)
+                assertEquals(bmgmDetailsResponse.bmgmIconUrl, actualBmgmUiModel.bmgmIconUrl)
+                assertEquals(
+                    bmgmDetailsResponse.totalPriceReductionInfoText,
+                    actualBmgmUiModel.totalPriceReductionInfoText
+                )
+                bmgmDetailsResponse.bmgmItemList.forEachIndexed { index, productUiModel ->
+                    assertEquals(
+                        productUiModel.orderId,
+                        actualBmgmUiModel.bmgmItemList[index].orderId
+                    )
+                    assertEquals(
+                        productUiModel.orderDetailId,
+                        actualBmgmUiModel.bmgmItemList[index].orderDetailId
+                    )
+                    assertEquals(
+                        productUiModel.productName,
+                        actualBmgmUiModel.bmgmItemList[index].productName
+                    )
+                    assertEquals(
+                        productUiModel.thumbnailUrl,
+                        actualBmgmUiModel.bmgmItemList[index].thumbnailUrl
+                    )
+                    assertTrue(productUiModel.price == actualBmgmUiModel.bmgmItemList[index].price)
+                    assertEquals(
+                        productUiModel.productPriceText,
+                        actualBmgmUiModel.bmgmItemList[index].productPriceText
+                    )
+                    assertEquals(
+                        productUiModel.quantity,
+                        actualBmgmUiModel.bmgmItemList[index].quantity
+                    )
+                    assertEquals(
+                        productUiModel.productNote,
+                        actualBmgmUiModel.bmgmItemList[index].productNote
+                    )
+                }
+            }
+        }
+
+    @Test
+    fun `given bmgmList empty, when getProducts then should return empty list of products when UI state is Showing`() =
+        runCollectingUiState { buyerDetailUiState ->
+
+            val productListShowingState =
+                mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
+                    every { data.productBmgmList } returns emptyList()
+                }
+
+            createSuccessGetBuyerOrderDetailDataResult()
+            mockProductListUiStateMapper(showingState = productListShowingState) {
+                getBuyerOrderDetailData()
+
+                val actualBmgmUiModel =
+                    buyerDetailUiState.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)
+                        .last().productListUiState.data.productBmgmList
+                assertEquals(emptyList<ProductBmgmSectionUiModel>(), actualBmgmUiModel)
             }
         }
 
@@ -479,9 +734,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getShopId should return shop id when UI state is equals to Showing`() =
         runCollectingUiState {
-            val productListShowingState = mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
-                every { data.productListHeaderUiModel.shopId } returns shopId
-            }
+            val productListShowingState =
+                mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
+                    every { data.productListHeaderUiModel.shopId } returns shopId
+                }
 
             createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
@@ -504,9 +760,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getShopName should return shop name when UI state is equals to Showing`() =
         runCollectingUiState {
-            val productListShowingState = mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
-                every { data.productListHeaderUiModel.shopName } returns shopName
-            }
+            val productListShowingState =
+                mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
+                    every { data.productListHeaderUiModel.shopName } returns shopName
+                }
 
             createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
@@ -529,9 +786,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getShopType should return shop type when ui state is equals to Showing`() =
         runCollectingUiState {
-            val productListShowingState = mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
-                every { data.productListHeaderUiModel.shopType } returns shopType
-            }
+            val productListShowingState =
+                mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
+                    every { data.productListHeaderUiModel.shopType } returns shopType
+                }
 
             createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
@@ -554,9 +812,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getCategoryId should return category id when ui state is not equals to Showing`() =
         runCollectingUiState {
-            val productListShowingState = mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
-                every { data.productList } returns listOf(product)
-            }
+            val productListShowingState =
+                mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
+                    every { data.productList } returns listOf(product)
+                }
 
             createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
@@ -598,15 +857,17 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 quantity = 1,
                 totalPrice = "500000",
                 totalPriceText = "Rp500.000",
-                isProcessing = false
+                isProcessing = false,
+                productUrl = ""
             )
-            val productListShowingState = mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
-                every { data.productList } returns listOf(
-                    product,
-                    product,
-                    anotherProduct
-                )
-            }
+            val productListShowingState =
+                mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
+                    every { data.productList } returns listOf(
+                        product,
+                        product,
+                        anotherProduct
+                    )
+                }
 
             createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
@@ -641,9 +902,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                     totalPriceText = "Rp100.0",
                     bundleItemList = listOf(product)
                 )
-            val productListShowingState = mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
-                every { data.productBundlingList } returns listOf(productBundlingItem)
-            }
+            val productListShowingState =
+                mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
+                    every { data.productBundlingList } returns listOf(productBundlingItem)
+                }
 
             createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
@@ -663,9 +925,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getOrderStatusId should not empty when ui state is equals to Showing`() =
         runCollectingUiState {
-            val orderStatusShowingState = mockk<OrderStatusUiState.HasData.Showing>(relaxed = true) {
-                every { data.orderStatusHeaderUiModel.orderStatusId } returns orderStatusId
-            }
+            val orderStatusShowingState =
+                mockk<OrderStatusUiState.HasData.Showing>(relaxed = true) {
+                    every { data.orderStatusHeaderUiModel.orderStatusId } returns orderStatusId
+                }
 
             createSuccessGetBuyerOrderDetailDataResult()
             mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
@@ -688,9 +951,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getOrderId should not empty when ui state is equals to Showing`() =
         runCollectingUiState {
-            val orderStatusShowingState = mockk<OrderStatusUiState.HasData.Showing>(relaxed = true) {
-                every { data.orderStatusHeaderUiModel.orderId } returns orderId
-            }
+            val orderStatusShowingState =
+                mockk<OrderStatusUiState.HasData.Showing>(relaxed = true) {
+                    every { data.orderStatusHeaderUiModel.orderId } returns orderId
+                }
 
             createSuccessGetBuyerOrderDetailDataResult()
             mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
@@ -709,4 +973,168 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
             assertEquals("0", viewModel.getOrderId())
         }
+
+    @Test
+    fun `after success with finishing order then update medal touch point state`() {
+        runCollectingUiState { buyerOrderDetailUiStateList ->
+            val orderStatusShowingState =
+                mockk<OrderStatusUiState.HasData.Showing>(relaxed = true) {
+                    every { data.orderStatusHeaderUiModel.orderStatusId } returns "600"
+                    every { data.orderStatusHeaderUiModel.orderId } returns orderId
+                }
+            val medalTouchPointData =
+                ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder(
+                    medaliID = 123312,
+                    medaliIconImageURL = "http://tokopedia.com/medaliIconImage",
+                    medaliIconImageURLWidget = "http://tokopedia.com/medaliIconImageURLWidget",
+                    medaliSunburstImageURL = "http://tokopedia.com/medaliSunburstImageURL",
+                    cta = ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder.CtaItem(
+                        appLink = "tokopedia://medali",
+                        isShown = true
+                    )
+                )
+            val marginLeft = 16
+            val marginTop = 22
+            val marginRight = 16
+
+            createSuccessGetBuyerOrderDetailDataResult()
+            createSuccessFinishOrderResult()
+
+            mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
+                getBuyerOrderDetailData()
+                viewModel.finishOrder()
+                advanceUntilIdle()
+
+                viewModel.updateScpRewardsMedalTouchPointWidgetState(
+                    data = medalTouchPointData,
+                    marginLeft = marginLeft,
+                    marginTop = marginTop,
+                    marginRight = marginRight
+                )
+
+                assertTrue(viewModel.finishOrderResult.value is Success)
+                assertEquals(
+                    ScpRewardsMedalTouchPointWidgetMapper.map(
+                        data = medalTouchPointData,
+                        marginLeft = marginLeft,
+                        marginTop = marginTop,
+                        marginRight = marginRight
+                    ),
+                    buyerOrderDetailUiStateList.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)
+                        .last().scpRewardsMedalTouchPointWidgetUiState
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `after failure with finishing order then dont update medal touch point state`() {
+        runCollectingUiState { buyerOrderDetailUiStateList ->
+            val orderStatusShowingState =
+                mockk<OrderStatusUiState.HasData.Showing>(relaxed = true) {
+                    every { data.orderStatusHeaderUiModel.orderStatusId } returns "600"
+                    every { data.orderStatusHeaderUiModel.orderId } returns orderId
+                }
+            createSuccessGetBuyerOrderDetailDataResult()
+            createFailedFinishOrderResult()
+
+            mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
+                getBuyerOrderDetailData()
+                viewModel.finishOrder()
+                advanceUntilIdle()
+                assertTrue(viewModel.finishOrderResult.value is Fail)
+                assertEquals(
+                    ScpRewardsMedalTouchPointWidgetUiState.HasData.Hidden,
+                    buyerOrderDetailUiStateList.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)
+                        .last().scpRewardsMedalTouchPointWidgetUiState
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `after success with finishing order but medal touch point state not updated`() {
+        runCollectingUiState { buyerOrderDetailUiStateList ->
+            val orderStatusShowingState =
+                mockk<OrderStatusUiState.HasData.Showing>(relaxed = true) {
+                    every { data.orderStatusHeaderUiModel.orderStatusId } returns "600"
+                    every { data.orderStatusHeaderUiModel.orderId } returns orderId
+                }
+
+            createSuccessGetBuyerOrderDetailDataResult()
+            createSuccessFinishOrderResult()
+
+            mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
+                getBuyerOrderDetailData()
+                viewModel.finishOrder()
+                advanceUntilIdle()
+
+                assertTrue(viewModel.finishOrderResult.value is Success)
+                assertEquals(
+                    ScpRewardsMedalTouchPointWidgetUiState.HasData.Hidden,
+                    buyerOrderDetailUiStateList.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)
+                        .last().scpRewardsMedalTouchPointWidgetUiState
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `hide medal touch point widget after successful finish order`() {
+        runCollectingUiState { buyerOrderDetailUiStateList ->
+            val orderStatusShowingState =
+                mockk<OrderStatusUiState.HasData.Showing>(relaxed = true) {
+                    every { data.orderStatusHeaderUiModel.orderStatusId } returns "600"
+                    every { data.orderStatusHeaderUiModel.orderId } returns orderId
+                }
+            val medalTouchPointData =
+                ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder(
+                    medaliID = 123312,
+                    medaliIconImageURL = "http://tokopedia.com/medaliIconImage",
+                    medaliIconImageURLWidget = "http://tokopedia.com/medaliIconImageURLWidget",
+                    medaliSunburstImageURL = "http://tokopedia.com/medaliSunburstImageURL",
+                    cta = ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder.CtaItem(
+                        appLink = "tokopedia://medali",
+                        isShown = true
+                    )
+                )
+            val marginLeft = 16
+            val marginTop = 22
+            val marginRight = 16
+
+            createSuccessGetBuyerOrderDetailDataResult()
+            createSuccessFinishOrderResult()
+
+            mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
+                getBuyerOrderDetailData()
+                viewModel.finishOrder()
+                advanceUntilIdle()
+
+                viewModel.updateScpRewardsMedalTouchPointWidgetState(
+                    data = medalTouchPointData,
+                    marginLeft = marginLeft,
+                    marginTop = marginTop,
+                    marginRight = marginRight
+                )
+
+                assertTrue(viewModel.finishOrderResult.value is Success)
+                assertEquals(
+                    ScpRewardsMedalTouchPointWidgetMapper.map(
+                        data = medalTouchPointData,
+                        marginLeft = marginLeft,
+                        marginTop = marginTop,
+                        marginRight = marginRight
+                    ),
+                    buyerOrderDetailUiStateList.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)
+                        .last().scpRewardsMedalTouchPointWidgetUiState
+                )
+                viewModel.hideScpRewardsMedalTouchPointWidget()
+                assertEquals(
+                    ScpRewardsMedalTouchPointWidgetUiState.HasData.Hidden,
+                    buyerOrderDetailUiStateList.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)
+                        .last().scpRewardsMedalTouchPointWidgetUiState
+                )
+            }
+        }
+    }
 }

@@ -11,12 +11,14 @@ import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionData
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionPayload
 import com.tokopedia.tokochat.domain.response.message_data.TokoChatMessageWrapper
+import com.tokopedia.tokochat.util.TokoChatValueUtil.CENSOR_TEXT
 import com.tokopedia.tokochat.util.TokoChatValueUtil.PICTURE
 import com.tokopedia.tokochat.util.TokoChatValueUtil.VOICE_NOTES
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatHeaderDateUiModel
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatImageBubbleUiModel
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleUiModel
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatReminderTickerUiModel
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatHeaderDateUiModel
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatImageBubbleUiModel
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatMessageBubbleCensorUiModel
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatMessageBubbleUiModel
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatReminderTickerUiModel
 import java.util.*
 import javax.inject.Inject
 
@@ -27,9 +29,14 @@ class TokoChatConversationUiMapper @Inject constructor(
     private val gson = GsonBuilder().create()
 
     private var firstTicker: TokoChatReminderTickerUiModel? = null
+    private var bubbleTicker: TokoChatReminderTickerUiModel? = null
 
     fun setFirstTicker(reminderTickerUiModel: TokoChatReminderTickerUiModel?) {
         firstTicker = reminderTickerUiModel
+    }
+
+    fun setBubbleTicker(reminderTickerUiModel: TokoChatReminderTickerUiModel?) {
+        bubbleTicker = reminderTickerUiModel
     }
 
     fun mapToChatUiModel(
@@ -95,7 +102,7 @@ class TokoChatConversationUiMapper @Inject constructor(
                     }
                 }
                 ConversationsConstants.TEXT_MESSAGE -> {
-                    resultList.add(it.mapToMessageBubbleUiModel(userId))
+                    resultList.add(it.mapToMessageBubble(userId))
                 }
             }
         }
@@ -111,7 +118,23 @@ class TokoChatConversationUiMapper @Inject constructor(
         firstTicker?.let {
             resultList.add(resultList.size, it)
         }
+        bubbleTicker?.let {
+            resultList.add(Int.ZERO, it)
+        }
         return resultList
+    }
+
+    private fun ConversationsMessage.mapToMessageBubble(
+        userId: String,
+        isNotSupported: Boolean = false,
+        unsupportedMessageText: String = ""
+    ): Any {
+        // If message text is censored text & from sender, change the UI
+        return if (messageText == CENSOR_TEXT && this.messageSender?.userId == userId) {
+            this.mapTopMessageBubbleCensorUiModel(userId)
+        } else {
+            this.mapToMessageBubbleUiModel(userId, isNotSupported, unsupportedMessageText)
+        }
     }
 
     private fun ConversationsMessage.mapToMessageBubbleUiModel(
@@ -132,6 +155,18 @@ class TokoChatConversationUiMapper @Inject constructor(
             .withIsSender(this.messageSender?.userId == userId)
             .withMessageText(messageText)
             .withIsNotSupported(isNotSupported)
+            .build()
+    }
+
+    private fun ConversationsMessage.mapTopMessageBubbleCensorUiModel(
+        userId: String
+    ): TokoChatMessageBubbleCensorUiModel {
+        return TokoChatMessageBubbleCensorUiModel.Builder()
+            .withMessageId(this.messageId)
+            .withFromUserId(this.messageSender?.userId ?: "")
+            .withMessageTime(this.createdTimestamp)
+            .withMessageStatus(this.readReceipt)
+            .withIsSender(this.messageSender?.userId == userId)
             .build()
     }
 

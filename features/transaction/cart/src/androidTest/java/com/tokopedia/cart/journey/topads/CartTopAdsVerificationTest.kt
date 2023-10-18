@@ -48,9 +48,9 @@ class CartTopAdsVerificationTest {
 
     @get:Rule
     var grantPermission: GrantPermissionRule = GrantPermissionRule.grant(
-            Manifest.permission.INTERNET,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        Manifest.permission.INTERNET,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
 
     @Before
@@ -103,19 +103,24 @@ class CartTopAdsVerificationTest {
     private fun clickProductRecommendationItem(cartRecyclerView: RecyclerView, i: Int) {
         try {
             Espresso.onView(ViewMatchers.withId(cartRecyclerView.id))
-                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, object : ViewAction {
-                        override fun getConstraints(): Matcher<View> = ViewMatchers.isClickable()
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        i,
+                        object : ViewAction {
+                            override fun getConstraints(): Matcher<View> = ViewMatchers.isClickable()
 
-                        override fun getDescription(): String = "click product item card"
+                            override fun getDescription(): String = "click product item card"
 
-                        override fun perform(uiController: UiController?, view: View?) {
-                            try {
-                                view?.performClick()
-                            } catch (e: PerformException) {
-                                e.printStackTrace()
+                            override fun perform(uiController: UiController?, view: View?) {
+                                try {
+                                    view?.performClick()
+                                } catch (e: PerformException) {
+                                    e.printStackTrace()
+                                }
                             }
                         }
-                    }))
+                    )
+                )
         } catch (e: PerformException) {
             e.printStackTrace()
         }

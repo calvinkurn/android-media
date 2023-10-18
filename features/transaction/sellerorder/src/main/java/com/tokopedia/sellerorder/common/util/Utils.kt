@@ -5,12 +5,14 @@ import android.content.Context
 import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import android.text.Spanned
 import android.view.HapticFeedbackConstants
 import android.view.View
+import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -18,6 +20,8 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.PATTERN_DATE_PARAM
@@ -33,7 +37,9 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 /**
  * Created by fwidjaja on 2019-11-21.
@@ -61,14 +67,14 @@ object Utils {
     @JvmStatic
     fun getL2CancellationReason(text: String, textToPrepend: String = ""): String {
         return if (text.contains('-')) {
-            "$textToPrepend ${text.split(" - ").last().decapitalize()}"
+            "$textToPrepend ${text.split(" - ").last().replaceFirstChar { it.lowercase(Locale.getDefault()) }}"
         } else {
             text
         }
     }
 
     fun getColoredIndicator(context: Context, colorHex: String): Drawable? {
-        val color = parseUnifyColorHex(context, colorHex, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        val color = parseUnifyColorHex(context, colorHex, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         val drawable = MethodChecker.getDrawable(context, R.drawable.ic_order_status_indicator)
         val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
         drawable.colorFilter = filter
@@ -81,6 +87,14 @@ object Utils {
         val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
         drawable.colorFilter = filter
         return drawable
+    }
+
+    fun getDeadlineDrawable(context: Context, @ColorRes colorRes: Int): GradientDrawable? {
+        val drawable = MethodChecker.getDrawable(context, R.drawable.bg_order_deadline)
+        val bgColor = MethodChecker.getColor(context, colorRes)
+        val gradientDrawable = (drawable as? GradientDrawable)
+        gradientDrawable?.setColor(bgColor)
+        return gradientDrawable
     }
 
     fun getColoredResoDeadlineBackground(context: Context, colorHex: String, defaultColor: Int): Drawable? {
@@ -149,7 +163,7 @@ object Utils {
         return this.mapNotNull { it.copyParcelable() }
     }
 
-    fun <T: Parcelable> T.copyParcelable(): T? {
+    fun <T : Parcelable> T.copyParcelable(): T? {
         var parcel: Parcel? = null
 
         return try {
@@ -157,7 +171,7 @@ object Utils {
             parcel.writeParcelable(this, 0)
             parcel.setDataPosition(0)
             parcel.readParcelable(this::class.java.classLoader)
-        } catch(throwable: Throwable) {
+        } catch (ignore: Throwable) {
             null
         } finally {
             parcel?.recycle()
@@ -228,6 +242,16 @@ object Utils {
             stringToUnifyColor(context, colorHex).run { this.unifyColor ?: this.defaultColor }
         } catch (t: Throwable) {
             defaultColor
+        }
+    }
+
+    @JvmStatic
+    fun isEnableOperationalGuideline(): Boolean {
+        return try {
+            val remoteConfigImpl = RemoteConfigInstance.getInstance().abTestPlatform
+            remoteConfigImpl.getString(RollenceKey.KEY_SOM_OG, "") == RollenceKey.KEY_SOM_OG
+        } catch (ignore: Exception) {
+            true
         }
     }
 }

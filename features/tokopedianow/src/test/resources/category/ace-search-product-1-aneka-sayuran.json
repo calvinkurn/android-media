@@ -1,0 +1,250 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 83,
+      "totalDataText": "83",
+      "responseCode": 0,
+      "keywordProcess": "0"
+    },
+    "data": {
+      "isQuerySafe": true,
+      "suggestion": {
+        "suggestion": "",
+        "query": "",
+        "text": ""
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "otherRelated": []
+      },
+      "products": [
+        {
+          "id": 5232377209,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/8/5/b9bfe1f0-0178-4084-b9ba-c382caf95f7a.jpg",
+          "name": "single_mie_goreng",
+          "price": "Rp1.000",
+          "priceInt": 1000,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [
+            5232377212,
+            5232377211,
+            5232377209
+          ],
+          "parentId": 5232377178,
+          "maxOrder": 500,
+          "ratingAverage": "",
+          "minOrder": 0,
+          "stock": 500,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "1000 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        },
+        {
+          "id": 5232377041,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/8/5/568dcdb7-d755-4b9c-b6d6-109dd0ca93fc.jpg",
+          "name": "single_keju",
+          "price": "Rp2.500",
+          "priceInt": 2500,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [
+            5232377043,
+            5232377044,
+            5232377041
+          ],
+          "parentId": 5232377016,
+          "maxOrder": 500,
+          "ratingAverage": "",
+          "minOrder": 0,
+          "stock": 500,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "1000 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [
+            {
+              "title": "1 kg",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "2 kg",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "3 kg",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 6903919751,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/11/7/99b96769-c978-4ac0-8ee1-3e573c1cdf99.jpg",
+          "name": "Multiloc_labu_test",
+          "price": "Rp20.000",
+          "priceInt": 20000,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 20,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 20,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "35000 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        },
+        {
+          "id": 2025598474,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2021/7/26/940f7e89-b18d-4e22-ace6-ee8be5374db1.jpg",
+          "name": "PDP0FS0CAMPAIGN0NONVARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR",
+          "price": "Rp1.000",
+          "priceInt": 1000,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 95,
+          "ratingAverage": "5.0",
+          "minOrder": 1,
+          "stock": 95,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "Terjual 19",
+              "type": "textDarkGrey",
+              "position": "integrity"
+            },
+            {
+              "url": "",
+              "title": "11 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        },
+        {
+          "id": 6889800616,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/11/4/98fd85fa-ca11-41b0-9f50-1c5491fce576.jpg",
+          "name": "card_kangkung",
+          "price": "Rp3.000",
+          "priceInt": 3000,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 5,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 5,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "100 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        },
+        {
+          "id": 7029764051,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/11/22/799702ad-1fde-4d33-887f-11768668ef10.jpg",
+          "name": "flash_sale_ubi",
+          "price": "Rp80.000",
+          "priceInt": 80000,
+          "discountPercentage": 20,
+          "originalPrice": "Rp100.000",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 1,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 1,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "Terjual 1",
+              "type": "textDarkGrey",
+              "position": "integrity"
+            },
+            {
+              "url": "",
+              "title": "25000 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        }
+      ]
+    }
+  }
+}

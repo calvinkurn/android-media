@@ -11,8 +11,8 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.mvcwidget.R
@@ -53,7 +53,7 @@ class MerchantRewardToolbar @JvmOverloads constructor(
     private fun initDrawableResources() {
         backArrowWhite = getBitmapDrawableFromVectorDrawable(mContext, com.tokopedia.abstraction.R.drawable.ic_action_back)
         backArrowWhite?.setColorFilter(
-            context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N400),
+            context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600),
             PorterDuff.Mode.SRC_ATOP
         )
         navigationIcon = backArrowWhite

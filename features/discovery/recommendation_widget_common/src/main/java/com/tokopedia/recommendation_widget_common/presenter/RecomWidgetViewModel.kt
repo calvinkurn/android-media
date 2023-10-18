@@ -386,6 +386,6 @@ open class RecomWidgetViewModel @Inject constructor(
         _atcRecomTokonowResetCard.postValue(recomItem)
     }
 
-    private fun isJobAvailable(job: Job?): Boolean = job == null || !job?.isActive
+    private fun isJobAvailable(job: Job?): Boolean = job == null || !job.isActive
 
 }

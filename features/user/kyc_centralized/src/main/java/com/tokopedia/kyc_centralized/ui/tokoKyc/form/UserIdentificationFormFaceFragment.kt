@@ -15,21 +15,24 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_KYC
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KYCConstant.PADDING_0_5F
 import com.tokopedia.kyc_centralized.common.KYCConstant.PADDING_16
 import com.tokopedia.kyc_centralized.common.KYCConstant.PADDING_ZERO
+import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
-import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraFragment
-import com.tokopedia.kyc_centralized.ui.tokoKyc.form.stepper.UserIdentificationStepperModel
 import com.tokopedia.kyc_centralized.ui.tokoKyc.form.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
 import com.tokopedia.kyc_centralized.ui.tokoKyc.form.stepper.BaseUserIdentificationStepperFragment
+import com.tokopedia.kyc_centralized.ui.tokoKyc.form.stepper.UserIdentificationStepperModel
+import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
+import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.file.FileUtil
@@ -47,8 +50,25 @@ class UserIdentificationFormFaceFragment :
     private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val kycUploadViewModel by lazy { viewModelFragmentProvider.get(KycUploadViewModel::class.java) }
 
+    @Inject
+    lateinit var kycSharedPreference: KycSharedPreference
+
+    @Inject
+    override lateinit var remoteConfig: RemoteConfig
+
+    @Inject
+    lateinit var imageEncryptionUtil: ImageEncryptionUtil
+
+    private var analytics: UserIdentificationCommonAnalytics? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        projectId = activity?.intent?.getIntExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, -1) ?: -1
+
+        val kycFlowType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
+        analytics = UserIdentificationCommonAnalytics.createInstance(projectId, kycFlowType)
+
         analytics?.eventViewSelfiePage(isKycSelfie)
         initObserver()
     }
@@ -80,14 +100,12 @@ class UserIdentificationFormFaceFragment :
     override fun getScreenName(): String = ""
 
     override fun encryptImage() {
-        context?.let {
-            if (ImageEncryptionUtil.isUsingEncrypt(it)) {
-                viewBinding?.button?.isEnabled = false
-                kycUploadViewModel.encryptImage(
-                    stepperModel?.ktpFile.toEmptyStringIfNull(),
-                    KYC_IV_KTP_CACHE
-                )
-            }
+        if (imageEncryptionUtil.isUsingEncrypt()) {
+            viewBinding?.button?.isEnabled = false
+            kycUploadViewModel.encryptImage(
+                stepperModel?.ktpFile.toEmptyStringIfNull(),
+                KYC_IV_KTP_CACHE
+            )
         }
     }
 

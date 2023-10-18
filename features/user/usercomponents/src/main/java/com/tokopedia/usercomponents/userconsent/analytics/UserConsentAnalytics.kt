@@ -2,16 +2,16 @@ package com.tokopedia.usercomponents.userconsent.analytics
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
+import com.tokopedia.usercomponents.userconsent.common.PurposeDataModel
 import javax.inject.Inject
 
 class UserConsentAnalytics @Inject constructor() {
 
     private val tracker = TrackApp.getInstance().gtm
 
-    private fun sendTracker(action: String, label: String) {
+    private fun sendTracker(event: String, action: String, label: String) {
         val trackerParam = TrackAppUtils.gtmData(
-            EVENT.CLICK_ACCOUNT,
+            event,
             CATEGORY.CONSENT_BOX,
             action,
             label
@@ -23,7 +23,7 @@ class UserConsentAnalytics @Inject constructor() {
         tracker.sendGeneralEvent(trackerParam)
     }
 
-    private fun generatePurposeId(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>): String {
+    private fun generatePurposeId(purposes: MutableList<PurposeDataModel>): String {
         var purposeIds = ""
         if (purposes.size == 1) {
             return purposes.first().id
@@ -36,55 +36,63 @@ class UserConsentAnalytics @Inject constructor() {
         return purposeIds
     }
 
-    fun trackOnPurposeCheck(isChecked: Boolean, purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>) {
+    fun trackOnPurposeCheck(isChecked: Boolean, purposes: MutableList<PurposeDataModel>, collectionId: String) {
         sendTracker(
+            event= EVENT.CLICK_ACCOUNT,
             action = ACTION.CLICK_TICK_BOX,
             label = String.format(
                 LABEL.TICK_BOX,
                 if (isChecked) LABEL.CHECK
                 else LABEL.UNCHECK,
-                generatePurposeId(purposes)
+                generatePurposeId(purposes),
+                collectionId
             )
         )
     }
 
-    fun trackOnPurposeCheckOnOptional(isChecked: Boolean, purposes: UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel) {
+    fun trackOnPurposeCheckOnOptional(isChecked: Boolean, purposes: PurposeDataModel, collectionId: String) {
         sendTracker(
+            event = EVENT.CLICK_ACCOUNT,
             action = ACTION.CLICK_TICK_BOX,
             label = String.format(
                 LABEL.TICK_BOX,
                 if (isChecked) LABEL.CHECK
                 else LABEL.UNCHECK,
-                purposes.id
+                purposes.id,
+                collectionId
             )
         )
     }
 
-    fun trackOnTnCHyperLinkClicked(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>) {
+    fun trackOnTnCHyperLinkClicked(purposes: MutableList<PurposeDataModel>, collectionId: String) {
         sendTracker(
+            event = EVENT.CLICK_ACCOUNT,
             action = ACTION.CLICK_TNC_HYPER_LINK,
-            label = generatePurposeId(purposes)
+            label = "${generatePurposeId(purposes)} - $collectionId"
         )
     }
 
-    fun trackOnPolicyHyperLinkClicked(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>) {
+    fun trackOnPolicyHyperLinkClicked(purposes: MutableList<PurposeDataModel>, collectionId: String) {
         sendTracker(
+            event = EVENT.CLICK_ACCOUNT,
             action = ACTION.CLICK_PRIVACY_HYPER_LINK,
-            label = generatePurposeId(purposes)
+            label = "${generatePurposeId(purposes)} - $collectionId"
         )
     }
 
-    fun trackOnActionButtonClicked(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>) {
+    fun trackOnActionButtonClicked(purposes: MutableList<PurposeDataModel>, collectionId: String) {
         sendTracker(
+            event = EVENT.CLICK_ACCOUNT,
             action = ACTION.CLICK_ACTION_BUTTON,
-            label = generatePurposeId(purposes)
+            label = "${generatePurposeId(purposes)} - $collectionId"
         )
     }
 
-    fun trackOnConsentView(purposes: MutableList<UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel>) {
+    fun trackOnConsentView(purposes: MutableList<PurposeDataModel>, collectionId: String) {
         sendTracker(
+            event = EVENT.VIEW_ACCOUNT_IRIS,
             action = ACTION.VIEW_USER_CONSENT,
-            label = generatePurposeId(purposes)
+            label = "${generatePurposeId(purposes)} - $collectionId"
         )
     }
 
@@ -97,6 +105,7 @@ class UserConsentAnalytics @Inject constructor() {
         const val TOKOPEDIA_MARKETPLACE_SITE = "tokopediamarketplace"
 
         object EVENT {
+            const val VIEW_ACCOUNT_IRIS = "viewAccountIris"
             const val CLICK_ACCOUNT = "clickAccount"
         }
 
@@ -115,7 +124,7 @@ class UserConsentAnalytics @Inject constructor() {
         object LABEL {
             const val CHECK = "check"
             const val UNCHECK = "uncheck"
-            const val TICK_BOX = "%s - tick box - %s"
+            const val TICK_BOX = "%s - %s - %s"
         }
     }
 }

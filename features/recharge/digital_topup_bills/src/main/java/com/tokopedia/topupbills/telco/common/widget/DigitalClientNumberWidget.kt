@@ -12,7 +12,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
@@ -20,9 +19,11 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapte
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topupbills.R
@@ -85,8 +86,12 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
         initListener()
     }
 
+    open fun formatClientNumberInput(clientNumber: String): String {
+        return CommonTopupBillsUtil.formatPrefixClientNumber(clientNumber)
+    }
+
     private fun initListener() {
-        inputNumberField.icon1.run {
+        inputNumberField.icon2.run {
             setOnClickListener { listener.onNavigateToContact(false) }
             setImageDrawable(getIconUnifyDrawable(context, IconUnify.CONTACT))
             show()
@@ -106,6 +111,15 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
 
             addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
+                    removeTextChangedListener(this)
+                    s?.let {
+                        it.replace(
+                            Int.ZERO,
+                            it.length,
+                            formatClientNumberInput(it.toString())
+                        )
+                    }
+                    addTextChangedListener(this)
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -250,9 +264,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
     }
 
     fun setInputNumber(inputNumber: String) {
-        inputNumberField.editText.setText(
-            CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber)
-        )
+        inputNumberField.editText.setText(inputNumber)
     }
 
     fun getInputNumber(): String {
@@ -265,20 +277,9 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
     }
 
     fun setIconOperator(url: String) {
-        ImageHandler.LoadImage(imgOperator, url)
-        ImageHandler.LoadImage(imgOperatorResult, url)
+        imgOperator.loadImage(url)
+        imgOperatorResult.loadImage(url)
         imgOperator.visibility = View.VISIBLE
-    }
-
-    fun setVisibleResultNumber(show: Boolean) {
-        inputNumberResult.text = getInputNumber()
-        if (show && getInputNumber().isNotEmpty()) {
-            layoutResult.show()
-            layoutInputNumber.hide()
-        } else {
-            layoutInputNumber.show()
-            layoutResult.hide()
-        }
     }
 
     fun setFilterChipShimmer(show: Boolean, shouldHideChip: Boolean = false) {

@@ -28,14 +28,14 @@ class SettingViewHolder(itemView: View, val listener: HomeAccountUserListener) :
 
     var adapter: HomeAccountUserCommonAdapter? = null
 
-    fun getTitle() = binding?.homeAccountExpandableLayoutTitle?.text.toString()
+    fun getTitle() = binding?.homeAccountExpandableLayoutContentTitle?.text.toString()
 
     fun bind(setting: SettingDataView) {
         if (setting.title.isNotEmpty()) {
-            binding?.homeAccountExpandableLayoutTitle?.visibility = View.VISIBLE
-            binding?.homeAccountExpandableLayoutTitle?.text = setting.title
+            binding?.homeAccountExpandableLayoutContentTitle?.visibility = View.VISIBLE
+            binding?.homeAccountExpandableLayoutContentTitle?.text = setting.title
         } else {
-            binding?.homeAccountExpandableLayoutTitle?.visibility = View.GONE
+            binding?.homeAccountExpandableLayoutContentTitle?.visibility = View.GONE
         }
 
         if (setting.showArrowDown) {

@@ -51,7 +51,7 @@ class DebugMediaThumbnailWidget @JvmOverloads constructor(
             binding.bgVideoShadow.show()
 
             binding.txtDuration.show()
-            binding.txtDuration.text = element.videoLength.humanize()
+            binding.txtDuration.text = element.duration.humanize()
         }
     }
 

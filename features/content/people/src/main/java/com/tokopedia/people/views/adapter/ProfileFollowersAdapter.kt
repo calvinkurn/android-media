@@ -6,9 +6,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -16,28 +13,20 @@ import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.library.baseadapter.BaseItem
 import com.tokopedia.people.R
-import com.tokopedia.people.listener.FollowerFollowingListener
-import com.tokopedia.people.listener.FollowingFollowerListener
-import com.tokopedia.people.model.ProfileFollowerListBase
-import com.tokopedia.people.model.ProfileFollowerV2
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
-import com.tokopedia.people.views.fragment.FollowerFollowingListingFragment
-import com.tokopedia.people.views.fragment.UserProfileFragment
+import com.tokopedia.people.views.adapter.listener.UserFollowListener
+import com.tokopedia.people.views.uimodel.PeopleUiModel
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.user.session.UserSession
 
 open class ProfileFollowersAdapter(
-    val viewModel: FollowerFollowingViewModel,
-    val callback: AdapterCallback,
-    val userSession: UserSession,
-    val listener: FollowerFollowingListener,
-    private val followerListener: FollowingFollowerListener,
-) : BaseAdapter<ProfileFollowerV2>(callback) {
+    private val viewModel: FollowerFollowingViewModel,
+    callback: AdapterCallback,
+    private val followListener: UserFollowListener,
+) : BaseAdapter<PeopleUiModel>(callback) {
 
     protected var cList: MutableList<BaseItem>? = null
-    public var cursor: String = ""
+    var lastCursor: String = ""
 
     inner class ViewHolder(view: View) : BaseVH(view) {
         internal var imgProfile: ImageUnify = view.findViewById(R.id.img_profile_image)
@@ -45,9 +34,8 @@ open class ProfileFollowersAdapter(
         internal var btnAction: UnifyButton = view.findViewById(R.id.btn_action_follow)
         internal var textName: TextView = view.findViewById(R.id.text_display_name)
         internal var textUsername: TextView = view.findViewById(R.id.text_user_name)
-        var isVisited = false
 
-        override fun bindView(item: ProfileFollowerV2, position: Int) {
+        override fun bindView(item: PeopleUiModel, position: Int) {
             setData(this, item, position)
         }
     }
@@ -85,160 +73,109 @@ open class ProfileFollowersAdapter(
 
     override fun loadData(pageNumber: Int, vararg args: String?) {
         super.loadData(pageNumber, *args)
-        viewModel.getFollowers(cursor, PAGE_COUNT)
+        viewModel.getFollowers(lastCursor, PAGE_COUNT)
     }
 
-    fun onSuccess(data: ProfileFollowerListBase) {
-        if (data == null ||
-            data.profileFollowers == null ||
-            data.profileFollowers.profileFollower == null
-        ) {
+    fun onSuccess(data: List<PeopleUiModel>, cursor: String) {
+        if (data.isEmpty()) {
             loadCompleted(mutableListOf(), data)
             isLastPage = true
-            cursor = ""
+            lastCursor = ""
         }
 
-        loadCompleted(data.profileFollowers.profileFollower, data)
-        cursor = data.profileFollowers.newCursor
-        isLastPage = data.profileFollowers.newCursor.isEmpty()
+        loadCompleted(data, data)
+        lastCursor = cursor
+        isLastPage = cursor.isEmpty()
     }
 
     fun onError() {
         loadCompletedWithError()
     }
 
-    private fun setData(holder: ViewHolder, item: ProfileFollowerV2, position: Int) {
-        val itemContext = holder.itemView.context
-        holder.imgProfile.setImageUrl(item.profile.imageCover)
-        holder.textName.text = item.profile.name
+    private fun bindUser(holder: ViewHolder, item: PeopleUiModel.UserUiModel, position: Int) {
+        holder.imgProfile.setImageUrl(item.photoUrl)
+        holder.textName.text = item.name
+        holder.imgBadge.hide()
 
-        val badgeUrl = item.profile.badges.getOrNull(BADGE_URL_IDX).orEmpty()
-        if(badgeUrl.isNotEmpty()) {
-            holder.imgBadge.show()
-            holder.imgBadge.setImageUrl(badgeUrl)
-        }
-        else {
-            holder.imgBadge.hide()
-        }
-
-        if (item.profile.username.isNotBlank()) {
+        if (item.username.isNotBlank()) {
             holder.textUsername.show()
-            holder.textUsername.text = "@" + item.profile.username
+            holder.textUsername.text = "@${item.username}"
         } else {
             holder.textUsername.hide()
         }
 
         holder.itemView.setOnClickListener {
-            followerListener.clickUser(userSession.userId, item.profile.userID == userSession.userId)
-            val intent = RouteManager.getIntent(
-                itemContext,
-                item.profile.sharelink.applink,
-            )
-            intent.putExtra(UserProfileFragment.EXTRA_POSITION_OF_PROFILE, position)
-            listener.callstartActivityFromFragment(
-                intent,
-                UserProfileFragment.REQUEST_CODE_USER_PROFILE,
-            )
+            followListener.onItemUserClicked(item, position)
         }
 
-        if (item.profile.userID == this@ProfileFollowersAdapter.userSession.userId) {
+        if (item.isMySelf) {
             holder.btnAction.hide()
         } else {
+            updateFollowButton(holder.btnAction, item.isFollowed)
             holder.btnAction.show()
-
-            if (item.isFollow) {
-                updateToFollowUi(holder.btnAction)
-
-                holder.btnAction.setOnClickListener { v ->
-                    if (!DeviceConnectionInfo.isInternetAvailable(itemContext.applicationContext)) {
-                        val snackBar = Toaster.build(
-                            holder.btnAction as View,
-                            itemContext.getString(com.tokopedia.people.R.string.up_error_unfollow),
-                            Toaster.LENGTH_LONG,
-                            Toaster.TYPE_ERROR,
-                        )
-
-                        snackBar.show()
-
-                        return@setOnClickListener
-                    }
-
-                    if (!userSession?.isLoggedIn) {
-                        listener.callstartActivityFromFragment(
-                            ApplinkConst.LOGIN,
-                            FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW,
-                        )
-                    } else {
-                        followerListener.clickUnfollow(userSession.userId, item.profile.userID == userSession.userId)
-                        viewModel.doUnFollow(item.profile.encryptedUserID)
-                        item.isFollow = false
-                        notifyItemChanged(position)
-                    }
-                }
-            } else {
-                updateToUnFollowUi(holder.btnAction)
-
-                holder.btnAction.setOnClickListener { v ->
-                    if (!DeviceConnectionInfo.isInternetAvailable(itemContext.applicationContext)) {
-                        val snackBar = Toaster.build(
-                            holder.btnAction as View,
-                            itemContext.getString(com.tokopedia.people.R.string.up_error_follow),
-                            Toaster.LENGTH_LONG,
-                            Toaster.TYPE_ERROR,
-                        )
-
-                        snackBar.show()
-
-                        return@setOnClickListener
-                    }
-
-                    if (!userSession?.isLoggedIn) {
-                        listener.callstartActivityFromFragment(
-                            ApplinkConst.LOGIN,
-                            FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW,
-                        )
-                    } else {
-                        followerListener.clickFollow(userSession.userId, item.profile.userID == userSession.userId)
-                        viewModel.doFollow(item.profile.encryptedUserID)
-                        item.isFollow = true
-                        notifyItemChanged(position)
-                    }
-                }
+            holder.btnAction.setOnClickListener { view ->
+                followListener.onFollowUserClicked(item, position)
             }
         }
     }
+
+    private fun bindShop(holder: ViewHolder, item: PeopleUiModel.ShopUiModel, position: Int) {
+        holder.imgProfile.setImageUrl(item.logoUrl)
+        holder.textName.text = item.name
+
+        if (item.badgeUrl.isNotBlank()) {
+            holder.imgBadge.show()
+            holder.imgBadge.setImageUrl(item.badgeUrl)
+        } else {
+            holder.imgBadge.hide()
+        }
+
+        holder.textUsername.hide()
+
+        holder.itemView.setOnClickListener {
+            followListener.onItemShopClicked(item, position)
+        }
+        updateFollowButton(holder.btnAction, item.isFollowed)
+        holder.btnAction.show()
+        holder.btnAction.setOnClickListener { view ->
+            followListener.onFollowShopClicked(item, position)
+        }
+    }
+
+    private fun setData(holder: ViewHolder, item: PeopleUiModel, position: Int) {
+        when (item) {
+            is PeopleUiModel.UserUiModel -> bindUser(holder, item, position)
+            is PeopleUiModel.ShopUiModel -> bindShop(holder, item, position)
+        }
+    }
+
     fun updateFollowUnfollow(position: Int, isFollowed: Boolean) {
         if (position >= 0 && position < items.size) {
-            items[position].isFollow = isFollowed
+            when(val item = items[position]) {
+                is PeopleUiModel.UserUiModel -> {
+                    items[position] = item.copy(isFollowed = isFollowed)
+                }
+                is PeopleUiModel.ShopUiModel -> {
+                    items[position] = item.copy(isFollowed = isFollowed)
+                }
+            }
             notifyItemChanged(position)
         }
     }
 
-    private fun updateToFollowUi(btnAction: UnifyButton) {
-        btnAction.text = btnAction.context.getString(R.string.up_lb_following)
-        btnAction.buttonVariant = UnifyButton.Variant.GHOST
-        btnAction.buttonType = UnifyButton.Type.ALTERNATE
-    }
-
-    private fun updateToUnFollowUi(btnAction: UnifyButton) {
-        btnAction.text = btnAction.context.getString(R.string.up_btn_text_follow)
-        btnAction.buttonVariant = UnifyButton.Variant.FILLED
-        btnAction.buttonType = UnifyButton.Type.MAIN
-    }
-
-    override fun onViewAttachedToWindow(vh: RecyclerView.ViewHolder) {
-        super.onViewAttachedToWindow(vh)
-
-        if (vh is ViewHolder) {
-            val holder = vh as ViewHolder
-            val data = items[holder.adapterPosition] ?: return
-            // listener.shopProductImpressed(holder.adapterPosition, data)
+    private fun updateFollowButton(button: UnifyButton, isFollowed: Boolean) {
+        if (isFollowed) {
+            button.text = button.context.getString(R.string.up_lb_following)
+            button.buttonVariant = UnifyButton.Variant.GHOST
+            button.buttonType = UnifyButton.Type.ALTERNATE
+        } else {
+            button.text = button.context.getString(R.string.up_btn_text_follow)
+            button.buttonVariant = UnifyButton.Variant.FILLED
+            button.buttonType = UnifyButton.Type.MAIN
         }
     }
 
     companion object {
         const val PAGE_COUNT = 10
-
-        private const val BADGE_URL_IDX = 1
     }
 }

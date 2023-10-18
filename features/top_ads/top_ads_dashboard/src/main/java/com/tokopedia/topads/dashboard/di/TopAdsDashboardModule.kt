@@ -8,8 +8,8 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
-import com.tokopedia.shop.common.constant.ShopCommonUrl
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.topads.dashboard.data.utils.ShopCommonUrl
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -30,12 +30,13 @@ class TopAdsDashboardModule {
     @TopAdsDashboardScope
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = com.tokopedia.user.session.UserSession(context)
 
-
     @ShopWsQualifier
     @TopAdsDashboardScope
     @Provides
-    fun provideWSRetrofit(@ShopQualifier okHttpClient: OkHttpClient,
-                          retrofitBuilder: Retrofit.Builder): Retrofit {
+    fun provideWSRetrofit(
+        @ShopQualifier okHttpClient: OkHttpClient,
+        retrofitBuilder: Retrofit.Builder
+    ): Retrofit {
         return retrofitBuilder.baseUrl(ShopCommonUrl.BASE_WS_URL).client(okHttpClient).build()
     }
 
@@ -60,13 +61,15 @@ class TopAdsDashboardModule {
 
     @TopAdsDashboardScope
     @Provides
-    fun provideGqlGetShopInfoUseCase(graphqlUseCase: MultiRequestGraphqlUseCase,
-                                     @Named(GQLQueryNamedConstant.SHOP_INFO)
-                                     gqlQuery: String): GQLGetShopInfoUseCase =
-            GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase)
+    fun provideGqlGetShopInfoUseCase(
+        graphqlUseCase: MultiRequestGraphqlUseCase,
+        @Named(GQLQueryNamedConstant.SHOP_INFO)
+        gqlQuery: String
+    ): GQLGetShopInfoUseCase =
+        GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase)
 
     @TopAdsDashboardScope
     @Provides
     fun provideMultiRequestGraphqlUseCase(): MultiRequestGraphqlUseCase =
-            GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
+        GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
 }

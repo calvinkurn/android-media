@@ -9,7 +9,6 @@ import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
 import com.tokopedia.updateinactivephone.features.submitnewphone.InactivePhoneSubmitDataActivity
 import com.tokopedia.updateinactivephone.stub.features.submitnewphone.regular.InactivePhoneDataUploadFragmentStub
 import com.tokopedia.updateinactivephone.stub.features.submitnewphone.withpin.InactivePhoneSubmitNewPhoneFragmentStub
-import com.tokopedia.updateinactivephone.stub.features.successpage.InactivePhoneSuccessPageActivityStub
 
 class InactivePhoneSubmitDataActivityStub : InactivePhoneSubmitDataActivity() {
 

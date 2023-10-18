@@ -213,10 +213,6 @@
 
 -keep public class com.android.installreferrer.** { *; }
 
-#keep for security purposes. This library has already been obfuscated.
--keep class com.tkpd.util.Base64.** { *; }
-
-
 # Keep Class com.tokopedia
 -keep class * extends com.tokopedia.design.base.BaseCustomView { *; }
 #discovery
@@ -245,7 +241,7 @@
 -keep class com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment
 -keep class com.tokopedia.home_recom.view.fragment.RecommendationFragment
 -keep class com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragment
--keep class com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment
+-keep class com.tokopedia.feedplus.presentation.fragment.FeedIntermediaryFragment
 -keep class com.tokopedia.cart.view.CartFragment
 -keep class com.tokopedia.dynamicfeatures.DFInstallerFragment
 -keep class com.tokopedia.review.feature.reading.presentation.fragment.ShopReviewFragment

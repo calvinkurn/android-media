@@ -3,16 +3,16 @@ package com.tokopedia.oneclickcheckout.order.view.model
 sealed class OccUIMessage
 
 data class OccToasterAction(
-        val message: String,
-        val ctaText: String = ""
+    val message: String,
+    val ctaText: String = ""
 ) : OccUIMessage()
 
 data class OccPrompt(
-        val type: String = "",
-        val title: String = "",
-        val description: String = "",
-        val imageUrl: String = "",
-        val buttons: List<OccPromptButton> = emptyList()
+    val type: String = "",
+    val title: String = "",
+    val description: String = "",
+    val imageUrl: String = "",
+    val buttons: List<OccPromptButton> = emptyList()
 ) : OccUIMessage() {
     companion object {
         const val TYPE_DIALOG = "dialog_box"
@@ -33,10 +33,10 @@ data class OccPrompt(
 }
 
 data class OccPromptButton(
-        val text: String = "",
-        val link: String = "",
-        val action: String = "",
-        val color: String = ""
+    val text: String = "",
+    val link: String = "",
+    val action: String = "",
+    val color: String = ""
 ) {
     companion object {
         const val ACTION_OPEN = "open"

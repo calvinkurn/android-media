@@ -69,7 +69,7 @@ interface TrackerId {
         const val ATTACH_PRESCRIPTION_RESULT = "37742"
         const val ATTACH_PRESCRIPTION_OPTIONS = "37744"
         const val CLICK_UPLOAD_RESEP_DOKTER = "37745"
-        const val CLICK_CHAT_DOKTER = "37745"
+        const val CLICK_CHAT_DOKTER = "37746"
         const val VIEW_NO_DOCTOR = "37747"
         const val CLICK_INGATKAN_SAYA = "37748"
         const val LANJUT_BUTTON_CLICK = "38051"

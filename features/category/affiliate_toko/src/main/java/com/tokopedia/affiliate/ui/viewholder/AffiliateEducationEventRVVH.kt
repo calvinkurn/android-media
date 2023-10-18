@@ -44,8 +44,7 @@ class AffiliateEducationEventRVVH(
         eventData = element?.event
         tvSeeMore.setOnClickListener {
             affiliateEducationEventArticleClickInterface?.onSeeMoreClick(
-                PAGE_EDUCATION_EVENT,
-                element?.event?.articles?.getOrNull(0)?.categories?.getOrNull(0)?.id.toString()
+                PAGE_EDUCATION_EVENT
             )
             sendEducationClickEvent()
         }

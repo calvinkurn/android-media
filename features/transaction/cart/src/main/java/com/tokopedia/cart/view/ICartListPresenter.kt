@@ -1,17 +1,19 @@
 package com.tokopedia.cart.view
 
+import android.os.Bundle
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cart.data.model.response.promo.CartPromoTicker
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
-import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
+import com.tokopedia.cart.domain.model.updatecart.UpdateAndGetLastApplyData
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
-import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -30,7 +32,7 @@ interface ICartListPresenter {
 
     fun setCartListData(cartListData: CartData)
 
-    fun getSummaryTransactionUiModel(): SummaryTransactionUiModel?
+    fun getSummaryTransactionUiModel(selectedCartItemData: List<CartItemHolderData>): SummaryTransactionUiModel?
 
     fun getPromoSummaryUiModel(): PromoSummaryData?
 
@@ -38,14 +40,16 @@ interface ICartListPresenter {
 
     fun processInitialGetCartData(cartId: String, initialLoad: Boolean, isLoadingTypeRefresh: Boolean, getCartState: Int = GET_CART_STATE_DEFAULT)
 
-    fun processDeleteCartItem(allCartItemData: List<CartItemHolderData>,
-                              removedCartItems: List<CartItemHolderData>,
-                              addWishList: Boolean,
-                              forceExpandCollapsedUnavailableItems: Boolean = false,
-                              isFromGlobalCheckbox: Boolean = false,
-                              isFromEditBundle: Boolean = false)
+    fun processDeleteCartItem(
+        allCartItemData: List<CartItemHolderData>,
+        removedCartItems: List<CartItemHolderData>,
+        addWishList: Boolean,
+        forceExpandCollapsedUnavailableItems: Boolean = false,
+        isFromGlobalCheckbox: Boolean = false,
+        isFromEditBundle: Boolean = false
+    )
 
-    fun processUndoDeleteCartItem(cartIds: List<String>);
+    fun processUndoDeleteCartItem(cartIds: List<String>)
 
     fun processUpdateCartData(fireAndForget: Boolean, onlyTokoNowProducts: Boolean = false)
 
@@ -53,7 +57,7 @@ interface ICartListPresenter {
 
     fun processUpdateCartCounter()
 
-    fun reCalculateSubTotal(dataList: List<CartShopHolderData>)
+    fun reCalculateSubTotal(dataList: List<CartGroupHolderData>)
 
     fun generateDeleteCartDataAnalytics(cartItemDataList: List<CartItemHolderData>): Map<String, Any>
 
@@ -72,6 +76,8 @@ interface ICartListPresenter {
     fun generateWishlistDataImpressionAnalytics(cartWishlistItemHolderDataList: List<CartWishlistItemHolderData>, isEmptyCart: Boolean): Map<String, Any>
 
     fun generateRecentViewDataImpressionAnalytics(cartRecentViewItemHolderDataList: List<CartRecentViewItemHolderData>, isEmptyCart: Boolean): Map<String, Any>
+
+    fun generateCartBundlingPromotionsAnalyticsData(bundleDetail: BundleDetailUiModel): List<Bundle>
 
     fun processAddToWishlistV2(productId: String, userId: String, wishListActionListener: WishlistV2ActionListener)
 
@@ -107,9 +113,7 @@ interface ICartListPresenter {
 
     fun doUpdateCartForPromo()
 
-    fun doValidateUse(promoRequest: ValidateUsePromoRequest)
-
-    fun doUpdateCartAndValidateUse(promoRequest: ValidateUsePromoRequest)
+    fun doUpdateCartAndGetLastApply(promoRequest: ValidateUsePromoRequest)
 
     fun doClearRedPromosBeforeGoToCheckout(clearPromoRequest: ClearPromoRequest)
 
@@ -123,9 +127,9 @@ interface ICartListPresenter {
 
     fun setValidateUseLastResponse(response: ValidateUsePromoRevampUiModel?)
 
-    fun getUpdateCartAndValidateUseLastResponse(): UpdateAndValidateUseData?
+    fun getUpdateCartAndGetLastApplyLastResponse(): UpdateAndGetLastApplyData?
 
-    fun setUpdateCartAndValidateUseLastResponse(response: UpdateAndValidateUseData?)
+    fun setUpdateCartAndGetLastApplyLastResponse(response: UpdateAndGetLastApplyData?)
 
     fun isLastApplyValid(): Boolean
 
@@ -141,7 +145,7 @@ interface ICartListPresenter {
 
     fun setLocalizingAddressData(lca: LocalCacheModel?)
 
-    fun checkBoAffordability(cartShopHolderData: CartShopHolderData)
+    fun checkCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData)
 
     fun getPromoFlag(): Boolean
 
@@ -152,6 +156,8 @@ interface ICartListPresenter {
     fun clearAllBo(clearPromoOrderData: ClearPromoOrderData)
 
     fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel)
+
+    fun checkEnableBundleCrossSell(cartGroupHolderData: CartGroupHolderData): Boolean
 
     companion object {
         const val GET_CART_STATE_DEFAULT = 0

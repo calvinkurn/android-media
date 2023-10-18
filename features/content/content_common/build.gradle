@@ -21,6 +21,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.content.common'
+    testNamespace 'com.tokopedia.content.common.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -48,6 +50,11 @@ android {
     testOptions {
         animationsDisabled = true
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
 }
 
 dependencies {
@@ -61,12 +68,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.medialoader)
-    implementation projectOrAar(rootProject.ext.features.feedComponent)
 
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.iris)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
@@ -97,6 +102,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     implementation rootProject.ext.networkDependencies.glide

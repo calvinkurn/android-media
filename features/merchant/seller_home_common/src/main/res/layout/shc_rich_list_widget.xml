@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcRichListTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:drawablePadding="8dp"
+        android:ellipsize="end"
+        android:gravity="top"
+        android:maxLines="2"
+        android:textColor="@color/Unify_NN900"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Performa Toko"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcRichListSubTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:paddingBottom="6dp"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/tvShcRichListTitle"
+        app:layout_constraintStart_toStartOf="@+id/tvShcRichListTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcRichListTitle"
+        app:typographyType="display_3"
+        tools:text="Subtitle"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/cardShcRichList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcRichListSubTitle"
+        tools:minHeight="200dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvShcRichList"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0"
+                tools:itemCount="3"
+                tools:listitem="@layout/shc_rich_list_rank_item" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvShcRichListUpdated"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="12dp"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rvShcRichList"
+                app:layout_constraintVertical_bias="0"
+                app:typographyType="small"
+                tools:text="Update terakhir 6 Jun 2023, 15:00 WIB" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.CardUnify>
+</androidx.constraintlayout.widget.ConstraintLayout>

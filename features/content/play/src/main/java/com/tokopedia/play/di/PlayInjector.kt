@@ -1,6 +1,6 @@
 package com.tokopedia.play.di
 
-import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 
 /**
@@ -10,13 +10,12 @@ object PlayInjector {
 
     private var customComponent: PlayComponent? = null
 
-    fun get(context: Context): PlayComponent = synchronized(this) {
-        return customComponent ?: DaggerPlayComponent.builder()
-            .baseAppComponent(
-                (context.applicationContext as BaseMainApplication).baseAppComponent
+    fun get(activity: AppCompatActivity): PlayComponent = synchronized(this) {
+        return customComponent ?: DaggerPlayComponent.factory()
+            .create(
+                baseAppComponent = (activity.applicationContext as BaseMainApplication).baseAppComponent,
+                activity = activity,
             )
-            .playModule(PlayModule(context))
-            .build()
     }
 
     fun set(component: PlayComponent) = synchronized(this) {

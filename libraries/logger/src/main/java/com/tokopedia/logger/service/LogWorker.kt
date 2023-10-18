@@ -33,6 +33,7 @@ class LogWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker
                     .setConstraints(Constraints.Builder()
                             .setRequiredNetworkType(NetworkType.CONNECTED)
                             .build())
+                    .keepResultsForAtLeast(1, TimeUnit.MINUTES)
                     .setInitialDelay(LOG_SERVICE_DELAY, TimeUnit.SECONDS)
                     .build()
         }

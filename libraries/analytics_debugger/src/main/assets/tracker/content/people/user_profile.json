@@ -1,0 +1,412 @@
+{
+  "readme": "User Profile - Analytics",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "openScreen",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "isLoggedInStatus": ".*",
+      "screenName": "/feed user profile - .*",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24604"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - back",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24605"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - share",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24606"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click - burger menu",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24607"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - profile picture",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .* - .* - live",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24608"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - follower",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24609"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - following",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24610"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - selengkapnya",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24611"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - follow",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24612"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - unfollow",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24613"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - video tab",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24614"
+    },
+    {
+      "event": "view_item",
+      "eventAction": "impression - video",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .* - .* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": "\\d+",
+          "item_id": ".*",
+          "item_name": "/feed user profile - video"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24615"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - video",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .* - .* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24616"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - feed tab",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24617"
+    },
+    {
+      "event": "view_item",
+      "eventAction": "impression - post",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .* - .* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": "\\d+",
+          "item_id": ".*",
+          "item_name": "/feed user profile - post"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24619"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - post",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .* - .* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24620"
+    },
+    {
+      "event": "openScreen",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "isLoggedInStatus": ".*",
+      "screenName": "/feed user profile - follower tab",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24621"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - user",
+      "eventCategory": "feed user profile - follower tab",
+      "eventLabel": ".* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24622"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - follow",
+      "eventCategory": "feed user profile - follower tab",
+      "eventLabel": ".* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24623"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - unfollow",
+      "eventCategory": "feed user profile - follower tab",
+      "eventLabel": ".* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24638"
+    },
+    {
+      "event": "openScreen",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "isLoggedInStatus": ".*",
+      "screenName": "/feed user profile - following tab",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24639"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - user",
+      "eventCategory": "feed user profile - following tab",
+      "eventLabel": ".* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24640"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - follow",
+      "eventCategory": "feed user profile - following tab",
+      "eventLabel": ".* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24641"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - unfollow",
+      "eventCategory": "feed user profile - following tab",
+      "eventLabel": ".* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "24642"
+    },
+    {
+      "event": "viewHomepageIris",
+      "eventAction": "impression - profile completion prompt",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "26372"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click - profile completion prompt",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "26373"
+    },
+    {
+      "event": "view_item",
+      "eventAction": "impression - profile recommendations carousel",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": "\\d+",
+          "item_id": ".*",
+          "item_name": "/feed user profile - profile recommendations carousel"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "26374"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - profile recommendations icon",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - .*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "26375"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click - follow profile recommendations",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".* - \\d+",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "26376"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click - create post button",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "26377"
+    },
+    {
+      "event": "viewHomepageIris",
+      "eventAction": "impression - onboarding bottomsheet with username",
+      "eventCategory": "feed user profile - onboarding bottomsheet",
+      "eventLabel": ".*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "26378"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click - lanjut on onboarding bottomsheet with username",
+      "eventCategory": "feed user profile - onboarding bottomsheet",
+      "eventLabel": ".*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "26379"
+    },
+    {
+      "event": "viewHomepageIris",
+      "eventAction": "impression - onboarding bottomsheet without username",
+      "eventCategory": "feed user profile - onboarding bottomsheet",
+      "eventLabel": ".*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "26380"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click - lanjut on onboarding bottomsheet without username",
+      "eventCategory": "feed user profile - onboarding bottomsheet",
+      "eventLabel": ".*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "26381"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click - ubah profile",
+      "eventCategory": "feed user profile",
+      "eventLabel": ".*",
+      "businessUnit": ".*",
+      "currentSite": ".*",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "33771"
+    }
+  ]
+}

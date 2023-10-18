@@ -9,8 +9,8 @@ import javax.inject.Inject
 
 class GetWatermarkUseCase @Inject constructor(
     private val watermarkRepository: WatermarkFilterRepository
-) : UseCase<WatermarkUseCaseParam, Bitmap>() {
-    override fun execute(params: WatermarkUseCaseParam): Bitmap {
+) : UseCase<WatermarkUseCaseParam, Bitmap?>() {
+    override fun execute(params: WatermarkUseCaseParam): Bitmap? {
         val element = params.element?.map()
         val bitmapResult = watermarkRepository.watermark(
             source = params.source,

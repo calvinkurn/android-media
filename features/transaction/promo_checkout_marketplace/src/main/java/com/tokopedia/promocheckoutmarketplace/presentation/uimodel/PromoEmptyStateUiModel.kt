@@ -4,8 +4,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckoutAdapterTypeFactory
 
 data class PromoEmptyStateUiModel(
-        var uiData: UiData,
-        var uiState: UiState
+    var uiData: UiData,
+    var uiState: UiState
 ) : Visitable<PromoCheckoutAdapterTypeFactory> {
 
     override fun type(typeFactory: PromoCheckoutAdapterTypeFactory): Int {
@@ -13,11 +13,11 @@ data class PromoEmptyStateUiModel(
     }
 
     data class UiData(
-            var title: String = "",
-            var description: String = "",
-            var imageUrl: String = "",
-            var buttonText: String = "",
-            var emptyStateStatus: String = ""
+        var title: String = "",
+        var description: String = "",
+        var imageUrl: String = "",
+        var buttonText: String = "",
+        var emptyStateStatus: String = ""
     ) {
         companion object {
             const val LABEL_BUTTON_PHONE_VERIFICATION = "Verifikasi Nomor HP"
@@ -26,7 +26,6 @@ data class PromoEmptyStateUiModel(
     }
 
     data class UiState(
-            var isShowButton: Boolean = false
+        var isShowButton: Boolean = false
     )
-
 }

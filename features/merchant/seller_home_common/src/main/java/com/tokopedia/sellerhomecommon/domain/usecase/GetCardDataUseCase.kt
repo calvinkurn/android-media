@@ -9,7 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.CardMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
-import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.GetCardDataResponse
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.usecase.RequestParams
@@ -70,7 +70,7 @@ class GetCardDataUseCase(
 
         fun getRequestParams(
             dataKey: List<String>,
-            dynamicParameter: DynamicParameterModel
+            dynamicParameter: ParamCommonWidgetModel
         ): RequestParams = RequestParams.create().apply {
             val jsonParams = dynamicParameter.toJsonString()
             val dataKeys = dataKey.map {

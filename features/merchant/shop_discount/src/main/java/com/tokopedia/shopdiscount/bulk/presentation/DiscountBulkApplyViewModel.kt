@@ -14,7 +14,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 import javax.inject.Inject
 
 class DiscountBulkApplyViewModel @Inject constructor(
@@ -69,7 +70,6 @@ class DiscountBulkApplyViewModel @Inject constructor(
     private var selectedDiscountAmount = 0
     private var selectedMaxQuantity = 0
 
-
     fun getSlashPriceBenefit() {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
@@ -78,8 +78,8 @@ class DiscountBulkApplyViewModel @Inject constructor(
             }
             _benefit.value = Success(result)
         }, onError = {
-            _benefit.value = Fail(it)
-        })
+                _benefit.value = Fail(it)
+            })
     }
 
     fun validateInput() {
@@ -176,7 +176,6 @@ class DiscountBulkApplyViewModel @Inject constructor(
             isUsingCustomPeriod
         )
     }
-
 
     fun getSelectedStartDate(): Date? {
         return selectedStartDate

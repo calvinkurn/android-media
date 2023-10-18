@@ -64,7 +64,7 @@ class ShareAddressRobot {
 
     fun clickIconContactPhoneNumber() {
         stubIntent()
-        onView(ViewMatchers.withId(R.id.text_field_icon_2))
+        onView(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.text_field_icon_2))
             .check(matches(isDisplayed()))
             .perform(click())
     }
@@ -74,7 +74,7 @@ class ShareAddressRobot {
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
-    private fun waitForData(millis: Long = 1000L) {
+    private fun waitForData(millis: Long = 500L) {
         Thread.sleep(millis)
     }
 

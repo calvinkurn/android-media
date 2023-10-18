@@ -1,24 +1,21 @@
 package com.tokopedia.play.broadcaster.ui.viewholder.carousel
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.databinding.ItemPlayBroPinnedProductCarouselBinding
 import com.tokopedia.play.broadcaster.databinding.ItemPlayBroPlaceholderCarouselBinding
 import com.tokopedia.play.broadcaster.databinding.ItemPlayBroProductCarouselBinding
-import com.tokopedia.play.broadcaster.type.DiscountedPrice
-import com.tokopedia.play.broadcaster.type.OriginalPrice
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.seller.model.DiscountedPrice
+import com.tokopedia.content.product.picker.seller.model.OriginalPrice
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.play_common.view.loadImage
 
 /**
@@ -39,36 +36,27 @@ class ProductCarouselViewHolder private constructor() {
                 binding.tvProductTagNormalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
 
+        @SuppressLint("ResourceType")
         fun bind(item: ProductUiModel) {
             binding.ivProductTag.setImageUrl(item.imageUrl)
-            if (item.stock > 0) {
-                binding.tvProductTagStock.text = context.getString(
-                    R.string.play_bro_product_stock,
-                    item.stock
-                )
-                binding.ivProductTagCover.hide()
-            } else {
-                binding.tvProductTagStock.text = context.getString(
-                    R.string.play_bro_product_tag_stock_empty
-                )
-                binding.ivProductTagCover.show()
-            }
+            binding.tvProductTagEmptyStock.showWithCondition(item.stock.isLessThanEqualZero())
+            binding.ivProductTagCover.showWithCondition(item.stock.isLessThanEqualZero())
 
-            when (item.price) {
+            when (val price = item.price) {
                 is DiscountedPrice -> {
                     binding.tvProductTagNormalPrice.show()
                     binding.tvProductTagDiscount.show()
                     binding.tvProductTagDiscount.text = context.getString(
-                        R.string.play_bro_product_discount_template,
-                        item.price.discountPercent
+                        contentproductpickerR.string.product_discount_template,
+                        price.discountPercent
                     )
-                    binding.tvProductTagPrice.text = item.price.discountedPrice
-                    binding.tvProductTagNormalPrice.text = item.price.originalPrice
+                    binding.tvProductTagPrice.text = price.discountedPrice
+                    binding.tvProductTagNormalPrice.text = price.originalPrice
                 }
                 is OriginalPrice -> {
                     binding.tvProductTagNormalPrice.invisible()
                     binding.tvProductTagDiscount.hide()
-                    binding.tvProductTagPrice.text = item.price.price
+                    binding.tvProductTagPrice.text = price.price
                 }
                 else -> {
                     binding.tvProductTagNormalPrice.invisible()
@@ -83,6 +71,7 @@ class ProductCarouselViewHolder private constructor() {
             binding.viewPinProduct.setOnClickListener {
                 listener.onPinClicked(item)
             }
+            binding.tvProductTagNumber.text = item.number
         }
 
         companion object {
@@ -117,36 +106,26 @@ class ProductCarouselViewHolder private constructor() {
             get() = itemView.context
 
 
+        @SuppressLint("ResourceType")
         fun bind(item: ProductUiModel) {
             binding.ivPinnedProductCarousel.loadImage(item.imageUrl)
             binding.tvPinnedProductCarouselName.text = item.name
+            binding.ivPinnedProductCarousel.showWithCondition(item.stock.isMoreThanZero())
+            binding.ivPinnedProductCarouselOos.showWithCondition(item.stock.isLessThanEqualZero())
+            binding.tvProductSummaryEmptyStock.showWithCondition(item.stock.isLessThanEqualZero())
 
-            if (item.stock > 0) {
-                binding.tvProductSummaryEmptyStock.text = context.getString(
-                    R.string.play_bro_product_stock,
-                    item.stock
-                )
-                binding.ivPinnedProductCarouselOos.gone()
-            } else {
-                binding.tvProductSummaryEmptyStock.text = context.getString(
-                    R.string.play_bro_product_tag_stock_empty
-                )
-                binding.ivPinnedProductCarouselOos.visible()
-            }
-
-            when (item.price) {
+            when (val price = item.price) {
                 is OriginalPrice -> {
-                    binding.tvPinnedProductCarouselPrice.text = item.price.price
+                    binding.tvPinnedProductCarouselPrice.text = price.price
                     binding.labelPinnedProductCarouselDiscount.visibility = View.GONE
                     binding.tvPinnedProductCarouselOriginalPrice.visibility = View.GONE
                 }
                 is DiscountedPrice -> {
-                    binding.tvPinnedProductCarouselPrice.text = item.price.discountedPrice
-                    binding.tvPinnedProductCarouselOriginalPrice.text =
-                        item.price.originalPrice
+                    binding.tvPinnedProductCarouselPrice.text = price.discountedPrice
+                    binding.tvPinnedProductCarouselOriginalPrice.text = price.originalPrice
                     binding.labelPinnedProductCarouselDiscount.text = itemView.context.getString(
-                        R.string.play_bro_product_discount_template,
-                        item.price.discountPercent
+                        contentproductpickerR.string.product_discount_template,
+                        price.discountPercent
                     )
                     binding.labelPinnedProductCarouselDiscount.visible()
                     binding.tvPinnedProductCarouselOriginalPrice.visible()
@@ -164,6 +143,7 @@ class ProductCarouselViewHolder private constructor() {
             binding.viewPinProduct.setOnClickListener {
                 listener.onPinClicked(item)
             }
+            binding.tvPinnedProductTagNumber.text = item.number
         }
 
         companion object {

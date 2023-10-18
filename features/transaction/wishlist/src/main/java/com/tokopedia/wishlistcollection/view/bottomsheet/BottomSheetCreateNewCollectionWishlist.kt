@@ -24,24 +24,25 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.wishlist.R as Rwishlist
 import com.tokopedia.wishlist.databinding.BottomsheetCreateNewWishlistCollectionBinding
 import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionNamesResponse
 import com.tokopedia.wishlistcollection.di.*
+import com.tokopedia.wishlistcollection.view.IWishlistCollectionFragment
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromCollectionPage
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromPdp
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
-import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionFragment
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionHostBottomSheetFragment
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import com.tokopedia.wishlistcollection.view.viewmodel.BottomSheetCreateNewCollectionViewModel
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PRODUCT_IDs
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.SOURCE
 import javax.inject.Inject
+import com.tokopedia.wishlist.R as Rwishlist
 
-class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
+class BottomSheetCreateNewCollectionWishlist :
+    BottomSheetUnify(),
     HasComponent<WishlistCollectionComponent> {
     private var binding by autoClearedNullable<BottomsheetCreateNewWishlistCollectionBinding>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
@@ -88,7 +89,7 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
         this.actionListenerFromPdp = fragment
     }
 
-    fun setListener(fragment: WishlistCollectionFragment) {
+    fun setListener(fragment: IWishlistCollectionFragment) {
         this.actionListenerFromCollectionPage = fragment
     }
 
@@ -129,21 +130,20 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
         )
         binding?.run {
             collectionCreateNameInputTextField.editText.addTextChangedListener(object :
-                TextWatcher {
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                    TextWatcher {
+                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-                override fun afterTextChanged(p0: Editable?) {
-                    newCollectionName = p0.toString().trimStart().trimEnd()
-                    if (newCollectionName.isNotEmpty()) {
-                        handler.postDelayed(checkNameRunnable, DELAY_CHECK_NAME)
-                    } else {
-                        disableSaveButton()
+                    override fun afterTextChanged(p0: Editable?) {
+                        newCollectionName = p0.toString().trimStart().trimEnd()
+                        if (newCollectionName.isNotEmpty()) {
+                            handler.postDelayed(checkNameRunnable, DELAY_CHECK_NAME)
+                        } else {
+                            disableSaveButton()
+                        }
                     }
-                }
-
-            })
+                })
             collectionCreateButton.isEnabled = false
         }
         setChild(binding?.root)
@@ -263,8 +263,11 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
                     }
                 }
             } else {
-                if (checkName.isNotEmpty()) enableSaveButton()
-                else disableSaveButton()
+                if (checkName.isNotEmpty()) {
+                    enableSaveButton()
+                } else {
+                    disableSaveButton()
+                }
             }
         }
     }

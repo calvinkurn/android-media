@@ -9,7 +9,7 @@ import com.tokopedia.play.util.animation.PlayAnimationUtil
  * Created by jegul on 16/04/20
  */
 class PlayFadeInAnimation(
-        private val durationInMs: Long
+    private val durationInMs: Long
 ) : PlayAnimation {
 
     private val animatorSet = AnimatorSet()

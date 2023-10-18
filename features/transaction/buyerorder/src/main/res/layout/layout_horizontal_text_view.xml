@@ -34,6 +34,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/order_detail_seperator_1dp"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:background="@color/Unify_N50"
+        android:background="@color/Unify_NN50"
         android:visibility="gone"/>
 </LinearLayout>

@@ -5,7 +5,12 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cartcommon.data.response.deletecart.Data
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
+import io.mockk.verify
+import io.mockk.verifyOrder
 import org.junit.Test
 import rx.Observable
 
@@ -18,18 +23,27 @@ class DeleteCartTest : BaseCartTest() {
 
         coEvery { deleteCartUseCase.setParams(any()) } just Runs
         coEvery { deleteCartUseCase.execute(any(), any()) } answers {
-            firstArg<(RemoveFromCartData) -> Unit>().invoke(RemoveFromCartData(status = "OK", data = Data(success = 1)))
+            firstArg<(RemoveFromCartData) -> Unit>().invoke(
+                RemoveFromCartData(
+                    status = "OK",
+                    data = Data(success = 1)
+                )
+            )
         }
 
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
 
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
 
         // WHEN
-        cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, false, true, false)
+        cartListPresenter.processDeleteCartItem(
+            arrayListOf(cartItemData),
+            arrayListOf(cartItemData),
+            false,
+            false,
+            true,
+            false
+        )
 
         // THEN
         verify {
@@ -47,20 +61,28 @@ class DeleteCartTest : BaseCartTest() {
 
         coEvery { deleteCartUseCase.setParams(any()) } just Runs
         coEvery { deleteCartUseCase.execute(any(), any()) } answers {
-            firstArg<(RemoveFromCartData) -> Unit>().invoke(RemoveFromCartData(status = "OK", data = Data(success = 1)))
+            firstArg<(RemoveFromCartData) -> Unit>().invoke(
+                RemoveFromCartData(
+                    status = "OK",
+                    data = Data(success = 1)
+                )
+            )
         }
 
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
 
         // WHEN
-        cartListPresenter.processDeleteCartItem(arrayListOf(firstCartItemData, secondCartItemData),
-                arrayListOf(secondCartItemData), false, false)
+        cartListPresenter.processDeleteCartItem(
+            arrayListOf(firstCartItemData, secondCartItemData),
+            arrayListOf(secondCartItemData),
+            false,
+            false
+        )
 
         // THEN
         verify {
             view.onDeleteCartDataSuccess(arrayListOf("1"), false, false, false, false, false)
         }
-
     }
 
     @Test
@@ -73,7 +95,12 @@ class DeleteCartTest : BaseCartTest() {
 
         coEvery { deleteCartUseCase.setParams(any()) } just Runs
         coEvery { deleteCartUseCase.execute(any(), any()) } answers {
-            firstArg<(RemoveFromCartData) -> Unit>().invoke(RemoveFromCartData(status = "OK", data = Data(success = 1)))
+            firstArg<(RemoveFromCartData) -> Unit>().invoke(
+                RemoveFromCartData(
+                    status = "OK",
+                    data = Data(success = 1)
+                )
+            )
         }
 
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
@@ -81,14 +108,17 @@ class DeleteCartTest : BaseCartTest() {
         every { view.checkHitValidateUseIsNeeded(any()) } returns true
 
         // WHEN
-        cartListPresenter.processDeleteCartItem(arrayListOf(firstCartItemData, secondCartItemData),
-                arrayListOf(secondCartItemData), false, false)
+        cartListPresenter.processDeleteCartItem(
+            arrayListOf(firstCartItemData, secondCartItemData),
+            arrayListOf(secondCartItemData),
+            false,
+            false
+        )
 
         // THEN
         verify {
             view.showPromoCheckoutStickyButtonLoading()
         }
-
     }
 
     @Test
@@ -105,7 +135,12 @@ class DeleteCartTest : BaseCartTest() {
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
 
         // WHEN
-        cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, false)
+        cartListPresenter.processDeleteCartItem(
+            arrayListOf(cartItemData),
+            arrayListOf(cartItemData),
+            false,
+            false
+        )
 
         // THEN
         verify {
@@ -127,7 +162,12 @@ class DeleteCartTest : BaseCartTest() {
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
 
         // WHEN
-        cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, true)
+        cartListPresenter.processDeleteCartItem(
+            arrayListOf(cartItemData),
+            arrayListOf(cartItemData),
+            false,
+            true
+        )
 
         // THEN
         verifyOrder {
@@ -144,12 +184,18 @@ class DeleteCartTest : BaseCartTest() {
         cartListPresenter.detachView()
 
         // WHEN
-        cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, false, true, false)
+        cartListPresenter.processDeleteCartItem(
+            arrayListOf(cartItemData),
+            arrayListOf(cartItemData),
+            false,
+            false,
+            true,
+            false
+        )
 
         // THEN
         verify(inverse = true) {
             view.onDeleteCartDataSuccess(arrayListOf("0"), true, false, false, true, false)
         }
     }
-
 }

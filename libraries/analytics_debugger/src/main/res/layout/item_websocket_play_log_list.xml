@@ -108,4 +108,34 @@
         app:typographyType="body_3"
         tools:text="123123" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_websocket_log_header_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/websocket_log_header_label"
+        app:layout_constraintEnd_toStartOf="@id/tv_websocket_log_header_info"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_websocket_log_gc_token"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_websocket_log_header_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="@id/tv_websocket_log_header_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintStart_toEndOf="@id/tv_websocket_log_header_label"
+        app:layout_constraintTop_toTopOf="@id/tv_websocket_log_header_label"
+        app:typographyType="body_3"
+        tools:text="android|121" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -359,6 +359,9 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
                 staggeredGridLayoutManager?.spanCount = spanCount
                 getAdapter()?.changeDoubleGridView()
             }
+            else -> {
+                //no-op
+            }
         }
     }
 

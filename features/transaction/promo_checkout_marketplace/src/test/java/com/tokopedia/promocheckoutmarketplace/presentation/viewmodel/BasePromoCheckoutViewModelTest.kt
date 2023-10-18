@@ -8,16 +8,15 @@ import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutU
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.*
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import org.junit.Before
 import org.junit.Rule
 
 abstract class BasePromoCheckoutViewModelTest {
 
     lateinit var viewModel: PromoCheckoutViewModel
-    private lateinit var dispatcher: CoroutineDispatcher
+    lateinit var testDispatchers: CoroutineTestDispatchers
 
     var getCouponListRecommendationUseCase: GetCouponListRecommendationUseCase = mockk()
     var validateUseUseCase: ValidateUsePromoRevampUseCase = mockk()
@@ -32,10 +31,15 @@ abstract class BasePromoCheckoutViewModelTest {
 
     @Before
     fun setUp() {
-        dispatcher = Dispatchers.Unconfined
+        testDispatchers = CoroutineTestDispatchers
         viewModel = PromoCheckoutViewModel(
-                dispatcher, getCouponListRecommendationUseCase, validateUseUseCase,
-                clearCacheAutoApplyUseCase, getPromoSuggestionUseCase, uiModelMapper, analytics
+            testDispatchers.main,
+            getCouponListRecommendationUseCase,
+            validateUseUseCase,
+            clearCacheAutoApplyUseCase,
+            getPromoSuggestionUseCase,
+            uiModelMapper,
+            analytics
         )
 
         every { analytics.eventViewAvailablePromoListEligiblePromo(any(), any()) } just Runs
@@ -43,5 +47,4 @@ abstract class BasePromoCheckoutViewModelTest {
 
         viewModel.initFragmentUiModel(PAGE_CART, "Error Message")
     }
-
 }

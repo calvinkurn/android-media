@@ -35,7 +35,7 @@
         app:text_field_label="@string/label_wholesale_price"
         app:text_field_label_static="true" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_delete_button"
         android:contentDescription="@string/content_desc_iv_delete_button"
         android:layout_width="20dp"
@@ -43,11 +43,11 @@
         android:layout_marginStart="@dimen/dp_18"
         android:layout_marginTop="@dimen/dp_22"
         android:layout_marginEnd="2dp"
-        android:scaleType="centerInside"
+        app:icon_name="CLEAR"
+        app:icon_color_light_enable="@color/Unify_NN600"
         app:layout_constraintLeft_toRightOf="@id/tfu_wholesale_price"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_remove" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

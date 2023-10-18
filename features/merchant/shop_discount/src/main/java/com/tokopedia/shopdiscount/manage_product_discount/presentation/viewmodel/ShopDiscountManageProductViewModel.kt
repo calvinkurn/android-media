@@ -10,9 +10,9 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
-import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiModel
 import com.tokopedia.shopdiscount.info.util.ShopDiscountSellerInfoMapper
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.NO_ERROR
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.START_DATE_ERROR
 import com.tokopedia.shopdiscount.utils.constant.DateConstant.FIVE_MINUTES
@@ -27,7 +27,8 @@ import com.tokopedia.shopdiscount.utils.extension.unixToMs
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 import javax.inject.Inject
 import kotlin.math.round
 
@@ -101,7 +102,7 @@ class ShopDiscountManageProductViewModel @Inject constructor(
             this.startDate = startDate
             this.endDate = endDate
         }
-        if(productData.productStatus.errorType == START_DATE_ERROR) {
+        if (productData.productStatus.errorType == START_DATE_ERROR) {
             if (isStartDateError(productData)) {
                 productData.productStatus.errorType = START_DATE_ERROR
             } else {
@@ -168,7 +169,6 @@ class ShopDiscountManageProductViewModel @Inject constructor(
         }
     }
 
-
     private fun updateProductDataDiscountPrice(discountPrice: Int, discountPercent: Int) {
         productData.slashPriceInfo.discountedPrice = discountPrice
         productData.slashPriceInfo.discountPercentage = discountPercent
@@ -194,7 +194,7 @@ class ShopDiscountManageProductViewModel @Inject constructor(
                 discountedPrice > averageSoldPrice && averageSoldPrice.isMoreThanZero() -> {
                     ERROR_R2_ABUSIVE
                 }
-                productData.productStatus.errorType  == START_DATE_ERROR-> {
+                productData.productStatus.errorType == START_DATE_ERROR -> {
                     ERROR_START_DATE
                 }
                 else -> {
@@ -208,10 +208,11 @@ class ShopDiscountManageProductViewModel @Inject constructor(
     fun getMinDiscountPrice(): Int {
         val originalPrice = productData.mappedResultData.minOriginalPrice.orZero()
         val minDiscountPrice = (originalPrice.toDouble() * 0.01).toInt()
-        return if(minDiscountPrice < 100)
+        return if (minDiscountPrice < 100) {
             100
-        else
+        } else {
             minDiscountPrice
+        }
     }
 
     fun getMaxDiscountPrice(): Int {
@@ -232,5 +233,4 @@ class ShopDiscountManageProductViewModel @Inject constructor(
         }
         _discountPeriodDataBasedOnBenefitLiveData.postValue(Pair(startDate, endDate))
     }
-
 }

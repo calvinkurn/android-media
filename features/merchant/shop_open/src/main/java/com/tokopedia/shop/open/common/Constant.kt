@@ -1,5 +1,8 @@
 package com.tokopedia.shop.open.common
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.url.TokopediaUrl
+
 object PageNameConstant {
     const val SPLASH_SCREEN_PAGE = "GREETING_PAGE"
     const val QUISIONER_PAGE = "QUISIONER_PAGE"
@@ -12,12 +15,12 @@ object ExitDialog {
 }
 
 object TermsAndConditionsLink {
-    const val URL_TNC = "https://www.tokopedia.com/terms.pl"
-    const val URL_PRIVACY_POLICY = "https://www.tokopedia.com/privacy.pl"
+    val URL_TNC = "${TokopediaUrl.getInstance().WEB}terms?lang=id"
+    val URL_PRIVACY_POLICY = "${TokopediaUrl.getInstance().WEB}privacy?lang=id"
 }
 
 object ImageAssets {
-    val IMG_SHOP_OPEN_SPLASH_SCREEN = "https://images.tokopedia.net/android/others/seller_empty_state.png"
+    val IMG_SHOP_OPEN_SPLASH_SCREEN = TokopediaImageUrl.IMG_SHOP_OPEN_SPLASH_SCREEN
 }
 
 object ScreenNameTracker {

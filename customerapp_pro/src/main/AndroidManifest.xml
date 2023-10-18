@@ -98,6 +98,7 @@
         <package android:name="com.asistenhidup.terran" />
         <package android:name="com.awantunai.app" />
         <package android:name="com.baga.cabjahbcaefiag" />
+        <package android:name="com.bajingan.bangsat" />
         <package android:name="com.bbxfintech" />
         <package android:name="com.berkem.bang" />
         <package android:name="com.beruangcerdas.finansialapp" />
@@ -179,6 +180,7 @@
         <package android:name="com.electrodialitic.haltere" />
         <package android:name="com.enough.rupiah" />
         <package android:name="com.estakapital.investor" />
+        <package android:name="com.example.myapplication" />
         <package android:name="com.excellence.PinjamanRupiah" />
         <package android:name="com.excelliance.multiaccount" />
         <package android:name="com.excelliance.multiaccounts" />
@@ -664,9 +666,9 @@
         android:resizeableActivity="true"
         android:supportsRtl="true"
         android:fullBackupContent="@xml/backup_descriptor"
-        android:theme="@style/Theme.Tokopedia3"
+        android:theme="@style/Theme.WhiteUnify"
         android:requestLegacyExternalStorage="true"
-        tools:replace="name,android:label,android:hasCode,android:fullBackupContent,android:allowBackup,android:resizeableActivity,android:icon">
+        tools:replace="name,android:label,android:hasCode,android:allowBackup,android:resizeableActivity">
         <meta-data
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
             android:value="true" />
@@ -725,6 +727,10 @@
         <meta-data
             android:name="APPSFLYER_KEY"
             android:value="@string/appsflyer_key_pro" />
+
+        <meta-data
+            android:name="google_analytics_automatic_screen_reporting_enabled"
+            android:value="false" />
 
         <provider
             android:name="com.facebook.internal.FacebookInitProvider"

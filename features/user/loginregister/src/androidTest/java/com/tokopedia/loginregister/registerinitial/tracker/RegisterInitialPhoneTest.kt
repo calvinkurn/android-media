@@ -11,6 +11,7 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher.validate
+import com.tokopedia.loginregister.common.analytics.RegisterAnalytics.Companion.LABEL_PHONE_EXIST
 import com.tokopedia.loginregister.registerinitial.RegisterInitialBase
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
@@ -76,7 +77,7 @@ class RegisterInitialPhoneTest: RegisterInitialBase() {
 
     //click
     private fun checkRegisterPhoneNumber() {
-        Thread.sleep(1000)
+//        Thread.sleep(1000)
 
         onView(withInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE))
                 .perform(replaceText(""))
@@ -94,12 +95,12 @@ class RegisterInitialPhoneTest: RegisterInitialBase() {
                 "click on button daftar - phone number",
                 "click"
             ),
-//            CassavaTestRuleMatcher.getAnalyticValidator(
-//                "clickRegister",
-//                "register page",
-//                "click on button daftar - phone number",
-//                "failed - ${Event.ANY}"
-//            )
+            CassavaTestRuleMatcher.getAnalyticValidator(
+                "clickRegister",
+                "register page",
+                "click on button daftar - phone number",
+                "failed - $LABEL_PHONE_EXIST"
+            )
         )
     }
 

@@ -35,25 +35,27 @@ class PaymentTopUpWebViewActivity : BaseSimpleActivity(), HasComponent<PaymentCo
 
     override fun getComponent(): PaymentComponent {
         return DaggerPaymentComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .paymentModule(PaymentModule())
-                .build()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .paymentModule(PaymentModule())
+            .build()
     }
 
     companion object {
 
-        fun createIntent(context: Context,
-                         title: String,
-                         url: String? = null,
-                         redirectUrl: String? = null,
-                         isHideDigital: Int? = null,
-                         customerData: OrderPaymentOvoCustomerData? = null): Intent {
+        fun createIntent(
+            context: Context,
+            title: String,
+            url: String? = null,
+            redirectUrl: String? = null,
+            isHideDigital: Int? = null,
+            customerData: OrderPaymentOvoCustomerData? = null
+        ): Intent {
             return Intent(context, PaymentTopUpWebViewActivity::class.java)
-                    .putExtra(PaymentTopUpWebViewFragment.EXTRA_TITLE, title)
-                    .putExtra(PaymentTopUpWebViewFragment.EXTRA_URL, url)
-                    .putExtra(PaymentTopUpWebViewFragment.EXTRA_REDIRECT_URL, redirectUrl)
-                    .putExtra(PaymentTopUpWebViewFragment.EXTRA_IS_HIDE_DIGITAL, isHideDigital)
-                    .putExtra(PaymentTopUpWebViewFragment.EXTRA_CUSTOMER_DATA, customerData)
+                .putExtra(PaymentTopUpWebViewFragment.EXTRA_TITLE, title)
+                .putExtra(PaymentTopUpWebViewFragment.EXTRA_URL, url)
+                .putExtra(PaymentTopUpWebViewFragment.EXTRA_REDIRECT_URL, redirectUrl)
+                .putExtra(PaymentTopUpWebViewFragment.EXTRA_IS_HIDE_DIGITAL, isHideDigital)
+                .putExtra(PaymentTopUpWebViewFragment.EXTRA_CUSTOMER_DATA, customerData)
         }
     }
 }

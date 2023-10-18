@@ -540,6 +540,7 @@
       {
         "title": "Coba produk dengan kategori ini :",
         "type": "category",
+        "layout": "category",
         "position": 9,
         "options": [
           {

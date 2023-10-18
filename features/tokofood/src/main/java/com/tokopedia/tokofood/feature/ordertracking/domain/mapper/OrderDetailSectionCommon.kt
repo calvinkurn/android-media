@@ -4,7 +4,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.tokofood.common.constants.LottieUrl
 import com.tokopedia.tokofood.feature.ordertracking.domain.constants.OrderStatusType
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderDetailResponse
-import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderStatusResponse
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverInformationUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.InvoiceOrderNumberUiModel
@@ -12,7 +11,6 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTr
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingStatusInfoUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.StepperStatusUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TickerInfoData
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ToolbarLiveTrackingUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 

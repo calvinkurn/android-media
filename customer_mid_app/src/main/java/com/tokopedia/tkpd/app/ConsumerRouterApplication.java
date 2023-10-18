@@ -16,20 +16,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
-import com.tokochat.tokochat_config_common.util.TokoChatConnection;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
-import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
-import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -75,21 +71,20 @@ import com.tokopedia.notifications.worker.PushWorker;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
-import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.promotionstarget.presentation.GratifCmInitializer;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.GraphqlHelper;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.sessioncommon.worker.RefreshProfileWorker;
 import com.tokopedia.tkpd.ConsumerSplashScreen;
-import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.AppNotificationReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.GQLPing;
+import com.tokopedia.tokochat.config.util.TokoChatConnection;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker;
-import com.tokopedia.sessioncommon.worker.RefreshProfileWorker;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -116,7 +111,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         AbstractionRouter,
         ApplinkRouter,
         LoyaltyModuleRouter,
-        GamificationRouter,
         NetworkRouter,
         TkpdAppsFlyerRouter,
         LinkerRouter {
@@ -128,7 +122,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     protected CacheManager cacheManager;
 
     private OmsComponent omsComponent;
-    private TetraDebugger tetraDebugger;
     private Iris mIris;
 
     private FirebaseMessagingManager fcmManager;
@@ -192,7 +185,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private boolean initLibraries() {
         initCMPushNotification();
-        initTetraDebugger();
         initCMDependencies();
         initDataStoreMigration();
         initRefreshProfileWorker();
@@ -267,20 +259,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return true;
     }
 
-    private void initTetraDebugger() {
-        if (com.tokopedia.config.GlobalConfig.isAllowDebuggingTools()) {
-            tetraDebugger = TetraDebugger.Companion.instance(context);
-            tetraDebugger.init();
-        }
-    }
-
-    private void setTetraUserId(String userId) {
-        if (tetraDebugger != null) {
-            tetraDebugger.setUserId(userId);
-        }
-    }
-
-
     private void initFirebase() {
         if (com.tokopedia.config.GlobalConfig.DEBUG) {
             try {
@@ -291,13 +269,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public void goToHome(Context context) {
-        Intent intent = RouteManager.getIntent(context, ApplinkConst.HOME);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        context.startActivity(intent);
     }
 
     @Override
@@ -446,11 +417,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
-        return new ApplinkUnsupportedImpl(activity);
-    }
-
-    @Override
     public void goToApplinkActivity(Context context, String applink) {
         if (context != null) {
             if (context instanceof Activity) {
@@ -504,13 +470,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void newGcmUpdate(SessionRefresh sessionRefresh) {
-        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
             @Override
-            public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                if (!task.isSuccessful() || task.getResult() == null) {
-                    gcmUpdateLegacy(sessionRefresh);
+            public void onComplete(@NonNull Task<String> task) {
+                if (task.isSuccessful()) {
+                    String token = task.getResult();
+                    if (!TextUtils.isEmpty(token)) {
+                        fcmManager.onNewToken(token);
+                    } else {
+                        gcmUpdateLegacy(sessionRefresh);
+                    }
                 } else {
-                    fcmManager.onNewToken(task.getResult().getToken());
+                    gcmUpdateLegacy(sessionRefresh);
                 }
             }
         });
@@ -620,7 +591,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private SendTokenToCMHandler provideCMHandler() {
         return new SendTokenToCMHandler(
                 new SendTokenToCMUseCase(
-                GraphqlInteractor.getInstance().getGraphqlRepository()
+                        GraphqlInteractor.getInstance().getGraphqlRepository()
                 ),
                 getApplicationContext(),
                 userSession,

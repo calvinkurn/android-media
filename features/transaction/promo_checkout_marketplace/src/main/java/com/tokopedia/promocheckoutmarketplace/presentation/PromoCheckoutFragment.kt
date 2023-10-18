@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -73,6 +74,9 @@ import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommen
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoSuggestionItemUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoSuggestionUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoTabUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.PromoListItemViewHolder.Companion.STATE_DISABLED
+import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.PromoListItemViewHolder.Companion.STATE_ENABLED
+import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.PromoListItemViewHolder.Companion.STATE_SELECTED
 import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.ApplyPromoResponseAction
 import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.ClearPromoResponseAction
 import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.Delete
@@ -109,8 +113,11 @@ import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapterTypeFactory>(),
-        PromoCheckoutActionListener, PromoCheckoutSuggestionListener, ToolbarPromoCheckoutListener {
+class PromoCheckoutFragment :
+    BaseListFragment<Visitable<*>, PromoCheckoutAdapterTypeFactory>(),
+    PromoCheckoutActionListener,
+    PromoCheckoutSuggestionListener,
+    ToolbarPromoCheckoutListener {
 
     private var viewBinding by autoClearedNullable<PromoCheckoutMarketplaceModuleFragmentBinding>()
 
@@ -152,6 +159,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private var toolbar: ToolbarPromoCheckout? = null
 
+    // Activity result
+    val gopayCicilLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        reloadData()
+    }
+
     companion object {
         const val REQUEST_CODE_PHONE_VERIFICATION = 9999
         const val HAS_ELEVATION = 6
@@ -169,12 +181,16 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         private const val DESTINATION_BACK = "back"
         private const val DESTINATION_REFRESH = "refresh"
 
-        fun createInstance(pageSource: Int,
-                           promoRequest: PromoRequest,
-                           validateUsePromoRequest: ValidateUsePromoRequest,
-                           bboPromoCodes: ArrayList<String>,
-                           promoMvcLockCourierFlow: Boolean = false,
-                           chosenAddress: ChosenAddress?): PromoCheckoutFragment {
+        private const val PROMO_GOPAY_LATER = "GoPay Later"
+
+        fun createInstance(
+            pageSource: Int,
+            promoRequest: PromoRequest,
+            validateUsePromoRequest: ValidateUsePromoRequest,
+            bboPromoCodes: ArrayList<String>,
+            promoMvcLockCourierFlow: Boolean = false,
+            chosenAddress: ChosenAddress?
+        ): PromoCheckoutFragment {
             return PromoCheckoutFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARGS_PAGE_SOURCE, pageSource)
@@ -194,9 +210,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             val baseAppComponent = it.application
             if (baseAppComponent is BaseMainApplication) {
                 DaggerPromoCheckoutMarketplaceComponent.builder()
-                        .baseAppComponent(baseAppComponent.baseAppComponent)
-                        .build()
-                        .inject(this)
+                    .baseAppComponent(baseAppComponent.baseAppComponent)
+                    .build()
+                    .inject(this)
             }
         }
     }
@@ -274,6 +290,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observeApplyPromoResult()
         observeClearPromoResult()
         observeGetPromoSuggestionResult()
+
+        // Observe ui actions
+        observeActionableCTAApplink()
     }
 
     private fun setBackground() {
@@ -292,7 +311,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun initializeFlagIsPromoMvcLockCourierFlow() {
         isPromoMvcLockCourierFlow = arguments?.getBoolean(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, false)
-                ?: false
+            ?: false
     }
 
     private fun setPromoMvcLockCourierFlow(isPromoMvcLockCourierFlow: Boolean) {
@@ -311,7 +330,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun initializeSwipeRefreshLayout() {
         activity?.let {
-            viewBinding?.swipeRefreshLayout?.setColorSchemeColors(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+            viewBinding?.swipeRefreshLayout?.setColorSchemeColors(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         }
         viewBinding?.swipeRefreshLayout?.setOnRefreshListener {
             reloadData()
@@ -321,7 +340,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private fun initializeRecyclerViewScrollListener() {
         recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -362,7 +380,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             buttonApplyNoPromo.setOnClickListener {
                 setButtonLoading(buttonApplyNoPromo, true)
                 val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
-                        ?: ValidateUsePromoRequest()
+                    ?: ValidateUsePromoRequest()
                 val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
                 viewModel.clearPromo(validateUsePromoRequest, bboPromoCodes ?: ArrayList())
                 analytics.eventClickBeliTanpaPromo(viewModel.getPageSource())
@@ -375,7 +393,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             buttonApplyPromo.setOnClickListener {
                 setButtonLoading(buttonApplyPromo, true)
                 val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
-                        ?: ValidateUsePromoRequest()
+                    ?: ValidateUsePromoRequest()
                 val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
                 viewModel.applyPromo(validateUsePromoRequest, bboPromoCodes ?: ArrayList())
             }
@@ -422,10 +440,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             val topVisibleUiModel = adapter.data[topItemPosition]
 
             // hard code to hide tab
-            val isShow: Boolean = false && (topVisibleUiModel !is PromoInputUiModel &&
+            val isShow: Boolean = false && (
+                topVisibleUiModel !is PromoInputUiModel &&
                     topVisibleUiModel !is PromoRecommendationUiModel &&
-                    topVisibleUiModel !is PromoEligibilityHeaderUiModel) ||
-                    (topVisibleUiModel is PromoEligibilityHeaderUiModel && !topVisibleUiModel.uiState.isEnabled)
+                    topVisibleUiModel !is PromoEligibilityHeaderUiModel
+                ) ||
+                (topVisibleUiModel is PromoEligibilityHeaderUiModel && !topVisibleUiModel.uiState.isEnabled)
 
             var tab: SectionTab? = null
             if (topVisibleUiModel is PromoEligibilityHeaderUiModel && !topVisibleUiModel.uiState.isEnabled) {
@@ -573,6 +593,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 is Delete -> {
                     adapter.removeData(it.data)
                 }
+                else -> {
+                    // no op
+                }
             }
         })
     }
@@ -584,6 +607,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     it.data.forEach { mapData ->
                         adapter.addVisitableList((adapter.data.indexOf(mapData.key) + 1), mapData.value)
                     }
+                }
+                else -> {
+                    // no op
                 }
             }
         })
@@ -706,6 +732,13 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         }
     }
 
+    private fun observeActionableCTAApplink() {
+        viewModel.getActionableApplinkNavigation.observe(viewLifecycleOwner) { applink ->
+            val intent = RouteManager.getIntent(context, applink)
+            gopayCicilLauncher.launch(intent)
+        }
+    }
+
     private fun showPromoCheckoutSuggestionBottomSheet(data: PromoSuggestionUiModel) {
         activity?.let {
             snapToPromoInput()
@@ -728,8 +761,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 val isAvailableSpaceSufficient = availableSpaceHeight - totalSpaceNeededForPromoSuggestionItems >= 0
                 if (!isAvailableSpaceSufficient) {
                     promoCheckoutSuggestionBottomSheet?.peekHeight = availableSpaceHeight.toInt()
-                    viewBinding?.promoSuggestionBottomSheet?.rvPromoSuggestion?.layoutParams?.height = (availableSpaceHeight - (viewBinding?.promoSuggestionBottomSheet?.buttonClose?.height
-                            ?: 0)).toInt()
+                    viewBinding?.promoSuggestionBottomSheet?.rvPromoSuggestion?.layoutParams?.height = (
+                        availableSpaceHeight - (
+                            viewBinding?.promoSuggestionBottomSheet?.buttonClose?.height
+                                ?: 0
+                            )
+                        ).toInt()
                 } else {
                     promoCheckoutSuggestionBottomSheet?.peekHeight = totalSpaceNeededForPromoSuggestionItems
                     viewBinding?.promoSuggestionBottomSheet?.rvPromoSuggestion?.layoutParams?.height = ConstraintLayout.LayoutParams.MATCH_PARENT
@@ -789,6 +826,20 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             renderLoadPromoSuccess(fragmentUiModel)
         } else {
             renderLoadPromoFailed(fragmentUiModel)
+        }
+
+        if (fragmentUiModel.uiState.shouldShowToasterBenefitAdjustmentMessage &&
+            fragmentUiModel.uiData.benefitAdjustmentMessage.isNotBlank()
+        ) {
+            view?.let {
+                Toaster.build(
+                    it,
+                    fragmentUiModel.uiData.benefitAdjustmentMessage,
+                    Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_NORMAL
+                ).show()
+                viewModel.setShouldShowToasterBenefitAdjustmentMessage(false)
+            }
         }
     }
 
@@ -929,13 +980,17 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun loadData(page: Int) {
         showLoading()
-        val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
-        val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
-        viewModel.getPromoList(promoRequest, "", chosenAddress)
+        loadPromoData()
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
         return false
+    }
+
+    private fun loadPromoData(promoCode: String = "") {
+        val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
+        val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
+        viewModel.getPromoList(promoRequest, promoCode, chosenAddress)
     }
 
     private fun showToastMessage(message: String) {
@@ -968,12 +1023,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     analytics.eventClickSimpanPromoBaru(viewModel.getPageSource())
                     if (viewModel.isHasAnySelectedPromoItem()) {
                         val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
-                                ?: ValidateUsePromoRequest()
+                            ?: ValidateUsePromoRequest()
                         val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
                         viewModel.applyPromo(validateUsePromoRequest, bboPromoCodes ?: ArrayList())
                     } else {
                         val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
-                                ?: ValidateUsePromoRequest()
+                            ?: ValidateUsePromoRequest()
                         val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
                         viewModel.clearPromo(validateUsePromoRequest, bboPromoCodes ?: ArrayList())
                     }
@@ -1009,11 +1064,13 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                         if (promoWithCoachMarkIndex != -1 && layoutManager.findFirstVisibleItemPosition() == promoWithCoachMarkIndex &&
-                                ::promoCoachMark.isInitialized && promoCoachMark.isShowing) {
+                            ::promoCoachMark.isInitialized && promoCoachMark.isShowing
+                        ) {
                             promoCoachMark.dismissCoachMark()
                             recyclerView.removeOnScrollListener(coachMarkRecyclerListener)
                         } else if (promoWithCoachMarkIndex != -1 && layoutManager.findLastVisibleItemPosition() == promoWithCoachMarkIndex &&
-                                ::promoCoachMark.isInitialized && promoCoachMark.isShowing) {
+                            ::promoCoachMark.isInitialized && promoCoachMark.isShowing
+                        ) {
                             promoCoachMark.dismissCoachMark()
                             recyclerView.removeOnScrollListener(coachMarkRecyclerListener)
                         }
@@ -1028,12 +1085,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 val coachMarkData = adapter.list[promoWithCoachMarkIndex] as PromoListItemUiModel
                 holder?.let {
                     val coachMarkItem = arrayListOf(
-                            CoachMark2Item(
-                                    holder.itemView.findViewById(R.id.container_constraint_promo_checkout),
-                                    coachMarkData.uiData.coachMark.title,
-                                    coachMarkData.uiData.coachMark.content,
-                                    CoachMark2.POSITION_BOTTOM
-                            )
+                        CoachMark2Item(
+                            holder.itemView.findViewById(R.id.container_constraint_promo_checkout),
+                            coachMarkData.uiData.coachMark.title,
+                            coachMarkData.uiData.coachMark.content,
+                            CoachMark2.POSITION_BOTTOM
+                        )
                     )
 
                     context?.let {
@@ -1076,7 +1133,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onClickInputCode() {
         if (promoInputBottomSheet == null) {
-            promoInputBottomSheet = PromoInputBottomSheet()
+            promoInputBottomSheet = PromoInputBottomSheet().apply {
+                setOnDismissListener {
+                    promoInputBottomSheet = null
+                }
+            }
         }
         viewModel.promoInputUiModel.value?.let {
             promoInputBottomSheet?.show(parentFragmentManager, "", it, this)
@@ -1107,9 +1168,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onClickApplyManualInputPromo(promoCode: String, isFromSuggestion: Boolean) {
         viewModel.updatePromoInputStateBeforeApplyPromo(promoCode, isFromSuggestion)
-        val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
-        val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
-        viewModel.getPromoList(promoRequest, promoCode, chosenAddress)
+        loadPromoData(promoCode)
     }
 
     override fun onCLickClearManualInputPromo() {
@@ -1117,7 +1176,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onClickPromoListItem(element: PromoListItemUiModel, position: Int) {
-        viewModel.updatePromoListAfterClickPromoItem(element)
+        viewModel.handlePromoListAfterClickPromoItem(element, position)
 
         // dismiss coachmark if user click promo with coachmark
         val adapterItems = adapter.list
@@ -1130,12 +1189,21 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onClickPromoItemDetail(element: PromoListItemUiModel) {
-        analytics.eventClickLihatDetailKupon(viewModel.getPageSource(), element.uiData.promoCode)
+        val promoCode: String
+        val couponAppLink: String
+        if (element.uiData.useSecondaryPromo) {
+            promoCode = element.uiData.secondaryCoupons.first().code
+            couponAppLink = element.uiData.secondaryCoupons.first().couponAppLink
+        } else {
+            promoCode = element.uiData.promoCode
+            couponAppLink = element.uiData.couponAppLink
+        }
+        analytics.eventClickLihatDetailKupon(viewModel.getPageSource(), promoCode)
         if (!element.uiState.isParentEnabled) {
-            analytics.eventClickLihatDetailOnIneligibleCoupon(viewModel.getPageSource(), element.uiData.promoCode, element.uiData.errorMessage)
+            analytics.eventClickLihatDetailOnIneligibleCoupon(viewModel.getPageSource(), promoCode, element.uiData.errorMessage)
         }
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_MARKETPLACE).apply {
-            val promoCodeLink = element.uiData.couponAppLink + element.uiData.promoCode
+            val promoCodeLink = couponAppLink + promoCode
             putExtra(EXTRA_KUPON_CODE, promoCodeLink)
             putExtra(EXTRA_IS_USE, true)
             putExtra(ONE_CLICK_SHIPMENT, false)
@@ -1165,6 +1233,15 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         }
     }
 
+    override fun onShowPromoActionable(element: PromoListItemUiModel, position: Int) {
+        analytics.sendImpressionPromoActivatedGopayCicilEvent(
+            viewModel.getPageSource(),
+            element.uiData.promoCode,
+            element.uiData.benefitAmount,
+            position
+        )
+    }
+
     override fun onTabSelected(element: PromoTabUiModel) {
         selectTab(element)
         analytics.eventClickTabPromoCategory(viewModel.getPageSource(), element.uiData.tabs[element.uiState.selectedTabPosition].title)
@@ -1174,7 +1251,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         viewBinding?.tabsPromoHeader?.tabsPromo?.getUnifyTabLayout()?.getTabAt(element.uiState.selectedTabPosition)?.select()
     }
 
-    override fun onShowPromoItem(element: PromoListItemUiModel, position: Int) {
+    override fun onShowPromoItem(
+        element: PromoListItemUiModel,
+        position: Int,
+        state: Int
+    ) {
         if (element.uiState.isParentEnabled) {
             analytics.eventImpressionEligiblePromoSection(viewModel.getPageSource(), position, element)
         } else {
@@ -1191,6 +1272,29 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
         if (element.uiState.isHighlighted) {
             analytics.eventImpressionHighlightedPromoSection(viewModel.getPageSource(), position, element)
+        }
+
+        outerLoop@ for (promoInfo in element.uiData.promoInfos) {
+            for (method in promoInfo.methods) {
+                if (method == PROMO_GOPAY_LATER) {
+                    if (state == STATE_ENABLED || state == STATE_SELECTED) {
+                        analytics.sendImpressionEligiblePromoSectionGopayCicilCartEvent(
+                            viewModel.getPageSource(),
+                            element.uiData.promoCode,
+                            element.uiData.benefitAmount,
+                            position
+                        )
+                        break@outerLoop
+                    } else if (state == STATE_DISABLED) {
+                        analytics.sendImpressionIneligiblePromoSectionGopayCicilPromoValidationEvent(
+                            viewModel.getPageSource(),
+                            element.uiData.promoCode,
+                            element.uiData.errorMessage
+                        )
+                        break@outerLoop
+                    }
+                }
+            }
         }
     }
 
@@ -1222,7 +1326,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
         if (tmpIndex != RecyclerView.NO_POSITION) {
             val tabHeight = context?.resources?.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_48)
-                    ?: 0
+                ?: 0
 
             val layoutManager: RecyclerView.LayoutManager? = recyclerView?.layoutManager
             if (layoutManager != null) {
@@ -1231,7 +1335,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         }
     }
 
-    private fun hasSeenBoInfoBottomSheet() : Boolean {
+    private fun hasSeenBoInfoBottomSheet(): Boolean {
         return context?.getSharedPreferences(PREFERENCES_NAME_PROMO_CHECKOUT, Context.MODE_PRIVATE)
             ?.getBoolean(KEY_HAS_SEEN_BO_INFO_BOTTOM_SHEET, false) ?: false
     }

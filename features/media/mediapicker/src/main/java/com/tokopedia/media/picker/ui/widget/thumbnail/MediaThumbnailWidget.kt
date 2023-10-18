@@ -4,17 +4,15 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.databinding.WidgetMediaThumbnailBinding
-import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.ui.widget.layout.SquareFrameLayout
 import com.tokopedia.media.picker.utils.loadPickerImage
 import com.tokopedia.picker.common.mapper.humanize
-import com.tokopedia.media.R as mediaResources
-import com.tokopedia.unifyprinciples.Typography.Companion.BODY_3
+import com.tokopedia.picker.common.uimodel.MediaUiModel
+import com.tokopedia.unifyprinciples.Typography.Companion.DISPLAY_3
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL
+import com.tokopedia.media.R as mediaResources
 
 class MediaThumbnailWidget @JvmOverloads constructor(
     context: Context,
@@ -33,7 +31,7 @@ class MediaThumbnailWidget @JvmOverloads constructor(
     }
 
     fun regularThumbnail(element: MediaUiModel?, onLoaded: () -> Unit = {}) {
-        binding.txtDuration.setType(BODY_3)
+        binding.txtDuration.setType(DISPLAY_3)
         renderView(element, onLoaded)
     }
 
@@ -44,14 +42,13 @@ class MediaThumbnailWidget @JvmOverloads constructor(
 
     private fun renderView(element: MediaUiModel?, onLoaded: () -> Unit) {
         if (element == null) return
-        val file = element.file?: return
+        val file = element.file ?: return
 
         binding.container.show()
         binding.imgPreview.loadPickerImage(file.path, onLoaded)
-
-        binding.txtDuration.shouldShowWithAction(file.isVideo()) {
-            binding.txtDuration.text = element.videoLength.humanize()
-            binding.bgVideoShadow.show()
+        binding.bgVideoShadow.showWithCondition(file.isVideo())
+        binding.txtDuration.showIfWithBlock(file.isVideo()) {
+            binding.txtDuration.text = element.duration.humanize()
         }
     }
 

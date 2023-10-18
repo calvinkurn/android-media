@@ -35,6 +35,11 @@ class PlayProductTagsModelBuilder {
         isPinned: Boolean = false,
         isRilisanSpesial: Boolean = false,
         buttons: List<ProductButtonUiModel> = emptyList(),
+        isProductNumerationShown: Boolean = false,
+        number: String = "0",
+        rating: String = "",
+        soldQuantity: String = "",
+        label: PlayProductUiModel.Product.Label = PlayProductUiModel.Product.Label(rankColors = emptyList(), rankFmt = "", rankType = ""),
     ) = PlayProductUiModel.Product(
         id = id,
         shopId = shopId,
@@ -50,6 +55,11 @@ class PlayProductTagsModelBuilder {
         isPinned = isPinned,
         isRilisanSpesial = isRilisanSpesial,
         buttons = buttons,
+        number = number,
+        isNumerationShown = isProductNumerationShown,
+        rating = rating,
+        soldQuantity = soldQuantity,
+        label = label,
     )
 
     fun buildMerchantVoucher(

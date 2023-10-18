@@ -23,7 +23,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
+import com.tokopedia.tokofood.common.domain.response.CartGeneralAddToCartData
 import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.unifycomponents.QuantityEditorUnify
@@ -37,9 +37,9 @@ import java.util.*
 
 object TokofoodExt {
 
-    const val NOT_FOUND_ERROR = "Not Found"
-    const val INTERNAL_SERVER_ERROR = "Internal Server Error"
-    const val ICON_BOUND_SIZE = 24
+    private const val NOT_FOUND_ERROR = "Not Found"
+    private const val INTERNAL_SERVER_ERROR = "Internal Server Error"
+    private const val ICON_BOUND_SIZE = 24
 
     const val MAXIMUM_QUANTITY = 999999
     const val MAXIMUM_QUANTITY_LENGTH = 7
@@ -84,11 +84,11 @@ object TokofoodExt {
         }
     }
 
-    fun Any.getSuccessUpdateResultPair(): Pair<UpdateParam, CartTokoFoodData>? {
+    fun Any.getSuccessAddToCartResultPair(): Pair<UpdateParam, CartGeneralAddToCartData>? {
         return (this as? Pair<*, *>)?.let { pair ->
             (pair.first as? UpdateParam)?.let { updateParams ->
-                (pair.second as? CartTokoFoodData)?.let { cartTokoFoodData ->
-                    updateParams to cartTokoFoodData
+                (pair.second as? CartGeneralAddToCartData)?.let { cartListData ->
+                    updateParams to cartListData
                 }
             }
         }
@@ -151,10 +151,10 @@ object TokofoodExt {
         val offset = 100
         val location = IntArray(2)
         view.getLocationOnScreen(location)
-        val X = location[0] + offset
-        val Y = location[1] + offset
-        return screen.top <= Y && screen.bottom >= Y &&
-            screen.left <= X && screen.right >= X
+        val x = location[0] + offset
+        val y = location[1] + offset
+        return screen.top <= y && screen.bottom >= y &&
+            screen.left <= x && screen.right >= x
     }
 
     fun QuantityEditorUnify.setupEditText() {

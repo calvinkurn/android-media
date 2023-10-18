@@ -27,4 +27,5 @@
     <dimen name="autocomplete_product_line_price_margin_right">16dp</dimen>
     <dimen name="autocomplete_product_double_line_price_margin_bottom">16dp</dimen>
     <dimen name="autocomplete_product_triple_line_price_margin_bottom">10dp</dimen>
+    <dimen name="autocomplete_searchbar_education_container_margin">16dp</dimen>
 </resources>

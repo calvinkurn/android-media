@@ -7,8 +7,8 @@ import com.tokopedia.minicart.R
 import com.tokopedia.minicart.databinding.ItemMiniCartChatLoadingBinding
 import com.tokopedia.unifycomponents.toPx
 
-class MiniCartChatLoadingViewHolder(private var viewBinding: ItemMiniCartChatLoadingBinding)
-    : LoadingViewholder(viewBinding.root) {
+class MiniCartChatLoadingViewHolder(private var viewBinding: ItemMiniCartChatLoadingBinding) :
+    LoadingViewholder(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_mini_cart_chat_loading
@@ -17,5 +17,4 @@ class MiniCartChatLoadingViewHolder(private var viewBinding: ItemMiniCartChatLoa
     override fun bind(element: LoadingModel?) {
         viewBinding.containerProductShimmering.setMargin(16.toPx(), 0, 16.toPx(), 0)
     }
-
 }

@@ -2,6 +2,7 @@ package com.tokopedia.play.channel.ui.component
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.databinding.ViewProductFeaturedBinding
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.component.UiComponent
@@ -10,6 +11,7 @@ import com.tokopedia.play.util.CachedState
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.isNotChanged
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
@@ -25,10 +27,11 @@ class ProductCarouselUiComponent(
     binding: ViewProductFeaturedBinding,
     private val bus: EventBus<Any>,
     scope: CoroutineScope,
-) : UiComponent<PlayViewerNewUiState> {
+    dispatchers: CoroutineDispatchers,
+    ) : UiComponent<PlayViewerNewUiState> {
 
     private val uiView = ProductCarouselUiView(
-        binding, object : ProductCarouselUiView.Listener {
+        binding, scope, object : ProductCarouselUiView.Listener {
             override fun onProductImpressed(
                 view: ProductCarouselUiView,
                 productMap: Map<PlayProductUiModel.Product, Int>
@@ -51,7 +54,7 @@ class ProductCarouselUiComponent(
             ) {
                 bus.emit(Event.OnTransactionClicked(product, action))
             }
-        }
+        } , dispatchers
     )
 
     init {

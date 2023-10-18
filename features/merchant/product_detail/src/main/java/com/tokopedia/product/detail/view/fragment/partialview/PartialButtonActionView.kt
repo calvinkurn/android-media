@@ -7,8 +7,10 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.onKeyboardVisibleListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -34,7 +36,6 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
-
 
 class PartialButtonActionView private constructor(
     val view: View,
@@ -106,7 +107,6 @@ class PartialButtonActionView private constructor(
         cartTypeData: CartTypeData? = null,
         isShopModerate: Boolean
     ) {
-
         this.isWarehouseProduct = isWarehouseProduct
         this.hasShopAuthority = hasShopAuthority
         this.hasTopAdsActive = hasTopAdsActive
@@ -114,7 +114,7 @@ class PartialButtonActionView private constructor(
         this.isShopOwner = isShopOwner
         this.isShopModerate = isShopModerate
         this.onSuccessGetCartType =
-            cartTypeData != null && cartTypeData.availableButtons.isNotEmpty()
+            cartTypeData != null && cartTypeData.availableButtonsPriority.isNotEmpty()
         this.tokonowButtonData = tokonowButtonData
         renderButton()
     }
@@ -165,7 +165,6 @@ class PartialButtonActionView private constructor(
         containerTokonowVar.show()
     }
 
-
     private fun showViewTokoNowVar() {
         qtyButtonPdp.hide()
         icDeleteNonVar.hide()
@@ -180,10 +179,24 @@ class PartialButtonActionView private constructor(
         btnTokonowVar.hide()
         txtTotalStockTokonowVar.hide()
         dividerTokonow.hide()
+        keyboardVisibleListener()
+    }
+
+    private fun keyboardVisibleListener() {
+        view.onKeyboardVisibleListener(
+            onShow = { rootView, keyboardHeight ->
+                if (rootView.paddingBottom == keyboardHeight) return@onKeyboardVisibleListener
+                rootView.setPadding(Int.ZERO, Int.ZERO, Int.ZERO, keyboardHeight)
+            },
+            onHide = { rootView, _ ->
+                if (rootView.paddingBottom == Int.ZERO) return@onKeyboardVisibleListener
+                rootView.setPadding(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
+            }
+        )
     }
 
     private fun renderTokoNowVar() = with(view) {
-        val availableButton = cartTypeData?.availableButtons ?: listOf()
+        val availableButton = cartTypeData?.availableButtonsPriority.orEmpty()
         btnTokonowVar.text = availableButton.getOrNull(0)?.text
             ?: context.getString(com.tokopedia.product.detail.common.R.string.plus_product_to_cart)
         btnTokonowVar.generateTheme(
@@ -200,7 +213,8 @@ class PartialButtonActionView private constructor(
         }
 
         txtTotalStockTokonowVar.text = context.getString(
-            R.string.pdp_pcs_builder, tokonowButtonData?.totalStockAtcVariant
+            R.string.pdp_pcs_builder,
+            tokonowButtonData?.totalStockAtcVariant
                 ?: DEFAULT_TOTAL_STOCK
         )
     }
@@ -225,7 +239,7 @@ class PartialButtonActionView private constructor(
 
     private fun renderNormalButtonCartRedirection() = with(binding) {
         qtyButtonPdp.hide()
-        val availableButton = cartTypeData?.availableButtons ?: listOf()
+        val availableButton = cartTypeData?.availableButtonsPriority.orEmpty()
 
         btnBuyNow.showWithCondition(availableButton.firstOrNull() != null)
         btnAddToCart.showWithCondition(availableButton.getOrNull(1) != null)
@@ -316,7 +330,8 @@ class PartialButtonActionView private constructor(
                     }
                 }
                 qtyButtonPdp?.editText?.addTextChangedListener(textWatcher)
-            })
+            }
+        )
             .debounce {
                 if (it < minQuantity) {
                     // Use longer debounce when reset qty, to support automation
@@ -331,7 +346,6 @@ class PartialButtonActionView private constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Subscriber<Int>() {
                 override fun onCompleted() {
-
                 }
 
                 override fun onError(e: Throwable) {
@@ -365,7 +379,7 @@ class PartialButtonActionView private constructor(
                         oldValue = localQuantity
                     )
                     localQuantity = quantity
-                    //fire again to update + and - button
+                    // fire again to update + and - button
                     setValue(localQuantity)
                 }
             }
@@ -395,7 +409,7 @@ class PartialButtonActionView private constructor(
                     buttonListener.buyNowClick(btnBuyNow.text.toString())
                 }
 
-                generateTheme(ProductDetailCommonConstant.KEY_BUTTON_SECONDARY)
+                generateTheme(ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN)
                 show()
             }
 
@@ -406,7 +420,7 @@ class PartialButtonActionView private constructor(
                     if (hasComponentLoading) return@setOnClickListener
                     buttonListener.addToCartClick(btnAddToCart.text.toString())
                 }
-                generateTheme(ProductDetailCommonConstant.KEY_BUTTON_PRIMARY)
+                generateTheme(ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN)
                 show()
             }
 
@@ -448,8 +462,8 @@ class PartialButtonActionView private constructor(
         }
     }
 
-    private fun shopModeratedManageButton(){
-        with(binding){
+    private fun shopModeratedManageButton() {
+        with(binding) {
             if (isShopModerate) {
                 btnTopAds.isEnabled = false
                 btnEditProduct.isEnabled = false
@@ -500,12 +514,12 @@ class PartialButtonActionView private constructor(
 }
 
 data class TokoNowButtonData(
-    //var
+    // var
     val totalStockAtcVariant: Int = 0,
     val productTitle: String = "",
     val isVariant: Boolean = false,
 
-    //non var
+    // non var
     val minQuantity: Int = DEFAULT_MIN_QTY,
     val maxQuantity: Int = DEFAULT_ATC_MAX_ORDER,
     val selectedMiniCart: MiniCartItem.MiniCartItemProduct? = null

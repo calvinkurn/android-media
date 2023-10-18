@@ -167,6 +167,11 @@
     <string name="loginregister_what_help_do_you_need">Butuh bantuan apa?</string>
     <string name="loginregister_need_another_help">Butuh bantuan lain? Hubungi Tokopedia Care</string>
 
+    <!-- Forbidden Page -->
+    <string name="forbidden_title"><![CDATA[<b>Peringatan</b>]]></string>
+    <string name="forbidden_msg"><![CDATA[<p>Kami mendeteksi adanya aktivitas mencurigakan pada perangkat Anda yang melanggar <u><font color=\'#42b549\'>Persyaratan Layanan</font></u> Tokopedia.</p> <p>Anda bisa kembali menggunakan aplikasi Tokopedia setelah aktivitas tersebut dihentikan.</p>]]></string>
+    <string name="forbidden_button">Coba Lagi</string>
+
     <!--Other Method Bottom Sheet-->
     <string name="other_method_email">E-mail</string>
     <string name="other_method_title">Pilih metode untuk Daftar</string>

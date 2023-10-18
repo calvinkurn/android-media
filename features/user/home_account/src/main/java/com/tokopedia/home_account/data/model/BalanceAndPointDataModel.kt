@@ -47,5 +47,10 @@ data class WalletappGetAccountBalance(
     var isHidden: Boolean = false,
     @SerializedName("is_show") @Expose
     var isShow: Boolean = false,
-    var hideTitle: Boolean = false
+    @SerializedName("type") @Expose
+    var type: String = "",
+    @SerializedName("status_name") @Expose
+    var statusName: String = "",
+    var hideTitle: Boolean = false,
+    var titleAsset: String = ""
 )

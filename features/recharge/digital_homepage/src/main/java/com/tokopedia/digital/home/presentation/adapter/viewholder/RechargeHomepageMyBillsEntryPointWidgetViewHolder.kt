@@ -7,6 +7,7 @@ import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeMyBillsEntrypointBinding
 import com.tokopedia.digital.home.model.RechargeHomepageMyBillsEntryPointModel
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
@@ -41,7 +42,10 @@ class RechargeHomepageMyBillsEntryPointWidgetViewHolder(
             }
 
             itemView.setOnClickListener {
-                RouteManager.route(it.context, sectionItem.applink)
+                listener.onRechargeSectionItemClicked(sectionItem)
+            }
+            binding.root.addOnImpressionListener(element.section) {
+                listener.onRechargeSectionItemImpression(element.section)
             }
         } else {
             binding.containerContent.gone()

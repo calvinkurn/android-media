@@ -4,12 +4,21 @@ internal const val QUERY_RATESV3 = "ratesV3"
 internal const val QUERY_RATESV3_API = "ratesV3Api"
 
 internal fun ratesQuery(queryName: String) = """
-query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
-  ${queryName}(input: ${"$"}param) {
+query $queryName(${"$"}param : OngkirRatesV3Input!) {
+  $queryName(input: ${"$"}param) {
     ratesv3 {
       id
       rates_id
       type
+      origin {
+        city_id
+        city_name
+      }
+      destination {
+        city_id
+        city_name
+      }
+      weight
       error {
         error_id
         error_message
@@ -37,6 +46,7 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
           text_service_desc
           text_eta_summarize
           error_code
+          text_service_ticker
         }
         features {
           dynamic_price {
@@ -159,6 +169,8 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
         service_id
         is_applied
         image_url
+        image_url_chosen
+        quota_message
         discounted_rate
         shipping_rate
         benefit_amount
@@ -207,6 +219,8 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
         service_id
         is_applied
         image_url
+        image_url_chosen
+        quota_message
         discounted_rate
         shipping_rate
         benefit_amount
@@ -264,6 +278,15 @@ internal fun ratesQuery() = """
         ratesv3 {
           id
           rates_id
+          origin {
+            city_id
+            city_name
+          }
+          destination {
+            city_id
+            city_name
+          }
+          weight
           type
           error {
             error_id
@@ -292,6 +315,7 @@ internal fun ratesQuery() = """
               text_service_desc
               text_eta_summarize
               error_code
+              text_service_ticker
             }
             features {
               dynamic_price {
@@ -414,6 +438,8 @@ internal fun ratesQuery() = """
             service_id
             is_applied
             image_url
+            image_url_chosen
+            quota_message
             discounted_rate
             shipping_rate
             benefit_amount
@@ -462,6 +488,8 @@ internal fun ratesQuery() = """
             service_id
             is_applied
             image_url
+            image_url_chosen
+            quota_message
             discounted_rate
             shipping_rate
             benefit_amount

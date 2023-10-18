@@ -26,7 +26,7 @@ import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.adapter.TopAdsHeadlineKeyAdapter
 import com.tokopedia.top_ads_headline.view.adapter.TopAdsHeadlineKeySelectedAdapter
 import com.tokopedia.top_ads_headline.view.viewmodel.TopAdsHeadlineKeyViewModel
-import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
+import com.tokopedia.topads.common.domain.model.createheadline.TopAdsManageHeadlineInput
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.KeywordData
@@ -43,6 +43,8 @@ import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.topads.common.R as topadscommonR
+import com.tokopedia.top_ads_headline.R as top_ads_headlineR
 
 /**
  * Created by Pika on 5/11/20.
@@ -209,13 +211,13 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
 
     private fun setToolTip() {
         val tooltipView =
-            layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null)
+            layoutInflater.inflate(topadscommonR.layout.tooltip_custom_view, null)
                 .apply {
-                    tvToolTipText = this.findViewById(R.id.tooltip_text)
+                    tvToolTipText = this.findViewById(topadscommonR.id.tooltip_text)
                     tvToolTipText?.text =
                         getString(R.string.topads_headline_keyword_bottomsheet_title1)
-                    imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
-                    imgTooltipIcon?.setImageDrawable(this.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
+                    imgTooltipIcon = this.findViewById(topadscommonR.id.tooltip_icon)
+                    imgTooltipIcon?.setImageDrawable(this.context.getResDrawable(topadscommonR.drawable.topads_ic_tips))
                 }
         tipBtn?.addItem(tooltipView)
         tipBtn?.setOnClickListener {
@@ -226,20 +228,20 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
             tipsList.apply {
                 add(TipsUiHeaderModel(R.string.topads_headline_keyword_bottomsheet_title1))
                 add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc1,
-                    R.drawable.topads_create_ic_checklist))
+                    topadscommonR.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc2,
-                    R.drawable.topads_create_ic_checklist))
+                    topadscommonR.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc3,
-                    R.drawable.topads_create_ic_checklist))
+                    topadscommonR.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc4,
-                    R.drawable.topads_create_ic_checklist))
+                    topadscommonR.drawable.topads_create_ic_checklist))
                 add(TipsUiHeaderModel(R.string.topads_headline_keyword_bottomsheet_title2))
                 add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc5,
-                    R.drawable.topads_create_ic_checklist))
+                    topadscommonR.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc6,
-                    R.drawable.topads_create_ic_checklist))
+                    topadscommonR.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc7,
-                    R.drawable.topads_create_ic_checklist))
+                    topadscommonR.drawable.topads_create_ic_checklist))
             }
             val tipsListSheet =
                 context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
@@ -370,7 +372,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
 
     private fun showAlreadyExistError() {
         view?.let { it1 ->
-            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(com.tokopedia.topads.common.R.dimen.dp_60)
+            Toaster.toasterCustomBottomHeight = it1.resources.getDimensionPixelSize(top_ads_headlineR.dimen.toaster_custom_bottom_height)
             Toaster.build(it1,
                 getString(R.string.topads_headline_keyword_already_exist),
                 Toaster.LENGTH_LONG,
@@ -426,12 +428,12 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     }
 
     private fun setCount() {
-        selectedTitle?.text = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_list_count),
+        selectedTitle?.text = String.format(getString(topadscommonR.string.topads_common_selected_list_count),
             keywordSelectedAdapter.itemCount)
         selectedTitle?.visibility =
             if (keywordSelectedAdapter.itemCount > 0) View.VISIBLE else View.GONE
         selectKeyInfo?.text =
-            String.format(getString(com.tokopedia.topads.common.R.string.format_selected_keyword), getSelectedKeywords().size)
+            String.format(getString(topadscommonR.string.format_selected_keyword), getSelectedKeywords().size)
     }
 
     override fun initInjector() {

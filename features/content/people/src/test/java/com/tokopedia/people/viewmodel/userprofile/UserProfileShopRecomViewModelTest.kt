@@ -3,16 +3,23 @@ package com.tokopedia.people.viewmodel.userprofile
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
+import com.tokopedia.people.data.UserFollowRepository
 import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
 import com.tokopedia.people.model.content.ContentModelBuilder
+import com.tokopedia.people.model.review.UserReviewModelBuilder
 import com.tokopedia.people.model.shoprecom.ShopRecomModelBuilder
 import com.tokopedia.people.model.userprofile.FollowInfoUiModelBuilder
 import com.tokopedia.people.model.userprofile.MutationUiModelBuilder
 import com.tokopedia.people.model.userprofile.ProfileUiModelBuilder
 import com.tokopedia.people.model.userprofile.ProfileWhitelistUiModelBuilder
 import com.tokopedia.people.robot.UserProfileViewModelRobot
-import com.tokopedia.people.util.*
+import com.tokopedia.people.util.andThen
+import com.tokopedia.people.util.assertEmpty
+import com.tokopedia.people.util.assertEvent
+import com.tokopedia.people.util.assertFalse
+import com.tokopedia.people.util.assertTrue
+import com.tokopedia.people.util.equalTo
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -34,6 +41,7 @@ class UserProfileShopRecomViewModelTest {
     private val testDispatcher = rule.dispatchers
 
     private val mockRepo: UserProfileRepository = mockk(relaxed = true)
+    private val mockFollowRepo: UserFollowRepository = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
 
     private val commonBuilder = CommonModelBuilder()
@@ -43,11 +51,12 @@ class UserProfileShopRecomViewModelTest {
     private val mutationBuilder = MutationUiModelBuilder()
     private val profileBuilder = ProfileUiModelBuilder()
     private val contentBuilder = ContentModelBuilder()
+    private val reviewBuilder = UserReviewModelBuilder()
 
     private val mockMutationSuccess = mutationBuilder.buildSuccess()
     private val mockMutationError = mutationBuilder.buildError()
     private val mockException = commonBuilder.buildException()
-    private val mockHasAcceptTnc = profileWhitelistBuilder.buildHasAcceptTnc()
+    private val mockCreationInfo = profileWhitelistBuilder.buildCreationInfoModel()
     private val mockShopRecomIsShown = shopRecomBuilder.buildModelIsShown(nextCursor = "")
     private val mockShopRecomIsNotShown = shopRecomBuilder.buildModelIsShown(nextCursor = "", isShown = false)
     private val mockShopRecomIsShownNoLoadMore = shopRecomBuilder.buildModelIsShown(nextCursor = "")
@@ -75,12 +84,17 @@ class UserProfileShopRecomViewModelTest {
     )
     private val mockTabsModel = contentBuilder.buildTabsModel(false)
 
-    private val robot = UserProfileViewModelRobot(
-        username = mockOwnUserId,
-        repo = mockRepo,
-        dispatcher = testDispatcher,
-        userSession = mockUserSession,
-    )
+    private val mockProfileSettings = reviewBuilder.buildReviewSetting(isEnabled = false)
+
+    private val robot by lazy {
+        UserProfileViewModelRobot(
+            username = mockOwnUserId,
+            repo = mockRepo,
+            followRepo = mockFollowRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+        )
+    }
 
     private val shopActionFollow = ShopFollowAction.Follow
     private val shopActionUnfollow = ShopFollowAction.UnFollow
@@ -88,8 +102,9 @@ class UserProfileShopRecomViewModelTest {
     @Before
     fun setUp() {
         coEvery { mockUserSession.userId } returns mockOwnUserId
-        coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
+        coEvery { mockRepo.getCreationInfo() } returns mockCreationInfo
         coEvery { mockRepo.getUserProfileTab(any()) } returns mockTabsModel
+        coEvery { mockRepo.getProfileSettings(any()) } returns mockProfileSettings
     }
 
     @Test
@@ -362,7 +377,7 @@ class UserProfileShopRecomViewModelTest {
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom("") } returns mockShopRecomIsShownTypeShop
-        coEvery { mockRepo.shopFollowUnfollow(mockItemId.toString(), shopActionFollow) } returns mockMutationSuccess
+        coEvery { mockFollowRepo.followShop(mockItemId.toString(), shopActionFollow) } returns mockMutationSuccess
 
         robot.use {
             it.setup {
@@ -397,7 +412,7 @@ class UserProfileShopRecomViewModelTest {
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom("") } returns mockShopRecomIsShownBeforeUnfollow
-        coEvery { mockRepo.shopFollowUnfollow(mockItemId.toString(), shopActionUnfollow) } returns mockMutationSuccess
+        coEvery { mockFollowRepo.followShop(mockItemId.toString(), shopActionUnfollow) } returns mockMutationSuccess
 
         robot.use {
             it.setup {
@@ -432,7 +447,7 @@ class UserProfileShopRecomViewModelTest {
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom("") } returns mockShopRecomIsShownBeforeUnfollow
-        coEvery { mockRepo.shopFollowUnfollow(mockItemId.toString(), shopActionUnfollow) } returns mockMutationSuccess
+        coEvery { mockFollowRepo.followShop(mockItemId.toString(), shopActionUnfollow) } returns mockMutationSuccess
 
         robot.use {
             it.setup {
@@ -457,7 +472,7 @@ class UserProfileShopRecomViewModelTest {
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom("") } returns mockShopRecomIsShownTypeShop
-        coEvery { mockRepo.shopFollowUnfollow(any(), shopActionFollow) } returns mockMutationError
+        coEvery { mockFollowRepo.followShop(any(), shopActionFollow) } returns mockMutationError
 
         robot.use {
             it.setup {
@@ -488,7 +503,7 @@ class UserProfileShopRecomViewModelTest {
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom("") } returns mockShopRecomIsShownBeforeUnfollow
-        coEvery { mockRepo.shopFollowUnfollow(any(), shopActionUnfollow) } returns mockMutationError
+        coEvery { mockFollowRepo.followShop(any(), shopActionUnfollow) } returns mockMutationError
 
         robot.use {
             it.setup {
@@ -514,7 +529,7 @@ class UserProfileShopRecomViewModelTest {
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom("") } returns mockShopRecomIsShownTypeShop
-        coEvery { mockRepo.shopFollowUnfollow(any(), shopActionFollow) } throws mockException
+        coEvery { mockFollowRepo.followShop(any(), shopActionFollow) } throws mockException
 
         robot.use {
             it.setup {
@@ -545,7 +560,7 @@ class UserProfileShopRecomViewModelTest {
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom("") } returns mockShopRecomIsShownBeforeUnfollow
-        coEvery { mockRepo.shopFollowUnfollow(any(), shopActionUnfollow) } throws mockException
+        coEvery { mockFollowRepo.followShop(any(), shopActionUnfollow) } throws mockException
 
         robot.use {
             it.setup {
@@ -625,7 +640,7 @@ class UserProfileShopRecomViewModelTest {
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom("") } returns mockShopRecomIsShownTypeBuyer
-        coEvery { mockRepo.followProfile(mockEncryptedId) } returns mockMutationSuccess
+        coEvery { mockFollowRepo.followUser(mockEncryptedId, true) } returns mockMutationSuccess
 
         robot.use {
             it.setup {
@@ -660,7 +675,7 @@ class UserProfileShopRecomViewModelTest {
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom("") } returns mockShopRecomIsShownBeforeUnfollow
-        coEvery { mockRepo.unFollowProfile(mockEncryptedId) } returns mockMutationSuccess
+        coEvery { mockFollowRepo.followUser(mockEncryptedId, false) } returns mockMutationSuccess
 
         robot.use {
             it.setup {
@@ -685,7 +700,7 @@ class UserProfileShopRecomViewModelTest {
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom("") } returns mockShopRecomIsShownTypeBuyer
-        coEvery { mockRepo.followProfile(mockEncryptedId) } returns mockMutationError
+        coEvery { mockFollowRepo.followUser(mockEncryptedId, true) } returns mockMutationError
 
         robot.use {
             it.setup {
@@ -716,7 +731,7 @@ class UserProfileShopRecomViewModelTest {
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom("") } returns mockShopRecomIsShownBeforeUnfollow
-        coEvery { mockRepo.unFollowProfile(mockEncryptedId) } returns mockMutationError
+        coEvery { mockFollowRepo.followUser(mockEncryptedId, false) } returns mockMutationError
 
         robot.use {
             it.setup {
@@ -742,7 +757,7 @@ class UserProfileShopRecomViewModelTest {
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom("") } returns mockShopRecomIsShownTypeBuyer
-        coEvery { mockRepo.followProfile(mockEncryptedId) } throws mockException
+        coEvery { mockFollowRepo.followUser(mockEncryptedId, true) } throws mockException
 
         robot.use {
             it.setup {
@@ -773,7 +788,7 @@ class UserProfileShopRecomViewModelTest {
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom("") } returns mockShopRecomIsShownBeforeUnfollow
-        coEvery { mockRepo.unFollowProfile(mockEncryptedId) } throws mockException
+        coEvery { mockFollowRepo.followUser(mockEncryptedId, false) } throws mockException
 
         robot.use {
             it.setup {

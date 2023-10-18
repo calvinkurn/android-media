@@ -1,5 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener

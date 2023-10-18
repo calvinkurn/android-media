@@ -13,19 +13,19 @@ import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AddEditProductDraftViewModel @Inject constructor(
-        private val coroutineDispatcher: CoroutineDispatchers,
-        private val deleteProductDraftUseCase: DeleteProductDraftUseCase,
-        private val deleteAllProductDraftUseCase: DeleteAllProductDraftUseCase,
-        private val getAllProductDraftUseCase: GetAllProductDraftUseCase,
-        private val getAllProductDraftFlowUseCase: GetAllProductDraftFlowUseCase
+    private val coroutineDispatcher: CoroutineDispatchers,
+    private val deleteProductDraftUseCase: DeleteProductDraftUseCase,
+    private val deleteAllProductDraftUseCase: DeleteAllProductDraftUseCase,
+    private val getAllProductDraftUseCase: GetAllProductDraftUseCase,
+    private val getAllProductDraftFlowUseCase: GetAllProductDraftFlowUseCase
 ) : BaseViewModel(coroutineDispatcher.main) {
 
     private val _drafts = MutableLiveData<Result<List<ProductDraft>>>()
@@ -59,8 +59,8 @@ class AddEditProductDraftViewModel @Inject constructor(
         launchCatchError(coroutineDispatcher.io, {
             _drafts.postValue(Success(getAllProductDraftUseCase.executeOnBackground()))
         }, onError = {
-            _drafts.postValue(Fail(it))
-        })
+                _drafts.postValue(Fail(it))
+            })
     }
 
     fun deleteProductDraft(draftId: Long) {
@@ -68,15 +68,15 @@ class AddEditProductDraftViewModel @Inject constructor(
             deleteProductDraftUseCase.params = DeleteProductDraftUseCase.createRequestParams(draftId)
             _deleteDraft.postValue(Success(deleteProductDraftUseCase.executeOnBackground()))
         }, onError = {
-            _deleteDraft.postValue(Fail(it))
-        })
+                _deleteDraft.postValue(Fail(it))
+            })
     }
 
     fun deleteAllProductDraft() {
         launchCatchError(coroutineDispatcher.io, {
             _deleteAllDraft.postValue(Success(deleteAllProductDraftUseCase.executeOnBackground()))
         }, onError = {
-            _deleteAllDraft.postValue(Fail(it))
-        })
+                _deleteAllDraft.postValue(Fail(it))
+            })
     }
 }

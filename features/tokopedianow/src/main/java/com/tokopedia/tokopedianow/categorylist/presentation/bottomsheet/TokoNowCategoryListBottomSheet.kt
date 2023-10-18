@@ -17,6 +17,7 @@ import com.tokopedia.globalerror.GlobalError.Companion.MAINTENANCE
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_FULL
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -24,7 +25,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categorylist.analytic.CategoryListAnalytics
 import com.tokopedia.tokopedianow.categorylist.di.component.DaggerCategoryListComponent
-import com.tokopedia.tokopedianow.categorylist.presentation.activity.TokoNowCategoryListActivity.Companion.PARAM_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.categorylist.presentation.uimodel.CategoryListItemUiModel
 import com.tokopedia.tokopedianow.categorylist.presentation.view.CategoryListView
 import com.tokopedia.tokopedianow.categorylist.presentation.view.CategoryListView.CategoryListListener
@@ -46,15 +46,11 @@ import javax.inject.Inject
 class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
 
     companion object {
-        private const val ERROR_STATE_NOT_FOUND_IMAGE_URL = "https://images.tokopedia.net/img/error_page_400_category_list.png"
+        private const val ERROR_STATE_NOT_FOUND_IMAGE_URL = TokopediaImageUrl.ERROR_STATE_NOT_FOUND_IMAGE_URL
         private val TAG = TokoNowCategoryListBottomSheet::class.simpleName
 
-        fun newInstance(warehouseId: String): TokoNowCategoryListBottomSheet {
-            return TokoNowCategoryListBottomSheet().apply {
-                arguments = Bundle().apply {
-                    putString(PARAM_WAREHOUSE_ID, warehouseId)
-                }
-            }
+        fun newInstance(): TokoNowCategoryListBottomSheet {
+            return TokoNowCategoryListBottomSheet()
         }
     }
 
@@ -121,20 +117,19 @@ class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
     private fun observeLiveData() {
         observe(viewModelTokoNow.categoryList) {
             if (it is Success) {
-                if(it.data.header.errorCode.isNullOrEmpty()){
+                if (it.data.header.errorCode.isNullOrEmpty()) {
                     showCategoryList(CategoryListMapper.mapToUiModel(it.data.data))
                 } else {
                     showGlobalError(null, it.data.header.errorCode)
                 }
-            } else if(it is Fail) {
+            } else if (it is Fail) {
                 showGlobalError(it.throwable)
             }
         }
     }
 
     private fun getCategoryList() {
-        val warehouseId = arguments?.getString(PARAM_WAREHOUSE_ID).orEmpty()
-        viewModelTokoNow.getCategoryList(warehouseId)
+        viewModelTokoNow.getCategoryList()
         showLoader()
     }
 
@@ -175,9 +170,12 @@ class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
     }
 
     private fun createCategoryList(category: CategoryListItemUiModel): CategoryListView {
-        return CategoryListView(requireContext(), analytics, object: CategoryListListener {
-            override fun onClickCategoryItem() = dismiss()
-        }).apply {
+        return CategoryListView(
+            requireContext(), analytics,
+            object : CategoryListListener {
+                override fun onClickCategoryItem() = dismiss()
+            }
+        ).apply {
             val paddingLeft = context?.resources
                 ?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
             setPadding(paddingLeft, 0, 0, 0)
@@ -185,9 +183,9 @@ class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun showGlobalError(throwable: Throwable?, errorCode: String = ""){
+    private fun showGlobalError(throwable: Throwable?, errorCode: String = "") {
         showError()
-        val typeError = when{
+        val typeError = when {
             throwable is UnknownHostException -> NO_CONNECTION
             errorCode == ERROR_PAGE_FULL -> PAGE_FULL
             errorCode == ERROR_SERVER -> SERVER_ERROR
@@ -196,9 +194,9 @@ class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
         }
 
         globalError?.setType(typeError)
-        if(errorCode == ERROR_PAGE_NOT_FOUND){
+        if (errorCode == ERROR_PAGE_NOT_FOUND) {
             showGlobalErrorPageNotFound()
-        } else if (errorCode == ERROR_SERVER || errorCode == ERROR_MAINTENANCE){
+        } else if (errorCode == ERROR_SERVER || errorCode == ERROR_MAINTENANCE) {
             globalError?.let {
                 it.errorAction.show()
                 it.errorAction.text = context?.getString(R.string.tokopedianow_category_list_bottom_sheet_error_go_to_homepage)
@@ -206,7 +204,7 @@ class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
                     dismiss()
                 }
             }
-        } else if(typeError == NO_CONNECTION){
+        } else if (typeError == NO_CONNECTION) {
             globalError?.setButtonFull(true)
             actionClickListenerTryAgain()
         } else {
@@ -215,7 +213,7 @@ class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
         setTitle("")
     }
 
-    private fun showGlobalErrorPageNotFound(){
+    private fun showGlobalErrorPageNotFound() {
         globalError?.let {
             it.errorIllustration.setImage(ERROR_STATE_NOT_FOUND_IMAGE_URL, 0f)
             it.errorTitle.text = context?.getString(R.string.tokopedianow_category_list_bottom_sheet_error_not_found_title).orEmpty()
@@ -224,7 +222,7 @@ class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
         actionClickListenerTryAgain()
     }
 
-    private fun actionClickListenerTryAgain(){
+    private fun actionClickListenerTryAgain() {
         globalError?.let {
             it.setActionClickListener {
                 getCategoryList()
@@ -244,7 +242,7 @@ class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
         loader?.show()
     }
 
-    private fun showError(){
+    private fun showError() {
         loader?.hide()
         contentContainer?.hide()
         globalError?.show()

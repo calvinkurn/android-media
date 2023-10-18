@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_container_balance"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingVertical="8dp"
+    android:paddingLeft="@dimen/balance_inner_left_padding"
+    android:paddingRight="@dimen/balance_inner_right_padding">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/home_iv_logo_balance"
+        android:layout_width="@dimen/balance_image_size"
+        android:layout_height="@dimen/balance_image_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/home_tv_title"
+        tools:text="GoPay fwdwdw"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constrainedWidth="true"
+        android:layout_marginStart="@dimen/balance_inner_content_padding"
+        android:lines="1"
+        android:singleLine="true"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toEndOf="@id/home_iv_logo_balance"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/home_iv_logo_balance"
+        app:layout_constraintBottom_toTopOf="@id/home_tv_subtitle"
+        app:layout_constraintHorizontal_bias="0"
+        app:typographyType="display_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/home_tv_subtitle"
+        tools:text="180.000 Coins"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintWidth_default="wrap"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="@dimen/balance_inner_content_padding"
+        android:lines="1"
+        android:singleLine="true"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toEndOf="@id/home_iv_logo_balance"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/home_iv_logo_balance"
+        app:layout_constraintTop_toBottomOf="@id/home_tv_title"
+        app:layout_constraintHorizontal_bias="0"
+        app:typographyType="small" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

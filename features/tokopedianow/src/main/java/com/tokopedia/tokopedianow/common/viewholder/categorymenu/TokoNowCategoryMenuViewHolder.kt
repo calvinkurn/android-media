@@ -1,11 +1,13 @@
 package com.tokopedia.tokopedianow.common.viewholder.categorymenu
 
+import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -19,6 +21,8 @@ import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuI
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryMenuBinding
+import com.tokopedia.tokopedianow.oldcategory.utils.TOKONOW_CATEGORY_L1
+import com.tokopedia.tokopedianow.oldcategory.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowCategoryMenuViewHolder(
@@ -35,6 +39,7 @@ class TokoNowCategoryMenuViewHolder(
     }
 
     private var binding: ItemTokopedianowCategoryMenuBinding? by viewBinding()
+    private var headerName: String = String.EMPTY
 
     private val adapter by lazy {
         TokoNowCategoryMenuAdapter(
@@ -62,25 +67,33 @@ class TokoNowCategoryMenuViewHolder(
     }
 
     override fun onSeeAllClicked(
+        context: Context,
         headerName: String,
-        appLink: String
+        appLink: String,
+        widgetId: String
     ) {
         onClickSeeAll(appLink)
     }
 
-    override fun onCategoryItemClicked(data: TokoNowCategoryMenuItemUiModel, itemPosition: Int) {
-        listener?.onCategoryMenuItemClicked(data, itemPosition)
+    override fun onCategoryItemClicked(
+        data: TokoNowCategoryMenuItemUiModel,
+        itemPosition: Int
+    ) {
+        listener?.onCategoryMenuItemClicked(data.copy(headerName = headerName), itemPosition)
     }
 
-    override fun onCategoryItemImpressed(data: TokoNowCategoryMenuItemUiModel, itemPosition: Int) {
-        listener?.onCategoryMenuItemImpressed(data, itemPosition)
+    override fun onCategoryItemImpressed(
+        data: TokoNowCategoryMenuItemUiModel,
+        itemPosition: Int
+    ) {
+        listener?.onCategoryMenuItemImpressed(data.copy(headerName = headerName), itemPosition)
     }
 
     override fun onChannelExpired() { /* nothing to do */ }
 
     private fun ItemTokopedianowCategoryMenuBinding.showLoadingState() {
         llCategory.hide()
-        rvCategory.hide()
+        recyclerView.hide()
         header.hide()
         categoryShimmering.categoryShimmeringLayout.show()
     }
@@ -91,7 +104,7 @@ class TokoNowCategoryMenuViewHolder(
         categoryShimmering.categoryShimmeringLayout.hide()
         llCategory.hide()
         header.show()
-        rvCategory.show()
+        recyclerView.show()
 
         showCategoryMenu(
             data = data
@@ -111,10 +124,18 @@ class TokoNowCategoryMenuViewHolder(
     }
 
     private fun ItemTokopedianowCategoryMenuBinding.setHeader(data: TokoNowCategoryMenuUiModel) {
+        headerName = data.title.ifEmpty {
+            val source = data.source
+                    if (source == TOKONOW_CATEGORY_L1 || source == TOKONOW_CATEGORY_L2) {
+                root.context.getString(R.string.tokopedianow_category_l1_category_menu_title)
+            } else {
+                root.context.getString(R.string.tokopedianow_repurchase_category_menu_title)
+            }
+        }
         header.setListener(this@TokoNowCategoryMenuViewHolder)
         header.setModel(
             model = TokoNowDynamicHeaderUiModel(
-                title = data.title.ifEmpty { root.context.getString(R.string.tokopedianow_repurchase_category_menu_title) },
+                title = headerName,
                 ctaText = root.context.getString(R.string.tokopedianow_see_all),
                 ctaTextLink = data.seeAllAppLink
             )
@@ -122,7 +143,7 @@ class TokoNowCategoryMenuViewHolder(
     }
 
     private fun ItemTokopedianowCategoryMenuBinding.setCategoryList(data: TokoNowCategoryMenuUiModel) {
-        rvCategory.run {
+        recyclerView.run {
             adapter = this@TokoNowCategoryMenuViewHolder.adapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         }
@@ -144,7 +165,7 @@ class TokoNowCategoryMenuViewHolder(
             }
 
             categoryShimmering.categoryShimmeringLayout.hide()
-            rvCategory.hide()
+            recyclerView.hide()
             header.hide()
         }
     }

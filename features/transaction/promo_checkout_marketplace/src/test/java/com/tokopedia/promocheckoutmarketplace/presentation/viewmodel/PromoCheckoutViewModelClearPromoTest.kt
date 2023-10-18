@@ -26,17 +26,17 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
 
     private fun mapUiModel(response: ClearPromoResponse): ClearPromoUiModel {
         return ClearPromoUiModel(
-                successDataModel = SuccessDataUiModel(
-                        success = response.successData.success,
-                        tickerMessage = response.successData.tickerMessage,
-                        defaultEmptyPromoMessage = response.successData.defaultEmptyPromoMessage,
-                )
+            successDataModel = SuccessDataUiModel(
+                success = response.successData.success,
+                tickerMessage = response.successData.tickerMessage,
+                defaultEmptyPromoMessage = response.successData.defaultEmptyPromoMessage
+            )
         )
     }
 
     @Test
     fun `WHEN clear promo and success THEN clear promo response action state should not be null`() {
-        //given
+        // given
         val response = provideClearPromoResponseSuccess()
 
         coEvery { clearCacheAutoApplyUseCase.setParams(any()) } returns clearCacheAutoApplyUseCase
@@ -46,16 +46,16 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
 
         viewModel.setPromoListValue(provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData())
 
-        //when
+        // when
         viewModel.clearPromo(ValidateUsePromoRequest(), ArrayList())
 
-        //then
+        // then
         assertNotNull(viewModel.clearPromoResponse.value)
     }
 
     @Test
     fun `WHEN clear promo and success THEN clear promo response action state should be success`() {
-        //given
+        // given
         val validateUseRequest = provideApplyPromoGlobalAndMerchantRequestInvalid()
         val response = provideClearPromoResponseSuccess()
         viewModel.setPromoListValue(provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData())
@@ -65,16 +65,16 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
             firstArg<(ClearPromoUiModel) -> Unit>().invoke(mapUiModel(response))
         }
 
-        //when
+        // when
         viewModel.clearPromo(validateUseRequest, ArrayList())
 
-        //then
+        // then
         assert(viewModel.clearPromoResponse.value?.state == ClearPromoResponseAction.ACTION_STATE_SUCCESS)
     }
 
     @Test
     fun `WHEN clear promo and failed THEN clear promo response action state should not be null`() {
-        //given
+        // given
         val response = provideClearPromoResponseFailed()
         viewModel.setPromoListValue(provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData())
 
@@ -83,16 +83,16 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
             firstArg<(ClearPromoUiModel) -> Unit>().invoke(mapUiModel(response))
         }
 
-        //when
+        // when
         viewModel.clearPromo(ValidateUsePromoRequest(), ArrayList())
 
-        //then
+        // then
         assertNotNull(viewModel.clearPromoResponse.value)
     }
 
     @Test
     fun `WHEN clear promo and failed THEN clear promo response action state should be error`() {
-        //given
+        // given
         val response = provideClearPromoResponseFailed()
         viewModel.setPromoListValue(provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData())
 
@@ -101,10 +101,10 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
             firstArg<(ClearPromoUiModel) -> Unit>().invoke(mapUiModel(response))
         }
 
-        //when
+        // when
         viewModel.clearPromo(ValidateUsePromoRequest(), ArrayList())
 
-        //then
+        // then
         assert(viewModel.clearPromoResponse.value?.state == ClearPromoResponseAction.ACTION_STATE_ERROR)
     }
 
@@ -189,10 +189,10 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
             firstArg<(ClearPromoUiModel) -> Unit>().invoke(mapUiModel(response))
         }
 
-        //when
+        // when
         viewModel.clearPromo(ValidateUsePromoRequest(), ArrayList(), clearPromoParam)
 
-        //then
+        // then
         assert(clearPromoParam.orderData.codes.isNotEmpty())
         assert(clearPromoParam.orderData.orders.isEmpty())
     }
@@ -332,10 +332,10 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
             firstArg<(ClearPromoUiModel) -> Unit>().invoke(mapUiModel(response))
         }
 
-        //when
+        // when
         viewModel.clearPromo(applyPromoParam, ArrayList(), clearPromoParam)
 
-        //then
+        // then
         assert(clearPromoParam.orderData.codes.isEmpty())
         assert(clearPromoParam.orderData.orders.isNotEmpty())
         assert(clearPromoParam.orderData.orders[0].codes.isNotEmpty())
@@ -356,10 +356,10 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
             firstArg<(ClearPromoUiModel) -> Unit>().invoke(mapUiModel(response))
         }
 
-        //when
+        // when
         viewModel.clearPromo(applyPromoParam, ArrayList(), clearPromoParam)
 
-        //then
+        // then
         assert(clearPromoParam.orderData.codes.isEmpty())
         assert(clearPromoParam.orderData.orders.isNotEmpty())
         assert(clearPromoParam.orderData.orders[0].codes.isNotEmpty())
@@ -379,5 +379,4 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         // then
         assert(viewModel.clearPromoResponse.value?.state == ClearPromoResponseAction.ACTION_STATE_ERROR)
     }
-
 }

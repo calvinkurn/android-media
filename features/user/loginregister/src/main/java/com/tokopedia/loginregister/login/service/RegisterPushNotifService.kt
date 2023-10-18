@@ -10,10 +10,8 @@ import androidx.annotation.RequiresApi
 import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.loginregister.login.data.SignResult
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
-import com.tokopedia.loginregister.login.di.LoginComponent
-import com.tokopedia.loginregister.login.domain.RegisterPushNotificationParamsModel
-import com.tokopedia.loginregister.login.domain.RegisterPushNotificationUseCase
-import com.tokopedia.sessioncommon.di.SessionModule
+import com.tokopedia.loginregister.registerpushnotif.domain.RegisterPushNotificationParamsModel
+import com.tokopedia.loginregister.registerpushnotif.domain.RegisterPushNotificationUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +19,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.security.*
 import javax.inject.Inject
-import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
 
 /**

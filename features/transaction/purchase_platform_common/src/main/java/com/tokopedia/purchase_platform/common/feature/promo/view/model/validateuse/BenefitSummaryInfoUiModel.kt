@@ -5,8 +5,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class BenefitSummaryInfoUiModel(
-        var finalBenefitAmountStr: String = "",
-        var finalBenefitAmount: Int = -1,
-        var finalBenefitText: String = "",
-        var summaries: List<SummariesItemUiModel> = listOf()
+    var finalBenefitAmountStr: String = "",
+    var finalBenefitAmount: Int = -1,
+    var finalBenefitText: String = "",
+    var summaries: List<SummariesItemUiModel> = listOf()
 ) : Parcelable

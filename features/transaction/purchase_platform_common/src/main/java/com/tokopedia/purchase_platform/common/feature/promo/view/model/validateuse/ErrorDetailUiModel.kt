@@ -5,5 +5,5 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ErrorDetailUiModel(
-        var message: String = ""
+    var message: String = ""
 ) : Parcelable

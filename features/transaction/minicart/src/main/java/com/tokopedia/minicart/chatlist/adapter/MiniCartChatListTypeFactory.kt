@@ -14,5 +14,4 @@ interface MiniCartChatListTypeFactory {
     fun type(uiModel: MiniCartChatSeparatorUiModel): Int
 
     fun createViewHolder(parent: View, viewType: Int): AbstractViewHolder<*>
-
 }

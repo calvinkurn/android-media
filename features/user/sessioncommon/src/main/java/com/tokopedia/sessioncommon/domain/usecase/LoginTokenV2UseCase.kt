@@ -18,9 +18,9 @@ import javax.inject.Named
  * Copyright (c) 2021 PT. Tokopedia All rights reserved.
  */
 open class LoginTokenV2UseCase @Inject constructor(
-        val graphqlUseCase: GraphqlUseCase<LoginTokenPojoV2>,
-        private val userSession: UserSessionInterface):
-        UseCase<LoginTokenPojoV2>() {
+    val graphqlUseCase: GraphqlUseCase<LoginTokenPojoV2>,
+    private val userSession: UserSessionInterface):
+    UseCase<LoginTokenPojoV2>() {
 
     init {
         graphqlUseCase.setGraphqlQuery(LoginTokenV2Query.loginEmailQuery)

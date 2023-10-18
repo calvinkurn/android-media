@@ -6,12 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.StatusInfo
 import com.tokopedia.product.manage.common.feature.getstatusshop.domain.GetStatusShopUseCase
-import com.tokopedia.product.manage.common.feature.uploadstatus.domain.ClearUploadStatusUseCase
-import com.tokopedia.product.manage.common.feature.uploadstatus.domain.GetUploadStatusUseCase
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
@@ -21,6 +24,8 @@ import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManag
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStatusUseCase
 import com.tokopedia.product.manage.common.feature.uploadstatus.data.model.UploadStatusModel
+import com.tokopedia.product.manage.common.feature.uploadstatus.domain.ClearUploadStatusUseCase
+import com.tokopedia.product.manage.common.feature.uploadstatus.domain.GetUploadStatusUseCase
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapResultToUpdateParam
 import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
@@ -29,17 +34,30 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.data.Edi
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.countSelectedFilter
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
+import com.tokopedia.product.manage.feature.list.data.model.ProductArchivalInfo
 import com.tokopedia.product.manage.feature.list.domain.GetShopManagerPopupsUseCase
+import com.tokopedia.product.manage.feature.list.domain.GetShopWarehouseUseCase
 import com.tokopedia.product.manage.feature.list.domain.GetTickerUseCase
+import com.tokopedia.product.manage.feature.list.domain.ProductArchivalInfoUseCase
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.datasource.TickerStaticDataProvider
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToUiModels
-import com.tokopedia.product.manage.feature.list.view.model.*
-import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType.*
+import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType
+import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType.MultipleProduct
+import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType.SingleProduct
+import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
+import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
+import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
-import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
+import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
+import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
+import com.tokopedia.product.manage.feature.list.view.model.ViewState
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideLoadingDialog
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowLoadingDialog
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
 import com.tokopedia.product.manage.feature.multiedit.data.param.MenuParam
 import com.tokopedia.product.manage.feature.multiedit.data.param.ProductParam
 import com.tokopedia.product.manage.feature.multiedit.data.param.ShopParam
@@ -48,14 +66,18 @@ import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeletePr
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.common.data.model.ProductStock
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.ExtraInfo
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
-import com.tokopedia.shop.common.domain.interactor.*
+import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
+import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoTopAdsUseCase
+import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -66,10 +88,9 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductManageViewModel @Inject constructor(
@@ -94,6 +115,8 @@ class ProductManageViewModel @Inject constructor(
     private val getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase,
     private val getStatusShop: GetStatusShopUseCase,
     private val getTickerUseCase: GetTickerUseCase,
+    private val getShopWarehouse: GetShopWarehouseUseCase,
+    private val getProductArchival: ProductArchivalInfoUseCase,
     private val tickerStaticDataProvider: TickerStaticDataProvider,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -102,6 +125,9 @@ class ProductManageViewModel @Inject constructor(
         // Currently update data on server is not realtime.
         // Client need to add request delay in order to receive updated data.
         const val REQUEST_DELAY = 1000L
+
+        // If hit bulk edit more than once in a row
+        private const val REASON_DT_FOR_BULK_EDIT = "FORBIDDEN_DT_PRODUCT_DELETION"
     }
 
     val viewState: LiveData<ViewState>
@@ -156,6 +182,8 @@ class ProductManageViewModel @Inject constructor(
         get() = _uploadStatus
     val shopStatus: MutableLiveData<StatusInfo>
         get() = _shopStatus
+    val productArchivalInfo: MutableLiveData<Result<ProductArchivalInfo>>
+        get() = _productArchivalInfo
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _showTicker = MutableLiveData<Boolean>()
@@ -183,13 +211,13 @@ class ProductManageViewModel @Inject constructor(
     private val _deleteProductDialog = MutableLiveData<DeleteProductDialogType>()
     private val _uploadStatus = MutableLiveData<UploadStatusModel>()
     private val _shopStatus = MutableLiveData<StatusInfo>()
+    private val _productArchivalInfo = MutableLiveData<Result<ProductArchivalInfo>>()
 
     private var access: ProductManageAccess? = null
     private var getProductListJob: Job? = null
     private var getFilterTabJob: Job? = null
     private var warehouseId: String = ""
     private var totalProductCount = 0
-
 
     init {
         initGetUploadStatus()
@@ -245,30 +273,50 @@ class ProductManageViewModel @Inject constructor(
         }
     }
 
-    fun editProductsByStatus(productIds: List<String>, status: ProductStatus) {
+    fun editProductsByStatus(
+        productIds: List<String>,
+        status: ProductStatus
+    ) {
         launchCatchError(block = {
             showProgressDialog()
 
             val response = withContext(dispatchers.io) {
+                val warehouseResponse = async {
+                    getShopWarehouse.execute(userSessionInterface.shopId.toLongOrZero())
+                }.await()
+
+                val isShopDilayaniTokopedia =
+                    warehouseResponse.keroWarehouseShop.data?.fulfillment?.isNotEmpty().orFalse()
+
                 val shopParam = ShopParam(userSessionInterface.shopId)
 
                 val params = productIds.map { productId ->
                     ProductParam(productId = productId, shop = shopParam, status = status)
                 }
 
-                val requestParams = MultiEditProductUseCase.createRequestParam(params)
+                val requestParams =
+                    MultiEditProductUseCase.createRequestParam(params, isShopDilayaniTokopedia)
                 multiEditProductUseCase.execute(requestParams)
             }
 
             val success = response.results?.filter { it.isSuccess() }.orEmpty()
-            val failed = response.results?.filter { !it.isSuccess() }.orEmpty()
+            val failed =
+                response.results?.filter { !it.isSuccess() && it.result?.header?.reason != REASON_DT_FOR_BULK_EDIT }
+                    .orEmpty()
+            val failedDilayaniTokopediaProduct = response.results?.filter {
+                !it.isSuccess() &&
+                    it.result?.header?.reason == REASON_DT_FOR_BULK_EDIT
+            }.orEmpty()
 
-            _multiEditProductResult.value = Success(EditByStatus(status, success, failed))
+            _multiEditProductResult.value =
+                Success(EditByStatus(status, success, failed, failedDilayaniTokopediaProduct))
+
             hideProgressDialog()
         }, onError = {
-            _multiEditProductResult.value = Fail(it)
-            hideProgressDialog()
-        })
+                _multiEditProductResult.value = Fail(it)
+
+                hideProgressDialog()
+            })
     }
 
     fun editProductsEtalase(productIds: List<String>, menuId: String, menuName: String) {
@@ -283,20 +331,20 @@ class ProductManageViewModel @Inject constructor(
                     ProductParam(productId = productId, shop = shopParam, menu = menuParam)
                 }
 
-                val requestParams = MultiEditProductUseCase.createRequestParam(params)
+                val requestParams =
+                    MultiEditProductUseCase.createRequestParam(params)
                 multiEditProductUseCase.execute(requestParams)
             }
 
             val success = response.results?.filter { it.isSuccess() }.orEmpty()
             val failed = response.results?.filter { !it.isSuccess() }.orEmpty()
-
-            val result = EditByMenu(menuId, menuName, success, failed)
+            val result = EditByMenu(menuId, menuName, success, failed, listOf())
             _multiEditProductResult.value = Success(result)
             hideProgressDialog()
         }, onError = {
-            _multiEditProductResult.value = Fail(it)
-            hideProgressDialog()
-        })
+                _multiEditProductResult.value = Fail(it)
+                hideProgressDialog()
+            })
     }
 
     fun getProductList(
@@ -315,7 +363,16 @@ class ProductManageViewModel @Inject constructor(
                 }
                 val getProductList = async {
                     val warehouseId = getWarehouseId(shopId)
-                    val extraInfo = listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC)
+                    val extraInfo =
+                        if (filterOptions?.contains(FilterOption.FilterByCondition.ProductArchival)
+                                .orFalse() || filterOptions?.contains(FilterOption.FilterByCondition.ProductPotentialArchivedStatus)
+                                .orFalse()
+                        ) {
+                            listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC,ExtraInfo.IS_DT_INBOUND, ExtraInfo.ARCHIVAL)
+
+                        } else {
+                            listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC, ExtraInfo.IS_DT_INBOUND)
+                        }
                     val requestParams = GQLGetProductListUseCase.createRequestParams(
                         shopId,
                         warehouseId,
@@ -334,7 +391,6 @@ class ProductManageViewModel @Inject constructor(
                 }
 
                 getProductList.await().productList to maxStockDeffered.await()
-
             }
             _refreshList.value = isRefresh
 
@@ -345,12 +401,12 @@ class ProductManageViewModel @Inject constructor(
             showTicker()
             hideProgressDialog()
         }, onError = {
-            if (it is CancellationException) {
-                return@launchCatchError
-            }
-            hideProgressDialog()
-            _productListResult.value = Fail(it)
-        }).let { getProductListJob = it }
+                if (it is CancellationException) {
+                    return@launchCatchError
+                }
+                hideProgressDialog()
+                _productListResult.value = Fail(it)
+            }).let { getProductListJob = it }
     }
 
     fun getProductVariants(productId: String) {
@@ -389,9 +445,9 @@ class ProductManageViewModel @Inject constructor(
 
             hideLoadingDialog()
         }, onError = {
-            _getProductVariantsResult.value = Fail(it)
-            hideLoadingDialog()
-        })
+                _getProductVariantsResult.value = Fail(it)
+                hideLoadingDialog()
+            })
     }
 
     fun getTickerData() {
@@ -400,13 +456,17 @@ class ProductManageViewModel @Inject constructor(
             val result = withContext(dispatchers.io) {
                 getTickerUseCase.execute()
             }
-            _tickerData.value = tickerStaticDataProvider.createTicker(
+            _tickerData.value = tickerStaticDataProvider.getTickers(
                 isMultiLocationShop,
+                _shopStatus.value?.shopStatus.orEmpty(),
                 result.getTargetedTicker?.tickers.orEmpty()
             )
         }, onError = {
-            _tickerData.value = tickerStaticDataProvider.createTicker(isMultiLocationShop)
-        })
+                _tickerData.value = tickerStaticDataProvider.getTickers(
+                    isMultiLocationShop,
+                    _shopStatus.value?.shopStatus.orEmpty()
+                )
+            })
     }
 
     fun getFiltersTab(withDelay: Boolean = false) {
@@ -429,11 +489,11 @@ class ProductManageViewModel @Inject constructor(
                 value = Success(data)
             }
         }, onError = {
-            if (it is CancellationException) {
-                return@launchCatchError
-            }
-            _productFiltersTab.value = Fail(it)
-        }).let { getFilterTabJob = it }
+                if (it is CancellationException) {
+                    return@launchCatchError
+                }
+                _productFiltersTab.value = Fail(it)
+            }).let { getFilterTabJob = it }
     }
 
     fun getProductManageAccess() {
@@ -488,8 +548,8 @@ class ProductManageViewModel @Inject constructor(
 
             productListFeaturedOnly?.let { setProductListFeaturedOnly(it) }
         }, onError = {
-            _productListFeaturedOnlyResult.value = Fail(it)
-        })
+                _productListFeaturedOnlyResult.value = Fail(it)
+            })
     }
 
     fun editPrice(productId: String, price: String, productName: String) {
@@ -515,6 +575,7 @@ class ProductManageViewModel @Inject constructor(
                         )
                     )
                 }
+
                 result.productUpdateV3Data.header.errorMessage.isNotEmpty() -> {
                     _editPriceResult.postValue(
                         Fail(
@@ -527,6 +588,7 @@ class ProductManageViewModel @Inject constructor(
                         )
                     )
                 }
+
                 else -> {
                     _editPriceResult.postValue(
                         Fail(
@@ -573,7 +635,9 @@ class ProductManageViewModel @Inject constructor(
                 result = editProductStock(productId, productName, it, status)
             }
 
-            _editStockResult.postValue(result)
+            result?.let {
+                _editStockResult.postValue(it)
+            }
         }) {
             val message =
                 com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()
@@ -645,7 +709,8 @@ class ProductManageViewModel @Inject constructor(
             },
             onError = {
                 _getPopUpResult.value = Fail(it)
-            })
+            }
+        )
     }
 
     fun deleteSingleProduct(productName: String, productId: String) {
@@ -666,6 +731,7 @@ class ProductManageViewModel @Inject constructor(
                         )
                     )
                 }
+
                 result.productUpdateV3Data.header.errorMessage.isNotEmpty() -> {
                     _deleteProductResult.postValue(
                         Fail(
@@ -677,6 +743,7 @@ class ProductManageViewModel @Inject constructor(
                         )
                     )
                 }
+
                 else -> {
                     _deleteProductResult.postValue(
                         Fail(
@@ -718,8 +785,8 @@ class ProductManageViewModel @Inject constructor(
                 )
             )
         }, onError = { throwable ->
-            _setFeaturedProductResult.postValue(Fail(throwable))
-        })
+                _setFeaturedProductResult.postValue(Fail(throwable))
+            })
     }
 
     fun showHideOptionsMenu() {
@@ -821,10 +888,12 @@ class ProductManageViewModel @Inject constructor(
                 productUpdateV3Data.isSuccess -> {
                     Success(EditStockResult(productName, productId, stock, status))
                 }
+
                 errorMessage.isNotEmpty() -> {
                     val error = Throwable(message = errorMessage.last())
                     Fail(EditStockResult(productName, productId, stock, status, error))
                 }
+
                 else -> {
                     val message =
                         com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()
@@ -851,7 +920,10 @@ class ProductManageViewModel @Inject constructor(
         return withContext(dispatchers.io) {
             val warehouseId = getWarehouseId(userSessionInterface.shopId)
             val requestParams = UpdateProductStockWarehouseUseCase.createRequestParams(
-                userSessionInterface.shopId, productId, warehouseId, stock.toString()
+                userSessionInterface.shopId,
+                productId,
+                warehouseId,
+                stock.toString()
             )
             val response = editStockUseCase.execute(requestParams)
             val productStatus = response.getProductStatus() ?: status
@@ -872,6 +944,7 @@ class ProductManageViewModel @Inject constructor(
                     val message = response.header.errorMessage.last()
                     Fail(MessageErrorException(message))
                 }
+
                 else -> {
                     val message = com.tokopedia.product.manage.common.R.string
                         .product_stock_reminder_toaster_failed_desc.toString()
@@ -881,6 +954,21 @@ class ProductManageViewModel @Inject constructor(
         }
     }
 
+    fun getProductArchivalInfo(productId: String) {
+        launchCatchError(block = {
+            val result = withContext(dispatchers.io) {
+                val requestParam = ProductArchivalInfoUseCase.createRequestParams(
+                    userSessionInterface.shopId,
+                    productId
+                )
+                getProductArchival.execute(requestParam)
+            }
+            _productArchivalInfo.value = Success(result)
+        }, onError = {
+            _productArchivalInfo.value = Fail(it)
+        })
+    }
+
     private suspend fun editVariantStock(result: EditVariantResult): Result<EditVariantResult> {
         return withContext(dispatchers.io) {
             val warehouseId = getWarehouseId(userSessionInterface.shopId)
@@ -888,7 +976,9 @@ class ProductManageViewModel @Inject constructor(
                 ProductStock(it.id, it.stock.toString())
             }
             val requestParams = UpdateProductStockWarehouseUseCase.createRequestParams(
-                userSessionInterface.shopId, warehouseId, productList
+                userSessionInterface.shopId,
+                warehouseId,
+                productList
             )
             editStockUseCase.execute(requestParams)
             Success(result)

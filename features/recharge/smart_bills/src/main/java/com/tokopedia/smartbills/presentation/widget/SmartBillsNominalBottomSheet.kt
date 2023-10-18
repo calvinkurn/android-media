@@ -1,5 +1,7 @@
 package com.tokopedia.smartbills.presentation.widget
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
@@ -28,13 +30,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGetNominalCallback): BottomSheetUnify(),
+class SmartBillsNominalBottomSheet: BottomSheetUnify(),
         SmartBillsNominalAdapter.SmartBillNominalListener {
 
     companion object{
         private val TAG = SmartBillsNominalBottomSheet::class.simpleName
 
-        private const val EMPTY_IMAGE_GLOBAL_ERROR : String = "https://images.tokopedia.net/img/add_bils_sbm_empty_nominal_4x.png"
+        private const val EMPTY_IMAGE_GLOBAL_ERROR = TokopediaImageUrl.EMPTY_IMAGE_GLOBAL_ERROR
 
         private const val PARAM_MENU_ID = "menu_id"
         private const val PARAM_CATEGORY_ID = "category_id"
@@ -43,10 +45,9 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
         private const val PARAM_IS_REQUEST_NOMINAL = "is_request_nominal"
         private const val PARAM_CATALOG_PRODUCT = "catalog_product"
 
-        fun newInstance(isRequestNominal:Boolean, catalogProductInput: RechargeCatalogProductInputMultiTabData, menuId: Int, categoryId:String, opeartorId: String, clientNumber: String,
-                       getNominalCallback: SmartBillsGetNominalCallback):
+        fun newInstance(isRequestNominal:Boolean, catalogProductInput: RechargeCatalogProductInputMultiTabData, menuId: Int, categoryId:String, opeartorId: String, clientNumber: String):
                 SmartBillsNominalBottomSheet {
-            return SmartBillsNominalBottomSheet(getNominalCallback).apply {
+            return SmartBillsNominalBottomSheet().apply {
                 arguments = Bundle().apply {
                     putInt(PARAM_MENU_ID, menuId)
                     putString(PARAM_CATEGORY_ID, categoryId)
@@ -81,6 +82,8 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
     private var globalError: GlobalError? = null
     private var errorViewGroup: ViewGroup? = null
 
+    private var nominalCallback: SmartBillsGetNominalCallback? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initView(inflater, container)
         menuId = arguments?.getInt(PARAM_MENU_ID).orZero()
@@ -104,7 +107,7 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        getNominalCallback.onCloseNominal()
+        nominalCallback?.onCloseNominal()
         super.onDismiss(dialog)
     }
 
@@ -112,9 +115,12 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
         show(fragmentManager, TAG)
     }
 
+    fun setCallback(nominalCallback: SmartBillsGetNominalCallback) {
+        this.nominalCallback = nominalCallback
+    }
     override fun onClickProduct(rechargeProduct: RechargeProduct) {
         dismiss()
-        getNominalCallback.onProductClicked(rechargeProduct)
+        nominalCallback?.onProductClicked(rechargeProduct)
     }
 
     private fun initInjector() {
@@ -160,7 +166,7 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
                         val products = viewModel.getProductByCategoryId(it.data.multitabData.productInputs, CategoryTelcoType.getCategoryString(categoryId))
                         showNominalCatalogList(products)
                         products?.let {
-                            getNominalCallback.onNominalLoaded(false, data, products)
+                            nominalCallback?.onNominalLoaded(false, data, products)
                         }
                     }
                 }

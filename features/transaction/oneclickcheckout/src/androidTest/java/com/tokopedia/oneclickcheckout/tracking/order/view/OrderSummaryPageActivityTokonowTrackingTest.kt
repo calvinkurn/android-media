@@ -73,21 +73,21 @@ class OrderSummaryPageActivityTokonowTrackingTest {
 
         orderSummaryPage {
             assertShipmentRevamp(
-                    shippingDuration = null,
-                    shippingCourier = "Now! 2 jam tiba (Rp20.000)",
-                    shippingPrice = null,
-                    shippingEta = "Tiba dalam 2 jam",
-                    shippingNotes = "Belum mencapai min. transaksi untuk gratis ongkir (RpXX.000)"
+                shippingDuration = null,
+                shippingCourier = "Now! 2 jam tiba (Rp20.000)",
+                shippingPrice = null,
+                shippingEta = "Tiba dalam 2 jam",
+                shippingNotes = "Belum mencapai min. transaksi untuk gratis ongkir (RpXX.000)"
             )
             clickAddProductQuantity(0, 1)
             assertShopCard(
-                    shopName = "tokocgk",
-                    shopLocation = "Kota Yogyakarta",
-                    hasShopLocationImg = false,
-                    hasShopBadge = true,
-                    isFreeShipping = true,
-                    preOrderText = "Pre Order 3 hari",
-                    alertMessage = "Alert"
+                shopName = "tokocgk",
+                shopLocation = "Kota Yogyakarta",
+                hasShopLocationImg = false,
+                hasShopBadge = true,
+                isFreeShipping = true,
+                preOrderText = "Pre Order 3 hari",
+                alertMessage = "Alert"
             )
         }
 

@@ -12,5 +12,5 @@ data class ScheduleDelivery(
     @SerializedName("schedule_date")
     val scheduleDate: String = "",
     @SerializedName("validation_metadata")
-    val validationMetadata: String = "",
+    val validationMetadata: String = ""
 )

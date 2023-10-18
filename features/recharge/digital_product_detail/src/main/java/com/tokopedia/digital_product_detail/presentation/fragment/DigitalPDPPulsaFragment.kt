@@ -18,9 +18,12 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
@@ -37,15 +40,17 @@ import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment.Comp
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
-import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
+import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DEFAULT_ICON_RES
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_PARAM
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FIXED_PADDING_ADJUSTMENT
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INDOSAT_CHECK_BALANCE_TYPE_ERROR
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INDOSAT_CHECK_BALANCE_TYPE_OTP
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INDOSAT_CHECK_BALANCE_TYPE_WIDGET
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INPUT_ACTION_TRACKING_DELAY
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.LOADER_DIALOG_TEXT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MAXIMUM_VALID_NUMBER_LENGTH
@@ -59,7 +64,10 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.T
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
+import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceModel
+import com.tokopedia.digital_product_detail.domain.model.DigitalSaveAccessTokenResultModel
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
+import com.tokopedia.digital_product_detail.presentation.custom.activityresult.OpenRechargeCheckBalance
 import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegate
 import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegateImpl
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
@@ -68,22 +76,27 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategor
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPWidgetMapper
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
+import com.tokopedia.recharge_component.listener.ClientNumberCheckBalanceListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.InputNumberActionType
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailBottomSheetModel
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailModel
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceOTPBottomSheetModel
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 import com.tokopedia.recharge_component.model.denom.DenomData
@@ -91,10 +104,12 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
+import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeCheckBalanceDetailViewHolder
+import com.tokopedia.recharge_component.presentation.bottomsheet.RechargeCheckBalanceDetailBottomSheet
+import com.tokopedia.recharge_component.presentation.bottomsheet.RechargeCheckBalanceOTPBottomSheet
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -107,21 +122,30 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import javax.inject.Inject
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.common_digital.R as common_digitalR
+import com.tokopedia.digital_product_detail.R as digital_product_detailR
+import com.tokopedia.recharge_component.R as recharge_componentR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by firmanda on 04/01/21
  */
 
-class DigitalPDPPulsaFragment : BaseDaggerFragment(),
+class DigitalPDPPulsaFragment :
+    BaseDaggerFragment(),
     RechargeDenomGridListener,
     RechargeBuyWidgetListener,
     RechargeRecommendationCardListener,
+    RechargeCheckBalanceOTPBottomSheet.RechargeCheckBalanceOTPBottomSheetListener,
     DigitalHistoryIconListener,
     ClientNumberInputFieldListener,
     ClientNumberFilterChipListener,
     ClientNumberAutoCompleteListener,
-    DigitalKeyboardDelegate by DigitalKeyboardDelegateImpl()
-{
+    ClientNumberCheckBalanceListener,
+    RechargeCheckBalanceDetailBottomSheet.RechargeCheckBalanceDetailBottomSheetListener,
+    RechargeCheckBalanceDetailViewHolder.RechargeCheckBalanceDetailViewHolderListener,
+    DigitalKeyboardDelegate by DigitalKeyboardDelegateImpl() {
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -135,6 +159,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var digitalPDPAnalytics: DigitalPDPAnalytics
+
+    @Inject
+    lateinit var commonMultiCheckoutAnalytics: CommonMultiCheckoutAnalytics
 
     private var binding by autoClearedNullable<FragmentDigitalPdpPulsaBinding>()
 
@@ -150,9 +177,34 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private var inputNumberActionType = InputNumberActionType.MANUAL
     private var actionTypeTrackingJob: Job? = null
     private var loader: LoaderDialog? = null
+    private var isAlreadyTrackImpressionMultiButton: Boolean = false
 
     private val remoteConfig: RemoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
+    }
+
+    private val indosatCheckBalanceLauncher = registerForActivityResult(OpenRechargeCheckBalance()) { result ->
+        when (result) {
+            is OpenRechargeCheckBalance.CheckBalanceOTPResult.Success -> {
+                saveIndosatAccessToken(result.accessToken)
+            }
+            is OpenRechargeCheckBalance.CheckBalanceOTPResult.EmptyToken -> {
+                view?.let {
+                    Toaster.build(
+                        it,
+                        getString(digital_product_detailR.string.check_balance_failed_verification),
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_ERROR
+                    ).show()
+                }
+            }
+        }
+        digitalPDPAnalytics.clickCloseOtp(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            loyaltyStatus,
+            userSession.userId,
+            userSession.isLoggedIn
+        )
     }
 
     override fun initInjector() {
@@ -208,6 +260,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun renderProduct() {
         binding?.run {
+            hideAllCheckBalanceWidget()
             val selectedClientNumber = rechargePdpPulsaClientNumberWidget.getInputNumber()
             try {
                 /* operator check */
@@ -239,7 +292,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 }
 
                 if (isOperatorChanged || selectedClientNumber
-                        .length in MINIMUM_VALID_NUMBER_LENGTH..MAXIMUM_VALID_NUMBER_LENGTH
+                    .length in MINIMUM_VALID_NUMBER_LENGTH..MAXIMUM_VALID_NUMBER_LENGTH
                 ) {
                     operator = selectedOperator.operator
                     rechargePdpPulsaClientNumberWidget.run {
@@ -247,6 +300,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     }
                     hideEmptyState()
                     onHideBuyWidget()
+                    getIndosatCheckBalance()
                     getRecommendations()
                     getCatalogProductInput(selectedOperator.key)
                 } else {
@@ -257,13 +311,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 viewModel.run {
                     cancelRecommendationJob()
                     cancelCatalogProductJob()
+                    cancelCheckBalanceJob()
                 }
                 rechargePdpPulsaClientNumberWidget.run {
                     setLoading(false)
                     resetContactName()
                     if (selectedClientNumber.length >= MINIMUM_OPERATOR_PREFIX) {
                         setErrorInputField(
-                            getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),
+                            getString(recharge_componentR.string.client_number_prefix_error),
                             true
                         )
                     }
@@ -274,54 +329,70 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun observeData() {
-        viewModel.menuDetailData.observe(viewLifecycleOwner, {
+        viewModel.menuDetailData.observe(viewLifecycleOwner) {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetMenuDetail(it.data)
                 is RechargeNetworkResult.Fail -> onFailedGetMenuDetail(it.error)
                 is RechargeNetworkResult.Loading -> {
                     onShimmeringRecommendation()
                 }
-            }
-        })
 
-        viewModel.favoriteChipsData.observe(viewLifecycleOwner, {
+                else -> {
+                    // no-op
+                }
+            }
+        }
+
+        viewModel.favoriteChipsData.observe(viewLifecycleOwner) {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetFavoriteChips(it.data)
                 is RechargeNetworkResult.Loading -> {
                     binding?.rechargePdpPulsaClientNumberWidget?.setFilterChipShimmer(true)
                 }
-            }
-        })
 
-        viewModel.autoCompleteData.observe(viewLifecycleOwner, {
+                else -> {
+                    // no-op
+                }
+            }
+        }
+
+        viewModel.autoCompleteData.observe(viewLifecycleOwner) {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
+                else -> {
+                    // no-op
+                }
             }
-        })
+        }
 
-
-        viewModel.prefillData.observe(viewLifecycleOwner, {
+        viewModel.prefillData.observe(viewLifecycleOwner) {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefill(it.data)
+                else -> {
+                    // no-op
+                }
             }
-        })
+        }
 
-        viewModel.catalogPrefixSelect.observe(viewLifecycleOwner, {
+        viewModel.catalogPrefixSelect.observe(viewLifecycleOwner) {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator()
                 is RechargeNetworkResult.Fail -> onFailedGetPrefixOperator(it.error)
+                else -> {
+                    // no-op
+                }
             }
-        })
+        }
 
-        viewModel.recommendationData.observe(viewLifecycleOwner, {
+        viewModel.recommendationData.observe(viewLifecycleOwner) {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetRecommendations(it.data)
                 is RechargeNetworkResult.Fail -> onFailedGetRecommendations()
                 is RechargeNetworkResult.Loading -> onShimmeringRecommendation()
             }
-        })
+        }
 
-        viewModel.observableDenomMCCMData.observe(viewLifecycleOwner, { denomData ->
+        viewModel.observableDenomMCCMData.observe(viewLifecycleOwner) { denomData ->
             when (denomData) {
                 is RechargeNetworkResult.Success -> {
                     if (productId >= 0) {
@@ -344,7 +415,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         )
                     ) {
                         showEmptyState(false)
-                    } else hideEmptyState()
+                    } else {
+                        hideEmptyState()
+                    }
 
                     if (selectedPositionDenom == null && selectedPositionMCCM == null) {
                         onHideBuyWidget()
@@ -360,10 +433,30 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     onShimmeringDenomGrid()
                     onLoadingAndFailMCCM()
                 }
-            }
-        })
 
-        viewModel.addToCartResult.observe(viewLifecycleOwner, { atcData ->
+                else -> {
+                    // no-op
+                }
+            }
+        }
+
+        viewModel.indosatCheckBalance.observe(viewLifecycleOwner) { checkBalanceData ->
+            when (checkBalanceData) {
+                is RechargeNetworkResult.Success -> onSuccessGetCheckBalance(checkBalanceData.data)
+                is RechargeNetworkResult.Fail -> onFailedGetCheckBalance(checkBalanceData.error)
+                is RechargeNetworkResult.Loading -> onLoadingGetCheckBalance()
+            }
+        }
+
+        viewModel.saveAccessTokenResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is RechargeNetworkResult.Success -> onSuccessSaveAccessToken(result.data)
+                is RechargeNetworkResult.Fail -> onFailedSaveAccessToken(result.error)
+                is RechargeNetworkResult.Loading -> onLoadingSaveAccessToken()
+            }
+        }
+
+        viewModel.addToCartResult.observe(viewLifecycleOwner) { atcData ->
             when (atcData) {
                 is RechargeNetworkResult.Success -> {
                     hideLoadingDialog()
@@ -376,7 +469,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         viewModel.digitalCheckoutPassData.productId.toString(),
                         viewModel.selectedGridProduct.denomData.title,
                         atcData.data.priceProduct,
-                        atcData.data.channelId,
+                        atcData.data.channelId
                     )
                     navigateToCart(atcData.data.categoryId)
                 }
@@ -390,18 +483,26 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     showLoadingDialog()
                 }
             }
-        })
+        }
+
+        viewModel.addToCartMultiCheckoutResult.observe(viewLifecycleOwner) {
+            hideLoadingDialog()
+            context?.let { context ->
+                trackOnClickMultiCheckout(it)
+                RouteManager.route(context, it.redirectUrl)
+            }
+        }
 
         viewModel.errorAtc.observe(viewLifecycleOwner) {
             hideLoadingDialog()
-            if (it.atcErrorPage.isShowErrorPage){
+            if (it.atcErrorPage.isShowErrorPage) {
                 redirectToCart(viewModel.digitalCheckoutPassData.categoryId ?: "")
-            } else{
+            } else {
                 showErrorUnverifiedNumber(it)
             }
         }
 
-        viewModel.clientNumberValidatorMsg.observe(viewLifecycleOwner, { msg ->
+        viewModel.clientNumberValidatorMsg.observe(viewLifecycleOwner) { msg ->
             binding?.rechargePdpPulsaClientNumberWidget?.run {
                 setLoading(false)
                 showClearIcon()
@@ -412,7 +513,17 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     onHideBuyWidget()
                 }
             }
-        })
+        }
+    }
+
+    private fun trackOnClickMultiCheckout(atc: DigitalAtcResult) {
+        commonMultiCheckoutAnalytics.onClickMultiCheckout(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            atc.channelId,
+            userSession.userId,
+            multiCheckoutButtonPromotionTracker(viewModel.multiCheckoutButtons)
+        )
     }
 
     private fun getRecommendations() {
@@ -423,11 +534,28 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         viewModel.getRecommendations(clientNumbers, listOf(categoryId))
     }
 
+    private fun getIndosatCheckBalance() {
+        if (DigitalPDPCategoryUtil.isOperatorIndosat(operator.id)) {
+            val clientNumbers =
+                listOf(binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: "")
+            viewModel.setRechargeCheckBalanceLoading()
+            viewModel.cancelCheckBalanceJob()
+            viewModel.getRechargeCheckBalance(clientNumbers, listOf(categoryId))
+        }
+    }
+
+    private fun saveIndosatAccessToken(accessToken: String) {
+        val msisdn = binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: ""
+        viewModel.setRechargeUserAccessTokenLoading()
+        viewModel.saveRechargeUserAccessToken(msisdn, accessToken)
+    }
+
     private fun getCatalogProductInput(selectedOperatorKey: String) {
         viewModel.setRechargeCatalogInputMultiTabLoading()
         viewModel.cancelCatalogProductJob()
         viewModel.getRechargeCatalogInputMultiTab(
-            menuId, selectedOperatorKey,
+            menuId,
+            selectedOperatorKey,
             binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: ""
         )
     }
@@ -457,6 +585,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
+        viewModel.multiCheckoutButtons = data.multiCheckoutButtons
         getFavoriteNumbers(
             listOf(
                 FavoriteNumberType.PREFILL,
@@ -477,8 +606,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         favoriteChips
                     )
                 )
-                setupDynamicScrollViewPadding(FIXED_PADDING_ADJUSTMENT)
-            } else setupDynamicScrollViewPadding()
+            }
+            setupDynamicScrollViewPadding()
         }
     }
 
@@ -514,11 +643,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun onFailedGetMenuDetail(throwable: Throwable) {
         val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
-            activity, throwable, ErrorHandler.Builder().build()
+            activity,
+            throwable,
+            ErrorHandler.Builder().build()
         )
         val errMsgSub = getString(
             R.string.error_message_with_code,
-            getString(com.tokopedia.abstraction.R.string.msg_network_error_2),
+            getString(abstractionR.string.msg_network_error_2),
             errCode
         )
         binding?.run {
@@ -548,6 +679,140 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         binding?.rechargePdpPulsaRecommendationWidget?.hide()
     }
 
+    private fun onSuccessGetCheckBalance(checkBalanceData: DigitalCheckBalanceModel) {
+        binding?.rechargePdpPulsaClientNumberWidget?.run {
+            hideCheckBalanceWidget()
+            hideCheckBalanceOtpWidget()
+            hideCheckBalanceWidgetShimmering()
+
+            if (checkBalanceData.widgetType.isEmpty()) {
+                setupDynamicScrollViewPadding()
+                return
+            }
+
+            when (checkBalanceData.widgetType.lowercase()) {
+                INDOSAT_CHECK_BALANCE_TYPE_OTP -> {
+                    viewModel.checkBalanceFailCounter = Int.ZERO
+                    renderCheckBalanceOTPWidget(
+                        DigitalPDPWidgetMapper.mapCheckBalanceOTPToWidgetModels(checkBalanceData)
+                    )
+                    showCheckBalanceOtpWidget()
+                    digitalPDPAnalytics.impressionCheckBalanceWidget(
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        operator.attributes.name,
+                        loyaltyStatus,
+                        userSession.userId
+                    )
+                }
+                INDOSAT_CHECK_BALANCE_TYPE_WIDGET -> {
+                    viewModel.checkBalanceFailCounter = Int.ZERO
+                    renderCheckBalanceWidget(
+                        DigitalPDPWidgetMapper.mapCheckBalanceToWidgetBalanceInfoModels(checkBalanceData),
+                        DigitalPDPWidgetMapper.mapCheckBalanceToBottomSheetBalanceDetailModels(checkBalanceData)
+                    )
+                    showCheckBalanceWidget()
+                    digitalPDPAnalytics.impressionCheckBalanceInfo(
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        operator.attributes.name,
+                        loyaltyStatus,
+                        checkBalanceData.campaignLabelText,
+                        userSession.userId
+                    )
+                }
+                INDOSAT_CHECK_BALANCE_TYPE_ERROR -> {
+                    onFailedGetCheckBalance(checkBalanceData = checkBalanceData)
+                    return
+                }
+                else -> return
+            }
+
+            if (checkBalanceData.campaignLabelText.isNotEmpty()) {
+                showCheckBalanceWarning(
+                    checkBalanceData.campaignLabelText,
+                    checkBalanceData.campaignLabelTextColor,
+                    isClickable = checkBalanceData.products.isNotEmpty()
+                )
+                removeClientNumberBottomPadding()
+            } else {
+                hideCheckBalanceWarning()
+                resetCheckBalanceWarningText()
+                showClientNumberBottomPadding()
+            }
+            setupDynamicScrollViewPadding()
+        }
+    }
+
+    private fun onFailedGetCheckBalance(
+        throwable: Throwable? = null,
+        checkBalanceData: DigitalCheckBalanceModel? = null
+    ) {
+        binding?.rechargePdpPulsaClientNumberWidget?.run {
+            hideCheckBalanceWidgetShimmering()
+            hideCheckBalanceOtpWidget()
+            hideCheckBalanceWarning()
+            resetCheckBalanceWarningText()
+            setupDynamicScrollViewPadding()
+            showCheckBalanceWidget()
+            showCheckBalanceWidgetLocalLoad {
+                viewModel.checkBalanceFailCounter++
+                if (viewModel.isCheckBalanceFailedMoreThanThreeTimes()) {
+                    hideCheckBalanceWidgetLocalLoad()
+                    removeClientNumberBottomPadding()
+                    checkBalanceData?.let {
+                        if (it.campaignLabelText.isNotEmpty()) {
+                            showCheckBalanceWarning(
+                                it.campaignLabelText,
+                                it.campaignLabelTextColor,
+                                isShowOnlyWarning = true,
+                                isClickable = it.products.isNotEmpty()
+                            )
+                        }
+                    }
+                    setupDynamicScrollViewPadding()
+                } else {
+                    getIndosatCheckBalance()
+                }
+            }
+        }
+    }
+
+    private fun onLoadingGetCheckBalance() {
+        binding?.rechargePdpPulsaClientNumberWidget?.run {
+            hideCheckBalanceOtpWidget()
+            hideCheckBalanceWidgetLocalLoad()
+            resetCheckBalanceWarningText()
+            showClientNumberBottomPadding()
+            showCheckBalanceWidget()
+            showCheckBalanceWidgetShimmering()
+            setupDynamicScrollViewPadding()
+        }
+    }
+
+    private fun onSuccessSaveAccessToken(data: DigitalSaveAccessTokenResultModel) {
+        if (data.isSuccess) {
+            getIndosatCheckBalance()
+        } else {
+            showErrorToaster(MessageErrorException(data.message))
+        }
+    }
+
+    private fun onFailedSaveAccessToken(throwable: Throwable) {
+        onFailedGetCheckBalance(throwable)
+    }
+
+    private fun onLoadingSaveAccessToken() {
+        onLoadingGetCheckBalance()
+    }
+
+    private fun hideAllCheckBalanceWidget() {
+        binding?.run {
+            rechargePdpPulsaClientNumberWidget.hideCheckBalanceWidget()
+            rechargePdpPulsaClientNumberWidget.hideCheckBalanceOtpWidget()
+            rechargePdpPulsaClientNumberWidget.showClientNumberBottomPadding()
+            setupDynamicScrollViewPadding()
+        }
+    }
+
     private fun initClientNumberWidget() {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             setCustomInputNumberFormatter { inputNumber ->
@@ -555,11 +820,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             }
             setInputFieldStaticLabel(
                 getString(
-                    com.tokopedia.recharge_component.R.string.label_recharge_client_number_telco
+                    recharge_componentR.string.label_recharge_client_number_telco
                 )
             )
             setInputFieldType(InputFieldType.Telco)
             setListener(
+                this@DigitalPDPPulsaFragment,
                 this@DigitalPDPPulsaFragment,
                 this@DigitalPDPPulsaFragment,
                 this@DigitalPDPPulsaFragment
@@ -575,7 +841,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     ) {
         val isDeniedOnce = localCacheHandler.getBoolean(FAVNUM_PERMISSION_CHECKER_IS_DENIED, false)
         if (!isDeniedOnce && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            permissionCheckerHelper.checkPermission(this,
+            permissionCheckerHelper.checkPermission(
+                this,
                 PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
                 object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
@@ -625,7 +892,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 categoryName,
                 isSwitchChecked,
                 loyaltyStatus,
-                FavoriteNumberPageConfig.TELCO,
+                FavoriteNumberPageConfig.TELCO
             )
 
             val requestCode = REQUEST_CODE_DIGITAL_SAVED_NUMBER
@@ -710,7 +977,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             if (denomGrid.listDenomData.isNotEmpty()) {
                 val colorHexInt = ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    unifyprinciplesR.color.Unify_NN0
                 )
                 val colorHexString = "#${Integer.toHexString(colorHexInt)}"
 
@@ -742,13 +1009,28 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun onShowBuyWidget(denomGrid: DenomData) {
         binding?.let {
             it.rechargePdpPulsaBuyWidget.show()
-            it.rechargePdpPulsaBuyWidget.renderBuyWidget(denomGrid, this)
+            it.rechargePdpPulsaBuyWidget.renderBuyWidget(denomGrid, this, viewModel.multiCheckoutButtons) {
+                commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    loyaltyStatus
+                )
+            }
+            it.rechargePdpPulsaBuyWidget.showCoachMark()
+            if (!isAlreadyTrackImpressionMultiButton) {
+                isAlreadyTrackImpressionMultiButton = true
+                commonMultiCheckoutAnalytics.onImpressMultiCheckoutButtons(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    multiCheckoutButtonImpressTrackerButtonType(viewModel.multiCheckoutButtons),
+                    userSession.userId
+                )
+            }
         }
     }
 
     private fun onHideBuyWidget() {
         binding?.let {
             it.rechargePdpPulsaBuyWidget.hide()
+            it.rechargePdpPulsaBuyWidget.hideCoachMark()
         }
     }
 
@@ -769,7 +1051,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             for (item in tickers) {
                 messages.add(
                     TickerData(
-                        item.name, item.content,
+                        item.name,
+                        item.content,
                         when (item.type) {
                             TopupBillsTicker.TYPE_WARNING -> Ticker.TYPE_WARNING
                             TopupBillsTicker.TYPE_INFO -> Ticker.TYPE_INFORMATION
@@ -783,8 +1066,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             binding?.rechargePdpPulsaTicker?.run {
                 addPagerView(
                     TickerPagerAdapter(
-                        this@DigitalPDPPulsaFragment.requireContext(), messages
-                    ), messages
+                        this@DigitalPDPPulsaFragment.requireContext(),
+                        messages
+                    ),
+                    messages
                 )
                 show()
             }
@@ -806,7 +1091,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         loyaltyStatus,
                         userSession.userId
                     )
-
                 } else {
                     rechargePdpPulsaEmptyStateWidget.hide()
                 }
@@ -881,6 +1165,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun onCollapseAppBar() {
         binding?.run {
             rechargePdpPulsaClientNumberWidget.setVisibleSimplifiedLayout(true)
+            hideKeyboard()
         }
     }
 
@@ -904,13 +1189,16 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     // this function used to redirect to cart if getting error from atc Response
-    private fun redirectToCart(categoryId: String){
+    private fun redirectToCart(categoryId: String) {
         context?.let {
-            RouteManager.route(it, CommonTopupBillsUtil.buildRedirectAppLinkToCheckout(
-                viewModel.digitalCheckoutPassData.productId ?: "",
-                viewModel.digitalCheckoutPassData.clientNumber ?: "",
-                categoryId
-            ))
+            RouteManager.route(
+                it,
+                CommonTopupBillsUtil.buildRedirectAppLinkToCheckout(
+                    viewModel.digitalCheckoutPassData.productId ?: "",
+                    viewModel.digitalCheckoutPassData.clientNumber ?: "",
+                    categoryId
+                )
+            )
         }
     }
 
@@ -932,10 +1220,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showErrorUnverifiedNumber(error: ErrorAtc){
+    private fun showErrorUnverifiedNumber(error: ErrorAtc) {
         view?.let {
-
-            fun redirectError(error: ErrorAtc){
+            fun redirectError(error: ErrorAtc) {
                 if (error.atcErrorPage.buttons.first().actionType == AtcErrorButton.TYPE_PHONE_VERIFICATION) {
                     RouteManager.getIntent(context, error.appLinkUrl).apply {
                         startActivityForResult(this, REQUEST_CODE_VERIFY_PHONE_NUMBER)
@@ -945,27 +1232,26 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 }
             }
 
-            if (error.appLinkUrl.isNotEmpty()){
+            if (error.appLinkUrl.isNotEmpty()) {
                 Toaster.build(
                     it,
                     error.title,
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.common_digital.R.string.digital_common_button_toaster)
+                    getString(common_digitalR.string.digital_common_button_toaster)
                 ) {
                     redirectError(error)
                 }.show()
-            }else{
+            } else {
                 Toaster.build(
                     it,
                     error.title,
                     Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR,
+                    Toaster.TYPE_ERROR
                 ).show()
             }
         }
     }
-
 
     private fun getDataFromBundle() {
         arguments?.run {
@@ -1004,9 +1290,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         viewModel.setAddToCartLoading()
         viewModel.addToCart(
             DeviceUtil.getDigitalIdentifierParam(requireActivity()),
-            DigitalSubscriptionParams(),
-            userSession.userId,
-            remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
+            userSession.userId
         )
     }
 
@@ -1022,20 +1306,21 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun setupDynamicScrollViewPadding(extraPadding: Int = 0) {
         binding?.rechargePdpPulsaClientNumberWidget
             ?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    binding?.rechargePdpPulsaClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(
-                        this
-                    )
-                    binding?.run {
-                        val defaultPadding: Int = context?.resources?.displayMetrics?.let {
-                            rechargePdpPulsaClientNumberWidget.height.pxToDp(it)
-                        } ?: 0
-                        val dynamicPadding = defaultPadding + extraPadding
-                        rechargePdpPulsaSvContainer.setPadding(0, dynamicPadding, 0, 0)
+                    ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        binding?.rechargePdpPulsaClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(
+                            this
+                        )
+                        binding?.run {
+                            val defaultPadding: Int = rechargePdpPulsaClientNumberWidget.height
+                            val scrollViewMargin: Int = context?.resources?.let {
+                                it.getDimensionPixelOffset(digital_product_detailR.dimen.nested_scroll_view_margin)
+                            } ?: 0
+                            val dynamicPadding = defaultPadding + extraPadding - scrollViewMargin
+                            rechargePdpPulsaSvContainer.setPadding(0, dynamicPadding, 0, 0)
+                        }
                     }
-                }
-            })
+                })
     }
 
     //region ClientNumberInputFieldListener
@@ -1069,7 +1354,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 TelcoCategoryType.CATEGORY_ROAMING.toString()
             )
             navigateToContact(
-                clientNumber, dgCategoryIds,
+                clientNumber,
+                dgCategoryIds,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 false
             )
@@ -1101,6 +1387,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     override fun onClickFilterChip(isLabeled: Boolean, favorite: RechargeClientNumberChipModel) {
+        hideKeyboard()
         inputNumberActionType = InputNumberActionType.CHIP
         if (isLabeled) {
             onHideBuyWidget()
@@ -1108,7 +1395,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
-                userSession.userId,
+                userSession.userId
             )
         } else {
             digitalPDPAnalytics.clickFavoriteNumberChips(
@@ -1134,7 +1421,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 TelcoCategoryType.CATEGORY_ROAMING.toString()
             )
             navigateToContact(
-                clientNumber, dgCategoryIds,
+                clientNumber,
+                dgCategoryIds,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 isSwitchChecked
             )
@@ -1165,14 +1453,18 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     //region RechargeDenomGridListener
     override fun onDenomGridClicked(
-        denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int,
+        denomGrid: DenomData,
+        layoutType: DenomWidgetEnum,
+        position: Int,
         productListTitle: String,
         isShowBuyWidget: Boolean
     ) {
+        hideKeyboard()
         if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE) {
-            if (viewModel.selectedGridProduct.denomWidgetEnum == DenomWidgetEnum.GRID_TYPE)
+            if (viewModel.selectedGridProduct.denomWidgetEnum == DenomWidgetEnum.GRID_TYPE) {
                 onClearSelectedDenomGrid(viewModel.selectedGridProduct.position)
-            digitalPDPAnalytics.clickMCCMProduct(
+            }
+            digitalPDPAnalytics.clickMCCMGridProduct(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
@@ -1185,8 +1477,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         } else if (layoutType == DenomWidgetEnum.GRID_TYPE) {
             if (viewModel.selectedGridProduct.denomWidgetEnum == DenomWidgetEnum.MCCM_GRID_TYPE ||
                 viewModel.selectedGridProduct.denomWidgetEnum == DenomWidgetEnum.FLASH_GRID_TYPE
-            )
+            ) {
                 onClearSelectedMCCM(viewModel.selectedGridProduct.position)
+            }
             digitalPDPAnalytics.clickProductCluster(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -1214,7 +1507,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         position: Int
     ) {
         if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE) {
-            digitalPDPAnalytics.impressionProductMCCM(
+            digitalPDPAnalytics.impressionProductMCCMGrid(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
@@ -1239,10 +1532,26 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     //region RechargeBuyWidgetListener
     override fun onClickedButtonLanjutkan(denom: DenomData) {
         viewModel.updateCheckoutPassData(
-            denom, userSession.userId.generateRechargeCheckoutToken(),
+            denom,
+            userSession.userId.generateRechargeCheckoutToken(),
             binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: "",
             operator.id
         )
+        if (userSession.isLoggedIn) {
+            addToCart()
+        } else {
+            navigateToLoginPage()
+        }
+    }
+
+    override fun onClickedButtonMultiCheckout(denom: DenomData) {
+        viewModel.updateCheckoutPassData(
+            denom,
+            userSession.userId.generateRechargeCheckoutToken(),
+            binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: "",
+            operator.id
+        )
+        viewModel.setAtcMultiCheckoutParam()
         if (userSession.isLoggedIn) {
             addToCart()
         } else {
@@ -1317,6 +1626,114 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
     //endregion
 
+    //region ClientNumberCheckBalanceListener
+    override fun onClickCheckBalanceOTPWidget(model: RechargeCheckBalanceOTPBottomSheetModel) {
+        digitalPDPAnalytics.clickCheckBalanceWidget(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            userSession.userId
+        )
+        val bottomSheet = RechargeCheckBalanceOTPBottomSheet()
+        bottomSheet.setBottomSheetModel(model)
+        bottomSheet.setListener(this)
+        bottomSheet.show(childFragmentManager)
+    }
+
+    override fun onClickCheckBalanceWidget(model: RechargeCheckBalanceDetailBottomSheetModel) {
+        digitalPDPAnalytics.clickLihatDetailCheckBalance(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            userSession.userId
+        )
+        val bottomSheet = RechargeCheckBalanceDetailBottomSheet().apply {
+            setCheckBalanceDetailBottomSheetListener(this@DigitalPDPPulsaFragment)
+            setCheckBalanceDetailViewHolderListener(this@DigitalPDPPulsaFragment)
+            setBottomSheetTitle(model.title)
+            setCheckBalanceDetailModels(model.details)
+        }
+        bottomSheet.show(childFragmentManager)
+    }
+    //endregion
+
+    //region RechargeCheckBalanceOTPBottomSheetListener
+    override fun onRenderCheckBalanceOTPBottomSheet() {
+        digitalPDPAnalytics.impressionPdpOtpPopUp(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            loyaltyStatus,
+            userSession.userId
+        )
+    }
+
+    override fun onClickButton(applink: String) {
+        digitalPDPAnalytics.clickPdpOtpPopUp(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            loyaltyStatus,
+            userSession.userId
+        )
+        indosatCheckBalanceLauncher.launch(applink)
+    }
+    //endregion
+
+    //region RechargeCheckBalanceDetailBottomSheetListener
+    override fun onRenderCheckBalanceDetailBottomSheet() {
+        digitalPDPAnalytics.impressionSheetActivePackage(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            userSession.userId
+        )
+    }
+
+    override fun onCloseCheckBalanceDetailBottomSheet() {
+        digitalPDPAnalytics.clickCloseSheetActivePackage(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            userSession.userId
+        )
+    }
+    //endregion
+
+    //region RechargeCheckBalanceDetailViewHolderListener
+    override fun onRenderCheckBalanceDetailBuyButton(
+        model: RechargeCheckBalanceDetailModel,
+        position: Int,
+        bottomSheetTitle: String
+    ) {
+        digitalPDPAnalytics.impressionActivePackageCheckBalance(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            bottomSheetTitle,
+            model.productId,
+            model.title,
+            position,
+            model.productPrice.toString(),
+            userSession.userId
+        )
+    }
+
+    override fun onClickCheckBalanceDetailBuyButton(
+        model: RechargeCheckBalanceDetailModel,
+        position: Int,
+        bottomSheetTitle: String
+    ) {
+        digitalPDPAnalytics.clickBeliLagiActivePackage(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            bottomSheetTitle,
+            model.productId,
+            model.title,
+            position,
+            model.productPrice.toString(),
+            userSession.userId
+        )
+    }
+    //endregion
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -1339,13 +1756,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             if (requestCode == REQUEST_CODE_DIGITAL_SAVED_NUMBER) {
                 if (data != null) {
                     val orderClientNumber =
-                        data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSavedNumber
-
-                    handleCallbackSavedNumber(
-                        orderClientNumber.clientName,
-                        orderClientNumber.clientNumber,
-                        orderClientNumber.inputNumberActionTypeIndex
-                    )
+                        data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as? TopupBillsSavedNumber
+                    orderClientNumber?.let {
+                        handleCallbackSavedNumber(
+                            it.clientName,
+                            it.clientNumber,
+                            it.inputNumberActionTypeIndex
+                        )
+                    }
                 } else {
                     handleCallbackAnySavedNumberCancel()
                 }
@@ -1370,8 +1788,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         if (data?.hasExtra(DigitalExtraParam.EXTRA_MESSAGE) == true) {
             val throwable = data.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE)
                 as Throwable
-            if (!throwable.message.isNullOrEmpty())
+            if (!throwable.message.isNullOrEmpty()) {
                 showErrorToaster(throwable)
+            }
         }
     }
 

@@ -8,6 +8,8 @@ import com.tokopedia.play.broadcaster.ui.model.CoverSource
  */
 sealed class CoverSetupState {
 
+    data class GeneratedCover(val coverImage: String) : CoverSetupState()
+
     sealed class Cropped : CoverSetupState() {
 
         abstract val coverImage: Uri
@@ -28,6 +30,3 @@ sealed class CoverSetupState {
     }
     object Blank : CoverSetupState()
 }
-
-val CoverSetupState.isCropping: Boolean
-    get() = this is CoverSetupState.Cropping

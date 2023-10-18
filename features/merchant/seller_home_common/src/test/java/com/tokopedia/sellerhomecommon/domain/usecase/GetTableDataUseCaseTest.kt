@@ -3,7 +3,7 @@ package com.tokopedia.sellerhomecommon.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerhomecommon.domain.mapper.TableMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetTableDataResponse
-import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.ParamTableWidgetModel
 import com.tokopedia.sellerhomecommon.utils.TestHelper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
@@ -42,7 +42,7 @@ class GetTableDataUseCaseTest {
 
     private val params = GetTableDataUseCase.getRequestParams(
         dataKey = ArgumentMatchers.anyList(),
-        dynamicParameter = DynamicParameterModel()
+        dynamicParameter = ParamTableWidgetModel()
     )
 
     @Before

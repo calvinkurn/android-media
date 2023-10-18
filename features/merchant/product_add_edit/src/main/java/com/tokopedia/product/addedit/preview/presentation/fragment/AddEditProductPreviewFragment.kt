@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.motion.widget.MotionLayout
@@ -33,11 +32,11 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkContentPosition
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
+import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_SAVE_DATA_UI_MODEL
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
@@ -61,6 +60,7 @@ import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
+import com.tokopedia.product.addedit.databinding.FragmentAddEditProductPreviewBinding
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE_IMPROVEMENT
@@ -91,8 +91,6 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_FIRST_MOVED
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_FULL_FLOW
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_LOGISTIC_LABEL
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.LATITUDE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.LONGITUDE
@@ -122,6 +120,7 @@ import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductLimitationTracking
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantActivity
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantDetailActivity
+import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantStockStatus
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
@@ -133,23 +132,22 @@ import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiM
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
 import com.tokopedia.shop.common.constant.admin_roles.AdminPermissionUrl
-import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.net.URLEncoder
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import com.tokopedia.product.manage.common.R as productManageR
 
 class AddEditProductPreviewFragment :
     AddEditProductFragment(),
@@ -171,56 +169,54 @@ class AddEditProductPreviewFragment :
     private var isAdminEligible = true
     private var isProductLimitEligible: Boolean = true
 
+    private var binding by autoClearedNullable<FragmentAddEditProductPreviewBinding>()
+
     // photo
-    private var addEditProductPhotoButton: Typography? = null
-    private var productPhotosView: RecyclerView? = null
+    private val addEditProductPhotoButton get() = binding?.addProductPhotoStepLayout?.tvStartAddEditProductPhoto
+    private val productPhotosView get() = binding?.addProductPhotoStepLayout?.rvProductPhotos
+    private val addProductPhotoTipsLayout get() = binding?.addProductPhotoStepLayout?.addProductPhotoTipsLayout
     private var productPhotoAdapter: ProductPhotoAdapter? = null
     private var photoItemTouchHelper: ItemTouchHelper? = null
-    private var addProductPhotoTipsLayout: ViewGroup? = null
 
     // detail
-    private var addEditProductDetailTitle: Typography? = null
-    private var addEditProductDetailButton: Typography? = null
-    private var productDetailPreviewLayout: ViewGroup? = null
-    private var productNameView: Typography? = null
-    private var productPriceView: Typography? = null
-    private var productStockView: Typography? = null
-    private var iconOutOfStock: IconUnify? = null
-    private var dividerDetail: DividerUnify? = null
+    private val addEditProductDetailTitle get() = binding?.addProductDetailStepLayout?.tvProductDetail
+    private val addEditProductDetailButton get() = binding?.addProductDetailStepLayout?.tvStartAddEditProductDetail
+    private val productDetailPreviewLayout get() = binding?.addProductDetailStepLayout?.productDetailPreviewLayout
+    private val productNameView get() = binding?.addProductDetailStepLayout?.tvProductName
+    private val productPriceView get() = binding?.addProductDetailStepLayout?.tvProductPrice
+    private val productStockView get() = binding?.addProductDetailStepLayout?.tvProductStock
+    private val iconOutOfStock get() = binding?.addProductDetailStepLayout?.iconOutOfStock
+    private val dividerDetail get() = binding?.addProductDetailStepLayout?.dividerDetail
     private var outOfStockCoachMark: CoachMark2? = null
 
     // description
-    private var addEditProductDescriptionTitle: Typography? = null
-    private var addEditProductDescriptionButton: Typography? = null
+    private val addEditProductDescriptionTitle get() = binding?.addProductDescriptionStepLayout?.tvProductDescription
+    private val addEditProductDescriptionButton get() = binding?.addProductDescriptionStepLayout?.tvStartAddEditProductDescription
 
     // variant
-    private var addEditProductVariantLayout: ViewGroup? = null
-    private var addEditProductVariantButton: Typography? = null
-    private var addProductVariantTipsLayout: ViewGroup? = null
-    private var sellerFeatureCarousel: SellerFeatureCarousel? = null
+    private val addEditProductVariantLayout get() = binding?.addProductVariantStepLayout
+    private val addEditProductVariantButton get() = binding?.addProductVariantStepLayout?.tvStartAddEditProductVariant
+    private val addProductVariantTipsLayout get() = binding?.addProductVariantStepLayout?.addProductVariantTipsLayout
+    private val sellerFeatureCarousel get() = binding?.aepProductNoVariantLayout?.sellerFeatureCarousel
 
     // shipment
-    private var addEditProductShipmentTitle: Typography? = null
-    private var addEditProductShipmentButton: Typography? = null
-
-    // promotion
-    private var editProductPromotionLayout: ViewGroup? = null
-    private var editProductPromotionButton: Typography? = null
+    private val addEditProductShipmentTitle get() = binding?.addProductShipmentStepLayout?.tvProductShipment
+    private val addEditProductShipmentButton get() = binding?.addProductShipmentStepLayout?.tvStartAddEditProductShipment
 
     // product status
-    private var editProductStatusLayout: ViewGroup? = null
-    private var productStatusSwitch: SwitchUnify? = null
+    private val editProductStatusLayout get() = binding?.editProductStatusLayout
+    private val productStatusSwitch get() = binding?.editProductStatusLayout?.suProductStatus
 
     // loading
-    private var loadingLayout: MotionLayout? = null
+    private val loadingLayout get() = binding?.loadingLayout
 
     // admin revamp
-    private var multiLocationTicker: Ticker? = null
-    private var adminRevampErrorLayout: FrameLayout? = null
-    private var adminRevampGlobalError: GlobalError? = null
+    private val multiLocationTicker get() = binding?.tickerAddEditMultiLocation
+    private val adminRevampErrorLayout get() = binding?.addEditErrorLayout
+    private val adminRevampGlobalError get() = binding?.addEditAdminGlobalError
 
     // product limitation
-    private var productLimitationTicker: Ticker? = null
+    private val productLimitationTicker get() = binding?.tickerAddEditProductLimitation
     private var productLimitationBottomSheet: ProductLimitationBottomSheet? = null
 
     private lateinit var userSession: UserSessionInterface
@@ -262,7 +258,8 @@ class AddEditProductPreviewFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_add_edit_product_preview, container, false)
+        binding = FragmentAddEditProductPreviewBinding.inflate(inflater)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -278,17 +275,15 @@ class AddEditProductPreviewFragment :
         setupToolbar()
 
         // setup views prop
-        setupPhotosViews(view)
-        setupDetailViews(view)
-        setupDescriptionViews(view)
-        setupVariantViews(view)
-        setupShipmentViews(view)
-        setupStatusViews(view)
-        setupLoadingViews(view)
-        setupAdminRevampViews(view)
+        setupPhotosViews()
+        setupDetailViews()
+        setupDescriptionViews()
+        setupVariantViews()
+        setupShipmentViews()
+        setupStatusViews()
         setupDoneButton(view)
         setupSellerAppViews()
-        setupProductLimitationViews(view)
+        setupProductLimitationViews()
 
         onFragmentResult()
         setupBackPressed()
@@ -307,6 +302,7 @@ class AddEditProductPreviewFragment :
         observeProductData()
         observeProductInputModel()
         observeProductVariant()
+        observeHasDTStock()
         observePriceRangeFormatted()
         observeStockFormatted()
         observeImageUrlOrPathList()
@@ -318,6 +314,7 @@ class AddEditProductPreviewFragment :
         observeAdminPermission()
         observeMustFillParentWeight()
         observeIsShopModerated()
+        observeIsRemovingSingleVariant()
 
         // validate shop status information
         validateShopStatus()
@@ -368,8 +365,12 @@ class AddEditProductPreviewFragment :
     }
 
     override fun onPause() {
+        try {
+            outOfStockCoachMark?.dismissCoachMark()
+        } catch (e: Exception) {
+            AddEditProductErrorHandler.logExceptionToCrashlytics(e)
+        }
         super.onPause()
-        outOfStockCoachMark?.dismissCoachMark()
     }
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
@@ -515,8 +516,7 @@ class AddEditProductPreviewFragment :
         )
     }
 
-    private fun setupPhotosViews(view: View) {
-        productPhotosView = view.findViewById(R.id.rv_product_photos)
+    private fun setupPhotosViews() {
         productPhotoAdapter = ProductPhotoAdapter(viewModel.getMaxProductPhotos(), true, mutableListOf(), this)
         productPhotosView?.let {
             it.adapter = productPhotoAdapter
@@ -525,8 +525,7 @@ class AddEditProductPreviewFragment :
             photoItemTouchHelper = ItemTouchHelper(photoItemTouchHelperCallback)
             photoItemTouchHelper?.attachToRecyclerView(it)
         }
-        addProductPhotoTipsLayout = view.findViewById(R.id.add_product_photo_tips_layout)
-        addEditProductPhotoButton = view.findViewById(R.id.tv_start_add_edit_product_photo)
+
         addEditProductPhotoButton?.setOnClickListener {
             // tracking
             val buttonTextStart: String = getString(R.string.action_start)
@@ -551,15 +550,7 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun setupDetailViews(view: View) {
-        addEditProductDetailTitle = view.findViewById(R.id.tv_product_detail)
-        addEditProductDetailButton = view.findViewById(R.id.tv_start_add_edit_product_detail)
-        productDetailPreviewLayout = view.findViewById(R.id.product_detail_preview_layout)
-        productNameView = view.findViewById(R.id.tv_product_name)
-        productPriceView = view.findViewById(R.id.tv_product_price)
-        productStockView = view.findViewById(R.id.tv_product_stock)
-        iconOutOfStock = view.findViewById(R.id.icon_out_of_stock)
-        dividerDetail = view.findViewById(R.id.divider_detail)
+    private fun setupDetailViews() {
         addEditProductDetailButton?.setOnClickListener {
             if (isEditing()) {
                 ProductEditStepperTracking.trackChangeProductDetail(shopId)
@@ -572,9 +563,7 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun setupDescriptionViews(view: View) {
-        addEditProductDescriptionTitle = view.findViewById(R.id.tv_product_description)
-        addEditProductDescriptionButton = view.findViewById(R.id.tv_start_add_edit_product_description)
+    private fun setupDescriptionViews() {
         addEditProductDescriptionButton?.setOnClickListener {
             if (isEditing()) {
                 ProductEditStepperTracking.trackChangeProductDesc(shopId)
@@ -583,9 +572,7 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun setupShipmentViews(view: View) {
-        addEditProductShipmentTitle = view.findViewById(R.id.tv_product_shipment)
-        addEditProductShipmentButton = view.findViewById(R.id.tv_start_add_edit_product_shipment)
+    private fun setupShipmentViews() {
         addEditProductShipmentButton?.setOnClickListener {
             if (isEditing()) {
                 ProductEditStepperTracking.trackChangeShipping(shopId)
@@ -594,17 +581,7 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun setupVariantViews(view: View) {
-        addEditProductVariantLayout = view.findViewById(R.id.add_product_variant_step_layout)
-        addEditProductVariantButton = view.findViewById(R.id.tv_start_add_edit_product_variant)
-        addProductVariantTipsLayout = view.findViewById(R.id.add_product_variant_tips_layout)
-        sellerFeatureCarousel = view.findViewById(R.id.sellerFeatureCarousel)
-        addEditProductVariantButton?.setOnClickListener {
-            if (isEditing()) {
-                ProductEditStepperTracking.trackAddProductVariant(shopId)
-            }
-            showVariantActivity()
-        }
+    private fun setupVariantViews() {
         addProductVariantTipsLayout?.setOnClickListener {
             if (isEditing()) {
                 ProductEditStepperTracking.trackClickHelpPriceVariant(shopId)
@@ -613,26 +590,21 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun setupAdminRevampViews(view: View) {
-        multiLocationTicker = view.findViewById(R.id.ticker_add_edit_multi_location)
-        adminRevampErrorLayout = view.findViewById(R.id.add_edit_error_layout)
-        adminRevampGlobalError = view.findViewById(R.id.add_edit_admin_global_error)
-    }
-
-    private fun setupLoadingViews(view: View) {
-        loadingLayout = view.findViewById(R.id.loading_layout)
-    }
-
-    private fun setupStatusViews(view: View) {
-        editProductStatusLayout = view.findViewById(R.id.edit_product_status_layout)
-        productStatusSwitch = view.findViewById(R.id.su_product_status)
+    private fun setupStatusViews() {
         productStatusSwitch?.setOnClickListener {
             val isChecked = productStatusSwitch?.isChecked ?: false
+            val productInputModel = viewModel.productInputModel.value ?: return@setOnClickListener
+
+            if (productInputModel.isCampaignActive ||
+                productInputModel.variantInputModel.isVariantCampaignActive()) {
+                showToasterErrorSetStatusCampaignActive(isChecked)
+                return@setOnClickListener
+            }
 
             if (isChecked && viewModel.isVariantEmpty.value == false) {
-                viewModel.productInputModel.value?.variantInputModel?.getStockStatus()?.let {
-                    activateVariantStatusConfirmation(it)
-                }
+                activateVariantStatusConfirmation(productInputModel.variantInputModel.getStockStatus())
+            } else if (!isChecked && productInputModel.hasDTStock) {
+                deactivateProductStatusConfirmation(productInputModel.detailInputModel.productName)
             } else {
                 viewModel.updateProductStatus(isChecked)
                 viewModel.setIsDataChanged(true)
@@ -663,35 +635,45 @@ class AddEditProductPreviewFragment :
 
     private fun setupDoneButton(view: View) {
         doneButton?.setOnClickListener {
-            updateProductImage()
-            if (isEditing()) {
-                ProductEditStepperTracking.trackFinishButton(shopId)
+            processSave(view)
+        }
+    }
+
+    private fun processSave(view: View){
+        updateProductImage()
+        if (isEditing()) {
+            ProductEditStepperTracking.trackFinishButton(shopId)
+        }
+
+        val validateMessage = viewModel.validateProductInput(
+            viewModel.productInputModel.value?.detailInputModel
+                ?: DetailInputModel()
+        )
+        val isAddingOrDuplicating = isAdding() || viewModel.isDuplicate
+        val mustFillParentWeight = viewModel.mustFillParentWeight.value.orFalse()
+        val isSingleProductVariant =
+            viewModel.productInputModel.value?.variantInputModel?.isSingleProductVariant().orFalse()
+
+        if (isSingleProductVariant) {
+            DialogUtil.showSingleProductVariantDialog(context ?: return) {
+                viewModel.convertToNonVariant()
             }
-
-            val validateMessage = viewModel.validateProductInput(
-                viewModel.productInputModel.value?.detailInputModel
-                    ?: DetailInputModel()
-            )
-            val isAddingOrDuplicating = isAdding() || viewModel.isDuplicate
-            val mustFillParentWeight = viewModel.mustFillParentWeight.value.orFalse()
-
-            if (mustFillParentWeight) {
-                Toaster.build(
-                    view,
-                    getString(R.string.error_weight_not_filled),
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR
-                ).show()
-            } else if (validateMessage.isNotEmpty()) {
-                Toaster.build(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-            } else if (isAddingOrDuplicating && !isProductLimitEligible) {
-                productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
-                productLimitationBottomSheet?.setIsSavingToDraft(true)
-                productLimitationBottomSheet?.show(childFragmentManager, context)
-            } else {
-                viewModel.productInputModel.value?.detailInputModel?.productName?.let {
-                    viewModel.validateProductNameInput(it)
-                }
+        } else if (mustFillParentWeight) {
+            Toaster.build(
+                view,
+                getString(R.string.error_weight_not_filled),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).show()
+        } else if (validateMessage.isNotEmpty()) {
+            Toaster.build(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        } else if (isAddingOrDuplicating && !isProductLimitEligible) {
+            productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
+            productLimitationBottomSheet?.setIsSavingToDraft(true)
+            productLimitationBottomSheet?.show(childFragmentManager, context)
+        } else {
+            viewModel.productInputModel.value?.detailInputModel?.productName?.let {
+                viewModel.validateProductNameInput(it)
             }
         }
     }
@@ -851,6 +833,20 @@ class AddEditProductPreviewFragment :
         }
     }
 
+    private fun displayRemoveVariantCoachmark() {
+        val items = listOf(
+            CoachMark2Item(
+                addEditProductDetailTitle ?: return,
+                "",
+                getString(R.string.product_add_edit_label_coachmark_variant_removed),
+                CoachMarkContentPosition.TOP.position
+            )
+        )
+        outOfStockCoachMark = CoachMark2(context ?: return)
+        outOfStockCoachMark?.showCoachMark(ArrayList(items))
+
+    }
+
     private fun displayAddModeDetail(productInputModel: ProductInputModel) {
         doneButton?.show()
         enablePhotoEdit()
@@ -867,7 +863,6 @@ class AddEditProductPreviewFragment :
         enableDescriptionEdit()
         enableVariantEdit()
         enableShipmentEdit()
-        enablePromotionEdit()
         enableStatusEdit()
     }
 
@@ -879,7 +874,7 @@ class AddEditProductPreviewFragment :
 
     private fun enableDetailEdit() {
         context?.let {
-            addEditProductDetailTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+            addEditProductDetailTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
             addEditProductDetailButton?.text = getString(R.string.action_change)
             addEditProductDetailButton?.animateExpand()
             dividerDetail?.hide()
@@ -888,14 +883,14 @@ class AddEditProductPreviewFragment :
 
     private fun enableDescriptionEdit() {
         context?.let {
-            addEditProductDescriptionTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+            addEditProductDescriptionTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
             addEditProductDescriptionButton?.text = getString(R.string.action_change)
             addEditProductDescriptionButton?.animateExpand()
         }
     }
 
     private fun enableVariantEdit() {
-        addEditProductVariantLayout?.showWithCondition(GlobalConfig.isSellerApp())
+        addEditProductVariantLayout?.root?.showWithCondition(GlobalConfig.isSellerApp())
         sellerFeatureCarousel?.showWithCondition(!GlobalConfig.isSellerApp())
     }
 
@@ -905,29 +900,21 @@ class AddEditProductPreviewFragment :
         addEditProductShipmentTitle?.setTextColor(
             ContextCompat.getColor(
                 context ?: return,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
             )
         )
     }
 
     private fun enableShipmentEdit() {
         context?.let {
-            addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+            addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
             addEditProductShipmentButton?.text = getString(R.string.action_change)
             addEditProductShipmentButton?.animateExpand()
         }
     }
 
-    private fun enablePromotionEdit() {
-        if (GlobalConfig.isSellerApp()) {
-            editProductPromotionLayout?.animateExpand()
-        } else {
-            editProductPromotionLayout?.animateCollapse()
-        }
-    }
-
     private fun enableStatusEdit() {
-        editProductStatusLayout?.animateExpand()
+        editProductStatusLayout?.root?.animateExpand()
     }
 
     private fun disableShipmentEdit() {
@@ -1026,11 +1013,28 @@ class AddEditProductPreviewFragment :
     }
 
     private fun observeProductVariant() {
-        viewModel.isVariantEmpty.observe(viewLifecycleOwner, {
+        viewModel.isVariantEmpty.observe(viewLifecycleOwner) {
             if (isDuplicate() || isEditing() || isDrafting()) {
                 showEmptyVariantState(it)
             }
-        })
+        }
+    }
+
+    private fun observeHasDTStock() {
+        viewModel.hasDTStock.observe(viewLifecycleOwner) { hasDTStock ->
+            addEditProductVariantButton?.setColorToDisabled(
+                hasDTStock && viewModel.isVariantEmpty.value == true)
+            addEditProductVariantButton?.setOnClickListener {
+                if (isEditing()) {
+                    ProductEditStepperTracking.trackAddProductVariant(shopId)
+                }
+                if (hasDTStock && viewModel.isVariantEmpty.value == true) {
+                    showDTDisableVariantChangeDialog()
+                } else {
+                    showVariantActivity()
+                }
+            }
+        }
     }
 
     private fun observePriceRangeFormatted() {
@@ -1065,7 +1069,7 @@ class AddEditProductPreviewFragment :
 
     private fun observeValidationMessage() {
         viewModel.resetValidateResult() // reset old result when re-observe
-        viewModel.validationResult.observe(viewLifecycleOwner, { result ->
+        viewModel.validationResult.observe(viewLifecycleOwner) { result ->
             when (result.result) {
                 // when we perform add product, the productId will be 0
                 // when we perform edit product, the productId will be provided from the getProductV3 response
@@ -1074,6 +1078,7 @@ class AddEditProductPreviewFragment :
                     if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
                         viewModel.productInputModel.value?.apply {
                             startProductEditService(this)
+                            view?.postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                         }
                     } else {
                         viewModel.productInputModel.value?.let { productInputModel ->
@@ -1082,11 +1087,11 @@ class AddEditProductPreviewFragment :
                             } else {
                                 startProductAddService(productInputModel)
                                 activity?.setResult(RESULT_OK)
+                                view?.postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                             }
                         }
                     }
                     showLoading()
-                    view?.postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                 }
                 ValidationResultModel.Result.VALIDATION_ERROR -> {
                     showToasterFailed(result.exception)
@@ -1098,7 +1103,7 @@ class AddEditProductPreviewFragment :
                     // no-op
                 }
             }
-        })
+        }
     }
 
     private fun observeSaveProductDraft() {
@@ -1124,6 +1129,7 @@ class AddEditProductPreviewFragment :
                         moveToImagePicker()
                     }
                 }
+
                 is Fail -> {
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
                     AddEditProductErrorHandler.logMessage("$TIMBER_PREFIX_LOCATION_VALIDATION: ${it.throwable.message}")
@@ -1234,6 +1240,16 @@ class AddEditProductPreviewFragment :
         }
     }
 
+    private fun observeIsRemovingSingleVariant() {
+        viewModel.isRemovingSingleVariant.observe(viewLifecycleOwner) {
+            if (it) {
+                displayRemoveVariantCoachmark()
+                showToasterNormal(getString(R.string.product_add_edit_label_toaster_variant_removed))
+                viewModel.productInputModel.value?.isRemovingSingleVariant = false
+            }
+        }
+    }
+
     private fun removeObservers() {
         viewModel.isEditing.removeObservers(this)
         viewModel.getProductResult.removeObservers(this)
@@ -1252,8 +1268,8 @@ class AddEditProductPreviewFragment :
 
     private fun updateImageListFromIntentData(data: Intent) {
         val result = ImagePickerResultExtractor.extract(data)
-        val imagePickerResult = result.imageUrlOrPathList as ArrayList
-        val originalImageUrl = result.originalImageUrl as ArrayList
+        val imagePickerResult = ArrayList<String>(result.imageUrlOrPathList as ArrayList)
+        val originalImageUrl = ArrayList<String>(result.originalImageUrl as ArrayList)
         val isEditted = result.isEditted as ArrayList
         if (imagePickerResult.size > 0) {
             val shouldUpdatePhotosInsteadMoveToDetail = isEditing() ||
@@ -1276,9 +1292,9 @@ class AddEditProductPreviewFragment :
 
     private fun updateImageListFromPicker(data: Intent) {
         val result = MediaPicker.result(data)
-        val imagePickerResult = result.editedImages as ArrayList
-        val originalImageUrl = result.originalPaths as ArrayList
-        if (imagePickerResult.size > 0) {
+        val imagePickerResult = ArrayList<String>(result.editedImages)
+        val originalImageUrl = ArrayList<String>(result.selectedIncludeMedia)
+        if (imagePickerResult.isNotEmpty()) {
             val shouldUpdatePhotosInsteadMoveToDetail = isEditing() ||
                 viewModel.isDuplicate ||
                 viewModel.productInputModel.value != null
@@ -1299,6 +1315,7 @@ class AddEditProductPreviewFragment :
         showLoading()
         data.let { intent ->
             val saveAddressDataModel = intent.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
+                ?: intent.getParcelableExtra<SaveAddressDataModel>(EXTRA_SAVE_DATA_UI_MODEL)
 
             saveAddressDataModel?.let { model ->
                 latitude = model.latitude
@@ -1424,7 +1441,7 @@ class AddEditProductPreviewFragment :
                 }
             }.orEmpty()
 
-            if (Rollence.getImagePickerRollence()) {
+            if (RemoteConfig.getImagePickerRemoteConfig(context)) {
                 val pageSource = if (!isEditing()) PageSource.AddProduct else PageSource.EditProduct
                 doTracking(isEditing())
                 val intent = ImagePickerAddEditNavigation.getIntentMultiplePicker(
@@ -1519,8 +1536,22 @@ class AddEditProductPreviewFragment :
         }
     }
 
+    private fun showDTDisableVariantChangeDialog() {
+        val dialog = DialogUnify(context ?: return, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+        val descriptionText = getString(R.string.product_add_edit_text_disabled_variant_deactivate_dialog)
+        dialog.apply {
+            setTitle(getString(R.string.product_add_edit_title_disabled_variant_deactivate_dialog))
+            setDescription(descriptionText)
+            setPrimaryCTAText(getString(R.string.action_oke_got_it))
+            setPrimaryCTAClickListener {
+                dismiss()
+            }
+        }
+        dialog.show()
+    }
+
     private fun updateProductImage() {
-        if (Rollence.getImagePickerRollence()) {
+        if (RemoteConfig.getImagePickerRemoteConfig(context)) {
             updateProductImageList()
         } else {
             updateImageList()
@@ -1753,21 +1784,73 @@ class AddEditProductPreviewFragment :
         }.show()
     }
 
+    private fun deactivateProductStatusConfirmation(productName: String) {
+        viewModel.updateProductStatus(true)
+        productStatusSwitch?.isChecked = true
+        val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        val descriptionText = getString(
+            productManageR.string.product_manage_confirm_inactive_dt_product_desc).parseAsHtml()
+        val successMessage = getString(R.string.product_add_edit_success_to_deactivate_format, productName)
+        dialog.apply {
+            setTitle(getString(productManageR.string.product_manage_confirm_inactive_dt_product_title))
+            setDescription(descriptionText)
+            setPrimaryCTAText(getString(productManageR.string.product_manage_confirm_inactive_dt_product_positive_button))
+            setSecondaryCTAText(getString(productManageR.string.product_manage_confirm_dt_product_cancel_button))
+            setPrimaryCTAClickListener {
+                productStatusSwitch?.isChecked = false
+                viewModel.updateProductStatus(false)
+                Toaster.build(
+                    view?:return@setPrimaryCTAClickListener,
+                    successMessage,
+                    Toaster.LENGTH_LONG,
+                    actionText = getString(R.string.action_oke)
+                ).show()
+                dismiss()
+            }
+            setSecondaryCTAClickListener {
+                dismiss()
+            }
+        }
+        dialog.show()
+    }
+
     private fun moveToLocationPicker() {
-        RouteManager.getIntent(activity, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-            putExtra(EXTRA_IS_FULL_FLOW, false)
-            putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-            startActivityForResult(this, REQUEST_CODE_SHOP_LOCATION)
+        activity?.let {
+            val bundle = Bundle().apply {
+                putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+            }
+            RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT).apply {
+                putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+                startActivityForResult(this, REQUEST_CODE_SHOP_LOCATION)
+            }
+        }
+    }
+
+    private fun showToasterNormal(message: String) {
+        view?.let {
+            Toaster.build(
+                it,
+                message,
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(R.string.label_for_action_text_toaster_success_set_shop_location)
+            ).show()
         }
     }
 
     private fun showToasterSuccessSetLocation() {
+        showToasterNormal(getString(R.string.label_for_toaster_success_set_shop_location))
+    }
+
+    private fun showToasterErrorSetStatusCampaignActive(isChecked: Boolean) {
+        viewModel.updateProductStatus(!isChecked)
+        productStatusSwitch?.isChecked = !isChecked
         view?.let {
             Toaster.build(
                 it,
-                getString(R.string.label_for_toaster_success_set_shop_location),
+                getString(R.string.product_add_edit_text_toaster_campaign_deactivate),
                 Snackbar.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
+                Toaster.TYPE_ERROR,
                 getString(R.string.label_for_action_text_toaster_success_set_shop_location)
             ).show()
         }
@@ -1866,8 +1949,7 @@ class AddEditProductPreviewFragment :
         productLimitationBottomSheet?.show(childFragmentManager, context)
     }
 
-    private fun setupProductLimitationViews(view: View) {
-        productLimitationTicker = view.findViewById(R.id.ticker_add_edit_product_limitation)
+    private fun setupProductLimitationViews() {
         val productLimitStartDate = getString(R.string.label_product_limitation_start_date)
         val tickers = listOf(
             TickerData(
@@ -1959,11 +2041,12 @@ class AddEditProductPreviewFragment :
     }
 
     private fun checkDownloadPermission() {
-        if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.R) {
+        if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.Q) {
             viewModel.productInputModel.value?.let { productInputModel ->
                 productInputModel.isDuplicate = true
                 startProductAddService(productInputModel)
                 activity?.setResult(RESULT_OK)
+                view?.postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
             }
         } else {
             val listener = object : PermissionCheckerHelper.PermissionCheckListener {
@@ -1980,6 +2063,7 @@ class AddEditProductPreviewFragment :
                         productInputModel.isDuplicate = true
                         startProductAddService(productInputModel)
                         activity?.setResult(RESULT_OK)
+                        view?.postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                     }
                 }
             }

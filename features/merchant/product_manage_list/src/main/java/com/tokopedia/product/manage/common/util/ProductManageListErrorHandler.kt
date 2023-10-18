@@ -3,8 +3,6 @@ package com.tokopedia.product.manage.common.util
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.product.manage.BuildConfig
-import java.lang.RuntimeException
 
 object ProductManageListErrorHandler {
 
@@ -13,7 +11,6 @@ object ProductManageListErrorHandler {
     private const val DEVICE_ID_KEY = "device_id"
     private const val MESSAGE_KEY = "message"
     private const val STACKTRACE_KEY = "stacktrace"
-    private const val EXTRAS_KEY = "extras"
 
     const val PRODUCT_MANAGE_TAG = "PRODUCT_MANAGE_ERROR"
 
@@ -31,7 +28,6 @@ object ProductManageListErrorHandler {
         const val GET_ALL_DRAFT_COUNT_ERROR = "product manage get all draft count error"
         const val GET_STOCK_REMINDER_ERROR = "product manage get stock reminder error"
         const val CREATE_STOCK_REMINDER_ERROR = "product manage create stock reminder error"
-        const val UPDATE_STOCK_REMINDER_ERROR = "product manage update stock reminder error"
     }
 
     fun logExceptionToCrashlytics(t: Throwable) {
@@ -42,28 +38,11 @@ object ProductManageListErrorHandler {
         }
     }
 
-    fun logExceptionToCrashlytics(throwable: Throwable, message: String) {
-        try {
-            if (!BuildConfig.DEBUG) {
-                val exceptionMessage = "$message - ${throwable.localizedMessage}"
-                FirebaseCrashlytics.getInstance().recordException(RuntimeException(
-                    exceptionMessage,
-                    throwable
-                ))
-            } else {
-                throwable.printStackTrace()
-            }
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
-        }
-    }
-
     fun logExceptionToServer(
         errorTag: String,
         throwable: Throwable,
         errorType: String,
-        deviceId: String,
-        extras: Map<String, Any> = mapOf()
+        deviceId: String
     ) {
         ServerLogger.log(
             Priority.P2,

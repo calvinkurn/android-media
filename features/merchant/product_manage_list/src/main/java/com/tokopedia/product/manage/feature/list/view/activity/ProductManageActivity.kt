@@ -1,8 +1,6 @@
 package com.tokopedia.product.manage.feature.list.view.activity
 
 import android.content.Context
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -12,8 +10,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.setStatusBarColor
+import com.tokopedia.product.manage.common.util.ProductManageConfig
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment
@@ -32,7 +29,11 @@ open class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductMan
 
         return@lazy when {
             filterId.isNotBlank() || searchKeyword.isNotBlank() || tab.isNotBlank() -> {
-                ProductManageSellerFragment.newInstance(arrayListOf(filterId), tab, searchKeyword)
+                if (filterId.isEmpty()){
+                    ProductManageSellerFragment.newInstance(arrayListOf(), tab, searchKeyword)
+                }else{
+                    ProductManageSellerFragment.newInstance(arrayListOf(filterId), tab, searchKeyword)
+                }
             }
             else -> {
                 ProductManageSellerFragment()
@@ -45,7 +46,7 @@ open class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductMan
 
         initInjector()
 
-        if (!GlobalConfig.isSellerApp()) {
+        if (!ProductManageConfig.IS_SELLER_APP) {
             window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         }
     }
@@ -77,7 +78,7 @@ open class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductMan
     }
 
     private fun goToSellerAppDashboard() {
-        if (GlobalConfig.isSellerApp()) {
+        if (ProductManageConfig.IS_SELLER_APP) {
             RouteManager.route(this, ApplinkConstInternalMarketplace.SELLER_APP_DASHBOARD)
         }
     }

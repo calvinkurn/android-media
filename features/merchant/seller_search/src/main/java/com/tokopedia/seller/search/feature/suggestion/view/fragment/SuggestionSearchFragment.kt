@@ -103,6 +103,9 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
                     setSuggestionSearch(it.data)
                     stopSearchResultPagePerformanceMonitoring()
                 }
+                else -> {
+                    //no-op
+                }
             }
         })
 

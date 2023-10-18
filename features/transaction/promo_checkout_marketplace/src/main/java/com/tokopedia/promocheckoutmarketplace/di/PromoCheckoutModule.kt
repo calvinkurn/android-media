@@ -32,5 +32,4 @@ class PromoCheckoutModule {
     @PromoCheckoutMarketplaceScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
-
 }

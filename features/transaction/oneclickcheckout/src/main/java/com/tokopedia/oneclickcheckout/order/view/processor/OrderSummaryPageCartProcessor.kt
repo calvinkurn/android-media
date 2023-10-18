@@ -6,6 +6,7 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiExtern
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
@@ -15,6 +16,8 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Com
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.mapper.PrescriptionMapper
+import com.tokopedia.oneclickcheckout.order.view.mapper.SaveAddOnStateMapper.generateSaveAddOnStateRequestParams
+import com.tokopedia.oneclickcheckout.order.view.mapper.SaveAddOnStateMapper.generateSaveAllAddOnsStateRequestParams
 import com.tokopedia.oneclickcheckout.order.view.model.AddressState
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
@@ -22,9 +25,13 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.SaveAddOnState
+import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
+import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EpharmacyPrescriptionDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCaseCoroutine
@@ -38,9 +45,9 @@ class OrderSummaryPageCartProcessor @Inject constructor(
     private val getOccCartUseCase: GetOccCartUseCase,
     private val updateCartOccUseCase: UpdateCartOccUseCase,
     private val getPrescriptionIdsUseCase: GetPrescriptionIdsUseCaseCoroutine,
+    private val saveAddOnStateUseCase: SaveAddOnStateUseCase,
     private val executorDispatchers: CoroutineDispatchers
 ) {
-
     suspend fun atcOcc(productIds: String, userId: String): OccGlobalEvent {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
@@ -48,11 +55,15 @@ class OrderSummaryPageCartProcessor @Inject constructor(
                 val listProductId = productIds.split(",").filter { it.isNotBlank() }
                 val response = atcOccMultiExternalUseCase.get().setParams(listProductId, userId).executeOnBackground()
                 if (response.isStatusError()) {
-                    return@withContext OccGlobalEvent.AtcError(errorMessage = response.getAtcErrorMessage()
-                            ?: "")
+                    return@withContext OccGlobalEvent.AtcError(
+                        errorMessage = response.getAtcErrorMessage()
+                            ?: ""
+                    )
                 }
-                return@withContext OccGlobalEvent.AtcSuccess(response.data.message.firstOrNull()
-                        ?: "")
+                return@withContext OccGlobalEvent.AtcSuccess(
+                    response.data.message.firstOrNull()
+                        ?: ""
+                )
             } catch (t: Throwable) {
                 return@withContext OccGlobalEvent.AtcError(t.cause ?: t)
             }
@@ -61,30 +72,36 @@ class OrderSummaryPageCartProcessor @Inject constructor(
         return result
     }
 
-    suspend fun getOccCart(source: String, gatewayCode: String, tenor: Int): ResultGetOccCart {
+    suspend fun getOccCart(
+        source: String,
+        gatewayCode: String,
+        tenor: Int,
+        isCartReimagine: Boolean
+    ): ResultGetOccCart {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val orderData = getOccCartUseCase.executeSuspend(getOccCartUseCase.createRequestParams(source, gatewayCode, tenor))
+                val orderData = getOccCartUseCase
+                    .executeSuspend(getOccCartUseCase.createRequestParams(source, gatewayCode, tenor, isCartReimagine))
                 return@withContext ResultGetOccCart(
-                        orderCart = orderData.cart,
-                        orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.preference.isValidProfile),
-                        orderProfile = orderData.preference,
-                        orderPayment = orderData.payment,
-                        orderPromo = orderData.promo.copy(state = OccButtonState.NORMAL),
-                        globalEvent = when {
-                            orderData.prompt.shouldShowPrompt() -> {
-                                OccGlobalEvent.Prompt(orderData.prompt)
-                            }
-                            orderData.popUp.isNeedToShowPopUp() -> {
-                                OccGlobalEvent.PopUp(orderData.popUp)
-                            }
-                            else -> null
-                        },
-                        throwable = null,
-                        addressState = AddressState(orderData.errorCode, orderData.preference.address, orderData.popUpMessage),
-                        profileCode = orderData.profileCode,
-                        imageUpload = orderData.imageUpload
+                    orderCart = orderData.cart,
+                    orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.preference.isValidProfile),
+                    orderProfile = orderData.preference,
+                    orderPayment = orderData.payment,
+                    orderPromo = orderData.promo.copy(state = OccButtonState.NORMAL),
+                    globalEvent = when {
+                        orderData.prompt.shouldShowPrompt() -> {
+                            OccGlobalEvent.Prompt(orderData.prompt)
+                        }
+                        orderData.popUp.isNeedToShowPopUp() -> {
+                            OccGlobalEvent.PopUp(orderData.popUp)
+                        }
+                        else -> null
+                    },
+                    throwable = null,
+                    addressState = AddressState(orderData.errorCode, orderData.preference.address, orderData.popUpMessage),
+                    profileCode = orderData.profileCode,
+                    imageUpload = orderData.imageUpload
                 )
             } catch (t: Throwable) {
                 Timber.d(t)
@@ -132,12 +149,12 @@ class OrderSummaryPageCartProcessor @Inject constructor(
             orderCart.products.forEach {
                 if (!it.isError) {
                     cart.add(
-                            UpdateCartOccCartRequest(
-                                    it.cartId,
-                                    it.orderQuantity,
-                                    it.notes,
-                                it.productId
-                            )
+                        UpdateCartOccCartRequest(
+                            it.cartId,
+                            it.orderQuantity,
+                            it.notes,
+                            it.productId
+                        )
                     )
                 }
             }
@@ -159,15 +176,15 @@ class OrderSummaryPageCartProcessor @Inject constructor(
             val realServiceId = orderShipment.getRealServiceId()
             val selectedGoCicilTerm = orderPayment.walletData.goCicilData.selectedTerm
             val profile = UpdateCartOccProfileRequest(
-                    gatewayCode = orderProfile.payment.gatewayCode,
-                    metadata = metadata,
-                    addressId = orderProfile.address.addressId,
-                    serviceId = if (realServiceId == 0) orderProfile.shipment.serviceId.toIntOrZero() else realServiceId,
-                    shippingId = orderShipment.getRealShipperId().toString(),
-                    spId = orderShipment.getRealShipperProductId().toString(),
-                    isFreeShippingSelected = orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && orderShipment.logisticPromoViewModel != null,
-                    tenureType = selectedGoCicilTerm?.installmentTerm ?: 0,
-                    optionId = selectedGoCicilTerm?.optionId ?: ""
+                gatewayCode = orderProfile.payment.gatewayCode,
+                metadata = metadata,
+                addressId = orderProfile.address.addressId,
+                serviceId = if (realServiceId == 0) orderProfile.shipment.serviceId.toIntOrZero() else realServiceId,
+                shippingId = orderShipment.getRealShipperId().toString(),
+                spId = orderShipment.getRealShipperProductId().toString(),
+                isFreeShippingSelected = orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && orderShipment.logisticPromoViewModel != null,
+                tenureType = selectedGoCicilTerm?.installmentTerm ?: 0,
+                optionId = selectedGoCicilTerm?.optionId ?: ""
             )
             return UpdateCartOccRequest(cart, profile)
         }
@@ -182,15 +199,15 @@ class OrderSummaryPageCartProcessor @Inject constructor(
         withContext(executorDispatchers.io) {
             try {
                 val param = generateUpdateCartParam(orderCart, orderProfile, orderShipment, orderPayment)?.copy(
-                        skipShippingValidation = shouldSkipShippingValidationWhenUpdateCart(orderShipment),
-                        source = SOURCE_UPDATE_QTY_NOTES
+                    skipShippingValidation = shouldSkipShippingValidationWhenUpdateCart(orderShipment),
+                    source = SOURCE_UPDATE_QTY_NOTES
                 )
                 if (param != null) {
                     // ignore result
                     updateCartOccUseCase.executeSuspend(param)
                 }
             } catch (t: Throwable) {
-                //ignore throwable
+                // ignore throwable
             }
         }
     }
@@ -208,8 +225,11 @@ class OrderSummaryPageCartProcessor @Inject constructor(
                 return@withContext true to OccGlobalEvent.TriggerRefresh()
             } catch (t: Throwable) {
                 if (t is MessageErrorException) {
-                    return@withContext false to OccGlobalEvent.TriggerRefresh(errorMessage = t.message
-                            ?: DEFAULT_ERROR_MESSAGE, shouldTriggerAnalytics = true)
+                    return@withContext false to OccGlobalEvent.TriggerRefresh(
+                        errorMessage = t.message
+                            ?: DEFAULT_ERROR_MESSAGE,
+                        shouldTriggerAnalytics = true
+                    )
                 }
                 return@withContext false to OccGlobalEvent.Error(t)
             }
@@ -231,8 +251,11 @@ class OrderSummaryPageCartProcessor @Inject constructor(
                 return@withContext true to OccGlobalEvent.Normal
             } catch (t: Throwable) {
                 if (t is MessageErrorException) {
-                    return@withContext false to OccGlobalEvent.TriggerRefresh(errorMessage = t.message
-                            ?: DEFAULT_ERROR_MESSAGE, shouldTriggerAnalytics = true)
+                    return@withContext false to OccGlobalEvent.TriggerRefresh(
+                        errorMessage = t.message
+                            ?: DEFAULT_ERROR_MESSAGE,
+                        shouldTriggerAnalytics = true
+                    )
                 }
                 return@withContext false to OccGlobalEvent.Error(t)
             }
@@ -254,10 +277,87 @@ class OrderSummaryPageCartProcessor @Inject constructor(
                 return@withContext true to OccGlobalEvent.Loading
             } catch (t: Throwable) {
                 if (t is MessageErrorException) {
-                    return@withContext false to OccGlobalEvent.TriggerRefresh(errorMessage = t.message
-                            ?: DEFAULT_ERROR_MESSAGE, shouldTriggerAnalytics = true)
+                    return@withContext false to OccGlobalEvent.TriggerRefresh(
+                        errorMessage = t.message
+                            ?: DEFAULT_ERROR_MESSAGE,
+                        shouldTriggerAnalytics = true
+                    )
                 }
                 return@withContext false to OccGlobalEvent.TriggerRefresh(throwable = t)
+            }
+        }
+        OccIdlingResource.decrement()
+        return result
+    }
+
+    suspend fun saveAddOnProductState(
+        newAddOnProductData: AddOnsProductDataModel.Data,
+        product: OrderProduct
+    ): SaveAddOnState {
+        OccIdlingResource.increment()
+        val result = withContext(executorDispatchers.io) {
+            try {
+                saveAddOnStateUseCase.setParams(
+                    saveAddOnStateRequest = generateSaveAddOnStateRequestParams(
+                        newAddOnProductData = newAddOnProductData,
+                        product = product
+                    ),
+                    isFireAndForget = true
+                )
+                val response = saveAddOnStateUseCase.executeOnBackground()
+                val errorMessage: String = response.saveAddOns.errorMessage.joinToString(separator = ", ")
+                return@withContext if (errorMessage.isBlank() && response.saveAddOns.status == STATUS_OK) {
+                    SaveAddOnState(
+                        isSuccess = true,
+                        message = errorMessage
+                    )
+                } else {
+                    SaveAddOnState(
+                        isSuccess = false,
+                        message = errorMessage
+                    )
+                }
+            } catch (throwable: Throwable) {
+                return@withContext SaveAddOnState(
+                    isSuccess = false,
+                    throwable = throwable
+                )
+            }
+        }
+        OccIdlingResource.decrement()
+        return result
+    }
+
+    suspend fun saveAllAddOnsAllProductsState(
+        products: List<OrderProduct>
+    ): SaveAddOnState {
+        OccIdlingResource.increment()
+        val result = withContext(executorDispatchers.io) {
+            try {
+                saveAddOnStateUseCase.setParams(
+                    saveAddOnStateRequest = generateSaveAllAddOnsStateRequestParams(
+                        products = products
+                    ),
+                    isFireAndForget = false
+                )
+                val response = saveAddOnStateUseCase.executeOnBackground()
+                val errorMessage: String = response.saveAddOns.errorMessage.joinToString(separator = ", ")
+                return@withContext if (errorMessage.isBlank() && response.saveAddOns.status == STATUS_OK) {
+                    SaveAddOnState(
+                        isSuccess = true,
+                        message = errorMessage
+                    )
+                } else {
+                    SaveAddOnState(
+                        isSuccess = false,
+                        message = errorMessage
+                    )
+                }
+            } catch (throwable: Throwable) {
+                return@withContext SaveAddOnState(
+                    isSuccess = false,
+                    throwable = throwable
+                )
             }
         }
         OccIdlingResource.decrement()

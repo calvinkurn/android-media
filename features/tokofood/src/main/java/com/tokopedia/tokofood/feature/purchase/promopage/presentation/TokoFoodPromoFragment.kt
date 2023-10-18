@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -35,9 +36,9 @@ import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListT
 import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodErrorPage
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.adapter.TokoFoodPromoAdapter
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.adapter.TokoFoodPromoAdapterTypeFactory
+import com.tokopedia.tokofood.feature.purchase.promopage.presentation.toolbar.TokoFoodPromoToolbar
+import com.tokopedia.tokofood.feature.purchase.promopage.presentation.toolbar.TokoFoodPromoToolbarListener
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.uimodel.TokoFoodPromoFragmentUiModel
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.toolbar.TokoFoodPromoToolbar
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.toolbar.TokoFoodPromoToolbarListener
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -46,7 +47,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class TokoFoodPromoFragment : BaseMultiFragment(),
+open class TokoFoodPromoFragment : BaseMultiFragment(),
         TokoFoodPromoActionListener, TokoFoodPromoToolbarListener, IBaseMultiFragment {
 
     @Inject
@@ -70,6 +71,10 @@ class TokoFoodPromoFragment : BaseMultiFragment(),
         arguments?.getString(MERCHANT_ID_KEY).orEmpty()
     }
 
+    private val cartIdList by lazy(LazyThreadSafetyMode.NONE) {
+        arguments?.getStringArrayList(CART_LIST_KEY).orEmpty()
+    }
+
     private val adapterTypeFactory by lazy(LazyThreadSafetyMode.NONE) {
         TokoFoodPromoAdapterTypeFactory(this)
     }
@@ -91,15 +96,18 @@ class TokoFoodPromoFragment : BaseMultiFragment(),
 
         private const val SOURCE_KEY = "source_key"
         private const val MERCHANT_ID_KEY = "merchant_id_key"
+        private const val CART_LIST_KEY = "cart_list_key"
 
         fun createInstance(source: String,
-                           merchantId: String? = null): TokoFoodPromoFragment {
+                           merchantId: String? = null,
+                           cartList: List<String>): TokoFoodPromoFragment {
             return TokoFoodPromoFragment().apply {
                 arguments = Bundle().apply {
                     putString(SOURCE_KEY, source)
                     merchantId?.let {
                         putString(MERCHANT_ID_KEY, it)
                     }
+                    putStringArrayList(CART_LIST_KEY, ArrayList(cartList))
                 }
             }
         }
@@ -139,8 +147,8 @@ class TokoFoodPromoFragment : BaseMultiFragment(),
         return null
     }
 
-    override fun getFragmentTitle(): String? {
-        return ""
+    override fun getFragmentTitle(): String {
+        return String.EMPTY
     }
 
     override fun getLaunchMode(): BaseMultiFragmentLaunchMode {
@@ -148,7 +156,7 @@ class TokoFoodPromoFragment : BaseMultiFragment(),
     }
 
     override fun getScreenName(): String {
-        return ""
+        return String.EMPTY
     }
 
     override fun initInjector() {
@@ -166,7 +174,7 @@ class TokoFoodPromoFragment : BaseMultiFragment(),
         viewBinding?.recyclerViewPurchasePromo?.show()
         rvAdapter?.clearAllElements()
         showLoading()
-        viewModel.loadData(source, merchantId)
+        viewModel.loadData(source, merchantId, cartIdList)
     }
 
     override fun onBackPressed() {

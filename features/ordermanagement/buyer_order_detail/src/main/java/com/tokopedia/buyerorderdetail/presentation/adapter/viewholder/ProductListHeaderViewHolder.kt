@@ -103,7 +103,7 @@ class ProductListHeaderViewHolder(
 
     private fun showShopBadge(url: String) {
         icBuyerOrderDetailSeeShopBadge?.let {
-            ImageHandler.loadImage2(it, url, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_error)
+            ImageHandler.loadImage2(it, url, com.tokopedia.utils.R.drawable.ic_loading_error)
         }
     }
 }

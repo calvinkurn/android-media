@@ -7,12 +7,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailInformationBinding
 import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailParentBinding
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.digitsOnly
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.getNumberFormatted
+import com.tokopedia.kotlin.extensions.view.getPercentFormatted
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.NumberTextInputUtil
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.NumberTextInputUtil
 
 open class ManageProductVariantBaseViewHolder(
     view: View,

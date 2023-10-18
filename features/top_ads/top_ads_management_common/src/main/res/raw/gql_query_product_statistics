@@ -10,6 +10,8 @@ query GetDashboardProductStatisticsV2($queryInput: GetDashboardProductStatistics
       stat_total_conversion
       stat_total_sold
       stat_total_gross_profit
+      stat_total_roas
+      stat_total_top_slot_impression
     }
   }
 }

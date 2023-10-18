@@ -1,6 +1,6 @@
 package com.tokopedia.logisticcart.datamock
 
-val shippingParamJson = """
+val SHIPPING_PARAM_JSON = """
     {
       "addressId": 99367774,
       "categoryIds": "753",
@@ -33,7 +33,7 @@ val shippingParamJson = """
     }
 """.trimIndent()
 
-val shopShipmentsJson = """
+val SHOP_SHIPMENTS_JSON = """
     [
       {
         "isDropshipEnabled": true,
@@ -197,6 +197,6 @@ val shopShipmentsJson = """
     ]
 """.trimIndent()
 
-val productsJson = """
+val PRODUCTS_JSON = """
     [{"is_free_shipping":false,"product_id":516791889}]
 """.trimIndent()

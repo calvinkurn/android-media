@@ -16,29 +16,29 @@
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl5"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_NN0"
             android:elevation="@dimen/spacing_lvl1"
             android:theme="@style/ThemeOverlay.AppCompat.Light"
             app:tabGravity="fill"
-            app:tabIndicatorColor="@color/Unify_G400"
+            app:tabIndicatorColor="@color/Unify_GN500"
             app:tabMode="scrollable"
-            app:tabSelectedTextColor="@color/Unify_G400"
+            app:tabSelectedTextColor="@color/Unify_GN500"
             app:tabTextAppearance="@style/Tabs.Secondary"
-            app:tabTextColor="@color/Unify_N700_32" />
+            app:tabTextColor="@color/Unify_NN950_32" />
 
         <com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterView
             android:id="@+id/quick_filter_months"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tab_layout"
-            android:background="@color/Unify_N0" />
+            android:background="@color/Unify_NN0" />
 
         <com.tokopedia.travelcalendar.view.widget.CalendarPickerView
             android:id="@+id/calendar_picker_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/quick_filter_months"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_NN0"
             android:paddingTop="@dimen/spacing_lvl4" />
 
         <com.tokopedia.travelcalendar.view.widget.HolidayWidgetView
@@ -47,7 +47,7 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/calendar_picker_view"
             android:layout_alignParentBottom="true"
-            android:background="@color/Unify_N50" />
+            android:background="@color/Unify_NN50" />
 
     </RelativeLayout>
 

@@ -49,7 +49,7 @@ class ChatAppWidgetViewModelTest {
 
     @Test
     fun `returns success result and notify the UI when get chat list`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
 
             val chatModel = ChatUiModel()
@@ -76,7 +76,7 @@ class ChatAppWidgetViewModelTest {
 
     @Test
     fun `given view null value when get chat data then return success result but will not notify the UI`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
 
             val chatModel = ChatUiModel()
@@ -100,7 +100,7 @@ class ChatAppWidgetViewModelTest {
 
     @Test
     fun `throw Exception and notify the UI when failed to get chat list`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val throwable = RuntimeException("")
             getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
 
@@ -122,7 +122,7 @@ class ChatAppWidgetViewModelTest {
 
     @Test
     fun `given view null value when get chat list then throw Exception will not notify the UI`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val exception = RuntimeException("")
             getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
 

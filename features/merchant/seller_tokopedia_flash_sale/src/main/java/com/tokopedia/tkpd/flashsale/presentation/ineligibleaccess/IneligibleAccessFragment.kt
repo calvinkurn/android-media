@@ -1,19 +1,17 @@
 package com.tokopedia.tkpd.flashsale.presentation.ineligibleaccess
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.components.bottomsheet.rbac.IneligibleAccessWarningBottomSheet
 import com.tokopedia.campaign.utils.extension.routeToUrl
+import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentIneligibleAccessBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import javax.inject.Inject
 
 class IneligibleAccessFragment : BaseDaggerFragment() {
 
@@ -29,14 +27,8 @@ class IneligibleAccessFragment : BaseDaggerFragment() {
             "https://seller.tokopedia.com/edu/fitur-admin-toko/"
     }
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-    private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(IneligibleAccessViewModel::class.java) }
-
     //binding
     private var binding by autoClearedNullable<StfsFragmentIneligibleAccessBinding>()
-
 
     override fun getScreenName(): String =
         IneligibleAccessFragment::class.java.canonicalName.orEmpty()
@@ -58,6 +50,7 @@ class IneligibleAccessFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        applyUnifyBackgroundColor()
         setupView()
         showIneligibleAccessBottomSheet()
     }

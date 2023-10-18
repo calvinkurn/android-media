@@ -13,10 +13,18 @@ import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
-import com.tokopedia.feedcomponent.util.util.*
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
+import com.tokopedia.feedcomponent.util.util.doOnLayout
+import com.tokopedia.feedcomponent.util.util.goneWithAnimation
+import com.tokopedia.feedcomponent.util.util.hideBubbleViewWithAnimation
+import com.tokopedia.feedcomponent.util.util.showBubbleViewWithAnimation
+import com.tokopedia.feedcomponent.util.util.visibleWithAnimation
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
@@ -77,6 +85,10 @@ class PostTagView @JvmOverloads constructor(
             constraintLayout = findViewById(R.id.parent_id)
             finalPointerView = productTagPointerTop
         }
+
+        productTagDot.setImageResource(R.drawable.ic_product_tag_circle)
+        productTagPointerTop.setImageResource(R.drawable.ic_feed_up)
+        productTagPointerBottom.setImageResource(R.drawable.ic_feed_down)
     }
 
     fun convertPxToDp( px: Float): Float {

@@ -24,7 +24,7 @@ class GetTopAdsShopUseCaseWithCoroutine(private val favoriteRepository: Favorite
         const val DEVICE_VALUE = "android"
         const val TEMPLATE_ID_VALUE = "3"
 
-        fun defaultParams(): RequestParams {
+        fun defaultParams(addressData: Map<String, String>): RequestParams {
             val params = RequestParams.create().apply {
                 putString(KEY_PAGE, TOPADS_PAGE_DEFAULT_VALUE)
                 putString(KEY_ITEM, TOPADS_ITEM_DEFAULT_VALUE)
@@ -33,6 +33,7 @@ class GetTopAdsShopUseCaseWithCoroutine(private val favoriteRepository: Favorite
                 putString(KEY_DEVICE, DEVICE_VALUE)
                 putString(KEY_TEMPLATE_ID, TEMPLATE_ID_VALUE)
             }
+            params.putAll(addressData)
             return params
         }
     }
@@ -50,8 +51,8 @@ class GetTopAdsShopUseCaseWithCoroutine(private val favoriteRepository: Favorite
     }
 
     private fun isForceRefresh(requestParams: RequestParams): Boolean {
-        val isForceRefresh = requestParams.getBoolean(GetTopAdsShopUseCase.KEY_IS_FORCE_REFRESH, false)
-        requestParams.clearValue(GetTopAdsShopUseCase.KEY_IS_FORCE_REFRESH)
+        val isForceRefresh = requestParams.getBoolean(KEY_IS_FORCE_REFRESH, false)
+        requestParams.clearValue(KEY_IS_FORCE_REFRESH)
         return isForceRefresh
     }
 }

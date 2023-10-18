@@ -3,15 +3,34 @@ package com.tokopedia.otp.verification.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.encryption.security.RsaUtils
+import com.tokopedia.otp.verification.data.OtpConstant
+import com.tokopedia.otp.verification.data.OtpConstant.DEFAULT_OTP_BEHAVIOR_ONE
+import com.tokopedia.otp.verification.data.OtpConstant.DEFAULT_OTP_BEHAVIOR_TWO
+import com.tokopedia.otp.verification.data.OtpConstant.StaticText.SPAN_USE_OTHER_METHODS
+import com.tokopedia.otp.verification.data.OtpConstant.StaticText.SPAN_USE_SMS_METHOD
+import com.tokopedia.otp.verification.data.OtpConstant.StaticText.spanFactory
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpRequestPojo
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.data.OtpValidatePojo
+import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListPojo
-import com.tokopedia.otp.verification.domain.usecase.*
+import com.tokopedia.otp.verification.domain.usecase.GetOtpModeListUseCase
+import com.tokopedia.otp.verification.domain.usecase.GetVerificationMethodInactivePhoneUseCase
+import com.tokopedia.otp.verification.domain.usecase.GetVerificationMethodPhoneRegisterMandatoryUseCase
+import com.tokopedia.otp.verification.domain.usecase.GetVerificationMethodUseCase
+import com.tokopedia.otp.verification.domain.usecase.GetVerificationMethodUseCase2FA
+import com.tokopedia.otp.verification.domain.usecase.OtpValidatePhoneRegisterMandatoryUseCase
+import com.tokopedia.otp.verification.domain.usecase.OtpValidateUseCase
+import com.tokopedia.otp.verification.domain.usecase.OtpValidateUseCase2FA
+import com.tokopedia.otp.verification.domain.usecase.SendOtp2FAUseCase
+import com.tokopedia.otp.verification.domain.usecase.SendOtpPhoneRegisterMandatoryUseCase
+import com.tokopedia.otp.verification.domain.usecase.SendOtpUseCase
+import com.tokopedia.otp.verification.view.uimodel.DefaultOtpUiModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.data.pin.PinStatusData
@@ -25,13 +44,19 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockkObject
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.util.concurrent.TimeoutException
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -43,6 +68,9 @@ class VerificationViewModelTest {
 
     @RelaxedMockK
     lateinit var getVerificationMethodUseCase: GetVerificationMethodUseCase
+
+    @RelaxedMockK
+    lateinit var getOtpModeList: GetOtpModeListUseCase
 
     @RelaxedMockK
     lateinit var getVerificationMethodUseCase2FA: GetVerificationMethodUseCase2FA
@@ -92,7 +120,6 @@ class VerificationViewModelTest {
     @RelaxedMockK
     lateinit var otpValidateResultObserver: Observer<Result<OtpValidateData>>
 
-
     private val dispatcherProviderTest = CoroutineTestDispatchersProvider
 
     private lateinit var viewmodel: VerificationViewModel
@@ -111,6 +138,7 @@ class VerificationViewModelTest {
         MockKAnnotations.init(this)
         viewmodel = VerificationViewModel(
             getVerificationMethodUseCase,
+            getOtpModeList,
             getVerificationMethodUseCase2FA,
             getVerificationMethodInactivePhoneUseCase,
             getVerificationMethodPhoneRegisterMandatoryUseCase,
@@ -350,7 +378,7 @@ class VerificationViewModelTest {
         successGetVerificationMethodResponse.data.errorMessage = ""
 
         // When
-        coEvery { getVerificationMethodPhoneRegisterMandatoryUseCase(any()) }returns
+        coEvery { getVerificationMethodPhoneRegisterMandatoryUseCase(any()) } returns
             successGetVerificationMethodResponse
         viewmodel.getVerificationMethodPhoneRegisterMandatory(otpType, validateToken, email, msisdn)
 
@@ -498,7 +526,7 @@ class VerificationViewModelTest {
 
         viewmodel.otpValidate("", "", "08123123123", "", "", "", "PIN", "", "", 0)
 
-        coVerify(exactly = 0) { generatePublicKeyUseCase.executeOnBackground() }
+        coVerify(exactly = 0) { generatePublicKeyUseCase() }
     }
 
     @Test
@@ -652,7 +680,7 @@ class VerificationViewModelTest {
 
         viewmodel.otpValidate2FA("", "", "", "PIN", "", userId = 0)
 
-        coVerify(exactly = 0) { generatePublicKeyUseCase.executeOnBackground() }
+        coVerify(exactly = 0) { generatePublicKeyUseCase() }
     }
 
     @Test
@@ -710,7 +738,7 @@ class VerificationViewModelTest {
         val hash = "asd"
         every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
         coEvery { checkPinHashV2UseCase(any()) } returns PinStatusResponse(PinStatusData(isNeedHash = true))
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
+        coEvery { generatePublicKeyUseCase(SessionConstants.GenerateKeyModule.PIN_V2.value) } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
 
         viewmodel.otpValidate("", "", "", "", "", "", "PIN", "", "", 0)
 
@@ -751,7 +779,7 @@ class VerificationViewModelTest {
         val hash = "asd"
         every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns ""
         coEvery { checkPinHashV2UseCase(any()) } returns PinStatusResponse(PinStatusData(isNeedHash = true))
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
+        coEvery { generatePublicKeyUseCase(SessionConstants.GenerateKeyModule.PIN_V2.value) } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
 
         viewmodel.otpValidate("", "", "", "", "", "", "PIN", "", "", 0)
 
@@ -790,13 +818,10 @@ class VerificationViewModelTest {
     fun `Success get pub key`() {
         val mocKeyData = KeyData("abc", "bca", "aaa")
         val generateKeyResponse = GenerateKeyPojo(mocKeyData)
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyResponse
+        coEvery { generatePublicKeyUseCase(SessionConstants.GenerateKeyModule.PIN_V2.value) } returns generateKeyResponse
 
         runBlocking {
             assert(viewmodel.getPublicKey() == mocKeyData)
-        }
-        verify {
-            generatePublicKeyUseCase.setParams("pinv2")
         }
     }
 
@@ -810,7 +835,7 @@ class VerificationViewModelTest {
         val encrypted = "abd123123"
         every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns encrypted
         coEvery { checkPinHashV2UseCase(any()) } returns PinStatusResponse(PinStatusData(isNeedHash = true))
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
+        coEvery { generatePublicKeyUseCase(SessionConstants.GenerateKeyModule.PIN_V2.value) } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
 
         val otpType = "123"
         val validateToken = "abc123"
@@ -848,7 +873,7 @@ class VerificationViewModelTest {
         val hash = "asd"
         every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns ""
         coEvery { checkPinHashV2UseCase(any()) } returns PinStatusResponse(PinStatusData(isNeedHash = true))
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
+        coEvery { generatePublicKeyUseCase() } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
 
         viewmodel.otpValidate2FA("", "", "", "", "", userId = 0)
 
@@ -943,6 +968,286 @@ class VerificationViewModelTest {
         verify(exactly = 0) {
             userSessionInterface.setToken(null, null, null)
         }
+    }
+
+    @Test
+    fun `isSmshidden return true`() {
+        assert(viewmodel.isSmsHidden(DEFAULT_OTP_BEHAVIOR_ONE))
+    }
+
+    @Test
+    fun `isSmshidden return false`() {
+        assert(!viewmodel.isSmsHidden(DEFAULT_OTP_BEHAVIOR_TWO))
+    }
+
+    @Test
+    fun `renderInitialDefaultOtp more than 1 methods`() {
+        val modeCode = 1
+        val linkType = 1
+        val modeList = arrayListOf(
+            ModeListData(modeCode = modeCode),
+            ModeListData(modeCode = 2),
+            ModeListData(modeCode = 3)
+        )
+
+        val mockData = OtpModeListData(success = true, defaultMode = modeCode, modeList = modeList, defaultBehaviorMode = 1, linkType = linkType)
+        viewmodel.renderInitialDefaultOtp(mockData)
+
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerClickableSpan == SPAN_USE_OTHER_METHODS)
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == spanFactory(SPAN_USE_OTHER_METHODS, mockData.linkType))
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().displayedModeList.size == 1)
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().originalOtpModeList.size == modeList.size)
+    }
+
+    @Test
+    fun `renderInitialDefaultOtp 1 methods`() {
+        val modeCode = 1
+        val modeList = arrayListOf(
+            ModeListData(modeCode = modeCode)
+        )
+
+        val mockData = OtpModeListData(success = true, defaultMode = modeCode, modeList = modeList, defaultBehaviorMode = 1)
+        viewmodel.renderInitialDefaultOtp(mockData)
+
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerClickableSpan == "")
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == "")
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().displayedModeList.size == 1)
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().originalOtpModeList.size == 1)
+    }
+
+    @Test
+    fun `render initial default otp when mode code is not exists and sms is hidden`() {
+        val modeCode = 11
+        val linkType = 1
+        val defaultBehaviourMode = 3
+        val modeList = arrayListOf(
+            ModeListData(modeCode = 1, modeText = OtpConstant.OtpMode.SMS),
+            ModeListData(modeCode = 2, modeText = OtpConstant.OtpMode.WA),
+            ModeListData(modeCode = 3, modeText = OtpConstant.OtpMode.MISCALL)
+
+        )
+
+        val mockData = OtpModeListData(success = true, defaultMode = modeCode, modeList = modeList, defaultBehaviorMode = defaultBehaviourMode, linkType = linkType)
+        viewmodel.renderInitialDefaultOtp(mockData)
+
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerClickableSpan == SPAN_USE_SMS_METHOD)
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == spanFactory(SPAN_USE_SMS_METHOD, mockData.linkType))
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().displayedModeList.find { it.modeText == OtpConstant.OtpMode.SMS } == null)
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().originalOtpModeList.size == modeList.size)
+    }
+
+    @Test
+    fun `when otp mode list has 2 and hide sms use footer sms`() {
+        val modeCode = 2
+        val linkType = 1
+        val defaultBehaviourMode = 3
+        val modeList = arrayListOf(
+            ModeListData(modeCode = 1, modeText = OtpConstant.OtpMode.SMS),
+            ModeListData(modeCode = 2, modeText = OtpConstant.OtpMode.WA)
+        )
+
+        val mockData = OtpModeListData(success = true, defaultMode = modeCode, modeList = modeList, defaultBehaviorMode = defaultBehaviourMode, linkType = linkType)
+        viewmodel.renderInitialDefaultOtp(mockData)
+
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerClickableSpan == SPAN_USE_SMS_METHOD)
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == spanFactory(SPAN_USE_SMS_METHOD, mockData.linkType))
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().displayedModeList.find { it.modeText == OtpConstant.OtpMode.SMS } == null)
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().originalOtpModeList.size == 2)
+    }
+
+    @Test
+    fun `renderInitialDefaultOtpOff more than 1 methods and SMS hidden`() {
+        val modeCode = 1
+        val modeList = arrayListOf(
+            ModeListData(modeCode = modeCode, modeText = OtpConstant.OtpMode.SMS),
+            ModeListData(modeCode = 2, modeText = OtpConstant.OtpMode.WA)
+        )
+
+        val mockData = OtpModeListData(success = true, defaultMode = modeCode, modeList = modeList, defaultBehaviorMode = 1)
+        viewmodel.renderInitialDefaultOtpOff(mockData)
+
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerClickableSpan == SPAN_USE_SMS_METHOD)
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == spanFactory(SPAN_USE_SMS_METHOD, mockData.linkType))
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().displayedModeList.find { it.modeText == OtpConstant.OtpMode.SMS } == null)
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().originalOtpModeList.size == 2)
+    }
+
+    @Test
+    fun `renderInitialDefaultOtpOff more than 1 methods and has SMS not hidden`() {
+        val modeCode = 1
+        val modeList = arrayListOf(
+            ModeListData(modeCode = modeCode, modeText = OtpConstant.OtpMode.SMS),
+            ModeListData(modeCode = 2, modeText = OtpConstant.OtpMode.WA)
+        )
+
+        val mockData = OtpModeListData(success = true, defaultMode = modeCode, modeList = modeList, defaultBehaviorMode = 2)
+        viewmodel.renderInitialDefaultOtpOff(mockData)
+
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerClickableSpan == "")
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == "")
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().originalOtpModeList.size == 2)
+    }
+
+    @Test
+    fun `renderInitialDefaultOtpOff has 1 method only`() {
+        val modeCode = 1
+        val modeList = arrayListOf(
+            ModeListData(modeCode = modeCode, modeText = OtpConstant.OtpMode.SMS)
+        )
+
+        val mockData = OtpModeListData(success = true, defaultMode = modeCode, modeList = modeList, defaultBehaviorMode = 3)
+        viewmodel.renderInitialDefaultOtpOff(mockData)
+
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerClickableSpan == "")
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == "")
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().originalOtpModeList.size == 1)
+    }
+
+    @Test
+    fun `getOtpModeListForDefaultOtp behavior 3`() {
+        val modeCode = 1
+        val modeList = arrayListOf(
+            ModeListData(modeCode = modeCode, modeText = OtpConstant.OtpMode.SMS),
+            ModeListData(modeCode = 2, modeText = OtpConstant.OtpMode.WA),
+            ModeListData(modeCode = 3, modeText = OtpConstant.OtpMode.MISCALL)
+        )
+
+        val mockData = OtpModeListData(success = true, defaultMode = modeCode, modeList = modeList, defaultBehaviorMode = 3)
+        coEvery { getOtpModeList(any()) } returns mockData
+
+        viewmodel.getOtpModeListForDefaultOtp("", "", "", "", "", "")
+
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerClickableSpan == SPAN_USE_OTHER_METHODS)
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == spanFactory(SPAN_USE_OTHER_METHODS, mockData.linkType))
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().originalOtpModeList.size == modeList.size)
+    }
+
+    @Test
+    fun `getOtpModeListForDefaultOtp behavior 1`() {
+        val modeCode = 0
+        val modeList = arrayListOf(
+            ModeListData(modeCode = modeCode, modeText = OtpConstant.OtpMode.SMS),
+            ModeListData(modeCode = 2, modeText = OtpConstant.OtpMode.WA)
+        )
+
+        val mockData = OtpModeListData(success = true, defaultMode = modeCode, modeList = modeList, defaultBehaviorMode = 1)
+        coEvery { getOtpModeList(any()) } returns mockData
+
+        viewmodel.getOtpModeListForDefaultOtp("", "", "", "", "", "")
+
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerClickableSpan == SPAN_USE_SMS_METHOD)
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == spanFactory(SPAN_USE_SMS_METHOD, mockData.linkType))
+    }
+
+    @Test
+    fun `getOtpModeListForDefaultOtp behavior 0`() {
+        val modeCode = 1
+        val modeList = arrayListOf(
+            ModeListData(modeCode = modeCode, modeText = OtpConstant.OtpMode.SMS),
+            ModeListData(modeCode = 2, modeText = OtpConstant.OtpMode.WA)
+        )
+
+        val mockData = OtpModeListData(success = true, defaultMode = modeCode, modeList = modeList, defaultBehaviorMode = 0)
+        coEvery { getOtpModeList(any()) } returns mockData
+
+        viewmodel.getOtpModeListForDefaultOtp("", "", "", "", "", "")
+
+        assert(viewmodel.getVerificationMethodResult.getOrAwaitValue() is Success)
+    }
+
+    @Test
+    fun `getOtpModeListForDefaultOtp throw exception`() {
+        coEvery { getOtpModeList(any()) } throws throwable
+
+        viewmodel.getOtpModeListForDefaultOtp("", "", "", "", "", "")
+
+        assert(viewmodel.getVerificationMethodResult.getOrAwaitValue() is Fail)
+    }
+
+    @Test
+    fun `showAllMethod hide sms`() {
+        val modeCode = 1
+        val modeList = arrayListOf(
+            ModeListData(modeCode = modeCode, modeText = OtpConstant.OtpMode.SMS),
+            ModeListData(modeCode = 2, modeText = OtpConstant.OtpMode.WA),
+            ModeListData(modeCode = 3, modeText = OtpConstant.OtpMode.MISCALL)
+        )
+
+        val mockData = DefaultOtpUiModel(
+            footerText = "",
+            footerClickableSpan = "",
+            footerAction = {},
+            defaultMode = modeCode,
+            defaultBehaviorMode = 3,
+            originalOtpModeList = modeList,
+            displayedModeList = modeList
+        )
+
+        viewmodel.showAllMethod(mockData)
+
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerClickableSpan == SPAN_USE_SMS_METHOD)
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == spanFactory(SPAN_USE_SMS_METHOD, mockData.linkType))
+    }
+
+    @Test
+    fun `showAllMethod show sms`() {
+        val modeCode = 1
+        val modeList = arrayListOf(
+            ModeListData(modeCode = modeCode, modeText = OtpConstant.OtpMode.SMS),
+            ModeListData(modeCode = 2, modeText = OtpConstant.OtpMode.WA)
+        )
+
+        val mockData = DefaultOtpUiModel(
+            footerText = "",
+            footerClickableSpan = "",
+            footerAction = {},
+            defaultMode = modeCode,
+            defaultBehaviorMode = 2,
+            originalOtpModeList = modeList,
+            displayedModeList = modeList
+        )
+
+        viewmodel.showAllMethod(mockData)
+
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerClickableSpan == "")
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == "")
+    }
+
+    @Test(expected = TimeoutException::class)
+    fun `showAllMethod null`() {
+        viewmodel.showAllMethod(null)
+        viewmodel.defaultOtpUiModel.getOrAwaitValue()
+    }
+
+    @Test
+    fun `getOtpModeListForDefaultOtp with cache`() {
+        val modeCode = 1
+        val modeList = arrayListOf(
+            ModeListData(modeCode = modeCode, modeText = OtpConstant.OtpMode.SMS),
+            ModeListData(modeCode = 2, modeText = OtpConstant.OtpMode.WA)
+        )
+
+        val mockData = DefaultOtpUiModel(
+            footerText = "",
+            footerClickableSpan = "",
+            footerAction = {},
+            defaultMode = modeCode,
+            defaultBehaviorMode = 2,
+            originalOtpModeList = modeList,
+            displayedModeList = modeList
+        )
+
+        viewmodel.getOtpModeListForDefaultOtp("", "", "", "", "", "", cache = mockData)
+
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerClickableSpan == "")
+        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == "")
+    }
+
+    @Test
+    fun `goToInputOtp`() {
+        val mockData = ModeListData(modeCode = 1)
+        viewmodel.goToInputOtp(mockData)
+        assert(viewmodel.gotoInputOtp.getOrAwaitValue().modeCode == 1)
     }
 
     companion object {

@@ -8,33 +8,33 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
 class ReviewImagePlayerViewModelTest: ReviewImagePlayerViewModelTestFixture() {
     @Test
-    fun `setImageUri should update _imageUri`() = runBlockingTest {
+    fun `setImageUri should update _imageUri`() = runTest {
         val newImageUri = "https://tokopedia.com/patrickstar.png"
         viewModel.setImageUri(newImageUri)
         Assert.assertEquals(newImageUri, viewModel.uiState.first().imageUri)
     }
 
     @Test
-    fun `setShowSeeMore and setTotalMediaCount should update uiState to ReviewImagePlayerUiState#ShowingSeeMore`() = runBlockingTest {
+    fun `setShowSeeMore and setTotalMediaCount should update uiState to ReviewImagePlayerUiState#ShowingSeeMore`() = runTest {
         viewModel.setShowSeeMore(true)
         viewModel.setTotalMediaCount(722)
         Assert.assertTrue(viewModel.uiState.first() is ReviewImagePlayerUiState.ShowingSeeMore)
     }
 
     @Test
-    fun `setShowSeeMore should not update uiState to ReviewImagePlayerUiState#ShowingSeeMore if _totalMediaCount is not more than zero`() = runBlockingTest {
+    fun `setShowSeeMore should not update uiState to ReviewImagePlayerUiState#ShowingSeeMore if _totalMediaCount is not more than zero`() = runTest {
         viewModel.setShowSeeMore(true)
         Assert.assertTrue(viewModel.uiState.first() is ReviewImagePlayerUiState.Showing)
     }
 
     @Test
-    fun `saveState should save current states`() = runBlockingTest {
+    fun `saveState should save current states`() = runTest {
         val outState = mockk<Bundle>(relaxed = true)
         viewModel.saveState(outState)
         verify { outState.putString(ReviewImagePlayerViewModel.SAVED_STATE_IMAGE_URI, any()) }
@@ -43,7 +43,7 @@ class ReviewImagePlayerViewModelTest: ReviewImagePlayerViewModelTestFixture() {
     }
 
     @Test
-    fun `restoreState should save current states`() = runBlockingTest {
+    fun `restoreState should save current states`() = runTest {
         val latestImageUri = "https://tokopedia.com/patrickstar.png"
         val latestShowSeeMore = true
         val latestTotalMediaCount = 722

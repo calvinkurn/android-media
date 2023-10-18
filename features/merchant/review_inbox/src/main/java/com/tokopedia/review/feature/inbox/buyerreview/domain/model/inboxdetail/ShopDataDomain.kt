@@ -7,7 +7,6 @@ import com.google.gson.annotations.SerializedName
  * @author by nisie on 8/23/17.
  */
 class ShopDataDomain constructor(
-    @SerializedName("shopIdStr") @Expose val shopId: String = "",
-    @SerializedName("domain") @Expose val domain: String = "",
-    @SerializedName("shopName") @Expose val shopName: String = "",
+    @SerializedName("shopID") @Expose val shopId: String = "",
+    @SerializedName("name") @Expose val shopName: String = ""
 )

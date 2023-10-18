@@ -12,4 +12,4 @@ data class AddWishlistCollectionsHostBottomSheetParams(
 
     @SerializedName("collection_name")
     var collectionName: String = ""
-): GqlParam
+) : GqlParam

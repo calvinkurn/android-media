@@ -5,14 +5,20 @@ import android.net.Uri
 import android.view.View
 import android.view.ViewTreeObserver
 import android.webkit.URLUtil
+import android.widget.FrameLayout
+import android.widget.ImageView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.util.ContentNetworkListener
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.loadImage
-import kotlinx.android.synthetic.main.item_post_video.view.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.videoplayer.view.widget.VideoPlayerView
+import com.tokopedia.design.R as designR
 
 /**
  * @author by yfsx on 20/03/19.
@@ -25,12 +31,17 @@ class VideoViewHolder(private val listener: VideoViewListener) :
 
     companion object {
         const val STRING_DEFAULT_TRANSCODING = "customerTrans"
-        const val TAG = "TAG_VIDEO_VIEW_HOLDER"
     }
 
     override fun bind(element: VideoModel) {
+        val ivImage: ImageView = itemView.findViewById(R.id.image)
+        val icPlay: ImageUnify = itemView.findViewById(R.id.ic_play)
+        val frameVideo: FrameLayout = itemView.findViewById(R.id.frame_video)
+        val layoutVideo: VideoPlayerView = itemView.findViewById(R.id.layout_video)
+
         if (!element.url.contains(STRING_DEFAULT_TRANSCODING)) {
-            itemView.image.setOnClickListener {
+            ivImage.setImageResource(designR.drawable.ic_loading_image)
+            ivImage.setOnClickListener {
                 if (element.url.isNotBlank()) {
                     listener.onVideoPlayerClicked(
                         element.positionInFeed,
@@ -40,29 +51,29 @@ class VideoViewHolder(private val listener: VideoViewListener) :
                         "",
                         "",
                         true,
-                            0L
+                        0L
                     )
                 }
             }
         } else {
-            itemView.ic_play.visibility = View.GONE
+            icPlay.gone()
         }
-        itemView.image.viewTreeObserver.addOnGlobalLayoutListener(
+        ivImage.viewTreeObserver.addOnGlobalLayoutListener(
             object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    val viewTreeObserver = itemView.image.viewTreeObserver
+                    val viewTreeObserver = ivImage.viewTreeObserver
                     viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                    itemView.image.maxHeight = itemView.image.width
-                    itemView.image.requestLayout()
+                    ivImage.maxHeight = ivImage.width
+                    ivImage.requestLayout()
                 }
             }
         )
-        itemView.image.loadImage(element.thumbnail)
+        ivImage.loadImage(element.thumbnail)
         if (canPlayVideo(element)) {
-            playVideo(element.url)
+            playVideo(frameVideo, layoutVideo, icPlay, ivImage, element.url)
         } else {
-            stopVideo()
+            stopVideo(layoutVideo)
         }
     }
 
@@ -70,20 +81,25 @@ class VideoViewHolder(private val listener: VideoViewListener) :
         return element.canPlayVideo && ContentNetworkListener.isWifiEnabled(itemView.context)
     }
 
-    private fun playVideo(url: String) {
+    private fun playVideo(
+        frameVideo: FrameLayout,
+        layoutVideo: VideoPlayerView,
+        icPlay: ImageUnify,
+        ivImage: ImageView,
+        url: String) {
         if (!isPlaying) {
-            itemView.frame_video.visibility = View.INVISIBLE
+            frameVideo.invisible()
             if (URLUtil.isValidUrl(url))
-            itemView.layout_video.setVideoURI(Uri.parse(url))
-            itemView.layout_video.setOnPreparedListener(object : MediaPlayer.OnPreparedListener {
+                layoutVideo.setVideoURI(Uri.parse(url))
+            layoutVideo.setOnPreparedListener(object : MediaPlayer.OnPreparedListener {
                 override fun onPrepared(mp: MediaPlayer) {
                     mp.isLooping = true
-                    itemView.ic_play.visibility = View.GONE
-                    itemView.image.visibility = View.GONE
+                    icPlay.gone()
+                    ivImage.gone()
                     mp.setOnInfoListener(object : MediaPlayer.OnInfoListener {
                         override fun onInfo(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
                             if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                                itemView.frame_video.visibility = View.VISIBLE
+                                frameVideo.visibility = View.VISIBLE
                                 return true
                             }
                             return false
@@ -91,15 +107,15 @@ class VideoViewHolder(private val listener: VideoViewListener) :
                     })
                 }
             })
-            itemView.layout_video.start()
+            layoutVideo.start()
             isPlaying = true
         }
     }
 
-    private fun stopVideo() {
+    private fun stopVideo(layoutVideo: VideoPlayerView) {
         if (isPlaying) {
-            itemView.layout_video.stopPlayback()
-            itemView.layout_video.visibility = View.GONE
+            layoutVideo.stopPlayback()
+            layoutVideo.gone()
             isPlaying = false
         }
     }

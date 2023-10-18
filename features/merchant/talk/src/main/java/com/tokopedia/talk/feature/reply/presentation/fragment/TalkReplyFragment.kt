@@ -30,12 +30,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
@@ -76,6 +77,8 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoCleared
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 open class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>,
@@ -494,20 +497,20 @@ open class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyCompo
         binding.pageLoading.root.hide()
     }
 
-    private fun showPageError() {
-        binding.pageError.apply {
-            root.show()
-            readingImageError.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
-            talkConnectionErrorRetryButton.setOnClickListener {
-                showPageLoading()
-                hidePageError()
-                getDiscussionData()
+    private fun showPageError(throwable: Throwable) {
+        binding.globalErrorTalkReply.run {
+            val errorType = when (throwable) {
+                is UnknownHostException, is SocketTimeoutException -> GlobalError.NO_CONNECTION
+                else -> GlobalError.SERVER_ERROR
             }
+            setType(errorType)
+            errorDescription.text = ErrorHandler.getErrorMessage(context, throwable)
+            show()
         }
     }
 
     private fun hidePageError() {
-        binding.pageError.root.hide()
+        binding.globalErrorTalkReply.hide()
     }
 
     private fun showBottomSheet(
@@ -797,8 +800,8 @@ open class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyCompo
                         shopId = discussionDataByQuestionID.shopID
                     }
                 }
-                else -> {
-                    showPageError()
+                is Fail -> {
+                    showPageError(it.throwable)
                 }
             }
         })
@@ -929,6 +932,7 @@ open class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyCompo
         initAttachedProductRecyclerView()
         initSwipeRefresh()
         initToolbar()
+        initGlobalError()
     }
 
     private fun initAdapter() {
@@ -1129,6 +1133,14 @@ open class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyCompo
                 setSupportActionBar(binding.headerTalkReply)
                 binding.headerTalkReply.title = getString(R.string.title_reply_page)
             }
+        }
+    }
+
+    private fun initGlobalError() {
+        binding.globalErrorTalkReply.setActionClickListener {
+            showPageLoading()
+            hidePageError()
+            getDiscussionData()
         }
     }
 

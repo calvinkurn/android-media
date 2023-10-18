@@ -1,8 +1,6 @@
 package com.tokopedia.tokofood.feature.search.searchresult.di.module
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tokofood.feature.search.di.scope.TokoFoodSearchScope
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.viewmodel.TokofoodQuickPriceRangeViewModel

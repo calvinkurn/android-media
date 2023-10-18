@@ -1,22 +1,18 @@
 package com.tokopedia.purchase_platform.common.utils
 
 import android.content.Context
-import android.text.SpannableStringBuilder
-import android.text.TextUtils
-import android.util.DisplayMetrics
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.CompoundButton
+import androidx.core.view.isVisible
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.unifycomponents.Toaster
 import rx.Emitter
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
-import kotlin.math.roundToInt
 
 /**
  * Created by fwidjaja on 2019-04-25.
@@ -24,53 +20,21 @@ import kotlin.math.roundToInt
 object Utils {
     @JvmStatic
     fun getHtmlFormat(text: String?): String {
-        if (text == null) return ""
-        if (TextUtils.isEmpty(text)) {
-            return SpannableStringBuilder("").toString()
-        }
+        if (text.isNullOrEmpty()) return ""
         val replacedText = text.replace("&amp;", "&")
         return MethodChecker.fromHtml(replacedText).toString()
     }
-
-    @JvmStatic
-    fun convertDpToPixel(dp: Float, context: Context): Int {
-        val resources = context.resources
-        val metrics = resources.displayMetrics
-        val px = dp * (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
-        return px.roundToInt()
-    }
-
-    @JvmStatic
-    fun removeDecimalSuffix(currencyString: String): String {
-        return currencyString.removeDecimalSuffix()
-    }
-
-    @JvmStatic
-    fun setToasterCustomBottomHeight(bottomHeight: Int) {
-        Toaster.toasterCustomBottomHeight = bottomHeight
-    }
-
-    @JvmStatic
-    fun isNotNullOrEmptyOrZero(string: String): Boolean {
-        if (string.toLongOrZero() == 0L) {
-            return false
-        }
-        return true
-    }
-
-    @JvmStatic
-    fun toIntOrZero(string: String): Int {
-        return string.toIntOrZero()
-    }
 }
 
-fun isNullOrEmpty(string: String?): Boolean = string.isNullOrEmpty()
+fun String?.getHtmlFormat(): String {
+    if (this.isNullOrEmpty()) return ""
+    val replacedText = this.replace("&amp;", "&")
+    return MethodChecker.fromHtml(replacedText).toString()
+}
 
 fun String.removeDecimalSuffix(): String = this.removeSuffix(".00")
 
-fun joinToString(strings: List<String>, separator: String): String = strings.joinToString(separator)
-
-fun joinToStringFromListInt(ints: List<Int>, separator: String): String = ints.joinToString(separator)
+fun String.removeSingleDecimalSuffix(): String = this.removeSuffix(".0")
 
 fun String.isNotBlankOrZero(): Boolean {
     return this.isNotBlank() && this.toLongOrZero() != 0L
@@ -81,25 +45,36 @@ fun String.isBlankOrZero(): Boolean {
 }
 
 const val DEFAULT_DEBOUNCE_IN_MILIS = 250L
+const val DEFAULT_THROTTLE_IN_MILIS = 2_000L
 fun rxViewClickDebounce(view: View, timeout: Long = DEFAULT_DEBOUNCE_IN_MILIS): Observable<Boolean> =
-        Observable.create({ emitter: Emitter<Boolean> ->
-            view.setOnClickListener {
-                emitter.onNext(true)
-            }
-        }, Emitter.BackpressureMode.LATEST)
-                .debounce(timeout, TimeUnit.MILLISECONDS)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
+    Observable.create({ emitter: Emitter<Boolean> ->
+        view.setOnClickListener {
+            emitter.onNext(true)
+        }
+    }, Emitter.BackpressureMode.LATEST)
+        .debounce(timeout, TimeUnit.MILLISECONDS)
+        .subscribeOn(AndroidSchedulers.mainThread())
+        .observeOn(AndroidSchedulers.mainThread())
+
+fun rxViewClickThrottle(view: View, timeout: Long = DEFAULT_THROTTLE_IN_MILIS): Observable<Boolean> =
+    Observable.create({ emitter: Emitter<Boolean> ->
+        view.setOnClickListener {
+            emitter.onNext(true)
+        }
+    }, Emitter.BackpressureMode.LATEST)
+        .throttleFirst(timeout, TimeUnit.MILLISECONDS)
+        .subscribeOn(AndroidSchedulers.mainThread())
+        .observeOn(AndroidSchedulers.mainThread())
 
 fun rxCompoundButtonCheckDebounce(compoundButton: CompoundButton, timeout: Long = DEFAULT_DEBOUNCE_IN_MILIS): Observable<Boolean> =
-        Observable.create({ emitter: Emitter<Boolean> ->
-            compoundButton.setOnCheckedChangeListener { _, isChecked ->
-                emitter.onNext(isChecked)
-            }
-        }, Emitter.BackpressureMode.LATEST)
-                .debounce(timeout, TimeUnit.MILLISECONDS)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
+    Observable.create({ emitter: Emitter<Boolean> ->
+        compoundButton.setOnCheckedChangeListener { _, isChecked ->
+            emitter.onNext(isChecked)
+        }
+    }, Emitter.BackpressureMode.LATEST)
+        .debounce(timeout, TimeUnit.MILLISECONDS)
+        .subscribeOn(AndroidSchedulers.mainThread())
+        .observeOn(AndroidSchedulers.mainThread())
 
 fun showSoftKeyboard(context: Context?, view: View) {
     if (context == null) return
@@ -110,3 +85,29 @@ fun showSoftKeyboard(context: Context?, view: View) {
         Timber.d(t)
     }
 }
+
+private fun View.fadeTo(visible: Boolean, duration: Long) {
+    // Make this idempotent.
+    val tagKey = "fadeTo".hashCode()
+    if (visible == isVisible && animation == null && getTag(tagKey) == null) return
+    if (getTag(tagKey) == visible) return
+
+    setTag(tagKey, visible)
+
+    if (visible && alpha == 1f) alpha = 0f
+    animate()
+        .alpha(if (visible) 1f else 0f)
+        .withStartAction {
+            if (visible) isVisible = true
+        }
+        .withEndAction {
+            setTag(tagKey, null)
+            if (isAttachedToWindow && !visible) isVisible = false
+        }
+        .setInterpolator(FastOutSlowInInterpolator())
+        .setDuration(duration)
+        .start()
+}
+
+fun View.animateShow(duration: Long = 400) = fadeTo(true, duration)
+fun View.animateGone(duration: Long = 400) = fadeTo(false, duration)

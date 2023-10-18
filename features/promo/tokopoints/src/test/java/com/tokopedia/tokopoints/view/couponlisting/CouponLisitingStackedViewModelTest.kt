@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -60,7 +60,7 @@ class CouponLisitingStackedViewModelTest {
 
     @Test
     fun `getList success case 1`() {
-        runBlockingTest {
+        runTest {
             val observer = mockk<Observer<Resources<TokoPointPromosEntity>>> {
                 every { onChanged(any()) } just Runs
             }
@@ -87,7 +87,7 @@ class CouponLisitingStackedViewModelTest {
 
     @Test
     fun `getList error case 2`() {
-        runBlockingTest {
+        runTest {
             val observer = mockk<Observer<Resources<TokoPointPromosEntity>>> {
                 every { onChanged(any()) } just Runs
             }
@@ -108,7 +108,7 @@ class CouponLisitingStackedViewModelTest {
 
     @Test
     fun `getList error case 1`() {
-        runBlockingTest {
+        runTest {
             val observer = mockk<Observer<Resources<TokoPointPromosEntity>>> {
                 every { onChanged(any()) } just Runs
             }
@@ -122,7 +122,7 @@ class CouponLisitingStackedViewModelTest {
 
     @Test
     fun getCouponInStack() {
-        runBlockingTest {
+        runTest {
             val observer = mockk<Observer<TokoPointPromosEntity>> {
                 every { onChanged(any()) } just Runs
             }
@@ -147,7 +147,7 @@ class CouponLisitingStackedViewModelTest {
     @ExperimentalCoroutinesApi
     @Test
     fun `getCouponInStack error case`() {
-        runBlockingTest {
+        runTest {
             val observer = mockk<Observer<TokoPointPromosEntity>> {
                 every { onChanged(any()) } just Runs
             }

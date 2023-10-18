@@ -9,8 +9,16 @@ import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.mockkObject
+import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.runBlocking
 import junit.framework.TestCase.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
@@ -20,12 +28,14 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
     @Test
     fun `when get shop basic data should return success`() {
-        runBlocking {
+        runTest {
             _onGetShopBasicData_thenReturnSuccess()
 
             shopEditBasicInfoViewModel.getShopBasicData()
 
-            val isGetShopBasicDataSubscribe = shopEditBasicInfoViewModel.shopBasicData.observeAwaitValue()
+            advanceTimeBy(1000)
+
+            val isGetShopBasicDataSubscribe = shopEditBasicInfoViewModel.shopBasicData.value
 
             assertTrue(isGetShopBasicDataSubscribe is Success)
         }
@@ -33,25 +43,28 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
     @Test
     fun `when get shop basic data should return fail`() {
-        runBlocking {
+        runTest {
             _onGetShopBasicData_thenReturnFail()
 
             shopEditBasicInfoViewModel.getShopBasicData()
 
-            val isGetShopBasicDataSubscribe = shopEditBasicInfoViewModel.shopBasicData.observeAwaitValue()
+            advanceTimeBy(1000)
+
+            val isGetShopBasicDataSubscribe = shopEditBasicInfoViewModel.shopBasicData.value
 
             assertTrue(isGetShopBasicDataSubscribe is Fail)
         }
     }
 
-
     @Test
     fun `when get status allow shop name domain changes should return success`() {
-        runBlocking {
+        runTest {
             mockkObject(GetAllowShopNameDomainChanges)
             onCheckAllowShopNameDomainChanges_thenReturnSuccess()
 
             shopEditBasicInfoViewModel.getAllowShopNameDomainChanges()
+
+            advanceTimeBy(1000)
 
             verifySuccessGetAllowShopNameDomainChangesCalled()
 
@@ -65,11 +78,13 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
     @Test
     fun `when get status allow shop name domain changes should return fail`() {
-        runBlocking {
+        runTest {
             mockkObject(GetAllowShopNameDomainChanges)
             onCheckAllowShopNameDomainChanges_thenReturnFail()
 
             shopEditBasicInfoViewModel.getAllowShopNameDomainChanges()
+
+            advanceTimeBy(1000)
 
             verifySuccessGetAllowShopNameDomainChangesCalled()
 
@@ -77,10 +92,9 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
         }
     }
 
-
     @Test
     fun `when upload shop image should return upload result success`() {
-        runBlocking {
+        runTest {
             val imagePath: String = "imagePath"
             val name: String = "name"
             val domain: String = "domain"
@@ -90,9 +104,16 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             _onUploadShopImage_thenReturnUploadResultSuccess()
 
             shopEditBasicInfoViewModel.uploadShopImage(
-                    imagePath, name, domain, tagline, description)
+                imagePath,
+                name,
+                domain,
+                tagline,
+                description
+            )
 
-            val isSuccessSubscribe = shopEditBasicInfoViewModel.uploadShopImage.observeAwaitValue()
+            advanceTimeBy(1000)
+
+            val isSuccessSubscribe = shopEditBasicInfoViewModel.uploadShopImage.value
 
             assertTrue(isSuccessSubscribe is Success)
         }
@@ -100,7 +121,7 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
     @Test
     fun `when upload shop image should return upload result error`() {
-        runBlocking {
+        runTest {
             val imagePath: String = "imagePath"
             val name: String = "name"
             val domain: String = "domain"
@@ -110,9 +131,16 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             _onUploadShopImage_thenReturnUploadResultError()
 
             shopEditBasicInfoViewModel.uploadShopImage(
-                imagePath, name, domain, tagline, description)
+                imagePath,
+                name,
+                domain,
+                tagline,
+                description
+            )
 
-            val isSuccessSubscribe = shopEditBasicInfoViewModel.uploadShopImage.observeAwaitValue()
+            advanceTimeBy(1000)
+
+            val isSuccessSubscribe = shopEditBasicInfoViewModel.uploadShopImage.value
 
             assertTrue(isSuccessSubscribe is Fail)
         }
@@ -130,7 +158,12 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             _onUploadShopImage_thenReturnNull()
 
             shopEditBasicInfoViewModel.uploadShopImage(
-                imagePath, name, domain, tagline, description)
+                imagePath,
+                name,
+                domain,
+                tagline,
+                description
+            )
 
             val subscribe = shopEditBasicInfoViewModel.uploadShopImage.observeAwaitValue()
 
@@ -138,10 +171,9 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
         }
     }
 
-
     @Test
     fun `when upload shop image should return fail`() {
-        runBlocking {
+        runTest {
             val imagePath: String = "imagePath"
             val name: String = "name"
             val domain: String = "domain"
@@ -151,18 +183,24 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             _onUploadShopImage_thenReturnFail()
 
             shopEditBasicInfoViewModel.uploadShopImage(
-                imagePath, name, domain, tagline, description)
+                imagePath,
+                name,
+                domain,
+                tagline,
+                description
+            )
 
-            val isSuccessSubscribe = shopEditBasicInfoViewModel.uploadShopImage.observeAwaitValue()
+            advanceTimeBy(1000)
+
+            val isSuccessSubscribe = shopEditBasicInfoViewModel.uploadShopImage.value
 
             assertTrue(isSuccessSubscribe is Fail)
         }
     }
 
-
     @Test
     fun `when update shop basic data should return success`() {
-        runBlocking {
+        runTest {
             val shopName = "shop"
             val shopDomain = "domain"
             val shopTagLine = "tagline"
@@ -171,7 +209,13 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             _onUpdateShopBasicData_thenReturn()
 
             shopEditBasicInfoViewModel.updateShopBasicData(
-                    shopName, shopDomain, shopTagLine, shopDescription)
+                shopName,
+                shopDomain,
+                shopTagLine,
+                shopDescription
+            )
+
+            advanceTimeBy(1000)
 
             val isSuccessSubscribe = shopEditBasicInfoViewModel.updateShopBasicData.observeAwaitValue()
 
@@ -181,7 +225,7 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
     @Test
     fun `when validate shop name should return success`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mockkObject(ValidateDomainShopNameUseCase)
 
             onValidateShopDomainName_thenReturnSuccess()
@@ -201,7 +245,7 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
     @Test
     fun `when validate shop name should return fail and success`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mockkObject(ValidateDomainShopNameUseCase)
 
             onValidateShopDomainName_thenReturnException()
@@ -231,7 +275,7 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
     @Test
     fun `when validate shop domain should return fail and success`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mockkObject(ValidateDomainShopNameUseCase)
 
             onValidateShopDomainName_thenReturnException()
@@ -261,7 +305,7 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
     @Test
     fun `when validate shop name should return fail`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mockkObject(ValidateDomainShopNameUseCase)
 
             onValidateShopDomainName_thenReturnThrowable()
@@ -280,7 +324,7 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
     @Test
     fun `when validate shop domain should return fail`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mockkObject(ValidateDomainShopNameUseCase)
 
             onValidateShopDomainName_thenReturnThrowable()
@@ -299,14 +343,14 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
     @Test
     fun `when validate domain name should return success`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mockkObject(ValidateDomainShopNameUseCase)
 
             onValidateShopDomainName_thenReturnSuccess()
 
             val domainName: String = "domain"
             shopEditBasicInfoViewModel.validateShopDomain(domainName)
-            advanceTimeBy(2000)
+            advanceTimeBy(1000)
 
             verifySuccessValidateDomainNameRequestParamsCalled(domainName)
 
@@ -319,14 +363,14 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
     @Test
     fun `when validate domain name should return success and it is valid`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mockkObject(ValidateDomainShopNameUseCase)
 
             onValidateShopDomainName_thenReturnSuccessIsValid()
 
             val domainName: String = "domain"
             shopEditBasicInfoViewModel.validateShopDomain(domainName)
-            advanceTimeBy(2000)
+            advanceTimeBy(1000)
 
             verifySuccessValidateDomainNameRequestParamsCalled(domainName)
 
@@ -339,13 +383,13 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
     @Test
     fun `when validate domain name should return success and get domain suggestion should return success`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             onValidateShopDomainName_thenReturnSuccess()
             privateCurrentShopNameField.set(shopEditBasicInfoViewModel, "shop")
 
             onGetShopDomainNameSuggestion_thenReturnSuccess()
             shopEditBasicInfoViewModel.validateShopDomain("domain")
-            advanceTimeBy(2000)
+            advanceTimeBy(1000)
 
             verifySuccessValidateDomainNameCalled()
             verifyGetShopDomainNameSuggestionCalled()
@@ -358,13 +402,13 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
     @Test
     fun `when validate domain name should return success and get domain suggestion should return fail`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             onValidateShopDomainName_thenReturnSuccess()
             privateCurrentShopNameField.set(shopEditBasicInfoViewModel, "shop")
 
             onGetShopDomainNameSuggestion_thenReturnFail()
             shopEditBasicInfoViewModel.validateShopDomain("domain")
-            advanceTimeBy(2000)
+            advanceTimeBy(1000)
 
             verifySuccessValidateDomainNameCalled()
             verifyGetShopDomainNameSuggestionCalled()

@@ -1,10 +1,16 @@
 package com.tokopedia.logisticorder.mapper
 
-import com.tokopedia.logisticorder.domain.response.*
-import com.tokopedia.logisticorder.uimodel.*
+import com.tokopedia.logisticorder.domain.response.GetDriverTipResponse
+import com.tokopedia.logisticorder.domain.response.LastDriver
+import com.tokopedia.logisticorder.domain.response.Payment
+import com.tokopedia.logisticorder.domain.response.Prepayment
+import com.tokopedia.logisticorder.uimodel.LastDriverModel
+import com.tokopedia.logisticorder.uimodel.LogisticDriverModel
+import com.tokopedia.logisticorder.uimodel.PaymentModel
+import com.tokopedia.logisticorder.uimodel.PrepaymentModel
 import javax.inject.Inject
 
-class DriverTipMapper @Inject constructor(){
+class DriverTipMapper @Inject constructor() {
 
     fun mapDriverTipData(response: GetDriverTipResponse): LogisticDriverModel {
         val data = response.response

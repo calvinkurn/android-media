@@ -84,6 +84,10 @@ class FeedOnboardingCoachmark @Inject constructor(
             addShortVideoCoachmarkItem(coachMarkItem)
         }
 
+        if (coachMarkItem.isEmpty()) {
+            mListener?.onCoachmarkFinish()
+        }
+
         coachMark.showCoachMark(coachMarkItem)
     }
     private fun shouldNotShowAnyCoachMark(
@@ -137,10 +141,10 @@ class FeedOnboardingCoachmark @Inject constructor(
 
     private fun addShortVideoCoachmarkItem(coachMarkItem: ArrayList<CoachMark2Item>) {
         val title =
-            context.getString(com.tokopedia.feedcomponent.R.string.feed_play_shorts_entry_point_coachmark_title)
+            context.getString(com.tokopedia.content.common.R.string.feed_play_shorts_entry_point_coachmark_title)
         val description =
             context.getString(
-                com.tokopedia.feedcomponent.R.string.feed_play_shorts_entry_point_coachmark_description
+                com.tokopedia.content.common.R.string.feed_play_shorts_entry_point_coachmark_description
             )
         val view: View? = anchorMap?.get(SHORT_VIDEO_COACH_MARK_ANCHOR)
         if (view != null) {

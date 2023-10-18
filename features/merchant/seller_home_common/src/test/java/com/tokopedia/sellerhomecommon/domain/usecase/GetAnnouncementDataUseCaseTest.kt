@@ -2,7 +2,7 @@ package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerhomecommon.domain.mapper.AnnouncementMapper
-import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.GetAnnouncementDataResponse
 import com.tokopedia.sellerhomecommon.utils.TestHelper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -40,7 +40,7 @@ class GetAnnouncementDataUseCaseTest {
 
     private val params = GetPieChartDataUseCase.getRequestParams(
             dataKey = ArgumentMatchers.anyList(),
-            dynamicParameter = DynamicParameterModel()
+            dynamicParameter = ParamCommonWidgetModel()
     )
 
     @Before

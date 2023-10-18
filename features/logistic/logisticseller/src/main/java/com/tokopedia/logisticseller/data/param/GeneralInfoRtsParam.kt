@@ -12,7 +12,7 @@ data class GeneralInfoRtsParam(
         @SerializedName("order_id")
         val orderId: String = "",
         @SerializedName("action")
-        val action: String = "",
+        val action: String = ""
     ) : GqlParam
 
     companion object {

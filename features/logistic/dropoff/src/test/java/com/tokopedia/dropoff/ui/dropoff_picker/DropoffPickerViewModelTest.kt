@@ -36,7 +36,6 @@ class DropoffPickerViewModelTest {
 
     private val storeObserver = mockk<Observer<Result<DropoffUiModel>>>(relaxed = true)
 
-
     @Before
     fun setUp() {
         Dispatchers.setMain(TestCoroutineDispatcher())
@@ -54,7 +53,10 @@ class DropoffPickerViewModelTest {
         val testData = DropoffUiModel(listOf(), 1)
         val successResult = hashMapOf<Type, Any>(GetStoreResponse::class.java to GetStoreResponse())
         coEvery { repo.response(any(), any()) } returns GraphqlResponse(
-                successResult, HashMap<Type, List<GraphqlError>>(), false)
+            successResult,
+            HashMap<Type, List<GraphqlError>>(),
+            false
+        )
         every { mapper.map(GetStoreResponse()) } returns testData
 
         viewModel.getStores("")

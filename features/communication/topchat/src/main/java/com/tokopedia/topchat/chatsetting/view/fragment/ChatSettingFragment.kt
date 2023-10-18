@@ -67,6 +67,9 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
         viewModel.chatSettings.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Success -> successLoadChatSetting(response.data)
+                else -> {
+                    //no-op
+                }
             }
         })
     }

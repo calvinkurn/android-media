@@ -12,6 +12,7 @@ import com.tokopedia.common.ProductServiceWidgetConstant
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -56,7 +57,6 @@ class ProductBundleViewModel @Inject constructor(
     companion object {
         private const val ATC_BUNDLE_QUANTITY = 1
         private const val SINGLE_PRODUCT_BUNDLE_ITEM_SIZE = 1
-        private const val PRODUCT_BUNDLE_STATUS_ACTIVE = "1"
         private const val PREORDER_STATUS_ACTIVE: String = "ACTIVE"
     }
 
@@ -172,6 +172,7 @@ class ProductBundleViewModel @Inject constructor(
                         bundleGroup = true,
                         preorder = true,
                         bundleStats = true,
+                        shopInformation = true,
                         inventoryDetail = InventoryDetail(
                             required = true,
                             userLocation = UserLocation(
@@ -232,10 +233,6 @@ class ProductBundleViewModel @Inject constructor(
         })
     }
 
-    fun isProductBundleAvailable(bundleInfo: BundleInfo): Boolean {
-        return bundleInfo.status == PRODUCT_BUNDLE_STATUS_ACTIVE
-    }
-
     fun mapBundleInfoToBundleMaster(bundleInfo: BundleInfo): ProductBundleMaster {
         return ProductBundleMaster(
             shopId = bundleInfo.shopID,
@@ -244,7 +241,8 @@ class ProductBundleViewModel @Inject constructor(
             quota = bundleInfo.quota,
             preOrderStatus = bundleInfo.preorder.status,
             processDay = bundleInfo.preorder.processTime.toLongOrZero(),
-            processTypeNum = bundleInfo.preorder.processTypeNum
+            processTypeNum = bundleInfo.preorder.processTypeNum,
+            totalSold = bundleInfo.bundleStats.totalSold.toIntSafely()
         )
     }
 

@@ -8,15 +8,15 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionParams
+import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
 import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionByIdResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionNamesResponse
-import com.tokopedia.wishlistcollection.data.response.UpdateWishlistCollectionResponse
+import com.tokopedia.wishlistcommon.data.response.UpdateWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionByIdUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionNamesUseCase
-import com.tokopedia.wishlistcollection.domain.UpdateWishlistCollectionUseCase
+import com.tokopedia.wishlistcommon.domain.UpdateWishlistCollectionUseCase
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import javax.inject.Inject
 
@@ -54,8 +54,8 @@ class WishlistCollectionEditViewModel @Inject constructor(
                 _collectionNames.value = Fail(Throwable())
             }
         }, onError = {
-            _collectionNames.value = Fail(it)
-        })
+                _collectionNames.value = Fail(it)
+            })
     }
 
     fun updateAccessWishlistCollection(updateWishlistCollectionParams: UpdateWishlistCollectionParams) {
@@ -67,8 +67,8 @@ class WishlistCollectionEditViewModel @Inject constructor(
                 _updateWishlistCollectionResult.value = Fail(Throwable())
             }
         }, onError = {
-            _updateWishlistCollectionResult.value = Fail(it)
-        })
+                _updateWishlistCollectionResult.value = Fail(it)
+            })
     }
 
     fun getWishlistCollectionById(collectonId: String) {
@@ -80,8 +80,8 @@ class WishlistCollectionEditViewModel @Inject constructor(
                 _getWishlistCollectionByIdResult.value = Fail(Throwable())
             }
         }, onError = {
-            _getWishlistCollectionByIdResult.value = Fail(it)
-        })
+                _getWishlistCollectionByIdResult.value = Fail(it)
+            })
     }
 
     fun deleteWishlistCollection(collectionId: String) {
@@ -93,7 +93,7 @@ class WishlistCollectionEditViewModel @Inject constructor(
                 _deleteCollectionResult.value = Fail(Throwable())
             }
         }, onError = {
-            _deleteCollectionResult.value = Fail(it)
-        })
+                _deleteCollectionResult.value = Fail(it)
+            })
     }
 }

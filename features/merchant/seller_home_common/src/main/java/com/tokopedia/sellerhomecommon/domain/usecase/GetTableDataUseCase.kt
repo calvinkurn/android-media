@@ -8,8 +8,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.TableMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
-import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.GetTableDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.ParamTableWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.usecase.RequestParams
@@ -85,15 +85,13 @@ class GetTableDataUseCase(
 
         fun getRequestParams(
             dataKey: List<TableAndPostDataKey>,
-            dynamicParameter: DynamicParameterModel
+            dynamicParameter: ParamTableWidgetModel
         ): RequestParams {
             val dataKeys: List<DataKeyModel> = dataKey.map {
                 DataKeyModel(
-                    key = it.dataKey,
-                    jsonParams = dynamicParameter.copy(
+                    key = it.dataKey, jsonParams = dynamicParameter.copy(
                         limit = it.maxData, tableFilter = it.filter
-                    ).toJsonString(),
-                    maxDisplay = it.maxDisplayPerPage
+                    ).toJsonString(), maxDisplay = it.maxDisplayPerPage
                 )
             }
             return RequestParams.create().apply {

@@ -26,7 +26,6 @@ class InspirationCarouselOptionInfoViewHolder(
         val productOption = item.product.getOrNull(0) ?: return
 
         bindProductImage(productOption.imgUrl)
-        bindImpressionListener(productOption)
 
         bindOptionTitle(item.title)
         bindOnClickListener(item)
@@ -41,18 +40,6 @@ class InspirationCarouselOptionInfoViewHolder(
         val binding = binding ?: return
         binding.optionInfoImage.shouldShowWithAction(imgUrl.isNotEmpty()) {
             binding.optionInfoImage.loadImage(imgUrl)
-        }
-    }
-
-    private fun bindImpressionListener(product: InspirationCarouselDataView.Option.Product) {
-        binding?.optionInfoImage?.addOnImpressionListener(product, createViewHintListener(product))
-    }
-
-    private fun createViewHintListener(product: InspirationCarouselDataView.Option.Product): ViewHintListener {
-        return object: ViewHintListener {
-            override fun onViewHint() {
-                inspirationCarouselListener.onImpressedInspirationCarouselInfoProduct(product)
-            }
         }
     }
 

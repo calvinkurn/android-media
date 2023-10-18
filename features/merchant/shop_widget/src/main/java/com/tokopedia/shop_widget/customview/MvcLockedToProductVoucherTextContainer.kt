@@ -2,8 +2,6 @@ package com.tokopedia.shop_widget.customview
 
 import android.app.Activity
 import android.content.Context
-import android.os.Build
-import android.text.Html
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
@@ -14,8 +12,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop_widget.R
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.htmltags.HtmlUtil
-import java.lang.reflect.Method
 
 class MvcLockedToProductVoucherTextContainer @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0

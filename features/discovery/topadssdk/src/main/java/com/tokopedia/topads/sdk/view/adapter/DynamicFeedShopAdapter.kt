@@ -22,6 +22,10 @@ import com.tokopedia.topads.sdk.utils.ImageLoader
 import com.tokopedia.topads.sdk.view.adapter.DynamicFeedShopAdapter.DynamicFeedShopViewHolder
 import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.topads.sdk.R as topadssdkR
+import com.tokopedia.gm.common.R as gmcommonR
 
 /**
  * @author by milhamj on 07/01/19.
@@ -131,7 +135,7 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
                 imageLoader.loadImage(imageUrl, imageView)
             } else {
                 imageView.setBackgroundColor(
-                        ContextCompat.getColor(imageView.context, com.tokopedia.unifyprinciples.R.color.Unify_N50)
+                        ContextCompat.getColor(imageView.context, unifyprinciplesR.color.Unify_NN50)
                 )
             }
         }
@@ -159,23 +163,23 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
                 shop.isShop_is_official -> {
                     ivBadge.show()
                     ivBadge.setImageDrawable(
-                            ImageLoader.getDrawable(ivBadge.context, R.drawable.ic_badge_shop_official)
+                            ImageLoader.getDrawable(ivBadge.context, topadssdkR.drawable.ic_badge_shop_official)
                     )
-                    layoutParams.leftMargin = ivBadge.context.resources.getDimension(R.dimen.dp_4).toInt()
+                    layoutParams.leftMargin = ivBadge.context.resources.getDimension(abstractionR.dimen.dp_4).toInt()
                 }
                 shop.isGoldShopBadge -> {
                     ivBadge.show()
                     ivBadge.setImageDrawable(
                             ImageLoader.getDrawable(
                                     ivBadge.context,
-                                    R.drawable.ic_power_merchant
+                                gmcommonR.drawable.ic_power_merchant
                             )
                     )
-                    layoutParams.leftMargin = ivBadge.context.resources.getDimension(R.dimen.dp_4).toInt()
+                    layoutParams.leftMargin = ivBadge.context.resources.getDimension(abstractionR.dimen.dp_4).toInt()
                 }
                 else -> {
                     ivBadge.hide()
-                    layoutParams.leftMargin = ivBadge.context.resources.getDimension(R.dimen.dp_0).toInt()
+                    layoutParams.leftMargin = ivBadge.context.resources.getDimension(abstractionR.dimen.dp_0).toInt()
                 }
             }
         }

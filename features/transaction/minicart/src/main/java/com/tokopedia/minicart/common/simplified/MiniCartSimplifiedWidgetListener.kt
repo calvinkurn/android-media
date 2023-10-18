@@ -3,7 +3,7 @@ package com.tokopedia.minicart.common.simplified
 import android.content.Intent
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 
-interface MiniCartSimplifiedWidgetListener: MiniCartWidgetListener {
+interface MiniCartSimplifiedWidgetListener : MiniCartWidgetListener {
 
     /**
      * Callback when user click Check Cart Button

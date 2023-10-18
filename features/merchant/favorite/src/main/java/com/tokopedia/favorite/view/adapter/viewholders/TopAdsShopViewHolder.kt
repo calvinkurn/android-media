@@ -2,7 +2,6 @@ package com.tokopedia.favorite.view.adapter.viewholders
 
 import android.content.Context
 import android.view.View
-import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView

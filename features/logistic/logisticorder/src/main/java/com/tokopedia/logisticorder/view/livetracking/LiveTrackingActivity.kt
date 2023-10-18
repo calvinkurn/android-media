@@ -23,5 +23,4 @@ class LiveTrackingActivity : BaseSimpleActivity() {
             return Intent(context, LiveTrackingActivity::class.java).putExtra(EXTRA_TRACKING_URL, trackingUrl)
         }
     }
-
 }

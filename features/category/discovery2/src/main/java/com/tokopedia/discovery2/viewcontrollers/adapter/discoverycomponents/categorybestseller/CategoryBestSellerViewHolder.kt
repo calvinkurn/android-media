@@ -23,13 +23,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 
-class CategoryBestSellerViewHolder (itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner)  {
+class CategoryBestSellerViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private var mProductCarouselRecyclerView: RecyclerView = itemView.findViewById(R.id.products_rv)
     private var mHeaderView: FrameLayout = itemView.findViewById(R.id.header_view)
     private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
-    private lateinit var categoryBestSellerViewModel: CategoryBestSellerViewModel
+    private var categoryBestSellerViewModel: CategoryBestSellerViewModel? = null
     private val carouselRecyclerViewDecorator = CarouselProductCardItemDecorator(fragment.context?.resources?.getDimensionPixelSize(R.dimen.dp_12))
     private var backgroundImage: ImageView = itemView.findViewById(R.id.background_image)
     private var componentsItem: ComponentsItem? = null
@@ -44,7 +44,9 @@ class CategoryBestSellerViewHolder (itemView: View, val fragment: Fragment) : Ab
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         categoryBestSellerViewModel = discoveryBaseViewModel as CategoryBestSellerViewModel
-        getSubComponent().inject(categoryBestSellerViewModel)
+        categoryBestSellerViewModel?.let {
+            getSubComponent().inject(it)
+        }
         addShimmer()
         addDefaultItemDecorator()
     }
@@ -52,51 +54,53 @@ class CategoryBestSellerViewHolder (itemView: View, val fragment: Fragment) : Ab
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { lifecycle ->
-            categoryBestSellerViewModel.getComponentData().observe(lifecycle, {
+            categoryBestSellerViewModel?.getComponentData()?.observe(lifecycle) {
                 componentsItem = it
-            })
-            categoryBestSellerViewModel.getProductCarouselItemsListData().observe(lifecycle, { item ->
-                if(item.isNotEmpty())
+            }
+            categoryBestSellerViewModel?.getProductCarouselItemsListData()?.observe(lifecycle) { item ->
+                if (item.isNotEmpty()) {
                     addCardHeader(item[0].lihatSemua)
+                }
                 mDiscoveryRecycleAdapter.setDataList(item)
-            })
-            categoryBestSellerViewModel.getBackgroundImage().observe(lifecycle, {
+            }
+            categoryBestSellerViewModel?.getBackgroundImage()?.observe(lifecycle) {
                 if (it.isNullOrEmpty()) {
                     backgroundImage.hide()
                 } else {
                     backgroundImage.loadImageWithoutPlaceholder(it)
                     backgroundImage.show()
                 }
-            })
-            categoryBestSellerViewModel.syncData.observe(lifecycle, { sync ->
+            }
+            categoryBestSellerViewModel?.syncData?.observe(lifecycle) { sync ->
                 if (sync) {
                     mDiscoveryRecycleAdapter.notifyDataSetChanged()
                 }
-            })
-            categoryBestSellerViewModel.getProductCardMaxHeight().observe(lifecycle, { height ->
+            }
+            categoryBestSellerViewModel?.getProductCardMaxHeight()?.observe(lifecycle) { height ->
                 setMaxHeight(height)
-            })
-            categoryBestSellerViewModel.getProductLoadState().observe(lifecycle, {
+            }
+            categoryBestSellerViewModel?.getProductLoadState()?.observe(lifecycle) {
                 if (it) handleErrorState()
-            })
+            }
         }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            categoryBestSellerViewModel.getComponentData().removeObservers(it)
-            categoryBestSellerViewModel.getProductCarouselItemsListData().removeObservers(it)
-            categoryBestSellerViewModel.getBackgroundImage().removeObservers(it)
-            categoryBestSellerViewModel.syncData.removeObservers(it)
-            categoryBestSellerViewModel.getProductCardMaxHeight().removeObservers(it)
-            categoryBestSellerViewModel.getProductLoadState().removeObservers(it)
+            categoryBestSellerViewModel?.getComponentData()?.removeObservers(it)
+            categoryBestSellerViewModel?.getProductCarouselItemsListData()?.removeObservers(it)
+            categoryBestSellerViewModel?.getBackgroundImage()?.removeObservers(it)
+            categoryBestSellerViewModel?.syncData?.removeObservers(it)
+            categoryBestSellerViewModel?.getProductCardMaxHeight()?.removeObservers(it)
+            categoryBestSellerViewModel?.getProductLoadState()?.removeObservers(it)
         }
     }
 
     private fun addDefaultItemDecorator() {
-        if (mProductCarouselRecyclerView.itemDecorationCount > 0)
+        if (mProductCarouselRecyclerView.itemDecorationCount > 0) {
             mProductCarouselRecyclerView.removeItemDecorationAt(0)
+        }
         mProductCarouselRecyclerView.addItemDecoration(carouselRecyclerViewDecorator)
     }
 
@@ -108,13 +112,23 @@ class CategoryBestSellerViewHolder (itemView: View, val fragment: Fragment) : Ab
 
     private fun addCardHeader(lihatSemua: LihatSemua?) {
         mHeaderView.removeAllViews()
-        val lihatSemuaDataItem = DataItem(title = lihatSemua?.header,
-                subtitle = lihatSemua?.subheader, btnApplink = lihatSemua?.applink)
+        val lihatSemuaDataItem = DataItem(
+            title = lihatSemua?.header,
+            subtitle = lihatSemua?.subheader,
+            btnApplink = lihatSemua?.applink
+        )
         val lihatSemuaComponentData = ComponentsItem(
-                name = componentsItem?.name ?: ComponentsList.CategoryBestSeller.componentName,
-                data = listOf(lihatSemuaDataItem))
-        mHeaderView.addView(CustomViewCreator.getCustomViewObject(itemView.context,
-                ComponentsList.LihatSemua, lihatSemuaComponentData, fragment))
+            name = componentsItem?.name ?: ComponentsList.CategoryBestSeller.componentName,
+            data = listOf(lihatSemuaDataItem)
+        )
+        mHeaderView.addView(
+            CustomViewCreator.getCustomViewObject(
+                itemView.context,
+                ComponentsList.LihatSemua,
+                lihatSemuaComponentData,
+                fragment
+            )
+        )
     }
 
     private fun addShimmer() {
@@ -128,8 +142,9 @@ class CategoryBestSellerViewHolder (itemView: View, val fragment: Fragment) : Ab
         val list: ArrayList<ComponentsItem> = ArrayList()
         mDiscoveryRecycleAdapter.setDataList(list)
         mDiscoveryRecycleAdapter.notifyDataSetChanged()
-        if (mHeaderView.childCount > 0)
+        if (mHeaderView.childCount > 0) {
             mHeaderView.removeAllViews()
+        }
     }
 
     override fun getInnerRecycleView(): RecyclerView {

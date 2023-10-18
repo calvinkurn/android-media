@@ -4,28 +4,53 @@ import android.content.Context
 import android.graphics.Bitmap
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.media.picker.utils.internal.retryOperator
 import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
 import com.tokopedia.utils.image.ImageProcessingUtil
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.io.File
 import javax.inject.Inject
 
 interface BitmapConverterRepository {
-    suspend fun convert(url: String): String?
+    fun convert(urls: List<String>): Flow<List<Pair<String, String>?>>
 }
 
 class BitmapConverterRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : BitmapConverterRepository {
 
-    override suspend fun convert(url: String): String? {
-        // 1. convert image to bitmap
-        val bitmap = urlToBitmap(url)?: return null
+    override fun convert(urls: List<String>): Flow<List<Pair<String, String>?>> {
+        return flow {
+            val convertedUrl = urls.map {
+                convert(it)
+            }
 
-        // 2. bitmap to file
-        val file = ImageProcessingUtil.writeImageToTkpdPath(
-            bitmap,
-            Bitmap.CompressFormat.JPEG
-        )
+            emit(convertedUrl)
+        }
+    }
+
+    private suspend fun convert(url: String): Pair<String, String>? {
+        var bitmap: Bitmap? = null
+
+        retryOperator(retries = 3) {
+            try {
+                val result = urlToBitmap(url)
+
+                if (result != null) {
+                    bitmap = result
+                }
+            } catch (ignored: Throwable) {
+                operationFailed()
+            }
+        }
+
+        val file = bitmap?.let {
+            ImageProcessingUtil.writeImageToTkpdPath(
+                it,
+                Bitmap.CompressFormat.JPEG
+            )
+        }
 
         file?.let {
             val fileName = getFileName(it.path)
@@ -35,10 +60,9 @@ class BitmapConverterRepositoryImpl @Inject constructor(
             it.renameTo(newFile)
 
             // 3. get file url, if image source from remote url
-            return newFile.path
+            return Pair(newFile.path, url)
         }
 
-        // 4. only if cache file is missing (failed to save bitmap #2)
         return null
     }
 

@@ -83,7 +83,7 @@ data class DisplayHeadlineAdsEntity(
     }
 
     fun List<DisplayHeadlineAdsEntity.DisplayHeadlineAds>.mappingTopAdsHeaderToChannelGrid(): List<ChannelGrid>{
-        return this.map {
+        return this.mapIndexed { index, it ->
             ChannelGrid(
                     id = it.id,
                     applink = it.applink,
@@ -100,7 +100,8 @@ data class DisplayHeadlineAdsEntity(
                     rating = it.headline.shop.products.firstOrNull()?.rating ?: 0,
                     impression = it.headline.image.url,
                     productClickUrl = it.adClickUrl,
-                    imageUrl = it.headline.shop.products.firstOrNull()?.imageProduct?.imageUrl ?: ""
+                    imageUrl = it.headline.shop.products.firstOrNull()?.imageProduct?.imageUrl ?: "",
+                    position = index
             )
         }
     }

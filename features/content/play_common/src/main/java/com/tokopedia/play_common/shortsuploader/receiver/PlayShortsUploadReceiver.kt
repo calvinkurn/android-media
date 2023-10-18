@@ -37,13 +37,6 @@ class PlayShortsUploadReceiver : BroadcastReceiver() {
         val action = intent?.getIntExtra(EXTRA_ACTION, 0).orZero()
 
         when(action) {
-            Action.OpenPlayRoom.value -> {
-                analytic.clickRedirectToChannelRoom(uploadData.authorId, uploadData.authorType, uploadData.shortsId)
-                val playRoomIntent = RouteManager.getIntent(context, getPlayRoomWebLink(uploadData)).apply {
-                    flags = FLAG_ACTIVITY_NEW_TASK
-                }
-                context.startActivity(playRoomIntent)
-            }
             Action.Retry.value -> {
                 analytic.clickRetryUpload(uploadData.authorId, uploadData.authorType, uploadData.shortsId)
                 playShortsUploader.upload(uploadData)
@@ -58,40 +51,10 @@ class PlayShortsUploadReceiver : BroadcastReceiver() {
             .inject(this)
     }
 
-    private fun getPlayRoomWebLink(uploadData: PlayShortsUploadModel): String {
-        return buildString {
-            append(TokopediaUrl.getInstance().WEB)
-            append(PLAY_ROOM_PATH)
-            append(uploadData.shortsId)
-            append("?")
-            append("$SOURCE_TYPE=${getSourceType(uploadData.authorType)}")
-            append("&")
-            append("$SOURCE_ID=${uploadData.authorId}")
-        }
-    }
-
-    private fun getSourceType(authorType: String): String {
-        return when(authorType) {
-            CONTENT_SHOP -> SOURCE_TYPE_SHOP
-            CONTENT_USER -> SOURCE_TYPE_USER
-            else -> ""
-        }
-    }
-
     companion object {
 
         private const val EXTRA_UPLOAD_DATA = "EXTRA_UPLOAD_DATA"
         private const val EXTRA_ACTION = "EXTRA_ACTION"
-
-        /** Web Link Const */
-        const val PLAY_ROOM_PATH = "play/channel/"
-        const val CONTENT_USER = "content-user"
-        const val CONTENT_SHOP = "content-shop"
-
-        const val SOURCE_TYPE = "source_type"
-        const val SOURCE_ID = "source_id"
-        const val SOURCE_TYPE_USER = "SHORT_VIDEO_USER"
-        const val SOURCE_TYPE_SHOP = "SHORT_VIDEO_SHOP"
 
         fun getIntent(
             context: Context,
@@ -105,7 +68,7 @@ class PlayShortsUploadReceiver : BroadcastReceiver() {
         }
 
         enum class Action(val value: Int) {
-            OpenPlayRoom(1), Retry(2)
+            Retry(1)
         }
     }
 }

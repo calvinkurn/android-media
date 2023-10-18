@@ -191,6 +191,10 @@ data class FlightCart(
             @Expose
             val priceDetail: List<PriceDetail> = listOf(),
 
+            @SerializedName("adminFee")
+            @Expose
+            val adminFee: AdminFee = AdminFee(),
+
             @SerializedName("amenityOptions")
             @Expose
             val amenityOptions: List<Amenity> = listOf(),
@@ -231,6 +235,29 @@ data class FlightCart(
     ) : Parcelable {
         fun idEqualsToInsuranceId(other: Insurance): Boolean = other.id == priceDetailId
     }
+
+    @Parcelize
+    data class AdminFee(
+        @SerializedName("label")
+        @Expose
+        val label: String = "",
+
+        @SerializedName("price")
+        @Expose
+        val price: String = "",
+
+        @SerializedName("priceNumeric")
+        @Expose
+        val priceNumeric: Int = 0,
+
+        @SerializedName("popUpTitle")
+        @Expose
+        val popUpTitle: String = "",
+
+        @SerializedName("popUpDescription")
+        @Expose
+        val popUpDescription: String = ""
+    ): Parcelable
 
     data class Amenity(
             @SerializedName("departureAirportID")

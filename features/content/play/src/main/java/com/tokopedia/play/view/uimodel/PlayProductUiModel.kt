@@ -23,9 +23,24 @@ sealed class PlayProductUiModel {
         val isPinned: Boolean,
         val isRilisanSpesial: Boolean,
         val buttons: List<ProductButtonUiModel>,
+        val number: String,
+        val isNumerationShown: Boolean,
+        val rating: String,
+        val label: Label,
+        val soldQuantity: String,
+
     ) : PlayProductUiModel() {
 
         val impressHolder = ImpressHolder()
+        data class Label (
+            val rankColors: List<String>,
+            val rankFmt: String,
+            val rankType: String,
+        ) {
+            companion object {
+                const val RIBBON_TYPE_DEFAULT = "no ribbon"
+            }
+        }
 
         companion object {
             val Empty: Product
@@ -44,9 +59,24 @@ sealed class PlayProductUiModel {
                     isPinned = false,
                     isRilisanSpesial = false,
                     buttons = emptyList(),
+                    number = "",
+                    isNumerationShown = false,
+                    rating = "",
+                    soldQuantity = "",
+                    label = Label(
+                        rankColors = emptyList(),
+                        rankFmt = "",
+                        rankType = "",
+                    )
                 )
         }
     }
 
     object Placeholder : PlayProductUiModel()
 }
+
+val PlayProductUiModel.Product.isShowRating: Boolean
+    get() = this.rating.isNotBlank()
+
+val PlayProductUiModel.Product.isShowSoldQuantity: Boolean
+    get() = this.soldQuantity.isNotBlank()

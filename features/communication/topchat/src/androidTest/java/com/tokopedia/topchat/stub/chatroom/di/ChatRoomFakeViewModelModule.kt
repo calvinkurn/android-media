@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.view.viewmodel.StickerViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatRoomWebSocketViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import dagger.Binds
 import dagger.Module
@@ -28,4 +29,10 @@ abstract class ChatRoomFakeViewModelModule {
     @IntoMap
     @ViewModelKey(StickerViewModel::class)
     internal abstract fun getStickerViewModel(viewModel: StickerViewModel): ViewModel
+
+    @Binds
+    @ChatScope
+    @IntoMap
+    @ViewModelKey(TopChatRoomWebSocketViewModel::class)
+    internal abstract fun bindTopChatRoomWebSocketViewModel(viewModel: TopChatRoomWebSocketViewModel): ViewModel
 }

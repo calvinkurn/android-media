@@ -10,7 +10,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -47,7 +47,7 @@ class TravelCountryCodeByIdUseCaseTest{
         } returns Success(countryList)
 
 
-        runBlockingTest {
+        runTest {
             val result = useCase.execute(DummyGqlQueryInterface(), "ID")
             assertTrue(result is Success)
             assertFalse(result is Fail)
@@ -70,7 +70,7 @@ class TravelCountryCodeByIdUseCaseTest{
         } returns Success(countryList)
 
 
-        runBlockingTest {
+        runTest {
             val result = useCase.execute(DummyGqlQueryInterface(), "ID")
             assertTrue(result is Success)
             assertFalse(result is Fail)
@@ -90,7 +90,7 @@ class TravelCountryCodeByIdUseCaseTest{
             travelCountryCodeUseCase.execute(any())
         } returns Fail(Throwable(message = "failed to fetch"))
 
-        runBlockingTest {
+        runTest {
             val result = useCase.execute(DummyGqlQueryInterface(), "ID")
             assertTrue(result is Fail)
             assertFalse(result is Success)

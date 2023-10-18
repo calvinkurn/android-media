@@ -7,7 +7,7 @@ import com.tokopedia.home_component.model.ChannelShop
  * Created by yfsx on 05/08/21.
  */
 fun List<DisplayHeadlineAdsEntity.DisplayHeadlineAds>.mappingTopAdsHeaderToChannelGrid(): List<ChannelGrid>{
-    return this.map {
+    return this.mapIndexed { index, it ->
         ChannelGrid(
                 id = it.id,
                 applink = it.applink,
@@ -24,7 +24,8 @@ fun List<DisplayHeadlineAdsEntity.DisplayHeadlineAds>.mappingTopAdsHeaderToChann
                 rating = it.headline.shop.products.firstOrNull()?.rating ?: 0,
                 impression = it.headline.image.url,
                 productClickUrl = it.adClickUrl,
-                imageUrl = it.headline.shop.products.firstOrNull()?.imageProduct?.imageUrl ?: ""
+                imageUrl = it.headline.shop.products.firstOrNull()?.imageProduct?.imageUrl ?: "",
+                position = index
         )
     }
 }

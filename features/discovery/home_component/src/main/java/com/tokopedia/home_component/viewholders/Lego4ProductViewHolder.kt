@@ -3,7 +3,6 @@ package com.tokopedia.home_component.viewholders
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
@@ -26,7 +25,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 class Lego4ProductViewHolder(itemView: View,
                              private val legoProductListener: LegoProductListener,
                              private val homeComponentListener: HomeComponentListener,
-                             val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null,
                              private val cardInteraction: Boolean = false
 ): AbstractViewHolder<Lego4ProductDataModel>(itemView) {
     companion object {
@@ -36,6 +34,7 @@ class Lego4ProductViewHolder(itemView: View,
         private const val LEGO_4_PRODUCT_SIZE = 4
     }
     private val binding: GlobalDcLego4ProductBinding? by viewBinding()
+    private val recyclerView by lazy { binding?.recycleList }
     private val layoutManager: GridLayoutManager by lazy { GridLayoutManager(itemView.context, SPAN_COUNT) }
 
     private var isCacheData = false
@@ -82,13 +81,12 @@ class Lego4ProductViewHolder(itemView: View,
     }
 
     private fun initRV() {
-        parentRecyclerViewPool?.let { binding?.homeComponentLego4ProductRv?.setRecycledViewPool(parentRecyclerViewPool) }
-        binding?.homeComponentLego4ProductRv?.layoutManager = layoutManager
+        recyclerView?.layoutManager = layoutManager
     }
 
     private fun initItems(element: Lego4ProductDataModel) {
         val adapter = Lego4ProductAdapter(element.channelModel, convertDataToProductData(element.channelModel))
-        binding?.homeComponentLego4ProductRv?.adapter = adapter
+        recyclerView?.adapter = adapter
     }
 
     private fun convertDataToProductData(channel: ChannelModel): List<LegoProductCardDataModel> {

@@ -8,15 +8,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.usercomponents.explicit.cassava.ExplicitCassava
 import com.tokopedia.usercomponents.explicit.di.FakeExplicitComponent
 import com.tokopedia.usercomponents.explicit.view.ExplicitData
+import com.tokopedia.usercomponents.explicit.view.ExplicitView
 import com.tokopedia.usercomponents.explicit.view.viewmodel.ExplicitViewContract
 import com.tokopedia.usercomponents.test.R
-import com.tokopedia.usercomponents.test.databinding.FragmentExplicitDebugBinding
-import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class ExplicitDebugFragment : BaseDaggerFragment() {
 
-    private val binding: FragmentExplicitDebugBinding? by viewBinding()
 
     @Inject
     lateinit var explicitViewContract: ExplicitViewContract
@@ -30,7 +28,7 @@ class ExplicitDebugFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding?.fakeExplicit?.setupView(
+        view.findViewById<ExplicitView>(R.id.fake_explicit)?.setupView(
             explicitViewContract,
             ExplicitData(
                 ExplicitCassava.VALUE_TEMPLATE_NAME,

@@ -45,7 +45,6 @@ class SmallGridProductItemViewHolder(
                 false,
                 productItemData.getProductListTypeEnum()
             )
-        this.productCardModel = productCardModel
 
         registerLifecycleObserver(productCardModel)
 
@@ -75,16 +74,27 @@ class SmallGridProductItemViewHolder(
     }
 
     private fun ProductItemDataView.getProductImage(): String {
-        return if (getProductListTypeEnum() == ProductCardModel.ProductListType.LONG_IMAGE)
+        return if (getProductListTypeEnum().needBiggerImage(this))
             imageUrl700
         else
             imageUrl300
     }
 
+    private fun ProductCardModel.ProductListType.needBiggerImage(
+        productItemDataView: ProductItemDataView
+    ): Boolean {
+        return this == ProductCardModel.ProductListType.LONG_IMAGE
+            || (this == ProductCardModel.ProductListType.PORTRAIT && productItemDataView.isPortrait)
+    }
+
     private fun ProductItemDataView.getProductListTypeEnum(): ProductCardModel.ProductListType {
-        return when(productListType) {
+        return when (productListType) {
             SearchConstant.ProductListType.VAR_REPOSITION -> ProductCardModel.ProductListType.REPOSITION
             SearchConstant.ProductListType.VAR_LONG_IMG -> ProductCardModel.ProductListType.LONG_IMAGE
+            SearchConstant.ProductListType.GIMMICK -> ProductCardModel.ProductListType.GIMMICK
+            SearchConstant.ProductListType.PORTRAIT -> ProductCardModel.ProductListType.PORTRAIT
+            SearchConstant.ProductListType.ETA -> ProductCardModel.ProductListType.ETA
+            SearchConstant.ProductListType.FIXED_GRID -> ProductCardModel.ProductListType.FIXED_GRID
             else -> ProductCardModel.ProductListType.CONTROL
         }
     }

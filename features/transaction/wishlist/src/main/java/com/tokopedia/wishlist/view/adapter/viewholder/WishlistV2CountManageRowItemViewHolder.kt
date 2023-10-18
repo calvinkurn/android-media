@@ -7,8 +7,10 @@ import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.WishlistV2StickyItemBinding
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 
-class WishlistV2CountManageRowItemViewHolder(private val binding: WishlistV2StickyItemBinding,
-                                             private val actionListener: WishlistV2Adapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
+class WishlistV2CountManageRowItemViewHolder(
+    private val binding: WishlistV2StickyItemBinding,
+    private val actionListener: WishlistV2Adapter.ActionListener?
+) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: WishlistV2TypeLayoutData, isShowCheckbox: Boolean) {
         if (item.dataObject is WishlistV2CountManageRowData) {
             binding.wishlistCountLabel.text = "${item.dataObject.count}"

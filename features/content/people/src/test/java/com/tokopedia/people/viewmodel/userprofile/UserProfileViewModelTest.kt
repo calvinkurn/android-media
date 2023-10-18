@@ -1,6 +1,7 @@
 package com.tokopedia.people.viewmodel.userprofile
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
@@ -10,12 +11,13 @@ import com.tokopedia.people.model.userprofile.ProfileUiModelBuilder
 import com.tokopedia.people.model.userprofile.ProfileWhitelistUiModelBuilder
 import com.tokopedia.people.robot.UserProfileViewModelRobot
 import com.tokopedia.people.util.andThen
+import com.tokopedia.people.util.assertTrue
 import com.tokopedia.people.util.equalTo
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileCreationInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
-import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -40,6 +42,7 @@ class UserProfileViewModelTest {
 
     private val mockRepo: UserProfileRepository = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
+    private val mockShortsRemoteConfig: PlayShortsEntryPointRemoteConfig = mockk(relaxed = true)
 
     private val commonBuilder = CommonModelBuilder()
     private val profileBuilder = ProfileUiModelBuilder()
@@ -63,8 +66,7 @@ class UserProfileViewModelTest {
     private val mockOtherFollowed = followInfoBuilder.buildFollowInfo(userID = mockOtherUserId, encryptedUserID = mockOtherUserId, status = true)
     private val mockOtherNotFollow = followInfoBuilder.buildFollowInfo(userID = mockOtherUserId, encryptedUserID = mockOtherUserId, status = false)
 
-    private val mockHasAcceptTnc = profileWhitelistBuilder.buildHasAcceptTnc()
-    private val mockHasNotAcceptTnc = profileWhitelistBuilder.buildHasNotAcceptTnc()
+    private val mockCreationInfo = profileWhitelistBuilder.buildCreationInfoModel()
 
     @Before
     fun setUp() {
@@ -87,7 +89,7 @@ class UserProfileViewModelTest {
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -97,9 +99,10 @@ class UserProfileViewModelTest {
                 profileInfo equalTo mockOwnProfile
                 followInfo equalTo FollowInfoUiModel.Empty
                 profileType equalTo ProfileType.NotLoggedIn
-                profileWhitelist equalTo ProfileWhitelistUiModel.Empty
+                creationInfo equalTo ProfileCreationInfoUiModel()
                 shopRecom equalTo mockEmptyShopRecom
                 it.viewModel.profileUserEncryptedID equalTo mockOwnProfile.encryptedUserID
+                it.viewModel.badges equalTo mockOwnProfile.badges
             }
         }
     }
@@ -108,13 +111,13 @@ class UserProfileViewModelTest {
     fun `when user load own data, it should call and emit whitelist data`() {
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockUserSession.userId } returns mockUserId
-        coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
+        coEvery { mockRepo.getCreationInfo() } returns mockCreationInfo
 
         val robot = UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -124,51 +127,30 @@ class UserProfileViewModelTest {
                 profileInfo equalTo mockOwnProfile
                 followInfo equalTo mockOwnFollow
                 profileType equalTo ProfileType.Self
-                profileWhitelist equalTo mockHasAcceptTnc
+                creationInfo equalTo mockCreationInfo
             }
         }
     }
 
     @Test
-    fun `when user load own data, and need to onboarding`() {
+    fun `when user load own data and already whitelisted, isWhitelist should be true`() {
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockUserSession.userId } returns mockUserId
-        coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
+        coEvery { mockRepo.getCreationInfo() } returns mockCreationInfo
 
         val robot = UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
             it.recordState {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             } andThen {
-                it.viewModel.needOnboarding equalTo false
-            }
-        }
-    }
-
-    @Test
-    fun `when user load own data, and no need to onboarding`() {
-        coEvery { mockUserSession.isLoggedIn } returns true
-        coEvery { mockUserSession.userId } returns mockUserId
-        coEvery { mockRepo.getWhitelist() } returns mockHasNotAcceptTnc
-
-        val robot = UserProfileViewModelRobot(
-            username = mockOwnUsername,
-            repo = mockRepo,
-            dispatcher = testDispatcher,
-            userSession = mockUserSession,
-        )
-
-        robot.use {
-            it.recordState {
-                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } andThen {
-                it.viewModel.needOnboarding equalTo true
+                creationInfo.isActive.assertTrue()
+                it.viewModel.isShortVideoEntryPointShow.assertTrue()
             }
         }
     }
@@ -181,7 +163,7 @@ class UserProfileViewModelTest {
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -191,7 +173,7 @@ class UserProfileViewModelTest {
                 profileInfo equalTo mockOtherProfile
                 followInfo equalTo mockOtherNotFollow
                 profileType equalTo ProfileType.OtherUser
-                profileWhitelist equalTo ProfileWhitelistUiModel.Empty
+                creationInfo equalTo ProfileCreationInfoUiModel()
                 shopRecom equalTo mockEmptyShopRecom
                 it.viewModel.profileUserEncryptedID equalTo mockOtherProfile.encryptedUserID
             }
@@ -206,7 +188,7 @@ class UserProfileViewModelTest {
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -216,7 +198,7 @@ class UserProfileViewModelTest {
                 profileInfo equalTo mockOtherProfile
                 followInfo equalTo mockOtherFollowed
                 profileType equalTo ProfileType.OtherUser
-                profileWhitelist equalTo ProfileWhitelistUiModel.Empty
+                creationInfo equalTo ProfileCreationInfoUiModel()
                 shopRecom equalTo mockEmptyShopRecom
             }
         }
@@ -231,7 +213,7 @@ class UserProfileViewModelTest {
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -241,7 +223,7 @@ class UserProfileViewModelTest {
                 profileInfo equalTo ProfileUiModel.Empty
                 followInfo equalTo FollowInfoUiModel.Empty
                 profileType equalTo ProfileType.Unknown
-                profileWhitelist equalTo ProfileWhitelistUiModel.Empty
+                creationInfo equalTo ProfileCreationInfoUiModel()
                 shopRecom equalTo ShopRecomUiModel()
             }
         }
@@ -257,7 +239,7 @@ class UserProfileViewModelTest {
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -267,7 +249,7 @@ class UserProfileViewModelTest {
                 profileInfo equalTo mockOtherProfile
                 followInfo equalTo FollowInfoUiModel.Empty
                 profileType equalTo ProfileType.NotLoggedIn
-                profileWhitelist equalTo ProfileWhitelistUiModel.Empty
+                creationInfo equalTo ProfileCreationInfoUiModel()
                 shopRecom equalTo mockEmptyShopRecom
             }
         }
@@ -284,7 +266,7 @@ class UserProfileViewModelTest {
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -308,7 +290,7 @@ class UserProfileViewModelTest {
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -332,7 +314,7 @@ class UserProfileViewModelTest {
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -356,7 +338,7 @@ class UserProfileViewModelTest {
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {

@@ -30,5 +30,4 @@ class CartCollapsedProductAdapter(val actionListener: ActionListener) : Recycler
         val data = cartCollapsedProductHolderDataList[position]
         holderView.bind(data)
     }
-
 }

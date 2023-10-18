@@ -51,154 +51,179 @@ object InstrumentationAuthHelper {
             userSession.email = ""
             userSession.accessTokenBearer = ""
             userSession.setIsLogin(false)
-        }
-        catch (throwable: Throwable) {
+        } catch (throwable: Throwable) {
             throwable.printStackTrace()
         }
     }
 
     fun userSession(
-            context: Context = InstrumentationRegistry.getInstrumentation().targetContext,
-            action: UserSession.() -> Unit
+        context: Context = InstrumentationRegistry.getInstrumentation().targetContext,
+        action: UserSession.() -> Unit
     ) {
         try {
             val userSession = UserSession(context)
             userSession.setIsLogin(true)
             userSession.action()
-        }
-        catch (throwable: Throwable) {
+        } catch (throwable: Throwable) {
             throwable.printStackTrace()
         }
     }
 
     private fun userSessionWithModifier(
-            context: Context = InstrumentationRegistry.getInstrumentation().targetContext,
-            modifyUserSession: ((UserSession) -> Unit)? = null,
-            action: UserSession.() -> Unit
+        context: Context = InstrumentationRegistry.getInstrumentation().targetContext,
+        modifyUserSession: ((UserSession) -> Unit)? = null,
+        action: UserSession.() -> Unit
     ) {
         try {
             val userSession = UserSession(context)
             modifyUserSession?.invoke(userSession)
             userSession.setIsLogin(true)
             userSession.action()
-        }
-        catch (throwable: Throwable) {
+        } catch (throwable: Throwable) {
             throwable.printStackTrace()
         }
     }
-
-
 
     private var UserSession.accessTokenBearer: String
         get() = accessToken
         set(bearerToken) = setToken(bearerToken, "Bearer")
 
     fun loginToAnUser(
-            application: Application,
-            idlingResource: CountingIdlingResource? = null,
-            userName: String = "fauzanofami.luthfi+01@tokopedia.com",
-            password: String = "toped12345"
+        application: Application,
+        idlingResource: CountingIdlingResource? = null,
+        userName: String = "fauzanofami.luthfi+01@tokopedia.com",
+        password: String = "toped12345"
     ) {
         idlingResource?.increment()
         val userSession = UserSession(application)
 
-        DataSource.getLoginService(application as InstrumentationTestApp).getToken(hashMapOf(
+        DataSource.getLoginService(application as InstrumentationTestApp).getToken(
+            hashMapOf(
                 "username" to userName,
                 "password" to password,
-                "grant_type" to "password"))
-                .map { tokenModel ->
-                    if (tokenModel == null || tokenModel.accessToken.isNullOrEmpty()) {
-                        throw (RuntimeException("Error user pass"))
-                    } else {
-                        tokenModel
-                    }
+                "grant_type" to "password"
+            )
+        )
+            .map { tokenModel ->
+                if (tokenModel == null || tokenModel.accessToken.isNullOrEmpty()) {
+                    throw (RuntimeException("Error user pass"))
+                } else {
+                    tokenModel
                 }
-                .doOnNext {
-                    userSession.setToken(
-                            it.accessToken,
-                            it.tokenType,
-                            EncoderDecoder.Encrypt(it.refreshToken,
-                                    userSession.refreshTokenIV))
-                }
-                .flatMap {
-                    DataSource.getAccountService(application as InstrumentationTestApp).info.asObservable()
-                }
-                .map { userInfoData ->
-                    if (userInfoData == null || userInfoData.userId.isEmpty()) {
-                        throw (RuntimeException("Error get user data"))
-                    } else {
-                        userInfoData
-                    }
-                }
-                .doOnNext {
-                    if (!userSession.isLoggedIn) {
-                        userSession.setTempUserId(it.userId)
-                        userSession.tempPhoneNumber = it.phone
-                        userSession.setTempLoginName(it.fullName)
-                        userSession.setTempLoginEmail(it.email)
-                    }
-                    userSession.setHasPassword(it.isCreatedPassword)
-                    userSession.profilePicture = it.profilePicture
-                    userSession.setIsMSISDNVerified(it.isPhoneVerified)
-                }
-                .flatMap {
-                    val map = mapOf(
-                            "user_id" to it.userId,
-                            "device_id" to DataSource.MOCK_DEVICE_ID,
-                            "hash" to getHash(it.userId),
-                            "os_type" to "1",
-                            "device_time" to (Date().time / 1000).toString()
+            }
+            .doOnNext {
+                userSession.setToken(
+                    it.accessToken,
+                    it.tokenType,
+                    EncoderDecoder.Encrypt(
+                        it.refreshToken,
+                        userSession.refreshTokenIV
                     )
-                    DataSource.getWsService(application as InstrumentationTestApp).makeLogin(map)
+                )
+            }
+            .flatMap {
+                DataSource.getAccountService(application as InstrumentationTestApp).info.asObservable()
+            }
+            .map { userInfoData ->
+                if (userInfoData == null || userInfoData.userId.isEmpty()) {
+                    throw (RuntimeException("Error get user data"))
+                } else {
+                    userInfoData
                 }
-                .map { makeLoginPojo ->
-                    if (makeLoginPojo == null || makeLoginPojo.data == null) {
-                        throw (RuntimeException("Error get make login"))
-                    } else {
-                        makeLoginPojo
-                    }
+            }
+            .doOnNext {
+                if (!userSession.isLoggedIn) {
+                    userSession.setTempUserId(it.userId)
+                    userSession.tempPhoneNumber = it.phone
+                    userSession.setTempLoginName(it.fullName)
+                    userSession.setTempLoginEmail(it.email)
                 }
-                .map { makeLoginPojo ->
-                    makeLoginPojo.data
+                userSession.setHasPassword(it.isCreatedPassword)
+                userSession.profilePicture = it.profilePicture
+                userSession.setIsMSISDNVerified(it.isPhoneVerified)
+            }
+            .flatMap {
+                val map = mapOf(
+                    "user_id" to it.userId,
+                    "device_id" to DataSource.MOCK_DEVICE_ID,
+                    "hash" to getHash(it.userId),
+                    "os_type" to "1",
+                    "device_time" to (Date().time / 1000).toString()
+                )
+                DataSource.getWsService(application as InstrumentationTestApp).makeLogin(map)
+            }
+            .map { makeLoginPojo ->
+                if (makeLoginPojo == null || makeLoginPojo.data == null) {
+                    throw (RuntimeException("Error get make login"))
+                } else {
+                    makeLoginPojo
                 }
-                .doOnNext { makeLoginPojo ->
-                    // bypass sec pojo
-                    userSession.setLoginSession(true,
-                            makeLoginPojo.userId,
-                            makeLoginPojo.fullName,
-                            makeLoginPojo.shopId,
-                            true,
-                            makeLoginPojo.shopName,
-                            userSession.tempEmail,
-                            makeLoginPojo.shopIsGold == 1,
-                            userSession.tempPhoneNumber)
-                    val cache = application.applicationContext.getSharedPreferences("GCM_STORAGE", Context.MODE_PRIVATE)
-                    cache.edit().putString("gcm_id", DataSource.MOCK_DEVICE_ID).apply()
-                    if (makeLoginPojo.securityPojo.allowLogin != 1) {
-                        throw (RuntimeException("security Pojo fail"))
-                    }
+            }
+            .map { makeLoginPojo ->
+                makeLoginPojo.data
+            }
+            .doOnNext { makeLoginPojo ->
+                // bypass sec pojo
+                userSession.setLoginSession(
+                    true,
+                    makeLoginPojo.userId,
+                    makeLoginPojo.fullName,
+                    makeLoginPojo.shopId,
+                    true,
+                    makeLoginPojo.shopName,
+                    userSession.tempEmail,
+                    makeLoginPojo.shopIsGold == 1,
+                    userSession.tempPhoneNumber
+                )
+                val cache = application.applicationContext.getSharedPreferences("GCM_STORAGE", Context.MODE_PRIVATE)
+                cache.edit().putString("gcm_id", DataSource.MOCK_DEVICE_ID).apply()
+                if (makeLoginPojo.securityPojo.allowLogin != 1) {
+                    throw (RuntimeException("security Pojo fail"))
                 }
-                .flatMap {
-                    Observable.just(true)
+            }
+            .flatMap {
+                Observable.just(true)
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<Boolean> {
+                override fun onError(e: Throwable?) {
                 }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<Boolean> {
-                    override fun onError(e: Throwable?) {
-                    }
 
-                    override fun onNext(t: Boolean?) {
-                    }
+                override fun onNext(t: Boolean?) {
+                }
 
-                    override fun onCompleted() {
-                        if (idlingResource?.isIdleNow == false) {
-                            idlingResource.decrement()
-                        }
+                override fun onCompleted() {
+                    if (idlingResource?.isIdleNow == false) {
+                        idlingResource.decrement()
                     }
-                })
+                }
+            })
     }
 
     fun getHash(userId: String): String {
         return AuthHelper.getMD5Hash(userId + "~" + DataSource.MOCK_DEVICE_ID)
+    }
+
+    fun login(custom: UserSession.() -> Unit = {}) {
+        val user = UserSession(InstrumentationRegistry.getInstrumentation().targetContext)
+        user.setLoginSession(
+            true,
+            "123",
+            "yehez",
+            "123",
+            true,
+            "asd",
+            "yehezkiel@tokopedia.com",
+            true,
+            "082242497515"
+        )
+        user.custom()
+    }
+
+    fun logout() {
+        val user = UserSession(InstrumentationRegistry.getInstrumentation().targetContext)
+        user.clearToken()
+        user.logoutSession()
     }
 }

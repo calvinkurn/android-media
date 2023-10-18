@@ -1,6 +1,11 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
+android {
+    namespace 'com.tokopedia.base.list.seller'
+    testNamespace 'com.tokopedia.base.list.seller.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpddesign)

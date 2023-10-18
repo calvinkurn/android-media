@@ -23,6 +23,9 @@ import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
 import com.tokopedia.globalerror.R as globalErrorRes
+import com.tokopedia.play_common.R as commonR
+import com.tokopedia.unifycomponents.R as unifyComponentsR
+import com.tokopedia.iconnotification.R as iconNotificationR
 
 /**
  * Created by kenny.hadisaputra on 15/07/22
@@ -49,7 +52,7 @@ class PlayActivityRobot(
             withId(
                 if (!isYouTube) R.id.view_video
                 else if (isErrorPage) R.id.fl_global_error
-                else R.id.fl_youtube_player
+                else R.id.youtube_webview
             )
         )
         delay(initialDelay)
@@ -63,7 +66,7 @@ class PlayActivityRobot(
 
     fun closeAnyBottomSheet() = chainable {
         Espresso.onView(
-            withId(R.id.iv_sheet_close)
+            withId(commonR.id.iv_sheet_close)
         ).perform(ViewActions.click())
     }
 
@@ -107,7 +110,7 @@ class PlayActivityRobot(
 
     fun clickToasterAction() = chainable {
         Espresso.onView(
-            withId(R.id.snackbar_btn)
+            withId(unifyComponentsR.id.snackbar_btn)
         ).perform(
             ViewActions.click()
         )
@@ -169,13 +172,57 @@ class PlayActivityRobot(
         )
     }
 
+    fun assertShowCartIconInProductBottomSheet(isShown: Boolean) = chainable {
+        val viewMatcher = allOf(
+            withId(com.tokopedia.play_common.R.id.icon_notif_right),
+            isDescendantOfA(withParent(withId(R.id.cl_product_sheet)))
+        )
+
+        Espresso.onView(viewMatcher)
+            .check(
+                matches(
+                    if (isShown) isDisplayed()
+                    else not(isDisplayed())
+                )
+            )
+    }
+
+    fun assertShowCartCountInProductBottomSheet(isShown: Boolean) = chainable {
+        val viewMatcher = allOf(
+            withId(iconNotificationR.id.notification),
+            isDescendantOfA(withParent(withId(R.id.cl_product_sheet))),
+            isDescendantOfA(withParent(withId(R.id.bottom_sheet_header))),
+        )
+
+        Espresso.onView(viewMatcher)
+            .check(
+                matches(
+                    if (isShown) isDisplayed()
+                    else not(isDisplayed())
+                )
+            )
+    }
+
+    fun assertCartCountInProductBottomSheet(count: String) = chainable {
+        val viewMatcher = allOf(
+            withId(com.tokopedia.iconnotification.R.id.notification),
+            isDescendantOfA(withParent(withId(R.id.cl_product_sheet))),
+            isDescendantOfA(withParent(withId(R.id.bottom_sheet_header))),
+        )
+
+        Espresso.onView(viewMatcher)
+            .check(
+                matches(withText(count))
+            )
+    }
+
     fun hasEngagement(isGame: Boolean) {
         RecyclerViewMatcher(R.id.rv_engagement_widget)
             .atPosition(0)
             .matches(hasDescendant(
                 hasBackground(
-                    if (isGame) R.drawable.bg_play_quiz_widget //QUIZ
-                    else R.drawable.bg_play_voucher_widget)
+                    if (isGame) com.tokopedia.play_common.R.drawable.bg_play_quiz_widget //QUIZ
+                    else com.tokopedia.play_common.R.drawable.bg_play_voucher_widget)
                 )
             )
     }
@@ -268,6 +315,26 @@ class PlayActivityRobot(
         Espresso.onView(
             withId(R.id.view_kebab_menu)
         ).perform(ViewActions.click())
+    }
+
+    /**
+     * Comment
+     */
+
+    fun openCommentBottomSheet() = chainable {
+        Espresso.onView(withId(R.id.view_vod_comment)).perform(ViewActions.click())
+    }
+
+    fun clickWithId(viewId: Int) = chainable {
+        Espresso.onView(withId(viewId)).perform(ViewActions.click())
+    }
+
+    fun impressIsAvailable(viewId: Int) = chainable {
+        Espresso.onView(withId(viewId)).check(matches(isDisplayed()))
+    }
+
+    fun typeInEditText(text: String = "test", viewId: Int) = chainable {
+        Espresso.onView(withId(viewId)).perform(ViewActions.typeText(text))
     }
 
     private fun chainable(fn: () -> Unit): PlayActivityRobot {

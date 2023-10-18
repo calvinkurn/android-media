@@ -17,8 +17,6 @@ class StockReminderActivity : BaseSimpleActivity() {
         private const val SLASH_CHAR = "/"
     }
 
-    private var productName: String = ""
-
     private var binding: ActivityStockReminderBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,10 +32,9 @@ class StockReminderActivity : BaseSimpleActivity() {
         if (uri != null) {
             val (infoProductId, infoProductName, infoIsVariant) = uri.getProductInformation()
             productId = infoProductId
-            productName = infoProductName
             isVariant = infoIsVariant
         }
-        return StockReminderFragment.createInstance(productId, productName, isVariant)
+        return StockReminderFragment.createInstance(productId, isVariant)
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {

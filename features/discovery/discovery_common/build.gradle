@@ -20,11 +20,16 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.discovery.common'
+    testNamespace 'com.tokopedia.discovery.common.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
-    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -37,6 +42,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.iris)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
 
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     testImplementation rootProject.ext.testDependencies.mockk

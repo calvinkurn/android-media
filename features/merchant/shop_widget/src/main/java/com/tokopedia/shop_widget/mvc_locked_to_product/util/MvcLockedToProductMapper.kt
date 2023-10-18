@@ -174,26 +174,6 @@ object MvcLockedToProductMapper {
         )
     }
 
-    private fun createProductCardModelPhase1(productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data): ProductCardModel {
-        return ProductCardModel(
-            productName = productResponse.name,
-            productImageUrl = productResponse.imageUrl,
-            formattedPrice = productResponse.displayPrice,
-            slashedPrice = productResponse.originalPrice,
-            discountPercentage = getProductCardDiscountPercentage(productResponse.discountPercentage),
-            freeOngkir = ProductCardModel.FreeOngkir(
-                productResponse.isShowFreeOngkir,
-                productResponse.freeOngkirPromoIcon
-            ),
-            isOutOfStock = productResponse.isSoldOut,
-            ratingCount = productResponse.rating,
-            countSoldRating = getProductCardRating(productResponse.averageRating),
-            reviewCount = productResponse.totalReview.toIntOrZero(),
-            labelGroupList = productResponse.labelGroups.map { mapToProductCardLabelGroup(it) }
-        )
-    }
-
-
     private fun getProductCardRating(averageRating: Double): String {
         return averageRating.toString().takeIf { averageRating != 0.0 }.orEmpty()
     }

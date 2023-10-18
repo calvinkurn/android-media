@@ -39,15 +39,15 @@ object ShopPageConstant {
         "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png"
     const val URL_IMAGE_BUYER_SHOP_SEARCH_EMPTY_STATE =
         "https://images.tokopedia.net/android/empty_state_search_filter.png"
-    const val ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET =
-        "android_shop_page_enable_choose_address_widget_on_shop_page_header"
-    const val ENABLE_SHOP_PAGE_UNIVERSAL_BOTTOM_SHEET =
-        "android_shop_page_enable_universal_bottom_sheet"
     const val ALL_SHOWCASE_ID = "etalase"
     const val CODE_STATUS_SUCCESS = "200"
     const val SHARED_PREF_AFFILIATE_CHANNEL = "SHARED_PREF_AFFILIATE_CHANNEL"
     const val SHOP_PAGE_SHARED_PREFERENCE = "SHOP_PAGE_PREFERENCE"
-    object ShopLayoutFeatures{
+    const val SHOP_COMPARISON_WIDGET_PAGE_NAME = "shop_comparison"
+    const val HACHIKO_VOUCHER_GRAPHQL_API_VERSION = "2.0.0"
+    const val LABEL_GROUP_INTEGRITY_POSITION_VALUE = "integrity"
+    const val FORMAT_CONVERT_PERCENTAGE_TO_HEX = "%02X"
+    object ShopLayoutFeatures {
         const val DIRECT_PURCHASE = "direct_purchase"
     }
 
@@ -65,5 +65,23 @@ object ShopPageConstant {
     object ShopTickerType {
         const val WARNING = "warning"
         const val INFO = "info"
+        const val DANGER = "danger"
+    }
+
+    object ShopTierType {
+        const val NA = -1
+        const val REGULAR_MERCHANT = 0
+        const val POWER_MERCHANT = 1
+        const val OFFICIAL_STORE = 2
+        const val POWER_MERCHANT_PRO = 3
+    }
+
+    object RequestParamValue {
+        const val PAGE_NAME_SHOP_COMPARISON_WIDGET = "shop_comparison"
+    }
+
+    object ShopPageFeatureImprovementType {
+        const val V3_IMPROVEMENT = "V3"      // Faster shop header using more slimmer P1 network call
+        const val V4_REIMAGINED = "V4"       // Shop Page Reimagined
     }
 }

@@ -1,0 +1,70 @@
+{
+  "chipGetInboxDetail": {
+    "data": {
+      "isSuccess": 1,
+      "tickets": {
+        "id": "5005D00000931AQQAY",
+        "showRating": true,
+        "badCsatReasonList": [
+          {
+            "id": 31,
+            "message": "Kecepatan respons",
+            "messageEn": "Response speed"
+          },
+          {
+            "id": 32,
+            "message": "Kejelasan bahasa",
+            "messageEn": "Language clarity"
+          },
+          {
+            "id": 33,
+            "message": "Waktu penyelesaian",
+            "messageEn": "Problem-solving time"
+          },
+          {
+            "id": 35,
+            "message": "Pemahaman masalah",
+            "messageEn": "Understanding problems"
+          },
+          {
+            "id": 36,
+            "message": "Solusi yang diberikan",
+            "messageEn": "Providing solutions"
+          }
+        ],
+        "comments": [
+          {
+            "id": "a175D000001nnimQAA",
+            "create_time": "2023-02-10T02:10:28.000+0000",
+            "message": "<p>Please close this</p>",
+            "message_plaintext": "Please close this",
+            "created_by": {
+              "name": "Tim Tokopedia Care",
+              "picture": "https://ecs7.tokopedia.net/img/contact-us/cs_square.png",
+              "role": "agent"
+            },
+            "attachment": [],
+            "note": "",
+            "rating": "101"
+          }
+        ],
+        "number": "02141472",
+        "subject": "Ubah nomor handphone",
+        "invoice": "",
+        "status": "closed",
+        "readStatus": "read",
+        "message": "Haiii this is just a testing please close it",
+        "createdBy": {
+          "name": "Gaow",
+          "picture": "https://images-staging.tokopedia.net/img/cache/100-square/tPxBYm/2023/1/20/0c372e2a-77da-496f-96c9-a453b449f85d.jpg",
+          "role": "customer"
+        },
+        "createTime": "2023-02-10T02:06:32.000+0000",
+        "needAttachment": false,
+        "attachment": [],
+        "allowClose": false
+      }
+    },
+    "messageError": []
+  }
+}

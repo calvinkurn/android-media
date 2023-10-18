@@ -7,6 +7,7 @@ import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.TokoFoodOrderS
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.*
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.MockKAnnotations
@@ -25,6 +26,9 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = UnconfinedTestRule()
 
     @RelaxedMockK
     protected lateinit var savedStateHandle: SavedStateHandle
@@ -79,6 +83,8 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
         const val ORDER_ID_DUMMY = "52af8a53-86cc-40b7-bb98-cc3adde8e32a"
         const val CHANNEL_ID = "1234567"
         const val GOFOOD_ORDER_NUMBER = "f-52af8a53-86cc-40b7-bb98-cc3adde8e32a"
+        const val IS_FROM_BUBBLE_KEY = "isFromBubble"
+        const val IS_FROM_BUBBLE = true
 
         const val ORDER_TRACKING_OTW_DESTINATION = "json/ordertracking/order_tracking_otw_destination.json"
         const val ORDER_TRACKING_CANCELLED = "json/ordertracking/orderdetailcancelled.json"

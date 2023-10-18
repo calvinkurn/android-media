@@ -23,6 +23,7 @@ object WidgetHeight {
     private const val MILESTONE = 320f
     private const val CALENDAR = 320f
     private const val UNIFICATION = 320f
+    private const val RICH_LIST = 300f
 
     fun getWidgetHeight(widgetType: String): Float {
         return when (widgetType) {
@@ -42,6 +43,7 @@ object WidgetHeight {
             WidgetType.MILESTONE -> MILESTONE
             WidgetType.CALENDAR -> CALENDAR
             WidgetType.UNIFICATION -> UNIFICATION
+            WidgetType.RICH_LIST -> RICH_LIST
             else -> 0f
         }
     }

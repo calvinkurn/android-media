@@ -1,9 +1,7 @@
 package com.tokopedia.product.manage.stub.feature.suspend.di
 
-import com.tokopedia.product.manage.common.di.ProductManageComponent
 import com.tokopedia.product.manage.feature.suspend.di.SuspendReasonComponent
 import com.tokopedia.product.manage.feature.suspend.di.SuspendReasonScope
-import com.tokopedia.product.manage.feature.suspend.view.bottomsheet.SuspendReasonBottomSheet
 import com.tokopedia.product.manage.stub.common.di.component.ProductManageComponentStub
 import com.tokopedia.product.manage.stub.feature.suspend.view.SuspendReasonBottomSheetStub
 import dagger.Component

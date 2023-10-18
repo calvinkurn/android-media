@@ -94,8 +94,8 @@ class OrderSummaryPageActivityBoUnstackTest {
                 ActivityResult(
                     Activity.RESULT_OK,
                     Intent().apply {
-                putExtra(ARGS_VALIDATE_USE_DATA_RESULT, validateUsePromoRevampUiModel)
-            }
+                        putExtra(ARGS_VALIDATE_USE_DATA_RESULT, validateUsePromoRevampUiModel)
+                    }
                 )
             )
             clickButtonPromo()

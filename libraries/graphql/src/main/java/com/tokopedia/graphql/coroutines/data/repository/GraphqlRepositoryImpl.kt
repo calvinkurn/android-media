@@ -1,6 +1,7 @@
 package com.tokopedia.graphql.coroutines.data.repository
 
 import android.util.Log
+import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
@@ -9,6 +10,7 @@ import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.*
 import com.tokopedia.graphql.util.LoggingUtils
+import com.tokopedia.graphql.util.RemoteConfigHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
@@ -27,14 +29,17 @@ class GraphqlRepositoryImpl @Inject constructor(
         val refreshRequests = mutableListOf<GraphqlRequest>()
         val isCachedData = mutableMapOf<Type, Boolean>()
 
-        val originalRequests = requests.toMutableList();
+        val originalRequests = requests.toMutableList()
 
         return withContext(Dispatchers.IO) {
             when (cacheStrategy.type) {
                 CacheType.NONE, CacheType.ALWAYS_CLOUD -> {
                     getCloudResponse(
-                        results, refreshRequests, isCachedData,
-                        originalRequests.toMutableList(), cacheStrategy
+                        results,
+                        refreshRequests,
+                        isCachedData,
+                        originalRequests.toMutableList(),
+                        cacheStrategy
                     )
                 }
                 CacheType.CACHE_ONLY -> graphqlCacheDataStore.getResponse(
@@ -47,13 +52,16 @@ class GraphqlRepositoryImpl @Inject constructor(
                             graphqlCacheDataStore.getResponse(originalRequests, cacheStrategy)
                         val tempRequestCloud = ArrayList<GraphqlRequest>()
                         responseCache.indexOfEmptyCached.forEachIndexed { index, i ->
-                            tempRequestCloud.add(originalRequests?.get(i))
+                            originalRequests.getOrNull(i)?.let { tempRequestCloud.add(it) }
                         }
                         var responseCloud: GraphqlResponseInternal? = null
                         if (!tempRequestCloud.isNullOrEmpty()) {
                             responseCloud = getCloudResponse(
-                                results, refreshRequests, isCachedData,
-                                tempRequestCloud.toMutableList(), cacheStrategy
+                                results,
+                                refreshRequests,
+                                isCachedData,
+                                tempRequestCloud.toMutableList(),
+                                cacheStrategy
                             )
                         }
                         responseCloud?.let {
@@ -66,13 +74,18 @@ class GraphqlRepositoryImpl @Inject constructor(
                     } catch (e: Exception) {
                         e.printStackTrace()
                         getCloudResponse(
-                            results, refreshRequests, isCachedData,
-                            originalRequests.toMutableList(), cacheStrategy
+                            results,
+                            refreshRequests,
+                            isCachedData,
+                            originalRequests.toMutableList(),
+                            cacheStrategy
                         )
                     }
                 }
             }.toGraphqlResponse(
-                results, refreshRequests, isCachedData,
+                results,
+                refreshRequests,
+                isCachedData,
                 originalRequests
             )
         }
@@ -108,14 +121,25 @@ class GraphqlRepositoryImpl @Inject constructor(
                 val data = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
                 if (data != null && !data.isJsonNull) {
                     //Lookup for data
-                    results[typeOfT] = CommonUtils.fromJson(data, typeOfT)
+                    results[typeOfT] = if(RemoteConfigHelper.isEnableGqlParseErrorLoggingImprovement()) {
+                        CommonUtils.fromJson(data, typeOfT, this@GraphqlRepositoryImpl.javaClass)
+                    } else {
+                        CommonUtils.fromJson(data, typeOfT)
+                    }
                     isCachedData[typeOfT] = false
                 }
 
                 val error = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
                 if (error != null && !error.isJsonNull) {
-                    errors[typeOfT] =
+                    errors[typeOfT] = if(RemoteConfigHelper.isEnableGqlParseErrorLoggingImprovement()) {
+                        CommonUtils.fromJson(
+                            error,
+                            Array<GraphqlError>::class.java,
+                            this@GraphqlRepositoryImpl.javaClass
+                        ).toList()
+                    } else {
                         CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
+                    }
                 }
                 LoggingUtils.logGqlSuccessRateBasedOnStatusCode(operationName, httpStatusCode)
                 LoggingUtils.logGqlParseSuccess("kt", requests.toString())
@@ -133,14 +157,14 @@ class GraphqlRepositoryImpl @Inject constructor(
         }
 
         val graphqlResponse = GraphqlResponse(results, errors, isCachedData)
-        //adding http status code
+        // adding http status code
         graphqlResponse.httpStatusCode = httpStatusCode
 
         if (refreshRequests.isEmpty()) {
             return graphqlResponse
         }
 
-        //adding cached request.
+        // adding cached request.
         graphqlResponse.refreshRequests = refreshRequests
         return graphqlResponse
     }
@@ -152,12 +176,13 @@ class GraphqlRepositoryImpl @Inject constructor(
         results: MutableMap<Type, Any>,
         refreshRequests: MutableList<GraphqlRequest>,
         isCachedData: MutableMap<Type, Boolean>,
-        requests: MutableList<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy
+        requests: MutableList<GraphqlRequest>,
+        cacheStrategy: GraphqlCacheStrategy
     ): GraphqlResponseInternal {
         var operationName = ""
         try {
             val copyRequests = mutableListOf<GraphqlRequest>()
-            copyRequests.addAll(requests);
+            copyRequests.addAll(requests)
 
             for (i in 0 until copyRequests.size) {
                 operationName = CommonUtils.getFullOperationName(requests.getOrNull(i))
@@ -175,8 +200,11 @@ class GraphqlRepositoryImpl @Inject constructor(
                 }
 
                 //Lookup for data
-                results[copyRequests[i].typeOfT] =
+                results[copyRequests[i].typeOfT] = if(RemoteConfigHelper.isEnableGqlParseErrorLoggingImprovement()){
+                    CommonUtils.fromJson(cachesResponse, copyRequests[i].typeOfT, this@GraphqlRepositoryImpl.javaClass)
+                } else {
                     CommonUtils.fromJson(cachesResponse, copyRequests[i].typeOfT)
+                }
                 isCachedData[copyRequests[i].typeOfT] = true
                 copyRequests[i].isNoCache = true
                 refreshRequests.add(copyRequests[i])
@@ -192,7 +220,6 @@ class GraphqlRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
 
         return graphqlCloudDataStore.getResponse(requests, cacheStrategy)
     }

@@ -8,10 +8,10 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 class ShopShipment(
-        var shipId: Int = 0,
-        var shipName: String = "",
-        var shipCode: String = "",
-        var shipLogo: String = "",
-        var shipProds: List<ShipProd> = emptyList(),
-        var isDropshipEnabled: Boolean = false,
+    var shipId: Int = 0,
+    var shipName: String = "",
+    var shipCode: String = "",
+    var shipLogo: String = "",
+    var shipProds: List<ShipProd> = emptyList(),
+    var isDropshipEnabled: Boolean = false
 ) : Parcelable

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -16,7 +15,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.orderhistory.R
 import com.tokopedia.orderhistory.analytic.OrderHistoryAnalytic
 import com.tokopedia.orderhistory.data.ChatHistoryProductResponse
@@ -31,7 +29,6 @@ import com.tokopedia.orderhistory.view.viewmodel.OrderHistoryViewModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -42,8 +39,10 @@ import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import javax.inject.Inject
 
-class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFactory>(),
-        OrderHistoryViewHolder.Listener, WishlistV2ActionListener {
+class OrderHistoryFragment :
+    BaseListFragment<Visitable<*>, OrderHistoryTypeFactory>(),
+    OrderHistoryViewHolder.Listener,
+    WishlistV2ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -79,7 +78,7 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerview()
-        setupProductListObserver()
+        setupObservers()
     }
 
     private fun initRemoteConfig() {
@@ -94,13 +93,28 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
         shopId = arguments?.getString(ApplinkConst.OrderHistory.PARAM_SHOP_ID)
     }
 
-    private fun setupProductListObserver() {
-        viewModel.product.observe(viewLifecycleOwner, Observer { result ->
+    private fun setupObservers() {
+        viewModel.product.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> onSuccessGetProductDate(result.data)
                 is Fail -> showGetListError(result.throwable)
             }
-        })
+        }
+
+        viewModel.addToCartResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    val dataModel = result.data.first
+                    val product = result.data.second
+                    analytic.trackSuccessDoBuy(product, dataModel)
+                    val intent = RouteManager.getIntent(context, ApplinkConst.CART)
+                    startActivity(intent)
+                }
+                is Fail -> {
+                    showErrorMessage(result.throwable.message.toString())
+                }
+            }
+        }
     }
 
     private fun onSuccessGetProductDate(data: ChatHistoryProductResponse) {
@@ -129,27 +143,16 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
 
     override fun onClickBuyAgain(product: Product) {
         val buyParam = getAtcBuyParam(product)
-        viewModel.addProductToCart(buyParam, {
-            analytic.trackSuccessDoBuy(product, it)
-            RouteManager.route(context, ApplinkConst.CART)
-        }, { msg ->
-            showErrorMessage(msg)
-        })
+        viewModel.addProductToCart(buyParam, product)
     }
 
-    private fun getAtcBuyParam(product: Product): RequestParams {
-        val addToCartRequestParams = AddToCartRequestParams(
-                productId = product.productId,
-                shopId = product.shopId,
-                quantity = product.minOrder,
-                atcFromExternalSource = AtcFromExternalSource.ATC_FROM_TOPCHAT
+    private fun getAtcBuyParam(product: Product): AddToCartRequestParams {
+        return AddToCartRequestParams(
+            productId = product.productId,
+            shopId = product.shopId,
+            quantity = product.minOrder,
+            atcFromExternalSource = AtcFromExternalSource.ATC_FROM_TOPCHAT
         )
-        return RequestParams.create().apply {
-            putObject(
-                    AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
-                    addToCartRequestParams
-            )
-        }
     }
 
     private fun showErrorMessage(msg: String) {
@@ -160,7 +163,7 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
 
     override fun onClickAddToWishList(product: Product) {
         context?.let {
-            viewModel.addToWishListV2(product.productId, session.userId,  this)
+            viewModel.addToWishListV2(product.productId, session.userId, this)
         }
     }
 
@@ -177,16 +180,16 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
         if (resultCode != Activity.RESULT_OK) return
         if (data == null) return
         val message = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
-                ?: return
+            ?: return
         view?.let {
             val ctaText = it.context.getString(R.string.cta_orderhistory_success_atw)
             Toaster.make(
-                    it,
-                    message,
-                    Toaster.LENGTH_SHORT,
-                    Toaster.TYPE_NORMAL,
-                    ctaText,
-                    View.OnClickListener { goToCheckoutPage() }
+                it,
+                message,
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_NORMAL,
+                ctaText,
+                View.OnClickListener { goToCheckoutPage() }
             )
         }
     }

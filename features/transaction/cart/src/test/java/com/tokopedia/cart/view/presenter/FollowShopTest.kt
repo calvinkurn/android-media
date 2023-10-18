@@ -4,10 +4,10 @@ import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
-import com.tokopedia.usecase.RequestParams
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.verify
+import io.mockk.verifyOrder
 import org.junit.Test
-import rx.Observable
 
 class FollowShopTest : BaseCartTest() {
 
@@ -21,12 +21,8 @@ class FollowShopTest : BaseCartTest() {
             }
         }
 
-        every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
-        every { followShopUseCase.createObservable(any()) } returns Observable.just(dataFollowShop)
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { followShopUseCase(any()) } returns dataFollowShop
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
 
         // WHEN
         cartListPresenter.followShop("1")
@@ -43,12 +39,8 @@ class FollowShopTest : BaseCartTest() {
         // GIVEN
         val exception = ResponseErrorException("Failed")
 
-        every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
-        every { followShopUseCase.createObservable(any()) } returns Observable.error(exception)
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { followShopUseCase(any()) } throws exception
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
 
         // WHEN
         cartListPresenter.followShop("1")
@@ -70,12 +62,8 @@ class FollowShopTest : BaseCartTest() {
             }
         }
 
-        every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
-        every { followShopUseCase.createObservable(any()) } returns Observable.just(dataFollowShop)
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { followShopUseCase(any()) } returns dataFollowShop
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
 
         cartListPresenter.detachView()
 
@@ -87,5 +75,4 @@ class FollowShopTest : BaseCartTest() {
             view.showProgressLoading()
         }
     }
-
 }

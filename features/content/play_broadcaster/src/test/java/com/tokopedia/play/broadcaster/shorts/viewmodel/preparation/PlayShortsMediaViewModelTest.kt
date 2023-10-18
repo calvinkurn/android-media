@@ -3,6 +3,8 @@ package com.tokopedia.play.broadcaster.shorts.viewmodel.preparation
 import com.tokopedia.play.broadcaster.shorts.robot.PlayShortsViewModelRobot
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.unit.test.rule.CoroutineTestRule
+import org.junit.Rule
 import org.junit.Test
 
 /**
@@ -12,6 +14,9 @@ class PlayShortsMediaViewModelTest {
 
     private val mediaUri1 = "mediaUri1"
     private val mediaUri2 = "mediaUri2"
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     @Test
     fun playShorts_preparation_media_firstTimeSetMedia() {

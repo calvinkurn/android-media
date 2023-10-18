@@ -1,11 +1,9 @@
 package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.usecase.RequestParams
-import io.mockk.every
-import io.mockk.verify
+import io.mockk.coEvery
+import io.mockk.coVerify
 import org.junit.Test
-import rx.Observable
 
 class SaveCheckboxStateTest : BaseCartTest() {
 
@@ -14,23 +12,21 @@ class SaveCheckboxStateTest : BaseCartTest() {
         // GIVEN
         val cartItemDataList = ArrayList<CartItemHolderData>().apply {
             add(
-                    CartItemHolderData(
-                            isSelected = true,
-                            cartId = "123"
-                    )
+                CartItemHolderData(
+                    isSelected = true,
+                    cartId = "123"
+                )
             )
         }
 
-        every { setCartlistCheckboxStateUseCase.createObservable(any()) } returns Observable.just(true)
-        every { setCartlistCheckboxStateUseCase.buildRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { setCartlistCheckboxStateUseCase(any()) } returns true
 
         // WHEN
         cartListPresenter.saveCheckboxState(cartItemDataList)
 
         // THEN
-        verify {
-            setCartlistCheckboxStateUseCase.createObservable(any())
+        coVerify {
+            setCartlistCheckboxStateUseCase(any())
         }
     }
-
 }

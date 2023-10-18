@@ -7,6 +7,7 @@ import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.interfaces.AffiliateEducationLearnClickInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationLearnUiModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.productcard.utils.findViewById
 import com.tokopedia.user.session.UserSession
 
 class AffiliateEducationLearnVH(
@@ -22,6 +23,7 @@ class AffiliateEducationLearnVH(
 
     private val bantuanContainer = itemView.findViewById<View>(R.id.bantuan_container)
     private val kamusContainer = itemView.findViewById<View>(R.id.kamus_container)
+    private val privasiContainer = itemView.findViewById<View>(R.id.privasi_container)
 
     override fun bind(element: AffiliateEducationLearnUiModel?) {
         bantuanContainer.setOnClickListener {
@@ -31,6 +33,9 @@ class AffiliateEducationLearnVH(
         kamusContainer.setOnClickListener {
             affiliateEducationLearnClickInterface?.onKamusClick()
             sendEducationClickEvent(AffiliateAnalytics.ActionKeys.CLICK_KAMUS_AFFILIATE)
+        }
+        privasiContainer.setOnClickListener {
+            affiliateEducationLearnClickInterface?.onKebijakanPrivasiClick()
         }
     }
 

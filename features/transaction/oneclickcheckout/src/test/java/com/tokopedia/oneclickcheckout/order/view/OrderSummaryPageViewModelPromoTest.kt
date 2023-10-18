@@ -181,7 +181,13 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                         shippingId = helper.firstCourierFirstDuration.productData.shipperId,
                         spId = helper.firstCourierFirstDuration.productData.shipperProductId,
                         shopId = helper.orderData.cart.shop.shopId.toLongOrZero(),
-                        product_details = listOf(ProductDetail(helper.product.productId.toLongOrZero(), helper.product.orderQuantity))
+                        product_details = listOf(
+                            ProductDetail(
+                                productId = helper.product.productId.toLongOrZero(),
+                                quantity = helper.product.orderQuantity,
+                                isChecked = true
+                            )
+                        )
                     )
                 )
             ),
@@ -203,7 +209,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                 ),
                 globalSuccess = true
             ),
-            status = "OK", errorCode = "200"
+            status = "OK",
+            errorCode = "200"
         )
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
@@ -251,7 +258,13 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                         freeShippingMetadata = helper.logisticPromo.freeShippingMetadata,
                         codes = mutableListOf(helper.logisticPromo.promoCode),
                         shopId = helper.orderData.cart.shop.shopId.toLongOrZero(),
-                        product_details = listOf(ProductDetail(helper.product.productId.toLongOrZero(), helper.product.orderQuantity))
+                        product_details = listOf(
+                            ProductDetail(
+                                productId = helper.product.productId.toLongOrZero(),
+                                quantity = helper.product.orderQuantity,
+                                isChecked = true
+                            )
+                        )
                     )
                 )
             ),
@@ -436,7 +449,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         val promoCode = "abc"
         val response = ValidateUsePromoRevampUiModel(
-            status = "OK", errorCode = "200",
+            status = "OK",
+            errorCode = "200",
             promoUiModel = PromoUiModel(
                 codes = listOf(promoCode),
                 messageUiModel = MessageUiModel(state = "green"),
@@ -554,7 +568,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         val lastResponse = ValidateUsePromoRevampUiModel(
-            status = "OK", errorCode = "200",
+            status = "OK",
+            errorCode = "200",
             promoUiModel = PromoUiModel(
                 voucherOrderUiModels = listOf(
                     PromoCheckoutVoucherOrdersItemUiModel(

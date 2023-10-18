@@ -9,7 +9,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
 
-
 @GqlQuery("submitRatingCSAT", SUBMIT_CSAT_RATING)
 class SubmitCsatRatingUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
@@ -17,7 +16,7 @@ class SubmitCsatRatingUseCase @Inject constructor(
 
     fun submitCsatRating(
         onSuccess: (SubmitCsatGqlResponse) -> Unit,
-        onError: kotlin.reflect.KFunction2<Throwable, String, Unit>,
+        onError: (Throwable) -> Unit,
         input: InputItem,
         messageId: String
     ) {
@@ -29,13 +28,13 @@ class SubmitCsatRatingUseCase @Inject constructor(
             this.execute(
                 { result ->
                     onSuccess(result)
-                }, { error ->
-                    onError(error, messageId)
+                },
+                { error ->
+                    onError(error)
                 }
             )
-
         } catch (throwable: Throwable) {
-            onError(throwable, messageId)
+            onError(throwable)
         }
     }
 
@@ -48,5 +47,4 @@ class SubmitCsatRatingUseCase @Inject constructor(
     companion object {
         private val PARAM_INPUT: String = "input"
     }
-
 }

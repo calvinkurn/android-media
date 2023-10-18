@@ -42,10 +42,13 @@ class ReceiverNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var loadingDialog: LoadingDialog
+
     @Inject
     lateinit var analytics: TrackingOtpUtil
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -101,29 +104,35 @@ class ReceiverNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     private fun initObserver() {
-        viewModel.verifyPushNotifResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessVerifyPushNotif().invoke(it.data)
-                is Fail -> onFailedVerifyPushNotif().invoke(it.throwable)
+        viewModel.verifyPushNotifResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> onSuccessVerifyPushNotif().invoke(it.data)
+                    is Fail -> onFailedVerifyPushNotif().invoke(it.throwable)
+                }
             }
-        })
-        viewModel.verifyPushNotifExpResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessVerifyPushNotifExp().invoke(it.data)
-                is Fail -> onFailedVerifyPushNotifExp().invoke(it.throwable)
+        )
+        viewModel.verifyPushNotifExpResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> onSuccessVerifyPushNotifExp().invoke(it.data)
+                    is Fail -> onFailedVerifyPushNotifExp().invoke(it.throwable)
+                }
             }
-        })
+        )
     }
 
     private fun onSuccessVerifyPushNotif(): (VerifyPushNotifData) -> Unit {
         return { verifyPushNotifData ->
             dismissLoading()
             goToResultNotif(
-                    verifyPushNotifData.imglink,
-                    verifyPushNotifData.messageTitle,
-                    verifyPushNotifData.messageBody,
-                    verifyPushNotifData.ctaType,
-                    verifyPushNotifData.status
+                verifyPushNotifData.imglink,
+                verifyPushNotifData.messageTitle,
+                verifyPushNotifData.messageBody,
+                verifyPushNotifData.ctaType,
+                verifyPushNotifData.status
             )
         }
     }
@@ -141,16 +150,17 @@ class ReceiverNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     private fun onSuccessVerifyPushNotifExp(): (VerifyPushNotifExpData) -> Unit {
         return { verifyPushNotifExpData ->
             dismissLoading()
-            if(verifyPushNotifExpData.imglink.isNotEmpty() &&
-                    verifyPushNotifExpData.messageTitle.isNotEmpty() &&
-                    verifyPushNotifExpData.messageBody.isNotEmpty() &&
-                    verifyPushNotifExpData.ctaType.isNotEmpty()) {
+            if (verifyPushNotifExpData.imglink.isNotEmpty() &&
+                verifyPushNotifExpData.messageTitle.isNotEmpty() &&
+                verifyPushNotifExpData.messageBody.isNotEmpty() &&
+                verifyPushNotifExpData.ctaType.isNotEmpty()
+            ) {
                 goToResultNotif(
-                        verifyPushNotifExpData.imglink,
-                        verifyPushNotifExpData.messageTitle,
-                        verifyPushNotifExpData.messageBody,
-                        verifyPushNotifExpData.ctaType,
-                        verifyPushNotifExpData.status
+                    verifyPushNotifExpData.imglink,
+                    verifyPushNotifExpData.messageTitle,
+                    verifyPushNotifExpData.messageBody,
+                    verifyPushNotifExpData.ctaType,
+                    verifyPushNotifExpData.status
                 )
             }
         }

@@ -42,14 +42,13 @@ class ProductThumbnailVariantViewHolder(
     }
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
 
-    private val emptyVariantData = VariantOptionWithAttribute()
+    private val emptyVariantData = VariantOptionWithAttribute.EMPTY
 
     init {
         with(binding) {
             thumbVariantList.adapter = containerAdapter
             thumbVariantList.itemAnimator = null
             thumbVariantList.layoutManager = layoutManager
-            thumbVariantList.setRecycledViewPool(pdpListener.getParentRecyclerViewPool())
         }
     }
 
@@ -62,20 +61,17 @@ class ProductThumbnailVariantViewHolder(
     }
 
     override fun bind(element: ProductSingleVariantDataModel) {
-        binding.setTitle()
-        binding.setThumbnailItems(element = element)
+        binding.thumbVariantTitle.text = element.title
+        setThumbnailItems(element = element)
         setOnClick()
         setImpression(element = element)
     }
 
     override fun bind(element: ProductSingleVariantDataModel, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
-            binding.setThumbnailItems(element = element)
+            binding.thumbVariantTitle.text = element.title
+            setThumbnailItems(element = element)
         }
-    }
-
-    private fun ItemThumbnailVariantViewHolderBinding.setTitle() {
-        thumbVariantTitle.text = pdpListener.getVariantString()
     }
 
     private fun setOnClick() {
@@ -94,12 +90,10 @@ class ProductThumbnailVariantViewHolder(
         }
     }
 
-    private fun ItemThumbnailVariantViewHolderBinding.setThumbnailItems(
+    private fun setThumbnailItems(
         element: ProductSingleVariantDataModel
     ) {
-        thumbVariantList.post {
-            containerAdapter.submitList(element.variantLevelOne?.variantOptions)
-        }
+        containerAdapter.submitList(element.variantLevelOne?.variantOptions)
 
         if (element.mapOfSelectedVariant.isEmpty()) {
             scrollToPosition(0)

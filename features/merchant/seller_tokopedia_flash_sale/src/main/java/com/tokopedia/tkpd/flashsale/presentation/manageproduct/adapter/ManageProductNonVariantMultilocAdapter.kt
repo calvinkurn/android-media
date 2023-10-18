@@ -4,7 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailLocationItemBinding
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 

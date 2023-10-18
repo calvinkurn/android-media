@@ -3,22 +3,6 @@
   "mode": "exact",
   "query": [
     {
-      "event": "view_item",
-      "eventCategory": "search result",
-      "eventAction": "impression - carousel banner",
-      "eventLabel": ".* - .*",
-      "sessionIris": ".*",
-      "promotions": [
-        {
-          "item_id": ".*",
-          "item_name": "/search - carousel",
-          "creative_name": ".*",
-          "creative_slot": ".*",
-          "category": "none / other"
-        }
-      ]
-    },
-    {
       "event": "select_content",
       "eventCategory": "search result",
       "eventAction": "click",
@@ -72,7 +56,9 @@
           "dimension61": ".+",
           "dimension90": ".*",
           "dimension115": ".*",
-          "dimension131": ".*"
+          "dimension131": ".*",
+          "dimension56": ".+",
+          "dimension58": ".+"
         }
       ]
     },
@@ -96,7 +82,9 @@
           "dimension61": ".+",
           "dimension90": ".*",
           "dimension115": ".*",
-          "dimension131": ".*"
+          "dimension131": ".*",
+          "dimension56": ".+",
+          "dimension58": ".+"
         }
       ]
     }

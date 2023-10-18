@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.generator
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.testing.launchFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.SavedStateHandle
@@ -16,40 +15,40 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.play.broadcaster.BuildConfig
-import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.factory.PlayBroTestFragmentFactory
-import com.tokopedia.play.broadcaster.setup.product.analytic.EtalaseListAnalyticManager
-import com.tokopedia.play.broadcaster.setup.product.analytic.ProductChooserAnalyticManager
-import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
-import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
-import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
-import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSortBottomSheet
-import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
-import com.tokopedia.play.broadcaster.type.DiscountedPrice
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
-import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
+import com.tokopedia.content.product.picker.seller.analytic.manager.EtalaseListAnalyticManager
+import com.tokopedia.content.product.picker.seller.analytic.manager.ProductChooserAnalyticManager
+import com.tokopedia.content.product.picker.ProductSetupFragment
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.EtalaseListBottomSheet
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductChooserBottomSheet
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductSortBottomSheet
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductSummaryBottomSheet
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
+import com.tokopedia.content.product.picker.seller.model.DiscountedPrice
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatusUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.seller.model.etalase.EtalaseUiModel
+import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
+import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.content.common.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
 import com.tokopedia.test.application.id_generator.ViewHierarchyPrinter
 import com.tokopedia.test.application.id_generator.writeGeneratedViewIds
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.hamcrest.Matcher
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.*
+import com.tokopedia.empty_state.R as empty_stateR
 
 /**
  * Created by kenny.hadisaputra on 23/02/22
@@ -70,18 +69,16 @@ class ProductChooserIdGenerator {
                 originalPriceNumber = 1000.0,
                 discountPercent = 50,
                 discountedPrice = "500",
-                discountedPriceNumber = 500.0,
-            )
+                discountedPriceNumber = 500.0
+            ),
+            hasCommission = false,
+            commissionFmt = "",
+            commission = 0L,
+            extraCommission = false,
+            pinStatus = PinProductUiModel.Empty,
+            number = "",
         )
     )
-
-//    private val mockProductSections = listOf(
-//        ProductTagSectionUiModel(
-//            name = "Section Test",
-//            campaignStatus = CampaignStatus.Ongoing,
-//            products = mockSelectedProducts,
-//        )
-//    )
 
     private val campaignList = listOf(
         CampaignUiModel(
@@ -92,9 +89,9 @@ class ProductChooserIdGenerator {
             endDateFmt = "",
             status = CampaignStatusUiModel(
                 status = CampaignStatus.Ongoing,
-                text = "Berlangsung",
+                text = "Berlangsung"
             ),
-            totalProduct = 50,
+            totalProduct = 50
         )
     )
 
@@ -103,25 +100,26 @@ class ProductChooserIdGenerator {
             id = "1",
             imageUrl = "",
             title = "Etalase 1",
-            totalProduct = 50,
+            totalProduct = 50
         )
     )
 
     private val mockProductSections = emptyList<ProductTagSectionUiModel>()
 
     private val repo = mockk<PlayBroadcastRepository>(relaxed = true)
-    private val configStore = mockk<HydraConfigStore>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
-    private val mockProductSetupViewModelFactory = object : PlayBroProductSetupViewModel.Factory {
+    private val mockProductSetupViewModelFactory = object : ContentProductPickerSellerViewModel.Factory {
         override fun create(
             creationId: String,
             maxProduct: Int,
             productSectionList: List<ProductTagSectionUiModel>,
             savedStateHandle: SavedStateHandle,
-            isEligibleForPin: Boolean
-        ): PlayBroProductSetupViewModel {
-            return PlayBroProductSetupViewModel(
+            isNumerationShown: Boolean,
+            isEligibleForPin: Boolean,
+            fetchCommissionProduct: Boolean
+        ): ContentProductPickerSellerViewModel {
+            return ContentProductPickerSellerViewModel(
                 creationId = creationId,
                 maxProduct = maxProduct,
                 productSectionList = mockProductSections,
@@ -130,6 +128,8 @@ class ProductChooserIdGenerator {
                 repo = repo,
                 userSession = userSession,
                 dispatchers = CoroutineDispatchersProvider,
+                isNumerationShown = isNumerationShown,
+                fetchCommissionProduct = fetchCommissionProduct,
             )
         }
     }
@@ -137,7 +137,46 @@ class ProductChooserIdGenerator {
     private val fragmentFactory = PlayBroTestFragmentFactory(
         mapOf(
             ProductSetupFragment::class.java to {
-                ProductSetupFragment(mockProductSetupViewModelFactory)
+                ProductSetupFragment(mockProductSetupViewModelFactory, mockk(relaxed = true)).apply {
+                    setDataSource(object : ProductSetupFragment.DataSource {
+                        override fun getProductSectionList(): List<ProductTagSectionUiModel> {
+                            return emptyList()
+                        }
+
+                        override fun isEligibleForPin(): Boolean {
+                            return true
+                        }
+
+                        override fun getSelectedAccount(): ContentAccountUiModel {
+                            return ContentAccountUiModel.Empty.copy(
+                                type = ContentCommonUserType.TYPE_SHOP,
+                            )
+                        }
+
+                        override fun creationId(): String {
+                            return ""
+                        }
+
+                        override fun maxProduct(): Int {
+                            return 30
+                        }
+
+                        override fun isNumerationShown(): Boolean {
+                            return true
+                        }
+
+                        override fun fetchCommissionProduct(): Boolean {
+                            return false
+                        }
+                    })
+                }
+            },
+            ProductSummaryBottomSheet::class.java to {
+                ProductSummaryBottomSheet(
+                    analytic = mockk(relaxed = true),
+                    coachMarkSharedPref = mockk(relaxed = true),
+                    pinnedProductAnalytic = mockk(relaxed = true)
+                )
             },
             ProductChooserBottomSheet::class.java to {
                 ProductChooserBottomSheet(
@@ -145,9 +184,9 @@ class ProductChooserIdGenerator {
                     NavigationBarColorDialogCustomizer(),
                     ProductChooserAnalyticManager(
                         mockk(relaxed = true),
-                        CoroutineDispatchersProvider,
+                        CoroutineDispatchersProvider
                     ),
-                    mockk(relaxed = true),
+                    mockk(relaxed = true)
                 )
             },
             EtalaseListBottomSheet::class.java to {
@@ -155,8 +194,20 @@ class ProductChooserIdGenerator {
                     NavigationBarColorDialogCustomizer(),
                     EtalaseListAnalyticManager(
                         mockk(relaxed = true),
-                        CoroutineDispatchersProvider,
-                    ),
+                        CoroutineDispatchersProvider
+                    )
+                )
+            },
+            ProductSummaryBottomSheet::class.java to {
+                ProductSummaryBottomSheet(
+                    mockk(relaxed = true),
+                    mockk(relaxed = true),
+                    mockk(relaxed = true),
+                )
+            },
+            ProductSortBottomSheet::class.java to {
+                ProductSortBottomSheet(
+                    mockk(relaxed = true)
                 )
             }
         )
@@ -175,7 +226,8 @@ class ProductChooserIdGenerator {
     )
 
     private val viewPrinter = ViewHierarchyPrinter(
-        printConditions, packageName = BuildConfig.LIBRARY_PACKAGE_NAME
+        printConditions,
+        packageName = LIBRARY_PACKAGE_NAME
     )
     private val fileWriter = FileWriter()
 
@@ -188,12 +240,12 @@ class ProductChooserIdGenerator {
             type = ContentCommonUserType.TYPE_SHOP,
             hasUsername = true,
             hasAcceptTnc = true,
-            enable = true,
+            enable = true
         )
 
         coEvery { repo.getProductsInEtalase(any(), any(), any(), any()) } returns PagedDataUiModel(
             dataList = mockSelectedProducts,
-            hasNextPage = false,
+            hasNextPage = false
         )
 
         coEvery { repo.getEtalaseList() } returns etalaseList
@@ -204,7 +256,7 @@ class ProductChooserIdGenerator {
     fun productChooserBottomSheet() {
         val scenario = launchFragment<ProductSetupFragment>(
             factory = fragmentFactory,
-            themeResId = R.style.AppTheme,
+            themeResId = empty_stateR.style.AppTheme
         )
 
         scenario.moveToState(Lifecycle.State.RESUMED)
@@ -223,13 +275,13 @@ class ProductChooserIdGenerator {
     fun sortFilterBottomSheet() {
         val scenario = launchFragment<ProductSetupFragment>(
             factory = fragmentFactory,
-            themeResId = R.style.AppTheme,
+            themeResId = empty_stateR.style.AppTheme
         )
 
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         onView(isRoot()).perform(waitFor(500))
-        onView(withId(R.id.chips_sort)).perform(click())
+        onView(withId(contentproductpickerR.id.chips_sort)).perform(click())
 
         scenario.onFragment {
             val chooserBottomSheet = ProductChooserBottomSheet.getFragment(it.childFragmentManager, it.requireActivity().classLoader)
@@ -246,13 +298,14 @@ class ProductChooserIdGenerator {
     fun etalaseListBottomSheet() {
         val scenario = launchFragment<ProductSetupFragment>(
             factory = fragmentFactory,
-            themeResId = R.style.AppTheme,
+            themeResId = empty_stateR.style.AppTheme
         )
 
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         onView(isRoot()).perform(waitFor(500))
-        onView(withId(R.id.chips_etalase)).perform(click())
+        onView(withId(contentproductpickerR.id.chips_etalase)).perform(click())
+        onView(isRoot()).perform(waitFor(500))
 
         scenario.onFragment {
             val bottomSheet = EtalaseListBottomSheet.getFragment(it.childFragmentManager, it.requireActivity().classLoader)
@@ -272,5 +325,9 @@ class ProductChooserIdGenerator {
                 uiController.loopMainThreadForAtLeast(delay)
             }
         }
+    }
+
+    companion object {
+        const val LIBRARY_PACKAGE_NAME = "com.tokopedia.play.broadcaster"
     }
 }

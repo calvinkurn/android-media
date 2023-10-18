@@ -28,9 +28,9 @@ class OldClearCacheAutoApplyStackUseCase @Inject constructor(private val graphql
 
     fun setParams(request: ClearPromoRequest) {
         params = mapOf(
-                PARAM_PLACEHOLDER_SERVICE_ID to request.serviceId,
-                PARAM_PLACEHOLDER_IS_OCC to request.isOcc,
-                PARAM_PLACEHOLDER_ORDER_DATA to request.orderData,
+            PARAM_PLACEHOLDER_SERVICE_ID to request.serviceId,
+            PARAM_PLACEHOLDER_IS_OCC to request.isOcc,
+            PARAM_PLACEHOLDER_ORDER_DATA to request.orderData
         )
     }
 
@@ -40,17 +40,17 @@ class OldClearCacheAutoApplyStackUseCase @Inject constructor(private val graphql
         graphqlUseCase.addRequest(graphqlRequest)
 
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .map {
-                    val response = it.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
-                    ClearPromoUiModel().apply {
-                        successDataModel = SuccessDataUiModel().apply {
-                            success = response.successData.success
-                            tickerMessage = response.successData.tickerMessage
-                            defaultEmptyPromoMessage = response.successData.defaultEmptyPromoMessage
-                        }
+            .map {
+                val response = it.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
+                ClearPromoUiModel().apply {
+                    successDataModel = SuccessDataUiModel().apply {
+                        success = response.successData.success
+                        tickerMessage = response.successData.tickerMessage
+                        defaultEmptyPromoMessage = response.successData.defaultEmptyPromoMessage
                     }
                 }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 }

@@ -1,16 +1,11 @@
 package com.tkpd.macrobenchmark.test.home
 
-import android.content.Intent
 import androidx.benchmark.macro.StartupMode
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SdkSuppress
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.UiDevice
 import com.tkpd.macrobenchmark.base.BaseStartupBenchmark
-import com.tkpd.macrobenchmark.util.MacroDevOps
 import com.tkpd.macrobenchmark.util.MacroIntent
 import com.tkpd.macrobenchmark.util.MacroInteration
-import org.junit.Before
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
@@ -24,29 +19,22 @@ import org.junit.runners.Parameterized
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
-class HomeStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
+class HomeStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchmark(startupMode) {
     override fun setupEnvironment() {
-        MacroDevOps.setupEnvironment(MacroIntent.Session.getSessionMacroSetupIntent())
-        MacroDevOps.setupEnvironment(MacroIntent.Home.getHomeIntent().apply {
-            this.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        })
-        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack()
-        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack()
     }
 
     override fun setupMock() {
-        MacroDevOps.setupEnvironment(MacroIntent.Mock.getHomeMockIntent())
     }
 
     override fun getIntent() = MacroIntent.Home.getHomeIntent()
 
     override fun waitUntil() {
         MacroInteration.waitForRecyclerViewContent(
-                MacroIntent.TKPD_PACKAGE_NAME,
-                MacroIntent.Home.RV_RESOURCE_ID
+            MacroIntent.TKPD_PACKAGE_NAME,
+            MacroIntent.Home.RV_RESOURCE_ID
         )
+        Thread.sleep(10000)
     }
 
     override fun traceName() = "mp_home"
-
 }

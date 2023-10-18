@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.network'
+    testNamespace 'com.tokopedia.network.test'
+}
+
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig

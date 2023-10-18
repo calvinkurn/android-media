@@ -2,7 +2,6 @@ package com.tokopedia.remoteconfig.abtest
 
 import android.content.Context
 import android.util.Log
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -10,8 +9,6 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.remoteconfig.GraphqlHelper
 import com.tokopedia.remoteconfig.R
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT
 import com.tokopedia.remoteconfig.abtest.data.AbTestVariantPojo
 import com.tokopedia.remoteconfig.abtest.data.FeatureVariantAnalytics
 import com.tokopedia.remoteconfig.abtest.data.RolloutFeatureVariants
@@ -54,9 +51,17 @@ class AbTestPlatform @JvmOverloads constructor(val context: Context) : RemoteCon
         throw RuntimeException("Method is not implemented yet")
     }
 
-    @Suppress("TooGenericExceptionCaught")
-    override fun getKeysByPrefix(prefix: String?): MutableSet<String> {
-        throw RuntimeException("Method is not implemented yet")
+    override fun getKeysByPrefix(prefix: String): MutableSet<String> {
+        return mutableSetOf<String>().apply {
+            for ((key, value) in sharedPreferences.all) {
+                val valueClassType = value?.let { it::class.java }
+                if (key.startsWith(prefix = prefix, ignoreCase = false) &&
+                    valueClassType == String::class.java
+                ) {
+                    add(key)
+                }
+            }
+        }
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -80,11 +85,6 @@ class AbTestPlatform @JvmOverloads constructor(val context: Context) : RemoteCon
 
     override fun getString(key: String?, defaultValue: String): String {
         // override customer app ab config features
-        if (GlobalConfig.PACKAGE_APPLICATION == CONSUMER_PRO_APPLICATION_PACKAGE) {
-            when (key) {
-                NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT -> return NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT
-            }
-        }
         val cacheValue: String = this.sharedPreferences.getString(key, defaultValue) ?: defaultValue
         if (!cacheValue.isEmpty() && !cacheValue.equals(defaultValue, ignoreCase = true)) {
             return cacheValue
@@ -145,7 +145,9 @@ class AbTestPlatform @JvmOverloads constructor(val context: Context) : RemoteCon
                 context.resources,
                 R.raw.gql_rollout_feature_variant
             ),
-            AbTestVariantPojo::class.java, payloads, false
+            AbTestVariantPojo::class.java,
+            payloads,
+            false
         )
 
         graphqlUseCase.clearRequest()
@@ -172,7 +174,7 @@ class AbTestPlatform @JvmOverloads constructor(val context: Context) : RemoteCon
                     override fun onCompleted() { }
 
                     override fun onError(e: Throwable?) { }
-                } 
+                }
             }
     }
 

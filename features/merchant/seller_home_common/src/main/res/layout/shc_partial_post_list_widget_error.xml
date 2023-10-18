@@ -13,7 +13,7 @@
         android:id="@+id/tvPostListTitleOnError"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"

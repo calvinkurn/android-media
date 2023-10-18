@@ -1,18 +1,24 @@
 package com.tokopedia.play.broadcaster.ui.state
 
-import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.AccountStateInfo
-import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
+import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
+import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import java.util.*
@@ -35,13 +41,21 @@ data class PlayBroadcastUiState(
     val quizBottomSheetUiState: QuizBottomSheetUiState,
     val selectedContentAccount: ContentAccountUiModel,
     val accountStateInfo: AccountStateInfo,
+    val bannerPreparation: List<PlayBroadcastPreparationBannerModel>,
+    val menuList: List<DynamicPreparationMenu>,
+    val title: PlayTitleUiModel,
+    val cover: PlayCoverUiModel,
+    val beautificationConfig: BeautificationConfigUiModel,
+    val tickerBottomSheetConfig: TickerBottomSheetUiModel,
 ) {
     companion object {
         val Empty: PlayBroadcastUiState
             get() = PlayBroadcastUiState(
                 channel = PlayChannelUiState(
+                    showPostVideoButton = true,
                     streamAllowed = true,
                     shortVideoAllowed = false,
+                    hasContent = false,
                     tnc = emptyList(),
                 ),
                 pinnedMessage = PinnedMessageUiState(
@@ -60,13 +74,21 @@ data class PlayBroadcastUiState(
                 quizBottomSheetUiState = QuizBottomSheetUiState.Empty,
                 selectedContentAccount = ContentAccountUiModel.Empty,
                 accountStateInfo = AccountStateInfo(),
+                bannerPreparation = emptyList(),
+                menuList = emptyList(),
+                title = PlayTitleUiModel.NoTitle,
+                cover = PlayCoverUiModel.empty(),
+                beautificationConfig = BeautificationConfigUiModel.Empty,
+                tickerBottomSheetConfig = TickerBottomSheetUiModel.Empty,
             )
     }
 }
 
 data class PlayChannelUiState(
+    val showPostVideoButton: Boolean,
     val streamAllowed: Boolean,
     val shortVideoAllowed: Boolean,
+    val hasContent: Boolean,
     val tnc: List<TermsAndConditionUiModel>,
 )
 

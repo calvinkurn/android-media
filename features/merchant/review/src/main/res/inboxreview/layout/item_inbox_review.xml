@@ -13,7 +13,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
@@ -55,7 +55,7 @@
         app:layout_constraintTop_toBottomOf="@+id/ivRatingFeedback"
         app:layout_constraintStart_toStartOf="@+id/ivRatingFeedback"
         app:layout_constraintEnd_toStartOf="@+id/tvFeedbackDate"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
@@ -88,7 +88,7 @@
         app:layout_constraintTop_toBottomOf="@id/partialFeedbackVariantInboxReview"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:maxLines="@integer/int_3"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
@@ -156,7 +156,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintTop_toBottomOf="@id/inbox_review_barrier"
         app:layout_constraintStart_toEndOf="@id/replyFeedbackState"
         tools:text="Balasan otomatis •"/>
@@ -170,7 +170,7 @@
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
         tools:text="Hari ini"/>
@@ -211,7 +211,7 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:typographyWeight="bold"
         app:typographyType="body_3"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         tools:text="Ubah balasan"/>
 
     <com.tokopedia.unifycomponents.DividerUnify

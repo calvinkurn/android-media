@@ -6,7 +6,6 @@ import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodSearchResultHelper.getSearchQuery
 
 object TokofoodSearchResultHelper {
 

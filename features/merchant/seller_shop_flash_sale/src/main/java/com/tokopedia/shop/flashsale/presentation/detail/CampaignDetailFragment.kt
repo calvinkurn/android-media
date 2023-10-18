@@ -498,27 +498,27 @@ class CampaignDetailFragment : BaseDaggerFragment(),
                 } else {
                     binding.tgCampaignStatus.setStatus(R.string.sfs_upcoming)
                 }
-                binding.tgCampaignStatus.textColor(R.color.Unify_YN400)
+                binding.tgCampaignStatus.textColor(com.tokopedia.unifyprinciples.R.color.Unify_YN400)
                 binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_upcoming)
             }
             campaign.status.isAvailable() -> {
                 binding.tgCampaignStatus.setStatus(R.string.sfs_available)
-                binding.tgCampaignStatus.textColor(R.color.Unify_NN600)
+                binding.tgCampaignStatus.textColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
                 binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_available)
             }
             campaign.status.isOngoing() -> {
                 binding.tgCampaignStatus.setStatus(R.string.sfs_ongoing)
-                binding.tgCampaignStatus.textColor(R.color.Unify_GN500)
+                binding.tgCampaignStatus.textColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_ongoing)
             }
             campaign.status.isFinished() -> {
                 binding.tgCampaignStatus.setStatus(R.string.sfs_finished)
-                binding.tgCampaignStatus.textColor(R.color.Unify_NN400)
+                binding.tgCampaignStatus.textColor(com.tokopedia.unifyprinciples.R.color.Unify_NN400)
                 binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_finished)
             }
             campaign.status.isCancelled() -> {
                 binding.tgCampaignStatus.setStatus(R.string.sfs_cancelled)
-                binding.tgCampaignStatus.textColor(R.color.Unify_RN500)
+                binding.tgCampaignStatus.textColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
                 binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_cancelled)
             }
         }

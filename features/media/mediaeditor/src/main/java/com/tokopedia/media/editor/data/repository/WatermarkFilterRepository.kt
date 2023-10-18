@@ -3,15 +3,16 @@ package com.tokopedia.media.editor.data.repository
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.media.editor.data.entity.EditorDetailEntity
+import com.tokopedia.media.editor.ui.uimodel.BitmapCreation
 import javax.inject.Inject
 import com.tokopedia.media.editor.ui.uimodel.EditorWatermarkUiModel
-import com.tokopedia.media.editor.utils.isDark
 import kotlin.math.min
 import com.tokopedia.unifyprinciples.R as principleR
 
@@ -23,19 +24,20 @@ interface WatermarkFilterRepository {
         isThumbnail: Boolean,
         element: EditorDetailEntity? = null,
         useStorageColor: Boolean
-    ): Bitmap
+    ): Bitmap?
 
     fun watermarkDrawerItem(
         implementedBaseBitmap: Bitmap,
         shopName: String
-    ): Pair<Bitmap, Bitmap>
+    ): Pair<Bitmap?, Bitmap?>
 
     fun isAssetInitialize(): Boolean
     fun setAsset(logoDrawable: Drawable, textLightColor: Int, textDarkColor: Int)
 }
 
 class WatermarkFilterRepositoryImpl @Inject constructor(
-    @ApplicationContext val context: Context
+    @ApplicationContext val context: Context,
+    private val bitmapCreationRepository: BitmapCreationRepository
 ) : WatermarkFilterRepository {
     private var logoDrawable: Drawable? = null
 
@@ -53,7 +55,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor(
     private var logoDrawableWidth: Float = 0f
         set(value) {
             field = value
-            logoDrawableHeight = (value / 14) * 3
+            logoDrawableHeight = (value / WATERMARK_LOGO_RATIO_WIDTH) * WATERMARK_LOGO_RATIO_HEIGHT
         }
 
     private var logoDrawableHeight = 0f
@@ -85,8 +87,8 @@ class WatermarkFilterRepositoryImpl @Inject constructor(
         isThumbnail: Boolean,
         element: EditorDetailEntity?,
         useStorageColor: Boolean
-    ): Bitmap {
-        shopText = if (shopNameParam.isEmpty()) DEFAULT_SHOP_NAME else shopNameParam
+    ): Bitmap? {
+        shopText = shopNameParam.ifEmpty { DEFAULT_SHOP_NAME }
 
         var isDark = source.isDark()
         if (useStorageColor) {
@@ -103,54 +105,62 @@ class WatermarkFilterRepositoryImpl @Inject constructor(
 
         val sourceWidth: Int = source.width
         val sourceHeight: Int = source.height
-        val result = Bitmap.createBitmap(sourceWidth, sourceHeight, source.config)
 
-        logoDrawableWidth = if (!isThumbnail)
-            (sourceWidth / IMAGE_SIZE_DIVIDER).toFloat()
-        else
-            min(sourceWidth, sourceHeight) / 3f
+        return bitmapCreationRepository.createBitmap(
+            BitmapCreation.emptyBitmap(
+                sourceWidth, sourceHeight, source.config
+            )
+        )?.let { result ->
+            logoDrawableWidth = if (!isThumbnail)
+                (sourceWidth / IMAGE_SIZE_DIVIDER).toFloat()
+            else
+                min(sourceWidth, sourceHeight) / THUMBNAIL_SIZE_DIVIDER
 
-        val canvas = Canvas(result)
-        canvas.drawBitmap(source, 0f, 0f, null)
+            val canvas = Canvas(result)
+            canvas.drawBitmap(source, 0f, 0f, null)
 
-        val paint = Paint()
+            val paint = Paint()
 
-        // font size will refer to logo height to achieve same visual size
-        paint.textSize = logoDrawableHeight
-        paint.isAntiAlias = true
-        paint.color = watermarkColor
+            // font size will refer to logo height to achieve same visual size
+            paint.textSize = logoDrawableHeight
+            paint.isAntiAlias = true
+            paint.color = watermarkColor
 
-        logoDrawable?.setTint(watermarkColor)
+            logoDrawable?.setTint(watermarkColor)
 
-        val shopTextBound = Rect()
-        paint.getTextBounds(shopText, 0, shopText.length, shopTextBound)
+            val shopTextBound = Rect()
+            paint.getTextBounds(shopText, 0, shopText.length, shopTextBound)
 
-        textWidth = shopTextBound.width()
-        textHeight = shopTextBound.height()
+            textWidth = shopTextBound.width()
+            textHeight = shopTextBound.height()
 
-        when (type) {
-            WatermarkType.Diagonal -> {
-                setWatermarkDiagonal(sourceWidth, sourceHeight, canvas, paint)
+            when (type) {
+                WatermarkType.Diagonal -> {
+                    setWatermarkDiagonal(sourceWidth, sourceHeight, canvas, paint)
+                }
+                WatermarkType.Center -> {
+                    setWatermarkCenter(sourceWidth, sourceHeight, canvas, paint)
+                }
             }
-            WatermarkType.Center -> {
-                setWatermarkCenter(sourceWidth, sourceHeight, canvas, paint)
+
+            element?.watermarkModeEntityData?.let {
+                it.textColorDark = isDark
+                it.watermarkType = type.value
+            } ?: run {
+                element?.watermarkModeEntityData = EditorWatermarkUiModel(type.value, isDark)
             }
-        }
 
-        element?.watermarkModeEntityData?.let {
-            it.textColorDark = isDark
-            it.watermarkType = type.value
-        } ?: run {
-            element?.watermarkModeEntityData = EditorWatermarkUiModel(type.value, isDark)
+            // return
+            result
+        } ?: kotlin.run {
+            null
         }
-
-        return result
     }
 
     override fun watermarkDrawerItem(
         implementedBaseBitmap: Bitmap,
         shopName: String
-    ): Pair<Bitmap, Bitmap> {
+    ): Pair<Bitmap?, Bitmap?> {
         val resultBitmap1 = watermark(
             implementedBaseBitmap,
             WatermarkType.Diagonal,
@@ -168,6 +178,55 @@ class WatermarkFilterRepositoryImpl @Inject constructor(
         )
 
         return Pair(resultBitmap1, resultBitmap2)
+    }
+
+    // formula to determine brightness 0.299 * r + 0.0f + 0.587 * g + 0.0f + 0.114 * b + 0.0f
+    // if total of dark pixel > total of pixel * 0.45 count that as dark image
+    private fun Bitmap.isDark(): Boolean {
+        val width = this.width
+        val height = this.height
+
+        if (bitmapCreationRepository.isBitmapOverflow(width, height)) {
+            return false
+        }
+
+        return try {
+            val ratio = width.toFloat() / height
+            val widthBitmapChecker = IMAGE_DARK_CHECKER_SCALE
+            val heightBitmapChecker = widthBitmapChecker * ratio
+            val bitmapChecker =
+                Bitmap.createScaledBitmap(this, widthBitmapChecker, heightBitmapChecker.toInt(), false)
+            val darkThreshold = bitmapChecker.width * bitmapChecker.height * DARK_COLOR_THRESHOLD
+            var darkPixels = 0
+            val pixels = IntArray(bitmapChecker.width * bitmapChecker.height)
+            bitmapChecker.getPixels(
+                pixels,
+                0,
+                bitmapChecker.width,
+                0,
+                0,
+                bitmapChecker.width,
+                bitmapChecker.height
+            )
+
+            for (i in pixels.indices) {
+                val color = pixels[i]
+                val r = Color.red(color)
+                val g = Color.green(color)
+                val b = Color.blue(color)
+                val luminance =
+                    LUMINANCE_MULTIPLIER_RED * r +
+                    LUMINANCE_MULTIPLIER_GREEN * g +
+                    LUMINANCE_MULTIPLIER_BLUE * b
+                if (luminance < LUMINANCE_THRESHOLD) {
+                    darkPixels++
+                }
+            }
+            bitmapChecker.recycle()
+            darkPixels >= darkThreshold
+        } catch (_: Exception) {
+            false
+        }
     }
 
     private fun setWatermarkCenter(
@@ -224,7 +283,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor(
             index = 0
             while (xLastPost <= width) {
                 canvas.save()
-                canvas.rotate(-30f)
+                canvas.rotate(WATERMARK_LOGO_DIAGONAL_DEGREE)
 
                 if (index % 2 == 1) {
                     canvas.translate(xLastPost, yLastPost)
@@ -248,6 +307,19 @@ class WatermarkFilterRepositoryImpl @Inject constructor(
         private const val ELLIPSIS_CONST = "..."
         private const val PADDING_DIVIDER = 6
         private const val IMAGE_SIZE_DIVIDER = 6
+        private const val THUMBNAIL_SIZE_DIVIDER = 3f
+
+        private const val IMAGE_DARK_CHECKER_SCALE = 50
+        private const val DARK_COLOR_THRESHOLD = 0.45f
+        private const val LUMINANCE_THRESHOLD = 150
+        private const val LUMINANCE_MULTIPLIER_RED = 0.299f
+        private const val LUMINANCE_MULTIPLIER_GREEN = 0.587f
+        private const val LUMINANCE_MULTIPLIER_BLUE = 0.114f
+
+        private const val WATERMARK_LOGO_RATIO_WIDTH = 14
+        private const val WATERMARK_LOGO_RATIO_HEIGHT = 3
+
+        private const val WATERMARK_LOGO_DIAGONAL_DEGREE = -30f
     }
 }
 

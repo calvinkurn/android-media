@@ -6,5 +6,5 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 
 internal suspend inline fun <reified T> GraphqlRepository.getResponse(request: GraphqlRequest): T {
     return response(listOf(request)).getSuccessData<T>()
-            ?: throw NullPointerException("Data with your type might not exist")
+        ?: throw NullPointerException("Data with your type might not exist")
 }

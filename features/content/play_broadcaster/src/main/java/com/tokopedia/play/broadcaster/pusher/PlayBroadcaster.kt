@@ -23,7 +23,6 @@ class PlayBroadcaster(
     private val broadcaster: Broadcaster,
     private val callback: Callback,
     private val remoteConfig: RemoteConfig,
-    configData: BroadcastingConfigUiModel,
 ) : Broadcaster by broadcaster {
 
     @ActivityRetainedScope
@@ -35,9 +34,14 @@ class PlayBroadcaster(
             handler: Handler?,
             callback: Callback,
             remoteConfig: RemoteConfig,
-            broadcastingConfigUiModel: BroadcastingConfigUiModel,
         ): PlayBroadcaster {
-            return PlayBroadcaster(activityContext, handler, broadcaster, callback, remoteConfig, broadcastingConfigUiModel)
+            return PlayBroadcaster(
+                activityContext,
+                handler,
+                broadcaster,
+                callback,
+                remoteConfig,
+            )
         }
     }
 
@@ -67,11 +71,6 @@ class PlayBroadcaster(
     init {
         broadcaster.init(activityContext, handler)
         broadcaster.addListener(broadcastListener)
-        broadcaster.setConfig(
-            audioRate = configData.audioRate,
-            videoRate = configData.videoBitrate,
-            videoFps = configData.fps
-        )
         enableDebugMonitoring()
     }
 
@@ -89,8 +88,12 @@ class PlayBroadcaster(
         isStartedBefore = true
     }
 
-    override fun create(holder: SurfaceHolder, surfaceSize: Broadcaster.Size) {
-        broadcaster.create(holder, surfaceSize)
+    override fun create(
+        holder: SurfaceHolder,
+        surfaceSize: Broadcaster.Size,
+        withByteplus: Boolean,
+    ) {
+        broadcaster.create(holder, surfaceSize, withByteplus)
         updateAspectFrameSize()
     }
 

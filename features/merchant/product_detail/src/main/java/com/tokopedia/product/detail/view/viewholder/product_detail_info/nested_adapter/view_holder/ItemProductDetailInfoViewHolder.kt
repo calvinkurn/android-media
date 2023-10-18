@@ -3,16 +3,18 @@ package com.tokopedia.product.detail.view.viewholder.product_detail_info.nested_
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.pdplayout.Content
 import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoAnnotationTrackData
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoNavigator
 import com.tokopedia.product.detail.databinding.ItemInfoProductDetailBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import java.util.Locale
 
 class ItemProductDetailInfoViewHolder(
     private val binding: ItemInfoProductDetailBinding,
@@ -20,14 +22,19 @@ class ItemProductDetailInfoViewHolder(
     private val isProductCatalog: Boolean
 ) : RecyclerView.ViewHolder(binding.root) {
 
+    private val annotationTrackData by lazy {
+        ProductDetailInfoAnnotationTrackData()
+    }
+
     fun bind(
         data: ProductDetailInfoContent,
         trackData: ComponentTrackDataModel?,
         itemCount: Int
     ) {
-        renderLineText(data = data, trackData)
+        renderLineText(data = data, trackData = trackData)
         renderIcon(data = data)
         renderDivider(itemCount = itemCount)
+        setImpression(data = data, trackData = trackData)
     }
 
     private fun renderLineText(
@@ -39,13 +46,13 @@ class ItemProductDetailInfoViewHolder(
         infoDetailValue.apply {
             text = data.subtitle.parseAsHtmlLink(root.context)
 
-            if (data.applink.isNotEmpty()) {
+            if (data.isClickable) {
                 setTextColor(root.context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 setWeight(com.tokopedia.unifyprinciples.Typography.BOLD)
-            }
 
-            setOnClickListener {
-                setOnDetailValueClicked(data = data, trackData = trackData)
+                setOnClickListener {
+                    setOnDetailValueClicked(data = data, trackData = trackData)
+                }
             }
         }
     }
@@ -54,7 +61,7 @@ class ItemProductDetailInfoViewHolder(
         if (data.infoLink.isNotEmpty()) {
             infoDetailIcon.show()
             infoDetailClickArea.setOnClickListener {
-                listener.goToEducational(data.applink)
+                listener.goToEducational(data.infoLink)
             }
 
             data.icon.toIntOrNull()?.let { icon ->
@@ -64,7 +71,7 @@ class ItemProductDetailInfoViewHolder(
     }
 
     private fun renderDivider(itemCount: Int) = with(binding) {
-        val showDivider = adapterPosition < itemCount - 1 || !isProductCatalog
+        val showDivider = bindingAdapterPosition < itemCount - 1 || !isProductCatalog
         divider.showWithCondition(shouldShow = showDivider)
     }
 
@@ -72,21 +79,56 @@ class ItemProductDetailInfoViewHolder(
         data: ProductDetailInfoContent,
         trackData: ComponentTrackDataModel?
     ) {
-        when (data.title.lowercase(Locale.getDefault())) {
-            ProductDetailCommonConstant.KEY_CATEGORY -> {
+        data.routeOnClick(object : ProductDetailInfoNavigator {
+            override fun toCategory(appLink: String) {
                 listener.onCategoryClicked(
-                    url = data.applink,
+                    url = appLink,
                     componentTrackDataModel = trackData ?: ComponentTrackDataModel()
                 )
             }
-            ProductDetailCommonConstant.KEY_ETALASE -> {
+
+            override fun toEtalase(appLink: String) {
                 listener.onEtalaseClicked(
-                    url = data.applink,
+                    url = appLink,
                     componentTrackDataModel = trackData ?: ComponentTrackDataModel()
                 )
             }
-            else -> {
-                listener.goToApplink(data.applink)
+
+            override fun toCatalog(appLink: String, subTitle: String) {
+                // no-ops, on bottom sheet only
+            }
+
+            override fun toAppLink(appLink: String) {
+                listener.goToApplink(url = appLink)
+            }
+
+            override fun toWebView(infoLink: String) {
+                listener.goToWebView(url = infoLink)
+            }
+
+            override fun toProductDetailInfo(key: String, extParam: String) {
+                listener.onAnnotationOpenProductInfoSheet(
+                    extParam = extParam,
+                    trackData = annotationTrackData.copy(
+                        parentTrackData = trackData,
+                        key = key,
+                        value = data.subtitle
+                    )
+                )
+            }
+        })
+    }
+
+    private fun setImpression(data: ProductDetailInfoContent, trackData: ComponentTrackDataModel?) {
+        if (data.key == Content.KEY_PANDUAN_UKURAN) {
+            binding.root.addOnImpressionListener(data.impressionHolder) {
+                listener.onAnnotationGenericImpression(
+                    trackData = annotationTrackData.copy(
+                        parentTrackData = trackData,
+                        key = data.key,
+                        value = data.subtitle
+                    )
+                )
             }
         }
     }

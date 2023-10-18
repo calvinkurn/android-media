@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tkpd.remoteresourcerequest.view.ImageDensityType
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.Constant.DISCO_EMPTY_STATE_IMG
 import com.tokopedia.discovery2.Constant.EmptyStateTexts.EMPTY_IMAGE
 import com.tokopedia.discovery2.Constant.EmptyStateTexts.FILTER_EMPTY_IMAGE
 import com.tokopedia.discovery2.R
@@ -20,7 +22,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
-    private lateinit var emptyStateViewModel: EmptyStateViewModel
+    private var emptyStateViewModel: EmptyStateViewModel? = null
     private val horizontalView: ConstraintLayout = itemView.findViewById(R.id.horizontal_view)
     private val verticalView: ConstraintLayout = itemView.findViewById(R.id.vertical_view)
     private val verticalTitle: Typography = itemView.findViewById(R.id.vertical_title_tv)
@@ -34,29 +36,51 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         emptyStateViewModel = discoveryBaseViewModel as EmptyStateViewModel
-        getSubComponent().inject(emptyStateViewModel)
+        emptyStateViewModel?.let {
+            getSubComponent().inject(it)
+        }
         init()
     }
 
     private fun init() {
-        emptyStateViewModel.getEmptyStateData().let {
-            if(it.isHorizontal){
+        emptyStateViewModel?.getEmptyStateData().let {
+            if (it?.isHorizontal == true) {
                 horizontalView.show()
                 verticalView.hide()
                 horizontalTitle.text = it.title
                 horizontalDecription.text = it.description
-                if (it.isFilterState) {
+                if (it.isRedirectionState) {
+                    horizontalButton.show()
+                    horizontalButton.text = it.buttonText
+                    horizontalButton.setOnClickListener { _ ->
+                        if (!it.buttonApplink.isNullOrEmpty()) {
+                            RouteManager.route(itemView.context, it.buttonApplink)
+                        }
+                    }
+                    if (!it.imageURL.isNullOrEmpty()) {
+                        horizontalImageView.loadRemoteImageDrawable(
+                            DISCO_EMPTY_STATE_IMG,
+                            it.imageURL
+                                ?: ""
+                        )
+                    } else {
+                        horizontalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE, ImageDensityType.SUPPORT_SINGLE_DPI)
+                    }
+                    return@let
+                } else if (it.isFilterState) {
                     horizontalButton.show()
                     horizontalButton.setOnClickListener {
-                        emptyStateViewModel.handleEmptyStateReset()
+                        emptyStateViewModel?.handleEmptyStateReset()
                     }
-                    horizontalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE,  ImageDensityType.SUPPORT_SINGLE_DPI)
-                }else{
+                    horizontalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE, ImageDensityType.SUPPORT_SINGLE_DPI)
+                } else {
                     horizontalButton.hide()
                     horizontalImageView.loadRemoteImageDrawable(EMPTY_IMAGE)
                 }
             } else {
-                setVerticalState(it)
+                if (it != null) {
+                    setVerticalState(it)
+                }
             }
         }
     }
@@ -66,13 +90,31 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
         verticalView.show()
         verticalTitle.text = emptyStateModel.title
         verticalDecription.text = emptyStateModel.description
-        if (emptyStateModel.isFilterState) {
+        if (emptyStateModel.isRedirectionState) {
             verticalButton.show()
-            verticalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE,  ImageDensityType.SUPPORT_SINGLE_DPI)
-            verticalButton.setOnClickListener {
-                emptyStateViewModel.handleEmptyStateReset()
+            verticalButton.text = emptyStateModel.buttonText
+            if (!emptyStateModel.imageURL.isNullOrEmpty()) {
+                verticalImageView.loadRemoteImageDrawable(
+                    DISCO_EMPTY_STATE_IMG,
+                    emptyStateModel.imageURL
+                        ?: ""
+                )
+            } else {
+                verticalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE, ImageDensityType.SUPPORT_SINGLE_DPI)
             }
-        }else{
+            verticalButton.setOnClickListener { _ ->
+                if (!emptyStateModel.buttonApplink.isNullOrEmpty()) {
+                    RouteManager.route(itemView.context, emptyStateModel.buttonApplink)
+                }
+            }
+            return
+        } else if (emptyStateModel.isFilterState) {
+            verticalButton.show()
+            verticalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE, ImageDensityType.SUPPORT_SINGLE_DPI)
+            verticalButton.setOnClickListener {
+                emptyStateViewModel?.handleEmptyStateReset()
+            }
+        } else {
             verticalButton.hide()
             verticalImageView.loadRemoteImageDrawable(EMPTY_IMAGE)
         }
@@ -81,9 +123,9 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { lifecycle ->
-            emptyStateViewModel.getSyncPageLiveData().observe(lifecycle, {
+            emptyStateViewModel?.getSyncPageLiveData()?.observe(lifecycle) {
                 if (it) (fragment as DiscoveryFragment).reSync()
-            })
+            }
         }
     }
 }

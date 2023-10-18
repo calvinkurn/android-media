@@ -1,5 +1,7 @@
 package com.tokopedia.wishlist.util
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 /**
  * Created by fwidjaja on 14/10/21.
  */
@@ -38,7 +40,7 @@ object WishlistV2Consts {
 
     const val SPEC_0 = 0
     const val SPEC_2 = 2
-    const val CREATE_NEW_COLLECTION_BG_IMAGE = "https://images.tokopedia.net/img/android/wishlist_collection/bg_create_new.png"
+    const val CREATE_NEW_COLLECTION_BG_IMAGE = TokopediaImageUrl.CREATE_NEW_COLLECTION_BG_IMAGE
     const val EMPTY_WISHLIST_PAGE_NAME = "empty_wishlist"
     const val WISHLIST_TOPADS_SOURCE = "6"
     const val WISHLIST_TOPADS_ADS_COUNT = 1
@@ -63,4 +65,6 @@ object WishlistV2Consts {
     const val ACTION_RESET_FILTER = "RESET_FILTER"
     const val ACTION_OPEN_MY_WISHLIST = "OPEN_MY_WISHLIST"
     const val ACTION_BACK_TO_HOME = "BACK_TO_HOME"
+
+    const val INDICATOR_PROGRESS_BAR_PERCENTAGE = 100
 }

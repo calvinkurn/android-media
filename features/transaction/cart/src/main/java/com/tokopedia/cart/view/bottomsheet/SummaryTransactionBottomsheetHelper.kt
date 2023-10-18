@@ -7,18 +7,23 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.cart.view.uimodel.PromoSummaryData
-import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
-import com.tokopedia.cart.view.adapter.cart.CartPromoSummaryAdapter
 import com.tokopedia.cart.databinding.LayoutBottomsheetSummaryTransactionBinding
+import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
+import com.tokopedia.cart.view.adapter.cart.CartAddOnSummaryAdapter
+import com.tokopedia.cart.view.adapter.cart.CartPromoSummaryAdapter
+import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
-fun showSummaryTransactionBottomsheet(summaryTransactionUiModel: SummaryTransactionUiModel, promoSummaryUiModel: PromoSummaryData?, fragmentManager: FragmentManager, context: Context) {
-
+fun showSummaryTransactionBottomsheet(
+    summaryTransactionUiModel: SummaryTransactionUiModel,
+    promoSummaryUiModel: PromoSummaryData?,
+    fragmentManager: FragmentManager,
+    context: Context
+) {
     val bottomSheet = BottomSheetUnify().apply {
         showKnob = true
         showCloseIcon = false
@@ -37,6 +42,7 @@ fun showSummaryTransactionBottomsheet(summaryTransactionUiModel: SummaryTransact
         renderPromo(binding, it)
     }
     renderSellerCashback(binding, summaryTransactionUiModel)
+    renderSummaryAddon(binding, summaryTransactionUiModel)
     renderSeparatorBenefit(binding, summaryTransactionUiModel, promoSummaryUiModel)
 
     bottomSheet.setChild(binding.root)
@@ -55,8 +61,8 @@ private fun renderSellerCashback(binding: LayoutBottomsheetSummaryTransactionBin
     if (summaryTransactionUiModel.sellerCashbackValue > 0) {
         binding.textTotalCashbackValue.apply {
             text = CurrencyFormatUtil.convertPriceValueToIdrFormat(summaryTransactionUiModel.sellerCashbackValue, false)
-                    .replace("Rp", "")
-                    .removeDecimalSuffix()
+                .replace("Rp", "")
+                .removeDecimalSuffix()
             visibility = View.VISIBLE
         }
         binding.textTotalCashbackTitle.apply {
@@ -135,5 +141,20 @@ private fun renderPriceTotal(binding: LayoutBottomsheetSummaryTransactionBinding
     }
     binding.textPriceTotalValue.apply {
         this.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(summaryTransactionUiModel.totalValue, false).removeDecimalSuffix()
+    }
+}
+
+private fun renderSummaryAddon(binding: LayoutBottomsheetSummaryTransactionBinding, summaryTransactionUiModel: SummaryTransactionUiModel) {
+    with(binding) {
+        if (summaryTransactionUiModel.listSummaryAddOns.isNotEmpty()) {
+            val adapter = CartAddOnSummaryAdapter(summaryTransactionUiModel.listSummaryAddOns)
+            recyclerViewAddOnSummary.layoutManager = LinearLayoutManager(root.context, RecyclerView.VERTICAL, false)
+            recyclerViewAddOnSummary.setHasFixedSize(true)
+            recyclerViewAddOnSummary.adapter = adapter
+
+            recyclerViewAddOnSummary.visibility = View.VISIBLE
+        } else {
+            recyclerViewAddOnSummary.visibility = View.GONE
+        }
     }
 }

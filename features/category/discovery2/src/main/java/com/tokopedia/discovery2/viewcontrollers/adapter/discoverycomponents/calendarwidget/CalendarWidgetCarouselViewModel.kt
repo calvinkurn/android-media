@@ -28,8 +28,9 @@ class CalendarWidgetCarouselViewModel(
         const val PRODUCT_PER_PAGE = 10
     }
 
+    @JvmField
     @Inject
-    lateinit var calenderWidgetUseCase: ProductCardsUseCase
+    var calenderWidgetUseCase: ProductCardsUseCase? = null
     private var isLoading = false
     private val calendarCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val calendarLoadError: MutableLiveData<Boolean> = MutableLiveData()
@@ -58,20 +59,21 @@ class CalendarWidgetCarouselViewModel(
 
     fun fetchProductCarouselData() {
         launchCatchError(block = {
-            if (components.properties?.calendarType?.equals(Constant.Calendar.DYNAMIC) == true)
-                calenderWidgetUseCase.loadFirstPageComponents(
+            if (components.properties?.calendarType?.equals(Constant.Calendar.DYNAMIC) == true) {
+                calenderWidgetUseCase?.loadFirstPageComponents(
                     components.id,
                     components.pageEndPoint,
                     PRODUCT_PER_PAGE
                 )
+            }
             components.shouldRefreshComponent = null
             setCalendarList()
         }, onError = {
-            components.noOfPagesLoaded = 1
-            components.verticalProductFailState = true
-            components.shouldRefreshComponent = null
-            calendarLoadError.value = true
-        })
+                components.noOfPagesLoaded = 1
+                components.verticalProductFailState = true
+                components.shouldRefreshComponent = null
+                calendarLoadError.value = true
+            })
     }
 
     fun resetComponent() {
@@ -84,7 +86,7 @@ class CalendarWidgetCarouselViewModel(
             if (it.isNotEmpty()) {
                 calendarLoadError.value = false
                 maxHeight = maxOf(reSyncProductCardHeight(it), maxHeight)
-                it.forEach { item->
+                it.forEach { item ->
                     item.data?.firstOrNull()?.maxHeight = maxHeight
                 }
                 calendarCarouselList.value = addLoadMore(it)
@@ -95,7 +97,7 @@ class CalendarWidgetCarouselViewModel(
         }
     }
 
-    private suspend fun reSyncProductCardHeight(list: ArrayList<ComponentsItem>) : Int{
+    suspend fun reSyncProductCardHeight(list: ArrayList<ComponentsItem>): Int {
         val calendarCardModelArray = ArrayList<DataItem>()
         list.forEach {
             it.data?.firstOrNull()?.let { dataItem ->
@@ -119,13 +121,15 @@ class CalendarWidgetCarouselViewModel(
     fun fetchCarouselPaginatedCalendars() {
         isLoading = true
         launchCatchError(block = {
-            if (calenderWidgetUseCase.getCarouselPaginatedData(
-                    components.id, components.pageEndPoint, PRODUCT_PER_PAGE
-                )
+            if (calenderWidgetUseCase?.getCarouselPaginatedData(
+                    components.id,
+                    components.pageEndPoint,
+                    PRODUCT_PER_PAGE
+                ) == true
             ) {
                 getCalendarList()?.let {
                     maxHeight = maxOf(reSyncProductCardHeight(it), maxHeight)
-                    it.forEach { item->
+                    it.forEach { item ->
                         item.data?.firstOrNull()?.maxHeight = maxHeight
                     }
                     isLoading = false
@@ -136,8 +140,8 @@ class CalendarWidgetCarouselViewModel(
                 paginatedErrorData()
             }
         }, onError = {
-            paginatedErrorData()
-        })
+                paginatedErrorData()
+            })
     }
 
     private fun paginatedErrorData() {
@@ -157,13 +161,15 @@ class CalendarWidgetCarouselViewModel(
         val calendarLoadState: ArrayList<ComponentsItem> = ArrayList()
         calendarLoadState.addAll(calendarDataList)
         if (Utils.nextPageAvailable(components, PRODUCT_PER_PAGE)) {
-            calendarLoadState.add(ComponentsItem(name = ComponentNames.LoadMore.componentName).apply {
-                pageEndPoint = components.pageEndPoint
-                parentComponentId = components.id
-                id = ComponentNames.LoadMore.componentName
-                loadForHorizontal = true
-                discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
-            })
+            calendarLoadState.add(
+                ComponentsItem(name = ComponentNames.LoadMore.componentName).apply {
+                    pageEndPoint = components.pageEndPoint
+                    parentComponentId = components.id
+                    id = ComponentNames.LoadMore.componentName
+                    loadForHorizontal = true
+                    discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
+                }
+            )
         }
         return calendarLoadState
     }
@@ -171,13 +177,15 @@ class CalendarWidgetCarouselViewModel(
     private fun addErrorReLoadView(calendarDataList: ArrayList<ComponentsItem>): ArrayList<ComponentsItem> {
         val calendarLoadState: ArrayList<ComponentsItem> = ArrayList()
         calendarLoadState.addAll(calendarDataList)
-        calendarLoadState.add(ComponentsItem(name = ComponentNames.CarouselErrorLoad.componentName).apply {
-            pageEndPoint = components.pageEndPoint
-            parentComponentId = components.id
-            id = ComponentNames.CarouselErrorLoad.componentName
-            parentComponentPosition = components.position
-            discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
-        })
+        calendarLoadState.add(
+            ComponentsItem(name = ComponentNames.CarouselErrorLoad.componentName).apply {
+                pageEndPoint = components.pageEndPoint
+                parentComponentId = components.id
+                id = ComponentNames.CarouselErrorLoad.componentName
+                parentComponentPosition = components.position
+                discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
+            }
+        )
         return calendarLoadState
     }
 }

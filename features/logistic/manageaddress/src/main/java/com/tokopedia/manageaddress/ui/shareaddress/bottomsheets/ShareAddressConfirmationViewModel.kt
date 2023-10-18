@@ -4,12 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.manageaddress.ui.uimodel.ShareAddressBottomSheetState
-import com.tokopedia.manageaddress.domain.usecase.shareaddress.ShareAddressToUserUseCase
-import com.tokopedia.manageaddress.domain.request.shareaddress.ShareAddressToUserParam
+import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.manageaddress.domain.request.shareaddress.SelectShareAddressParam
+import com.tokopedia.manageaddress.domain.request.shareaddress.ShareAddressToUserParam
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.SelectShareAddressUseCase
+import com.tokopedia.manageaddress.domain.usecase.shareaddress.ShareAddressToUserUseCase
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ShareAddressConfirmationViewModel @Inject constructor(
@@ -18,45 +19,77 @@ class ShareAddressConfirmationViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
-    private val mutableShareAddressResponse = MutableLiveData<ShareAddressBottomSheetState>()
-    val shareAddressResponse: LiveData<ShareAddressBottomSheetState>
-        get() = mutableShareAddressResponse
+    private val _dismissEvent = SingleLiveEvent<Unit>()
+    val dismissEvent: LiveData<Unit>
+        get() = _dismissEvent
 
-    var isApprove = false
+    private val _leavePageEvent = SingleLiveEvent<Unit>()
+    val leavePageEvent: LiveData<Unit>
+        get() = _leavePageEvent
+
+    private val _toastEvent = SingleLiveEvent<Toast>()
+    val toastEvent: LiveData<Toast>
+        get() = _toastEvent
+
+    private val _loading: MutableLiveData<LoadingState> = MutableLiveData(LoadingState.NotLoading)
+    val loading: LiveData<LoadingState>
+        get() = _loading
 
     fun shareAddress(param: ShareAddressToUserParam) {
-        launchCatchError(block = {
-            showLoadingState(true)
-            val result = shareAddressToUserUseCase(param)
-            showLoadingState(false)
-            mutableShareAddressResponse.value = if (result.isSuccessShareAddress) {
-                ShareAddressBottomSheetState.Success
-            } else {
-                ShareAddressBottomSheetState.Fail(result.errorMessage)
+        launch {
+            try {
+                _loading.value = LoadingState.AgreeLoading
+                val result = shareAddressToUserUseCase(param)
+                _toastEvent.value =
+                    if (result.isSuccessShareAddress) Toast.Success else Toast.Error(result.errorMessage)
+                ShareAddressAnalytics.directShareAgreeSendAddress(result.isSuccessShareAddress)
+            } catch (e: Exception) {
+                _toastEvent.value = Toast.Error(e.message.orEmpty())
+                ShareAddressAnalytics.directShareAgreeSendAddress(false)
             }
-        }, onError = {
-            showLoadingState(false)
-            mutableShareAddressResponse.value = ShareAddressBottomSheetState.Fail(it.message.orEmpty())
-        })
+            _loading.value = LoadingState.NotLoading
+            _dismissEvent.call()
+        }
     }
 
-    fun shareAddressFromNotif(param: SelectShareAddressParam) {
-        launchCatchError(block = {
-            showLoadingState(true)
-            val result = selectShareAddressUseCase(param)
-            showLoadingState(false)
-            mutableShareAddressResponse.value = if (result.isSuccess) {
-                ShareAddressBottomSheetState.Success
-            } else {
-                ShareAddressBottomSheetState.Fail(result.errorMessage)
+    fun shareAddressFromNotif(param: SelectShareAddressParam.Param) {
+        launch {
+            try {
+                _loading.value =
+                    if (param.approve) LoadingState.AgreeLoading else LoadingState.DisagreeLoading
+                val result = selectShareAddressUseCase(param)
+                if (param.approve) {
+                    ShareAddressAnalytics.fromNotifAgreeSendAddress(result.isSuccess)
+                    if (result.isSuccess) {
+                        _toastEvent.value = Toast.Success
+                        _leavePageEvent.call()
+                    } else {
+                        _toastEvent.value = Toast.Error(result.errorMessage)
+                    }
+                } else {
+                    ShareAddressAnalytics.fromNotifDisagreeSendAddress(result.isSuccess)
+                }
+            } catch (e: Exception) {
+                _toastEvent.value = Toast.Error(e.message.orEmpty())
+                if (param.approve) {
+                    ShareAddressAnalytics.fromNotifAgreeSendAddress(false)
+                } else {
+                    ShareAddressAnalytics.fromNotifDisagreeSendAddress(false)
+                }
             }
-        }, onError = {
-            showLoadingState(false)
-            mutableShareAddressResponse.value = ShareAddressBottomSheetState.Fail(it.message.orEmpty())
-        })
+            _loading.value = LoadingState.NotLoading
+            _dismissEvent.call()
+        }
     }
 
-    private fun showLoadingState(isShowLoading: Boolean) {
-        mutableShareAddressResponse.value = ShareAddressBottomSheetState.Loading(isShowLoading)
+    sealed interface Toast {
+        object Success : Toast
+        data class Error(val msg: String) : Toast
+    }
+
+    sealed interface LoadingState {
+        object NotLoading : LoadingState
+        object AgreeLoading : LoadingState
+        object DisagreeLoading : LoadingState
     }
 }

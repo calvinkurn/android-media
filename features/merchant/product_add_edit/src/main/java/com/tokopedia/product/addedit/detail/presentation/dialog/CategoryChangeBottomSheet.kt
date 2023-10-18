@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.databinding.BottomsheetCategoryChangeLayoutBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -56,7 +55,6 @@ class CategoryChangeBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupView(binding: BottomsheetCategoryChangeLayoutBinding?) {
-
         binding?.root?.context?.run {
             val text = this.getString(R.string.content_category_change_bs)
             val ss = SpannableString(text)
@@ -70,7 +68,7 @@ class CategoryChangeBottomSheet : BottomSheetUnify() {
 
                 override fun updateDrawState(ds: TextPaint) {
                     context?.run {
-                        ds.color = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                        ds.color = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ds.underlineColor = 0
                     }
                 }

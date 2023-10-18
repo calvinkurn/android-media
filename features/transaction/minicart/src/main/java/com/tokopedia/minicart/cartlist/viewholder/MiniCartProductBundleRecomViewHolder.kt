@@ -12,7 +12,7 @@ import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleWidg
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
 
-class MiniCartProductBundleRecomViewHolder (
+class MiniCartProductBundleRecomViewHolder(
     private val viewBinding: ItemMiniCartProductBundleRecomBinding,
     private val multipleProductBundleListener: MultipleProductBundleListener? = null,
     private val singleProductBundleListener: SingleProductBundleListener? = null
@@ -26,7 +26,7 @@ class MiniCartProductBundleRecomViewHolder (
         private const val BUNDLE_SINGLE_ITEM_SIZE = 1
     }
 
-    private var rvBundleAdapter : ShopHomeProductBundleWidgetAdapter? = null
+    private var rvBundleAdapter: ShopHomeProductBundleWidgetAdapter? = null
     private var bundleListSize = 0
 
     override fun bind(element: MiniCartProductBundleRecomUiModel) {

@@ -1,7 +1,9 @@
 package com.tokopedia.play.di
 
 import android.content.Context
+import androidx.activity.result.ActivityResultRegistry
 import androidx.annotation.Nullable
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.gms.cast.framework.CastContext
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -17,6 +19,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.play.analytic.CastAnalyticHelper
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.analytic.PlayDimensionTrackingHelper
 import com.tokopedia.play.util.PlayCastHelper
 import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.util.share.PlayShareExperienceImpl
@@ -41,7 +44,6 @@ import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.play_common.websocket.KEY_GROUP_CHAT_PREFERENCES
-import com.tokopedia.product.detail.common.VariantConstant.QUERY_VARIANT
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -57,7 +59,7 @@ import javax.inject.Named
  * Created by jegul on 29/11/19
  */
 @Module
-class PlayModule(val mContext: Context) {
+class PlayModule {
 
     @PlayScope
     @Provides
@@ -69,7 +71,9 @@ class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
-    fun providePlayVideoPlayerLifecycleObserver(): PlayVideoPlayerObserver = PlayVideoPlayerObserver(mContext)
+    fun providePlayVideoPlayerLifecycleObserver(activity: AppCompatActivity): PlayVideoPlayerObserver {
+        return PlayVideoPlayerObserver(activity)
+    }
 
     @PlayScope
     @Provides
@@ -92,15 +96,11 @@ class PlayModule(val mContext: Context) {
     @PlayScope
     @Provides
     @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)
-    fun provideUpdateCartCounterMutation(): String {
-        return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.atc_common.R.raw.gql_update_cart_counter)
-    }
-
-    @Provides
-    @PlayScope
-    @Named(QUERY_VARIANT)
-    internal fun provideQueryVariant(): String {
-        return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.variant_common.R.raw.gql_product_variant)
+    fun provideUpdateCartCounterMutation(activity: AppCompatActivity): String {
+        return GraphqlHelper.loadRawString(
+            activity.resources,
+            com.tokopedia.atc_common.R.raw.gql_update_cart_counter
+        )
     }
 
     @Provides
@@ -113,8 +113,8 @@ class PlayModule(val mContext: Context) {
 
     @Provides
     @PlayScope
-    fun provideTrackingQueue(): TrackingQueue {
-        return TrackingQueue(mContext)
+    fun provideTrackingQueue(activity: AppCompatActivity): TrackingQueue {
+        return TrackingQueue(activity)
     }
 
     @Provides
@@ -125,8 +125,8 @@ class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
-    fun provideRemoteConfig(): RemoteConfig {
-        return FirebaseRemoteConfigImpl(mContext)
+    fun provideRemoteConfig(activity: AppCompatActivity): RemoteConfig {
+        return FirebaseRemoteConfigImpl(activity)
     }
 
     @PlayScope
@@ -143,8 +143,8 @@ class PlayModule(val mContext: Context) {
 
     @Provides
     @PlayScope
-    fun providePlayAnalytic(userSession: UserSessionInterface, trackingQueue: TrackingQueue): PlayAnalytic {
-        return PlayAnalytic(userSession, trackingQueue)
+    fun providePlayAnalytic(userSession: UserSessionInterface, trackingQueue: TrackingQueue, dimensionTrackingHelper: PlayDimensionTrackingHelper): PlayAnalytic {
+        return PlayAnalytic(userSession, trackingQueue, dimensionTrackingHelper)
     }
 
     @PlayScope
@@ -222,5 +222,11 @@ class PlayModule(val mContext: Context) {
             mapper,
             connectionUtil
         )
+    }
+
+    @PlayScope
+    @Provides
+    fun provideActivityResultRegistry(activity: AppCompatActivity): ActivityResultRegistry {
+        return activity.activityResultRegistry
     }
 }

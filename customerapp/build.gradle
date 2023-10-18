@@ -1,9 +1,10 @@
 apply plugin: 'com.android.application'
-apply plugin: 'embrace-swazzler'
+if(project.hasProperty('enableEmbraceMa')) {
+    apply plugin: 'embrace-swazzler'
+}
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
 apply plugin: 'newrelic'
-apply plugin: 'robust'
 
 if (project.hasProperty("enable-shrinkresource")) {
     apply from: "$rootProject.projectDir/buildconfig/appcompile/enable-shrinkresource.gradle"
@@ -63,7 +64,7 @@ def isFirebasePerformanceLogEnabled() {
 }
 
 def isEnableMacrobenchmarkUtil() {
-    if (project.hasProperty('enableMacrobenchmarkUtil')?: "false") {
+    if (project.hasProperty('enableMacrobenchmarkUtil')) {
         return "true";
     }
     return "false";
@@ -102,6 +103,8 @@ ext.lintchecks = [
 apply plugin: "org.gradle.test-retry"
 
 android {
+    namespace 'com.tokopedia.tkpd'
+    testNamespace 'com.tokopedia.tkpd.test'
     packagingOptions {
         exclude 'META-INF/**'
         pickFirst '**/armeabi-v7a/libc++_shared.so'
@@ -212,6 +215,14 @@ android {
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
         }
+
+        benchmark {
+            initWith buildTypes.release
+            signingConfig signingConfigs.debug
+            matchingFallbacks = ['release']
+            debuggable false
+            proguardFiles('benchmark-rules.pro')
+        }
     }
 
     defaultConfig {
@@ -280,7 +291,6 @@ android {
 }
 
 dependencies {
-
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 
@@ -309,13 +319,13 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.logger)
-    implementation projectOrAar(rootProject.ext.features.mediaCommon)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
     implementation projectOrAar(rootProject.ext.libraries.screenshot_observer)
     implementation projectOrAar(rootProject.ext.features.addOnGifting)
     implementation projectOrAar(rootProject.ext.features.appCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.youtubePlayer)
 
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.core
@@ -325,10 +335,10 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.supportV13
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.miscDependencies.lottie
+    implementation rootProject.ext.gotoOneKyc.resource
 
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
-    implementation rootProject.ext.firebase.auth
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.firebase.fireStore
     implementation (rootProject.ext.firebase.crashlytics) {
@@ -394,6 +404,8 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
+    implementation rootProject.ext.miscDependencies.profileInstaller
+
     //[START] test and androidTest dependencies
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -444,9 +456,11 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.unifyDependencies.accordion
     implementation rootProject.ext.unifyDependencies.imageGallery
+
     if (project.hasProperty('enableMacrobenchmarkUtil')?: false) {
         implementation projectOrAar(rootProject.ext.libraries.macrobenchmarkUtil)
     }
+
 }
 
 apply plugin: 'com.google.gms.google-services'

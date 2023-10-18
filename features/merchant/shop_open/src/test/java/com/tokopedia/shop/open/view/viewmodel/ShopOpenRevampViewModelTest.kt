@@ -3,11 +3,15 @@ package com.tokopedia.shop.open.view.viewmodel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampSaveShipmentLocationUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ValidateDomainShopNameUseCase
-import com.tokopedia.shop.open.domain.*
+import com.tokopedia.shop.open.domain.ShopOpenRevampCreateShopUseCase
+import com.tokopedia.shop.open.domain.ShopOpenRevampGetSurveyUseCase
+import com.tokopedia.shop.open.domain.ShopOpenRevampSendSurveyUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.mockkObject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 import org.mockito.Matchers.anyMap
@@ -17,7 +21,7 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
 
     @Test
     fun `given success response when validate shop name is called `() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             shopName = "tokoHape"
 
             mockkObject(ValidateDomainShopNameUseCase)
@@ -26,7 +30,7 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
 
             viewModel.checkShopName(shopName)
 
-            advanceTimeBy(400)
+            advanceUntilIdle()
 
             verifyValidateShopNameUseCase(shopName)
 
@@ -47,7 +51,7 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
 
     @Test
     fun `given success response when validate domain name is called `() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             domainName = "tokoHape"
 
             mockkObject(ValidateDomainShopNameUseCase)
@@ -56,7 +60,7 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
 
             viewModel.checkDomainName(domainName)
 
-            advanceTimeBy(400)
+            advanceUntilIdle()
 
             verifyValidateDomainNameUseCase(domainName)
 
@@ -77,14 +81,14 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
 
     @Test
     fun `given shop name validation when shop name is not empty and gotten success result`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mockkObject(ValidateDomainShopNameUseCase)
 
             everyValidateDomainShopNameUseCase(isSuccess = true)
 
             viewModel.validateShopName(shopName)
 
-            advanceTimeBy(400)
+            advanceUntilIdle()
 
             verifyValidateShopNameUseCase(shopName)
 
@@ -95,14 +99,14 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
 
     @Test
     fun `given shop name validation when shop name is not empty and gotten failed result`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mockkObject(ValidateDomainShopNameUseCase)
 
             everyValidateDomainShopNameUseCase(isSuccess = false)
 
             viewModel.validateShopName(shopName)
 
-            advanceTimeBy(400)
+            advanceUntilIdle()
 
             verifyValidateShopNameUseCase(shopName)
 
@@ -113,14 +117,14 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
 
     @Test
     fun `given shop name validation when shop name is not empty and the shop name do not equal to current shop name`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             shopName = "tera1717"
 
             privateCurrentShopNameField.set(viewModel, "erra2222")
 
             viewModel.validateShopName(shopName)
 
-            advanceTimeBy(400)
+            advanceUntilIdle()
 
             Assert.assertTrue((privateCurrentShopNameField).get(viewModel) != shopName)
         }
@@ -128,14 +132,14 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
 
     @Test
     fun `given domain name validation when domain name is not empty and gotten success result`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mockkObject(ValidateDomainShopNameUseCase)
 
             everyValidateDomainShopNameUseCase(isSuccess = true)
 
             viewModel.validateDomainName(domainName)
 
-            advanceTimeBy(400)
+            advanceUntilIdle()
 
             verifyValidateDomainNameUseCase(domainName)
 
@@ -146,14 +150,14 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
 
     @Test
     fun `given domain name validation when domain name is not empty and gotten failed result`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mockkObject(ValidateDomainShopNameUseCase)
 
             everyValidateDomainShopNameUseCase(isSuccess = false)
 
             viewModel.validateDomainName(domainName)
 
-            advanceTimeBy(400)
+            advanceUntilIdle()
 
             verifyValidateDomainNameUseCase(domainName)
 
@@ -164,14 +168,14 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
 
     @Test
     fun `given domain name validation when shop name is not empty and the domain name do not equal to current domain name`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             domainName = "tera5555"
 
             privateCurrentShopNameField.set(viewModel, "erra1818")
 
             viewModel.validateDomainName(domainName)
 
-            advanceTimeBy(400)
+            advanceUntilIdle()
 
             Assert.assertTrue((privateCurrentDomainNameField).get(viewModel) != domainName)
         }
@@ -179,12 +183,14 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
 
     @Test
     fun `given domain name suggestion when shop name is provided and gotten success result`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mockkObject(GetShopDomainNameSuggestionUseCase)
 
             everyGetShopDomainNameSuggestionUseCase(isSuccess = true)
 
             viewModel.getDomainShopNameSuggestions(domainName)
+
+            advanceUntilIdle()
 
             verifyGetShopDomainNameSuggestionUseCase(domainName)
 
@@ -194,12 +200,14 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
 
     @Test
     fun `given domain name suggestion when shop name is provided and gotten failed result`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mockkObject(GetShopDomainNameSuggestionUseCase)
 
             everyGetShopDomainNameSuggestionUseCase(isSuccess = false)
 
             viewModel.getDomainShopNameSuggestions(domainName)
+
+            advanceUntilIdle()
 
             verifyGetShopDomainNameSuggestionUseCase(domainName)
 
@@ -209,12 +217,14 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
 
     @Test
     fun `given shop id when valid shop name and valid domain name are provided and gotten success result`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mockkObject(ShopOpenRevampCreateShopUseCase)
 
             everyCreateShopUseCase(isSuccess = true)
 
             viewModel.createShop(shopName, domainName)
+
+            advanceUntilIdle()
 
             verifyCreateShopUseCase(shopName, domainName)
 
@@ -224,12 +234,14 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
 
     @Test
     fun `given shop id when valid shop name and valid domain name are provided and gotten failed result`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mockkObject(ShopOpenRevampCreateShopUseCase)
 
             everyCreateShopUseCase(isSuccess = false)
 
             viewModel.createShop(shopName, domainName)
+
+            advanceUntilIdle()
 
             verifyCreateShopUseCase(shopName, domainName)
 
@@ -239,12 +251,14 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
 
     @Test
     fun `given success param when send survey data and gotten success result`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mockkObject(ShopOpenRevampSendSurveyUseCase)
 
             everySendSurveyUseCase(isSuccess = true)
 
             viewModel.sendSurveyData(anyMap())
+
+            advanceUntilIdle()
 
             verifySendSurveyUseCase(anyMap())
 
@@ -254,12 +268,14 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
 
     @Test
     fun `given success param when send survey data and gotten failed result`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mockkObject(ShopOpenRevampSendSurveyUseCase)
 
             everySendSurveyUseCase(isSuccess = false)
 
             viewModel.sendSurveyData(anyMap())
+
+            advanceUntilIdle()
 
             verifySendSurveyUseCase(anyMap())
 
@@ -269,12 +285,14 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
 
     @Test
     fun `given quisionaire data when request is executed and gotten success result`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mockkObject(ShopOpenRevampGetSurveyUseCase)
 
             everyGetSurveyUseCase(isSuccess = true)
 
             viewModel.getSurveyQuizionaireData()
+
+            advanceUntilIdle()
 
             verifyGetSurveyUseCase()
 
@@ -284,12 +302,14 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
 
     @Test
     fun `given quisionaire data when request is executed and gotten failed result`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             mockkObject(ShopOpenRevampGetSurveyUseCase)
 
             everyGetSurveyUseCase(isSuccess = false)
 
             viewModel.getSurveyQuizionaireData()
+
+            advanceUntilIdle()
 
             verifyGetSurveyUseCase()
 
@@ -299,7 +319,7 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
 
     @Test
     fun `given success message when shopId, postCode, courierOrigin, addrStreet, lat, long are provided and gotten success result`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val saveShippingData: MutableMap<String, Any> = viewModel.getSaveShopShippingLocationData(shopId, postCode, courierOrigin, addrStreet, lat, long)
 
             mockkObject(ShopOpenRevampSaveShipmentLocationUseCase)
@@ -307,6 +327,8 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
             everySaveShopShipmentLocationUseCase(isSuccess = true)
 
             viewModel.saveShippingLocation(saveShippingData)
+
+            advanceUntilIdle()
 
             verifySaveShopShipmentLocationUseCase(saveShippingData)
 
@@ -316,7 +338,7 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
 
     @Test
     fun `given success message when shopId, postCode, courierOrigin, addrStreet, lat, long are provided and gotten failed result`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val saveShippingData: MutableMap<String, Any> = viewModel.getSaveShopShippingLocationData(shopId, postCode, courierOrigin, addrStreet, lat, long)
 
             mockkObject(ShopOpenRevampSaveShipmentLocationUseCase)
@@ -324,6 +346,8 @@ class ShopOpenRevampViewModelTest: ShopOpenRevampViewModelTestFixtures()  {
             everySaveShopShipmentLocationUseCase(isSuccess = false)
 
             viewModel.saveShippingLocation(saveShippingData)
+
+            advanceUntilIdle()
 
             verifySaveShopShipmentLocationUseCase(saveShippingData)
 

@@ -16,7 +16,7 @@ data class PageResult<T>(
 }
 
 sealed class PageResultState {
-    data class Success(val pageInfo: PageInfo) : PageResultState()
+    data class Success(val pageInfo: PageInfo, val isFirstPage: Boolean) : PageResultState()
     data class Upcoming(val channelId: String) : PageResultState()
     data class Archived(val config: ArchivedUiModel): PageResultState() //Page with config
     object Loading : PageResultState()

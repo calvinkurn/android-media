@@ -24,7 +24,6 @@ abstract class ViewModelModule {
     @ViewModelKey(ShopEditBasicInfoViewModel::class)
     internal abstract fun shopEditBasicInfoViewModel(viewModel: ShopEditBasicInfoViewModel): ViewModel
 
-
     @Binds
     @IntoMap
     @ShopSettingsScope

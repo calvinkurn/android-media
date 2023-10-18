@@ -4,15 +4,26 @@ import android.nfc.tech.IsoDep
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
+import com.tokopedia.common_electronic_money.data.EmoneyInquiryLogRequest
+import com.tokopedia.common_electronic_money.data.EmoneyInquiryLogResponse
+import com.tokopedia.common_electronic_money.data.RechargeEmoneyInquiryLogRequest
+import com.tokopedia.common_electronic_money.data.RechargeEmoneyInquiryLogResponse
+import com.tokopedia.common_electronic_money.domain.usecase.RechargeEmoneyInquiryLogUseCase
 import com.tokopedia.common_electronic_money.util.NFCUtils
 import com.tokopedia.emoney.data.BalanceTapcash
 import com.tokopedia.emoney.util.TapcashObjectMapper.mapTapcashtoEmoney
 import com.tokopedia.emoney.viewmodel.TapcashBalanceViewModel.Companion.COMMAND_GET_CHALLENGE
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.graphql.data.model.GraphqlError.Extensions
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Dispatchers
 import org.junit.Before
@@ -31,6 +42,9 @@ class TapcashBalanceViewModelTest {
 
     @MockK
     lateinit var isoDep: IsoDep
+
+    @RelaxedMockK
+    lateinit var rechargeEmoneyInquiryLogUseCase: RechargeEmoneyInquiryLogUseCase
 
     private lateinit var tapcashBalanceViewModel: TapcashBalanceViewModel
     private lateinit var emptyByteNfc: ByteArray
@@ -57,6 +71,12 @@ class TapcashBalanceViewModelTest {
         {"rechargeUpdateBalanceEmoneyBniTapcash":{"attributes":{"cryptogram":"0600271031CADAAE000000000000000085A00E33BD0F26DFDB71CA6C6CBCE500","rrn":0,"amount":20000,"button_text":"Top-up Sekarang","image_issuer":"https://images.tokopedia.net/img/attachment/2020/11/12/66301108/66301108_3bd5585d-f39b-4d62-b7da-fe677b200e1a.png","card_number":"7546130000056854"},"error":{"id":0,"title":"Ini saldo kamu yang paling baru, ya.","status":0}}}
     """.trimIndent()
 
+    val emoneyInquiryLogRequest = RechargeEmoneyInquiryLogRequest(
+        EmoneyInquiryLogRequest(
+            3, 0, "7546130000056854", "Message Network Logger: Error get balance", 0.0
+        )
+    )
+
     @Before
     fun setUp(){
         MockKAnnotations.init(this)
@@ -66,7 +86,7 @@ class TapcashBalanceViewModelTest {
         challangeResultSuccess = NFCUtils.stringToByteArrayRadix(challangeResult)
         challangeResultFail = NFCUtils.stringToByteArrayRadix(challangeFail)
         challangeResultEmpty = NFCUtils.stringToByteArrayRadix("")
-        tapcashBalanceViewModel = spyk(TapcashBalanceViewModel(graphqlRepository, Dispatchers.Unconfined))
+        tapcashBalanceViewModel = spyk(TapcashBalanceViewModel(graphqlRepository, rechargeEmoneyInquiryLogUseCase, Dispatchers.Unconfined))
     }
 
     private fun initSuccessData(){
@@ -377,7 +397,102 @@ class TapcashBalanceViewModelTest {
         tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
         //then
-        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.message, "Error get balance")
+        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.first?.message, "Error get balance")
+        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.second, emoneyInquiryLogRequest)
+    }
+
+    @Test
+    fun processTagIntent_WriteBalanceTapcash_FailedGRPC() {
+        //given
+        initSuccessData()
+        val secureByteRequest = NFCUtils.stringToByteArrayRadix(secureRequest)
+        val secureByteResult =
+            NFCUtils.stringToByteArrayRadix(secureResult)
+
+        every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultSuccess
+        every { tapcashBalanceViewModel.getRandomString() } returns terminalRandomNumber
+        every { isoDep.transceive(secureByteRequest) } returns secureByteResult
+
+        val errorGql = GraphqlError().apply {
+            message = "Error get balance"
+            extensions = Extensions().apply {
+                developerMessage = "GRPC timeout"
+            }
+        }
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[BalanceTapcash::class.java] = listOf(errorGql)
+
+        val gqlResponseWriteBalanceFailed = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseWriteBalanceFailed
+        //when
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
+
+        //then
+        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.first?.message, "Error get balance")
+        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.second, emoneyInquiryLogRequest)
+    }
+
+    @Test
+    fun processTagIntent_WriteBalanceTapcash_DeveloperMessageNull() {
+        //given
+        initSuccessData()
+        val secureByteRequest = NFCUtils.stringToByteArrayRadix(secureRequest)
+        val secureByteResult =
+            NFCUtils.stringToByteArrayRadix(secureResult)
+
+        every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultSuccess
+        every { tapcashBalanceViewModel.getRandomString() } returns terminalRandomNumber
+        every { isoDep.transceive(secureByteRequest) } returns secureByteResult
+
+        val errorGql = GraphqlError().apply {
+            message = "Error get balance"
+            extensions = Extensions().apply {
+                developerMessage = null
+            }
+        }
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[BalanceTapcash::class.java] = listOf(errorGql)
+
+        val gqlResponseWriteBalanceFailed = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseWriteBalanceFailed
+        //when
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
+
+        //then
+        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.first?.message, "Error get balance")
+        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.second, emoneyInquiryLogRequest)
+    }
+
+    @Test
+    fun processTagIntent_WriteBalanceTapcash_ExtensionNull() {
+        //given
+        initSuccessData()
+        val secureByteRequest = NFCUtils.stringToByteArrayRadix(secureRequest)
+        val secureByteResult =
+            NFCUtils.stringToByteArrayRadix(secureResult)
+
+        every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultSuccess
+        every { tapcashBalanceViewModel.getRandomString() } returns terminalRandomNumber
+        every { isoDep.transceive(secureByteRequest) } returns secureByteResult
+
+        val errorGql = GraphqlError().apply {
+            message = "Error get balance"
+            extensions = null
+        }
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[BalanceTapcash::class.java] = listOf(errorGql)
+
+        val gqlResponseWriteBalanceFailed = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseWriteBalanceFailed
+        //when
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
+
+        //then
+        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.first?.message, "Error get balance")
+        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.second, emoneyInquiryLogRequest)
     }
 
     @Test
@@ -405,7 +520,7 @@ class TapcashBalanceViewModelTest {
         tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
         //then
-        assertEquals(((tapcashBalanceViewModel.errorWrite.value) as Throwable).message, "Maaf, TapCash BNI sedang ada gangguan")
+        assertEquals(((tapcashBalanceViewModel.errorWrite.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message, "Maaf, TapCash BNI sedang ada gangguan")
     }
 
     @Test
@@ -423,7 +538,7 @@ class TapcashBalanceViewModelTest {
         tapcashBalanceViewModel.writeBalance(balanceTapcash, terminalRandomNumberByte)
 
         //then
-        assertEquals(((tapcashBalanceViewModel.errorWrite.value) as Throwable).message, "Maaf, TapCash BNI sedang ada gangguan")
+        assertEquals(((tapcashBalanceViewModel.errorWrite.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message, "Maaf, TapCash BNI sedang ada gangguan")
     }
 
     @Test
@@ -438,7 +553,7 @@ class TapcashBalanceViewModelTest {
         tapcashBalanceViewModel.writeBalance(balanceTapcash, terminalRandomNumberByte)
 
         //then
-        assertEquals(((tapcashBalanceViewModel.errorWrite.value) as Throwable).message, "Maaf, TapCash BNI sedang ada gangguan")
+        assertEquals(((tapcashBalanceViewModel.errorWrite.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message, "Maaf, TapCash BNI sedang ada gangguan")
     }
 
     @Test
@@ -456,7 +571,25 @@ class TapcashBalanceViewModelTest {
         tapcashBalanceViewModel.writeBalance(balanceTapcash, terminalRandomNumberByte)
 
         //then
-        assertEquals(((tapcashBalanceViewModel.errorWrite.value) as Throwable).message, "Maaf, TapCash BNI sedang ada gangguan")
+        assertEquals(((tapcashBalanceViewModel.errorWrite.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message, "Maaf, TapCash BNI sedang ada gangguan")
+    }
+
+    @Test
+    fun processTagIntent_WriteBalanceTapcash_IsodepException() {
+        //given
+        initSuccessData()
+        tapcashBalanceViewModel.isoDep = isoDep
+        val writeByteRequest = NFCUtils.stringToByteArrayRadix("9036140125031402140300EFCE6ACABEA98BF985A00E33BD0F26DFDB71CA6C6CBCE500000000000000000018")
+        val balanceTapcash = Gson().fromJson(dummyResponseWithCrypto, BalanceTapcash::class.java)
+        val terminalRandomNumberByte = NFCUtils.hexStringToByteArray(terminalRandomNumber)
+
+        every { isoDep.transceive(writeByteRequest) } answers { throw Exception() }
+
+        //when
+        tapcashBalanceViewModel.writeBalance(balanceTapcash, terminalRandomNumberByte)
+
+        //then
+        assertEquals(((tapcashBalanceViewModel.errorWrite.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message, "Maaf, TapCash BNI sedang ada gangguan")
     }
 
     @Test
@@ -561,6 +694,84 @@ class TapcashBalanceViewModelTest {
         tapcashBalanceViewModel.isoDep = isoDep
         //then
         assertEquals(tapcashBalanceViewModel.isoDep, isoDep)
+    }
+
+    @Test
+    fun processTapcashErrorLogging_ExpectedSuccess() {
+        //given
+        val errorMessage = "Error Logging"
+        val tapcashLogErrorResponse = RechargeEmoneyInquiryLogResponse(
+            emoneyInquiryLog = EmoneyInquiryLogResponse (
+                inquiryId = 1L,
+                status = "Success",
+                message = "Success"
+            )
+        )
+
+        val tapcashLogRequest = RechargeEmoneyInquiryLogRequest(
+            log = EmoneyInquiryLogRequest(
+                rc = errorMessage
+            )
+        )
+        coEvery {
+            rechargeEmoneyInquiryLogUseCase.execute(tapcashLogRequest)
+        } returns tapcashLogErrorResponse
+
+        //when
+
+        tapcashBalanceViewModel.tapcashErrorLogging(tapcashLogRequest)
+
+        //then
+
+        assertEquals((((tapcashBalanceViewModel.tapcashLogError.value) as Pair<Result<RechargeEmoneyInquiryLogResponse>, RechargeEmoneyInquiryLogRequest>).first as Success).data, tapcashLogErrorResponse)
+        assertEquals(((tapcashBalanceViewModel.tapcashLogError.value) as Pair<Result<RechargeEmoneyInquiryLogResponse>, RechargeEmoneyInquiryLogRequest>).second , tapcashLogRequest)
+    }
+
+    @Test
+    fun processTapcashErrorLogging_ExpectedFailed() {
+        //given
+        val errorMessage = "Error Logging"
+        val tapcashLogRequest = RechargeEmoneyInquiryLogRequest(
+            log = EmoneyInquiryLogRequest(
+                rc = errorMessage
+            )
+        )
+        coEvery {
+            rechargeEmoneyInquiryLogUseCase.execute(tapcashLogRequest)
+        } throws MessageErrorException(errorMessage)
+
+        //when
+
+        tapcashBalanceViewModel.tapcashErrorLogging(tapcashLogRequest)
+
+        //then
+
+        assertEquals((((tapcashBalanceViewModel.tapcashLogError.value) as Pair<Result<RechargeEmoneyInquiryLogResponse>, RechargeEmoneyInquiryLogRequest>).first as Fail).throwable.message, errorMessage)
+        assertEquals(((tapcashBalanceViewModel.tapcashLogError.value) as Pair<Result<RechargeEmoneyInquiryLogResponse>, RechargeEmoneyInquiryLogRequest>).second , tapcashLogRequest)
+    }
+
+    @Test
+    fun getCardNumber_ExpectedFailed_PurseEmpty() {
+        //given
+        val successCardNumber = ""
+
+        //when
+        val expectedCardNumber = tapcashBalanceViewModel.getCardNumber("")
+
+        //then
+        assertEquals(successCardNumber, expectedCardNumber)
+    }
+
+    @Test
+    fun getCardNumber_ExpectedFailed_PurseLength() {
+        //given
+        val successCardNumber = ""
+
+        //when
+        val expectedCardNumber = tapcashBalanceViewModel.getCardNumber("0701004E200000007546130000056854")
+
+        //then
+        assertEquals(successCardNumber, expectedCardNumber)
     }
 
     private fun checkAssertEmoneyInquiry(expected: EmoneyInquiry, actual: EmoneyInquiry){

@@ -68,7 +68,8 @@ class InspirationCarouselProductDataViewMapper {
                 parentId = product.parentId,
                 minOrder = product.minOrder,
                 trackingOption = trackingOption,
-                StockBarDataView.create(product.stockBar),
+                stockBarDataView = StockBarDataView.create(product.stockBar),
+                warehouseID = product.warehouseIdDefault,
             )
         }
     }

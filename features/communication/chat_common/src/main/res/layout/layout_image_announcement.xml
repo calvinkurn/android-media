@@ -47,7 +47,7 @@
             android:focusable="true"
             android:text="@string/title_chatcommon_check"
             android:textAllCaps="false"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/Unify_NN0"
             android:textStyle="bold"
             tools:ignore="UnifyComponentUsage" />
 
@@ -61,7 +61,7 @@
         android:layout_gravity="start"
         android:layout_marginTop="@dimen/chatcommon_3dp"
         android:gravity="start"
-        android:textColor="@color/Unify_N300"
+        android:textColor="@color/Unify_NN500"
         app:typographyType="small"
         tools:text="testtest" />
 

@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.logout.di.module.LogoutViewModelModule
-import com.tokopedia.logout.view.LogoutActivity
+import com.tokopedia.logout.LogoutActivity
 import dagger.BindsInstance
 import dagger.Component
 

@@ -2,10 +2,9 @@ package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
 import com.tokopedia.logisticCommon.domain.model.Place
+import com.tokopedia.logisticCommon.domain.usecase.GetAutoCompleteUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.AutoCompleteMapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -17,7 +16,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,7 +26,7 @@ class SearchPageViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val repo: KeroRepository = mockk(relaxed = true)
+    private val repo: GetAutoCompleteUseCase = mockk(relaxed = true)
     private val autoCompleterMapper = AutoCompleteMapper()
 
     private lateinit var searchPageViewModel: SearchPageViewModel
@@ -45,33 +43,26 @@ class SearchPageViewModelTest {
     }
 
     @Test
-    fun `Get Auto Complete List Success`() {
-        coEvery { repo.getAutoComplete(any(), any()) } returns AutoCompleteResponse()
+    fun `verify when get auto complete list success`() {
+        // Given
+        coEvery { repo(any()) } returns AutoCompleteResponse()
+
+        // When
         searchPageViewModel.getAutoCompleteList("Jakarta", "")
+
+        // Then
         verify { autoCompleteListObserver.onChanged(match { it is Success }) }
     }
 
     @Test
-    fun `Get Auto Complete List Fail`() {
-        coEvery { repo.getAutoComplete(any(), any()) } throws defaultThrowable
+    fun `verify when get auto complete list failed`() {
+        // Given
+        coEvery { repo(any()) } throws defaultThrowable
+
+        // When
         searchPageViewModel.getAutoCompleteList("Jakarta", "")
+
+        // Then
         verify { autoCompleteListObserver.onChanged(match { it is Fail }) }
-    }
-
-    @Test
-    fun `Get Address Data`() {
-        val address = SaveAddressDataModel(formattedAddress = "Unnamed Road, Jl Testimoni", selectedDistrict = "Testimoni")
-
-        searchPageViewModel.setAddress(address)
-
-        Assert.assertEquals(searchPageViewModel.getAddress(), address)
-    }
-
-    @Test
-    fun `verify set gms availability flag is correct`() {
-        val gmsAvailable = true
-        searchPageViewModel.isGmsAvailable = gmsAvailable
-
-        Assert.assertEquals(searchPageViewModel.isGmsAvailable, gmsAvailable)
     }
 }

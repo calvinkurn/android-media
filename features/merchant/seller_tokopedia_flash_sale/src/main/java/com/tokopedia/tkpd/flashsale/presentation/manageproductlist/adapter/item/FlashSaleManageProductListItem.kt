@@ -5,7 +5,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 
 data class FlashSaleManageProductListItem(
-    val product: ReservedProduct.Product? = null
+    val product: ReservedProduct.Product = ReservedProduct.Product()
 ) : DelegateAdapterItem {
-    override fun id() = product?.productId.orZero()
+    override fun id() = product.productId.orZero()
 }

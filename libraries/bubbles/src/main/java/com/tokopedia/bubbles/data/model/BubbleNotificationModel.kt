@@ -9,5 +9,6 @@ class BubbleNotificationModel(
     val fullName: String,
     val avatarUrl: String,
     val summary: String,
-    val sentTime: Long
+    val sentTime: Long,
+    val isFromUser: Boolean
 )

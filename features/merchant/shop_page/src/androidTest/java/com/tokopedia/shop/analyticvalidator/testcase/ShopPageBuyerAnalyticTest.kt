@@ -22,21 +22,18 @@ import com.tokopedia.shop.analyticvalidator.util.ShopUiTestUtil
 import com.tokopedia.shop.analyticvalidator.util.ViewActionUtil
 import com.tokopedia.shop.analyticvalidator.util.ViewActionUtil.clickTabLayoutPosition
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
-import com.tokopedia.shop.mock.ShopPageMockResponseConfig
-import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
-import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.AllOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import com.tokopedia.unifycomponents.R as unifyComponentsR
 
 class ShopPageBuyerAnalyticTest {
 
@@ -51,7 +48,7 @@ class ShopPageBuyerAnalyticTest {
     }
 
     @get:Rule
-    var activityRule: IntentsTestRule<ShopPageActivity> = IntentsTestRule(ShopPageActivity::class.java, false, false)
+    var headerActivityRule: IntentsTestRule<ShopPageHeaderActivity> = IntentsTestRule(ShopPageHeaderActivity::class.java, false, false)
 
     @get:Rule
     var cassavaRule = CassavaTestRule()
@@ -91,19 +88,19 @@ class ShopPageBuyerAnalyticTest {
 //    }
 
     private fun validateTrackerShopHeaderJourney() {
-        activityRule.activity.finish()
+        headerActivityRule.activity.finish()
         doAnalyticDebuggerTest(SHOP_PAGE_CLICK_TABS_TRACKER_MATCHER_PATH)
     }
 
     private fun validateTrackerShopProductTabJourney() {
-        activityRule.activity.finish()
+        headerActivityRule.activity.finish()
         doAnalyticDebuggerTest(SHOP_PAGE_PRODUCT_TAB_CLICK_SORT_TRACKER_MATCHER_PATH)
         doAnalyticDebuggerTest(SHOP_PAGE_PRODUCT_TAB_CLICK_ETALASE_TRACKER_MATCHER_PATH)
         doAnalyticDebuggerTest(SHOP_PAGE_PRODUCT_TAB_PRODUCT_CARD_TRACKER_MATCHER_PATH)
     }
 
     private fun validateTrackerShopHomeTabJourney() {
-        activityRule.activity.finish()
+        headerActivityRule.activity.finish()
         doAnalyticDebuggerTest(SHOP_PAGE_HOME_TAB_DISPLAY_WIDGET_TRACKER_MATCHER_PATH)
         doAnalyticDebuggerTest(SHOP_PAGE_HOME_TAB_FEATURED_PRODUCT_WIDGET_TRACKER_MATCHER_PATH)
         doAnalyticDebuggerTest(SHOP_PAGE_HOME_TAB_NPL_WIDGET_TRACKER_MATCHER_PATH)
@@ -160,7 +157,7 @@ class ShopPageBuyerAnalyticTest {
         Espresso.onView(
             firstView(
                 AllOf.allOf(
-                    withId(R.id.snackbar_btn)
+                    withId(unifyComponentsR.id.snackbar_btn)
                 )
             )
         ).perform(click())
@@ -174,7 +171,7 @@ class ShopPageBuyerAnalyticTest {
         Espresso.onView(
             firstView(
                 AllOf.allOf(
-                    withId(R.id.bottom_sheet_close)
+                    withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)
                 )
             )
         ).perform(click())
@@ -194,18 +191,18 @@ class ShopPageBuyerAnalyticTest {
 
         Espresso.onView(
             AllOf.allOf(
-                withId(R.id.carouselProductCardRecyclerView)
+                withId(com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView)
             )
         ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
         Espresso.onView(
             AllOf.allOf(
-                withId(R.id.carouselProductCardRecyclerView)
+                withId(com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView)
             )
-        ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, CommonActions.clickChildViewWithId(R.id.buttonAddToCart)))
+        ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, CommonActions.clickChildViewWithId(com.tokopedia.productcard.R.id.buttonAddToCart)))
         Espresso.onView(
             firstView(
                 AllOf.allOf(
-                    withId(R.id.tvSeeAll),
+                    withId(R.id.icon_cta_chevron),
                     isDisplayed()
                 )
             )
@@ -246,7 +243,7 @@ class ShopPageBuyerAnalyticTest {
             (
                 AllOf.allOf(
                     withText("Urutkan"),
-                    isDescendantOfA(withId(R.id.sort_filter_items_wrapper))
+                    isDescendantOfA(withId(com.tokopedia.sortfilter.R.id.sort_filter_items_wrapper))
                 )
                 )
         )
@@ -254,7 +251,7 @@ class ShopPageBuyerAnalyticTest {
             (
                 AllOf.allOf(
                     withText("Etalase Toko"),
-                    isDescendantOfA(withId(R.id.sort_filter_items_wrapper))
+                    isDescendantOfA(withId(com.tokopedia.sortfilter.R.id.sort_filter_items_wrapper))
                 )
                 )
         )
@@ -293,7 +290,7 @@ class ShopPageBuyerAnalyticTest {
                 withId(R.id.recycler_view),
                 isDisplayed()
             )
-        ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, CommonActions.clickChildViewWithId(R.id.imageThreeDots)))
+        ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, CommonActions.clickChildViewWithId(com.tokopedia.productcard.R.id.imageThreeDots)))
     }
 
     private fun testClickTabs() {
@@ -323,7 +320,7 @@ class ShopPageBuyerAnalyticTest {
             firstView(
                 AllOf.allOf(
                     withText("Urutkan"),
-                    isDescendantOfA(withId(R.id.sort_filter_items_wrapper))
+                    isDescendantOfA(withId(com.tokopedia.sortfilter.R.id.sort_filter_items_wrapper))
                 )
             )
         ).perform(click())
@@ -339,7 +336,7 @@ class ShopPageBuyerAnalyticTest {
             firstView(
                 AllOf.allOf(
                     withText("Etalase Toko"),
-                    isDescendantOfA(withId(R.id.sort_filter_items_wrapper))
+                    isDescendantOfA(withId(com.tokopedia.sortfilter.R.id.sort_filter_items_wrapper))
                 )
             )
         ).perform(click())

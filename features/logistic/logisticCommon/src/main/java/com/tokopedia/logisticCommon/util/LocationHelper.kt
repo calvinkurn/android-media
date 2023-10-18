@@ -39,8 +39,7 @@ fun getLatLng(lat: String, long: String): LatLng {
 
 fun getLatLng(lat: Double, long: Double): LatLng = LatLng(lat, long)
 
-fun bitmapDescriptorFromVector(context: Context, @DrawableRes vectorResId: Int)
-        : BitmapDescriptor? {
+fun bitmapDescriptorFromVector(context: Context, @DrawableRes vectorResId: Int): BitmapDescriptor? {
     return ContextCompat.getDrawable(context, vectorResId)?.run {
         setBounds(0, 0, intrinsicWidth, intrinsicHeight)
         val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
@@ -50,35 +49,35 @@ fun bitmapDescriptorFromVector(context: Context, @DrawableRes vectorResId: Int)
 }
 
 fun rxPinPoint(maps: GoogleMap): Observable<Boolean> =
-        Observable.create({ emitter: Emitter<Boolean> ->
-            maps.setOnCameraMoveListener {
-                emitter.onNext(true)
-            }
-        }, Emitter.BackpressureMode.LATEST)
-                .debounce(REVERSE_GEOCODE_DELAY, TimeUnit.MILLISECONDS)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
+    Observable.create({ emitter: Emitter<Boolean> ->
+        maps.setOnCameraMoveListener {
+            emitter.onNext(true)
+        }
+    }, Emitter.BackpressureMode.LATEST)
+        .debounce(REVERSE_GEOCODE_DELAY, TimeUnit.MILLISECONDS)
+        .subscribeOn(AndroidSchedulers.mainThread())
+        .observeOn(AndroidSchedulers.mainThread())
 
 fun rxEditText(et: EditText): Observable<String> =
-        Observable.create({ emitter: Emitter<String> ->
-            et.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    emitter.onNext(s?.toString() ?: "")
-                }
+    Observable.create({ emitter: Emitter<String> ->
+        et.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                emitter.onNext(s?.toString() ?: "")
+            }
 
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                    // no op
-                }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // no op
+            }
 
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    // no op
-                }
-            })
-        }, Emitter.BackpressureMode.LATEST)
-                .debounce(AUTOCOMPLETE_DELAY, TimeUnit.MILLISECONDS)
-                .distinctUntilChanged()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // no op
+            }
+        })
+    }, Emitter.BackpressureMode.LATEST)
+        .debounce(AUTOCOMPLETE_DELAY, TimeUnit.MILLISECONDS)
+        .distinctUntilChanged()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
 
 fun Subscription.toCompositeSubs(subs: CompositeSubscription) {
     subs.add(this)

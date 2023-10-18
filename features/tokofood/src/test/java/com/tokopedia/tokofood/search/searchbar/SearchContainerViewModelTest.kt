@@ -4,6 +4,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
@@ -16,8 +19,8 @@ class SearchContainerViewModelTest : SearchContainerViewModelTestFixture() {
         val expectedKeyword = "makanan"
         val expectedKeywordList = listOf("ma", "maka", "makana", "makanan")
         var actualKeyword = ""
-        coroutineTestRule.runBlockingTest {
-            val collectorJob = launch {
+        runTest {
+            val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.keywordResult.collectLatest {
                     actualKeyword = it
                 }

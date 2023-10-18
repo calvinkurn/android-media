@@ -1,0 +1,76 @@
+{
+  "readme": "Digital PDP paket data favorite",
+  "mode": "exact",
+  "query": [
+    {
+      "eventAction": "view favorite number chip",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*",
+      "event": "viewDigitalIris",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "sessionIris": ".*",
+      "userId":".*"
+    },
+    {
+      "eventAction": "view favorite contact chip",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*",
+      "event": "viewDigitalIris",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "eventAction": "click favorite number chip",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "eventAction": "click favorite contact chip",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "eventAction": "input from favorite number",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "eventAction": "click on contact icon",
+      "eventLabel": ".*",
+      "eventCategory": "digital - homepage",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "eventAction": "input from contact",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    }
+  ]
+}

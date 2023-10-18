@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_cover_form_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.20" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_cover_form_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.80" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_cover_form_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_cover_form_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/tv_cover_form_description"
+        app:layout_constraintGuide_percent="0.70" />
+
+    <com.tokopedia.play.broadcaster.view.custom.PlayCoverPreview
+        android:id="@+id/cl_cover_form_preview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/gl_cover_form_bottom"
+        app:layout_constraintDimensionRatio="9:16"
+        app:layout_constraintEnd_toEndOf="@id/gl_cover_form_right"
+        app:layout_constraintStart_toStartOf="@id/gl_cover_form_left"
+        app:layout_constraintTop_toTopOf="@id/gl_cover_form_top" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_cover_form_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:gravity="center"
+        android:text="@string/play_bro_cover_form_instruction_bottom_sheet"
+        app:layout_constraintBottom_toTopOf="@id/btn_setup_cover_upload_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_cover_form_preview"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_setup_cover_upload_image"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:unifyButtonSize="medium"
+        android:enabled="false"
+        android:text="@string/play_label_save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,22 +5,34 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.discovery.common.EventObserver
-import com.tokopedia.discovery.common.manager.*
+import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_ATC
+import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_SHARE_PRODUCT
+import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_VISIT_SHOP
+import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST
+import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_PRODUCT
+import com.tokopedia.discovery.common.manager.startSimilarSearch
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.productcard.options.databinding.ProductCardOptionsFragmentLayoutBinding
+import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
+import com.tokopedia.productcard.options.onboarding.OnBoardingListenerDelegate
 import com.tokopedia.productcard.options.tracking.ProductCardOptionsTracking
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.viewBinding
+import javax.inject.Inject
 
 
-internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
+internal class ProductCardOptionsFragment @Inject constructor(
+    private val onBoardingListenerDelegate: OnBoardingListenerDelegate,
+): TkpdBaseV4Fragment(), ProductCardOptionsListener {
 
     private var productCardOptionsViewModel: ProductCardOptionsViewModel? = null
     private var binding: ProductCardOptionsFragmentLayoutBinding? by viewBinding()
@@ -36,6 +48,7 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViewModel()
         observeViewModelData()
+        observeLifeCycle()
     }
 
     private fun initViewModel() {
@@ -54,6 +67,11 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         observeRouteToShopPageEvent()
         observeShareProductEvent()
         observeIsLoadingEvent()
+        observeCoachmarkEvent()
+    }
+
+    private fun observeLifeCycle() {
+        onBoardingListenerDelegate.observeLifeCycle(viewLifecycleOwner)
     }
 
     private fun observeOptionListLiveData() {
@@ -64,7 +82,8 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
 
     private fun loadOptions(optionList: List<Visitable<*>>) {
         val productCardOptionsRecyclerView = binding?.productCardOptionsRecyclerView ?:return
-        productCardOptionsRecyclerView.adapter = ProductCardOptionsAdapter(ProductCardOptionsTypeFactoryImpl()).also {
+        val typeFactory = ProductCardOptionsTypeFactoryImpl(this)
+        productCardOptionsRecyclerView.adapter = ProductCardOptionsAdapter(typeFactory).also {
             it.setList(optionList)
         }
 
@@ -156,8 +175,38 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         })
     }
 
+    private fun observeCoachmarkEvent() {
+        productCardOptionsViewModel?.getCoachmarkEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            val recyclerView = binding?.productCardOptionsRecyclerView ?: return@EventObserver
+            onBoardingListenerDelegate.buildCoachMark(recyclerView, it.adapterPosition)
+        })
+    }
+
+    override fun onProductCardOptionsItemImpressed(
+        option: ProductCardOptionsItemModel,
+        adapterPosition: Int,
+    ) {
+        productCardOptionsViewModel?.checkShouldDisplaySimilarSearchCoachmark(
+            option,
+            adapterPosition,
+        )
+    }
+
     override fun onDestroyView() {
         Toaster.onCTAClick = View.OnClickListener { }
         super.onDestroyView()
+    }
+
+    companion object {
+        @JvmStatic
+        internal fun newInstance(
+            classLoader: ClassLoader,
+            fragmentFactory: FragmentFactory,
+        ): Fragment {
+            return fragmentFactory.instantiate(
+                classLoader,
+                ProductCardOptionsFragment::class.java.name,
+            )
+        }
     }
 }

@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 
 buildscript {
@@ -17,6 +16,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.usercomponents'
+    testNamespace 'com.tokopedia.usercomponents.test'
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
@@ -40,11 +41,6 @@ android {
     }
 }
 
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
-
 dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -65,7 +61,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.applink)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.graphql)

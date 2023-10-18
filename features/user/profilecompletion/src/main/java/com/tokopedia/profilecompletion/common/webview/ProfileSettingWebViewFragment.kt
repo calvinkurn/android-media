@@ -5,11 +5,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.webkit.WebView
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.profilecompletion.di.ActivityComponentFactory
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
-import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.webview.BaseWebViewFragment
 import javax.inject.Inject
 
@@ -20,46 +17,46 @@ class ProfileSettingWebViewFragment : BaseWebViewFragment() {
     lateinit var tracker: ProfileInfoTracker
 
     override fun onFragmentBackPressed(): Boolean {
-	if (Uri.parse(url).path?.contains(SUFFIX_CHANGE_EMAIL) == true) {
-	    tracker.trackClickOnBtnBackChangeEmail()
-	}
-	return super.onFragmentBackPressed()
+        if (Uri.parse(url).path?.contains(SUFFIX_CHANGE_EMAIL) == true) {
+            tracker.trackClickOnBtnBackChangeEmail()
+        }
+        return super.onFragmentBackPressed()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-	super.onCreate(savedInstanceState)
-	this.activity?.let {
-	    getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
-	}
+        super.onCreate(savedInstanceState)
+        this.activity?.let {
+            getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
+        }
     }
 
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
-	if (isUrlAppLinkSuccessChangeEmail(url)) {
-	    onChangeEmailSuccess()
-	    return true
-	}
-	return super.shouldOverrideUrlLoading(webview, url)
+        if (isUrlAppLinkSuccessChangeEmail(url)) {
+            onChangeEmailSuccess()
+            return true
+        }
+        return super.shouldOverrideUrlLoading(webview, url)
     }
 
     private fun onChangeEmailSuccess() {
-	activity?.apply {
-	    this.setResult(Activity.RESULT_OK)
-	    this.finish()
-	}
+        activity?.apply {
+            this.setResult(Activity.RESULT_OK)
+            this.finish()
+        }
     }
 
     private fun isUrlAppLinkSuccessChangeEmail(url: String): Boolean {
-	return url.isNotEmpty() && url == APPLINK
+        return url.isNotEmpty() && url == APPLINK
     }
 
     companion object {
-	private const val APPLINK = "tokopedia-android-internal://success-change-email"
-	private const val SUFFIX_CHANGE_EMAIL = "/user/profile/email"
+        private const val APPLINK = "tokopedia-android-internal://success-change-email"
+        private const val SUFFIX_CHANGE_EMAIL = "/user/profile/email"
 
-	fun instance(bundle: Bundle): Fragment {
-	    val fragment = ProfileSettingWebViewFragment()
-	    fragment.arguments = bundle
-	    return fragment
-	}
+        fun instance(bundle: Bundle): Fragment {
+            val fragment = ProfileSettingWebViewFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }

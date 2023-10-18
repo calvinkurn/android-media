@@ -12,10 +12,12 @@ import com.tokopedia.buyerorderdetail.presentation.model.DigitalRecommendationUi
 import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OwocBomDetailSectionUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlatformFeeInfoUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PofRefundInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.SimpleCopyableKeyValueUiModel
@@ -26,10 +28,13 @@ import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
+import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.uimodel.ScpRewardsMedalTouchPointWidgetUiModel
 
 @Suppress("UNCHECKED_CAST")
 open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFactory) :
-        BaseAdapter<BuyerOrderDetailTypeFactory>(typeFactory) {
+    BaseAdapter<BuyerOrderDetailTypeFactory>(typeFactory) {
 
     private fun setupNewItems(
         context: Context?,
@@ -41,6 +46,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
             setupProductListSection(context, uiState.productListUiState.data)
             setupOrderInsuranceSection(context, uiState.orderInsuranceUiState)
             setupEpharmacyInfoSection(context, uiState.epharmacyInfoUiState.data)
+            setupScpRewardsMedalTouchPointSection(uiState.scpRewardsMedalTouchPointWidgetUiState)
             setupShipmentInfoSection(context, uiState.shipmentInfoUiState.data)
             setupPaymentInfoSection(context, uiState.paymentInfoUiState.data)
             setUpPhysicalRecommendationSection(uiState.pgRecommendationWidgetUiState.data)
@@ -60,7 +66,8 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         orderStatusUiModel: OrderStatusUiModel
     ) {
         val shouldAddThinDivider = addOrderStatusHeaderSection(
-            context, orderStatusUiModel.orderStatusHeaderUiModel
+            context,
+            orderStatusUiModel.orderStatusHeaderUiModel
         ).or(
             addTickerSection(context, orderStatusUiModel.ticker)
         ).and(orderStatusUiModel.orderStatusInfoUiModel.shouldShow(context))
@@ -71,7 +78,8 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupOrderResolutionSection(
-        context: Context?, orderResolutionUiState: OrderResolutionTicketStatusUiState
+        context: Context?,
+        orderResolutionUiState: OrderResolutionTicketStatusUiState
     ) {
         if (orderResolutionUiState is OrderResolutionTicketStatusUiState.HasData) {
             if (orderResolutionUiState.data.shouldShow(context)) {
@@ -82,24 +90,42 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupProductListSection(
-        context: Context?, productListUiModel: ProductListUiModel
+        context: Context?,
+        productListUiModel: ProductListUiModel
     ) {
         addThickDividerSection()
         addProductListHeaderSection(context, productListUiModel.productListHeaderUiModel)
+        addTickerDetailsSection(context, productListUiModel.tickerInfo)
+        addPofHeaderSection(context, productListUiModel.productFulfilledHeaderLabel)
+        addProductBmgmListSection(productListUiModel.productBmgmList)
         addProductBundlingListSection(productListUiModel.productBundlingList)
         addProductListSection(context, productListUiModel.productList)
         addAddonsListSection(productListUiModel.addonsListUiModel)
+        addPofHeaderSection(context, productListUiModel.productUnfulfilledHeaderLabel)
+        addProductListSection(context, productListUiModel.productUnFulfilledList)
         addProductListToggleSection(productListUiModel.productListToggleUiModel)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupOrderInsuranceSection(
-        context: Context?, orderInsuranceUiState: OrderInsuranceUiState
+        context: Context?,
+        orderInsuranceUiState: OrderInsuranceUiState
     ) {
         if (orderInsuranceUiState is OrderInsuranceUiState.HasData) {
             if (orderInsuranceUiState.data.shouldShow(context)) {
                 addThickDividerSection()
                 addOrderInsuranceSection(orderInsuranceUiState.data)
             }
+        }
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupScpRewardsMedalTouchPointSection(
+        scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState
+    ) {
+        if (scpRewardsMedalTouchPointWidgetUiState is ScpRewardsMedalTouchPointWidgetUiState.HasData.Showing) {
+            addThickDividerSection()
+            addScpRewardsMedalTouchPointSection(
+                uiModel = scpRewardsMedalTouchPointWidgetUiState.uiModel
+            )
         }
     }
 
@@ -118,6 +144,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         shipmentInfoUiModel: ShipmentInfoUiModel
     ) {
         addThickDividerSection()
+        addOwocSection(context, shipmentInfoUiModel.owocInfoUiModel)
         addPlainHeaderSection(context, shipmentInfoUiModel.headerUiModel)
         addTickerSection(context, shipmentInfoUiModel.ticker)
         addCourierInfoSection(context, shipmentInfoUiModel.courierInfoUiModel)
@@ -139,6 +166,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         addPaymentInfoSection(context, paymentInfoUiModel.paymentInfoItems)
         addThinDividerSection()
         addPaymentGrandTotalSection(context, paymentInfoUiModel.paymentGrandTotal)
+        addPaymentRefundSection(context, paymentInfoUiModel.pofRefundInfoUiModel)
         addPlatformFeeInfoSection()
         addTickerSection(context, paymentInfoUiModel.ticker)
     }
@@ -162,7 +190,9 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         return if (tickerUiModel.shouldShow(context)) {
             add(tickerUiModel)
             true
-        } else false
+        } else {
+            false
+        }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addThinDashedDividerSection() {
@@ -177,6 +207,12 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         add(ThinDividerUiModel())
     }
 
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addScpRewardsMedalTouchPointSection(
+        uiModel: ScpRewardsMedalTouchPointWidgetUiModel
+    ) {
+        (uiModel as? Visitable<BuyerOrderDetailTypeFactory>)?.let { add(it) }
+    }
+
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOrderStatusHeaderSection(
         context: Context?,
         orderStatusHeaderUiModel: OrderStatusUiModel.OrderStatusHeaderUiModel
@@ -184,7 +220,9 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         return if (orderStatusHeaderUiModel.shouldShow(context)) {
             add(orderStatusHeaderUiModel)
             true
-        } else false
+        } else {
+            false
+        }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOrderStatusInfoSection(
@@ -201,11 +239,45 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         if (productListHeaderUiModel.shouldShow(context)) add(productListHeaderUiModel)
     }
 
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addTickerDetailsSection(
+        context: Context?,
+        tickerUiModel: TickerUiModel?
+    ) {
+        if (tickerUiModel != null && tickerUiModel.shouldShow(context)) {
+            tickerUiModel.marginBottom = context?.resources?.getDimensionPixelSize(
+                com.tokopedia.unifyprinciples.R.dimen.unify_space_8
+            )
+            tickerUiModel.marginTop = context?.resources?.getDimensionPixelSize(
+                com.tokopedia.unifyprinciples.R.dimen.unify_space_8
+            )
+
+            add(tickerUiModel)
+        }
+    }
+
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductListSection(
         context: Context?,
-        productList: List<ProductListUiModel.ProductUiModel>
+        productList: List<ProductListUiModel.ProductUiModel>?
     ) {
-        productList.filter { it.shouldShow(context) }.also { addAll(it) }
+        productList?.filter { it.shouldShow(context) }?.also { addAll(it) }
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPofHeaderSection(
+        context: Context?,
+        pofHeaderLabelUiModel: ProductListUiModel.ProductPofHeaderLabelUiModel?
+    ) {
+        if (pofHeaderLabelUiModel?.shouldShow(context) == true) {
+            add(pofHeaderLabelUiModel)
+        }
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPofUnfulfilledHeaderSection(
+        context: Context?,
+        pofHeaderLabelUiModel: ProductListUiModel.ProductPofHeaderLabelUiModel
+    ) {
+        if (pofHeaderLabelUiModel.shouldShow(context)) {
+            add(pofHeaderLabelUiModel)
+        }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addCourierInfoSection(
@@ -213,6 +285,12 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         courierInfoUiModel: ShipmentInfoUiModel.CourierInfoUiModel
     ) {
         if (courierInfoUiModel.shouldShow(context)) add(courierInfoUiModel)
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductBmgmListSection(
+        productBmgmList: List<ProductBmgmSectionUiModel>
+    ) {
+        (productBmgmList as? List<Visitable<BuyerOrderDetailTypeFactory>>)?.let { addAll(it) }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductBundlingListSection(
@@ -312,8 +390,24 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         if (paymentGrandTotal.shouldShow(context)) add(paymentGrandTotal)
     }
 
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPaymentRefundSection(
+        context: Context?,
+        paymentRefund: PofRefundInfoUiModel?
+    ) {
+        if (paymentRefund != null && paymentRefund.shouldShow(context)) add(paymentRefund)
+    }
+
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPlatformFeeInfoSection() {
         add(PlatformFeeInfoUiModel())
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOwocSection(
+        context: Context?,
+        owocBomDetailSectionUiModel: OwocBomDetailSectionUiModel?
+    ) {
+        if (owocBomDetailSectionUiModel?.shouldShow(context = context) == true) {
+            add(owocBomDetailSectionUiModel)
+        }
     }
 
     private inline fun <reified T : Any> removeRecommendationWidget() {

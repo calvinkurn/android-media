@@ -1,6 +1,7 @@
 package com.tokopedia.people.viewmodel.userprofile
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.people.data.UserFollowRepository
 import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.*
 import com.tokopedia.people.model.userprofile.FollowInfoUiModelBuilder
@@ -33,6 +34,7 @@ class UserProfileFollowViewModelTest {
     private val testDispatcher = rule.dispatchers
 
     private val mockRepo: UserProfileRepository = mockk(relaxed = true)
+    private val mockFollowRepo: UserFollowRepository = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
 
     private val commonBuilder = CommonModelBuilder()
@@ -66,8 +68,8 @@ class UserProfileFollowViewModelTest {
 
         coEvery { mockRepo.getFollowInfo(listOf(mockUserId)) } returns mockOwnFollow
 
-        coEvery { mockRepo.followProfile(any()) } returns mockMutationSuccess
-        coEvery { mockRepo.unFollowProfile(any()) } returns mockMutationSuccess
+        coEvery { mockFollowRepo.followUser(any(), true) } returns mockMutationSuccess
+        coEvery { mockFollowRepo.followUser(any(), false) } returns mockMutationSuccess
     }
 
     @Test
@@ -155,6 +157,7 @@ class UserProfileFollowViewModelTest {
         val robot = UserProfileViewModelRobot(
             username = mockOtherUsername,
             repo = mockRepo,
+            followRepo = mockFollowRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
         )
@@ -175,12 +178,13 @@ class UserProfileFollowViewModelTest {
 
     @Test
     fun `when user wants to follow an unfollowed profile and failed, it should emit error event and not change follow status`() {
-        coEvery { mockRepo.followProfile(any()) } returns mockMutationError
+        coEvery { mockFollowRepo.followUser(any(), true) } returns mockMutationError
         coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherNotFollow
 
         val robot = UserProfileViewModelRobot(
             username = mockOtherUsername,
             repo = mockRepo,
+            followRepo = mockFollowRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
         )
@@ -199,12 +203,13 @@ class UserProfileFollowViewModelTest {
 
     @Test
     fun `when user wants to follow an unfollowed profile and throw exception, it should emit error event and not change follow status`() {
-        coEvery { mockRepo.followProfile(any()) } throws mockException
+        coEvery { mockFollowRepo.followUser(any(), true) } throws mockException
         coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherNotFollow
 
         val robot = UserProfileViewModelRobot(
             username = mockOtherUsername,
             repo = mockRepo,
+            followRepo = mockFollowRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
         )
@@ -234,6 +239,7 @@ class UserProfileFollowViewModelTest {
         val robot = UserProfileViewModelRobot(
             username = mockOtherUsername,
             repo = mockRepo,
+            followRepo = mockFollowRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
         )
@@ -254,12 +260,13 @@ class UserProfileFollowViewModelTest {
 
     @Test
     fun `when user wants to unfollow a followed profile and failed, it should emit error event and not change follow status`() {
-        coEvery { mockRepo.unFollowProfile(any()) } returns mockMutationError
+        coEvery { mockFollowRepo.followUser(any(), false) } returns mockMutationError
         coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherFollowed
 
         val robot = UserProfileViewModelRobot(
             username = mockOtherUsername,
             repo = mockRepo,
+            followRepo = mockFollowRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
         )
@@ -278,12 +285,13 @@ class UserProfileFollowViewModelTest {
 
     @Test
     fun `when user wants to unfollow a followed profile and error happen, it should emit error event and not change follow status`() {
-        coEvery { mockRepo.unFollowProfile(any()) } throws mockException
+        coEvery { mockFollowRepo.followUser(any(), false) } throws mockException
         coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherFollowed
 
         val robot = UserProfileViewModelRobot(
             username = mockOtherUsername,
             repo = mockRepo,
+            followRepo = mockFollowRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
         )
@@ -307,6 +315,7 @@ class UserProfileFollowViewModelTest {
         val robot = UserProfileViewModelRobot(
             username = mockOtherUsername,
             repo = mockRepo,
+            followRepo = mockFollowRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
         )

@@ -7,7 +7,7 @@
     android:layout_marginLeft="12dp"
     android:layout_marginRight="12dp"
     android:orientation="vertical"
-    app:cardBackgroundColor="@color/Unify_N0">
+    app:cardBackgroundColor="@color/Unify_NN0">
 
     <FrameLayout
         android:id="@+id/fl_banner"
@@ -23,7 +23,7 @@
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_vertical|left"
             android:layout_marginLeft="-12dp"
-            app:cardBackgroundColor="@color/Unify_N0"
+            app:cardBackgroundColor="@color/Unify_NN0"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp" />
 
@@ -34,7 +34,7 @@
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_vertical|right"
             android:layout_marginRight="-12dp"
-            app:cardBackgroundColor="@color/Unify_N0"
+            app:cardBackgroundColor="@color/Unify_NN0"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp" />
 
@@ -72,7 +72,7 @@
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"
-                app:cardBackgroundColor="@color/Unify_N0"
+                app:cardBackgroundColor="@color/Unify_NN0"
                 app:cardCornerRadius="4dp"
                 app:cardElevation="2dp">
 
@@ -86,6 +86,6 @@
             android:layout_gravity="top"
             android:layout_marginLeft="1dp"
             android:layout_marginRight="1dp"
-            android:background="@color/Unify_N0" />
+            android:background="@color/Unify_NN0" />
     </FrameLayout>
 </LinearLayout>

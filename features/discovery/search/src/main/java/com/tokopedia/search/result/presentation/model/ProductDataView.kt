@@ -29,6 +29,7 @@ class ProductDataView {
     var inspirationCarouselDataView = listOf<InspirationCarouselDataView>()
     var inspirationWidgetDataView = listOf<InspirationWidgetVisitable>()
     var defaultView = 0
+    var gridType = ""
     var relatedDataView: RelatedDataView? = null
     var totalDataText = ""
     var bannerDataView = BannerDataView()

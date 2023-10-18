@@ -37,7 +37,7 @@ object BubblesUtils {
 
     private fun getAlternateBitmap(context: Context): Bitmap? {
         return try {
-            BitmapFactory.decodeResource(context.resources, com.tokopedia.notification.common.R.mipmap.ic_statusbar_notif_seller)
+            BitmapFactory.decodeResource(context.resources, com.tokopedia.bubbles.R.drawable.default_toped_20_user)
         } catch (ex: Exception) {
             null
         }
@@ -50,5 +50,4 @@ object BubblesUtils {
             null
         }
     }
-
 }

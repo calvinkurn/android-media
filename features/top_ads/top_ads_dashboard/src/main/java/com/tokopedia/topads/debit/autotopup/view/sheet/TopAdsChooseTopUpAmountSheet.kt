@@ -109,12 +109,20 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
         }
         adapter?.setListener(object : TopAdsAutoTopUpChipsAdapter.OnCreditOptionItemClicked {
             override fun onItemClicked(position: Int) {
-                data?.let {
+                data?.let { it ->
                     bonusTxt?.text =
-                        Html.fromHtml(String.format(getString(R.string.topads_dash_bonus_String_bottomsheet),
-                            "$bonus%",
-                            Utils.convertToCurrency(calculatePercentage(it?.availableNominals[position].priceFmt,
-                                bonus).toLong())))
+                        Html.fromHtml(
+                            String.format(
+                                getString(R.string.topads_dash_bonus_String_bottomsheet),
+                                "$bonus%",
+                                Utils.convertToCurrency(
+                                    calculatePercentage(
+                                        it.availableNominals[position].priceFmt,
+                                        bonus
+                                    ).toLong()
+                                )
+                            )
+                        )
                     dedAmount?.text = it.availableNominals[position].minCreditFmt
                 }
             }
@@ -134,12 +142,20 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
         /*def should be 200k*/
         adapter?.setSelected()
         bonusTxt?.text =
-            Html.fromHtml(String.format(getString(R.string.topads_dash_bonus_String_bottomsheet),
-                "$bonus%",
-                Utils.convertToCurrency(calculatePercentage(data?.availableNominals?.get(defIndex)?.priceFmt
-                    ?: "1", bonus)
-                    .toLong())))
+            Html.fromHtml(
+                String.format(
+                    getString(R.string.topads_dash_bonus_String_bottomsheet),
+                    "$bonus%",
+                    Utils.convertToCurrency(
+                        calculatePercentage(
+                            data?.availableNominals?.get(defIndex)?.priceFmt
+                                ?: "1",
+                            bonus
+                        )
+                            .toLong()
+                    )
+                )
+            )
         dedAmount?.text = data?.availableNominals?.get(defIndex)?.minCreditFmt
-
     }
 }

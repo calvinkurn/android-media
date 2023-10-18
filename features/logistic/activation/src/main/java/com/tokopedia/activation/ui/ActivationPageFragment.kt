@@ -48,11 +48,11 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-
-class ActivationPageFragment: BaseDaggerFragment() {
+class ActivationPageFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -139,7 +139,7 @@ class ActivationPageFragment: BaseDaggerFragment() {
         itemLayout = view?.findViewById(R.id.item_activation_layout)
         globalError = view?.findViewById(R.id.global_error)
 
-        if(expandLayout) {
+        if (expandLayout) {
             codExpandLL?.show()
         } else {
             codImageExtend?.animate()?.rotation(ANIMATION_ROTATION)?.duration = ANIMATION_DURATION
@@ -147,86 +147,101 @@ class ActivationPageFragment: BaseDaggerFragment() {
         }
 
         codCheckboxTnc?.text = context?.let { HtmlLinkHelper(it, getString(R.string.tnc_checkbox_text_cod)).spannedString }
-        codCheckboxTnc?.setOnTouchListener(ActivationPageTouchListener{
-            goToTncWebView(it)
-        })
+        codCheckboxTnc?.setOnTouchListener(
+            ActivationPageTouchListener {
+                goToTncWebView(it)
+            }
+        )
         codTncDesc1?.text = context?.let { HtmlLinkHelper(it, getString(R.string.tnc_text_1)).spannedString }
-        codTncDesc1?.setOnTouchListener(ActivationPageTouchListener {
-            goToTncWebView(it)
-        })
+        codTncDesc1?.setOnTouchListener(
+            ActivationPageTouchListener {
+                goToTncWebView(it)
+            }
+        )
         codTncDesc2?.text = context?.let { HtmlLinkHelper(it, getString(R.string.tnc_text_2)).spannedString }
         codTncDesc3?.text = context?.let { HtmlLinkHelper(it, getString(R.string.tnc_text_3)).spannedString }
         codSeeMore?.text = context?.let { HtmlLinkHelper(it, getString(R.string.see_more_cod)).spannedString }
-        codSeeMore?.setOnTouchListener(ActivationPageTouchListener {
-            goToTncWebView(it)
-        })
+        codSeeMore?.setOnTouchListener(
+            ActivationPageTouchListener {
+                goToTncWebView(it)
+            }
+        )
     }
 
     private fun initViewModel() {
-        viewModel.shopFeature.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ActivationPageState.Success -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    globalError?.gone()
-                    itemLayout?.visible()
-                    setupView(it.data)
-                }
+        viewModel.shopFeature.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is ActivationPageState.Success -> {
+                        swipeRefreshLayout?.isRefreshing = false
+                        globalError?.gone()
+                        itemLayout?.visible()
+                        setupView(it.data)
+                    }
 
-                is ActivationPageState.Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    if (it.throwable != null) {
-                        handleError(it.throwable)
+                    is ActivationPageState.Fail -> {
+                        swipeRefreshLayout?.isRefreshing = false
+                        if (it.throwable != null) {
+                            handleError(it.throwable)
+                        }
+                    }
+
+                    is ActivationPageState.Loading -> {
+                        swipeRefreshLayout?.isRefreshing = true
                     }
                 }
-
-                is ActivationPageState.Loading -> {
-                    swipeRefreshLayout?.isRefreshing = true
-                }
             }
-        })
+        )
 
-        viewModel.updateShopFeature.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is ActivationPageState.Success -> {
-                    openDialogCoverageValidation(it.data)
-                }
+        viewModel.updateShopFeature.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is ActivationPageState.Success -> {
+                        openDialogCoverageValidation(it.data)
+                    }
 
-                is ActivationPageState.Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    if (it.throwable != null) {
-                        handleError(it.throwable)
+                    is ActivationPageState.Fail -> {
+                        swipeRefreshLayout?.isRefreshing = false
+                        if (it.throwable != null) {
+                            handleError(it.throwable)
+                        }
+                    }
+
+                    is ActivationPageState.Loading -> {
+                        swipeRefreshLayout?.isRefreshing = true
                     }
                 }
-
-                is ActivationPageState.Loading -> {
-                    swipeRefreshLayout?.isRefreshing = true
-                }
             }
-        })
+        )
 
-        viewModel.activatedShipping.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is ActivationPageState.Success -> {
-                    openDialogActivationPage(it.data)
-                }
+        viewModel.activatedShipping.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is ActivationPageState.Success -> {
+                        openDialogActivationPage(it.data)
+                    }
 
-                is ActivationPageState.Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    if (it.throwable != null) {
-                        handleError(it.throwable)
+                    is ActivationPageState.Fail -> {
+                        swipeRefreshLayout?.isRefreshing = false
+                        if (it.throwable != null) {
+                            handleError(it.throwable)
+                        }
+                    }
+
+                    is ActivationPageState.Loading -> {
+                        swipeRefreshLayout?.isRefreshing = true
                     }
                 }
-
-                is ActivationPageState.Loading -> {
-                    swipeRefreshLayout?.isRefreshing = true
-                }
             }
-        })
+        )
     }
 
     private fun initListeners() {
         codImageExtend?.setOnClickListener {
-            if(expandLayout) {
+            if (expandLayout) {
                 codImageExtend?.animate()?.rotation(ANIMATION_ROTATION)?.duration = ANIMATION_DURATION
                 expandLayout = false
                 codExpandLL?.let { layout -> collapse(layout) }
@@ -236,8 +251,6 @@ class ActivationPageFragment: BaseDaggerFragment() {
                 codExpandLL?.let { layout -> expand(layout) }
             }
         }
-
-
     }
 
     private fun setupView(data: ShopFeatureModel) {
@@ -269,26 +282,25 @@ class ActivationPageFragment: BaseDaggerFragment() {
             codLabel?.gone()
             codCheckboxRL?.visible()
             codButtonSave?.buttonVariant = UnifyButton.Variant.FILLED
-            codButtonSave?.isEnabled = codCheckbox?.isChecked?: false
+            codButtonSave?.isEnabled = codCheckbox?.isChecked ?: false
             codButtonSave?.text = getString(R.string.cod_button_active)
             codButtonSave?.setOnClickListener {
                 validateActivatedShipping()
             }
         }
 
-        if(codCheckbox?.isVisible == true) {
+        if (codCheckbox?.isVisible == true) {
             codCheckbox?.setOnCheckedChangeListener { _, isChecked ->
                 codButtonSave?.isEnabled = isChecked
             }
         }
-
     }
 
     private fun getShopFeature() {
         viewModel.getShopFeature(userSession.shopId)
     }
 
-    private fun validateActivatedShipping(){
+    private fun validateActivatedShipping() {
         val userId = userSession.userId
         viewModel.validateActivatedShipping(userId.toLong())
     }
@@ -322,10 +334,11 @@ class ActivationPageFragment: BaseDaggerFragment() {
         view.show()
         val anim = object : Animation() {
             override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
-                view.layoutParams.height = if (interpolatedTime == 1f)
+                view.layoutParams.height = if (interpolatedTime == 1f) {
                     ViewGroup.LayoutParams.WRAP_CONTENT
-                else
+                } else {
                     (targetHeight * interpolatedTime).toInt()
+                }
                 view.requestLayout()
             }
 
@@ -365,7 +378,7 @@ class ActivationPageFragment: BaseDaggerFragment() {
     }
 
     private fun openDialogCoverageValidation(data: UpdateFeatureModel) {
-        if(!data.success) {
+        if (!data.success) {
             swipeRefreshLayout?.isRefreshing = false
             context?.let {
                 DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
@@ -379,15 +392,18 @@ class ActivationPageFragment: BaseDaggerFragment() {
             }
         } else {
             view?.let { view ->
-                if (codValue) Toaster.build(view, COD_INACTIVE_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show()
-                else Toaster.build(view, COD_ACTIVE_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show()
+                if (codValue) {
+                    Toaster.build(view, COD_INACTIVE_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show()
+                } else {
+                    Toaster.build(view, COD_ACTIVE_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show()
+                }
             }
             getShopFeature()
         }
     }
 
     private fun goToTncWebView(link: String): Boolean {
-        return RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${link}")
+        return RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=$link")
     }
 
     private fun handleError(throwable: Throwable) {
@@ -414,8 +430,13 @@ class ActivationPageFragment: BaseDaggerFragment() {
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.build(it, throwable.message
-                            ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                    Toaster.build(
+                        it,
+                        throwable.message
+                            ?: DEFAULT_ERROR_MESSAGE,
+                        Toaster.LENGTH_SHORT,
+                        type = Toaster.TYPE_ERROR
+                    ).show()
                 }
             }
         }
@@ -439,6 +460,4 @@ class ActivationPageFragment: BaseDaggerFragment() {
         private const val INTERPOLATOR_Y1 = 0f
         private const val INTERPOLATOR_Y2 = 1f
     }
-
-
 }

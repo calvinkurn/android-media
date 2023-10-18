@@ -3,16 +3,16 @@ package com.tokopedia.analyticsdebugger.debugger
 import android.content.Context
 import android.os.Environment
 import android.util.Log
-
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.FpmLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.domain.model.FpmFileLogModel
 import com.tokopedia.analyticsdebugger.debugger.domain.model.PerformanceLogModel
-import com.tokopedia.analyticsdebugger.debugger.helper.NotificationHelper
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.FpmDebuggerActivity
+import com.tokopedia.analyticsdebugger.util.NotificationHelper
 import com.tokopedia.config.GlobalConfig
-
+import rx.Subscriber
+import rx.schedulers.Schedulers
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -20,10 +20,6 @@ import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.Date
-
-import rx.Subscriber
-import rx.schedulers.Schedulers
-
 
 class FpmLogger private constructor(private val context: Context) : PerformanceLogger {
     private val dbSource: FpmLogDBSource
@@ -40,11 +36,13 @@ class FpmLogger private constructor(private val context: Context) : PerformanceL
         this.cache = LocalCacheHandler(context, FPM_DEBUGGER)
     }
 
-    override fun save(traceName: String,
-                      startTime: Long,
-                      endTime: Long,
-                      attributes: Map<String, String>,
-                      metrics: Map<String, Long>) {
+    override fun save(
+        traceName: String,
+        startTime: Long,
+        endTime: Long,
+        attributes: Map<String, String>,
+        metrics: Map<String, Long>
+    ) {
         try {
             val performanceLogModel = PerformanceLogModel(traceName)
             performanceLogModel.startTime = startTime
@@ -64,11 +62,9 @@ class FpmLogger private constructor(private val context: Context) : PerformanceL
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
     }
 
     private fun createFormattedDataString(model: PerformanceLogModel): String {
-
         val fpmFileLogModel = FpmFileLogModel()
         val gson = GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create()
 
@@ -88,7 +84,6 @@ class FpmLogger private constructor(private val context: Context) : PerformanceL
         } catch (e: UnsupportedEncodingException) {
             return gson.toJson(fpmFileLogModel)
         }
-
     }
 
     private fun writeToFile(data: String) {
@@ -101,7 +96,6 @@ class FpmLogger private constructor(private val context: Context) : PerformanceL
         } catch (e: IOException) {
             Log.e("Exception", "File write failed: $e")
         }
-
     }
 
     override fun wipe() {
@@ -125,7 +119,6 @@ class FpmLogger private constructor(private val context: Context) : PerformanceL
     private fun defaultSubscriber(): Subscriber<in Boolean> {
         return object : Subscriber<Boolean>() {
             override fun onCompleted() {
-
             }
 
             override fun onError(e: Throwable) {
@@ -146,7 +139,7 @@ class FpmLogger private constructor(private val context: Context) : PerformanceL
         private var instance: PerformanceLogger? = null
 
         @JvmStatic
-        fun getInstance() : PerformanceLogger? {
+        fun getInstance(): PerformanceLogger? {
             return instance
         }
 
@@ -168,28 +161,25 @@ class FpmLogger private constructor(private val context: Context) : PerformanceL
                 override val isNotificationEnabled: Boolean
                     get() = false
 
-                override fun save(traceName: String,
-                                  startTime: Long,
-                                  endTime: Long,
-                                  attributes: Map<String, String>,
-                                  metrics: Map<String, Long>) {
-
+                override fun save(
+                    traceName: String,
+                    startTime: Long,
+                    endTime: Long,
+                    attributes: Map<String, String>,
+                    metrics: Map<String, Long>
+                ) {
                 }
 
                 override fun wipe() {
-
                 }
 
                 override fun openActivity() {
-
                 }
 
                 override fun enableAutoLogFile(status: Boolean) {
-
                 }
 
                 override fun enableNotification(status: Boolean) {
-
                 }
             }
         }

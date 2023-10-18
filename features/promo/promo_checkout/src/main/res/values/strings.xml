@@ -20,17 +20,10 @@
     <string name="promo_checkout_label_error_empty_voucher_code">Kode Voucher Harus Diisi</string>
     <string name="promostacking_checkout_label_error_empty_voucher_code">Kode promo harus diisi</string>
     <string name="promo_label_html_tnc_promo"><![CDATA[<html><head><style>li{ font-size: 10pt; }</style></head><body>%1$s</body></html>]]></string>
-    <string name="promo_popup_ok">OK</string>
-    <string name="promo_popoup_batal">Batal</string>
-    <string name="promo_popup_button_positive_one">Lengkapi Profil</string>
-    <string name="promo_popup_button_negative_one">Nanti Saja</string>
-    <string name="promo_popup_button_positive">Tukar</string>
-    <string name="promo_popup_title">Penukaran Gagal</string>
     <string name="promo_checkout_cataloglist_title">Tukar Pointsmu Denga Koupoon</string>
     <string name="promo_checkout_catalogsubtitle">Cari tahu sekarang juga</string>
     <string name="promo_checkout_tnc"><![CDATA[Syarat & Ketentuan]]></string>
     <string name="promo_checkout_mypoint">Points Saya</string>
-    <string name="promo_checkout_error_desc_redeem">Points Anda tidak terpotong.Permintaan gagal diverifikasi</string>
     <string name="promo_phone_verification_message">Sebelum menggunakan promo ini, harap melakukan verifikasi pada nomor handphone Anda</string>
     <string name="promo_phone_verification_desc">Sebelum menggunakan promo ini, verifikasi dulu nomor HP kamu, ya.</string>
     <string name="promo_verifikasi_title">Ayo verifikasi nomor HP kamu!</string>

@@ -5,7 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorderdetail.R
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.ActionButtonClickListener
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.unifyprinciples.Typography
 
 class SecondaryActionButtonAdapter(private val listener: ActionButtonClickListener?) : RecyclerView.Adapter<SecondaryActionButtonAdapter.ViewHolder>() {

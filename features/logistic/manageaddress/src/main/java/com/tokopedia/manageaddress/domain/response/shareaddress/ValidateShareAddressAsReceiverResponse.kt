@@ -9,7 +9,7 @@ data class ValidateShareAddressAsReceiverResponse(
 ) {
     data class ValidateShareAddressData(
         @SuppressLint("Invalid Data Type")
-        @SerializedName("isValid")
+        @SerializedName("is_valid")
         val isValid: Boolean = false,
         @SerializedName("receiver_user_name")
         val receiverUserName: String? = null,

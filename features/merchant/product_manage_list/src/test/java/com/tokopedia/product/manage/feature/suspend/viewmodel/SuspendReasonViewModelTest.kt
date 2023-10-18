@@ -4,9 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.product.manage.feature.suspend.domain.usecase.SuspendReasonUseCase
 import com.tokopedia.product.manage.feature.suspend.view.uimodel.SuspendReasonUiModel
 import com.tokopedia.product.manage.feature.suspend.view.viewmodel.SuspendReasonViewModel
-import com.tokopedia.product.manage.feature.violation.domain.usecase.ViolationReasonUseCase
-import com.tokopedia.product.manage.feature.violation.view.uimodel.ViolationReasonUiModel
-import com.tokopedia.product.manage.feature.violation.view.viewmodel.ViolationReasonViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

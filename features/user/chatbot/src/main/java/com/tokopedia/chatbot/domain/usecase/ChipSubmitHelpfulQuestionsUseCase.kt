@@ -15,9 +15,8 @@ class ChipSubmitHelpfulQuestionsUseCase @Inject constructor(
 ) : GraphqlUseCase<SubmitOptionListResponse>(graphqlRepository) {
 
     fun chipSubmitHelpfulQuestions(
-        onError: kotlin.reflect.KFunction2<Throwable, String, Unit>,
-        submitOptionInput: SubmitOptionInput,
-        messageId: String
+        onError: (Throwable) -> Unit,
+        submitOptionInput: SubmitOptionInput
     ) {
         try {
             this.setTypeClass(SubmitOptionListResponse::class.java)
@@ -26,13 +25,13 @@ class ChipSubmitHelpfulQuestionsUseCase @Inject constructor(
 
             this.execute(
                 {
-                }, { error ->
-                    onError(error, messageId)
+                },
+                { error ->
+                    onError(error)
                 }
             )
-
         } catch (throwable: Throwable) {
-            onError(throwable, messageId)
+            onError(throwable)
         }
     }
 

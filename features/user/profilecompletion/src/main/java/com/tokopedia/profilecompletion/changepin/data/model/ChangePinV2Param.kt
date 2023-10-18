@@ -12,7 +12,7 @@ data class ChangePinV2Param(
     val confirmPin: String = "",
     @SerializedName("h")
     val hash: String = ""
-): GqlParam
+) : GqlParam
 
 data class MutatePinV2Data(
     @SerializedName("success")

@@ -25,8 +25,11 @@ abstract class JourneyDatabase : RoomDatabase() {
                 synchronized(lock) {
                     r = instance
                     if (r == null) {
-                        r = Room.databaseBuilder(context,
-                            JourneyDatabase::class.java, DATABASE_NAME)
+                        r = Room.databaseBuilder(
+                            context,
+                            JourneyDatabase::class.java,
+                            DATABASE_NAME
+                        )
                             .fallbackToDestructiveMigration().build()
                         instance = r
                     }
@@ -36,4 +39,3 @@ abstract class JourneyDatabase : RoomDatabase() {
         }
     }
 }
-

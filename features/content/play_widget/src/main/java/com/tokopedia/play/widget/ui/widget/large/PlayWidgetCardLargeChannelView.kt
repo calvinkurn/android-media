@@ -43,6 +43,7 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
     private val pvVideo: PlayerView
     private val reminderBadge: View
     private val ivReminder: IconUnify
+    private val ivAction: IconUnify
     private val liveBadge: View
     private val totalViewBadge: View
     private val tvOnlyLive: TextView
@@ -68,6 +69,7 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         pvVideo = view.findViewById(R.id.play_widget_player_view)
         reminderBadge = view.findViewById(R.id.view_reminder)
         ivReminder = view.findViewById(R.id.play_widget_iv_reminder)
+        ivAction = view.findViewById(R.id.play_widget_iv_action)
         liveBadge = view.findViewById(R.id.play_widget_badge_live)
         totalViewBadge = view.findViewById(R.id.play_widget_badge_total_view)
         tvOnlyLive = view.findViewById(R.id.tv_only_live)
@@ -116,7 +118,7 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
         val startTimeIsShown = model.startTime.isNotEmpty() && model.channelType == PlayWidgetChannelType.Upcoming
 
-        tvStartTime.shouldShowWithAction(startTimeIsShown){
+        tvStartTime.shouldShowWithAction(startTimeIsShown) {
             tvStartTime.text = model.startTime
         }
 
@@ -133,16 +135,22 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         setOnClickListener {
             mListener?.onChannelClicked(it, model)
         }
+
+        ivAction.setOnClickListener {
+            mListener?.onMenuActionButtonClicked(it, model)
+        }
     }
 
     private fun setActiveModel(model: PlayWidgetChannelUiModel) {
         val isLiveBadgeShown = model.video.isLive && model.channelType == PlayWidgetChannelType.Live
+        ivAction.showWithCondition(model.hasAction)
         liveBadge.showWithCondition(isLiveBadgeShown)
         reminderBadge.gone()
         totalViewBadge.showWithCondition(model.totalView.isVisible)
     }
 
     private fun setUpcomingModel() {
+        ivAction.gone()
         liveBadge.gone()
         reminderBadge.visible()
         totalViewBadge.gone()
@@ -178,9 +186,12 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         }.exhaustive
     }
 
-    private fun setPromoLabelIcon(isRilisanSpesial: Boolean){
-        if(isRilisanSpesial) ivPromoLabel.setImage(newIconId = IconUnify.ROCKET, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
-        else ivPromoLabel.setImage(newIconId = IconUnify.PROMO, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+    private fun setPromoLabelIcon(isRilisanSpesial: Boolean) {
+        if (isRilisanSpesial) {
+            ivPromoLabel.setImage(newIconId = IconUnify.ROCKET, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+        } else {
+            ivPromoLabel.setImage(newIconId = IconUnify.PROMO, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+        }
     }
 
     override fun setPlayer(player: PlayVideoPlayer?) {
@@ -192,7 +203,7 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         } else {
             if (::mModel.isInitialized) {
                 player.videoUrl = mModel.video.videoUrl
-                player.shouldCache = !mModel.video.isLive
+                player.isLive = mModel.video.isLive
                 player.start()
             }
             player.listener = playerListener
@@ -205,7 +216,7 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
     override fun isPlayable(): Boolean {
         return mModel.channelType == PlayWidgetChannelType.Live ||
-                mModel.channelType == PlayWidgetChannelType.Vod
+            mModel.channelType == PlayWidgetChannelType.Vod
     }
 
     override fun onDetachedFromWindow() {
@@ -222,6 +233,11 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         fun onToggleReminderChannelClicked(
             item: PlayWidgetChannelUiModel,
             reminderType: PlayWidgetReminderType
+        )
+
+        fun onMenuActionButtonClicked(
+            view: View,
+            item: PlayWidgetChannelUiModel
         )
     }
 }

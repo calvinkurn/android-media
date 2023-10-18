@@ -7,12 +7,35 @@ import com.tokopedia.home_account.FileUtil
 import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.account_settings.data.model.UserProfileSetting
 import com.tokopedia.home_account.account_settings.data.model.UserProfileSettingResponse
-import com.tokopedia.home_account.data.model.*
-import com.tokopedia.home_account.domain.usecase.*
-import com.tokopedia.home_account.pref.AccountPreference
+import com.tokopedia.home_account.data.model.BalanceAndPointDataModel
+import com.tokopedia.home_account.data.model.CentralizedUserAssetConfig
+import com.tokopedia.home_account.data.model.CentralizedUserAssetDataModel
+import com.tokopedia.home_account.data.model.CoBrandCCBalanceDataModel
+import com.tokopedia.home_account.data.model.OfferInterruptResponse
+import com.tokopedia.home_account.data.model.ProfileDataView
+import com.tokopedia.home_account.data.model.RecommendationWidgetWithTDN
+import com.tokopedia.home_account.data.model.SafeModeParam
+import com.tokopedia.home_account.data.model.SaldoBalanceDataModel
+import com.tokopedia.home_account.data.model.SetUserProfileSetting
+import com.tokopedia.home_account.data.model.SetUserProfileSettingResponse
+import com.tokopedia.home_account.data.model.ShortcutResponse
+import com.tokopedia.home_account.data.model.TokopointsBalanceDataModel
+import com.tokopedia.home_account.data.model.UserAccountDataModel
+import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
+import com.tokopedia.home_account.data.pref.AccountPreference
+import com.tokopedia.home_account.domain.usecase.GetBalanceAndPointUseCase
+import com.tokopedia.home_account.domain.usecase.GetCentralizedUserAssetConfigUseCase
+import com.tokopedia.home_account.domain.usecase.GetCoBrandCCBalanceAndPointUseCase
+import com.tokopedia.home_account.domain.usecase.GetSafeModeUseCase
+import com.tokopedia.home_account.domain.usecase.GetSaldoBalanceUseCase
+import com.tokopedia.home_account.domain.usecase.GetTokopointsBalanceAndPointUseCase
+import com.tokopedia.home_account.domain.usecase.HomeAccountShortcutUseCase
+import com.tokopedia.home_account.domain.usecase.HomeAccountUserUsecase
+import com.tokopedia.home_account.domain.usecase.OfferInterruptUseCase
+import com.tokopedia.home_account.domain.usecase.SaveAttributeOnLocalUseCase
+import com.tokopedia.home_account.domain.usecase.UpdateSafeModeUseCase
 import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
-import com.tokopedia.home_account.privacy_account.domain.GetLinkStatusUseCase
-import com.tokopedia.home_account.privacy_account.domain.GetUserProfile
+import com.tokopedia.home_account.view.mapper.ProfileWithDataStoreMapper
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
 import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
@@ -20,8 +43,11 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
+import com.tokopedia.sessioncommon.data.ocl.OclPreference
+import com.tokopedia.sessioncommon.data.ocl.OclStatus
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
+import com.tokopedia.sessioncommon.domain.usecase.GetOclStatusUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -38,7 +64,9 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -62,8 +90,6 @@ class HomeAccountUserViewModelTest {
     private val tokopointsBalanceAndPointUseCase = mockk<GetTokopointsBalanceAndPointUseCase>(relaxed = true)
     private val saldoBalanceUseCase = mockk<GetSaldoBalanceUseCase>(relaxed = true)
     private val coBrandCCBalanceAndPointUseCase = mockk<GetCoBrandCCBalanceAndPointUseCase>(relaxed = true)
-    private val getLinkStatusUseCase = mockk<GetLinkStatusUseCase>(relaxed = true)
-    private val getPhoneUseCase = mockk<GetUserProfile>(relaxed = true)
     private val topAdsImageViewUseCase = mockk<TopAdsImageViewUseCase>(relaxed = true)
     private val getSafeModeUseCase = mockk<GetSafeModeUseCase>(relaxed = true)
     private val checkFingerprintToggleUseCase = mockk<CheckFingerprintToggleStatusUseCase>(relaxed = true)
@@ -71,6 +97,8 @@ class HomeAccountUserViewModelTest {
     private val tokopediaPlusUseCase = mockk<TokopediaPlusUseCase>(relaxed = true)
     private val offerInterruptUseCase = mockk<OfferInterruptUseCase>(relaxed = true)
     private val refreshProfileUseCase = mockk<GetUserInfoAndSaveSessionUseCase>(relaxed = true)
+    private val getOclStatusUseCase = mockk<GetOclStatusUseCase>(relaxed = true)
+    private val oclPreference = mockk<OclPreference>(relaxed = true)
 
     private val shortCutResponse = mockk<Observer<Result<ShortcutResponse>>>(relaxed = true)
     private val centralizedUserAssetConfigObserver = mockk<Observer<Result<CentralizedUserAssetConfig>>>(relaxed = true)
@@ -82,6 +110,7 @@ class HomeAccountUserViewModelTest {
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
     private val accountPref = mockk<AccountPreference>(relaxed = true)
     private val fingerprintPreferenceManager = mockk<FingerprintPreference>(relaxed = true)
+    private val dataStoreMapper = mockk<ProfileWithDataStoreMapper>(relaxed = true)
 
     private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var viewModel: HomeAccountUserViewModel
@@ -112,14 +141,15 @@ class HomeAccountUserViewModelTest {
             tokopointsBalanceAndPointUseCase,
             saldoBalanceUseCase,
             coBrandCCBalanceAndPointUseCase,
-            getLinkStatusUseCase,
-            getPhoneUseCase,
             getSafeModeUseCase,
             checkFingerprintToggleUseCase,
             tokopediaPlusUseCase,
             saveAttributeOnLocal,
             offerInterruptUseCase,
             refreshProfileUseCase,
+            dataStoreMapper,
+            getOclStatusUseCase,
+            oclPreference,
             dispatcher
         )
 
@@ -130,47 +160,19 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
-    fun `Execute refreshPhoneNo Success`() {
-        coEvery { getPhoneUseCase(Unit) } returns profilePojo
-
-        viewModel.refreshPhoneNo()
-
-        verify {
-            userSession.phoneNumber = profilePojo.profileInfo.phone
-        }
-        assertEquals(viewModel.phoneNo.value, profilePojo.profileInfo.phone)
-    }
-
-    @Test
-    fun `Execute refreshPhoneNo Success but phone empty`() {
-        coEvery { getPhoneUseCase(Unit) } returns ProfilePojo()
-
-        viewModel.refreshPhoneNo()
-        assertEquals(viewModel.phoneNo.value, null)
-    }
-
-    @Test
-    fun `Execute refreshPhoneNo Failed`() {
-        coEvery { getPhoneUseCase(Unit) } throws throwable.throwable
-
-        viewModel.refreshPhoneNo()
-
-        assertEquals(viewModel.phoneNo.value, "")
-    }
-
-    @Test
     fun `Execute getBuyerData Success`() {
         /* When */
+        val profileDataView = ProfileDataView()
         coEvery { homeAccountUserUsecase(Unit) } returns responseResult
         coEvery { homeAccountShortcutUseCase(Unit) } returns shortcut
-        coEvery { getLinkStatusUseCase.invoke(any()) } returns linkStatusResult
         coEvery { offerInterruptUseCase.invoke(any()) } returns offerInterruptResponse
+        coEvery { dataStoreMapper.invoke(any()) } returns profileDataView
 
         viewModel.getBuyerData()
 
         responseResult.linkStatus = linkStatusResult.response
 
-        assertEquals(viewModel.buyerAccountDataData.value, Success(responseResult))
+        assertEquals(viewModel.buyerAccountDataData.value, Success(profileDataView))
     }
 
     @Test
@@ -178,7 +180,6 @@ class HomeAccountUserViewModelTest {
         /* When */
         val exception = Exception("error")
         coEvery { homeAccountUserUsecase.invoke(Unit) } throws exception
-        coEvery { getLinkStatusUseCase.invoke(any()) } throws exception
         coEvery { offerInterruptUseCase.invoke(any()) } returns offerInterruptResponse
 
         viewModel.getBuyerData()
@@ -203,7 +204,7 @@ class HomeAccountUserViewModelTest {
             homeAccountRecommendationUseCase.getData(any())
         } returns listOf(recommendationData)
 
-        val expectedResult = RecommendationWidgetWithTDN(recommendationData,null)
+        val expectedResult = RecommendationWidgetWithTDN(recommendationData, null)
 
         viewModel.getFirstRecommendation()
 
@@ -228,10 +229,10 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Successfully get recommendation with tdn data`() {
         val recomList = listOf(
-                RecommendationItem(1),
-                RecommendationItem(2),
-                RecommendationItem(3),
-                RecommendationItem(4)
+            RecommendationItem(1),
+            RecommendationItem(2),
+            RecommendationItem(3),
+            RecommendationItem(4)
         )
         val testPage = 1
         val expectedResult = RecommendationWidget(recommendationItemList = recomList)
@@ -253,10 +254,10 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Successfully get recommendation with tdn data throw error`() {
         val recomList = listOf(
-                RecommendationItem(1),
-                RecommendationItem(2),
-                RecommendationItem(3),
-                RecommendationItem(4)
+            RecommendationItem(1),
+            RecommendationItem(2),
+            RecommendationItem(3),
+            RecommendationItem(4)
         )
         val testPage = 1
         val expectedResult = RecommendationWidget(recommendationItemList = recomList)
@@ -339,7 +340,6 @@ class HomeAccountUserViewModelTest {
 
         assertEquals((viewModel.getRecommendationData.value as Success).data, recomList)
     }
-
 
     @Test
     fun `Failed to get first recommendation`() {
@@ -479,7 +479,6 @@ class HomeAccountUserViewModelTest {
             getSafeModeUseCase(Unit)
         } returns getResponse
 
-
         viewModel.setSafeMode(isActive)
 
         verify {
@@ -546,7 +545,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { balanceAndPointUseCase(any()) } returns successGetBalanceAndPointResponse
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY, false, AccountConstants.WALLET.GOPAY)
 
         verify { balanceAndPointObserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
@@ -560,7 +559,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { balanceAndPointUseCase(any()) } coAnswers { throw throwableResponse }
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY, false, AccountConstants.WALLET.GOPAY)
 
         verify { balanceAndPointObserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
@@ -574,7 +573,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { balanceAndPointUseCase(any()) } returns successGetBalanceAndPointResponse
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAYLATER, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAYLATER, false, AccountConstants.WALLET.GOPAYLATER)
 
         verify { balanceAndPointObserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
@@ -588,7 +587,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { balanceAndPointUseCase(any()) } coAnswers { throw throwableResponse }
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAYLATER, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAYLATER, false, AccountConstants.WALLET.GOPAYLATER)
 
         verify { balanceAndPointObserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
@@ -602,7 +601,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { balanceAndPointUseCase(any()) } returns successGetBalanceAndPointResponse
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.OVO, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.OVO, false, AccountConstants.WALLET.OVO)
 
         verify { balanceAndPointObserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
@@ -616,7 +615,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { balanceAndPointUseCase(any()) } coAnswers { throw throwableResponse }
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.OVO, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.OVO, false, AccountConstants.WALLET.OVO)
 
         verify { balanceAndPointObserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
@@ -630,7 +629,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { tokopointsBalanceAndPointUseCase(Unit) } returns successGetTokopointBalanceAndPointResponse
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.TOKOPOINT, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.TOKOPOINT, false, AccountConstants.WALLET.TOKOPOINT)
 
         verify { balanceAndPointObserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
@@ -644,7 +643,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { tokopointsBalanceAndPointUseCase(Unit) } coAnswers { throw throwableResponse }
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.TOKOPOINT, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.TOKOPOINT, false, AccountConstants.WALLET.TOKOPOINT)
 
         verify { balanceAndPointObserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
@@ -658,7 +657,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { saldoBalanceUseCase(Unit) } returns successGetSaldoBalanceAndPointResponse
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.SALDO, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.SALDO, false, AccountConstants.WALLET.SALDO)
 
         verify { balanceAndPointObserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
@@ -672,7 +671,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { saldoBalanceUseCase(Unit) } coAnswers { throw throwableResponse }
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.SALDO, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.SALDO, false, AccountConstants.WALLET.SALDO)
 
         verify { balanceAndPointObserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
@@ -686,7 +685,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { coBrandCCBalanceAndPointUseCase(Unit) } returns successGetCoBrandCCBalanceAndPointResponse
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.CO_BRAND_CC, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.CO_BRAND_CC, false, AccountConstants.WALLET.CO_BRAND_CC)
 
         verify { balanceAndPointObserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
@@ -700,7 +699,7 @@ class HomeAccountUserViewModelTest {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
         coEvery { coBrandCCBalanceAndPointUseCase(Unit) } coAnswers { throw throwableResponse }
 
-        viewModel.getBalanceAndPoint(AccountConstants.WALLET.CO_BRAND_CC, false)
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.CO_BRAND_CC, false, AccountConstants.WALLET.CO_BRAND_CC)
 
         verify { balanceAndPointObserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
@@ -713,7 +712,7 @@ class HomeAccountUserViewModelTest {
     fun `Failed get balance and point and hide title false`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
 
-        viewModel.getBalanceAndPoint("", true)
+        viewModel.getBalanceAndPoint("", true, "")
 
         verify { balanceAndPointObserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
@@ -752,7 +751,7 @@ class HomeAccountUserViewModelTest {
 
         viewModel.getFingerprintStatus()
 
-        assert((viewModel.checkFingerprintStatus.value as Fail).throwable.message == "Gagal")
+        assert((viewModel.checkFingerprintStatus.value as Fail).throwable.message == errorMsg)
     }
 
     @Test
@@ -768,7 +767,7 @@ class HomeAccountUserViewModelTest {
 
         viewModel.getFingerprintStatus()
 
-        assert((viewModel.checkFingerprintStatus.value as Fail).throwable.message == "Gagal")
+        assert((viewModel.checkFingerprintStatus.value as Fail).throwable.message == errorMsg)
     }
 
     @Test
@@ -840,6 +839,20 @@ class HomeAccountUserViewModelTest {
         } throws Exception()
 
         viewModel.refreshUserProfile()
+    }
+
+    @Test
+    fun `getOclStatus - success`() {
+        val resp = OclStatus(true)
+        coEvery { getOclStatusUseCase(any()) } returns resp
+        viewModel.getOclStatus()
+        assert(viewModel.getOclStatus.value == resp)
+    }
+
+    @Test
+    fun `getOclStatus - exception`() {
+        coEvery { getOclStatusUseCase(any()) } throws Exception()
+        viewModel.getOclStatus()
     }
 
     companion object {

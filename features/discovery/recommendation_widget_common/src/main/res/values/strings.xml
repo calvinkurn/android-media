@@ -19,4 +19,11 @@
     <string name="view_to_view_action_retry">Coba Lagi</string>
     <string name="view_to_view_local_load_title">Konten gagal ditampilkan</string>
     <string name="view_to_view_local_load_description">Klik ikon di samping buat coba lagi.</string>
+
+    <string name="content_desc_comparison_bpc_spec_bullet">Spec bullet icon</string>
+
+    <string name="recom_vertical_see_more">Lihat Semua</string>
+    
+    <string name="best_seller_empty_title">Yaah, masih kosong nih</string>
+    <string name="best_seller_empty_subtitle">Belum ada produk yang sesuai pilihanmu. Coba pilih yang lain, yuk!</string>
 </resources>

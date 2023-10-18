@@ -1,9 +1,10 @@
 package com.tokopedia.loginregister.shopcreation.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.loginregister.shopcreation.view.fragment.LandingShopCreationFragment
-import com.tokopedia.loginregister.shopcreation.view.fragment.NameShopCreationFragment
-import com.tokopedia.loginregister.shopcreation.view.fragment.PhoneShopCreationFragment
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.loginregister.shopcreation.view.landingshop.LandingShopCreationFragment
+import com.tokopedia.loginregister.shopcreation.view.nameshop.NameShopCreationFragment
+import com.tokopedia.loginregister.shopcreation.view.phoneshop.PhoneShopCreationFragment
 import com.tokopedia.sessioncommon.di.SessionCommonScope
 import com.tokopedia.sessioncommon.di.SessionModule
 import dagger.Component
@@ -13,12 +14,11 @@ import dagger.Component
  * ade.hadian@tokopedia.com
  */
 
-@ShopCreationScope
+@ActivityScope
 @SessionCommonScope
 @Component(modules = [
     ShopCreationModule::class,
     ShopCreationViewModelModule::class,
-    ShopCreationQueryModule::class,
     SessionModule::class
 ], dependencies = [BaseAppComponent::class])
 interface ShopCreationComponent {

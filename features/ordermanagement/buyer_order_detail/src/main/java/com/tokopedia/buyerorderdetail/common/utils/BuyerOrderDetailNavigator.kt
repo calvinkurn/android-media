@@ -9,17 +9,18 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailCommonIntentParamKey
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailIntentCode
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerRequestCancellationIntentParamKey
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import java.net.URLDecoder
+import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 
 class BuyerOrderDetailNavigator(
     private val activity: Activity,
@@ -36,15 +37,25 @@ class BuyerOrderDetailNavigator(
         private const val BUYER_MODE = 1
     }
 
-    private fun composeCallIntentData(phoneNumber: String): Uri {
-        return Uri.parse("$TELEPHONY_URI$phoneNumber")
-    }
-
     private fun applyTransition() {
         activity.overridePendingTransition(
             com.tokopedia.resources.common.R.anim.slide_right_in_medium,
             com.tokopedia.resources.common.R.anim.slide_left_out_medium
         )
+    }
+
+    fun goToBomDetailPage(orderId: String) {
+        val appLink =
+            Uri.parse(ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL).buildUpon()
+                .appendQueryParameter(DeeplinkMapperUoh.PATH_ORDER_ID, orderId)
+                .build()
+                .toString()
+        val intent = RouteManager.getIntent(activity, appLink).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+
+        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
+        applyTransition()
     }
 
     fun goToPrintInvoicePage(url: String, invoiceNum: String) {
@@ -65,17 +76,8 @@ class BuyerOrderDetailNavigator(
         applyTransition()
     }
 
-    fun goToTrackShipmentPage(orderId: String, trackingUrl: String) {
-        val decodedUrl = if (trackingUrl.startsWith(PREFIX_HTTPS)) {
-            trackingUrl
-        } else {
-            URLDecoder.decode(trackingUrl, BuyerOrderDetailMiscConstant.ENCODING_UTF_8)
-        }
-        val appLink = Uri.parse(ApplinkConst.ORDER_TRACKING).buildUpon()
-            .appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, decodedUrl)
-            .build()
-            .toString()
-        val intent = RouteManager.getIntent(activity, appLink, orderId)
+    fun goToTrackShipmentPage(appLink: String) {
+        val intent = RouteManager.getIntent(activity, appLink)
         fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
         applyTransition()
     }
@@ -96,11 +98,9 @@ class BuyerOrderDetailNavigator(
     }
 
     fun goToCallingPage(phoneNumber: String) {
-        val intent = Intent(Intent.ACTION_DIAL).apply {
-            data = composeCallIntentData(phoneNumber)
-        }
-        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
-        applyTransition()
+        val bottomSheetMaskingPhoneNumber =
+            MaskingPhoneNumberBottomSheet.newInstance(phoneNumber)
+        bottomSheetMaskingPhoneNumber.show(fragment.childFragmentManager)
     }
 
     fun goToRequestCancellationPage(
@@ -111,15 +111,19 @@ class BuyerOrderDetailNavigator(
         if (uiState is BuyerOrderDetailUiState.HasData) {
             val orderStatusUiModel = uiState.orderStatusUiState.data
             val productListUiModel = uiState.productListUiState.data
+            val shipmentInfoUiModel = uiState.shipmentInfoUiState.data
+            val owocInfoUiModel = shipmentInfoUiModel.owocInfoUiModel
+
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalOrder.INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE)
             val payload: Map<String, Any?> = mapOf(
-                    BuyerRequestCancellationIntentParamKey.SHOP_NAME to productListUiModel.productListHeaderUiModel.shopName,
-                    BuyerRequestCancellationIntentParamKey.INVOICE to orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice,
-                    BuyerOrderDetailCommonIntentParamKey.ORDER_ID to orderStatusUiModel.orderStatusHeaderUiModel.orderId,
-                    BuyerRequestCancellationIntentParamKey.IS_CANCEL_ALREADY_REQUESTED to false,
-                    BuyerRequestCancellationIntentParamKey.TITLE_CANCEL_REQUESTED to button.popUp.title,
-                    BuyerRequestCancellationIntentParamKey.BODY_CANCEL_REQUESTED to button.popUp.body,
-                    BuyerRequestCancellationIntentParamKey.SHOP_ID to productListUiModel.productListHeaderUiModel.shopId
+                BuyerRequestCancellationIntentParamKey.SHOP_NAME to productListUiModel.productListHeaderUiModel.shopName,
+                BuyerRequestCancellationIntentParamKey.INVOICE to orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice,
+                BuyerOrderDetailCommonIntentParamKey.ORDER_ID to orderStatusUiModel.orderStatusHeaderUiModel.orderId,
+                BuyerRequestCancellationIntentParamKey.IS_CANCEL_ALREADY_REQUESTED to false,
+                BuyerRequestCancellationIntentParamKey.TITLE_CANCEL_REQUESTED to button.popUp.title,
+                BuyerRequestCancellationIntentParamKey.BODY_CANCEL_REQUESTED to button.popUp.body,
+                BuyerRequestCancellationIntentParamKey.SHOP_ID to productListUiModel.productListHeaderUiModel.shopId,
+                BuyerRequestCancellationIntentParamKey.PARAM_TX_ID to owocInfoUiModel?.txId.orEmpty()
             )
             val cacheId = cacheManager.generateUniqueRandomNumber()
             cacheManager.put(cacheId, payload)
@@ -142,13 +146,13 @@ class BuyerOrderDetailNavigator(
         intent.putExtra(ApplinkConst.Chat.INVOICE_ID, orderStatusUiModel.orderStatusHeaderUiModel.orderId)
         intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice)
         val productName =
-            productListUiModel.productList.firstOrNull()?.productName ?:
-            productListUiModel.productBundlingList.firstOrNull()?.bundleItemList?.firstOrNull()?.productName
+            productListUiModel.productList.firstOrNull()?.productName
+                ?: productListUiModel.productBundlingList.firstOrNull()?.bundleItemList?.firstOrNull()?.productName
         intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, productName.orEmpty())
         intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, orderStatusUiModel.orderStatusInfoUiModel.purchaseDate)
         val productThumbnail =
-            productListUiModel.productList.firstOrNull()?.productThumbnailUrl ?:
-            productListUiModel.productBundlingList.firstOrNull()?.bundleItemList?.firstOrNull()?.productThumbnailUrl
+            productListUiModel.productList.firstOrNull()?.productThumbnailUrl
+                ?: productListUiModel.productBundlingList.firstOrNull()?.bundleItemList?.firstOrNull()?.productThumbnailUrl
         intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, productThumbnail.orEmpty())
         intent.putExtra(ApplinkConst.Chat.INVOICE_URL, orderStatusUiModel.orderStatusInfoUiModel.invoice.url)
         intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId)
@@ -186,17 +190,33 @@ class BuyerOrderDetailNavigator(
         applyTransition()
     }
 
+    fun goToPartialOrderFulfillment(orderId: String) {
+        val params = mapOf(
+            ApplinkConstInternalOrder.PARAM_ORDER_ID to orderId
+        )
+        val appLink = UriUtil.buildUriAppendParams(
+            ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_PARTIAL_ORDER_FULFILLMENT,
+            params
+        )
+        val intent = RouteManager.getIntent(fragment.context, appLink)
+        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_PARTIAL_ORDER_FULFILLMENT)
+    }
+
     fun openAppLink(appLink: String, shouldRefreshWhenBack: Boolean): Boolean {
         val intent: Intent? = RouteManager.getIntentNoFallback(activity, appLink)
         return if (intent == null) {
             if (appLink.startsWith(PREFIX_HTTP)) {
                 openWebView(appLink, shouldRefreshWhenBack)
                 true
-            } else false
+            } else {
+                false
+            }
         } else {
             val requestCode = if (shouldRefreshWhenBack) {
                 BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY
-            } else BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED
+            } else {
+                BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED
+            }
             fragment.startActivityForResult(intent, requestCode)
             applyTransition()
             true
@@ -207,8 +227,11 @@ class BuyerOrderDetailNavigator(
         val intent: Intent =
             RouteManager.getIntent(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
         val requestCode =
-            if (shouldRefreshWhenBack) BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY
-            else BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED
+            if (shouldRefreshWhenBack) {
+                BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY
+            } else {
+                BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED
+            }
         fragment.startActivityForResult(intent, requestCode)
         applyTransition()
     }

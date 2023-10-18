@@ -20,6 +20,8 @@ import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.viewhelper.URLSpanNoUnderline
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.unifyprinciples.stringToUnifyColor
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By @ilhamsuaib on 19/05/20
@@ -32,6 +34,8 @@ class CardViewHolder(
     companion object {
         val RES_LAYOUT = R.layout.shc_card_widget
         private const val ZERO_STR = "0"
+        private const val COLOR_PATTERN = "(#[a-fA-F0-9]{8}|#[a-fA-F0-9]{6})"
+        private const val URL_TEXT_PATTERN = "(?<=>)(.*?)(?=</a>)"
     }
 
     private val binding by lazy {
@@ -62,14 +66,20 @@ class CardViewHolder(
             data.error.isNotBlank() -> {
                 showShimmer(false)
                 showOnError(element, true)
-                listener.setOnErrorWidget(adapterPosition, element, data.error)
+                listener.setOnErrorWidget(absoluteAdapterPosition, element, data.error)
                 setupTag(element)
             }
+
             else -> {
-                showOnError(element, false)
-                showShimmer(false)
-                showViewComponent(element, true)
-                setupTag(element)
+                if (element.data?.showWidget.orFalse()) {
+                    showOnError(element, false)
+                    showShimmer(false)
+                    showViewComponent(element, true)
+                    setupTag(element)
+                    listener.setCoachMarkView(element.dataKey, binding.root)
+                } else {
+                    listener.removeWidget(absoluteAdapterPosition, element)
+                }
             }
         }
     }
@@ -102,7 +112,7 @@ class CardViewHolder(
                     shouldLoadAnimation = false
                     tvCardValue.visible()
                     shcCardValueCountdownView.invisible()
-                    tvCardValue.text = shownValue.parseAsHtml()
+                    setCardValueText(shownValue)
                 }
                 setupRefreshButton(element)
             }
@@ -118,14 +128,14 @@ class CardViewHolder(
                 )
                 containerCard.setBackgroundResource(selectableItemBg.resourceId)
             } else {
-                containerCard.setBackgroundColor(root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                containerCard.setBackgroundColor(root.context.getResColor(unifyprinciplesR.color.Unify_NN0))
             }
 
             if (shouldLoadAnimation) {
                 tvCardValue.invisible()
             } else {
                 tvCardValue.visible()
-                tvCardValue.text = (element.data?.value ?: ZERO_STR).parseAsHtml()
+                setCardValueText(element.data?.value)
             }
             if (element.data?.description.isNullOrBlank()) {
                 tvCardSubValue.invisible()
@@ -144,8 +154,9 @@ class CardViewHolder(
             }
 
             root.setOnClickListener {
-                if (element.getWidgetAppLink().isNotBlank()) {
-                    if (RouteManager.route(root.context, element.getWidgetAppLink())) {
+                val appLink = element.getWidgetAppLink()
+                if (appLink.isNotBlank()) {
+                    if (RouteManager.route(root.context, appLink)) {
                         listener.sendCardClickTracking(element)
                     }
                 }
@@ -155,6 +166,38 @@ class CardViewHolder(
             showBadge(element.data?.badgeImageUrl.orEmpty())
             removeCardValueUnderLine()
         }
+    }
+
+    private fun setCardValueText(value: String?) {
+        with(binding) {
+            val cardValue = value?.takeIf { it.isNotBlank() } ?: ZERO_STR
+            val hexColor = getHexColor(cardValue)
+            if (hexColor.isNullOrBlank()) {
+                tvCardValue.text = cardValue.parseAsHtml()
+            } else {
+                val urlPattern = URL_TEXT_PATTERN.toRegex().find(cardValue)
+                val isUrl = urlPattern?.groupValues?.isNotEmpty().orFalse()
+                tvCardValue.text = if (isUrl) {
+                    urlPattern?.value ?: cardValue
+                } else {
+                    cardValue.parseAsHtml()
+                }
+                getUnifyColorFromString(cardValue)?.let {
+                    tvCardValue.setTextColor(it)
+                }
+            }
+        }
+    }
+
+    private fun getUnifyColorFromString(shownValue: String): Int? {
+        getHexColor(shownValue)?.let { hexColor ->
+            return stringToUnifyColor(itemView.context, hexColor).unifyColor
+        }
+        return null
+    }
+
+    private fun getHexColor(str: String): String? {
+        return COLOR_PATTERN.toRegex().find(str)?.groupValues?.first()
     }
 
     private fun removeCardValueUnderLine() {
@@ -196,17 +239,20 @@ class CardViewHolder(
                     imgShcCardStatePlus.gone()
                     imgShcCardState.loadImage(R.drawable.bg_shc_card_stata_warning)
                 }
+
                 CardDataUiModel.State.WARNING_PLUS, CardDataUiModel.State.DANGER_PLUS -> {
                     imgShcCardState.visible()
                     imgShcCardState.loadImage(R.drawable.bg_shc_card_stata_warning)
                     imgShcCardStatePlus.visible()
                     imgShcCardStatePlus.loadImage(SellerHomeUrl.IMG_CARD_ORNAMENT_YELLOW)
                 }
+
                 CardDataUiModel.State.GOOD_PLUS -> {
                     imgShcCardState.gone()
                     imgShcCardStatePlus.visible()
                     imgShcCardStatePlus.loadImage(SellerHomeUrl.IMG_CARD_ORNAMENT_GREEN)
                 }
+
                 else -> {
                     imgShcCardState.gone()
                     imgShcCardStatePlus.gone()
@@ -245,5 +291,7 @@ class CardViewHolder(
         fun sendCardImpressionEvent(model: CardWidgetUiModel) {}
 
         fun sendCardClickTracking(model: CardWidgetUiModel) {}
+
+        fun setCoachMarkView(dataKey: String, view: View) {}
     }
 }

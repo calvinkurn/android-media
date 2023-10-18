@@ -2,7 +2,11 @@ package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceRecomProductCartMapData
 import com.tokopedia.recommendation_widget_common.extension.LABEL_FULFILLMENT
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
@@ -71,8 +75,8 @@ class AddToCartRecommendationAnalyticsTest : BaseCartTest() {
     fun `WHEN generate add to cart data analytics on recommendation and eligible for BO THEN dimension 83 should be bebas ongkir`() {
         // Given
         val recommendationItem = RecommendationItem(
-                isFreeOngkirActive = true,
-                labelGroupList = listOf(RecommendationLabel())
+            isFreeOngkirActive = true,
+            labelGroupList = listOf(RecommendationLabel())
         )
         val result: Map<String, Any>?
 
@@ -90,8 +94,8 @@ class AddToCartRecommendationAnalyticsTest : BaseCartTest() {
     fun `WHEN generate add to cart data analytics on recommendation and eligible for BOE THEN dimension 83 should be bebas ongkir extra`() {
         // Given
         val recommendationItem = RecommendationItem(
-                isFreeOngkirActive = true,
-                labelGroupList = listOf(RecommendationLabel(position = LABEL_FULFILLMENT))
+            isFreeOngkirActive = true,
+            labelGroupList = listOf(RecommendationLabel(position = LABEL_FULFILLMENT))
         )
         val result: Map<String, Any>?
 
@@ -109,8 +113,8 @@ class AddToCartRecommendationAnalyticsTest : BaseCartTest() {
     fun `WHEN generate add to cart data analytics on recommendation and not eligible for BO & BOE THEN dimension 83 should be none other`() {
         // Given
         val recommendationItem = RecommendationItem(
-                isFreeOngkirActive = false,
-                labelGroupList = listOf(RecommendationLabel())
+            isFreeOngkirActive = false,
+            labelGroupList = listOf(RecommendationLabel())
         )
         val result: Map<String, Any>?
 
@@ -123,6 +127,4 @@ class AddToCartRecommendationAnalyticsTest : BaseCartTest() {
         val dimension83 = products[0][EnhancedECommerceRecomProductCartMapData.KEY_DIMENSION_83]
         Assert.assertTrue(dimension83 == EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
     }
-
-
 }

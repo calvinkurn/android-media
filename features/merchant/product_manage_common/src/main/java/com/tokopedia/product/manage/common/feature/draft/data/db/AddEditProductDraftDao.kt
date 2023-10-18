@@ -14,16 +14,16 @@ interface AddEditProductDraftDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateDraft(draft: AddEditProductDraftEntity)
 
-    @Query("SELECT * FROM ${AddEditProductDraftConstant.DB_TABLE} WHERE id = :productId LIMIT 1")
+    @Query("SELECT * FROM ${AddEditProductDraftConstant.DB_TABLE} WHERE id = :productId AND ${AddEditProductDraftConstant.DB_COLUMN_DATA} != '' LIMIT 1")
     fun getDraft(productId: Long): AddEditProductDraftEntity?
 
-    @Query("SELECT * FROM ${AddEditProductDraftConstant.DB_TABLE} WHERE shopId LIKE :shopId AND ${AddEditProductDraftConstant.DB_COLUMN_IS_UPLOADING} = 0")
+    @Query("SELECT * FROM ${AddEditProductDraftConstant.DB_TABLE} WHERE shopId LIKE :shopId AND ${AddEditProductDraftConstant.DB_COLUMN_IS_UPLOADING} = 0 AND ${AddEditProductDraftConstant.DB_COLUMN_DATA} != ''")
     fun getAllDraftsFlow(shopId: String): Flow<List<AddEditProductDraftEntity>>
 
-    @Query("SELECT * FROM ${AddEditProductDraftConstant.DB_TABLE} WHERE shopId LIKE :shopId AND ${AddEditProductDraftConstant.DB_COLUMN_IS_UPLOADING} = 0")
+    @Query("SELECT * FROM ${AddEditProductDraftConstant.DB_TABLE} WHERE shopId LIKE :shopId AND ${AddEditProductDraftConstant.DB_COLUMN_IS_UPLOADING} = 0 AND ${AddEditProductDraftConstant.DB_COLUMN_DATA} != ''")
     fun getAllDrafts(shopId: String): List<AddEditProductDraftEntity>
 
-    @Query("SELECT COUNT(*) FROM ${AddEditProductDraftConstant.DB_TABLE} WHERE shopId LIKE :shopId AND ${AddEditProductDraftConstant.DB_COLUMN_IS_UPLOADING} = 0")
+    @Query("SELECT COUNT(*) FROM ${AddEditProductDraftConstant.DB_TABLE} WHERE shopId LIKE :shopId AND ${AddEditProductDraftConstant.DB_COLUMN_IS_UPLOADING} = 0 AND ${AddEditProductDraftConstant.DB_COLUMN_DATA} != ''")
     fun getAllDraftsCountFlow(shopId: String): Flow<Long>
 
     @Query("UPDATE ${AddEditProductDraftConstant.DB_TABLE} SET ${AddEditProductDraftConstant.DB_COLUMN_IS_UPLOADING} = :inverseIsUploading WHERE ${AddEditProductDraftConstant.DB_COLUMN_IS_UPLOADING} = :isUploading")

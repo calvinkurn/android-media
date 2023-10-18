@@ -47,7 +47,8 @@ data class ChipsData(
     @SerializedName("user_state") var userStatus: String? = null,
     @SerializedName("user_balance_amt") var userBalanceAmount: String? = null,
     @SerializedName("installment_amt") var installmentAmount: String? = null,
-    @SerializedName("cta") var cta: Cta? = Cta()
+    @SerializedName("cta") var cta: Cta? = Cta(),
+    @SerializedName("promo_name") val promoName: String? = null,
 ) : Parcelable
 
 @Parcelize

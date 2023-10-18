@@ -1,8 +1,6 @@
 package com.tokopedia.shop.product.utils.mapper
 
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.data.model.Actions
@@ -89,8 +87,9 @@ object ShopPageProductListMapper {
                         it.isUpcoming = campaign.isUpcoming
                         if (!campaign.isUpcoming) {
                             val viewCount = stats.viewCount
-                            if (viewCount >= THRESHOLD_VIEW_COUNT)
+                            if (viewCount >= THRESHOLD_VIEW_COUNT) {
                                 it.pdpViewCount = String.format(POSTFIX_VIEW_COUNT, viewCount.thousandFormatted())
+                            }
                             it.stockLabel = labelGroupList.firstOrNull()?.title.takeIf { showStockBar }.orEmpty()
                             it.stockBarPercentage = campaign.stockSoldPercentage.toInt()
                         }
@@ -104,8 +103,9 @@ object ShopPageProductListMapper {
                         it.hideGimmick = campaign.hideGimmick
                         if (!campaign.isUpcoming) {
                             val viewCount = stats.viewCount
-                            if (viewCount >= THRESHOLD_VIEW_COUNT)
+                            if (viewCount >= THRESHOLD_VIEW_COUNT) {
                                 it.pdpViewCount = String.format(POSTFIX_VIEW_COUNT, viewCount.thousandFormatted())
+                            }
                             it.stockLabel = labelGroupList.firstOrNull { labelGroup ->
                                 labelGroup.position.isEmpty()
                             }?.title ?: ""
@@ -126,6 +126,7 @@ object ShopPageProductListMapper {
                 it.isVariant = hasVariant
                 it.minimumOrder = minimumOrder
                 it.parentId = parentId
+                it.averageRating = stats.averageRating
             }
         }
 
@@ -207,7 +208,8 @@ object ShopPageProductListMapper {
     fun mapToProductCardModel(
         shopProductUiModel: ShopProductUiModel,
         isWideContent: Boolean,
-        isShowThreeDots: Boolean = true
+        isShowThreeDots: Boolean = true,
+        isForceLightMode: Boolean = false
     ): ProductCardModel {
         val totalReview = try {
             NumberFormat.getInstance().parse(shopProductUiModel.totalReview).toInt()
@@ -229,7 +231,7 @@ object ShopPageProductListMapper {
             discountPercentage = discountPercentage.takeIf { !shopProductUiModel.hideGimmick } ?: "",
             slashedPrice = shopProductUiModel.originalPrice.orEmpty().takeIf { !shopProductUiModel.hideGimmick } ?: "",
             formattedPrice = shopProductUiModel.displayedPrice ?: "",
-            countSoldRating = if (shopProductUiModel.rating != 0.0) shopProductUiModel.rating.toString() else "",
+            countSoldRating = shopProductUiModel.averageRating,
             freeOngkir = freeOngkirObject,
             labelGroupList = shopProductUiModel.labelGroupList.map {
                 mapToProductCardLabelGroup(it)
@@ -238,7 +240,8 @@ object ShopPageProductListMapper {
             pdpViewCount = shopProductUiModel.pdpViewCount,
             stockBarLabel = shopProductUiModel.stockLabel,
             stockBarPercentage = shopProductUiModel.stockBarPercentage,
-            isWideContent = isWideContent
+            isWideContent = isWideContent,
+            forceLightModeColor = isForceLightMode
         )
         return if (shopProductUiModel.isEnableDirectPurchase && isProductCardIsNotSoldOut(shopProductUiModel.isSoldOut)) {
             val productCardModel = if (shopProductUiModel.isVariant) {

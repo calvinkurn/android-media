@@ -3,6 +3,7 @@ package com.tokopedia.troubleshooter.notification.ui.adapter.factory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.troubleshooter.notification.data.service.googleplay.PlayServicesManager
 import com.tokopedia.troubleshooter.notification.ui.adapter.viewholder.ConfigViewHolder
 import com.tokopedia.troubleshooter.notification.ui.adapter.viewholder.FooterViewHolder
 import com.tokopedia.troubleshooter.notification.ui.adapter.viewholder.StatusViewHolder
@@ -16,7 +17,8 @@ import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView
 
 class TroubleshooterItemFactory(
         private val itemListener: ConfigItemListener,
-        private val footerListener: FooterListener
+        private val footerListener: FooterListener,
+        private val playServicesManager: PlayServicesManager
 ): BaseAdapterTypeFactory(), TroubleshooterTypeFactory {
 
     override fun type(config: ConfigUIView): Int {
@@ -37,7 +39,7 @@ class TroubleshooterItemFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when(type) {
-            FooterViewHolder.LAYOUT -> FooterViewHolder(footerListener, parent)
+            FooterViewHolder.LAYOUT -> FooterViewHolder(footerListener, parent, playServicesManager)
             ConfigViewHolder.LAYOUT -> ConfigViewHolder(itemListener, parent)
             TickerViewHolder.LAYOUT -> TickerViewHolder(parent)
             StatusViewHolder.LAYOUT -> StatusViewHolder(parent)

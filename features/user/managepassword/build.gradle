@@ -1,9 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
-
 
 buildscript {
     repositories {
@@ -17,14 +15,11 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.managepassword'
+    testNamespace 'com.tokopedia.managepassword.test'
     buildFeatures {
         viewBinding true
     }
-}
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
 }
 
 dependencies {
@@ -37,7 +32,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.libraries.encryption)
     implementation projectOrAar(rootProject.ext.libraries.utils)

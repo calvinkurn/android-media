@@ -12,12 +12,13 @@ interface ProductBundleAdapterListener {
         bundle: BundleUiModel,
         selectedMultipleBundle: BundleDetailUiModel,
         selectedProduct: BundleProductUiModel,
-        productItemPosition: Int
+        itemPosition: Int
     )
 
     fun onMultipleBundleActionButtonClicked(
         selectedMultipleBundle: BundleDetailUiModel,
-        productDetails: List<BundleProductUiModel>
+        productDetails: List<BundleProductUiModel>,
+        bundlePosition: Int
     )
 
     fun onMultipleBundleMoreProductClicked(
@@ -28,7 +29,8 @@ interface ProductBundleAdapterListener {
 
     fun onSingleBundleActionButtonClicked(
         selectedBundle: BundleDetailUiModel,
-        bundleProducts: BundleProductUiModel
+        bundleProducts: BundleProductUiModel,
+        bundlePosition: Int
     )
 
     fun onTrackSingleVariantChange(
@@ -49,7 +51,20 @@ interface ProductBundleAdapterListener {
         bundlePosition: Int,
     )
 
+    fun impressionProductBundleMultiple(
+        bundle: BundleUiModel,
+        selectedMultipleBundle: BundleDetailUiModel,
+        bundlePosition: Int,
+    )
+
     fun impressionProductItemBundleMultiple(
+        selectedProduct: BundleProductUiModel,
+        selectedMultipleBundle: BundleDetailUiModel,
+        productItemPosition: Int
+    )
+
+    fun impressionProductItemBundleMultiple(
+        bundle: BundleUiModel,
         selectedProduct: BundleProductUiModel,
         selectedMultipleBundle: BundleDetailUiModel,
         productItemPosition: Int

@@ -30,7 +30,6 @@ object TokofoodErrorLogger {
 
     object ErrorDescription {
         internal const val RENDER_PAGE_ERROR = "error render page"
-        internal const val ADD_TO_CART_ERROR = "error add to cart"
         internal const val REMOVE_FROM_CART_ERROR = "error remove from cart"
         internal const val UPDATE_CART_ERROR = "error update cart"
         internal const val PAYMENT_ERROR = "error go to payment"
@@ -45,7 +44,6 @@ object TokofoodErrorLogger {
         internal const val ERROR_CHOOSE_ADDRESS_MANAGE_LOCATION = "error of choose_address in manage location"
         internal const val ERROR_CHOOSE_ADDRESS_MERCHANT_PAGE = "error of choose_address in merchant page"
         internal const val ERROR_CHECK_DELIVERY_COVERAGE = "error of deliverage coverage"
-        internal const val ERROR_ELIGIBLE_FOR_ADDRESS = "error of eligible for address"
         internal const val ERROR_INITIAL_SEARCH_STATE = "error load initial search state"
         internal const val ERROR_REMOVE_RECENT_SEARCH = "error of remove recent search"
         internal const val ERROR_LOAD_SEARCH_RESULT_PAGE = "error load search result page"
@@ -54,7 +52,6 @@ object TokofoodErrorLogger {
 
     object ErrorType {
         internal const val ERROR_PAGE = "error_page"
-        internal const val ERROR_ADD_TO_CART = "error_atc"
         internal const val ERROR_REMOVE_FROM_CART = "error_remove"
         internal const val ERROR_UPDATE_CART = "error_update"
         internal const val ERROR_PAYMENT = "error_payment"
@@ -68,7 +65,6 @@ object TokofoodErrorLogger {
         internal const val ERROR_LOAD_MORE_CATEGORY = "error_load_more_category"
         internal const val ERROR_CHOOSE_ADDRESS = "error_choose_address"
         internal const val ERROR_CHECK_DELIVERY_COVERAGE = "error_check_delivery_coverage"
-        internal const val ERROR_ELIGIBLE_FOR_ADDRESS = "error_eligible_for_address"
         internal const val ERROR_INITIAL_SEARCH_STATE = "error_load_initial_search_state"
         internal const val ERROR_REMOVE_RECENT_SEARCH = "error_remove_recent_search"
         internal const val ERROR_LOAD_SEARCH_RESULT_PAGE = "error_load_srp"

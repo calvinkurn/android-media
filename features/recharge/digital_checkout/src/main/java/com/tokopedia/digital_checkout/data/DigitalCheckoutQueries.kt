@@ -83,6 +83,7 @@ object DigitalCheckoutQueries {
               fintech_amount
               fintech_partner_amount
               operator_name
+              cross_sell_metadata
               info {
                 title
                 subtitle
@@ -99,6 +100,11 @@ object DigitalCheckoutQueries {
             admin_fee_included
             channel_id
             collection_point_id
+            collection_point_version
+            collection_data_elements {
+              key
+              value
+            }
           }
         }
     """

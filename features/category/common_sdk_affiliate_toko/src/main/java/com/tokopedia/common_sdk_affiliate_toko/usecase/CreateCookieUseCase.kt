@@ -54,6 +54,7 @@ class CreateCookieUseCase @Inject constructor(
             CreateAffiliateCookieRequest.PageDetail(
                 param.affiliatePageDetail.pageId,
                 param.affiliatePageDetail.source.getType(),
+                param.affiliatePageDetail.pageName,
                 param.affiliatePageDetail.siteId,
                 param.affiliatePageDetail.verticalId
             ),

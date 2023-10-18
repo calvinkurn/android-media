@@ -5,10 +5,11 @@ import com.tokopedia.affiliate.model.response.AffiliateEducationCategoryResponse
 interface AffiliateEducationLearnClickInterface {
     fun onKamusClick()
     fun onBantuanClick()
+    fun onKebijakanPrivasiClick()
 }
 
 interface AffiliateEducationEventArticleClickInterface {
-    fun onSeeMoreClick(pageType: String, categoryId: String)
+    fun onSeeMoreClick(pageType: String)
     fun onDetailClick(pageType: String, slug: String)
 }
 

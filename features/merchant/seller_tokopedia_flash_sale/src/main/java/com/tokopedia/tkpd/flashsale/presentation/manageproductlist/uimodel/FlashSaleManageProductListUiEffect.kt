@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel
 
-import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionProgress
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionSseResult
 import com.tokopedia.tkpd.flashsale.domain.entity.ProductSubmissionResult
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.CampaignDetailBottomSheetModel

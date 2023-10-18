@@ -3,7 +3,6 @@ package com.tokopedia.product.manage.feature.suspend.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.query.StockReminderQuery
 import com.tokopedia.product.manage.feature.suspend.data.SuspendReasonDetailResponse
 import com.tokopedia.product.manage.feature.suspend.domain.mapper.SuspendReasonMapper
 import com.tokopedia.product.manage.feature.suspend.view.uimodel.SuspendReasonUiModel

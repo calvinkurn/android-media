@@ -4,7 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.smartbills.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -27,19 +28,19 @@ class SmartBillsToolTipBottomSheet : BottomSheetUnify() {
 
     private fun initView(view: View?) {
         view?.let {
-         buttonClickToolTip = view.findViewById(R.id.btn_tooltip_sbm)
-         imgSbmToolTip = view.findViewById(R.id.img_sbm_tooltip)
-         buttonClickToolTip?.setOnClickListener {
+            buttonClickToolTip = view.findViewById(R.id.btn_tooltip_sbm)
+            imgSbmToolTip = view.findViewById(R.id.img_sbm_tooltip)
+            buttonClickToolTip?.setOnClickListener {
                 tooltipListener.onClickMoreLearn()
             }
 
-         imgSbmToolTip?.loadImage(IMAGE_URL)
+            imgSbmToolTip?.loadImage(IMAGE_URL)
         }
     }
 
     companion object {
         private const val TAG = "SmartBillsToolTipBottomSheet"
-        private const val IMAGE_URL = "https://images.tokopedia.net/img/tooltips_image_sbm.png"
+        private const val IMAGE_URL = TokopediaImageUrl.SmartBillsToolTipBottomSheet_IMAGE_URL
 
         @JvmStatic
         fun newInstance(context: Context, listener: SmartBillsToolTipBottomSheet.Listener): SmartBillsToolTipBottomSheet {
@@ -52,7 +53,7 @@ class SmartBillsToolTipBottomSheet : BottomSheetUnify() {
         }
     }
 
-    interface Listener{
+    interface Listener {
         fun onClickMoreLearn()
     }
 }

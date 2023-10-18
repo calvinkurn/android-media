@@ -121,6 +121,9 @@ class MerchantCampaignTNCBottomSheet : BottomSheetUnify() {
                     tickerTnc.gone()
                     btnAgree.gone()
                 }
+                else -> {
+                    //no-op
+                }
             }
             btnAgree.setOnClickListener {
                 listener?.onTNCConfirmationClicked()

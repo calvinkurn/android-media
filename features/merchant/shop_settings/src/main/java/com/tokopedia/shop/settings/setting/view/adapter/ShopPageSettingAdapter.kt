@@ -5,17 +5,23 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.setting.data.*
+import com.tokopedia.shop.settings.setting.data.Product
+import com.tokopedia.shop.settings.setting.data.Profile
+import com.tokopedia.shop.settings.setting.data.Shipping
+import com.tokopedia.shop.settings.setting.data.ShopPageSetting
+import com.tokopedia.shop.settings.setting.data.Support
 import com.tokopedia.shop.settings.setting.view.adapter.viewholder.ProductViewHolder
 import com.tokopedia.shop.settings.setting.view.adapter.viewholder.ProfileViewHolder
 import com.tokopedia.shop.settings.setting.view.adapter.viewholder.ShippingViewHolder
 import com.tokopedia.shop.settings.setting.view.adapter.viewholder.SupportViewHolder
 
-class ShopPageSettingAdapter(private val profileItemClickListener: ProfileItemClickListener,
-                             private val productItemClickListener: ProductItemClickListener,
-                             private val supportItemClickListener: SupportItemClickListener,
-                             private val shippingItemClickListener: ShippingItemClickListener)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ShopPageSettingAdapter(
+    private val profileItemClickListener: ProfileItemClickListener,
+    private val productItemClickListener: ProductItemClickListener,
+    private val supportItemClickListener: SupportItemClickListener,
+    private val shippingItemClickListener: ShippingItemClickListener
+) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val TYPE_PROFILE = 1
@@ -46,7 +52,6 @@ class ShopPageSettingAdapter(private val profileItemClickListener: ProfileItemCl
     }
 
     private var shopPageSettingList = listOf<ShopPageSetting>()
-    private var isEligibleForMultiLocation: Boolean = false
     private var shippingViewHolder: ShippingViewHolder? = null
 
     override fun getItemViewType(position: Int): Int {
@@ -86,7 +91,7 @@ class ShopPageSettingAdapter(private val profileItemClickListener: ProfileItemCl
                 holder.bind(supportItemClickListener)
             }
             is ShippingViewHolder -> {
-                holder.bind(isEligibleForMultiLocation, shippingItemClickListener)
+                holder.bind(true, shippingItemClickListener)
                 shippingViewHolder = holder
             }
         }
@@ -96,8 +101,7 @@ class ShopPageSettingAdapter(private val profileItemClickListener: ProfileItemCl
         this.shopPageSettingList = newShopPageSettingList
     }
 
-    fun setMultiLocationEligibility(isEligible: Boolean) {
-        isEligibleForMultiLocation = isEligible
+    fun setMultiLocationEligibility() {
         notifyItemChanged(shippingViewHolder?.adapterPosition.orZero())
     }
 }

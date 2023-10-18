@@ -10,12 +10,15 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.annotation.DrawableRes
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -24,7 +27,6 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.kotlin.extensions.view.showToast
 
 /**
  * @author by yfsx on 17/05/19.
@@ -169,7 +171,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
                 override val key: String,
                 override val displayName: String,
                 override val mimeType: MimeType,
-                @DrawableRes val imageResource: Int,
+                val imageResource: Drawable?,
                 val handler: () -> Unit
         ) : ShareType()
     }
@@ -273,7 +275,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
                         })
         )
 
-        showToast(getString(R.string.msg_copy))
+        showToast(getString(com.tokopedia.content.common.R.string.msg_copy))
     }
 
     private fun doActivityShare(type: ShareType.ActivityShare) {
@@ -281,10 +283,10 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
             startActivity(type.intent)
             sendTracker(type.key)
         } catch (ex: PackageManager.NameNotFoundException) {
-            showToast(getString(R.string.error_apps_not_installed))
+            showToast(getString(com.tokopedia.content.common.R.string.error_apps_not_installed))
             ex.printStackTrace()
         } catch (ex: Exception) {
-            showToast(getString(R.string.error_occurred))
+            showToast(getString(com.tokopedia.content.common.R.string.error_occurred))
             ex.printStackTrace()
         }
     }
@@ -295,7 +297,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
 
     private fun actionMore() {
         val intent = getIntent(data?.uri ?: "", TYPE_TEXT)
-        startActivity(Intent.createChooser(intent, getString(R.string.other)))
+        startActivity(Intent.createChooser(intent, getString(com.tokopedia.content.common.R.string.other)))
         sendTracker(KEY_OTHER)
     }
 
@@ -324,8 +326,8 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         return Intent(ACTION_INSTAGRAM_STORY)
                 .setType(MimeType.IMAGE.typeString)
                 .putExtra(IG_STORY_EXTRA_STICKER_URI, mediaUri)
-                .putExtra(IG_STORY_EXTRA_TOP_BG, getString(com.tokopedia.unifyprinciples.R.color.Unify_N75))
-                .putExtra(IG_STORY_EXTRA_BOTTOM_BG, getString(com.tokopedia.unifyprinciples.R.color.Unify_T400))
+                .putExtra(IG_STORY_EXTRA_TOP_BG, getString(com.tokopedia.unifyprinciples.R.color.Unify_NN50))
+                .putExtra(IG_STORY_EXTRA_BOTTOM_BG, getString(com.tokopedia.unifyprinciples.R.color.Unify_TN400))
                 .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
 
@@ -381,7 +383,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         mProgressBar.visibility = View.GONE
         mLayoutError.visibility = View.VISIBLE
         mRecyclerView.visibility = View.GONE
-        mTextViewError.text = messageError + "\n" + getString(R.string.error_failed_add_product)
+        mTextViewError.text = messageError + "\n" + getString(com.tokopedia.content.common.R.string.error_failed_add_product)
     }
 
     fun setData(data: Bundle) {
@@ -408,19 +410,42 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
 
     private fun generateAvailableShareTypes(typeList: List<MimeType>): List<ShareType> {
         return mutableListOf<ShareType>().apply {
-            add(ShareType.ActivityShare(KEY_WHATSAPP, getString(R.string.share_whatsapp), MimeType.TEXT, getWhatsAppIntent(PACKAGE_NAME_WHATSAPP)))
-            add(ShareType.ActivityShare(KEY_FACEBOOK, getString(R.string.share_facebook), MimeType.TEXT, getTextIntent(PACKAGE_NAME_FACEBOOK, CLASS_NAME_FACEBOOK)))
-            add(ShareType.ActivityShare(KEY_LINE, getString(R.string.share_line).toUpperCase(), MimeType.TEXT, getTextIntent(PACKAGE_NAME_LINE, CLASS_NAME_LINE)))
-            add(ShareType.ActivityShare(KEY_TWITTER, getString(R.string.share_twitter), MimeType.TEXT, getTextIntent(PACKAGE_NAME_TWITTER, CLASS_NAME_TWITTER)))
+            add(ShareType.ActivityShare(KEY_WHATSAPP, getString(com.tokopedia.content.common.R.string.share_whatsapp), MimeType.TEXT, getWhatsAppIntent(PACKAGE_NAME_WHATSAPP)))
+            add(ShareType.ActivityShare(KEY_FACEBOOK, getString(com.tokopedia.content.common.R.string.share_facebook), MimeType.TEXT, getTextIntent(PACKAGE_NAME_FACEBOOK, CLASS_NAME_FACEBOOK)))
+            add(ShareType.ActivityShare(KEY_LINE, getString(com.tokopedia.content.common.R.string.share_line).toUpperCase(), MimeType.TEXT, getTextIntent(PACKAGE_NAME_LINE, CLASS_NAME_LINE)))
+            add(ShareType.ActivityShare(KEY_TWITTER, getString(com.tokopedia.content.common.R.string.share_twitter), MimeType.TEXT, getTextIntent(PACKAGE_NAME_TWITTER, CLASS_NAME_TWITTER)))
 
             val mediaUrl: String? = arguments?.getString(EXTRA_MEDIA_URL)
             if (typeList.contains(MimeType.IMAGE) && mediaUrl?.isNotEmpty() == true) {
-                add(ShareType.ActivityShare(KEY_INSTAGRAM_FEED, getString(R.string.share_instagram_feed), MimeType.IMAGE, getInstagramFeedIntent(Uri.parse(mediaUrl))))
-                add(ShareType.ActivityShare(KEY_INSTAGRAM_STORY, getString(R.string.share_instagram_story), MimeType.IMAGE, getInstagramStoryIntent(Uri.parse(mediaUrl))))
+                add(ShareType.ActivityShare(KEY_INSTAGRAM_FEED, getString(com.tokopedia.content.common.R.string.share_instagram_feed), MimeType.IMAGE, getInstagramFeedIntent(Uri.parse(mediaUrl))))
+                add(ShareType.ActivityShare(KEY_INSTAGRAM_STORY, getString(com.tokopedia.content.common.R.string.share_instagram_story), MimeType.IMAGE, getInstagramStoryIntent(Uri.parse(mediaUrl))))
             }
 
-            add(ShareType.ActionShare(KEY_COPY, getString(R.string.copy), MimeType.TEXT, R.drawable.ic_copy_clipboard, ::actionCopy))
-            add(ShareType.ActionShare(KEY_OTHER, getString(R.string.other), MimeType.TEXT, R.drawable.ic_btn_more, ::actionMore))
+            add(
+                ShareType.ActionShare(
+                    KEY_COPY,
+                    getString(com.tokopedia.content.common.R.string.copy),
+                    MimeType.TEXT,
+                    MethodChecker.getDrawable(context, R.drawable.ic_copy_clipboard),
+                    ::actionCopy
+                )
+            )
+            add(
+                ShareType.ActionShare(
+                    KEY_OTHER,
+                    getString(com.tokopedia.content.common.R.string.other),
+                    MimeType.TEXT,
+                    getIconUnifyDrawable(
+                        requireContext(),
+                        IconUnify.MENU_KEBAB_HORIZONTAL,
+                        MethodChecker.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                        )
+                    ),
+                    ::actionMore
+                )
+            )
         }
                 .filterNot { shareType -> shareType is ShareType.ActivityShare && shareType.getResolveActivity(context as Context) == null }
                 .distinctBy(ShareType::key)

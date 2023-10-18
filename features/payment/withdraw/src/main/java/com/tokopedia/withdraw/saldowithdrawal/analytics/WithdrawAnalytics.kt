@@ -9,7 +9,7 @@ import javax.inject.Inject
  * RP stand for Rekening Premium Program
  */
 class WithdrawAnalytics @Inject constructor(
-        val userSession: dagger.Lazy<UserSession>
+    val userSession: dagger.Lazy<UserSession>
 ) {
 
     fun sendScreen(screenName: String?) {
@@ -17,323 +17,389 @@ class WithdrawAnalytics @Inject constructor(
     }
 
     fun eventClickWithdrawal() {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLICK_WITHDRAWAL,
-                ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLICK_WITHDRAWAL,
+            ""
         )
         sendTrackingData(map)
     }
 
     fun eventClickWithdrawalAll() {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLICK_WITHDRAWAL_ALL,
-                ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLICK_WITHDRAWAL_ALL,
+            ""
         )
         sendTrackingData(map)
     }
 
     fun eventClickTANDC() {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLICK_TANDC,
-                ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLICK_TANDC,
+            ""
         )
         sendTrackingData(map)
     }
-
 
     fun eventClickTarikSaldo() {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLICK_TARIK_SALDO,
-                ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLICK_TARIK_SALDO,
+            ""
         )
         sendTrackingData(map)
     }
-
 
     fun onBannerItemView(bannerId: Int, isBanner: Boolean) {
-        val label = if (isBanner) String.format(EVENT_BANNER_LABEL_YES_WIDGET, bannerId) else
+        val label = if (isBanner) {
+            String.format(EVENT_BANNER_LABEL_YES_WIDGET, bannerId)
+        } else {
             String.format(EVENT_BANNER_LABEL_NO_WIDGET, bannerId)
-       val map = TrackAppUtils.gtmData(EVENT_NAME_PROMO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_VIEW_BANNER,
-                label
+        }
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_PROMO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_VIEW_BANNER,
+            label
         )
         sendTrackingData(map)
     }
 
-
     fun eventClickAddAccount() {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLICK_ACCOUNT_ADD,
-                ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLICK_ACCOUNT_ADD,
+            ""
         )
         sendTrackingData(map)
     }
 
     fun onClickManageAccount() {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLICK_MANAGE_ACCOUNT,
-                ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLICK_MANAGE_ACCOUNT,
+            ""
         )
         sendTrackingData(map)
     }
 
     fun onRekeningPremiumLogoClick() {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLICK_REKENING_PREMIUM_LOGO,
-                ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLICK_REKENING_PREMIUM_LOGO,
+            ""
         )
         sendTrackingData(map)
     }
 
     fun onRekeningPremiumAccountInfoClosed() {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLOSE_REKENING_PREMIUM_ACCOUNT_INFO,
-                ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLOSE_REKENING_PREMIUM_ACCOUNT_INFO,
+            ""
         )
         sendTrackingData(map)
     }
 
     fun onRekeningPremiumAccountMoreInfo() {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLICK_REKENING_PREMIUM_ACCOUNT_MORE_INFO,
-                ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLICK_REKENING_PREMIUM_ACCOUNT_MORE_INFO,
+            ""
         )
         sendTrackingData(map)
     }
 
-
     fun onClickJoinRekeningProgram() {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLICK_JOIN_REKENING_PROGRAM,
-                ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLICK_JOIN_REKENING_PROGRAM,
+            ""
         )
         sendTrackingData(map)
-
     }
 
     fun onBackFromWithdrawalJoinRPBottomSheet(bankNameStr: String?) {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLICK_BACK_FROM_WITHDEAWAL_OPTION,
-                bankNameStr ?: ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLICK_BACK_FROM_WITHDEAWAL_OPTION,
+            bankNameStr ?: ""
         )
         sendTrackingData(map)
     }
 
     fun onWithdrawalByJoiningOfferOpen(bankNameStr: String?) {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO_IRIS,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_ON_WITHDRAWAL_BY_RP_OFFER_VISIBLE,
-                bankNameStr ?: ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO_IRIS,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_ON_WITHDRAWAL_BY_RP_OFFER_VISIBLE,
+            bankNameStr ?: ""
         )
         sendTrackingData(map)
     }
-
 
     fun onClickWithdrawalBalanceAndJoin(bankName: String?) {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLICK_WITHDRAWAL_AND_JOIN_RP,
-                bankName ?: ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLICK_WITHDRAWAL_AND_JOIN_RP,
+            bankName ?: ""
         )
         sendTrackingData(map)
     }
-
 
     fun onClickOnlyWithdrawalSaldo(bankName: String?) {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLICK_ONLY_WITHDRAWAL_SALDO,
-                bankName ?: ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLICK_ONLY_WITHDRAWAL_SALDO,
+            bankName ?: ""
         )
         sendTrackingData(map)
     }
-
 
     fun onSuccessPageRekeningPremiumLinkClick(label: String) {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-               EVENT_CATEGORY_WITHDRAWAL_PAGE,
-               EVENT_ACTION_ON_CLICK_RP_LINK,
-               label)
-        sendTrackingData(map)
-    }
-
-
-    fun onClickCloseOnSuccessScreen(label: String) {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-               EVENT_CATEGORY_WITHDRAWAL_PAGE,
-               EVENT_ACTION_ON_BACK_FROM_SALDO_PROCESSING,
-               label
-       )
-        sendTrackingData(map)
-    }
-
-
-    fun eventClickBackToSaldoPage(label: String) {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLICK_BACK_TO_SALDO_DETAIL,
-                label
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_ON_CLICK_RP_LINK,
+            label
         )
         sendTrackingData(map)
     }
 
+    fun onClickCloseOnSuccessScreen(label: String) {
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_ON_BACK_FROM_SALDO_PROCESSING,
+            label
+        )
+        sendTrackingData(map)
+    }
 
     fun onViewRekeningPremiumApplicationIsINProgress(bankName: String?) {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO_IRIS,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_RP_APPLICATION_IS_PROGRESS,
-                bankName ?: ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO_IRIS,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_RP_APPLICATION_IS_PROGRESS,
+            bankName ?: ""
         )
         sendTrackingData(map)
     }
 
     fun onViewRekeningPremiumApplicationFailed(label: String) {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO_IRIS,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_RP_APPLICATION_FAILED,
-                label)
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO_IRIS,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_RP_APPLICATION_FAILED,
+            label
+        )
         sendTrackingData(map)
     }
-
 
     fun onClickUpgradeToPowerMerchant(label: String) {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLICK_UPGRADE_POWER_MERCHANT,
-                label)
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLICK_UPGRADE_POWER_MERCHANT,
+            label
+        )
         sendTrackingData(map)
     }
-
 
     fun onShowJoinRekeningPremiumWidgetOnSuccessPage(bankName: String?) {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO_IRIS,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_VIEW_JOIN_RP_WIDGET,
-                bankName ?: "")
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO_IRIS,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_VIEW_JOIN_RP_WIDGET,
+            bankName ?: ""
+        )
         sendTrackingData(map)
     }
-
 
     fun onViewRekeningPointWidget(label: String) {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO_IRIS,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_VIEW_RP_POINT_WIDGET,
-                label)
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO_IRIS,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_VIEW_RP_POINT_WIDGET,
+            label
+        )
         sendTrackingData(map)
     }
-
 
     fun onDisableAccountClick(bankName: String?) {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLICK_DISABLE_ACCOUNT,
-                bankName ?: "")
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLICK_DISABLE_ACCOUNT,
+            bankName ?: ""
+        )
         sendTrackingData(map)
     }
-
 
     fun onDisableAccountInfoSheetClose(bankName: String?) {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLOSE_DISABLE_ACCOUNT_INFO,
-                bankName ?: "")
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLOSE_DISABLE_ACCOUNT_INFO,
+            bankName ?: ""
+        )
         sendTrackingData(map)
     }
 
-
     fun onDisableAccountInfoSheetOpen(bankName: String?) {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO_IRIS,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_OPEN_DISABLE_ACCOUNT_INFO,
-                bankName ?: "")
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO_IRIS,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_OPEN_DISABLE_ACCOUNT_INFO,
+            bankName ?: ""
+        )
         sendTrackingData(map)
     }
 
     fun onClickOpenRekPreInfoFromDisableAccount(label: String) {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLICK_CHECK_RP,
-                label)
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLICK_CHECK_RP,
+            label
+        )
         sendTrackingData(map)
     }
 
-
     fun eventClickContinueBtn() {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLICK_CONTINUE,
-                ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLICK_CONTINUE,
+            ""
         )
         sendTrackingData(map)
     }
 
     fun eventClickAccountBank() {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLICK_ACCOUNT_BANK,
-                ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLICK_ACCOUNT_BANK,
+            ""
         )
         sendTrackingData(map)
     }
 
     fun onNoTickerDisplayedOnSuccessPage(label: String) {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_WITHDRAWAL_VIEW_PROCESSED,
-                label
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_WITHDRAWAL_VIEW_PROCESSED,
+            label
         )
         sendTrackingData(map)
     }
 
     fun onBannerItemClick(bannerId: Int, isBanner: Boolean) {
-        val label = if (isBanner) String.format(EVENT_BANNER_LABEL_YES_WIDGET, bannerId) else
+        val label = if (isBanner) {
+            String.format(EVENT_BANNER_LABEL_YES_WIDGET, bannerId)
+        } else {
             String.format(EVENT_BANNER_LABEL_NO_WIDGET, bannerId)
-       val map = TrackAppUtils.gtmData(EVENT_NAME_PROMO_CLICK,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLICK_BANNER,
-                label
+        }
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_PROMO_CLICK,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLICK_BANNER,
+            label
         )
         sendTrackingData(map)
     }
 
     fun onRekeningBannerClick(label: String) {
-       val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO_IRIS,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_CLICK_REKENING_BANNER,
-                label
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO_IRIS,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_CLICK_REKENING_BANNER,
+            label
         )
         sendTrackingData(map)
     }
 
     fun onBackPressFromWithdrawalPage() {
-        val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
-                EVENT_CATEGORY_WITHDRAWAL_PAGE,
-                EVENT_ACTION_BACK_FROM_WITHDRAWAL,
-                ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_SALDO,
+            EVENT_CATEGORY_WITHDRAWAL_PAGE,
+            EVENT_ACTION_BACK_FROM_WITHDRAWAL,
+            ""
         )
-       sendTrackingData(map)
+        sendTrackingData(map)
+    }
+
+    fun eventViewSuccessThankYouWithdrawalPage(withdrawalID: Long) {
+        val map = TrackAppUtils.gtmData(
+            EVENT_VIEW_ITEM,
+            EVENT_CATEGORY_WITHDRAWAL_THANK_YOU_PAGE,
+            EVENT_VIEW_WD_THANK_YOU_PAGE_SUCCESS,
+            ""
+        )
+        map[KEY_TRACKER_ID] = TRACKER_ID_42131
+        map[KEY_ATTRIBUTION] = withdrawalID
+        sendTrackingData(map)
+    }
+
+    fun eventViewFailedThankYouWithdrawalPage(withdrawalID: Long) {
+        val map = TrackAppUtils.gtmData(
+            EVENT_VIEW_ITEM,
+            EVENT_CATEGORY_WITHDRAWAL_THANK_YOU_PAGE,
+            EVENT_VIEW_WD_THANK_YOU_PAGE_FAILED,
+            ""
+        )
+        map[KEY_TRACKER_ID] = TRACKER_ID_42133
+        map[KEY_ATTRIBUTION] = withdrawalID
+        sendTrackingData(map)
+    }
+
+    fun eventClickCtaSuccessThankYouWithdrawalPage(withdrawalID: Long) {
+        val map = TrackAppUtils.gtmData(
+            EVENT_SELECT_CONTENT,
+            EVENT_CATEGORY_WITHDRAWAL_THANK_YOU_PAGE,
+            EVENT_ACTION_CLICK_CTA_THANK_YOU_PAGE_SUCCESS,
+            ""
+        )
+        map[KEY_TRACKER_ID] = TRACKER_ID_42132
+        map[KEY_ATTRIBUTION] = withdrawalID
+        sendTrackingData(map)
+    }
+
+    fun eventClickCtaFailedThankYouWithdrawalPage(withdrawalID: Long) {
+        val map = TrackAppUtils.gtmData(
+            EVENT_SELECT_CONTENT,
+            EVENT_CATEGORY_WITHDRAWAL_THANK_YOU_PAGE,
+            EVENT_ACTION_CLICK_CTA_THANK_YOU_PAGE_FAILED,
+            ""
+        )
+        map[KEY_TRACKER_ID] = TRACKER_ID_42134
+        map[KEY_ATTRIBUTION] = withdrawalID
+        sendTrackingData(map)
     }
 
     private fun sendTrackingData(map: MutableMap<String, Any>) {
         map[KEY_USER_ID] = userSession.get().userId
         map[KEY_BUSINESS_UNIT] = KEY_BUSINESS_UNIT_VALUE
-        map[KEY_CURRENT_SITE]= KEY_CURRENT_SITE_VALUE
+        map[KEY_CURRENT_SITE] = KEY_CURRENT_SITE_VALUE
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
-
-
 
     companion object {
 
@@ -341,12 +407,14 @@ class WithdrawAnalytics @Inject constructor(
         const val SCREEN_WITHDRAW_SUCCESS_PAGE = "/penarikan-diproses/"
         private const val EVENT_NAME_CLICK_SALDO = "clickWithdrawal"
         private const val EVENT_NAME_CLICK_SALDO_IRIS = "viewWithdrawalIris"
-
+        private const val EVENT_VIEW_ITEM = "view_item"
+        private const val EVENT_SELECT_CONTENT = "select_content"
 
         private const val EVENT_NAME_PROMO = "promoView"
         private const val EVENT_NAME_PROMO_CLICK = "promoClick"
 
         private const val EVENT_CATEGORY_WITHDRAWAL_PAGE = "withdrawal page"
+        private const val EVENT_CATEGORY_WITHDRAWAL_THANK_YOU_PAGE = "wd thank you page"
         private const val EVENT_ACTION_CLICK_WITHDRAWAL = "click withdrawal"
         private const val EVENT_ACTION_CLICK_REKENING_PREMIUM_LOGO = "click rekening premium logo"
         private const val EVENT_ACTION_CLOSE_REKENING_PREMIUM_ACCOUNT_INFO = "click back from rekening premium"
@@ -382,13 +450,22 @@ class WithdrawAnalytics @Inject constructor(
         private const val EVENT_ACTION_CLICK_TARIK_SALDO = "click tarik saldo"
         private const val EVENT_ACTION_CLICK_TANDC = "click ketentuan penarikan saldo"
         private const val EVENT_ACTION_CLICK_CONTINUE = "click lanjut tarik"
-        private const val EVENT_ACTION_CLICK_BACK_TO_SALDO_DETAIL = "click kembali detail saldo"
-
+        private const val EVENT_VIEW_WD_THANK_YOU_PAGE_SUCCESS = "view wd thank you page success"
+        private const val EVENT_VIEW_WD_THANK_YOU_PAGE_FAILED = "view wd thank you page failed"
+        private const val EVENT_ACTION_CLICK_CTA_THANK_YOU_PAGE_SUCCESS = "click button balik saldo tokopedia after wd success"
+        private const val EVENT_ACTION_CLICK_CTA_THANK_YOU_PAGE_FAILED = "click button hubungi tokopedia after wd failed"
 
         private const val KEY_BUSINESS_UNIT = "businessUnit"
         private const val KEY_USER_ID = "userId"
         private const val KEY_CURRENT_SITE = "currentSite"
         private const val KEY_BUSINESS_UNIT_VALUE = "payment"
         private const val KEY_CURRENT_SITE_VALUE = "tokopediamarketplace"
+        private const val KEY_TRACKER_ID = "trackerId"
+        private const val KEY_ATTRIBUTION = "attribution"
+
+        private const val TRACKER_ID_42131 = "42131"
+        private const val TRACKER_ID_42132 = "42132"
+        private const val TRACKER_ID_42133 = "42133"
+        private const val TRACKER_ID_42134 = "42134"
     }
 }

@@ -3,6 +3,9 @@ package com.tokopedia.media.preview.ui.activity
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.app.Activity
 import android.content.Intent
+import android.graphics.BitmapFactory
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.ViewModelProvider
@@ -12,24 +15,20 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.R
-import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.media.databinding.ActivityPreviewBinding
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
-import com.tokopedia.media.preview.analytics.PREVIEW_PAGE_LANJUT
-import com.tokopedia.media.preview.analytics.PREVIEW_PAGE_UPLOAD
-import com.tokopedia.media.preview.analytics.PREVIEW_RETAKE_CAMMERA
-import com.tokopedia.media.preview.analytics.PREVIEW_RETAKE_GALLERY
-import com.tokopedia.media.preview.analytics.PREVIEW_RETAKE_RECORDER
-import com.tokopedia.media.preview.analytics.PreviewAnalytics
+import com.tokopedia.media.picker.utils.goToSettings
+import com.tokopedia.media.picker.utils.parcelableArrayListExtra
+import com.tokopedia.media.picker.utils.permission.PermissionManager
+import com.tokopedia.media.picker.utils.permission.PermissionRequestCallback
+import com.tokopedia.media.picker.utils.permission.isGranted
+import com.tokopedia.media.preview.analytics.*
 import com.tokopedia.media.preview.di.DaggerPreviewComponent
 import com.tokopedia.media.preview.ui.component.PreviewPagerComponent
-import com.tokopedia.picker.common.EXTRA_INTENT_PREVIEW
-import com.tokopedia.picker.common.RESULT_INTENT_PREVIEW
-import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
-import com.tokopedia.picker.common.EXTRA_EDITOR_PICKER
-import com.tokopedia.picker.common.PickerResult
+import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.basecomponent.uiComponent
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
 import com.tokopedia.picker.common.uimodel.MediaUiModel
@@ -37,13 +36,9 @@ import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
+import java.io.File
 import javax.inject.Inject
-import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES
-import com.tokopedia.media.picker.utils.goToSettings
-import com.tokopedia.media.picker.utils.permission.PermissionManager
-import com.tokopedia.media.picker.utils.permission.PermissionRequestCallback
-import com.tokopedia.media.picker.utils.permission.isGranted
+
 
 open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
     DrawerSelectionWidget.Listener {
@@ -221,7 +216,27 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
                         PREVIEW_PAGE_UPLOAD
                     }
 
-                    previewAnalytics.clickNextButton(buttonState)
+                    // size, resolution, total pixel
+                    val imageDetailList: MutableList<Triple<String, String, Int>> = mutableListOf()
+                    it.originalPaths.forEach { pathImg ->
+                        val (width, height) = getImageResolution(pathImg)
+
+                        imageDetailList.add(
+                            Triple(
+                                getImageSize(pathImg).toString(),
+                                "${width}x$height",
+                                width*height
+                            )
+                        )
+                    }
+                    imageDetailList.sortByDescending { (_, _, pixel) ->
+                        pixel
+                    }
+
+                    previewAnalytics.clickNextButton(
+                        buttonState,
+                        imageDetailList
+                    )
                     onFinishIntent(it, withEditor)
                 }
         }
@@ -245,8 +260,7 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
     private fun restoreDataState(savedInstanceState: Bundle?) {
         // get data from picker
         intent?.let {
-            val items =
-                it.getParcelableArrayListExtra<MediaUiModel>(EXTRA_INTENT_PREVIEW) ?: listOf()
+            val items = it.parcelableArrayListExtra<MediaUiModel>(EXTRA_INTENT_PREVIEW) ?: listOf()
 
             if (items.isNotEmpty()) {
                 setUiModelData(items)
@@ -316,16 +330,15 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
 
     private fun retakeButtonAction(media: MediaUiModel) {
         binding?.btnRetake?.show()
+        binding?.btnRetake?.setModeUi(media)
 
-        val retakeState = if (media.file?.isVideo() == true && media.isFromPickerCamera) {
-            binding?.btnRetake?.videoMode()
-            PREVIEW_RETAKE_RECORDER
-        } else if (media.file?.isImage() == true && media.isFromPickerCamera) {
-            binding?.btnRetake?.photoMode()
-            PREVIEW_RETAKE_CAMMERA
-        } else {
-            binding?.btnRetake?.commonMode()
-            PREVIEW_RETAKE_GALLERY
+        val isVideoFromCamera = media.file?.isVideo() == true && media.isCacheFile
+        val isImageFromCamera = media.file?.isImage() == true && media.isCacheFile
+
+        val retakeState = when {
+            isVideoFromCamera -> PREVIEW_RETAKE_RECORDER
+            isImageFromCamera -> PREVIEW_RETAKE_CAMMERA
+            else -> PREVIEW_RETAKE_GALLERY
         }
 
         binding?.btnRetake?.setOnClickListener {
@@ -335,7 +348,7 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
     }
 
     private fun onCancelOrRetakeMedia(media: MediaUiModel) {
-        if (media.isFromPickerCamera) {
+        if (media.isCacheFile) {
             media.file?.safeDelete()
         }
 
@@ -365,6 +378,23 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
         intent.putExtra(EXTRA_EDITOR_PICKER, withEditor)
         setResult(Activity.RESULT_OK, intent)
         finish()
+    }
+
+    // Temporary will removed later
+    private fun getImageResolution(path: String): Pair<Int, Int> {
+        return try {
+            val option = BitmapFactory.Options()
+            option.inJustDecodeBounds = true
+            BitmapFactory.decodeFile(path, option)
+            return Pair(option.outWidth, option.outHeight)
+        } catch (_: Exception) {
+            Pair(0, 0)
+        }
+    }
+
+    private fun getImageSize(path: String): Int {
+        val file: File = File(path)
+       return (file.length() / 1024).toString().toInt()
     }
 
     protected open fun initInjector() {

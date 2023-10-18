@@ -38,7 +38,8 @@
           "item_category": ".+"
         }
       ],
-      "item_list" : "/deals"
+      "item_list" : "/deals",
+      "item_list_name" : "/deals"
     }, {
       "event" : "select_content",
       "eventCategory" : "digital - deals",

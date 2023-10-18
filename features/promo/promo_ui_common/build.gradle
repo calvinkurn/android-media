@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.promoui.common'
+    testNamespace 'com.tokopedia.promoui.common.test'
+}
+
 dependencies {
 	implementation rootProject.ext.unifyDependencies.principles
     implementation fileTree(dir: 'libs', include: ['*.jar'])

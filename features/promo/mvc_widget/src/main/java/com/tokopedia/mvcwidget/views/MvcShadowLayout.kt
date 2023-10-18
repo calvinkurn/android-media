@@ -5,7 +5,6 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import androidx.core.content.ContextCompat
-import com.tokopedia.promoui.common.R
 import com.tokopedia.promoui.common.dpToPx
 
 class MvcShadowLayout @JvmOverloads constructor(
@@ -28,7 +27,7 @@ class MvcShadowLayout @JvmOverloads constructor(
         enableShadow = true
         shadowStrokeWidth = dpToPx(3)
         blurRadius = dpToPx(8)
-        shadowColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
+        shadowColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32)
     }
 
     override fun drawShadow(canvas: Canvas) {

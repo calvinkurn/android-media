@@ -9,6 +9,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynami
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
@@ -92,17 +93,19 @@ class HomeViewModelPlayCarouselTest {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `given user not logged in when shouldUpdatePlayWidgetToggleReminder then trigger livedata with given paramater`(){
-        val mockChannel = DynamicHomeChannel.Channels()
+    fun `given user not logged in when shouldUpdatePlayWidgetToggleReminder then trigger livedata with given paramater`() {
+        val mockChannel = ChannelModel("", "")
         val mockPlayWidgetState = PlayWidgetState(isLoading = true)
 
         val mockChannelId = "1"
         val mockReminderType = PlayWidgetReminderType.NotReminded
-        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
                 list = listOf(
-                        CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetState)
+                    CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetState)
                 )
-        ))
+            )
+        )
         coEvery { getUserSession.isLoggedIn } returns false
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, userSessionInterface = getUserSession)
         homeViewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, mockReminderType)
@@ -114,25 +117,27 @@ class HomeViewModelPlayCarouselTest {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `given homePlayUseCase success when shouldUpdatePlayWidgetToggleReminder then trigger livedata with Result success reminderType`(){
-        val mockChannel = DynamicHomeChannel.Channels()
+    fun `given homePlayUseCase success when shouldUpdatePlayWidgetToggleReminder then trigger livedata with Result success reminderType`() {
+        val mockChannel = ChannelModel("", "")
         val mockPlayWidgetState = PlayWidgetState(isLoading = true)
 
         val mockChannelId = "1"
         val mockReminderType = PlayWidgetReminderType.NotReminded
-        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
                 list = listOf(
-                        CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetState)
+                    CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetState)
                 )
-        ))
+            )
+        )
         getPlayUseCase.givenOnUpdatePlayToggleReminderReturn(true)
         getPlayUseCase.givenOnGetPlayWidgetUiModelReturn(mockPlayWidgetState)
 
         coEvery { getUserSession.isLoggedIn } returns true
         homeViewModel = createHomeViewModel(
-                getHomeUseCase = getHomeUseCase,
-                userSessionInterface = getUserSession,
-                homePlayUseCase = getPlayUseCase
+            getHomeUseCase = getHomeUseCase,
+            userSessionInterface = getUserSession,
+            homePlayUseCase = getPlayUseCase
         )
         homeViewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, mockReminderType)
         homeViewModel.playWidgetReminderObservable.observeOnce {
@@ -140,35 +145,37 @@ class HomeViewModelPlayCarouselTest {
             Assert.assertTrue(it.data == mockReminderType)
         }
         homeViewModel.homeDataModel.findWidget<CarouselPlayWidgetDataModel>(
-                actionOnFound = { model, index ->
-                    Assert.assertTrue(model.widgetState == mockPlayWidgetState)
-                },
-                actionOnNotFound = {
-                    Assert.assertTrue(false)
-                }
+            actionOnFound = { model, index ->
+                Assert.assertTrue(model.widgetState == mockPlayWidgetState)
+            },
+            actionOnNotFound = {
+                Assert.assertTrue(false)
+            }
         )
     }
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `given homePlayUseCase failed when shouldUpdatePlayWidgetToggleReminder then trigger livedata with Result error reminderType and homeDataModel updated`(){
-        val mockChannel = DynamicHomeChannel.Channels()
+    fun `given homePlayUseCase failed when shouldUpdatePlayWidgetToggleReminder then trigger livedata with Result error reminderType and homeDataModel updated`() {
+        val mockChannel = ChannelModel("", "")
         val mockPlayWidgetState = PlayWidgetState(isLoading = true)
 
         val mockChannelId = "1"
         val mockReminderType = PlayWidgetReminderType.NotReminded
-        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
                 list = listOf(
-                        CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetState)
+                    CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetState)
                 )
-        ))
+            )
+        )
         getPlayUseCase.givenOnUpdatePlayToggleReminderReturn(false)
         getPlayUseCase.givenOnGetPlayWidgetUiModelReturn(mockPlayWidgetState)
         coEvery { getUserSession.isLoggedIn } returns true
         homeViewModel = createHomeViewModel(
-                getHomeUseCase = getHomeUseCase,
-                userSessionInterface = getUserSession,
-                homePlayUseCase = getPlayUseCase
+            getHomeUseCase = getHomeUseCase,
+            userSessionInterface = getUserSession,
+            homePlayUseCase = getPlayUseCase
         )
         homeViewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, mockReminderType)
         homeViewModel.playWidgetReminderObservable.observeOnce {
@@ -176,134 +183,142 @@ class HomeViewModelPlayCarouselTest {
         }
 
         homeViewModel.homeDataModel.findWidget<CarouselPlayWidgetDataModel>(
-                actionOnFound = { model, index ->
-                    Assert.assertTrue(model.widgetState == mockPlayWidgetState)
-                },
-                actionOnNotFound = {
-                    Assert.assertTrue(false)
-                }
+            actionOnFound = { model, index ->
+                Assert.assertTrue(model.widgetState == mockPlayWidgetState)
+            },
+            actionOnNotFound = {
+                Assert.assertTrue(false)
+            }
         )
     }
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `given initial carousel data model when updatePlayWidgetTotalView then homeDataModel need to update carousel model with value from usecase`(){
-        val mockChannel = DynamicHomeChannel.Channels()
+    fun `given initial carousel data model when updatePlayWidgetTotalView then homeDataModel need to update carousel model with value from usecase`() {
+        val mockChannel = ChannelModel("", "")
         val mockChannelId = "1"
         val mockTotalView = "99"
 
         val mockInitialCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetState)
         val mockReturnCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetStateUseCaseReturn)
 
-        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
                 list = listOf(mockInitialCarouselModel)
-        ))
+            )
+        )
         getPlayUseCase.givenOnUpdatePlayTotalViewReturn(mockReturnCarouselModel)
         coEvery { getUserSession.isLoggedIn } returns true
         homeViewModel = createHomeViewModel(
-                getHomeUseCase = getHomeUseCase,
-                userSessionInterface = getUserSession,
-                homePlayUseCase = getPlayUseCase
+            getHomeUseCase = getHomeUseCase,
+            userSessionInterface = getUserSession,
+            homePlayUseCase = getPlayUseCase
         )
         homeViewModel.updatePlayWidgetTotalView(mockChannelId, mockTotalView)
 
         homeViewModel.homeDataModel.findWidget<CarouselPlayWidgetDataModel>(
-                actionOnFound = { model, index ->
-                    Assert.assertTrue(model == mockReturnCarouselModel)
-                },
-                actionOnNotFound = {
-                    Assert.assertTrue(false)
-                }
+            actionOnFound = { model, index ->
+                Assert.assertTrue(model == mockReturnCarouselModel)
+            },
+            actionOnNotFound = {
+                Assert.assertTrue(false)
+            }
         )
     }
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `given initial carousel data model when onUpdateActionReminder then homeDataModel need to update carousel model with value from usecase`(){
-        val mockChannel = DynamicHomeChannel.Channels()
+    fun `given initial carousel data model when onUpdateActionReminder then homeDataModel need to update carousel model with value from usecase`() {
+        val mockChannel = ChannelModel("", "")
         val mockChannelId = "1"
 
         val mockInitialCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetState)
         val mockReturnCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetStateUseCaseReturn)
 
-        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
                 list = listOf(mockInitialCarouselModel)
-        ))
+            )
+        )
         getPlayUseCase.givenOnUpdateActionReminderReturn(mockReturnCarouselModel)
         coEvery { getUserSession.isLoggedIn } returns true
         homeViewModel = createHomeViewModel(
-                getHomeUseCase = getHomeUseCase,
-                userSessionInterface = getUserSession,
-                homePlayUseCase = getPlayUseCase
+            getHomeUseCase = getHomeUseCase,
+            userSessionInterface = getUserSession,
+            homePlayUseCase = getPlayUseCase
         )
         homeViewModel.updatePlayWidgetReminder(mockChannelId, true)
 
         homeViewModel.homeDataModel.findWidget<CarouselPlayWidgetDataModel>(
-                actionOnFound = { model, index ->
-                    Assert.assertTrue(model == mockReturnCarouselModel)
-                },
-                actionOnNotFound = {
-                    Assert.assertTrue(false)
-                }
+            actionOnFound = { model, index ->
+                Assert.assertTrue(model == mockReturnCarouselModel)
+            },
+            actionOnNotFound = {
+                Assert.assertTrue(false)
+            }
         )
     }
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `given getPlayWidget usecase success when getPlayWidgetWhenShouldRefresh then homeDataModel need to update carousel model with value from usecase`(){
-        val mockChannel = DynamicHomeChannel.Channels()
+    fun `given getPlayWidget usecase success when getPlayWidgetWhenShouldRefresh then homeDataModel need to update carousel model with value from usecase`() {
+        val mockChannel = ChannelModel("", "")
 
         val mockInitialCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetState)
         val mockReturnCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetStateUseCaseReturn)
 
-        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
                 list = listOf(mockInitialCarouselModel)
-        ))
+            )
+        )
         getPlayUseCase.givenOnGetPlayWidgetWhenShouldRefreshReturn(mockPlayWidgetStateUseCaseReturn)
         coEvery { getUserSession.isLoggedIn } returns true
         homeViewModel = createHomeViewModel(
-                getHomeUseCase = getHomeUseCase,
-                userSessionInterface = getUserSession,
-                homePlayUseCase = getPlayUseCase
+            getHomeUseCase = getHomeUseCase,
+            userSessionInterface = getUserSession,
+            homePlayUseCase = getPlayUseCase
         )
         homeViewModel.getPlayWidgetWhenShouldRefresh()
 
         homeViewModel.homeDataModel.findWidget<CarouselPlayWidgetDataModel>(
-                actionOnFound = { model, index ->
-                    Assert.assertTrue(model == mockReturnCarouselModel)
-                },
-                actionOnNotFound = {
-                    Assert.assertTrue(false)
-                }
+            actionOnFound = { model, index ->
+                Assert.assertTrue(model == mockReturnCarouselModel)
+            },
+            actionOnNotFound = {
+                Assert.assertTrue(false)
+            }
         )
     }
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `given getPlayWidget usecase failed when getPlayWidgetWhenShouldRefresh then homeDataModel need to remove carousel model`(){
-        val mockChannel = DynamicHomeChannel.Channels()
+    fun `given getPlayWidget usecase failed when getPlayWidgetWhenShouldRefresh then homeDataModel need to remove carousel model`() {
+        val mockChannel = ChannelModel("", "")
 
         val mockInitialCarouselModel = CarouselPlayWidgetDataModel(mockChannel, mockPlayWidgetState)
 
-        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
                 list = listOf(mockInitialCarouselModel)
-        ))
+            )
+        )
         getPlayUseCase.givenOnGetPlayWidgetWhenShouldRefreshError()
         coEvery { getUserSession.isLoggedIn } returns true
         homeViewModel = createHomeViewModel(
-                getHomeUseCase = getHomeUseCase,
-                userSessionInterface = getUserSession,
-                homePlayUseCase = getPlayUseCase
+            getHomeUseCase = getHomeUseCase,
+            userSessionInterface = getUserSession,
+            homePlayUseCase = getPlayUseCase
         )
         homeViewModel.getPlayWidgetWhenShouldRefresh()
 
         homeViewModel.homeDataModel.findWidget<CarouselPlayWidgetDataModel>(
-                actionOnFound = { model, index ->
-                    Assert.assertTrue(false)
-                },
-                actionOnNotFound = {
-                    Assert.assertTrue(true)
-                }
+            actionOnFound = { model, index ->
+                Assert.assertTrue(false)
+            },
+            actionOnNotFound = {
+                Assert.assertTrue(true)
+            }
         )
     }
 }

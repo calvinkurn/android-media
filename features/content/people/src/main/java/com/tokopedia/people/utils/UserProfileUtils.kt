@@ -1,6 +1,8 @@
 package com.tokopedia.people.utils
 
+import android.content.Context
 import android.view.View
+import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -52,4 +54,9 @@ fun View.showToast(
         duration,
         type,
     ).show()
+}
+
+fun Context.isInternetAvailable(): Boolean {
+    return DeviceConnectionInfo.isConnectWifi(this.applicationContext) ||
+        DeviceConnectionInfo.isConnectCellular(this.applicationContext)
 }

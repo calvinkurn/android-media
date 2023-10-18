@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
@@ -37,14 +38,15 @@ import com.tokopedia.product.addedit.productlimitation.domain.usecase.ProductLim
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
+import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.*
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.feature.getstatusshop.domain.GetStatusShopUseCase
-import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampSaveShipmentLocationUseCase
+import com.tokopedia.shopadmin.common.util.AccessId
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -114,6 +116,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
         !it.variantInputModel.hasVariant()
     }
 
+    val hasDTStock = Transformations.map(productInputModel) {
+        it.hasDTStock
+    }
+
     val priceRangeFormatted = Transformations.map(productInputModel) {
         val highestPrice = it.variantInputModel.getHighestPrice().orZero()
         val lowestPrice = it.variantInputModel.getLowestPrice().orZero()
@@ -136,6 +142,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     val mustFillParentWeight = Transformations.map(productInputModel) {
         !it.shipmentInputModel.isUsingParentWeight && !it.variantInputModel.hasVariant()
+    }
+
+    val isRemovingSingleVariant = Transformations.map(productInputModel) {
+        it.isRemovingSingleVariant
     }
 
     private val mImageUrlOrPathList = MutableLiveData<MutableList<String>>()
@@ -273,10 +283,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }
 
             val imageUrlOrPathList = cleanResult.mapIndexed { index, urlOrPath ->
-                if (!editted[index]) {
-                    val picture =
-                        pictureList.find { pict -> pict.urlOriginal == cleanResult[index] }?.urlThumbnail.toString()
-                    if (picture != "null" && picture.isNotBlank()) {
+                if (!editted.getOrNull(index).orTrue()) {
+                    val picture = pictureList.find {
+                            pict -> pict.urlOriginal == cleanResult.getOrNull(index).orEmpty()
+                    }?.urlThumbnail.orEmpty()
+                    if (picture.isNotBlank()) {
                         return@mapIndexed picture
                     }
                 }
@@ -659,22 +670,26 @@ class AddEditProductPreviewViewModel @Inject constructor(
      * */
     fun clearProductPhotoUrl(
         imagePickerResult: ArrayList<String>,
-        originalImageUrl: ArrayList<String>
+        originalImageUrls: ArrayList<String>
     ): Pair<ArrayList<String>, ArrayList<Boolean>> {
         val resultCleaner = arrayListOf<String>()
         val isEdited = arrayListOf<Boolean>()
         imagePickerResult.forEachIndexed { index, uriEditImage ->
+            val originalImageUrl = originalImageUrls.getOrNull(index)
             when {
                 uriEditImage.isNotEmpty() -> {
                     resultCleaner.add(uriEditImage)
                     isEdited.add(true)
                 }
-                isPictureFromInternet(originalImageUrl[index]) -> {
-                    resultCleaner.add(originalImageUrl[index])
+                originalImageUrl.isNullOrEmpty() -> {
+                    return@forEachIndexed
+                }
+                isPictureFromInternet(originalImageUrl) -> {
+                    resultCleaner.add(originalImageUrl)
                     isEdited.add(false)
                 }
                 else -> {
-                    resultCleaner.add(originalImageUrl[index])
+                    resultCleaner.add(originalImageUrl)
                     isEdited.add(true)
                 }
             }
@@ -684,5 +699,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private fun isPictureFromInternet(urlOrPath: String): Boolean {
         return urlOrPath.contains(PREFIX_CACHE)
+    }
+
+    fun convertToNonVariant() {
+        productInputModel.getValueOrDefault().convertToNonVariant()
+        productInputModel.value = productInputModel.value // refresh and re-trigger livedata changes
     }
 }

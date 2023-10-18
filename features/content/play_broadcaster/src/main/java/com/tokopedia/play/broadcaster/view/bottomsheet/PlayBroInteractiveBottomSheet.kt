@@ -101,12 +101,18 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     height = (getScreenHeight() * 1f).toInt()
                 }
             }
+            else -> {
+                //no-op
+            }
         }
         if (Type.mapFromString(sheetType) != Type.UNKNOWN) {
             when (Type.mapFromString(sheetType)) {
                 Type.QUIZ_DETAIL -> setupQuizDetail()
                 Type.LEADERBOARD -> setupLeaderBoard()
                 Type.REPORT -> setupReport()
+                else -> {
+                    //no-op
+                }
             }
             observeQuizDetail()
         }
@@ -199,6 +205,9 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     dataUiModel.choice.interactiveTitle,
                 )
             }
+            else -> {
+                //no-op
+            }
         }
 
     }
@@ -234,6 +243,9 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     parentViewModel.channelId,
                     parentViewModel.channelTitle,
                 )
+            }
+            else -> {
+                //no-op
             }
         }
         dismiss()
@@ -284,6 +296,9 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     item.interactiveTitle,
                 )
             }
+            else -> {
+                //no-op
+            }
         }
         parentViewModel.submitAction(PlayBroadcastAction.ClickQuizChoiceOption(item))
     }
@@ -313,6 +328,9 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     leaderboard.title,
                     leaderboard.leaderBoardType.toString().lowercase(),
                 )
+            else -> {
+                //no-op
+            }
         }
     }
 

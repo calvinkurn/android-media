@@ -34,22 +34,22 @@ class LoginFingerprintUseCase @Inject constructor(
                        onShowPopupError: (loginTokenPojo: LoginToken)  -> Unit,
                        onGoToActivationPage: (errorMessage: MessageErrorException) -> Unit,
                        onGoToSecurityQuestion: () -> Unit) {
-            launchCatchError(dispatchers.io, {
-                userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
-                val data =
-                    graphqlUseCase.apply {
-                        setTypeClass(LoginTokenPojo::class.java)
-                        setGraphqlQuery(query)
-                        setRequestParams(createRequestParams(email, validateToken))
-                    }.executeOnBackground()
-                withContext(dispatchers.main) {
-                    LoginV2Mapper(userSession).map(data.loginToken, onSuccessLoginToken, onErrorLoginToken, onShowPopupError, onGoToActivationPage, onGoToSecurityQuestion)
-                }
-            }, {
-                withContext(dispatchers.main) {
-                    onErrorLoginToken(it)
-                }
-            })
+        launchCatchError(dispatchers.io, {
+            userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
+            val data =
+                graphqlUseCase.apply {
+                    setTypeClass(LoginTokenPojo::class.java)
+                    setGraphqlQuery(query)
+                    setRequestParams(createRequestParams(email, validateToken))
+                }.executeOnBackground()
+            withContext(dispatchers.main) {
+                LoginV2Mapper(userSession).map(data.loginToken, onSuccessLoginToken, onErrorLoginToken, onShowPopupError, onGoToActivationPage, onGoToSecurityQuestion)
+            }
+        }, {
+            withContext(dispatchers.main) {
+                onErrorLoginToken(it)
+            }
+        })
     }
 
     private fun createRequestParams(email: String, validateToken: String): Map<String, Any> {

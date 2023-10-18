@@ -9,13 +9,13 @@ object Constant {
     const val DATE_FORMAT_HH_MM = "HH:mm"
     const val DATE_FORMAT_EXPIRED = "yyyy-MM-dd HH:mm:ss"
 
-    const val PM_TOP_ADS_CREDIT = "1,5%"
+    const val PM_TOP_ADS_CREDIT = "0,5%"
     const val PM_BROAD_CAST_CHAT = "200"
-    const val PM_PRO_ADV_TOP_ADS_CREDIT = "2%"
+    const val PM_PRO_ADV_TOP_ADS_CREDIT = "1%"
     const val PM_PRO_ADV_BROAD_CAST_CHAT = "400"
-    const val PM_PRO_EXP_TOP_ADS_CREDIT = "2,5%"
+    const val PM_PRO_EXP_TOP_ADS_CREDIT = "1%"
     const val PM_PRO_EXP_BROAD_CAST_CHAT = "600"
-    const val PM_PRO_ULT_TOP_ADS_CREDIT = "3%"
+    const val PM_PRO_ULT_TOP_ADS_CREDIT = "1%"
     const val PM_PRO_ULT_BROAD_CAST_CHAT = "1.000"
     const val PM_SPECIAL_RELEASE = 5
     const val PM_PRO_ADV_SPECIAL_RELEASE = 10
@@ -67,8 +67,6 @@ object Constant {
             "https://images.tokopedia.net/img/android/power_merchant/ic_pm_pro_downgrade_warning@2x.png"
         const val IC_PM_PRO_UPGRADE_LEVEL =
             "https://images.tokopedia.net/img/android/power_merchant/ic_pm_pro_upgrade_level@2x.png"
-        const val IC_PM_CASH_BACK =
-            "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_cash_back.png"
         const val IC_PM_FLASH_SALE =
             "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_flash_sale.png"
         const val IC_PM_PRODUCT_BUNDLING =
@@ -81,6 +79,17 @@ object Constant {
             "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_broadcast_chat.png"
         const val IMG_PM_REGISTRATION =
             "https://images.tokopedia.net/img/android/power_merchant_subscribe/img_pm_registration_banner.png"
+        const val IC_FLASH_SALE_SHOP = "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_flash_sale_toko.png"
+        const val IC_DISCOUNT_SHOP = "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_diskon_toko.png"
+        const val IC_SMART_REPLY = "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_smart_reply.png"
+        const val IC_TOKOPEDIA_PLAY = "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_tokopedia_play.png"
+        const val IC_TOPADS = "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_topads.png"
+        const val IC_BROADCAST_CHAT = "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_broadcast_chat.png"
+        const val BG_AFFECT_PM_DEACTIVATION = "https://images.tokopedia.net/img/android/power_merchant_subscribe/bg_affect_pm_deactivation.png"
+        const val BG_AFFECT_PM_DEACTIVATION_DM = "https://images.tokopedia.net/img/android/power_merchant_subscribe/bg_affect_pm_deactivation_dark_mode.png"
+        const val BG_AFFECT_PM_PRO_DEACTIVATION = "https://images.tokopedia.net/img/android/power_merchant_subscribe/bg_affect_pm_pro_deactivation.png"
+        const val BG_AFFECT_PM_PRO_DEACTIVATION_DM = "https://images.tokopedia.net/img/android/power_merchant_subscribe/bg_affect_pm_pro_deactivation_dark_mode.png"
+        const val IL_PM_OPT_OUT_CONFIRMATION = "https://images.tokopedia.net/img/android/power_merchant_subscribe/il_pm_opt_out_confirmation.png"
     }
 
     object MembershipConst {

@@ -50,7 +50,8 @@
           "dimension40": "/deals"
         }
       ],
-      "item_list" : "/deals"
+      "item_list" : "/deals",
+      "item_list_name": "/deals"
     }, {
       "event" : "select_content",
       "eventCategory" : "digital - deals",
@@ -112,7 +113,8 @@
           "dimension40": "/deals"
         }
       ],
-      "item_list" : "/deals"
+      "item_list" : "/deals",
+      "item_list_name": "/deals"
     }
   ]
 }

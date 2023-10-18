@@ -9,6 +9,7 @@ import java.util.*
  */
 class ShopProductFeaturedUiModel : BaseShopProductViewModel {
     private var shopProductUiModelList: List<ShopProductUiModel>? = null
+    var isNewData: Boolean = false
 
     constructor() {
         shopProductUiModelList = ArrayList()

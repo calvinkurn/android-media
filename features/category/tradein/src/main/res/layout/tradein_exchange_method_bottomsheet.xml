@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/tradein_ditukar_di_alamatmu"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ticker_address_info"
         app:typographyType="heading_4"
@@ -46,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintTop_toBottomOf="@id/tradein_p1"
         app:typographyType="heading_5"
         tools:text="Rp2.500.000 - Rp3.500.000" />
@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:text="@string/tradein_undiagnosed_info_text"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintTop_toBottomOf="@id/tradein_p1_price"
         app:typographyType="body_3"
         app:typographyWeight="reguler" />
@@ -83,7 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/tradein_ditukar_di_indomaret"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintTop_toBottomOf="@id/divider"
         app:typographyType="heading_4"
         app:typographyWeight="bold" />
@@ -105,7 +105,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintTop_toBottomOf="@id/tradein_p3"
         app:typographyType="heading_5"
         tools:text="Rp2.500.000 - Rp3.500.000" />
@@ -116,7 +116,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:text="@string/tradein_undiagnosed_info_text"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintTop_toBottomOf="@id/tradein_p3_price"
         app:typographyType="body_3"
         app:typographyWeight="reguler" />

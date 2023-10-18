@@ -21,6 +21,7 @@ import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.track.TrackAppUtils
 import kotlin.math.max
 
@@ -80,9 +81,15 @@ internal class SortFilterBottomSheetViewModel {
     private val originalFilterViewState = mutableSetOf<String>()
     private var originalSortValue = ""
     private var originalKeyword = ""
+    private var isReimagine = false
 
-    fun init(mapParameter: Map<String, String>, dynamicFilterModel: DynamicFilterModel?) {
+    fun init(
+        mapParameter: Map<String, String>,
+        dynamicFilterModel: DynamicFilterModel?,
+        isReimagine: Boolean = false,
+    ) {
         this.mutableMapParameter = mapParameter.toMutableMap()
+        this.isReimagine = isReimagine
 
         initializeDynamicFilterModel(dynamicFilterModel)
     }
@@ -150,12 +157,12 @@ internal class SortFilterBottomSheetViewModel {
     private fun isButtonResetVisible() = filterController.isFilterActive() || isSortNotDefault()
 
     private fun isSortNotDefault(): Boolean {
-        return getSelectedSortValue() != dynamicFilterModel?.defaultSortValue ?: ""
+        return getSelectedSortValue() != (dynamicFilterModel?.defaultSortValue ?: "")
     }
 
     private fun processSortData(dynamicFilterModelData: DataValue) {
         val sortList = dynamicFilterModelData.sort
-        if (sortList.isEmpty()) return
+        if (isReimagine || sortList.isEmpty()) return
 
         val sortItemViewModelList = mutableListOf<SortItemViewModel>()
 
@@ -470,7 +477,7 @@ internal class SortFilterBottomSheetViewModel {
     private fun createPriceRangeClickTrackingEventAction(priceOptionViewModel: PriceOptionViewModel): String {
         return String.format(
                 FilterEventTracking.Action.CLICK_FILTER_PRICE_RANGE,
-                priceOptionViewModel.option.valMin.toInt(), priceOptionViewModel.option.valMax.toInt(), priceOptionViewModel.position
+                priceOptionViewModel.option.valMin.toIntOrZero(), priceOptionViewModel.option.valMax.toIntOrZero(), priceOptionViewModel.position
         )
     }
 

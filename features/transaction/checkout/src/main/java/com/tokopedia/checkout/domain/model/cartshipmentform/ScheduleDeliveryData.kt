@@ -11,5 +11,5 @@ import kotlinx.parcelize.Parcelize
 data class ScheduleDeliveryData(
     val timeslotId: Long = 0L,
     val scheduleDate: String = "",
-    val validationMetadata: String = "",
+    val validationMetadata: String = ""
 ) : Parcelable

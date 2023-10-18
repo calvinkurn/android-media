@@ -8,38 +8,51 @@ import com.tokopedia.notifcenter.data.uimodel.BigDividerUiModel
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.SectionTitleUiModel
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
+import com.tokopedia.notifcenter.view.adapter.typefactory.NotificationTypeFactory
 import javax.inject.Inject
 
 class NotifcenterDetailMapper @Inject constructor() {
 
     fun mapFirstPage(
-            response: NotifcenterDetailResponse,
-            needSectionTitle: Boolean = true,
-            needLoadMoreButton: Boolean = true
+        response: NotifcenterDetailResponse,
+        needSectionTitle: Boolean = true,
+        needLoadMoreButton: Boolean = true,
+        needDivider: Boolean = false
     ): NotificationDetailResponseModel {
         val items = arrayListOf<Visitable<NotificationTypeFactory>>()
-        val newSections = mapNewSection(response, needSectionTitle, needLoadMoreButton).items
+        val newSections = mapNewSection(
+            response,
+            needSectionTitle,
+            needLoadMoreButton,
+            needDivider
+        ).items
         val earlierSections = mapEarlierSection(
-                response, needSectionTitle, needLoadMoreButton, newSections.isNotEmpty()
+            response,
+            needSectionTitle,
+            needLoadMoreButton,
+            newSections.isNotEmpty()
         ).items
         items.addAll(newSections)
         items.addAll(earlierSections)
         return NotificationDetailResponseModel(
-                items = items,
-                hasNext = response.notifcenterDetail.paging.hasNext
+            items = items,
+            hasNext = response.notifcenterDetail.paging.hasNext
         )
     }
 
     fun mapNewSection(
-            response: NotifcenterDetailResponse,
-            needSectionTitle: Boolean = true,
-            needLoadMoreButton: Boolean = true
+        response: NotifcenterDetailResponse,
+        needSectionTitle: Boolean = true,
+        needLoadMoreButton: Boolean = true,
+        needDivider: Boolean = false
     ): NotificationDetailResponseModel {
         val items = arrayListOf<Visitable<NotificationTypeFactory>>()
         val notifcenterDetail = response.notifcenterDetail
         if (notifcenterDetail.newList.isNotEmpty()) {
             updateNotificationOptions(notifcenterDetail.newList, notifcenterDetail)
+            if (needDivider && needSectionTitle) {
+                items.add(BigDividerUiModel())
+            }
             if (needSectionTitle) {
                 items.add(SectionTitleUiModel("Terbaru"))
             }
@@ -53,16 +66,16 @@ class NotifcenterDetailMapper @Inject constructor() {
             }
         }
         return NotificationDetailResponseModel(
-                items = items,
-                hasNext = response.notifcenterDetail.newPaging.hasNext
+            items = items,
+            hasNext = response.notifcenterDetail.newPaging.hasNext
         )
     }
 
     fun mapEarlierSection(
-            response: NotifcenterDetailResponse,
-            needSectionTitle: Boolean = true,
-            needLoadMoreButton: Boolean = true,
-            needDivider: Boolean = false
+        response: NotifcenterDetailResponse,
+        needSectionTitle: Boolean = true,
+        needLoadMoreButton: Boolean = true,
+        needDivider: Boolean = false
     ): NotificationDetailResponseModel {
         val items = arrayListOf<Visitable<NotificationTypeFactory>>()
         val notifcenterDetail = response.notifcenterDetail
@@ -84,8 +97,8 @@ class NotifcenterDetailMapper @Inject constructor() {
             }
         }
         return NotificationDetailResponseModel(
-                items = items,
-                hasNext = response.notifcenterDetail.paging.hasNext
+            items = items,
+            hasNext = response.notifcenterDetail.paging.hasNext
         )
     }
 
@@ -95,14 +108,12 @@ class NotifcenterDetailMapper @Inject constructor() {
         }
     }
 
-
     private fun updateNotificationOptions(
-            notifications: List<NotificationUiModel>,
-            notifcenterDetail: NotifcenterDetail
+        notifications: List<NotificationUiModel>,
+        notifcenterDetail: NotifcenterDetail
     ) {
         notifications.forEach {
             it.options = notifcenterDetail.options
         }
     }
-
 }

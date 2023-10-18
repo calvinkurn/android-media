@@ -12,8 +12,8 @@ import com.tokopedia.shop.open.data.model.Question
 import com.tokopedia.shop.open.listener.SurveyListener
 
 class ShopOpenRevampQuisionerAdapter(
-        val surveyListener: SurveyListener
-): RecyclerView.Adapter<ShopOpenRevampQuisionerAdapter.ShopOpenRevampQuisionerViewHolder>() {
+    val surveyListener: SurveyListener
+) : RecyclerView.Adapter<ShopOpenRevampQuisionerAdapter.ShopOpenRevampQuisionerViewHolder>() {
 
     private var questionListData: MutableList<Question> = mutableListOf()
 
@@ -31,10 +31,10 @@ class ShopOpenRevampQuisionerAdapter(
     }
 
     override fun onBindViewHolder(holder: ShopOpenRevampQuisionerViewHolder, position: Int) {
-        holder.bindData(questionListData[position], position)
+        holder.bindData(questionListData[position])
     }
 
-    inner class ShopOpenRevampQuisionerViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class ShopOpenRevampQuisionerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private var recyclerView: RecyclerView? = null
         private var layoutManager: LinearLayoutManager? = null
         private var adapter: ShopOpenRevampChoiceItemAdapter? = null
@@ -48,19 +48,17 @@ class ShopOpenRevampQuisionerAdapter(
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
 
-        fun bindData(question: Question, position: Int) {
+        fun bindData(question: Question) {
             if (question.type == 1) {
                 setupChoicesView(question)
             }
         }
 
         private fun setupChoicesView(question: Question) {
-            txtQuestionTitle.text = question.question.toString()
+            txtQuestionTitle.text = question.question
             recyclerView?.layoutManager = layoutManager
             adapter = ShopOpenRevampChoiceItemAdapter(question.choices, surveyListener, question.id)
             recyclerView?.adapter = adapter
         }
-
     }
-
 }

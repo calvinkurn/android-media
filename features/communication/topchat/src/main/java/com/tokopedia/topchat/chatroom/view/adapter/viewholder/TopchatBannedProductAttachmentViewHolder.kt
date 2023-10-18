@@ -15,40 +15,40 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 
 class TopchatBannedProductAttachmentViewHolder(
-        itemView: View?, listener: ProductAttachmentListener
+        itemView: View, listener: ProductAttachmentListener
 ) : BannedProductAttachmentViewHolder(itemView, listener) {
 
-    override var container: ConstraintLayout? = itemView?.findViewById(R.id.bubble_product)
-    override var warning: Ticker? = itemView?.findViewById(R.id.banned_warning)
-    override var name: TextView? = itemView?.findViewById(R.id.product_name)
-    override var price: TextView? = itemView?.findViewById(R.id.product_price)
-    override var btnBuy: UnifyButton? = itemView?.findViewById(R.id.btn_buy)
-    override var image: ImageView? = itemView?.findViewById(R.id.product_image)
+    override var container: ConstraintLayout? = itemView.findViewById(R.id.bubble_product)
+    override var warning: Ticker? = itemView.findViewById(R.id.banned_warning)
+    override var name: TextView? = itemView.findViewById(R.id.product_name)
+    override var price: TextView? = itemView.findViewById(R.id.product_price)
+    override var btnBuy: UnifyButton? = itemView.findViewById(R.id.btn_buy)
+    override var image: ImageView? = itemView.findViewById(R.id.product_image)
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
             container,
-            com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN0,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            ViewUtil.getShadowColorViewHolder(itemView.context),
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
             container,
-            com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN0,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            ViewUtil.getShadowColorViewHolder(itemView.context),
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER,
-            com.tokopedia.unifyprinciples.R.color.Unify_G200,
+            com.tokopedia.unifyprinciples.R.color.Unify_GN100,
             getStrokeWidthSenderDimenRes()
     )
 

@@ -2,28 +2,27 @@ package com.tokopedia.kyc_centralized.data.network
 
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.data.model.KycResponse
+import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
 
 class KycUploadImagesRepository @Inject constructor(
     private val api: KycUploadApi,
+    private val kycSharedPreference: KycSharedPreference
 ) {
     suspend fun uploadImages(
         requestBodyProjectId: RequestBody,
         params: RequestBody,
         ktpImage: MultipartBody.Part,
         faceImage: MultipartBody.Part,
-        projectId: String
+        selfieMode: RequestBody
     ): KycResponse {
-        return when (projectId) {
-            KYCConstant.HOME_CREDIT_PROJECT_ID,
-            KYCConstant.CO_BRAND_PROJECT_ID,
-            KYCConstant.OFFICIAL_STORE_PROJECT_ID,
-            KYCConstant.GO_CICIL_PROJECT_ID -> {
-                uploadImagesAlaCarte(requestBodyProjectId, params, ktpImage, faceImage)
+        return when (kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)) {
+            KYCConstant.SharedPreference.VALUE_KYC_FLOW_TYPE_ALA_CARTE -> {
+                uploadImagesAlaCarte(requestBodyProjectId, params, ktpImage, faceImage, selfieMode)
             }
-            else -> uploadImagesKyc(requestBodyProjectId, params, ktpImage, faceImage)
+            else -> uploadImagesKyc(requestBodyProjectId, params, ktpImage, faceImage, selfieMode)
         }
     }
 
@@ -31,17 +30,19 @@ class KycUploadImagesRepository @Inject constructor(
         projectId: RequestBody,
         params: RequestBody,
         ktpImage: MultipartBody.Part,
-        faceImage: MultipartBody.Part
+        faceImage: MultipartBody.Part,
+        selfieMode: RequestBody
     ): KycResponse {
-        return api.uploadImages(projectId, params, ktpImage, faceImage)
+        return api.uploadImages(projectId, params, ktpImage, faceImage, selfieMode)
     }
 
     private suspend fun uploadImagesAlaCarte(
         projectId: RequestBody,
         params: RequestBody,
         ktpImage: MultipartBody.Part,
-        faceImage: MultipartBody.Part
+        faceImage: MultipartBody.Part,
+        selfieMode: RequestBody
     ): KycResponse {
-        return api.uploadImagesAlaCarte(projectId, params, ktpImage, faceImage)
+        return api.uploadImagesAlaCarte(projectId, params, ktpImage, faceImage, selfieMode)
     }
 }

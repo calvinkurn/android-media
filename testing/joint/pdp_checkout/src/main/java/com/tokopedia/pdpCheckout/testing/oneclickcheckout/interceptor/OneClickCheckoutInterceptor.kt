@@ -13,8 +13,9 @@ object OneClickCheckoutInterceptor {
 
     fun setupGraphqlMockResponse(context: Context) {
         GraphqlClient.reInitRetrofitWithInterceptors(
-                listOf(cartInterceptor, preferenceInterceptor, logisticInterceptor, promoInterceptor, checkoutInterceptor, paymentInterceptor),
-                context)
+            listOf(cartInterceptor, preferenceInterceptor, logisticInterceptor, promoInterceptor, checkoutInterceptor, paymentInterceptor),
+            context
+        )
     }
 
     fun resetAllCustomResponse() {

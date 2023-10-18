@@ -14,17 +14,21 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 @GqlQuery(GetCouponListRecommendationUseCase.QUERY_NAME, GetCouponListRecommendationUseCase.QUERY)
-class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
-                                                             private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<CouponListRecommendationResponse>() {
+class GetCouponListRecommendationUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
+) : UseCase<CouponListRecommendationResponse>() {
 
     private var params: Map<String, Any?>? = null
 
     fun setParams(promoRequest: PromoRequest, chosenAddress: ChosenAddress?) {
         params = mapOf(
-                KEY_PARAMS to CouponListRecommendationRequest(promoRequest = promoRequest),
-                // Add current selected address from local cache
-                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to (chosenAddress
-                        ?: chosenAddressRequestHelper.getChosenAddress())
+            KEY_PARAMS to CouponListRecommendationRequest(promoRequest = promoRequest),
+            // Add current selected address from local cache
+            ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to (
+                chosenAddress
+                    ?: chosenAddressRequestHelper.getChosenAddress()
+                )
         )
     }
 
@@ -116,6 +120,7 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                     additional_bo_datas {
                                         code
                                         unique_id
+                                        cart_string_group
                                         shipping_id
                                         sp_id
                                         benefit_amount
@@ -127,6 +132,13 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                         eta_txt
                                     }
                                     currency_details_str
+                                    cta {
+                                        text
+                                        url
+                                        app_link
+                                        type
+                                        json_metadata
+                                    }
                                     coachmark {
                                         is_shown
                                         title
@@ -146,6 +158,58 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                         amount_idr
                                         benefit_type
                                         data_type
+                                    }
+                                    benefit_adjustment_message
+                                    secondary_coupons {
+                                        promo_id
+                                        code
+                                        title
+                                        message
+                                        coupon_app_link
+                                        unique_id
+                                        shop_id
+                                        benefit_amount
+                                        is_recommended
+                                        is_selected
+                                        is_attempted
+                                        is_bebas_ongkir
+                                        clashing_infos {
+                                            code
+                                            message
+                                            icon
+                                        }
+                                        bo_clashing_infos {
+                                            code
+                                            message
+                                            icon
+                                        }
+                                        additional_bo_datas {
+                                            code
+                                            unique_id
+                                            shipping_id
+                                            sp_id
+                                            benefit_amount
+                                            promo_id
+                                            shipping_subsidy
+                                            shipping_price
+                                            benefit_class
+                                            bo_campaign_id
+                                            eta_txt
+                                        }
+                                        currency_details_str
+                                        is_highlighted
+                                        promo_infos {
+                                             type
+                                             title
+                                             icon
+                                             validation_type
+                                             methods
+                                        }
+                                        benefit_details {
+                                            amount_idr
+                                            benefit_type
+                                            data_type
+                                        }
                                     }
                                 }
                             }
@@ -170,5 +234,4 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
             }
         """
     }
-
 }

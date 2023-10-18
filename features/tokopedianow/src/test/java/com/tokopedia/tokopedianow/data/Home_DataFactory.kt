@@ -22,11 +22,13 @@ import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.Ca
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.model.Data
 import com.tokopedia.tokopedianow.home.domain.model.GetQuestListResponse
@@ -38,14 +40,12 @@ import com.tokopedia.tokopedianow.home.domain.model.QuestListResponse
 import com.tokopedia.tokopedianow.home.domain.model.QuestUser
 import com.tokopedia.tokopedianow.home.domain.model.ResultStatus
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
-import com.tokopedia.tokopedianow.home.domain.model.Ticker
-import com.tokopedia.tokopedianow.home.domain.model.TickerResponse
-import com.tokopedia.tokopedianow.home.domain.model.Tickers
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -74,6 +74,14 @@ fun createHomeLayoutList(): List<HomeLayoutResponse> {
                     header = Header(
                             name = "Banner Tokonow",
                             serverTimeUnix = 0
+                    )
+            ),
+            HomeLayoutResponse(
+                    id = "222332",
+                    layout = "bundling_widget",
+                    header = Header(
+                        name = "Product Bundling",
+                        serverTimeUnix = 0
                     )
             )
     )
@@ -207,6 +215,7 @@ fun createHomeLayoutData(): HomeLayoutResponse {
 fun createLoadingState(): HomeLayoutListUiModel {
     val mutableList = mutableListOf<Visitable<*>>()
     val loadingStateUiModel = HomeLoadingStateUiModel(id = HomeStaticLayoutId.LOADING_STATE)
+    mutableList.add(HomeHeaderUiModel(id = HomeStaticLayoutId.HOME_HEADER))
     mutableList.add(loadingStateUiModel)
     return HomeLayoutListUiModel(
             items = mutableList,
@@ -226,20 +235,33 @@ fun createEmptyState(id: String, serviceType: String): HomeLayoutListUiModel {
     )
 }
 
-fun createTicker(): TickerResponse {
-    return  TickerResponse(
-            ticker = Tickers(
-                    tickerList = listOf(
-                            Ticker(
-                                    id = "10",
-                                    title = "Welcome to Tokonow",
-                                    message = "Tokonow is one of the best feature",
-                                    color = "#FFF",
-                                    layout = "default"
+fun createTicker(): GetTargetedTickerResponse {
+    return GetTargetedTickerResponse(
+        getTargetedTicker = GetTargetedTickerResponse.GetTargetedTicker(
+            tickers = listOf(
+                GetTargetedTickerResponse.GetTargetedTicker.TickerResponse(
+                    action = GetTargetedTickerResponse.GetTargetedTicker.TickerResponse.Action(
+                        appURL = "",
+                        label = "",
+                        type = "",
+                        webURL = ""
+                    ),
+                    content = "Maaf, kamu baru bisa belanja setelah kami kembali beroperasi.",
+                    iD = "",
+                    metadata = listOf(
+                        GetTargetedTickerResponse.GetTargetedTicker.TickerResponse.Metadata(
+                            type = "blockAddToCart",
+                            values = listOf(
+                                "true"
                             )
-
-                    )
+                        )
+                    ),
+                    priority = 1,
+                    title = "Tokopedia NOW! sedang tidak beroperasi",
+                    type = ""
+                )
             )
+        )
     )
 }
 
@@ -442,8 +464,8 @@ fun createCategoryGridDataModel(
     return TokoNowCategoryMenuUiModel(id = id, title =  title, categoryListUiModel = categoryList, state = state)
 }
 
-fun createHomeTickerDataModel(tickers: List<TickerData> = listOf(createTickerData())): HomeTickerUiModel {
-    return HomeTickerUiModel(id = "1", tickers = tickers)
+fun createHomeTickerDataModel(tickers: List<TickerData> = listOf(createTickerData())): TokoNowTickerUiModel {
+    return TokoNowTickerUiModel(id = "1", tickers = tickers)
 }
 
 fun createTickerData(
@@ -459,13 +481,30 @@ fun createHomeProductCardUiModel(
     productId: String = "",
     shopId: String = "",
     quantity: Int = 0,
+    stock: Int = 0,
+    minOrder: Int = 0,
+    maxOrder: Int = 0,
     parentId: String = "",
-    product: ProductCardModel = ProductCardModel(),
-    @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT,
     position: Int = 0,
-    headerName: String = ""
-): TokoNowProductCardUiModel {
-    return TokoNowProductCardUiModel(channelId, productId, shopId, quantity, parentId, product, type, position, headerName)
+    originalPosition: Int = 0,
+    headerName: String = "",
+    blockAddToCart: Boolean = false
+): TokoNowRepurchaseProductUiModel {
+    return TokoNowRepurchaseProductUiModel(
+        channelId = channelId,
+        productId = productId,
+        shopId = shopId,
+        orderQuantity = quantity,
+        availableStock = stock,
+        minOrder = minOrder,
+        maxOrder = maxOrder,
+        parentId = parentId,
+        position = position,
+        originalPosition = originalPosition,
+        needToShowQuantityEditor = true,
+        headerName = headerName,
+        blockAddToCart = blockAddToCart
+    )
 }
 
 fun createLocalCacheModel(
@@ -487,4 +526,19 @@ fun createLocalCacheModel(
         warehouses = warehouses,
         service_type = serviceType
     )
+}
+
+fun createHomeProductCardUiModel(
+    channelId: String = "",
+    productId: String = "",
+    shopId: String = "",
+    quantity: Int = 0,
+    stock: Int = 0,
+    parentId: String = "",
+    product: ProductCardModel = ProductCardModel(),
+    @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT,
+    position: Int = 0,
+    headerName: String = ""
+): TokoNowProductCardUiModel {
+    return TokoNowProductCardUiModel(channelId, productId, shopId, quantity, stock, parentId, product, type, position, headerName)
 }

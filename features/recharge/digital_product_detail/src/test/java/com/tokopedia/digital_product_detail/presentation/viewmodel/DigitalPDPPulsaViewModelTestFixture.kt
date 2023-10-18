@@ -7,16 +7,17 @@ import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipMode
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteGroupModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
+import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceModel
+import com.tokopedia.digital_product_detail.domain.model.DigitalSaveAccessTokenResultModel
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
 import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
-import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
-import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.Called
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -24,7 +25,8 @@ import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -36,7 +38,7 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    val testCoroutineRule = CoroutineTestRule()
+    val testCoroutineRule = UnconfinedTestRule()
 
     protected lateinit var viewModel: DigitalPDPPulsaViewModel
 
@@ -111,13 +113,43 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
 
     protected fun onGetAddToCart_thenReturn(response: DigitalAtcResult) {
         coEvery {
-            repo.addToCart(any(), any(), any(), any(), any())
+            repo.addToCart(any(), any(), any(), "")
+        } returns response
+    }
+
+    protected fun onGetAddToCartMultiChekout_thenReturn(response: DigitalAtcResult) {
+        coEvery {
+            repo.addToCart(any(), any(), any(), "pdp_to_multi_checkout")
         } returns response
     }
 
     protected fun onGetAddToCart_thenReturn(errorThrowable: Throwable) {
         coEvery {
-            repo.addToCart(any(), any(), any(), any(), any())
+            repo.addToCart(any(), any(), any(), "")
+        } throws errorThrowable
+    }
+
+    protected fun onGetRechargeCheckBalance_thenReturn(response: DigitalCheckBalanceModel) {
+        coEvery {
+            repo.getRechargeCheckBalance(any(), any(), any(), any())
+        } returns response
+    }
+
+    protected fun onGetRechargeCheckBalance_thenReturn(errorThrowable: Throwable) {
+        coEvery {
+            repo.getRechargeCheckBalance(any(), any(), any(), any())
+        } throws errorThrowable
+    }
+
+    protected fun onSaveRechargeUserAccessToken(response: DigitalSaveAccessTokenResultModel) {
+        coEvery {
+            repo.saveRechargeUserBalanceAccessToken(any(), any())
+        } returns response
+    }
+
+    protected fun onSaveRechargeUserAccessToken(errorThrowable: Throwable) {
+        coEvery {
+            repo.saveRechargeUserBalanceAccessToken(any(), any())
         } throws errorThrowable
     }
 
@@ -154,7 +186,19 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
     }
 
     protected fun verifyAddToCartRepoGetCalled() {
-        coVerify { repo.addToCart(any(), any(), any(), any(), any()) }
+        coVerify { repo.addToCart(any(), any(), any(), "") }
+    }
+
+    protected fun verifyAddToCartMultiCheckoutRepoGetCalled() {
+        coVerify { repo.addToCart(any(), any(), any(), "pdp_to_multi_checkout") }
+    }
+
+    protected fun verifyGetRechargeCheckBalanceRepoGetCalled() {
+        coVerify { repo.getRechargeCheckBalance(any(), any(), any(), any()) }
+    }
+
+    protected fun verifySaveRechargeUserAccessTokenGetCalled() {
+        coVerify { repo.saveRechargeUserBalanceAccessToken(any(), any()) }
     }
 
     protected fun verifyGetFavoriteNumberLoading(expectedResponse: RechargeNetworkResult.Loading) {
@@ -240,6 +284,14 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
         )
     }
 
+    protected fun verifyAddToCartMultiChekoutSuccess(expectedResponse: DigitalAtcResult) {
+        val actualResponse = viewModel.addToCartMultiCheckoutResult.value
+        Assert.assertEquals(
+            expectedResponse,
+            actualResponse
+        )
+    }
+
     protected fun verifyAddToCartError(expectedResponse: Throwable) {
         val actualResponse = viewModel.addToCartResult.value
         Assert.assertEquals(
@@ -258,7 +310,7 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
-    protected fun verifyAddToCartErrorNotEmpty(expectedResponse: ErrorAtc){
+    protected fun verifyAddToCartErrorNotEmpty(expectedResponse: ErrorAtc) {
         val actualResponse = viewModel.errorAtc.value
         Assert.assertEquals(expectedResponse, actualResponse)
     }
@@ -315,6 +367,46 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
     protected fun verifyGetRecommendationErrorCancellation() {
         val actualResponse = viewModel.recommendationData.value
         Assert.assertNull(actualResponse)
+    }
+
+    protected fun verifyGetRechargeCheckBalanceLoading(expectedResponse: RechargeNetworkResult.Loading) {
+        val actualResponse = viewModel.indosatCheckBalance.value
+        Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
+    protected fun verifyGetRechargeCheckBalanceSuccess(expectedResponse: DigitalCheckBalanceModel) {
+        val actuaLResponse = viewModel.indosatCheckBalance.value
+        Assert.assertEquals(
+            expectedResponse,
+            (actuaLResponse as RechargeNetworkResult.Success).data
+        )
+    }
+
+    protected fun verifyGetRechargeCheckBalanceFail() {
+        val actualResponse = viewModel.indosatCheckBalance.value
+        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
+    }
+
+    protected fun verifyGetRechargeCheckBalanceIsCancelled() {
+        Assert.assertTrue(viewModel.checkBalanceJob?.isCancelled == true)
+    }
+
+    protected fun verifySaveRechargeUserAccessTokenLoading(expectedResponse: RechargeNetworkResult.Loading) {
+        val actualResponse = viewModel.saveAccessTokenResult.value
+        Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
+    protected fun verifySaveRechargeUserAccessTokenSuccess(expectedResponse: DigitalSaveAccessTokenResultModel) {
+        val actualResponse = viewModel.saveAccessTokenResult.value
+        Assert.assertEquals(
+            expectedResponse,
+            (actualResponse as RechargeNetworkResult.Success).data
+        )
+    }
+
+    protected fun verifySaveRechargeUserAccessTokenFail() {
+        val actualResponse = viewModel.saveAccessTokenResult.value
+        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
     }
 
     protected fun verifyCheckoutPassDataUpdated(expectedResult: DigitalCheckoutPassData) {
@@ -455,24 +547,24 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
         Assert.assertEquals(expected.idemPotencyKey, actual.idemPotencyKey)
     }
 
-    protected fun TestCoroutineScope.skipPrefixOperatorDelay() {
-        advanceTimeBy(DigitalPDPConstant.DELAY_PREFIX_TIME)
+    protected fun TestScope.skipPrefixOperatorDelay() {
+        advanceUntilIdle()
     }
 
-    protected fun TestCoroutineScope.skipValidatorDelay() {
-        advanceTimeBy(DigitalPDPConstant.VALIDATOR_DELAY_TIME)
+    protected fun TestScope.skipValidatorDelay() {
+        advanceUntilIdle()
     }
 
-    protected fun TestCoroutineScope.skipMultitabDelay() {
-        advanceTimeBy(DigitalPDPConstant.DELAY_MULTI_TAB)
+    protected fun TestScope.skipMultitabDelay() {
+        advanceUntilIdle()
     }
 
-    protected fun TestCoroutineScope.skipRecommendationDelay() {
-        advanceTimeBy(DigitalPDPConstant.DELAY_MULTI_TAB)
+    protected fun TestScope.skipRecommendationDelay() {
+        advanceUntilIdle()
     }
 
-    protected fun TestCoroutineScope.skipClientNumberTransitionDelay() {
-        advanceTimeBy(DigitalPDPConstant.DELAY_CLIENT_NUMBER_TRANSITION)
+    protected fun TestScope.skipClientNumberTransitionDelay() {
+        advanceUntilIdle()
     }
 
     companion object {

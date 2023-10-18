@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.media.player.video.presentation.fragment
 
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.LruCache
 import android.view.LayoutInflater
 import android.view.TextureView
 import android.view.View
@@ -13,10 +14,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.databinding.FragmentReviewMediaGalleryVideoPlayerBinding
-import com.tokopedia.review.feature.media.gallery.base.di.ReviewMediaGalleryComponentInstance
 import com.tokopedia.review.feature.media.gallery.detailed.di.DetailedReviewMediaGalleryComponentInstance
 import com.tokopedia.review.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
@@ -44,6 +45,7 @@ import kotlin.math.ceil
 class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVideoPlayerListener {
     companion object {
         private const val ARG_VIDEO_URI = "argVideoUri"
+        private const val VIDEO_FRAME_SCALE = 0.5
 
         fun createInstance(videoUri: String): ReviewVideoPlayerFragment {
             return ReviewVideoPlayerFragment().apply {
@@ -67,6 +69,9 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
 
     @Inject
     lateinit var videoPlayer: ReviewVideoPlayer
+
+    @Inject
+    lateinit var bitmapCache: LruCache<String, Bitmap>
 
     private var binding by viewBinding(FragmentReviewMediaGalleryVideoPlayerBinding::bind)
     private var listener: Listener? = null
@@ -108,11 +113,10 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
 
     override fun onPause() {
         super.onPause()
+        updateCurrentFrameBitmap()
+        reviewVideoPlayerViewModel.setPlaybackStateToInactive(videoPlayer.getCurrentPositionMillis())
         if (activity?.isChangingConfigurations != true) {
-            updateCurrentFrameBitmap()
-            reviewVideoPlayerViewModel.setPlaybackStateToInactive(videoPlayer.getCurrentPositionMillis())
             reviewVideoPlayerViewModel.resetVideoPlayerState()
-            videoPlayer.pause()
         } else {
             reviewVideoPlayerViewModel.setVideoPlayerStateToChangingConfiguration()
         }
@@ -137,7 +141,6 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
     override fun initInjector() {
         DaggerReviewVideoPlayerComponent.builder()
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-            .reviewMediaGalleryComponent(ReviewMediaGalleryComponentInstance.getInstance(requireContext()))
             .detailedReviewMediaGalleryComponent(DetailedReviewMediaGalleryComponentInstance.getInstance(requireContext()))
             .build()
             .inject(this)
@@ -177,12 +180,12 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
         viewLifecycleOwner.collectLatestWhenResumed(reviewVideoPlayerViewModel.videoPlayerUiState) {
             when (it) {
                 is ReviewVideoPlayerUiState.Initial -> {
-                    videoPlayer.initializeVideoPlayer(it.videoUri, true)
+                    videoPlayer.initializeVideoPlayer(it.videoUri)
                     reviewVideoPlayerViewModel.setVideoPlayerStateToRestoring()
                 }
                 is ReviewVideoPlayerUiState.ChangingConfiguration -> {
-                    videoPlayer.initializeVideoPlayer(it.videoUri, false)
-                    reviewVideoPlayerViewModel.setVideoPlayerStateToReadyToPlay()
+                    videoPlayer.initializeVideoPlayer(it.videoUri)
+                    reviewVideoPlayerViewModel.setVideoPlayerStateToRestoring()
                 }
                 is ReviewVideoPlayerUiState.RestoringState -> {
                     videoPlayer.restorePlaybackState(it.presentationTimeMs, it.playWhenReady)
@@ -234,13 +237,11 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
                         trackStopped(ceil(it.currentPosition / 1000f).toLong())
                         binding?.loaderReviewVideoPlayer?.gone()
                         binding?.overlayReviewVideoPlayerLoading?.gone()
-                        reviewVideoPlayerViewModel.showVideoThumbnail()
                         reviewVideoPlayerViewModel.hideVideoError()
                     }
                     is ReviewVideoPlaybackUiState.Error -> {
                         binding?.loaderReviewVideoPlayer?.gone()
                         binding?.overlayReviewVideoPlayerLoading?.gone()
-                        reviewVideoPlayerViewModel.showVideoThumbnail()
                         reviewVideoPlayerViewModel.showVideoError(it.errorCode)
                     }
                     is ReviewVideoPlaybackUiState.Buffering,
@@ -248,7 +249,6 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
                         trackImpression()
                         binding?.loaderReviewVideoPlayer?.show()
                         binding?.overlayReviewVideoPlayerLoading?.show()
-                        reviewVideoPlayerViewModel.hideVideoThumbnail()
                         reviewVideoPlayerViewModel.hideVideoError()
                     }
                     is ReviewVideoPlaybackUiState.Playing -> {
@@ -256,7 +256,6 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
                         trackPlaying()
                         binding?.loaderReviewVideoPlayer?.gone()
                         binding?.overlayReviewVideoPlayerLoading?.gone()
-                        reviewVideoPlayerViewModel.hideVideoThumbnail()
                         reviewVideoPlayerViewModel.hideVideoError()
                     }
                     is ReviewVideoPlaybackUiState.Paused,
@@ -265,7 +264,6 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
                         trackStopped(ceil(it.currentPosition / 1000f).toLong())
                         binding?.loaderReviewVideoPlayer?.gone()
                         binding?.overlayReviewVideoPlayerLoading?.gone()
-                        reviewVideoPlayerViewModel.hideVideoThumbnail()
                         reviewVideoPlayerViewModel.hideVideoError()
                     }
                 }
@@ -302,9 +300,12 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
             reviewVideoPlayerViewModel.videoThumbnailUiState.collectLatest {
                 when (it) {
                     is ReviewVideoThumbnailUiState.Showed -> {
-                        binding?.ivReviewVideoPlayerFramePreview?.run {
-                            setImageBitmap(it.videoThumbnail)
-                            show()
+                        val bitmap = bitmapCache.get(reviewVideoPlayerViewModel.videoPlayerUiState.value.videoUri)
+                        if (bitmap == null) {
+                            binding?.ivReviewVideoPlayerFramePreview?.gone()
+                        } else {
+                            binding?.ivReviewVideoPlayerFramePreview?.loadImage(bitmap)
+                            binding?.ivReviewVideoPlayerFramePreview?.show()
                         }
                     }
                     is ReviewVideoThumbnailUiState.Hidden -> {
@@ -323,24 +324,37 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
         }
     }
 
-    private fun ReviewVideoPlayer.initializeVideoPlayer(videoUri: String, shouldPrepare: Boolean) {
+    private fun ReviewVideoPlayer.initializeVideoPlayer(videoUri: String) {
         val playerView = binding?.playerViewReviewVideoPlayer ?: return
         initializeVideoPlayer(
             uri = videoUri,
             newPlayerView = playerView,
             newListener = this@ReviewVideoPlayerFragment,
-            shouldPrepare = shouldPrepare
+            shouldPrepare = true
         )
     }
 
     private fun updateCurrentFrameBitmap() {
-        getCurrentFrameBitmap()?.run {
-            reviewVideoPlayerViewModel.updateVideoThumbnail(this)
-        }
+        val bitmap = getCurrentFrameBitmap() ?: return
+        bitmapCache.put(reviewVideoPlayerViewModel.videoPlayerUiState.value.videoUri, bitmap)
     }
 
     private fun getCurrentFrameBitmap(): Bitmap? {
-        return (binding?.playerViewReviewVideoPlayer?.videoSurfaceView as? TextureView)?.bitmap
+        val textureView = binding?.playerViewReviewVideoPlayer?.videoSurfaceView as? TextureView
+        return if (textureView == null) {
+            null
+        } else {
+            val textureViewWidth = (textureView.width * VIDEO_FRAME_SCALE).toInt()
+            val textureViewHeight = (textureView.height * VIDEO_FRAME_SCALE).toInt()
+            val bitmap = bitmapCache.get(
+                reviewVideoPlayerViewModel.videoPlayerUiState.value.videoUri
+            )?.takeIf { cachedBitmap ->
+                val cachedBitmapWidth = (cachedBitmap.width * VIDEO_FRAME_SCALE).toInt()
+                val cachedBitmapHeight = (cachedBitmap.height * VIDEO_FRAME_SCALE).toInt()
+                cachedBitmapWidth == textureViewWidth && cachedBitmapHeight == textureViewHeight
+            } ?: Bitmap.createBitmap(textureViewWidth, textureViewHeight, Bitmap.Config.RGB_565)
+            textureView.getBitmap(bitmap)
+        }
     }
 
     fun setListener(newListener: Listener) {

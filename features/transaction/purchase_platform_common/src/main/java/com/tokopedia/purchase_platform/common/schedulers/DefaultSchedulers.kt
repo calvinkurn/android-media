@@ -4,7 +4,7 @@ import rx.Scheduler
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
-object DefaultSchedulers: ExecutorSchedulers {
+object DefaultSchedulers : ExecutorSchedulers {
 
     override val io: Scheduler
         get() = Schedulers.io()

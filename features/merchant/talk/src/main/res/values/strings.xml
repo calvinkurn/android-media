@@ -61,7 +61,7 @@
     <string name="delete_cancel_button">Batal</string>
     <string name="delete_question_toaster_fail">Pertanyaan belum terhapus. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="reply_total_answer">Jawaban (%d)</string>
-    <string name="delete_question_bottom_sheet">Hapus Pertanyaan</string>
+    <string name="delete_question_bottom_sheet">Hapus diskusi ini</string>
     <string name="delete_answer_bottom_sheet">Hapus Jawaban</string>
     <string name="edit_product_bottom_sheet">Ubah Deskripsi Produk</string>
     <string name="report_bottom_sheet_text">Laporkan</string>

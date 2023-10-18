@@ -9,9 +9,12 @@ import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,7 +28,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
 
-    private var listProducts = listOf<SomDetailOrder.Data.GetSomDetail.Details.Product>()
+    private var listProducts = listOf<SomDetailOrder.GetSomDetail.Details.Product>()
     private var listReasonReject = listOf(SomReasonRejectData.Data.SomRejectReason())
 
     @RelaxedMockK
@@ -61,7 +64,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
             authorizeChatReplyAccessUseCase
         )
 
-        val product1 = SomDetailOrder.Data.GetSomDetail.Details.Product("123")
+        val product1 = SomDetailOrder.GetSomDetail.Details.Product("123")
         listProducts = arrayListOf(product1).toMutableList()
 
         val reasonReject1 = SomReasonRejectData.Data.SomRejectReason(1)
@@ -70,206 +73,445 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
 
     // order_detail
     @Test
-    fun getOrderDetail_shouldCancelOldProcess() = coroutineTestRule.runBlockingTest {
-        //given
+    fun getOrderDetail_shouldCancelOldProcess() = coroutineTestRule.runTest {
+        // given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
-        } returns Success(GetSomDetailResponse(getSomDetail = SomDetailOrder.Data.GetSomDetail("123")))
+        } returns Success(GetSomDetailResponse(getSomDetail = SomDetailOrder.GetSomDetail("123")))
 
-        //when
+        // when
         viewModel.loadDetailOrder("")
         viewModel.loadDetailOrder("")
 
-        //then
+        // then
         assert(viewModel.orderDetailResult.value is Success)
         assert((viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.orderId == "123")
     }
 
     @Test
-    fun getOrderDetail_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
-        //given
+    fun `given the bmgm data when loadDetailOrder then should return success`() {
+        // given
+        val orderId = "123"
+        val bmgmDetailsResponse =
+            SomDetailOrder.GetSomDetail.Details(
+                bmgmIcon = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2A.jpg",
+                bmgms = listOf(
+                    SomDetailOrder.GetSomDetail.Bmgm(
+                        bmgmTierName = "offers - Beli2DiskonDiskon30%",
+                        id = "1:3:0",
+                        priceBeforeBenefitFormatted = "Rp400.000",
+                        orderDetail = listOf(
+                            SomDetailOrder.GetSomDetail.Bmgm.OrderDetail(
+                                id = "2150865420",
+                                productName = "Power Bank Original - Pink",
+                                thumbnail = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
+                                price = 75000.00,
+                                priceText = "Rp 75.000",
+                                quantity = 2
+                            ),
+                            SomDetailOrder.GetSomDetail.Bmgm.OrderDetail(
+                                id = "2150865421",
+                                productName = "Power Bank Original - Blue",
+                                thumbnail = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
+                                price = 75000.00,
+                                priceText = "Rp 75.000",
+                                quantity = 2
+                            )
+                        )
+                    )
+                )
+            )
+
+        coEvery {
+            somGetOrderDetailUseCase.execute(orderId)
+        } returns Success(
+            GetSomDetailResponse(
+                getSomDetail = SomDetailOrder.GetSomDetail(
+                    details = bmgmDetailsResponse
+                )
+            )
+        )
+
+        // when
+        viewModel.loadDetailOrder(orderId)
+
+        // then
+        coVerify {
+            somGetOrderDetailUseCase.execute(orderId)
+        }
+
+        val detailsActual =
+            (viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail!!.details
+
+        assert(viewModel.orderDetailResult.value is Success)
+        assertEquals(bmgmDetailsResponse.bmgmIcon, detailsActual.bmgmIcon)
+        assertEquals(
+            bmgmDetailsResponse.bmgms!!.first().bmgmTierName,
+            detailsActual.bmgms!!.first().bmgmTierName
+        )
+        assertEquals(
+            bmgmDetailsResponse.bmgms!!.first().priceBeforeBenefitFormatted,
+            detailsActual.bmgms!!.first().priceBeforeBenefitFormatted
+        )
+
+        bmgmDetailsResponse.bmgms!!.first().orderDetail.forEachIndexed { index, product ->
+            val productActual = detailsActual.bmgms!!.first().orderDetail[index]
+
+            assertEquals(product.id, productActual.id)
+            assertEquals(product.productName, productActual.productName)
+            assertTrue(product.price == productActual.price)
+            assertEquals(product.priceText, productActual.priceText)
+            assertEquals(product.thumbnail, productActual.thumbnail)
+            assertEquals(product.note, productActual.note)
+        }
+    }
+
+    @Test
+    fun `given the bmgm and bundling data when loadDetailOrder then should return success`() {
+        // given
+        val orderId = "123"
+        val expectedResponse =
+            SomDetailOrder.GetSomDetail.Details(
+                bundle = listOf(
+                    SomDetailOrder.GetSomDetail.Details.Bundle(
+                        bundleName = "bundling - Beli2DiskonDiskon30%",
+                        bundleId = "1:5:0",
+                        bundlePrice = "Rp600.000",
+                        bundleSubtotalPrice = "Rp200.000",
+                        orderDetail = listOf(
+                            SomDetailOrder.GetSomDetail.Details.Product(
+                                id = "2150865420",
+                                name = "Power Bank Original - Yellow",
+                                thumbnail = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
+                                priceText = "Rp 75.000",
+                                quantity = 2
+                            ),
+                            SomDetailOrder.GetSomDetail.Details.Product(
+                                id = "2150865421",
+                                name = "Power Bank Original - Black",
+                                thumbnail = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
+                                priceText = "Rp 75.000",
+                                quantity = 2
+                            )
+                        )
+                    )
+                ),
+                bmgmIcon = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2A.jpg",
+                bmgms = listOf(
+                    SomDetailOrder.GetSomDetail.Bmgm(
+                        bmgmTierName = "offers - Beli2DiskonDiskon30%",
+                        id = "1:3:0",
+                        priceBeforeBenefitFormatted = "Rp400.000",
+                        orderDetail = listOf(
+                            SomDetailOrder.GetSomDetail.Bmgm.OrderDetail(
+                                id = "2150865420",
+                                productName = "Power Bank Original - Pink",
+                                thumbnail = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
+                                price = 75000.00,
+                                priceText = "Rp 75.000",
+                                quantity = 2
+                            ),
+                            SomDetailOrder.GetSomDetail.Bmgm.OrderDetail(
+                                id = "2150865421",
+                                productName = "Power Bank Original - Blue",
+                                thumbnail = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
+                                price = 75000.00,
+                                priceText = "Rp 75.000",
+                                quantity = 2
+                            )
+                        )
+                    )
+                )
+            )
+
+        coEvery {
+            somGetOrderDetailUseCase.execute(orderId)
+        } returns Success(
+            GetSomDetailResponse(
+                getSomDetail = SomDetailOrder.GetSomDetail(
+                    details = expectedResponse
+                )
+            )
+        )
+
+        // when
+        viewModel.loadDetailOrder(orderId)
+
+        // then
+        coVerify {
+            somGetOrderDetailUseCase.execute(orderId)
+        }
+
+        val detailsActual =
+            (viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail!!.details
+
+        assert(viewModel.orderDetailResult.value is Success)
+
+        assertEquals(expectedResponse.bundle!!.first().bundleName, detailsActual.bundle!!.first().bundleName)
+        assertEquals(expectedResponse.bundle!!.first().bundlePrice, detailsActual.bundle!!.first().bundlePrice)
+        assertEquals(expectedResponse.bundle!!.first().bundleSubtotalPrice, detailsActual.bundle!!.first().bundleSubtotalPrice)
+
+        assertEquals(expectedResponse.bmgmIcon, detailsActual.bmgmIcon)
+        assertEquals(
+            expectedResponse.bmgms!!.first().bmgmTierName,
+            detailsActual.bmgms!!.first().bmgmTierName
+        )
+        assertEquals(
+            expectedResponse.bmgms!!.first().priceBeforeBenefitFormatted,
+            detailsActual.bmgms!!.first().priceBeforeBenefitFormatted
+        )
+
+        expectedResponse.bundle!!.first().orderDetail.forEachIndexed { index, product ->
+            val productActual = detailsActual.bundle!!.first().orderDetail[index]
+
+            assertEquals(product.id, productActual.id)
+            assertEquals(product.name, productActual.name)
+            assertEquals(product.priceText, productActual.priceText)
+            assertEquals(product.thumbnail, productActual.thumbnail)
+            assertEquals(product.note, productActual.note)
+        }
+
+        expectedResponse.bmgms!!.first().orderDetail.forEachIndexed { index, product ->
+            val productActual = detailsActual.bmgms!!.first().orderDetail[index]
+
+            assertEquals(product.id, productActual.id)
+            assertEquals(product.productName, productActual.productName)
+            assertTrue(product.price == productActual.price)
+            assertEquals(product.priceText, productActual.priceText)
+            assertEquals(product.thumbnail, productActual.thumbnail)
+            assertEquals(product.note, productActual.note)
+        }
+    }
+
+    @Test
+    fun `given the bmgm null when loadDetailOrder then should return success`() {
+        // given
+        val orderId = "123"
+        val bmgmDetailsResponse =
+            SomDetailOrder.GetSomDetail.Details(
+                bmgmIcon = "null",
+                bmgms = null
+            )
+
+        coEvery {
+            somGetOrderDetailUseCase.execute(orderId)
+        } returns Success(
+            GetSomDetailResponse(
+                getSomDetail = SomDetailOrder.GetSomDetail(
+                    details = bmgmDetailsResponse
+                )
+            )
+        )
+
+        // when
+        viewModel.loadDetailOrder(orderId)
+
+        // then
+        coVerify {
+            somGetOrderDetailUseCase.execute(orderId)
+        }
+
+        val detailsActual =
+            (viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail!!.details
+
+        assert(viewModel.orderDetailResult.value is Success)
+        assertEquals(bmgmDetailsResponse.bmgmIcon, detailsActual.bmgmIcon)
+        assertEquals(
+            bmgmDetailsResponse.bmgms,
+            detailsActual.bmgms
+        )
+    }
+
+    @Test
+    fun getOrderDetail_shouldReturnSuccess() = coroutineTestRule.runTest {
+        // given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
-        } returns Success(GetSomDetailResponse(getSomDetail = SomDetailOrder.Data.GetSomDetail("123")))
+        } returns Success(GetSomDetailResponse(getSomDetail = SomDetailOrder.GetSomDetail("123")))
 
-        //when
+        // when
         viewModel.loadDetailOrder("")
 
-        //then
+        // then
         assert(viewModel.orderDetailResult.value is Success)
         assert((viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.orderId == "123")
     }
 
     @Test
-    fun getOrderDetail_shouldReturnFail() = coroutineTestRule.runBlockingTest {
-        //given
+    fun getOrderDetail_shouldReturnFail() = coroutineTestRule.runTest {
+        // given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
         } returns Fail(Throwable())
 
-        //when
+        // when
         viewModel.loadDetailOrder("")
 
-        //then
+        // then
         assert(viewModel.orderDetailResult.value is Fail)
     }
 
     @Test
-    fun getOrderDetail_ifThrowableThrown_shouldFail() = coroutineTestRule.runBlockingTest {
-        //given
+    fun getOrderDetail_ifThrowableThrown_shouldFail() = coroutineTestRule.runTest {
+        // given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
         } throws Throwable()
 
-        //when
+        // when
         viewModel.loadDetailOrder("")
 
-        //then
+        // then
         assert(viewModel.orderDetailResult.value is Fail)
     }
 
     @Test
-    fun getOrderDetail_shouldNotReturnEmpty() = coroutineTestRule.runBlockingTest {
-        //given
+    fun getOrderDetail_shouldNotReturnEmpty() = coroutineTestRule.runTest {
+        // given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
         } returns Success(
             GetSomDetailResponse(
-                getSomDetail = SomDetailOrder.Data.GetSomDetail(details = SomDetailOrder.Data.GetSomDetail.Details(nonBundle = listProducts))
+                getSomDetail = SomDetailOrder.GetSomDetail(
+                    details = SomDetailOrder.GetSomDetail.Details(
+                        nonBundle = listProducts
+                    )
+                )
             )
         )
 
-        //when
+        // when
         viewModel.loadDetailOrder("")
 
-        //then
+        // then
         assert(viewModel.orderDetailResult.value is Success)
         assert(
-            (viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.getProductList()?.isNotEmpty()
+            (viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.getProductList()
+                ?.isNotEmpty()
                 ?: false
         )
     }
 
     // reason_reject
     @Test
-    fun getReasonReject_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
-        //given
+    fun getReasonReject_shouldReturnSuccess() = coroutineTestRule.runTest {
+        // given
         coEvery {
             somReasonRejectUseCase.execute(any())
         } returns Success(SomReasonRejectData.Data(listSomRejectReason = listReasonReject))
 
-        //when
+        // when
         viewModel.getRejectReasons()
 
-        //then
+        // then
         assert(viewModel.rejectReasonResult.value is Success)
         assert((viewModel.rejectReasonResult.value as Success<SomReasonRejectData.Data>).data.listSomRejectReason.first().reasonCode == 1)
     }
 
     @Test
-    fun getReasonReject_shouldReturnFail() = coroutineTestRule.runBlockingTest {
-        //given
+    fun getReasonReject_shouldReturnFail() = coroutineTestRule.runTest {
+        // given
         coEvery {
             somReasonRejectUseCase.execute(any())
         } returns Fail(Throwable())
 
-        //when
+        // when
         viewModel.getRejectReasons()
 
-        //then
+        // then
         assert(viewModel.rejectReasonResult.value is Fail)
     }
 
     @Test
-    fun getReasonReject_ifThrowableThrown_shouldReturnFail() = coroutineTestRule.runBlockingTest {
-        //given
+    fun getReasonReject_ifThrowableThrown_shouldReturnFail() = coroutineTestRule.runTest {
+        // given
         coEvery {
             somReasonRejectUseCase.execute(any())
         } throws Throwable()
 
-        //when
+        // when
         viewModel.getRejectReasons()
 
-        //then
+        // then
         assert(viewModel.rejectReasonResult.value is Fail)
     }
 
     @Test
-    fun getReasonReject_msgShouldNotReturnEmpty() = coroutineTestRule.runBlockingTest {
-        //given
+    fun getReasonReject_msgShouldNotReturnEmpty() = coroutineTestRule.runTest {
+        // given
         coEvery {
             somReasonRejectUseCase.execute(any())
         } returns Success(SomReasonRejectData.Data(listSomRejectReason = listReasonReject))
 
-        //when
+        // when
         viewModel.getRejectReasons()
 
-        //then
+        // then
         assert(viewModel.rejectReasonResult.value is Success)
         assert((viewModel.rejectReasonResult.value as Success<SomReasonRejectData.Data>).data.listSomRejectReason.isNotEmpty())
     }
 
     // set_delivered
     @Test
-    fun setDelivered_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
-        //given
+    fun setDelivered_shouldReturnSuccess() = coroutineTestRule.runTest {
+        // given
         coEvery {
             somSetDeliveredUseCase.execute(any(), any())
         } returns Success(SetDeliveredResponse(SetDelivered(success = 1)))
 
-        //when
+        // when
         viewModel.setDelivered("", "")
 
-        //then
+        // then
         assert(viewModel.setDelivered.value is Success)
         assert((viewModel.setDelivered.value as Success<SetDeliveredResponse>).data.setDelivered.success == 1)
     }
 
     @Test
-    fun setDelivered_shouldReturnFail() = coroutineTestRule.runBlockingTest {
-        //given
+    fun setDelivered_shouldReturnFail() = coroutineTestRule.runTest {
+        // given
         coEvery {
             somSetDeliveredUseCase.execute(any(), any())
         } returns Fail(Throwable())
 
-        //when
+        // when
         viewModel.setDelivered("", "")
 
-        //then
+        // then
         assert(viewModel.setDelivered.value is Fail)
     }
 
     @Test
-    fun setDelivered_ifThrowableThrown_shouldReturnFail() = coroutineTestRule.runBlockingTest {
-        //given
+    fun setDelivered_ifThrowableThrown_shouldReturnFail() = coroutineTestRule.runTest {
+        // given
         coEvery {
             somSetDeliveredUseCase.execute(any(), any())
         } throws Throwable()
 
-        //when
+        // when
         viewModel.setDelivered("", "")
 
-        //then
+        // then
         assert(viewModel.setDelivered.value is Fail)
     }
 
     @Test
-    fun setDelivered_msgShouldNotReturnEmpty() = coroutineTestRule.runBlockingTest {
-        //given
+    fun setDelivered_msgShouldNotReturnEmpty() = coroutineTestRule.runTest {
+        // given
         coEvery {
             somSetDeliveredUseCase.execute(any(), any())
         } returns Success(SetDeliveredResponse(SetDelivered(message = listMsg)))
 
-        //when
+        // when
         viewModel.setDelivered("", "")
 
-        //then
+        // then
         assert(viewModel.setDelivered.value is Success)
         assert((viewModel.setDelivered.value as Success<SetDeliveredResponse>).data.setDelivered.message.first() == "msg1")
     }
 
     @Test
-    fun checkAdminAccess_ifShopOwner_shouldReturnTruePair() = coroutineTestRule.runBlockingTest {
+    fun checkAdminAccess_ifShopOwner_shouldReturnTruePair() = coroutineTestRule.runTest {
         coEvery {
             userSessionInterface.isShopOwner
         } returns true
@@ -280,7 +522,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     @Test
-    fun checkAdminAccess_ifShopAdmin_shouldSuccess() = coroutineTestRule.runBlockingTest {
+    fun checkAdminAccess_ifShopAdmin_shouldSuccess() = coroutineTestRule.runTest {
         val isSomDetailRole = true
         val isReplyChatRole = true
         onAuthorizeSomDetailAccessSuccess_thenReturn(isSomDetailRole)
@@ -298,7 +540,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     @Test
-    fun checkAdminAccess_ifShopAdmin_shouldFail() = coroutineTestRule.runBlockingTest {
+    fun checkAdminAccess_ifShopAdmin_shouldFail() = coroutineTestRule.runTest {
         onAuthorizeReplyChatAccessFail_thenThrow(ResponseErrorException())
         coEvery {
             userSessionInterface.isShopOwner
@@ -313,36 +555,35 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     private fun onAuthorizeSomDetailAccessSuccess_thenReturn(isEligible: Boolean) =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             coEvery {
                 authorizeSomDetailAccessUseCase.execute(any())
             } returns isEligible
         }
 
     private fun onAuthorizeReplyChatAccessSuccess_thenReturn(isEligible: Boolean) =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             coEvery {
                 authorizeChatReplyAccessUseCase.execute(any())
             } returns isEligible
         }
 
     private fun onAuthorizeSomDetailAccessFail_thenThrow(throwable: Throwable) =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             coEvery {
                 authorizeSomDetailAccessUseCase.execute(any())
             } throws throwable
         }
 
     private fun onAuthorizeReplyChatAccessFail_thenThrow(throwable: Throwable) =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             coEvery {
                 authorizeChatReplyAccessUseCase.execute(any())
             } throws throwable
         }
 
     private fun assertDetailChatEligibilityEquals(pairs: Pair<Boolean, Boolean>) =
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             Assert.assertEquals(pairs, (viewModel.somDetailChatEligibility.value as? Success)?.data)
         }
 }
-

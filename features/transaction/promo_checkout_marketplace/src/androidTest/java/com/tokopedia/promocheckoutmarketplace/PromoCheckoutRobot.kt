@@ -29,12 +29,14 @@ class PromoCheckoutRobot {
 
     fun clickPromoWithTitle(title: String) {
         onView(withId(R.id.promo_checkout_marketplace_module_recycler_view)).perform(
-                actionOnHolderItem(onPromoListItemViewHolderWithTitle(title), clickPromoListItemViewHolder()))
+            actionOnHolderItem(onPromoListItemViewHolderWithTitle(title), clickPromoListItemViewHolder())
+        )
     }
 
     fun clickPilihPromoRecommendation() {
         onView(withId(R.id.promo_checkout_marketplace_module_recycler_view)).perform(
-                actionOnHolderItem(onPromoRecommendationViewHolder(), clickPilihInPromoRecommendationViewHolder()))
+            actionOnHolderItem(onPromoRecommendationViewHolder(), clickPilihInPromoRecommendationViewHolder())
+        )
     }
 
     fun typePromoCode(promoCode: String) {
@@ -120,7 +122,7 @@ fun clickPromoListItemViewHolder() = object : ViewAction {
     }
 
     override fun perform(uiController: UiController?, view: View?) {
-        view?.findViewById<View>(R.id.card_promo_item)!!.performClick()
+        view?.findViewById<View>(R.id.promo_constraint_wrapper)!!.performClick()
     }
 }
 

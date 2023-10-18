@@ -72,13 +72,38 @@
                             android:visibility="gone"
                             app:tickerType="announcement" />
 
-                        <com.tokopedia.unifycomponents.UnifyButton
-                            android:id="@+id/recharge_general_enquiry_button"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_lvl3"
-                            android:text="@string/enquiry_label"
-                            app:unifyButtonType="main" />
+                            android:orientation="horizontal">
+
+                            <com.tokopedia.unifycomponents.UnifyButton
+                                android:id="@+id/recharge_general_secondary_button"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:enabled="true"
+                                android:text="@string/enquiry_label"
+                                android:visibility="gone"
+                                android:layout_marginTop="8dp"
+                                tools:visibility="visible"
+                                app:unifyButtonSize="large"
+                                app:unifyButtonVariant="ghost"
+                                android:layout_marginHorizontal="8dp"
+                                />
+
+                            <com.tokopedia.unifycomponents.UnifyButton
+                                android:id="@+id/recharge_general_enquiry_button"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginTop="8dp"
+                                android:text="@string/enquiry_label"
+                                app:unifyButtonType="main"
+                                android:layout_marginHorizontal="8dp"
+                                />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 

@@ -29,5 +29,4 @@ class UohPmsButtonViewHolder(private val binding: UohPmsButtonItemBinding, priva
             }
         }
     }
-
 }

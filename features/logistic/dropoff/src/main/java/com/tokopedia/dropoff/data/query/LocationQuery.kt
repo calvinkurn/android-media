@@ -1,8 +1,5 @@
 package com.tokopedia.dropoff.data.query
 
-import com.google.gson.Gson
-import com.tokopedia.dropoff.data.response.getStore.GetStoreResponse
-
 object LocationQuery {
     val keroAddressStoreLocation = """
         query KeroAddressStoreLocation(${'$'}query: KeroAddressStoreLocationInput) {
@@ -37,5 +34,4 @@ object LocationQuery {
           }
         }
     """.trimIndent()
-
 }

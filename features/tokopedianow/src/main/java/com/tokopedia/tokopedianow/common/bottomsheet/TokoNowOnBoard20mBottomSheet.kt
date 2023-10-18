@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.imageassets.TokopediaImageUrl.IMG_USP_NOW_GUARANTEED_QUALITY_LIGHT_MODE
+import com.tokopedia.imageassets.TokopediaImageUrl.IMG_USP_NOW_TIME_LIGHT_MODE
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowOnBoard20mBinding
@@ -16,8 +18,6 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class TokoNowOnBoard20mBottomSheet: BottomSheetUnify() {
 
     companion object {
-        private const val IMG_TIME = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_educational_information_two_hours.png"
-        private const val IMG_GUARANTEED_QUALITY = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_educational_information_guaranteed_quality.png"
         private val TAG = TokoNowOnBoard20mBottomSheet::class.simpleName
 
         fun newInstance(): TokoNowOnBoard20mBottomSheet {
@@ -50,8 +50,8 @@ class TokoNowOnBoard20mBottomSheet: BottomSheetUnify() {
         binding?.tpTime?.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_on_boarding_first_content_detail_bottomsheet, context?.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950) ?: ""))
         binding?.tpChoiceProduct?.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_on_boarding_second_content_detail_bottomsheet, context?.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950) ?: ""))
 
-        binding?.iuTime?.setImageUrl(IMG_TIME)
-        binding?.iuChoiceProduct?.setImageUrl(IMG_GUARANTEED_QUALITY)
+        binding?.iuTime?.setImageUrl(IMG_USP_NOW_TIME_LIGHT_MODE)
+        binding?.iuChoiceProduct?.setImageUrl(IMG_USP_NOW_GUARANTEED_QUALITY_LIGHT_MODE)
 
         binding?.btnTryNow?.setOnClickListener {
             dismiss()

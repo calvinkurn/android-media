@@ -12,10 +12,12 @@ class GetShopFeatureUseCase @Inject constructor(val graphqlUseCase: GraphqlUseCa
 
     override suspend fun executeOnBackground(): ShopFeatureModel {
         graphqlUseCase.setGraphqlQuery(QUERY)
-        graphqlUseCase.setRequestParams(mapOf(
+        graphqlUseCase.setRequestParams(
+            mapOf(
                 PARAM_TYPE to useCaseRequestParams.getInt(PARAM_TYPE, 1),
                 PARAM_SHOP_ID to useCaseRequestParams.getString(PARAM_SHOP_ID, "")
-        ))
+            )
+        )
         graphqlUseCase.setTypeClass(GetShopFeatureResponse::class.java)
         val result = graphqlUseCase.executeOnBackground()
         return mapper.convertToUIModel(result.shopFeature.shopData)
@@ -47,5 +49,4 @@ class GetShopFeatureUseCase @Inject constructor(val graphqlUseCase: GraphqlUseCa
             }
         """.trimIndent()
     }
-
 }

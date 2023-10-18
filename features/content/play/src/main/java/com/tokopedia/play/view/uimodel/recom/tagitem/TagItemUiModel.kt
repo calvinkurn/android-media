@@ -16,7 +16,7 @@ data class TagItemUiModel(
                 voucher = VoucherUiModel.Empty,
                 maxFeatured = 0,
                 resultState = ResultState.Loading,
-                bottomSheetTitle = ""
+                bottomSheetTitle = "",
             )
     }
 }

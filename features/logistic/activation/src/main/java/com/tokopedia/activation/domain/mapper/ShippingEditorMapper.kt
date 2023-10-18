@@ -6,9 +6,8 @@ import com.tokopedia.activation.model.response.ActivatedShipping
 object ShippingEditorMapper {
 
     fun convertToUIModel(data: ActivatedShipping): ShippingEditorModel {
-        return  ShippingEditorModel().apply {
+        return ShippingEditorModel().apply {
             x11 = data.x11.isAvailable
         }
     }
-
 }

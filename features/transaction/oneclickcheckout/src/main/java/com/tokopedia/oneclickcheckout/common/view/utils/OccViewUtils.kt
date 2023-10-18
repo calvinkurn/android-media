@@ -14,17 +14,17 @@ private fun View.fadeTo(visible: Boolean, duration: Long) {
 
     if (visible && alpha == 1f) alpha = 0f
     animate()
-            .alpha(if (visible) 1f else 0f)
-            .withStartAction {
-                if (visible) isVisible = true
-            }
-            .withEndAction {
-                setTag(tagKey, null)
-                if (isAttachedToWindow && !visible) isVisible = false
-            }
-            .setInterpolator(FastOutSlowInInterpolator())
-            .setDuration(duration)
-            .start()
+        .alpha(if (visible) 1f else 0f)
+        .withStartAction {
+            if (visible) isVisible = true
+        }
+        .withEndAction {
+            setTag(tagKey, null)
+            if (isAttachedToWindow && !visible) isVisible = false
+        }
+        .setInterpolator(FastOutSlowInInterpolator())
+        .setDuration(duration)
+        .start()
 }
 
 internal fun View.animateShow(duration: Long = 400) = fadeTo(true, duration)

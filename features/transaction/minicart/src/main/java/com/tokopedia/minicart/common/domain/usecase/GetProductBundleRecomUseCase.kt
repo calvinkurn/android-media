@@ -24,7 +24,7 @@ import javax.inject.Inject
 class GetProductBundleRecomUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
     private val chosenAddressRequestHelper: ChosenAddressRequestHelper
-): GraphqlUseCase<ProductBundleRecomResponse>(graphqlRepository) {
+) : GraphqlUseCase<ProductBundleRecomResponse>(graphqlRepository) {
 
     init {
         setTypeClass(ProductBundleRecomResponse::class.java)
@@ -32,17 +32,18 @@ class GetProductBundleRecomUseCase @Inject constructor(
     }
 
     suspend fun execute(
-        productIds: List<String>,
-        excludeBundleIds: List<String>,
+        productIds: List<String> = listOf(),
+        excludeBundleIds: List<String> = listOf(),
         queryParam: String = "type=SINGLE,MULTIPLE"
     ): ProductBundleRecomResponse {
-        setRequestParams(RequestParams.create().apply {
-            putString(PARAM_WAREHOUSE_ID, chosenAddressRequestHelper.getChosenAddress().tokonow.warehouseId)
-            putObject(PARAM_PRODUCT_IDS, productIds)
-            putObject(PARAM_EXCLUDE_BUNDLE_IDS, excludeBundleIds)
-            putString(PARAM_QUERY_PARAM, queryParam)
-        }.parameters)
+        setRequestParams(
+            RequestParams.create().apply {
+                putString(PARAM_WAREHOUSE_ID, chosenAddressRequestHelper.getChosenAddress().tokonow.warehouseId)
+                putObject(PARAM_PRODUCT_IDS, productIds)
+                putObject(PARAM_EXCLUDE_BUNDLE_IDS, excludeBundleIds)
+                putString(PARAM_QUERY_PARAM, queryParam)
+            }.parameters
+        )
         return executeOnBackground()
     }
-
 }

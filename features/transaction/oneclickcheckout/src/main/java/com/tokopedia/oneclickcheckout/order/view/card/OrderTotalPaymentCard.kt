@@ -19,7 +19,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
-class OrderTotalPaymentCard(private val binding: LayoutPaymentBinding, private val listener: OrderTotalPaymentCardListener): RecyclerView.ViewHolder(binding.root) {
+class OrderTotalPaymentCard(private val binding: LayoutPaymentBinding, private val listener: OrderTotalPaymentCardListener) : RecyclerView.ViewHolder(binding.root) {
 
     fun setupPayment(orderTotal: OrderTotal) {
         binding.apply {

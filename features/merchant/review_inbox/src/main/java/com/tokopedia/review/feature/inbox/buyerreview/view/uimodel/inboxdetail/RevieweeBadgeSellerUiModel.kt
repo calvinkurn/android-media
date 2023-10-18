@@ -8,6 +8,5 @@ data class RevieweeBadgeSellerUiModel(
     var reputationScore: String = "",
     var score: Int = 0,
     var minBadgeScore: Int = 0,
-    var reputationBadgeUrl: String = "",
-    var isFavorited: Int = -1
+    var reputationBadgeUrl: String = ""
 )

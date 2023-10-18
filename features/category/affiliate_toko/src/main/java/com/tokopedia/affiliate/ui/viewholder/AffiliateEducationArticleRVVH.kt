@@ -41,8 +41,7 @@ class AffiliateEducationArticleRVVH(
     override fun bind(element: AffiliateEducationArticleRVUiModel?) {
         tvSeeMore.setOnClickListener {
             affiliateEducationEventArticleClickInterface?.onSeeMoreClick(
-                PAGE_EDUCATION_ARTICLE,
-                element?.article?.articles?.getOrNull(0)?.categories?.getOrNull(0)?.id.toString()
+                PAGE_EDUCATION_ARTICLE
             )
             sendEducationClickEvent()
         }

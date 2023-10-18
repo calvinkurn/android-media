@@ -3,7 +3,13 @@ package com.tokopedia.oneclickcheckout.order.view
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.data.checkout.OrderMetadata
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccData
+import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccPaymentParameter
+import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccRedirectParam
+import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
+import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import io.mockk.coEvery
@@ -21,7 +27,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
     fun `Get Occ Cart Success With Hide Upload Prescription Widget`() {
         // Given
         val response = helper.orderData
-        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
+        every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
         coEvery {
             getPrescriptionIdsUseCase.setParams(any()).executeOnBackground()
@@ -48,7 +54,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
     fun `Get Occ Cart Success With Render Upload Prescription Widget not yet upload prescriptions`() {
         // Given
         val response = helper.orderData.copy(imageUpload = helper.imageUploadDataModel)
-        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
+        every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
         coEvery {
             getPrescriptionIdsUseCase.setParams(any(), any()).executeOnBackground()
@@ -74,7 +80,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
     fun `Get Occ Cart Success With Render Upload Prescription Widget with uploaded prescriptions`() {
         // Given
         val response = helper.orderData.copy(imageUpload = helper.imageUploadDataModel)
-        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
+        every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
         coEvery {
             getPrescriptionIdsUseCase.setParams(any(), any()).executeOnBackground()
@@ -104,7 +110,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
     fun `Get Occ Cart Success With Render Upload Prescription Widget not yet upload prescription then get one prescription id from epharmacy`() {
         // Given
         val response = helper.orderData.copy(imageUpload = helper.imageUploadDataModel)
-        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
+        every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
         coEvery {
             getPrescriptionIdsUseCase.setParams(any(), any()).executeOnBackground()
@@ -144,7 +150,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
                 uploadedImageCount = 0,
                 showImageUpload = true,
                 frontEndValidation = true,
-                isError = false,
+                isError = false
             )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
@@ -163,7 +169,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
     fun `continue to payment without upload prescription but no front end validation`() {
         // Given
         val response = helper.orderData.copy(imageUpload = helper.imageUploadDataModel)
-        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
+        every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProfile.value = helper.preference
@@ -176,7 +182,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
                 uploadedImageCount = 0,
                 showImageUpload = true,
                 frontEndValidation = false,
-                isError = false,
+                isError = false
             )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 

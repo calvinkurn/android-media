@@ -29,6 +29,7 @@ import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDi
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.constant.ZERO
+import com.tokopedia.shopdiscount.utils.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.layoutmanager.NonPredictiveLinearLayoutManager
@@ -38,7 +39,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
@@ -55,7 +56,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
 
         @JvmStatic
         fun newInstance(
-            discountStatusName : String,
+            discountStatusName: String,
             discountStatusId: Int
         ): SearchProductFragment {
             val fragment = SearchProductFragment()
@@ -65,7 +66,6 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
             }
             return fragment
         }
-
     }
     private val discountStatusName by lazy {
         arguments?.getString(BUNDLE_KEY_DISCOUNT_STATUS_NAME).orEmpty()
@@ -80,7 +80,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
     lateinit var viewModelFactory: ViewModelFactory
 
     @Inject
-    lateinit var userSession : UserSessionInterface
+    lateinit var userSession: UserSessionInterface
 
     private val loaderDialog by lazy { LoaderDialog(requireActivity()) }
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
@@ -115,6 +115,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setFragmentToUnifyBgColor()
         setupView()
         observeProducts()
         observeDeleteDiscount()
@@ -169,7 +170,6 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
             btnDelete.setOnClickListener { displayBulkDeleteConfirmationDialog() }
         }
     }
-
 
     private fun observeProducts() {
         viewModel.products.observe(viewLifecycleOwner) {
@@ -267,7 +267,6 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
                 viewModel.getTotalProduct() - ONE_PRODUCT
             }
 
-
             binding?.recyclerView showToaster deletionWording
             binding?.tpgTotalProduct?.text =
                 String.format(getString(R.string.sd_total_product), updatedTotalProduct)
@@ -305,7 +304,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
         reserveProduct(requestId, listOf(product.id))
     }
 
-    private val onVariantInfoClicked : (Product, Int) -> Unit = { product, position ->
+    private val onVariantInfoClicked: (Product, Int) -> Unit = { product, position ->
         viewModel.setSelectedProduct(product)
         guard(product.disableClick) {
             showProductDetailBottomSheet(product, position)
@@ -319,7 +318,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
         }
     }
 
-    private fun reserveProduct(requestId : String, productIds : List<String>) {
+    private fun reserveProduct(requestId: String, productIds: List<String>) {
         binding?.btnManage?.isLoading = true
         binding?.btnManage?.loadingText = getString(R.string.sd_please_wait)
         viewModel.reserveProduct(requestId, productIds)
@@ -351,7 +350,6 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
                 String.format(getString(R.string.sd_selected_product_counter), selectedProductCount)
         }
 
-
         if (shouldDisableSelection) {
             disableProductSelection(items)
         } else {
@@ -359,17 +357,17 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
         }
     }
 
-    private fun disableProductSelection(products : List<Product>) {
+    private fun disableProductSelection(products: List<Product>) {
         val toBeDisabledProducts = viewModel.disableProducts(products)
         adapter?.refresh(toBeDisabledProducts)
     }
 
-    private fun enableProductSelection(products : List<Product>) {
+    private fun enableProductSelection(products: List<Product>) {
         val toBeEnabledProducts = viewModel.enableProduct(products)
         adapter?.refresh(toBeEnabledProducts)
     }
 
-    private fun guard(disableClick: Boolean, block : () -> Unit) {
+    private fun guard(disableClick: Boolean, block: () -> Unit) {
         if (disableClick) {
             Toaster.build(
                 binding?.recyclerView ?: return,
@@ -449,7 +447,6 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
             globalError.setType(GlobalError.SERVER_ERROR)
             globalError.setActionClickListener { loadInitialData() }
         }
-
     }
 
     private fun displayMoreMenuBottomSheet(product: Product) {
@@ -488,11 +485,10 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
             discountStatusId,
             position
         )
-        bottomSheet.setListener(object: ShopDiscountProductDetailBottomSheet.Listener{
+        bottomSheet.setListener(object : ShopDiscountProductDetailBottomSheet.Listener {
             override fun deleteParentProduct(productId: String) {
                 deleteSingleProduct(productId)
             }
-
         })
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -500,7 +496,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
     private fun deleteSingleProduct(productId: String) {
         val totalCountProduct = viewModel.getTotalProduct() - ONE_PRODUCT
         val getDeletedProduct = adapter?.getProductBasedOnId(productId)
-        getDeletedProduct?.let{
+        getDeletedProduct?.let {
             productAdapter.delete(it)
             binding?.tpgTotalProduct?.text =
                 String.format(getString(R.string.sd_total_product), totalCountProduct)
@@ -563,10 +559,9 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
     }
 
     override fun onSwipeRefreshPulled() {
-
     }
 
-    private fun handleEmptyState(totalProduct : Int) {
+    private fun handleEmptyState(totalProduct: Int) {
         if (totalProduct == ZERO) {
             showEmptyState(discountStatusId)
         } else {
@@ -574,7 +569,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
         }
     }
 
-    private fun showEmptyState(discountStatusId : Int) {
+    private fun showEmptyState(discountStatusId: Int) {
         val title = if (discountStatusId == DiscountStatus.PAUSED) {
             getString(R.string.sd_no_paused_discount_title)
         } else {
@@ -597,7 +592,6 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
         binding?.emptyState?.setDescription(description)
     }
 
-
     private fun hideEmptyState() {
         binding?.emptyState?.gone()
     }
@@ -611,7 +605,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
         loaderDialog.dialog.dismiss()
     }
 
-     private fun redirectToProductDetailPage(product: Product) {
+    private fun redirectToProductDetailPage(product: Product) {
         val imageUrl = arrayListOf(product.imageUrl)
         val intent = ImagePreviewActivity.getCallingIntent(
             context = requireActivity(),
@@ -620,5 +614,4 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
         )
         startActivity(intent)
     }
-
 }

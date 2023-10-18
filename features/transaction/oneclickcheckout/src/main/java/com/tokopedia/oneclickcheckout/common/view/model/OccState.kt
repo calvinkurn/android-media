@@ -24,10 +24,19 @@ sealed class OccState<out T : Any> {
 sealed class OccGlobalEvent {
     object Normal : OccGlobalEvent()
     object Loading : OccGlobalEvent()
-    data class Error(val throwable: Throwable? = null, val errorMessage: String = "") : OccGlobalEvent()
+    data class Error(
+        val throwable: Throwable? = null,
+        val errorMessage: String = "",
+        val ctaText: String = ""
+    ) : OccGlobalEvent()
     data class PriceChangeError(val message: PriceChangeMessage) : OccGlobalEvent()
-    data class TriggerRefresh(val throwable: Throwable? = null, val errorMessage: String = "", val successMessage: String = "",
-                              val uiMessage: OccToasterAction? = null, val shouldTriggerAnalytics: Boolean = false) : OccGlobalEvent()
+    data class TriggerRefresh(
+        val throwable: Throwable? = null,
+        val errorMessage: String = "",
+        val successMessage: String = "",
+        val uiMessage: OccToasterAction? = null,
+        val shouldTriggerAnalytics: Boolean = false
+    ) : OccGlobalEvent()
     data class PromoClashing(val notEligiblePromoHolderDataList: ArrayList<NotEligiblePromoHolderdata>) : OccGlobalEvent()
     data class AtcError(val throwable: Throwable? = null, val errorMessage: String = "") : OccGlobalEvent()
     data class AtcSuccess(val message: String = "") : OccGlobalEvent()

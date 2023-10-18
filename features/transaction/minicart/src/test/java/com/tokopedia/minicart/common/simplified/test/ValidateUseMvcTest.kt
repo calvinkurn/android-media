@@ -51,37 +51,37 @@ class ValidateUseMvcTest {
 
     @Test
     fun `WHEN validate mvc success THEN should update validate use mvc data`() {
-        //given
+        // given
         val validateUseResponse = ValidateUseMvcData(status = "OK", success = true)
         coEvery { validateUseMvcUseCase.setParam(any()).execute(any(), any()) } answers {
             firstArg<(ValidateUseMvcData) -> Unit>().invoke(validateUseResponse)
         }
 
-        //when
+        // when
         viewModel.getLatestWidgetState()
 
-        //then
+        // then
         assert(viewModel.validateUseMvcData.value == validateUseResponse)
     }
 
     @Test
     fun `WHEN validate mvc failed THEN should set state failed validate use`() {
-        //given
+        // given
         val throwable = IOException()
         coEvery { validateUseMvcUseCase.setParam(any()).execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
 
-        //when
+        // when
         viewModel.getLatestWidgetState()
 
-        //then
+        // then
         assert(viewModel.miniCartSimplifiedState.value == MiniCartSimplifiedState(state = MiniCartSimplifiedState.STATE_FAILED_VALIDATE_USE, throwable = throwable))
     }
 
     @Test
     fun `WHEN validate mvc failed on move to cart THEN should set state failed validate use move to cart`() {
-        //given
+        // given
         val validateUseResponse = ValidateUseMvcData(status = "OK", success = true)
         coEvery { validateUseMvcUseCase.setParam(any()).execute(any(), any()) } answers {
             firstArg<(ValidateUseMvcData) -> Unit>().invoke(validateUseResponse)
@@ -92,42 +92,42 @@ class ValidateUseMvcTest {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
 
-        //when
+        // when
         viewModel.moveToCart()
 
-        //then
+        // then
         assert(viewModel.miniCartSimplifiedState.value == MiniCartSimplifiedState(state = MiniCartSimplifiedState.STATE_FAILED_VALIDATE_USE_MOVE_TO_CART, throwable = throwable))
     }
 
     @Test
     fun `WHEN move to cart THEN should validate mvc with apply true`() {
-        //given
+        // given
         val validateUseResponse = ValidateUseMvcData(status = "OK", success = true)
         coEvery { validateUseMvcUseCase.setParam(any()).execute(any(), any()) } answers {
             firstArg<(ValidateUseMvcData) -> Unit>().invoke(validateUseResponse)
         }
         viewModel.getLatestWidgetState()
 
-        //when
+        // when
         viewModel.moveToCart()
 
-        //then
+        // then
         coVerify { validateUseMvcUseCase.setParam(match { it.apply }).execute(any(), any()) }
     }
 
     @Test
     fun `WHEN move to cart success THEN should set state move to cart`() {
-        //given
+        // given
         val validateUseResponse = ValidateUseMvcData(status = "OK", success = true)
         coEvery { validateUseMvcUseCase.setParam(any()).execute(any(), any()) } answers {
             firstArg<(ValidateUseMvcData) -> Unit>().invoke(validateUseResponse)
         }
         viewModel.getLatestWidgetState()
 
-        //when
+        // when
         viewModel.moveToCart()
 
-        //then
+        // then
         assert(viewModel.miniCartSimplifiedState.value == MiniCartSimplifiedState(state = MiniCartSimplifiedState.STATE_MOVE_TO_CART))
     }
 }

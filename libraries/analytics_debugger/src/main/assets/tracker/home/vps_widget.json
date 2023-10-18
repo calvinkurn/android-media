@@ -6,7 +6,7 @@
       "event": "view_item",
       "eventAction": "lego banner 4 image auto v2 impression",
       "eventCategory": "homepage",
-      "eventLabel": "",
+      "eventLabel": ".* - 4_banners_auto_vps_v2 - .*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "promotions": [
@@ -18,6 +18,8 @@
           "creative_url": ""
         }
       ],
+      "channelId": ".*",
+      "trackerId": "31870",
       "userId": ".*",
       "sessionIris": ".*"
     },
@@ -25,7 +27,7 @@
       "event": "select_content",
       "eventAction": "lego banner 4 image auto v2 click",
       "eventCategory": "homepage",
-      "eventLabel": ".* - .*",
+      "eventLabel": ".* - 4_banners_auto_vps_v2 - .*",
       "businessUnit": "home & browse",
       "campaignCode": ".*",
       "currentSite": "tokopediamarketplace",
@@ -37,6 +39,8 @@
           "item_name": "/ - p.* - lego banner 4 image auto v2 - .*"
         }
       ],
+      "channelId": ".*",
+      "trackerId": "31871",
       "userId": ".*",
       "sessionIris": ".*",
       "clientId": ".*"

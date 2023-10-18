@@ -6,31 +6,41 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.oneclickcheckout.common.utils.generateAppVersionForPayment
+import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentData
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentGqlResponse
-import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOption
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
 import javax.inject.Inject
 
-class GoCicilInstallmentOptionUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository) {
+class GoCicilInstallmentOptionUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository
+) {
 
     @GqlQuery(GoCicilInstallmentOptionQuery, QUERY)
-    suspend fun executeSuspend(param: GoCicilInstallmentRequest): List<GoCicilInstallmentOption> {
-        val request = GraphqlRequest(GoCicilInstallmentOptionQuery(), GoCicilInstallmentGqlResponse::class.java, generateParam(param))
-        val response = graphqlRepository.response(listOf(request)).getSuccessData<GoCicilInstallmentGqlResponse>()
+    suspend fun executeSuspend(param: GoCicilInstallmentRequest): GoCicilInstallmentData {
+        val request = GraphqlRequest(
+            GoCicilInstallmentOptionQuery(),
+            GoCicilInstallmentGqlResponse::class.java,
+            generateParam(param)
+        )
+        val response = graphqlRepository.response(listOf(request))
+            .getSuccessData<GoCicilInstallmentGqlResponse>()
         if (!response.response.success) {
             throw MessageErrorException()
         }
-        return response.response.data.installmentOptions
+        return response.response.data
     }
 
     private fun generateParam(param: GoCicilInstallmentRequest): Map<String, Any?> {
         return mapOf(
-                PARAM_GATEWAY_CODE to param.gatewayCode,
-                PARAM_MERCHANT_CODE to param.merchantCode,
-                PARAM_PROFILE_CODE to param.profileCode,
-                PARAM_USER_DEFINED_VALUE to param.userDefinedValue,
-                PARAM_PAYMENT_AMOUNT to param.paymentAmount,
-                PARAM_ORDER_METADATA to param.orderMetadata,
+            PARAM_GATEWAY_CODE to param.gatewayCode,
+            PARAM_MERCHANT_CODE to param.merchantCode,
+            PARAM_PROFILE_CODE to param.profileCode,
+            PARAM_USER_DEFINED_VALUE to param.userDefinedValue,
+            PARAM_PAYMENT_AMOUNT to param.paymentAmount,
+            PARAM_ORDER_METADATA to param.orderMetadata,
+            PARAM_PROMO_PARAM to param.promoParam,
+            PARAM_APP_VERSION to generateAppVersionForPayment()
         )
     }
 
@@ -41,13 +51,19 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(@ApplicationContext pr
         private const val PARAM_USER_DEFINED_VALUE = "userDefinedValue"
         private const val PARAM_PAYMENT_AMOUNT = "paymentAmount"
         private const val PARAM_ORDER_METADATA = "orderMetadata"
+        private const val PARAM_PROMO_PARAM = "promoParam"
+        private const val PARAM_APP_VERSION = "appVersion"
 
         private const val GoCicilInstallmentOptionQuery = "GoCicilInstallmentOptionQuery"
         private const val QUERY = """
-            query getInstallmentInfo(${'$'}gatewayCode: String!, ${'$'}merchantCode: String!, ${'$'}profileCode: String!, ${'$'}userDefinedValue: String!, ${'$'}paymentAmount: Float!, ${'$'}orderMetadata: String) {
-                getInstallmentInfo(gatewayCode: ${'$'}gatewayCode, merchantCode: ${'$'}merchantCode, profileCode: ${'$'}profileCode, userDefinedValue: ${'$'}userDefinedValue, paymentAmount: ${'$'}paymentAmount, orderMetadata: ${'$'}orderMetadata) {
+            query getInstallmentInfo(${'$'}gatewayCode: String!, ${'$'}merchantCode: String!, ${'$'}profileCode: String!, ${'$'}userDefinedValue: String!, ${'$'}paymentAmount: Float!, ${'$'}orderMetadata: String, ${'$'}promoParam: String, ${'$'}appVersion: String) {
+                getInstallmentInfo(gatewayCode: ${'$'}gatewayCode, merchantCode: ${'$'}merchantCode, profileCode: ${'$'}profileCode, userDefinedValue: ${'$'}userDefinedValue, paymentAmount: ${'$'}paymentAmount, orderMetadata: ${'$'}orderMetadata, promoParam: ${'$'}promoParam, appVersion: ${'$'}appVersion) {
                     success
                     data {
+                        ticker {
+                            code
+                            message
+                        }
                         installment_options {
                             installment_term
                             option_id

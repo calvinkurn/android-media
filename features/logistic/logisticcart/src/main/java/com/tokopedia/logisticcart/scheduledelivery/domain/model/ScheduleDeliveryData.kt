@@ -6,7 +6,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Error
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class ScheduleDeliveryData(
+data class ScheduleDeliveryData(
     @SerializedName("rates_id")
     val ratesId: Long = 0,
     @SerializedName("available")
@@ -26,5 +26,5 @@ class ScheduleDeliveryData(
     @SerializedName("error")
     val error: ErrorRatesDetailData = ErrorRatesDetailData(),
     @SerializedName("delivery_services")
-    val deliveryServices: List<DeliveryService> = arrayListOf(),
+    val deliveryServices: List<DeliveryService> = arrayListOf()
 ) : Parcelable

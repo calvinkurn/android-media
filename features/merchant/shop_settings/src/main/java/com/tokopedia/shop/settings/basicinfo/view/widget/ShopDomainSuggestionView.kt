@@ -10,26 +10,27 @@ import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.view.adapter.ShopDomainSuggestionAdapter
 import com.tokopedia.shop.settings.basicinfo.view.adapter.ShopDomainSuggestionAdapterFactoryImpl
 import com.tokopedia.shop.settings.basicinfo.view.model.ShopDomainSuggestion
-import com.tokopedia.unifycomponents.ChipsUnify
 
-class ShopDomainSuggestionView: FrameLayout {
+class ShopDomainSuggestionView : FrameLayout {
 
     private var adapter: ShopDomainSuggestionAdapter? = null
     private var onClickItemListener: ((String) -> Unit)? = null
     private var suggestionList: RecyclerView? = null
 
-    constructor (context: Context): super(context)
+    constructor (context: Context) : super(context)
 
-    constructor(context: Context, attrs: AttributeSet): super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
         inflate(context, R.layout.layout_shop_domain_suggestion, this)
         suggestionList = findViewById(R.id.suggestionList)
-        adapter = ShopDomainSuggestionAdapter(ShopDomainSuggestionAdapterFactoryImpl {
-            onClickItemListener?.invoke(it)
-        })
+        adapter = ShopDomainSuggestionAdapter(
+            ShopDomainSuggestionAdapterFactoryImpl {
+                onClickItemListener?.invoke(it)
+            }
+        )
 
         suggestionList?.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         suggestionList?.adapter = adapter

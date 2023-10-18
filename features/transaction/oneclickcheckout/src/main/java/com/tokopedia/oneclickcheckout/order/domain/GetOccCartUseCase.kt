@@ -14,18 +14,26 @@ import com.tokopedia.oneclickcheckout.order.domain.mapper.GetOccCartMapper
 import com.tokopedia.oneclickcheckout.order.view.model.OrderData
 import javax.inject.Inject
 
-class GetOccCartUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
-                                            private val mapper: GetOccCartMapper,
-                                            private val chosenAddressRequestHelper: ChosenAddressRequestHelper) {
+class GetOccCartUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val mapper: GetOccCartMapper,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
+) {
 
-    fun createRequestParams(source: String, gatewayCode: String, tenor: Int): Map<String, Any?> {
+    fun createRequestParams(
+        source: String,
+        gatewayCode: String,
+        tenor: Int,
+        isCartReimagine: Boolean
+    ): Map<String, Any?> {
         return mapOf(
-                PARAM_SOURCE to source,
-                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
-                PARAM_ADDITIONAL_PARAMS to mapOf(
-                        PARAM_GATEWAY_CODE to gatewayCode,
-                        PARAM_TENOR to tenor
-                )
+            PARAM_SOURCE to source,
+            ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+            PARAM_ADDITIONAL_PARAMS to mapOf(
+                PARAM_GATEWAY_CODE to gatewayCode,
+                PARAM_TENOR to tenor,
+                PARAM_IS_CART_REIMAGINE to isCartReimagine
+            )
         )
     }
 
@@ -42,8 +50,10 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             }
             return mapper.mapGetOccCartDataToOrderData(response.response.data)
         } else {
-            throw MessageErrorException(response.response.errorMessages.firstOrNull()
-                    ?: DEFAULT_ERROR_MESSAGE)
+            throw MessageErrorException(
+                response.response.errorMessages.firstOrNull()
+                    ?: DEFAULT_ERROR_MESSAGE
+            )
         }
     }
 
@@ -52,6 +62,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
         private const val PARAM_GATEWAY_CODE = "gateway_code"
         private const val PARAM_TENOR = "tenure_type"
         private const val PARAM_ADDITIONAL_PARAMS = "additional_params"
+        private const val PARAM_IS_CART_REIMAGINE = "is_cart_reimagine"
 
         private const val GetOccMultiQuery = "GetOccMultiQuery"
 
@@ -187,6 +198,25 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
         }
         cart_details {
           products {
+            add_ons_product {
+				icon_url
+				title
+				bottomsheet {
+					title
+					applink
+					is_shown
+				}
+				data {
+					id
+					unique_id
+					price
+					info_link
+					name
+					status
+					type
+                    fixed_quantity
+				}
+            }
             errors
             cart_id
             product_id
@@ -276,6 +306,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             	add_on_id
             	add_on_qty
               	add_on_price
+                add_on_unique_id
               	add_on_metadata {
               	  add_on_note {
 					is_custom_note
@@ -320,6 +351,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             add_on_id
             add_on_qty
             add_on_price
+            add_on_unique_id
             add_on_metadata {
               add_on_note {
 			    is_custom_note
@@ -664,7 +696,15 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
                 amount
                 currency_details_str
               }
+              bebas_ongkir_info {
+                is_bo_unstack_enabled
+                is_use_bebas_ongkir_only
+              }
               sp_ids
+            }
+            user_group_metadata {
+              key
+              value
             }
           }
         }
@@ -720,6 +760,10 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
         invoice_not_sent_to_recipient
       }
       total_product_price
+      add_ons_summary {
+        wording
+        type
+      }
     }
   }
 }"""

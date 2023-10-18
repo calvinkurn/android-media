@@ -1,6 +1,5 @@
 package com.tokopedia.review.feature.media.player.video.presentation.viewmodel
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -14,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
@@ -34,8 +34,6 @@ class ReviewVideoPlayerViewModel @Inject constructor(
         MutableStateFlow(ReviewVideoPlaybackUiState.Inactive())
     private val _videoPlayerUiState: MutableStateFlow<ReviewVideoPlayerUiState> =
         MutableStateFlow(ReviewVideoPlayerUiState.Initial())
-    private val _videoThumbnailUiState: MutableStateFlow<ReviewVideoThumbnailUiState> =
-        MutableStateFlow(ReviewVideoThumbnailUiState.Hidden())
     private val _videoErrorUiState: MutableStateFlow<ReviewVideoErrorUiState> =
         MutableStateFlow(ReviewVideoErrorUiState.Hidden)
     private val _connectedToWifi: MutableStateFlow<Boolean> =
@@ -66,22 +64,16 @@ class ReviewVideoPlayerViewModel @Inject constructor(
             initialValue = _videoPlayerUiState.value
         )
     val videoThumbnailUiState: StateFlow<ReviewVideoThumbnailUiState>
-        get() = combine(
-            _videoPlaybackUiState,
-            _videoThumbnailUiState
-        ) { playbackUiState, thumbnailUiState ->
-            if (
-                playbackUiState is ReviewVideoPlaybackUiState.Ended ||
-                playbackUiState is ReviewVideoPlaybackUiState.Inactive
-            ) {
-                ReviewVideoThumbnailUiState.Showed(thumbnailUiState.videoThumbnail)
+        get() = _videoPlaybackUiState.mapLatest { playbackUiState ->
+            if (playbackUiState is ReviewVideoPlaybackUiState.Inactive) {
+                ReviewVideoThumbnailUiState.Showed
             } else {
-                ReviewVideoThumbnailUiState.Hidden(thumbnailUiState.videoThumbnail)
+                ReviewVideoThumbnailUiState.Hidden
             }
         }.stateIn(
             scope = this,
             started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
-            initialValue = _videoThumbnailUiState.value
+            initialValue = ReviewVideoThumbnailUiState.Hidden
         )
 
     private fun restoreSavedPlaybackUiState(savedInstanceState: Bundle) {
@@ -185,37 +177,6 @@ class ReviewVideoPlayerViewModel @Inject constructor(
                     shouldPlayWhenActive = isOnPlayingState || isOnBufferingState || shouldPlayWhenActive
                 )
             } else it
-        }
-    }
-
-    fun updateVideoThumbnail(bitmap: Bitmap?) {
-        _videoThumbnailUiState.update {
-            when (it) {
-                is ReviewVideoThumbnailUiState.Hidden -> it.copy(videoThumbnail = bitmap)
-                is ReviewVideoThumbnailUiState.Showed -> {
-                    if (bitmap == null) {
-                        ReviewVideoThumbnailUiState.Hidden()
-                    } else {
-                        ReviewVideoThumbnailUiState.Showed(videoThumbnail = bitmap)
-                    }
-                }
-            }
-        }
-    }
-
-    fun showVideoThumbnail() {
-        _videoThumbnailUiState.update {
-            if (it.videoThumbnail == null) {
-                ReviewVideoThumbnailUiState.Hidden()
-            } else {
-                ReviewVideoThumbnailUiState.Showed(videoThumbnail = it.videoThumbnail)
-            }
-        }
-    }
-
-    fun hideVideoThumbnail() {
-        _videoThumbnailUiState.update {
-            ReviewVideoThumbnailUiState.Hidden(it.videoThumbnail)
         }
     }
 

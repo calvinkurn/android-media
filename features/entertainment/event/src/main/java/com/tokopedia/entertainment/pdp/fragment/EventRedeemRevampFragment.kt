@@ -172,6 +172,8 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
                     context, redeemColor.Unify_NN950
                 ), PorterDuff.Mode.SRC_IN
             )
+            tfRedeem.editText.isFocusable = false
+            tfRedeem.editText.isClickable = true
         }
     }
 
@@ -283,6 +285,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
             tgValueDate.show()
             tgTitleSumTicket.show()
             tgValueSumTicket.show()
+            showSeatingNumbers()
             tgTitleRedeem.show()
             btnRedeem.show()
             tfRedeem.show()
@@ -303,6 +306,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
             tgValueDate.hide()
             tgTitleSumTicket.hide()
             tgValueSumTicket.hide()
+            hideSeatingNumbers()
             tgTitleRedeem.hide()
             btnRedeem.hide()
             tfRedeem.hide()
@@ -347,6 +351,12 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
             tgValueTypeTicket.text = redeem.schedule.name
             tgValueDate.text = redeem.schedule.showData
             tgValueSumTicket.text = redeem.quantity.toString()
+            if (redeem.seatingNumbers.isNotEmpty()) {
+                showSeatingNumbers()
+                tgValueSeatingNumber.text = redeem.seatingNumbers
+            } else {
+               hideSeatingNumbers()
+            }
             renderRedeemLayout(redeem)
         }
     }
@@ -406,10 +416,8 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
                 }
             } else if (isStatusNotAllDisabled(getUpdateListRedemption())) {
                 hideVisitorLayout()
-                tfRedeem.addOnFocusChangeListener = { _, hasFocus ->
-                    if (hasFocus) {
-                        showBottomSheet(redeem.schedule.name)
-                    }
+                tfRedeem.editText.setOnClickListener {
+                    showBottomSheet(redeem.schedule.name)
                 }
                 btnRedeem.setOnClickListener {
                     processRedeem()
@@ -496,6 +504,20 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
             errorMessage?.let {
                 Toaster.build(view, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
+        }
+    }
+
+    private fun showSeatingNumbers() {
+        binding?.apply {
+            tgValueSeatingNumber.show()
+            tgTitleSeatingNumber.show()
+        }
+    }
+
+    private fun hideSeatingNumbers() {
+        binding?.apply {
+            tgValueSeatingNumber.hide()
+            tgTitleSeatingNumber.hide()
         }
     }
 

@@ -6,13 +6,13 @@ import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayPartnerInfoModelBuilder
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
-import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.assertTrue
 import com.tokopedia.play.view.uimodel.action.ClickPartnerNameAction
 import com.tokopedia.play.view.uimodel.action.SendWarehouseId
 import com.tokopedia.play.view.uimodel.event.OpenPageEvent
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

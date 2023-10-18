@@ -7,7 +7,7 @@ import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -35,7 +35,7 @@ class UpdateUserDobUseCaseTest {
 
     @Test
     fun `check function invokation of getData`() {
-        runBlockingTest {
+        runTest {
             coEvery {
                 (repository.getGQLData("",
                         UserDOBUpdateResponse::class.java,
@@ -53,7 +53,7 @@ class UpdateUserDobUseCaseTest {
 
     @Test
     fun `check function invokation of getDobMap on invokation of getData`() {
-        runBlockingTest {
+        runTest {
             coEvery {
                 (repository.getGQLData("",
                         UserDOBUpdateResponse::class.java,

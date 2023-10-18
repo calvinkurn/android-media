@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.similarproduct.domain.model
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ProductRecommendationResponse(
@@ -65,6 +66,8 @@ data class ProductRecommendationResponse(
         ){
 
             data class RecommendationItem(
+                @field:SerializedName("parentID")
+                val parentID: String? = null,
 
                 @field:SerializedName("clickUrl")
                 val clickUrl: String? = null,
@@ -128,6 +131,10 @@ data class ProductRecommendationResponse(
 
                 @field:SerializedName("categoryBreadcrumbs")
                 val categoryBreadcrumbs: String? = null,
+
+                @SerializedName("warehouseID")
+                @Expose
+                val warehouseId: String? = null,
 
                 @field:SerializedName("id")
                 val id: Long? = null,

@@ -13,6 +13,7 @@
       "eventLabel": ".+",
       "currentSite": "tokopediadigitaldeals",
       "item_list": ".+",
+      "item_list_name": ".+",
       "category": "deals",
       "event": "view_item_list",
       "items": [
@@ -24,7 +25,7 @@
           "item_name": ".+",
           "item_brand": ".+",
           "item_variant": "none/others",
-          "item_category": "none / other"
+          "item_category": ".+"
         }
       ]
     },

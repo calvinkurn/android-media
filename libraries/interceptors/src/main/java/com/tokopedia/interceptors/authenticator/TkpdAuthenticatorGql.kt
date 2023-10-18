@@ -8,11 +8,13 @@ import com.tokopedia.interceptors.forcelogout.ForceLogoutData
 import com.tokopedia.interceptors.forcelogout.ForceLogoutUseCase
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql
 import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.globalScopeLaunch
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.refreshtoken.AccessTokenRefresh
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.datastore.UserSessionDataStoreClient
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
@@ -71,6 +73,14 @@ class TkpdAuthenticatorGql(
         intent.putExtra("description", forceLogoutData.description)
         intent.putExtra("url", forceLogoutData.url)
         LocalBroadcastManager.getInstance(application.applicationContext).sendBroadcast(intent)
+    }
+
+    private fun clearDataStore() {
+        globalScopeLaunch({
+            UserSessionDataStoreClient.getInstance(application).logoutSession()
+        }, {
+            it.printStackTrace()
+        })
     }
 
     override fun authenticate(route: Route?, response: Response): Request? {

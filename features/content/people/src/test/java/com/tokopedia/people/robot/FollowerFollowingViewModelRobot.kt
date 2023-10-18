@@ -1,18 +1,18 @@
 package com.tokopedia.people.robot
 
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.people.data.UserProfileRepository
+import com.tokopedia.people.data.UserFollowRepository
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import io.mockk.mockk
 import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import java.io.Closeable
 
 /**
  * Created By : Jonathan Darwin on July 06, 2022
  */
 class FollowerFollowingViewModelRobot(
-    repo: UserProfileRepository = mockk(relaxed = true),
+    repo: UserFollowRepository = mockk(relaxed = true),
 ) : Closeable {
 
     val viewModel = FollowerFollowingViewModel(
@@ -35,7 +35,7 @@ class FollowerFollowingViewModelRobot(
 
     fun start(fn: suspend FollowerFollowingViewModelRobot.() -> Unit) {
         use {
-            runBlockingTest { fn() }
+            runTest { fn() }
         }
     }
 

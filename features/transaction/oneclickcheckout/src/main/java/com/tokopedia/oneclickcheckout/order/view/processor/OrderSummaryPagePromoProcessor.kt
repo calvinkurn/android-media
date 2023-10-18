@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
@@ -15,6 +16,10 @@ import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.promousage.data.request.GetPromoListRecommendationParam
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
+import com.tokopedia.promousage.domain.usecase.PromoUsageGetPromoListRecommendationEntryPointUseCase
+import com.tokopedia.promousage.view.mapper.PromoUsageGetPromoListRecommendationMapper
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
@@ -33,10 +38,17 @@ import dagger.Lazy
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUsePromoRevampUseCase: Lazy<ValidateUsePromoRevampUseCase>,
-                                                         private val clearCacheAutoApplyStackUseCase: Lazy<ClearCacheAutoApplyStackUseCase>,
-                                                         private val orderSummaryAnalytics: OrderSummaryAnalytics,
-                                                         private val executorDispatchers: CoroutineDispatchers) {
+class OrderSummaryPagePromoProcessor @Inject constructor(
+    private val validateUsePromoRevampUseCase: Lazy<ValidateUsePromoRevampUseCase>,
+    private val clearCacheAutoApplyStackUseCase: Lazy<ClearCacheAutoApplyStackUseCase>,
+    private val getPromoListRecommendationEntryPointUseCase: PromoUsageGetPromoListRecommendationEntryPointUseCase,
+    private val getPromoListRecommendationMapper: PromoUsageGetPromoListRecommendationMapper,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
+    private val orderSummaryAnalytics: OrderSummaryAnalytics,
+    private val executorDispatchers: CoroutineDispatchers
+) {
+
+    var isCartCheckoutRevamp: Boolean = false
 
     suspend fun validateUsePromo(validateUsePromoRequest: ValidateUsePromoRequest, lastValidateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, forceValidateUse: Boolean): Triple<ValidateUsePromoRevampUiModel?, OccGlobalEvent?, Boolean> {
         if (!forceValidateUse && !hasPromo(validateUsePromoRequest)) return Triple(null, null, false)
@@ -80,25 +92,25 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         withContext(executorDispatchers.io) {
             try {
                 val params = ClearPromoRequest(
-                        ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                        isOcc = true,
-                        ClearPromoOrderData(
-                                orders = listOf(
-                                        ClearPromoOrder(
-                                            uniqueId = orderCart.cartString,
-                                            boType = orderCart.shop.boMetadata.boType,
-                                            codes = arrayListOf(oldPromoCode),
-                                            isPo = orderCart.products[0].isPreOrder == 1,
-                                            poDuration = orderCart.products[0].preOrderDuration.toString(),
-                                            warehouseId = orderCart.shop.warehouseId.toLongOrZero(),
-                                            shopId = orderCart.shop.shopId.toLongOrZero(),
-                                        )
-                                )
+                    ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                    isOcc = true,
+                    ClearPromoOrderData(
+                        orders = listOf(
+                            ClearPromoOrder(
+                                uniqueId = orderCart.cartString,
+                                boType = orderCart.shop.boMetadata.boType,
+                                codes = arrayListOf(oldPromoCode),
+                                isPo = orderCart.products[0].isPreOrder == 1,
+                                poDuration = orderCart.products[0].preOrderDuration.toString(),
+                                warehouseId = orderCart.shop.warehouseId.toLongOrZero(),
+                                shopId = orderCart.shop.shopId.toLongOrZero()
+                            )
                         )
+                    )
                 )
                 clearCacheAutoApplyStackUseCase.get().setParams(params).executeOnBackground()
             } catch (t: Throwable) {
-                //ignore throwable
+                // ignore throwable
             }
         }
     }
@@ -173,23 +185,23 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val result = withContext(executorDispatchers.io) {
             try {
                 val params = ClearPromoRequest(
-                        ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                        isOcc = true,
-                        ClearPromoOrderData(
-                                codes = notEligiblePromoHolderdataList.mapNotNull { if (it.iconType == NotEligiblePromoHolderdata.TYPE_ICON_GLOBAL) it.promoCode else null },
-                                orders = listOf(
-                                        ClearPromoOrder(
-                                            uniqueId = orderCart.cartString,
-                                            boType = orderCart.shop.boMetadata.boType,
-                                            codes = notEligiblePromoHolderdataList.mapNotNull { if (it.iconType == NotEligiblePromoHolderdata.TYPE_ICON_GLOBAL) null else it.promoCode }
-                                                .toMutableList(),
-                                            warehouseId = orderCart.shop.warehouseId.toLongOrZero(),
-                                            isPo = orderCart.products[0].isPreOrder == 1,
-                                            poDuration = orderCart.products[0].preOrderDuration.toString(),
-                                            shopId = orderCart.shop.shopId.toLongOrZero(),
-                                        )
-                                )
+                    ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                    isOcc = true,
+                    ClearPromoOrderData(
+                        codes = notEligiblePromoHolderdataList.mapNotNull { if (it.iconType == NotEligiblePromoHolderdata.TYPE_ICON_GLOBAL) it.promoCode else null },
+                        orders = listOf(
+                            ClearPromoOrder(
+                                uniqueId = orderCart.cartString,
+                                boType = orderCart.shop.boMetadata.boType,
+                                codes = notEligiblePromoHolderdataList.mapNotNull { if (it.iconType == NotEligiblePromoHolderdata.TYPE_ICON_GLOBAL) null else it.promoCode }
+                                    .toMutableList(),
+                                warehouseId = orderCart.shop.warehouseId.toLongOrZero(),
+                                isPo = orderCart.products[0].isPreOrder == 1,
+                                poDuration = orderCart.products[0].preOrderDuration.toString(),
+                                shopId = orderCart.shop.shopId.toLongOrZero()
+                            )
                         )
+                    )
                 )
                 clearCacheAutoApplyStackUseCase.get().setParams(params).executeOnBackground()
                 return@withContext true to OccGlobalEvent.Loading
@@ -207,11 +219,19 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val ordersItem = Order()
         ordersItem.shopId = orderCart.shop.shopId.toLongOrZero()
         ordersItem.uniqueId = orderCart.cartString
+        ordersItem.cartStringGroup = orderCart.cartString
         ordersItem.boType = orderCart.shop.boMetadata.boType
         val productDetails: ArrayList<ProductDetail> = ArrayList()
         orderCart.products.forEach {
             if (!it.isError) {
-                productDetails.add(ProductDetail(it.productId.toLongOrZero(), it.orderQuantity))
+                productDetails.add(
+                    ProductDetail(
+                        productId = it.productId.toLongOrZero(),
+                        quantity = it.orderQuantity,
+                        cartId = it.cartId,
+                        isChecked = true
+                    )
+                )
             }
         }
         ordersItem.product_details = productDetails
@@ -234,6 +254,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         promoRequest.orders = listOf(ordersItem)
         promoRequest.state = CheckoutConstant.PARAM_CHECKOUT
         promoRequest.cartType = CheckoutConstant.PARAM_OCC_MULTI
+        promoRequest.isCartCheckoutRevamp = isCartCheckoutRevamp
 
         if (lastValidateUsePromoRequest != null) {
             promoRequest.codes = ArrayList(lastValidateUsePromoRequest.codes)
@@ -275,6 +296,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val ordersItem = OrdersItem()
         ordersItem.shopId = orderCart.shop.shopId.toLongOrZero()
         ordersItem.uniqueId = orderCart.cartString
+        ordersItem.cartStringGroup = orderCart.cartString
         ordersItem.boType = orderCart.shop.boMetadata.boType
         ordersItem.warehouseId = orderCart.shop.warehouseId.toLongOrZero()
         ordersItem.isPo = orderCart.products[0].isPreOrder == 1
@@ -314,6 +336,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         }
         validateUsePromoRequest.skipApply = 0
         validateUsePromoRequest.isSuggested = 0
+        validateUsePromoRequest.isCartCheckoutRevamp = isCartCheckoutRevamp
 
         return validateUsePromoRequest
     }
@@ -390,7 +413,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
             if (voucherOrdersItemUiModel.messageUiModel.state == "red") {
                 val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
                 notEligiblePromoHolderdata.promoTitle = voucherOrdersItemUiModel.titleDescription
-                notEligiblePromoHolderdata.promoCode = voucherOrdersItemUiModel.titleDescription
+                notEligiblePromoHolderdata.promoCode = voucherOrdersItemUiModel.code
                 if (orderCart.cartString == voucherOrdersItemUiModel.uniqueId) {
                     notEligiblePromoHolderdata.shopName = orderCart.shop.shopName
                     notEligiblePromoHolderdata.shopBadge = orderCart.shop.shopBadge
@@ -413,29 +436,61 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
             try {
                 val order = validateUsePromoRequest.orders.first()
                 val params = ClearPromoRequest(
-                        ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                        isOcc = true,
-                        ClearPromoOrderData(
-                                codes = validateUsePromoRequest.codes,
-                                orders = listOf(
-                                        ClearPromoOrder(
-                                            uniqueId = order.uniqueId,
-                                            boType = order.boType,
-                                            codes = order.codes,
-                                            warehouseId = order.warehouseId,
-                                            isPo = order.isPo,
-                                            poDuration = order.poDuration.toString(),
-                                            shopId = order.shopId,
-                                        )
-                                )
+                    ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                    isOcc = true,
+                    ClearPromoOrderData(
+                        codes = validateUsePromoRequest.codes,
+                        orders = listOf(
+                            ClearPromoOrder(
+                                uniqueId = order.uniqueId,
+                                boType = order.boType,
+                                codes = order.codes,
+                                warehouseId = order.warehouseId,
+                                isPo = order.isPo,
+                                poDuration = order.poDuration.toString(),
+                                shopId = order.shopId
+                            )
                         )
+                    )
                 )
                 clearCacheAutoApplyStackUseCase.get().setParams(params).executeOnBackground()
             } catch (t: Throwable) {
-                //ignore throwable
+                // ignore throwable
             }
             return true
         }
         return false
+    }
+
+    fun getValidPromoCodes(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): List<String> {
+        val promoCodes = mutableListOf<String>()
+        if (validateUsePromoRevampUiModel != null) {
+            if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state != "red") {
+                promoCodes.addAll(validateUsePromoRevampUiModel.promoUiModel.codes)
+            }
+            validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels.forEach {
+                if (it.messageUiModel.state != "red") {
+                    promoCodes.add(it.code)
+                }
+            }
+        }
+        return promoCodes
+    }
+
+    suspend fun getEntryPointInfo(
+        promoRequest: PromoRequest
+    ): PromoEntryPointInfo {
+        return try {
+            val param = GetPromoListRecommendationParam.create(
+                promoRequest = promoRequest,
+                chosenAddress = chosenAddressRequestHelper.getChosenAddress(),
+                isPromoRevamp = true
+            )
+            val response = getPromoListRecommendationEntryPointUseCase(param)
+            getPromoListRecommendationMapper
+                .mapPromoListRecommendationEntryPointResponseToEntryPointInfo(response)
+        } catch (_: Throwable) {
+            PromoEntryPointInfo(isSuccess = false)
+        }
     }
 }

@@ -22,22 +22,10 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bran
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.brandrecommendations.BrandRecommendationViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.brandrecommendations.BrandRecommendationViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.*
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselbanner.CarouselBannerItemViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselbanner.CarouselBannerItemViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselbanner.CarouselBannerViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselbanner.CarouselBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselerrorload.CarouselErrorLoadViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselerrorload.CarouselErrorLoadViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorybestseller.CategoryBestSellerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorybestseller.CategoryBestSellerViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationItemViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationItemViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterItemViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterItemViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.circularsliderbanner.CircularSliderBannerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.circularsliderbanner.CircularSliderBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponItemViewHolder
@@ -50,14 +38,12 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cont
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentCard.ContentCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentCard.ContentCardViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentCard.ContentCardViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.dynamicCategory.DynamicCategoryItemViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.dynamicCategory.DynamicCategoryItemViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.dynamicCategory.DynamicCategoryViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.dynamicCategory.DynamicCategoryViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentcardemptystate.ContentCardEmptyStateViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentcardemptystate.ContentCardEmptyStateViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatflashsaletimerwidget.LihatFlashSaleTimerViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatflashsaletimerwidget.LihatFlashSaleTimerViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.flashsaletoko.FlashSaleTokoTabViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.flashsaletoko.FlashSaleTokoTabViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewHolder
@@ -82,6 +68,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.MixLeftEmptyViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcolumnlist.ProductCardColumnListViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcolumnlist.ProductCardColumnListViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.EmptyStateViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.EmptyStateViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewHolder
@@ -90,6 +78,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsingle.ProductCardSingleViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsingle.ProductCardSingleViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.producthighlight.ProductHighlightViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.producthighlight.ProductHighlightViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewHolder
@@ -111,6 +101,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shop
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcarditem.ShopCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemIconViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemIconViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder
@@ -123,17 +115,16 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.them
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.thematicheader.ThematicHeaderViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.timerSprintSale.TimerSprintSaleItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.timerSprintSale.TimerSprintSaleItemViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsItemViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsItemViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topadsheadline.TopAdsHeadlineViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topadsheadline.TopAdsHeadlineViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest.TopQuestViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest.TopQuestViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.viewallcard.ViewAllCarouselViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.viewallcard.ViewAllCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YouTubeViewViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YoutubeViewViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class DiscoveryHomeFactory {
 
@@ -169,16 +160,6 @@ class DiscoveryHomeFactory {
                 ::YouTubeViewViewModel
             )
             initializeComponent(
-                ComponentsList.CategoryNavigation,
-                ::CategoryNavigationViewHolder,
-                ::CategoryNavigationViewModel
-            )
-            initializeComponent(
-                ComponentsList.CategoryNavigationIem,
-                ::CategoryNavigationItemViewHolder,
-                ::CategoryNavigationItemViewModel
-            )
-            initializeComponent(
                 ComponentsList.BannerTimer,
                 ::BannerTimerViewHolder,
                 ::BannerTimerViewModel
@@ -188,31 +169,11 @@ class DiscoveryHomeFactory {
                 ::LihatSemuaViewHolder,
                 ::LihatSemuaViewModel
             )
-            initializeComponent(
-                ComponentsList.ChipsFilterView,
-                ::ComingSoonViewHolder,
-                ::ComingSoonViewModel
-            )
 //            initializeComponent(ComponentsList.SliderBanner, ::SliderBannerViewHolder, ::SliderBannerViewModel)
             initializeComponent(
                 ComponentsList.SliderBanner,
                 ::CircularSliderBannerViewHolder,
                 ::CircularSliderBannerViewModel
-            )
-            initializeComponent(
-                ComponentsList.Notifier,
-                ::ComingSoonViewHolder,
-                ::ComingSoonViewModel
-            )
-            initializeComponent(
-                ComponentsList.CarouselBanner,
-                ::CarouselBannerViewHolder,
-                ::CarouselBannerViewModel
-            )
-            initializeComponent(
-                ComponentsList.CarouselBannerItemView,
-                ::CarouselBannerItemViewHolder,
-                ::CarouselBannerItemViewModel
             )
             initializeComponent(
                 ComponentsList.TitleImage,
@@ -249,43 +210,14 @@ class DiscoveryHomeFactory {
                 ::ComingSoonViewHolder,
                 ::ComingSoonViewModel
             )
-            initializeComponent(
-                ComponentsList.Tokopoints,
-                ::TokopointsViewHolder,
-                ::TokopointsViewModel
-            )
-            initializeComponent(
-                ComponentsList.TokopointsItem,
-                ::TokopointsItemViewHolder,
-                ::TokopointsItemViewModel
-            )
             initializeComponent(ComponentsList.Spacing, ::SpacingViewHolder, ::SpacingViewModel)
             initializeComponent(ComponentsList.Tabs, ::TabsViewHolder, ::TabsViewModel)
             initializeComponent(ComponentsList.TabsItem, ::TabsItemViewHolder, ::TabsItemViewModel)
+            initializeComponent(ComponentsList.TabsIcon, ::TabsViewHolder, ::TabsViewModel)
             initializeComponent(
-                ComponentsList.ChipsFilter,
-                ::ChipsFilterViewHolder,
-                ::ChipsFilterViewModel
-            )
-            initializeComponent(
-                ComponentsList.ChipsFilterItem,
-                ::ChipsFilterItemViewHolder,
-                ::ChipsFilterItemViewModel
-            )
-            initializeComponent(
-                ComponentsList.DynamicCategory,
-                ::DynamicCategoryViewHolder,
-                ::DynamicCategoryViewModel
-            )
-            initializeComponent(
-                ComponentsList.DynamicCategoryItem,
-                ::DynamicCategoryItemViewHolder,
-                ::DynamicCategoryItemViewModel
-            )
-            initializeComponent(
-                ComponentsList.LihatFlashSaleTimer,
-                ::LihatFlashSaleTimerViewHolder,
-                ::LihatFlashSaleTimerViewModel
+                ComponentsList.TabsIconItem,
+                ::TabsItemIconViewHolder,
+                ::TabsItemIconViewModel
             )
             initializeComponent(
                 ComponentsList.TimerSprintSale,
@@ -348,6 +280,11 @@ class DiscoveryHomeFactory {
                 ::MasterProductCardItemViewHolder,
                 ::MasterProductCardItemViewModel
             )
+            initializeComponent(
+                ComponentsList.ProductCardCarouselItemList,
+                ::MasterProductCardItemViewHolder,
+                ::MasterProductCardItemViewModel
+            )
 
             // Product Card Sprint Sale
             initializeComponent(
@@ -379,6 +316,11 @@ class DiscoveryHomeFactory {
                 ::EmptyStateViewModel
             )
             initializeComponent(
+                ComponentsList.ContentCardEmptyState,
+                ::ContentCardEmptyStateViewHolder,
+                ::ContentCardEmptyStateViewModel
+            )
+            initializeComponent(
                 ComponentsList.SaleEndState,
                 ::SaleEndStateViewHolder,
                 ::SaleEndStateViewModel
@@ -390,14 +332,14 @@ class DiscoveryHomeFactory {
                 ::MixLeftEmptyViewModel
             )
 
-            //Quick Filter
+            // Quick Filter
             initializeComponent(
                 ComponentsList.QuickFilter,
                 ::QuickFilterViewHolder,
                 ::QuickFilterViewModel
             )
 
-            //Product Card Single
+            // Product Card Single
             initializeComponent(
                 ComponentsList.ProductCardSingle,
                 ::ProductCardSingleViewHolder,
@@ -409,7 +351,7 @@ class DiscoveryHomeFactory {
                 ::MasterProductCardItemViewModel
             )
 
-            //Navigation Chips
+            // Navigation Chips
             initializeComponent(
                 ComponentsList.NavigationChips,
                 ::NavigationChipsViewHolder,
@@ -421,14 +363,14 @@ class DiscoveryHomeFactory {
                 ::DefaultComponentViewModel
             )
 
-            //Banned View
+            // Banned View
             initializeComponent(
                 ComponentsList.BannedView,
                 ::BannedViewViewHolder,
                 ::DefaultComponentViewModel
             )
 
-            //Play Widget
+            // Play Widget
             initializeComponent(
                 ComponentsList.DiscoPlayWidgetView,
                 ::DiscoveryPlayWidgetViewHolder,
@@ -482,7 +424,7 @@ class DiscoveryHomeFactory {
                 ::ErrorLoadViewModel
             )
 
-            //Category Best Seller
+            // Category Best Seller
             initializeComponent(
                 ComponentsList.CategoryBestSeller,
                 ::CategoryBestSellerViewHolder,
@@ -496,20 +438,20 @@ class DiscoveryHomeFactory {
                 ::CategoryBestSellerViewModel
             )
 
-            //Topads Headline View
+            // Topads Headline View
             initializeComponent(
                 ComponentsList.TopadsHeadlineView,
                 ::TopAdsHeadlineViewHolder,
                 ::TopAdsHeadlineViewModel
             )
 
-            //Rilisan Spesial View
+            // Rilisan Spesial View
             initializeComponent(
                 ComponentsList.ShopCardView,
                 ::ShopCardViewHolder,
                 ::ShopCardViewModel
             )
-            //Rilisan Spesial ItemView
+            // Rilisan Spesial ItemView
             initializeComponent(
                 ComponentsList.ShopCardItemView,
                 ::ShopCardItemViewHolder,
@@ -519,7 +461,8 @@ class DiscoveryHomeFactory {
             initializeComponent(
                 ComponentsList.Section,
                 ::SectionViewHolder,
-                ::SectionViewModel)
+                ::SectionViewModel
+            )
 
 //            initializeComponent(ComponentsList.AnchorTabs,::AnchorTabsViewHolder,::AnchorTabsViewModel)
 
@@ -528,7 +471,7 @@ class DiscoveryHomeFactory {
                 ::AnchorTabsItemViewHolder,
                 ::AnchorTabsItemViewModel
             )
-            //Calendar View
+            // Calendar View
             initializeComponent(
                 ComponentsList.CalendarWidgetCarousel,
                 ::CalendarWidgetCarouselViewHolder,
@@ -595,11 +538,32 @@ class DiscoveryHomeFactory {
                 ::ContentCardItemViewHolder,
                 ::ContentCardItemViewModel
             )
-
+            initializeComponent(
+                ComponentsList.ProductHighlight,
+                ::ProductHighlightViewHolder,
+                ::ProductHighlightViewModel
+            )
             initializeComponent(
                 ComponentsList.ThematicHeader,
                 ::ThematicHeaderViewHolder,
                 ::ThematicHeaderViewModel
+            )
+            initializeComponent(
+                component = ComponentsList.ProductCardColumnList,
+                componentViewHolder = ::ProductCardColumnListViewHolder,
+                componentViewModel = ::ProductCardColumnListViewModel
+            )
+
+            initializeComponent(
+                ComponentsList.FlashSaleTokoTab,
+                ::FlashSaleTokoTabViewHolder,
+                ::FlashSaleTokoTabViewModel
+            )
+
+            initializeComponent(
+                ComponentsList.ViewAllCarouselCard,
+                ::ViewAllCarouselViewHolder,
+                ::ViewAllCarouselViewModel
             )
         }
 
@@ -617,13 +581,14 @@ class DiscoveryHomeFactory {
             return componentIdMap[viewType]
         }
 
-
         fun createViewHolder(
             itemView: View,
             viewType: Int,
             fragment: Fragment
         ): AbstractViewHolder? {
-            return componentMapper[viewType]?.getViewHolder(itemView, fragment)
+            return componentMapper[viewType]?.getViewHolder(itemView, fragment)?.apply {
+                uiWidgetComponent = (fragment as DiscoveryFragment).provideSubComponent()
+            }
         }
 
         fun createViewModel(viewType: Int): (application: Application, components: ComponentsItem, position: Int) -> DiscoveryBaseViewModel {
@@ -634,7 +599,7 @@ class DiscoveryHomeFactory {
         }
 
         fun isStickyHeader(viewType: Int): Boolean {
-            return viewType == ComponentsList.Tabs.ordinal || viewType == ComponentsList.AnchorTabs.ordinal
+            return viewType == ComponentsList.Tabs.ordinal || viewType == ComponentsList.TabsIcon.ordinal || viewType == ComponentsList.AnchorTabs.ordinal
         }
     }
 }

@@ -9,16 +9,15 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatButton
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
-
 class RoundButton : AppCompatButton {
 
     var cornerRadius = 0f
-    var buttonColor:Int = 0
-    set(value){
-        field = value
-        invalidate()
-        requestLayout()
-    }
+    var buttonColor: Int = 0
+        set(value) {
+            field = value
+            invalidate()
+            requestLayout()
+        }
 
     var clipPath = Path()
     var clipRectF = RectF()
@@ -32,10 +31,9 @@ class RoundButton : AppCompatButton {
         init(attrs)
     }
 
-    constructor(context: Context,attrs:AttributeSet?,defStyleAttr:Int) : super(context, attrs, defStyleAttr){
-      init(attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        init(attrs)
     }
-
 
     private fun init(attributeSet: AttributeSet?) {
         readAttributes(attributeSet)
@@ -44,11 +42,13 @@ class RoundButton : AppCompatButton {
     private fun readAttributes(attrs: AttributeSet?) {
         if (attrs != null) {
             val array = context.theme
-                .obtainStyledAttributes(attrs,com.tokopedia.tokopoints.R.styleable.RoundButton, 0, 0)
+                .obtainStyledAttributes(attrs, com.tokopedia.tokopoints.R.styleable.RoundButton, 0, 0)
             cornerRadius = array.getDimension(com.tokopedia.tokopoints.R.styleable.RoundButton_tpRbCornerRadius, 0f)
             buttonColor = array.getColor(
-                com.tokopedia.tokopoints.R.styleable.RoundButton_tpRbButtonColor, MethodChecker.getColor(
-                    context, com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.tokopoints.R.styleable.RoundButton_tpRbButtonColor,
+                MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 )
             )
             array.recycle()
@@ -74,5 +74,4 @@ class RoundButton : AppCompatButton {
             canvas.drawPaint(clipPaint)
         }
     }
-
 }

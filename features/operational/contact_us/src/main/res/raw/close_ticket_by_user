@@ -1,8 +1,0 @@
-mutation chipCloseTicketByUser($caseID: String!, $source: String!) {
-   chipCloseTicketByUser(caseID: $caseID, source: $source) {
-     data {
-       isSuccess
-     }
-     messageError
-   }
- }

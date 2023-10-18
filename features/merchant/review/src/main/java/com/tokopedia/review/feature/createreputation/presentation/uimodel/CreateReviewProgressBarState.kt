@@ -1,25 +1,25 @@
 package com.tokopedia.review.feature.createreputation.presentation.uimodel
 
 data class CreateReviewProgressBarState(
-    var isGoodRating: Boolean = false,
-    var isPhotosFilled: Boolean = false,
-    var isTextAreaFilled: Boolean = false,
-    var isBadRatingReasonSelected: Boolean = false
+    val isGoodRating: Boolean = false,
+    val isPhotosFilled: Boolean = false,
+    val isTestimonyComplete: Boolean = false,
+    val isBadRatingReasonSelected: Boolean = false
 ) {
     // New Flow
     fun isComplete(): Boolean {
-        return if (isGoodRating) isPhotosFilled && isTextAreaFilled else isBadRatingReasonSelected && isTextAreaFilled && isPhotosFilled
+        return if (isGoodRating) isPhotosFilled && isTestimonyComplete else isBadRatingReasonSelected && isTestimonyComplete && isPhotosFilled
     }
 
     fun isNeedPhotoOnly(): Boolean {
-        return if (isGoodRating) !isPhotosFilled && isTextAreaFilled else isBadRatingReasonSelected && isTextAreaFilled && !isPhotosFilled
+        return if (isGoodRating) !isPhotosFilled && isTestimonyComplete else isBadRatingReasonSelected && isTestimonyComplete && !isPhotosFilled
     }
 
     fun isNeedReviewOnly(): Boolean {
-        return if (isGoodRating) isPhotosFilled && !isTextAreaFilled else isBadRatingReasonSelected && !isTextAreaFilled && isPhotosFilled
+        return if (isGoodRating) isPhotosFilled && !isTestimonyComplete else isBadRatingReasonSelected && !isTestimonyComplete && isPhotosFilled
     }
 
     fun isNeedBadRatingReasonOnly(): Boolean {
-        return !isBadRatingReasonSelected && !isGoodRating && (isPhotosFilled || isTextAreaFilled)
+        return !isBadRatingReasonSelected && !isGoodRating && (isPhotosFilled || isTestimonyComplete)
     }
 }

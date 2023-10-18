@@ -28,12 +28,10 @@ class ProductRecommendationVerticalViewHolder(
 
         binding.productDetailCard.apply {
             setProductModel(
-                item.toProductCardModel(hasThreeDots = true)
+                item.toProductCardModel()
             )
 
             setOnClickListener { onClickRecommendation(item, element.position) }
-
-            setThreeDotsOnClickListener { onClickThreeDots(item, element.position) }
         }
 
         itemView.addOnImpressionListener(element.impressHolder) {
@@ -56,19 +54,6 @@ class ProductRecommendationVerticalViewHolder(
         )
 
         goToProduct(item.productId.toString())
-    }
-
-    private fun onClickThreeDots(
-        item: RecommendationItem,
-        position: Int
-    ) {
-        val recommVerticalData = listener.getRecommendationVerticalTrackData() ?: return
-
-        listener.onThreeDotsClick(
-            item,
-            recommVerticalData.adapterPosition,
-            position
-        )
     }
 
     private fun onImpressRecommendation(

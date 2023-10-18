@@ -4,13 +4,16 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetV2DataModel
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
+import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
+import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
@@ -37,9 +40,11 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDat
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
+import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
+import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
 
 interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductMostHelpfulReviewDataModel): Int
@@ -47,7 +52,6 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductGeneralInfoDataModel): Int
     fun type(data: ProductRecommendationDataModel): Int
     fun type(data: PageErrorDataModel): Int
-    fun type(data: VariantDataModel): Int
     fun type(data: ProductNotifyMeDataModel): Int
     fun type(data: ProductMediaDataModel): Int
     fun type(data: ProductContentDataModel): Int
@@ -69,9 +73,9 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: OneLinersDataModel): Int
     fun type(data: ProductCategoryCarouselDataModel): Int
     fun type(data: TopadsHeadlineUiModel): Int
-    fun type(data: ProductBundlingDataModel): Int
     fun type(data: ContentWidgetDataModel): Int
-    fun type(data: FintechWidgetDataModel):Int
+    fun type(data: FintechWidgetDataModel): Int
+    fun type(data: FintechWidgetV2DataModel): Int
     fun type(data: ProductRecommendationVerticalDataModel): Int
     fun type(data: ProductRecommendationVerticalPlaceholderDataModel): Int
     fun type(data: LoadingDataModel): Int
@@ -80,5 +84,14 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: ArButtonDataModel): Int
     fun type(data: ViewToViewWidgetDataModel): Int
     fun type(data: ProductCustomInfoTitleDataModel): Int
+    fun type(data: ProductShopReviewDataModel): Int
+    fun type(data: OngoingCampaignDataModel): Int
+    fun type(data: DynamicOneLinerDataModel): Int
+    fun type(data: APlusImageUiModel): Int
+    fun type(data: BMGMUiModel): Int
+
+    // This is the new centralized recom widget model.
+    // After migration, all recom widgets will only be mapped into this model
+    fun type(data: PdpRecommendationWidgetDataModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

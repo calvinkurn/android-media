@@ -5,7 +5,6 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.ui.productsheet.adapter.delegate.ProductSheetAdapterDelegate
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.ui.productsheet.viewholder.ProductSheetSectionViewHolder
-import com.tokopedia.play.view.custom.ProductBottomSheetCardView
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 
