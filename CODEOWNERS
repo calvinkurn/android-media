@@ -138,6 +138,7 @@
 /features/content/content_test/                         @tokopedia/android-minionlance-dev
 /features/content/createpost/           				@tokopedia/android-minionlance-dev
 /features/content/createpost_common/           			@tokopedia/android-minionlance-dev
+/features/content/creation_common/                      @tokopedia/android-minionlance-dev
 /features/content/explore/              				@tokopedia/android-minionlance-dev
 /features/content/feed/                 				@tokopedia/android-minionlance-dev
 /features/content/feed_component/       				@tokopedia/android-minionlance-dev
