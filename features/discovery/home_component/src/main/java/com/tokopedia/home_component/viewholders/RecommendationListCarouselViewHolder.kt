@@ -151,7 +151,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 adapter = RecommendationListAdapter(newList, listCarouselListener, isCacheData, cardInteraction)
                 setRecycledViewPool(parentRecycledViewPool)
                 clearItemRecyclerViewDecoration(this)
-                if (channel.channelGrids.size > 1) {
+                if (channel.channelGrids.isNotEmpty()) {
                     addItemDecoration(SimpleHorizontalLinearLayoutDecoration())
                 }
             }

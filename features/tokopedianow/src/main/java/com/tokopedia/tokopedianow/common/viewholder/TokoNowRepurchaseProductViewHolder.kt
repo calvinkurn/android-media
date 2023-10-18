@@ -41,6 +41,10 @@ class TokoNowRepurchaseProductViewHolder(
                 listener?.onAddVariantClicked(product)
             }
 
+            setOnBlockAddToCartListener {
+                listener?.onBlockAddToCartListener()
+            }
+
             addOnImpressionListener(product) {
                 listener?.onProductCardImpressed(layoutPosition, product)
             }
@@ -62,5 +66,6 @@ class TokoNowRepurchaseProductViewHolder(
         fun onProductCardClicked(position: Int, data: TokoNowRepurchaseProductUiModel)
         fun onAddVariantClicked(data: TokoNowRepurchaseProductUiModel)
         fun createAffiliateLink(url: String): String
+        fun onBlockAddToCartListener()
     }
 }
