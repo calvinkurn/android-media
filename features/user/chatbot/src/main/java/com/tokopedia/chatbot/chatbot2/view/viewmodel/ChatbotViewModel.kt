@@ -35,6 +35,7 @@ import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.DynamicAttachmentBo
 import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.SmallReplyBoxAttribute
 import com.tokopedia.chatbot.chatbot2.data.inboxTicketList.InboxTicketListResponse
 import com.tokopedia.chatbot.chatbot2.data.livechatdivider.LiveChatDividerAttributes
+import com.tokopedia.chatbot.chatbot2.data.newchatbotsession.DynamicAttachmentNewChatbotSession
 import com.tokopedia.chatbot.chatbot2.data.newsession.TopBotNewSessionResponse
 import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyPojo
@@ -232,6 +233,9 @@ class ChatbotViewModel @Inject constructor(
     private val _dynamicAttachmentRejectReasonState = MutableLiveData<ChatbotRejectReasonsState>()
     val dynamicAttachmentRejectReasonState: LiveData<ChatbotRejectReasonsState>
         get() = _dynamicAttachmentRejectReasonState
+    private val _dynamicAttachmentNewChatbotSession = MutableLiveData<Boolean>()
+    val dynamicAttachmentNewChatbotSession: LiveData<Boolean>
+        get() = _dynamicAttachmentNewChatbotSession
 
     // Video Upload Related
     @VisibleForTesting
@@ -1131,6 +1135,9 @@ class ChatbotViewModel @Inject constructor(
                 ChatbotConstant.DynamicAttachment.DYNAMIC_REJECT_REASON -> {
                     convertToRejectReasonsData(dynamicAttachmentAttribute.dynamicContent)
                 }
+                ChatbotConstant.DynamicAttachment.DYNAMIC_NEW_CHATBOT_SESSION -> {
+                    convertToDynamicAttachmentNewChatbotSession(dynamicAttachmentAttribute.dynamicContent)
+                }
                 else -> {
                     // need to show fallback message
                     mapToVisitable(pojo)
@@ -1186,6 +1193,15 @@ class ChatbotViewModel @Inject constructor(
         handleDynamicAttachmentRejectReasons(rejectReasonData)
     }
 
+    private fun convertToDynamicAttachmentNewChatbotSession(dynamicContent: String?) {
+        if (dynamicContent == null) {
+            return
+        }
+
+        val newChatbotSession = Gson().fromJson(dynamicContent, DynamicAttachmentNewChatbotSession::class.java)
+        handleDynamicAttachmentNewChatbotSession(newChatbotSession.isNewChatbotSession)
+    }
+
     private fun handleMediaButtonWS(mediaButtonToggleContent: MediaButtonAttribute) {
         if (mediaButtonToggleContent.isMediaButtonEnabled) {
             _dynamicAttachmentMediaUploadState.postValue(
@@ -1204,6 +1220,10 @@ class ChatbotViewModel @Inject constructor(
                 )
             )
         }
+    }
+
+    fun handleDynamicAttachmentNewChatbotSession(isNewChatbotSession: Boolean) {
+        _dynamicAttachmentNewChatbotSession.postValue(isNewChatbotSession)
     }
 
     fun handleDynamicAttachmentRejectReasons(rejectReasonData: DynamicAttachmentRejectReasons) {
