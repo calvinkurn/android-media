@@ -1,6 +1,7 @@
 package com.tokopedia.shop.common.util
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -23,6 +24,7 @@ class ShopTimer {
                     action()
                 }
             } catch (e: Exception) {
+                if (e is CancellationException) return@launch
                 FirebaseCrashlytics.getInstance().recordException(e)
             }
         }
