@@ -391,7 +391,7 @@ class ShopInfoFragment :
     }
 
     private fun getShopEpharmacyData(shopId: Int) {
-        shopViewModel?.getShopGoApotikData(shopId = shopId)
+        shopViewModel?.getShopGoApotikData(shopId = shopId, warehouseId = 0)
     }
 
     private fun setStatisticsVisibility() {
