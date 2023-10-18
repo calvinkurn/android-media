@@ -125,8 +125,7 @@ class BlockedKycBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        //TODO change the value when ready
-        private const val PATH_TOKOPEDIA_CARE = "help/article/a-3881?nref='goto-kyc'"
+        private const val PATH_TOKOPEDIA_CARE = "help"
 
         private const val IS_BLOCKED_MULTIPLE_ACCOUNT = "is_blocked_multiple_account"
         fun newInstance(blockedMultipleAccount: Boolean) =
