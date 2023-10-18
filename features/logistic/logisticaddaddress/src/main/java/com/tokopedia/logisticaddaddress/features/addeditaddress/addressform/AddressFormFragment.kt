@@ -654,9 +654,7 @@ class AddressFormFragment :
             binding?.loaderAddressForm?.gone()
             when (it) {
                 is Success -> {
-//                    if (addressUiState.isEdit()) {
                     isPositiveFlow = it.data.hasPinpoint().orFalse()
-//                    }
                     prepareLayout(it.data)
                 }
 
@@ -1086,8 +1084,6 @@ class AddressFormFragment :
             bundle.putLong(EXTRA_DISTRICT_ID, districtId)
         }
         bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
-//        bundle.putParcelable(EXTRA_SAVE_DATA_UI_MODEL, viewModel.saveDataModel)
-//        bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, true)
         bundle.putBoolean(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
         bundle.putString(EXTRA_ADDRESS_STATE, addressUiState.name)
         if (!isPositiveFlow && addressUiState.isAdd()) {

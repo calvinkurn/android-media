@@ -191,8 +191,10 @@ open class PinpointViewModelTest {
         long: Double = 0.0,
         districtId: Long = 444,
         title: String = "title",
-        description: String = "description",
-        errorMessage: String = ""
+        errorMessage: String = "",
+        districtName: String = "",
+        cityName: String = "",
+        provinceName: String = ""
     ): GetDistrictResponse {
         return GetDistrictResponse(
             KeroPlacesGetDistrict(
@@ -202,7 +204,9 @@ open class PinpointViewModelTest {
                     longitude = long.toString(),
                     districtId = districtId,
                     title = title,
-                    formattedAddress = description
+                    districtName = districtName,
+                    cityName = cityName,
+                    provinceName = provinceName
                 ),
                 messageError = listOf(errorMessage)
             )
@@ -261,15 +265,13 @@ open class PinpointViewModelTest {
             )
         } returns createDistrictResponse(
             districtId = districtId,
-            title = title,
-            description = description
+            title = title
         )
 
         viewModel.fetchData()
 
         assert(viewModel.action.value == PinpointAction.InvalidDistrictPinpoint(source = PinpointAction.InvalidDistrictPinpoint.InvalidDistrictPinpointSource.ADD_ADDRESS_BUYER))
         assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).title == title)
-        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).description == description)
         assert(!(viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonPrimary.enable)
         assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonPrimary.show)
         assert(!(viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonPrimary.success)
@@ -302,11 +304,10 @@ open class PinpointViewModelTest {
                 )
             )
         } returns createDistrictResponse(
-            title = title,
-            description = description,
-            errorMessage = "Lokasi gagal ditemukan",
             lat = 11.11,
-            long = 22.22
+            long = 22.22,
+            title = title,
+            errorMessage = "Lokasi gagal ditemukan"
         )
 
         viewModel.fetchData()
@@ -330,6 +331,9 @@ open class PinpointViewModelTest {
             uiState = AddressUiState.AddAddress
         )
         val title = "tokopedia tower"
+        val districtName = "district name"
+        val cityName = "city name"
+        val provinceName = "province name"
         val description = "Setiabudi, Jakarta Selatan"
         val districtId = 3333L
         val lat = 11.22
@@ -343,17 +347,19 @@ open class PinpointViewModelTest {
                 )
             )
         } returns createDistrictResponse(
+            lat = lat,
+            long = long,
             districtId = districtId,
             title = title,
-            description = description,
-            lat = lat,
-            long = long
+            districtName = districtName,
+            cityName = cityName,
+            provinceName = provinceName
         )
 
         viewModel.fetchData()
 
         assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).title == title)
-        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).description == description)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).description == "$cityName, $districtName, $provinceName")
         assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonPrimary.enable)
         assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonPrimary.show)
         assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonPrimary.success)
@@ -924,7 +930,9 @@ open class PinpointViewModelTest {
             postalCode = result.postalCode,
             latitude = result.lat.toString(),
             longitude = result.long.toString(),
-            title = result.title
+            title = result.title,
+            formattedAddress = result.formattedAddress,
+            selectedDistrict = result.selectedDistrict
         )
         viewModel.uiModel = result
 
@@ -1152,5 +1160,43 @@ open class PinpointViewModelTest {
         viewModel.fetchData()
 
         assert(viewModel.action.value is PinpointAction.GetCurrentLocation)
+    }
+
+    // region isPositiveFlow
+
+    @Test
+    fun `WHEN user on ana revamp negative flow THEN isPositiveFlow returns false`() {
+        viewModel.onViewCreated(
+            uiState = AddressUiState.AddAddress,
+            isEditWarehouse = false,
+            source = "checkout",
+            isPositiveFlow = false
+        )
+
+        assert(!viewModel.isPositiveFlow)
+    }
+
+    @Test
+    fun `WHEN user on ana revamp positive flow THEN isPositiveFlow returns true`() {
+        viewModel.onViewCreated(
+            uiState = AddressUiState.AddAddress,
+            isEditWarehouse = false,
+            source = "checkout",
+            isPositiveFlow = true
+        )
+
+        assert(viewModel.isPositiveFlow)
+    }
+
+    @Test
+    fun `WHEN user on ana revamp flow is undecided THEN isPositiveFlow returns true for analytic`() {
+        viewModel.onViewCreated(
+            uiState = AddressUiState.AddAddress,
+            isEditWarehouse = false,
+            source = "checkout",
+            isPositiveFlow = null
+        )
+
+        assert(viewModel.isPositiveFlow)
     }
 }

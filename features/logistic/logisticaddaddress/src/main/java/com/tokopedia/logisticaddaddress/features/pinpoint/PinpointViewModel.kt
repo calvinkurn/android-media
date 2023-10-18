@@ -53,7 +53,7 @@ class PinpointViewModel @Inject constructor(
     }
 
     // only set this for pinpoint webview
-    private var saveAddressDataModel: SaveAddressDataModel? = null
+    private var addressDataFromWebview: SaveAddressDataModel? = null
 
     var uiModel = PinpointUiModel()
     var addressId = ""
@@ -62,17 +62,18 @@ class PinpointViewModel @Inject constructor(
     var uiState: AddressUiState? = null
     var source = ""
 
-    // this variable shows the real state of positive / negative flow in add address flow
-    // positive flow means address has pinpoint (search page -> pinpoint page -> accept pinpoint)
-    // negative flow means address has no pinpoint (search page -> isi alamat manual OR search page -> pinpoint page -> discard pinpoint)
-    // null value means the flow is not decided yet
-    // ex: search page -> pinpoint page (hasn't decided to choose/discard the pinpoint)
-    // this variable is set as nullable because the value can't be changed once it's been set
-    // ex: search page -> isi alamat manual -> pilih pinpoint -> accept pinpoint. this case is still negative flow
+    /*
+     this variable shows the real state of positive / negative flow in add address flow
+     - true (positive flow) means address has pinpoint (search page -> pinpoint page -> accept pinpoint)
+     - false (negative flow) means address has no pinpoint (search page -> isi alamat manual OR search page -> pinpoint page -> discard pinpoint)
+     - null value means the flow is not decided yet (search page -> pinpoint page (hasn't decided to choose/discard the pinpoint)
+     this variable is set as nullable because the value can't be changed once it's been set
+     ex: search page -> isi alamat manual -> pilih pinpoint -> accept pinpoint. this case is still negative flow
+     */
     private var _isPositiveFlow: Boolean? = null
 
     // this getter is used for analytic in the view fragment
-    // the default is true
+    // when flow is undecided, default is true
     val isPositiveFlow: Boolean
         get() = _isPositiveFlow ?: true
 
@@ -259,7 +260,7 @@ class PinpointViewModel @Inject constructor(
     this method is to save pinpoint result from webview pinpoint
      */
     fun setAddress(address: SaveAddressDataModel) {
-        this.saveAddressDataModel = address
+        this.addressDataFromWebview = address
     }
 
     /*
@@ -268,7 +269,7 @@ class PinpointViewModel @Inject constructor(
     this method returns the SaveAddressDataModel retrieved from Pinpoint Webview Page
      */
     fun getAddress(): SaveAddressDataModel {
-        return saveAddressDataModel ?: SaveAddressDataModel(
+        return addressDataFromWebview ?: SaveAddressDataModel(
             districtName = uiModel.districtName,
             cityName = uiModel.cityName,
             provinceName = uiModel.provinceName,
