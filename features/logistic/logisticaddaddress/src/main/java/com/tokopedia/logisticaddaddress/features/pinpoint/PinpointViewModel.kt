@@ -278,7 +278,9 @@ class PinpointViewModel @Inject constructor(
             postalCode = uiModel.postalCode,
             latitude = uiModel.lat.toString(),
             longitude = uiModel.long.toString(),
-            title = uiModel.title
+            title = uiModel.title,
+            formattedAddress = uiModel.formattedAddress,
+            selectedDistrict = uiModel.selectedDistrict
         )
     }
 

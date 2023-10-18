@@ -912,8 +912,7 @@ open class PinpointViewModelTest {
             postalCode = "12048",
             lat = 22.22,
             long = 44.44,
-            title = "title",
-            formattedAddress = "formatted address"
+            title = "title"
         )
         val addressModel = SaveAddressDataModel(
             districtName = result.districtName,
@@ -957,8 +956,7 @@ open class PinpointViewModelTest {
             postalCode = "12048",
             lat = 22.22,
             long = 44.44,
-            title = "title",
-            formattedAddress = "formatted address"
+            title = "title"
         )
         viewModel.uiModel = result
 
@@ -993,8 +991,7 @@ open class PinpointViewModelTest {
             postalCode = "12048",
             lat = 22.22,
             long = 44.44,
-            title = "title",
-            formattedAddress = "formatted address"
+            title = "title"
         )
         viewModel.uiModel = result
 

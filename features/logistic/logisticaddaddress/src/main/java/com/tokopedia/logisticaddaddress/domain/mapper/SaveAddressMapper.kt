@@ -48,7 +48,6 @@ object SaveAddressMapper {
         this.postalCode = autoFillModel.postalCode
         this.lat = autoFillModel.latitude.toDoubleOrZero()
         this.long = autoFillModel.longitude.toDoubleOrZero()
-        this.formattedAddress = autoFillModel.formattedAddress
         return this
     }
 
@@ -90,7 +89,6 @@ object SaveAddressMapper {
         this.postalCode = getDistrictDataUiModel.postalCode
         this.lat = getDistrictDataUiModel.latitude.toDoubleOrZero()
         this.long = getDistrictDataUiModel.longitude.toDoubleOrZero()
-        this.formattedAddress = getDistrictDataUiModel.formattedAddress
         return this
     }
 

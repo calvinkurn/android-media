@@ -15,12 +15,14 @@ data class PinpointUiModel(
     var lat: Double = 0.0,
     var long: Double = 0.0,
     var placeId: String = "",
-    var title: String = "",
-    var formattedAddress: String = ""
+    var title: String = ""
 ) : Parcelable {
 
     val selectedDistrict: String
         get() = formattedAddress
+
+    val formattedAddress: String
+        get() = "$cityName, $districtName, $provinceName"
 
     fun hasPinpoint(): Boolean {
         return lat.isValidPinpoint() && long.isValidPinpoint()
