@@ -73,13 +73,16 @@ class RoundedSpan(
             }
         }
 
-        rect.set(shiftLeft, top.toFloat() - SPACE_GAP_EXTRA, shiftRight, bottom.toFloat() + SPACE_GAP_EXTRA)
+        rect.set(shiftLeft, top.toFloat(), shiftRight, bottom.toFloat())
 
         if (lnum != 0 && end == text.length) {
             rect.bottom += SPACE_GAP_EXTRA
         }
 
         if (lnum == 0) {
+            rect.top -= SPACE_GAP_EXTRA
+            rect.bottom += SPACE_GAP_EXTRA
+
             c.drawRoundRect(rect, radius.toFloat(), radius.toFloat(), paint)
         } else {
             path.reset()
