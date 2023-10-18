@@ -28,7 +28,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.navigation.broadcaster.PlayBroadcasterArgument
 import com.tokopedia.content.common.types.BundleData
@@ -39,7 +38,6 @@ import com.tokopedia.explore.view.fragment.ContentExploreFragment
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 import com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
-import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.FragmentFeedPlusContainerBinding
 import com.tokopedia.feedplus.oldFeed.data.pojo.FeedTabs
 import com.tokopedia.feedplus.oldFeed.domain.model.feed.WhitelistDomain
@@ -88,7 +86,9 @@ import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 import javax.inject.Inject
-import com.tokopedia.content.common.R as contentCommonR
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.feedplus.R as feedplusR
 
 /**
  * @author by milhamj on 25/07/18.
@@ -212,9 +212,7 @@ class FeedPlusContainerFragment :
     private var badgeNumberCart: Int = 0
     private var isLightThemeStatusBar = false
     private var isSeller = false
-
-    private lateinit var coachMarkItem: CoachMarkItem
-
+    
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainParentStatusBarListener = context as MainParentStatusBarListener
@@ -293,9 +291,9 @@ class FeedPlusContainerFragment :
     }
 
     private fun setupView(view: View) {
-        fabFeed = view.findViewById(R.id.fab_feed)
-        feedFloatingButton = view.findViewById(R.id.feed_floating_button)
-        ivFeedUser = view.findViewById(R.id.iv_feed_user)
+        fabFeed = view.findViewById(feedplusR.id.fab_feed)
+        feedFloatingButton = view.findViewById(feedplusR.id.feed_floating_button)
+        ivFeedUser = view.findViewById(feedplusR.id.iv_feed_user)
     }
 
     private fun initNavRevampAbTest() {
@@ -504,10 +502,10 @@ class FeedPlusContainerFragment :
     }
 
     private fun initView() {
-        postProgressUpdateView = view?.findViewById(R.id.postUpdateView)
-        viewPager = view?.findViewById(R.id.view_pager)
-        tabLayout = view?.findViewById(R.id.tab_layout)
-        coachMarkOverlay = view?.findViewById(R.id.transparent_overlay_coachmark)
+        postProgressUpdateView = view?.findViewById(feedplusR.id.postUpdateView)
+        viewPager = view?.findViewById(feedplusR.id.view_pager)
+        tabLayout = view?.findViewById(feedplusR.id.tab_layout)
+        coachMarkOverlay = view?.findViewById(feedplusR.id.transparent_overlay_coachmark)
         postProgressUpdateView?.setCreatePostData(CreatePostViewModel())
         postProgressUpdateView?.setPostUpdateListener(this)
         hideAllFab()
@@ -571,15 +569,12 @@ class FeedPlusContainerFragment :
     }
 
     private fun setupObserver() {
-        viewModel.whitelistResp.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> handleWhitelistData(it.data)
-                    is Fail -> onErrorGetWhitelist(it.throwable)
-                }
+        viewModel.whitelistResp.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> handleWhitelistData(it.data)
+                is Fail -> onErrorGetWhitelist(it.throwable)
             }
-        )
+        }
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             callbackFlow {
@@ -606,10 +601,10 @@ class FeedPlusContainerFragment :
                         postProgressUpdateView?.hide()
                         Toaster.build(
                             view = requireView(),
-                            text = getString(R.string.feed_upload_content_success),
+                            text = getString(feedplusR.string.feed_upload_content_success),
                             duration = Toaster.LENGTH_LONG,
                             type = Toaster.TYPE_NORMAL,
-                            actionText = getString(R.string.feed_upload_shorts_see_video),
+                            actionText = getString(feedplusR.string.feed_upload_shorts_see_video),
                             clickListener = View.OnClickListener {
                                 playShortsUploadAnalytic.clickRedirectToChannelRoom(
                                     uploadData.authorId,
@@ -652,10 +647,10 @@ class FeedPlusContainerFragment :
 
             Toaster.build(
                 view = requireView(),
-                text = getString(R.string.feed_transcoding_livestream_to_vod_message),
+                text = getString(feedplusR.string.feed_transcoding_livestream_to_vod_message),
                 duration = Toaster.LENGTH_LONG,
                 type = Toaster.TYPE_NORMAL,
-                actionText = getString(R.string.feed_transcoding_livestream_to_vod_action),
+                actionText = getString(feedplusR.string.feed_transcoding_livestream_to_vod_action),
                 clickListener = {
                     RouteManager.route(requireContext(), appLinkSeeTranscodingChannel)
                 }
@@ -852,7 +847,7 @@ class FeedPlusContainerFragment :
     private fun createLiveFab(): FloatingButtonItem {
         return FloatingButtonItem(
             iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
-            title = getString(R.string.feed_fab_create_live),
+            title = getString(feedplusR.string.feed_fab_create_live),
             listener = {
                 fabFeed.menuOpen = false
                 entryPointAnalytic.clickCreateLiveEntryPoint()
@@ -865,7 +860,7 @@ class FeedPlusContainerFragment :
     private fun createPostFab(): FloatingButtonItem {
         return FloatingButtonItem(
             iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
-            title = getString(R.string.feed_fab_create_post),
+            title = getString(feedplusR.string.feed_fab_create_post),
             listener = {
                 fabFeed.menuOpen = false
                 entryPointAnalytic.clickCreatePostEntryPoint()
@@ -881,7 +876,7 @@ class FeedPlusContainerFragment :
                 )
                 intent.putExtra(
                     BundleData.TITLE,
-                    getString(contentCommonR.string.feed_post_sebagai)
+                    getString(contentcommonR.string.feed_post_sebagai)
                 )
                 intent.putExtra(
                     BundleData.APPLINK_FOR_GALLERY_PROCEED,
@@ -896,7 +891,7 @@ class FeedPlusContainerFragment :
     private fun createShortsFab(): FloatingButtonItem {
         return FloatingButtonItem(
             iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.SHORT_VIDEO),
-            title = getString(R.string.feed_fab_create_shorts_video),
+            title = getString(feedplusR.string.feed_fab_create_shorts_video),
             listener = {
                 fabFeed.menuOpen = false
                 playShortsInFeedAnalytic.clickCreateShortsEntryPoint()
@@ -925,7 +920,7 @@ class FeedPlusContainerFragment :
                         ivFeedUser.setImageDrawable(
                             MethodChecker.getDrawable(
                                 requireContext(),
-                                R.drawable.ic_user_profile_default
+                                feedplusR.drawable.ic_user_profile_default
                             )
                         )
                     }
@@ -953,10 +948,8 @@ class FeedPlusContainerFragment :
                 text = ErrorHandler.getErrorMessage(context, throwable),
                 duration = Toaster.LENGTH_LONG,
                 type = Toaster.TYPE_ERROR,
-                actionText = getString(com.tokopedia.abstraction.R.string.title_try_again),
-                clickListener = View.OnClickListener {
-                    viewModel.getWhitelist()
-                }
+                actionText = getString(abstractionR.string.title_try_again),
+                clickListener = { viewModel.getWhitelist() }
             ).show()
         }
 
@@ -1050,7 +1043,7 @@ class FeedPlusContainerFragment :
     override fun swipeOnPostUpdate() {
         Toaster.build(
             requireView(),
-            getString(R.string.feed_post_successful_toaster),
+            getString(feedplusR.string.feed_post_successful_toaster),
             Toaster.LENGTH_LONG,
             Toaster.TYPE_NORMAL
         ).show()
