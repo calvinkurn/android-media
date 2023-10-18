@@ -22,12 +22,12 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTracker
-import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter2
+import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseItemDecoration
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChipsViewHolder
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiAction
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel2
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
 import com.tokopedia.feedplus.databinding.FragmentFeedBrowseBinding
@@ -151,7 +151,7 @@ class FeedBrowseFragment @Inject constructor(
     private val bannerListener = object : FeedBrowseBannerViewHolder.Listener {
         override fun onBannerClicked(
             viewHolder: FeedBrowseBannerViewHolder,
-            item: FeedBrowseUiModel.Banner
+            item: FeedBrowseItemListModel.Banner
         ) {
 //            showToast(item.title)
             startActivity(Intent(requireContext(), FeedCategoryInspirationActivity::class.java))
@@ -176,7 +176,7 @@ class FeedBrowseFragment @Inject constructor(
         }
     }
 
-    private val adapter by lazy { FeedBrowseAdapter2(chipsListener, bannerListener) }
+    private val adapter by lazy { FeedBrowseAdapter(chipsListener, bannerListener) }
 
     private val viewModel: FeedBrowseViewModel by viewModels { viewModelFactory }
 

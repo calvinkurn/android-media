@@ -10,9 +10,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.adapter.CenterScrollLayoutManager
-import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseCardAdapter
-import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChipAdapter
+import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChannelAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChannelItemDecoration
+import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChipAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowsePayloads
 import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
 import com.tokopedia.feedplus.browse.presentation.model.ChipUiState
@@ -99,7 +99,7 @@ internal class FeedBrowseChannelViewHolder private constructor(
             listener.onCardClicked(item, config.data, widgetData, position, bindingAdapterPosition)
         }
     }
-    private val cardAdapter by lazy { FeedBrowseCardAdapter(cardListener) }
+    private val cardAdapter by lazy { FeedBrowseChannelAdapter(cardListener) }
     private val cardItemDecoration = FeedBrowseChannelItemDecoration(
         context = binding.root.context,
         spacingHorizontal = feedplusR.dimen.feed_space_8,
@@ -315,11 +315,11 @@ internal class FeedBrowseChannelViewHolder private constructor(
                 ItemFeedBrowseChannelBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
-                    false,
+                    false
                 ),
                 listener,
                 lifecycleScope,
-                coroutineDispatchers,
+                coroutineDispatchers
             )
         }
     }

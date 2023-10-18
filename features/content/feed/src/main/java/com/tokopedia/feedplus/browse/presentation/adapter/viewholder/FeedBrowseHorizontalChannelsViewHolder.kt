@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseCardAdapter
+import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChannelAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseHorizontalChannelsItemDecoration
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowsePayloads
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
@@ -19,7 +19,7 @@ internal class FeedBrowseHorizontalChannelsViewHolder private constructor(
     private val binding: ItemFeedBrowseHorizontalChannelsBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    private val adapter = FeedBrowseCardAdapter(
+    private val adapter = FeedBrowseChannelAdapter(
         object : FeedBrowseChannelViewHolder2.Channel.Listener {
             override fun onCardImpressed(item: PlayWidgetChannelUiModel, position: Int) {
             }

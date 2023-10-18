@@ -13,7 +13,7 @@ import com.tokopedia.unifycomponents.CardUnify2
  */
 internal class FeedBrowseBannerViewHolder private constructor(
     private val binding: ItemFeedBrowseBannerItemBinding,
-    private val listener: Listener,
+    private val listener: Listener
 ) : BaseViewHolder(binding.root) {
 
     init {
@@ -23,15 +23,15 @@ internal class FeedBrowseBannerViewHolder private constructor(
     fun bind(item: FeedBrowseUiModel.Banner) {
         binding.imgBanner.setImageUrl(item.imageUrl)
         binding.tvInspiration.text = item.title
-
-        binding.root.setOnClickListener {
-            listener.onBannerClicked(this, item)
-        }
     }
 
     fun bind(item: FeedBrowseItemListModel.Banner) {
         binding.imgBanner.setImageUrl(item.banner.imageUrl)
         binding.tvInspiration.text = item.banner.title
+
+        binding.root.setOnClickListener {
+            listener.onBannerClicked(this, item)
+        }
     }
 
     companion object {
@@ -42,7 +42,7 @@ internal class FeedBrowseBannerViewHolder private constructor(
                     parent,
                     false
                 ),
-                listener,
+                listener
             )
         }
     }
@@ -50,7 +50,7 @@ internal class FeedBrowseBannerViewHolder private constructor(
     interface Listener {
         fun onBannerClicked(
             viewHolder: FeedBrowseBannerViewHolder,
-            item: FeedBrowseUiModel.Banner,
+            item: FeedBrowseItemListModel.Banner
         )
     }
 }

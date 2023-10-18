@@ -13,7 +13,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 /**
  * Created by meyta.taliti on 11/08/23.
  */
-internal class FeedBrowseCardAdapter(
+internal class FeedBrowseChannelAdapter(
     private val listener: FeedBrowseChannelViewHolder2.Channel.Listener
 ) : ListAdapter<Any, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<Any>() {
@@ -70,10 +70,8 @@ internal class FeedBrowseCardAdapter(
         payloads: MutableList<Any>
     ) {
         if (payloads.isEmpty()) {
-            Log.d("ON_BIND", "PAYLOAD EMPTY")
             return super.onBindViewHolder(holder, position, payloads)
         }
-        Log.d("ON_BIND", "PAYLOAD NOT EMPTY")
         val payload = payloads.filterIsInstance<FeedBrowsePayloads>().combine()
         val item = getItem(position)
         when {

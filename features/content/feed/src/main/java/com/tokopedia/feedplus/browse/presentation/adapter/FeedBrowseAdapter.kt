@@ -14,13 +14,12 @@ import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseT
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel2
 import com.tokopedia.feedplus.browse.presentation.model.ItemListState
-import com.tokopedia.feedplus.browse.presentation.model.hasContent
 import com.tokopedia.feedplus.browse.presentation.model.hasContentAndNotEmpty
 
 /**
  * Created by kenny.hadisaputra on 25/09/23
  */
-internal class FeedBrowseAdapter2(
+internal class FeedBrowseAdapter(
     private val chipsListener: FeedBrowseChipsViewHolder.Listener,
     private val bannerListener: FeedBrowseBannerViewHolder.Listener,
 ) : ListAdapter<FeedBrowseItemListModel, RecyclerView.ViewHolder>(
