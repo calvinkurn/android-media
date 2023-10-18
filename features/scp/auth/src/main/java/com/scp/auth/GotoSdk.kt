@@ -157,7 +157,7 @@ object GotoSdk {
                 appInfo = AppInfo(
                     appType = TOKOPEDIA_APP_TYPE,
                     isDebug = TokopediaUrl.getInstance().TYPE == Env.STAGING,
-                    language = LOCALE_ID,
+                    language = { LOCALE_ID },
                     isDarkThemeEnabled = {
                         application.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
                     }
@@ -187,7 +187,6 @@ object GotoSdk {
         )
         return GOTOPINSDKINSTANCE!!
     }
-
 
     private fun getDeviceName(): String {
         val manufacturer = Build.MANUFACTURER
