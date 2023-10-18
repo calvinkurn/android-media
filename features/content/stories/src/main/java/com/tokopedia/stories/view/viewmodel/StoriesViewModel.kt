@@ -30,6 +30,7 @@ import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetStatusDefault
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
 import com.tokopedia.stories.view.viewmodel.state.ProductBottomSheetUiState
+import com.tokopedia.stories.view.viewmodel.state.TimerStatusInfo
 import com.tokopedia.stories.view.viewmodel.state.StoriesUiState
 import com.tokopedia.stories.view.viewmodel.state.isAnyShown
 import com.tokopedia.user.session.UserSessionInterface
@@ -139,14 +140,26 @@ class StoriesViewModel @AssistedInject constructor(
     val storiesState: Flow<StoriesUiState>
         get() = combine(
             _storiesMainDataState,
-            _bottomSheetStatusState,
-            _productsState
-        ) { storiesMainData, sheetStatus, product ->
+            _productsState,
+            timerState,
+        ) { storiesMainData, product, timerState ->
             StoriesUiState(
                 storiesMainData = storiesMainData,
-                bottomSheetStatus = sheetStatus,
-                productSheet = product
+                productSheet = product,
+                timerStatus = timerState,
             )
+        }
+
+    private val timerState: Flow<TimerStatusInfo>
+        get() = combine(
+            _bottomSheetStatusState,
+            _storiesMainDataState,
+            _groupPos,
+            _detailPos
+        ) { bottomSheet, mainData, groupPosition, detailPosition ->
+            val listOfDetail = mainData.groupItems.getOrNull(groupPosition)?.detail?.detailItems ?: emptyList()
+            val detail = listOfDetail.getOrNull(detailPosition) ?: StoriesDetailItem()
+            TimerStatusInfo(event = if (bottomSheet.isAnyShown) PAUSE else detail.event, story = TimerStatusInfo.Companion.StoryTimer(id = detail.id, itemCount = listOfDetail.size, resetValue = detail.resetValue, duration = detail.content.duration, position = detailPosition))
         }
 
     val userId: String

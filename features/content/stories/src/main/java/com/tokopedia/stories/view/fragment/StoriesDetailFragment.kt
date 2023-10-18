@@ -24,7 +24,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -74,7 +73,7 @@ import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PreviousDetai
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ResumeStories
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
-import com.tokopedia.stories.view.viewmodel.state.isAnyShown
+import com.tokopedia.stories.view.viewmodel.state.TimerStatusInfo
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.Job
@@ -205,8 +204,8 @@ class StoriesDetailFragment @Inject constructor(
                     val curr = currState.storiesMainData.groupItems
                         .getOrNull(currState.storiesMainData.selectedGroupPosition)?.detail
                     renderStoriesDetail(prev, curr)
+                    renderTimer(prevState.timerStatus, currState.timerStatus)
                 }
-                observeBottomSheetStatus(prevState?.bottomSheetStatus, currState.bottomSheetStatus)
             }
         }
     }
@@ -218,7 +217,6 @@ class StoriesDetailFragment @Inject constructor(
                 when (event) {
                     is StoriesUiEvent.EmptyDetailPage -> {
                         setNoContent(true)
-                        showPageLoading(false)
                     }
 
                     is StoriesUiEvent.ErrorDetailPage -> {
@@ -229,7 +227,6 @@ class StoriesDetailFragment @Inject constructor(
                             setFailed(true)
                             binding.layoutStoriesFailed.btnStoriesFailedLoad.setOnClickListener { run { event.onClick() } }
                         }
-                        showPageLoading(false)
                     }
 
                     StoriesUiEvent.OpenKebab -> {
@@ -333,7 +330,6 @@ class StoriesDetailFragment @Inject constructor(
         val prevItem = prevState?.detailItems?.getOrNull(prevState.selectedDetailPosition)
         val currentItem = state.detailItems.getOrNull(state.selectedDetailPosition) ?: return
 
-        renderTimer(state)
         handleVideoPlayState(currentItem)
 
         if (currentItem.isContentLoaded) return
@@ -387,40 +383,24 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun observeBottomSheetStatus(
-        prevState: Map<BottomSheetType, Boolean>?,
-        state: Map<BottomSheetType, Boolean>
-    ) {
-        if (prevState == state) return
-        if (state.isAnyShown.orFalse()) pauseStories() else resumeStories()
-    }
+    private fun renderTimer(prevTimer: TimerStatusInfo?, timerState: TimerStatusInfo) {
+        if (prevTimer == timerState) return
 
-    private fun renderTimer(state: StoriesDetail) {
-        val data = state.detailItems[state.selectedDetailPosition]
-
-        showStoriesActionView(data.event == RESUME)
+        showStoriesActionView(timerState.event == RESUME)
 
         with(binding.cvStoriesDetailTimer) {
             apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     StoriesDetailTimer(
-                        currentPosition = state.selectedDetailPosition,
-                        itemCount = state.detailItems.size,
-                        data = data,
-                    ) {
-                        if (isEligiblePage) {
-                            viewModelAction(NextDetail)
-                            _videoPlayer?.pause()
-                        }
-                    }
+                        timerInfo = timerState,
+                    ) { if (isEligiblePage) viewModelAction(NextDetail) }
                 }
             }
         }
     }
 
-    private fun buildEventLabel(): String =
-        "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
+    private fun buildEventLabel(): String = "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
 
     private fun renderAuthor(state: StoriesDetailItem) {
         with(binding.vStoriesPartner) {
@@ -434,6 +414,7 @@ class StoriesDetailFragment @Inject constructor(
                 analytic?.sendClickShopNameEvent(buildEventLabel())
                 viewModelAction(StoriesUiAction.Navigate(state.author.appLink))
             }
+            root.show()
         }
     }
 
@@ -560,6 +541,7 @@ class StoriesDetailFragment @Inject constructor(
         showSwipeProductJob?.cancel()
         binding.storiesComponent.showWithCondition(isShow)
         binding.clSideIcons.showWithCondition(isShow)
+        binding.vStoriesPartner.root.showWithCondition(isShow)
     }
 
     private fun showStoriesActionView(isShow: Boolean) {
@@ -663,6 +645,9 @@ class StoriesDetailFragment @Inject constructor(
     private fun setNoContent(isShow: Boolean) = with(binding.layoutNoContent) {
         binding.layoutStoriesContent.root.showWithCondition(!isShow)
         root.showWithCondition(isShow)
+
+        if(!isShow) return@with
+        renderTimer(null, TimerStatusInfo.Empty) //will be improved in rendered failed
     }
 
     override fun onDestroyView() {
@@ -683,19 +668,8 @@ class StoriesDetailFragment @Inject constructor(
         position: Int,
         view: StoriesProductBottomSheet
     ) {
-        val eventLabel =
-            "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
-        if (action == StoriesProductAction.Atc) analytic?.sendClickAtcButtonEvent(
-            eventLabel,
-            listOf(product),
-            position,
-            viewModel.mDetail.author.name
-        ) else analytic?.sendClickBuyButtonEvent(
-            eventLabel,
-            listOf(product),
-            position,
-            viewModel.mDetail.author.name
-        )
+        val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
+        if (action == StoriesProductAction.Atc) analytic?.sendClickAtcButtonEvent(eventLabel, listOf(product), position, viewModel.mDetail.author.name) else analytic?.sendClickBuyButtonEvent(eventLabel, listOf(product), position, viewModel.mDetail.author.name)
     }
 
     override fun onClickedProduct(
@@ -703,22 +677,15 @@ class StoriesDetailFragment @Inject constructor(
         position: Int,
         view: StoriesProductBottomSheet
     ) {
-        val eventLabel =
-            "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
-        analytic?.sendClickProductCardEvent(
-            eventLabel,
-            "/stories-room - ${viewModel.storyId} - product card",
-            listOf(product),
-            position
-        )
+        val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
+        analytic?.sendClickProductCardEvent(eventLabel, "/stories-room - ${viewModel.storyId} - product card", listOf(product), position)
     }
 
     override fun onImpressedProduct(
         product: Map<ContentTaggedProductUiModel, Int>,
         view: StoriesProductBottomSheet
     ) {
-        val eventLabel =
-            "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.keys.firstOrNull()?.id.orEmpty()}"
+        val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.keys.firstOrNull()?.id.orEmpty()}"
         analytic?.sendViewProductCardEvent(eventLabel, product)
     }
 

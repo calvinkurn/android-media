@@ -24,29 +24,27 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
+import com.tokopedia.stories.view.viewmodel.state.TimerStatusInfo
 import kotlinx.coroutines.delay
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @Composable
 fun StoriesDetailTimer(
-    currentPosition: Int,
-    itemCount: Int,
-    data: StoriesDetailItem,
+    timerInfo: TimerStatusInfo,
     timerFinished: () -> Unit,
 ) {
-    val anim = remember(data.id, data.resetValue) { Animatable(INITIAL_ANIMATION) }
+    val anim = remember(timerInfo.story.id, timerInfo.story.resetValue) { Animatable(INITIAL_ANIMATION) }
 
-    LaunchedEffect(data) {
-        when (data.event) {
-            StoriesDetailItemUiEvent.PAUSE, StoriesDetailItemUiEvent.BUFFERING -> anim.stop()
+    LaunchedEffect(timerInfo) {
+        when (timerInfo.event) {
+            StoriesDetailItemUiEvent.PAUSE -> anim.stop()
             StoriesDetailItemUiEvent.RESUME -> {
                 delay(100)
                 anim.animateTo(
                     targetValue = TARGET_ANIMATION,
                     animationSpec = tween(
-                        durationMillis = (data.content.duration * (TARGET_ANIMATION - anim.value)).toInt(),
+                        durationMillis = (timerInfo.story.duration * (TARGET_ANIMATION - anim.value)).toInt(),
                         easing = LinearEasing,
                     )
                 )
@@ -57,8 +55,8 @@ fun StoriesDetailTimer(
     }
 
     StoriesDetailTimerContent(
-        count = itemCount,
-        currentPosition = currentPosition,
+        count = timerInfo.story.itemCount,
+        currentPosition = timerInfo.story.position,
         progress = anim.value,
     )
 }
@@ -107,9 +105,7 @@ private fun StoriesDetailTimerContent(
 @Composable
 internal fun StoriesDetailTimerPreview() {
     StoriesDetailTimer(
-        currentPosition = 0,
-        itemCount = 3,
-        data = StoriesDetailItem()
+        timerInfo = TimerStatusInfo.Empty,
     ) { }
 }
 
