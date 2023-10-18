@@ -24,6 +24,7 @@ object ConfigurationMapper {
         }
     }
 
+    @Suppress("SwallowedException")
     fun parseWhitelistPerf(json: String): PerfWhitelistConfiguration {
         return try {
             Gson().fromJson(json, PerfWhitelistConfiguration::class.java)
