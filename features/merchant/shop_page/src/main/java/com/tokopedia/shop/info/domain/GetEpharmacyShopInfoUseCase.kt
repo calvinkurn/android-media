@@ -6,13 +6,13 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.shop.info.data.GetEpharmacyShopInfoResponse
+import com.tokopedia.shop.info.data.GetEpharmacyShopInfo
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetEpharmacyShopInfoUseCase @Inject constructor(
     private val gqlUseCase: MultiRequestGraphqlUseCase
-) : UseCase<GetEpharmacyShopInfoResponse>() {
+) : UseCase<GetEpharmacyShopInfo>() {
 
     companion object {
         private const val SHOP_ID = "shop_id"
@@ -49,17 +49,17 @@ class GetEpharmacyShopInfoUseCase @Inject constructor(
 
     var params = mapOf<String, Any>()
 
-    override suspend fun executeOnBackground(): GetEpharmacyShopInfoResponse {
+    override suspend fun executeOnBackground(): GetEpharmacyShopInfo {
         gqlUseCase.clearRequest()
         gqlUseCase.setCacheStrategy(
             GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build()
         )
-        val gqlRequest = GraphqlRequest(QUERY, GetEpharmacyShopInfoResponse::class.java, params)
+        val gqlRequest = GraphqlRequest(QUERY, GetEpharmacyShopInfo::class.java, params)
         gqlUseCase.addRequest(gqlRequest)
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error == null || error.isEmpty()) {
-            return gqlResponse.getData(GetEpharmacyShopInfoResponse::class.java)
+            return gqlResponse.getData(GetEpharmacyShopInfo::class.java)
         } else {
             throw MessageErrorException(error.joinToString(", ") { it.message })
         }

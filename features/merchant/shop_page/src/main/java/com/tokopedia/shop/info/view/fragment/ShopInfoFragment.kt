@@ -43,7 +43,7 @@ import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.databinding.FragmentShopInfoBinding
 import com.tokopedia.shop.extension.transformToVisitable
-import com.tokopedia.shop.info.data.GetEpharmacyShopInfoResponse
+import com.tokopedia.shop.info.data.GetEpharmacyShopInfo
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity.Companion.EXTRA_SHOP_INFO
@@ -475,13 +475,13 @@ class ShopInfoFragment :
         }
     }
 
-    private fun renderEpharmDetailsData(epharmData: GetEpharmacyShopInfoResponse.Data) {
+    private fun renderEpharmDetailsData(epharmData: GetEpharmacyShopInfo.Data) {
         if (!isErrorGetEpharmData(epharmData.getEpharmacyShopInfo.header)) {
         } else {
         }
     }
 
-    private fun isErrorGetEpharmData(errData: GetEpharmacyShopInfoResponse.GetEpharmacyShopInfo.Header): Boolean {
+    private fun isErrorGetEpharmData(errData: GetEpharmacyShopInfo.Data.GetEpharmacyShopInfoData.Header): Boolean {
         return errData.errorCode != 0 && errData.errorMessage.isNotEmpty()
     }
 

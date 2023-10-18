@@ -16,7 +16,7 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Compani
 import com.tokopedia.shop.common.graphql.data.shopinfo.ChatExistingChat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
-import com.tokopedia.shop.info.data.GetEpharmacyShopInfoResponse
+import com.tokopedia.shop.info.data.GetEpharmacyShopInfo
 import com.tokopedia.shop.info.domain.GetEpharmacyShopInfoUseCase
 import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -46,8 +46,8 @@ class ShopInfoViewModel @Inject constructor(
     val shopBadgeReputation = MutableLiveData<Result<ShopBadge>>()
     val messageIdOnChatExist = MutableLiveData<Result<String>>()
 
-    private val _epharmDetailData = MutableLiveData<Result<GetEpharmacyShopInfoResponse>>()
-    val epharmDetailData: LiveData<Result<GetEpharmacyShopInfoResponse>>
+    private val _epharmDetailData = MutableLiveData<Result<GetEpharmacyShopInfo>>()
+    val epharmDetailData: LiveData<Result<GetEpharmacyShopInfo>>
         get() = _epharmDetailData
 
     fun getShopInfo(shopId: String) {
