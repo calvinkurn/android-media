@@ -8,6 +8,8 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.percentFormatted
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
@@ -43,6 +45,9 @@ class GetProductArUseCase @Inject constructor(
                       type
                       providerData
                       price
+                      priceFmt
+                      slashPriceFmt
+                      discPercentage
                       minOrder
                       campaignInfo {
                         isActive
@@ -116,7 +121,13 @@ class GetProductArUseCase @Inject constructor(
                 { ar ->
                     ar.copy(
                         providerDataCompiled = convertToObject(ar.providerData),
-                        priceFmt = ar.priceFmt.ifNullOrBlank { ar.price.getCurrencyFormatted() }
+                        priceFmt = ar.priceFmt.ifNullOrBlank { ar.price.getCurrencyFormatted() },
+                        slashPriceFmt = ar.slashPriceFmt.ifNullOrBlank {
+                            ar.campaignInfo.originalPrice?.getCurrencyFormatted().orEmpty()
+                        },
+                        discPercentage = ar.discPercentage.ifNullOrBlank {
+                            ar.campaignInfo.discountedPercentage.orZero().percentFormatted()
+                        }
                     )
                 }
             ),

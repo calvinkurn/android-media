@@ -22,6 +22,12 @@ data class ProductAr(
     @SerializedName("priceFmt")
     @Expose
     val priceFmt: String = "",
+    @SerializedName("slashPriceFmt")
+    @Expose
+    val slashPriceFmt: String = "",
+    @SerializedName("discPercentage")
+    @Expose
+    val discPercentage: String = "",
     @SuppressLint("Invalid Data Type")
     @SerializedName("productID")
     @Expose
