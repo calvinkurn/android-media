@@ -49,7 +49,6 @@ class NewRelicInteractionActCall(
         setNewRelicAttribute(activity)
     }
 
-
     private fun setNewRelicAttribute(activity: Activity) {
         NewRelic.setAttribute(ATTRIBUTE_ACTIVITY, activity.javaClass.simpleName)
     }
