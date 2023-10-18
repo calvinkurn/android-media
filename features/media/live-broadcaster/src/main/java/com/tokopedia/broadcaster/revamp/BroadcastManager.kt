@@ -654,7 +654,7 @@ class BroadcastManager @Inject constructor(
     }
 
     override fun flip() {
-        if (isFlipGracePeriod) return
+        if (mWithByteplus == true && isFlipGracePeriod) return
 
         if (mStreamerWrapper?.displayStreamer == null || !isVideoCaptureStarted()) {
             // preventing accidental touch issues
@@ -662,7 +662,6 @@ class BroadcastManager @Inject constructor(
         }
         mAdaptiveBitrate?.pause()
         mStreamerWrapper?.flip()
-        isFlipGracePeriod = true
 
         // Re-select camera
         val cameraManager = mCameraManager ?: return
@@ -674,7 +673,7 @@ class BroadcastManager @Inject constructor(
 
         if (mBroadcastOn) mAdaptiveBitrate?.resume()
 
-        if (mWithByteplus == true) {
+        executeWhenByteplusActive {
             startDelayFlipCamera()
         }
     }
@@ -865,6 +864,8 @@ class BroadcastManager @Inject constructor(
          * the flip() is not flipping immediately & there's no callbacks that indicate
          * when larix is rendering front / back camera.
          */
+        isFlipGracePeriod = true
+
         Handler().postDelayed({
             isFlipGracePeriod = false
         }, FLIP_CAMERA_DELAY)
@@ -942,6 +943,10 @@ class BroadcastManager @Inject constructor(
 
     private fun broadcastStatisticUpdate() {
         mListeners.forEach { it.onBroadcastStatisticUpdate(mMetric) }
+    }
+
+    private fun executeWhenByteplusActive(onExecute: () -> Unit) {
+        if (mWithByteplus == true) onExecute()
     }
 
     companion object {
