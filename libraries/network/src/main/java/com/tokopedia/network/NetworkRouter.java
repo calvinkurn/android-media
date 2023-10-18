@@ -41,4 +41,6 @@ public interface NetworkRouter {
                                       String response, String request);
 
     ScpTokenModel onNewRefreshToken();
+
+    boolean isGotoAuthSdkEnabled();
 }

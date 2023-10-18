@@ -8,32 +8,28 @@ import android.security.keystore.KeyProperties
 import android.util.Base64
 import androidx.annotation.RequiresApi
 import androidx.work.*
+import com.scp.auth.di.DaggerScpAuthComponent
+import com.scp.auth.registerpushnotif.data.RegisterPushNotifData
+import com.scp.auth.registerpushnotif.data.RegisterPushNotificationParamsModel
+import com.scp.auth.registerpushnotif.data.SignResult
+import com.scp.auth.registerpushnotif.domain.ScpRegisterPushNotifUseCase
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.logger.utils.globalScopeLaunch
-import com.tokopedia.loginregister.login.data.SignResult
-import com.tokopedia.loginregister.login.domain.pojo.RegisterPushNotifData
-import com.tokopedia.loginregister.registerpushnotif.di.DaggerRegisterPushNotificationComponent
-import com.tokopedia.loginregister.registerpushnotif.di.RegisterPushNotificationModule
-import com.tokopedia.loginregister.registerpushnotif.domain.RegisterPushNotificationParamsModel
-import com.tokopedia.loginregister.registerpushnotif.domain.RegisterPushNotificationUseCase
-import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.user.session.UserSessionInterface
 import java.security.*
 import javax.inject.Inject
-import javax.inject.Named
 
-class RegisterPushNotificationWorker(
+class ScpRegisterPushNotificationWorker(
     val context: Context,
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
 
-    @Named(SessionModule.SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var registerPushNotificationUseCase: RegisterPushNotificationUseCase
+    lateinit var registerPushNotificationUseCase: ScpRegisterPushNotifUseCase
 
     private var keyPair: KeyPair? = null
 
@@ -42,8 +38,7 @@ class RegisterPushNotificationWorker(
     }
 
     init {
-        DaggerRegisterPushNotificationComponent.builder()
-            .registerPushNotificationModule(RegisterPushNotificationModule(context))
+        DaggerScpAuthComponent.builder()
             .build()
             .inject(this)
     }
@@ -203,7 +198,7 @@ class RegisterPushNotificationWorker(
             WorkManager.getInstance(context).enqueueUniqueWork(
                 WORKER_NAME,
                 ExistingWorkPolicy.KEEP,
-                OneTimeWorkRequestBuilder<RegisterPushNotificationWorker>()
+                OneTimeWorkRequestBuilder<ScpRegisterPushNotificationWorker>()
                     .setConstraints(
                         Constraints.Builder()
                             .setRequiredNetworkType(NetworkType.CONNECTED)

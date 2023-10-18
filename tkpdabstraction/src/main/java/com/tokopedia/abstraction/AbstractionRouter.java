@@ -42,7 +42,5 @@ public interface AbstractionRouter {
 
     void disconnectTokoChat();
 
-    boolean isGotoAuthSdkEnabled();
-
     void onRefreshCM(String token);
 }

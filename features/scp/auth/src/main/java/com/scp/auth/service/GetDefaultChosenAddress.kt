@@ -2,13 +2,13 @@ package com.scp.auth.service
 
 import android.content.Context
 import android.content.Intent
+import com.scp.auth.di.DaggerScpAuthComponent
 import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.GetDefaultChosenAddressParam
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetDefaultChosenAddressUseCase
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -32,7 +32,9 @@ class GetDefaultChosenAddressService : JobIntentServiceX(), CoroutineScope {
 
     private fun initInjector() {
         application?.let {
-            ActivityComponentFactory.instance.createLoginComponent(it).inject(this)
+            DaggerScpAuthComponent.builder()
+                .build()
+                .inject(this)
         }
     }
 
