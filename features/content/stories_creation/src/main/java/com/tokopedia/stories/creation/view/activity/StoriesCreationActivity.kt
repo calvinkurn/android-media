@@ -33,6 +33,7 @@ import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationErrorBotto
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationInfoBottomSheet
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
+import com.tokopedia.stories.creation.view.model.exception.AccountNotEligibleException
 import javax.inject.Inject
 
 /**
@@ -128,9 +129,17 @@ class StoriesCreationActivity : BaseActivity() {
             when (fragment) {
                 is StoriesCreationErrorBottomSheet -> {
                     fragment.listener = object : StoriesCreationErrorBottomSheet.Listener {
-                        override fun onRetry() {
+                        override fun onRetry(throwable: Throwable) {
                             fragment.dismiss()
-                            viewModel.submitAction(StoriesCreationAction.Prepare)
+
+                            when (throwable) {
+                                is AccountNotEligibleException -> {
+                                    finish()
+                                }
+                                else -> {
+                                    viewModel.submitAction(StoriesCreationAction.Prepare)
+                                }
+                            }
                         }
 
                         override fun onClose() {
