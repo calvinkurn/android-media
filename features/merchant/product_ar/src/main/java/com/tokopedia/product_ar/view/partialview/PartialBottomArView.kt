@@ -6,8 +6,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.percentFormatted
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.product.detail.common.generateTheme
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.model.ModifaceUiModel
@@ -94,16 +95,14 @@ class PartialBottomArView private constructor(val view: View, val listener: Prod
         if (data.campaignInfo.isActive == true) {
             txtMainPrice.text = data.campaignInfo.discountedPrice?.getCurrencyFormatted()
             txtSlashPrice.text = data.campaignInfo.originalPrice?.getCurrencyFormatted()
-            lblDiscounted.text = context.getString(
-                    com.tokopedia.product.detail.common.R.string.template_campaign_off_string,
-                    data.campaignInfo.discountedPercentage.toIntSafely().toString())
+            lblDiscounted.text = data.campaignInfo.discountedPercentage.orZero().percentFormatted()
 
             txtSlashPrice.paintFlags = txtSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             txtMainPrice.show()
             txtSlashPrice.show()
             lblDiscounted.show()
         } else {
-            txtMainPrice.text = data.price.getCurrencyFormatted()
+            txtMainPrice.text = data.priceFmt
             txtMainPrice.show()
             txtSlashPrice.hide()
             lblDiscounted.hide()

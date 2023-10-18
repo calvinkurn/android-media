@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.common.data.model.variant
 
+import android.annotation.SuppressLint
 import androidx.collection.ArrayMap
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -38,6 +39,7 @@ data class VariantChild(
     @Expose
     val stock: VariantStock? = null,
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("optionID")
     @Expose
     val optionIds: List<String> = listOf(),
