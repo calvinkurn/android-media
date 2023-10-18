@@ -404,35 +404,38 @@ class CatalogDetailUiMapper @Inject constructor(
 
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToComparison(): BaseCatalogUiModel {
         var isFirstData = true
-        return ComparisonUiModel(content = data?.comparison.orEmpty().take(COMPARISON_COUNT).map {
-            val comparisonSpecs = mutableListOf<ComparisonUiModel.ComparisonSpec>()
-            it.fullSpec.forEach { spec ->
-                comparisonSpecs.add(ComparisonUiModel.ComparisonSpec(
-                    isSpecCategoryTitle = true,
-                    specCategoryTitle = if (isFirstData) spec.name else ""
-                ))
-                spec.row.forEach { rowItem ->
-                    val insertedItem = ComparisonUiModel.ComparisonSpec(
-                        isSpecCategoryTitle = false,
-                        specTitle = if (isFirstData) rowItem.key else "",
-                        specValue = rowItem.value,
-                    )
-                    comparisonSpecs.add(insertedItem)
+        return ComparisonUiModel(content = data?.comparison.orEmpty()
+            .filter { it.id != "0" }
+            .take(COMPARISON_COUNT)
+            .map {
+                val comparisonSpecs = mutableListOf<ComparisonUiModel.ComparisonSpec>()
+                it.fullSpec.forEach { spec ->
+                    comparisonSpecs.add(ComparisonUiModel.ComparisonSpec(
+                        isSpecCategoryTitle = true,
+                        specCategoryTitle = if (isFirstData) spec.name else ""
+                    ))
+                    spec.row.forEach { rowItem ->
+                        val insertedItem = ComparisonUiModel.ComparisonSpec(
+                            isSpecCategoryTitle = false,
+                            specTitle = if (isFirstData) rowItem.key else "",
+                            specValue = rowItem.value,
+                        )
+                        comparisonSpecs.add(insertedItem)
+                    }
                 }
-            }
-            isFirstData = false
-            ComparisonUiModel.ComparisonContent(
-                imageUrl = it.catalogImage.firstOrNull{ image -> image.isPrimary }?.imageUrl.orEmpty(),
-                productTitle = it.name,
-                price = it.marketPrice.firstOrNull()?.let { marketPrice ->
-                    marketPrice.minFmt + " - " + marketPrice.maxFmt
-                }.orEmpty() ,
-                comparisonSpecs = comparisonSpecs,
-                topComparisonSpecs = comparisonSpecs
-                    .filter { comparisonSpec -> !comparisonSpec.isSpecCategoryTitle }
-                    .take(TOP_COMPARISON_SPEC_COUNT)
-            )
-        })
+                isFirstData = false
+                ComparisonUiModel.ComparisonContent(
+                    imageUrl = it.catalogImage.firstOrNull{ image -> image.isPrimary }?.imageUrl.orEmpty(),
+                    productTitle = it.name,
+                    price = it.marketPrice.firstOrNull()?.let { marketPrice ->
+                        marketPrice.minFmt + " - " + marketPrice.maxFmt
+                    }.orEmpty() ,
+                    comparisonSpecs = comparisonSpecs,
+                    topComparisonSpecs = comparisonSpecs
+                        .filter { comparisonSpec -> !comparisonSpec.isSpecCategoryTitle }
+                        .take(TOP_COMPARISON_SPEC_COUNT)
+                )
+            }.toMutableList())
     }
 
     private fun getTextColor(darkMode: Boolean): Int {

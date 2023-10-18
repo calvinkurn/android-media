@@ -3,6 +3,7 @@ package com.tokopedia.oldcatalog.usecase.detail
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.catalog.ui.mapper.CatalogDetailUiMapper
 import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
+import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.network.constant.ErrorNetMessage.MESSAGE_ERROR_NULL_DATA_SHORT
 import com.tokopedia.network.exception.MessageErrorException
@@ -46,6 +47,25 @@ class CatalogDetailUseCase @Inject constructor(
             catalogDetailDataModel.postValue(Success(catalogDetailUiMapper.mapToCatalogDetailUiModel(data.catalogGetDetailModular)))
         else{
             catalogDetailDataModel.postValue(Fail(Throwable(MESSAGE_ERROR_NULL_DATA_SHORT)))
+        }
+    }
+
+    suspend fun getCatalogDetailV4Comparison(
+        catalogId : String,
+        comparedCatalogId : String
+    ): ComparisonUiModel? {
+        val gqlResponse = catalogDetailRepository.getCatalogDetail(
+            catalogId,
+            comparedCatalogId,
+            userSession.userId,
+            CatalogConstant.DEVICE,
+            cacheType = CacheType.NONE
+        )
+        val data = gqlResponse?.getData<CatalogResponseData>(CatalogResponseData::class.java)
+        if (data?.catalogGetDetailModular != null)
+            return catalogDetailUiMapper.mapToCatalogDetailUiModel(data.catalogGetDetailModular).widgets.firstOrNull { it is ComparisonUiModel } as? ComparisonUiModel
+        else{
+            throw MessageErrorException(MESSAGE_ERROR_NULL_DATA_SHORT)
         }
     }
 

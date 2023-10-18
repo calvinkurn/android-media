@@ -39,6 +39,9 @@ class ComparisonItemViewHolder(
             tfProductPrice.text = item.price
             rvSpecs.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
             rvSpecs.adapter = ComparisonSpecItemAdapter(specs)
+
+            tfProductName.setTextColor(item.productTextColor ?: return)
+            tfProductPrice.setTextColor(item.productTextColor ?: return)
         }
     }
 }

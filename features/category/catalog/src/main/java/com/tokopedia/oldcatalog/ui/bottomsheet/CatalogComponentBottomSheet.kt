@@ -7,6 +7,7 @@ import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment
 import com.tokopedia.oldcatalog.listener.CatalogDetailListener
 import com.tokopedia.oldcatalog.ui.fragment.CatalogAllReviewFragment
 import com.tokopedia.oldcatalog.ui.fragment.CatalogDetailPageFragment
+import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment as CatalogDetailPageFragmentV4
 import com.tokopedia.oldcatalog.ui.fragment.CatalogProductComparisonFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
@@ -84,6 +85,10 @@ class CatalogComponentBottomSheet : BottomSheetUnify(), CatalogDetailListener {
 
             is CatalogDetailPageFragment -> {
                 (parentFragment as? CatalogDetailPageFragment)?.changeComparison(comparedCatalogId)
+            }
+
+            is CatalogDetailPageFragmentV4 -> {
+                (parentFragment as? CatalogDetailPageFragmentV4)?.changeComparison(comparedCatalogId)
             }
         }
     }

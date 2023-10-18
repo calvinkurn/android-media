@@ -129,10 +129,22 @@ class ComparisonViewHolder(
     }
 
     private fun WidgetItemComparisonBinding.setupColors(element: ComparisonUiModel) {
+        if (!isDisplayingTopSpec) return
         if (element.darkMode) {
             btnSeeMore.applyColorMode(ColorMode.DARK_MODE)
         } else {
             btnSeeMore.applyColorMode(ColorMode.LIGHT_MODE)
+        }
+        tfCatalogTitle.setTextColor(element.widgetTextColor ?: return)
+        layoutComparison.apply {
+            tfProductName.setTextColor(element.widgetTextColor ?: return)
+            tfProductPrice.setTextColor(element.widgetTextColor ?: return)
+            element.content.forEach { comparisonContent ->
+                comparisonContent.productTextColor = element.widgetTextColor
+                comparisonContent.topComparisonSpecs.forEach { comparisonSpec ->
+                    comparisonSpec.specTextColor = element.widgetTextColor
+                }
+            }
         }
     }
 
