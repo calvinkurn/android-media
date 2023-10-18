@@ -31,8 +31,6 @@ class HomeSpacingDecoration : RecyclerView.ItemDecoration() {
             unifyprinciplesR.dimen.unify_space_0)
         val dimen4dp = parent.context.resources.getDimensionPixelSize(
             unifyprinciplesR.dimen.unify_space_4)
-        val dimen8dp = parent.context.resources.getDimensionPixelSize(
-            unifyprinciplesR.dimen.unify_space_8)
         val dimen12dp = parent.context.resources.getDimensionPixelSize(
             unifyprinciplesR.dimen.unify_space_12)
         val dimen16dp = parent.context.resources.getDimensionPixelSize(
@@ -41,7 +39,7 @@ class HomeSpacingDecoration : RecyclerView.ItemDecoration() {
         when (val viewHolder = parent.findViewHolderForLayoutPosition(position)) {
             is TokoNowCategoryMenuViewHolder -> {
                 viewHolder.itemView.findViewById<RecyclerView?>(R.id.recycler_view)
-                    .setPadding(dimen12dp, dimen8dp, dimen12dp, -dimen4dp)
+                    .setPadding(dimen12dp, dimen4dp, dimen12dp, -dimen4dp)
                 viewHolder.itemView.findViewById<TokoNowDynamicHeaderView?>(R.id.header)
                     .setLayoutParams {
                         it.topMargin = if(position == FIRST_ITEM_POSITION) dimen0dp else dimen16dp
