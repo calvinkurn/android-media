@@ -539,7 +539,7 @@ open class DynamicProductDetailFragment :
             playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
                 setListener(this@DynamicProductDetailFragment)
             },
-            affiliateCookieHelper.get(),
+            affiliateCookieHelper.get()
         )
     }
     private val adapter by lazy {
@@ -854,9 +854,13 @@ open class DynamicProductDetailFragment :
     }
 
     private fun reloadFintechWidget() {
-        if (pdpUiUpdater == null || (pdpUiUpdater?.fintechWidgetMap == null &&
-                pdpUiUpdater?.fintechWidgetV2Map == null)
-        ) return
+        if (pdpUiUpdater == null || (
+            pdpUiUpdater?.fintechWidgetMap == null &&
+                pdpUiUpdater?.fintechWidgetV2Map == null
+            )
+        ) {
+            return
+        }
         if (pdpUiUpdater?.fintechWidgetMap?.isLoggedIn != viewModel.isUserSessionActive ||
             pdpUiUpdater?.fintechWidgetV2Map?.isLoggedIn != viewModel.isUserSessionActive
         ) {
@@ -2718,7 +2722,7 @@ open class DynamicProductDetailFragment :
                 viewModel.userSessionInterface.isLoggedIn
             )
         }
-        pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo)
+        pdpUiUpdater?.updateDataP1(updatedDynamicProductInfo)
 
         pdpUiUpdater?.updateNotifyMeAndContent(
             selectedChild?.productId.toString(),
@@ -3361,7 +3365,7 @@ open class DynamicProductDetailFragment :
         }
         renderVariant(viewModel.variantData)
 
-        pdpUiUpdater?.updateDataP1(context, productInfo, true)
+        pdpUiUpdater?.updateDataP1(productInfo, true)
         pdpUiUpdater?.updateInitialMedia(
             productInfo.data.media,
             productInfo.data.containerType,

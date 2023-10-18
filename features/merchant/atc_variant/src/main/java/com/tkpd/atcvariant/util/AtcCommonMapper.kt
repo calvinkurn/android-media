@@ -372,10 +372,10 @@ object AtcCommonMapper {
             selectedChild?.campaign?.isActive ?: false
         }
         val priceFmt = selectedChild?.priceFmt.ifNullOrBlank {
-            selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted().orEmpty()
+            selectedChild?.finalMainPrice?.getCurrencyFormatted().orEmpty()
         }
         val slashPriceFmt = selectedChild?.slashPriceFmt.ifNullOrBlank {
-            selectedChild?.finalMainPrice?.getCurrencyFormatted().orEmpty()
+            selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted().orEmpty()
         }
         val discPercentageFmt = selectedChild?.discPercentage.ifNullOrBlank {
             selectedChild?.campaign?.discountedPercentage.orZero().percentFormatted()

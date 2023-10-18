@@ -201,7 +201,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         get() = mapOfData[ProductDetailConstant.BMGM_SNEAK_PEEK_NAME] as? BMGMUiModel
 
     fun updateDataP1(
-        context: Context?,
         dataP1: DynamicProductInfoP1?,
         loadInitialData: Boolean = false
     ) {
@@ -227,10 +226,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                             campaign.percentageAmount.percentFormatted()
                         }
                         campaign.slashPriceFmt = price.slashPriceFmt.ifNullOrBlank {
-                            campaign.originalPrice.getCurrencyFormatted()
+                            campaign.discountedPrice.getCurrencyFormatted()
                         }
                         campaign.priceFmt = price.priceFmt.ifNullOrBlank {
-                            campaign.discountedPrice.getCurrencyFormatted()
+                            campaign.originalPrice.getCurrencyFormatted()
                         }
                     }
 
