@@ -46,6 +46,18 @@
         tools:text="Terjual Habis"
         tools:visibility="visible" />
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/checkout_btn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:padding="2dp"
+        android:elevation="@dimen/unify_space_2"
+        android:layout_marginHorizontal="@dimen/dp_6"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/circular_ocs_button"
+        app:layout_constraintBottom_toBottomOf="@id/product_highlight_image"
+        app:layout_constraintEnd_toEndOf="@id/product_highlight_image" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/data_card_parent"
         android:layout_width="0dp"

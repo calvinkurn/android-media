@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.Constant
+import com.tokopedia.discovery2.Constant.ProductHighlight.ATC_OCS
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.databinding.DiscoItemMultiProductHighlightRevampBinding
@@ -22,6 +23,7 @@ import com.tokopedia.discovery2.viewcontrollers.customview.PriceBoxView
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -71,6 +73,7 @@ class ProductHighlightRevampItem(
 
                         phProductName.text = productHighlightData.productName
 
+                        renderOCSButton(checkoutBtn)
                         renderStockBar(progressBarStock)
                         renderCashback(cashbackView)
                         renderPriceBox(priceBox)
@@ -122,6 +125,7 @@ class ProductHighlightRevampItem(
 
                         phProductName.text = productHighlightData.productName
 
+                        renderOCSButton(checkoutBtn)
                         renderStockBar(progressBarStock)
                         renderCashback(cashbackView)
                         renderPriceBox(priceBox)
@@ -160,6 +164,7 @@ class ProductHighlightRevampItem(
 
                         priceBox.fontType = PriceBoxView.Type.TRIPLE
 
+                        renderOCSButton(checkoutBtn)
                         renderStockBar(progressBarStock)
                         renderCashback(cashbackView)
                         renderPriceBox(priceBox)
@@ -186,6 +191,10 @@ class ProductHighlightRevampItem(
                 }
             }
         }
+    }
+
+    private fun renderOCSButton(checkoutBtn: ImageUnify) {
+        checkoutBtn.isVisible = productHighlightData.atcButtonCTA == ATC_OCS
     }
 
     private fun renderPriceBox(view: PriceBoxView) {

@@ -135,6 +135,7 @@ object Constant {
         const val PROMO = "promo"
         const val PRICE = "price"
         const val V2_STYLE = "product_highlight_v2"
+        const val ATC_OCS = "ocs"
     }
 
     internal object CompType {
