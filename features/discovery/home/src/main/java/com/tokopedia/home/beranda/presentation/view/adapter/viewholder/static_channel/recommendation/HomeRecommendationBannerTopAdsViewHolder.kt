@@ -64,14 +64,14 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) : SmartAbstractViewHo
             })
             binding?.homeRecomTopadsLoaderImage?.show()
             binding?.homeRecomTopadsImageView?.let {
+                it.imageWidth = recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageWidth
+                it.imageHeight = recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageHeight
                 if (recommendationBannerTopAdsDataModelDataModel.bannerType == TYPE_VERTICAL_BANNER_ADS) {
                     loadVerticalBanner(recommendationBannerTopAdsDataModelDataModel, it)
                 } else {
                     Glide.with(itemView.context)
                         .load(recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageUrl)
                         .transform(RoundedCorners(8))
-                        .override(itemView.context.resources.displayMetrics.widthPixels,
-                            getHeight(recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageWidth, recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageHeight))
                         .fitCenter()
                         .addListener(object : RequestListener<Drawable> {
                             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -112,12 +112,5 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) : SmartAbstractViewHo
                 }
             })
             .into(appCompatImageView)
-    }
-
-    private fun getHeight(width: Int, height: Int): Int {
-        val metrics = itemView.context.resources.displayMetrics
-        val deviceWidth = metrics.widthPixels.toFloat()
-        val widthRatio = deviceWidth / width.toFloat()
-        return (widthRatio * height).toInt()
     }
 }
