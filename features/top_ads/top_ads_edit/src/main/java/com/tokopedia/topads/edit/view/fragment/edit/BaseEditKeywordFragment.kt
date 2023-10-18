@@ -81,6 +81,7 @@ private const val OTOMATIS_LEARN_MORE_LINK = "https://seller.tokopedia.com/edu/t
 
 class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.ButtonAction {
 
+    private var dailyBudgetInput: Float = 0f
     private var minMaxBids: MutableList<String>? = null
 
     @Inject
@@ -162,7 +163,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         productIds = arguments?.getStringArrayList("productIdList")?.let { ArrayList(it) }
             ?: arrayListOf()
         context?.resources?.getString(R.string.topads_edit_auto_bid_ticker_title)?.let { autoBidTicker?.setHtmlDescription(it) }
-
+        this.dailyBudgetInput = arguments?.getFloat("dailyBudgetInput") ?: 0f
         initListeners()
         renderViewPager()
         setTabs()
@@ -186,6 +187,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
 
         }
         this.minMaxBids = arguments?.getStringArrayList("minMaxBids")
+
     }
 
     private fun setViews() {
@@ -243,7 +245,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
                             if (number % 50 == 0.0) {
                                 setMessageErrorField("Biaya optimal ✔️", "0", false)
                                 productIds.let {
-                                    viewModel.getPerformanceData(it, result.toFloat(), result.toFloat(), 0f)
+                                    viewModel.getPerformanceData(it, result.toFloat(), result.toFloat(), dailyBudgetInput)
                                 }
                                 actionEnable(true)
                             }else{

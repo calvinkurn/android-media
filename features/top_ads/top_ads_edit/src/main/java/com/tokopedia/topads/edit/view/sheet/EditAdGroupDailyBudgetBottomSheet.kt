@@ -22,7 +22,7 @@ import com.tokopedia.topads.common.view.sheet.CreatePotentialPerformanceSheet
 import com.tokopedia.topads.edit.databinding.TopadsEditSheetEditAdGroupDailyBudgetBinding
 import com.tokopedia.topads.edit.di.DaggerTopAdsEditComponent
 import com.tokopedia.topads.edit.di.module.TopAdEditModule
-import com.tokopedia.topads.edit.viewmodel.EditAdGroupViewModel
+import com.tokopedia.topads.edit.viewmodel.EditAdGroupDailyBudgetViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
@@ -50,7 +50,7 @@ class EditAdGroupDailyBudgetBottomSheet : BottomSheetUnify() {
         ViewModelProvider(this, viewModelFactory)
     }
     private val viewModel by lazy {
-        viewModelProvider[EditAdGroupViewModel::class.java]
+        viewModelProvider[EditAdGroupDailyBudgetViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,7 +82,8 @@ class EditAdGroupDailyBudgetBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        viewModel.getPerformanceData(productIds, bids, dailyBudget.toFloatOrZero())
+        setListeners()
+        viewModel.getPerformanceData(productIds, bids, CurrencyFormatHelper.convertRupiahToDouble(dailyBudget).toFloat())
         observeLiveData()
     }
 
@@ -110,7 +111,6 @@ class EditAdGroupDailyBudgetBottomSheet : BottomSheetUnify() {
 
     private fun initView() {
         setBudget()
-        setListeners()
         if (dailyBudget == "0") {
             binding?.toggle?.isChecked = false
             binding?.textField?.hide()
@@ -174,6 +174,7 @@ class EditAdGroupDailyBudgetBottomSheet : BottomSheetUnify() {
                 binding?.textField?.hide()
                 binding?.editAdGroupNamCta?.isEnabled = false
                 binding?.editAdGroupNamCta?.isEnabled = true
+                viewModel.getPerformanceData(productIds, bids, 0f)
             }
         }
         binding?.icon?.setOnClickListener {

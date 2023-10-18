@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import com.tokopedia.topads.edit.view.model.KeywordAdsViewModel
 import com.tokopedia.topads.edit.view.model.ProductAdsListViewModel
+import com.tokopedia.topads.edit.viewmodel.EditAdGroupDailyBudgetViewModel
 import com.tokopedia.topads.edit.viewmodel.EditAdGroupViewModel
 import dagger.Binds
 import dagger.Module
@@ -41,5 +42,10 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(EditAdGroupViewModel::class)
     internal abstract fun provideEditAdGroupViewModel(viewModel: EditAdGroupViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(EditAdGroupDailyBudgetViewModel::class)
+    internal abstract fun provideEditAdGroupDailyBudgetViewModel(viewModel: EditAdGroupDailyBudgetViewModel): ViewModel
 
 }
