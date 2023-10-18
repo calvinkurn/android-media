@@ -34,25 +34,27 @@ class UniversalInboxAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return typeFactory.createViewHolder(view, viewType)
+        val holder = typeFactory.createViewHolder(view, viewType)
+        val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+        when (viewType) {
+            UniversalInboxMenuItemViewHolder.LAYOUT -> layout.isFullSpan = true
+            UniversalInboxMenuSeparatorViewHolder.LAYOUT -> layout.isFullSpan = true
+            UniversalInboxWidgetMetaViewHolder.LAYOUT -> layout.isFullSpan = true
+            UniversalInboxRecommendationWidgetViewHolder.LAYOUT -> layout.isFullSpan = true
+            UniversalInboxTopAdsBannerViewHolder.LAYOUT -> layout.isFullSpan = true
+            UniversalInboxTopAdsHeadlineViewHolder.LAYOUT -> layout.isFullSpan = true
+            UniversalInboxRecommendationLoaderViewHolder.LAYOUT -> layout.isFullSpan = true
+            UniversalInboxRecommendationTitleViewHolder.LAYOUT -> layout.isFullSpan = true
+        }
+        return holder
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
         try {
-            val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
-            when (getItemViewType(position)) {
-                UniversalInboxMenuItemViewHolder.LAYOUT -> layout.isFullSpan = true
-                UniversalInboxMenuSeparatorViewHolder.LAYOUT -> layout.isFullSpan = true
-                UniversalInboxWidgetMetaViewHolder.LAYOUT -> layout.isFullSpan = true
-                UniversalInboxRecommendationWidgetViewHolder.LAYOUT -> layout.isFullSpan = true
-                UniversalInboxTopAdsBannerViewHolder.LAYOUT -> layout.isFullSpan = true
-                UniversalInboxTopAdsHeadlineViewHolder.LAYOUT -> layout.isFullSpan = true
-                UniversalInboxRecommendationLoaderViewHolder.LAYOUT -> layout.isFullSpan = true
-                UniversalInboxRecommendationTitleViewHolder.LAYOUT -> layout.isFullSpan = true
-            }
+            @Suppress("UNCHECKED_CAST")
             (holder as AbstractViewHolder<Visitable<*>>).bind(visitables[position])
         } catch (throwable: Throwable) {
-            Timber.e(throwable)
+            Timber.d(throwable)
         }
     }
 
