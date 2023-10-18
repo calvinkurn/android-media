@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_ARGS_EXTRA
 import com.tokopedia.common_epharmacy.EPHARMACY_PPG_QTY_CHANGE
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.epharmacy.R
@@ -25,6 +24,7 @@ import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.databinding.EpharmacyQuantityChangeFragmentBinding
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.utils.CategoryKeys
+import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
 import com.tokopedia.epharmacy.utils.EPharmacyButtonState
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
@@ -51,8 +51,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     private var ePharmacyRecyclerView: RecyclerView? = null
     private var ePharmacyGlobalError: GlobalError? = null
     private var qCTotalAmount: TotalAmount? = null
-
-    private var groupIds: ArrayList<String>? = arrayListOf()
+    private var tConsultationId = 0L
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -106,7 +105,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     }
 
     private fun initArguments() {
-        groupIds = arguments?.getStringArrayList(EPHARMACY_CONSULTATION_ARGS_EXTRA)
+        tConsultationId = arguments?.getLong(EPHARMACY_TOKO_CONSULTATION_ID).orZero()
     }
 
     private fun setUpObservers() {
@@ -135,7 +134,7 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
 
     private fun makeRequestParams(): MutableMap<String, Any?> {
         return mutableMapOf(
-            EPharmacyPrepareProductsGroupUseCase.PARAM_SOURCE to EPHARMACY_PPG_QTY_CHANGE,
+            EPharmacyPrepareProductsGroupUseCase.PARAM_SOURCE to EPHARMACY_PPG_QTY_CHANGE
         )
     }
 
