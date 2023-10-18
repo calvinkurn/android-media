@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.databinding.LayoutGotoKycBlockedBinding
 import com.tokopedia.kyc_centralized.di.DaggerGoToKycComponent
+import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -30,6 +31,7 @@ class BlockedKycBottomSheet : BottomSheetUnify() {
     private var binding by autoClearedNullable<LayoutGotoKycBlockedBinding>()
 
     private var isBlockedMultipleAccount = false
+    private var projectId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +39,7 @@ class BlockedKycBottomSheet : BottomSheetUnify() {
 
         arguments?.let {
             isBlockedMultipleAccount = it.getBoolean(IS_BLOCKED_MULTIPLE_ACCOUNT).orFalse()
+            projectId = it.getString(PROJECT_ID).orEmpty()
         }
     }
 
@@ -73,10 +76,19 @@ class BlockedKycBottomSheet : BottomSheetUnify() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
+        if (isBlockedMultipleAccount) {
+            GotoKycAnalytics.sendClickOnCloseButtonBlockingMultipleAccountPageEvent(projectId)
+        } else {
+            GotoKycAnalytics.sendClickOnCloseButtonBlockingGeneralPageEvent(
+                source = SOURCE_BACKEND,
+                projectId = projectId
+            )
+        }
         finishWithResultCancelled()
     }
 
     private fun goToTokopediaCare() {
+        GotoKycAnalytics.sendClickOnButtonTokopediaCareBlockingMultipleAccountPageEvent(projectId)
         RouteManager.route(
             context,
             ApplinkConstInternalGlobal.WEBVIEW,
@@ -93,6 +105,8 @@ class BlockedKycBottomSheet : BottomSheetUnify() {
     }
 
     private fun setUpViewBlockedMultipleAccount() {
+        GotoKycAnalytics.sendViewOnBlockingMultipleAccountPageEvent(projectId)
+
         binding?.apply {
             ivBlocked.loadImageWithoutPlaceholder(getString(R.string.img_url_goto_kyc_blocked_multiple_account))
             tvTitle.text = getString(R.string.goto_kyc_blocked_title_multiple_account)
@@ -103,6 +117,8 @@ class BlockedKycBottomSheet : BottomSheetUnify() {
     }
 
     private fun setUpViewBlockedGeneral() {
+        GotoKycAnalytics.sendViewOnBlockingGeneralPageEvent(source = SOURCE_BACKEND, projectId = projectId)
+
         binding?.apply {
             ivBlocked.loadImageWithoutPlaceholder(getString(R.string.img_url_goto_kyc_blocked_general))
             tvTitle.text = getString(R.string.goto_kyc_blocked_title_general)
@@ -125,13 +141,16 @@ class BlockedKycBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
+        private const val SOURCE_BACKEND = "backend"
         private const val PATH_TOKOPEDIA_CARE = "help"
 
-        private const val IS_BLOCKED_MULTIPLE_ACCOUNT = "is_blocked_multiple_account"
-        fun newInstance(blockedMultipleAccount: Boolean) =
+        private const val IS_BLOCKED_MULTIPLE_ACCOUNT = "isBlockedMultipleAccount"
+        private const val PROJECT_ID = "projectId"
+        fun newInstance(blockedMultipleAccount: Boolean, projectId: String) =
             BlockedKycBottomSheet().apply {
                 arguments = Bundle().apply {
                     putBoolean(IS_BLOCKED_MULTIPLE_ACCOUNT, blockedMultipleAccount)
+                    putString(PROJECT_ID, projectId)
                 }
             }
     }
