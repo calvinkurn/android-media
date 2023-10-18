@@ -15,7 +15,6 @@ import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliatePerformanceListData
 import com.tokopedia.affiliate.model.response.AffiliateUserPerformaListItemData
-import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.model.response.ItemTypesItem
 import com.tokopedia.affiliate.sse.AffiliateSSE
 import com.tokopedia.affiliate.sse.AffiliateSSEMapper
@@ -38,7 +37,6 @@ import com.tokopedia.affiliate.usecase.AffiliatePerformanceDataUseCase
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceItemTypeUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSSEAuthTokenUseCase
 import com.tokopedia.affiliate.usecase.AffiliateUserPerformanceUseCase
-import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.affiliate.utils.DateUtils
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -55,7 +53,6 @@ import javax.inject.Inject
 
 class AffiliateAdpViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
-    private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase,
     private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase,
     private val affiliateUserPerformanceUseCase: AffiliateUserPerformanceUseCase,
     private val affiliatePerformanceItemTypeUseCase: AffiliatePerformanceItemTypeUseCase,
@@ -74,7 +71,6 @@ class AffiliateAdpViewModel @Inject constructor(
         MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private val noMoreDataAvailable = MutableLiveData(false)
     private val isSSEConnected = MutableStateFlow(false)
-    private val validateUserdata = MutableLiveData<AffiliateValidateUserData>()
     private val errorMessage = MutableLiveData<Throwable>()
     private val rangeChanged = MutableLiveData<Boolean>()
     private val affiliateSSEAdpTotalClickItem =
@@ -98,21 +94,6 @@ class AffiliateAdpViewModel @Inject constructor(
     companion object {
         private const val FILTER_LAST_THIRTY_DAYS = "LastThirtyDays"
         private const val CONVERSION_METRIC = "conversion"
-    }
-
-    fun getAffiliateValidateUser() {
-        launchCatchError(
-            block = {
-                validateUserdata.value =
-                    affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
-                progressBar.value = false
-            },
-            onError = {
-                progressBar.value = false
-                it.printStackTrace()
-                errorMessage.value = it
-            }
-        )
     }
 
     fun getAnnouncementInformation(isHome: Boolean) {
@@ -377,7 +358,6 @@ class AffiliateAdpViewModel @Inject constructor(
     fun getDataShimmerVisibility(): LiveData<Boolean> = dataPlatformShimmerVisibility
     fun getRangeChanged(): LiveData<Boolean> = rangeChanged
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
-    fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
     fun getAffiliateAnnouncement(): LiveData<AffiliateAnnouncementDataV2> = affiliateAnnouncement
     fun getAffiliateDataItems(): LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> =
         affiliateDataList

@@ -11,7 +11,6 @@ import com.tokopedia.affiliate.model.pojo.AffiliateHeaderItemData
 import com.tokopedia.affiliate.model.pojo.AffiliateTermsAndConditionData
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateWebViewBottomSheet
-import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateTermsAndConditionFragment
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateHeaderModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTermsAndConditionModel
@@ -88,7 +87,7 @@ fun Ticker.setAnnouncementData(
     source: Int = PAGE_ANNOUNCEMENT_ALL
 ) {
     when (announcementData.getAffiliateAnnouncementV2?.announcementData?.type) {
-        AffiliateBaseFragment.WARNING -> {
+        WARNING ->
             setupTickerView(
                 source,
                 announcementData.getAffiliateAnnouncementV2?.announcementData,
@@ -96,9 +95,8 @@ fun Ticker.setAnnouncementData(
                 Ticker.TYPE_WARNING,
                 context
             )
-        }
 
-        AffiliateBaseFragment.ERROR -> {
+        ERROR ->
             setupTickerView(
                 source,
                 announcementData.getAffiliateAnnouncementV2?.announcementData,
@@ -106,9 +104,8 @@ fun Ticker.setAnnouncementData(
                 Ticker.TYPE_ERROR,
                 context
             )
-        }
 
-        AffiliateBaseFragment.ANNOUNCEMENT -> {
+        ANNOUNCEMENT ->
             setupTickerView(
                 source,
                 announcementData.getAffiliateAnnouncementV2?.announcementData,
@@ -116,9 +113,8 @@ fun Ticker.setAnnouncementData(
                 Ticker.TYPE_ANNOUNCEMENT,
                 context
             )
-        }
 
-        else -> {
+        else ->
             setupTickerView(
                 source,
                 announcementData.getAffiliateAnnouncementV2?.announcementData,
@@ -126,7 +122,6 @@ fun Ticker.setAnnouncementData(
                 Ticker.TYPE_INFORMATION,
                 context
             )
-        }
     }
 }
 
