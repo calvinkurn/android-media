@@ -18,6 +18,7 @@ import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDefaultAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.PinpointValidationUseCase
+import com.tokopedia.logisticaddaddress.features.pinpoint.uimodel.PinpointUiModel
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -1180,7 +1181,7 @@ class AddressFormViewModelTest {
             saveDataModel = spyk(),
             defaultName = defaultName,
             defaultPhone = defaultPhone,
-            pinpointUiModel = null
+            pinpointUiModel = PinpointUiModel()
         )
 
         // Then
