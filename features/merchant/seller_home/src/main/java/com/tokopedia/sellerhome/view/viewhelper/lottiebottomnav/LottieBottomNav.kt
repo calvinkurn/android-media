@@ -86,14 +86,14 @@ class LottieBottomNav : LinearLayout {
             if (badgeValue > Int.ZERO) {
                 it.layoutParams = badgeLayoutParam
                 it.background = getNotificationBackground(it.context)
-                it.text = getBadgeTest(badgeValue)
+                it.text = getBadgeText(badgeValue)
                 it.bringToFront()
             }
             it.visibility = visibility
         }
     }
 
-    private fun getBadgeTest(badgeValue: Int): String {
+    private fun getBadgeText(badgeValue: Int): String {
         return if (badgeValue < NOTIF_COUNTER_LIMIT) {
             badgeValue.toString()
         } else {
