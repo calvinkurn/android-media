@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.ImageUnify xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/detail_income_icon"
-    android:layout_width="16dp"
-    android:layout_height="16dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:layout_marginHorizontal="2dp"
-    android:adjustViewBounds="true"
-    app:unify_image_corner_radius="0" />
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/detail_income_icon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        app:unify_image_corner_radius="0" />
+
+</LinearLayout>
