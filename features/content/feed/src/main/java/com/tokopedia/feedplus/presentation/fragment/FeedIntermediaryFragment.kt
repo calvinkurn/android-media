@@ -46,7 +46,7 @@ class FeedIntermediaryFragment : Fragment(), FragmentListener {
     }
 
     private fun setupView() {
-        val fragment = if (false) {
+        val fragment = if (isUsingImmersiveFeed()) {
             FeedBaseFragment()
         } else {
             FeedPlusContainerFragment()
