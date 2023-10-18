@@ -280,6 +280,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setOnBackPressed()
+        initObserver()
         checkMapsAvailability(savedInstanceState)
     }
 
@@ -553,7 +554,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
             setFusedLocationClient()
             fetchData()
             setViewListener()
-            initObserver()
         } else {
             context?.let { ctx -> goToLitePinpoint(ctx) }
         }
