@@ -1211,7 +1211,7 @@ class FeedPlusFragment :
     }
 
     private fun resetImagePostWhenFragmentNotVisible() {
-        val layoutManager = binding.recyclerView.layoutManager as LinearLayoutManager?
+        val layoutManager = binding.recyclerView.layoutManager as? LinearLayoutManager
         val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
         val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
         for (i in firstPosition..lastPosition) {
@@ -1232,7 +1232,7 @@ class FeedPlusFragment :
     }
 
     private fun resetVODWhenFeedTabChanged() {
-        val layoutManager = binding.recyclerView.layoutManager as LinearLayoutManager?
+        val layoutManager = binding.recyclerView.layoutManager as? LinearLayoutManager
         val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
         val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
         for (i in firstPosition..lastPosition) {
