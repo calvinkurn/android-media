@@ -46,6 +46,7 @@ import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
+import com.tokopedia.shop.common.util.ShopTimer
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.convertUrlToBitmapAndLoadImage
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
@@ -84,7 +85,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopPageHeaderFragmentHeaderViewHolderV2(
@@ -163,8 +163,8 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     private var coachMark: CoachMark2? = null
     private val tickerShopStatus: Ticker? = viewBinding?.tickerShopStatus
     private var playVideoWrapper: PlayVideoWrapper? = null
-    private var timer: Timer? = null
     private var currentIndexUspDynamicValue: Int = 0
+    private val timer = ShopTimer()
 
     fun setupChooseAddressWidget(isMyShop: Boolean) {
         chooseAddressWidget?.apply {
@@ -993,28 +993,21 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
 
     fun startDynamicUspCycle(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>) {
         val listDynamicUspValue = listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
-        if (timer == null && listDynamicUspValue.isNotEmpty()) {
-            timer = Timer()
-            timer?.scheduleAtFixedRate(
-                object : TimerTask() {
-                    override fun run() {
-                        if (currentIndexUspDynamicValue == listDynamicUspValue.size - Int.ONE) {
-                            currentIndexUspDynamicValue = Int.ZERO
-                        } else {
-                            ++currentIndexUspDynamicValue
-                        }
-                        val currentValue = listDynamicUspValue[currentIndexUspDynamicValue]
-                        cycleDynamicUspText(currentValue)
-                    }
-                },
-                CYCLE_DURATION, CYCLE_DURATION
-            )
+        if (listDynamicUspValue.isNotEmpty()) {
+            timer.startTimer(CYCLE_DURATION) {
+                if (currentIndexUspDynamicValue == listDynamicUspValue.size - Int.ONE) {
+                    currentIndexUspDynamicValue = Int.ZERO
+                } else {
+                    ++currentIndexUspDynamicValue
+                }
+                val currentValue = listDynamicUspValue[currentIndexUspDynamicValue]
+                cycleDynamicUspText(currentValue)
+            }
         }
     }
 
     fun clearTimerDynamicUsp() {
-        timer?.cancel()
-        timer = null
+        timer.stopTimer()
         currentIndexUspDynamicValue = Int.ZERO
         updateDynamicUspValue(String.EMPTY)
     }
@@ -1028,8 +1021,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     }
 
     fun pauseTimerDynamicUspCycle() {
-        timer?.cancel()
-        timer = null
+        timer.stopTimer()
     }
 
     fun resumeTimerDynamicUspCycle() {
