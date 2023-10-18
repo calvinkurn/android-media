@@ -13,21 +13,18 @@ import androidx.annotation.NonNull;
 import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.app.common.SplashScreen;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.applink.sellermigration.SellerMigrationRedirectionUtil;
 import com.tokopedia.core.gcm.FCMCacheManager;
-import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.keys.Keys;
-import com.tokopedia.logger.LogManager;
 import com.tokopedia.notifications.CMPushNotificationManager;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.weaver.Weaver;
 
 import java.util.ArrayList;
 
@@ -43,14 +40,25 @@ public class SplashScreenActivity extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_SA)
-                .start(this.getApplication());
-        setUserIdNewRelic();
+        initNewRelicInBackground();
         super.onCreate(savedInstanceState);
         CMPushNotificationManager.getInstance()
                 .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
 
         syncFcmToken();
+    }
+
+    private void initNewRelicInBackground() {
+        Weaver.Companion.executeWeaveCoRoutineNow(() -> {
+            initNewRelic();
+            return true;
+        });
+    }
+
+    private void initNewRelic() {
+        NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_SA)
+                .start(this.getApplication());
+        setUserIdNewRelic();
     }
 
     private void setUserIdNewRelic() {
