@@ -745,3 +745,11 @@ fun Label.forceLightRed() {
 
     setBackgroundDrawable(drawable)
 }
+
+fun Label.forceLightGreen() {
+    setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_GN500))
+    val drawable = ContextCompat.getDrawable(context, unifycomponentsR.drawable.label_bg)
+    drawable?.setColorFilter(context.resources.getColor(R.color.dms_static_light_GN100), PorterDuff.Mode.SRC_ATOP)
+
+    setBackgroundDrawable(drawable)
+}

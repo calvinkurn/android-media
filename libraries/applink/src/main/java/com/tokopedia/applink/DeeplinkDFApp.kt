@@ -75,10 +75,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTravel.HOST_FLIGHT
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.HOST_HOTEL
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.HOST_PEOPLE
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.HOST_USER
+import com.tokopedia.applink.model.DFP
 import com.tokopedia.applink.model.DFPHost
 import com.tokopedia.applink.model.DFPPath
 import com.tokopedia.applink.model.DFPSchemeToDF
-import com.tokopedia.applink.model.DFP
 import com.tokopedia.applink.model.PathType
 import java.io.BufferedReader
 import java.io.FileNotFoundException
@@ -176,7 +176,7 @@ object DeeplinkDFApp {
         DF_TOKOPEDIA_NOW to getDfTokopediaNow(),
         DF_TRAVEL to getDfTravel(),
         DF_USER_LIVENESS to getDfUserLiveness(),
-        DF_USER_SETTINGS to getDfUserSettings(),
+        DF_USER_SETTINGS to getDfUserSettings()
     )
 
     fun getDfSellerappMap() = mapOf(
@@ -187,7 +187,7 @@ object DeeplinkDFApp {
         DF_SELLER_FEEDBACK to getDfSellerFeedback(),
         DF_SELLER_FRONT_FUNNEL to getDfSellerFrontFunnel(),
         DF_SELLER_TALK to getDfSellerTalk(),
-        DF_SHOP_SETTINGS_SELLER_APP to getDfShopSettingsSellerapp(),
+        DF_SHOP_SETTINGS_SELLER_APP to getDfShopSettingsSellerapp()
     )
 
     private fun Map<String, List<DFP>>?.filteredOnDF(context: Context): Map<String, List<DFP>> {
@@ -234,13 +234,13 @@ object DeeplinkDFApp {
         // moneyin
         DFP(INTERNAL, HOST_MONEYIN, PathType.PATTERN, "/device_validation"),
         // dropoff
-        DFP(INTERNAL, HOST_LOGISTIC, PathType.PATTERN, "/dropoff/"),
+        DFP(INTERNAL, HOST_LOGISTIC, PathType.PATTERN, "/dropoff/")
     )
 
     private fun getDfCommTokochat() = mutableListOf(
         // tokochat
         DFP(INTERNAL, HOST_COMMUNICATION, PathType.PATTERN, "/tokochat"),
-        DFP(INTERNAL, HOST_COMMUNICATION, PathType.PATTERN, "/tokochat/list"),
+        DFP(INTERNAL, HOST_COMMUNICATION, PathType.PATTERN, "/tokochat/list")
     )
 
     private fun getDfContentPlayBroadcaster() = mutableListOf(
@@ -252,18 +252,18 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker"),
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-preview"),
         // live-broadcaster
-        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/chucker"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/chucker")
     )
 
     private fun getDfDigital() = mutableListOf(
         // smart_bills
         DFP(INTERNAL, HOST_RECHARGE, PathType.PATTERN, "/bayarsekaligus", DIGITAL_SMART_BILLS),
-        DFP(INTERNAL, HOST_RECHARGE, PathType.PATTERN, "/add_telco"),
+        DFP(INTERNAL, HOST_RECHARGE, PathType.PATTERN, "/add_telco")
     )
 
     private fun getDfDilayaniTokopedia() = mutableListOf(
         // dilayanitokopedia
-        DFP(INTERNAL, HOST_DILAYANI_TOKOPEDIA, PathType.PATTERN, "/home"),
+        DFP(INTERNAL, HOST_DILAYANI_TOKOPEDIA, PathType.PATTERN, "/home")
     )
 
     private fun getDfEntertainment() = mutableListOf(
@@ -276,13 +276,13 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_EVENT, PathType.PATH, "/redeem", ENTERTAINMENT_EVENT),
         DFP(INTERNAL, HOST_EVENT, PathType.PATTERN, "/detail/.*", ENTERTAINMENT_EVENT),
         DFP(INTERNAL, HOST_EVENT, PathType.PATH, "/home", ENTERTAINMENT_EVENT),
-        //deals
+        // deals
         DFP(INTERNAL, HOST_DEALS, PathType.PATH, "/home-new", ENTERTAINMENT_DEALS),
         DFP(INTERNAL, HOST_DEALS, PathType.PATH, "/search-new", ENTERTAINMENT_DEALS),
         DFP(INTERNAL, HOST_DEALS, PathType.PATH, "/category-new/page", ENTERTAINMENT_DEALS),
         DFP(INTERNAL, HOST_DEALS, PathType.PATH, "/brand-new/page", ENTERTAINMENT_DEALS),
         DFP(INTERNAL, HOST_DEALS, PathType.PATH, "/brand-detail-new", ENTERTAINMENT_DEALS),
-        DFP(INTERNAL, HOST_DEALS, PathType.PATH, "/pdp-new", ENTERTAINMENT_DEALS),
+        DFP(INTERNAL, HOST_DEALS, PathType.PATH, "/pdp-new", ENTERTAINMENT_DEALS)
     )
 
     private fun getDfFeedContentCreation() = mutableListOf(
@@ -298,7 +298,7 @@ object DeeplinkDFApp {
         // image_picker
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/image-picker"),
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/video-picker"),
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/image-editor"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/image-editor")
     )
 
     private fun getDfMerchantLogin() = mutableListOf(
@@ -313,7 +313,7 @@ object DeeplinkDFApp {
         // attachvoucher
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/user-attach-voucher"),
         // shop_open
-        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-open"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-open")
     )
 
     private fun getDfMerchantNonLogin() = mutableListOf(
@@ -331,12 +331,12 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product/.*/review/gallery"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/review/credibility/.*/.*/"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/review/media-gallery"),
-        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product-review/bulk-create"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product-review/bulk-create")
     )
 
     private fun getDfMerchantProductAR() = mutableListOf(
         // product_ar
-        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/productar/.*/"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/productar/.*/")
     )
 
     private fun getDfMerchantSeller() = mutableListOf(
@@ -346,37 +346,61 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product-category-picker/.*/"),
         // power_merchant_subscribe
         DFP(
-            INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/power-merchant-subscribe",
+            INTERNAL,
+            HOST_MARKETPLACE,
+            PathType.PATTERN,
+            "/power-merchant-subscribe",
             DFWebviewFallbackUrl.POWER_MERCHANT
         ),
         DFP(
-            INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/pm-benefit-package",
+            INTERNAL,
+            HOST_MARKETPLACE,
+            PathType.PATH,
+            "/pm-benefit-package",
             DFWebviewFallbackUrl.POWER_MERCHANT
         ),
         // shop_settings
         DFP(
-            INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-settings-info",
+            INTERNAL,
+            HOST_MARKETPLACE,
+            PathType.PATTERN,
+            "/shop-settings-info",
             SHOP_SETTINGS
         ),
         DFP(
-            INTERNAL, HOST_MARKETPLACE, PathType.PATTERN,
-            "/shop-settings-operational-hours", SHOP_SETTINGS
+            INTERNAL,
+            HOST_MARKETPLACE,
+            PathType.PATTERN,
+            "/shop-settings-operational-hours",
+            SHOP_SETTINGS
         ),
         DFP(
-            INTERNAL, HOST_MARKETPLACE, PathType.PATTERN,
-            "/shop-settings-edit-schedule", SHOP_SETTINGS
+            INTERNAL,
+            HOST_MARKETPLACE,
+            PathType.PATTERN,
+            "/shop-settings-edit-schedule",
+            SHOP_SETTINGS
         ),
         DFP(
-            INTERNAL, HOST_MARKETPLACE, PathType.PATTERN,
-            "/shop-settings-notes", SHOP_SETTINGS
+            INTERNAL,
+            HOST_MARKETPLACE,
+            PathType.PATTERN,
+            "/shop-settings-notes",
+            SHOP_SETTINGS
         ),
         DFP(
-            INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-settings-etalase/add",
+            INTERNAL,
+            HOST_MARKETPLACE,
+            PathType.PATTERN,
+            "/shop-settings-etalase/add",
             SHOP_SETTINGS
         ),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-page-setting", SHOP_SETTINGS),
         DFP(
-            INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/settings",
+            INTERNAL,
+            HOST_MARKETPLACE,
+            PathType.PATTERN,
+            "/shop-page/.*/settings",
             SHOP_SETTINGS
         ),
         // top_ads_dashboard
@@ -430,24 +454,36 @@ object DeeplinkDFApp {
 
         // product_manage_list
         DFP(
-            INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/product-manage-list",
+            INTERNAL,
+            HOST_MARKETPLACE,
+            PathType.PATH,
+            "/product-manage-list",
             MANAGE_PRODUCT
         ),
         DFP(
-            INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/stock-reminder/.*/.*/.*",
+            INTERNAL,
+            HOST_MARKETPLACE,
+            PathType.PATTERN,
+            "/stock-reminder/.*/.*/.*",
             MANAGE_PRODUCT
         ),
         DFP(
-            INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/reserved-stock/.*/.*/",
+            INTERNAL,
+            HOST_MARKETPLACE,
+            PathType.PATTERN,
+            "/reserved-stock/.*/.*/",
             MANAGE_PRODUCT
-        ),
+        )
     )
 
     private fun getDfOperationalContactUs() = mutableListOf(
         // contact_us
         DFP(TOKOPEDIA, HOST_CONTACT_US, PathType.NO_PATH, "", OPERATIONAL_CONTACT_US),
         DFP(
-            INTERNAL, HOST_CUSTOMERAPP_INBOX_LIST, PathType.NO_PATH, "",
+            INTERNAL,
+            HOST_CUSTOMERAPP_INBOX_LIST,
+            PathType.NO_PATH,
+            "",
             OPERATIONAL_CONTACT_US
         ),
         DFP(TOKOPEDIA, HOST_TICKET, PathType.PATTERN, "/.*", OPERATIONAL_CONTACT_US),
@@ -455,29 +491,35 @@ object DeeplinkDFApp {
 
         // chatbot
         DFP(
-            INTERNAL, HOST_TICKET, PathType.PATH, "/inbox-list",
+            INTERNAL,
+            HOST_TICKET,
+            PathType.PATH,
+            "/inbox-list",
             DFWebviewFallbackUrl.OPERATIONAL_CHAT_BOT
         ),
         DFP(
-            INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/chatbot/.*",
+            INTERNAL,
+            HOST_GLOBAL,
+            PathType.PATTERN,
+            "/chatbot/.*",
             DFWebviewFallbackUrl.OPERATIONAL_CHAT_BOT
         ),
 
         // telephony_masking
-        DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/telephony-masking"),
+        DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/telephony-masking")
     )
 
     private fun getDfPeople() = mutableListOf(
         // people
         DFP(INTERNAL, HOST_PEOPLE, PathType.PATTERN, "/settings/.*"),
         DFP(INTERNAL, HOST_PEOPLE, PathType.PATTERN, "/.*"),
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/people/followers/"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/people/followers/")
     )
 
     private fun getDfPromoGamification() = mutableListOf(
         // gamification
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/gamification_gift_daily"),
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/gamification_gift_60s"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/gamification_gift_60s")
     )
 
     private fun getDfPromoTokopoints() = mutableListOf(
@@ -487,7 +529,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_TOKOPOINTS, PathType.PREFIX, "/kupon-saya", PROMO_TOKOPOINTS),
         DFP(INTERNAL, HOST_TOKOPOINTS, PathType.PREFIX, "/tukar-detail", PROMO_TOKOPOINTS),
         DFP(INTERNAL, HOST_TOKOPOINTS, PathType.PREFIX, "/kupon-detail", PROMO_TOKOPOINTS),
-        DFP(INTERNAL, HOST_TOKOPOINTS, PathType.PREFIX, "/introduction", PROMO_TOKOPOINTS),
+        DFP(INTERNAL, HOST_TOKOPOINTS, PathType.PREFIX, "/introduction", PROMO_TOKOPOINTS)
     )
 
     private fun getDfTokofood() = mutableListOf(
@@ -497,7 +539,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_FOOD, PathType.PATH, "/merchant"),
         DFP(INTERNAL, HOST_FOOD, PathType.PATH, "/category"),
         DFP(INTERNAL, HOST_FOOD, PathType.PATH, "/purchase"),
-        DFP(INTERNAL, HOST_FOOD, PathType.PATH, "/search"),
+        DFP(INTERNAL, HOST_FOOD, PathType.PATH, "/search")
     )
 
     private fun getDfTokopediaNow() = mutableListOf(
@@ -521,14 +563,18 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/recipe/filter"),
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/recipe/auto-complete"),
         DFP(
-            INTERNAL, HOST_TOKOPEDIA_NOW,
-            PathType.PATTERN, "/recipe/ingredient-bottomsheet"
+            INTERNAL,
+            HOST_TOKOPEDIA_NOW,
+            PathType.PATTERN,
+            "/recipe/ingredient-bottomsheet"
         ),
         DFP(
-            INTERNAL, HOST_TOKOPEDIA_NOW,
-            PathType.PATTERN, "/recipe/similar-product-bottomsheet"
+            INTERNAL,
+            HOST_TOKOPEDIA_NOW,
+            PathType.PATTERN,
+            "/recipe/similar-product-bottomsheet"
         ),
-        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/buyer-communication"),
+        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/buyer-communication")
     )
 
     private fun getDfTravel() = mutableListOf(
@@ -545,12 +591,12 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_HOTEL, PathType.PATTERN, "/detail/.*", TRAVEL_HOTEL),
         DFP(TOKOPEDIA, HOST_HOTEL, PathType.PATTERN, "/order/.*", TRAVEL_HOTEL),
         DFP(TOKOPEDIA, HOST_HOTEL, PathType.PATTERN, "/booking/.*", TRAVEL_HOTEL),
-        DFP(TOKOPEDIA, HOST_HOTEL, PathType.PATTERN, "/cancel/.*", TRAVEL_HOTEL),
+        DFP(TOKOPEDIA, HOST_HOTEL, PathType.PATTERN, "/cancel/.*", TRAVEL_HOTEL)
     )
 
     private fun getDfUserLiveness() = mutableListOf(
         // liveness
-        DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/liveness-detection"),
+        DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/liveness-detection")
     )
 
     private fun getDfUserSettings() = mutableListOf(
@@ -593,19 +639,21 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/search-history"),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/sharing-wishlist"),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/dsar"),
-        DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/dsar/add-email"),
+        DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/dsar/add-email")
     )
 
     private fun getDfCampaignList() = mutableListOf(
         // campaign_list
-        DFP(INTERNAL, HOST_SELLERAPP, PathType.PATTERN, "/campaign-list"),
+        DFP(INTERNAL, HOST_SELLERAPP, PathType.PATTERN, "/campaign-list")
     )
 
     private fun getDfFlashSaleTokopedia() = mutableListOf(
         // seller_tokopedia_flash_sale
         DFP(INTERNAL, HOST_SELLERAPP, PathType.PATTERN, "/tokopedia-flash-sale/.*/"),
         DFP(
-            INTERNAL, HOST_SELLERAPP, PathType.PATTERN,
+            INTERNAL,
+            HOST_SELLERAPP,
+            PathType.PATTERN,
             "/tokopedia-flash-sale/campaign-detail/.*/"
         )
     )
@@ -619,12 +667,13 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/webview-kyc"),
 
         // liveness
-        DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/liveness-detection"),
+        DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/liveness-detection")
     )
 
     private fun getDfSellerFeedback() = mutableListOf(
         // seller_feedback
         DFP(INTERNAL, HOST_SELLERAPP, PathType.PATH, "/seller-feedback"),
+        DFP(INTERNAL, HOST_SELLERAPP, PathType.PATH, "/seller-feedback-kmp")
     )
 
     private fun getDfSellerFrontFunnel() = mutableListOf(
@@ -638,7 +687,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop/performance"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-penalty-old"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-penalty"),
-        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-penalty-detail"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-penalty-detail")
     )
 
     private fun getDfSellerTalk() = mutableListOf(
@@ -647,7 +696,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/product-talk/.*/"),
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/reply-talk/.*/"),
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/add-talk"),
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/talk-seller-settings/"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/talk-seller-settings/")
     )
 
     private fun getDfShopSettingsSellerapp() = mutableListOf(
@@ -658,7 +707,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-settings-notes"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-settings-etalase/add"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-page-setting"),
-        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/settings"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/settings")
     )
 
     fun Map<String, List<DFP>>.mapDF(): MutableList<DFPSchemeToDF> {

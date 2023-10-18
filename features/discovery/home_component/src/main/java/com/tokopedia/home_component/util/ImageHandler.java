@@ -244,13 +244,13 @@ public class ImageHandler {
                     .addListener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            imageLoaderStateListener.failedLoad();
+                            imageLoaderStateListener.failedLoad(imageview);
                             return false;
                         }
 
                         @Override
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            imageLoaderStateListener.successLoad();
+                            imageLoaderStateListener.successLoad(imageview);
                             return false;
                         }
                     })
@@ -823,8 +823,8 @@ public class ImageHandler {
                 });
     }
     public interface ImageLoaderStateListener{
-        void successLoad();
-        void failedLoad();
+        void successLoad(ImageView view);
+        void failedLoad(ImageView view);
     }
 }
 
