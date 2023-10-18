@@ -1,5 +1,7 @@
 package com.tokopedia.stories.creation.analytic
 
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+
 
 /**
  * Created By : Jonathan Darwin on October 17, 2023
@@ -13,11 +15,11 @@ interface StoriesCreationAnalytic {
      */
 
     /** Row 1 */
-    fun openScreenCreationPage(partnerId: String, partnerType: String, storyId: String)
+    fun openScreenCreationPage(account: ContentAccountUiModel, storyId: String)
 
     /** Row 2 */
-    fun clickAddProduct(partnerId: String, partnerType: String)
+    fun clickAddProduct(account: ContentAccountUiModel)
 
     /** Row 3 */
-    fun clickUpload(partnerId: String, partnerType: String, storyId: String)
+    fun clickUpload(account: ContentAccountUiModel, storyId: String)
 }

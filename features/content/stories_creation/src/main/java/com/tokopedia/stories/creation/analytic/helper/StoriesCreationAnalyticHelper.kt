@@ -13,6 +13,10 @@ object StoriesCreationAnalyticHelper {
         return "${account.id} - ${getAccountType(account)}"
     }
 
+    fun getEventLabel(account: ContentAccountUiModel, storyId: String): String {
+        return "${getEventLabelByAccount(account)} - $storyId"
+    }
+
     fun getTrackerIdBySite(mainAppTrackerId: String, sellerAppTrackerId: String): String {
         return if (GlobalConfig.isSellerApp()) {
             sellerAppTrackerId

@@ -189,8 +189,7 @@ class StoriesCreationActivity : BaseActivity() {
                         uiState = uiState,
                         onImpressScreen = {
                             storiesCreationAnalytic.openScreenCreationPage(
-                                partnerId = viewModel.selectedAccount.id,
-                                partnerType = viewModel.selectedAccount.type,
+                                account = viewModel.selectedAccount,
                                 storyId = viewModel.storyId
                             )
                         },
@@ -205,8 +204,7 @@ class StoriesCreationActivity : BaseActivity() {
                         },
                         onClickAddProduct = {
                             storiesCreationAnalytic.clickAddProduct(
-                                partnerId = viewModel.selectedAccount.id,
-                                partnerType = viewModel.selectedAccount.type,
+                                account = viewModel.selectedAccount,
                             )
 
                             supportFragmentManager.beginTransaction()
@@ -215,8 +213,7 @@ class StoriesCreationActivity : BaseActivity() {
                         },
                         onClickUpload = {
                             storiesCreationAnalytic.clickUpload(
-                                partnerId = viewModel.selectedAccount.id,
-                                partnerType = viewModel.selectedAccount.type,
+                                account = viewModel.selectedAccount,
                                 storyId = viewModel.storyId
                             )
 
