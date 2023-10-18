@@ -3,12 +3,10 @@ package com.tokopedia.abstraction.relic;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
-
 import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-
 import org.jetbrains.annotations.NotNull;
 
 public class NewRelicInteractionActCall implements Application.ActivityLifecycleCallbacks {

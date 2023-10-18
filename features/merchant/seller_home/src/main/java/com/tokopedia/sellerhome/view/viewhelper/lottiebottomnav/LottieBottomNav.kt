@@ -24,7 +24,6 @@ import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-
 class LottieBottomNav : LinearLayout {
 
     companion object {
