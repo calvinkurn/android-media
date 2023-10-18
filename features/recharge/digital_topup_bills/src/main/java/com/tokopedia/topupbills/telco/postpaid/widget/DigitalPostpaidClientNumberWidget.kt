@@ -1,13 +1,11 @@
 package com.tokopedia.topupbills.telco.postpaid.widget
 
 import android.content.Context
-import android.text.TextUtils
 import android.util.AttributeSet
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.annotation.AttrRes
-import com.tokopedia.common.topupbills.data.TelcoEnquiryData
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
+import com.tokopedia.common.topupbills.data.constant.showMultiCheckoutButton
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.postpaid.listener.ClientNumberPostpaidListener
@@ -19,9 +17,8 @@ import com.tokopedia.unifycomponents.UnifyButton
  */
 class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
 
-    private lateinit var btnEnquiry: UnifyButton
-    private lateinit var enquiryResult: LinearLayout
-    private lateinit var titleEnquiryResult: TextView
+    private var btnMain: UnifyButton? = null
+    private var btnSecondary: UnifyButton? = null
     private lateinit var postpaidListener: ClientNumberPostpaidListener
 
     constructor(context: Context) : super(context) {
@@ -32,7 +29,11 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
         initV()
     }
 
-    constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         initV()
     }
 
@@ -41,56 +42,45 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
     }
 
     fun initV() {
-        btnEnquiry = view.findViewById(R.id.telco_enquiry_btn)
-        titleEnquiryResult = view.findViewById(R.id.telco_title_enquiry_result)
-        enquiryResult = view.findViewById(R.id.telco_enquiry_result)
-
-        btnEnquiry.setOnClickListener {
-            if (btnEnquiry.isClickable) {
-                postpaidListener.enquiryNumber()
-            }
-        }
+        btnMain = view.findViewById(R.id.telco_main_btn)
+        btnSecondary = view.findViewById(R.id.telco_secondary_btn)
     }
 
     fun resetClientNumberPostpaid() {
-        enquiryResult.removeAllViews()
-        btnEnquiry.show()
-        titleEnquiryResult.gone()
-        enquiryResult.gone()
+        btnMain?.show()
     }
 
     fun resetEnquiryResult() {
-        btnEnquiry.show()
-        titleEnquiryResult.gone()
-        enquiryResult.gone()
+        btnMain?.show()
     }
 
     fun setButtonEnquiry(enable: Boolean) {
-        btnEnquiry.isClickable = enable
+        btnMain?.isClickable = enable
     }
 
     fun setLoadingButtonEnquiry(loading: Boolean) {
-        btnEnquiry.isLoading = loading
-    }
-
-    fun showEnquiryResultPostpaid(telcoEnquiryData: TelcoEnquiryData) {
-        enquiryResult.removeAllViews()
-        if (telcoEnquiryData.enquiry.attributes.mainInfoList != null) {
-            for (item in telcoEnquiryData.enquiry.attributes.mainInfoList) {
-                if (!TextUtils.isEmpty(item.value)) {
-                    val billsResult = DigitalTelcoBillsResultWidget(context)
-                    billsResult.setLabel(item.label)
-                    billsResult.setValue(item.value)
-                    enquiryResult.addView(billsResult)
-                }
-            }
-        }
-        btnEnquiry.gone()
-        titleEnquiryResult.show()
-        enquiryResult.show()
+        btnMain?.isLoading = loading
+        btnSecondary?.isLoading = loading
     }
 
     fun setPostpaidListener(listener: ClientNumberPostpaidListener) {
         this.postpaidListener = listener
+    }
+
+    fun showMulticheckoutButtonSupport(multiCheckoutButtons: List<MultiCheckoutButtons>) {
+        btnMain?.let { btnMain ->
+            btnSecondary?.let { btnSecondary ->
+                showMultiCheckoutButton(multiCheckoutButtons, context, btnMain, btnSecondary,
+                    CoachMark2(context),
+                    {
+                        postpaidListener.mainButtonClick()
+                    }, {
+                        postpaidListener.secondaryButtonClick()
+                    }, {
+                        postpaidListener.onCloseCoachMark()
+                    }
+                )
+            }
+        }
     }
 }

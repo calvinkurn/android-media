@@ -177,6 +177,11 @@ import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop_widget.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop_widget.mvc_locked_to_product.util.MvcLockedToProductUtil
 import com.tokopedia.shop_widget.note.view.bottomsheet.ShopNoteBottomSheet
+import com.tokopedia.stories.widget.NoCoachMarkStrategy
+import com.tokopedia.stories.widget.OneTimeAnimationStrategy
+import com.tokopedia.stories.widget.StoriesWidgetManager
+import com.tokopedia.stories.widget.domain.StoriesEntryPoint
+import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
@@ -303,6 +308,7 @@ class ShopPageReimagineHeaderFragment :
         private const val CHIPS_NAME_CAMPAIGN = "Launching Eksklusif"
         private const val CHIPS_NAME_TOKO_PAGE = "Halaman Toko"
         private const val VALUE_ROLLENCE_NEW_SHOP_SHARE = "control_variant"
+        const val SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA = "HIDE_SHARE_CTA"
 
         @JvmStatic
         fun createInstance() = ShopPageReimagineHeaderFragment()
@@ -402,6 +408,11 @@ class ShopPageReimagineHeaderFragment :
     private var shopPageHeaderP1Data: ShopPageHeaderP1HeaderData? = null
     private var isAlreadyGetShopPageP2Data: Boolean = false
 
+    private val storiesManager by storiesManager(StoriesEntryPoint.ShopPageReimagined) {
+        setAnimationStrategy(OneTimeAnimationStrategy())
+        setCoachMarkStrategy(NoCoachMarkStrategy())
+    }
+
     private val bottomSheetTabNotFound: ShopEtalaseNotFoundBottomSheet by lazy {
         ShopEtalaseNotFoundBottomSheet.createInstance()
     }
@@ -493,6 +504,10 @@ class ShopPageReimagineHeaderFragment :
                 })
             }
         }
+    }
+
+    override fun getStoriesWidgetManager(): StoriesWidgetManager {
+        return storiesManager
     }
 
     private fun initViews(view: View) {
@@ -1190,6 +1205,7 @@ class ShopPageReimagineHeaderFragment :
             )
         }
         shopLandingPageInitAffiliateCookie()
+        storiesManager.updateStories(listOf(shopId))
     }
 
     private fun checkAffiliateAppLink(uri: Uri) {
@@ -1471,7 +1487,7 @@ class ShopPageReimagineHeaderFragment :
             UriUtil.buildUri(
                 ApplinkConst.SHOP_ETALASE,
                 shopId,
-                DEFAULT_SHOWCASE_ID
+                SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA
             ),
             "utf-8"
         )
@@ -2073,6 +2089,7 @@ class ShopPageReimagineHeaderFragment :
     }
 
     override fun refreshData() {
+        storiesManager.updateStories(listOf(shopId))
         isAlreadyGetShopPageP2Data = false
         hideShopPageFab()
         val shopProductListFragment: Fragment? = viewPagerAdapterHeader?.getRegisteredFragment(if (shopPageHeaderDataModel?.isOfficial == true) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)

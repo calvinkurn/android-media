@@ -19,7 +19,6 @@ import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.InstructionT
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.InstructionUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.MediaSliderUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.OutOfCoverageUiModel
-import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeDetailLoadingUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeInfoUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeProductUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeTabUiModel
@@ -699,11 +698,11 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
     }
 
     @Test
-    fun `when onClickBookmarkBtn should call update address data and add loading to layout list`() {
+    fun `when onClickBookmarkBtn should call update address data and add error ui model to layout list`() {
         viewModel.refreshPage()
 
         val expectedLayoutList = listOf(
-            RecipeDetailLoadingUiModel
+            TokoNowServerErrorUiModel
         )
 
         verifyUpdateAddressDataCalled()

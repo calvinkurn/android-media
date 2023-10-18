@@ -34,7 +34,7 @@ open class BaseCategoryViewModel(
     affiliateService: NowAffiliateService,
     userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
-): BaseTokoNowViewModel(
+) : BaseTokoNowViewModel(
     getTargetedTickerUseCase = getTargetedTickerUseCase,
     getMiniCartUseCase = getMiniCartUseCase,
     addToCartUseCase = addToCartUseCase,
@@ -83,11 +83,9 @@ open class BaseCategoryViewModel(
     protected open suspend fun loadFirstPage(
         tickerData: GetTickerData
     ) {
-
     }
 
     protected open suspend fun loadNextPage() {
-
     }
 
     protected fun sendOpenScreenTracker(id: String, name: String, url: String) {
@@ -136,7 +134,6 @@ open class BaseCategoryViewModel(
             loadMoreJob = launchCatchError(block = {
                 loadNextPage()
             }) {
-
             }
         }
     }
@@ -184,11 +181,12 @@ open class BaseCategoryViewModel(
     }
 
     private fun getShopIdBeforeLoadData() {
-        getShopAndWarehouseUseCase.getStateChosenAddress(
-            ::onGetShopAndWarehouseSuccess,
-            onFail = {},
-            SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
-        )
+        launchCatchError(block = {
+            val response = getShopAndWarehouseUseCase(SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH)
+            onGetShopAndWarehouseSuccess(response)
+        }) {
+            // no op
+        }
     }
 
     private fun onGetShopAndWarehouseSuccess(state: GetStateChosenAddressResponse) {
@@ -203,7 +201,7 @@ open class BaseCategoryViewModel(
             page = tickerPage
         ).await()
 
-        return if(tickerData != null) {
+        return if (tickerData != null) {
             hasBlockedAddToCart = tickerData.blockAddToCart
             tickerData
         } else {
