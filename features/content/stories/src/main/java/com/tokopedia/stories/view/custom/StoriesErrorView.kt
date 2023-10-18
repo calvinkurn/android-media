@@ -63,6 +63,7 @@ class StoriesErrorView : ConstraintLayout {
             binding.btnStoriesNoInetRetry.showWithCondition(value != Type.EmptyStories && value != Type.EmptyCategory && value != Type.NoContent)
             binding.loaderGroup.showWithCondition(value != Type.EmptyStories && value != Type.EmptyCategory && value != Type.NoContent)
             binding.icCloseLoading.showWithCondition(value != Type.EmptyCategory && value != Type.NoContent)
+            binding.viewTimer.showWithCondition(value != Type.EmptyCategory && value != Type.NoContent)
         }
 
     fun setAction(action: (View) -> Unit) {
