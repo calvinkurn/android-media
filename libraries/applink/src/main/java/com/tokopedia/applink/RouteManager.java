@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.dev_monitoring_tools.userjourney.UserJourney;
@@ -46,7 +47,6 @@ import timber.log.Timber;
 
 public class RouteManager {
 
-    private static final String EXTRA_APPLINK_UNSUPPORTED = "EXTRA_APPLINK_UNSUPPORTED";
     public static final String QUERY_PARAM = "QUERY_PARAM";
     private static final String LINK = ".link";
 
@@ -350,6 +350,9 @@ public class RouteManager {
 
         logErrorOpenDeeplink(context, uriString);
 
+        intent = getDeeplinkNotFoundIntent(context);
+        context.startActivity(intent);
+
         ApplinkLogger.getInstance(context).appendTrace("Error: No destination activity found");
         ApplinkLogger.getInstance(context).save();
         return false;
@@ -421,11 +424,14 @@ public class RouteManager {
 
         if (intent == null || intent.resolveActivity(context.getPackageManager()) == null) {
             logErrorOpenDeeplink(context, deeplink);
-            intent = getHomeIntent(context);
-            intent.setData(Uri.parse(deeplink));
-            intent.putExtra(EXTRA_APPLINK_UNSUPPORTED, true);
+            intent = getDeeplinkNotFoundIntent(context);
+            if (intent != null) {
+                intent.setData(Uri.parse(deeplink));
+                return intent;
+            } else {
+                return getHomeIntent(context);
+            }
         }
-
         return intent;
     }
 
@@ -443,6 +449,10 @@ public class RouteManager {
         }
         intent.setClassName(packageName, GlobalConfig.HOME_ACTIVITY_CLASS_NAME);
         return intent;
+    }
+
+    public static Intent getDeeplinkNotFoundIntent(Context context) {
+        return getIntentNoFallback(context, ApplinkConstInternalGlobal.DEEPLINK_NOT_FOUND);
     }
 
     /**

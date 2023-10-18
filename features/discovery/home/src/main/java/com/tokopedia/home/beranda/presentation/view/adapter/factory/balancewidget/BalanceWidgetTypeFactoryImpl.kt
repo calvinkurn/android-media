@@ -15,11 +15,15 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2.BalanceWidgetAtf2ShimmerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2.BalanceWidgetAtf2ViewHolder
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
+import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 
 /**
  * Created by frenzel
  */
-class BalanceWidgetTypeFactoryImpl(val listener: HomeCategoryListener?) : BaseAdapterTypeFactory(), BalanceWidgetTypeFactory {
+class BalanceWidgetTypeFactoryImpl(
+    val listener: HomeCategoryListener?,
+    private val homeThematicUtil: HomeThematicUtil,
+) : BaseAdapterTypeFactory(), BalanceWidgetTypeFactory {
     override fun type(dataModel: HomeBalanceModel): Int {
         return if(HomeRollenceController.isUsingAtf2Variant()) {
             BalanceWidgetAtf2ViewHolder.LAYOUT
@@ -41,9 +45,9 @@ class BalanceWidgetTypeFactoryImpl(val listener: HomeCategoryListener?) : BaseAd
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             BalanceWidgetViewHolder.LAYOUT -> BalanceWidgetViewHolder(view, listener)
-            BalanceWidgetAtf2ViewHolder.LAYOUT -> BalanceWidgetAtf2ViewHolder(view, listener)
+            BalanceWidgetAtf2ViewHolder.LAYOUT -> BalanceWidgetAtf2ViewHolder(view, listener, homeThematicUtil)
             BalanceWidgetShimmerViewHolder.LAYOUT -> BalanceWidgetShimmerViewHolder(view, listener)
-            BalanceWidgetAtf2ShimmerViewHolder.LAYOUT -> BalanceWidgetAtf2ShimmerViewHolder(view, listener)
+            BalanceWidgetAtf2ShimmerViewHolder.LAYOUT -> BalanceWidgetAtf2ShimmerViewHolder(view, listener, homeThematicUtil)
             BalanceWidgetFailedViewHolder.LAYOUT -> BalanceWidgetFailedViewHolder(view, listener)
             BalanceWidgetAtf2FailedViewHolder.LAYOUT -> BalanceWidgetAtf2FailedViewHolder(view, listener)
             else -> super.createViewHolder(view, type)

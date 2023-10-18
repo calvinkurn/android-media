@@ -6,12 +6,13 @@ import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PLACEHOLDER
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
+import com.tokopedia.feedplus.presentation.model.type.FeedContentType
 
 /**
  * Created By : Muhammad Furqan on 02/03/23
  */
 data class FeedCardImageContentModel(
-    val id: String,
+    override val id: String,
     val typename: String,
     val type: String,
     val author: FeedAuthorModel,
@@ -34,7 +35,7 @@ data class FeedCardImageContentModel(
     val views: FeedViewModel,
     val like: FeedLikeModel,
     val comments: FeedCommentModel,
-    val share: FeedShareModel,
+    override val share: FeedShareModel,
     val followers: FeedFollowModel,
     val menuItems: List<ContentMenuItem>,
     val detailScore: List<FeedScoreModel>,
@@ -45,8 +46,9 @@ data class FeedCardImageContentModel(
     val adViewUrl: String = "", // use only for topads
     val adClickUrl: String = "", // use only for topads
     val isFetched: Boolean = false, // use only for topads
-    val topAdsId: String = "" // use only for topads
-) : Visitable<FeedAdapterTypeFactory> {
+    val topAdsId: String = "", // use only for topads
+    override val contentType: FeedContentType
+) : Visitable<FeedAdapterTypeFactory>, FeedContentUiModel {
     override fun type(typeFactory: FeedAdapterTypeFactory): Int = typeFactory.type(this)
 
     val isTypeProductHighlight: Boolean
@@ -54,9 +56,6 @@ data class FeedCardImageContentModel(
 
     val isTopAds: Boolean
         get() = type == TYPE_FEED_TOP_ADS && typename == TYPE_FEED_X_CARD_PLACEHOLDER
-
-    val showComment: Boolean
-        get() = !isTopAds && !isTypeProductHighlight
 
     val contentScore = detailScore.firstOrNull { it.isContentScore }?.value ?: ""
 }
