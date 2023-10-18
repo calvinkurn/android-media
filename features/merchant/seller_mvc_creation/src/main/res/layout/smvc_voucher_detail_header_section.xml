@@ -150,6 +150,12 @@
 
     </LinearLayout>
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_header_used_quota"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tpg_progress_bar_title, pgb_used_voucher, tpg_used_voucher_quota, tpg_available_voucher_quota" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpg_progress_bar_title"
         android:layout_width="wrap_content"

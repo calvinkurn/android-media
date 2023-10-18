@@ -393,6 +393,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     voucherDetailTracker.sendClickDownloadEvent(data)
                 }
             }
+            groupHeaderUsedQuota.showWithCondition(!data.isGetSubsidy())
         }
     }
 
