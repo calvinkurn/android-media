@@ -2,10 +2,8 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.marginBottom
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
-import androidx.core.view.marginTop
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
@@ -75,7 +73,7 @@ class DynamicOneLinerViewHolder(
                 title.renderHtmlBold(context)
             }
 
-            setMargin(marginLeft, data.paddingTop, marginRight, data.paddingBottom)
+            setMargin(marginLeft, data.paddingTop.toPx(), marginRight, data.paddingBottom.toPx())
         }
 
         val iconUrl = data.icon
