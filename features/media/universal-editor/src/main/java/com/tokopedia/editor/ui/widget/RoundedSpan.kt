@@ -75,125 +75,57 @@ class RoundedSpan(
 
         rect.set(shiftLeft, top.toFloat(), shiftRight, bottom.toFloat())
 
-        if (lnum != 0 && end == text.length) {
-            rect.bottom += SPACE_GAP_EXTRA
+        if (text.substring(start, end).replace("\n","").isEmpty()) {
+            return
         }
 
-        if (lnum == 0) {
-            rect.top -= SPACE_GAP_EXTRA
-            rect.bottom += SPACE_GAP_EXTRA
+        val startPoint = Pair(right - (right - left).toFloat(), top.toFloat())
+        path.moveTo(startPoint.first, startPoint.second)
 
-            c.drawRoundRect(rect, radius.toFloat(), radius.toFloat(), paint)
-        } else {
-            path.reset()
+        // 1
+        path.lineTo(rect.left + radius, top.toFloat())
 
-            // check if line is empty only contain \n then skip background
-            val textOnLine = text.substring(start, end)
-            if (textOnLine.replace("\n", "").isEmpty()) {
-                prevWidth = 0f
-                prevLeft = rect.left
-                prevRight = rect.right
-                prevBottom = rect.bottom
-                prevTop = rect.top
+        // 2
+        path.cubicTo(
+            rect.left, rect.top,
+            rect.left, rect.top,
+            rect.left, rect.top + radius
+        )
 
-                listOfEmptyLine[lnum] = "-"
+        // 3
+        path.lineTo(rect.left, rect.bottom - radius)
 
-                return
-            }
+        // 4
+        path.cubicTo(
+            rect.left, rect.bottom,
+            rect.left, rect.bottom,
+            rect.left + radius, rect.bottom
+        )
 
-            // check if draw need to skip spike when prev line is empty (only contain new line)
-            val isSkipSpike = listOfEmptyLine[lnum - 1] != null
+        // 5
+        path.lineTo(rect.right - radius, rect.bottom)
 
-            val difference = width - prevWidth
-            val diff = -sign(difference) * (2f * radius).coerceAtMost(abs(difference / 2f)) / 2f
-            path.moveTo(
-                prevLeft, rect.top
-            )
+        // 6
+        path.cubicTo(
+            rect.right, rect.bottom,
+            rect.right, rect.bottom,
+            rect.right, rect.bottom - radius
+        )
 
-            if (align != ALIGN_LEFT) {
-                if (!isSkipSpike) {
-                    path.cubicTo(//1
-                        prevLeft, prevBottom - radius,
-                        prevLeft, rect.top,
-                        prevLeft + diff, rect.top
-                    )
-                }
-            } else {
-                path.lineTo(prevLeft, prevBottom + radius)
-            }
-            path.lineTo(
-                rect.left - diff, rect.top
-            )
-            path.cubicTo(//2 rounded kiri atas
-                rect.left - diff, rect.top,
-                rect.left, rect.top,
-                rect.left, rect.top + radius
-            )
-            path.lineTo(
-                rect.left, rect.bottom - radius
-            )
-            path.cubicTo(//3 rounded kiri bawah
-                rect.left, rect.bottom - radius,
-                rect.left, rect.bottom,
-                rect.left + radius, rect.bottom
-            )
-            path.lineTo(
-                rect.right - radius, rect.bottom
-            )
-            path.cubicTo(//4 rounded kanan bawah
-                rect.right - radius, rect.bottom,
-                rect.right, rect.bottom,
-                rect.right, rect.bottom - radius
-            )
+        // 7
+        path.lineTo(rect.right, rect.top + radius)
 
-            path.lineTo(
-                rect.right, rect.top + radius
-            )
+        // 8
+        path.cubicTo(
+            rect.right, rect.top,
+            rect.right, rect.top,
+            rect.right - radius, rect.top
+        )
 
-            if (align != ALIGN_RIGHT) {
-                path.cubicTo(//5 rounded kanan atas
-                    rect.right, rect.top + radius,
-                    rect.right, rect.top,
-                    rect.right + diff, rect.top
-                )
-                path.lineTo(
-                    prevRight - diff, rect.top
-                )
-                if (!isSkipSpike) {
-                    path.cubicTo(//6
-                        prevRight - diff, rect.top,
-                        prevRight, rect.top,
-                        prevRight, prevBottom - radius
-                    )
-                }
-            } else {
-                path.lineTo(prevRight, prevBottom - radius)
-            }
+        // 9
+        path.lineTo(startPoint.first, startPoint.second)
 
-            if (!isSkipSpike) {
-                path.cubicTo(//7
-                    prevRight, prevBottom - radius,
-                    prevRight, prevBottom,
-                    prevRight - radius, prevBottom
-                )
-            }
-
-            path.lineTo(
-                prevLeft + radius, rect.top
-            )
-
-            if (!isSkipSpike) {
-                path.cubicTo(//8
-                    prevLeft + radius, prevBottom,
-                    prevLeft, prevBottom,
-                    prevLeft, rect.top - radius
-                )
-            }
-
-            c.drawPath(path, paintStroke)
-
-        }
-
+        c.drawPath(path, paintStroke)
 
         prevWidth = width
         prevLeft = rect.left
