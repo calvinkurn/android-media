@@ -44,10 +44,15 @@ class StoriesErrorView : ConstraintLayout {
                         IconUnify.SIGNAL_INACTIVE
                     )
 
-                    Type.FailedLoad, Type.NoContent -> Triple(
+                    Type.FailedLoad -> Triple(
                         null,
                         R.string.stories_retry_description,
                         IconUnify.RELOAD
+                    )
+                    Type.NoContent -> Triple(
+                        R.string.stories_content_render_failed,
+                        null,
+                        IconUnify.IMAGE
                     )
 
                     else -> Triple(null, null, IconUnify.ERROR)

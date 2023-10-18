@@ -311,7 +311,7 @@ class StoriesDetailFragment @Inject constructor(
                                     hideError()
                                 }
                                 override fun failedLoad() {
-                                    setErrorType(StoriesErrorView.Type.NoContent) { viewModelAction(StoriesUiAction.RetryDetailPage) }
+                                    setErrorType(StoriesErrorView.Type.NoContent)
                                 }
                             }
                         )
@@ -584,7 +584,7 @@ class StoriesDetailFragment @Inject constructor(
         setCloseAction { activity?.finish() }
         translationZ = if (errorType == StoriesErrorView.Type.NoContent || errorType == StoriesErrorView.Type.EmptyCategory) 0f else 1f
 
-        if(errorType != StoriesErrorView.Type.EmptyCategory) return@with
+        if(errorType != StoriesErrorView.Type.EmptyCategory && errorType != StoriesErrorView.Type.NoContent) return@with
         renderTimer(null, TimerStatusInfo.Empty)
     }
 
