@@ -23,8 +23,9 @@ internal object EPharmacyNavigator {
         ePharmacyGroupId: String?,
         enablerName: String?,
         price: String?,
-        operatingSchedule: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource.OperatingSchedule?,
+        duration: String?,
         note: String?,
+        isOutsideWorkingHours: Boolean?,
         isOnlyConsult: Boolean = false
     ): String {
         return UriUtil.buildUriAppendParam(
@@ -34,9 +35,9 @@ internal object EPharmacyNavigator {
                 EPHARMACY_GROUP_ID to ePharmacyGroupId,
                 EPHARMACY_ENABLER_NAME to enablerName,
                 EPHARMACY_CONS_PRICE to price.orEmpty(),
-                EPHARMACY_CONS_DURATION to operatingSchedule?.duration.orEmpty(),
+                EPHARMACY_CONS_DURATION to duration.orEmpty(),
                 EPHARMACY_NOTE to note.orEmpty(),
-                EPHARMACY_IS_OUTSIDE_WORKING_HOURS to (operatingSchedule?.isClosingHour.orFalse()).toString(),
+                EPHARMACY_IS_OUTSIDE_WORKING_HOURS to isOutsideWorkingHours?.orFalse().toString(),
                 EPHARMACY_IS_ONLY_CONSULT to isOnlyConsult.toString()
             )
         )

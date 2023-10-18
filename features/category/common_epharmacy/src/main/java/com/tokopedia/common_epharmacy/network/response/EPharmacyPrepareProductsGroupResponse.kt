@@ -3,6 +3,7 @@ package com.tokopedia.common_epharmacy.network.response
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.orZero
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -55,10 +56,10 @@ data class EPharmacyPrepareProductsGroupResponse(
 
                 @Parcelize
                 data class Ticker(
-                    @SerializedName("ticker_type")
+                    @SerializedName("type_int")
                     var tickerType: Int?,
-                    @SerializedName("title")
-                    val title: String?
+                    @SerializedName("message")
+                    val message: String?
                 ) : Parcelable
 
                 @Parcelize
@@ -127,6 +128,8 @@ data class EPharmacyPrepareProductsGroupResponse(
                     val pwaLink: String?,
                     @SerializedName("price")
                     val price: String? = "",
+                    @SerializedName("price_str")
+                    val priceStr: String? = "",
                     @SerializedName("note")
                     val note: String?,
                     @SerializedName("status")
@@ -216,7 +219,6 @@ data class EPharmacyPrepareProductsGroupResponse(
                         val qtyComparison: QtyComparison?,
                         @SerializedName("price")
                         val price: Double,
-                        var subTotal: Double? = (qtyComparison?.initialQty.orZero() * qtyComparison?.productPrice.orZero()),
                         ) : Parcelable {
                         @Parcelize
                         data class QtyComparison(
@@ -228,8 +230,12 @@ data class EPharmacyPrepareProductsGroupResponse(
                             var currentQty: Int = 0,
                             @SerializedName("price")
                             val productPrice: Double?,
-                            var subTotal: Double? = (initialQty.orZero() * productPrice.orZero()),
-                        ) : Parcelable
+                        ) : Parcelable {
+
+                            @IgnoredOnParcel
+                            var subTotal: Double? = (initialQty?.toDouble().orZero() * productPrice.orZero())
+                        }
+
                     }
                 }
             }

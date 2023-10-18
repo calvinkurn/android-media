@@ -29,12 +29,15 @@ import com.tokopedia.epharmacy.utils.MINI_CONS_CHOOSER_IMAGE_URL_DISABLED
 import com.tokopedia.epharmacy.utils.UPLOAD_CHOOSER_IMAGE_URL
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class EPharmacyChooserBottomSheet : BottomSheetUnify() {
 
@@ -161,13 +164,29 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                     }
                 }
 
+                renderDuration(duration)
+                renderPrice(price)
                 renderNote(note)
+            }
+        }
+    }
 
-                if (duration.isNotBlank() || price.isNotBlank()) {
-                    chooserMiniConsultation.payGroup.show()
-                    chooserMiniConsultation.durationValue.text = duration
-                    chooserMiniConsultation.feeValue.text = price
-                }
+    private fun renderDuration(durationText: String?) {
+        binding?.chooserMiniConsultation?.apply {
+            if(durationText?.isNotBlank().orFalse()){
+                duration.show()
+                durationValue.show()
+                durationValue.text = durationText
+            }
+        }
+    }
+
+    private fun renderPrice(priceText: String?) {
+        binding?.chooserMiniConsultation?.apply {
+            if(priceText?.isNotBlank().orFalse()){
+                fee.show()
+                feeValue.show()
+                feeValue.text = priceText
             }
         }
     }
@@ -175,7 +194,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     private fun renderClosingHours() {
         binding?.chooserMiniConsultation?.let {
             with(it) {
-                val disableColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400)
+                val disableColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN400)
                 lblPAPTittleOptionBottomsheet.setTextColor(disableColor)
                 lblPAPDescriptionOptionBottomsheet.setTextColor(disableColor)
                 baruLabel.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)

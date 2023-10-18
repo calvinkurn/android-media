@@ -7,8 +7,8 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.epharmacy.R as epharmacyR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class EPharmacySecondaryActionButtonItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
     private val divider = MethodChecker.getDrawable(context, epharmacyR.drawable.epharmacy_secondary_action_button_divider)

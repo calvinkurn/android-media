@@ -31,7 +31,7 @@ class EPharmacyComponentBottomSheet : BottomSheetUnify() {
         setUpTitle()
         if (savedInstanceState == null) {
             when (arguments?.getString(COMPONENT_NAME)) {
-                TYPE_QUANTITY_CHANGE -> {
+                TYPE_QUANTITY_EDITOR -> {
                     EPharmacyNavigator.navigateToQuantityBottomSheet(childFragmentManager)
                 }
             }
@@ -48,7 +48,7 @@ class EPharmacyComponentBottomSheet : BottomSheetUnify() {
     companion object {
 
         private const val COMPONENT_NAME = "ComponentName"
-        private const val TYPE_QUANTITY_CHANGE = "quantity-change"
+        private const val TYPE_QUANTITY_EDITOR = "quantity-editor"
 
         fun newInstance(componentName: String): EPharmacyComponentBottomSheet {
             return EPharmacyComponentBottomSheet().apply {

@@ -12,15 +12,16 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
     GraphqlUseCase<EPharmacyPrepareProductsGroupResponse>(graphqlRepository) {
 
     fun getEPharmacyPrepareProductsGroup(
-        onSuccess: (String, EPharmacyPrepareProductsGroupResponse) -> Unit,
+        onSuccess: (EPharmacyPrepareProductsGroupResponse, String?) -> Unit,
         onError: (Throwable) -> Unit,
-        source: String = EPHARMACY_PPG_SOURCE_PAP
+        source: String? = EPHARMACY_PPG_SOURCE_PAP,
+        params: MutableMap<String, Any?>
     ) {
         try {
-            this.setParams()
+            this.setParams(params)
             this.execute(
                 { result ->
-                    onSuccess(source, result)
+                    onSuccess(result, source)
                 },
                 { error ->
                     onError(error)
@@ -31,19 +32,15 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
         }
     }
 
-    private fun getRequestParams(source: String): MutableMap<String, Any?> {
-        val requestMap = mutableMapOf<String, Any?>()
-        requestMap[PARAM_SOURCE] = source
-        return requestMap
-    }
-
     companion object {
+        const val PARAM_INPUT = "input"
         const val PARAM_SOURCE = "source"
+        const val PARAM_TOKO_CONSULTATION_ID = "tokoConsultationID"
     }
 
-    private fun setParams() {
+    fun setParams(params: Map<String, Any?>) {
         this.setTypeClass(EPharmacyPrepareProductsGroupResponse::class.java)
         this.setGraphqlQuery(GetEPharmacyPrepareProductsGroupQuery)
-        // this.setRequestParams(getRequestParams(source))
+        this.setRequestParams(mapOf(PARAM_INPUT to params))
     }
 }

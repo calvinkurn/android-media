@@ -14,9 +14,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_epharmacy.EPHARMACY_CEK_RESEP_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_CHOOSER_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
+import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_CHECKOUT
 import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_PAP
 import com.tokopedia.common_epharmacy.EPHARMACY_PPG_UOH
 import com.tokopedia.common_epharmacy.EPHARMACY_UPLOAD_REQUEST_CODE
+import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyAdapter
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
@@ -33,10 +35,8 @@ import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyReminderScreenBottomSheet
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.ATTACH_PRESCRIPTION_PAGE
 import com.tokopedia.epharmacy.utils.EPHARMACY_ANDROID_SOURCE
 import com.tokopedia.epharmacy.utils.EPHARMACY_APPLINK
-import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_NAME
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
-import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_IDS
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
 import com.tokopedia.epharmacy.utils.EPharmacyButtonState
@@ -59,7 +59,6 @@ import com.tokopedia.epharmacy.utils.UPLOAD_PAGE_SOURCE_PAP
 import com.tokopedia.epharmacy.utils.openDocument
 import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewModel
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -87,8 +86,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     private var trackingSentBoolean = false
 
     private var tConsultationId = 0L
-    private var source = String.EMPTY
-    private var groupIds : Array<String>? = arrayOf()
+    private var source = EPHARMACY_PPG_SOURCE_PAP
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -135,14 +133,13 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     }
 
     private fun initArguments() {
-        groupIds = arguments?.getStringArray(EPHARMACY_GROUP_IDS)
         tConsultationId = arguments?.getLong(EPHARMACY_TOKO_CONSULTATION_ID).orZero()
 
-        source = if(!groupIds.isNullOrEmpty()){
-            EPHARMACY_PPG_SOURCE_PAP
-        }else if(!tConsultationId.isZero()) {
+        source = if (!tConsultationId.isZero()) {
             EPHARMACY_PPG_UOH
-        }else String.EMPTY
+        } else {
+            EPHARMACY_PPG_SOURCE_CHECKOUT
+        }
     }
 
     private fun setUpObservers() {
@@ -167,7 +164,14 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun getData() {
         addShimmer()
-        ePharmacyPrescriptionAttachmentViewModel.getPrepareProductGroup()
+        ePharmacyPrescriptionAttachmentViewModel.getPrepareProductGroup(source, makeRequestParams())
+    }
+
+    private fun makeRequestParams(): MutableMap<String, Any?> {
+        return mutableMapOf(
+            EPharmacyPrepareProductsGroupUseCase.PARAM_SOURCE to source,
+            EPharmacyPrepareProductsGroupUseCase.PARAM_TOKO_CONSULTATION_ID to tConsultationId
+        )
     }
 
     private fun addShimmer() {
@@ -418,6 +422,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         submitList(newData)
     }
 
+    // Redirection-Actions
     private fun onDoneButtonClick(appLink: String?) {
         if (hasAnyError()) {
             showToast(TYPE_ERROR, context?.resources?.getString(epharmacyR.string.epharmacy_local_prescription_not_uploaded_error).orEmpty())
@@ -432,7 +437,6 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             ePharmacyPrescriptionAttachmentViewModel.getGroupIds().toString(),
             EPharmacyUtils.getPrescriptionIds(ePharmacyPrescriptionAttachmentViewModel.ePharmacyPrepareProductsGroupResponseData).toString()
         )
-
         EPharmacyNavigator.prescriptionAttachmentDoneRedirection(activity, appLink, ePharmacyPrescriptionAttachmentViewModel.getResultForCheckout())
     }
 
@@ -559,8 +563,9 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 ePharmacyGroupId,
                 enablerName,
                 price,
-                operatingSchedule,
-                EPharmacyUtils.getChatDokterNote(context, operatingSchedule, note),
+                operatingSchedule?.duration.toString(),
+                note,
+                operatingSchedule?.isClosingHour,
                 isOnlyConsult
             )
         )?.also {

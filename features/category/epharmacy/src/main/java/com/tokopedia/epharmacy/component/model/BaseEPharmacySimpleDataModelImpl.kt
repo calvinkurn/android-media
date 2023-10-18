@@ -2,10 +2,11 @@ package com.tokopedia.epharmacy.component.model
 
 import android.os.Bundle
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
+import com.tokopedia.kotlin.extensions.view.EMPTY
 
 abstract class BaseEPharmacySimpleDataModelImpl(
-    open val name: String = "",
-    open val type: String = "") : BaseEPharmacyDataModel {
+    open val name: String = String.EMPTY,
+    open val type: String = String.EMPTY) : BaseEPharmacyDataModel {
 
     override fun name(): String = name
 

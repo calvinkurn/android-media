@@ -3,8 +3,8 @@ package com.tokopedia.epharmacy.component.model
 import com.tokopedia.epharmacy.adapters.factory.EPharmacyAdapterFactory
 
 data class EPharmacyOrderDetailHeaderDataModel(
-    override val name: String = "",
-    override val type: String = "",
+    override val name: String,
+    override val type: String,
     val title: String?,
     val tickerType: Int?,
     val tickerMessage: String?,
@@ -22,8 +22,8 @@ data class EPharmacyOrderDetailHeaderDataModel(
 }
 
 data class EPharmacyOrderDetailInfoDataModel(
-    override val name: String = "",
-    override val type: String = "",
+    override val name: String,
+    override val type: String,
     val serviceType: String?,
     val enablerName: String?,
     val duration: String?,
@@ -39,8 +39,8 @@ data class EPharmacyOrderDetailInfoDataModel(
 
 
 data class EPharmacyOrderDetailPaymentDataModel(
-    override val name: String = "",
-    override val type: String = "",
+    override val name: String,
+    override val type: String,
     val paymentMethod: String?,
     val totalPrice: String?,
     val totalPayment: String?

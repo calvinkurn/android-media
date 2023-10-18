@@ -9,13 +9,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/epharmacy_rv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp"
-        android:paddingBottom="32dp"
-        app:layout_constraintBottom_toTopOf="@id/qc_total_amount"
+        android:layout_height="match_parent"
         tools:listitem="@layout/epharmacy_prescription_attachment_view_item"
         tools:itemCount="3"
         />
@@ -23,24 +17,13 @@
 
     <com.tokopedia.totalamount.TotalAmount
         android:id="@+id/qc_total_amount"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:unify_total_amount_title_text="@string/epharmacy_total_harga"
         app:unify_total_amount_cta_text="@string/epharmacy_perbarui_pesanan"
-        />
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/epharmacy_loader"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
         />
 
     <com.tokopedia.globalerror.GlobalError

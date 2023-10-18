@@ -15,7 +15,10 @@ import com.tokopedia.epharmacy.network.response.EPharmacyConsultationDetailsResp
 import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationResponse
 import com.tokopedia.epharmacy.usecase.EPharmacyGetConsultationDetailsUseCase
 import com.tokopedia.epharmacy.usecase.EPharmacyInitiateConsultationUseCase
-import com.tokopedia.epharmacy.utils.*
+import com.tokopedia.epharmacy.utils.EPharmacyMiniConsultationToaster
+import com.tokopedia.epharmacy.utils.EPharmacyUploadError
+import com.tokopedia.epharmacy.utils.EPharmacyUtils
+import com.tokopedia.epharmacy.utils.PRESCRIPTION_ATTACH_SUCCESS
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -46,12 +49,13 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
 
     var ePharmacyPrepareProductsGroupResponseData: EPharmacyPrepareProductsGroupResponse ? = null
 
-    fun getPrepareProductGroup(source: String = EPHARMACY_PPG_SOURCE_PAP) {
+    fun getPrepareProductGroup(source: String = EPHARMACY_PPG_SOURCE_PAP, params: MutableMap<String, Any?>) {
         ePharmacyPrepareProductsGroupUseCase.cancelJobs()
         ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(
             ::onAvailablePrepareProductGroup,
             ::onFailPrepareProductGroup,
-            source
+            source,
+            params
         )
     }
 
@@ -73,7 +77,7 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         )
     }
 
-    private fun onAvailablePrepareProductGroup(source: String, ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse) {
+    private fun onAvailablePrepareProductGroup(ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse, source: String?) {
         ePharmacyPrepareProductsGroupResponseData = ePharmacyPrepareProductsGroupResponse
         ePharmacyPrepareProductsGroupResponse.let { data ->
             if (data.detailData?.groupsData?.epharmacyGroups?.isNotEmpty() == true) {

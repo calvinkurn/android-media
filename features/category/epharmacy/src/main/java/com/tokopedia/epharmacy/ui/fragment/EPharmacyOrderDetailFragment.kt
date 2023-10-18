@@ -30,6 +30,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
@@ -47,7 +48,8 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
     private var ePharmacySecondaryButton: CardUnify? = null
     private var ePharmacyGlobalError: GlobalError? = null
 
-    private var orderId = "9e7c7910-6cc9-4397-901e-55a21c7d7e98"
+    //TODO get from backend
+    private var orderUUId = "9e7c7910-6cc9-4397-901e-55a21c7d7e98"
     private var tConsultationId = String.EMPTY
 
     private var binding by autoClearedNullable<EpharmacyOrderDetailFragmentBinding>()
@@ -119,7 +121,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
 
     private fun getData() {
         addShimmer()
-        ePharmacyOrderDetailViewModel?.getEPharmacyOrderDetail(tConsultationId, orderId)
+        ePharmacyOrderDetailViewModel?.getEPharmacyOrderDetail(tConsultationId, orderUUId)
     }
 
     private fun addShimmer() {
@@ -251,5 +253,83 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
             fragment.arguments = bundle
             return fragment
         }
+    }
+
+    fun sendViewChatDokterOrderDetailPageEvent (eventLabel: String) {
+        Tracker.Builder()
+            .setEvent("viewGroceriesIris")
+            .setEventAction("view chat dokter order detail page")
+            .setEventCategory("epharmacy chat dokter order detail page")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "45879")
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .build()
+            .send()
+    }
+
+    fun sendClickMainCtaEvent (eventLabel: String) {
+        Tracker.Builder()
+            .setEvent("clickGroceries")
+            .setEventAction("click main CTA")
+            .setEventCategory("epharmacy chat dokter order detail page")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "45880")
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .build()
+            .send()
+    }
+
+    fun sendViewPrescriptionImageWebviewEvent (eventLabel: String) {
+        Tracker.Builder()
+            .setEvent("viewGroceriesIris")
+            .setEventAction("view prescription image webview")
+            .setEventCategory("epharmacy prescription image webview")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "45882")
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .build()
+            .send()
+    }
+
+    fun sendClickPusatBantuanEvent (eventLabel: String) {
+        Tracker.Builder()
+            .setEvent("clickGroceries")
+            .setEventAction("click pusat bantuan")
+            .setEventCategory("epharmacy chat dokter order detail page")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "45885")
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .build()
+            .send()
+    }
+
+    fun sendClickBantuanOnLainnyaEvent (eventLabel: String) {
+        Tracker.Builder()
+            .setEvent("clickGroceries")
+            .setEventAction("click bantuan on lainnya")
+            .setEventCategory("epharmacy chat dokter order detail page")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "45886")
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .build()
+            .send()
+    }
+
+    fun sendClickBatalkanEvent (eventLabel: String) {
+        Tracker.Builder()
+            .setEvent("clickGroceries")
+            .setEventAction("click batalkan")
+            .setEventCategory("epharmacy chat dokter order detail page")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "45888")
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .build()
+            .send()
     }
 }

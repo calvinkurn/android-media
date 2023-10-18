@@ -93,6 +93,8 @@
             android:layout_marginTop="8dp"
             app:typographyType="paragraph_3"
             android:text="@string/epharmacy_biaya_chat_dokter"
+            android:visibility="gone"
+            tools:visibility="visible"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -104,6 +106,8 @@
             android:layout_marginTop="4dp"
             app:typographyType="paragraph_3"
             android:text="@string/epharmacy_durasi"
+            android:visibility="gone"
+            tools:visibility="visible"
             />
 
         <androidx.constraintlayout.widget.Barrier
@@ -125,6 +129,7 @@
             app:typographyWeight="bold"
             android:textColor="@color/Unify_NN600"
             android:gravity="end"
+            android:visibility="gone"
             tools:text="Rp10.000"
             />
 
@@ -139,6 +144,7 @@
             app:typographyWeight="bold"
             android:textColor="@color/Unify_NN600"
             android:gravity="end"
+            android:visibility="gone"
             tools:text="15 Menit"
             />
 
@@ -146,8 +152,7 @@
             android:id="@+id/note_ll"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/duration"
-            app:layout_constraintEnd_toEndOf="@id/duration_value"
+            app:layout_constraintStart_toStartOf="@id/divider"
             app:layout_constraintTop_toBottomOf="@id/duration"
             android:layout_marginTop="8dp"
             android:orientation="horizontal"
@@ -177,14 +182,6 @@
                 />
 
         </LinearLayout>
-
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/pay_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:constraint_referenced_ids="duration,duration_value,fee,fee_value,divider"
-            android:visibility="gone"
-            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

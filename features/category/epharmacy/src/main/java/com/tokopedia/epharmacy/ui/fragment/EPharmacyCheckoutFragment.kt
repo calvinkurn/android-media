@@ -24,10 +24,12 @@ import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.epharmacy.viewmodel.EPharmacyCheckoutViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_LONG
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
@@ -50,6 +52,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     private var tConsultationId = DEFAULT_ZERO_VALUE
     private var enablerId = DEFAULT_ZERO_VALUE
     private var groupId = String.EMPTY
+    private var enablerName = String.EMPTY
 
     private var ePharmacyCheckoutParams = EPharmacyCheckoutParams(ePharmacyCheckoutCartGroup = null)
 
@@ -139,6 +142,8 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     private fun onSuccessData(data: Success<EPharmacyAtcInstantResponse>) {
         removeShimmer()
         updateUi(data.data)
+        enablerName = data.data.cartGeneralAddToCartInstant?.cartGeneralAddToCartInstantData?.businessDataList?.businessData?.firstOrNull()?.cartGroups?.firstOrNull()?.carts?.firstOrNull()?.customResponse?.enablerName.orEmpty()
+        sendViewCheckoutPageEvent("$enablerName - $groupId - $tConsultationId")
     }
 
     private fun updateUi(data: EPharmacyAtcInstantResponse) {
@@ -157,7 +162,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
             setCartInfo(info.cartGroups?.firstOrNull()?.carts?.firstOrNull())
             setSummaryInfo(cartGeneralAddToCartInstant.cartGeneralAddToCartInstantData.businessDataList.shoppingSummary)
             setTotalInfo(cartGeneralAddToCartInstant.cartGeneralAddToCartInstantData.businessDataList.shoppingSummary)
-        }
+        } ?: setGlobalErrors(GlobalError.SERVER_ERROR)
     }
 
     private fun setTitle(title: String?) {
@@ -185,9 +190,9 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
 
     private fun setTotalInfo(shoppingSummary: EPharmacyAtcInstantResponse.CartGeneralAddToCartInstant.CartGeneralAddToCartInstantData.BusinessDataList.BusinessData.ShoppingSummary?) {
         binding?.qcTotalAmount?.apply {
-            setLabelTitle("Total Tagihan")
+            setLabelTitle(context.getString(epharmacyR.string.epharmacy_total_tagihan))
             setAmount(shoppingSummary?.businessBreakDown?.firstOrNull()?.product?.totalPriceFmt.orEmpty())
-            setCtaText("Pilih Pembayaran")
+            setCtaText(context.getString(epharmacyR.string.epharmacy_pilih_pembayaran))
             amountCtaView.setOnClickListener {
                 onSelectPayment()
             }
@@ -242,6 +247,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     }
 
     private fun onSelectPayment() {
+        sendClickPilihPembayaranEvent("$enablerName - $groupId - $tConsultationId")
         ePharmacyCheckoutViewModel?.getEPharmacyCheckoutData(EPharmacyUtils.createCheckoutGeneralParams(ePharmacyCheckoutParams))
     }
 
@@ -271,5 +277,44 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
                 arguments = bundle
             }
         }
+    }
+
+    private fun sendViewCheckoutPageEvent (eventLabel: String) {
+        Tracker.Builder()
+            .setEvent("viewGroceriesIris")
+            .setEventAction("view checkout page")
+            .setEventCategory("epharmacy chat dokter checkout page")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "45865")
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .build()
+            .send()
+    }
+
+    private fun sendClickPilihPembayaranEvent (eventLabel: String) {
+        Tracker.Builder()
+            .setEvent("clickGroceries")
+            .setEventAction("click pilih pembayaran")
+            .setEventCategory("epharmacy chat dokter checkout page")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "45866")
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .build()
+            .send()
+    }
+
+    fun sendClickBackEvent (eventLabel: String) {
+        Tracker.Builder()
+            .setEvent("clickGroceries")
+            .setEventAction("click back")
+            .setEventCategory("epharmacy chat dokter checkout page")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "45890")
+            .setBusinessUnit("Physical Goods")
+            .setCurrentSite("tokopediamarketplace")
+            .build()
+            .send()
     }
 }

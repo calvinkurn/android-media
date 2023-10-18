@@ -44,6 +44,8 @@
     <string name="epharmacy_chat_dokter">Chat Dokter</string>
     <string name="epharmacy_ringkasan_pembayaran">Ringkasan Pembayaran</string>
     <string name="epharmacy_subtotal_tagihan">Subtotal Tagihan</string>
+    <string name="epharmacy_total_tagihan">Total Tagihan</string>
+    <string name="epharmacy_pilih_pembayaran">Pilih Pembayaran</string>
     <string name="epharmacy_checkout_page_title">Checkout</string>
     <string name="epharmacy_order_detail_title">Detail Pesanan</string>
     <string name="epharmacy_durasi">Durasi</string>

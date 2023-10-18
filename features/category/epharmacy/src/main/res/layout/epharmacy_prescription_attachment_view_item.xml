@@ -190,7 +190,7 @@
         />
 
     <include
-        android:id="@+id/quantity_change_layout"
+        android:id="@+id/quantity_editor_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         layout="@layout/epharmacy_quantity_change_layout"
@@ -205,7 +205,7 @@
         android:id="@+id/barrier_more_products"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="division_single_card,quantity_change_layout"
+        app:constraint_referenced_ids="division_single_card,quantity_editor_layout"
         app:barrierDirection="bottom"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -229,7 +229,7 @@
         android:id="@+id/barrier_chat_dokter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="btn_PAP_minimize,quantity_change_layout"
+        app:constraint_referenced_ids="btn_PAP_minimize,quantity_editor_layout"
         app:barrierDirection="bottom"
         />
 
