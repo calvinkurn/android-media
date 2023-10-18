@@ -723,18 +723,27 @@ class EditAdGroupFragment : BaseDaggerFragment() {
         dataProduct.clear()
         dataKeyword.clear()
         dataProduct = items
-        val bidTypeData: ArrayList<TopAdsBidSettingsModel> = arrayListOf()
-        bidTypeData.add(TopAdsBidSettingsModel(ParamObject.PRODUCT_SEARCH, groupInfoResponse?.bidSettings?.firstOrNull()?.priceBid))
-        bidTypeData.add(
-            TopAdsBidSettingsModel(ParamObject.PRODUCT_BROWSE,
-                if (editedRecomBid.isEmpty()) groupInfoResponse?.bidSettings?.getOrNull(1)?.priceBid
-                else editedRecomBid.toFloatOrZero())
-        )
-        dataGroup[BID_TYPE] = bidTypeData
+        dataGroup[BID_TYPE] = getBidTypeData()
         dataKeyword[SUGGESTION_BID_SETTINGS] = bidSettingsListManual
-        dataGroup[STRATEGIES] = mutableListOf<String>()
+        dataGroup[STRATEGIES] = if (isBidAutomatic) mutableListOf("auto_bid") else mutableListOf()
         submitEditGroup(CreateEditAdGroupItemTag.PRODUCT)
 
+    }
+
+    private fun getBidTypeData(): ArrayList<TopAdsBidSettingsModel> {
+        val bidTypeData: ArrayList<TopAdsBidSettingsModel> = arrayListOf()
+        if (groupInfoResponse?.bidSettings?.firstOrNull()?.bidType == "product_auto_search") {
+            bidTypeData.add(TopAdsBidSettingsModel(ParamObject.PRODUCT_SEARCH, bidSuggestion.toFloatOrZero()))
+            bidTypeData.add(TopAdsBidSettingsModel(ParamObject.PRODUCT_BROWSE, bidSuggestion.toFloatOrZero()))
+        } else {
+            bidTypeData.add(TopAdsBidSettingsModel(ParamObject.PRODUCT_SEARCH, groupInfoResponse?.bidSettings?.firstOrNull()?.priceBid))
+            bidTypeData.add(
+                TopAdsBidSettingsModel(ParamObject.PRODUCT_BROWSE,
+                    if (editedRecomBid.isEmpty()) groupInfoResponse?.bidSettings?.getOrNull(1)?.priceBid
+                    else editedRecomBid.toFloatOrZero())
+            )
+        }
+        return bidTypeData
     }
 
     fun sendKeywordData(data: HashMap<String, Any?>) {
