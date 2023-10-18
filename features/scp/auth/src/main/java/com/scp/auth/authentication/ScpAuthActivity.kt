@@ -92,6 +92,10 @@ class ScpAuthActivity : BaseActivity() {
             .inject(this)
     }
 
+    private fun isShowGoogleLogin(): Boolean{
+        return firebaseRemoteConfig.getBoolean(CONFIG_GOOGLE_LOGIN, false)
+    }
+
     private fun startGotoLogin() {
         GotoSdk.LSDKINSTANCE?.startLoginFlow(
             activity = this@ScpAuthActivity,
@@ -107,7 +111,7 @@ class ScpAuthActivity : BaseActivity() {
                     title = "Pilih akun untuk lanjut"
                 ),
                 inputCredentialsConfigs = LSdkInputCredentialsUiConfigs(
-                    shouldShowGoogleLogin = true
+                    shouldShowGoogleLogin = isShowGoogleLogin()
                 )
             ),
             additionalHeaders = TkpdAdditionalHeaders(this),
@@ -266,5 +270,7 @@ class ScpAuthActivity : BaseActivity() {
     companion object {
         const val TOKOPEDIA_CARE_PATH = "help"
         const val TOKOPEDIA_CARE_STRING_FORMAT = "%s?url=%s"
+
+        const val CONFIG_GOOGLE_LOGIN = "android_user_google_login"
     }
 }
