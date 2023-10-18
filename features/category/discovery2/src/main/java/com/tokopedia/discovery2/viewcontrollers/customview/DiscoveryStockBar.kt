@@ -27,6 +27,9 @@ class DiscoveryStockBar : FrameLayout {
     }
 
     fun setLabel(label: String?) {
-        binding?.label?.text = label
+        binding?.label?.apply {
+            text = label
+            textSize = 8f
+        }
     }
 }
