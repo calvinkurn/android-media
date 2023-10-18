@@ -86,6 +86,7 @@ class GetVoucherListUseCase @Inject constructor(
                           }
                         }
                         is_editable
+                        is_stoppable
                         subsidy_detail{
                           program_detail{
                             program_name

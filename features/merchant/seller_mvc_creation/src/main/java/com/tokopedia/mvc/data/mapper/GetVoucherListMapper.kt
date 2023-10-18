@@ -65,6 +65,7 @@ class GetVoucherListMapper @Inject constructor() {
                 isParent = it.isParent,
                 labelVoucher = it.toLabelVoucher(),
                 isEditable = it.isEditable,
+                isStoppable = it.isStoppable,
                 subsidyDetail = it.subsidyDetail.toSubsidyDetail(),
                 galadrielVoucherId = it.galadrielVoucherId
             )
