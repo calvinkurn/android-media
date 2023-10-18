@@ -9,6 +9,7 @@ import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
 import com.tokopedia.stories.creation.view.model.StoriesMediaType
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
+import com.tokopedia.stories.creation.view.model.exception.AccountNotEligibleException
 import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -82,7 +83,9 @@ class StoriesCreationViewModel @Inject constructor(
                 }
             }
             else {
-                /** TODO JOE: handle this */
+                _uiEvent.emit(
+                    StoriesCreationUiEvent.ErrorPreparePage(AccountNotEligibleException())
+                )
             }
         }) { throwable ->
             _uiEvent.emit(
