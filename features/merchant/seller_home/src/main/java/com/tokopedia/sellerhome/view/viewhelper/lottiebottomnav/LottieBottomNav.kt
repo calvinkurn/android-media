@@ -17,10 +17,10 @@ import android.widget.TextView
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhome.R
-import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -30,6 +30,8 @@ class LottieBottomNav : LinearLayout {
         private const val DEFAULT_HEIGHT = 56f
         private const val DEFAULT_ICON_PADDING = 2
         private const val DEFAULT_TEXT_SIZE = 10f
+        private const val MAX_BADGE_VALUE = "99+"
+        private const val NOTIF_COUNTER_LIMIT = 100
     }
 
     private val badgeTextViewList: MutableList<TextView> = mutableListOf()
@@ -84,17 +86,25 @@ class LottieBottomNav : LinearLayout {
             if (badgeValue > Int.ZERO) {
                 it.layoutParams = badgeLayoutParam
                 it.background = getNotificationBackground(it.context)
-                it.text = badgeValue.toString()
+                it.text = getBadgeTest(badgeValue)
                 it.bringToFront()
             }
             it.visibility = visibility
         }
     }
 
+    private fun getBadgeTest(badgeValue: Int): String {
+        return if (badgeValue < NOTIF_COUNTER_LIMIT) {
+            badgeValue.toString()
+        } else {
+            MAX_BADGE_VALUE
+        }
+    }
+
     private fun getNotificationBackground(context: Context): GradientDrawable {
         val shape = GradientDrawable()
-        shape.shape = GradientDrawable.OVAL
-        shape.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
+        shape.shape = GradientDrawable.RECTANGLE
+        shape.cornerRadius = context.dpToPx(6)
         shape.setColor(context.getResColor(unifyprinciplesR.color.Unify_RN600))
         return shape
     }
