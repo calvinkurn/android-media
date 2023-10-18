@@ -293,6 +293,8 @@ object ShopPageTrackingConstant {
     const val DIMENSION_45 = "dimension45"
     const val DIMENSION_38 = "dimension38"
     const val DIMENSION_40 = "dimension40"
+    const val DIMENSION_56 = "dimension56"
+    const val DIMENSION_58 = "dimension58"
     const val DIMENSION_83 = "dimension83"
     const val DIMENSION_87 = "dimension87"
     const val DIMENSION_117 = "dimension117"
@@ -584,7 +586,7 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_IMPRESSION_REIMAGINED_PRODUCT_CAROUSEL = "46621"
         const val TRACKER_ID_CLICK_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "45951"
         const val TRACKER_ID_CLICK_REIMAGINED_PRODUCT_CAROUSEL = "45952"
-        
+
         const val TRACKER_ID_REIMAGINED_IMPRESSION_HEADER_SHOP = "45906"
         const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_NAME = "45907"
         const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_REVIEW = "45908"

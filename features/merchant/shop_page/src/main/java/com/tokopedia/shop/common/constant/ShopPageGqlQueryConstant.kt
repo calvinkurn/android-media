@@ -76,6 +76,7 @@ object ShopPageGqlQueryConstant {
                   hasVariant
                   parent_id
                   show_stockbar
+                  warehouse_id
                 }
                 suggestion {
                   text

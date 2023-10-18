@@ -65,6 +65,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_118
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_38
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_40
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_45
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_56
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_58
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_61
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_79
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_80
@@ -590,7 +592,8 @@ class ShopPageHomeTracking(
         customDimensionShopPage: CustomDimensionShopPageAttribution,
         sortAndFilterValue: String,
         userId: String,
-        selectedTabName: String
+        selectedTabName: String,
+        warehouseId: String
     ) {
         val etalaseChip = String.format(SELECTED_ETALASE_CHIP, ALL_PRODUCT)
         val loginNonLoginEventValue = if (isLogin) LOGIN else NON_LOGIN
@@ -619,7 +622,8 @@ class ShopPageHomeTracking(
                     customDimensionShopPage,
                     sortAndFilterValue,
                     listEventValue,
-                    selectedTabName
+                    selectedTabName,
+                    warehouseId
                 )
             )
         )
@@ -701,7 +705,8 @@ class ShopPageHomeTracking(
         customDimensionShopPage: CustomDimensionShopPageAttribution,
         sortAndFilterValue: String,
         userId: String,
-        selectedTabName: String
+        selectedTabName: String,
+        warehouseId: String
     ) {
         val etalaseChip = String.format(SELECTED_ETALASE_CHIP, ALL_PRODUCT)
         val loginNonLoginEventValue = if (isLogin) LOGIN else NON_LOGIN
@@ -730,7 +735,8 @@ class ShopPageHomeTracking(
                         customDimensionShopPage,
                         sortAndFilterValue,
                         listEventValue,
-                        selectedTabName
+                        selectedTabName,
+                        warehouseId
                     )
                 )
             )
@@ -1240,7 +1246,8 @@ class ShopPageHomeTracking(
         customDimensionShopPage: CustomDimensionShopPageAttribution,
         sortAndFilterValue: String,
         listEventValue: String,
-        selectedTabName: String
+        selectedTabName: String,
+        warehouseId: String
     ): Map<String, Any> {
         val boe = if (customDimensionShopPage.isFulfillmentExist == true && customDimensionShopPage.isFreeOngkirActive == true) {
             BOE
@@ -1261,7 +1268,9 @@ class ShopPageHomeTracking(
             DIMENSION_81 to customDimensionShopPage.shopType.orEmpty(),
             DIMENSION_79 to customDimensionShopPage.shopId.orEmpty(),
             DIMENSION_90 to customDimensionShopPage.shopRef.orEmpty(),
-            DIMENSION_83 to boe
+            DIMENSION_83 to boe,
+            DIMENSION_58 to customDimensionShopPage.isFulfillmentExist.toString(),
+            DIMENSION_56 to warehouseId
         ).apply {
             if (sortAndFilterValue.isNotEmpty()) {
                 put(DIMENSION_61, sortAndFilterValue)
@@ -3691,7 +3700,6 @@ class ShopPageHomeTracking(
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PROMO_VIEW, bundle)
     }
 
-
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
     // Tracker ID: 46621
     fun sendProductCarouselImpression(
@@ -3717,7 +3725,7 @@ class ShopPageHomeTracking(
         val eventLabel = "$bannerVariant - $productCardVariant"
 
         val productBundles = productCarouselItemType.toProductBundles()
-        
+
         val bundle = Bundle().apply {
             putString(EVENT, VIEW_ITEM_LIST)
             putString(EVENT_ACTION, IMPRESSION_REIMAGINED_PRODUCT_CAROUSEL)
@@ -3738,7 +3746,7 @@ class ShopPageHomeTracking(
     private fun List<ShopHomeBannerProductGroupItemType>.toProductBundles(): ArrayList<Bundle> {
         val productBundles = ArrayList<Bundle>()
         val products = filterIsInstance<ProductItemType>()
-        
+
         products.forEachIndexed { index, product ->
             val price = try {
                 product.price.digitsOnly().toDouble()
@@ -3746,7 +3754,7 @@ class ShopPageHomeTracking(
                 FirebaseCrashlytics.getInstance().recordException(e)
                 Int.ZERO.toDouble()
             }
-            
+
             val productBundle = Bundle().apply {
                 putString(DIMENSION_40, ITEM_LIST_REIMAGINED_ADVANCED_PRODUCT_CAROUSEL)
                 putInt(INDEX, index.inc())
@@ -3760,10 +3768,10 @@ class ShopPageHomeTracking(
 
             productBundles.add(productBundle)
         }
-        
+
         return productBundles
     }
-    
+
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
     // Tracker ID: 45951
     fun sendProductCarouselBannerClick(
@@ -3825,7 +3833,7 @@ class ShopPageHomeTracking(
             FirebaseCrashlytics.getInstance().recordException(e)
             Int.ZERO.toDouble()
         }
-        
+
         val bundledProduct = Bundle().apply {
             putString(DIMENSION_40, ITEM_LIST_REIMAGINED_ADVANCED_PRODUCT_CAROUSEL)
             putInt(INDEX, index)
@@ -3836,7 +3844,7 @@ class ShopPageHomeTracking(
             putString(ITEM_VARIANT, "")
             putDouble(PRICE, price)
         }
-        
+
         val bundle = Bundle().apply {
             putString(EVENT, SELECT_CONTENT)
             putString(EVENT_ACTION, CLICK_REIMAGINED_PRODUCT_CAROUSEL)
@@ -4416,7 +4424,7 @@ class ShopPageHomeTracking(
             FirebaseCrashlytics.getInstance().recordException(e)
             Int.ZERO.toDouble()
         }
-        
+
         return Bundle().apply {
             putString(DIMENSION_40, "$ITEM_LIST_SHOP_PAGE_REIMAGINED $TERLARIS_WIDGET_VALUE")
             putString(INDEX, trackerModel.position.toString())

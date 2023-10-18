@@ -58,7 +58,7 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var listChildId: List<String> = listOf()
     var parentId: String = ""
     var averageRating: String = ""
-
+    var warehouseId: String = ""
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
         return when (typeFactory) {
             is ShopHomeAdapterTypeFactory -> {

@@ -126,6 +126,7 @@ object ShopPageHomeMapper {
                 it.isVariant = hasVariant
                 it.parentId = parentId
                 it.averageRating = stats.averageRating
+                it.warehouseId = shopProduct.warehouseId
             }
         }
 
