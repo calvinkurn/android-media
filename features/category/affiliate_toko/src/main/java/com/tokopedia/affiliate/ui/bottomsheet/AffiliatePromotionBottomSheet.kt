@@ -6,7 +6,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,6 +52,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -229,15 +229,13 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     productImage.show()
                     productImage.loadImage(params?.itemImage ?: bundle.getString(KEY_PRODUCT_IMAGE))
                 }
-
+                ssaMessage?.apply {
+                    show()
+                    text = params?.ssaInfo?.message?.parseAsHtml()
+                }
                 if (params?.ssaInfo?.ssaStatus == true) {
                     ssaGroup.isVisible = true
-                    ssaMessage.text =
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            Html.fromHtml(params.ssaInfo.message, Html.FROM_HTML_MODE_LEGACY)
-                        } else {
-                            Html.fromHtml(params.ssaInfo.message)
-                        }
+
                     ssaLabel.apply {
                         isVisible = params.ssaInfo.label.labelText.isNotBlank()
                         text = params.ssaInfo.label.labelText

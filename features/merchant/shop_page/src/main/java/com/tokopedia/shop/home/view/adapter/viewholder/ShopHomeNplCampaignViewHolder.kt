@@ -168,6 +168,9 @@ class ShopHomeNplCampaignViewHolder(
             background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_red_rect)
             setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
         }
+        nplReminderView?.setCardUnifyBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
+        imageRemindMeNotification?.setColorFilter(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_Black_68), PorterDuff.Mode.SRC_IN)
+        remindMeText?.setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_Black_68))
     }
 
     private fun configFestivity() {
@@ -181,6 +184,9 @@ class ShopHomeNplCampaignViewHolder(
             background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_white_rect)
             setTextColor(MethodChecker.getColor(itemView.context, shopcommonR.color.dms_shop_festivity_timer_text_color))
         }
+        nplReminderView?.setCardUnifyBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
+        imageRemindMeNotification?.setColorFilter(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_Black_68), PorterDuff.Mode.SRC_IN)
+        remindMeText?.setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_Black_68))
     }
 
     private fun configDefaultColor() {

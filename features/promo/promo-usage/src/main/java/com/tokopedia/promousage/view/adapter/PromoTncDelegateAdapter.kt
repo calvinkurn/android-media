@@ -23,6 +23,14 @@ internal class PromoTncDelegateAdapter(
         viewHolder.bind(item)
     }
 
+    override fun bindViewHolder(
+        item: PromoTncItem,
+        viewHolder: ViewHolder,
+        payloads: MutableList<Any>
+    ) {
+        viewHolder.bind(item)
+    }
+
     internal inner class ViewHolder(
         private val binding: PromoUsageItemPromoTncBinding
     ) : RecyclerView.ViewHolder(binding.root) {
