@@ -278,6 +278,9 @@ class DsarFragment : BaseDaggerFragment(), OnDateChangedListener {
         binding?.btnNext?.setOnClickListener {
             viewModel.showSummary()
         }
+        binding?.globarErrorDsar?.setActionClickListener {
+            viewModel.fetchInitialData()
+        }
     }
 
     override fun onDateChanged(date: Long) {}

@@ -143,6 +143,8 @@ class DsarViewModel @Inject constructor(
     }
 
     fun fetchInitialData() {
+        _globalError.value = false
+        _mainLoader.value = true
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
             { checkRequestStatus() },
             {
