@@ -4,7 +4,9 @@ package com.tokopedia.editor.ui.widget
 
 import android.content.Context
 import android.graphics.Color
+import android.text.Editable
 import android.text.SpannableString
+import android.text.TextWatcher
 import android.text.style.LineBackgroundSpan
 import android.util.AttributeSet
 import android.util.TypedValue
@@ -13,6 +15,7 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.setPadding
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.util.FontAlignment.Companion.toGravity
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.getTypeface as unifyTypeFaceGetter
 
@@ -29,7 +32,7 @@ class EditorEditTextView @JvmOverloads constructor(
     private val padding: Int = 16.toPx()
     private val roundedPadding = 12.toPx()
 
-    private var listener: (text: String) -> Unit = {}
+    private var isSpanImplemented = false
 
     init {
         setPadding(padding)
@@ -39,31 +42,51 @@ class EditorEditTextView @JvmOverloads constructor(
 
         // set for edittext background color, to remove underline
         setBackgroundColor(Color.TRANSPARENT)
+
+        addTextChangedListener(object: TextWatcher{
+            override fun afterTextChanged(newText: Editable?) {}
+
+            override fun beforeTextChanged(p0: CharSequence?, start: Int, end: Int, count: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, start: Int, end: Int, count: Int) {
+                if (start == 0 && end == 0 && count > 0 && !isSpanImplemented) {
+                    setText(text)
+                }
+            }
+        })
     }
 
-    override fun setText(text: CharSequence?, type: BufferType?) {
-        this.editableText.let {
-            it?.getSpans(0, text?.length ?: 0, LineBackgroundSpan::class.java)?.apply {
-                it.removeSpan(this.first())
-            }
-        }
-
+    private fun setSpan(): SpannableString {
         val spanString = SpannableString(text)
         val roundedSpan = RoundedSpan(backgroundColor, padding = roundedPadding, radius = roundedPadding / 2).apply {
             this.setAlignment(alignment)
         }
-
         spanString.setSpan(roundedSpan,0, text?.length ?: 1, SpannableString.SPAN_EXCLUSIVE_INCLUSIVE)
+        return spanString
+    }
 
-        super.setText(spanString, type)
-        setSelection(spanString.length)
+    override fun setText(text: CharSequence?, type: BufferType?) {
+        this.editableText?.let {
+            it.getSpans(0, text?.length ?: 0, LineBackgroundSpan::class.java)?.apply {
+                if (this.isNotEmpty()) {
+                    it.removeSpan(this.first())
+                }
+            }
+        }
+
+        var spanString: SpannableString? = null
+        if ((text?.length ?: 0) > 0) {
+            spanString = setSpan()
+            isSpanImplemented = true
+        }
+
+        super.setText(spanString ?: text, type)
+        setSelection(spanString?.length ?: 0)
     }
 
     fun setColor(textColor: Int, backgroundColor: Int){
         setTextColor(textColor)
-        backgroundColor.let {
-            this.backgroundColor = it
-        }
+        this.backgroundColor = backgroundColor
 
         setText(text)
     }
@@ -124,7 +147,7 @@ class EditorEditTextView @JvmOverloads constructor(
     companion object {
         private const val DEFAULT_FONT_SIZE = 16f
 
-        private const val LINE_HEIGHT_EXTRA = 5f
+        private const val LINE_HEIGHT_EXTRA = 4f
         private const val LINE_HEIGHT_MULTIPLIER = 1f
     }
 }

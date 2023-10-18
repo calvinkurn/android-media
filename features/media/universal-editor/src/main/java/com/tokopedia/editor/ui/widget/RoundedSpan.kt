@@ -1,12 +1,10 @@
 package com.tokopedia.editor.ui.widget
 
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import android.text.style.LineBackgroundSpan
-import android.util.Log
 import com.tokopedia.unifycomponents.toPx
 import kotlin.math.sign
 import kotlin.math.abs
@@ -75,14 +73,13 @@ class RoundedSpan(
             }
         }
 
-        rect.set(shiftLeft, top.toFloat(), shiftRight, bottom.toFloat())
+        rect.set(shiftLeft, top.toFloat() - SPACE_GAP_EXTRA, shiftRight, bottom.toFloat() + SPACE_GAP_EXTRA)
 
-        if(end == text.length) { // last line
-            rect.bottom += ADDITIONAL_BOTTOM_GAP
+        if (lnum != 0 && end == text.length) {
+            rect.bottom += SPACE_GAP_EXTRA
         }
 
         if (lnum == 0) {
-            rect.top -= ADDITIONAL_TOP_GAP
             c.drawRoundRect(rect, radius.toFloat(), radius.toFloat(), paint)
         } else {
             path.reset()
@@ -103,9 +100,6 @@ class RoundedSpan(
 
             // check if draw need to skip spike when prev line is empty (only contain new line)
             val isSkipSpike = listOfEmptyLine[lnum - 1] != null
-            if (isSkipSpike) {
-                rect.top -= ADDITIONAL_TOP_GAP
-            }
 
             val difference = width - prevWidth
             val diff = -sign(difference) * (2f * radius).coerceAtMost(abs(difference / 2f)) / 2f
@@ -213,7 +207,6 @@ class RoundedSpan(
         private const val DEFAULT_PADDING = 8
         private const val DEFAULT_CORNER = 8
 
-        private const val ADDITIONAL_TOP_GAP = 5f
-        private const val ADDITIONAL_BOTTOM_GAP = 8f
+        private const val SPACE_GAP_EXTRA = 4f
     }
 }
