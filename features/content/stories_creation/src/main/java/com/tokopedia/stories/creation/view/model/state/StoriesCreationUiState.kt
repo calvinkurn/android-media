@@ -11,7 +11,6 @@ import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
 data class StoriesCreationUiState(
     val mediaFilePath: String,
     val mediaType: ContentMediaType,
-    val storiesId: String,
     val config: StoriesCreationConfiguration,
     val accountList: List<ContentAccountUiModel>,
     val selectedAccount: ContentAccountUiModel,
@@ -22,7 +21,6 @@ data class StoriesCreationUiState(
             get() = StoriesCreationUiState(
                 mediaFilePath = "",
                 mediaType = ContentMediaType.Unknown,
-                storiesId = "",
                 config = StoriesCreationConfiguration.Empty,
                 accountList = emptyList(),
                 selectedAccount = ContentAccountUiModel.Empty,
