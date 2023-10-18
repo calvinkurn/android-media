@@ -856,9 +856,13 @@ open class DynamicProductDetailFragment :
     }
 
     private fun reloadFintechWidget() {
-        if (pdpUiUpdater == null || (pdpUiUpdater?.fintechWidgetMap == null &&
-                pdpUiUpdater?.fintechWidgetV2Map == null)
-        ) return
+        if (pdpUiUpdater == null || (
+            pdpUiUpdater?.fintechWidgetMap == null &&
+                pdpUiUpdater?.fintechWidgetV2Map == null
+            )
+        ) {
+            return
+        }
         if (pdpUiUpdater?.fintechWidgetMap?.isLoggedIn != viewModel.isUserSessionActive ||
             pdpUiUpdater?.fintechWidgetV2Map?.isLoggedIn != viewModel.isUserSessionActive
         ) {
@@ -3063,7 +3067,6 @@ open class DynamicProductDetailFragment :
 
     private fun doP2DataAfterCloud(p2Data: ProductInfoP2UiData) {
         viewModel.getDynamicProductInfoP1?.let { p1 ->
-            DynamicProductDetailTracking.Moengage.sendMoEngageOpenProduct(p1)
             DynamicProductDetailTracking.Moengage.eventAppsFylerOpenProduct(p1)
 
             DynamicProductDetailTracking.sendScreen(

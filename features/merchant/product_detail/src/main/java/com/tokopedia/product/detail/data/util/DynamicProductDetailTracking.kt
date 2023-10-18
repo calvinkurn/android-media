@@ -1487,19 +1487,6 @@ object DynamicProductDetailTracking {
     }
 
     object Moengage {
-
-        fun sendMoEngageClickReview(productInfo: DynamicProductInfoP1) {
-            sendMoEngage(productInfo, "Clicked_Ulasan_Pdp")
-        }
-
-        fun sendMoEngageOpenProduct(productInfo: DynamicProductInfoP1) {
-            sendMoEngage(productInfo, "Product_Page_Opened")
-        }
-
-        fun sendMoEngageClickDiskusi(productInfo: DynamicProductInfoP1) {
-            sendMoEngage(productInfo, "Clicked_Diskusi_Pdp")
-        }
-
         fun eventPDPWishlistAppsFyler(productInfo: DynamicProductInfoP1) {
             eventAppsFyler(productInfo, "af_add_to_wishlist")
         }
@@ -1516,38 +1503,6 @@ object DynamicProductDetailTracking {
                     "source" to "pdp_share"
                 )
             )
-        }
-
-        private fun sendMoEngage(
-            productInfo: DynamicProductInfoP1,
-            eventName: String
-        ) {
-            productInfo.run {
-                basic.category.breadcrumbUrl
-
-                TrackApp.getInstance().moEngage.sendEvent(
-                    eventName,
-                    mutableMapOf<String, Any>().apply {
-                        if (basic.category.detail.isNotEmpty()) {
-                            put("category", basic.category.detail[0].name)
-                            put("category_id", basic.category.detail[0].id)
-                        }
-                        if (basic.category.detail.size > 1) {
-                            put("subcategory", basic.category.detail[1].name)
-                            put("subcategory_id", basic.category.detail[1].id)
-                        }
-                        put("product_name", getProductName)
-                        put("product_id", basic.productID)
-                        put("product_url", basic.url)
-                        put("product_price", data.price.value)
-                        put("product_price_fmt", TrackingUtil.getFormattedPrice(data.price.value))
-                        put("is_official_store", data.isOS)
-                        put("shop_id", productInfo.basic.shopID)
-                        put("shop_name", productInfo.basic.shopName)
-                        put("product_image_url", data.getFirstProductImage().toString())
-                    }
-                )
-            }
         }
 
         private fun eventAppsFyler(productInfo: DynamicProductInfoP1, eventName: String) {

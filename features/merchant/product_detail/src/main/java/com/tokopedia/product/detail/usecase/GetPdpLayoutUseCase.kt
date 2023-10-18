@@ -488,7 +488,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
     private val forceRefresh
         get() = requestParams.getBoolean(ProductDetailCommonConstant.PARAM_FORCE_REFRESH, false)
 
-    // public for unit test only
     private val excludeComponentInCache by lazy {
         listOf(
             ProductDetailConstant.PRODUCT_LIST,
