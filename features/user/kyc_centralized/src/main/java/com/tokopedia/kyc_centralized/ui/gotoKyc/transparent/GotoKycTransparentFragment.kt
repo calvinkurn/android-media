@@ -82,6 +82,13 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             KYCConstant.ActivityResult.LAUNCH_TOKO_KYC -> {
                 gotoTokoKyc(viewModel.projectId)
             }
+            KYCConstant.ActivityResult.BLOCKED_KYC -> {
+                val isBlockedMultipleAccount = result.data?.getBooleanExtra(
+                    KYCConstant.PARAM_BLOCKED_IS_MULTIPLE_ACCOUNT,
+                    false
+                ) == true
+                showBlockedKycBottomSheet(isBlockedMultipleAccount)
+            }
             else -> {
                 finishWithResult(result.resultCode)
             }
@@ -275,6 +282,9 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 is AccountLinkingStatusResult.TokoKyc -> {
                     gotoTokoKyc(viewModel.projectId)
                 }
+                is AccountLinkingStatusResult.Blocked -> {
+                    showBlockedKycBottomSheet(it.isMultipleAccount)
+                }
                 is AccountLinkingStatusResult.Linked -> {
                     viewModel.checkEligibility()
                 }
@@ -434,6 +444,10 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
 
         onBoardNonProgressiveBottomSheet.setOnLaunchTokoKycListener {
             gotoTokoKyc(viewModel.projectId)
+        }
+
+        onBoardNonProgressiveBottomSheet.setOnLaunchBlockedKycListener { isBlockedMultipleAccount ->
+            showBlockedKycBottomSheet(isBlockedMultipleAccount)
         }
 
         onBoardNonProgressiveBottomSheet.setOnDismissWithDataListener { isReload ->
