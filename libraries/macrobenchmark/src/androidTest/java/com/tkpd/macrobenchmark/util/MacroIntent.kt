@@ -230,7 +230,7 @@ object MacroIntent {
         const val PACKAGE_NAME = "$TKPD_PACKAGE_NAME.$DF_MODULE_NAME"
 
         const val RECYCLER_VIEW_ID = "rv_pdp"
-        const val TRACE = "pdp_result_trace"
+        const val TRACE = "perf_trace_perf_trace_pdp"
 
         fun getIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
