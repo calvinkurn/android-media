@@ -48,7 +48,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 object GotoSdk {
-    var LSDKINSTANCE: LSdkProvider? = null
+    @JvmField var LSDKINSTANCE: LSdkProvider? = null
 
     private var GOTOPINSDKINSTANCE: PinManager? = null
     private var component: ScpAuthComponent? = null

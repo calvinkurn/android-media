@@ -18,12 +18,10 @@ object ScpUtils {
     }
 
     fun updateSsoToken(accessToken: String) {
-        println("updateSsoToken: cek is debug ${GlobalConfig.DEBUG} or allowing debug tools ${GlobalConfig.isAllowDebuggingTools()}")
         GotoSdk.LSDKINSTANCE?.updateSsoToken(accessToken = accessToken)
     }
 
     fun saveTokens(accessToken: String, refreshToken: String) {
-        println("\"saveTokens: cek is debug ${GlobalConfig.DEBUG} or allowing debug tools ${GlobalConfig.isAllowDebuggingTools()}\"")
         if (isGotoLoginEnabled()) {
             updateSsoToken(accessToken)
             GotoSdk.LSDKINSTANCE?.save(accessToken, refreshToken)
