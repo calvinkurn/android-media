@@ -17,6 +17,7 @@ import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXHomeEntity
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play.widget.ui.model.PlayGridType
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -29,6 +30,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetVideoUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.videoTabComponent.domain.mapper.FEED_TYPE_CHANNEL_BLOCK
+import com.tokopedia.videoTabComponent.domain.mapper.FEED_TYPE_CHANNEL_RECOM
 import com.tokopedia.videoTabComponent.domain.mapper.FEED_TYPE_TAB_MENU
 import javax.inject.Inject
 
@@ -51,6 +53,7 @@ class FeedBrowseMapper @Inject constructor() {
                         group = item.type,
                         menus = emptyMap(),
                         selectedMenuId = "",
+                        type = FeedBrowseModel.ChannelsWithMenus.Type.Unknown,
                     )
                 } else if (item.type.startsWith("browse_widget_recommendation")) {
                     FeedBrowseModel.InspirationBanner(
@@ -167,7 +170,7 @@ class FeedBrowseMapper @Inject constructor() {
         return when (firstWidget?.type) {
             FEED_TYPE_TAB_MENU -> {
                 ContentSlotModel.TabMenus(
-                    firstWidget.items.mapIndexed { index, item ->
+                    firstWidget.items.map { item ->
                         WidgetMenuModel(
                             id = item.id,
                             label = item.label,
@@ -179,7 +182,11 @@ class FeedBrowseMapper @Inject constructor() {
                 )
             }
             FEED_TYPE_CHANNEL_BLOCK -> {
-                ContentSlotModel.ChannelBlock(mapChannel(firstWidget))
+//                ContentSlotModel.ChannelBlock(mapChannel(firstWidget))
+                ContentSlotModel.ChannelRecommendation(mapChannel(firstWidget))
+            }
+            FEED_TYPE_CHANNEL_RECOM -> {
+                ContentSlotModel.ChannelRecommendation(mapChannel(firstWidget))
             }
             else -> error("Type ${firstWidget?.type} is not currently supported")
         }
@@ -232,7 +239,14 @@ class FeedBrowseMapper @Inject constructor() {
             totalView = PlayWidgetTotalView(totalView, true),
             promoType = PlayWidgetPromoType.NoPromo,
             reminderType = PlayWidgetReminderType.NotReminded,
-            partner = PlayWidgetPartnerUiModel.Empty.copy(id = item.partner.id),
+            partner = PlayWidgetPartnerUiModel(
+                id = item.partner.id,
+                name = item.partner.name,
+                avatarUrl = item.partner.thumbnailUrl,
+                badgeUrl = item.partner.badgeUrl,
+                appLink = item.partner.appLink,
+                type = PartnerType.Unknown,
+            ),
             video = PlayWidgetVideoUiModel.Empty.copy(coverUrl = coverUrl),
             channelType = channelType,
             hasGame = false,

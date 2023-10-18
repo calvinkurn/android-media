@@ -27,7 +27,7 @@ import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseItemDecorati
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiAction
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseIntent
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel2
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
 import com.tokopedia.feedplus.databinding.FragmentFeedBrowseBinding
@@ -164,7 +164,7 @@ class FeedBrowseFragment @Inject constructor(
             slotId: String,
             chip: WidgetMenuModel
         ) {
-            viewModel.submitAction(FeedBrowseUiAction.SelectChipWidget(slotId, chip))
+            viewModel.onIntent(FeedBrowseIntent.SelectChipWidget(slotId, chip))
         }
 
         override fun onChipSelected(
@@ -172,7 +172,7 @@ class FeedBrowseFragment @Inject constructor(
             slotId: String,
             chip: WidgetMenuModel
         ) {
-            viewModel.submitAction(FeedBrowseUiAction.FetchCardsWidget(slotId, chip))
+            viewModel.onIntent(FeedBrowseIntent.FetchCardsWidget(slotId, chip))
         }
     }
 
@@ -209,7 +209,7 @@ class FeedBrowseFragment @Inject constructor(
         setupView()
         observeUiState()
 
-        viewModel.submitAction(FeedBrowseUiAction.LoadInitialPage)
+        viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
     }
 
     override fun getScreenName(): String {
@@ -299,7 +299,7 @@ class FeedBrowseFragment @Inject constructor(
             if (errorType == GlobalError.MAINTENANCE) {
                 exitPage()
             } else {
-                viewModel.submitAction(FeedBrowseUiAction.LoadInitialPage)
+                viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
             }
         }
         binding.feedBrowseError.setType(errorType)

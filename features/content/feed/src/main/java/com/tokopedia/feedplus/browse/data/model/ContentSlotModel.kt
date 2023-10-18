@@ -14,4 +14,8 @@ internal sealed interface ContentSlotModel {
     data class ChannelBlock(
         val channels: List<PlayWidgetChannelUiModel>
     ) : ContentSlotModel
+
+    data class ChannelRecommendation(
+        val channels: List<PlayWidgetChannelUiModel>
+    ) : ContentSlotModel
 }

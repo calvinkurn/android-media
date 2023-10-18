@@ -6,27 +6,27 @@ import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 /**
  * Created by meyta.taliti on 11/08/23.
  */
-internal sealed interface FeedBrowseUiAction {
+internal sealed interface FeedBrowseIntent {
 
-    object LoadInitialPage : FeedBrowseUiAction
+    object LoadInitialPage : FeedBrowseIntent
 
     data class SelectChip(
         val model: FeedBrowseChipUiModel,
         val widgetId: String
-    ) : FeedBrowseUiAction
+    ) : FeedBrowseIntent
 
     data class SelectChipWidget(
         val slotId: String,
         val model: WidgetMenuModel,
-    ) : FeedBrowseUiAction
+    ) : FeedBrowseIntent
 
     data class FetchCards(
         val extraParam: WidgetRequestModel,
         val widgetId: String
-    ) : FeedBrowseUiAction
+    ) : FeedBrowseIntent
 
     data class FetchCardsWidget(
         val slotId: String,
         val model: WidgetMenuModel,
-    ) : FeedBrowseUiAction
+    ) : FeedBrowseIntent
 }

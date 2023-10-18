@@ -7,12 +7,10 @@ import com.tokopedia.content.common.usecase.GetPlayWidgetSlotUseCase
 import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseModel
-import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemUiModel
-import com.tokopedia.feedplus.browse.presentation.model.FeedCategoryInspirationModel
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import kotlinx.coroutines.withContext
@@ -59,7 +57,7 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
                     title = "Ini Banner",
                     identifier = "Identifier Banner",
                     bannerList = emptyList(),
-                )
+                ),
             ) + mapper.mapSlotsResponse(response).ifEmpty {
                 throw IllegalStateException("no slots available")
             }
@@ -138,54 +136,5 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
                 )
             )
         )
-    }
-
-    override suspend fun getCategoryInspiration(): List<FeedCategoryInspirationModel> {
-        val isWifi = connectionUtil.isEligibleForHeavyDataUsage()
-//        return withContext(dispatchers.io) {
-//            try {
-//                val response = playWidgetSlotUseCase.executeOnBackground(
-//                    group = extraParam.group,
-//                    cursor = "",
-//                    sourceId = extraParam.sourceId,
-//                    sourceType = extraParam.sourceType,
-//                    isWifi = isWifi
-//                )
-//                mapper.mapWidget(response)
-//            } catch (err: Throwable) {
-//                ChannelUiState.Error(err, extraParam = extraParam)
-//            }
-//        }
-        return withContext(dispatchers.io) {
-            buildList {
-                add(
-                    FeedCategoryInspirationModel.Chips(
-                        id = "chips_mock",
-                        chipList = List(6) {
-                            WidgetMenuModel(
-                                id = it.toString(),
-                                label = "Chips $it",
-                                group = "Group $it",
-                                sourceType = "Source Type $it",
-                                sourceId = "Source Id $it",
-                            )
-                        }
-                    )
-                )
-
-                addAll(
-                    List(7) {
-                        FeedCategoryInspirationModel.Card(
-                            id = it.toString(),
-                            imageUrl = "",
-                            partnerName = "Partner $it",
-                            avatarUrl = "",
-                            badgeUrl = "",
-                            title = "Card $it"
-                        )
-                    }
-                )
-            }
-        }
     }
 }

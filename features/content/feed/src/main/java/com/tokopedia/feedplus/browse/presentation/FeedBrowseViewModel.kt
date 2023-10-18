@@ -11,7 +11,7 @@ import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiAction
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseIntent
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel2
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
 import com.tokopedia.feedplus.browse.presentation.model.ItemListState
@@ -61,17 +61,17 @@ internal class FeedBrowseViewModel @Inject constructor(
         initialValue = FeedBrowseUiState.Placeholder
     )
 
-    fun submitAction(action: FeedBrowseUiAction) {
+    fun onIntent(action: FeedBrowseIntent) {
         when (action) {
-            FeedBrowseUiAction.LoadInitialPage -> handleInitialPage()
-            is FeedBrowseUiAction.FetchCards -> {
+            FeedBrowseIntent.LoadInitialPage -> handleInitialPage()
+            is FeedBrowseIntent.FetchCards -> {
                 handleFetchWidget(action.extraParam, action.widgetId)
             }
-            is FeedBrowseUiAction.SelectChip -> handleSelectChip(action.model, action.widgetId)
-            is FeedBrowseUiAction.FetchCardsWidget -> {
+            is FeedBrowseIntent.SelectChip -> handleSelectChip(action.model, action.widgetId)
+            is FeedBrowseIntent.FetchCardsWidget -> {
                 handleFetchWidget(WidgetRequestModel.Empty, action.slotId)
             }
-            is FeedBrowseUiAction.SelectChipWidget -> {
+            is FeedBrowseIntent.SelectChipWidget -> {
                 handleSelectChip(action.model, action.slotId)
             }
         }
@@ -169,6 +169,7 @@ internal class FeedBrowseViewModel @Inject constructor(
                     if (menuKeys.isEmpty()) {
                         updateWidget<FeedBrowseModel.ChannelsWithMenus>(slotId, ResultState.Success) {
                             it.copy(
+                                type = FeedBrowseModel.ChannelsWithMenus.Type.ChannelBlock,
                                 menus = mapOf(
                                     WidgetMenuModel.Default to ItemListState.HasContent(response.channels)
                                 )
@@ -178,6 +179,27 @@ internal class FeedBrowseViewModel @Inject constructor(
                         updateWidget<FeedBrowseModel.ChannelsWithMenus>(slotId, ResultState.Success) {
                             val menu = selectedMenu ?: menuKeys.first()
                             it.copy(
+                                type = FeedBrowseModel.ChannelsWithMenus.Type.ChannelBlock,
+                                menus = menus + (menu to ItemListState.HasContent(response.channels))
+                            )
+                        }
+                    }
+                }
+                is ContentSlotModel.ChannelRecommendation -> {
+                    if (menuKeys.isEmpty()) {
+                        updateWidget<FeedBrowseModel.ChannelsWithMenus>(slotId, ResultState.Success) {
+                            it.copy(
+                                type = FeedBrowseModel.ChannelsWithMenus.Type.ChannelRecommendation,
+                                menus = mapOf(
+                                    WidgetMenuModel.Default to ItemListState.HasContent(response.channels)
+                                )
+                            )
+                        }
+                    } else {
+                        updateWidget<FeedBrowseModel.ChannelsWithMenus>(slotId, ResultState.Success) {
+                            val menu = selectedMenu ?: menuKeys.first()
+                            it.copy(
+                                type = FeedBrowseModel.ChannelsWithMenus.Type.ChannelRecommendation,
                                 menus = menus + (menu to ItemListState.HasContent(response.channels))
                             )
                         }

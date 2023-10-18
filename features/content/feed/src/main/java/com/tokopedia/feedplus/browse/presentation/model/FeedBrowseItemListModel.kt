@@ -29,8 +29,14 @@ internal sealed interface FeedBrowseItemListModel {
         override val slotId: String,
         val itemState: ItemListState<PlayWidgetChannelUiModel>,
     ) : FeedBrowseItemListModel
+
     data class Banner(
         override val slotId: String,
         val banner: BannerWidgetModel,
+    ) : FeedBrowseItemListModel
+
+    data class InspirationCard(
+        override val slotId: String,
+        val item: PlayWidgetChannelUiModel,
     ) : FeedBrowseItemListModel
 }

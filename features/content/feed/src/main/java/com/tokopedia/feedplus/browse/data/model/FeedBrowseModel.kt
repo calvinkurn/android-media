@@ -17,7 +17,15 @@ internal sealed interface FeedBrowseModel {
         val group: String,
         val menus: Map<WidgetMenuModel, ItemListState<PlayWidgetChannelUiModel>>,
         val selectedMenuId: String,
-    ) : FeedBrowseModel
+        val type: Type,
+    ) : FeedBrowseModel {
+
+        enum class Type {
+            ChannelBlock,
+            ChannelRecommendation,
+            Unknown,
+        }
+    }
 
     data class InspirationBanner(
         override val slotId: String,

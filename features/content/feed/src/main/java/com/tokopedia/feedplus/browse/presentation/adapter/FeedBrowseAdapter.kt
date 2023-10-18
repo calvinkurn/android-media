@@ -10,10 +10,12 @@ import com.tokopedia.feedplus.browse.data.model.FeedBrowseModel
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseInspirationCardViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel2
 import com.tokopedia.feedplus.browse.presentation.model.ItemListState
+import com.tokopedia.feedplus.browse.presentation.model.hasContent
 import com.tokopedia.feedplus.browse.presentation.model.hasContentAndNotEmpty
 
 /**
@@ -55,6 +57,7 @@ internal class FeedBrowseAdapter(
             TYPE_HORIZONTAL_CHANNELS -> FeedBrowseHorizontalChannelsViewHolder.create(parent)
             TYPE_BANNER -> FeedBrowseBannerViewHolder.create(parent, bannerListener)
             TYPE_TITLE -> FeedBrowseTitleViewHolder.create(parent)
+            TYPE_INSPIRATION_CARD -> FeedBrowseInspirationCardViewHolder.create(parent)
             else -> error("ViewType $viewType is not supported")
         }
     }
@@ -72,6 +75,9 @@ internal class FeedBrowseAdapter(
                 holder.bind(item)
             }
             holder is FeedBrowseTitleViewHolder && item is FeedBrowseItemListModel.Title -> {
+                holder.bind(item)
+            }
+            holder is FeedBrowseInspirationCardViewHolder && item is FeedBrowseItemListModel.InspirationCard -> {
                 holder.bind(item)
             }
         }
@@ -103,6 +109,7 @@ internal class FeedBrowseAdapter(
             is FeedBrowseItemListModel.HorizontalChannels -> TYPE_HORIZONTAL_CHANNELS
             is FeedBrowseItemListModel.Banner -> TYPE_BANNER
             is FeedBrowseItemListModel.Title -> TYPE_TITLE
+            is FeedBrowseItemListModel.InspirationCard -> TYPE_INSPIRATION_CARD
         }
     }
 
@@ -112,6 +119,7 @@ internal class FeedBrowseAdapter(
                 val item = getItem(position)
                 return when (item::class) {
                     FeedBrowseItemListModel.Banner::class -> 1
+                    FeedBrowseItemListModel.InspirationCard::class -> 1
                     else -> 2
                 }
             }
@@ -123,6 +131,7 @@ internal class FeedBrowseAdapter(
         internal const val TYPE_HORIZONTAL_CHANNELS = 1
         internal const val TYPE_BANNER = 2
         internal const val TYPE_TITLE = 3
+        internal const val TYPE_INSPIRATION_CARD = 4
     }
 
     fun setList(items: List<FeedBrowseUiModel2>) {
@@ -141,6 +150,14 @@ internal class FeedBrowseAdapter(
     private fun FeedBrowseModel.ChannelsWithMenus.mapToItems(
         state: ResultState,
     ): List<FeedBrowseItemListModel> {
+        return when (type) {
+            FeedBrowseModel.ChannelsWithMenus.Type.ChannelBlock -> mapToChannelBlocks(state)
+            FeedBrowseModel.ChannelsWithMenus.Type.ChannelRecommendation -> mapToChannelRecommendations(state)
+            FeedBrowseModel.ChannelsWithMenus.Type.Unknown -> emptyList()
+        }
+    }
+
+    private fun FeedBrowseModel.ChannelsWithMenus.mapToChannelBlocks(state: ResultState): List<FeedBrowseItemListModel> {
         return buildList {
             if (state.isLoading) {
                 add(FeedBrowseItemListModel.Title(slotId, title))
@@ -171,6 +188,37 @@ internal class FeedBrowseAdapter(
                     itemsInSelectedMenu ?: ItemListState.Loading
                 )
             )
+        }
+    }
+
+    private fun FeedBrowseModel.ChannelsWithMenus.mapToChannelRecommendations(
+        state: ResultState
+    ): List<FeedBrowseItemListModel> {
+        return buildList {
+            val isMenuEmpty = menus.keys.isEmpty() || menus.keys.any { !it.isValid }
+            val selectedMenu = menus.keys.firstOrNull { it.id == selectedMenuId } ?: menus.keys.firstOrNull()
+            val itemsInSelectedMenu = menus[selectedMenu ?: menus.keys.firstOrNull()]
+
+            if (!isMenuEmpty) {
+                add(
+                    FeedBrowseItemListModel.Chips(
+                        slotId,
+                        menus.keys.toList().map {
+                            FeedBrowseItemListModel.Chips.Model(it, it == selectedMenu)
+                        }
+                    )
+                )
+            }
+            if (!isMenuEmpty || itemsInSelectedMenu?.hasContentAndNotEmpty() == true) {
+                add(FeedBrowseItemListModel.Title(slotId, title))
+            }
+            if (itemsInSelectedMenu?.hasContent() == true) {
+                addAll(
+                    itemsInSelectedMenu.items.map {
+                        FeedBrowseItemListModel.InspirationCard(slotId, it)
+                    }
+                )
+            }
         }
     }
 
