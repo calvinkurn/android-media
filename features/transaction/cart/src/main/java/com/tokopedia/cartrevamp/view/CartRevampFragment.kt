@@ -506,6 +506,10 @@ class CartRevampFragment :
         return this
     }
 
+    override fun getScreenName(): String {
+        return ConstantTransactionAnalytics.ScreenName.CART
+    }
+
     override fun onClickShopNow() {
         cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart()
         routeToHome()
