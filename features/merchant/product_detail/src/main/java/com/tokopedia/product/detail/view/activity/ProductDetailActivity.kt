@@ -347,7 +347,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     private fun initBlocksPLTMonitoring() {
         blocksPerformanceTrace = BlocksPerformanceTrace(
             this,
-            "pdp",
+            "perf_trace_pdp",
             lifecycleScope,
             this
         ) { summaryModel, capturedBlocks -> }
