@@ -3050,7 +3050,7 @@ open class DynamicProductDetailFragment :
             ProductDetailServerLogger.logBreadCrumbSuccessGetDataP2(
                 isSuccess = it.shopInfo.shopCore.shopID.isNotEmpty()
             )
-            stickyLoginView?.loadContent()
+
             getRecyclerView()?.addOneTimeGlobalLayoutListener {
                 EmbraceMonitoring.stopMoments(ProductDetailConstant.PDP_RESULT_TRACE_P2_DATA)
             }
@@ -3089,6 +3089,8 @@ open class DynamicProductDetailFragment :
             }
 
             DynamicProductDetailTracking.Branch.eventBranchItemView(p1, viewModel.userId)
+
+            stickyLoginView?.loadContent()
         }
     }
 
