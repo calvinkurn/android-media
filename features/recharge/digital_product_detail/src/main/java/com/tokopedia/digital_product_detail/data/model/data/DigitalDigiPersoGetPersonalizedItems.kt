@@ -5,16 +5,16 @@ import com.google.gson.annotations.SerializedName
 
 data class DigitalDigiPersoGetPersonalizedItem(
     @SerializedName("digiPersoGetPersonalizedItems")
-    val recommendationData: PersoRecommendationData
+    val digitalPersoData: DigitalPersoData
 )
 
-data class PersoRecommendationData(
+data class DigitalPersoData(
     @SerializedName("title")
     val title: String,
     @SerializedName("mediaURL")
     val mediaUrl: String,
     @SerializedName("items")
-    val items: List<PersoRecommendationItem>,
+    val items: List<DigitalPersoItem>,
     @SerializedName("textLink")
     val textLink: String,
     @SerializedName("webLink")
@@ -23,11 +23,13 @@ data class PersoRecommendationData(
     val appLink: String
 )
 
-data class PersoRecommendationItem(
+data class DigitalPersoItem(
     @SerializedName("id")
     val id: String,
     @SerializedName("title")
     val title: String,
+    @SerializedName("subtitle")
+    val subtitle: String,
     @SerializedName("mediaURL")
     val mediaURL: String,
     @SerializedName("mediaUrlType")
@@ -56,12 +58,50 @@ data class PersoRecommendationItem(
     val appLink: String,
     @SerializedName("webLink")
     val webLink: String,
+    @SerializedName("textLink")
+    val textLink: String,
     @SerializedName("backgroundColor")
     val backgroundColor: String,
     @SerializedName("trackingData")
     val trackingData: TrackingData,
     @SerializedName("descriptions")
     val descriptions: List<String>,
+    @SerializedName("campaignLabelText")
+    val campaignLabelText: String,
+    @SerializedName("campaignLabelTextColor")
+    val campaignLabelTextColor: String,
+    @SerializedName("iconURL")
+    val iconUrl: String,
+    @SerializedName("widgets")
+    val widgets: List<DigitalPersoWidget>,
+    @SerializedName("products")
+    val products: List<DigitalPersoProduct>
+)
+
+data class DigitalPersoWidget(
+    @SerializedName("title")
+    val title: String,
+    @SerializedName("subtitle")
+    val subtitle: String,
+    @SerializedName("iconURL")
+    val iconUrl: String
+)
+
+data class DigitalPersoProduct(
+    @SerializedName("title")
+    val title: String,
+    @SerializedName("subtitle")
+    val subtitle: String,
+    @SerializedName("subtitleColor")
+    val subtitleColor: String,
+    @SerializedName("applink")
+    val applink: String,
+    @SerializedName("buttonText")
+    val buttonText: String,
+    @SerializedName("productID")
+    val productId: String = "",
+    @SerializedName("price")
+    val price: Double = 0.0
 )
 
 data class TrackingData(

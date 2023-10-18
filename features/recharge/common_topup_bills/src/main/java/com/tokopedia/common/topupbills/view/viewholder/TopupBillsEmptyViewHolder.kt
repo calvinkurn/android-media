@@ -1,22 +1,23 @@
 package com.tokopedia.common.topupbills.view.viewholder
 
 import androidx.annotation.LayoutRes
-import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.topupbills.R
-import kotlinx.android.synthetic.main.view_digital_empty_product_list.view.*
+import com.tokopedia.common.topupbills.databinding.ViewDigitalEmptyProductListBinding
 
 /**
  * @author by resakemal on 22/08/19
  */
 
-class TopupBillsEmptyViewHolder(itemView: View) : AbstractViewHolder<EmptyModel>(itemView) {
+class TopupBillsEmptyViewHolder(
+    private val binding: ViewDigitalEmptyProductListBinding
+) : AbstractViewHolder<EmptyModel>(binding.root) {
 
     override fun bind(element: EmptyModel) {
-        with(itemView) {
-            topupbills_title_empty_product.text = element.title
-            topupbills_desc_empty_product.text = element.description
+        with(binding) {
+            topupbillsTitleEmptyProduct.text = element.title
+            topupbillsDescEmptyProduct.text = element.description
         }
     }
 

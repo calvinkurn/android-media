@@ -10,7 +10,6 @@ data class OrdersItem(
     @SuppressLint("Invalid Data Type")
     @SerializedName("shipping_id")
     var shippingId: Int = 0,
-    @SuppressLint("Invalid Data Type")
     @SerializedName("shop_id")
     var shopId: Long = 0,
     @SerializedName("codes")
@@ -24,7 +23,6 @@ data class OrdersItem(
     var productDetails: List<ProductDetailsItem> = listOf(),
     @SerializedName("free_shipping_metadata")
     var freeShippingMetadata: String = "",
-    @SuppressLint("Invalid Data Type")
     @SerializedName("bo_campaign_id")
     var boCampaignId: Long = 0,
     @SerializedName("shipping_subsidy")
@@ -37,6 +35,8 @@ data class OrdersItem(
     var etaText: String = "",
     @SerializedName("validation_metadata")
     var validationMetadata: String = "",
+    @SerializedName("cart_string_group")
+    var cartStringGroup: String = "",
     @Transient
     var boType: Int = 0,
     @Transient
@@ -44,5 +44,7 @@ data class OrdersItem(
     @Transient
     var poDuration: Int = 0,
     @Transient
-    var warehouseId: Long = 0
+    var warehouseId: Long = 0,
+    @Transient
+    var boCode: String = ""
 ) : Parcelable

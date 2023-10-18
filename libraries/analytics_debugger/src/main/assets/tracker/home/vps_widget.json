@@ -44,16 +44,6 @@
       "userId": ".*",
       "sessionIris": ".*",
       "clientId": ".*"
-    },
-    {
-      "event": "clickHomepage",
-      "eventAction": "click view all on lego banner 4 image auto v2",
-      "eventCategory": "homepage",
-      "eventLabel": ".* - 4_banners_auto_vps_v2 - .*",
-      "trackerId": "43643",
-      "businessUnit": "home & browse",
-      "channelId": ".*",
-      "currentSite": "tokopediamarketplace"
     }
   ]
 }

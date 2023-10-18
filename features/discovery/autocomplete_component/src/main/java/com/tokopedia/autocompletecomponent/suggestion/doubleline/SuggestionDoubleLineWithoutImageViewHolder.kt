@@ -37,9 +37,9 @@ class SuggestionDoubleLineWithoutImageViewHolder(
     private fun bindSubtitle(item: BaseSuggestionDataView) {
         val autocompleteSuggestionDoubleLineWithoutImageSubtitle = binding?.autocompleteSuggestionDoubleLineWithoutImageSubtitle ?: return
         if (item.applink.isNotEmpty()) {
-            autocompleteSuggestionDoubleLineWithoutImageSubtitle.setTypography(itemView.context, Typography.BOLD, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+            autocompleteSuggestionDoubleLineWithoutImageSubtitle.setTypography(itemView.context, Typography.BOLD, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         } else {
-            autocompleteSuggestionDoubleLineWithoutImageSubtitle.setTypography(itemView.context, Typography.REGULAR, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+            autocompleteSuggestionDoubleLineWithoutImageSubtitle.setTypography(itemView.context, Typography.REGULAR, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
         }
         autocompleteSuggestionDoubleLineWithoutImageSubtitle.setTextAndCheckShow(item.subtitle)
     }

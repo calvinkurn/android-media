@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
+import android.os.Bundle
 import android.view.View
 import android.view.ViewStub
 import androidx.annotation.LayoutRes
@@ -11,6 +12,8 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.LoginWidgetView
+import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.home.databinding.HomeHeaderAtf2Binding
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.home_component.util.toDpInt
@@ -26,12 +29,13 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class HomeHeaderAtf2ViewHolder(
     itemView: View,
-    private val listener: HomeCategoryListener
-) :
-    AbstractViewHolder<HomeHeaderDataModel>(itemView) {
+    private val listener: HomeCategoryListener,
+    private val homeThematicUtil: HomeThematicUtil,
+) : AbstractViewHolder<HomeHeaderDataModel>(itemView) {
 
     private var binding: HomeHeaderAtf2Binding? by viewBinding()
     private var balanceWidgetView: BalanceWidgetView? = null
+    private var loginWidgetView: LoginWidgetView? = null
     private var chooseAddressView: ChooseAddressWidget? = null
     private var viewPullRefresh: LayoutIconPullRefreshView? = null
     private val paddingBottomChooseAddress = 3f.toDpInt()
@@ -46,10 +50,11 @@ class HomeHeaderAtf2ViewHolder(
         renderEmptySpace()
         renderHeader()
         element.headerDataModel?.let {
-            renderBalanceLayout(
-                it.homeBalanceModel,
-                element.headerDataModel?.isUserLogin ?: false
-            )
+            if(it.isUserLogin) {
+                renderBalanceLayout(it.homeBalanceModel)
+            } else {
+                renderLoginWidget()
+            }
         }
         renderChooseAddress(element.needToShowChooseAddress)
         BenchmarkHelper.endSystraceSection()
@@ -74,6 +79,7 @@ class HomeHeaderAtf2ViewHolder(
             viewPullRefresh = getParentLayout(binding?.viewPullRefresh)
         }
         viewPullRefresh?.let {
+            it.setColorPullRefresh(getPullRefreshLoaderColor())
             listener.pullRefreshIconCaptured(it)
         }
     }
@@ -85,22 +91,33 @@ class HomeHeaderAtf2ViewHolder(
         binding?.viewEmpty?.invalidate()
     }
 
-    private fun renderBalanceLayout(data: HomeBalanceModel?, isUserLogin: Boolean) {
+    private fun renderBalanceLayout(data: HomeBalanceModel) {
         if (balanceWidgetView == null) {
             balanceWidgetView = getParentLayout(binding?.viewBalanceWidget)
         }
-        data?.let {
-            if (isUserLogin) {
-                balanceWidgetView?.visible()
-                balanceWidgetView?.bind(it, listener)
-            } else {
-                balanceWidgetView?.gone()
-            }
+        loginWidgetView?.gone()
+        balanceWidgetView?.visible()
+        balanceWidgetView?.bind(data, listener, homeThematicUtil)
+    }
+
+    private fun renderLoginWidget() {
+        if(loginWidgetView == null) {
+            loginWidgetView = getParentLayout(binding?.viewLoginWidget)
         }
+        balanceWidgetView?.gone()
+        loginWidgetView?.visible()
+        loginWidgetView?.bind(listener, homeThematicUtil)
     }
 
     override fun bind(element: HomeHeaderDataModel, payloads: MutableList<Any>) {
-        bind(element)
+        if(payloads.isNotEmpty() && (payloads[0] as? Bundle)?.getBoolean(HomeThematicUtil.PAYLOAD_APPLY_THEMATIC_COLOR) == true) {
+            chooseAddressView?.updateWidget()
+            balanceWidgetView?.applyThematicColor()
+            viewPullRefresh?.setColorPullRefresh(getPullRefreshLoaderColor())
+            loginWidgetView?.renderTextColor(homeThematicUtil)
+        } else {
+            bind(element)
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -121,5 +138,11 @@ class HomeHeaderAtf2ViewHolder(
 
     private fun isViewStubHasBeenInflated(viewStub: ViewStub?): Boolean {
         return viewStub?.parent == null
+    }
+
+    private fun getPullRefreshLoaderColor(): Int {
+        return if(homeThematicUtil.isBackgroundLoaded && !homeThematicUtil.isDefault())
+            LayoutIconPullRefreshView.TYPE_WHITE
+        else LayoutIconPullRefreshView.TYPE_GREEN
     }
 }

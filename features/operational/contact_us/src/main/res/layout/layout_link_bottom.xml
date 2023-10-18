@@ -28,7 +28,7 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="16dp"
         android:text="@string/hubungi_kami"
-        android:textColor="@color/contact_us_dms_complain_bg"
+        android:textColor="@color/Unify_GN500"
         app:typographyWeight="bold"
         app:typographyType="body_2"/>
 </LinearLayout>

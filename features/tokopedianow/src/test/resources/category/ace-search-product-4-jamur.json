@@ -1,0 +1,241 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 9,
+      "totalDataText": "9",
+      "responseCode": 0,
+      "keywordProcess": "0"
+    },
+    "data": {
+      "isQuerySafe": true,
+      "suggestion": {
+        "suggestion": "",
+        "query": "",
+        "text": ""
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "otherRelated": []
+      },
+      "products": [
+        {
+          "id": 4208745078,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/6/10/ae17afdc-d9c2-4b12-bffe-0427b0cca073.jpg",
+          "name": "Alfamart_Facial_Tissue_Frozen_50_Sheets",
+          "price": "Rp4.700",
+          "priceInt": 4700,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 99,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 99,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "Terjual 47",
+              "type": "textDarkGrey",
+              "position": "integrity"
+            },
+            {
+              "url": "",
+              "title": "150 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        },
+        {
+          "id": 4208747052,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/6/10/a8ae4378-9cb2-42df-ba66-e545851100a8.jpg",
+          "name": "Sidomuncul_Tolak_Linu_Mint_Herbal_15_ml",
+          "price": "Rp3.700",
+          "priceInt": 3700,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 55,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 55,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "Terjual 4",
+              "type": "textDarkGrey",
+              "position": "integrity"
+            },
+            {
+              "url": "",
+              "title": "150 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        },
+        {
+          "id": 4208744852,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/6/10/839e491e-db85-49c8-8fa7-998aa714d8b9.jpg",
+          "name": "Alfamart_Facial_Tissue_Frozen_200_Sheets",
+          "price": "Rp13.900",
+          "priceInt": 13900,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 98,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 98,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "Terjual 20",
+              "type": "textDarkGrey",
+              "position": "integrity"
+            },
+            {
+              "url": "",
+              "title": "150 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        },
+        {
+          "id": 2714002503,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/1/12/7b93760c-d303-4ae8-83de-8dbeb047f6ef.jpg",
+          "name": "[NEW]_SNBS_JMR_Champignon",
+          "price": "Rp800",
+          "priceInt": 800,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 100,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 100,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "100 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        },
+        {
+          "id": 4208745375,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/6/10/c4fafd6e-6ced-423c-b5b8-0d9bbd3a92ca.jpg",
+          "name": "Baygon_Aerosol_Flower_Garden_600_ml",
+          "price": "Rp39.500",
+          "priceInt": 39500,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 99,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 99,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "Terjual 4",
+              "type": "textDarkGrey",
+              "position": "integrity"
+            },
+            {
+              "url": "",
+              "title": "150 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        },
+        {
+          "id": 2714002687,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/1/12/bb5cde13-f382-4e4b-81a8-5fcdc92b1267.jpg",
+          "name": "[NEW]_SNBS_JMR_Shitake",
+          "price": "Rp200",
+          "priceInt": 200,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 1,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 0,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "Stok Habis",
+              "type": "transparentBlack",
+              "position": "status"
+            },
+            {
+              "url": "",
+              "title": "100 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": true
+        }
+      ]
+    }
+  }
+}

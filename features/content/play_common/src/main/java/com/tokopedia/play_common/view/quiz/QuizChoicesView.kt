@@ -49,7 +49,7 @@ class QuizChoicesView : ConstraintLayout {
 
         bgDrawable = MethodChecker.getDrawable(context, commonR.drawable.bg_quiz_choice)
         defaultFontColor = MethodChecker.getColor(context, unifyR.color.Unify_NN950)
-        filledFontColor = MethodChecker.getColor(context, unifyR.color.Unify_N0)
+        filledFontColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
     }
 
     /***
@@ -126,7 +126,7 @@ class QuizChoicesView : ConstraintLayout {
                 context,
                 if (it) IconUnify.CHECK_CIRCLE else IconUnify.CLEAR,
                 when {
-                    isAnswered -> MethodChecker.getColor(context, unifyR.color.Unify_N0)
+                    isAnswered -> MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
                     it -> MethodChecker.getColor(context, unifyR.color.Unify_GN400)
                     else -> MethodChecker.getColor(context, unifyR.color.Unify_RN500)
                 }
@@ -143,7 +143,7 @@ class QuizChoicesView : ConstraintLayout {
 
         isDefault?.let {
             if (it) {
-                shape.setColor(MethodChecker.getColor(context, unifyR.color.Unify_N0))
+                shape.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
             }
             shape.setStroke(QUIZ_OPTION_STROKE_WIDTH, MethodChecker.getColor(context, commonR.color.play_dms_stroke_quiz))
         }

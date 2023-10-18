@@ -51,9 +51,6 @@ class ProfileViewHolder(
 
     private val binding: HomeAccountItemProfileBinding? by viewBinding()
 
-    fun getMemberTitle(): String =
-        binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutTitle?.text.toString()
-
     fun bind(profile: ProfileDataView) {
         binding?.homeAccountProfileSection?.accountUserItemProfileName?.text = profile.name
         if (profile.phone.isNotEmpty()) {
@@ -144,7 +141,6 @@ class ProfileViewHolder(
 
     private fun renderAddPhoneButton() {
         binding?.homeAccountProfileSection?.apply {
-            accountUserItemProfileLinkStatus.hide()
             accountUserItemProfilePhone.hide()
             labelPhoneVerify.hide()
             linkAccountProfileBtn.apply {
@@ -152,7 +148,7 @@ class ProfileViewHolder(
                 setDrawable(getIconUnifyDrawable(
                     context,
                     IconUnify.PROTECTION,
-                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)),
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)),
                     UnifyButton.DrawablePosition.LEFT
                 )
                 setOnClickListener {
@@ -164,7 +160,6 @@ class ProfileViewHolder(
 
     private fun renderPhoneVerifyButton(phoneNumber: String) {
         binding?.homeAccountProfileSection?.apply {
-            accountUserItemProfileLinkStatus.hide()
             labelPhoneVerify.show()
             accountUserItemProfilePhone.apply {
                 text = Utils.formatPhoneNumber(phoneNumber)
@@ -175,7 +170,7 @@ class ProfileViewHolder(
                 setDrawable(getIconUnifyDrawable(
                     context,
                     IconUnify.PROTECTION,
-                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)),
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)),
                     UnifyButton.DrawablePosition.LEFT
                 )
                 setOnClickListener {
@@ -190,19 +185,13 @@ class ProfileViewHolder(
             labelPhoneVerify.hide()
 
             if (profile.isShowLinkStatus) {
-                linkAccountProfileBtn.setOnClickListener {
-                    listener.onLinkingAccountClicked(profile.isLinked)
-                }
                 if (profile.isLinked) {
                     linkAccountProfileBtn.hide()
-                    accountUserItemProfileLinkStatus.show()
                 } else {
-                    accountUserItemProfileLinkStatus.hide()
                     linkAccountProfileBtn.show()
                 }
             } else {
                 linkAccountProfileBtn.hide()
-                accountUserItemProfileLinkStatus.hide()
             }
         }
     }
@@ -373,7 +362,5 @@ class ProfileViewHolder(
         const val TOP_PAD = 8
         val LAYOUT = R.layout.home_account_item_profile
         private const val DEFAULT_NAME = "toppers-"
-//        private const val ADD_PHONE = "Tambah Nomor HP"
-//        private const val VERIFY_PHONE = "Verifikasi Nomor HP"
     }
 }

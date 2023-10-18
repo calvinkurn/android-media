@@ -23,7 +23,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:fontFamily="sans-serif"
-        android:textColor="@color/Unify_N700_44"
+        android:textColor="@color/Unify_NN950_44"
         app:typographyType="display_2"
         android:textStyle="normal"
         tools:text="Mengandung SARA, kekerasan, diskriminasi, vulgar, ancaman dan pelanggaran nilai/norma sosial" />

@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cal
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import io.mockk.*
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +26,9 @@ class CalendarWidgetGridViewModelTest {
     }
     private val application: Application = mockk()
 
-    private val viewModel: CalendarWidgetGridViewModel = spyk(CalendarWidgetGridViewModel(application, componentsItem, 99))
+    private val viewModel: CalendarWidgetGridViewModel =
+        spyk(CalendarWidgetGridViewModel(application, componentsItem, 99))
+    private val calenderWidgetUseCase: ProductCardsUseCase = mockk()
 
     @Before
     @Throws(Exception::class)
@@ -41,10 +44,27 @@ class CalendarWidgetGridViewModelTest {
     }
 
     @Test
-    fun `test for onAttachToViewHolder`(){
+    fun `test for useCase`() {
+        val viewModel: CalendarWidgetGridViewModel =
+            spyk(CalendarWidgetGridViewModel(application, componentsItem, 99))
+
+        val calenderWidgetUseCase = mockk<ProductCardsUseCase>()
+        viewModel.calenderWidgetUseCase = calenderWidgetUseCase
+
+        assert(viewModel.calenderWidgetUseCase === calenderWidgetUseCase)
+    }
+
+    @Test
+    fun `test for onAttachToViewHolder`() {
         runBlocking {
+            viewModel.calenderWidgetUseCase = calenderWidgetUseCase
             every { componentsItem.properties?.calendarType } returns "dynamic"
-            coEvery { viewModel.calenderWidgetUseCase.loadFirstPageComponents(any(), any()) } returns true
+            coEvery {
+                calenderWidgetUseCase.loadFirstPageComponents(
+                    any(),
+                    any()
+                )
+            } returns true
 
             viewModel.onAttachToViewHolder()
 
@@ -53,12 +73,12 @@ class CalendarWidgetGridViewModelTest {
     }
 
     @Test
-    fun `test for position passed`(){
+    fun `test for position passed`() {
         assert(viewModel.position == 99)
     }
 
     @Test
-    fun `test for components passed`(){
+    fun `test for components passed`() {
         assert(viewModel.components === componentsItem)
     }
 }

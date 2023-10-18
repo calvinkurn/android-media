@@ -6,14 +6,14 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.Group
+import android.widget.GridLayout
+import android.widget.ImageView
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -27,6 +27,7 @@ import com.tokopedia.affiliate.INSTAGRAM_DEFAULT
 import com.tokopedia.affiliate.PAGE_TYPE_CAMPAIGN
 import com.tokopedia.affiliate.PAGE_TYPE_PDP
 import com.tokopedia.affiliate.PAGE_TYPE_SHOP
+import com.tokopedia.affiliate.PAGE_TYPE_WISHLIST
 import com.tokopedia.affiliate.TIKTOK_DEFAULT
 import com.tokopedia.affiliate.TWITTER_DEFAULT
 import com.tokopedia.affiliate.WWW
@@ -42,28 +43,34 @@ import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShareModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromotionBSViewModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.affiliate_toko.databinding.AffiliatePromotionBottomSheetBinding
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, AddSocialInterface {
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
-    private var contentView: View? = null
+    private var binding by autoClearedNullable<AffiliatePromotionBottomSheetBinding>()
+
     private val adapter: AffiliateAdapter = AffiliateAdapter(
         AffiliateAdapterFactory(
             shareButtonInterface = this,
@@ -89,8 +96,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
     private var selectedIds = arrayListOf<Int>()
 
     @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
-    private lateinit var affiliatePromotionBSViewModel: AffiliatePromotionBSViewModel
+    @JvmField
+    var viewModelProvider: ViewModelProvider.Factory? = null
+    private var affiliatePromotionBSViewModel: AffiliatePromotionBSViewModel? = null
 
     companion object {
 
@@ -136,40 +144,19 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
         const val WHATSAPP_ID = 12
         const val YOUTUBE_ID = 13
 
-        fun newInstance(
-            bottomSheetType: SheetType,
-            bottomSheetInterface: AffiliatePromotionBottomSheetInterface?,
-            idArray: ArrayList<Int>?,
-            itemId: String,
-            itemName: String,
-            itemImage: String,
-            itemUrl: String,
-            productIdentifier: String,
-            origin: Int = ORIGIN_PROMOSIKAN,
-            isLinkGenerationEnabled: Boolean = true,
-            commission: String = "",
-            status: String = "",
-            type: String? = "pdp"
-        ): AffiliatePromotionBottomSheet {
-            return AffiliatePromotionBottomSheet().apply {
-                sheetType = bottomSheetType
-                affiliatePromotionBottomSheetInterface = bottomSheetInterface
-                selectedIds = idArray ?: arrayListOf()
-                arguments = Bundle().apply {
-                    putString(KEY_PRODUCT_ID, itemId)
-                    putString(KEY_PRODUCT_NAME, itemName)
-                    putString(KEY_PRODUCT_IMAGE, itemImage)
-                    putString(KEY_PRODUCT_URL, itemUrl)
-                    putString(KEY_PRODUCT_IDENTIFIER, productIdentifier)
-                    putInt(KEY_ORIGIN, origin)
-                    putBoolean(KEY_LINK_GEN_ENABLED, isLinkGenerationEnabled)
-                    putString(KEY_COMMISON_PRICE, commission)
-                    putString(KEY_STATUS, status)
-                    putString(KEY_TYPE, type)
-                }
-            }
-        }
+        private const val TOTAL_IMG_2 = 2
+        private const val TOTAL_IMG_3 = 3
+        private const val TOTAL_IMG_4 = 4
 
+        private const val SPEC_0 = 0
+        private const val SPEC_2 = 2
+
+        private val COLLECTION_MARGIN_1_5 = 1.5f.dp.value.toInt()
+        private val COLLECTION_MARGIN_3 = 1.5f.dp.value.toInt()
+        private const val COLLECTION_PARAM_SIZE = 4
+        private const val INDEX_ONE = 1
+        private const val INDEX_TWO = 2
+        private const val INDEX_THREE = 3
         fun newInstance(
             params: AffiliatePromotionBottomSheetParams,
             bottomSheetType: SheetType,
@@ -180,7 +167,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 affiliatePromotionBottomSheetInterface = bottomSheetInterface
                 selectedIds = params.idArray ?: arrayListOf()
                 arguments = Bundle().apply {
-                    putSerializable(KEY_PARAMS, params)
+                    putParcelable(KEY_PARAMS, params)
                 }
             }
         }
@@ -197,7 +184,8 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
         savedInstanceState: Bundle?
     ): View? {
         affiliatePromotionBSViewModel =
-            ViewModelProvider(this, viewModelProvider)[AffiliatePromotionBSViewModel::class.java]
+            viewModelProvider?.let { ViewModelProvider(this, it) }
+                ?.get(AffiliatePromotionBSViewModel::class.java)
         init()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -210,48 +198,49 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
         } else {
             setTitle(getString(R.string.affiliate_where_to_promote))
         }
-        contentView = View.inflate(
-            context,
-            R.layout.affiliate_promotion_bottom_sheet,
-            null
-        )
+        binding = AffiliatePromotionBottomSheetBinding.inflate(LayoutInflater.from(context))
 
         afterViewSet()
-        setChild(contentView)
+        setChild(binding?.root)
         sendScreenEvent()
     }
 
     private fun afterViewSet() {
-        contentView?.run {
+        binding?.run {
             arguments?.let { bundle ->
                 val params: AffiliatePromotionBottomSheetParams? =
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        bundle.getSerializable(
+                        bundle.getParcelable(
                             KEY_PARAMS,
                             AffiliatePromotionBottomSheetParams::class.java
                         )
                     } else {
-                        bundle.getSerializable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
+                        bundle.getParcelable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
                     }
-                findViewById<Typography>(R.id.product_name).text =
+                type = params?.type ?: bundle.getString(KEY_TYPE, PAGE_TYPE_PDP)
+                productName.text =
                     params?.itemName ?: bundle.getString(KEY_PRODUCT_NAME)
-                findViewById<ImageUnify>(R.id.product_image).loadImage(
-                    params?.itemImage ?: bundle.getString(KEY_PRODUCT_IMAGE)
-                )
-
+                if (type == PAGE_TYPE_WISHLIST) {
+                    glCollectionItem.show()
+                    productImage.hide()
+                    setCollectionImages(params?.imageArray)
+                } else {
+                    glCollectionItem.hide()
+                    productImage.show()
+                    productImage.loadImage(params?.itemImage ?: bundle.getString(KEY_PRODUCT_IMAGE))
+                }
+                ssaMessage?.apply {
+                    show()
+                    text = params?.ssaInfo?.message?.parseAsHtml()
+                }
                 if (params?.ssaInfo?.ssaStatus == true) {
-                    findViewById<Group>(R.id.ssa_group).isVisible = true
-                    findViewById<Typography>(R.id.ssa_message).text =
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            Html.fromHtml(params.ssaInfo.message, Html.FROM_HTML_MODE_LEGACY)
-                        } else {
-                            Html.fromHtml(params.ssaInfo.message)
-                        }
-                    findViewById<Label>(R.id.ssa_label).apply {
+                    ssaGroup.isVisible = true
+
+                    ssaLabel.apply {
                         isVisible = params.ssaInfo.label.labelText.isNotBlank()
                         text = params.ssaInfo.label.labelText
                     }
-                    findViewById<Typography>(R.id.ssa_expiry_date).text = params.ssaInfo.ssaMessage
+                    ssaExpiryDate.text = params.ssaInfo.ssaMessage
                 }
                 productId =
                     params?.itemId ?: bundle.getString(KEY_PRODUCT_ID, "")
@@ -263,10 +252,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     params?.isLinkGenerationEnabled ?: bundle.getBoolean(KEY_LINK_GEN_ENABLED)
                 commission = params?.commission ?: bundle.getString(KEY_COMMISON_PRICE, "")
                 status = params?.status ?: bundle.getString(KEY_STATUS, "")
-                type = params?.type ?: bundle.getString(KEY_TYPE, PAGE_TYPE_PDP)
 
                 when (originScreen) {
-                    ORIGIN_SSA_SHOP -> findViewById<IconUnify>(R.id.icon_ssa_message).setOnClickListener {
+                    ORIGIN_SSA_SHOP -> iconSsaMessage.setOnClickListener {
                         RouteManager.route(
                             context,
                             ApplinkConst.SHOP.replace(
@@ -275,16 +263,18 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                             )
                         )
                     }
+
                     ORIGIN_PROMO_TOKO_NOW -> {
-                        findViewById<IconUnify>(R.id.icon_ssa_message).setOnClickListener {
+                        iconSsaMessage.setOnClickListener {
                             RouteManager.route(
                                 context,
                                 ApplinkConst.TokopediaNow.HOME
                             )
                         }
                     }
+
                     ORIGIN_PROMO_DISCO_BANNER, ORIGIN_PROMO_DISCO_BANNER_LIST -> {
-                        findViewById<IconUnify>(R.id.icon_ssa_message).setOnClickListener {
+                        iconSsaMessage.setOnClickListener {
                             RouteManager.route(
                                 context,
                                 appUrl
@@ -295,19 +285,135 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
             }
 
             if (sheetType == SheetType.ADD_SOCIAL) {
-                findViewById<IconUnify>(R.id.product_image).hide()
-                findViewById<Typography>(R.id.product_name).hide()
+                productImage.hide()
+                productName.hide()
             }
 
-            setObservers(this)
+            setObservers()
         }
-        contentView?.findViewById<RecyclerView>(R.id.share_rv)?.let {
+        binding?.shareRv?.let {
             addDataInRecyclerView()
             val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter.setVisitables(listVisitable)
             it.layoutManager = layoutManager
             it.adapter = adapter
         }
+    }
+
+    private fun setCollectionImages(
+        images: List<String?>?
+    ) {
+        val params = getCollectionGridParams(images?.size.orZero())
+        val imgCollections = arrayOf(
+            binding?.imgCollection1,
+            binding?.imgCollection2,
+            binding?.imgCollection3,
+            binding?.imgCollection4
+        )
+
+        if (images.isNullOrEmpty() || images.size <= 1) {
+            binding?.glCollectionItem?.gone()
+            binding?.productImage?.show()
+            binding?.productImage?.apply {
+                visible()
+                setImageUrl(images?.getOrNull(0).orEmpty())
+                scaleType = ImageView.ScaleType.CENTER_CROP
+            }
+        } else {
+            repeat(images.size) {
+                imgCollections[it]?.apply {
+                    layout(0, 0, 0, 0)
+                    visible()
+                    layoutParams = params[it]
+                    setImageUrl(images[it].orEmpty())
+                    scaleType = ImageView.ScaleType.CENTER_CROP
+                }
+            }
+        }
+    }
+
+    private fun getCollectionGridParams(size: Int): Array<GridLayout.LayoutParams?> {
+        val params = arrayOfNulls<GridLayout.LayoutParams>(COLLECTION_PARAM_SIZE)
+        when (size) {
+            TOTAL_IMG_2 -> {
+                val param1: GridLayout.LayoutParams =
+                    GridLayout.LayoutParams(binding?.imgCollection1?.layoutParams)
+                param1.rowSpec = GridLayout.spec(SPEC_0, SPEC_2, 1.0F)
+                param1.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
+                param1.setMargins(Int.ZERO, Int.ZERO, COLLECTION_MARGIN_3, 0)
+
+                val param2: GridLayout.LayoutParams =
+                    GridLayout.LayoutParams(binding?.imgCollection2?.layoutParams)
+                param2.rowSpec = GridLayout.spec(SPEC_0, SPEC_2, 1.0F)
+                param2.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
+                params[Int.ZERO] = param1
+                params[INDEX_ONE] = param2
+            }
+
+            TOTAL_IMG_3 -> {
+                val param1: GridLayout.LayoutParams =
+                    GridLayout.LayoutParams(binding?.imgCollection1?.layoutParams)
+                param1.rowSpec = GridLayout.spec(SPEC_0, SPEC_2, 1.0F)
+                param1.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
+                param1.setMargins(Int.ZERO, Int.ZERO, COLLECTION_MARGIN_3, COLLECTION_MARGIN_1_5)
+
+                val param2: GridLayout.LayoutParams =
+                    GridLayout.LayoutParams(binding?.imgCollection2?.layoutParams)
+                param2.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
+                param2.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
+                param2.setMargins(Int.ZERO, Int.ZERO, Int.ZERO, COLLECTION_MARGIN_3)
+
+                val param3: GridLayout.LayoutParams =
+                    GridLayout.LayoutParams(binding?.imgCollection2?.layoutParams)
+                param3.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
+                param3.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
+
+                params[Int.ZERO] = param1
+                params[INDEX_ONE] = param2
+                params[INDEX_TWO] = param3
+            }
+
+            TOTAL_IMG_4 -> {
+                val param1: GridLayout.LayoutParams =
+                    GridLayout.LayoutParams(binding?.imgCollection1?.layoutParams)
+                param1.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
+                param1.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
+                param1.setMargins(Int.ZERO, Int.ZERO, COLLECTION_MARGIN_1_5, COLLECTION_MARGIN_1_5)
+
+                val param2: GridLayout.LayoutParams =
+                    GridLayout.LayoutParams(binding?.imgCollection2?.layoutParams)
+                param2.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
+                param2.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
+                param2.setMargins(COLLECTION_MARGIN_1_5, Int.ZERO, Int.ZERO, COLLECTION_MARGIN_1_5)
+
+                val param3: GridLayout.LayoutParams =
+                    GridLayout.LayoutParams(binding?.imgCollection3?.layoutParams)
+                param3.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
+                param3.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
+                param3.setMargins(
+                    COLLECTION_MARGIN_1_5,
+                    COLLECTION_MARGIN_1_5,
+                    COLLECTION_MARGIN_1_5,
+                    Int.ZERO
+                )
+
+                val param4: GridLayout.LayoutParams =
+                    GridLayout.LayoutParams(binding?.imgCollection4?.layoutParams)
+                param4.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
+                param4.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
+                param4.setMargins(
+                    COLLECTION_MARGIN_1_5,
+                    COLLECTION_MARGIN_1_5,
+                    COLLECTION_MARGIN_1_5,
+                    Int.ZERO
+                )
+                params[Int.ZERO] = param1
+                params[INDEX_ONE] = param2
+                params[INDEX_TWO] = param3
+                params[INDEX_THREE] = param4
+            }
+        }
+        return params
     }
 
     private fun addDataInRecyclerView() {
@@ -383,7 +489,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
         )
 
         if (sheetType == SheetType.ADD_SOCIAL) {
-            contentView?.findViewById<UnifyButton>(R.id.simpan_btn)?.run {
+            binding?.simpanBtn?.run {
                 show()
                 setOnClickListener {
                     onSaveSocialButtonClicked()
@@ -438,19 +544,21 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
             .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
             .build()
 
-    private fun setObservers(contentView: View) {
-        affiliatePromotionBSViewModel.generateLinkData().observe(this) {
+    private fun setObservers() {
+        affiliatePromotionBSViewModel?.generateLinkData()?.observe(this) {
             it?.let { data ->
                 when (type) {
                     PAGE_TYPE_PDP -> sendClickEventProduct(
                         data.linkID,
                         AffiliateAnalytics.LabelKeys.SUCCESS
                     )
+
                     PAGE_TYPE_SHOP -> sendClickPGeventShop(
                         data.linkID,
                         AffiliateAnalytics.LabelKeys.SUCCESS,
                         status
                     )
+
                     PAGE_TYPE_CAMPAIGN -> sendClickEventCampaign(
                         data.linkID,
                         AffiliateAnalytics.LabelKeys.SUCCESS
@@ -464,39 +572,44 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                         data.url?.shortURL
                     )
                 )
-                Toaster.build(
-                    contentView.rootView,
-                    getString(R.string.affiliate_link_generated_succesfully, currentName),
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL
-                ).show()
+                binding?.root?.rootView?.let { safeView ->
+                    Toaster.build(
+                        safeView,
+                        getString(R.string.affiliate_link_generated_succesfully, currentName),
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL
+                    ).show()
+                }
             } ?: kotlin.run {
-                when (PAGE_TYPE_PDP) {
+                when (type) {
                     PAGE_TYPE_PDP -> sendClickEventProduct("", AffiliateAnalytics.LabelKeys.FAIL)
                     PAGE_TYPE_SHOP ->
                         sendClickPGeventShop("", AffiliateAnalytics.LabelKeys.FAIL, status)
+
                     PAGE_TYPE_CAMPAIGN -> sendClickEventCampaign(
                         "",
                         AffiliateAnalytics.LabelKeys.FAIL
                     )
                 }
 
-                Toaster.build(
-                    contentView.rootView,
-                    getString(R.string.affiliate_link_empty_error),
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR
-                ).show()
+                binding?.root?.rootView?.let { safeView ->
+                    Toaster.build(
+                        safeView,
+                        getString(R.string.affiliate_link_empty_error),
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_ERROR
+                    ).show()
+                }
             }
         }
 
-        affiliatePromotionBSViewModel.loading().observe(this) { isLoad ->
+        affiliatePromotionBSViewModel?.loading()?.observe(this) { isLoad ->
             if (isLoad != null) {
                 loading(isLoad)
             }
         }
 
-        affiliatePromotionBSViewModel.getErrorMessage().observe(this) { error ->
+        affiliatePromotionBSViewModel?.getErrorMessage()?.observe(this) { error ->
             if (error != null) {
                 when (type) {
                     PAGE_TYPE_PDP -> sendClickEventProduct("", AffiliateAnalytics.LabelKeys.FAIL)
@@ -505,17 +618,20 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                         AffiliateAnalytics.LabelKeys.FAIL,
                         status
                     )
+
                     PAGE_TYPE_CAMPAIGN -> sendClickEventCampaign(
                         "",
                         AffiliateAnalytics.LabelKeys.FAIL
                     )
                 }
-                Toaster.build(
-                    contentView.rootView,
-                    error,
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR
-                ).show()
+                binding?.root?.rootView?.let { safeView ->
+                    Toaster.build(
+                        safeView,
+                        error,
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_ERROR
+                    ).show()
+                }
             }
         }
     }
@@ -523,12 +639,12 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
     private fun sendClickEventProduct(linkID: String?, state: String) {
         val params: AffiliatePromotionBottomSheetParams? =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                arguments?.getSerializable(
+                arguments?.getParcelable(
                     KEY_PARAMS,
                     AffiliatePromotionBottomSheetParams::class.java
                 )
             } else {
-                arguments?.getSerializable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
+                arguments?.getParcelable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
             }
         var eventAction = ""
         var eventCategory = ""
@@ -543,6 +659,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     eventLabel += " - komisi extra"
                 }
             }
+
             ORIGIN_HOME_GENERATED -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_DAFTAR_LINK_PRODUK
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
@@ -550,6 +667,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     eventLabel += " - komisi extra"
                 }
             }
+
             ORIGIN_PERNAH_DIBELI_PROMOSIKA -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DIABEL
                 eventCategory =
@@ -558,6 +676,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     eventLabel += " - komisi extra"
                 }
             }
+
             ORIGIN_TERAKHIR_DILIHAT -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DILIHAT
                 eventCategory =
@@ -566,6 +685,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     eventLabel += " - komisi extra"
                 }
             }
+
             ORIGIN_PROMOSIKAN -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_RESULT_PAGE
                 eventCategory =
@@ -580,19 +700,19 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
             eventAction,
             eventCategory,
             eventLabel,
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
     private fun sendClickPGeventShop(linkID: String?, status: String, entryFlag: String) {
         val params: AffiliatePromotionBottomSheetParams? =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                arguments?.getSerializable(
+                arguments?.getParcelable(
                     KEY_PARAMS,
                     AffiliatePromotionBottomSheetParams::class.java
                 )
             } else {
-                arguments?.getSerializable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
+                arguments?.getParcelable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
             }
         var eventAction = ""
         var eventCategory = ""
@@ -608,6 +728,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     eventLabel += "komisi extra"
                 }
             }
+
             ORIGIN_PROMOSIKAN -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_SHOP_SEARCH_RESULT
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
@@ -616,6 +737,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     eventLabel += " - komisi extra"
                 }
             }
+
             ORIGIN_SSA_SHOP -> {
                 event = AffiliateAnalytics.EventKeys.CLICK_CONTENT
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_SSA_SHOP
@@ -628,19 +750,19 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
             eventAction,
             eventCategory,
             eventLabel,
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
     private fun sendClickEventCampaign(linkID: String?, status: String) {
         val params: AffiliatePromotionBottomSheetParams? =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                arguments?.getSerializable(
+                arguments?.getParcelable(
                     KEY_PARAMS,
                     AffiliatePromotionBottomSheetParams::class.java
                 )
             } else {
-                arguments?.getSerializable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
+                arguments?.getParcelable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
             }
         var eventAction = ""
         var eventCategory = ""
@@ -652,11 +774,13 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
                 eventLabel = "$linkID - $status"
             }
+
             ORIGIN_PROMO_DISCO_BANNER -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_DISCO_BANNER
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
                 eventLabel = "$linkID - $status"
             }
+
             ORIGIN_PROMO_DISCO_BANNER_LIST -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_DISCO_BANNER_LIST
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
@@ -671,7 +795,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
             eventAction,
             eventCategory,
             eventLabel,
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -693,7 +817,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 AffiliateAnalytics.ActionKeys.IMPRESSION_HOME_PORTAL_B_S,
                 AffiliateAnalytics.CategoryKeys.HOME_PORTAL_B_S,
                 "",
-                userSessionInterface.userId
+                userSessionInterface?.userId.orEmpty()
             )
         } else if (originScreen == ORIGIN_PROMOSIKAN) {
             AffiliateAnalytics.sendEvent(
@@ -701,7 +825,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 AffiliateAnalytics.ActionKeys.IMPRESSION_PROMOSIKAN_SRP_B_S,
                 AffiliateAnalytics.CategoryKeys.PROMOSIKAN_SRP_B_S,
                 "",
-                userSessionInterface.userId
+                userSessionInterface?.userId.orEmpty()
             )
         }
     }
@@ -709,7 +833,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
     override fun onShareButtonClick(name: String?, id: Int?, serviceFormat: String?) {
         currentName = name
         currentServiceFormat = serviceFormat ?: ""
-        affiliatePromotionBSViewModel.affiliateGenerateLink(
+        affiliatePromotionBSViewModel?.affiliateGenerateLink(
             id,
             type,
             productId,
@@ -742,20 +866,21 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 count += 1
             }
         }
+
         if (count == 0) {
-            contentView?.findViewById<UnifyButton>(R.id.simpan_btn)?.run {
+            binding?.simpanBtn?.run {
                 buttonVariant = UnifyButton.Variant.GHOST
                 buttonType = UnifyButton.Type.ALTERNATE
                 isEnabled = false
             }
-            contentView?.findViewById<Typography>(R.id.error_message)?.show()
+            binding?.errorMessage?.show()
         } else {
-            contentView?.findViewById<UnifyButton>(R.id.simpan_btn)?.run {
+            binding?.simpanBtn?.run {
                 buttonVariant = UnifyButton.Variant.FILLED
                 buttonType = UnifyButton.Type.MAIN
                 isEnabled = true
             }
-            contentView?.findViewById<Typography>(R.id.error_message)?.hide()
+            binding?.errorMessage?.hide()
         }
     }
 }

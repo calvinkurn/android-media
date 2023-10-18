@@ -26,6 +26,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
+import com.tokopedia.applink.user.DeeplinkMapperUser;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.home_account.AccountConstants;
 import com.tokopedia.home_account.R;
@@ -58,6 +59,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private UserSessionInterface userSession;
     private AccountAnalytics accountAnalytics;
     private Integer PROJECT_ID = 7;
+
+    private String SOURCE = "Account";
 
     private View personalDataMenu;
     private View addressMenu;
@@ -268,8 +271,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private void goToKyc() {
         if (getActivity() != null) {
-            Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalUserPlatform.KYC_INFO, String.valueOf(PROJECT_ID));
-            startActivity(intent);
+            RouteManager.route(getContext(), ApplinkConstInternalUserPlatform.INSTANCE.getGotoKYCApplink(PROJECT_ID.toString(), SOURCE, ""));
         }
     }
 

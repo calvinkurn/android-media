@@ -16,5 +16,9 @@ data class CategoryItemModel(
     @SerializedName("id")
     var id: String?,
     @SerializedName("name")
-    var name: String?
+    var name: String?,
+    @SerializedName("confidence_score")
+    var confidenceScore: String?,
+    @SerializedName("precision")
+    var precision: String?,
 )

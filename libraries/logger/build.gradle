@@ -35,6 +35,8 @@ dependencies {
 }
 
 android {
+    namespace 'com.tokopedia.logger'
+    testNamespace 'com.tokopedia.logger.test'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11

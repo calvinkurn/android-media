@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-parcelize'
 
 buildscript {
     repositories {
@@ -11,6 +12,11 @@ buildscript {
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
     }
+}
+
+android {
+    namespace 'com.tokopedia.merchantvoucher'
+    testNamespace 'com.tokopedia.merchantvoucher.test'
 }
 
 dependencies {
@@ -24,7 +30,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.linker)
 
     implementation rootProject.ext.unifyDependencies.principles

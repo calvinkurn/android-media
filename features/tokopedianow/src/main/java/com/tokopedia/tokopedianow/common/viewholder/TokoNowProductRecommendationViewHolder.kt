@@ -5,13 +5,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
-import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
+import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView.TokoNowProductRecommendationListener
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductRecommendationBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowProductRecommendationViewHolder(
     itemView: View,
-    private val listener: TokoNowProductRecommendationView.TokoNowProductRecommendationListener? = null
+    private val listener: TokoNowProductRecommendationListener? = null
 ) : AbstractViewHolder<TokoNowProductRecommendationUiModel>(itemView) {
 
     companion object {
@@ -24,7 +24,8 @@ class TokoNowProductRecommendationViewHolder(
     override fun bind(element: TokoNowProductRecommendationUiModel) {
         binding?.apply {
             productRecommendation.setRequestParam(
-                getRecommendationRequestParam = element.requestParam
+                getRecommendationRequestParam = element.requestParam,
+                tickerPageSource = element.tickerPageSource
             )
             productRecommendation.setListener(
                 productRecommendationListener = listener

@@ -1,0 +1,27 @@
+{
+  "GetTargetedTicker": {
+    "List": [
+      {
+        "ID": 128,
+        "Title": "Info Pengembangan System AFTER REFACTOR",
+        "Content": "Notification content baru sedang berkendala, Mohon cek berkala.",
+        "Action": {
+          "Label": "Baca Selengkapnya",
+          "Type": "link",
+          "AppURL": "tokopedia://webview?url=https://www.tokopedia.com",
+          "WebURL": "https://www.tokopedia.com"
+        },
+        "Type": "warning",
+        "Priority": 1,
+        "Metadata": [
+          {
+            "Type": "blockAddToCart",
+            "Values": [
+              "true"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

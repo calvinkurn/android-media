@@ -10,10 +10,9 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
-import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
-import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Category.TOKONOW_CATEGORY_PAGE
-import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_CATEGORY_ID
-import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_REF
+import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Category.TOKONOW_CATEGORY_PAGE
+import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_CATEGORY_ID
+import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_REF
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper.mapProductItemToRecommendationItem
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
@@ -134,7 +133,7 @@ data class ProductRecommendationCallback(
         appLink: String
     ) {
         val newAppLink = if (eventCategory == TOKONOW_CATEGORY_PAGE) {
-            CategoryTracking.sendRecommendationSeeAllClickEvent(categoryIdTracking)
+            com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendRecommendationSeeAllClickEvent(categoryIdTracking)
             modifySeeMoreAppLink(appLink)
         } else {
             SearchResultTracker.sendRecommendationSeeAllClickEvent(query)

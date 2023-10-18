@@ -1,6 +1,19 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-kapt'
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
+
+android {
+    buildFeatures {
+        viewBinding true
+        buildConfig true
+    }
+}
 
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
@@ -17,6 +30,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.explore'
+    testNamespace 'com.tokopedia.explore.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
@@ -28,7 +46,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.affiliateCommon)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.affiliateCommon)
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
@@ -54,6 +72,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.supportLibDependencies.kotlinMetaData
 
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     testImplementation rootProject.ext.testDependencies.mockk

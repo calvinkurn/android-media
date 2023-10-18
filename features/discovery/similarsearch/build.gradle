@@ -6,6 +6,8 @@ apply plugin: 'io.hansel.preprocessor.module'
 
 
 android {
+    namespace 'com.tokopedia.similarsearch'
+    testNamespace 'com.tokopedia.similarsearch.test'
     buildFeatures {
         viewBinding true
     }
@@ -42,7 +44,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)

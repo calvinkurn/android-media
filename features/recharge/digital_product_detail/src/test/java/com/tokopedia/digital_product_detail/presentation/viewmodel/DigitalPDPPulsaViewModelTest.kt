@@ -1,11 +1,12 @@
 package com.tokopedia.digital_product_detail.presentation.viewmodel
 
-import com.tokopedia.common.topupbills.favoritepdp.data.mapper.DigitalPersoMapper
+import com.tokopedia.common.topupbills.favoritepdp.data.mapper.FavoritePersoMapper
 import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
+import com.tokopedia.digital_product_detail.data.mapper.DigitalPersoMapper
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.presentation.data.PulsaDataFactory
 import com.tokopedia.network.exception.MessageErrorException
@@ -17,6 +18,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -24,8 +26,9 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     private val dataFactory = PulsaDataFactory()
     private val mapperFactory = DigitalDenomMapper()
-    private val persoMapperFactory = DigitalPersoMapper()
+    private val persoMapperFactory = FavoritePersoMapper()
     private val mapAtcFactory = DigitalAtcMapper()
+    private val digitalPersoMapperFactory = DigitalPersoMapper()
 
     @Test
     fun `given menuDetail loading state then should get loading state`() {
@@ -66,7 +69,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         runTest {
             val response = dataFactory.getRecommendationData()
             val mappedResponse =
-                mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, false)
+                mapperFactory.mapDigiPersoToRecommendation(response.digitalPersoData, false)
             onGetRecommendation_thenReturn(mappedResponse)
 
             viewModel.getRecommendations(listOf(), listOf())
@@ -125,6 +128,64 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
         verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
         verifyGetFavoriteNumberPrefillNull()
+    }
+
+    @Test
+    fun `when getting rechargeCheckBalance should run and give success result`() {
+        val response = dataFactory.getRechargeCheckBalanceData()
+        val mappedResponse = digitalPersoMapperFactory.mapDigiPersoToCheckBalanceModel(response.digitalPersoData)
+        onGetRechargeCheckBalance_thenReturn(mappedResponse)
+
+        viewModel.getRechargeCheckBalance(listOf(), listOf())
+        verifyGetRechargeCheckBalanceRepoGetCalled()
+        verifyGetRechargeCheckBalanceSuccess(mappedResponse)
+    }
+
+    @Test
+    fun `when getting rechargeCheckBalance should run and givefail result`() {
+        val exception = MessageErrorException("Tokopedia")
+        onGetRechargeCheckBalance_thenReturn(exception)
+
+        viewModel.getRechargeCheckBalance(listOf(), listOf())
+        verifyGetRechargeCheckBalanceRepoGetCalled()
+        verifyGetRechargeCheckBalanceFail()
+    }
+
+    @Test
+    fun `given rechargeCheckBalance loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setRechargeCheckBalanceLoading()
+        verifyGetRechargeCheckBalanceLoading(loadingResponse)
+    }
+
+    @Test
+    fun `when saveRechargeUserAccessToken called should run and give success result`() {
+        val response = dataFactory.saveRechargeUserAccessToken()
+        val mappedResponse = digitalPersoMapperFactory.mapSaveAccessTokenToAccessTokenResultModel(response.rechargeSaveTelcoUserBalanceAccessToken)
+        onSaveRechargeUserAccessToken(mappedResponse)
+
+        viewModel.saveRechargeUserAccessToken("", "")
+        verifySaveRechargeUserAccessTokenSuccess(mappedResponse)
+        verifySaveRechargeUserAccessTokenGetCalled()
+    }
+
+    @Test
+    fun `when saveRechargeUserAccessToken called should run and give fail result`() {
+        val exception = MessageErrorException("Tokopedia")
+        onSaveRechargeUserAccessToken(exception)
+
+        viewModel.saveRechargeUserAccessToken("", "")
+        verifySaveRechargeUserAccessTokenGetCalled()
+        verifySaveRechargeUserAccessTokenFail()
+    }
+
+    @Test
+    fun `given save loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setRechargeUserAccessTokenLoading()
+        verifySaveRechargeUserAccessTokenLoading(loadingResponse)
     }
 
     @Test
@@ -462,10 +523,17 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
     }
 
     @Test
+    fun `when cancelCheckBalanceJob called the job should be cancelled and live data should not emit value`() {
+        viewModel.checkBalanceJob = Job()
+        viewModel.cancelCheckBalanceJob()
+        verifyGetRechargeCheckBalanceIsCancelled()
+    }
+
+    @Test
     fun `when cancelRecommendationJob called the job should be cancelled and live data should not emit`() {
         val response = dataFactory.getRecommendationData()
         val mappedResponse =
-            mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
+            mapperFactory.mapDigiPersoToRecommendation(response.digitalPersoData, true)
         onGetRecommendation_thenReturn(mappedResponse)
 
         viewModel.getRecommendations(listOf(), listOf())
@@ -495,6 +563,17 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartSuccess(response)
+    }
+
+    @Test
+    fun `when getting addToCartMultiCheckout should run and return success`() {
+        val response = mapAtcFactory.mapAtcToResult(dataFactory.getAddToCartData())
+        onGetAddToCartMultiChekout_thenReturn(response)
+
+        viewModel.setAtcMultiCheckoutParam()
+        viewModel.addToCart(RequestBodyIdentifier(), "")
+        verifyAddToCartMultiCheckoutRepoGetCalled()
+        verifyAddToCartMultiChekoutSuccess(response)
     }
 
     @Test
@@ -689,6 +768,24 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         val expectedResult = viewModel.isEmptyDenomMCCM(listDenom, listMccm)
 
         verifyDenomAndMCCMIsEmpty(expectedResult)
+    }
+
+    @Test
+    fun `given checkBalanceFailCounter is zero, isCheckBalanceFailedMoreThanThreeTimes should return false`() {
+        viewModel.checkBalanceFailCounter = 0
+
+        val actualResult = viewModel.isCheckBalanceFailedMoreThanThreeTimes()
+        Assert.assertTrue(viewModel.checkBalanceFailCounter == 0)
+        Assert.assertFalse(actualResult)
+    }
+
+    @Test
+    fun `given checkBalanceFailCounter is three, isCheckBalanceFailedMoreThanThreeTimes should return true`() {
+        viewModel.checkBalanceFailCounter = 3
+
+        val actualResult = viewModel.isCheckBalanceFailedMoreThanThreeTimes()
+        Assert.assertTrue(viewModel.checkBalanceFailCounter == 3)
+        Assert.assertTrue(actualResult)
     }
 
     companion object {

@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:textSize="14sp"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:layout_marginTop="18dp"
         app:typographyWeight="bold"
         android:layout_marginBottom="18dp" />

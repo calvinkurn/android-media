@@ -8,15 +8,28 @@
     android:background="@color/Unify_Background"
     tools:context=".view.TrackingPageFragment">
 
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header_tracking_page"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_shadow="true"
+        app:unify_header_title="@string/label_tracking_activity"
+        app:unify_header_is_show_back_button="true"
+        />
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/header_tracking_page">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -27,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_reference_number"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
                 app:layout_constraintTop_toBottomOf="@id/top_padding"
@@ -37,7 +50,7 @@
                 android:id="@+id/reference_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
                 app:layout_constraintTop_toBottomOf="@id/lbl_ref_num"
@@ -75,7 +88,7 @@
                 android:layout_marginRight="8dp"
                 android:paddingTop="8dp"
                 android:text="@string/label_delivery_date"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintEnd_toEndOf="@id/center"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintRight_toLeftOf="@id/center"
@@ -89,7 +102,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintEnd_toEndOf="@id/center"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintRight_toLeftOf="@id/center"
@@ -106,7 +119,7 @@
                 android:layout_marginRight="8dp"
                 android:paddingTop="16dp"
                 android:text="@string/label_seller_courier_tracking"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintEnd_toEndOf="@id/center"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintRight_toLeftOf="@id/center"
@@ -120,7 +133,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintEnd_toEndOf="@id/center"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintRight_toLeftOf="@id/center"
@@ -135,7 +148,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintEnd_toEndOf="@id/center"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintRight_toLeftOf="@id/center"
@@ -152,7 +165,7 @@
                 android:layout_marginLeft="8dp"
                 android:paddingTop="8dp"
                 android:text="@string/label_service_code"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintBaseline_toBaselineOf="@id/lbl_delivery_date"
                 app:layout_constraintEnd_toStartOf="@id/right_padding"
                 app:layout_constraintLeft_toRightOf="@id/center"
@@ -167,7 +180,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintEnd_toStartOf="@id/right_padding"
                 app:layout_constraintLeft_toRightOf="@id/center"
                 app:layout_constraintRight_toLeftOf="@id/right_padding"
@@ -184,7 +197,7 @@
                 android:layout_marginLeft="8dp"
                 android:paddingTop="16dp"
                 android:text="@string/label_buyer"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintBaseline_toBaselineOf="@id/lbl_seller_courier_tracking"
                 app:layout_constraintEnd_toStartOf="@id/right_padding"
                 app:layout_constraintLeft_toRightOf="@id/center"
@@ -199,7 +212,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintEnd_toStartOf="@id/right_padding"
                 app:layout_constraintLeft_toRightOf="@id/center"
                 app:layout_constraintRight_toLeftOf="@id/right_padding"
@@ -214,7 +227,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintEnd_toStartOf="@id/right_padding"
                 app:layout_constraintLeft_toRightOf="@id/center"
                 app:layout_constraintRight_toLeftOf="@id/right_padding"
@@ -229,7 +242,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="16dp"
                 android:text="@string/tracking_label_eta"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintEnd_toStartOf="@id/center"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintRight_toLeftOf="@id/center"
@@ -242,7 +255,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="4dp"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
                 app:layout_constraintTop_toBottomOf="@id/lbl_eta"
@@ -254,7 +267,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/unify_space_8"
                 android:layout_marginTop="@dimen/unify_space_24"
-                android:background="@color/Unify_N50"
+                android:background="@color/Unify_NN50"
                 android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/description_barrier" />
 
@@ -274,7 +287,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/label_tracking_status"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
                 app:layout_constraintTop_toBottomOf="@id/tipping_gojek_layout"
@@ -284,7 +297,7 @@
                 android:id="@+id/current_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
                 app:layout_constraintTop_toBottomOf="@id/lbl_tracking_status"
@@ -310,7 +323,7 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/Unify_N100"
+                android:background="@color/Unify_NN200"
                 app:layout_constraintEnd_toStartOf="@id/right_padding"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintRight_toLeftOf="@id/right_padding"
@@ -492,57 +505,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/image_preview_large"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/dms_tracking_preview_static_black"
-        android:visibility="gone">
-
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/icon_close"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            app:icon_color_light_disabled="@color/Unify_Static_White"
-            app:icon_color_light_enable="@color/Unify_Static_White"
-            app:icon_color_night_disabled="@color/Unify_Static_White"
-            app:icon_color_night_enable="@color/Unify_Static_White"
-            app:icon_name="CLOSE"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="ContentDescription" />
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/img_proof"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/proof_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/dms_proof_description_static_black"
-            android:paddingHorizontal="62dp"
-            android:paddingVertical="10dp"
-            android:textAlignment="center"
-            android:textColor="@color/Unify_Background"
-            app:layout_constraintBottom_toBottomOf="@id/img_proof"
-            app:layout_constraintEnd_toEndOf="@id/img_proof"
-            app:layout_constraintStart_toStartOf="@id/img_proof"
-            app:typographyType="body_3"
-            tools:text="Foto sepenuhnya diambil dan merupakan tanggung jawab kurir." />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
         android:id="@+id/loading_view"

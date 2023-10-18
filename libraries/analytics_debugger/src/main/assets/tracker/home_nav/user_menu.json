@@ -1,0 +1,17 @@
+{
+  "readme": "Home Nav click user menu",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickHomepage",
+      "eventAction": "click on user menu",
+      "eventCategory": "global menu",
+      "eventLabel": ".*",
+      "pageSource": ".*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "trackerId": "18485"
+    }
+  ]
+}

@@ -24,7 +24,8 @@ class RechargeOrderDetailTypeFactory(
         private val staticButtonListener: RechargeOrderDetailStaticButtonViewHolder.ActionListener,
         private val aboutOrderListener: RechargeOrderDetailAboutOrderViewHolder.ActionListener,
         private val actionButtonListener: RechargeOrderDetailActionButtonSectionViewHolder.ActionListener,
-        private val recommendationWidgetListener: RecommendationWidgetListener
+        private val recommendationWidgetListener: RecommendationWidgetListener,
+        private val rechargePaymentInfoMessageListener: RechargeOrderDetailPaymentViewHolder.RechargeOrderDetailPaymentListener
 ) : BaseAdapterTypeFactory(), RecommendationTypeFactory {
 
     override fun type(bestSellerDataModel: BestSellerDataModel): Int =
@@ -72,7 +73,7 @@ class RechargeOrderDetailTypeFactory(
                 RechargeOrderDetailDividerViewHolder.LAYOUT -> RechargeOrderDetailDividerViewHolder(parent)
                 RechargeOrderDetailPaymentViewHolder.LAYOUT -> {
                     val binding = ItemOrderDetailRechargePaymentDetailBinding.bind(parent)
-                    RechargeOrderDetailPaymentViewHolder(binding)
+                    RechargeOrderDetailPaymentViewHolder(binding, rechargePaymentInfoMessageListener)
                 }
                 RechargeOrderDetailProductViewHolder.LAYOUT -> {
                     val binding = ItemOrderDetailRechargeProductBinding.bind(parent)

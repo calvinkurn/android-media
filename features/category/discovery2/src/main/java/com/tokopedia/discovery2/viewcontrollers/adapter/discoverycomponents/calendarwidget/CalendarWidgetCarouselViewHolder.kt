@@ -20,7 +20,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 
 class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
-    private lateinit var calendarWidgetCarouselViewModel: CalendarWidgetCarouselViewModel
+    private var calendarWidgetCarouselViewModel: CalendarWidgetCarouselViewModel? = null
     private var calendarCarouselRecyclerView: RecyclerView = itemView.findViewById(R.id.calendar_rv)
     private var linearLayoutManager: LinearLayoutManager =
         LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
@@ -36,20 +36,22 @@ class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         calendarWidgetCarouselViewModel = discoveryBaseViewModel as CalendarWidgetCarouselViewModel
-        getSubComponent().inject(calendarWidgetCarouselViewModel)
-        addDecorator()
-        if (mDiscoveryRecycleAdapter.itemCount == 0 || calendarWidgetCarouselViewModel.getCalendarList().isNullOrEmpty()) {
-            addShimmer()
-            mDiscoveryRecycleAdapter.notifyDataSetChanged()
+        calendarWidgetCarouselViewModel?.let { calendarWidgetCarouselViewModel ->
+            getSubComponent().inject(calendarWidgetCarouselViewModel)
+            addDecorator()
+            if (mDiscoveryRecycleAdapter.itemCount == 0 || calendarWidgetCarouselViewModel.getCalendarList().isNullOrEmpty()) {
+                addShimmer()
+            }
+            handleCarouselPagination()
         }
-        handleCarouselPagination()
     }
 
     private fun addDecorator() {
-        calendarWidgetCarouselViewModel.components.properties?.let {
+        calendarWidgetCarouselViewModel?.components?.properties?.let {
             if (it.calendarType == Constant.Calendar.DYNAMIC || it.calendarLayout == CAROUSEL) {
-                if (calendarCarouselRecyclerView.itemDecorationCount > 0)
+                if (calendarCarouselRecyclerView.itemDecorationCount > 0) {
                     calendarCarouselRecyclerView.removeItemDecorationAt(0)
+                }
                 calendarCarouselRecyclerView.addItemDecoration(carouselRecyclerViewDecorator)
             } else {
                 calendarCarouselRecyclerView.setMargin(
@@ -70,9 +72,11 @@ class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
                 val totalItemCount: Int = linearLayoutManager.itemCount
                 val firstVisibleItemPosition: Int =
                     linearLayoutManager.findFirstVisibleItemPosition()
-                if (!calendarWidgetCarouselViewModel.isLoadingData() && !calendarWidgetCarouselViewModel.isLastPage()) {
-                    if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0) {
-                        calendarWidgetCarouselViewModel.fetchCarouselPaginatedCalendars()
+                calendarWidgetCarouselViewModel?.let { calendarWidgetCarouselViewModel ->
+                    if (!calendarWidgetCarouselViewModel.isLoadingData() && !calendarWidgetCarouselViewModel.isLastPage()) {
+                        if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0) {
+                            calendarWidgetCarouselViewModel.fetchCarouselPaginatedCalendars()
+                        }
                     }
                 }
             }
@@ -81,48 +85,47 @@ class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun addShimmer() {
         val list: ArrayList<ComponentsItem> = ArrayList()
-        list.add(ComponentsItem(name = ComponentNames.ShimmerCalendarWidget.componentName, properties = calendarWidgetCarouselViewModel.components.properties))
-        list.add(ComponentsItem(name = ComponentNames.ShimmerCalendarWidget.componentName, properties = calendarWidgetCarouselViewModel.components.properties))
-        list.add(ComponentsItem(name = ComponentNames.ShimmerCalendarWidget.componentName, properties = calendarWidgetCarouselViewModel.components.properties))
-        list.add(ComponentsItem(name = ComponentNames.ShimmerCalendarWidget.componentName, properties = calendarWidgetCarouselViewModel.components.properties))
+        list.add(ComponentsItem(name = ComponentNames.ShimmerCalendarWidget.componentName, properties = calendarWidgetCarouselViewModel?.components?.properties))
+        list.add(ComponentsItem(name = ComponentNames.ShimmerCalendarWidget.componentName, properties = calendarWidgetCarouselViewModel?.components?.properties))
+        list.add(ComponentsItem(name = ComponentNames.ShimmerCalendarWidget.componentName, properties = calendarWidgetCarouselViewModel?.components?.properties))
+        list.add(ComponentsItem(name = ComponentNames.ShimmerCalendarWidget.componentName, properties = calendarWidgetCarouselViewModel?.components?.properties))
         mDiscoveryRecycleAdapter.setDataList(list)
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { it ->
-            calendarWidgetCarouselViewModel.getCalendarCarouselItemsListData().observe(it, { item ->
+            calendarWidgetCarouselViewModel?.getCalendarCarouselItemsListData()?.observe(it) { item ->
                 mDiscoveryRecycleAdapter.setDataList(item)
-            })
-            calendarWidgetCarouselViewModel.syncData.observe(it, { sync ->
+            }
+            calendarWidgetCarouselViewModel?.syncData?.observe(it) { sync ->
                 if (sync) {
                     mDiscoveryRecycleAdapter.notifyDataSetChanged()
                 }
-            })
-            calendarWidgetCarouselViewModel.getCalendarLoadState().observe(it, { errorState ->
-                if (errorState)
+            }
+            calendarWidgetCarouselViewModel?.getCalendarLoadState()?.observe(it) { errorState ->
+                if (errorState) {
                     handleErrorState()
-            })
+                }
+            }
         }
     }
 
     private fun handleErrorState() {
         addShimmer()
-        mDiscoveryRecycleAdapter.notifyDataSetChanged()
-
     }
 
     private fun reloadComponent() {
         calendarCarouselRecyclerView.visible()
-        calendarWidgetCarouselViewModel.resetComponent()
-        calendarWidgetCarouselViewModel.fetchProductCarouselData()
+        calendarWidgetCarouselViewModel?.resetComponent()
+        calendarWidgetCarouselViewModel?.fetchProductCarouselData()
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            calendarWidgetCarouselViewModel.getCalendarCarouselItemsListData().removeObservers(it)
-            calendarWidgetCarouselViewModel.getCalendarLoadState().removeObservers(it)
+            calendarWidgetCarouselViewModel?.getCalendarCarouselItemsListData()?.removeObservers(it)
+            calendarWidgetCarouselViewModel?.getCalendarLoadState()?.removeObservers(it)
         }
     }
 }

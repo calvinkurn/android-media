@@ -2,12 +2,13 @@ package com.tokopedia.feedplus.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
+import com.tokopedia.feedplus.presentation.model.type.FeedContentType
 
 /**
  * Created By : Muhammad Furqan on 02/03/23
  */
 data class FeedCardLivePreviewContentModel(
-    val id: String,
+    override val id: String,
     val typename: String,
     val type: String,
     val author: FeedAuthorModel,
@@ -24,9 +25,12 @@ data class FeedCardLivePreviewContentModel(
     val hasVoucher: Boolean,
     val campaign: FeedCardCampaignModel,
     val products: List<FeedCardProductModel>,
-) : Visitable<FeedAdapterTypeFactory> {
+    override val contentType: FeedContentType = FeedContentType.PlayLivePreview,
+    override val share: FeedShareModel? = null
+) : Visitable<FeedAdapterTypeFactory>, FeedContentUiModel {
     override fun type(typeFactory: FeedAdapterTypeFactory): Int = typeFactory.type(this)
 
     val contentScore = detailScore.firstOrNull { it.isContentScore }?.value ?: ""
 
+    val videoUrl: String = media.firstOrNull()?.mediaUrl.orEmpty()
 }

@@ -7,6 +7,7 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.values
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -25,24 +28,36 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.editor.analytics.addLogoToText
+import com.tokopedia.media.editor.analytics.addTextToText
 import com.tokopedia.media.editor.analytics.cropRatioToText
 import com.tokopedia.media.editor.analytics.editordetail.EditorDetailAnalytics
 import com.tokopedia.media.editor.analytics.getToolEditorText
+import com.tokopedia.media.editor.analytics.getToolEditorTextAnalytics
 import com.tokopedia.media.editor.analytics.removeBackgroundToText
 import com.tokopedia.media.editor.analytics.watermarkToText
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
+import com.tokopedia.media.editor.data.AddTextColorProvider
+import com.tokopedia.media.editor.data.entity.AddTextBackgroundTemplate
+import com.tokopedia.media.editor.data.entity.AddTextTemplateMode
 import com.tokopedia.media.editor.ui.component.RotateToolUiComponent.Companion.ROTATE_BTN_DEGREE
 import com.tokopedia.media.editor.data.repository.WatermarkType
 import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
+import com.tokopedia.media.editor.ui.activity.addtext.AddTextActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.component.*
 import com.tokopedia.media.editor.ui.uimodel.*
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel.Companion.EMPTY_RATIO
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_WHITE
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_DEFAULT
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_GRAY
+import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
+import com.tokopedia.media.editor.ui.fragment.bottomsheet.AddTextBackgroundBottomSheet
+import com.tokopedia.media.editor.ui.fragment.bottomsheet.EditorAddTextTipsBottomSheet
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.utils.*
 import com.tokopedia.media.loader.data.Properties
@@ -58,6 +73,7 @@ import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.cache.EditorAddLogoCacheManager
+import com.tokopedia.picker.common.cache.EditorAddTextCacheManager
 import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.picker.common.types.ModeType
@@ -66,15 +82,23 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.R as principleR
 import com.tokopedia.utils.view.binding.viewBinding
 import com.yalantis.ucrop.util.FastBitmapDrawable
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
+import kotlin.math.abs
 import kotlin.math.max
 
 class DetailEditorFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val editorDetailAnalytics: EditorDetailAnalytics,
     private val pickerParam: PickerCacheManager,
-    private val addLogoCacheManager: EditorAddLogoCacheManager
+    private val addLogoCacheManager: EditorAddLogoCacheManager,
+    private val addTextCacheManager: EditorAddTextCacheManager,
+    private val addTextColorProvider: AddTextColorProvider
 ) : BaseEditorFragment(),
     BrightnessToolUiComponent.Listener,
     ContrastToolsUiComponent.Listener,
@@ -83,7 +107,9 @@ class DetailEditorFragment @Inject constructor(
     RotateToolUiComponent.Listener,
     CropToolUiComponent.Listener,
     EditorDetailPreviewWidget.Listener,
-    AddLogoToolUiComponent.Listener {
+    AddLogoToolUiComponent.Listener,
+    AddTextToolUiComponent.Listener
+{
 
     private val viewBinding: FragmentDetailEditorBinding? by viewBinding()
     private val viewModel: DetailEditorViewModel by activityViewModels { viewModelFactory }
@@ -95,6 +121,7 @@ class DetailEditorFragment @Inject constructor(
     private val rotateComponent by uiComponent { RotateToolUiComponent(it, this) }
     private val cropComponent by uiComponent { CropToolUiComponent(it, this) }
     private val addLogoComponent by uiComponent { AddLogoToolUiComponent(it, this) }
+    private val addTextComponent by uiComponent { AddTextToolUiComponent(it, this) }
 
     private var data = EditorDetailUiModel()
     private var detailState = EditorUiModel()
@@ -107,13 +134,9 @@ class DetailEditorFragment @Inject constructor(
     private var removeBackgroundType = 0
 
     private var isEdited = false
-    private var initialImageMatrix: Matrix? = null
+    private var initialImageMatrix: FloatArray? = null
 
     private var initialRotateNumber = 0
-
-    // storage variable for watermark case
-    private var globalWidth = 0
-    private var globalHeight = 0
 
     private var originalImageWidth = 0
     private var originalImageHeight = 0
@@ -124,21 +147,32 @@ class DetailEditorFragment @Inject constructor(
     // and used on watermark observer as flag for
     private var isRotatedWatermark = false
 
+    private val isImplementWatermarkSave: Boolean
+        get() = (!data.isToolWatermark() && !data.isToolAddText() && !data.isToolAddLogo() && !data.isToolRemoveBackground())
+
     fun isShowDialogConfirmation(): Boolean {
         return isEdited
     }
 
     private fun saveOverlay() {
-        viewBinding?.imgPreviewOverlay?.let {
-            val logoBitmap = it.drawable.toBitmap()
-            viewModel.saveImageCache(it.drawable.toBitmap(), sourcePath = PNG_KEY)
-                ?.let { fileResult ->
-                    data.addLogoValue = EditorAddLogoUiModel(
-                        Pair(logoBitmap.width, logoBitmap.height),
-                        fileResult.path,
-                        addLogoComponent.getLogoUrl()
-                    )
-                }
+        viewBinding?.let {
+            val drawable =
+                if (data.isToolAddLogo()) it.imgPreviewOverlay.drawable else it.imgPreviewOverlaySecondary.drawable
+            drawable?.let { overlayDrawable ->
+                val overlayBitmap = overlayDrawable.toBitmap()
+                viewModel.saveImageCache(overlayBitmap, sourcePath = PNG_KEY)
+                    ?.let { fileResult ->
+                        if (data.isToolAddLogo()) {
+                            data.addLogoValue = EditorAddLogoUiModel(
+                                Pair(overlayBitmap.width, overlayBitmap.height),
+                                fileResult.path,
+                                addLogoComponent.getLogoUrl()
+                            )
+                        } else {
+                            data.addTextValue?.textImagePath = fileResult.path
+                        }
+                    }
+            }
         }
     }
 
@@ -167,24 +201,23 @@ class DetailEditorFragment @Inject constructor(
                 data
             ) { processedData ->
                 viewModel.getProcessedBitmap(processedData)?.let {
-                    data.resultUrl = viewModel.saveImageCache(
-                        it,
-                        sourcePath = data.originalUrl
-                    )?.path
+                    lifecycleScope.launch {
+                        // implement watermark on editor done (save process)
+                        val bitmap = implementWatermarkOnSave(it)
 
-                    if (data.addLogoValue != EditorAddLogoUiModel()) {
-                        // crop current overlay
-                        val isWidthSame = data.addLogoValue.imageRealSize.first == it.width
-                        val isHeightSame = data.addLogoValue.imageRealSize.second == it.height
+                        data.resultUrl = viewModel.saveImageCache(
+                            bitmap,
+                            sourcePath = data.originalUrl
+                        )?.path
 
-                        if (!isWidthSame || !isHeightSame) {
-                            updateAddLogoOverlay(Pair(it.width, it.height)) {
-                                finishPage()
-                            }
-                        } else {
-                            finishPage()
+                        if (data.addLogoValue.logoUrl.isNotEmpty()) {
+                            updateAddLogoOverlay(Pair(it.width, it.height)).firstOrNull()
                         }
-                    } else {
+
+                        if (data.addTextValue?.textImagePath?.isNotEmpty() == true) {
+                            updateAddTextOverlay(Pair(it.width, it.height)) {}
+                        }
+
                         finishPage()
                     }
                 } ?: run {
@@ -193,13 +226,20 @@ class DetailEditorFragment @Inject constructor(
                 }
             }
         } else {
-            if (data.isToolAddLogo()) {
+            if (data.isToolAddLogo() || data.isToolAddText()) {
                 saveOverlay()
             }
 
             getBitmap()?.let {
+                // implement watermark on editor done (save process), prevent watermark implemented twice
+                val bitmap = if (isImplementWatermarkSave) {
+                    implementWatermarkOnSave(it)
+                } else {
+                    it
+                }
+
                 data.resultUrl = viewModel.saveImageCache(
-                    it,
+                    bitmap,
                     sourcePath = data.originalUrl
                 )?.path
 
@@ -230,21 +270,24 @@ class DetailEditorFragment @Inject constructor(
         initButtonListener()
     }
 
+    // === Listener brightness
     override fun onBrightnessValueChanged(value: Float) {
         viewModel.setBrightness(value)
         data.brightnessValue = value
         isEdited = true
     }
 
+    // === Listener contrast
     override fun onContrastValueChanged(value: Float) {
         viewModel.setContrast(value, implementedBaseBitmap)
         data.contrastValue = value
         isEdited = true
     }
 
+    // === Listener remove background
     override fun onRemoveBackgroundClicked(removeBgType: Int) {
         getImageView()?.let { imageView ->
-            data.resultUrl?.let { it ->
+            data.resultUrl?.let {
                 removeBackgroundType = removeBgType
                 data.removeBackgroundColor = removeBgType
 
@@ -279,6 +322,7 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    // === Listener watermark
     override fun onWatermarkChanged(type: WatermarkType) {
         implementedBaseBitmap?.let {
             viewModel.setWatermark(
@@ -291,6 +335,7 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    // === Listener rotate
     override fun onRotateValueChanged(rotateValue: Float) {
         viewModel.setRotate(viewBinding?.imgUcropPreview, rotateValue, false)
         isEdited = true
@@ -314,9 +359,18 @@ class DetailEditorFragment @Inject constructor(
 
         viewBinding?.imgUcropPreview?.let {
             rotateAddLogoOverlay(it)
+            rotateAddTextOverlay(it)
+
+            // update overlay view with new asset & size
+            it.overlayView.cropViewRect.let { overlayRect ->
+                setOverlaySize(
+                    Pair(overlayRect.width(), overlayRect.height())
+                )
+            }
         }
     }
 
+    // === Listener crop
     override fun onCropRatioClicked(ratio: ImageRatioType) {
         viewBinding?.imgUcropPreview?.let {
             val overlayView = it.overlayView
@@ -329,7 +383,13 @@ class DetailEditorFragment @Inject constructor(
             // check if any crop state before
             if (data.cropRotateValue.cropRatio != EMPTY_RATIO) {
                 // if had crop state then compare if ratio is change
-                if (data.cropRotateValue.cropRatio != newRatioPair) {
+                val (cropRatioX, cropRatioY) = data.cropRotateValue.cropRatio
+
+                // need compare by value since image ratio can contain width height instead of direct ratio 3:4 / 2:1
+                val ratioValue = cropRatioX / cropRatioY
+                val newRatioValue = newRatioPair.first / newRatioPair.second
+
+                if (ratioValue != newRatioValue) {
                     setCropRatio(newRatioPair)
                 }
             } else if (data.originalRatio != ratio.getRatio()) { // if didn't have crop state, compare original ratio
@@ -344,7 +404,6 @@ class DetailEditorFragment @Inject constructor(
         viewBinding?.imgUcropPreview?.let {
             it.post {
                 readPreviousState()
-                initialImageMatrix = Matrix(it.cropImageView.imageMatrix)
             }
 
             // waiting for crop & rotate state implementation process for AddLogo overlay size
@@ -355,10 +414,15 @@ class DetailEditorFragment @Inject constructor(
                         it.overlayView.cropViewRect.height()
                     )
                 )
+
+                Handler().postDelayed(getRunnable{
+                    initialImageMatrix = it.cropImageView.imageMatrix.values()
+                }, INITIAL_MATRIX_DELAY)
             }, DELAY_CROP_ROTATE_PROCESS)
         }
     }
 
+    // === Listener add Logo
     override fun onLogoChosen(bitmap: Bitmap?, newSize: Pair<Int, Int>, isCircular: Boolean) {
         viewModel.generateAddLogoOverlay(bitmap, newSize, isCircular)?.let { overlayBitmap ->
             viewBinding?.imgPreviewOverlay?.apply {
@@ -370,7 +434,10 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onUpload() {
-        editorDetailAnalytics.clickAddLogoUpload()
+        editorDetailAnalytics.clickAddLogoUpload(
+            addLogoComponent.getUploadState()
+        )
+
         if (!addLogoComponent.isUploadAvatarReady() && !isAddLogoTipsShowed) {
             showAddLogoUploadTips()
         } else {
@@ -378,8 +445,8 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    override fun onLoadRetry() {
-        editorDetailAnalytics.clickAddLogoLoadRetry()
+    override fun onLoadFailedToasterShow() {
+        editorDetailAnalytics.viewAddLogoLoadRetry()
     }
 
     override fun onLoadFailed() {
@@ -388,12 +455,86 @@ class DetailEditorFragment @Inject constructor(
         activity?.finish()
     }
 
+    override fun onStandardizeAvatar(
+        source: Bitmap,
+        cropRotateData: EditorCropRotateUiModel
+    ): Bitmap? {
+        return viewModel.cropImage(source, cropRotateData)
+    }
+
+    // === Listener add text
+    override fun onAddFreeText() {
+        editorDetailAnalytics.clickAddTextFreeText()
+
+        if (data.addTextValue?.textTemplate == AddTextTemplateMode.BACKGROUND) {
+            isEdited = true
+        }
+
+        data.addTextValue?.let {
+            it.textTemplate = AddTextTemplateMode.FREE
+        }
+
+        implementAddTextData()
+    }
+
+    override fun onAddSingleBackgroundText() {
+        editorDetailAnalytics.clickAddTextBackgroundText()
+        showAddTextBackgroundSelection{ color, model ->
+            if (data.addTextValue?.textTemplate == AddTextTemplateMode.FREE) {
+                isEdited = true
+            }
+
+            data.addTextValue?.let {
+                it.textTemplate = AddTextTemplateMode.BACKGROUND
+                it.setBackgroundTemplate(BackgroundTemplateDetail(
+                    addTextBackgroundColor = color,
+                    addTextBackgroundModel = model
+                ))
+
+                it.textColor = addTextColorProvider.getTextColorOnBackgroundMode(color)
+            }
+
+            implementAddTextData()
+            isEdited = true
+
+            openAddTextActivity()
+        }
+    }
+
+    override fun onChangePosition() {
+        val intent = Intent(activity, AddTextActivity::class.java)
+        intent.putExtra(AddTextActivity.ADD_TEXT_PARAM, data)
+        intent.putExtra(AddTextActivity.ADD_TEXT_MODE, AddTextActivity.POSITION_MODE)
+        startActivityForResult(intent, AddTextActivity.ADD_TEXT_REQUEST_CODE)
+    }
+
+    override fun onTemplateSave(isSave: Boolean) {
+        if (isSave) {
+            editorDetailAnalytics.clickAddTextTemplate()
+            showAddTextTemplateSaveDialog()
+        } else {
+            showAddTextTemplateLoadDialog()
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ADD_LOGO_PICKER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val elements = data?.getParcelableExtra(EXTRA_RESULT_PICKER) ?: PickerResult()
             addLogoComponent.initUploadAvatar(elements.originalPaths.first())
             addLogoCacheManager.set(elements.originalPaths.first())
+        } else if (requestCode == AddTextActivity.ADD_TEXT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            data?.getParcelableExtra<EditorAddTextUiModel>(AddTextActivity.ADD_TEXT_RESULT)?.let {
+                this.data.addTextValue = it
+                implementAddTextData()
+                isEdited = true
+            }
+        } else if (requestCode == AddTextActivity.ADD_TEXT_REQUEST_CODE && resultCode == Activity.RESULT_CANCELED) {
+            // if user back from add text input page & no input state, direct user to editor home
+            if (this.data.addTextValue == null) {
+                activity?.finish()
+            }
         }
     }
 
@@ -467,6 +608,13 @@ class DetailEditorFragment @Inject constructor(
                         }
                     )
                 )
+            } ?: run {
+                viewBinding?.editorFragmentDetailRoot?.let { view ->
+                    showErrorLoadToaster(
+                        view,
+                        null
+                    )
+                }
             }
         }
     }
@@ -546,10 +694,12 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeWatermark() {
         viewModel.watermarkFilter.observe(viewLifecycleOwner) { watermarkBitmap ->
-            watermarkBitmap?.let {
-                getImageView()?.setImageBitmap(it)
-            } ?: kotlin.run {
-                showErrorGeneralToaster(context)
+            if (data.isToolWatermark()) {
+                watermarkBitmap?.let {
+                    getImageView()?.setImageBitmap(it)
+                } ?: kotlin.run {
+                    showErrorGeneralToaster(context)
+                }
             }
         }
     }
@@ -593,6 +743,29 @@ class DetailEditorFragment @Inject constructor(
                         localAvatarUrl = addLogoCacheManager.get(),
                         data.addLogoValue
                     )
+                }
+            }
+            // ==========
+            EditorToolType.ADD_TEXT -> {
+                // init add text when image is already done (waiting for image size)
+                setImageView(data.resultUrl ?: url, false) {
+                    // check if user have saved template or not
+                    val savedTemplate = Gson().fromJson(addTextCacheManager.get(), EditorAddTextUiModel::class.java)
+                    addTextComponent.setupView(data.addTextValue, (savedTemplate != null))
+
+                    viewBinding?.imgPreviewOverlay?.setOnClickListener {
+                        openAddTextActivity()
+                    }
+
+                    if (data.addTextValue == null) {
+                        if (!addTextCacheManager.getTipsState()) {
+                            showAddTextTips(isOpenTextActivity = true)
+                        } else {
+                            openAddTextActivity()
+                        }
+                    } else {
+                        implementAddTextData()
+                    }
                 }
             }
         }
@@ -668,87 +841,6 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun implementPreviousWatermark(detailUiModel: EditorDetailUiModel) {
-        detailUiModel.watermarkMode?.let {
-            if (it.watermarkType != data.watermarkMode?.watermarkType) {
-                return
-            }
-
-            getBitmap()?.let { bitmap ->
-                val finalBitmap = if (isRotatedWatermark || (!data.isToolCrop() && !data.isToolRotate())) {
-                    bitmap
-                } else {
-                    watermarkRotateBitmap(detailUiModel.cropRotateValue, bitmap, true)
-                }
-
-                WatermarkType.map(it.watermarkType)?.let { type ->
-                    finalBitmap?.let { finalBitmapReady ->
-                        viewModel.setWatermark(
-                            finalBitmapReady,
-                            type,
-                            detailUiModel = detailUiModel,
-                            useStorageColor = true
-                        )
-
-                        watermarkComponent.setWatermarkTypeSelected(type)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun watermarkRotateBitmap(
-        rotateValue: EditorCropRotateUiModel,
-        source: Bitmap,
-        isInverse: Boolean = false
-    ): Bitmap? {
-        var finalRotateDegree = rotateValue.let {
-            it.rotateDegree + (it.orientationChangeNumber * ROTATE_BTN_DEGREE)
-        }
-
-        val mirrorX = rotateValue.scaleX
-        val mirrorY = rotateValue.scaleY
-        val matrix = Matrix()
-
-        // rotate is used on image that sent to watermark, inverse is used on watermark image result
-        if (isInverse) {
-            finalRotateDegree *= -1
-
-            matrix.preRotate(finalRotateDegree)
-            matrix.postScale(mirrorX, mirrorY)
-        } else {
-            matrix.preScale(mirrorX, mirrorY)
-            matrix.postRotate(finalRotateDegree)
-        }
-
-        if (globalWidth == 0) {
-            globalWidth = source.width
-            globalHeight = source.height
-        }
-
-        return viewModel.bitmapCreation(
-            BitmapCreation.cropBitmap(source, 0, 0, source.width, source.height, matrix, true)
-        )
-    }
-
-    // neutralize rotate bitmap
-    // rotate can effect the bitmap size, neutralize do clip the size back to its original size
-    private fun neutralizeWatermarkResult(watermarkBitmap: Bitmap, isInverse: Boolean = true): Bitmap? {
-        watermarkRotateBitmap(
-            data.cropRotateValue,
-            watermarkBitmap,
-            isInverse
-        )?.let { neutralizeBitmap ->
-            val cropX = (neutralizeBitmap.width - globalWidth) / 2
-            val cropY = (neutralizeBitmap.height - globalHeight) / 2
-
-            return viewModel.bitmapCreation(
-                BitmapCreation.cropBitmap(neutralizeBitmap, cropX, cropY, globalWidth, globalHeight)
-            )
-        }
-        return null
-    }
-
     private fun readPreviousState() {
         var cropScale = DEFAULT_CROP_SCALE
         var latestBrightnessIndex = DEFAULT_CONTRAST_BRIGHTNESS_INDEX
@@ -777,36 +869,12 @@ class DetailEditorFragment @Inject constructor(
 
         implementBrightnessAndContrast(latestBrightnessIndex, latestContrastIndex)
 
-        // if watermark didn't need to be rotated following product image
-        if (!data.isToolWatermark()) {
-            val isCropRotate = (data.isToolRotate() || data.isToolCrop())
-
-            if (isCropRotate) { // if crop / rotate
-                if (data.watermarkMode != null) { // if have watermark state
-                    implementPreviousWatermark(data)
-
-                    if (!isRotatedWatermark) { // if watermark didn't included on product image rotate
-                        getBitmap()?.let {
-                            getImageView()?.setImageBitmap(neutralizeWatermarkResult(it, false))
-                        }
-                    }
-                }
-            } else if (isRotatedWatermark) { // if watermark included on product image rotate (for non ucrop)
-                implementPreviousWatermark(data)
-            }
-        }
-
-        // non ucrop state implementation
+        // non u-crop state implementation
         if (!data.isToolCrop() && !data.isToolRotate()){
             if (viewBinding?.imgUcropPreview?.isVisible == false && data.cropRotateValue.imageWidth != 0) {
                 manualCropBitmap(data.cropRotateValue)
             }
-
-            // if watermark didn't need to be rotated following product image (non ucrop)
-            if (!isRotatedWatermark && !data.isToolWatermark()) {
-                implementPreviousWatermark(data)
-            }
-        } else { // ucrop state implementation
+        } else { // u-crop state implementation
             if (data.cropRotateValue.imageWidth != 0) {
                 implementPreviousStateRotate(data.cropRotateValue)
                 if (cropScale != 0f) viewModel.rotateInitialScale = cropScale
@@ -822,7 +890,9 @@ class DetailEditorFragment @Inject constructor(
             when (editorToolType) {
                 EditorToolType.BRIGHTNESS -> implementPreviousStateBrightness(brightnessValue)
                 EditorToolType.CONTRAST -> implementPreviousStateContrast(contrastValue)
-                EditorToolType.WATERMARK -> implementPreviousWatermark(previousState)
+                EditorToolType.WATERMARK -> {
+                    implementWatermark(getBitmap(), previousState)
+                }
             }
         }
     }
@@ -917,15 +987,16 @@ class DetailEditorFragment @Inject constructor(
             activity?.finish()
         }
 
-        viewBinding?.btnSave?.setOnClickListener { _ ->
+        viewBinding?.btnSave?.setOnClickListener {
             if (data.isToolCrop()) {
                 // check if user move crop area via image matrix translation, works for crop
-                initialImageMatrix?.values()?.let { initialMatrixValue ->
+                initialImageMatrix?.let { initialMatrixValue ->
                     val currentMatrix =
                         viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix?.values()
                     currentMatrix?.let {
                         initialMatrixValue.forEachIndexed { index, value ->
-                            if (value != currentMatrix[index]) {
+                            val diffValue = abs(abs(value) - abs(currentMatrix[index]))
+                            if (diffValue > UCROP_MATRIX_TOLERANCE_VALUE) {
                                 isEdited = true
                             }
                         }
@@ -1022,38 +1093,42 @@ class DetailEditorFragment @Inject constructor(
                         originalImageWidth = bitmap.width
                         originalImageHeight = bitmap.height
 
-                        viewBinding?.imgViewPreview?.setImageBitmap(validateImageSize(bitmap))
+                        viewBinding?.imgViewPreview?.apply {
+                            setImageBitmap(validateImageSize(bitmap))
 
-                        if (readPreviousValue) {
-                            readPreviousState()
-                            viewBinding?.imgViewPreview?.let {
-                                setOverlaySize(
-                                    getDisplayedImageSize(
-                                        viewBinding?.imgViewPreview,
-                                        it.drawable.toBitmap()
+                            post {
+                                if (readPreviousValue) {
+                                    readPreviousState()
+                                    viewBinding?.imgViewPreview?.let {
+                                        setOverlaySize(
+                                            getDisplayedImageSize(
+                                                viewBinding?.imgViewPreview,
+                                                it.drawable.toBitmap()
+                                            )
+                                        )
+                                    }
+                                } else {
+                                    implementedBaseBitmap = bitmap
+                                    viewBinding?.imgViewPreview?.post {
+                                        setOverlaySize(
+                                            getDisplayedImageSize(
+                                                viewBinding?.imgViewPreview,
+                                                bitmap
+                                            )
+                                        )
+                                    }
+                                }
+
+                                if (data.isToolWatermark()) {
+                                    setWatermarkDrawerItem(bitmap)
+                                    watermarkComponent.setWatermarkTypeSelected(
+                                        WatermarkType.map(data.watermarkMode?.watermarkType)
                                     )
-                                )
-                            }
-                        } else {
-                            implementedBaseBitmap = bitmap
-                            viewBinding?.imgViewPreview?.post {
-                                setOverlaySize(
-                                    getDisplayedImageSize(
-                                        viewBinding?.imgViewPreview,
-                                        bitmap
-                                    )
-                                )
+                                }
+
+                                onImageReady()
                             }
                         }
-
-                        if (data.isToolWatermark()) {
-                            setWatermarkDrawerItem(bitmap)
-                            watermarkComponent.setWatermarkTypeSelected(
-                                WatermarkType.map(data.watermarkMode?.watermarkType)
-                            )
-                        }
-
-                        onImageReady()
                     },
                     onCleared = {}
                 )
@@ -1063,18 +1138,24 @@ class DetailEditorFragment @Inject constructor(
 
     private fun setOverlaySize(displaySize: Pair<Float, Float>?) {
         if (data.isToolCrop()) return
-        displaySize?.let {
-            viewBinding?.imgPreviewOverlay?.apply {
-                val lp = layoutParams
+        displaySize?.let { (width, height) ->
+            viewBinding?.let {
+                it.imgPreviewOverlayContainer.apply {
+                    layoutParams.apply {
+                        this.width = width.toInt()
+                        this.height = height.toInt()
+                    }
+                    requestLayout()
 
-                lp.width = it.first.toInt()
-                lp.height = it.second.toInt()
+                    post {
+                        if (data.addLogoValue.overlayLogoUrl.isNotEmpty()) {
+                            it.imgPreviewOverlay.loadImageWithoutPlaceholder(data.addLogoValue.overlayLogoUrl)
+                        }
 
-                layoutParams = lp
-
-                post {
-                    if (data.isToolAddLogo()) return@post
-                    this.loadImageWithoutPlaceholder(data.addLogoValue.overlayLogoUrl)
+                        if (data.addTextValue != null) {
+                            it.imgPreviewOverlaySecondary.loadImage(data.addTextValue?.textImagePath)
+                        }
+                    }
                 }
             }
         }
@@ -1130,10 +1211,17 @@ class DetailEditorFragment @Inject constructor(
                 viewModel.rotateSliderValue.toInt()
             }
             val addLogoValue = addLogoToText(addLogoComponent.getLogoState())
+            val addTextValue = data.addTextValue?.let {
+                addTextToText(
+                    it,
+                    addTextColorProvider.getTextColorName(it.getTemplateColor())
+                )
+            } ?: ""
 
             val currentEditorText =
-                requireContext().getText(getToolEditorText(data.editorToolType)).toString()
+                requireContext().getText(getToolEditorTextAnalytics(data.editorToolType)).toString()
             editorDetailAnalytics.clickSave(
+                data.editorToolType,
                 currentEditorText,
                 brightnessText,
                 contrastText,
@@ -1141,7 +1229,8 @@ class DetailEditorFragment @Inject constructor(
                 rotateText,
                 watermarkText,
                 removeBackgroundText,
-                addLogoValue
+                addLogoValue,
+                addTextValue
             )
         }
     }
@@ -1167,31 +1256,65 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun updateAddLogoOverlay(
+        newSize: Pair<Int, Int>
+    ): Flow<String> {
+        return callbackFlow {
+            loadUrlImage(
+                data.addLogoValue.logoUrl,
+                {},
+                MediaBitmapEmptyTarget(
+                    onReady = { logoBitmap ->
+                        viewModel.generateAddLogoOverlay(
+                            logoBitmap,
+                            newSize,
+                            isCircular = data.addLogoValue.logoUrl.contains(HTTPS_KEY)
+                        )?.let {
+                            viewModel.saveImageCache(it, sourcePath = PNG_KEY)?.let { fileResult ->
+                                data.addLogoValue.overlayLogoUrl = fileResult.path
+                                trySend(fileResult.path)
+                            }
+                        }
+                    }
+                )
+            )
+
+            awaitClose {
+                channel.close()
+            }
+        }
+    }
+
+    private fun updateAddTextOverlay(
         newSize: Pair<Int, Int>,
         onFinish: (filePath: String) -> Unit
     ) {
-        loadUrlImage(
-            data.addLogoValue.logoUrl,
-            {},
-            MediaBitmapEmptyTarget(
-                onReady = { logoBitmap ->
-                    viewModel.generateAddLogoOverlay(
-                        logoBitmap,
-                        newSize,
-                        isCircular = data.addLogoValue.logoUrl.contains(HTTPS_KEY)
-                    )?.let {
-                        viewModel.saveImageCache(it, sourcePath = PNG_KEY)?.let { fileResult ->
-                            data.addLogoValue.overlayLogoUrl = fileResult.path
-                            onFinish(fileResult.path)
-                        }
+        data.addTextValue?.let {
+            viewModel.generateAddTextOverlay(newSize, it).let { generatorResult ->
+                generatorResult?.let { newTextOverlay ->
+                    viewModel.saveImageCache(newTextOverlay, sourcePath = PNG_KEY)?.let { cacheFile ->
+                        data.addTextValue?.textImagePath = cacheFile.absolutePath
+                        onFinish(cacheFile.absolutePath)
                     }
                 }
-            ))
+            }
+        }
     }
 
     fun showAddLogoUploadTips(isUpload: Boolean = true) {
-        addLogoComponent.bottomSheet(isUpload).show(childFragmentManager, BOTTOM_SHEET_TAG)
+        addLogoComponent.bottomSheet(isUpload).show(childFragmentManager, ADD_LOGO_BOTTOM_SHEET_TAG)
         isAddLogoTipsShowed = true
+    }
+
+    fun showAddTextTips(isOpenTextActivity: Boolean = false) {
+        EditorAddTextTipsBottomSheet().apply {
+            show(this@DetailEditorFragment.childFragmentManager, ADD_LOGO_BOTTOM_SHEET_TAG)
+            if (isOpenTextActivity) {
+                setOnDismissListener {
+                    openAddTextActivity()
+                    addTextCacheManager.setTipsState()
+                }
+            }
+        }
     }
 
     private fun showAddLogoPicker() {
@@ -1232,35 +1355,69 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun rotateAddLogoOverlay(previewWidget: EditorDetailPreviewWidget) {
-        val cropViewRect = previewWidget.overlayView.cropViewRect
+        getLatestImageSize(previewWidget)?.let { (width, height) ->
+            // set size to provide new ratio if image is rotated, compare state rotate number with view model temp value
+            val rotateSize = when(checkLatestOrientation()) {
+                ORIENTATION_ROTATED -> Pair(height, width)
+                else -> Pair(width, height)
+            }
 
+            lifecycleScope.launch {
+                updateAddLogoOverlay(rotateSize).collect { resultUrl ->
+                    viewBinding?.imgPreviewOverlay?.loadImage(resultUrl)
+                }
+            }
+        }
+    }
+
+    private fun rotateAddTextOverlay(previewWidget: EditorDetailPreviewWidget) {
+        getLatestImageSize(previewWidget)?.let { (width, height) ->
+            // set size to provide new ratio if image is rotated, compare state rotate number with view model temp value
+            val rotateSize = when(checkLatestOrientation()) {
+                ORIENTATION_ROTATED -> Pair(height, width)
+                else -> Pair(width, height)
+            }
+
+            updateAddTextOverlay(rotateSize) { resultUrl ->
+                viewBinding?.imgPreviewOverlaySecondary?.loadImage(resultUrl)
+            }
+        }
+    }
+
+    /**
+     * used for manual rotate overlay image
+     * return Pair<Width, Height>
+     */
+    private fun getLatestImageSize(previewWidget: EditorDetailPreviewWidget): Pair<Int, Int>? {
         // get image width between edited (if any crop / rotate state) or original
         val realImageWidth = if (data.cropRotateValue.imageWidth != 0) {
             data.cropRotateValue.imageWidth
         } else {
-            previewWidget.cropImageView.drawable.intrinsicWidth
+            previewWidget.cropImageView.drawable?.intrinsicWidth ?: 0
         }
 
         // get image height between edited (if any crop / rotate state) or original
         val realImageHeight = if (data.cropRotateValue.imageHeight != 0) {
             data.cropRotateValue.imageHeight
         } else {
-            previewWidget.cropImageView.drawable.intrinsicHeight
+            previewWidget.cropImageView.drawable?.intrinsicHeight ?: 0
         }
 
-        // set size to provide new ratio if image is rotated, compare state rotate number with view model temp value
-        val rotateSize =
-            if ((viewModel.rotateNumber - data.cropRotateValue.orientationChangeNumber) % 2 == 1) {
-                Pair(realImageHeight, realImageWidth)
-            } else {
-                Pair(realImageWidth, realImageHeight)
-            }
+        // validation if u-crop failed to return drawable via cropImageView
+        return if (realImageWidth == 0 || realImageHeight == 0) {
+            showErrorGeneralToaster(context)
+            finishPage()
+            null
+        } else {
+            Pair(realImageWidth, realImageHeight)
+        }
+    }
 
-        updateAddLogoOverlay(rotateSize) { resultUrl ->
-            setOverlaySize(
-                Pair(cropViewRect.width(), cropViewRect.height())
-            )
-            viewBinding?.imgPreviewOverlay?.loadImage(resultUrl)
+    private fun checkLatestOrientation(): Int {
+        return if ((viewModel.rotateNumber - data.cropRotateValue.orientationChangeNumber) % 2 == 1) {
+            ORIENTATION_ROTATED
+        } else {
+            ORIENTATION_ORIGINAL
         }
     }
 
@@ -1281,6 +1438,146 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    private fun implementAddTextData() {
+        data.addTextValue?.let {
+            viewModel.generateAddTextOverlay(
+                Pair(originalImageWidth, originalImageHeight),
+                it
+            ).let { bitmapResult ->
+                addTextComponent.updateItemActiveState(it)
+
+                viewBinding?.imgPreviewOverlaySecondary?.setImageBitmap(bitmapResult)
+            }
+        }
+    }
+
+    private fun openAddTextActivity() {
+        val intent = Intent(activity, AddTextActivity::class.java)
+        intent.putExtra(AddTextActivity.ADD_TEXT_PARAM, data)
+        intent.putExtra(AddTextActivity.ADD_TEXT_MODE, AddTextActivity.TEXT_MODE)
+        startActivityForResult(intent, AddTextActivity.ADD_TEXT_REQUEST_CODE)
+    }
+
+    private fun showAddTextBackgroundSelection(onFinish: (color: Int, backgroundModel: AddTextBackgroundTemplate) -> Unit) {
+        AddTextBackgroundBottomSheet(
+            data.resultUrl,
+            onFinish
+        ).show(
+            childFragmentManager,
+            ADD_TEXT_BOTTOM_SHEET_TAG
+        )
+    }
+
+    private fun showAddTextTemplateSaveDialog() {
+        context?.let {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(editorR.string.add_text_dialog_save_title))
+                setDescription(getString(editorR.string.add_text_dialog_save_desc))
+                setPrimaryCTAText(getString(editorR.string.add_text_dialog_save_primary_btn))
+                setSecondaryCTAText(getString(editorR.string.add_text_dialog_save_secondary_btn))
+                show()
+
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+
+                setPrimaryCTAClickListener {
+                    try {
+                        val saveTemplate = Gson().toJson(data.addTextValue)
+                        addTextCacheManager.set(saveTemplate)
+                        addTextComponent.updateSaveToApply()
+
+                        templateToaster(isLoad = false, isError = false)
+                    } catch (_: Exception) {
+                        templateToaster(isLoad = false, isError = true)
+                    }
+
+                    dismiss()
+                }
+            }
+        }
+    }
+
+    private fun showAddTextTemplateLoadDialog() {
+        context?.let {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(editorR.string.add_text_dialog_load_title))
+                setDescription(getString(editorR.string.add_text_dialog_load_desc))
+                setPrimaryCTAText(getString(editorR.string.add_text_dialog_load_primary_btn))
+                setSecondaryCTAText(getString(editorR.string.add_text_dialog_load_secondary_btn))
+                show()
+
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+
+                setPrimaryCTAClickListener {
+                    try {
+                        val savedTemplate = Gson().fromJson(addTextCacheManager.get(), EditorAddTextUiModel::class.java)
+
+                        data.addTextValue = savedTemplate.apply {
+                            textValue = data.addTextValue?.textValue ?: ""
+                        }
+
+                        implementAddTextData()
+                        isEdited = true
+                        templateToaster(isLoad = true, isError = false)
+                    } catch (_: Exception) {
+                        templateToaster(isLoad = true, isError = true)
+                    }
+
+                    dismiss()
+                }
+            }
+        }
+    }
+
+    private fun templateToaster(isLoad: Boolean, isError: Boolean) {
+        val toasterType = if (isError) Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
+        val textRef = if (!isLoad) {
+            if (isError) {
+                editorR.string.add_text_toaster_template_save_error
+            } else {
+                editorR.string.add_text_toaster_template_save
+            }
+        } else {
+            if (isError) {
+                editorR.string.add_text_toaster_template_load_error
+            } else {
+                editorR.string.add_text_toaster_template_load
+            }
+        }
+        val text = getString(textRef)
+
+        viewBinding?.editorFragmentDetailRoot?.let {
+            Toaster.build(it, text, Toaster.LENGTH_SHORT, toasterType).show()
+        }
+    }
+
+    private fun implementWatermark(bitmapSource: Bitmap?, detailUiModel: EditorDetailUiModel?) {
+        detailUiModel?.watermarkMode?.watermarkType?.let {
+            WatermarkType.map(it)?.let { type ->
+                bitmapSource?.let { bitmap ->
+                    viewModel.setWatermark(
+                        bitmap,
+                        type,
+                        detailUiModel = detailUiModel,
+                        useStorageColor = true
+                    )
+                }
+            }
+        }
+    }
+
+    private fun implementWatermarkOnSave(bitmap: Bitmap): Bitmap {
+        return if (data.watermarkMode != null) {
+            implementWatermark(bitmap, data)
+            viewModel.watermarkFilter.value ?: bitmap
+        } else {
+            bitmap
+        }
+    }
+
     override fun getScreenName() = SCREEN_NAME
 
     companion object {
@@ -1296,13 +1593,14 @@ class DetailEditorFragment @Inject constructor(
 
         private const val DELAY_REMOVE_BG_TOASTER = 300L
 
-        private const val BOTTOM_SHEET_TAG = "Add Logo BottomSheet"
+        private const val ADD_LOGO_BOTTOM_SHEET_TAG = "Add Logo BottomSheet"
+        private const val ADD_TEXT_BOTTOM_SHEET_TAG = "Add Text BottomSheet"
 
         private const val ADD_LOGO_PICKER_REQUEST_CODE = 979
 
         private const val HTTPS_KEY = "https:"
 
-        // key to generate PNG result for AddLogo overlay
+        // key to generate PNG result for AddLogo & AddText overlay
         private const val PNG_KEY = "image.png"
 
         private const val ADD_LOGO_IMAGE_RES_MIN = 500
@@ -1312,5 +1610,11 @@ class DetailEditorFragment @Inject constructor(
         private const val DEFAULT_WATERMARK_ROTATE_INDEX = 99
         private const val DEFAULT_CONTRAST_BRIGHTNESS_INDEX = -1
         private const val DEFAULT_CROP_SCALE = 0f
+
+        private const val ORIENTATION_ORIGINAL = 0
+        private const val ORIENTATION_ROTATED = 1
+
+        private const val UCROP_MATRIX_TOLERANCE_VALUE = 0.001f
+        private const val INITIAL_MATRIX_DELAY = 400L
     }
 }

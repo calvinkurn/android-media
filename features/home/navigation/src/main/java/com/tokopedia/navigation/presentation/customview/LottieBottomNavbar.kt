@@ -59,11 +59,11 @@ class LottieBottomNavbar : LinearLayout {
     private var containerWidth: Int = 0
     private var navbarContainer: LinearLayout? = null
 
-    private var buttonContainerBackgroundLightColor: Int = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-    private var buttonLightColor: Int = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300)
+    private var buttonContainerBackgroundLightColor: Int = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+    private var buttonLightColor: Int = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
 
-    private var buttonContainerBackgroundDarkColor: Int = ContextCompat.getColor(mDarkModeContext, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-    private var buttonDarkColor: Int = ContextCompat.getColor(mDarkModeContext, com.tokopedia.unifyprinciples.R.color.Unify_N300)
+    private var buttonContainerBackgroundDarkColor: Int = ContextCompat.getColor(mDarkModeContext, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+    private var buttonDarkColor: Int = ContextCompat.getColor(mDarkModeContext, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
 
     private var currentRippleScale = 0f
     private val interpolatorEnter = UnifyMotion.EASE_OVERSHOOT
@@ -209,11 +209,11 @@ class LottieBottomNavbar : LinearLayout {
 
         buttonsHeight = styledAttributes.getDimension(R.styleable.LottieBottomNavbar_buttonsHeight, defaultButtonHeight)
 
-        buttonContainerBackgroundLightColor = styledAttributes.getColor(R.styleable.LottieBottomNavbar_buttonContainerBackgroundColor, androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        buttonContainerBackgroundDarkColor = darkModeStyledAttributes.getColor(R.styleable.LottieBottomNavbar_buttonContainerBackgroundColor, androidx.core.content.ContextCompat.getColor(mDarkModeContext, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        buttonContainerBackgroundLightColor = styledAttributes.getColor(R.styleable.LottieBottomNavbar_buttonContainerBackgroundColor, androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+        buttonContainerBackgroundDarkColor = darkModeStyledAttributes.getColor(R.styleable.LottieBottomNavbar_buttonContainerBackgroundColor, androidx.core.content.ContextCompat.getColor(mDarkModeContext, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
 
-        buttonLightColor = styledAttributes.getColor(R.styleable.LottieBottomNavbar_buttonColor, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
-        buttonDarkColor = darkModeStyledAttributes.getColor(R.styleable.LottieBottomNavbar_buttonColor, ContextCompat.getColor(mDarkModeContext, com.tokopedia.unifyprinciples.R.color.Unify_N200))
+        buttonLightColor = styledAttributes.getColor(R.styleable.LottieBottomNavbar_buttonColor, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500))
+        buttonDarkColor = darkModeStyledAttributes.getColor(R.styleable.LottieBottomNavbar_buttonColor, ContextCompat.getColor(mDarkModeContext, com.tokopedia.unifyprinciples.R.color.Unify_NN500))
 
         styledAttributes.recycle()
         darkModeStyledAttributes.recycle()

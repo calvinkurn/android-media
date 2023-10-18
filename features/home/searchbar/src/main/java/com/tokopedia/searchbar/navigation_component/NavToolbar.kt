@@ -64,7 +64,7 @@ import com.tokopedia.searchbar.navigation_component.viewModel.NavigationViewMode
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.utils.resources.isDarkMode
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
@@ -132,6 +132,8 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     private var searchbarType: Int? = null
     private var darkIconColor: Int? = getDarkIconColor()
     private var lightIconColor: Int? = getLightIconColor()
+    private var navToolbarIconCustomDarkColor: Int? = null
+    private var navToolbarIconCustomLightColor: Int? = null
 
     private val navIconRecyclerView: RecyclerView by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.rv_icon_list)
@@ -255,7 +257,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         val iconConfig = iconBuilder.build()
         viewModel?.setRegisteredIconList(iconConfig)
         this.useCentralizedIconNotification = iconConfig.useCentralizedIconNotification
-        navIconAdapter = NavToolbarIconAdapter(iconConfig, this)
+        navIconAdapter = NavToolbarIconAdapter(iconConfig, this, {navToolbarIconCustomLightColor}, {navToolbarIconCustomDarkColor})
         navIconAdapter?.setHasStableIds(true)
         navIconRecyclerView.adapter = navIconAdapter
         navIconRecyclerView.itemAnimator = null
@@ -350,6 +352,14 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     }
 
     /**
+     * Switch toolbar based on UI mode (light/dark mode)
+     */
+    fun switchToolbarBasedOnUiMode() {
+        if(context?.isDarkMode() == true) switchToDarkToolbar()
+        else switchToLightToolbar()
+    }
+
+    /**
      * Switch to light toolbar manually. To manage toolbar automatically
      * @see
      * NavRecyclerViewScrollListener
@@ -358,7 +368,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         if (toolbarThemeType != TOOLBAR_LIGHT_TYPE) {
             navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT)
             toolbarThemeType = TOOLBAR_LIGHT_TYPE
-            tvToolbarTitle.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            tvToolbarTitle.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
             setBackButtonColorBasedOnTheme()
             setTitleTextColorBasedOnTheme()
         }
@@ -477,7 +487,10 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         return layoutCustomView
     }
 
-    fun setBackButtonType(newBackType: Int? = null) {
+    fun setBackButtonType(
+        newBackType: Int? = null,
+        onClick: () -> Unit = { }
+    ) {
         newBackType?.let { backType = newBackType }
 
         if (backType != BACK_TYPE_NONE) {
@@ -491,6 +504,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
                         componentName = IconList.NAME_BACK_BUTTON,
                         userId = getUserId()
                     )
+                    onClick.invoke()
                     (context as? Activity)?.onBackPressed()
                 }
             }
@@ -542,7 +556,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         return null
     }
 
-    // this needed to enable coachmark on wishlist detail page
+    // this needed to enable coachmark on wishlist detail page & thankyou page
     fun getShareIconView(): View? {
         val shareIconPosition = navIconAdapter?.getShareIconPosition()
         shareIconPosition?.let {
@@ -550,6 +564,10 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
             return viewholder?.itemView
         }
         return null
+    }
+
+    fun updateIcon(oldIconId: Int, newIconId: Int) {
+        navIconAdapter?.updateIcon(oldIconId, newIconId)
     }
 
     private fun getNoteBookIconView(): IconNotification? {
@@ -808,8 +826,8 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     private fun getLightBackgroundColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
 
     private fun setTitleTextColorBasedOnTheme() {
-        val lightColorCondition = darkIconColor ?: ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
-        val darkCondition = lightIconColor ?: ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        val lightColorCondition = darkIconColor ?: ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
+        val darkCondition = lightIconColor ?: ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
 
         toolbarThemeCondition(
             lightCondition = { tvToolbarTitle.setTextColor(lightColorCondition) },
@@ -922,5 +940,23 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
                 activity = activity
             )
         }
+    }
+
+    fun setupSearchBarWithStaticLightModeColor() {
+        val searchBackgroundColor = getDrawable(R.drawable.nav_toolbar_searchbar_bg_corner_static)
+        val blendIconSearchColor =
+            blendColor(getColor(R.color.searchbar_dms_search_icon_dark_color))
+        val hintTextColor = getColor(R.color.searchbar_dms_text_color)
+        layoutSearch.background = searchBackgroundColor
+        iconSearchMagnify.colorFilter = blendIconSearchColor
+        etSearch.setHintTextColor(hintTextColor)
+    }
+
+    fun setNavToolbarIconCustomColor(
+        navToolbarIconCustomLightColor: Int,
+        navToolbarIconCustomDarkColor: Int
+    ){
+        this.navToolbarIconCustomLightColor = navToolbarIconCustomLightColor
+        this.navToolbarIconCustomDarkColor = navToolbarIconCustomDarkColor
     }
 }

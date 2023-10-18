@@ -1,9 +1,8 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.content.common">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
         <activity
-            android:name=".producttag.container.ContentProductTagTestActivity"
+            android:name="com.tokopedia.content.common.producttag.container.ContentProductTagTestActivity"
             android:launchMode="singleTask"
             android:theme="@style/Theme.WhiteUnify" />
     </application>

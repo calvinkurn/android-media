@@ -153,7 +153,7 @@ class ChooseRelatedCampaignViewModelTest {
     }
 
     @Test
-    fun `check onCampaignClicked when getPreviousCampaign is failed`(){
+    fun `check onCampaignClicked when getPreviousCampaign is failed`() {
         val inputItem = RelatedCampaignItem(
             id = 2.toLong(),
             name = "Test_2",
@@ -167,7 +167,6 @@ class ChooseRelatedCampaignViewModelTest {
             } throws MessageErrorException()
             viewModel.onCampaignClicked(inputItem)
         }
-
     }
 
     @Test
@@ -314,7 +313,8 @@ class ChooseRelatedCampaignViewModelTest {
             CampaignUiModel.ThematicInfo(0, 0, "", 0, ""),
             Date(),
             Date(),
-            CampaignUiModel.PackageInfo(packageId = 1, packageName = "VPS Package Elite")
+            CampaignUiModel.PackageInfo(packageId = 1, packageName = "VPS Package Elite"),
+            isOosImprovement = false
         )
     }
 
@@ -324,7 +324,7 @@ class ChooseRelatedCampaignViewModelTest {
             list.add(
                 RelatedCampaignItem(
                     id = i.toLong(),
-                    name = "Test_${i}",
+                    name = "Test_$i",
                     isMaxSelected = i % 2 == 0,
                     isSelected = false
                 )

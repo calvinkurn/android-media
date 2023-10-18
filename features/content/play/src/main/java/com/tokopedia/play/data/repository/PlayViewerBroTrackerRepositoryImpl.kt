@@ -1,16 +1,16 @@
 package com.tokopedia.play.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play.domain.TrackProductTagBroadcasterUseCase
-import com.tokopedia.play.domain.TrackVisitChannelBroadcasterUseCase
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
+import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.play.domain.repository.PlayViewerBroTrackerRepository
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PlayViewerBroTrackerRepositoryImpl @Inject constructor(
-    private val trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
+    private val broadcasterReportTrackViewerUseCase: BroadcasterReportTrackViewerUseCase,
     private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
-    private val dispatchers: CoroutineDispatchers,
+    private val dispatchers: CoroutineDispatchers
 ) : PlayViewerBroTrackerRepository {
 
     override suspend fun trackProducts(
@@ -18,8 +18,8 @@ class PlayViewerBroTrackerRepositoryImpl @Inject constructor(
         productIds: List<String>
     ) {
         withContext(dispatchers.io) {
-            trackProductTagBroadcasterUseCase.apply {
-                params = TrackProductTagBroadcasterUseCase.createParams(
+            broadcasterReportTrackViewerUseCase.apply {
+                params = BroadcasterReportTrackViewerUseCase.createParams(
                     channelId,
                     productIds
                 )
@@ -29,13 +29,14 @@ class PlayViewerBroTrackerRepositoryImpl @Inject constructor(
 
     override suspend fun trackVisitChannel(
         channelId: String,
-        sourceType: String,
+        sourceType: String
     ) {
         withContext(dispatchers.io) {
             trackVisitChannelBroadcasterUseCase.apply {
                 setRequestParams(
                     TrackVisitChannelBroadcasterUseCase.createParams(
-                        channelId, sourceType
+                        channelId,
+                        sourceType
                     )
                 )
             }.executeOnBackground()

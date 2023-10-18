@@ -2,6 +2,8 @@ package com.tokopedia.wishlistcollection.util
 
 import android.os.SystemClock
 import android.view.View
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.wishlist.data.model.*
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
@@ -19,12 +21,17 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLE
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_TICKER
 
 object WishlistCollectionUtils {
+    fun isAffiliateTickerEnabled() = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+        RollenceKey.WISHLIST_AFFILIATE_TICKER,
+        ""
+    ) == RollenceKey.WISHLIST_AFFILIATE_TICKER
+
     fun mapCollection(
         data: GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData,
         recomm: WishlistV2RecommendationDataModel
     ): List<WishlistCollectionTypeLayoutData> {
         val listCollection = arrayListOf<WishlistCollectionTypeLayoutData>()
-        if (data.ticker.title.isNotEmpty() && data.ticker.description.isNotEmpty()) {
+        if ((data.ticker.title.isNotEmpty() && data.ticker.description.isNotEmpty()) || isAffiliateTickerEnabled()) {
             val tickerObject = WishlistCollectionTypeLayoutData(
                 data.ticker,
                 TYPE_COLLECTION_TICKER

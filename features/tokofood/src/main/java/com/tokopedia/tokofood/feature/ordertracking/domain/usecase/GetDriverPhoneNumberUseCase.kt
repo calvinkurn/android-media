@@ -10,7 +10,7 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 @GqlQuery("DriverPhoneNumberQuery", DRIVER_PHONE_NUMBER_QUERY)
-class GetDriverPhoneNumberUseCase @Inject constructor(
+open class GetDriverPhoneNumberUseCase @Inject constructor(
     private val useCase: GraphqlUseCase<DriverPhoneNumberResponse>,
     private val driverPhoneNumberMapper: DriverPhoneNumberMapper
 ) {
@@ -19,7 +19,7 @@ class GetDriverPhoneNumberUseCase @Inject constructor(
         useCase.setTypeClass(DriverPhoneNumberResponse::class.java)
     }
 
-    suspend fun execute(orderId: String): DriverPhoneNumberUiModel {
+    open suspend fun execute(orderId: String): DriverPhoneNumberUiModel {
         useCase.setRequestParams(createRequestParams(orderId))
         return driverPhoneNumberMapper.mapToDriverPhoneNumberUiModel(useCase.executeOnBackground().tokofoodDriverPhoneNumber)
     }

@@ -11,9 +11,12 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase.Companion.REQUES
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.WishlistResult
+import com.tokopedia.discovery.common.utils.SimilarSearchCoachMarkLocalCache
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.productcard.options.divider.ProductCardOptionsItemDivider
 import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -23,17 +26,20 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import dagger.Lazy
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import rx.Subscriber
 
 internal class ProductCardOptionsViewModel(
-        private val dispatcherProvider: CoroutineDispatchers,
-        val productCardOptionsModel: ProductCardOptionsModel?,
-        private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
-        private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
-        private val addToCartUseCase: UseCase<AddToCartDataModel>,
-        private val userSession: UserSessionInterface,
+    private val dispatcherProvider: CoroutineDispatchers,
+    val productCardOptionsModel: ProductCardOptionsModel?,
+    private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
+    private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
+    private val addToCartUseCase: UseCase<AddToCartDataModel>,
+    private val userSession: UserSessionInterface,
+    private val similarSearchCoachMarkLocalCache: SimilarSearchCoachMarkLocalCache,
+    private val abTestRemoteConfig: Lazy<RemoteConfig>,
 ): BaseViewModel(dispatcherProvider.main) {
 
     private val productCardOptionsItemListLiveData = MutableLiveData<List<Visitable<*>>>()
@@ -46,6 +52,19 @@ internal class ProductCardOptionsViewModel(
     private val routeToShopPageEventLiveData = MutableLiveData<Event<Boolean>>()
     private val shareProductEventLiveData = MutableLiveData<Event<ProductData>>()
     private val isLoadingEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val coachmarkEventLiveData = MutableLiveData<Event<CoachmarkEvent>>()
+
+    private val isEnabledRollence by lazy(LazyThreadSafetyMode.NONE, ::getIsEnabledRollence)
+
+    private fun getIsEnabledRollence() = try {
+        abTestRemoteConfig.get()
+            .getString(
+                RollenceKey.SEARCH_SIMILAR_SEARCH_COACHMARK,
+                ""
+            ) == RollenceKey.SEARCH_SIMILAR_SEARCH_COACHMARK_VARIANT
+    } catch (ignored: Throwable) {
+        false
+    }
 
     init {
         initWishlistOption()
@@ -313,4 +332,17 @@ internal class ProductCardOptionsViewModel(
     fun getShareProductEventLiveData(): LiveData<Event<ProductData>> = shareProductEventLiveData
 
     fun getIsLoadingEventLiveData(): LiveData<Event<Boolean>> = isLoadingEventLiveData
+
+    fun getCoachmarkEventLiveData(): LiveData<Event<CoachmarkEvent>> = coachmarkEventLiveData
+
+    fun checkShouldDisplaySimilarSearchCoachmark(
+        option: ProductCardOptionsItemModel,
+        adapterPosition: Int,
+    ) {
+        if (option.title == SEE_SIMILAR_PRODUCTS && isEnabledRollence) {
+            if (similarSearchCoachMarkLocalCache.shouldShowSimilarSearchProductOptionCoachmark()) {
+                coachmarkEventLiveData.postValue(Event(CoachmarkEvent(adapterPosition)))
+            }
+        }
+    }
 }

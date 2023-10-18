@@ -128,7 +128,7 @@ class AtcVariantViewModel @Inject constructor(
     }
 
     fun onVariantClicked(
-        showQtyEditor: Boolean,
+        showQtyEditorOrTokoNow: Boolean,
         selectedOptionKey: String,
         selectedOptionId: String,
         variantImage: String, // only use when user click partially to update the image
@@ -152,7 +152,7 @@ class AtcVariantViewModel @Inject constructor(
                 selectedVariantChild,
                 aggregatorData?.cardRedirection,
                 isShopOwner,
-                selectedMiniCart != null,
+                showQtyEditorOrTokoNow && selectedMiniCart != null,
                 aggregatorData?.alternateCopy
             )
 
@@ -169,7 +169,7 @@ class AtcVariantViewModel @Inject constructor(
                 selectedVariantChild = selectedVariantChild,
                 variantImage = variantImage,
                 selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false,
-                showQtyEditor = showQtyEditor,
+                showQtyEditor = showQtyEditorOrTokoNow,
                 selectedQuantity = selectedQuantity,
                 shouldShowDeleteButton = shouldShowDeleteButton,
                 aggregatorUiData = aggregatorData
@@ -259,7 +259,14 @@ class AtcVariantViewModel @Inject constructor(
 
             // Get cart redirection , and warehouse by selected product id to render button and toko cabang
             val selectedMiniCart = minicartData?.get(selectedChild?.productId ?: "")
-            val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedChild, aggregatorData?.cardRedirection, isShopOwner, selectedMiniCart != null, aggregatorData?.alternateCopy)
+            val cartData = AtcCommonMapper.mapToCartRedirectionData(
+                selectedChild = selectedChild,
+                cartTypeData = aggregatorData?.cardRedirection,
+                isShopOwner = isShopOwner,
+                shouldUseAlternateTokoNow = aggregatorParams.showQtyEditorOrTokoNow() &&
+                        selectedMiniCart != null,
+                alternateCopy = aggregatorData?.alternateCopy
+            )
             val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
 
             // generate variant component and data, initial render need to determine selected option

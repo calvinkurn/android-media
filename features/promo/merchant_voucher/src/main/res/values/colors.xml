@@ -3,4 +3,6 @@
     <color name="separator_color">#e0e0e0</color>
     <color name="voucher_text_color_disable">#abadb1</color>
     <color name="voucher_button_color_disable">#e5e7e9</color>
+    <color name="merchantvoucher_dms_shadow_light">#408D96AA</color>
+    <color name="merchantvoucher_dms_shadow_dark">#12000000</color>
 </resources>

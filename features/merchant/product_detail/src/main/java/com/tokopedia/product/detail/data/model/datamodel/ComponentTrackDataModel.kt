@@ -8,21 +8,25 @@ import android.os.Parcelable
  */
 
 data class ComponentTrackDataModel(
-        val componentType: String = "",
-        val componentName: String = "",
-        val adapterPosition: Int = 0
+    val componentType: String = "",
+    val componentName: String = "",
+    val adapterPosition: Int = 0
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readInt())
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readInt()
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(componentType)
         parcel.writeString(componentName)
         parcel.writeInt(adapterPosition)
     }
+
+    fun getComponentData(action: String) =
+        "comp:$componentName;temp:$componentType;elem:$action;cpos:$adapterPosition;"
 
     override fun describeContents(): Int {
         return 0

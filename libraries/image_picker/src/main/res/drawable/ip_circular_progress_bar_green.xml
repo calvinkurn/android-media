@@ -2,12 +2,12 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/bg_circular_progress">
         <shape android:shape="ring" android:thickness="@dimen/dp_3" android:useLevel="false">
-            <solid android:color="@color/Unify_N100"/>
+            <solid android:color="@color/Unify_NN200"/>
         </shape>
     </item>
     <item android:id="@+id/circular_progress">
         <shape android:shape="ring" android:thickness="@dimen/dp_3" android:useLevel="true">
-            <solid android:color="@color/Unify_G400"/>
+            <solid android:color="@color/Unify_GN500"/>
         </shape>
     </item>
 </layer-list>

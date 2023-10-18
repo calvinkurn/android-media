@@ -1,7 +1,6 @@
 package com.tokopedia.home_recom.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -24,10 +23,10 @@ object SimilarProductRecommendationTracking {
     private const val EVENT_CLICK_BACK_BUTTON = "click - back button"
 
     private const val EVENT_CATEGORY_SIMILAR_PRODUCT = "similar product recommendation page"
-    private const val ACTION_IMPRESSION_PRODUCT_RECOMMENDATION = "impression - product recommendation"
-    private const val ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_NON_LOGIN = "impression - product recommendation - non login"
-    private const val ACTION_CLICK_PRODUCT_RECOMMENDATION = "click - product recommendation"
-    private const val ACTION_CLICK_PRODUCT_RECOMMENDATION_NON_LOGIN = "click - product recommendation - non login"
+    private const val ACTION_IMPRESSION_PRODUCT_RECOMMENDATION = "impression - similar product recommendation"
+    private const val ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_NON_LOGIN = "impression - similar product recommendation - non login"
+    private const val ACTION_CLICK_PRODUCT_RECOMMENDATION = "click - similar product recommendation"
+    private const val ACTION_CLICK_PRODUCT_RECOMMENDATION_NON_LOGIN = "click - similar product recommendation - non login"
     private const val EVENT_ACTION_CLICK_ANNOTATION_CHIP = "click - quick filter"
     private const val EVENT_ACTION_CLICK_FULL_FILTER_CHIP = "click - full filter chip on this page"
     private const val EVENT_ACTION_CLICK_SHOW_PRODUCT = "click - `tampilkan product` button after choose multiple filter / sort"
@@ -51,6 +50,8 @@ object SimilarProductRecommendationTracking {
     private const val FIELD_DIMENSION_61 = "dimension61"
     private const val FIELD_DIMENSION_83 = "dimension83"
     private const val FIELD_DIMENSION_90 = "dimension90"
+    private const val FIELD_DIMENSION_40 = "dimension40"
+    private const val FIELD_DIMENSION_56 = "dimension56"
 
     private const val LIST_PRODUCT_RECOMMENDATION = "/similarrecommendation - rekomendasi untuk anda - %s - ref: %s%s"
     private const val LIST_PRODUCT_RECOMMENDATION_NON_LOGIN = "/similarrecommendation - non login - rekomendasi untuk anda - %s - ref: %s%s"
@@ -68,209 +69,267 @@ object SimilarProductRecommendationTracking {
     private const val CURRENT_SITE = "currentSite"
     private const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
     private const val USER_ID = "userId"
+    private const val PAGE_DESTINATION = "pageDestination"
+
+    private const val TRACKER_ID = "trackerId"
+    private const val TRACKER_ID_IMPRESSION_LOGIN = "2149"
+    private const val TRACKER_ID_IMPRESSION_NON_LOGIN = "2150"
+    private const val TRACKER_ID_CLICK_LOGIN = "2151"
+    private const val TRACKER_ID_CLICK_NON_LOGIN = "2152"
 
     private fun getTracker(): ContextAnalytics {
         return TrackApp.getInstance().gtm
     }
 
-    private fun convertRecommendationItemToDataClickObject(item: RecommendationItem,
-                                                           list: String,
-                                                           position: String,
-                                                           internalRef: String): Any {
+    private fun convertRecommendationItemToDataClickObject(
+        item: RecommendationItem,
+        list: String,
+        position: String,
+        internalRef: String
+    ): Any {
         return DataLayer.mapOf(
-                FIELD_ACTION_FIELD, DataLayer.mapOf(
-                FIELD_PRODUCT_LIST, list
-        ),
-                FIELD_PRODUCTS, DataLayer.listOf(
+            FIELD_ACTION_FIELD,
+            DataLayer.mapOf(FIELD_PRODUCT_LIST, list),
+            FIELD_PRODUCTS,
+            DataLayer.listOf(
                 DataLayer.mapOf(
-                        FIELD_PRODUCT_NAME, item.name,
-                        FIELD_PRODUCT_ID, item.productId,
-                        FIELD_PRODUCT_PRICE, item.priceInt.toString(),
-                        FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
-                        FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
-                        FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
-                        FIELD_PRODUCT_LIST, list,
-                        FIELD_PRODUCT_POSITION, position,
-                        FIELD_ATTRIBUTE, VALUE_EMPTY,
-                        FIELD_DIMENSION_61, item.dimension61,
-                        FIELD_DIMENSION_83, getBebasOngkirValue(item),
-                        FIELD_DIMENSION_90, internalRef
+                    FIELD_PRODUCT_NAME, item.name,
+                    FIELD_PRODUCT_ID, item.productId,
+                    FIELD_PRODUCT_PRICE, item.priceInt.toString(),
+                    FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
+                    FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
+                    FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
+                    FIELD_PRODUCT_LIST, list,
+                    FIELD_PRODUCT_POSITION, position,
+                    FIELD_ATTRIBUTE, VALUE_EMPTY,
+                    FIELD_DIMENSION_61, item.dimension61,
+                    FIELD_DIMENSION_90, internalRef,
+                    FIELD_DIMENSION_40, list,
+                    FIELD_DIMENSION_56, item.warehouseId.toString(),
                 )
-        )
+            )
         )
     }
 
-    private fun convertRecommendationItemToDataImpressionObject(item: RecommendationItem,
-                                                                list: String,
-                                                                position: String,
-                                                                internalRef: String): Any {
+    private fun convertRecommendationItemToDataImpressionObject(
+        item: RecommendationItem,
+        list: String,
+        position: String,
+        internalRef: String
+    ): Any {
         return DataLayer.mapOf(
-                FIELD_PRODUCT_NAME, item.name,
-                FIELD_PRODUCT_ID, item.productId,
-                FIELD_PRODUCT_PRICE, item.priceInt.toString(),
-                FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
-                FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
-                FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
-                FIELD_PRODUCT_LIST, list,
-                FIELD_PRODUCT_POSITION, position,
-                FIELD_DIMENSION_83, getBebasOngkirValue(item),
-                FIELD_DIMENSION_90, internalRef,
-                FIELD_DIMENSION_61, item.dimension61
+            FIELD_PRODUCT_NAME, item.name,
+            FIELD_PRODUCT_ID, item.productId,
+            FIELD_PRODUCT_PRICE, item.priceInt.toString(),
+            FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
+            FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
+            FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
+            FIELD_PRODUCT_LIST, list,
+            FIELD_PRODUCT_POSITION, position,
+            FIELD_DIMENSION_90, internalRef,
+            FIELD_DIMENSION_61, item.dimension61,
+            FIELD_DIMENSION_40, list,
+            FIELD_DIMENSION_56, item.warehouseId.toString(),
         )
-    }
-
-    private fun getBebasOngkirValue(item: RecommendationItem): String{
-        val hasFulfillment = item.labelGroupList.hasLabelGroupFulfillment()
-        return if(item.isFreeOngkirActive && hasFulfillment) VALUE_BEBAS_ONGKIR_EXTRA
-        else if(item.isFreeOngkirActive && !hasFulfillment) VALUE_BEBAS_ONGKIR
-        else VALUE_NONE_OTHER
     }
 
     fun eventImpression(
-            trackingQueue: TrackingQueue,
-            recommendationItem: RecommendationItem,
-            position: String,
-            ref: String,
-            internalRef: String
+        trackingQueue: TrackingQueue,
+        recommendationItem: RecommendationItem,
+        position: String,
+        ref: String,
+        internalRef: String,
+        userId: String
     ) {
         trackingQueue.putEETracking(
+            DataLayer.mapOf(
+                EVENT, EVENT_PRODUCT_VIEW,
+                EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
+                EVENT_ACTION, ACTION_IMPRESSION_PRODUCT_RECOMMENDATION,
+                BUSINESS_UNIT, BU_HOME_AND_BROWSE,
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                ECOMMERCE,
                 DataLayer.mapOf(
-                        EVENT, EVENT_PRODUCT_VIEW,
-                        EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
-                        EVENT_ACTION, ACTION_IMPRESSION_PRODUCT_RECOMMENDATION,
-                        EVENT_LABEL, VALUE_EMPTY,
-                        ECOMMERCE, DataLayer.mapOf(
-                        CURRENCY_CODE, VALUE_IDR,
-                        IMPRESSION, DataLayer.listOf(
+                    CURRENCY_CODE,
+                    VALUE_IDR,
+                    IMPRESSION,
+                    DataLayer.listOf(
                         convertRecommendationItemToDataImpressionObject(
-                                recommendationItem,
-                                String.format(
-                                        LIST_PRODUCT_RECOMMENDATION,
-                                        recommendationItem.recommendationType,
-                                        ref,
-                                        if(recommendationItem.isTopAds) PRODUCT_TOP_ADS else ""
-                                ), position, internalRef)
-                )
-                )
-                ) as HashMap<String, Any>?
-        )
-    }
-
-    fun eventImpressionNonLogin(
-            trackingQueue: TrackingQueue,
-            recommendationItem: RecommendationItem,
-            position: String,
-            ref: String,
-            internalRef: String
-    ) {
-        trackingQueue.putEETracking(
-                DataLayer.mapOf(
-                        EVENT, EVENT_PRODUCT_VIEW,
-                        EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
-                        EVENT_ACTION, ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_NON_LOGIN,
-                        EVENT_LABEL, VALUE_EMPTY,
-                        ECOMMERCE, DataLayer.mapOf(
-                        CURRENCY_CODE, VALUE_IDR,
-                        IMPRESSION, DataLayer.listOf(
-                        convertRecommendationItemToDataImpressionObject(
-                                recommendationItem,
-                                String.format(
-                                        LIST_PRODUCT_RECOMMENDATION_NON_LOGIN,
-                                        recommendationItem.recommendationType,
-                                        ref,
-                                        if(recommendationItem.isTopAds) PRODUCT_TOP_ADS else ""
-                                ), position, internalRef)
-                )
-                )
-                ) as HashMap<String, Any>?
-        )
-    }
-
-    fun eventClick(
-            recommendationItem: RecommendationItem,
-            position: String,
-            ref: String,
-            internalRef: String
-    ) {
-        val data =
-                DataLayer.mapOf(
-                        EVENT, EVENT_PRODUCT_CLICK,
-                        EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
-                        EVENT_ACTION, ACTION_CLICK_PRODUCT_RECOMMENDATION,
-                        EVENT_LABEL, VALUE_EMPTY,
-                        ECOMMERCE, DataLayer.mapOf(
-                        CLICK, convertRecommendationItemToDataClickObject(
-                        recommendationItem,
-                        String.format(
+                            recommendationItem,
+                            String.format(
                                 LIST_PRODUCT_RECOMMENDATION,
                                 recommendationItem.recommendationType,
                                 ref,
                                 if (recommendationItem.isTopAds) PRODUCT_TOP_ADS else ""
-                        ),
-                        position,
-                        internalRef
+                            ),
+                            position,
+                            internalRef
+                        )
+                    )
+                ),
+                EVENT_LABEL, "${recommendationItem.header}, null",
+                USER_ID, userId.ifEmpty { "0" },
+                PAGE_DESTINATION, internalRef,
+                TRACKER_ID, TRACKER_ID_IMPRESSION_LOGIN
+            ) as? HashMap<String, Any>
+        )
+    }
+
+    fun eventImpressionNonLogin(
+        trackingQueue: TrackingQueue,
+        recommendationItem: RecommendationItem,
+        position: String,
+        ref: String,
+        internalRef: String,
+        userId: String
+    ) {
+        trackingQueue.putEETracking(
+            DataLayer.mapOf(
+                EVENT, EVENT_PRODUCT_VIEW,
+                EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
+                EVENT_ACTION, ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_NON_LOGIN,
+                BUSINESS_UNIT, BU_HOME_AND_BROWSE,
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                ECOMMERCE,
+                DataLayer.mapOf(
+                    CURRENCY_CODE,
+                    VALUE_IDR,
+                    IMPRESSION,
+                    DataLayer.listOf(
+                        convertRecommendationItemToDataImpressionObject(
+                            recommendationItem,
+                            String.format(
+                                LIST_PRODUCT_RECOMMENDATION_NON_LOGIN,
+                                recommendationItem.recommendationType,
+                                ref,
+                                if (recommendationItem.isTopAds) PRODUCT_TOP_ADS else ""
+                            ),
+                            position,
+                            internalRef
+                        )
+                    )
+                ),
+                EVENT_LABEL, "${recommendationItem.header}, null",
+                USER_ID, userId.ifEmpty { "0" },
+                PAGE_DESTINATION, internalRef,
+                TRACKER_ID, TRACKER_ID_IMPRESSION_NON_LOGIN
+            ) as? HashMap<String, Any>
+        )
+    }
+
+    fun eventClick(
+        recommendationItem: RecommendationItem,
+        position: String,
+        ref: String,
+        internalRef: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            EVENT, EVENT_PRODUCT_CLICK,
+            EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
+            EVENT_ACTION, ACTION_CLICK_PRODUCT_RECOMMENDATION,
+            BUSINESS_UNIT, BU_HOME_AND_BROWSE,
+            CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+            EVENT_LABEL, VALUE_EMPTY,
+            ECOMMERCE,
+            DataLayer.mapOf(
+                CLICK,
+                convertRecommendationItemToDataClickObject(
+                    recommendationItem,
+                    String.format(
+                        LIST_PRODUCT_RECOMMENDATION,
+                        recommendationItem.recommendationType,
+                        ref,
+                        if (recommendationItem.isTopAds) PRODUCT_TOP_ADS else ""
+                    ),
+                    position,
+                    internalRef
                 )
-                )
-                )
+            ),
+            EVENT_LABEL, "${recommendationItem.header}, null",
+            USER_ID, userId.ifEmpty { "0" },
+            PAGE_DESTINATION, internalRef,
+            TRACKER_ID, TRACKER_ID_CLICK_LOGIN
+        )
 
         getTracker().sendEnhanceEcommerceEvent(data)
     }
 
     fun eventClickNonLogin(
-            recommendationItem: RecommendationItem,
-            position: String,
-            ref: String,
-            internalRef: String
+        recommendationItem: RecommendationItem,
+        position: String,
+        ref: String,
+        internalRef: String,
+        userId: String
     ) {
-        val data =
-                DataLayer.mapOf(
-                        EVENT, EVENT_PRODUCT_CLICK,
-                        EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
-                        EVENT_ACTION, ACTION_CLICK_PRODUCT_RECOMMENDATION_NON_LOGIN,
-                        EVENT_LABEL, VALUE_EMPTY,
-                        ECOMMERCE, DataLayer.mapOf(
-                            CLICK, convertRecommendationItemToDataClickObject(
-                                recommendationItem,
-                                String.format(
-                                        LIST_PRODUCT_RECOMMENDATION_NON_LOGIN,
-                                        recommendationItem.recommendationType,
-                                        ref,
-                                        if(recommendationItem.isTopAds) PRODUCT_TOP_ADS else ""
-                                ),
-                                position,
-                                internalRef
-                            )
-                        )
-                )
-        getTracker().sendEnhanceEcommerceEvent(data)
-    }
-
-    fun eventClickWishlist(isAddWishlist: Boolean){
         val data = DataLayer.mapOf(
-                EVENT, EVENT_CLICK_RECOMMENDATION,
-                EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
-                EVENT_ACTION, String.format(EVENT_WISHLIST_RECOMMENDATION, if(isAddWishlist) "add" else "remove"),
-                EVENT_LABEL, VALUE_EMPTY
+            EVENT, EVENT_PRODUCT_CLICK,
+            EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
+            EVENT_ACTION, ACTION_CLICK_PRODUCT_RECOMMENDATION_NON_LOGIN,
+            BUSINESS_UNIT, BU_HOME_AND_BROWSE,
+            CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+            EVENT_LABEL, VALUE_EMPTY,
+            ECOMMERCE,
+            DataLayer.mapOf(
+                CLICK,
+                convertRecommendationItemToDataClickObject(
+                    recommendationItem,
+                    String.format(
+                        LIST_PRODUCT_RECOMMENDATION_NON_LOGIN,
+                        recommendationItem.recommendationType,
+                        ref,
+                        if (recommendationItem.isTopAds) PRODUCT_TOP_ADS else ""
+                    ),
+                    position,
+                    internalRef
+                )
+            ),
+            EVENT_LABEL, "${recommendationItem.header}, null",
+            USER_ID, userId.ifEmpty { "0" },
+            PAGE_DESTINATION, internalRef,
+            TRACKER_ID, TRACKER_ID_CLICK_NON_LOGIN
         )
         getTracker().sendEnhanceEcommerceEvent(data)
     }
 
-    fun eventClickWishlistNonLogin(){
+    fun eventClickWishlist(isAddWishlist: Boolean) {
         val data = DataLayer.mapOf(
-                EVENT, EVENT_CLICK_RECOMMENDATION,
-                EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
-                EVENT_ACTION, EVENT_WISHLIST_RECOMMENDATION_NON_LOGIN,
-                EVENT_LABEL, VALUE_EMPTY
+            EVENT,
+            EVENT_CLICK_RECOMMENDATION,
+            EVENT_CATEGORY,
+            EVENT_CATEGORY_SIMILAR_PRODUCT,
+            EVENT_ACTION,
+            String.format(EVENT_WISHLIST_RECOMMENDATION, if (isAddWishlist) "add" else "remove"),
+            EVENT_LABEL,
+            VALUE_EMPTY
+        )
+        getTracker().sendEnhanceEcommerceEvent(data)
+    }
+
+    fun eventClickWishlistNonLogin() {
+        val data = DataLayer.mapOf(
+            EVENT,
+            EVENT_CLICK_RECOMMENDATION,
+            EVENT_CATEGORY,
+            EVENT_CATEGORY_SIMILAR_PRODUCT,
+            EVENT_ACTION,
+            EVENT_WISHLIST_RECOMMENDATION_NON_LOGIN,
+            EVENT_LABEL,
+            VALUE_EMPTY
         )
         getTracker().sendEnhanceEcommerceEvent(data)
     }
 
     fun eventClickBackButton() {
         val data = DataLayer.mapOf(
-                EVENT, EVENT_CLICK_RECOMMENDATION,
-                EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
-                EVENT_ACTION, EVENT_CLICK_BACK_BUTTON,
-                EVENT_LABEL, VALUE_EMPTY
+            EVENT,
+            EVENT_CLICK_RECOMMENDATION,
+            EVENT_CATEGORY,
+            EVENT_CATEGORY_SIMILAR_PRODUCT,
+            EVENT_ACTION,
+            EVENT_CLICK_BACK_BUTTON,
+            EVENT_LABEL,
+            VALUE_EMPTY
         )
         getTracker().sendEnhanceEcommerceEvent(data)
     }
@@ -278,41 +337,41 @@ object SimilarProductRecommendationTracking {
     fun eventUserClickQuickFilterChip(userId: String, parameter: String) {
         val tracker = getTracker()
         val data = DataLayer.mapOf(
-                EVENT, EVENT_CLICK_RECOMMENDATION,
-                EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
-                EVENT_ACTION, EVENT_ACTION_CLICK_ANNOTATION_CHIP,
-                EVENT_LABEL, parameter,
-                BUSINESS_UNIT, BU_HOME_AND_BROWSE,
-                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-                USER_ID, userId
+            EVENT, EVENT_CLICK_RECOMMENDATION,
+            EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
+            EVENT_ACTION, EVENT_ACTION_CLICK_ANNOTATION_CHIP,
+            EVENT_LABEL, parameter,
+            BUSINESS_UNIT, BU_HOME_AND_BROWSE,
+            CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+            USER_ID, userId
         )
         tracker.sendEnhanceEcommerceEvent(data)
     }
 
-    fun eventUserClickFullFilterChip(userId: String, param: String){
+    fun eventUserClickFullFilterChip(userId: String, param: String) {
         val tracker = getTracker()
         val data = DataLayer.mapOf(
-                EVENT, EVENT_CLICK_RECOMMENDATION,
-                EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
-                EVENT_ACTION, EVENT_ACTION_CLICK_FULL_FILTER_CHIP,
-                EVENT_LABEL, param,
-                BUSINESS_UNIT, BU_HOME_AND_BROWSE,
-                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-                USER_ID, userId
+            EVENT, EVENT_CLICK_RECOMMENDATION,
+            EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
+            EVENT_ACTION, EVENT_ACTION_CLICK_FULL_FILTER_CHIP,
+            EVENT_LABEL, param,
+            BUSINESS_UNIT, BU_HOME_AND_BROWSE,
+            CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+            USER_ID, userId
         )
         tracker.sendEnhanceEcommerceEvent(data)
     }
 
-    fun eventUserClickShowProduct(userId: String, param: String){
+    fun eventUserClickShowProduct(userId: String, param: String) {
         val tracker = getTracker()
         val data = DataLayer.mapOf(
-                EVENT, EVENT_CLICK_RECOMMENDATION,
-                EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
-                EVENT_ACTION, EVENT_ACTION_CLICK_SHOW_PRODUCT,
-                EVENT_LABEL, param,
-                BUSINESS_UNIT, BU_HOME_AND_BROWSE,
-                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-                USER_ID, userId
+            EVENT, EVENT_CLICK_RECOMMENDATION,
+            EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
+            EVENT_ACTION, EVENT_ACTION_CLICK_SHOW_PRODUCT,
+            EVENT_LABEL, param,
+            BUSINESS_UNIT, BU_HOME_AND_BROWSE,
+            CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+            USER_ID, userId
         )
         tracker.sendEnhanceEcommerceEvent(data)
     }

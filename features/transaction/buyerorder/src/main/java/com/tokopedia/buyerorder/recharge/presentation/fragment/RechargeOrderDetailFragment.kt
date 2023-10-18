@@ -53,7 +53,9 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
     RechargeOrderDetailStaticButtonViewHolder.ActionListener,
     RechargeOrderDetailAboutOrderViewHolder.ActionListener,
     RechargeOrderDetailActionButtonSectionViewHolder.ActionListener,
-    RecommendationWidgetListener {
+    RecommendationWidgetListener,
+    RechargeOrderDetailPaymentViewHolder.RechargeOrderDetailPaymentListener
+{
 
     private lateinit var binding: FragmentRechargeOrderDetailBinding
 
@@ -79,6 +81,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
     private val typeFactory: RechargeOrderDetailTypeFactory by lazy {
         RechargeOrderDetailTypeFactory(
             digitalRecommendationData,
+            this,
             this,
             this,
             this,
@@ -256,6 +259,10 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         RouteManager.route(context, appLink)
     }
 
+    override fun onClickTnC(applink: String) {
+        RouteManager.route(context, applink)
+    }
+
     private fun fetchData() {
         rechargeViewModel.fetchData(
             RechargeOrderDetailRequest(
@@ -309,7 +316,11 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                             primaryActionButton.name,
                             primaryActionButton.buttonType
                         )
-                        onStickyActionButtonClicked(ctx, primaryActionButton.uri)
+                        if (!primaryActionButton.mappingUri.equals(MAPPING_URI_VOID, true)) {
+                            onStickyActionButtonClicked(ctx, primaryActionButton.uri)
+                        } else {
+                            showVoidDialog()
+                        }
                     }
                 }
             }
@@ -517,6 +528,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         private const val IDEM_POTENCY_KEY = "idem_potency_key"
 
         private const val INVOICE_NUMBER_LABEL = "Nomor Invoice"
+        private const val MAPPING_URI_VOID = "void"
 
         fun getInstance(
             orderId: String,

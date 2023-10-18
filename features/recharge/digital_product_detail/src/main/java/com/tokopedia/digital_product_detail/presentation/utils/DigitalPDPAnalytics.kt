@@ -24,7 +24,9 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.DIMENSION45
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.EMPTY_DISCOUNT_PRICE
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.FLASH_SALE
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.IFRAME_OTP
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.INDEX
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.IS_LOGGEDIN_STATUS
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.ITEMS
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.ITEM_BRAND
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.ITEM_CATEGORY
@@ -37,6 +39,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.PROMOTIONS
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.QUANTITY
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.REGULAR
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.SCREEN_NAME
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.SHOP_ID
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.SHOP_NAME
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.SHOP_TYPE
@@ -50,9 +53,11 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.VIEW_ITEM_LIST
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_CHEVRON_PROMOTION
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_CLOSE_PRODUCT_DESC
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_OLD_MCCM
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_PRODUCT_PROMOTION
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_SHOW_MORE_PROMOTION
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.IMPRESS_BOTTOM_SHEET_PRODUCT_DESC
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.IMPRESS_OLD_MCCM
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.IMPRESS_PROMO_CLUSTER_PRODUCT
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -223,6 +228,279 @@ class DigitalPDPAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43697
+    fun impressionCheckBalanceWidget(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.IMPRESSION_CHECK_BALANCE_WIDGET,
+            TrackAppUtils.EVENT_LABEL,
+            "$categoryName - $operatorName - $loyaltyStatus",
+            TRACKER_ID,
+            DigitalPDPEventTracking.TrackerId.IMPRESSION_CHECK_BALANCE_WIDGET
+        )
+        data.viewDigitalIris(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43698
+    fun clickCheckBalanceWidget(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_CHECK_BALANCE_WIDGET,
+            TrackAppUtils.EVENT_LABEL,
+            "$categoryName - $operatorName - $loyaltyStatus",
+            TRACKER_ID,
+            DigitalPDPEventTracking.TrackerId.CLICK_CHECK_BALANCE_WIDGET
+        )
+        data.clickDigitalItemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43699
+    fun impressionPdpOtpPopUp(
+        categoryName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.IMPRESSION_PDP_OTP_POP_UP,
+            TrackAppUtils.EVENT_LABEL,
+            "$categoryName - $loyaltyStatus",
+            TRACKER_ID,
+            DigitalPDPEventTracking.TrackerId.IMPRESSION_PDP_OTP_POP_UP
+        )
+        data.viewDigitalIris(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43700
+    fun clickPdpOtpPopUp(
+        categoryName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_PDP_OTP_POP_UP,
+            TrackAppUtils.EVENT_LABEL,
+            "$categoryName - $loyaltyStatus",
+            TRACKER_ID,
+            DigitalPDPEventTracking.TrackerId.CLICK_PDP_OTP_TOP_UP
+        )
+        data.clickDigitalItemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43701
+    fun clickInputOtp(
+        userId: String,
+        isLogin: Boolean
+    ) {
+        val data = DataLayer.mapOf(
+            TRACKER_ID,
+            DigitalPDPEventTracking.TrackerId.CLICK_INPUT_OTP,
+            IS_LOGGEDIN_STATUS,
+            isLogin,
+            SCREEN_NAME,
+            IFRAME_OTP
+        )
+        data.clickDigitalItemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43702
+    fun clickCloseOtp(
+        categoryName: String,
+        loyaltyStatus: String,
+        userId: String,
+        isLogin: Boolean
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_CLOSE_OTP,
+            TrackAppUtils.EVENT_LABEL, "$categoryName - $loyaltyStatus",
+            TRACKER_ID, DigitalPDPEventTracking.TrackerId.CLICK_CLOSE_OTP,
+            IS_LOGGEDIN_STATUS, isLogin,
+            SCREEN_NAME, IFRAME_OTP
+        )
+        data.clickDigitalItemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43704
+    fun impressionCheckBalanceInfo(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        errorMessage: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.IMPRESSION_CHECK_BALANCE_INFO,
+            TrackAppUtils.EVENT_LABEL,
+            "$categoryName - $operatorName - $loyaltyStatus - $errorMessage",
+            TRACKER_ID,
+            DigitalPDPEventTracking.TrackerId.IMPRESSION_CHECK_BALANCE_INFO
+        )
+        data.viewDigitalIris(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43705
+    fun clickLihatDetailCheckBalance(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_LIHAT_DETAIL_CHECK_BALANCE,
+            TrackAppUtils.EVENT_LABEL,
+            "$categoryName - $operatorName - $loyaltyStatus",
+            TRACKER_ID,
+            DigitalPDPEventTracking.TrackerId.CLICK_LIHAT_DETAIL_CHECK_BALANCE
+        )
+        data.clickDigitalItemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43706
+    fun impressionSheetActivePackage(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.IMPRESSION_SHEET_ACTIVE_PACKAGE)
+            putString(TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName - $loyaltyStatus")
+            putString(TRACKER_ID, DigitalPDPEventTracking.TrackerId.IMPRESSION_SHEET_ACTIVE_PACKAGE)
+            putParcelableArrayList(
+                ITEMS,
+                mapperCheckBalanceProductToItemList(
+                    categoryName,
+                    operatorName,
+                    "",
+                    "",
+                    ""
+                )
+            )
+        }
+        eventDataLayer.viewItem(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventDataLayer)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43707
+    fun clickCloseSheetActivePackage(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_CLOSE_SHEET_ACTIVE_PACKAGE,
+            TrackAppUtils.EVENT_LABEL,
+            "$categoryName - $operatorName - $loyaltyStatus",
+            TRACKER_ID,
+            DigitalPDPEventTracking.TrackerId.CLICK_CLOSE_SHEET_ACTIVE_PACKAGE
+        )
+        data.clickDigitalItemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43708
+    fun impressionActivePackageCheckBalance(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        productListName: String,
+        productId: String,
+        productName: String,
+        index: Int,
+        price: String,
+        userId: String
+    ) {
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.IMPRESSION_ACTIVE_PACKAGE_CHECK_BALANCE)
+            putString(TrackAppUtils.EVENT_LABEL, "$categoryName - $index - $operatorName - $loyaltyStatus")
+            putString(TRACKER_ID, DigitalPDPEventTracking.TrackerId.IMPRESSION_ACTIVE_PACKAGE_CHECK_BALANCE)
+            putString(ITEM_LIST, productListName)
+            putParcelableArrayList(
+                ITEMS,
+                mapperCheckBalanceProductToDimen40ItemList(
+                    productListName,
+                    index,
+                    categoryName,
+                    operatorName,
+                    productId,
+                    productName,
+                    price
+                )
+            )
+        }
+        eventDataLayer.viewItemList(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventDataLayer)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43709
+    fun clickBeliLagiActivePackage(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        productListName: String,
+        productId: String,
+        productName: String,
+        index: Int,
+        price: String,
+        userId: String
+    ) {
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_BELI_LAGI_ACTIVE_PACKAGE)
+            putString(TrackAppUtils.EVENT_LABEL, "$categoryName - $index - $operatorName - $loyaltyStatus")
+            putString(TRACKER_ID, DigitalPDPEventTracking.TrackerId.CLICK_BELI_LAGI_ACTIVE_PACKAGE)
+            putString(ITEM_LIST, productListName)
+            putParcelableArrayList(
+                ITEMS,
+                mapperCheckBalanceProductToDimen40ItemList(
+                    productListName,
+                    index,
+                    categoryName,
+                    operatorName,
+                    productId,
+                    productName,
+                    price
+                )
+            )
+        }
+        eventDataLayer.clickGeneralItemList(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
+    }
+
     fun eventClearInputNumber(categoryName: String, userId: String) {
         val data = DataLayer.mapOf(
             TrackAppUtils.EVENT_ACTION,
@@ -361,7 +639,7 @@ class DigitalPDPAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    fun impressionProductMCCM(
+    fun impressionProductMCCMGrid(
         categoryName: String,
         operatorName: String,
         loyaltyStatus: String,
@@ -372,8 +650,7 @@ class DigitalPDPAnalytics {
 
     ) {
         val isMCCMorFlashSale =
-            if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
-                denomType == DenomWidgetEnum.MCCM_FULL_TYPE
+            if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE
             ) {
                 MCCM
             } else {
@@ -383,20 +660,20 @@ class DigitalPDPAnalytics {
             putString(TrackAppUtils.EVENT_ACTION, VIEW_PROMO_CARD)
             putString(
                 TrackAppUtils.EVENT_LABEL,
-                "${categoryName}_${operatorName}_${isMCCMorFlashSale}_$loyaltyStatus"
+                "${categoryName}_${operatorName}_${isMCCMorFlashSale}_${loyaltyStatus}_${denomData.itemType}"
             )
             putParcelableArrayList(
                 ITEMS,
                 mapperDenomToItemList(denomData, operatorName, position, isMCCMorFlashSale, categoryName)
             )
+            putString(TRACKER_ID, IMPRESS_OLD_MCCM)
         }
 
         eventDataLayer.viewItemList(userId)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventDataLayer)
     }
 
-
-    fun impressMCCMProductNew(
+    fun impressMCCMProductFullVertical(
         productListName: String,
         categoryName: String,
         operatorName: String,
@@ -417,7 +694,7 @@ class DigitalPDPAnalytics {
             putString(ITEM_LIST, productListName)
             putString(
                 TrackAppUtils.EVENT_LABEL,
-                "${categoryName} - ${operatorName} - ${(position + Int.ONE)} - ${denomData.id} - $loyaltyStatus"
+                "$categoryName - $operatorName - ${(position + Int.ONE)} - ${denomData.id} - $loyaltyStatus"
             )
             putParcelableArrayList(
                 ITEMS,
@@ -450,7 +727,7 @@ class DigitalPDPAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    fun clickMCCMProduct(
+    fun clickMCCMGridProduct(
         productListName: String,
         categoryName: String,
         operatorName: String,
@@ -461,8 +738,7 @@ class DigitalPDPAnalytics {
         position: Int
     ) {
         val isMCCMorFlashSale =
-            if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
-                denomType == DenomWidgetEnum.MCCM_FULL_TYPE
+            if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE
             ) {
                 MCCM
             } else {
@@ -473,19 +749,20 @@ class DigitalPDPAnalytics {
             putString(ITEM_LIST, productListName)
             putString(
                 TrackAppUtils.EVENT_LABEL,
-                "${categoryName}_${operatorName}_${isMCCMorFlashSale}_$loyaltyStatus"
+                "${categoryName}_${operatorName}_${isMCCMorFlashSale}_${loyaltyStatus}_${denomData.itemType}"
             )
             putParcelableArrayList(
                 ITEMS,
                 mapperDenomToItemList(denomData, operatorName, position, isMCCMorFlashSale, categoryName)
             )
+            putString(TRACKER_ID, CLICK_OLD_MCCM)
         }
 
         eventDataLayer.clickGeneralItemList(userId)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
     }
 
-    fun clickMCCMProductNew(
+    fun clickMCCMProductFullVertical(
         productListName: String,
         categoryName: String,
         operatorName: String,
@@ -506,7 +783,7 @@ class DigitalPDPAnalytics {
             putString(ITEM_LIST, productListName)
             putString(
                 TrackAppUtils.EVENT_LABEL,
-                "${categoryName} - ${operatorName} - ${(position + Int.ONE)} - ${denomData.id} - $loyaltyStatus"
+                "$categoryName - $operatorName - ${(position + Int.ONE)} - ${denomData.id} - $loyaltyStatus"
             )
             putParcelableArrayList(
                 ITEMS,
@@ -577,10 +854,7 @@ class DigitalPDPAnalytics {
         denomType: DenomWidgetEnum
     ) {
         val isMCCMorFlashSale =
-            if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
-                denomType == DenomWidgetEnum.MCCM_FULL_TYPE ||
-                denomType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE
-            ) {
+            if (denomType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
                 MCCM
             } else {
                 FLASH_SALE
@@ -589,7 +863,7 @@ class DigitalPDPAnalytics {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_CHEVRON_IN_PROMO_CARD)
             putString(ITEM_LIST, productListName)
-            putString(TrackAppUtils.EVENT_LABEL,  "${categoryName} - ${operatorName} - $loyaltyStatus")
+            putString(TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName - $loyaltyStatus")
             putString(TRACKER_ID, CLICK_CHEVRON_PROMOTION)
             putParcelableArrayList(
                 ITEMS,
@@ -752,13 +1026,13 @@ class DigitalPDPAnalytics {
         categoryName: String,
         operatorName: String,
         loyaltyStatus: String,
-        userId: String,
-    ){
+        userId: String
+    ) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, CLICK_CHEVRON_SHOW_MORE)
             putString(
                 TrackAppUtils.EVENT_LABEL,
-                "${categoryName} - ${operatorName} - $loyaltyStatus"
+                "$categoryName - $operatorName - $loyaltyStatus"
             )
             putString(TRACKER_ID, CLICK_SHOW_MORE_PROMOTION)
         }
@@ -772,17 +1046,16 @@ class DigitalPDPAnalytics {
         operatorName: String,
         loyaltyStatus: String,
         userId: String,
-        denomType: DenomWidgetEnum,
+        denomType: DenomWidgetEnum
     ) {
         val recommendationLogic = if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
-            denomType == DenomWidgetEnum.MCCM_FULL_TYPE ||
             denomType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE
-        ){
+        ) {
             MCCM
-        } else if(
+        } else if (
             denomType == DenomWidgetEnum.GRID_TYPE ||
             denomType == DenomWidgetEnum.FULL_TYPE
-        ){
+        ) {
             REGULAR
         } else {
             FLASH_SALE
@@ -792,7 +1065,7 @@ class DigitalPDPAnalytics {
             putString(TrackAppUtils.EVENT_ACTION, CLICK_CLOSE_BUTTON_PRODUCT_DESC)
             putString(
                 TrackAppUtils.EVENT_LABEL,
-                "${categoryName} - ${operatorName} - ${recommendationLogic} - $loyaltyStatus"
+                "$categoryName - $operatorName - $recommendationLogic - $loyaltyStatus"
             )
             putString(TRACKER_ID, CLICK_CLOSE_PRODUCT_DESC)
         }
@@ -812,14 +1085,13 @@ class DigitalPDPAnalytics {
         position: Int
     ) {
         val recommendationLogic = if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
-            denomType == DenomWidgetEnum.MCCM_FULL_TYPE ||
             denomType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE
-        ){
+        ) {
             MCCM
-        } else if(
+        } else if (
             denomType == DenomWidgetEnum.GRID_TYPE ||
             denomType == DenomWidgetEnum.FULL_TYPE
-        ){
+        ) {
             REGULAR
         } else {
             FLASH_SALE
@@ -829,7 +1101,7 @@ class DigitalPDPAnalytics {
             putString(TrackAppUtils.EVENT_ACTION, IMPRESS_PRODUCT_DESC)
             putString(
                 TrackAppUtils.EVENT_LABEL,
-                "${categoryName} - ${operatorName} - ${recommendationLogic} - $loyaltyStatus"
+                "$categoryName - $operatorName - $recommendationLogic - $loyaltyStatus"
             )
             putString(TRACKER_ID, IMPRESS_BOTTOM_SHEET_PRODUCT_DESC)
             putString(ITEM_LIST, productListTitle)
@@ -1029,6 +1301,52 @@ class DigitalPDPAnalytics {
                 putString(SHOP_ID, null)
                 putString(SHOP_NAME, null)
                 putString(SHOP_TYPE, null)
+            }
+        )
+        return listItems
+    }
+
+    fun mapperCheckBalanceProductToDimen40ItemList(
+        title: String,
+        index: Int,
+        categoryName: String,
+        operatorName: String,
+        productId: String,
+        productName: String,
+        price: String
+    ): ArrayList<Bundle> {
+        val listItems = ArrayList<Bundle>()
+        listItems.add(
+            Bundle().apply {
+                putString(DIMENSION40, title)
+                putString(INDEX, index.toString())
+                putString(ITEM_BRAND, operatorName)
+                putString(ITEM_CATEGORY, categoryName)
+                putString(ITEM_ID, productId)
+                putString(ITEM_NAME, productName)
+                putString(ITEM_VARIANT, "")
+                putString(PRICE, price)
+            }
+        )
+        return listItems
+    }
+
+    fun mapperCheckBalanceProductToItemList(
+        categoryName: String,
+        operatorName: String,
+        productId: String,
+        productName: String,
+        price: String
+    ): ArrayList<Bundle> {
+        val listItems = ArrayList<Bundle>()
+        listItems.add(
+            Bundle().apply {
+                putString(ITEM_BRAND, operatorName)
+                putString(ITEM_CATEGORY, categoryName)
+                putString(ITEM_ID, productId)
+                putString(ITEM_NAME, productName)
+                putString(ITEM_VARIANT, "")
+                putString(PRICE, price)
             }
         )
         return listItems

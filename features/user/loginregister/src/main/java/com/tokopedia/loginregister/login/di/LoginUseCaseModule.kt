@@ -8,20 +8,15 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
-import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
-import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
-import com.tokopedia.sessioncommon.di.SessionModule
-import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginFingerprintUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 /**
  * Created by Ade Fulki on 2019-10-09.
@@ -35,8 +30,8 @@ class LoginUseCaseModule {
     fun provideMultiRequestGraphql(): MultiRequestGraphqlUseCase = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
 
     @Provides
-    fun provideRegisterCheckGraphQlUseCase(@ApplicationContext graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<RegisterCheckPojo> = GraphqlUseCase(graphqlRepository)
+    fun provideRegisterCheckGraphQlUseCase(@ApplicationContext graphqlRepository: GraphqlRepository): GraphqlUseCase<RegisterCheckPojo> =
+        GraphqlUseCase(graphqlRepository)
 
     @Provides
     fun provideLoginTokenUseCaseV2(@ApplicationContext graphqlRepository: GraphqlRepository, userSessionInterface: UserSessionInterface): LoginTokenV2UseCase {
@@ -51,18 +46,11 @@ class LoginUseCaseModule {
     }
 
     @Provides
-    fun provideGeneratePublicKeyUseCase(@ApplicationContext graphqlRepository: GraphqlRepository): GeneratePublicKeyUseCase {
-        val useCase = GraphqlUseCase<GenerateKeyPojo>(graphqlRepository)
-        return GeneratePublicKeyUseCase(useCase)
-    }
-
-    @Provides
-    fun provideDynamicBannerUseCase(graphqlUseCase: MultiRequestGraphqlUseCase): DynamicBannerUseCase {
-        return DynamicBannerUseCase(graphqlUseCase)
-    }
-
-    @Provides
-    fun provideLoginFingerprintUsecase(@ApplicationContext graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers, userSessionInterface: UserSessionInterface, fingerprintPreference: FingerprintPreference
+    fun provideLoginFingerprintUsecase(
+        @ApplicationContext graphqlRepository: GraphqlRepository,
+        dispatchers: CoroutineDispatchers,
+        userSessionInterface: UserSessionInterface,
+        fingerprintPreference: FingerprintPreference
     ): LoginFingerprintUseCase {
         val useCase = GraphqlUseCase<LoginTokenPojo>(graphqlRepository)
         return LoginFingerprintUseCase(useCase, dispatchers, userSessionInterface, fingerprintPreference)

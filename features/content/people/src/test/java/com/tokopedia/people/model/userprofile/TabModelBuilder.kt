@@ -7,24 +7,35 @@ import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
  */
 class TabModelBuilder {
 
-    fun mockProfileTab(showTabs: Boolean = true): ProfileTabUiModel {
+    fun mockProfileTab(
+        showTabs: Boolean = true,
+        newestTab: ProfileTabUiModel.Key = ProfileTabUiModel.Key.Unknown,
+    ): ProfileTabUiModel {
         return ProfileTabUiModel(
             showTabs = showTabs,
-            tabs = if (showTabs) tabs() else emptyList()
+            tabs = if (showTabs) tabs(newestTab) else emptyList()
         )
     }
 
-    private fun tabs(): List<ProfileTabUiModel.Tab> {
+    private fun tabs(newestTab: ProfileTabUiModel.Key): List<ProfileTabUiModel.Tab> {
         return listOf(
             ProfileTabUiModel.Tab(
                 title = "Feed",
-                "feed",
-                position = 0
+                ProfileTabUiModel.Key.Feeds,
+                position = 0,
+                isNew = newestTab == ProfileTabUiModel.Key.Feeds,
             ),
             ProfileTabUiModel.Tab(
                 title = "Video",
-                "video",
-                position = 1
+                ProfileTabUiModel.Key.Video,
+                position = 1,
+                isNew = newestTab == ProfileTabUiModel.Key.Video,
+            ),
+            ProfileTabUiModel.Tab(
+                title = "Review",
+                ProfileTabUiModel.Key.Review,
+                position = 2,
+                isNew = newestTab == ProfileTabUiModel.Key.Review,
             ),
         )
     }

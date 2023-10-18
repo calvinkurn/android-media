@@ -1,7 +1,7 @@
 package com.tokopedia.logisticaddaddress.domain.mapper
 
 import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.GetDistrictDataUiModel
 import javax.inject.Inject
 
 /**
@@ -13,22 +13,21 @@ class GetDistrictMapper @Inject constructor() {
         val msg = response.keroPlacesGetDistrict.messageError.firstOrNull()
         val errorCode = response.keroPlacesGetDistrict.errorCode
         with(response.keroPlacesGetDistrict.data) {
-                return GetDistrictDataUiModel(
-                    title = this.title,
-                    formattedAddress = this.formattedAddress,
-                    districtName = this.districtName,
-                    provinceName = this.provinceName,
-                    cityName = this.cityName,
-                    latitude = this.latitude,
-                    longitude = this.longitude,
-                    districtId = this.districtId,
-                    postalCode = this.postalCode,
-                    cityId = this.cityId,
-                    provinceId = this.provinceId,
-                    errMessage = msg,
-                    errorCode = errorCode
+            return GetDistrictDataUiModel(
+                title = this.title,
+                formattedAddress = this.formattedAddress,
+                districtName = this.districtName,
+                provinceName = this.provinceName,
+                cityName = this.cityName,
+                latitude = this.latitude,
+                longitude = this.longitude,
+                districtId = this.districtId,
+                postalCode = this.postalCode,
+                cityId = this.cityId,
+                provinceId = this.provinceId,
+                errMessage = msg,
+                errorCode = errorCode
             )
         }
     }
-
 }

@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.content.common.model.TrackVisitChannelResponse
+import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXAuthor
@@ -19,7 +21,6 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.FeedXTrackViewerResponse
 import com.tokopedia.feedcomponent.data.pojo.PostUpcomingCampaign
 import com.tokopedia.feedcomponent.data.pojo.UpcomingCampaignResponse
-import com.tokopedia.feedcomponent.data.pojo.VisitChannelTracking
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Header
 import com.tokopedia.feedcomponent.data.pojo.shopmutation.FollowShop
@@ -31,7 +32,6 @@ import com.tokopedia.feedcomponent.domain.model.ResultItem
 import com.tokopedia.feedcomponent.domain.model.ShopCore
 import com.tokopedia.feedcomponent.domain.model.ShopFollowingEntity
 import com.tokopedia.feedcomponent.domain.model.ShopInfoById
-import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetFollowingUseCase
@@ -90,12 +90,15 @@ import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Shop
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -112,7 +115,7 @@ class FeedViewModelTest {
     private val testDispatcher = coroutineTestRule.dispatchers
 
     private val mockReport: SubmitReportContentUseCase = mockk(relaxed = true)
-    private val mockTrackChannel: FeedBroadcastTrackerUseCase = mockk(relaxed = true)
+    private val mockTrackChannel: TrackVisitChannelBroadcasterUseCase = mockk(relaxed = true)
     private val mockTrackViewer: FeedXTrackViewerUseCase = mockk(relaxed = true)
     private val mockLike: SubmitLikeContentUseCase = mockk(relaxed = true)
     private val mockDelete: SubmitActionContentUseCase = mockk(relaxed = true)
@@ -129,6 +132,13 @@ class FeedViewModelTest {
     private val mockFollowingUsecase: GetFollowingUseCase = mockk(relaxed = true)
 
     private val gqlFailed = MessageErrorException("ooPs")
+
+    @Before
+    fun setUp() {
+        mockkObject(PostUpcomingCampaignReminderUseCase) {
+            coEvery { PostUpcomingCampaignReminderUseCase.createParam(any(), any()) } returns RequestParams()
+        }
+    }
 
     /**
      * Send Report
@@ -194,7 +204,7 @@ class FeedViewModelTest {
     @Test
     fun `track visit channel - success`() {
         val expected =
-            VisitChannelTracking.Response(reportVisitChannelTracking = VisitChannelTracking(success = true))
+            TrackVisitChannelResponse.Response(model = TrackVisitChannelResponse(success = true))
 
         coEvery { mockTrackChannel.executeOnBackground() } returns expected
 
@@ -964,7 +974,7 @@ class FeedViewModelTest {
      */
 
     @Test
-    fun `set unset reminder - succes from gql`() {
+    fun `set unset reminder - success from gql`() {
         val expected = PostUpcomingCampaign(response = UpcomingCampaignResponse(success = true))
         coEvery { mockPostReminderCampaign.executeOnBackground() } returns expected
         create(

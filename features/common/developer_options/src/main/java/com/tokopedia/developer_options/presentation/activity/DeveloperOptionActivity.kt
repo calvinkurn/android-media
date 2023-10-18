@@ -15,6 +15,8 @@ import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.GsonBuilder
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
@@ -22,18 +24,26 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2.Companion.isCoachmmarkShowAllowed
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.developer_options.R
+import com.tokopedia.developer_options.branchlink.domain.BranchLinkUseCase
 import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionAdapter
 import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionDiffer
 import com.tokopedia.developer_options.presentation.adapter.typefactory.DeveloperOptionTypeFactoryImpl
+import com.tokopedia.developer_options.presentation.di.DaggerDevOptComponent
+import com.tokopedia.developer_options.presentation.di.DevOptModule
 import com.tokopedia.developer_options.presentation.viewholder.AccessTokenViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.BranchLinkViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.DevOptsAuthorizationViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.HomeAndNavigationRevampSwitcherViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.LoginHelperListener
 import com.tokopedia.developer_options.presentation.viewholder.ResetOnBoardingViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.ShopIdViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.UrlEnvironmentViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.UserIdViewHolder
 import com.tokopedia.developer_options.session.DevOptLoginSession
 import com.tokopedia.encryption.security.sha256
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.translator.manager.TranslatorManager
@@ -53,6 +63,7 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import javax.inject.Inject
 
 /**
  * @author Said Faisal on 24/11/2021
@@ -103,6 +114,7 @@ class DeveloperOptionActivity :
         const val EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
         const val DEPRECATED_API_SWITCHER_TOASTER_SP_NAME = "deprecated_switcher_toggle"
         const val DEPRECATED_API_SWITCHER_TOASTER_KEY = "deprecated_switcher_key"
+        const val PREF_KEY_FPI_MONITORING_POPUP = "fpi_monitoring_popup"
     }
 
     private var userSession: UserSession? = null
@@ -110,6 +122,10 @@ class DeveloperOptionActivity :
     private var sbDeveloperOption: SearchBarUnify? = null
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(this) }
     private val loginSession by lazy { DevOptLoginSession(this) }
+    private val gson by lazy { GsonBuilder().disableHtmlEscaping().create() }
+
+    @Inject
+    lateinit var branchLinkUseCase: BranchLinkUseCase
 
     private val adapter by lazy {
         DeveloperOptionAdapter(
@@ -119,7 +135,10 @@ class DeveloperOptionActivity :
                 urlEnvironmentListener = selectUrlEnvironment(),
                 homeAndNavigationRevampListener = homeAndNavigationListener(),
                 loginHelperListener = loginHelperListener(),
-                authorizeListener = this
+                authorizeListener = this,
+                branchListener = getBranchListener(),
+                userIdListener = userIdListener(),
+                shopIdListener = shopIdListener()
             ),
             differ = DeveloperOptionDiffer()
         )
@@ -128,6 +147,7 @@ class DeveloperOptionActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkDebuggingModeOrNot()
+        inject()
         autoAuthorized()
     }
 
@@ -176,6 +196,11 @@ class DeveloperOptionActivity :
     }
 
     override fun getScreenName(): String = getString(R.string.screen_name)
+
+    private fun inject() {
+        DaggerDevOptComponent.builder().baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .devOptModule(DevOptModule()).build().inject(this)
+    }
 
     private fun checkDebuggingModeOrNot() {
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -373,6 +398,39 @@ class DeveloperOptionActivity :
         }
     }
 
+    private fun userIdListener() = object : UserIdViewHolder.UserIdListener {
+        override fun onClickUserIdButton() {
+            userSession?.userId?.apply {
+                copyToClipboard(this)
+            }
+        }
+
+        override fun getUserId(): String = userSession?.userId.orEmpty()
+    }
+
+    private fun shopIdListener() = object : ShopIdViewHolder.ShopIdListener {
+        override fun onClickShopIdButton() {
+            userSession?.shopId?.apply {
+                copyToClipboard(this)
+            }
+        }
+
+        override fun getShopId(): String = userSession?.shopId.orEmpty()
+    }
+    private fun copyToClipboard(id: String) {
+        val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("Copied Id ", id)
+        clipboard.setPrimaryClip(clip)
+        showToaster(
+            String.format(
+                resources.getString(
+                    R.string.copy_id,
+                    id
+                ).toBlankOrString()
+            )
+        )
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
@@ -390,6 +448,38 @@ class DeveloperOptionActivity :
     private fun showToaster(message: String) {
         KeyboardHandler.hideSoftKeyboard(this)
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun getBranchListener(): BranchLinkViewHolder.BranchListener {
+        return object : BranchLinkViewHolder.BranchListener {
+            override fun onClick(link: String) {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        val response = branchLinkUseCase(link)
+                        val prettyJson = gson.toJson(response)
+                        withContext(Dispatchers.Main) {
+                            openResultBranch(prettyJson)
+                        }
+                    } catch (e: Exception) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(this@DeveloperOptionActivity, e.message, Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun openResultBranch(result: String) {
+        val dialog = Dialog(this, Dialog.Type.LONG_PROMINANCE)
+        dialog.setTitle("Result branch")
+        dialog.setDesc(result)
+        dialog.setDescMovementMethod()
+        dialog.setBtnCancel("Close")
+        dialog.setOnCancelClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 
     class DeveloperOptionException(message: String?) : RuntimeException(message)

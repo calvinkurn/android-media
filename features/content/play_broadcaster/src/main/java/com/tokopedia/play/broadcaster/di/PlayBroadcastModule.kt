@@ -7,22 +7,25 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.broadcaster.revamp.BroadcastManager
 import com.tokopedia.broadcaster.revamp.Broadcaster
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
+import com.tokopedia.byteplus.effect.EffectManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
-import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
-import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
+import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
+import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
+import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
 import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtilImpl
@@ -65,8 +68,10 @@ class PlayBroadcastModule(
 
     @ActivityRetainedScope
     @Provides
-    fun provideBroadcaster(): Broadcaster {
-        return BroadcastManager()
+    fun provideBroadcaster(
+        effectManager: EffectManager
+    ): Broadcaster {
+        return BroadcastManager(effectManager)
     }
 
     @Provides
@@ -110,13 +115,14 @@ class PlayBroadcastModule(
         setupMenuAnalytic: PlayBroSetupMenuAnalytic,
         setupTitleAnalytic: PlayBroSetupTitleAnalytic,
         setupCoverAnalytic: PlayBroSetupCoverAnalytic,
-        setupProductAnalytic: PlayBroSetupProductAnalytic,
+        setupProductAnalytic: ContentProductPickerSellerAnalytic,
         summaryAnalytic: PlayBroadcastSummaryAnalytic,
         scheduleAnalytic: PlayBroScheduleAnalytic,
-        pinProductAnalytic: PlayBroadcastPinProductAnalytic,
+        pinProductAnalytic: ContentPinnedProductAnalytic,
         accountAnalytic: PlayBroadcastAccountAnalytic,
         shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
         playBroadcastPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,
+        beautificationAnalytic: PlayBroadcastBeautificationAnalytic,
     ): PlayBroadcastAnalytic {
         return PlayBroadcastAnalytic(
             userSession,
@@ -131,6 +137,7 @@ class PlayBroadcastModule(
             accountAnalytic,
             shortsEntryPointAnalytic,
             playBroadcastPerformanceDashboardEntryPointAnalytic,
+            beautificationAnalytic,
         )
     }
 
@@ -148,8 +155,8 @@ class PlayBroadcastModule(
 
     @ActivityRetainedScope
     @Provides
-    fun providePlayBroadcastMapper(htmlTextTransformer: HtmlTextTransformer, uriParser: UriParser): PlayBroadcastMapper {
-        return PlayBroadcastUiMapper(htmlTextTransformer, uriParser)
+    fun providePlayBroadcastMapper(htmlTextTransformer: HtmlTextTransformer, uriParser: UriParser, assetChecker: AssetChecker): PlayBroadcastMapper {
+        return PlayBroadcastUiMapper(htmlTextTransformer, uriParser, assetChecker)
     }
 
     @ActivityRetainedScope

@@ -9,7 +9,11 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLay
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
+import com.tokopedia.product.detail.data.model.asUiModel
+import com.tokopedia.product.detail.data.model.bottom_sheet_edu.asUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
+import com.tokopedia.product.detail.data.model.shop_review.asUiModel
+import com.tokopedia.product.detail.data.model.social_proof.asUiModel
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.usecase.GetPdpLayoutUseCaseTest
@@ -39,7 +43,7 @@ object ProductDetailTestUtil {
 
     fun getMockP2Data(): ProductInfoP2UiData {
         val mockData: ProductInfoP2Data.Response = createMockGraphqlSuccessResponse(MOCK_P2_DATA_UT_VIEW_MODEL, ProductInfoP2Data.Response::class.java)
-        return mapP2DataIntoUiData(mockData.response)
+        return mockData.response.asUiModel()
     }
 
     fun getMockPdpLayout(): ProductDetailDataModel {
@@ -62,40 +66,6 @@ object ProductDetailTestUtil {
             getJsonFromFile(jsonLocation),
             typeOfClass
         ) as T
-    }
-
-    private fun mapP2DataIntoUiData(responseData: ProductInfoP2Data): ProductInfoP2UiData {
-        val p2UiData = ProductInfoP2UiData()
-        responseData.run {
-            p2UiData.shopInfo = responseData.shopInfo
-            p2UiData.shopSpeed = shopSpeed.hour
-            p2UiData.shopChatSpeed = shopChatSpeed.messageResponseTime
-            p2UiData.shopRating = shopRating.ratingScore
-            p2UiData.productView = productView
-            p2UiData.wishlistCount = wishlistCount
-            p2UiData.shopBadge = shopBadge.badge
-            p2UiData.shopCommitment = shopCommitment.shopCommitment
-            p2UiData.productPurchaseProtectionInfo = productPurchaseProtectionInfo
-            p2UiData.validateTradeIn = validateTradeIn
-            p2UiData.cartRedirection = cartRedirection.data.associateBy({ it.productId }, { it })
-            p2UiData.nearestWarehouseInfo = nearestWarehouseInfo.associateBy({ it.productId }, { it.warehouseInfo })
-            p2UiData.upcomingCampaigns = upcomingCampaigns.associateBy { it.productId ?: "" }
-            p2UiData.productFinancingRecommendationData = productFinancingRecommendationData
-            p2UiData.productFinancingCalculationData = productFinancingCalculationData
-            p2UiData.ratesEstimate = ratesEstimate
-            p2UiData.restrictionInfo = restrictionInfo
-            p2UiData.bebasOngkir = bebasOngkir
-            p2UiData.uspImageUrl = uspTokoCabangData.uspBoe.uspIcon
-            p2UiData.merchantVoucherSummary = merchantVoucherSummary
-            p2UiData.helpfulReviews = mostHelpFulReviewData.list
-            p2UiData.imageReview = DynamicProductDetailMapper.generateImageReview(reviewImage)
-            p2UiData.alternateCopy = cartRedirection.alternateCopy
-            p2UiData.rating = rating
-            p2UiData.ticker = ticker
-            p2UiData.shopFinishRate = responseData.shopFinishRate.finishRate
-            p2UiData.arInfo = arInfo
-        }
-        return p2UiData
     }
 
     private fun mapIntoModel(data: PdpGetLayout): ProductDetailDataModel {

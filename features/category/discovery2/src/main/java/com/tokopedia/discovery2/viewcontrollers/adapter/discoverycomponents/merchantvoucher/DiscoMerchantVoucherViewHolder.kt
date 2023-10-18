@@ -20,75 +20,88 @@ import com.tokopedia.user.session.UserSession
 
 class DiscoMerchantVoucherViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
-    private lateinit var discoMerchantVoucherViewModel: DiscoMerchantVoucherViewModel
+    private var discoMerchantVoucherViewModel: DiscoMerchantVoucherViewModel? = null
     private val mvcView: MvcView = itemView.findViewById(R.id.disco_single_mv)
     private val shimmer: LoaderUnify = itemView.findViewById(R.id.shimmer_view)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         discoMerchantVoucherViewModel = discoveryBaseViewModel as DiscoMerchantVoucherViewModel
-        getSubComponent().inject(discoMerchantVoucherViewModel)
-        if(UserSession(fragment.context).isLoggedIn) {
+        discoMerchantVoucherViewModel?.let {
+            getSubComponent().inject(it)
+        }
+        if (UserSession(fragment.context).isLoggedIn) {
             shimmer.show()
             discoveryBaseViewModel.fetchDataForCoupons()
-        }else{
+        } else {
             shimmer.hide()
             mvcView.hide()
         }
     }
 
     private fun sendImpressionTracking(data: MvcData) {
+        discoMerchantVoucherViewModel?.let { discoMerchantVoucherViewModel ->
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
                 .trackSingleMerchantVoucherImpression(
                     discoMerchantVoucherViewModel.components,
                     discoMerchantVoucherViewModel.getShopID(),
                     UserSession(fragment.context).userId,
                     discoMerchantVoucherViewModel.position,
-                    Utils.extractFromHtml(data.animatedInfoList?.firstOrNull()?.title))
+                    Utils.extractFromHtml(data.animatedInfoList?.firstOrNull()?.title)
+                )
+        }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { owner ->
-            discoMerchantVoucherViewModel.mvcData.observe(owner, {
-                shimmer.hide()
-                mvcView.show()
-                mvcView.setData(
-                    it, discoMerchantVoucherViewModel.getShopID(), MvcSource.DISCO,
-                    {
-                        (fragment as DiscoveryFragment).startMVCTransparentActivity(
-                            discoMerchantVoucherViewModel.position,
-                            discoMerchantVoucherViewModel.getShopID(),
-                            discoMerchantVoucherViewModel.getProductId(),
-                            it.hashCode()
-                        )
-                    },
-                    mvcTrackerImpl = getAnalytics(it.animatedInfoList?.firstOrNull()?.title)
-                )
-                sendImpressionTracking(it)
-            })
-            discoMerchantVoucherViewModel.errorState.observe(owner, {
-                if (it) {
+            discoMerchantVoucherViewModel?.let { discoMerchantVoucherViewModel ->
+                discoMerchantVoucherViewModel.mvcData.observe(owner) {
                     shimmer.hide()
-                    mvcView.hide()
+                    mvcView.show()
+                    getAnalytics(it.animatedInfoList?.firstOrNull()?.title)?.let { analytics ->
+                        mvcView.setData(
+                            it,
+                            discoMerchantVoucherViewModel.getShopID(),
+                            MvcSource.DISCO,
+                            {
+                                (fragment as DiscoveryFragment).startMVCTransparentActivity(
+                                    discoMerchantVoucherViewModel.position,
+                                    discoMerchantVoucherViewModel.getShopID(),
+                                    discoMerchantVoucherViewModel.getProductId(),
+                                    it.hashCode()
+                                )
+                            },
+                            mvcTrackerImpl = analytics
+                        )
+                    }
+                    sendImpressionTracking(it)
                 }
-            })
+                discoMerchantVoucherViewModel.errorState.observe(owner) {
+                    if (it) {
+                        shimmer.hide()
+                        mvcView.hide()
+                    }
+                }
+            }
         }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            discoMerchantVoucherViewModel.mvcData.removeObservers(it)
-            discoMerchantVoucherViewModel.errorState.removeObservers(it)
+            discoMerchantVoucherViewModel?.mvcData?.removeObservers(it)
+            discoMerchantVoucherViewModel?.errorState?.removeObservers(it)
         }
     }
 
-    private fun getAnalytics(couponName: String?): DiscoMerchantAnalytics {
-        return DiscoMerchantAnalytics(
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics(),
-            discoMerchantVoucherViewModel.components,
-            discoMerchantVoucherViewModel.position,
-            Utils.extractFromHtml(couponName)
-        )
+    private fun getAnalytics(couponName: String?): DiscoMerchantAnalytics? {
+        return discoMerchantVoucherViewModel?.let {
+            DiscoMerchantAnalytics(
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics(),
+                it.components,
+                it.position,
+                Utils.extractFromHtml(couponName)
+            )
+        }
     }
 }

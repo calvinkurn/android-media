@@ -6,17 +6,19 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.databinding.EntLayoutViewholderEventLocationAdaperItemBinding
+import com.tokopedia.entertainment.databinding.EntLayoutViewholderEventLocationBinding
 import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemLocationModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventLocationModel
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import kotlinx.android.synthetic.main.ent_layout_viewholder_event_location.view.*
-import kotlinx.android.synthetic.main.ent_layout_viewholder_event_location_adaper_item.view.*
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Author errysuprayogi on 27,January,2020
@@ -26,9 +28,10 @@ class EventLocationEventViewHolder(itemView: View,
     : AbstractViewHolder<EventLocationModel>(itemView) {
 
     var itemAdapter = InnerItemAdapter(locationListener)
+    private val binding: EntLayoutViewholderEventLocationBinding? by viewBinding()
 
     init {
-        itemView.ent_recycle_view_location.apply {
+        binding?.entRecycleViewLocation?.run {
             layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
             adapter = itemAdapter
         }
@@ -42,39 +45,48 @@ class EventLocationEventViewHolder(itemView: View,
         @LayoutRes
         @kotlin.jvm.JvmField
         var LAYOUT: Int = R.layout.ent_layout_viewholder_event_location
-        val TAG = EventLocationEventViewHolder::class.java.simpleName
     }
 
-    class InnerItemAdapter(val locationListener: TrackingListener) : RecyclerView.Adapter<InnerViewHolder>() {
+    class InnerItemAdapter(private val locationListener: TrackingListener) : RecyclerView.Adapter<InnerViewHolder>() {
 
         lateinit var items: List<EventItemLocationModel>
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InnerViewHolder {
-            val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.ent_layout_viewholder_event_location_adaper_item, parent, false)
-            return InnerViewHolder(view)
+            val binding = EntLayoutViewholderEventLocationAdaperItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+            return InnerViewHolder(binding, locationListener, items)
         }
 
         override fun onBindViewHolder(holder: InnerViewHolder, position: Int) {
-            var item = items.get(position)
-            Glide.with(holder.view).load(item.imageUrl).into(holder.view.image)
-            holder.view.txt_title.text = item.title
-            holder.view.txt_subtitle.text = item.tagline
-            holder.view.addOnImpressionListener(item, {
-                locationListener.impressionLocationEvent(item, items,
-                        position + 1)
-            })
-            holder.view.setOnClickListener {
-                locationListener.clickLocationEvent(item, items,
-                        position + 1)
-                RouteManager.route(holder.view.context,
-                        ApplinkConstInternalEntertainment.EVENT_CATEGORY, "", item.id, item.title)
-            }
+            return holder.bind(items[position])
         }
 
         override fun getItemCount() = items.size
     }
 
-    class InnerViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+    class InnerViewHolder(private val binding: EntLayoutViewholderEventLocationAdaperItemBinding, val locationListener: TrackingListener, var items: List<EventItemLocationModel>) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: EventItemLocationModel) {
+            with(binding) {
+                image.loadImage(item.imageUrl)
+                txtTitle.text = item.title
+                txtSubtitle.text = item.tagline
+                root.addOnImpressionListener(item) {
+                    locationListener.impressionLocationEvent(
+                        item, items,
+                        position + Int.ONE
+                    )
+                }
+                root.setOnClickListener {
+                    locationListener.clickLocationEvent(item, items,
+                        position + Int.ONE)
+                    RouteManager.route(root.context,
+                        ApplinkConstInternalEntertainment.EVENT_CATEGORY, "", item.id, item.title)
+                }
+            }
+        }
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.pdp.fintech.view
 
 import android.content.Context
+import android.text.Html
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.annotation.AttrRes
@@ -41,10 +42,11 @@ class PdpFintechWidget @JvmOverloads constructor(
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
 
-    private var idToPriceMap = HashMap<String, FintechPriceDataModel>()
+    private var idToPriceUrlMap = HashMap<String, FintechPriceURLDataModel>()
     private var priceToChip = HashMap<String, ArrayList<ChipsData>>()
     private var categoryId: String? = null
     private var productID: String? = ""
+    private var parentId: String = ""
     private var productPrice: String? = ""
     private val NOT_BRANDER_CHIPS = "NON BRANDED"
     private val BRANDER_CHIPS = "BRANDED"
@@ -68,7 +70,6 @@ class PdpFintechWidget @JvmOverloads constructor(
         initInjector()
         initView()
         initRecycler()
-
     }
 
 
@@ -101,7 +102,7 @@ class PdpFintechWidget @JvmOverloads constructor(
     private fun onSuccessData(it: Success<WidgetDetail>) {
         setPriceToChipMap(it.data)
         updateTestForChip(it.data)
-        getChipDataAndUpdate(idToPriceMap[productID]?.price)
+        getChipDataAndUpdate(idToPriceUrlMap[productID]?.price)
     }
 
     private fun updateTestForChip(widgetDetail: WidgetDetail) {
@@ -128,8 +129,11 @@ class PdpFintechWidget @JvmOverloads constructor(
         if(Utils.safeLet(listOfAllChecker) == true) {
             binding.pdpFintechWidgetSeeMore.setOnClickListener {
                 routeToPdp(
-                    returnRouteObject(chipsData)
-                    )
+                    returnRouteObject(chipsData).also { data ->
+                        data.categoryId = categoryId.orEmpty()
+                        data.parentId = parentId
+                    }
+                )
             }
         }
     }
@@ -156,6 +160,8 @@ class PdpFintechWidget @JvmOverloads constructor(
             override fun clickedWidget(
                 fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass
             ) {
+                fintechRedirectionWidgetDataClass.categoryId = categoryId.orEmpty()
+                fintechRedirectionWidgetDataClass.parentId = parentId
                 routeToPdp(fintechRedirectionWidgetDataClass)
             }
 
@@ -179,6 +185,7 @@ class PdpFintechWidget @JvmOverloads constructor(
                     fintechRedirectionWidgetDataClass.gatewayCode,
                     rediretionLink,
                     fintechRedirectionWidgetDataClass.promoName,
+                    fintechRedirectionWidgetDataClass.subtitle
                 )
             )
         else
@@ -192,6 +199,7 @@ class PdpFintechWidget @JvmOverloads constructor(
                     fintechRedirectionWidgetDataClass.gatewayCode,
                     rediretionLink,
                     fintechRedirectionWidgetDataClass.promoName,
+                    fintechRedirectionWidgetDataClass.subtitle
                 )
             )
     }
@@ -223,16 +231,17 @@ class PdpFintechWidget @JvmOverloads constructor(
         fintechWidgetViewHolder: ProductUpdateListner,
         loggedIn: Boolean,
         shopID: String,
+        parentId: String
     ) {
         try {
             if (this.productID == productID && this.logInStatus == loggedIn && priceToChip.isNotEmpty()) {
-                if (idToPriceMap[productID] != null)
-                    getChipDataAndUpdate(idToPriceMap[productID]?.price)
+                if (idToPriceUrlMap[productID] != null)
+                    getChipDataAndUpdate(idToPriceUrlMap[productID]?.price)
                 else
-                    getDetailFromApi(productID, fintechWidgetViewHolder, shopID)
+                    getDetailFromApi(productID, fintechWidgetViewHolder, shopID, parentId)
             } else {
 
-                getDetailFromApi(productID, fintechWidgetViewHolder, shopID)
+                getDetailFromApi(productID, fintechWidgetViewHolder, shopID, parentId)
             }
         } catch (e: Exception) {
             instanceProductUpdateListner?.removeWidget()
@@ -245,14 +254,17 @@ class PdpFintechWidget @JvmOverloads constructor(
         productID: String,
         fintechWidgetViewHolder: ProductUpdateListner,
         shopID: String,
+        parentId: String
     ) {
         this.productID = productID
+        this.parentId = parentId
         this.instanceProductUpdateListner = fintechWidgetViewHolder
         categoryId?.let {
             fintechWidgetViewModel.getWidgetData(
                 it,
-                idToPriceMap,
+                idToPriceUrlMap,
                 shopID,
+                parentId
             )
         }
     }
@@ -284,7 +296,8 @@ class PdpFintechWidget @JvmOverloads constructor(
                         chipList[i].userStatus ?: "",
                         NOT_BRANDER_CHIPS,
                         chipList[i].productCode ?: "",
-                        chipList[i].promoName
+                        chipList[i].promoName,
+                        chipList[i].subheader
                     )
                 )
             else
@@ -295,7 +308,8 @@ class PdpFintechWidget @JvmOverloads constructor(
                         chipList[i].userStatus ?: "",
                         BRANDER_CHIPS,
                         chipList[i].productCode ?: "",
-                        chipList[i].promoName
+                        chipList[i].promoName,
+                        chipList[i].subheader
                     )
                 )
 
@@ -304,21 +318,24 @@ class PdpFintechWidget @JvmOverloads constructor(
     }
 
     fun updateIdToPriceMap(
-        productIdToPrice: HashMap<String, FintechPriceDataModel>,
+        productIdToPrice: HashMap<String, FintechPriceURLDataModel>,
         productCategoryId: String?
 
     ) {
-        idToPriceMap = productIdToPrice
+        idToPriceUrlMap = productIdToPrice
         categoryId = productCategoryId
     }
 
     companion object {
         const val ACTIVATION_LINKINING_FLOW = 2
         const val LIHAT_SEMU_GATEWAY_ID = "0"
+        const val PARAM_PARENT_ID = "parentId"
+        const val PARAM_CATEGORY_ID = "categoryId"
     }
 
 }
 
-data class FintechPriceDataModel(
-    var price: String? = null
+data class FintechPriceURLDataModel(
+    var price: String? = null,
+    var url: String
 )

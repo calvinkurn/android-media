@@ -1,9 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
-import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.productbundlewidget.listener.ProductBundleWidgetListener
@@ -11,12 +9,14 @@ import com.tokopedia.productbundlewidget.model.*
 import com.tokopedia.productbundlewidget.presentation.ProductBundleWidgetView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
 import com.tokopedia.shop.databinding.ItemShopHomeProductBundleParentWidgetBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.utils.view.binding.viewBinding
@@ -27,7 +27,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ShopHomeProductBundleParentWidgetViewHolder(
     itemView: View,
     private val multipleProductBundleListener: MultipleProductBundleListener,
-    private val singleProductBundleListener: SingleProductBundleListener
+    private val singleProductBundleListener: SingleProductBundleListener,
+    shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeProductBundleListUiModel>(itemView), ProductBundleWidgetListener {
 
     companion object {
@@ -54,6 +55,9 @@ class ShopHomeProductBundleParentWidgetViewHolder(
     }
 
     override fun bind(element: ShopHomeProductBundleListUiModel) {
+        val isFestivity = element.isFestivity
+        val isOverrideWidgetTheme = element.header.isOverrideTheme
+
         bundleListUiModel = element
         shopId = element.productBundleList.firstOrNull()?.shopId.orEmpty()
         warehouseId = element.productBundleList.firstOrNull()?.warehouseId.orEmpty()
@@ -70,30 +74,34 @@ class ShopHomeProductBundleParentWidgetViewHolder(
             .setWidgetType(WidgetType.TYPE_1)
             .setPageSource(ShopPageConstant.SOURCE)
             .build()
-        setBundlingWidgetRvMarginTop()
         productBundleWidgetView?.setListener(this)
         productBundleWidgetView?.setTitleText(bundleWidgetTitle)
         productBundleWidgetView?.getBundleData(param)
-        checkFestivity(element)
+        productBundleWidgetView?.setIsOverrideWidgetTheme(isOverrideWidgetTheme)
+        productBundleWidgetView?.setBundlingCarouselTopMargin(BUNDLE_RV_MARGIN_TOP.dpToPx().toInt())
+
+        checkFestivity(isFestivity = isFestivity)
+        configColorTheme(
+            isFestivity = isFestivity,
+            isOverrideWidgetTheme = isOverrideWidgetTheme,
+            colorSchema = element.header.colorSchema
+        )
     }
 
-    private fun setBundlingWidgetRvMarginTop() {
-        productBundleWidgetView?.findViewById<RecyclerView>(R.id.rv_bundles).apply {
-            val params = this?.layoutParams as? LinearLayout.LayoutParams
-            params?.setMargins(
-                params.leftMargin,
-                BUNDLE_RV_MARGIN_TOP.dpToPx().toInt(),
-                params.rightMargin,
-                params.bottomMargin
-            )
-            if(params != null){
-                this?.layoutParams = params
+    private fun configColorTheme(isFestivity: Boolean, isOverrideWidgetTheme: Boolean, colorSchema: ShopPageColorSchema) {
+        if (isFestivity) {
+            configFestivity()
+        } else {
+            if (isOverrideWidgetTheme) {
+                configReimaginedColor(colorSchema)
+            } else {
+                configNonFestivity()
             }
         }
     }
 
-    private fun checkFestivity(element: ShopHomeProductBundleListUiModel) {
-        if (element.isFestivity) {
+    private fun checkFestivity(isFestivity: Boolean) {
+        if (isFestivity) {
             configFestivity()
         } else {
             configNonFestivity()
@@ -108,6 +116,11 @@ class ShopHomeProductBundleParentWidgetViewHolder(
     private fun configNonFestivity() {
         val defaultTitleColorRes = com.tokopedia.unifyprinciples.R.color.Unify_NN950
         productBundleWidgetView?.setTitleTextColor(defaultTitleColorRes)
+    }
+
+    private fun configReimaginedColor(colorSchema: ShopPageColorSchema) {
+        val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        productBundleWidgetView?.setTitleTextColor(titleColor)
     }
 
     override fun onBundleProductClicked(

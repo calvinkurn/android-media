@@ -85,7 +85,7 @@ class CarouselFeaturedShopViewHolder (
     @SuppressLint("ResourcePackage")
     private fun setImageShop(imageUrl:String){
         binding?.featuredShopProductImage?.show()
-        binding?.featuredShopProductImage?.loadImageNoRounded(imageUrl, R.drawable.placeholder_grey)
+        binding?.featuredShopProductImage?.loadImageNoRounded(imageUrl, com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
     }
 
     private fun setTopAds(isTopAds: Boolean){

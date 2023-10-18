@@ -1,0 +1,147 @@
+{
+  "TokonowCategoryDetail": {
+    "header": {
+      "process_time": 0.005186419,
+      "messages": [],
+      "reason": "",
+      "error_code": "0"
+    },
+    "data": {
+      "id": "4858",
+      "name": "Sayur \u0026 Buah Segar",
+      "url": "https://www.tokopedia.com/now/category/sayur-buah-segar",
+      "applinks": "tokopedia://now/category/4858",
+      "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2022/6/8/064a4248-238c-4c6b-887a-6de297c73578.jpg",
+      "color": "#FFFAE6",
+      "child": [
+        {
+          "id": "4859",
+          "name": "Aneka Sayuran",
+          "url": "https://www.tokopedia.com/now/category/sayur-buah-segar/aneka-sayuran",
+          "applinks": "tokopedia://now/category/4858/4859",
+          "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2021/7/7/a80f19e4-9a7e-4dae-8be4-732d0353fd6d.png",
+          "isKyc": false,
+          "isAdult": 0,
+          "minAge": 0,
+          "color": "#FFFAE6"
+        },
+        {
+          "id": "4826",
+          "name": "Bawang ",
+          "url": "https://www.tokopedia.com/now/category/sayur-buah-segar/bawang",
+          "applinks": "tokopedia://now/category/4858/4826",
+          "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2021/7/7/756050bc-045b-46d9-9994-ded115f6b534.png",
+          "isKyc": false,
+          "isAdult": 0,
+          "minAge": 0,
+          "color": "#FFFAE6"
+        },
+        {
+          "id": "4860",
+          "name": "Buah-buahan",
+          "url": "https://www.tokopedia.com/now/category/sayur-buah-segar/buah-buahan",
+          "applinks": "tokopedia://now/category/4858/4860",
+          "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2021/7/7/e9e12971-6999-422d-9543-3a10e01812c7.png",
+          "isKyc": false,
+          "isAdult": 0,
+          "minAge": 0,
+          "color": "#FFFAE6"
+        },
+        {
+          "id": "4863",
+          "name": "Jamur",
+          "url": "https://www.tokopedia.com/now/category/sayur-buah-segar/jamur",
+          "applinks": "tokopedia://now/category/4858/4863",
+          "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2021/7/7/8d9ebb5a-116d-4d25-9850-2e68ecf443db.png",
+          "isKyc": false,
+          "isAdult": 0,
+          "minAge": 0,
+          "color": "#FFFAE6"
+        },
+        {
+          "id": "4865",
+          "name": "Paket Sayur",
+          "url": "https://www.tokopedia.com/now/category/sayur-buah-segar/paket-sayur",
+          "applinks": "tokopedia://now/category/4858/4865",
+          "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2021/7/7/5a47d6eb-1db4-4719-94ff-a010df3eb29b.png",
+          "isKyc": false,
+          "isAdult": 0,
+          "minAge": 0,
+          "color": "#FFFAE6"
+        },
+        {
+          "id": "4948",
+          "name": "Rempah",
+          "url": "https://www.tokopedia.com/now/category/sayur-buah-segar/rempah",
+          "applinks": "tokopedia://now/category/4858/4948",
+          "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2021/7/7/8630c38f-441c-437f-a293-23fe8dc118d1.png",
+          "isKyc": false,
+          "isAdult": 0,
+          "minAge": 0,
+          "color": "#FFFAE6"
+        },
+        {
+          "id": "4864",
+          "name": "Tahu \u0026 Tempe",
+          "url": "https://www.tokopedia.com/now/category/sayur-buah-segar/tahu-tempe",
+          "applinks": "tokopedia://now/category/4858/4864",
+          "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2021/7/7/17f9a6c8-0c17-48de-b0fe-6c588a9cf2d8.png",
+          "isKyc": false,
+          "isAdult": 0,
+          "minAge": 0,
+          "color": "#FFFAE6"
+        }
+      ],
+      "recommendation": [
+        {
+          "id": "4681",
+          "name": "Snack \u0026 Es Krim",
+          "url": "https://www.tokopedia.com/now/category/snack-es-krim",
+          "applinks": "tokopedia://now/category/4681",
+          "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2022/3/2/b07973b6-0cf0-44e2-8a9a-0e484c9469b7.jpg",
+          "color": "#FFFAE6"
+        },
+        {
+          "id": "5028",
+          "name": "Minuman",
+          "url": "https://www.tokopedia.com/now/category/minuman",
+          "applinks": "tokopedia://now/category/5028",
+          "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2022/3/2/718a7fa1-ee5d-4748-9b0c-105022bdc2e3.jpg",
+          "color": "#EBFFFE"
+        },
+        {
+          "id": "4666",
+          "name": "Mie, Pasta \u0026 Bihun",
+          "url": "https://www.tokopedia.com/now/category/mie-pasta-bihun",
+          "applinks": "tokopedia://now/category/4666",
+          "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2022/3/2/4089cc1e-dae0-4723-a660-3c23f78a7ba2.jpg",
+          "color": "#FBF4FF"
+        },
+        {
+          "id": "4652",
+          "name": "Daging \u0026 Seafood",
+          "url": "https://www.tokopedia.com/now/category/daging-seafood",
+          "applinks": "tokopedia://now/category/4652",
+          "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2022/3/2/b7e38c83-be98-45b4-87cd-99977f704727.jpg",
+          "color": "#EBFFFE"
+        }
+      ],
+      "navigation": {
+        "prev": {
+          "id": "5338",
+          "name": "Produk Dewasa",
+          "url": "https://www.tokopedia.com/now/category/produk-dewasa",
+          "applinks": "tokopedia://now/category/5338",
+          "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2022/7/28/a3f94a26-8425-4c78-9cb8-f8decbea8253.jpg"
+        },
+        "next": {
+          "id": "4807",
+          "name": "Bumbu Masakan",
+          "url": "https://www.tokopedia.com/now/category/bumbu-masakan",
+          "applinks": "tokopedia://now/category/4807",
+          "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2022/3/2/5a2b07fe-1101-49e9-b0d6-7007a3277fb2.jpg"
+        }
+      }
+    }
+  }
+}

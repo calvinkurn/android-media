@@ -14,11 +14,11 @@ import com.tokopedia.tokochat.domain.response.message_data.TokoChatMessageWrappe
 import com.tokopedia.tokochat.util.TokoChatValueUtil.CENSOR_TEXT
 import com.tokopedia.tokochat.util.TokoChatValueUtil.PICTURE
 import com.tokopedia.tokochat.util.TokoChatValueUtil.VOICE_NOTES
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatHeaderDateUiModel
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatImageBubbleUiModel
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleCensorUiModel
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleUiModel
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatReminderTickerUiModel
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatHeaderDateUiModel
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatImageBubbleUiModel
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatMessageBubbleCensorUiModel
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatMessageBubbleUiModel
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatReminderTickerUiModel
 import java.util.*
 import javax.inject.Inject
 
@@ -29,9 +29,14 @@ class TokoChatConversationUiMapper @Inject constructor(
     private val gson = GsonBuilder().create()
 
     private var firstTicker: TokoChatReminderTickerUiModel? = null
+    private var bubbleTicker: TokoChatReminderTickerUiModel? = null
 
     fun setFirstTicker(reminderTickerUiModel: TokoChatReminderTickerUiModel?) {
         firstTicker = reminderTickerUiModel
+    }
+
+    fun setBubbleTicker(reminderTickerUiModel: TokoChatReminderTickerUiModel?) {
+        bubbleTicker = reminderTickerUiModel
     }
 
     fun mapToChatUiModel(
@@ -112,6 +117,9 @@ class TokoChatConversationUiMapper @Inject constructor(
 
         firstTicker?.let {
             resultList.add(resultList.size, it)
+        }
+        bubbleTicker?.let {
+            resultList.add(Int.ZERO, it)
         }
         return resultList
     }

@@ -284,7 +284,7 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
                 val drawable = getIconUnifyDrawable(
                     context,
                     com.tokopedia.iconunify.R.drawable.iconunify_information,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
                 spStatusInfoIcon!!.setImageDrawable(drawable)
                 spKYCStatusLayout!!.background =
@@ -293,7 +293,7 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
                 val drawable = getIconUnifyDrawable(
                     context,
                     com.tokopedia.iconunify.R.drawable.iconunify_information,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Y300
+                    com.tokopedia.unifyprinciples.R.color.Unify_YN300
                 )
                 spStatusInfoIcon!!.setImageDrawable(drawable)
                 spKYCStatusLayout!!.background =
@@ -302,7 +302,7 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
                 val drawable = getIconUnifyDrawable(
                     context,
                     com.tokopedia.iconunify.R.drawable.iconunify_information,
-                    com.tokopedia.unifyprinciples.R.color.Unify_R200
+                    com.tokopedia.unifyprinciples.R.color.Unify_RN200
                 )
                 spStatusInfoIcon!!.setImageDrawable(drawable)
                 spKYCStatusLayout!!.background =
@@ -337,7 +337,7 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
                     anchorLabel.setTextColor(Color.parseColor(gqlAnchorListResponse.color))
                 } catch (e: Exception) {
                     context?.let { context ->
-                        anchorLabel.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                        anchorLabel.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                     }
                 }
 

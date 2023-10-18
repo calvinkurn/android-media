@@ -3,7 +3,6 @@ package com.tokopedia.checkout.data.model.response.shipmentaddressform
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.checkout.data.model.response.dynamicdata.ShipmentDynamicDataPassing
 import com.tokopedia.checkout.data.model.response.egold.EgoldAttributes
-import com.tokopedia.checkout.data.model.response.platformfee.ShipmentPlatformFee
 import com.tokopedia.purchase_platform.common.feature.coachmarkplus.CoachmarkPlusResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.ImageUploadResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopUp
@@ -51,8 +50,6 @@ data class ShipmentAddressFormDataResponse(
     val campaignTimer: CampaignTimer = CampaignTimer(),
     @SerializedName("addresses")
     val addresses: Addresses = Addresses(),
-    @SerializedName("disabled_features_detail")
-    val disabledFeaturesDetail: DisabledFeaturesDetail = DisabledFeaturesDetail(),
     @SerializedName("promo")
     val promoSAFResponse: PromoSAFResponse = PromoSAFResponse(),
     @SerializedName("open_prerequisite_site")
@@ -78,5 +75,7 @@ data class ShipmentAddressFormDataResponse(
     @SerializedName("dynamic_data_passing")
     val dynamicDataPassing: ShipmentDynamicDataPassing = ShipmentDynamicDataPassing(),
     @SerializedName("platform_fee")
-    val shipmentPlatformFee: ShipmentPlatformFee = ShipmentPlatformFee()
+    val shipmentPlatformFee: ShipmentPlatformFee = ShipmentPlatformFee(),
+    @SerializedName("add_ons_summary")
+    val listSummaryAddOns: List<ShipmentSummaryAddOn> = emptyList()
 )

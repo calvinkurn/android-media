@@ -11,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
@@ -84,12 +85,10 @@ class ComposeMessageAreaConstraintLayout : ConstraintLayout, LifecycleObserver {
     }
 
     private fun setDefaultComposeBackground() {
-        val paddingStart =
-            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7).toInt()
-        val paddingEnd =
-            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8).toInt()
-        val paddingTop = resources.getDimension(R.dimen.dp_topchat_11).toInt()
-        val paddingBottom = resources.getDimension(R.dimen.dp_topchat_10).toInt()
+        val paddingStart = 12.dpToPx(resources.displayMetrics)
+        val paddingEnd = 48.dpToPx(resources.displayMetrics)
+        val paddingTop = 10.dpToPx(resources.displayMetrics)
+        val paddingBottom = 10.dpToPx(resources.displayMetrics)
         composeArea?.background = bgComposeArea
         composeArea?.setPadding(paddingStart, paddingTop, paddingEnd, paddingBottom)
     }

@@ -50,7 +50,7 @@ class InspirationCarouselOptionGridBannerViewHolder(
 
     private fun renderBackgroundColor() {
         binding?.optionGridCardViewConstraintLayout?.background = ColorDrawable(
-                MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         )
     }
 

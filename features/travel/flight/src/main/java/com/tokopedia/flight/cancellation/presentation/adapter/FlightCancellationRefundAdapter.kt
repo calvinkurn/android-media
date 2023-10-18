@@ -34,7 +34,7 @@ class FlightCancellationRefundAdapter : RecyclerView.Adapter<FlightCancellationR
     inner class ViewHolder(val binding: ItemFlightCancellationRefundBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(description: FlightCancellationRefundModel) {
-            val color = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+            val color = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
             val fullText = description.title + ", " + description.subtitle
             val startIndex = fullText.indexOf(description.subtitle)
             val stopIndex = fullText.length

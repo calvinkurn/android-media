@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <gradient android:startColor="@color/Unify_N0" android:endColor="@color/Unify_B100" android:angle="270"/>
+    <gradient android:startColor="@color/Unify_NN0" android:endColor="@color/Unify_BN50" android:angle="270"/>
     <corners android:topRightRadius="@dimen/spacing_lvl3" android:topLeftRadius="@dimen/spacing_lvl3"/>
 </shape>

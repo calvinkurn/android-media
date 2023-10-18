@@ -4,7 +4,7 @@
     <item android:id="@android:id/background">
         <shape>
             <corners android:radius="8dp"/>
-            <solid android:color="@color/Unify_N75"/>
+            <solid android:color="@color/Unify_NN50"/>
         </shape>
     </item>
 <!--Define the progress properties like start color, end color etc-->
@@ -12,7 +12,7 @@
         <clip>
             <shape>
                 <corners android:radius="8dp"/>
-                <solid android:color="@color/Unify_R500"/>
+                <solid android:color="@color/Unify_RN500"/>
             </shape>
         </clip>
     </item>

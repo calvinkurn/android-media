@@ -61,7 +61,10 @@ object UserProfileVideoMapper {
             partner = PlayWidgetPartnerUiModel(
                 id = item.partner.id,
                 name = item.partner.name,
-                type = PartnerType.getTypeByValue(item.partner.name)
+                type = PartnerType.getTypeByValue(item.partner.name),
+                avatarUrl = "",
+                badgeUrl = "",
+                appLink = "",
             ),
             video = PlayWidgetVideoUiModel(item.id, item.isLive, item.coverUrl, item.webLink),
             channelType = channelType,
@@ -76,6 +79,7 @@ object UserProfileVideoMapper {
                 PlayWidgetChannelType.getByValue(channelTypeTransitionPrev),
                 PlayWidgetChannelType.getByValue(channelTypeTransitionNext),
             ),
+            products = emptyList(),
         )
     }
 }

@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-parcelize'
 
 buildscript {
     repositories {
@@ -15,8 +16,11 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.topads.sdk'
+    testNamespace 'com.tokopedia.topads.sdk.test'
     buildFeatures {
         buildConfig true
+        viewBinding true
     }
 }
 
@@ -28,7 +32,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation rootProject.ext.firebase.core
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
@@ -65,6 +69,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.viewAllCard
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
@@ -73,10 +78,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 
-    implementation('de.hdodenhof:circleimageview:2.2.0') {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    }
     androidTestImplementation rootProject.ext.testDependencies.androidAnnotation
 
     //test
@@ -86,6 +90,8 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+
+    api rootProject.ext.kotlinParcelizeRuntimeDependencies
 }
 
 project.ext {

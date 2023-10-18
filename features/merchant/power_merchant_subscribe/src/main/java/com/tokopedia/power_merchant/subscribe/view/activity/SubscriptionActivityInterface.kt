@@ -12,6 +12,10 @@ interface SubscriptionActivityInterface {
 
     fun setViewForRegistrationPage()
 
+    fun renderFooterView()
+
+    fun hideFooterView()
+
     fun setViewForPmSuccessState()
 
     fun hideActivationProgress()

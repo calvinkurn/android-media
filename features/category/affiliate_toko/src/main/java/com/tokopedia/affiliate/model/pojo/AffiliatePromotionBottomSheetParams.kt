@@ -1,7 +1,9 @@
 package com.tokopedia.affiliate.model.pojo
 
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class AffiliatePromotionBottomSheetParams(
     val idArray: ArrayList<Int>?,
     val itemId: String,
@@ -15,17 +17,20 @@ data class AffiliatePromotionBottomSheetParams(
     val commission: String = "",
     val status: String = "",
     val type: String? = "pdp",
-    val ssaInfo: SSAInfo? = null
-) : Serializable {
+    val ssaInfo: SSAInfo? = null,
+    val imageArray: List<String?>? = null
+) : Parcelable {
+    @Parcelize
     data class SSAInfo(
         val ssaStatus: Boolean,
         val ssaMessage: String,
         val message: String,
         val label: Label
-    ) : Serializable {
+    ) : Parcelable {
+        @Parcelize
         data class Label(
             val labelType: String,
             val labelText: String
-        ) : Serializable
+        ) : Parcelable
     }
 }

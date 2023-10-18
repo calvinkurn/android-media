@@ -16,7 +16,6 @@ data class NavProductOrder(
         val additionalProductCount: Int = 0,
         val applink: String = "",
         val estimatedArrival: String = "",
-        var fullWidth: Boolean = false
 )
 
 data class NavPaymentOrder(
@@ -27,5 +26,4 @@ data class NavPaymentOrder(
         val descriptionText: String = "",
         val imageUrl: String = "",
         val applink: String = "",
-        var fullWidth: Boolean = false
 )

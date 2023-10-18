@@ -68,8 +68,9 @@ val registeredGqlFunctions = mapOf(
     "cart_general_cart_list" to "cagn",
     "cart_general_remove_cart" to "cagn",
     "cart_general_promo_list" to "cagn",
-    "checkout_cart_general" to "cogn"
-    )
+    "checkout_cart_general" to "cogn",
+    "rechargeCheckoutV3" to "rcgco"
+)
 
 fun getAkamaiQuery(query: String): String? {
     return getAkamaiQuery(getQueryListFromQueryString(query))
@@ -89,8 +90,9 @@ fun getMutation(input: String, match: String): Boolean {
     val input3 = input2.replace("\\s+", " ")
     val m: Matcher = getMutationPattern.matcher(input3)
     while (m.find()) {
-        if (m.group(0).equals(match, ignoreCase = true))
+        if (m.group(0).equals(match, ignoreCase = true)) {
             return true
+        }
     }
     return false
 }
@@ -103,7 +105,8 @@ const val sdValidTime = 10000
 
 fun Context.setExpiredTime(expiredTime: Long) {
     val sharedPreferences = this.getSharedPreferences(
-        KEY_AKAMAI_EXPIRED_TIME, MODE_PRIVATE
+        KEY_AKAMAI_EXPIRED_TIME,
+        MODE_PRIVATE
     ).edit()
 
     sharedPreferences.putLong(KEY_VALUE_AKAMAI_EXPIRED_TIME, expiredTime)
@@ -112,13 +115,15 @@ fun Context.setExpiredTime(expiredTime: Long) {
 
 fun Context.getExpiredTime(): Long {
     return this.getSharedPreferences(
-        KEY_AKAMAI_EXPIRED_TIME, MODE_PRIVATE
+        KEY_AKAMAI_EXPIRED_TIME,
+        MODE_PRIVATE
     ).getLong(KEY_VALUE_AKAMAI_EXPIRED_TIME, -1L)
 }
 
 fun Context.setAkamaiValue(realAkamaiValue: String) {
     val sharedPreferences = this.getSharedPreferences(
-        KEY_AKAMAI_EXPIRED_TIME, MODE_PRIVATE
+        KEY_AKAMAI_EXPIRED_TIME,
+        MODE_PRIVATE
     ).edit()
     sharedPreferences.putString(KEY_REAL_VALUE_AKAMAI, realAkamaiValue)
     sharedPreferences.apply()
@@ -126,10 +131,10 @@ fun Context.setAkamaiValue(realAkamaiValue: String) {
 
 fun Context.getAkamaiValue(): String {
     return this.getSharedPreferences(
-        KEY_AKAMAI_EXPIRED_TIME, MODE_PRIVATE
+        KEY_AKAMAI_EXPIRED_TIME,
+        MODE_PRIVATE
     ).getString(KEY_REAL_VALUE_AKAMAI, "") ?: ""
 }
-
 
 fun <E> setExpire(
     currentTime: () -> Long,
@@ -149,7 +154,9 @@ fun <E> setExpire(
         val valueChanged = currentValue?.equals(previousValue) ?: false
         if (valueChanged) {
             ServerLogger.log(
-                Priority.P1, "AKAMAI_SENSOR_SAME", mapOf(
+                Priority.P1,
+                "AKAMAI_SENSOR_SAME",
+                mapOf(
                     "type" to "shared_pref",
                     "expired" to "true",
                     "value_changed" to valueChanged.toString(),
@@ -185,4 +192,3 @@ fun getQueryListFromQueryString(input: String): MutableList<String> {
     }
     return any
 }
-

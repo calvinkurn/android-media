@@ -9,11 +9,13 @@ import java.util.HashMap
 
 class FlashSaleWidgetCallback(
     val homeCategoryListener: HomeCategoryListener
-): FlashSaleWidgetListener {
+) : FlashSaleWidgetListener {
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid) {
         homeCategoryListener.getTrackingQueueObj()?.putEETracking(
             FlashSaleTracking.getImpressionEvent(
-                channelGrid, channel, homeCategoryListener.userId
+                channelGrid,
+                channel,
+                homeCategoryListener.userId
             ) as? HashMap<String, Any>
         )
     }
@@ -23,17 +25,17 @@ class FlashSaleWidgetCallback(
         channelGrid: ChannelGrid,
         applink: String
     ) {
-        homeCategoryListener.onDynamicChannelClicked(applink)
         FlashSaleTracking.sendClickEvent(channelGrid, channel, homeCategoryListener.userId)
+        homeCategoryListener.onDynamicChannelClicked(applink)
     }
 
     override fun onSeeAllClicked(channel: ChannelModel, applink: String) {
-        homeCategoryListener.onDynamicChannelClicked(applink)
         FlashSaleTracking.sendHeaderCtaClickEvent(channel)
+        homeCategoryListener.onDynamicChannelClicked(applink)
     }
 
     override fun onViewAllCardClicked(channel: ChannelModel, applink: String) {
-        homeCategoryListener.onDynamicChannelClicked(applink)
         FlashSaleTracking.sendViewAllCardClickEvent(channel)
+        homeCategoryListener.onDynamicChannelClicked(applink)
     }
 }

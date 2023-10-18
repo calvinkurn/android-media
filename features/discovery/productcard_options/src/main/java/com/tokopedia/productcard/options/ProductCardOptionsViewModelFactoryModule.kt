@@ -4,13 +4,15 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.discovery.common.utils.SimilarSearchCoachMarkLocalCache
 import com.tokopedia.productcard.options.di.ProductCardOptionsScope
-import com.tokopedia.productcard.options.di.TopAdsWishlistUseCaseModule
 import com.tokopedia.productcard.options.di.UserSessionModule
 import com.tokopedia.productcard.options.di.WishlistUseCaseModule
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -31,7 +33,9 @@ internal class ProductCardOptionsViewModelFactoryModule(
             deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
             addToCartUseCase: AddToCartUseCase,
             userSession: UserSessionInterface,
-            coroutineDispatchers: CoroutineDispatchers
+            coroutineDispatchers: CoroutineDispatchers,
+            similarSearchCoachMarkLocalCache: SimilarSearchCoachMarkLocalCache,
+            abTestRemoteConfig: Lazy<RemoteConfig>,
     ): ViewModelProvider.Factory {
         return ProductCardOptionsViewModelFactory(
                 coroutineDispatchers,
@@ -39,7 +43,9 @@ internal class ProductCardOptionsViewModelFactoryModule(
                 addToWishlistV2UseCase,
                 deleteWishlistV2UseCase,
                 addToCartUseCase,
-                userSession
+                userSession,
+                similarSearchCoachMarkLocalCache,
+                abTestRemoteConfig,
         )
     }
 }

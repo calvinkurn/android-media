@@ -72,6 +72,24 @@ fun MutableMap<String, Any>.appendPromotionsEnhancedEcommerce(
         mutableMapOf<String, Any>().appendPromotionsEnhancedEcommerceItemId(itemId)
             .appendPromotionsEnhancedEcommerceCreativeName(creativeName)
             .appendPromotionsEnhancedEcommerceItemName(itemName)
+            .appendPromotionsEnhancedEcommerceCreativeSlot(creativeSlot.toString())
+    )
+    val payloadPromotions = mapOf(AnalyticConstant.KEY_PROMOTIONS to promotions)
+    val payloadPromoView = mapOf(AnalyticConstant.KEY_PROMO_VIEW to payloadPromotions)
+    put(AnalyticConstant.KEY_ECOMMERCE, payloadPromoView)
+    return this
+}
+
+fun MutableMap<String, Any>.appendPromotionsEnhancedEcommerce(
+    creativeName: String,
+    creativeSlot: String,
+    itemId: String,
+    itemName: String
+): MutableMap<String, Any> {
+    val promotions = arrayListOf(
+        mutableMapOf<String, Any>().appendPromotionsEnhancedEcommerceItemId(itemId)
+            .appendPromotionsEnhancedEcommerceCreativeName(creativeName)
+            .appendPromotionsEnhancedEcommerceItemName(itemName)
             .appendPromotionsEnhancedEcommerceCreativeSlot(creativeSlot)
     )
     val payloadPromotions = mapOf(AnalyticConstant.KEY_PROMOTIONS to promotions)
@@ -95,8 +113,13 @@ fun MutableMap<String, Any>.appendPromotionsEnhancedEcommerceItemName(name: Stri
     return this
 }
 
-fun MutableMap<String, Any>.appendPromotionsEnhancedEcommerceCreativeSlot(position: Int): MutableMap<String, Any> {
-    put(AnalyticConstant.KEY_CREATIVE_SLOT, position.toString())
+fun MutableMap<String, Any>.appendPromotionsEnhancedEcommerceCreativeSlot(position: String): MutableMap<String, Any> {
+    put(AnalyticConstant.KEY_CREATIVE_SLOT, position)
+    return this
+}
+
+fun MutableMap<String, Any>.appendSessionIris(sessionIris: String): MutableMap<String, Any> {
+    put(AnalyticConstant.KEY_SESSION_IRIS, sessionIris)
     return this
 }
 

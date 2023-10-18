@@ -1,6 +1,11 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
+android {
+    namespace 'com.tokopedia.pocnewrelic'
+    testNamespace 'com.tokopedia.pocnewrelic.test'
+}
+
 dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
     implementation projectOrAar(rootProject.ext.libraries.keys)

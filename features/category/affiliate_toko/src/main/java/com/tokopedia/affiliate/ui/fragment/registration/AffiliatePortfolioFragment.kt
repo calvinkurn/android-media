@@ -29,6 +29,7 @@ import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -41,18 +42,34 @@ class AffiliatePortfolioFragment :
     PortfolioUrlTextUpdateInterface,
     PortfolioClickInterface {
 
-    private lateinit var affiliatePortfolioViewModel: AffiliatePortfolioViewModel
-    private val affiliateAdapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(onFocusChangeInterface = this, portfolioClickInterface = this))
+    private var affiliatePortfolioViewModel: AffiliatePortfolioViewModel? = null
+    private val affiliateAdapter: AffiliateAdapter = AffiliateAdapter(
+        AffiliateAdapterFactory(
+            onFocusChangeInterface = this,
+            portfolioClickInterface = this
+        )
+    )
 
     @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
+    @JvmField
+    var viewModelProvider: ViewModelProvider.Factory? = null
 
-    private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelProvider) }
+    private val viewModelFragmentProvider by lazy {
+        activity?.let { activity ->
+            viewModelProvider?.let { viewModelProvider ->
+                ViewModelProvider(
+                    activity,
+                    viewModelProvider
+                )
+            }
+        }
+    }
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
-    private lateinit var registrationSharedViewModel: AffiliateRegistrationSharedViewModel
+    private var registrationSharedViewModel: AffiliateRegistrationSharedViewModel? = null
 
     override fun getViewModelType(): Class<AffiliatePortfolioViewModel> {
         return AffiliatePortfolioViewModel::class.java
@@ -61,15 +78,18 @@ class AffiliatePortfolioFragment :
     override fun setViewModel(viewModel: BaseViewModel) {
         affiliatePortfolioViewModel = viewModel as AffiliatePortfolioViewModel
     }
-    override fun getVMFactory(): ViewModelProvider.Factory {
+
+    override fun getVMFactory(): ViewModelProvider.Factory? {
         return viewModelProvider
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        registrationSharedViewModel = viewModelFragmentProvider.get(AffiliateRegistrationSharedViewModel::class.java)
+        registrationSharedViewModel =
+            viewModelFragmentProvider?.get(AffiliateRegistrationSharedViewModel::class.java)
         initObserver()
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -87,7 +107,8 @@ class AffiliatePortfolioFragment :
         initButton()
         setUpNavBar()
         view?.findViewById<RecyclerView>(R.id.social_link_rv)?.run {
-            val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            val linearLayoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             layoutManager = linearLayoutManager
             adapter = affiliateAdapter
         }
@@ -96,27 +117,43 @@ class AffiliatePortfolioFragment :
     }
 
     private fun setPortfolioData() {
-        if (affiliatePortfolioViewModel.affiliatePortfolioData.value.isNullOrEmpty() && registrationSharedViewModel.affiliatePortfolioData.value.isNullOrEmpty()) {
-            affiliatePortfolioViewModel.createDefaultListForSm()
-        } else if (affiliatePortfolioViewModel.affiliatePortfolioData.value.isNullOrEmpty() && !registrationSharedViewModel.affiliatePortfolioData.value.isNullOrEmpty()) {
-            affiliatePortfolioViewModel.affiliatePortfolioData.value = registrationSharedViewModel.affiliatePortfolioData.value
-            affiliatePortfolioViewModel.isError.value = registrationSharedViewModel.isFieldError.value
+        if (affiliatePortfolioViewModel?.affiliatePortfolioData?.value.isNullOrEmpty() &&
+            registrationSharedViewModel?.affiliatePortfolioData?.value.isNullOrEmpty()
+        ) {
+            affiliatePortfolioViewModel?.createDefaultListForSm()
+        } else if (affiliatePortfolioViewModel?.affiliatePortfolioData?.value.isNullOrEmpty() &&
+            !registrationSharedViewModel?.affiliatePortfolioData?.value.isNullOrEmpty()
+        ) {
+            affiliatePortfolioViewModel?.affiliatePortfolioData?.value =
+                registrationSharedViewModel?.affiliatePortfolioData?.value
+            affiliatePortfolioViewModel?.isError?.value =
+                registrationSharedViewModel?.isFieldError?.value
         }
     }
 
     private fun sendOpenScreenTracking() {
-        val loginText = if (userSessionInterface.isLoggedIn)AffiliateAnalytics.LabelKeys.LOGIN else AffiliateAnalytics.LabelKeys.NON_LOGIN
+        val loginText =
+            if (userSessionInterface?.isLoggedIn == true) {
+                AffiliateAnalytics.LabelKeys.LOGIN
+            } else {
+                AffiliateAnalytics.LabelKeys.NON_LOGIN
+            }
         AffiliateAnalytics.sendOpenScreenEvent(
             AffiliateAnalytics.EventKeys.OPEN_SCREEN,
             "${AffiliateAnalytics.ScreenKeys.AFFILIATE_PORTFOLIO_NAME}$loginText",
-            userSessionInterface.isLoggedIn,
-            userSessionInterface.userId
+            userSessionInterface?.isLoggedIn.orFalse(),
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
     private fun initButton() {
         view?.findViewById<UnifyButton>(R.id.next_button)?.apply {
-            isEnabled = if (affiliatePortfolioViewModel.isError().value == null)false else affiliatePortfolioViewModel.isError().value != true
+            isEnabled =
+                if (affiliatePortfolioViewModel?.isError()?.value == null) {
+                    false
+                } else {
+                    affiliatePortfolioViewModel?.isError()?.value != true
+                }
             setOnClickListener {
                 nextButtonClicked()
                 sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_SELANJUTNYA)
@@ -129,18 +166,24 @@ class AffiliatePortfolioFragment :
             AffiliateAnalytics.EventKeys.CLICK_PG,
             eventAction,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_REGISTRATION_PAGE_PROMOTION_CHANNEL,
-            if (userSessionInterface.isLoggedIn)AffiliateAnalytics.LabelKeys.LOGIN else AffiliateAnalytics.LabelKeys.NON_LOGIN,
-            userSessionInterface.userId
+            if (userSessionInterface?.isLoggedIn == true) {
+                AffiliateAnalytics.LabelKeys.LOGIN
+            } else {
+                AffiliateAnalytics.LabelKeys.NON_LOGIN
+            },
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
     private fun setUpNavBar() {
-        val customView = layoutInflater.inflate(R.layout.affiliate_navbar_custom_content, null, false)
+        val customView =
+            layoutInflater.inflate(R.layout.affiliate_navbar_custom_content, null, false)
         customView.findViewById<Typography>(R.id.navbar_sub_tittle).apply {
             show()
             text = getString(R.string.affiliate_subtitle_portfolio)
         }
-        customView.findViewById<Typography>(R.id.navbar_tittle).text = getString(R.string.daftar_affiliate)
+        customView.findViewById<Typography>(R.id.navbar_tittle).text =
+            getString(R.string.daftar_affiliate)
         view?.findViewById<HeaderUnify>(R.id.affiliate_portfolio_toolbar)?.apply {
             customView(customView)
             setNavigationOnClickListener {
@@ -150,21 +193,20 @@ class AffiliatePortfolioFragment :
     }
 
     private fun initObserver() {
-        affiliatePortfolioViewModel.getPortfolioUrlList().observe(this, { data ->
+        affiliatePortfolioViewModel?.getPortfolioUrlList()?.observe(this) { data ->
             setDataToRV(data)
-        })
+        }
 
-        affiliatePortfolioViewModel.getUpdateItemIndex().observe(this, {
-                index ->
+        affiliatePortfolioViewModel?.getUpdateItemIndex()?.observe(this) { index ->
             affiliateAdapter.notifyItemChanged(index)
-        })
-        affiliatePortfolioViewModel.isError().observe(this, { isError ->
+        }
+        affiliatePortfolioViewModel?.isError()?.observe(this) { isError ->
             view?.findViewById<UnifyButton>(R.id.next_button)?.apply {
                 isError?.let {
                     isEnabled = !it
                 }
             }
-        })
+        }
     }
 
     private fun setDataToRV(data: ArrayList<Visitable<AffiliateAdapterTypeFactory>>?) {
@@ -177,6 +219,7 @@ class AffiliatePortfolioFragment :
     override fun initInject() {
         getComponent().injectPortfolioFragment(this)
     }
+
     private fun getComponent(): AffiliateComponent =
         DaggerAffiliateComponent
             .builder()
@@ -191,24 +234,24 @@ class AffiliatePortfolioFragment :
     }
 
     override fun onUrlUpdate(position: Int, text: String) {
-        affiliatePortfolioViewModel.updateList(position, text)
+        affiliatePortfolioViewModel?.updateList(position, text)
     }
 
     override fun onError(position: Int) {
-        affiliatePortfolioViewModel.updateListErrorState(position)
+        affiliatePortfolioViewModel?.updateListErrorState(position)
     }
 
     override fun onUrlSuccess(position: Int) {
-        affiliatePortfolioViewModel.updateListSuccess(position)
+        affiliatePortfolioViewModel?.updateListSuccess(position)
     }
 
     override fun onNextKeyPressed(position: Int, b: Boolean) {
-        affiliatePortfolioViewModel.affiliatePortfolioData.value?.let {
+        affiliatePortfolioViewModel?.affiliatePortfolioData?.value?.let {
             if (position + 1 < it.size &&
                 it[position + 1] is AffiliatePortfolioUrlModel
             ) {
-                affiliatePortfolioViewModel.updateFocus(position + 1, b)
-                affiliatePortfolioViewModel.updateFocus(position, false)
+                affiliatePortfolioViewModel?.updateFocus(position + 1, b)
+                affiliatePortfolioViewModel?.updateFocus(position, false)
             } else {
                 view?.hideKeyboard(context)
             }
@@ -222,11 +265,14 @@ class AffiliatePortfolioFragment :
     }
 
     private fun nextButtonClicked() {
-        if (affiliatePortfolioViewModel.checkDataForAtLeastOne()) {
-            val arrayListOfChannels = arrayListOf<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>()
-            affiliatePortfolioViewModel.affiliatePortfolioData.value?.forEach { channelItem ->
+        if (affiliatePortfolioViewModel?.checkDataForAtLeastOne() == true) {
+            val arrayListOfChannels =
+                arrayListOf<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>()
+            affiliatePortfolioViewModel?.affiliatePortfolioData?.value?.forEach { channelItem ->
                 (channelItem as? AffiliatePortfolioUrlModel)?.let {
-                    if (channelItem.portfolioItm.text?.isNotEmpty() == true && channelItem.portfolioItm.firstTime != true) {
+                    if (channelItem.portfolioItm.text?.isNotEmpty() == true &&
+                        channelItem.portfolioItm.firstTime != true
+                    ) {
                         arrayListOfChannels.add(
                             OnboardAffiliateRequest.OnboardAffiliateChannelRequest(
                                 channelItem.portfolioItm.serviceFormat,
@@ -238,12 +284,12 @@ class AffiliatePortfolioFragment :
                 }
             }
             view?.hideKeyboard(context)
-            registrationSharedViewModel.navigateToTermsFragment(arrayListOfChannels)
+            registrationSharedViewModel?.navigateToTermsFragment(arrayListOfChannels)
         } else {
             view?.let { view ->
                 Toaster.build(
                     view,
-                    getString(com.tokopedia.affiliate_toko.R.string.affiliate_please_fill_one_social_media),
+                    getString(R.string.affiliate_please_fill_one_social_media),
                     Snackbar.LENGTH_LONG,
                     Toaster.TYPE_ERROR
                 ).show()
@@ -257,7 +303,9 @@ class AffiliatePortfolioFragment :
     }
 
     private fun setDataInSharedViewModel() {
-        registrationSharedViewModel.affiliatePortfolioData.value = affiliatePortfolioViewModel.affiliatePortfolioData.value
-        registrationSharedViewModel.isFieldError.value = affiliatePortfolioViewModel.isError().value
+        registrationSharedViewModel?.affiliatePortfolioData?.value =
+            affiliatePortfolioViewModel?.affiliatePortfolioData?.value
+        registrationSharedViewModel?.isFieldError?.value =
+            affiliatePortfolioViewModel?.isError()?.value
     }
 }

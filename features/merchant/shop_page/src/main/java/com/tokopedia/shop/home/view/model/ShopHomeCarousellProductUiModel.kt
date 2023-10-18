@@ -1,7 +1,10 @@
 package com.tokopedia.shop.home.view.model
 
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
+import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 
 /**
  * Created by zulfikarrahman on 1/16/18.
@@ -22,7 +25,19 @@ data class ShopHomeCarousellProductUiModel(
         const val IS_ATC = 1
     }
 
-    override fun type(typeFactory: ShopHomeAdapterTypeFactory): Int {
-        return typeFactory.type(this)
+    override fun type(typeFactory: ShopWidgetTypeFactory): Int {
+        return when (typeFactory) {
+            is ShopHomeAdapterTypeFactory -> {
+                typeFactory.type(this)
+            }
+
+            is ShopCampaignTabAdapterTypeFactory -> {
+                typeFactory.type(this)
+            }
+
+            else -> {
+                Int.ZERO
+            }
+        }
     }
 }

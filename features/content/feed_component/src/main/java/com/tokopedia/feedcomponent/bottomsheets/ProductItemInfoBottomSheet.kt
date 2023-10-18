@@ -40,7 +40,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     private var viewModel: FeedProductItemInfoViewModel? = null
     private var customMvcTracker: MvcTrackerImpl? = null
 
-    private lateinit var listProducts: List<FeedXProduct>
+    private var listProducts: List<FeedXProduct> = emptyList()
     private var listener: Listener? = null
     private var postId: String = "0"
     private val adapter by lazy {
@@ -304,7 +304,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         view?.rootView?.let {
             context?.resources?.let { resource ->
                 Toaster.toasterCustomBottomHeight =
-                    resource.getDimensionPixelSize(com.tokopedia.feedcomponent.R.dimen.feed_bottomsheet_toaster_margin_bottom)
+                    resource.getDimensionPixelSize(com.tokopedia.content.common.R.dimen.feed_bottomsheet_toaster_margin_bottom)
             }
             if (actionText?.isEmpty() == false) {
                 Toaster.build(it, message, Toaster.LENGTH_LONG, type, actionText)

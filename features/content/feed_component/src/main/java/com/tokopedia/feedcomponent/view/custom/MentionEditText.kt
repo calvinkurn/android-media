@@ -25,7 +25,7 @@ class MentionEditText : AppCompatMultiAutoCompleteTextView {
 
         @ColorInt
         fun getMentionColor(context: Context): Int {
-            return ContextCompat.getColor(context, unifyR.color.Unify_G500)
+            return ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         }
     }
 

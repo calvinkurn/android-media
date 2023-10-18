@@ -19,7 +19,6 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
-import com.tokochat.tokochat_config_common.util.TokoChatConnection;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
@@ -27,7 +26,6 @@ import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
 import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
-import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -73,21 +71,20 @@ import com.tokopedia.notifications.worker.PushWorker;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
-import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.promotionstarget.presentation.GratifCmInitializer;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.GraphqlHelper;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.sessioncommon.worker.RefreshProfileWorker;
 import com.tokopedia.tkpd.ConsumerSplashScreen;
-import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.AppNotificationReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.GQLPing;
+import com.tokopedia.tokochat.config.util.TokoChatConnection;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker;
-import com.tokopedia.sessioncommon.worker.RefreshProfileWorker;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -114,7 +111,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         AbstractionRouter,
         ApplinkRouter,
         LoyaltyModuleRouter,
-        GamificationRouter,
         NetworkRouter,
         TkpdAppsFlyerRouter,
         LinkerRouter {
@@ -276,13 +272,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToHome(Context context) {
-        Intent intent = RouteManager.getIntent(context, ApplinkConst.HOME);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        context.startActivity(intent);
-    }
-
-    @Override
     public void onNewIntent(Context context, Intent intent) {
         NFCSubscriber.onNewIntent(context, intent);
     }
@@ -425,11 +414,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public boolean isSupportApplink(String appLink) {
         return false;
-    }
-
-    @Override
-    public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
-        return new ApplinkUnsupportedImpl(activity);
     }
 
     @Override

@@ -25,13 +25,15 @@ import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.common.LoadingDialog
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
+import com.tokopedia.profilecompletion.databinding.FragmentNewAddPhoneBinding
+import com.tokopedia.profilecompletion.databinding.FragmentOnboardPinBinding
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_onboard_pin.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 /**
@@ -40,6 +42,9 @@ import javax.inject.Inject
  */
 
 class PinOnboardingFragment : BaseDaggerFragment() {
+
+    private var _binding: FragmentOnboardPinBinding? = null
+    private val binding get() = _binding!!
 
     @Inject
     lateinit var trackingPinUtil: TrackingPinUtil
@@ -67,7 +72,8 @@ class PinOnboardingFragment : BaseDaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_onboard_pin, container, false)
+        _binding = FragmentOnboardPinBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,9 +81,9 @@ class PinOnboardingFragment : BaseDaggerFragment() {
 
         initVar()
 
-        ImageHandler.LoadImage(onboardImage, ONBOARD_PICT_URL)
+        ImageHandler.LoadImage(binding?.onboardImage, ONBOARD_PICT_URL)
 
-        btnNext.setOnClickListener {
+        binding?.btnNext?.setOnClickListener {
             trackingPinUtil.trackClickCreateButton()
             goToAddPin()
         }
@@ -176,19 +182,20 @@ class PinOnboardingFragment : BaseDaggerFragment() {
     }
 
     private fun showLoading() {
-        loader?.show()
-        container?.hide()
+        binding?.loader?.show()
+        binding?.container?.hide()
     }
 
     private fun hideLoading() {
-        loader?.hide()
-        container?.show()
+        binding?.loader?.hide()
+        binding?.container?.show()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         addChangePinViewModel.getStatusPinResponse.removeObservers(this)
         addChangePinViewModel.flush()
+        _binding = null
     }
 
     fun onBackPressed() {

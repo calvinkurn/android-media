@@ -15,7 +15,7 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/order_payment_image"
-            tools:background="@color/Unify_B100"
+            tools:background="@color/Unify_BN50"
             app:loader_type="rect"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -26,7 +26,7 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/order_payment_status"
-            android:textColor="@color/Unify_Y400"
+            android:textColor="@color/Unify_YN400"
             android:textSize="10dp"
             android:textStyle="bold"
             app:loader_type="line"
@@ -51,7 +51,7 @@
             android:layout_height="10sp"/>
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:id="@+id/order_payment_description"
             app:loader_type="line"
             app:typographyType="small"

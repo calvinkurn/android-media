@@ -9,6 +9,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BannerData
+import com.tokopedia.withdraw.saldowithdrawal.domain.model.GqlBankListResponse
+import com.tokopedia.withdraw.saldowithdrawal.domain.model.GqlGetBankDataResponse
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.ValidatePopUpWithdrawal
 import com.tokopedia.withdraw.saldowithdrawal.domain.usecase.GQLValidateWithdrawalUseCase
 import com.tokopedia.withdraw.saldowithdrawal.domain.usecase.GetBankListUseCase
@@ -24,7 +26,7 @@ class SaldoWithdrawalViewModel @Inject constructor(
 
     val bannerListLiveData = MutableLiveData<Result<ArrayList<BannerData>>>()
 
-    val bankListResponseMutableData = MutableLiveData<Result<ArrayList<BankAccount>>>()
+    val bankListResponseMutableData = MutableLiveData<Result<GqlBankListResponse>>()
 
     val validatePopUpWithdrawalMutableData = SingleLiveEvent<Result<ValidatePopUpWithdrawal>>()
 
@@ -61,9 +63,9 @@ class SaldoWithdrawalViewModel @Inject constructor(
 
     fun getBankList() {
         launchCatchError(block = {
-            when (val result = bankListUseCase.getBankList()) {
+            when (val result = bankListUseCase.getBankList(false)) {
                 is Success -> {
-                    bankListResponseMutableData.postValue(Success(result.data.bankAccount.bankAccountList))
+                    bankListResponseMutableData.postValue(Success(result.data.bankAccount))
                 }
                 is Fail -> {
                     bankListResponseMutableData.postValue(result)

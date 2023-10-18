@@ -37,7 +37,7 @@
         android:layout_width="@dimen/unify_space_16"
         android:layout_height="@dimen/unify_space_16"
         android:layout_gravity="center_vertical"
-        app:icon_color_light_enable="@color/Unify_N0"
+        app:icon_color_light_enable="@color/Unify_NN0"
         app:icon_name="CLOCK" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -45,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_topchat_3"
-        android:textColor="@color/Unify_N0"
+        android:textColor="@color/Unify_NN0"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="17 Feb 2021" />

@@ -153,6 +153,7 @@ public interface CMConstant {
         String ADVANCE_TARGET = "isAdvanceTarget";
         String GROUP_ID = "groupId";
         String GROUP_NAME = "groupName";
+        String USER_TYPE = "userType";
 
         interface PayloadExtraDataKey {
             String CAMPAIGN_NAME = "cmpgnName";
@@ -161,6 +162,8 @@ public interface CMConstant {
             String SESSION_ID = "sesnId";
             String INTENT_ACTION = "intentAction";
             String TOPCHAT = "topChat";
+
+            String TOKOCHAT = "tokoChat";
         }
 
 

@@ -197,7 +197,7 @@ open class ProductReviewBasicInfoWidget : BaseCustomView {
 
     fun setReviewerImage(imageUrl: String) {
         profilePicture?.apply {
-            if (isProductReview) {
+            if (isProductReview && imageUrl.isNotEmpty()) {
                 urlSrc = imageUrl
                 show()
                 if (!isAnonymous) {

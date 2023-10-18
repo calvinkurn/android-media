@@ -6,7 +6,6 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HomeNavItemAffiliateBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
@@ -44,12 +43,10 @@ class AffiliateViewHolder (
 
     private fun affiliateClicked(profileAffiliate: ProfileAffiliateDataModel, context: Context) {
         if (profileAffiliate.isRegister) {
-            TrackingProfileSection.onClickShopAndAffiliate(TrackingProfileSection.AFFILIATE_ACCOUNT)
-            RouteManager.route(context, profileAffiliate.affiliateAppLink)
+            mainNavListener.onProfileSectionClicked(TrackingProfileSection.AFFILIATE_ACCOUNT, profileAffiliate.affiliateAppLink)
         }
         else {
-            TrackingProfileSection.onClickShopAndAffiliate(TrackingProfileSection.CREATE_AFFILIATE)
-            RouteManager.route(context, profileAffiliate.affiliateAppLink)
+            mainNavListener.onProfileSectionClicked(TrackingProfileSection.CREATE_AFFILIATE, profileAffiliate.affiliateAppLink)
         }
     }
 

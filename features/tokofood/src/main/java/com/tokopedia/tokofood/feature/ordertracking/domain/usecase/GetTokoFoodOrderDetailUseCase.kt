@@ -10,7 +10,7 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 @GqlQuery("TokoFoodOrderDetailQuery", TOKO_FOOD_ORDER_DETAIL_QUERY)
-class GetTokoFoodOrderDetailUseCase @Inject constructor(
+open class GetTokoFoodOrderDetailUseCase @Inject constructor(
     private val useCase: GraphqlUseCase<TokoFoodOrderDetailResponse>,
     private val tokoFoodOrderDetailMapper: TokoFoodOrderDetailMapper
 ) {
@@ -19,13 +19,13 @@ class GetTokoFoodOrderDetailUseCase @Inject constructor(
         useCase.setTypeClass(TokoFoodOrderDetailResponse::class.java)
     }
 
-    suspend fun execute(orderId: String): OrderDetailResultUiModel {
+    open suspend fun execute(orderId: String): OrderDetailResultUiModel {
         useCase.setRequestParams(createRequestParamsOrderDetail(orderId))
         val response = useCase.executeOnBackground().tokofoodOrderDetail
         return tokoFoodOrderDetailMapper.mapToOrderDetailResultUiModel(response)
     }
 
-    private fun createRequestParamsOrderDetail(orderId: String): Map<String, Any> {
+    fun createRequestParamsOrderDetail(orderId: String): Map<String, Any> {
         return RequestParams.create().apply {
             putString(ORDER_ID_KEY, orderId)
         }.parameters

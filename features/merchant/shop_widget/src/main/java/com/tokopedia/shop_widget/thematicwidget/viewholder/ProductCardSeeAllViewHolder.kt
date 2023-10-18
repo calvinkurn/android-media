@@ -29,7 +29,7 @@ class ProductCardSeeAllViewHolder(
                 listener?.onProductCardSeeAllClickListener(element.appLink)
             }
             iuChevron.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500), BlendModeCompat.SRC_ATOP)
+                ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500), BlendModeCompat.SRC_ATOP)
         }
     }
 

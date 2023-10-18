@@ -97,6 +97,8 @@ class AtcVariantHeaderViewHolder(private val view: View,
     private fun loadDescription(headerData: ProductHeaderData) = with(view) {
         if (headerData.isCampaignActive) {
             renderCampaignActive(headerData)
+        } else if (headerData.hideGimmick) {
+            renderNoCampaign(headerData.productSlashPrice)
         } else {
             renderNoCampaign(headerData.productMainPrice)
         }

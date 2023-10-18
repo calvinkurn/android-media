@@ -45,10 +45,10 @@ class TrackingPageViewModel @Inject constructor(
     val driverTipData: LiveData<Result<LogisticDriverModel>>
         get() = _driverTipsData
 
-    fun getTrackingData(orderId: String) {
+    fun getTrackingData(orderId: String, orderTxId: String?, groupType: Int?) {
         viewModelScope.launch {
             try {
-                val trackingParam = trackingUseCase.getParam(orderId, "")
+                val trackingParam = trackingUseCase.getParam(orderId, orderTxId, groupType, "")
                 val getTrackingData = trackingUseCase(trackingParam)
                 _trackingData.value = Success(mapper.mapTrackingData(getTrackingData))
             } catch (e: Throwable) {

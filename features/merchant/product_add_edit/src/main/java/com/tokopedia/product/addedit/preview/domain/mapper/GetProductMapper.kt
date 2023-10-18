@@ -52,7 +52,9 @@ class GetProductMapper @Inject constructor() {
         mapDescriptionInputModel(product),
         mapShipmentInputModel(product),
         mapVariantInputModel(product.variant),
-        itemSold = product.txStats.itemSold
+        itemSold = product.txStats.itemSold,
+        hasDTStock = product.hasDTStock,
+        isCampaignActive = product.campaign.isActive
     )
 
     fun convertToGram(weight: Int, unit: String): Int {
@@ -100,7 +102,9 @@ class GetProductMapper @Inject constructor() {
                 it.stock,
                 it.isPrimary,
                 convertToGram(it.weight, it.weightUnit),
-                UNIT_GRAM_STRING
+                UNIT_GRAM_STRING,
+                it.hasDTStock,
+                it.isCampaign
             )
         }
         return ArrayList(variantCombination)
@@ -147,22 +151,22 @@ class GetProductMapper @Inject constructor() {
 
     private fun mapDetailInputModel(product: Product): DetailInputModel =
         DetailInputModel(
-            product.productName,
-            product.productName,
-            product.category.name,
-            product.category.id,
-            product.price,
-            product.stock,
-            product.minOrder,
-            product.condition,
-            product.sku,
-            getActiveStatus(product.status),
+            productName = product.productName,
+            currentProductName = product.productName,
+            categoryName = product.category.name,
+            categoryId = product.category.id,
+            price = product.price,
+            stock = product.stock,
+            minOrder = product.minOrder,
+            condition = product.condition,
+            sku = product.sku,
+            status = getActiveStatus(product.status),
             imageUrlOrPathList = mapImageUrlOrPathList(product),
             preorder = mapPreorderInputModel(product.preorder),
             wholesaleList = mapWholeSaleInputModel(product.wholesales),
             pictureList = mapPictureInputModel(product.pictures),
             productShowCases = mapProductShowCaseInputModel(product.menus),
-            null
+            specifications = null
         )
 
     private fun mapImageUrlOrPathList(product: Product): MutableList<String> {

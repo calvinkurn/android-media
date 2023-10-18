@@ -3,57 +3,25 @@ package com.tokopedia.checkout.view.viewholder
 import android.annotation.SuppressLint
 import android.text.TextUtils
 import android.view.View
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.Space
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.checkout.R
+import com.tokopedia.checkout.databinding.ViewItemShipmentRecipientAddressBinding
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.TRADE_IN_DROP_OFF_IMAGE_URL
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.purchase_platform.common.utils.Utils.getHtmlFormat
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.TabsUnify
-import com.tokopedia.unifycomponents.UnifyImageButton
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.HEADING_5
 import java.util.*
 
-class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAdapterActionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(itemView) {
-
-    private val rlRecipientAddressLayout: RelativeLayout = itemView.findViewById(R.id.rl_shipment_recipient_address_layout)
-    private val tvAddressStatus: Label = itemView.findViewById(com.tokopedia.logisticCommon.R.id.tv_address_status)
-    private val tvAddressName: Typography = itemView.findViewById(com.tokopedia.logisticCommon.R.id.tv_address_name)
-    private val tvRecipientName: Typography = itemView.findViewById(com.tokopedia.logisticCommon.R.id.tv_recipient_name)
-    private val tvRecipientAddress: Typography = itemView.findViewById(com.tokopedia.logisticCommon.R.id.tv_recipient_address)
-    private val tvRecipientPhone: Typography = itemView.findViewById(com.tokopedia.logisticCommon.R.id.tv_recipient_phone)
-    private val tabUnifyTradeInAddress: TabsUnify = itemView.findViewById(R.id.tab_unify_trade_in_address)
-    private val layoutAddressNormal: RelativeLayout = itemView.findViewById(R.id.layout_address_normal)
-    private val layoutAddressDropOff: ConstraintLayout = itemView.findViewById(R.id.layout_address_drop_off)
-    private val tvShipmentAddress: Typography = itemView.findViewById(R.id.tv_shipment_address)
-    private val imgButtonTradeInInfo: UnifyImageButton = itemView.findViewById(R.id.img_button_trade_in_info)
-    private val separator: View = itemView.findViewById(R.id.separator)
-    private val tvDropOffAddressTitle: Typography = itemView.findViewById(R.id.tv_drop_off_address_title)
-    private val tvDropOffAddressDescription: Typography = itemView.findViewById(R.id.tv_drop_off_address_description)
-    private val tvChangeDropOff: Typography = itemView.findViewById(R.id.tv_change_drop_off)
-    private val imgPinpoint: ImageView = itemView.findViewById(R.id.img_pinpoint)
-    private val tvChangeAddressTop: Typography = itemView.findViewById(R.id.tv_change_address_top)
-    private val separatorBottom: View = itemView.findViewById(R.id.separator_bottom)
-    private val space: Space = itemView.findViewById(R.id.space)
-    private val layoutTradeInOption: ConstraintLayout = itemView.findViewById(R.id.layout_trade_in_option)
-    private val chipsTradeInNormal: ChipsUnify = itemView.findViewById(R.id.chips_trade_in_normal)
-    private val chipsTradeInDropOff: ChipsUnify = itemView.findViewById(R.id.chips_trade_in_drop_off)
-    private val emptyStateDropOff: EmptyStateUnify = itemView.findViewById(R.id.empty_state_drop_off)
+class ShipmentRecipientAddressViewHolder(private val binding: ViewItemShipmentRecipientAddressBinding, private val shipmentAdapterActionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(binding.root) {
 
     private val localCacheHandler: LocalCacheHandler by lazy {
         LocalCacheHandler(itemView.context, KEY_ONBOARDING_CHECKOUT_ADDRESS)
@@ -68,28 +36,28 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
             renderNormalAddress(recipientAddress)
         }
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            rlRecipientAddressLayout.foreground = ContextCompat.getDrawable(rlRecipientAddressLayout.context, com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item)
+            binding.rlShipmentRecipientAddressLayout.foreground = ContextCompat.getDrawable(binding.rlShipmentRecipientAddressLayout.context, com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item)
         }
         showOnboarding(isShowOnboarding)
     }
 
     private fun renderTradeInAddressWithTabs(recipientAddress: RecipientAddressModel) {
-        tvShipmentAddress.setText(R.string.lebal_trade_in_address_mode)
-        layoutTradeInOption.visibility = View.GONE
-        tvShipmentAddress.setType(HEADING_5)
-        imgButtonTradeInInfo.visibility = View.GONE
-        separator.visibility = View.GONE
-        imgButtonTradeInInfo.setOnClickListener {
+        binding.tvShipmentAddress.setText(R.string.lebal_trade_in_address_mode)
+        binding.layoutTradeInOption.visibility = View.GONE
+        binding.tvShipmentAddress.setType(HEADING_5)
+        binding.imgButtonTradeInInfo.visibility = View.GONE
+        binding.separator.visibility = View.GONE
+        binding.imgButtonTradeInInfo.setOnClickListener {
             shipmentAdapterActionListener.onClickTradeInInfo()
         }
-        if (tabUnifyTradeInAddress.getUnifyTabLayout().tabCount == 0) {
-            tabUnifyTradeInAddress.addNewTab(tabUnifyTradeInAddress.context.getString(R.string.label_tab_trade_in_address_deliver))
-            tabUnifyTradeInAddress.addNewTab(tabUnifyTradeInAddress.context.getString(R.string.label_tab_trade_in_address_pickup))
+        if (binding.tabUnifyTradeInAddress.getUnifyTabLayout().tabCount == 0) {
+            binding.tabUnifyTradeInAddress.addNewTab(binding.tabUnifyTradeInAddress.context.getString(R.string.label_tab_trade_in_address_deliver))
+            binding.tabUnifyTradeInAddress.addNewTab(binding.tabUnifyTradeInAddress.context.getString(R.string.label_tab_trade_in_address_pickup))
         }
         renderSelectedTab(recipientAddress)
         setChipTabsClickListener(recipientAddress)
         renderDisabledTab(recipientAddress)
-        tabUnifyTradeInAddress.getUnifyTabLayout().addOnTabSelectedListener(object : OnTabSelectedListener {
+        binding.tabUnifyTradeInAddress.getUnifyTabLayout().addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
@@ -104,7 +72,7 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
             override fun onTabUnselected(tab: TabLayout.Tab) {}
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
-        tvChangeDropOff.setOnClickListener {
+        binding.layoutAddressDropOff.tvChangeDropOff.setOnClickListener {
             shipmentAdapterActionListener.onChangeTradeInDropOffClicked(recipientAddress.latitude, recipientAddress.longitude)
         }
     }
@@ -112,30 +80,30 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
     private fun renderDisabledTab(recipientAddress: RecipientAddressModel) {
         if (recipientAddress.disabledAddress != null && !recipientAddress.disabledAddress.isEmpty()) {
             if (recipientAddress.disabledAddress.contains(AddressesData.DEFAULT_ADDRESS)) {
-                chipsTradeInNormal.chipType = ChipsUnify.TYPE_DISABLE
-                chipsTradeInNormal.isClickable = false
-                chipsTradeInNormal.setOnClickListener(null)
+                binding.chipsTradeInNormal.chipType = ChipsUnify.TYPE_DISABLE
+                binding.chipsTradeInNormal.isClickable = false
+                binding.chipsTradeInNormal.setOnClickListener(null)
             }
             if (recipientAddress.disabledAddress.contains(AddressesData.TRADE_IN_ADDRESS)) {
-                chipsTradeInDropOff.chipType = ChipsUnify.TYPE_DISABLE
-                chipsTradeInDropOff.isClickable = false
-                chipsTradeInNormal.setOnClickListener(null)
+                binding.chipsTradeInDropOff.chipType = ChipsUnify.TYPE_DISABLE
+                binding.chipsTradeInDropOff.isClickable = false
+                binding.chipsTradeInNormal.setOnClickListener(null)
             }
         }
     }
 
     private fun renderSelectedTab(recipientAddress: RecipientAddressModel) {
         if (recipientAddress.selectedTabIndex == 0) {
-            if (tabUnifyTradeInAddress.getUnifyTabLayout().tabCount > 0) {
+            if (binding.tabUnifyTradeInAddress.getUnifyTabLayout().tabCount > 0) {
                 recipientAddress.isIgnoreSelectionAction = true
-                tabUnifyTradeInAddress.getUnifyTabLayout().getTabAt(0)?.select()
+                binding.tabUnifyTradeInAddress.getUnifyTabLayout().getTabAt(0)?.select()
                 renderTradeInDeliveryTab(recipientAddress)
                 setTradeInDefaultAddress()
             }
         } else {
-            if (tabUnifyTradeInAddress.getUnifyTabLayout().tabCount > 1) {
+            if (binding.tabUnifyTradeInAddress.getUnifyTabLayout().tabCount > 1) {
                 recipientAddress.isIgnoreSelectionAction = true
-                tabUnifyTradeInAddress.getUnifyTabLayout().getTabAt(1)?.select()
+                binding.tabUnifyTradeInAddress.getUnifyTabLayout().getTabAt(1)?.select()
                 renderTradeInPickUpTab(recipientAddress)
                 setTradeInDropOffAddress()
             }
@@ -143,18 +111,18 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
     }
 
     private fun setChipTabsClickListener(recipientAddress: RecipientAddressModel) {
-        chipsTradeInNormal.setOnClickListener { v: View? ->
+        binding.chipsTradeInNormal.setOnClickListener {
             shipmentAdapterActionListener.onSwapInUserAddress()
-            val tab = tabUnifyTradeInAddress.tabLayout.getTabAt(0)
+            val tab = binding.tabUnifyTradeInAddress.tabLayout.getTabAt(0)
             if (tab != null) {
                 recipientAddress.isIgnoreSelectionAction = false
                 setTradeInDefaultAddress()
                 tab.select()
             }
         }
-        chipsTradeInDropOff.setOnClickListener { v: View? ->
+        binding.chipsTradeInDropOff.setOnClickListener {
             shipmentAdapterActionListener.onClickSwapInIndomaret()
-            val tab = tabUnifyTradeInAddress.tabLayout.getTabAt(1)
+            val tab = binding.tabUnifyTradeInAddress.tabLayout.getTabAt(1)
             if (tab != null) {
                 recipientAddress.isIgnoreSelectionAction = false
                 setTradeInDropOffAddress()
@@ -164,77 +132,76 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
     }
 
     private fun setTradeInDefaultAddress() {
-        chipsTradeInNormal.chipType = ChipsUnify.TYPE_SELECTED
-        if (chipsTradeInDropOff.chipType != null && chipsTradeInDropOff.chipType == ChipsUnify.TYPE_SELECTED) {
-            chipsTradeInDropOff.chipType = ChipsUnify.TYPE_NORMAL
+        binding.chipsTradeInNormal.chipType = ChipsUnify.TYPE_SELECTED
+        if (binding.chipsTradeInDropOff.chipType != null && binding.chipsTradeInDropOff.chipType == ChipsUnify.TYPE_SELECTED) {
+            binding.chipsTradeInDropOff.chipType = ChipsUnify.TYPE_NORMAL
         }
     }
 
     private fun setTradeInDropOffAddress() {
-        chipsTradeInDropOff.chipType = ChipsUnify.TYPE_SELECTED
-        if (chipsTradeInNormal.chipType != null && chipsTradeInNormal.chipType == ChipsUnify.TYPE_SELECTED) {
-            chipsTradeInNormal.chipType = ChipsUnify.TYPE_NORMAL
+        binding.chipsTradeInDropOff.chipType = ChipsUnify.TYPE_SELECTED
+        if (binding.chipsTradeInNormal.chipType != null && binding.chipsTradeInNormal.chipType == ChipsUnify.TYPE_SELECTED) {
+            binding.chipsTradeInNormal.chipType = ChipsUnify.TYPE_NORMAL
         }
     }
 
     private fun renderTradeInPickUpTab(recipientAddress: RecipientAddressModel) {
-        layoutAddressNormal.visibility = View.GONE
-        layoutAddressDropOff.visibility = View.VISIBLE
+        binding.layoutAddressNormal.root.visibility = View.GONE
+        binding.layoutAddressDropOff.root.visibility = View.VISIBLE
         if (TextUtils.isEmpty(recipientAddress.dropOffAddressName)) {
-            tvDropOffAddressTitle.visibility = View.GONE
-            tvDropOffAddressDescription.visibility = View.GONE
-            imgPinpoint.visibility = View.GONE
-            tvChangeDropOff.visibility = View.GONE
-            emptyStateDropOff.visibility = View.VISIBLE
-            emptyStateDropOff.setTitle(emptyStateDropOff.context.getString(R.string.label_drop_off_empty_title))
-            emptyStateDropOff.setDescription(emptyStateDropOff.context.getString(R.string.label_drop_off_empty_description))
-            emptyStateDropOff.setPrimaryCTAText(emptyStateDropOff.context.getString(R.string.label_drop_off_cta))
-            emptyStateDropOff.setPrimaryCTAClickListener {
+            binding.layoutAddressDropOff.tvDropOffAddressTitle.visibility = View.GONE
+            binding.layoutAddressDropOff.tvDropOffAddressDescription.visibility = View.GONE
+            binding.layoutAddressDropOff.imgPinpoint.visibility = View.GONE
+            binding.layoutAddressDropOff.tvChangeDropOff.visibility = View.GONE
+            binding.layoutAddressDropOff.emptyStateDropOff.visibility = View.VISIBLE
+            binding.layoutAddressDropOff.emptyStateDropOff.setTitle(binding.layoutAddressDropOff.emptyStateDropOff.context.getString(R.string.label_drop_off_empty_title))
+            binding.layoutAddressDropOff.emptyStateDropOff.setDescription(binding.layoutAddressDropOff.emptyStateDropOff.context.getString(R.string.label_drop_off_empty_description))
+            binding.layoutAddressDropOff.emptyStateDropOff.setPrimaryCTAText(binding.layoutAddressDropOff.emptyStateDropOff.context.getString(R.string.label_drop_off_cta))
+            binding.layoutAddressDropOff.emptyStateDropOff.setPrimaryCTAClickListener {
                 shipmentAdapterActionListener.onChangeTradeInDropOffClicked(recipientAddress.latitude, recipientAddress.longitude)
-                Unit
             }
-            emptyStateDropOff.setImageUrl(TRADE_IN_DROP_OFF_IMAGE_URL)
+            binding.layoutAddressDropOff.emptyStateDropOff.setImageUrl(TRADE_IN_DROP_OFF_IMAGE_URL)
         } else {
-            tvDropOffAddressTitle.visibility = View.VISIBLE
-            tvDropOffAddressDescription.visibility = View.VISIBLE
-            tvDropOffAddressTitle.text = recipientAddress.dropOffAddressName
-            tvDropOffAddressDescription.text = recipientAddress.dropOffAddressDetail
-            imgPinpoint.visibility = View.VISIBLE
-            tvChangeDropOff.visibility = View.VISIBLE
-            emptyStateDropOff.visibility = View.GONE
+            binding.layoutAddressDropOff.tvDropOffAddressTitle.visibility = View.VISIBLE
+            binding.layoutAddressDropOff.tvDropOffAddressDescription.visibility = View.VISIBLE
+            binding.layoutAddressDropOff.tvDropOffAddressTitle.text = recipientAddress.dropOffAddressName
+            binding.layoutAddressDropOff.tvDropOffAddressDescription.text = recipientAddress.dropOffAddressDetail
+            binding.layoutAddressDropOff.imgPinpoint.visibility = View.VISIBLE
+            binding.layoutAddressDropOff.tvChangeDropOff.visibility = View.VISIBLE
+            binding.layoutAddressDropOff.emptyStateDropOff.visibility = View.GONE
         }
     }
 
     private fun renderTradeInDeliveryTab(recipientAddress: RecipientAddressModel) {
-        layoutAddressDropOff.visibility = View.GONE
-        layoutAddressNormal.visibility = View.VISIBLE
+        binding.layoutAddressDropOff.root.visibility = View.GONE
+        binding.layoutAddressNormal.root.visibility = View.VISIBLE
         renderBasicAddress(recipientAddress)
     }
 
     private fun renderNormalAddress(recipientAddress: RecipientAddressModel) {
-        tvShipmentAddress.setText(R.string.label_showcase_address_title)
-        layoutTradeInOption.visibility = View.GONE
-        imgButtonTradeInInfo.visibility = View.GONE
-        layoutAddressDropOff.visibility = View.GONE
-        layoutAddressNormal.visibility = View.VISIBLE
+        binding.tvShipmentAddress.setText(R.string.label_showcase_address_title)
+        binding.layoutTradeInOption.visibility = View.GONE
+        binding.imgButtonTradeInInfo.visibility = View.GONE
+        binding.layoutAddressDropOff.root.visibility = View.GONE
+        binding.layoutAddressNormal.root.visibility = View.VISIBLE
         renderBasicAddress(recipientAddress)
     }
 
     private fun renderBasicAddress(recipientAddress: RecipientAddressModel) {
-        tvAddressStatus.visibility = View.GONE
+        binding.layoutAddressNormal.tvAddressStatus.visibility = View.GONE
         if (recipientAddress.addressStatus == 2) {
-            tvAddressStatus.visibility = View.VISIBLE
+            binding.layoutAddressNormal.tvAddressStatus.visibility = View.VISIBLE
         } else {
-            tvAddressStatus.visibility = View.GONE
+            binding.layoutAddressNormal.tvAddressStatus.visibility = View.GONE
         }
-        tvAddressName.text = getHtmlFormat(recipientAddress.addressName)
-        tvRecipientName.text = String.format(
-            tvRecipientName.context.getString(R.string.recipient_name_format),
+        binding.layoutAddressNormal.tvAddressName.text = getHtmlFormat(recipientAddress.addressName)
+        binding.layoutAddressNormal.tvRecipientName.text = String.format(
+            binding.layoutAddressNormal.tvRecipientName.context.getString(R.string.recipient_name_format),
             getHtmlFormat(recipientAddress.recipientName),
             recipientAddress.recipientPhoneNumber
         )
-        tvRecipientAddress.text = getHtmlFormat(getFullAddress(recipientAddress))
-        tvRecipientPhone.visibility = View.GONE
+        binding.layoutAddressNormal.tvRecipientAddress.text = getHtmlFormat(getFullAddress(recipientAddress))
+        binding.layoutAddressNormal.tvRecipientPhone.visibility = View.GONE
     }
 
     private fun getFullAddress(recipientAddress: RecipientAddressModel): String {
@@ -248,17 +215,17 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
     }
 
     private fun renderChangeAddress(recipientAddress: RecipientAddressModel) {
-        separatorBottom.visibility = View.GONE
-        space.visibility = View.VISIBLE
+        binding.separatorBottom.visibility = View.GONE
+        binding.space.visibility = View.VISIBLE
         if (recipientAddress.selectedTabIndex == 0) {
-            tvChangeAddressTop.visibility = View.VISIBLE
-            tvShipmentAddress.visibility = View.VISIBLE
-            tvChangeAddressTop.setOnClickListener {
+            binding.tvChangeAddressTop.visibility = View.VISIBLE
+            binding.tvShipmentAddress.visibility = View.VISIBLE
+            binding.tvChangeAddressTop.setOnClickListener {
                 shipmentAdapterActionListener.onChangeAddress()
             }
         } else {
-            tvChangeAddressTop.visibility = View.GONE
-            tvShipmentAddress.visibility = View.GONE
+            binding.tvChangeAddressTop.visibility = View.GONE
+            binding.tvShipmentAddress.visibility = View.GONE
         }
     }
 
@@ -271,7 +238,7 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
             val onboardingItems = ArrayList<CoachMark2Item>().apply {
                 add(
                     CoachMark2Item(
-                        rlRecipientAddressLayout,
+                        binding.rlShipmentRecipientAddressLayout,
                         it.getString(R.string.label_showcase_address_title),
                         it.getString(R.string.label_showcase_address_message)
                     )

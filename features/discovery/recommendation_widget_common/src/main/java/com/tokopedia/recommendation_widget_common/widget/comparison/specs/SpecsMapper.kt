@@ -1,14 +1,15 @@
 package com.tokopedia.recommendation_widget_common.widget.comparison.specs
 
 import android.content.Context
-
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationSpecificationLabels
+import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonColorConfig
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_3
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 object SpecsMapper {
     fun mapToSpecsListModel(
@@ -16,7 +17,8 @@ object SpecsMapper {
         parentInEdgeStart: Boolean = false,
         specsConfig: SpecsConfig,
         position: Int,
-        totalItems: Int
+        totalItems: Int,
+        comparisonColorConfig: ComparisonColorConfig,
     ): SpecsListModel {
         val listSpecsModel = recommendationSpecificationLabels.withIndex().map {
             SpecsModel(
@@ -26,16 +28,15 @@ object SpecsMapper {
                     it.index,
                     recommendationSpecificationLabels.size
                 ),
-                bgDrawableColorRef = getColorCompareItem(
-                    parentInEdgeStart
-                )
+                bgDrawableColorRef = getColorCompareItem(parentInEdgeStart),
+                colorConfig = comparisonColorConfig,
             )
         }
         return SpecsListModel(
             specs = listSpecsModel,
             specsConfig = specsConfig,
             currentRecommendationPosition = position,
-            totalRecommendations = totalItems
+            totalRecommendations = totalItems,
         )
     }
 
@@ -50,9 +51,9 @@ object SpecsMapper {
 
     private fun getColorCompareItem(parentInEdgeStart: Boolean): Int {
         return if (parentInEdgeStart) {
-            com.tokopedia.unifyprinciples.R.color.Unify_N50
+            unifyprinciplesR.color.Unify_NN50
         } else {
-            com.tokopedia.unifyprinciples.R.color.Unify_N0
+            android.R.color.transparent
         }
     }
 

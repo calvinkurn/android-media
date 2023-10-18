@@ -8,6 +8,6 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 class CodModel(
-    var isCod: Boolean = false,
-    var counterCod: Int = 0
+    val isCod: Boolean = false,
+    val counterCod: Int = 0
 ) : Parcelable

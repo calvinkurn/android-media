@@ -10,6 +10,8 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_
 import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
+import com.tokopedia.chat_common.domain.pojo.Chat
+import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CHAT_SEPARATOR
@@ -27,15 +29,19 @@ import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.DynamicAttachment
 import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.DynamicStickyButton
 import com.tokopedia.chatbot.chatbot2.data.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.chatbot2.data.imageupload.ChatbotImageUploadAttributes
+import com.tokopedia.chatbot.chatbot2.data.owocinvoice.DynamicOwocInvoicePojo
 import com.tokopedia.chatbot.chatbot2.data.quickreply.ListInvoicesSelectionPojo
 import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyPojo
+import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
+import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasonsSend
 import com.tokopedia.chatbot.chatbot2.data.stickyactionbutton.StickyActionButtonPojo
 import com.tokopedia.chatbot.chatbot2.data.uploadsecure.ChatbotVideoUploadAttributes
 import com.tokopedia.chatbot.chatbot2.view.uimodel.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.csatoptionlist.CsatOptionsUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicAttachmentTextUiModel
+import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicOwocInvoiceUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicStickyButtonUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.invoice.AttachInvoiceSelectionUiModel
@@ -51,6 +57,44 @@ import javax.inject.Inject
  * @author by nisie on 21/12/18.
  */
 open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatMapper() {
+
+    override fun mappingListChat(pojo: GetExistingChatPojo): ArrayList<Visitable<*>> {
+        val listChat: ArrayList<Visitable<*>> = ArrayList()
+
+        for (chatItemPojo in pojo.chatReplies.list) {
+            for (chatItemPojoByDate in chatItemPojo.chats) {
+                for ((index, chatItemPojoByDateByTime) in chatItemPojoByDate.replies.withIndex()) {
+                    if (hasAttachment(chatItemPojoByDateByTime)) {
+                        val attachmentIds = getAttachmentIds(pojo.chatReplies.attachmentIds)
+                        val hasReplied = validateActionButtonHasBeenReplied(index, chatItemPojoByDateByTime, chatItemPojoByDate)
+                        if (!hasReplied) {
+                            listChat.add(mapAttachment(chatItemPojoByDateByTime, attachmentIds))
+                        }
+                    } else {
+                        listChat.add(convertToMessageViewModel(chatItemPojoByDateByTime))
+                    }
+                }
+            }
+        }
+
+        return listChat
+    }
+
+    private fun validateActionButtonHasBeenReplied(
+        index: Int,
+        chatItemPojoByDateByTime: Reply,
+        chatItemPojoByDate: Chat
+    ): Boolean {
+        val attachmentId = chatItemPojoByDateByTime.attachment.type.toString()
+        if (attachmentId != TYPE_CHAT_BALLOON_ACTION) return false
+
+        return if (index < (chatItemPojoByDate.replies.size - 1)) {
+            val nextItem = chatItemPojoByDate.replies[index + 1]
+            !nextItem.isOpposite
+        } else {
+            false
+        }
+    }
 
     override fun mapAttachment(
         chatItemPojoByDateByTime: Reply,
@@ -91,6 +135,18 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                             dynamicAttachment
                         )
                         ChatbotConstant.DynamicAttachment.DYNAMIC_TEXT_SEND -> convertToDynamicAttachment105withContentCode106(
+                            chatItemPojoByDateByTime,
+                            dynamicAttachment
+                        )
+                        ChatbotConstant.DynamicAttachment.DYNAMIC_REJECT_REASON -> convertToDynamicAttachmentWithContentCode107(
+                            chatItemPojoByDateByTime,
+                            dynamicAttachment
+                        )
+                        ChatbotConstant.DynamicAttachment.DYNAMIC_REJECT_REASON_SEND -> convertToDynamicAttachmentWithContentCode108(
+                            chatItemPojoByDateByTime,
+                            dynamicAttachment
+                        )
+                        ChatbotConstant.DynamicAttachment.DYNAMIC_INVOICE_OWOC -> convertToDynamicOwocInvoice(
                             chatItemPojoByDateByTime,
                             dynamicAttachment
                         )
@@ -137,6 +193,57 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
         return DynamicAttachmentTextUiModel.Builder()
             .withResponseFromGQL(pojo)
             .withMsgContent(dynamicStickyButton.text)
+            .build()
+    }
+
+    private fun convertToDynamicAttachmentWithContentCode107(
+        pojo: Reply,
+        dynamicAttachment: DynamicAttachment
+    ): DynamicAttachmentTextUiModel {
+        val dynamicStickyButton = gson.fromJson(
+            dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent,
+            DynamicAttachmentRejectReasons::class.java
+        )
+
+        return DynamicAttachmentTextUiModel.Builder()
+            .withResponseFromGQL(pojo)
+            .isSender(false)
+            .withMsg(dynamicStickyButton.helpfulQuestion.message)
+            .withRejectReasons(dynamicStickyButton)
+            .build()
+    }
+
+    private fun convertToDynamicOwocInvoice(
+        pojo: Reply,
+        dynamicAttachment: DynamicAttachment
+    ): DynamicOwocInvoiceUiModel {
+        val dynamicOwocInvoicePojo = gson.fromJson(
+            dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent,
+            DynamicOwocInvoicePojo::class.java
+        )
+
+        return DynamicOwocInvoiceUiModel.Builder()
+            .withResponseFromGQL(pojo)
+            .withMsg(dynamicOwocInvoicePojo.message ?: "")
+            .withOwocInvoiceList(dynamicOwocInvoicePojo.invoiceCardList)
+            .build()
+    }
+
+    private fun convertToDynamicAttachmentWithContentCode108(
+        pojo: Reply,
+        dynamicAttachment: DynamicAttachment
+    ): DynamicAttachmentTextUiModel {
+        val dynamicStickyButton = gson.fromJson(
+            dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent,
+            DynamicAttachmentRejectReasonsSend::class.java
+        )
+        var msg = ""
+        if (dynamicStickyButton.helpfulQuestionFeedbackForm.helpfulQuestion.newQuickReplies.isNotEmpty()) {
+            msg = dynamicStickyButton.helpfulQuestionFeedbackForm.helpfulQuestion.newQuickReplies[0].text
+        }
+        return DynamicAttachmentTextUiModel.Builder()
+            .withResponseFromGQL(pojo)
+            .withMsgContent(msg)
             .build()
     }
 
@@ -229,7 +336,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             pojo.replyTime,
             pojo.msg,
             convertToChatActionBubbleViewModelList(pojoAttribute),
-            status = pojo.status
+            status = pojo.status,
+            isTypingBlocked = pojoAttribute.isTypingBlockedOnButtonSelect
         )
     }
 

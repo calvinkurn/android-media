@@ -6,7 +6,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.param.KeroAddressParamData
-import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.common.domain.response.CartListBusinessData
 import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataAdditionalGrouping
 import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataAdditionalGroupingDetail
@@ -167,6 +166,38 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
                 },
                 then = {
                     assertEquals(successResponse.data, it)
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `when loadData should set payment button loading false`() {
+        runBlocking {
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
+                    PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
+                )
+            ).data
+            onGetCheckoutTokoFood_thenReturn(successResponse)
+            val isHasPinpoint = true
+
+            viewModel.isPaymentButtonLoading.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.setIsHasPinpoint("123", isHasPinpoint)
+                    viewModel.loadData()
+                },
+                then = {
+                    assertEquals(false, it)
                 }
             )
         }
@@ -1634,10 +1665,20 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
     @Test
     fun `when triggerEditQuantity, should emit update quantity state`() {
         runTest {
-            val successResponse =
-                JsonResourcesUtil.createSuccessResponse<CartGeneralCartListData>(
+            val rawSuccessResponse =
+                JsonResourcesUtil.createSuccessResponse<CartListTokofoodResponse>(
                     PURCHASE_SUCCESS_JSON
+                ).cartGeneralCartList
+
+            val successResponse = rawSuccessResponse.copy(
+                data = rawSuccessResponse.data.copy(
+                    data = rawSuccessResponse.data.data.copy(
+                        businessData = rawSuccessResponse.data.data.businessData.map {
+                            it.copy(businessId = TokoFoodCartUtil.getBusinessId())
+                        }
+                    )
                 )
+            ).data
             onGetCheckoutTokoFood_thenReturn(successResponse)
 
             viewModel.setIsHasPinpoint("123", true)

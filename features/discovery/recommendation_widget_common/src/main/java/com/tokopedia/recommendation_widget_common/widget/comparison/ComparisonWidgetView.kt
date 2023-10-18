@@ -10,12 +10,15 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.viewutil.parseColorHex
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.recommendation_widget_common.widget.comparison.compareditem.ComparedItemAdapter
 import com.tokopedia.track.TrackApp
@@ -25,6 +28,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ComparisonWidgetView : FrameLayout, CoroutineScope {
 
@@ -32,15 +36,18 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
     private var comparisonListModel: ComparisonListModel? = null
     private var adapter: ComparedItemAdapter? = null
     private var comparedAdapter: ComparisonWidgetAdapter? = null
+    private var isAnchorClickable: Boolean = false
 
     private var userSessionInterface = UserSession(context)
 
     private val masterJob = SupervisorJob()
     override val coroutineContext = masterJob + Dispatchers.IO
 
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context) : super(context) { init() }
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) { init(attrs) }
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        init(attrs)
+    }
 
     private var rv_comparison_widget: RecyclerView? = null
     private var rv_compared_item: RecyclerView? = null
@@ -48,13 +55,20 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
     private var btn_see_more: TextView? = null
     private var btn_collapse: LinearLayout? = null
     private var comparison_widget_container: LinearLayout? = null
-    init {
+    private var tvCollapse: TextView? = null
+    private var chevronCollapse: IconUnify? = null
+
+    private fun init(attrs: AttributeSet? = null) {
+        initAttributes(attrs)
+
         LayoutInflater.from(context).inflate(R.layout.view_comparison_widget, this)
         rv_comparison_widget = rootView.findViewById(R.id.rv_comparison_widget)
         rv_compared_item = rootView.findViewById(R.id.rv_compared_item)
         tv_header_title = rootView.findViewById(R.id.tv_header_title)
         btn_see_more = rootView.findViewById(R.id.btn_see_more)
         btn_collapse = rootView.findViewById(R.id.btn_collapse)
+        tvCollapse = rootView.findViewById(R.id.tv_collapse)
+        chevronCollapse = rootView.findViewById(R.id.iv_chevron_down_see_more)
         comparison_widget_container = rootView.findViewById(R.id.comparison_widget_container)
 
         if (rv_comparison_widget?.itemDecorationCount == 0) {
@@ -64,16 +78,40 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
         switchToCollapsedState(resources.getDimensionPixelSize(R.dimen.comparison_widget_collapsed_height))
     }
 
+    private fun initAttributes(attrs: AttributeSet?) {
+        attrs ?: return
+
+        val typedArray = context.obtainStyledAttributes(
+            attrs,
+            R.styleable.ComparisonWidgetView, 0, 0)
+
+        try {
+            isAnchorClickable = typedArray.getBoolean(R.styleable.ComparisonWidgetView_clickableAnchor, false)
+        } finally {
+            typedArray.recycle()
+        }
+    }
+
     fun setComparisonWidgetData(
         recommendationWidget: RecommendationWidget,
         comparisonWidgetInterface: ComparisonWidgetInterface,
         recommendationTrackingModel: RecommendationTrackingModel,
-        trackingQueue: TrackingQueue?
+        trackingQueue: TrackingQueue?,
+        isAnchorClickable: Boolean? = null,
+        comparisonColorConfig: ComparisonColorConfig = ComparisonColorConfig(),
     ) {
         launch {
             try {
+                isAnchorClickable?.let { this@ComparisonWidgetView.isAnchorClickable = it }
+
                 val comparisonListModel =
-                    ComparisonWidgetMapper.mapToComparisonWidgetModel(recommendationWidget, context)
+                    ComparisonWidgetMapper.mapToComparisonWidgetModel(
+                        recommendationWidget,
+                        context,
+                        this@ComparisonWidgetView.isAnchorClickable,
+                        comparisonColorConfig,
+                    )
+
                 if (this@ComparisonWidgetView.adapter == null) {
                     launch(Dispatchers.Main) {
                         tv_header_title?.text = comparisonListModel.recommendationWidget?.title
@@ -82,6 +120,18 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
                         } else {
                             btn_see_more?.gone()
                         }
+
+                        val textColor = comparisonListModel.comparisonColorConfig.textColor.parseColorHex(
+                            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950_96)
+                        )
+                        tv_header_title?.setTextColor(textColor)
+
+                        val ctaColor = comparisonListModel.comparisonColorConfig.ctaTextColor.parseColorHex(
+                            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500)
+                        )
+                        tvCollapse?.setTextColor(ctaColor)
+                        chevronCollapse?.setColorFilter(ctaColor)
+                        btn_see_more?.setBackgroundColor(ctaColor)
 
                         this@ComparisonWidgetView.comparisonListModel = comparisonListModel
                         this@ComparisonWidgetView.adapter = ComparedItemAdapter(

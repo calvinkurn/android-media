@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Kota"
-        android:textColor="@color/Unify_N200"
+        android:textColor="@color/Unify_NN500"
         android:background="@drawable/bg_text_city_type"
         android:paddingTop="@dimen/spacing_lvl1"
         android:paddingBottom="@dimen/spacing_lvl1"

@@ -8,19 +8,24 @@ import com.tokopedia.discovery2.usecase.emptystateusecase.EmptyStateUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import javax.inject.Inject
 
-class EmptyStateViewModel(val application: Application,
-                          val components: ComponentsItem, val position: Int)
-    : DiscoveryBaseViewModel() {
+class EmptyStateViewModel(
+    val application: Application,
+    val components: ComponentsItem,
+    val position: Int
+) :
+    DiscoveryBaseViewModel() {
+    @JvmField
     @Inject
-    lateinit var emptyStateRepository: EmptyStateRepository
+    var emptyStateRepository: EmptyStateRepository? = null
+
+    @JvmField
     @Inject
-    lateinit var emptyStateUseCase: EmptyStateUseCase
+    var emptyStateUseCase: EmptyStateUseCase? = null
 
-
-    fun getEmptyStateData(): EmptyStateModel {
-        return emptyStateRepository.getEmptyStateData(components)
+    fun getEmptyStateData(): EmptyStateModel? {
+        return emptyStateRepository?.getEmptyStateData(components)
     }
-    fun handleEmptyStateReset(){
-        this@EmptyStateViewModel.syncData.value = emptyStateUseCase.resetChildComponents(components)
+    fun handleEmptyStateReset() {
+        this@EmptyStateViewModel.syncData.value = emptyStateUseCase?.resetChildComponents(components)
     }
 }

@@ -27,7 +27,7 @@
         android:id="@+id/divider_shipment"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rv_shipper_child"/>
 

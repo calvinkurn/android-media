@@ -118,7 +118,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
                     getString(R.string.hotel_review_filter_second_rank),
                     getString(R.string.hotel_review_filter_third_rank)
                 ),
-                com.tokopedia.unifyprinciples.R.color.Unify_G300
+                com.tokopedia.unifyprinciples.R.color.Unify_GN300
             )
             it.filterRecyclerView.selectOnlyOneChip(true)
             // initially select recent search chip

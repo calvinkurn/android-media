@@ -63,7 +63,7 @@
     <string name="picker_image_res_min_limit">Ukuran foto minimal %1$d x %1$d px.</string>
     <string name="picker_image_max_size">Ukuran foto maksimal %1$d MB.</string>
 
-    <string name="picker_title_empty_state">Masing kosong, nih</string>
+    <string name="picker_title_empty_state">Masih kosong, nih</string>
     <string name="picker_message_empty_state">Yuk, isi dengan media menarik dimulai dari ambil foto dengan kamera.</string>
 
 <!--    special char-->

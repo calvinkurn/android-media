@@ -42,8 +42,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ImageContrastCheck"
-        tools:src="@drawable/ic_star_four" />
+        tools:ignore="ImageContrastCheck"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/assigned_value_typography"
@@ -54,7 +53,7 @@
         android:maxLines="2"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:textColor="@color/Unify_NN0"
+        android:textColor="@color/product_card_compact_dms_card_color"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image_filter_view"
@@ -82,7 +81,7 @@
 
     <LinearLayout
         android:id="@+id/promo_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:visibility="gone"

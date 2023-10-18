@@ -46,6 +46,8 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPreparationFrag
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
+import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationSetupFragment
+import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationTabFragment
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import kotlin.LazyThreadSafetyMode.NONE
@@ -119,6 +121,7 @@ class SwitchAccountRobot(
         accountAnalytic = PlayBroadcastAccountAnalyticImpl(analyticUserSession, hydraConfigStore),
         shortsEntryPointAnalytic = mockk(relaxed = true),
         playPerformanceDashboardEntryPointAnalytic = mockk(relaxed = true),
+        beautificationAnalytic = mockk(relaxed = true),
     )
 
     private val ugcViewModelFactory = object : UGCOnboardingViewModelFactory.Creator {
@@ -171,6 +174,8 @@ class SwitchAccountRobot(
                     analyticManager = mockk(relaxed = true),
                     userSession = mockk(relaxed = true),
                     coachMarkSharedPref = mockk(relaxed = true),
+                    beautificationUiBridge = mockk(relaxed = true),
+                    beautificationAnalyticStateHolder = mockk(relaxed = true),
                 )
             },
             UserCompleteOnboardingBottomSheet::class.java to {
@@ -185,12 +190,27 @@ class SwitchAccountRobot(
                     strategyFactory = onboardingStrategy
                 )
             },
+            BeautificationSetupFragment::class.java to {
+                BeautificationSetupFragment(
+                    viewModelFactoryCreator = parentViewModelFactoryCreator,
+                    beautificationUiBridge = mockk(relaxed = true),
+                    beautificationAnalytic = mockk(relaxed = true),
+                    beautificationAnalyticStateHolder = mockk(relaxed = true),
+                )
+            },
+            BeautificationTabFragment::class.java to {
+                BeautificationTabFragment(
+                    viewModelFactoryCreator = parentViewModelFactoryCreator,
+                    beautificationAnalytic = mockk(relaxed = true),
+                    beautificationAnalyticStateHolder = mockk(relaxed = true),
+                )
+            }
         )
     )
 
     private val scenario = launchFragmentInContainer<PlayBroadcastPreparationFragment>(
         factory = fragmentFactory,
-        themeResId = R.style.AppTheme,
+        themeResId = com.tokopedia.empty_state.R.style.AppTheme,
     )
 
     init {

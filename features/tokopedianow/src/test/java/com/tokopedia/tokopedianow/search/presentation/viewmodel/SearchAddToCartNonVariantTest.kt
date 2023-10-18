@@ -1,7 +1,11 @@
 package com.tokopedia.tokopedianow.search.presentation.viewmodel
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType
+import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
+import com.tokopedia.tokopedianow.common.util.ProductAdsMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper
@@ -14,13 +18,15 @@ import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.C
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.DeleteCartTestObject.deleteCartResponse
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.PRODUCT_ID_NON_VARIANT_ATC
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.miniCartItems
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.miniCartSimplifiedData
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
-class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
+class SearchAddToCartNonVariantTest : SearchTestFixtures(), Callback {
 
     private val searchModelJSON = "search/first-page-products-variant-and-non-variant.json"
     private val searchModel = searchModelJSON.jsonToObject<SearchModel>()
@@ -31,13 +37,13 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
         super.setUp()
 
         addToCartTestHelper = AddToCartNonVariantTestHelper(
-                tokoNowSearchViewModel,
-                addToCartUseCase,
-                updateCartUseCase,
-                deleteCartUseCase,
-                getMiniCartListSimplifiedUseCase,
-                userSession,
-                this,
+            tokoNowSearchViewModel,
+            addToCartUseCase,
+            updateCartUseCase,
+            deleteCartUseCase,
+            getMiniCartListSimplifiedUseCase,
+            userSession,
+            this
         )
     }
 
@@ -91,6 +97,22 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
     }
 
     @Test
+    fun `test add to cart update ads carousel success`() {
+        addToCartTestHelper.run {
+            `Given first page API will be successful`()
+            `Given view already created`()
+            `Given add to cart API will success`(addToCartSuccessModel)
+            `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
+
+            val productItemList = tokoNowSearchViewModel.visitableListLiveData.value!!.getProductItemList()
+            val productItemDataViewToATC = productItemList[0]
+
+            `When handle cart event ads product`(productItemDataViewToATC, addToCartQty)
+            `Then verify carousel ads updated`()
+        }
+    }
+
+    @Test
     fun `add to cart non login broad match item`() {
         addToCartTestHelper.run {
             val searchModel = "search/broadmatch/broadmatch-no-result.json".jsonToObject<SearchModel>()
@@ -120,7 +142,7 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
     private fun `When add to cart broad match item`(
         broadMatchItem: ProductCardCompactCarouselItemUiModel,
         quantity: Int,
-        broadMatchIndex: Int,
+        broadMatchIndex: Int
     ) {
         tokoNowSearchViewModel.onViewATCBroadMatchItem(broadMatchItem, quantity, broadMatchIndex)
     }
@@ -158,7 +180,7 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
     private fun `Then assert add to cart tracking broad match item`(
         quantity: Int,
         cartId: String,
-        item: ProductCardCompactCarouselItemUiModel,
+        item: ProductCardCompactCarouselItemUiModel
     ) {
         val addToCartEvent = tokoNowSearchViewModel.addToCartBroadMatchTrackingLiveData.value!!
 
@@ -228,7 +250,7 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
 
     private fun AddToCartNonVariantTestHelper.`Given view setup to update quantity broad match item`(
         productId: String,
-        updatedQuantity: Int,
+        updatedQuantity: Int
     ) {
         val searchModel = "search/broadmatch/broadmatch-no-result.json".jsonToObject<SearchModel>()
         `Given get search first page use case will be successful`(searchModel)
@@ -248,7 +270,7 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
         broadMatchItem: ProductCardCompactCarouselItemUiModel,
         expectedErrorMessage: String = "",
         expectedProductQuantity: Int = updateQuantityParam,
-        expectedRefreshMiniCartCount: Int = 2,
+        expectedRefreshMiniCartCount: Int = 2
     ) {
         `Then assert update cart params`(updateQuantityParam, cartIdParam)
         `Then assert cart message event`("")
@@ -285,7 +307,7 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
                 broadMatchItem,
                 expectedErrorMessage,
                 expectedProductQuantity,
-                expectedRefreshMiniCartCount,
+                expectedRefreshMiniCartCount
             )
         }
     }
@@ -303,13 +325,13 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
 
             `Then assert delete cart broad match item behavior`(
                 broadMatchItemInMiniCart.cartId,
-                expectedSuccessDeleteCartMessage = deleteCartMessage,
+                expectedSuccessDeleteCartMessage = deleteCartMessage
             )
         }
     }
 
     private fun AddToCartNonVariantTestHelper.`Given view setup to delete broad match item`(
-        productIdToDelete: String,
+        productIdToDelete: String
     ) {
         val searchModel = "search/broadmatch/broadmatch-no-result.json".jsonToObject<SearchModel>()
         `Given get search first page use case will be successful`(searchModel)
@@ -326,7 +348,7 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
         cartIdParam: String,
         expectedSuccessDeleteCartMessage: String = "",
         expectedFailedDeleteCartMessage: String = "",
-        expectedRefreshMiniCartCount: Int = 2,
+        expectedRefreshMiniCartCount: Int = 2
     ) {
         `Then assert delete cart params`(cartIdParam)
         `Then assert remove from cart message event`(expectedSuccessDeleteCartMessage)
@@ -354,5 +376,34 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
                 expectedRefreshMiniCartCount = 1
             )
         }
+    }
+
+    private fun `Then verify carousel ads updated`() {
+        val adsCarouselUiModel = mapProductAdsCarousel(
+            response = searchModel.productAds
+        )
+        tokoNowSearchViewModel.updateAdsCarouselLiveData
+            .verifyValueEquals(Pair(6, adsCarouselUiModel))
+    }
+
+    private fun List<Visitable<*>>.getProductItemList(): List<ProductCardCompactCarouselItemUiModel> {
+        return filterIsInstance<TokoNowAdsCarouselUiModel>().first().items
+    }
+
+    private fun `When handle cart event ads product`(
+        productItemToATC: ProductCardCompactCarouselItemUiModel,
+        addToCartQty: Int
+    ) {
+        val productItem = ProductItemDataView(
+            shop = ProductItemDataView.Shop(productItemToATC.shopId, productItemToATC.shopName),
+            productCardModel = productItemToATC.productCardModel,
+            widgetTitle = productItemToATC.headerName,
+            shopId = productItemToATC.shopId,
+            shopName = productItemToATC.shopName,
+            shopType = productItemToATC.shopType,
+            categoryBreadcrumbs = productItemToATC.categoryBreadcrumbs,
+            type = TokoNowStaticLayoutType.PRODUCT_ADS_CAROUSEL
+        )
+        tokoNowSearchViewModel.onViewATCProductNonVariant(productItem, addToCartQty)
     }
 }

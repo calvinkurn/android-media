@@ -8,7 +8,7 @@ import com.tokopedia.notifcenter.data.uimodel.BigDividerUiModel
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.SectionTitleUiModel
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
+import com.tokopedia.notifcenter.view.adapter.typefactory.NotificationTypeFactory
 import javax.inject.Inject
 
 class NotifcenterDetailMapper @Inject constructor() {

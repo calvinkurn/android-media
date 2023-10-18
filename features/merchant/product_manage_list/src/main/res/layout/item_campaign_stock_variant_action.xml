@@ -13,7 +13,7 @@
         android:id="@+id/tv_campaign_stock_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:text="@string/product_manage_campaign_stock_event_action"
         app:typographyType="heading_6"
         app:layout_constraintStart_toStartOf="parent"

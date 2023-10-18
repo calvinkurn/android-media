@@ -6,9 +6,12 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.media.loader.data.getFailureType
 import com.tokopedia.media.loader.data.Properties
+import com.tokopedia.media.loader.internal.NetworkResponseManager
 import com.tokopedia.media.loader.tracker.IsIcon
 import com.tokopedia.media.loader.tracker.MediaLoaderTracker
+import com.tokopedia.media.loader.utils.RemoteConfig
 import com.tokopedia.media.loader.utils.adaptiveSizeImageRequest
 import com.tokopedia.media.loader.wrapper.MediaDataSource.Companion.mapTo as dataSource
 
@@ -74,6 +77,21 @@ internal object MediaListenerBuilder {
                 isIcon = IsIcon(properties.isIcon),
                 loadTime = loadTime
             )
+
+            if (properties.shouldTrackNetwork && RemoteConfig.shouldAbleToExposeResponseHeader(context)) {
+                val result = NetworkResponseManager.getInstance()
+                val headers = result.header(properties.data.toString())
+
+                properties.setNetworkResponse?.header(
+                    headers, // get all header responses
+                    headers.getFailureType() // get failure type (if any)
+                )
+
+                // in case we need to clear force the previous cache of headers
+                if (properties.isForceClearHeaderCache) {
+                    result.forceResetCache()
+                }
+            }
         }
 
         // override the load time into properties

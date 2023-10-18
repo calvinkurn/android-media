@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View.OnClickListener
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.content.common.databinding.BottomSheetHeaderBinding
+import com.tokopedia.iconunify.IconUnify
 
 /**
  * @author by astidhiyaa on 02/12/22
@@ -42,5 +43,11 @@ class ContentHeaderView : ConstraintLayout {
             binding.ivSheetClose.setOnClickListener {
                 value.onClick(it)
             }
+        }
+
+    var icon: Int = IconUnify.CLOSE
+        set(value) {
+            field = value
+            binding.ivSheetClose.setImage(value)
         }
 }

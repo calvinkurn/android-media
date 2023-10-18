@@ -14,15 +14,20 @@ interface DynamicLegoBannerListener {
     fun onClickGridThreeImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int)
     fun onClickGridTwoImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int)
 
-    fun onImpressionGridSixImage(channelModel: ChannelModel, parentPosition: Int)
-    fun onImpressionGridFourImage(channelModel: ChannelModel, parentPosition: Int)
-    fun onImpressionGridThreeImage(channelModel: ChannelModel, parentPosition: Int)
-    fun onImpressionGridTwoImage(channelModel: ChannelModel, parentPosition: Int)
+    // Per grid impression listener
+    fun onImpressionGridSixImage(channelModel: ChannelModel, parentPosition: Int) { }
+    fun onImpressionGridFourImage(channelModel: ChannelModel, parentPosition: Int) { }
+    fun onImpressionGridThreeImage(channelModel: ChannelModel, parentPosition: Int) { }
+    fun onImpressionGridTwoImage(channelModel: ChannelModel, parentPosition: Int) { }
 
+    // Viewport impression listener
     fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int)
     fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int)
     fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int)
     fun onChannelImpressionTwoImage(channelModel: ChannelModel, parentPosition: Int)
+
+    // Globalized viewport impression listener for new tracking mechanism
+    fun onViewportImpression(channelModel: ChannelModel) { }
 
     fun getDynamicLegoBannerData(channelModel: ChannelModel)
 }

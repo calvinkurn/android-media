@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginTop="10dp"
             android:fontFamily="sans-serif-light"
             android:gravity="center_horizontal"
             android:text="@string/introducing"
@@ -59,10 +59,10 @@
             android:background="@drawable/btn_share_transaparent"
             android:fontFamily="sans-serif"
             android:gravity="center_horizontal"
-            android:padding="@dimen/margin_small"
+            android:padding="10dp"
             android:text="@string/download_topseller_app"
             android:textColor="@color/medium_green"
-            android:textSize="@dimen/fonts"
+            android:textSize="14sp"
             android:textStyle="bold" />
 
         <TextView
@@ -88,7 +88,7 @@
             android:layout_below="@id/imageview1"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="23dp"
-            android:padding="@dimen/padding_med"
+            android:padding="20dp"
             app:remoteFileName="ic_icon_redirect_seller_app.png" />
     </RelativeLayout>
 

@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.widget.comparison
 
 import android.content.Context
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
@@ -13,12 +14,14 @@ import kotlinx.coroutines.Dispatchers
 object ComparisonWidgetMapper {
     suspend fun mapToComparisonWidgetModel(
         recommendationWidget: RecommendationWidget,
-        context: Context
+        context: Context,
+        isAnchorClickable: Boolean,
+        comparisonColorConfig: ComparisonColorConfig,
     ): ComparisonListModel {
         val recommendationItems = recommendationWidget.recommendationItemList
         val specsConfig = buildSpecsConfig(recommendationItems, context)
         val listOfProductCardModel = recommendationItems.map {
-            it.toProductCardModel()
+            it.toProductCardModel(forceLightMode = comparisonColorConfig.productCardForceLightMode)
         }
         val productCardHeight = listOfProductCardModel.getMaxHeightForGridView(
             context,
@@ -33,22 +36,28 @@ object ComparisonWidgetMapper {
 
                 ComparisonModel(
                     specsModel = SpecsMapper.mapToSpecsListModel(
-                        it.value.specs, isEdgeStart, specsConfig, it.index, recommendationItems.size),
+                        it.value.specs,
+                        isEdgeStart,
+                        specsConfig,
+                        it.index,
+                        recommendationItems.size,
+                        comparisonColorConfig
+                    ),
                     productCardModel = it.value.toProductCardModel(),
                     recommendationItem = it.value,
-                    isCurrentItem = checkIseCurrentItem(it.index)
+                    isClickable = isClickable(it.index, isAnchorClickable),
                 )
             },
             comparisonWidgetConfig = ComparisonWidgetConfig(
                 productCardHeight = productCardHeight,
-                collapsedHeight = collapsedHeight
-            )
+                collapsedHeight = collapsedHeight,
+            ),
+            comparisonColorConfig = comparisonColorConfig,
         )
     }
 
-    private fun checkIseCurrentItem(index: Int): Boolean {
-        return index == 0
-    }
+    private fun isClickable(index: Int, isAnchorClickable: Boolean) =
+        index != Int.ZERO || isAnchorClickable
 
     private fun getCollapsedSpecsHeight(heightPositionMap: MutableMap<Int, Int>): Int {
         //2 is number visible of specs height on collapsed state

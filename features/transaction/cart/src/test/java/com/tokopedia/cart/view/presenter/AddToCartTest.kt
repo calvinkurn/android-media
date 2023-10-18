@@ -35,12 +35,10 @@ class AddToCartTest : BaseCartTest() {
                 success = 1
             }
         }
-        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
@@ -64,7 +62,8 @@ class AddToCartTest : BaseCartTest() {
                 add(errorMessage)
             }
         }
-        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
@@ -90,12 +89,10 @@ class AddToCartTest : BaseCartTest() {
             }
         }
 
-        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
@@ -119,7 +116,8 @@ class AddToCartTest : BaseCartTest() {
             }
         }
 
-        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
@@ -135,7 +133,8 @@ class AddToCartTest : BaseCartTest() {
     fun `WHEN add to cart recent view item failed with exception THEN should render error`() {
         // GIVEN
         val exception = IllegalStateException("Add to cart error with exception")
-        every { addToCartUseCase.createObservable(any()) } returns Observable.error(exception)
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } throws exception
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
@@ -161,12 +160,10 @@ class AddToCartTest : BaseCartTest() {
             }
         }
 
-        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
 
         every { userSessionInterface.userId } returns "123"
 
@@ -194,7 +191,8 @@ class AddToCartTest : BaseCartTest() {
             }
         }
 
-        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
@@ -235,12 +233,10 @@ class AddToCartTest : BaseCartTest() {
                 success = 1
             }
         }
-        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
@@ -280,7 +276,8 @@ class AddToCartTest : BaseCartTest() {
                 add(errorMessage)
             }
         }
-        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
@@ -306,12 +303,10 @@ class AddToCartTest : BaseCartTest() {
                 success = 1
             }
         }
-        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        coEvery { addToCartUseCase.setParams(any()) } just Runs
+        coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
         every { userSessionInterface.userId } returns "123"
 
         cartListPresenter.detachView()

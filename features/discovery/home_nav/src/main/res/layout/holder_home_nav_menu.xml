@@ -60,7 +60,7 @@
         android:gravity="center_vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:layout_marginEnd="8dp"
         app:typographyType="small"
         app:layout_constraintEnd_toEndOf="parent"
@@ -68,4 +68,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:notificationType="counter_type"
         tools:visibility="visible"/>
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/nav_menu_icon_cta"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:icon_name="CHEVRON_RIGHT" />
 </LinearLayout>

@@ -3,6 +3,7 @@
     <string name="label_affiliate">Affiliate</string>
 
     <string name="affiliate_home">Home</string>
+    <string name="affiliate_performa">Performa</string>
     <string name="affiliate_promo">Promosikan</string>
     <string name="affiliate_withdrawal">Pendapatan</string>
     <string name="affiliate_bantuan">Bantuan</string>
@@ -31,12 +32,6 @@
     <string name="affiliate_paste_product_link">Tempel link produk atau toko di Tokopedia yang kamu suka, ya.</string>
     <string name="affiliate_active">Aktif</string>
     <string name="affiliate_inactive">Tidak Aktif</string>
-    <string name="affiliate_how_to_promote">Gimana cara promosikannya?</string>
-    <string name="affiliate_how_to_get_link">Kamu bisa dapatkan link affiliate dengan cara berikut ini:\n</string>
-    <string name="affiliate_how_to_get_link_1">1. Salin link produk yang kamu ingin promosikan di aplikasi Tokopedia (Pastikan produknya termasuk dari kategori yang bisa dipromosikan. Lihat Kategori)</string>
-    <string name="affiliate_how_to_get_link_2">2. Tempel link produk di kolom yang disediakan pada halaman Promosikan</string>
-    <string name="affiliate_how_to_get_link_3">3. Produk akan ditemukan jika link benar</string>
-    <string name="affiliate_how_to_get_link_4">4. Dapatkan link affiliate dengan klik tombol Promosikan</string>
     <string name="affiliate_link_generated_succesfully">Link affiliate untuk di %s tersalin dan siap dipromosikan.</string>
     <string name="affiliate_link_empty_error">Link gagal disalin karena ada kendala pada sistem.</string>
     <string name="affiliate_product_count">%s Produk</string>
@@ -58,7 +53,7 @@
     <string name="affiliate_tutorial_title_2">Rekomendasi produk sesuai personamu</string>
     <string name="affiliate_tutorial_subtitle_2"><![CDATA[Tokopedia akan bantu pilihkan produk best seller dan yang lagi trending!]]></string>
     <string name="affiliate_tutorial_title_3">Semua bisa kamu lakukan di Dashboard Affiliate</string>
-    <string name="affiliate_tutorial_subtitle_3"><![CDATA[Mudah cek performa Affiliate, hingga kembangin skill kamu dengan Content Creator Academy!]]></string>
+    <string name="affiliate_tutorial_subtitle_3">Cek performa, tarik saldo, hingga kembangin skill kamu dengan Akademi Kreator Tokopedia!</string>
     <string name="affiliate_pelajari">Pelajari</string>
     <string name="affiliate_daftar_sekarang">Daftar Sekarang</string>
     <string name="affiliate_daftar_affiliate_dengan_akun_lain"><![CDATA[Daftar Affiliate dengan akun lain?\u0020]]></string>
@@ -210,4 +205,7 @@
     <string name="affiliate_ssa_promo_title">Toko dengan komisi ekstra!</string>
     <string name="affiliate_tokonow_promo_title">Komisi fresh dari Tokopedia NOW!</string>
     <string name="affiliate_tokonow_promo_subtitle">Kini udah bisa promosi &amp; share link NOW!</string>
+    <string name="link_history_entry">Riwayat link dipromosikan</string>
+    <string name="affiliate_back_to_wishlist">Kembali ke Koleksi Wishlist</string>
+    <string name="affiliate_go_to_promote">Ke Halaman Promosikan</string>
 </resources>

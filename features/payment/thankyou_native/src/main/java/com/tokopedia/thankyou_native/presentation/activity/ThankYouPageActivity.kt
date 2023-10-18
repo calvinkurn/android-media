@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -19,8 +20,10 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.TkpdIdlingResource
@@ -32,6 +35,7 @@ import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.DialogController
 import com.tokopedia.thankyou_native.presentation.fragment.*
+import com.tokopedia.thankyou_native.presentation.helper.PostPurchaseShareHelper
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import timber.log.Timber
@@ -46,6 +50,8 @@ const val ARG_MERCHANT = "merchant"
 private const val GLOBAL_NAV_HINT = "Cari lagi barang impianmu"
 
 private const val KEY_CONFIG_NEW_NAVIGATION = "app_flag_thankyou_new_navigation"
+private const val KEY_ROLLENCE_SHARE = "share_thankyoupage"
+private const val VALUE_MERCHANT_TOKOPEDIA = "tokopedia"
 
 class ThankYouPageActivity :
     BaseSimpleActivity(),
@@ -54,6 +60,9 @@ class ThankYouPageActivity :
 
     @Inject
     lateinit var thankYouPageAnalytics: dagger.Lazy<ThankYouPageAnalytics>
+
+    @Inject
+    lateinit var postPurchaseShareHelper: dagger.Lazy<PostPurchaseShareHelper>
 
     private lateinit var thankYouPageComponent: ThankYouPageComponent
 
@@ -268,7 +277,7 @@ class ThankYouPageActivity :
             }
             this@ThankYouPageActivity.lifecycle.addObserver(this)
             setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
-            if (hideSearchBar.not()) setIcon(IconBuilder().addIcon(IconList.ID_NAV_GLOBAL) {})
+            if (hideSearchBar.not()) setIcon(getIconBuilder())
             if (hideGlobalMenu.not()) setupSearchbar(listOf(HintData(GLOBAL_NAV_HINT)))
             setToolbarPageName(title)
             show()
@@ -327,8 +336,10 @@ class ThankYouPageActivity :
 
     private fun isWidgetOrderingEnabled(): Boolean {
         return try {
-            return getAbTestPlatform()
-                ?.getBoolean(RollenceKey.THANKYOU_PAGE_WIDGET_ORDERING, true) ?: false
+            return (
+                getAbTestPlatform()
+                    ?.getString(RollenceKey.THANKYOU_PAGE_WIDGET_ORDERING, String.EMPTY) ?: String.EMPTY
+                ).isNotEmpty()
         } catch (e: Exception) {
             Timber.e(e)
             true
@@ -336,4 +347,66 @@ class ThankYouPageActivity :
     }
 
     data class FragmentByPaymentMode(val fragment: Fragment, val title: String)
+
+    /**
+     * Header Icon(s) Section
+     */
+
+    private fun getIconBuilder(): IconBuilder {
+        return try {
+            val shareRollence: String = getAbTestPlatform()?.getString(
+                key = KEY_ROLLENCE_SHARE,
+                defaultValue = ""
+            ) ?: ""
+            val merchantCode = intent.data?.getQueryParameter(ARG_MERCHANT)
+            if (shareRollence == KEY_ROLLENCE_SHARE &&
+                merchantCode == VALUE_MERCHANT_TOKOPEDIA
+            ) {
+                getCustomizeIconBuilder()
+            } else {
+                getDefaultIconBuilder()
+            }
+        } catch (throwable: Throwable) { // in case error, show default
+            Timber.d(throwable)
+            getDefaultIconBuilder()
+        }
+    }
+
+    private fun getCustomizeIconBuilder(): IconBuilder {
+        // Track view
+        thankYouPageAnalytics.get().sendViewShareIcon(
+            orderIdList = postPurchaseShareHelper.get().getOrderIdListString(
+                thanksPageData.shopOrder
+            )
+        )
+
+        // asc order from left to right
+        return IconBuilder(
+            builderFlags = IconBuilderFlag(
+                pageSource = NavSource.THANKYOU
+            )
+        ).addIcon(IconList.ID_SHARE) {
+            thankYouPageAnalytics.get().sendClickShareIcon(
+                orderIdList = postPurchaseShareHelper.get().getOrderIdListString(
+                    thanksPageData.shopOrder
+                )
+            )
+            postPurchaseShareHelper.get().goToSharePostPurchase(
+                this,
+                thanksPageData.shopOrder
+            )
+        }.addIcon(IconList.ID_NAV_GLOBAL) {
+            // no-op
+        }
+    }
+
+    private fun getDefaultIconBuilder(): IconBuilder {
+        return IconBuilder(
+            builderFlags = IconBuilderFlag(
+                pageSource = NavSource.THANKYOU
+            )
+        ).addIcon(IconList.ID_NAV_GLOBAL) {
+            // no-op
+        }
+    }
 }

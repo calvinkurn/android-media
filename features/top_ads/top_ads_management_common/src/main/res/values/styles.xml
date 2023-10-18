@@ -16,8 +16,8 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
+
 
     <style name="CreateAdsBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/CreateAdsBottomSheetStyle</item>
@@ -33,7 +33,7 @@
         <item name="android:layout_width">0dp</item>
         <item name="typographyType">body_3</item>
         <item name="typographyWeight">bold</item>
-        <item name="android:textColor">@color/Unify_N700_96</item>
+        <item name="android:textColor">@color/Unify_NN950_96</item>
     </style>
 
     <style name="CardView.Text">
@@ -41,7 +41,7 @@
         <item name="android:layout_width">0dp</item>
         <item name="typographyWeight">reguler</item>
         <item name="typographyType">small</item>
-        <item name="android:textColor">@color/Unify_N700_68</item>
+        <item name="android:textColor">@color/Unify_NN950_68</item>
     </style>
 
 

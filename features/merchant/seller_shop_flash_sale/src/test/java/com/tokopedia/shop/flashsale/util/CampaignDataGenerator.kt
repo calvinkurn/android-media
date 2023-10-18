@@ -4,15 +4,12 @@ import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction.Submit
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction.Update
 import com.tokopedia.shop.flashsale.domain.entity.CampaignBanner
-import com.tokopedia.shop.flashsale.domain.entity.CampaignBanner.Shop as BannerShop
-import com.tokopedia.shop.flashsale.domain.entity.CampaignBanner.Product as BannerProduct
 import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
 import com.tokopedia.shop.flashsale.domain.entity.CampaignDetailMeta
-import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase.Param
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel.PackageInfo
-import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel.ThematicInfo
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel.ProductSummary
+import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel.ThematicInfo
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC.TncRequest
 import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
@@ -24,7 +21,10 @@ import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignCreationElig
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
+import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase.Param
 import java.util.Date
+import com.tokopedia.shop.flashsale.domain.entity.CampaignBanner.Product as BannerProduct
+import com.tokopedia.shop.flashsale.domain.entity.CampaignBanner.Shop as BannerShop
 
 object CampaignDataGenerator {
     fun generateCampaignUiModel(
@@ -66,7 +66,8 @@ object CampaignDataGenerator {
         packageInfo = PackageInfo(
             packageId = 0,
             packageName = "VPS"
-        )
+        ),
+        isOosImprovement = true
     )
 
     fun generateRelatedCampaigns(campaignId: Long = 1001): List<RelatedCampaign> = listOf(
@@ -98,7 +99,8 @@ object CampaignDataGenerator {
         paymentType = paymentType ?: campaignData.paymentType,
         isCampaignRuleSubmit = isTNCConfirmed,
         showTeaser = campaignData.useUpcomingWidget,
-        packageId = campaignData.packageInfo.packageId
+        packageId = campaignData.packageInfo.packageId,
+        isOosImprovement = campaignData.isOosImprovement
     )
 
     fun generateCampaignCreationResult(
@@ -107,7 +109,7 @@ object CampaignDataGenerator {
         totalProductFailed: Int = 0,
         errorDescription: String = "Belum memenuhi kriteria",
         errorTitle: String = "Gagal diproses",
-        errorMessage: String = "Produk ditolak",
+        errorMessage: String = "Produk ditolak"
     ): CampaignCreationResult = CampaignCreationResult(
         campaignId = campaignId,
         isSuccess = isSuccess,
@@ -187,7 +189,7 @@ object CampaignDataGenerator {
 
     fun generateShareComponentMetaData(
         banner: CampaignBanner = generateCampaignBanner(),
-        shopInfo: ShopInfo = ShopInfo(true, true),
+        shopInfo: ShopInfo = ShopInfo(true, true)
     ): ShareComponentMetadata = ShareComponentMetadata(
         banner = banner,
         shop = shopInfo
@@ -237,7 +239,7 @@ object CampaignDataGenerator {
         campaignId: Long = 1001,
         isUniqueBuyer: Boolean = true,
         isCampaignRelation: Boolean = true,
-        paymentType: PaymentType = PaymentType.REGULAR,
+        paymentType: PaymentType = PaymentType.REGULAR
     ): TncRequest = TncRequest(
         campaignId = campaignId,
         isUniqueBuyer = isUniqueBuyer,
@@ -245,4 +247,3 @@ object CampaignDataGenerator {
         paymentType = paymentType
     )
 }
-

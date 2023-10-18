@@ -33,7 +33,7 @@
                 android:layout_marginStart="@dimen/unify_space_8"
                 android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_marginEnd="@dimen/unify_space_8"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:typographyType="small"
                 tools:text="Apple" />
 

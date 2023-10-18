@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.buyerorderdetail.presentation.bottomsheet.OwocBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.PartialOrderFulfillmentBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.PofConfirmRejectBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.SubmissionOrderExtensionBottomSheet
@@ -21,4 +22,5 @@ interface BuyerOrderDetailComponent {
     fun inject(partialOrderFulfillmentFragment: PartialOrderFulfillmentFragment)
     fun inject(partialOrderFulfillmentBottomSheet: PartialOrderFulfillmentBottomSheet)
     fun inject(pofConfirmRejectBottomSheet: PofConfirmRejectBottomSheet)
+    fun inject(owocBottomSheet: OwocBottomSheet)
 }

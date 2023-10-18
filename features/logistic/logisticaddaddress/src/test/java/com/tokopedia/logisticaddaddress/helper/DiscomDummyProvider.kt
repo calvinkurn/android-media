@@ -23,7 +23,7 @@ object DiscomDummyProvider {
     }
 
     fun getSuccessResponse(): DistrictRecommendationResponse =
-            Gson().fromJson(jakDiscomResponse, DistrictRecommendationResponse::class.java)
+        Gson().fromJson(jakDiscomResponse, DistrictRecommendationResponse::class.java)
 
     fun getSuccessGqlResponse(): GraphqlResponse {
         val result = HashMap<Type, Any>()
@@ -32,12 +32,11 @@ object DiscomDummyProvider {
     }
 
     fun getEmptyResponse(): DistrictRecommendationResponse =
-            Gson().fromJson(qwrDiscomResponse, DistrictRecommendationResponse::class.java)
+        Gson().fromJson(qwrDiscomResponse, DistrictRecommendationResponse::class.java)
 
     fun getEmptyZipResponse(): DistrictRecommendationResponse =
-            Gson().fromJson(wolowaDiscomResponse, DistrictRecommendationResponse::class.java)
+        Gson().fromJson(wolowaDiscomResponse, DistrictRecommendationResponse::class.java)
 }
-
 
 val qwrDiscomResponse = """
 {

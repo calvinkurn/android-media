@@ -33,7 +33,7 @@ class ViolationReasonItemViewHolder(itemView: View,
         itemView.context?.let { context ->
             val textColorInt = MethodChecker.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_G500
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500
             )
             binding?.tvProductManageViolationItemDetail?.run {
                 setClickableUrlHtml(

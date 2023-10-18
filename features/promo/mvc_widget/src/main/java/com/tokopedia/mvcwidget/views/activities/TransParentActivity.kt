@@ -27,10 +27,10 @@ import timber.log.Timber
 class TransParentActivity : BaseActivity() {
     var isOnResume = false
     private var childView: MvcDetailView? = null
-    private var appLink : String?=null
-    private var shopName : String?=null
-    val mvcTracker : MvcTracker = MvcTracker()
-    var mvcDataHashcode : Int = 0
+    private var appLink: String? = null
+    private var shopName: String? = null
+    val mvcTracker: MvcTracker = MvcTracker()
+    var mvcDataHashcode: Int = 0
 
     companion object {
         const val SHOP_ID = "shopId"
@@ -39,21 +39,32 @@ class TransParentActivity : BaseActivity() {
         const val REDIRECTION_LINK = "redirectionLink"
         const val SHOP_NAME = "shopName"
         const val DATA_HASH_CODE = "dataHash"
+        const val ADDITIONAL_PARAM_JSON = "additionalParamJson"
 
-        fun getIntent(context: Context, shopId: String, @MvcSource source: Int, redirectionLink: String = "", shopName: String = "",hashCode:Int = 0, productId: String = ""): Intent {
+        fun getIntent(
+            context: Context,
+            shopId: String,
+            @MvcSource source: Int,
+            redirectionLink: String = "",
+            shopName: String = "",
+            hashCode: Int = 0,
+            productId: String = "",
+            additionalParamJson: String = ""
+        ): Intent {
             val intent = Intent(context, TransParentActivity::class.java)
             intent.putExtra(SHOP_ID, shopId)
             intent.putExtra(PRODUCT_ID, productId)
             intent.putExtra(MVC_SOURCE, source)
             intent.putExtra(REDIRECTION_LINK, redirectionLink)
             intent.putExtra(SHOP_NAME, shopName)
-            intent.putExtra(DATA_HASH_CODE,hashCode)
+            intent.putExtra(DATA_HASH_CODE, hashCode)
+            intent.putExtra(ADDITIONAL_PARAM_JSON, additionalParamJson)
             return intent
         }
-
     }
 
     val REQUEST_CODE_LOGIN = 12
+    var additionalParamJson: String = ""
     lateinit var userSession: UserSession
     lateinit var shopId: String
     lateinit var productId: String
@@ -67,10 +78,11 @@ class TransParentActivity : BaseActivity() {
         handleDimming()
         shopId = intent.extras?.getString(SHOP_ID, "0") ?: "0"
         productId = intent.extras?.getString(PRODUCT_ID, "") ?: ""
+        additionalParamJson = intent.extras?.getString(ADDITIONAL_PARAM_JSON, "") ?: ""
         mvcSource = intent.extras?.getInt(MVC_SOURCE, MvcSource.DEFAULT) ?: MvcSource.DEFAULT
         appLink = intent.extras?.getString(REDIRECTION_LINK, "") ?: ""
         shopName = intent.extras?.getString(SHOP_NAME, "") ?: ""
-        mvcDataHashcode = intent.extras?.getInt(DATA_HASH_CODE,0)?:0
+        mvcDataHashcode = intent.extras?.getInt(DATA_HASH_CODE, 0) ?: 0
 
         if (userSession.isLoggedIn) {
             showMvcDetailDialog()
@@ -100,7 +112,6 @@ class TransParentActivity : BaseActivity() {
         bottomSheet.setTitle(getString(R.string.mvc_daftar_kupon_toko))
         childView = MvcDetailView(this)
 
-
         if (!appLink.isNullOrEmpty()) {
             childView?.findViewById<LinearLayout>(R.id.btn_layout)?.visibility = View.VISIBLE
             childView?.findViewById<UnifyButton>(R.id.btn_continue)?.let { button ->
@@ -122,7 +133,7 @@ class TransParentActivity : BaseActivity() {
         }
         bottomSheet.setChild(childView)
         bottomSheet.show(supportFragmentManager, "BottomSheet Tag")
-        childView?.show(shopId, false, mvcSource, mvcTracker, productId)
+        childView?.show(shopId, false, mvcSource, mvcTracker, productId, additionalParamJson)
         bottomSheet.setShowListener {
             val titleMargin = dpToPx(16).toInt()
             bottomSheet.bottomSheetWrapper.setPadding(0, dpToPx(16).toInt(), 0, 0)
@@ -131,15 +142,14 @@ class TransParentActivity : BaseActivity() {
 
         bottomSheet.setOnDismissListener {
             if (isOnResume) {
-                if(childView?.bundleForDataUpdate != null){
+                if (childView?.bundleForDataUpdate != null) {
                     val intent = IntentManger.getJadiMemberIntent(childView?.bundleForDataUpdate!!)
-                    setResult(MvcView.RESULT_CODE_OK,intent)
+                    setResult(MvcView.RESULT_CODE_OK, intent)
                 }
                 finish()
-                mvcTracker.closeMainBottomSheet(childView?.widgetType?:FollowWidgetType.DEFAULT, shopId, userSession.userId, mvcSource)
+                mvcTracker.closeMainBottomSheet(childView?.widgetType ?: FollowWidgetType.DEFAULT, shopId, userSession.userId, mvcSource)
             }
         }
-
     }
 
     override fun onResume() {

@@ -40,29 +40,20 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .height(54.dp)
                 .onMeasureConstraints { constraints.value = it }
                 .verticalScroll(scrollState)
         ) {
-            NestTypography(
-                "Tokopedia Test App",
-                modifier = Modifier.padding(8.dp),
-                textStyle = NestTheme.typography.heading3
-            )
-            val urlBgColor = if (model.urlState.contains("live", true)) {
-                NestTheme.colors.GN._600
-            } else {
-                NestTheme.colors.YN._600
+            Surface(Modifier.fillMaxWidth(), elevation = 4.dp) {
+                NestTypography(
+                    "Tokopedia Test App",
+                    textStyle = NestTheme.typography.heading3,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp, vertical = 8.dp)
+                )
             }
-            Text(
-                text = model.urlState,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(urlBgColor)
-                    .padding(vertical = 2.dp),
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colors.onPrimary,
-                style = NestTheme.typography.heading6
-            )
+
             Column(
                 modifier = Modifier
                     .constrainSize { constraints.value }
