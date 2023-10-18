@@ -41,6 +41,7 @@ import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.util.EncoderDecoder
 import kotlinx.coroutines.CoroutineScope
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -125,7 +126,7 @@ object GotoSdk {
             LSDKINSTANCE?.getAccessToken()?.isEmpty() == true &&
             LSDKINSTANCE?.getRefreshToken()?.isEmpty() == true
         ) {
-            ScpUtils.saveTokens(accessToken = userSession.accessToken, refreshToken = userSession.freshToken)
+            ScpUtils.saveTokens(accessToken = userSession.accessToken, refreshToken = EncoderDecoder.Decrypt(userSession.freshToken, userSession.refreshTokenIV))
         }
     }
 

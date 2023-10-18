@@ -1367,7 +1367,7 @@ class RegisterInitialFragment :
         registerPushNotif()
         submitIntegrityApi()
 
-        ScpUtils.saveTokens(userSession.accessToken, userSession.freshToken)
+        ScpUtils.saveTokens(userSession.accessToken, EncoderDecoder.Decrypt(userSession.freshToken, userSession.refreshTokenIV))
 
         activity?.let {
             val bundle = Bundle()
