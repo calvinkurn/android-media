@@ -518,7 +518,11 @@ data class SomDetailOrder(
 
             @SerializedName("shipment_logo")
             @Expose
-            val shipmentLogo: String = ""
+            val shipmentLogo: String = "",
+
+            @SerializedName("is_affiliate")
+            @Expose
+            val isAffiliate: Boolean = false
         )
 
         data class LogisticInfo(

@@ -213,7 +213,7 @@ object SomGetOrderDetailResponseMapper {
     }
 
     private fun SomDetailOrder.GetSomDetail.mapToProductsHeaderUiModel(): SomDetailProducts {
-        return SomDetailProducts(flagOrderMeta.isTopAds, flagOrderMeta.isBroadcastChat)
+        return SomDetailProducts(flagOrderMeta.isTopAds, flagOrderMeta.isBroadcastChat, flagOrderMeta.isAffiliate)
     }
 
     private fun SomDetailOrder.GetSomDetail.mapToProductsUiModel(): List<Visitable<SomDetailAdapterFactoryImpl>> {

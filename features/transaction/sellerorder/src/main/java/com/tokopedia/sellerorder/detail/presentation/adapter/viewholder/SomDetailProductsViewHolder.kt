@@ -30,9 +30,18 @@ class SomDetailProductsViewHolder(
                     adsTitle.text =
                         if (item.dataObject.isTopAds) root.context.getString(R.string.sale_from_top_ads)
                         else root.context.getString(R.string.sale_from_broadcast_chat)
-                    groupAds.show()
+                    adsTitle.show()
+                    icAdsDetail.show()
+                    icAdsDetailAffiliate.hide()
+                } else if (item.dataObject.isAffiliate) {
+                    adsTitle.text = root.context.getString(R.string.sale_from_affiliate)
+                    adsTitle.show()
+                    icAdsDetailAffiliate.show()
+                    icAdsDetail.hide()
                 } else {
-                    groupAds.hide()
+                    adsTitle.hide()
+                    icAdsDetailAffiliate.hide()
+                    icAdsDetail.hide()
                 }
             }
         }

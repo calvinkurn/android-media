@@ -346,6 +346,7 @@
     <string name="som_dropoff_template_text_no_cost_delivery">Cukup anterin langsung paket ke gerai terdekat tanpa perlu bayar ongkir ke kurir. </string>
     <string name="som_dropoff_template_text_no_manual_input_resi">Tidak perlu masukin resi manual karena akan otomatis update di sistem. </string>
     <string name="som_dropoff_template_text_auto_confirm">Konfirmasi pengiriman otomatis maks. 3 jam setelah paket diserahkan ke kurir. </string>
+    <string name="sale_from_affiliate">Penjualan dari Affiliate</string>
 
 
 </resources>

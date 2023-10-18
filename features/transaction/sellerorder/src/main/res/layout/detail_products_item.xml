@@ -45,14 +45,16 @@
         app:layout_constraintEnd_toStartOf="@id/ads_title"
         app:layout_constraintTop_toTopOf="@id/products_title" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_ads"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_ads_detail_affiliate"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:rotation="90"
+        app:icon_name="SHARE_MOBILE"
         android:visibility="gone"
-        app:constraint_referenced_ids="ads_title, ic_ads_detail"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@id/products_title"
+        app:layout_constraintEnd_toStartOf="@id/ads_title"
+        app:layout_constraintTop_toTopOf="@id/products_title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
