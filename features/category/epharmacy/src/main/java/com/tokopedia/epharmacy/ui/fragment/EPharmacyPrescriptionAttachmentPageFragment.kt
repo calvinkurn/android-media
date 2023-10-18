@@ -438,10 +438,10 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             EPharmacyUtils.getPrescriptionIds(ePharmacyPrescriptionAttachmentViewModel.ePharmacyPrepareProductsGroupResponseData).toString()
         )
 
-        if(source == EPHARMACY_PPG_SOURCE_CHECKOUT){
-
+        if (source == EPHARMACY_PPG_SOURCE_CHECKOUT) {
+        } else {
+            EPharmacyNavigator.prescriptionAttachmentDoneRedirection(activity, appLink, ePharmacyPrescriptionAttachmentViewModel.getResultForCheckout())
         }
-        EPharmacyNavigator.prescriptionAttachmentDoneRedirection(activity, appLink, ePharmacyPrescriptionAttachmentViewModel.getResultForCheckout())
     }
 
     private fun hasAnyError(): Boolean {
