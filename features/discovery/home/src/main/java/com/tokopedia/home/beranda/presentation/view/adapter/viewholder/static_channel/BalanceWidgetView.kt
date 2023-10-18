@@ -104,9 +104,8 @@ class BalanceWidgetView : FrameLayout {
     fun getSubscriptionView(): View? {
         val firstViewHolder = rvBalance?.findViewHolderForAdapterPosition(DEFAULT_POSITION_BALANCE_WIDGET)
         firstViewHolder?.let {
-            if (it is BalanceWidgetViewHolder) {
-                return it.getSubscriptionView(subscriptionPosition)
-            }
+            // temporary removed,
+            // will need to be readded to show PLUS coachmark
         }
         return null
     }
