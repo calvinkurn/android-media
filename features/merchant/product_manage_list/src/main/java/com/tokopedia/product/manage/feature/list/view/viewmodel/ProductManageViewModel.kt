@@ -314,10 +314,10 @@ class ProductManageViewModel @Inject constructor(
 
             hideProgressDialog()
         }, onError = {
-            _multiEditProductResult.value = Fail(it)
+                _multiEditProductResult.value = Fail(it)
 
-            hideProgressDialog()
-        })
+                hideProgressDialog()
+            })
     }
 
     fun editProductsEtalase(productIds: List<String>, menuId: String, menuName: String) {
@@ -343,9 +343,9 @@ class ProductManageViewModel @Inject constructor(
             _multiEditProductResult.value = Success(result)
             hideProgressDialog()
         }, onError = {
-            _multiEditProductResult.value = Fail(it)
-            hideProgressDialog()
-        })
+                _multiEditProductResult.value = Fail(it)
+                hideProgressDialog()
+            })
     }
 
     fun getProductList(
@@ -366,7 +366,7 @@ class ProductManageViewModel @Inject constructor(
                     val warehouseId = getWarehouseId(shopId)
                     val extraInfo =
                         if (filterOptions?.contains(FilterOption.FilterByCondition.ProductArchival)
-                                .orFalse() || filterOptions?.contains(FilterOption.FilterByCondition.ProductPotentialArchivedStatus)
+                            .orFalse() || filterOptions?.contains(FilterOption.FilterByCondition.ProductPotentialArchivedStatus)
                                 .orFalse()
                         ) {
                             listOf(
@@ -375,7 +375,6 @@ class ProductManageViewModel @Inject constructor(
                                 ExtraInfo.IS_DT_INBOUND,
                                 ExtraInfo.ARCHIVAL
                             )
-
                         } else {
                             listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC, ExtraInfo.IS_DT_INBOUND)
                         }
@@ -407,12 +406,12 @@ class ProductManageViewModel @Inject constructor(
             showTicker()
             hideProgressDialog()
         }, onError = {
-            if (it is CancellationException) {
-                return@launchCatchError
-            }
-            hideProgressDialog()
-            _productListResult.value = Fail(it)
-        }).let { getProductListJob = it }
+                if (it is CancellationException) {
+                    return@launchCatchError
+                }
+                hideProgressDialog()
+                _productListResult.value = Fail(it)
+            }).let { getProductListJob = it }
     }
 
     fun getProductVariants(productId: String) {
@@ -451,9 +450,9 @@ class ProductManageViewModel @Inject constructor(
 
             hideLoadingDialog()
         }, onError = {
-            _getProductVariantsResult.value = Fail(it)
-            hideLoadingDialog()
-        })
+                _getProductVariantsResult.value = Fail(it)
+                hideLoadingDialog()
+            })
     }
 
     fun getTickerData() {
@@ -468,11 +467,11 @@ class ProductManageViewModel @Inject constructor(
                 result.getTargetedTicker?.tickers.orEmpty()
             )
         }, onError = {
-            _tickerData.value = tickerStaticDataProvider.getTickers(
-                isMultiLocationShop,
-                _shopStatus.value?.shopStatus.orEmpty()
-            )
-        })
+                _tickerData.value = tickerStaticDataProvider.getTickers(
+                    isMultiLocationShop,
+                    _shopStatus.value?.shopStatus.orEmpty()
+                )
+            })
     }
 
     fun getFiltersTab(withDelay: Boolean = false) {
@@ -495,11 +494,11 @@ class ProductManageViewModel @Inject constructor(
                 value = Success(data)
             }
         }, onError = {
-            if (it is CancellationException) {
-                return@launchCatchError
-            }
-            _productFiltersTab.value = Fail(it)
-        }).let { getFilterTabJob = it }
+                if (it is CancellationException) {
+                    return@launchCatchError
+                }
+                _productFiltersTab.value = Fail(it)
+            }).let { getFilterTabJob = it }
     }
 
     fun getProductManageAccess() {
@@ -554,8 +553,8 @@ class ProductManageViewModel @Inject constructor(
 
             productListFeaturedOnly?.let { setProductListFeaturedOnly(it) }
         }, onError = {
-            _productListFeaturedOnlyResult.value = Fail(it)
-        })
+                _productListFeaturedOnlyResult.value = Fail(it)
+            })
     }
 
     fun editPrice(productId: String, price: String, productName: String) {
@@ -694,12 +693,17 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(block = {
             var data: Result<EditVariantResult>? = null
 
-            if (result.editStatus) {
-                data = editVariantStatus(result)
-            }
-
-            if (result.editStock) {
+            if (result.editStatus && result.editStock) {
                 data = editVariantStock(result)
+                if (data is Success) {
+                    editVariantStatus(result)
+                } else {
+                    throw Throwable()
+                }
+            } else if (result.editStock) {
+                data = editVariantStock(result)
+            } else if (result.editStatus) {
+                data = editVariantStatus(result)
             }
 
             _editVariantStockResult.value = data
@@ -798,8 +802,8 @@ class ProductManageViewModel @Inject constructor(
                 )
             )
         }, onError = { throwable ->
-            _setFeaturedProductResult.postValue(Fail(throwable))
-        })
+                _setFeaturedProductResult.postValue(Fail(throwable))
+            })
     }
 
     fun showHideOptionsMenu() {
@@ -978,8 +982,8 @@ class ProductManageViewModel @Inject constructor(
             }
             _productArchivalInfo.value = Success(result)
         }, onError = {
-            _productArchivalInfo.value = Fail(it)
-        })
+                _productArchivalInfo.value = Fail(it)
+            })
     }
 
     private suspend fun editVariantStock(result: EditVariantResult): Result<EditVariantResult> {
