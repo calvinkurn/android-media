@@ -2,10 +2,15 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.marginBottom
+import androidx.core.view.marginLeft
+import androidx.core.view.marginRight
+import androidx.core.view.marginTop
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -15,6 +20,7 @@ import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataMode
 import com.tokopedia.product.detail.databinding.ItemDynamicOneLinerBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.renderHtmlBold
+import com.tokopedia.unifycomponents.toPx
 
 class DynamicOneLinerViewHolder(
     view: View,
@@ -68,6 +74,10 @@ class DynamicOneLinerViewHolder(
             } else {
                 title.renderHtmlBold(context)
             }
+
+            val paddingTop = data.paddingTop.takeIf { it > -1 }?.toPx() ?: marginTop
+            val paddingBottom = data.paddingBottom.takeIf { it > -1 }?.toPx() ?: marginBottom
+            setMargin(marginLeft, paddingTop, marginRight, paddingBottom)
         }
 
         val iconUrl = data.icon

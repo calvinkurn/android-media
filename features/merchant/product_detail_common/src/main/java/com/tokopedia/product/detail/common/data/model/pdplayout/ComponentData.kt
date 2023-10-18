@@ -159,6 +159,8 @@ data class ComponentData(
     val text: String = "",
     @SerializedName("chevronPos")
     val chevronPos: String = "",
+    @SerializedName("padding")
+    val padding: Padding = Padding(),
 
     // region a plus content data
     @SerializedName("contentMedia")
@@ -262,3 +264,10 @@ data class ContentMedia(
 ) {
     fun valid() = url.isNotBlank() && ratio.validDimensionRatio()
 }
+
+data class Padding(
+    @SerializedName("t")
+    val top: Int = -1,
+    @SerializedName("b")
+    val bottom: Int = -1
+)
