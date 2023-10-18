@@ -2,23 +2,33 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:clipChildren="false"
     android:clipToPadding="false"
     tools:parentTag="com.google.android.material.card.MaterialCardView">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/cashback"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:ellipsize="end"
-            android:paddingHorizontal="6dp"
-            android:text="Cashback 100rb"
+            android:maxLines="1"
+            android:paddingHorizontal="4dp"
+            android:textAlignment="center"
             android:textColor="@color/Unify_NN0"
+            android:textSize="8sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="small"
+            tools:ignore="SmallSp"
             tools:text="Cashback 100rb" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </merge>

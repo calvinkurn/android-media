@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import com.tokopedia.discovery2.databinding.DiscoveryStockBarLayoutBinding
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 
 class DiscoveryStockBar : FrameLayout {
 
@@ -16,6 +18,15 @@ class DiscoveryStockBar : FrameLayout {
 
     init {
         binding = DiscoveryStockBarLayoutBinding.inflate(LayoutInflater.from(context), this, true )
-        binding?.stockProgressBar?.setValue(75)
+    }
+
+    fun setValue(value: Double?) {
+        binding?.root?.isVisible = value != null
+
+        binding?.stockProgressBar?.setValue(value?.toInt().orZero())
+    }
+
+    fun setLabel(label: String?) {
+        binding?.label?.text = label
     }
 }

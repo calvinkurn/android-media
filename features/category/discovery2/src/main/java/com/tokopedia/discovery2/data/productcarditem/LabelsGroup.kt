@@ -14,5 +14,8 @@ data class LabelsGroup(
         val type: String = "",
 
         @SerializedName("url")
-        val url: String = ""
+        val url: String = "",
+
+        @SerializedName("color")
+        val colors: ArrayList<String> = arrayListOf()
 )

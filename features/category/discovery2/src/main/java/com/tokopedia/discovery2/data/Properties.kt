@@ -109,4 +109,13 @@ data class Properties(
         @SerializedName("supergraphic_image_url")
         val supergraphicImageUrl: String? = "",
 
+        @SerializedName("style")
+        val style: String? = "",
+
+        @SerializedName("price_box")
+        val priceBox: PriceBox? = null,
+
+        @SerializedName("ribbon")
+        val ribbon: Ribbon? = null,
+
 )

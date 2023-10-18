@@ -1,6 +1,8 @@
 package com.tokopedia.discovery2.viewcontrollers.customview
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
@@ -21,10 +23,15 @@ class RibbonView @JvmOverloads constructor(
 
     private var binding = RibbonLayoutBinding.inflate(LayoutInflater.from(context), this)
 
+    private var shapeDrawable: MaterialShapeDrawable? = null
+
     init {
         binding.percentage.addOneTimeGlobalLayoutListener {
             val ribbonPathModel = ShapeAppearanceModel.builder()
-                .setTopRightCorner(CornerFamily.ROUNDED, convertDpToPixel(CORNER_SIZE, context).toFloat())
+                .setTopRightCorner(
+                    CornerFamily.ROUNDED,
+                    convertDpToPixel(CORNER_SIZE, context).toFloat()
+                )
                 .setBottomEdge(
                     TriangleEdgeTreatment(
                         binding.percentage.width.toFloat() / 2,
@@ -34,14 +41,42 @@ class RibbonView @JvmOverloads constructor(
                 )
                 .build()
 
-            val ribbonDrawable = MaterialShapeDrawable(ribbonPathModel)
-            ribbonDrawable.fillColor = ContextCompat.getColorStateList(
+            shapeDrawable = MaterialShapeDrawable(ribbonPathModel)
+            shapeDrawable?.fillColor = ContextCompat.getColorStateList(
                 context,
                 unifyprinciplesR.color.Unify_RN600
             )
 
-            background = ribbonDrawable
+            background = shapeDrawable
         }
+    }
+
+    fun setText(value: String) {
+        binding.percentage.text = value
+    }
+
+    fun setType(value: Int) {
+        binding.percentage.setType(value)
+    }
+
+    fun setBackgroundColor(color: String?) {
+        if (color.isNullOrEmpty()) return
+
+        shapeDrawable?.fillColor = ColorStateList.valueOf(Color.parseColor(color))
+        background = shapeDrawable
+    }
+
+    fun setFontColor(color: String?) {
+        if (color.isNullOrEmpty()) return
+
+        binding.percentage.setTextColor(Color.parseColor(color))
+    }
+
+    fun changeToDisable(textColor: Int, backgroundColor: Int) {
+        binding.percentage.setTextColor(textColor)
+
+        shapeDrawable?.fillColor = ColorStateList.valueOf(backgroundColor)
+        background = shapeDrawable
     }
 
     companion object {

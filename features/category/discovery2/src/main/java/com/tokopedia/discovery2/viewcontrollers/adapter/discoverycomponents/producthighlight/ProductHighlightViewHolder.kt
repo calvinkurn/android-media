@@ -9,6 +9,7 @@ import com.tokopedia.discovery2.Constant.ProductHighlight.DOUBLESINGLEEMPTY
 import com.tokopedia.discovery2.Constant.ProductHighlight.TRIPLE
 import com.tokopedia.discovery2.Constant.ProductHighlight.TRIPLEDOUBLEEMPTY
 import com.tokopedia.discovery2.Constant.ProductHighlight.TRIPLESINGLEEMPTY
+import com.tokopedia.discovery2.Constant.ProductHighlight.V2_STYLE
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.databinding.MultiBannerLayoutBinding
@@ -26,7 +27,7 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
     private val binding: MultiBannerLayoutBinding = MultiBannerLayoutBinding.bind(itemView)
     private var mProductHighlightViewModel: ProductHighlightViewModel? = null
     private var bannerName: String = ""
-    var productHighlightItemList: ArrayList<ProductHighlightItem> = arrayListOf()
+    var productHighlightItemList: ArrayList<BaseProductHighlightItem> = arrayListOf()
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mProductHighlightViewModel = discoveryBaseViewModel as ProductHighlightViewModel
@@ -95,7 +96,7 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
         }
 
         for ((index, productHighlightItem) in mutableData.withIndex()) {
-            var productHighlightView: ProductHighlightItem
+            var productHighlightView: BaseProductHighlightItem
             val isLastItem = index == mutableData.size - 1
             if (productHighlightItem.parentComponentName.isNullOrEmpty()) {
                 productHighlightItem.parentComponentName = bannerName
@@ -103,17 +104,35 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
             mProductHighlightViewModel?.let { viewModel ->
                 productHighlightItem.positionForParentItem = viewModel.position
             }
-            if (index == 0) {
-                productHighlightView = ProductHighlightItem(
-                    productHighlightItem, properties, binding.bannerContainerLayout, constraintSet, index,
-                    null, itemView.context, isLastItem, compType
+
+            val previous = if (index == 0) null else productHighlightItemList[index - 1]
+
+            productHighlightView = if (properties?.style == V2_STYLE) {
+                ProductHighlightRevampItem(
+                    productHighlightItem,
+                    properties,
+                    binding.bannerContainerLayout,
+                    constraintSet,
+                    index,
+                    previous,
+                    itemView.context,
+                    isLastItem,
+                    compType
                 )
             } else {
-                productHighlightView = ProductHighlightItem(
-                    productHighlightItem, properties, binding.bannerContainerLayout, constraintSet, index,
-                    productHighlightItemList[index - 1], itemView.context, isLastItem, compType
+                ProductHighlightItem(
+                    productHighlightItem,
+                    properties,
+                    binding.bannerContainerLayout,
+                    constraintSet,
+                    index,
+                    previous,
+                    itemView.context,
+                    isLastItem,
+                    compType
                 )
             }
+
             productHighlightItemList.add(productHighlightView)
 
             setClickOnProductHighlight(productHighlightItem, index)

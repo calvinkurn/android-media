@@ -133,6 +133,8 @@ object Constant {
         const val TRIPLEDOUBLEEMPTY = "tripleDoubleEmpty"
         const val STATUS = "status"
         const val PROMO = "promo"
+        const val PRICE = "price"
+        const val V2_STYLE = "product_highlight_v2"
     }
 
     internal object CompType {

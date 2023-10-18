@@ -8,88 +8,114 @@
     android:clipToPadding="false"
     tools:parentTag="com.google.android.material.card.MaterialCardView">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/card_background"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:scaleType="fitXY"
-        app:layout_constraintDimensionRatio="H,1:1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/root"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:alpha="0.8"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/progressBarStock">
+        android:layout_height="wrap_content">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/ph_product_price"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            android:layout_marginTop="6dp"
-            android:text="Rp4.199.000"
-            android:textColor="@color/Unify_RN600"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="display_2"
-            app:typographyWeight="bold"
-            tools:text="Rp4.199.000" />
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/ph_discounted_product_price"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            android:layout_marginTop="4dp"
-            android:alpha="0.6"
-            android:text="Rp6.499.000"
-            android:textColor="@color/Unify_RN600"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/card_background"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:maxHeight="62dp"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ph_product_price"
-            app:typographyType="small"
-            app:typographyWeight="reguler"
-            tools:text="Rp6.499.000" />
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/free_text_container"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="6dp"
-            android:background="@drawable/disco_bg_rounded_bottom"
+            android:layout_height="wrap_content"
+            android:alpha="0.8"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ph_discounted_product_price">
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/ph_free_text"
+                android:id="@+id/ph_product_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="display_2"
+                app:typographyWeight="bold"
+                tools:text="Rp4.199.000" />
+
+            <androidx.legacy.widget.Space
+                android:id="@+id/product_price_space"
+                android:layout_width="0dp"
+                android:layout_height="6dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ph_product_price" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/ph_discounted_product_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:alpha="0.6"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/product_price_space"
+                app:typographyType="small"
+                app:typographyWeight="reguler"
+                tools:text="Rp6.499.000" />
+
+            <androidx.legacy.widget.Space
+                android:id="@+id/discounted_price_space"
+                android:layout_width="0dp"
+                android:layout_height="6dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ph_discounted_product_price" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/free_text_container"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:background="@drawable/disco_bg_rounded_bottom"
-                android:ellipsize="end"
-                android:paddingHorizontal="8dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="8dp"
-                android:text="Gratis Samsung Galaxy Buds"
-                android:textColor="@color/Unify_RN600"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="small"
-                tools:text="Gratis Samsung Galaxy Buds" />
+                app:layout_constraintTop_toBottomOf="@id/discounted_price_space">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/ph_free_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:paddingHorizontal="8dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="8dp"
+                    android:textColor="@color/Unify_NN950"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="small"
+                    tools:text="Gratis Samsung Galaxy Buds" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.tokopedia.discovery2.viewcontrollers.customview.RibbonView
+                android:id="@+id/discount_ribbon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <com.tokopedia.discovery2.viewcontrollers.customview.RibbonView
-            android:id="@+id/discount_ribbon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </merge>
