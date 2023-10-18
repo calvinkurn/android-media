@@ -15,13 +15,13 @@ object HomeRollenceController {
     var rollenceLoadTime: String = ""
     var rollenceLoadAtfCache: String = RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL
 
-    fun fetchHomeRollenceValue(context: Context) {
-        fetchAtfRollenceValue(context)
+    fun fetchHomeRollenceValue() {
+        fetchAtfRollenceValue()
         fetchLoadTimeRollenceValue()
         fetchAtfCacheRollenceValue()
     }
 
-    private fun fetchAtfRollenceValue(context: Context) {
+    private fun fetchAtfRollenceValue() {
         rollenceAtfValue = try {
             val rollenceAtf = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_ATF)
             if (rollenceAtf == RollenceKey.HOME_COMPONENT_ATF_3) {

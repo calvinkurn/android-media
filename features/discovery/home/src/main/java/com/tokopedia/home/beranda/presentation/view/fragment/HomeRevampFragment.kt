@@ -585,9 +585,7 @@ open class HomeRevampFragment :
             getRemoteConfigController().fetchHomeRemoteConfig()
         }
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
-        context?.let {
-            HomeRollenceController.fetchHomeRollenceValue(it)
-        }
+        HomeRollenceController.fetchHomeRollenceValue()
 
         // show nav toolbar
         navToolbar?.visibility = View.VISIBLE
