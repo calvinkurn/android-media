@@ -33,9 +33,7 @@ class TkpdAuthenticatorGql(
     val userSession: UserSessionInterface,
     val refreshTokenUseCaseGql: RefreshTokenGql
 ) : Authenticator {
-
-    var isRefreshing = false
-
+    
     private fun isNeedRefresh() = userSession.isLoggedIn
 
     private fun getRefreshQueryPath(finalRequest: Request, response: Response): String {
@@ -85,16 +83,13 @@ class TkpdAuthenticatorGql(
         })
     }
 
+    @Synchronized
     override fun authenticate(route: Route?, response: Response): Request? {
-        if (!isRefreshing) {
-            isRefreshing = true
-            return if (networkRouter.isGotoAuthSdkEnabled) {
-                isGotoLoginSdkEnabled(response)
-            } else {
-                isGotoLoginSdkDisabled(response)
-            }
+        return if (networkRouter.isGotoAuthSdkEnabled) {
+            isGotoLoginSdkEnabled(response)
+        } else {
+            isGotoLoginSdkDisabled(response)
         }
-        return null
     }
 
     private fun isGotoLoginSdkDisabled(response: Response): Request? {
@@ -117,7 +112,6 @@ class TkpdAuthenticatorGql(
                             } else {
                                 networkRouter.showForceLogoutTokenDialog("/")
                             }
-                            isRefreshing = false
                             return null
                         } else if (tokenResponse.accessToken?.isEmpty() == true) {
                             logRefreshTokenEvent(
@@ -126,7 +120,6 @@ class TkpdAuthenticatorGql(
                                 path,
                                 trimToken(userSession.accessToken)
                             )
-                            isRefreshing = false
                             return refreshWithOldMethod(response)
                         } else {
                             onRefreshTokenSuccess(
@@ -134,7 +127,6 @@ class TkpdAuthenticatorGql(
                                 refreshToken = tokenResponse.refreshToken ?: "",
                                 tokenType = tokenResponse.tokenType ?: ""
                             )
-                            isRefreshing = false
                             return updateRequestWithNewToken(originalRequest)
                         }
                     } else {
@@ -144,7 +136,6 @@ class TkpdAuthenticatorGql(
                             path,
                             trimToken(userSession.accessToken)
                         )
-                        isRefreshing = false
                         return refreshWithOldMethod(response)
                     }
                 } catch (ex: Exception) {
@@ -154,23 +145,19 @@ class TkpdAuthenticatorGql(
                         path,
                         trimToken(userSession.accessToken)
                     )
-                    isRefreshing = false
                     null
                 }
             } else {
                 networkRouter.showForceLogoutTokenDialog("/")
                 logRefreshTokenEvent("", TYPE_RESPONSE_COUNT, "", "")
-                isRefreshing = false
                 return null
             }
         } else {
             if (responseCount(response) != 0) {
                 logRefreshTokenEvent("", TYPE_RESPONSE_COUNT_NOT_LOGIN, "", "")
-                isRefreshing = false
                 return null
             }
         }
-        isRefreshing = false
         return response.request
     }
 
@@ -188,34 +175,29 @@ class TkpdAuthenticatorGql(
                             refreshToken = newRefreshToken,
                             tokenType = "Bearer"
                         )
-                        isRefreshing = false
+                        
                         updateRequestWithNewToken(originalRequest)
                     } else {
                         networkRouter.showForceLogoutTokenDialog("/")
                         logRefreshTokenEvent("", TYPE_RESPONSE_COUNT, "", "")
-                        isRefreshing = false
                         null
                     }
                 } catch (ex: Exception) {
                     networkRouter.showForceLogoutTokenDialog("/")
                     logRefreshTokenEvent("", TYPE_RESPONSE_COUNT, "", "")
-                    isRefreshing = false
                     return null
                 }
             } else {
                 networkRouter.showForceLogoutTokenDialog("/")
                 logRefreshTokenEvent("", TYPE_RESPONSE_COUNT, "", "")
-                isRefreshing = false
                 return null
             }
         } else {
             if (responseCount(response) != 0) {
                 logRefreshTokenEvent("", TYPE_RESPONSE_COUNT_NOT_LOGIN, "", "")
-                isRefreshing = false
                 return null
             }
         }
-        isRefreshing = false
         return response.request
     }
 
@@ -226,15 +208,13 @@ class TkpdAuthenticatorGql(
                 // to check how many users success after fallback from gql
                 logRefreshTokenEvent("", TYPE_SUCCESS_REFRESH_TOKEN_REST, "", accessToken = trimToken(newToken))
                 networkRouter.doRelogin(newToken)
-                isRefreshing = false
+                
                 updateRequestWithNewToken(response.request)
             } else {
-                isRefreshing = false
                 null
             }
         } catch (e: Exception) {
             logRefreshTokenEvent(formatThrowable(e), TYPE_RETRY_REFRESH_TOKEN_REST, "", "")
-            isRefreshing = false
             null
         }
     }

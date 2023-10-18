@@ -9,7 +9,6 @@ class ScpRefreshHelper(
     private val application: Context
 ) {
 
-    @Synchronized
     fun refreshToken(): ScpTokenModel {
         val isSuccess = refreshWithGotoSdk()
         return if (isSuccess) {
