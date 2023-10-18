@@ -18,7 +18,6 @@ import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataMode
 import com.tokopedia.product.detail.databinding.ItemDynamicOneLinerBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.renderHtmlBold
-import com.tokopedia.unifycomponents.toPx
 
 class DynamicOneLinerViewHolder(
     view: View,
@@ -73,7 +72,7 @@ class DynamicOneLinerViewHolder(
                 title.renderHtmlBold(context)
             }
 
-            setMargin(marginLeft, data.paddingTop.toPx(), marginRight, data.paddingBottom.toPx())
+            setMargin(marginLeft, data.paddingTopPx, marginRight, data.paddingBottomPx)
         }
 
         val iconUrl = data.icon

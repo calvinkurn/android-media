@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.data.model.datamodel
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.unifycomponents.toPx
 
 data class DynamicOneLinerDataModel(
     val name: String,
@@ -27,9 +28,12 @@ data class DynamicOneLinerDataModel(
         val icon: String = "",
         val status: String = "",
         val chevronPos: String = "",
-        val paddingTop: Int = 0,
-        val paddingBottom: Int = 0
+        private val paddingTop: Int = 0,
+        private val paddingBottom: Int = 0
     ) {
+        val paddingTopPx = paddingTop.toPx()
+        val paddingBottomPx = paddingBottom.toPx()
+
         val shouldShowSeparatorTop
             get() = separator == ProductCustomInfoDataModel.SEPARATOR_BOTH ||
                 separator == ProductCustomInfoDataModel.SEPARATOR_TOP
