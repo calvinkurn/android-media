@@ -2,19 +2,21 @@ package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_ch
 
 import android.os.Bundle
 import com.tokopedia.home.beranda.domain.gql.feed.Product
+import com.tokopedia.home.beranda.domain.gql.recommendationcard.Card
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.smart_recycler_helper.SmartVisitable
 
 data class HomeRecommendationItemDataModel(
-        val product: Product,
-        val pageName: String = "",
-        val layoutName: String = "",
-        val position: Int = -1,
-        val tabName: String = ""
-) : HomeRecommendationVisitable, ImpressHolder()
-{
+    val product: Product? = null,
+    val card: Card? = null,
+    val productCardModel: ProductCardModel,
+    val pageName: String = "",
+    val layoutName: String = "",
+    val position: Int = -1
+) : HomeRecommendationVisitable, ImpressHolder() {
     override fun type(typeFactory: HomeRecommendationTypeFactory): Int {
         return typeFactory.type(this)
     }
@@ -24,7 +26,7 @@ data class HomeRecommendationItemDataModel(
     }
 
     override fun getUniqueIdentity(): Any {
-        return product.id
+        return card?.id.orEmpty()
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
@@ -37,12 +39,12 @@ data class HomeRecommendationItemDataModel(
 
         other as HomeRecommendationItemDataModel
 
-        if (product != other.product) return false
+        if (card != other.card) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return product.hashCode()
+        return card.hashCode()
     }
 }

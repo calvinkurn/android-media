@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecomme
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.smart_recycler_helper.SmartTypeFactory
 
-interface HomeRecommendationTypeFactory: SmartTypeFactory{
+interface HomeRecommendationTypeFactory : SmartTypeFactory {
     fun type(dataModel: HomeRecommendationLoading): Int
     fun type(dataModel: HomeRecommendationEmpty): Int
     fun type(dataModel: HomeRecommendationError): Int

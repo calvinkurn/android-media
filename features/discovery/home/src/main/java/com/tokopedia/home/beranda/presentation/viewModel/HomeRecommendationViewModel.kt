@@ -18,16 +18,17 @@ import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.topads.sdk.utils.VALUE_ITEM
 import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import javax.inject.Inject
 
 class HomeRecommendationViewModel @Inject constructor(
-    private val getHomeRecommendationUseCase: GetHomeRecommendationUseCase,
-    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-    private val getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
-    private val userSessionInterface: UserSessionInterface,
-    private val topAdsAddressHelper: TopAdsAddressHelper,
-    homeDispatcher: CoroutineDispatchers
-) : BaseViewModel(homeDispatcher.io) {
+    private val getHomeRecommendationUseCase: Lazy<GetHomeRecommendationUseCase>,
+    private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
+    private val getTopAdsHeadlineUseCase: Lazy<GetTopAdsHeadlineUseCase>,
+    private val userSessionInterface: Lazy<UserSessionInterface>,
+    private val topAdsAddressHelper: Lazy<TopAdsAddressHelper>,
+    homeDispatcher: Lazy<CoroutineDispatchers>
+) : BaseViewModel(homeDispatcher.get().io) {
 
     companion object {
         private const val TOPADS_TDN_RECOM_SOURCE = "1"
@@ -55,8 +56,8 @@ class HomeRecommendationViewModel @Inject constructor(
     ) {
         _homeRecommendationLiveData.postValue(HomeRecommendationDataModel(homeRecommendations = listOf(loadingModel)))
         launchCatchError(coroutineContext, block = {
-            getHomeRecommendationUseCase.setParams(tabName, recommendationId, count, 1, locationParam, sourceType)
-            val data = getHomeRecommendationUseCase.executeOnBackground()
+            getHomeRecommendationUseCase.get().setParams(tabName, recommendationId, count, 1, locationParam, sourceType)
+            val data = getHomeRecommendationUseCase.get().executeOnBackground()
             if (data.homeRecommendations.isEmpty()) {
                 _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = listOf(HomeRecommendationEmpty())))
             } else {
@@ -65,8 +66,8 @@ class HomeRecommendationViewModel @Inject constructor(
                     val homeBannerTopAds = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
                     var topAdsBanner = arrayListOf<TopAdsImageViewModel>()
                     if (homeBannerTopAds.isNotEmpty()) {
-                        topAdsBanner = topAdsImageViewUseCase.getImageData(
-                            topAdsImageViewUseCase.getQueryMap(
+                        topAdsBanner = topAdsImageViewUseCase.get().getImageData(
+                            topAdsImageViewUseCase.get().getQueryMap(
                                 query = "",
                                 source = TOPADS_TDN_RECOM_SOURCE,
                                 pageToken = "",
@@ -147,8 +148,8 @@ class HomeRecommendationViewModel @Inject constructor(
 
     private suspend fun fetchHeadlineAds(tabIndex: Int): TopAdsHeadlineResponse {
         return if (tabIndex == Int.ZERO) {
-            val params = getTopAdsHeadlineUseCase.createParams(
-                userId = userSessionInterface.userId,
+            val params = getTopAdsHeadlineUseCase.get().createParams(
+                userId = userSessionInterface.get().userId,
                 page = TOPADS_PAGE_DEFAULT,
                 src = SRC_HEADLINE_TOPADS,
                 templateId = VALUE_TEMPLATE_ID,
@@ -156,8 +157,8 @@ class HomeRecommendationViewModel @Inject constructor(
                 item = VALUE_ITEM,
                 seenAds = null
             )
-            getTopAdsHeadlineUseCase.setParams(params, topAdsAddressHelper.getAddressData())
-            getTopAdsHeadlineUseCase.executeOnBackground()
+            getTopAdsHeadlineUseCase.get().setParams(params, topAdsAddressHelper.get().getAddressData())
+            getTopAdsHeadlineUseCase.get().executeOnBackground()
         } else {
             TopAdsHeadlineResponse()
         }
@@ -172,13 +173,13 @@ class HomeRecommendationViewModel @Inject constructor(
             )
         )
         launchCatchError(coroutineContext, block = {
-            getHomeRecommendationUseCase.setParams(tabName, recomId, count, page, locationParam, sourceType)
-            val data = getHomeRecommendationUseCase.executeOnBackground()
+            getHomeRecommendationUseCase.get().setParams(tabName, recomId, count, page, locationParam, sourceType)
+            val data = getHomeRecommendationUseCase.get().executeOnBackground()
             list.remove(loadMoreModel)
             try {
                 val homeBannerTopAds = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
-                val topAdsBanner = topAdsImageViewUseCase.getImageData(
-                    topAdsImageViewUseCase.getQueryMap(
+                val topAdsBanner = topAdsImageViewUseCase.get().getImageData(
+                    topAdsImageViewUseCase.get().getQueryMap(
                         query = "",
                         source = TOPADS_TDN_RECOM_SOURCE,
                         pageToken = "",
