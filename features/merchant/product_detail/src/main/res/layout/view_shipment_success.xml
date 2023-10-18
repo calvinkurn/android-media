@@ -13,68 +13,107 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:unify_image_disable_shimmering_placeholder="true"
         app:unify_image_placeholder="@android:color/transparent"
-        tools:src="@tools:sample/avatars"
-        tools:visibility="gone" />
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/pdp_shipment_header_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="12dp"
-        android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_header_price"
-        app:layout_constraintEnd_toStartOf="@id/pdp_shipment_header_price"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/pdp_shipment_header_price"
-        tools:layout_width="100dp"
         tools:src="@tools:sample/avatars" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/pdp_shipment_header_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="16dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintEnd_toStartOf="@id/pdp_shipment_header_slash_price"
-        app:layout_constraintStart_toEndOf="@id/pdp_shipment_header_logo"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="display_1"
-        app:typographyWeight="bold"
-        tools:text="Ongkir Instant 3 jam mulai Rp40.000" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/pdp_shipment_header_slash_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_header_price"
-        app:layout_constraintEnd_toStartOf="@id/pdp_shipment_chevron"
-        app:layout_constraintStart_toEndOf="@id/pdp_shipment_header_price"
-        app:layout_constraintTop_toTopOf="@id/pdp_shipment_header_price"
-        app:typographyType="display_2"
-        tools:text="Rp10.000" />
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/pdp_shipment_chevron"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:icon_name="CHEVRON_RIGHT"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/pdp_shipment_container_body"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/pdp_shipment_header_price" />
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/pdp_shipment_header_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="12dp"
+            app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_header_price"
+            app:layout_constraintEnd_toStartOf="@id/pdp_shipment_header_price"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/pdp_shipment_header_price"
+            tools:layout_width="100dp"
+            tools:src="@tools:sample/avatars" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/pdp_shipment_header_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@id/pdp_shipment_header_slash_price"
+            app:layout_constraintStart_toEndOf="@id/pdp_shipment_header_logo"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginStart="0dp"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
+            tools:text="Ongkir Instant 3 jam mulai Rp40.000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/pdp_shipment_header_slash_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_header_price"
+            app:layout_constraintEnd_toStartOf="@id/pdp_shipment_chevron"
+            app:layout_constraintStart_toEndOf="@id/pdp_shipment_header_price"
+            app:layout_constraintTop_toTopOf="@id/pdp_shipment_header_price"
+            app:typographyType="display_2"
+            tools:text="Rp10.000" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/pdp_shipment_chevron"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/pdp_shipment_container_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/pdp_shipment_header_price" />
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/pdp_shipment_ticker"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            app:closeButtonVisibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pdp_shipment_container_body"
+            app:tickerShapeType="loose"
+            app:tickerType="announcement"
+            tools:descriptionText="Maaf, pengiriman terjadwal belum tersedia untuk beberapa produk pada kategori ini."
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.TipsUnify
+            android:id="@+id/pdp_shipment_tips"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pdp_shipment_ticker"
+            app:layout_goneMarginTop="10dp"
+            app:unify_tips_description="Test"
+            tools:visibility="visible" />
+
+        <ViewStub
+            android:id="@+id/vs_shipment_plus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:layout="@layout/view_shipment_plus"
+            app:layout_constraintTop_toBottomOf="@id/pdp_shipment_tips" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

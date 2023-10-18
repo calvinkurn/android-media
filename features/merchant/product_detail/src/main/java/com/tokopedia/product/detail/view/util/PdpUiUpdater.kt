@@ -1163,7 +1163,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
 
         updateData(ProductDetailConstant.SHIPMENT_V3){
-            shipmentV3?.setData(rates)
+            shipmentV3?.setData(
+                rates = rates,
+                isCod = isCod,
+                boType = freeOngkirData.boType
+            )
         }
     }
 

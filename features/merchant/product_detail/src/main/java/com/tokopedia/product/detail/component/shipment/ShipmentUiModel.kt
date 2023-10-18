@@ -5,7 +5,10 @@ import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentBody
+import com.tokopedia.product.detail.common.data.model.rates.Ticker
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 data class ShipmentUiModel(
@@ -29,7 +32,11 @@ data class ShipmentUiModel(
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 
-    fun setData(rates: P2RatesEstimate?) {
+    fun setData(
+        rates: P2RatesEstimate?,
+        isCod: Boolean,
+        boType: Int
+    ) {
         if (rates == null) {
             state = Failed
             return
@@ -47,13 +54,23 @@ data class ShipmentUiModel(
             return
         }
 
+        val slashPrice = data.originalShippingRate.takeIf { it > 0 }?.getCurrencyFormatted() ?: ""
+
         Success(
             logo = data.boBadge.imageUrl,
             title = data.title,
-            slashPrice = data.originalShippingRate.getCurrencyFormatted() ?: "",
+            slashPrice = slashPrice,
             appLink = "",
             background = rates.background,
-            body = data.shipmentBody.toUiModel()
+            body = data.shipmentBody.toUiModel(),
+            tickers = data.tickers,
+            shipmentPlus = DynamicProductDetailMapper.mapToShipmentPlusData(
+                rates.shipmentPlus,
+                boType
+            ),
+            labels = data.chipsLabel,
+            isCod = isCod,
+            isScheduled = data.isScheduled
         ).also { state = it }
     }
 
@@ -77,7 +94,15 @@ data class ShipmentUiModel(
         val slashPrice: String,
         val appLink: String,
         val background: String,
-        val body: List<Info>
+        val body: List<Info>,
+
+        val tickers: List<Ticker>,
+        val shipmentPlus: ShipmentPlusData,
+
+        // additional data from old shipment
+        val labels: List<String>,
+        val isCod: Boolean,
+        val isScheduled: Boolean
     ) : State
 
     data class Info(
