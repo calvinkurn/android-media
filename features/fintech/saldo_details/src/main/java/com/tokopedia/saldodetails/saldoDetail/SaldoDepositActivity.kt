@@ -2,8 +2,12 @@ package com.tokopedia.saldodetails.saldoDetail
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -17,6 +21,7 @@ import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponentInsta
 import com.tokopedia.saldodetails.saldoDetail.SaldoDepositFragment.Companion.REQUEST_WITHDRAW_CODE
 import com.tokopedia.saldodetails.saldoDetail.coachmark.SaldoCoachMarkListener
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import javax.inject.Inject
 
 /**
@@ -84,6 +89,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         initInjector()
         setUpToolbar()
         initializeView()
+        hideStatusBar()
     }
 
     private fun setUpToolbar() {
@@ -94,6 +100,19 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
             rightIcons?.let {
                 it.getOrNull(0)?.setOnClickListener { RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_INTRO) }
             }
+            headerView?.setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900))
+        }
+    }
+
+    private fun hideStatusBar() {
+        this.window?.let { window ->
+            if (Build.VERSION.SDK_INT in Build.VERSION_CODES.KITKAT..Build.VERSION_CODES.KITKAT_WATCH) {
+                window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            }
+
+            window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.statusBarColor = Color.TRANSPARENT
         }
     }
 
