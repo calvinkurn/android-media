@@ -113,6 +113,7 @@ class MerchantPromotionGetMVDataByIDUseCase @Inject constructor(
                         }
                       }
                       is_editable
+                      is_stoppable
                       subsidy_detail{
                         quota_subsidized{
                           voucher_quota

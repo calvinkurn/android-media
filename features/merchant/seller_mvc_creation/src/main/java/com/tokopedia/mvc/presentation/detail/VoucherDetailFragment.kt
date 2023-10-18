@@ -1182,7 +1182,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun deleteOrStopVoucher(data: VoucherDetailData) {
         if (data.isFromVps() ||
             data.isGetSubsidy() ||
-            !data.isEditable
+            !data.isEditable ||
+            !data.isStoppable
         ) {
             if (data.subsidyDetail.programDetail.promotionStatus == PromotionStatus.APPROVED ||
                 data.subsidyDetail.programDetail.promotionStatus == PromotionStatus.REGISTERED

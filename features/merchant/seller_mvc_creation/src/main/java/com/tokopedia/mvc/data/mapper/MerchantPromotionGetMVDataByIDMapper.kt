@@ -83,6 +83,7 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
                 productIds = toProductIds(),
                 labelVoucher = toLabelVoucher(),
                 isEditable = isEditable,
+                isStoppable = isStoppable,
                 subsidyDetail = toSubsidyDetail()
             )
             voucherDetailData
