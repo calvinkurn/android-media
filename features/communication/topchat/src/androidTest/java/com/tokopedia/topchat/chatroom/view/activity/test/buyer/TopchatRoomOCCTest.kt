@@ -12,7 +12,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.productResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.productRobot
-import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatChatRoomFragmentStub
+import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatRoomFragmentStub
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -23,13 +23,13 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
     @Before
     override fun before() {
         super.before()
-        TopChatChatRoomFragmentStub.isOCCActive = true
+        TopChatRoomFragmentStub.isOCCActive = true
     }
 
     @After
     override fun tearDown() {
         super.tearDown()
-        TopChatChatRoomFragmentStub.isOCCActive = false
+        TopChatRoomFragmentStub.isOCCActive = false
     }
 
     @Test

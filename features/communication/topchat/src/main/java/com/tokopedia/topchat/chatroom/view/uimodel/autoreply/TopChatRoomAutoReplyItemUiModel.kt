@@ -7,7 +7,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.utils.htmltags.HtmlUtil
 import timber.log.Timber
 
-data class TopChatAutoReplyItemUiModel(
+data class TopChatRoomAutoReplyItemUiModel(
     @SerializedName("title")
     val title: String,
 
@@ -23,7 +23,17 @@ data class TopChatAutoReplyItemUiModel(
             PRODUCT_MESSAGE -> IconUnify.PRODUCT
             DELIVERY_MESSAGE -> IconUnify.COURIER
             OPERATIONAL_MESSAGE -> IconUnify.CLOCK
-            else -> null
+            else -> {
+                /**
+                 * If the title and type is blank,
+                 * it should be treated same as welcome message
+                 */
+                if (title.isNotBlank() && type.isNotBlank()) {
+                    IconUnify.BELL
+                } else {
+                    null
+                }
+            }
         }
     }
 

@@ -9,7 +9,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam.Companion.EVENT_ACTION_ATC
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam.Companion.EVENT_ACTION_BUY
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.BundleItem
-import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyItemUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatRoomAutoReplyItemUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
@@ -1064,9 +1064,8 @@ object TopChatAnalyticsKt {
     }
 
     fun eventImpressionAutoReply(
-        source: String,
         messageId: String,
-        contentList: List<TopChatAutoReplyItemUiModel>
+        contentList: List<TopChatRoomAutoReplyItemUiModel>
     ) {
         val contentHeader = contentList
             .mapNotNull { it.type.takeIf { type -> type.isNotEmpty() } }
@@ -1077,7 +1076,7 @@ object TopChatAnalyticsKt {
                 event = Event.VIEW_COMMUNICATION_IRIS,
                 category = Category.CHAT_DETAIL,
                 action = Action.IMPRESSION_BALASAN_OTOMATIS,
-                label = "$source - $messageId - $contentHeader",
+                label = "$sourcePage - $messageId - $contentHeader",
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
                 trackerId = "47757"
@@ -1086,9 +1085,8 @@ object TopChatAnalyticsKt {
     }
 
     fun eventClickAutoReply(
-        source: String,
         messageId: String,
-        contentList: List<TopChatAutoReplyItemUiModel>
+        contentList: List<TopChatRoomAutoReplyItemUiModel>
     ) {
         val contentHeader = contentList
             .mapNotNull { it.type.takeIf { type -> type.isNotEmpty() } }
@@ -1099,7 +1097,7 @@ object TopChatAnalyticsKt {
                 event = Event.CLICK_COMMUNICATION,
                 category = Category.CHAT_DETAIL,
                 action = Action.CLICK_BALASAN_OTOMATIS,
-                label = "$source - $messageId - $sourcePage - $contentHeader",
+                label = "$sourcePage - $messageId - $contentHeader",
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
                 trackerId = "47758"

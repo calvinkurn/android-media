@@ -7,18 +7,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatChatRoomAutoReplyAdapter
-import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyItemUiModel
+import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAutoReplyAdapter
+import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatRoomAutoReplyItemUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomBottomsheetAutoReplyBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class TopChatAutoReplyDetailBottomSheet: BottomSheetUnify() {
+class TopChatRoomAutoReplyDetailBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<TopchatChatroomBottomsheetAutoReplyBinding>()
-    private val adapter = TopChatChatRoomAutoReplyAdapter(isMessageBubble = false)
-    private var welcomeMessage = TopChatAutoReplyItemUiModel("", "", "")
-    private var list: List<TopChatAutoReplyItemUiModel> = listOf()
+    private val adapter = TopChatRoomAutoReplyAdapter(isMessageBubble = false)
+    private var mainMessage = TopChatRoomAutoReplyItemUiModel("", "", "")
+    private var list: List<TopChatRoomAutoReplyItemUiModel> = listOf()
 
     init {
         clearContentPadding = true
@@ -46,19 +46,21 @@ class TopChatAutoReplyDetailBottomSheet: BottomSheetUnify() {
 
     private fun setupViews() {
         this.setTitle(getString(R.string.topchat_message_auto_reply_bs_title))
-        binding?.topchatChatroomTvWelcomeMessageBs?.text = welcomeMessage.getMessage()
+        binding?.topchatChatroomTvWelcomeMessageBs?.text = mainMessage.getMessage()
         binding?.topchatChatroomRvAutoReplyBs?.adapter = adapter
         binding?.topchatChatroomRvAutoReplyBs?.layoutManager = LinearLayoutManager(context)
         binding?.topchatChatroomRvAutoReplyBs?.itemAnimator = null
+        binding?.topchatChatroomRvAutoReplyBs?.isNestedScrollingEnabled = false
+        binding?.topchatChatroomRvAutoReplyBs?.setHasFixedSize(true)
         adapter.updateItem(list)
     }
 
     fun show(
         fragmentManager: FragmentManager?,
-        welcomeMessage: TopChatAutoReplyItemUiModel,
-        list: List<TopChatAutoReplyItemUiModel>
+        mainMessage: TopChatRoomAutoReplyItemUiModel,
+        list: List<TopChatRoomAutoReplyItemUiModel>
     ) {
-        this.welcomeMessage = welcomeMessage
+        this.mainMessage = mainMessage
         this.list = list
         fragmentManager?.let {
             if (!isVisible) {
@@ -68,6 +70,6 @@ class TopChatAutoReplyDetailBottomSheet: BottomSheetUnify() {
     }
 
     companion object {
-        private val TAG = TopChatAutoReplyDetailBottomSheet::class.simpleName
+        private val TAG = TopChatRoomAutoReplyDetailBottomSheet::class.simpleName
     }
 }

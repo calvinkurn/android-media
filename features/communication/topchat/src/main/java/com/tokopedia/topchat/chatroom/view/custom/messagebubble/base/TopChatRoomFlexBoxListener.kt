@@ -1,17 +1,17 @@
 package com.tokopedia.topchat.chatroom.view.custom.messagebubble.base
 
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
-import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyItemUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatRoomAutoReplyItemUiModel
 
-interface TopChatChatRoomFlexBoxListener {
+interface TopChatRoomFlexBoxListener {
     fun changeAddress(attachment: HeaderCtaButtonAttachment)
 
     fun onViewAutoReply(
-        list: List<TopChatAutoReplyItemUiModel>
+        list: List<TopChatRoomAutoReplyItemUiModel>
     )
 
     fun onClickReadMoreAutoReply(
-        welcomeMessage: TopChatAutoReplyItemUiModel,
-        list: List<TopChatAutoReplyItemUiModel>
+        mainMessage: TopChatRoomAutoReplyItemUiModel,
+        list: List<TopChatRoomAutoReplyItemUiModel>
     )
 }

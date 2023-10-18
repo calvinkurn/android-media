@@ -5,7 +5,7 @@ import com.tokopedia.topchat.chatroom.service.NotificationChatService
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.fragment.StickerFragment
-import com.tokopedia.topchat.chatroom.view.fragment.TopChatChatRoomFragment
+import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import dagger.Component
 
 /**
@@ -18,7 +18,7 @@ import dagger.Component
     dependencies = [BaseAppComponent::class]
 )
 interface ChatComponent {
-    fun inject(fragment: TopChatChatRoomFragment)
+    fun inject(fragment: TopChatRoomFragment)
 
     fun inject(fragment: StickerFragment)
 

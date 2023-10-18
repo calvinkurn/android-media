@@ -60,6 +60,8 @@ class GetChatUseCaseStub @Inject constructor(
         "product_bundling/success_get_chat_broadcast_product_bundling.json"
     private val broadcastWithFlexibleCta =
         "broadcast/success_get_chat_broadcast_with_flexible_cta.json"
+    private val autoReplyResponsePath =
+        "auto_reply/success_get_chat_with_auto_reply.json"
 
     var response: GetExistingChatPojo = GetExistingChatPojo()
         set(value) {
@@ -152,6 +154,11 @@ class GetChatUseCaseStub @Inject constructor(
     val broadCastChatWithFlexibleCtaSeller: GetExistingChatPojo
         get() = alterResponseOf(broadcastWithFlexibleCta) { response ->
             swapInterlocutor(response)
+            alterDateToToday(response)
+        }
+
+    val autoReplyResponse: GetExistingChatPojo
+        get() = alterResponseOf(autoReplyResponsePath) { response ->
             alterDateToToday(response)
         }
 
