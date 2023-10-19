@@ -10,12 +10,14 @@ import com.tokopedia.checkout.RevampShipmentActivity
 import com.tokopedia.checkout.interceptor.CheckoutInterceptor
 import com.tokopedia.checkout.interceptor.SAF_OWOC_DEFAULT_RESPONSE_PATH
 import com.tokopedia.checkout.robot.checkoutPageRevamp
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@UiTest
 class CheckoutRevampOwocTest {
 
     @get:Rule
