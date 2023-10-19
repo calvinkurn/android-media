@@ -684,6 +684,16 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         }
     }
 
+    override fun onComparisonProductClick(id: String) {
+        val catalogProductList =
+            Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG))
+                .buildUpon()
+                .appendPath(id).toString()
+        RouteManager.getIntent(context, catalogProductList).apply {
+            startActivity(this)
+        }
+    }
+
     override fun changeComparison(selectedComparedCatalogId: String) {
         compareCatalogId = selectedComparedCatalogId
         viewModel.getProductCatalogComparisons(catalogId, compareCatalogId)

@@ -16,6 +16,7 @@ data class ComparisonUiModel(
 ) {
 
     data class ComparisonContent(
+        val id: String,
         val imageUrl: String,
         val productTitle: String,
         val price: String,

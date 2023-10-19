@@ -1,5 +1,6 @@
 package com.tokopedia.catalog.ui.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.databinding.FragmentCatalogComparisonDetailBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
@@ -128,11 +132,12 @@ class CatalogComparisonDetailFragment :
     }
 
     private fun setupToolbar() {
-        binding?.toolbar?.cartButton?.hide()
-        binding?.toolbar?.searchButton?.hide()
         context?.let {
             binding?.toolbar?.apply {
                 title = getString(R.string.text_comparison_title)
+                searchButton?.hide()
+                cartButton?.hide()
+                shareButton?.hide()
                 setColors(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950))
                 setNavigationOnClickListener {
                     activity?.finish()
@@ -166,6 +171,16 @@ class CatalogComparisonDetailFragment :
 
     override fun onComparisonSeeMoreButtonClicked() {
         // no-op
+    }
+
+    override fun onComparisonProductClick(id: String) {
+        val catalogProductList =
+            Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG))
+                .buildUpon()
+                .appendPath(id).toString()
+        RouteManager.getIntent(context, catalogProductList).apply {
+            startActivity(this)
+        }
     }
 
     override fun changeComparison(comparedCatalogId: String) {

@@ -425,6 +425,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 }
                 isFirstData = false
                 ComparisonUiModel.ComparisonContent(
+                    id =  it.id,
                     imageUrl = it.catalogImage.firstOrNull{ image -> image.isPrimary }?.imageUrl.orEmpty(),
                     productTitle = it.name,
                     price = it.marketPrice.firstOrNull()?.let { marketPrice ->
