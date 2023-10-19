@@ -56,8 +56,8 @@ class EditorEditTextView @JvmOverloads constructor(
         })
     }
 
-    private fun setSpan(): SpannableString {
-        val spanString = SpannableString(text)
+    private fun setSpan(paramText: CharSequence?): SpannableString {
+        val spanString = SpannableString(paramText)
         val roundedSpan = RoundedSpan(
             backgroundColor,
             padding = roundedPadding,
@@ -81,7 +81,7 @@ class EditorEditTextView @JvmOverloads constructor(
 
         var spanString: SpannableString? = null
         if ((text?.length ?: 0) > 0) {
-            spanString = setSpan()
+            spanString = setSpan(text)
             isSpanImplemented = true
         }
 
