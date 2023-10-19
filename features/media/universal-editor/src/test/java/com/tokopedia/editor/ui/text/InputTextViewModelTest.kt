@@ -35,7 +35,7 @@ class InputTextViewModelTest {
     @Test
     fun `try to get empty selected color`() {
         // Given
-        var selectedColor: Int? = null
+        val selectedColor: Int?
 
         // When
         selectedColor = viewModel.getCurrentSelectedColor()
@@ -69,9 +69,7 @@ class InputTextViewModelTest {
         )
 
         // When
-        every { colorProvider.getColorMap() } returns mapOf(
-            Pair(newSelectedColor, colorModel)
-        )
+        every { colorProvider.getColorMap() } returns mapOf(newSelectedColor to colorModel)
         viewModel.updateBackgroundState(selectedBackgroundPairColor)
         viewModel.updateSelectedColor(newSelectedColor)
 
@@ -93,9 +91,7 @@ class InputTextViewModelTest {
         )
 
         // When
-        every { colorProvider.getColorMap() } returns mapOf(
-            Pair(193, colorModel)
-        )
+        every { colorProvider.getColorMap() } returns mapOf(193 to colorModel)
         viewModel.updateBackgroundState(selectedBackgroundPairColor)
         viewModel.updateSelectedColor(newSelectedColor)
 

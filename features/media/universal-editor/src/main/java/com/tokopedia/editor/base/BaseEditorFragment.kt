@@ -1,5 +1,8 @@
+@file:SuppressLint("UnsafeFragmentConstructor")
+
 package com.tokopedia.editor.base
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View

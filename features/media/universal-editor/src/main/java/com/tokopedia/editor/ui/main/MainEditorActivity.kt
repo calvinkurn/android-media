@@ -1,6 +1,11 @@
+@file:SuppressLint("DeprecatedMethod")
+@file:Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
+
 package com.tokopedia.editor.ui.main
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -10,16 +15,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.editor.R
 import com.tokopedia.editor.databinding.ActivityMainEditorBinding
 import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
 import com.tokopedia.editor.ui.dialog.ConfirmationDialog
-import com.tokopedia.editor.ui.main.component.AudioStateUiComponent
-import com.tokopedia.editor.ui.main.component.GlobalLoaderUiComponent
-import com.tokopedia.editor.ui.main.component.NavigationToolUiComponent
-import com.tokopedia.editor.ui.main.component.PagerContainerUiComponent
+import com.tokopedia.editor.ui.component.AudioStateUiComponent
+import com.tokopedia.editor.ui.component.GlobalLoaderUiComponent
+import com.tokopedia.editor.ui.component.NavigationToolUiComponent
+import com.tokopedia.editor.ui.component.PagerContainerUiComponent
 import com.tokopedia.editor.ui.main.uimodel.InputTextParam
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
@@ -28,6 +34,7 @@ import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.ui.placement.PlacementImageActivity
 import com.tokopedia.editor.ui.text.InputTextActivity
 import com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
+import com.tokopedia.editor.util.safeLoadNativeLibrary
 import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.RESULT_UNIVERSAL_EDITOR
@@ -105,18 +112,31 @@ open class MainEditorActivity : AppCompatActivity()
     }
 
     private val viewModel: MainEditorViewModel by viewModels { viewModelFactory }
-    private lateinit var binding: ActivityMainEditorBinding
+    private var binding: ActivityMainEditorBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
+        loadNativeLibrary(this)
         supportFragmentManager.fragmentFactory = fragmentFactory
 
         super.onCreate(savedInstanceState)
         binding = ActivityMainEditorBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(binding?.root)
 
         setDataParam()
         initObserver()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+        if (isSplitInstallEnabled() && newBase != null) {
+            loadNativeLibrary(newBase)
+        }
     }
 
     override fun onCloseClicked() {
@@ -130,16 +150,14 @@ open class MainEditorActivity : AppCompatActivity()
     override fun onTextClick(text: View, model: InputTextModel?) {
         if (model == null) return
 
-        binding.container.setTextVisibility(text.id, false)
+        binding?.container?.setTextVisibility(text.id, false)
         viewModel.onEvent(MainEditorEvent.EditInputTextPage(text.id, model))
     }
 
-    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton())
     }
 
-    @Suppress("DEPRECATION")
     private fun setDataParam() {
         val param = intent?.getParcelableExtra<UniversalEditorParam>(
             EXTRA_UNIVERSAL_EDITOR_PARAM
@@ -148,6 +166,27 @@ open class MainEditorActivity : AppCompatActivity()
         require(param.pageSource.isUnknown().not()) { "We unable to find the page source." }
 
         viewModel.onEvent(MainEditorEvent.SetupView(param))
+    }
+
+    private fun loadNativeLibrary(context: Context) {
+        if (isSplitInstallEnabled()) {
+            SplitCompat.installActivity(context)
+
+            safeLoadNativeLibrary(context, "c++_shared")
+
+            // FFMPEG
+            safeLoadNativeLibrary(context, "mobileffmpeg")
+            safeLoadNativeLibrary(context, "mobileffmpeg_abidetect")
+
+            // Common
+            safeLoadNativeLibrary(context, "avutil")
+            safeLoadNativeLibrary(context, "swscale")
+            safeLoadNativeLibrary(context, "swresample")
+            safeLoadNativeLibrary(context, "avcodec")
+            safeLoadNativeLibrary(context, "avformat")
+            safeLoadNativeLibrary(context, "avdevice")
+            safeLoadNativeLibrary(context, "avfilter")
+        }
     }
 
     private fun initObserver() {
@@ -173,7 +212,7 @@ open class MainEditorActivity : AppCompatActivity()
         navigationTool.setupView(model.tools)
 
         // listeners
-        binding.container.setListener(this)
+        binding?.container?.setListener(this)
 
         isPageInitialize = true
     }
@@ -194,7 +233,7 @@ open class MainEditorActivity : AppCompatActivity()
                 }
             }
             is MainEditorEffect.UpdateTextAddedState -> {
-                val hasTextAdded = binding.container.hasTextAdded()
+                val hasTextAdded = binding?.container?.hasTextAdded() ?: return
                 viewModel.onEvent(MainEditorEvent.HasTextAdded(hasTextAdded))
             }
             is MainEditorEffect.RemoveAudioState -> {
@@ -247,15 +286,15 @@ open class MainEditorActivity : AppCompatActivity()
         val (viewId, model) = state
         if (model == null) return
 
-        binding.container.addOrEditText(viewId, model)
-        binding.container.setTextVisibility(viewId, true)
+        binding?.container?.addOrEditText(viewId, model)
+        binding?.container?.setTextVisibility(viewId, true)
         viewModel.onEvent(MainEditorEvent.ResetActiveInputText)
     }
 
     private fun onShowToastErrorMessage(message: String) {
         if (message.isEmpty()) return
 
-        val parent = binding.container
+        val parent = binding?.container ?: return
         val actionText = getString(R.string.universal_editor_retry)
 
         val toaster = Toaster.build(parent, message, LENGTH_SHORT, TYPE_ERROR, actionText) {
@@ -266,8 +305,12 @@ open class MainEditorActivity : AppCompatActivity()
     }
 
     private fun exportFinalResult() {
-        val bitmap = binding.container.exportAsBitmap()
+        // grid and deletion view are added as Views. thus, we have to ensure
+        // both view are removed before convert it to bitmap.
+        binding?.container?.viewsCleanUp()
+
         val imageBitmap = pagerContainer.getImageBitmap()
+        val bitmap = binding?.container?.exportAsBitmap() ?: return
 
         viewModel.onEvent(MainEditorEvent.ExportMedia(bitmap, imageBitmap))
     }
@@ -300,5 +343,18 @@ open class MainEditorActivity : AppCompatActivity()
         ModuleInjector
             .get(this)
             .inject(this)
+    }
+
+    /**
+     * A hansel-able feature toggle.
+     *
+     * If the SplitCompat.install(...) won't work properly,
+     * we are able to disable by patching it through Hansel.
+     *
+     * This temporary method, this LOC will be deleted in
+     * upcoming two versions after this editor got released.
+     */
+    private fun isSplitInstallEnabled(): Boolean {
+        return true
     }
 }

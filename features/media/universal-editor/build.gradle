@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
-apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-parcelize'
 
 buildscript {
@@ -8,10 +7,6 @@ buildscript {
         google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
-    }
-
-    dependencies {
-        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
@@ -25,45 +20,6 @@ android {
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
-    }
-
-    sourceSets {
-        test {
-            java.srcDirs += "$projectDir/src/testCommon/java"
-        }
-        androidTest {
-            java.srcDirs += "$projectDir/src/testCommon/java"
-        }
-    }
-
-    buildTypes {
-        debug {
-            ext.enableHansel = project.hasProperty('hanselEnableDebug')
-            testCoverageEnabled (project.hasProperty('coverage'))
-        }
-        release {
-            ext.enableHansel = !project.hasProperty('hanselDisableRelease')
-            minifyEnabled false
-            consumerProguardFiles 'proguard-rules.pro'
-        }
-    }
-
-    testOptions {
-        unitTests.all {
-            jacoco {
-                includeNoLocationClasses = true
-                excludes = ['jdk.internal.*']
-            }
-        }
-    }
-
     buildFeatures {
         viewBinding true
     }
@@ -74,15 +30,16 @@ android {
                 srcDirs 'src/main/res',
                         'src/main/res/layouts/parent',
                         'src/main/res/layouts/image',
-                        'src/main/res/layouts/video'
+                        'src/main/res/layouts/video',
+                        'src/main/res/layouts/component',
+                        'src/main/res/layouts/partial'
             }
         }
     }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation (name: 'ffmpeg-mobile-video', ext: 'aar')
+    implementation rootProject.ext.miscDependencies.ffmpeg
 
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
@@ -97,6 +54,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.track)
+
+    implementation rootProject.ext.playServicesDependencies.core
 
     implementation rootProject.ext.networkDependencies.retrofitKotlinCoroutine
     implementation rootProject.ext.networkDependencies.loggingInterceptor
@@ -139,7 +98,7 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
 
-    implementation (rootProject.ext.tkpdLibDependencies.ucrop) {
+    implementation(rootProject.ext.tkpdLibDependencies.ucrop) {
         exclude group: 'com.android.support'
     }
 
@@ -162,7 +121,7 @@ project.ext {
     artifactId = 'universal-editor'
     groupId = 'com.tokopedia.editor'
     versionName = "0.0.1"
-    artifactName ="universal-editor"
+    artifactName = "universal-editor"
 }
 
 apply from: '../../../publish_local.gradle'

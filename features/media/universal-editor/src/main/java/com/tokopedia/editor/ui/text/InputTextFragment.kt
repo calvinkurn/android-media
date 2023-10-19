@@ -1,4 +1,4 @@
-@file:Suppress("DEPRECATION")
+@file:Suppress("DEPRECATION", "DeprecatedMethod")
 
 package com.tokopedia.editor.ui.text
 

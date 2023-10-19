@@ -14,7 +14,7 @@ import com.tokopedia.editor.analytics.image.placement.ImagePlacementAnalytics
 import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
-import com.tokopedia.editor.ui.main.component.GlobalLoaderUiComponent
+import com.tokopedia.editor.ui.component.GlobalLoaderUiComponent
 import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.editor.util.getEditorCacheFolderPath
 import com.tokopedia.picker.common.basecomponent.uiComponent
