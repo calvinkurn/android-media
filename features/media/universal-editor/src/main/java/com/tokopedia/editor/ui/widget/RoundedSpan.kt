@@ -137,9 +137,6 @@ class RoundedSpan(
 
                 // 15
                 path.lineTo(rect.left + radius, rect.top)
-            } else {
-                // 19
-                path.lineTo(rect.left, rect.top + radius)
             }
         } else {
             // 1
