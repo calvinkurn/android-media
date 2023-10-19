@@ -54,9 +54,10 @@ class CatalogDetailUiMapper @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
     companion object {
-        private val LAYOUT_VERSION_4_VALUE = 4
-        private val COMPARISON_COUNT = 2
-        private val TOP_COMPARISON_SPEC_COUNT = 5
+        private const val LAYOUT_VERSION_4_VALUE = 4
+        private const val COMPARISON_COUNT = 2
+        private const val TOP_COMPARISON_SPEC_COUNT = 5
+        private const val INVALID_CATALOG_ID = "0"
     }
 
     fun mapToWidgetVisitables(
@@ -404,10 +405,13 @@ class CatalogDetailUiMapper @Inject constructor(
 
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToComparison(): BaseCatalogUiModel {
         var isFirstData = true
-        return ComparisonUiModel(content = data?.comparison.orEmpty()
-            .filter { it.id != "0" }
+        val displayedComparisons = data?.comparison.orEmpty()
+            .filter { it.id != INVALID_CATALOG_ID }
             .take(COMPARISON_COUNT)
-            .map {
+        return if (displayedComparisons.isEmpty()) {
+            BlankUiModel()
+        } else {
+            ComparisonUiModel(content = displayedComparisons.map {
                 val comparisonSpecs = mutableListOf<ComparisonUiModel.ComparisonSpec>()
                 it.fullSpec.forEach { spec ->
                     comparisonSpecs.add(ComparisonUiModel.ComparisonSpec(
@@ -437,6 +441,7 @@ class CatalogDetailUiMapper @Inject constructor(
                         .take(TOP_COMPARISON_SPEC_COUNT)
                 )
             }.toMutableList())
+        }
     }
 
     private fun getTextColor(darkMode: Boolean): Int {
