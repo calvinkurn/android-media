@@ -1371,6 +1371,10 @@ class ShipmentMapper @Inject constructor() {
         const val BMGM_ITEM_DEFAULT = 0
         const val BMGM_ITEM_HEADER = 1
 
-        val DEFAULT_PAYMENT_LEVEL_ADD_ONS_POSITION = listOf<Long>(1, 2, 3)
+        private const val EGOLD_ID = 1L
+        private const val DG_ID = 2L
+        private const val DONATION_ID = 3L
+
+        val DEFAULT_PAYMENT_LEVEL_ADD_ONS_POSITION = listOf<Long>(DG_ID, EGOLD_ID, DONATION_ID)
     }
 }
