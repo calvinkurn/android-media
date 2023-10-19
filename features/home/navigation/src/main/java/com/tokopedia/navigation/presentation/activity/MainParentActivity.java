@@ -539,7 +539,6 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
         checkApplinkCouponCode(intent);
         checkAgeVerificationExtra(intent);
 
@@ -974,9 +973,7 @@ public class MainParentActivity extends BaseActivity implements
 
             @Override
             public void onNotNeedUpdateInApp() {
-                if (!isFinishing()) {
-                    checkIsNeedUpdateIfComeFromUnsupportedApplink(MainParentActivity.this.getIntent());
-                }
+                // noop
             }
 
             @Override
@@ -984,14 +981,6 @@ public class MainParentActivity extends BaseActivity implements
                 globalNavAnalytics.get().eventImpressionAppUpdate(detailUpdate.isForceUpdate());
             }
         };
-    }
-
-    private void checkIsNeedUpdateIfComeFromUnsupportedApplink(Intent intent) {
-        if (intent.getBooleanExtra(ApplinkRouter.EXTRA_APPLINK_UNSUPPORTED, false)) {
-            if (getApplication() instanceof ApplinkRouter) {
-                ((ApplinkRouter) getApplication()).getApplinkUnsupported(this).showAndCheckApplinkUnsupported();
-            }
-        }
     }
 
     private void checkApplinkCouponCode(Intent intent) {
@@ -1189,14 +1178,7 @@ public class MainParentActivity extends BaseActivity implements
             //to trigger white text when tokopedia darkmode not on top page
             requestStatusBarLight();
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                this.getWindow().getDecorView().setSystemUiVisibility(
-                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-                                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-                                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
-                this.getWindow().setStatusBarColor(Color.TRANSPARENT);
-            }
+            forceRequestStatusBarDark();
         }
     }
 
@@ -1207,6 +1189,22 @@ public class MainParentActivity extends BaseActivity implements
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             this.getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
+            this.getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+    }
+
+    /**
+     * Force status bar texts to dark without UI mode checking.
+     * For safe request dark status bar, use requestStatusBarDark()
+     */
+    @Override
+    public void forceRequestStatusBarDark() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            this.getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
             this.getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
@@ -1370,9 +1368,7 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public void onNotNeedUpdateInApp() {
-        if (!isFinishing()) {
-            checkIsNeedUpdateIfComeFromUnsupportedApplink(MainParentActivity.this.getIntent());
-        }
+        //noop
     }
 
     @Override

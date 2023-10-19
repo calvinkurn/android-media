@@ -545,14 +545,13 @@ object CartDataHelper {
         return listOfferId
     }
 
-    fun getCartItemHolderDataAndIndexByOfferId(cartDataList: ArrayList<Any>, offerId: Long): Pair<Int, CartItemHolderData> {
+    fun getCartItemHolderDataListAndIndexByOfferId(cartDataList: ArrayList<Any>, offerId: Long): Pair<Int, ArrayList<CartItemHolderData>> {
         var indexReturned = RecyclerView.NO_POSITION
-        var itemReturned = CartItemHolderData()
+        val itemReturned = arrayListOf<CartItemHolderData>()
         for ((index, data) in cartDataList.withIndex()) {
             if (data is CartItemHolderData && data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId == offerId) {
-                indexReturned = index
-                itemReturned = data
-                break
+                if (indexReturned == RecyclerView.NO_POSITION) indexReturned = index
+                itemReturned.add(data)
             }
         }
         return Pair(indexReturned, itemReturned)

@@ -80,6 +80,7 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                       expiry_info
                       secondary_coupons {
                         code
+                        title
                         benefit_type_str
                         benefit_amount_str
                         message

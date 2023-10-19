@@ -1465,23 +1465,9 @@ class CartViewModelTest : BaseCartViewModelTest() {
                 cartViewModel.tokoNowProductUpdater.first()
             }
 
-            cartViewModel.emitTokonowUpdated(true)
+            cartViewModel.emitTokonowUpdated()
 
             assertTrue(deferred.await())
-        }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun `WHEN emitTokonowUpdated false THEN should emit false`() {
-        runTest(UnconfinedTestDispatcher()) {
-            val deferred = async {
-                cartViewModel.tokoNowProductUpdater.first()
-            }
-
-            cartViewModel.emitTokonowUpdated(false)
-
-            assertFalse(deferred.await())
         }
     }
     // endregion

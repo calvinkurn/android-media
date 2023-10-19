@@ -71,6 +71,8 @@ class FintechWidgetViewHolder(val view: View, val listener: DynamicProductDetail
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT
         params.width = ViewGroup.LayoutParams.MATCH_PARENT
         itemView.layoutParams = params
+        listener
+            .getBlocksPerformanceTrace()?.addViewPerformanceBlocks(itemView)
     }
 
     override fun fintechChipClicked(
