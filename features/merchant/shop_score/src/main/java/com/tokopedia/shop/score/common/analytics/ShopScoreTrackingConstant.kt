@@ -33,7 +33,6 @@ object ShopScoreTrackingConstant {
     const val CLICK_CONTACT_HELP_CENTER = "click - hubungi pusat bantuan"
     const val CLICK_HELP_CENTER = "click - pusat bantuan"
     const val VIEW_SHOP_SCORE_IRIS = "viewShopScoreIris"
-    const val IMPRESSION_LEARN_MORE = "impression - pelajari selengkapnya"
     const val IMPRESSION_SEE_PENALTY_DETAIL = "impression - lihat detail penalti disini"
     const val IMPRESSION_CHECK_PENALTY = "impression - cek penalti"
     const val IMPRESSION_COMPLETE_INFO = "impression - info lengkap"

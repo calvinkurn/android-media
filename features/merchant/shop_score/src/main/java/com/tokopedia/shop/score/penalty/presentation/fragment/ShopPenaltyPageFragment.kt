@@ -31,13 +31,11 @@ import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
 import com.tokopedia.shop.score.penalty.presentation.activity.ShopPenaltyNotYetDeductedActivity
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemDetailPenaltyListener
-import com.tokopedia.shop.score.penalty.presentation.adapter.ItemHeaderCardPenaltyListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPenaltyErrorListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPenaltyInfoNotificationListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPenaltyPointCardListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPenaltySubsectionListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPenaltyTickerListener
-import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPeriodDateFilterListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemSortFilterPenaltyListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterFactory
@@ -65,8 +63,6 @@ open class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAd
     PenaltyDateFilterBottomSheet.CalenderListener,
     PenaltyFilterBottomSheet.PenaltyFilterFinishListener,
     ItemDetailPenaltyListener,
-    ItemHeaderCardPenaltyListener,
-    ItemPeriodDateFilterListener,
     ItemPenaltyErrorListener,
     ItemSortFilterPenaltyListener,
     ItemPenaltySubsectionListener,
@@ -86,8 +82,6 @@ open class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAd
 
     private val penaltyPageAdapterFactory by lazy {
         PenaltyPageAdapterFactory(
-            this,
-            this,
             this,
             this,
             this,
@@ -187,32 +181,6 @@ open class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAd
         observePenaltyPage()
         observeUpdateSortFilter()
         observeDetailPenaltyNextPage()
-    }
-
-    override fun onDateClick() {
-        val bottomSheetDateFilter = PenaltyDateFilterBottomSheet.newInstance(
-            viewModelShopPenalty.getStartDate(),
-            viewModelShopPenalty.getEndDate(),
-            viewModelShopPenalty.getMaxStartDate(),
-            viewModelShopPenalty.getMaxEndDate()
-        )
-        bottomSheetDateFilter.setCalendarListener(this)
-        bottomSheetDateFilter.show(childFragmentManager)
-    }
-
-    override fun impressLearnMorePenaltyPage() {
-        shopScorePenaltyTracking.impressLearnMorePenaltyPage()
-    }
-
-    override fun onMoreInfoHelpPenaltyClicked() {
-        context?.let {
-            RouteManager.route(
-                it,
-                ApplinkConstInternalGlobal.WEBVIEW,
-                ShopScoreConstant.SYSTEM_PENALTY_HELP_URL
-            )
-        }
-        shopScorePenaltyTracking.clickLearMorePenaltyPage()
     }
 
     override fun onRetryRefreshError() {

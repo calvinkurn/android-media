@@ -35,11 +35,6 @@ interface FilterPenaltyTypesBottomSheetListener {
     fun onFilterSaved(filterList: List<Int>)
 }
 
-interface ItemHeaderCardPenaltyListener {
-    fun impressLearnMorePenaltyPage()
-    fun onMoreInfoHelpPenaltyClicked()
-}
-
 interface ItemPeriodDateFilterListener {
     fun onDateClick()
 }

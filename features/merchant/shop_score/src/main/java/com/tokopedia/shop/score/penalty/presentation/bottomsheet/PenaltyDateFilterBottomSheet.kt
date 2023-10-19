@@ -209,7 +209,6 @@ class PenaltyDateFilterBottomSheet :
         const val KEY_END_DATE_PENALTY = "key_end_date_penalty"
         const val KEY_MAX_START_DATE_PENALTY = "key_max_start_date_penalty"
         const val KEY_MAX_END_DATE_PENALTY = "key_max_end_date_penalty"
-        const val DELAY_SELECTED_FILTER_DATE_PENALTY = 300L
         const val NINETY_DAYS = 90
 
         fun newInstance(
