@@ -201,7 +201,12 @@ class FeedBrowseChannelViewHolder(
 
     private fun setupCards(channel: ChannelUiState.Data) {
         cardAdapter.setItemsAndAnimateChanges(channel.items)
+        autoScrollCard()
         configureAutoRefresh(channel.config)
+    }
+
+    private fun autoScrollCard() {
+        recyclerViewCard.scrollToPosition(0)
     }
 
     fun configureAutoRefresh(configUiModel: FeedBrowseConfigUiModel) {
