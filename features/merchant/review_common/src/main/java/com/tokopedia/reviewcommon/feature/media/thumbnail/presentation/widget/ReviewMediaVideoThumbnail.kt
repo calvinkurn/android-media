@@ -10,13 +10,13 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.utils.FeatureToggle
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.reviewcommon.R
 import com.tokopedia.reviewcommon.databinding.WidgetReviewMediaVideoThumbnailBinding
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget.ReviewVideoPlayer
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget.ReviewVideoPlayerListener
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
+import com.tokopedia.reviewcommon.util.FeatureToggle
 import com.tokopedia.unifycomponents.BaseCustomView
 
 class ReviewMediaVideoThumbnail @JvmOverloads constructor(
@@ -58,7 +58,7 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        if (RemoteConfig.glideM3U8ThumbnailLoaderEnabled(context)) {
+        if (FeatureToggle.glideM3U8ThumbnailLoaderEnabled(context)) {
             binding.ivReviewMediaVideoThumbnail.clearImage()
         } else {
             reviewVideoPlayer.cleanupVideoPlayer()
@@ -104,7 +104,7 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
     private fun WidgetReviewMediaVideoThumbnailBinding.setupVideoThumbnail(
         uiState: ReviewMediaVideoThumbnailUiState
     ) {
-        if (RemoteConfig.glideM3U8ThumbnailLoaderEnabled(context)) {
+        if (FeatureToggle.glideM3U8ThumbnailLoaderEnabled(context)) {
             setupVideoThumbnailWithGlide(uiState)
             playerViewReviewMediaVideoThumbnail.gone()
             ivReviewMediaVideoThumbnail.show()
