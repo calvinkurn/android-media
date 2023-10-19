@@ -14,8 +14,10 @@ class UniversalInboxTopAdsTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(29) // End of page 1
-            scrollToPosition(47)
+            scrollToPosition(20) // Reach Product Recommendation
+            scrollToPosition(30) // Scroll First Page
+            scrollToPosition(40) // Scroll Second Page
+            scrollToPosition(50) // Scroll to Headline
         }
 
         // Then
@@ -32,8 +34,10 @@ class UniversalInboxTopAdsTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(29) // End of page 1
-            scrollToPosition(47)
+            scrollToPosition(20) // Reach Product Recommendation
+            scrollToPosition(30) // Scroll First Page
+            scrollToPosition(40) // Scroll Second Page
+            scrollToPosition(50) // Scroll to Headline
         }
 
         // Then

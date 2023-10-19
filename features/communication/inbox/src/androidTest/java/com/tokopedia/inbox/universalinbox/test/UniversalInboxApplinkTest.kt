@@ -21,6 +21,7 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         menuRobot {
             clickMenuOnPosition(1)
         }
+
         // Then
         menuResult {
             assertApplinkChatBuyer()
