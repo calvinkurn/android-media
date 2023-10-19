@@ -68,7 +68,7 @@ import java.util.*
 import javax.inject.Inject
 import com.tokopedia.abstraction.R as abstractionR
 
-open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAdsBannerClickListener {
+class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAdsBannerClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

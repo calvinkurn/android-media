@@ -34,6 +34,7 @@ class HomeRecommendationCardMapper @Inject constructor() {
                 }
 
                 TYPE_BANNER_ADS -> {
+                    // todo mapping topadsImageViewModel
                     homeRecommendationVisitableList.add(HomeRecommendationBannerTopAdsDataModel(position = index))
                 }
             }

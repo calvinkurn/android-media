@@ -64,11 +64,13 @@ class HomeRecommendationViewModel @Inject constructor(
             if (data.homeRecommendations.isEmpty()) {
                 _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = listOf(HomeRecommendationEmpty())))
             } else {
+                // todo bakal dihapus terkait topads
                 try {
                     val headlineAds = fetchHeadlineAds(tabIndex)
                     val homeBannerTopAds = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
                     var topAdsBanner = arrayListOf<TopAdsImageViewModel>()
                     if (homeBannerTopAds.isNotEmpty()) {
+                        // todo bakal dihapus karena udah di merge
                         topAdsBanner = topAdsImageViewUseCase.get().getImageData(
                             topAdsImageViewUseCase.get().getQueryMap(
                                 query = "",
@@ -81,8 +83,10 @@ class HomeRecommendationViewModel @Inject constructor(
                             )
                         )
                     }
+                    // todo bakal dihapus karena udah di merge
                     handleTopAdsWidgets(data, topAdsBanner, homeBannerTopAds, headlineAds)
                 } catch (e: Exception) {
+                    // todo bakal dihapus
                     _homeRecommendationLiveData.postValue(
                         data.copy(
                             homeRecommendations = data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel }
@@ -149,6 +153,7 @@ class HomeRecommendationViewModel @Inject constructor(
         _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = newList))
     }
 
+    // todo will be removed
     private suspend fun fetchHeadlineAds(tabIndex: Int): TopAdsHeadlineResponse {
         return if (tabIndex == Int.ZERO) {
             val params = getTopAdsHeadlineUseCase.get().createParams(
@@ -175,11 +180,13 @@ class HomeRecommendationViewModel @Inject constructor(
                 homeRecommendations = list.toList().copy()
             )
         )
+        // todo check
         launchCatchError(coroutineContext, block = {
             // todo will remove
 //            getHomeRecommendationUseCase.get().setParams(tabName, recomId, count, page, locationParam, sourceType)
             val data = getHomeRecommendationCardUseCase.get().execute(page, sourceType, locationParam)
             list.remove(loadMoreModel)
+            // todo will remove the logic
             try {
                 val homeBannerTopAds = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
                 val topAdsBanner = topAdsImageViewUseCase.get().getImageData(
@@ -243,6 +250,7 @@ class HomeRecommendationViewModel @Inject constructor(
         }
     }
 
+    // todo will be removed
     private fun incrementTopadsPage() {
         topAdsBannerNextPage = try {
             val currentPage = topAdsBannerNextPage.toIntOrZero()
