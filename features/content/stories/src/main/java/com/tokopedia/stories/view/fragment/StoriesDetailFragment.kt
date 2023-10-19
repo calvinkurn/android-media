@@ -319,7 +319,7 @@ class StoriesDetailFragment @Inject constructor(
                     }
 
                     StoryStatus.Unknown -> {
-                        setErrorType(StoriesErrorView.Type.EmptyStories)
+                        setErrorType(StoriesErrorView.Type.NoContent)
                         contentIsLoaded()
                     }
                 }
@@ -330,7 +330,7 @@ class StoriesDetailFragment @Inject constructor(
             }
 
             Unknown -> {
-                setErrorType(StoriesErrorView.Type.EmptyStories)
+                setErrorType(StoriesErrorView.Type.NoContent)
                 contentIsLoaded()
             }
         }
