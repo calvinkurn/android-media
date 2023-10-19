@@ -312,8 +312,8 @@ open class SomListOrderViewHolder(
     }
 
     private fun ItemSomListOrderBinding.setDeadlineLowerThan12Hours() {
-        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN600)
-        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.sellerorder.R.color._dms_som_operational_less_than_24_hour_color)
+        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
         layoutSomListDeadline.background = bgDeadline
         icDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
         tvSomListDeadline.setTextColor(colorDeadline)
@@ -323,13 +323,17 @@ open class SomListOrderViewHolder(
         val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN50)
         val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN600)
         layoutSomListDeadline.background = bgDeadline
-        icDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
+        icDeadline.setImage(
+            newIconId = IconUnify.CLOCK,
+            newLightEnable = colorDeadline,
+            newDarkEnable = colorDeadline
+        )
         tvSomListDeadline.setTextColor(colorDeadline)
     }
 
     private fun ItemSomListOrderBinding.setDeadlineMoreThan24Hours() {
         val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.sellerorder.R.color._dms_som_operational_more_than_24_hour_color)
-        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
         layoutSomListDeadline.background = bgDeadline
         icDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
         tvSomListDeadline.setTextColor(colorDeadline)
