@@ -21,6 +21,7 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.Calendar
 import java.util.Date
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
     BaseCustomView(context, attrs, defStyleAttr) {
@@ -32,7 +33,7 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
     private var tpTitle: Typography? = null
     private var tpSubtitle: Typography? = null
     private var tusCountDown: TimerUnifySingle? = null
-    private var tusCountDownViewStub: ViewStub? = null
+    private var tusCountDownViewStub: View? = null
     private var sivCircleSeeAll: AppCompatImageView? = null
 
     init {
@@ -106,7 +107,7 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
                 } else {
                     itemView?.context?.getString(R.string.tokopedianow_mix_left_carousel_widget_see_all)
                 }
-                tpSeeAll?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                tpSeeAll?.setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500))
                 tpSeeAll?.setOnClickListener {
                     listener?.onSeeAllClicked(
                         context = context,
@@ -156,17 +157,20 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
                         listener?.onChannelExpired()
                     }
                 }
+                tusCountDownViewStub?.show()
+                tusCountDown?.show()
             }
         } else {
-            tusCountDownViewStub?.visibility = View.GONE
+            tusCountDownViewStub?.hide()
+            tusCountDown?.hide()
         }
     }
 
     private fun inflateTimerCountDown() {
-        if(tusCountDown == null) {
-            val view = tusCountDownViewStub
+        if(tusCountDownViewStub?.parent != null) {
+            val view = (tusCountDownViewStub as? ViewStub)
                 ?.inflateView(R.layout.layout_tokopedianow_timer_unify_single)
-            tusCountDown = view?.findViewById(R.id.tus_count_down)
+            tusCountDown = view as? TimerUnifySingle
         }
     }
 
