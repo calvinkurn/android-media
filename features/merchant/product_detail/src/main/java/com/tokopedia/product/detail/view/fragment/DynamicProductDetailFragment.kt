@@ -2343,7 +2343,6 @@ open class DynamicProductDetailFragment :
 
     private fun trackingEventSuccessAddToWishlist(componentTrackDataModel: ComponentTrackDataModel) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
-            DynamicProductDetailTracking.Moengage.eventPDPWishlistAppsFyler(productInfo)
             DynamicProductDetailTracking.Click.eventPDPAddToWishlist(
                 productInfo,
                 componentTrackDataModel
@@ -3067,8 +3066,6 @@ open class DynamicProductDetailFragment :
 
     private fun doP2DataAfterCloud(p2Data: ProductInfoP2UiData) {
         viewModel.getDynamicProductInfoP1?.let { p1 ->
-            DynamicProductDetailTracking.Moengage.eventAppsFylerOpenProduct(p1)
-
             DynamicProductDetailTracking.sendScreen(
                 irisSessionId,
                 p1.basic.shopID,
@@ -4159,7 +4156,6 @@ open class DynamicProductDetailFragment :
                             ProductData.PLACEHOLDER_REFERRAL_CODE,
                             dataObj
                         )
-                    DynamicProductDetailTracking.Moengage.sendMoEngagePDPReferralCodeShareEvent()
                 }
                 executeProductShare(productData, affiliateData, imageGeneratorData)
             }

@@ -36,8 +36,6 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import org.json.JSONArray
-import org.json.JSONObject
 import java.util.*
 
 object DynamicProductDetailTracking {
@@ -1482,59 +1480,6 @@ object DynamicProductDetailTracking {
         fun eventBranchAddToWishlist(productInfo: DynamicProductInfoP1?, userId: String?, description: String) {
             if (productInfo != null) {
                 LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ADD_TO_WHISHLIST, TrackingUtil.createLinkerData(productInfo, userId, description)))
-            }
-        }
-    }
-
-    object Moengage {
-        fun eventPDPWishlistAppsFyler(productInfo: DynamicProductInfoP1) {
-            eventAppsFyler(productInfo, "af_add_to_wishlist")
-        }
-
-        fun eventAppsFylerOpenProduct(productInfo: DynamicProductInfoP1) {
-            eventAppsFyler(productInfo, "af_content_view")
-        }
-
-        fun sendMoEngagePDPReferralCodeShareEvent() {
-            TrackApp.getInstance().moEngage.sendEvent(
-                "Share_Event",
-                mutableMapOf<String, Any>(
-                    "channel" to "lainnya",
-                    "source" to "pdp_share"
-                )
-            )
-        }
-
-        private fun eventAppsFyler(productInfo: DynamicProductInfoP1, eventName: String) {
-            TrackApp.getInstance().appsFlyer.run {
-                productInfo.let {
-                    val mutableMap = mutableMapOf(
-                        "af_description" to "productView",
-                        "af_content_id" to it.basic.productID,
-                        "af_content_type" to "product",
-                        "af_price" to it.data.price.value,
-                        "af_currency" to "IDR",
-                        "af_quantity" to 1.toString()
-                    ).apply {
-                        if (it.basic.category.detail.isNotEmpty()) {
-                            val size = it.basic.category.detail.size
-                            for (i in 1..size) {
-                                put("level" + i + "_name", it.basic.category.detail[size - i].name)
-                                put("level" + i + "_id", it.basic.category.detail[size - i].id)
-                            }
-                        }
-                        if ("af_content_view" == eventName) {
-                            val jsonArray = JSONArray()
-                            val jsonObject = JSONObject()
-                            jsonObject.put("id", it.basic.productID)
-                            jsonObject.put("quantity", 1)
-                            jsonArray.put(jsonObject)
-                            this["af_content"] = jsonArray.toString()
-                        }
-                    }
-
-                    sendEvent(eventName, mutableMap as Map<String, Any>?)
-                }
             }
         }
     }
