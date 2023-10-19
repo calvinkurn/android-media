@@ -10,5 +10,14 @@ data class DataConfig(
     @SerializedName("send_failed")
     val sendFailed: Boolean = false,
     @SerializedName("image_url_list")
-    val imageUrlList: List<String>?
-)
+    val imageUrlList: List<Item>?
+) {
+    data class Item(
+        @SerializedName("vendor")
+        val vendor: String,
+        @SerializedName("cname")
+        val cname: String,
+        @SerializedName("url")
+        val url: String
+    )
+}

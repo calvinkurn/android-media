@@ -8,18 +8,14 @@ import android.os.Bundle
 import com.google.android.gms.security.ProviderInstaller
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.common.network.coroutines.RestRequestInteractor
-import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common.network.data.model.RequestType
-import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import javax.net.ssl.SSLContext
 
 class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallbacks {
@@ -55,24 +51,28 @@ class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallb
     }
 
     private fun process(context: Context, config: DataConfig) {
-        val restRepository: RestRepository by lazy {
-            RestRequestInteractor.getInstance().restRepository.apply {
-                updateInterceptors(mutableListOf(CdnInterceptor(context)), context)
-            }
-        }
-        config.imageUrlList?.let {
-            it.forEach { url ->
-                CoroutineScope(Dispatchers.IO).launch {
-                    if (config.sendSuccess) {
-                        val token = object : TypeToken<DataResponse<String>>() {}.type
-                        val restRequest = RestRequest.Builder(url, token)
-                            .setHeaders(mapOf("host" to "images.tokopedia.net", "user-agent" to getUserAgent()))
-                            .setRequestType(RequestType.GET)
-                            .build()
-                        restRepository.getResponse(restRequest)
+        try {
+            val interceptor = CdnInterceptor(context)
+            config.imageUrlList?.let {
+                it.forEach { item ->
+                    CoroutineScope(Dispatchers.IO).launch {
+                        if (config.sendSuccess) {
+                            val client = OkHttpClient.Builder()
+                                .dns(CdnDns(item.cname))
+                                .addInterceptor(interceptor)
+                                .hostnameVerifier { hostname, session -> true }
+                                .build()
+                            val request = Request.Builder()
+                                .url(item.url)
+                                .addHeader("host", "images.tokopedia.net")
+                                .addHeader("user-agent", getUserAgent())
+                                .build()
+                            client.newCall(request).execute()
+                        }
                     }
                 }
             }
+        } catch (ignore: Exception) {
         }
     }
 
