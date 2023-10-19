@@ -956,7 +956,7 @@ class ShopHomeViewModelTest {
     }
 
     @Test
-    fun `when call getProductGridListWidgetData with no initial product and is direct purchase true then productListData value should success`() {
+    fun `when call getProductGridListWidgetData direct purchase true then productListData value should success`() {
         val mockSortId = "123"
         val mockSortName = "sort 1"
 
@@ -972,7 +972,6 @@ class ShopHomeViewModelTest {
             mockShopId,
             mockProductPerPage,
             shopProductFilterParameter,
-            null,
             addressWidgetData,
             mockIsDirectPurchaseTrue
         )
@@ -986,7 +985,7 @@ class ShopHomeViewModelTest {
     }
 
     @Test
-    fun `when call getProductGridListWidgetData with no initial product and is direct purchase false then productListData value should success`() {
+    fun `when call getProductGridListWidgetData direct purchase false then productListData value should success`() {
         val mockSortId = "123"
         val mockSortName = "sort 1"
 
@@ -1002,7 +1001,6 @@ class ShopHomeViewModelTest {
             mockShopId,
             mockProductPerPage,
             shopProductFilterParameter,
-            null,
             addressWidgetData,
             mockIsDirectPurchaseFalse
         )
@@ -1016,7 +1014,7 @@ class ShopHomeViewModelTest {
     }
 
     @Test
-    fun `when call getProductGridListWidgetData with no initial product and productList response is error then value should null`() {
+    fun `when call getProductGridListWidgetData productList response is error then value should null`() {
         val mockSortId = "123"
         val mockSortName = "sort 1"
         coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
@@ -1031,7 +1029,6 @@ class ShopHomeViewModelTest {
             mockShopId,
             mockProductPerPage,
             shopProductFilterParameter,
-            null,
             addressWidgetData,
             mockIsDirectPurchaseTrue
         )
@@ -1050,7 +1047,7 @@ class ShopHomeViewModelTest {
                 name = mockSortName
             }
         )
-        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData, mockIsDirectPurchaseTrue)
+        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, addressWidgetData, mockIsDirectPurchaseTrue)
         assert(viewModel.getSortNameById(mockSortId) == mockSortName)
     }
 
@@ -1059,7 +1056,7 @@ class ShopHomeViewModelTest {
         val mockSortId = "123"
         coEvery { gqlGetShopSortUseCase.executeOnBackground() } returns listOf()
         coEvery { shopProductSortMapper.convertSort(any()) } throws Exception()
-        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData, mockIsDirectPurchaseTrue)
+        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, addressWidgetData, mockIsDirectPurchaseTrue)
         assert(viewModel.getSortNameById(mockSortId).isEmpty())
     }
 
@@ -1072,7 +1069,7 @@ class ShopHomeViewModelTest {
         coEvery { shopProductSortMapper.convertSort(any()) } returns mutableListOf(
             ShopProductSortModel()
         )
-        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData, mockIsDirectPurchaseTrue)
+        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, addressWidgetData, mockIsDirectPurchaseTrue)
     }
 
     @Test
@@ -1087,61 +1084,8 @@ class ShopHomeViewModelTest {
                 name = mockSortName
             }
         )
-        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData, mockIsDirectPurchaseTrue)
+        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, addressWidgetData, mockIsDirectPurchaseTrue)
         assert(viewModel.getSortNameById("").isEmpty())
-    }
-
-    @Test
-    fun `check whether getProductGridListWidgetData with initial product list data and shop direct purchase true, should product list with direct purchase value of true`() {
-        val mockSortId = "123"
-        val mockSortName = "sort 1"
-        val mockShopProductList = ShopProduct.GetShopProduct(
-            data = listOf(
-                ShopProduct(),
-                ShopProduct(),
-                ShopProduct()
-            )
-        )
-
-        coEvery { gqlGetShopSortUseCase.executeOnBackground() } returns listOf()
-        coEvery { shopProductSortMapper.convertSort(any()) } returns mutableListOf(
-            ShopProductSortModel().apply {
-                value = mockSortId
-                name = mockSortName
-            }
-        )
-        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, mockShopProductList, addressWidgetData, mockIsDirectPurchaseTrue)
-        assert(
-            (viewModel.productListData.value as? Success)?.data?.listShopProductUiModel?.all {
-                it.isEnableDirectPurchase
-            } == true
-        )
-    }
-
-    @Test
-    fun `check whether getProductGridListWidgetData with initial product list data and shop direct purchase false, should product list with direct purchase value of false`() {
-        val mockSortId = "123"
-        val mockSortName = "sort 1"
-        val mockShopProductList = ShopProduct.GetShopProduct(
-            data = listOf(
-                ShopProduct(),
-                ShopProduct(),
-                ShopProduct()
-            )
-        )
-        coEvery { gqlGetShopSortUseCase.executeOnBackground() } returns listOf()
-        coEvery { shopProductSortMapper.convertSort(any()) } returns mutableListOf(
-            ShopProductSortModel().apply {
-                value = mockSortId
-                name = mockSortName
-            }
-        )
-        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, mockShopProductList, addressWidgetData, mockIsDirectPurchaseFalse)
-        assert(
-            (viewModel.productListData.value as? Success)?.data?.listShopProductUiModel?.all {
-                !it.isEnableDirectPurchase
-            } == true
-        )
     }
 
     @Test
