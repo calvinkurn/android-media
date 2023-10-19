@@ -208,7 +208,7 @@ class StoriesDetailFragment @Inject constructor(
 
                     curr?.let {
                         it.detailItems.getOrNull(it.selectedDetailPosition)?.let { item ->
-                            handleVideoPlayState(item)
+                            handleVideoPlayState(item, currState.timerStatus)
                         }
                     }
                 }
@@ -800,12 +800,12 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun handleVideoPlayState(state: StoriesDetailItem) {
+    private fun handleVideoPlayState(state: StoriesDetailItem, timerState: TimerStatusInfo) {
         if (_videoPlayer == null) return
 
         when {
             (state.event == RESUME || state.event == BUFFERING) && state.content.type == Video -> videoPlayer.resume()
-            state.event == PAUSE || viewModel.isAnyBottomSheetShown -> videoPlayer.pause()
+            state.event == PAUSE || timerState.event == PAUSE -> videoPlayer.pause()
         }
     }
 
