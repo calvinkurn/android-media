@@ -854,8 +854,12 @@ open class DynamicProductDetailFragment :
     }
 
     private fun reloadFintechWidget() {
-        if (pdpUiUpdater == null || pdpUiUpdater?.fintechWidgetMap == null) return
-        if (pdpUiUpdater?.fintechWidgetMap?.isLoggedIn != viewModel.isUserSessionActive) {
+        if (pdpUiUpdater == null || (pdpUiUpdater?.fintechWidgetMap == null &&
+                pdpUiUpdater?.fintechWidgetV2Map == null)
+        ) return
+        if (pdpUiUpdater?.fintechWidgetMap?.isLoggedIn != viewModel.isUserSessionActive ||
+            pdpUiUpdater?.fintechWidgetV2Map?.isLoggedIn != viewModel.isUserSessionActive
+        ) {
             productId?.let {
                 pdpUiUpdater?.updateFintechDataWithProductId(
                     it,

@@ -54,7 +54,7 @@
         android:id="@+id/stories_component"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="cv_stories_detail_timer, ic_close, rv_stories_category, v_stories_partner" />
+        app:constraint_referenced_ids="cv_stories_detail_timer, ic_close, rv_stories_category" />
 
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/cv_stories_detail_timer"
@@ -177,7 +177,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintWidth_default="wrap"
-        app:layout_goneMarginEnd="@dimen/spacing_lvl5" />
+        app:layout_goneMarginEnd="@dimen/spacing_lvl5"
+        android:visibility="gone"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_side_icons"

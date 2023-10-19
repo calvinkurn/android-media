@@ -64,6 +64,7 @@ import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedViewModel
 import com.tokopedia.feedplus.presentation.model.PostSourceModel
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
+import com.tokopedia.feedplus.presentation.model.type.FeedContentType
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.kolcommon.data.SubmitActionContentResponse
@@ -364,7 +365,7 @@ class FeedPostViewModelTest {
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = ContentTaggedProductUiModel.Campaign(
                 ContentTaggedProductUiModel.CampaignType.NoCampaign,
                 ContentTaggedProductUiModel.CampaignStatus.Unknown,
@@ -403,7 +404,7 @@ class FeedPostViewModelTest {
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = ContentTaggedProductUiModel.Campaign(
                 ContentTaggedProductUiModel.CampaignType.NoCampaign,
                 ContentTaggedProductUiModel.CampaignStatus.Unknown,
@@ -453,7 +454,7 @@ class FeedPostViewModelTest {
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = ContentTaggedProductUiModel.Campaign(
                 ContentTaggedProductUiModel.CampaignType.NoCampaign,
                 ContentTaggedProductUiModel.CampaignStatus.Unknown,
@@ -508,7 +509,7 @@ class FeedPostViewModelTest {
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = ContentTaggedProductUiModel.Campaign(
                 ContentTaggedProductUiModel.CampaignType.NoCampaign,
                 ContentTaggedProductUiModel.CampaignStatus.Unknown,
@@ -547,7 +548,7 @@ class FeedPostViewModelTest {
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = ContentTaggedProductUiModel.Campaign(
                 ContentTaggedProductUiModel.CampaignType.NoCampaign,
                 ContentTaggedProductUiModel.CampaignStatus.Unknown,
@@ -597,7 +598,7 @@ class FeedPostViewModelTest {
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = ContentTaggedProductUiModel.Campaign(
                 ContentTaggedProductUiModel.CampaignType.NoCampaign,
                 ContentTaggedProductUiModel.CampaignStatus.Unknown,
@@ -1973,7 +1974,8 @@ class FeedPostViewModelTest {
                 "",
                 "",
                 false,
-                ""
+                "",
+                FeedContentType.TopAds
             ),
             FeedCardVideoContentModel(
                 "video 1 id",
@@ -2002,7 +2004,8 @@ class FeedPostViewModelTest {
                 emptyList(),
                 emptyList(),
                 "",
-                "1"
+                "1",
+                FeedContentType.PlayShortVideo
             ),
             FeedCardLivePreviewContentModel(
                 "live 1 id",
@@ -2058,7 +2061,8 @@ class FeedPostViewModelTest {
                 "",
                 "",
                 false,
-                ""
+                "",
+                FeedContentType.ProductHighlight
             ),
             FeedCardVideoContentModel(
                 "video 2 id",
@@ -2087,7 +2091,8 @@ class FeedPostViewModelTest {
                 emptyList(),
                 emptyList(),
                 "",
-                ""
+                "",
+                FeedContentType.PlayChannel
             ),
             FeedCardLivePreviewContentModel(
                 "live 2 id",
@@ -2120,7 +2125,7 @@ class FeedPostViewModelTest {
 
     private fun getDummyFollowRecommendationWidgetOnlyModel() = FeedModel(
         items = listOf(
-            FeedFollowRecommendationModel.Empty.copy(id = "follow-recommendation"),
+            FeedFollowRecommendationModel.Empty.copy(id = "follow-recommendation")
         ),
         pagination = FeedPaginationModel(
             "",

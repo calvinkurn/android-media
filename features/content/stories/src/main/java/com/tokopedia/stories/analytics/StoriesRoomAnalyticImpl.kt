@@ -6,6 +6,7 @@ import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.Key
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.view.model.StoriesArgsModel
+import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
@@ -416,17 +417,19 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
     // Tracker ID: 46062
+    //{source entry point} - {partnerID} - {story_id} - {asgc/organic} - {image/video} - {current circle}
     override fun sendClickExitStoryRoomEvent(
         storiesId: String,
-        creatorType: String,
-        contentType: String,
+        contentType: StoriesDetailItem.StoriesItemContentType,
         currentCircle: String
     ) {
+        val authorId =  if (storiesId == "0") "0" else args.authorId
+        val mediaType = if (contentType == StoriesDetailItem.StoriesItemContentType.Unknown) "0" else "asgc"
         Tracker.Builder()
             .setEvent(Event.clickContent)
             .setEventAction("click - exit story room")
             .setEventCategory(STORIES_ROOM_CATEGORIES)
-            .setEventLabel("${args.entryPoint} - ${args.authorId} - $storiesId - $creatorType - $contentType - $currentCircle")
+            .setEventLabel("${args.entryPoint} - $authorId - $storiesId - $mediaType - ${contentType.value} - $currentCircle")
             .setCustomProperty(Key.trackerId, "46062")
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
