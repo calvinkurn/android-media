@@ -41,10 +41,10 @@ class ShipmentViewHolder(
     private val context = view.context
     private val binding = ItemShipmentBinding.bind(view)
 
-    private val viewSuccess: View by getSuccess()
-    private val viewError: View by getError()
-    private val viewLoading: View by getLoading()
-    private val viewFailed: View by getFailed()
+    private val viewSuccess = ShipmentView(binding.pdpShipmentStateSuccess)
+    private val viewError = ShipmentView(binding.pdpShipmentStateError)
+    private val viewLoading = ShipmentView(binding.pdpShipmentStateLoading)
+    private val viewFailed = ShipmentView(binding.pdpShipmentStateFailed)
 
     override fun bind(element: ShipmentUiModel) {
         val componentTrackDataModel = getComponentTrackData(element)
@@ -61,38 +61,39 @@ class ShipmentViewHolder(
     }
 
     private fun ShipmentUiModel.Success.render(componentTrackDataModel: ComponentTrackDataModel) {
-        ViewShipmentSuccessBinding.bind(viewSuccess).apply(this, componentTrackDataModel)
+        ViewShipmentSuccessBinding.bind(viewSuccess.view).apply(this, componentTrackDataModel)
 
-        binding.pdpShipmentStateSuccess.show()
-        binding.pdpShipmentStateError.hide()
-        binding.pdpShipmentStateLoading.hide()
-        binding.pdpShipmentStateFailed.hide()
+        viewSuccess.show()
+        viewError.hide()
+        viewLoading.hide()
+        viewFailed.hide()
     }
 
     private fun ShipmentUiModel.Error.render(componentTrackDataModel: ComponentTrackDataModel) {
-        ViewShipmentErrorBinding.bind(viewError).apply(this, componentTrackDataModel)
+        ViewShipmentErrorBinding.bind(viewError.view).apply(this, componentTrackDataModel)
 
-        binding.pdpShipmentStateSuccess.hide()
-        binding.pdpShipmentStateError.show()
-        binding.pdpShipmentStateLoading.hide()
-        binding.pdpShipmentStateFailed.hide()
+        viewSuccess.hide()
+        viewError.show()
+        viewLoading.hide()
+        viewFailed.hide()
     }
 
     private fun ShipmentUiModel.Loading.render() {
-        viewLoading
+        viewLoading.view
 
-        binding.pdpShipmentStateSuccess.hide()
-        binding.pdpShipmentStateError.hide()
-        binding.pdpShipmentStateLoading.show()
-        binding.pdpShipmentStateFailed.hide()
+        viewSuccess.hide()
+        viewError.hide()
+        viewLoading.show()
+        viewFailed.hide()
     }
 
     private fun ShipmentUiModel.Failed.render() {
-        ViewShipmentFailedBinding.bind(viewFailed).apply()
+        ViewShipmentFailedBinding.bind(viewFailed.view).apply()
 
-        binding.pdpShipmentStateSuccess.hide()
-        binding.pdpShipmentStateLoading.hide()
-        binding.pdpShipmentStateError.show()
+        viewSuccess.hide()
+        viewError.hide()
+        viewLoading.hide()
+        viewError.show()
     }
 
     private fun ViewShipmentSuccessBinding.apply(
@@ -183,8 +184,6 @@ class ShipmentViewHolder(
         }
 
         renderShipmentPlus(vsShipmentPlus, data.shipmentPlus, componentTrackDataModel)
-
-
     }
 
     private fun renderShipmentPlus(
@@ -282,19 +281,26 @@ class ShipmentViewHolder(
         }
     }
 
-    private fun getSuccess() = lazy {
-        binding.pdpShipmentStateSuccess.inflate()
-    }
-
     private fun getError() = lazy {
         binding.pdpShipmentStateError.inflate()
     }
 
-    private fun getLoading() = lazy {
-        binding.pdpShipmentStateLoading.inflate()
-    }
-
     private fun getFailed() = lazy {
         binding.pdpShipmentStateFailed.inflate()
+    }
+
+    data class ShipmentView(
+        val viewStub: ViewStub
+    ) {
+        private val inflateDelegate = lazy { viewStub.inflate() }
+        val view: View by inflateDelegate
+
+        fun hide() {
+            if (inflateDelegate.isInitialized()) view.hide()
+        }
+
+        fun show() {
+            if (inflateDelegate.isInitialized()) view.show()
+        }
     }
 }
