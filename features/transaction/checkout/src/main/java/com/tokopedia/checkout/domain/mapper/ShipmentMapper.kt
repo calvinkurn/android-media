@@ -1375,6 +1375,6 @@ class ShipmentMapper @Inject constructor() {
         private const val DG_ID = 2L
         private const val DONATION_ID = 3L
 
-        val DEFAULT_PAYMENT_LEVEL_ADD_ONS_POSITION = listOf<Long>(DG_ID, EGOLD_ID, DONATION_ID)
+        val DEFAULT_PAYMENT_LEVEL_ADD_ONS_POSITION = listOf(DG_ID, EGOLD_ID, DONATION_ID)
     }
 }
