@@ -1063,6 +1063,8 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         //
         bundle.putString(KEY_EVENT, keyEvent);
+
+        addUtmHolder(bundle);
         pushEventV5(keyEvent, wrapWithSessionIris(bundle), context);
     }
 
@@ -1484,9 +1486,6 @@ public class GTMAnalytics extends ContextAnalytics {
                             addGclIdIfNeeded(eventName, it);
                         }
                     }
-                    it.putString(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
-                    it.putString(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
-                    it.putString(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
                     pushIris(it);
                     return true;
                 })
@@ -1534,6 +1533,12 @@ public class GTMAnalytics extends ContextAnalytics {
                 iris.saveEvent(values);
             }
         }
+    }
+
+    private void addUtmHolder(Bundle values) {
+        values.putString(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
+        values.putString(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
+        values.putString(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
     }
 
     private void pushIris(Bundle values) {
