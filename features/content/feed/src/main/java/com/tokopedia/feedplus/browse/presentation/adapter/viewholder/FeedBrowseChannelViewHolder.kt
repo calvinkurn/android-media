@@ -114,6 +114,7 @@ class FeedBrowseChannelViewHolder(
 
     init {
         recyclerViewCard.adapter = cardAdapter
+        recyclerViewCard.itemAnimator = null
         recyclerViewCard.addItemDecoration(cardItemDecoration)
 
         recyclerViewChip.adapter = chipAdapter
