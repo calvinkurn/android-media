@@ -19,6 +19,7 @@ import com.tokopedia.editor.ui.gesture.listener.OnMultiTouchListener
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.util.FontAlignment
 import com.tokopedia.editor.util.FontAlignment.Companion.toGravity
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 class DynamicTextCanvasLayout @JvmOverloads constructor(
@@ -87,6 +88,14 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
         val canvas = Canvas(bitmap)
         draw(canvas)
         return bitmap
+    }
+
+    fun viewsCleanUp() {
+        val gridView = findViewById<GridGuidelineView>(VIEW_GRID_GUIDELINE_ID)
+        val deleteView = findViewById<View>(VIEW_DELETION_BUTTON_ID)
+
+        gridView.hide()
+        deleteView.hide()
     }
 
     override fun onRemoveView(view: View) {

@@ -20,21 +20,15 @@ import com.tokopedia.track.TrackApp
 import javax.inject.Inject
 
 class ImagePlacementAnalyticsImpl @Inject constructor(
-    paramFetcher: EditorParamFetcher
+    private val paramFetcher: EditorParamFetcher
 ) : ImagePlacementAnalytics {
-    private val pageSourceString: String
-    private val editorType: String
-    private val customTrackerData: Map<String, String>
-
-    init {
-        paramFetcher.get().let {
-            pageSourceString = it.pageSource.value
-            editorType = getMediaTypeString(it.firstFile)
-            customTrackerData = it.trackerExtra
-        }
-    }
+    private var pageSourceString: String = ""
+    private var editorType: String = ""
+    private var customTrackerData: Map<String, String> = mapOf()
 
     override fun editSaveClick() {
+        getParamValue()
+
         // editVariant is filled with 0 since we didn't sent crop detail on tracker
         val eventLabel = "$editorType - $pageSourceString - $EDITOR_TOOL_NAME - 0 - ${customTrackerData.toImmersiveTrackerData()}"
         sendGeneralEvent(
@@ -67,6 +61,14 @@ class ImagePlacementAnalyticsImpl @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generalEvent.toMap()
         )
+    }
+
+    private fun getParamValue() {
+        paramFetcher.get().let {
+            pageSourceString = it.pageSource.value
+            editorType = getMediaTypeString(it.firstFile)
+            customTrackerData = it.trackerExtra
+        }
     }
 
     companion object {

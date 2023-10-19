@@ -3,6 +3,7 @@ package com.tokopedia.editor.data.repository
 import android.graphics.Bitmap
 import com.arthenica.mobileffmpeg.Config
 import com.arthenica.mobileffmpeg.FFmpeg
+import com.tokopedia.editor.analytics.EditorLogger
 import com.tokopedia.editor.data.model.CanvasSize
 import com.tokopedia.utils.file.FileUtil
 import kotlinx.coroutines.channels.awaitClose
@@ -48,6 +49,10 @@ class VideoFlattenRepositoryImpl @Inject constructor(
                     trySend(flattenResultFilePath())
                 } else {
                     trySend("")
+                }
+
+                Config.enableLogCallback {
+                    EditorLogger.videoFlatten(returnCode, command, it.text)
                 }
             }
 

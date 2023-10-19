@@ -4,8 +4,9 @@ import android.content.Context
 import android.media.MediaMetadataRetriever
 import androidx.core.net.toUri
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.editor.analytics.EditorLogger
 import com.tokopedia.editor.data.model.VideoInfo
-import timber.log.Timber
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import javax.inject.Inject
 
 interface VideoExtractMetadataRepository {
@@ -22,7 +23,9 @@ class VideoExtractMetadataRepositoryImpl @Inject constructor(
         try {
             retriever.setDataSource(context, path.toUri())
         } catch (exception: IllegalArgumentException) {
-            Timber.d("VOD-Metadata: $exception")
+            EditorLogger.videoExtractMetadata(
+                exception.stackTraceToString().take(1000)
+            )
         }
 
         return VideoInfo(
@@ -34,13 +37,13 @@ class VideoExtractMetadataRepositoryImpl @Inject constructor(
     private fun getVideoWidth(retriever: MediaMetadataRetriever): Int {
         return retriever.extractMetadata(
             MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH
-        )?.toInt() ?: MIN_WIDTH
+        )?.toIntOrNull() ?: MIN_WIDTH
     }
 
     private fun getVideoHeight(retriever: MediaMetadataRetriever): Int {
         return retriever.extractMetadata(
             MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT
-        )?.toInt() ?: MIN_HEIGHT
+        )?.toIntOrNull() ?: MIN_HEIGHT
     }
 
     companion object {

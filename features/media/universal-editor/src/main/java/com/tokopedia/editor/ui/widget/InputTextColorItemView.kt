@@ -6,12 +6,12 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.unifyprinciples.R as principleR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class InputTextColorItemView(context: Context) : AppCompatImageView(context) {
     private val shapeDrawable = GradientDrawable()
 
-    private val strokeColor = ContextCompat.getColor(context, principleR.color.Unify_Static_White)
+    private val strokeColor = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White)
 
     init {
         val lp = LinearLayout.LayoutParams(

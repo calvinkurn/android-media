@@ -24,7 +24,6 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.runs
-import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -105,7 +104,7 @@ class MainEditorViewModelTest {
         // Verify
         onEvent(MainEditorEvent.AddInputTextPage)
 
-        val effects = recordEffect()
+        val effects = expectAllEffects()
         assertTrue(effects[0] is MainEditorEffect.OpenInputText)
         assertTrue(effects[1] is MainEditorEffect.ParentToolbarVisibility)
 
@@ -124,7 +123,7 @@ class MainEditorViewModelTest {
         onEvent(MainEditorEvent.EditInputTextPage(typographyId, model))
         assertTrue(viewModel.inputTextState.value.viewId.isMoreThanZero())
 
-        val effects = recordEffect()
+        val effects = expectAllEffects()
         assertTrue(effects[0] is MainEditorEffect.OpenInputText)
         assertTrue(effects[1] is MainEditorEffect.ParentToolbarVisibility)
 
@@ -181,7 +180,7 @@ class MainEditorViewModelTest {
         fakeVideoFlattenRepository.emit("result")
 
         // Verify
-        val effects = recordEffect()
+        val effects = expectAllEffects()
         assertTrue(effects[0] is MainEditorEffect.ShowLoading)
         assertTrue(effects[1] is MainEditorEffect.HideLoading)
         assertTrue(effects[2] is MainEditorEffect.FinishEditorPage)
@@ -209,7 +208,7 @@ class MainEditorViewModelTest {
         fakeVideoFlattenRepository.emit("")
 
         // Verify
-        val effects = recordEffect()
+        val effects = expectAllEffects()
         assertTrue(effects[0] is MainEditorEffect.ShowLoading)
         assertTrue(effects[1] is MainEditorEffect.HideLoading)
         assertTrue(effects[2] is MainEditorEffect.ShowToastErrorMessage)
@@ -255,7 +254,7 @@ class MainEditorViewModelTest {
         fakeImageFlattenRepository.emit("result")
 
         // Verify
-        val effects = recordEffect()
+        val effects = expectAllEffects()
         assertTrue(effects[1] is MainEditorEffect.ShowLoading)
         assertTrue(effects[2] is MainEditorEffect.HideLoading)
         assertTrue(effects[3] is MainEditorEffect.FinishEditorPage)
@@ -289,7 +288,7 @@ class MainEditorViewModelTest {
         fakeImageFlattenRepository.emit("")
 
         // Verify
-        val effects = recordEffect()
+        val effects = expectAllEffects()
         assertTrue(effects[0] is MainEditorEffect.ShowLoading)
         assertTrue(effects[1] is MainEditorEffect.HideLoading)
         assertTrue(effects[2] is MainEditorEffect.ShowToastErrorMessage)
@@ -322,7 +321,7 @@ class MainEditorViewModelTest {
         fakeImageFlattenRepository.emit("")
 
         // Verify
-        val effects = recordEffect()
+        val effects = expectAllEffects()
         assertTrue(effects.isEmpty())
     }
 
@@ -351,7 +350,7 @@ class MainEditorViewModelTest {
         onEvent(MainEditorEvent.PlacementImagePage)
 
         // Verify
-        val effects = recordEffect()
+        val effects = expectAllEffects()
         assertTrue(effects[0] is MainEditorEffect.OpenPlacementPage)
     }
 
@@ -362,7 +361,7 @@ class MainEditorViewModelTest {
         onEvent(MainEditorEvent.PlacementImagePage)
 
         // Verify
-        val effects = recordEffect()
+        val effects = expectAllEffects()
         assertTrue(effects.isEmpty())
     }
 
@@ -378,7 +377,7 @@ class MainEditorViewModelTest {
         )
 
         // Verify
-        val effects = recordEffect()
+        val effects = expectAllEffects()
         assertTrue(effects[0] is MainEditorEffect.OpenInputText)
     }
 
@@ -397,7 +396,7 @@ class MainEditorViewModelTest {
         onEvent(MainEditorEvent.PlacementImageResult(newImage))
 
         // Verify
-        val effects = recordEffect()
+        val effects = expectAllEffects()
         assertTrue(effects[0] is MainEditorEffect.UpdatePagerSourcePath)
     }
 
@@ -407,7 +406,7 @@ class MainEditorViewModelTest {
         onEvent(MainEditorEvent.PlacementImageResult(null))
 
         // Verify
-        val effects = recordEffect()
+        val effects = expectAllEffects()
         assertTrue(effects.isEmpty())
     }
 
@@ -417,7 +416,7 @@ class MainEditorViewModelTest {
         onEvent(MainEditorEvent.ManageVideoAudio)
 
         // Verify
-        val effects = recordEffect()
+        val effects = expectAllEffects()
         assertTrue(effects[0] is MainEditorEffect.RemoveAudioState)
         assertTrue(viewModel.mainEditorState.value.isRemoveAudio)
     }
@@ -429,7 +428,7 @@ class MainEditorViewModelTest {
         onEvent(MainEditorEvent.ManageVideoAudio)
 
         // Verify
-        val effects = recordEffect()
+        val effects = expectAllEffects()
         assertTrue(effects[0] is MainEditorEffect.RemoveAudioState)
         assertFalse(viewModel.mainEditorState.value.isRemoveAudio)
     }
@@ -453,7 +452,7 @@ class MainEditorViewModelTest {
         onEvent(MainEditorEvent.ClickHeaderCloseButton(true))
 
         // Verify
-        val effects = recordEffect()
+        val effects = expectAllEffects()
         assertTrue(effects[0] is MainEditorEffect.CloseMainEditorPage)
     }
 
@@ -464,7 +463,7 @@ class MainEditorViewModelTest {
         onEvent(MainEditorEvent.ClickHeaderCloseButton())
 
         // Verify
-        val effects = recordEffect()
+        val effects = expectAllEffects()
         assertTrue(effects[0] is MainEditorEffect.ShowCloseDialogConfirmation)
     }
 
@@ -491,7 +490,7 @@ class MainEditorViewModelTest {
         onEvent(MainEditorEvent.ClickHeaderCloseButton(false))
 
         // Verify
-        val effects = recordEffect()
+        val effects = expectAllEffects()
         assertTrue(effects[0] is MainEditorEffect.ShowCloseDialogConfirmation)
     }
 
@@ -518,23 +517,8 @@ class MainEditorViewModelTest {
         onEvent(MainEditorEvent.ClickHeaderCloseButton(true))
 
         // Verify
-        val effects = recordEffect()
+        val effects = expectAllEffects()
         assertTrue(effects[0] is MainEditorEffect.CloseMainEditorPage)
-    }
-
-    private fun recordEffect(): List<MainEditorEffect> {
-        val dispatchers = CoroutineTestDispatchers
-        val scope = CoroutineScope(dispatchers.immediate)
-        val effects = mutableListOf<MainEditorEffect>()
-
-        scope.launch {
-            viewModel.uiEffect.collect {
-                effects.add(it)
-            }
-        }
-
-        scope.cancel()
-        return effects
     }
 
     private fun mockParamFetcher() {
@@ -561,6 +545,29 @@ class MainEditorViewModelTest {
 
     private fun onEvent(event: MainEditorEvent) {
         viewModel.onEvent(event)
+    }
+
+    /**
+     * A helper to observe the effect handler.
+     *
+     * This method allows to observe the streamline the all recent updates of effect immediately.
+     * As the universal editor uses MVI-like, hence we have to cater the effect handler as well.
+     *
+     * the [expectAllEffects] capabilities are able to get the recent updates from shared flow.
+     */
+    private fun expectAllEffects(): List<MainEditorEffect> {
+        val dispatchers = CoroutineTestDispatchers
+        val scope = CoroutineScope(dispatchers.immediate)
+        val effects = mutableListOf<MainEditorEffect>()
+
+        scope.launch {
+            viewModel.uiEffect.collect {
+                effects.add(it)
+            }
+        }
+
+        scope.cancel()
+        return effects
     }
 
     private fun mockAnalytics() {

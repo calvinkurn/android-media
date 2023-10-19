@@ -401,13 +401,16 @@ class CartViewModel @Inject constructor(
                 wishlistIndex = index
             }
         }
-        cartDataList.value.add(++wishlistIndex, cartSectionHeaderHolderData)
-        cartModel.firstCartSectionHeaderPosition = when (cartModel.firstCartSectionHeaderPosition) {
-            -1 -> wishlistIndex
-            else -> min(cartModel.firstCartSectionHeaderPosition, wishlistIndex)
+
+        if (cartDataList.value.isNotEmpty()) {
+            cartDataList.value.add(++wishlistIndex, cartSectionHeaderHolderData)
+            cartModel.firstCartSectionHeaderPosition = when (cartModel.firstCartSectionHeaderPosition) {
+                -1 -> wishlistIndex
+                else -> min(cartModel.firstCartSectionHeaderPosition, wishlistIndex)
+            }
+            cartDataList.value.add(++wishlistIndex, cartWishlistHolderData)
+            cartDataList.notifyObserver()
         }
-        cartDataList.value.add(++wishlistIndex, cartWishlistHolderData)
-        cartDataList.notifyObserver()
     }
 
     fun hasReachAllShopItems(data: Any): Boolean {
@@ -979,13 +982,16 @@ class CartViewModel @Inject constructor(
                 recentViewIndex = index
             }
         }
-        cartDataList.value.add(++recentViewIndex, cartSectionHeaderHolderData)
-        cartModel.firstCartSectionHeaderPosition = when (cartModel.firstCartSectionHeaderPosition) {
-            -1 -> recentViewIndex
-            else -> min(cartModel.firstCartSectionHeaderPosition, recentViewIndex)
+
+        if (cartDataList.value.isNotEmpty()) {
+            cartDataList.value.add(++recentViewIndex, cartSectionHeaderHolderData)
+            cartModel.firstCartSectionHeaderPosition = when (cartModel.firstCartSectionHeaderPosition) {
+                -1 -> recentViewIndex
+                else -> min(cartModel.firstCartSectionHeaderPosition, recentViewIndex)
+            }
+            cartDataList.value.add(++recentViewIndex, cartRecentViewHolderData)
+            cartDataList.notifyObserver()
         }
-        cartDataList.value.add(++recentViewIndex, cartRecentViewHolderData)
-        cartDataList.notifyObserver()
     }
 
     fun processGetWishlistV2Data() {
@@ -1085,20 +1091,23 @@ class CartViewModel @Inject constructor(
                 recommendationIndex = index
             }
         }
-        cartSectionHeaderHolderData?.let {
-            cartDataList.value.add(++recommendationIndex, cartSectionHeaderHolderData)
-            cartModel.firstCartSectionHeaderPosition =
-                when (cartModel.firstCartSectionHeaderPosition) {
-                    -1 -> recommendationIndex
-                    else -> min(cartModel.firstCartSectionHeaderPosition, recommendationIndex)
-                }
-        }
 
-        if (recommendationPage == 1) {
-            addCartTopAdsHeadlineData(++recommendationIndex)
+        if (cartDataList.value.isNotEmpty()) {
+            cartSectionHeaderHolderData?.let {
+                cartDataList.value.add(++recommendationIndex, cartSectionHeaderHolderData)
+                cartModel.firstCartSectionHeaderPosition =
+                    when (cartModel.firstCartSectionHeaderPosition) {
+                        -1 -> recommendationIndex
+                        else -> min(cartModel.firstCartSectionHeaderPosition, recommendationIndex)
+                    }
+            }
+
+            if (recommendationPage == 1) {
+                addCartTopAdsHeadlineData(++recommendationIndex)
+            }
+            cartDataList.value.addAll(++recommendationIndex, cartRecommendationItemHolderDataList)
+            cartDataList.notifyObserver()
         }
-        cartDataList.value.addAll(++recommendationIndex, cartRecommendationItemHolderDataList)
-        cartDataList.notifyObserver()
     }
 
     fun addCartTopAdsHeadlineData(index: Int) {
@@ -2019,7 +2028,7 @@ class CartViewModel @Inject constructor(
                             newCartItemHolderData.cartBmGmTickerData.isShowBmGmDivider = false
 
                             newCartGroupHolderData.productUiModelList[lastItemIndex] = newCartItemHolderData
-                            // newCartDataList[index + newCartGroupHolderData.productUiModelList.size] = newCartItemHolderData
+                            newCartDataList[newCartDataList.indexOfFirst { it is CartItemHolderData && it.cartId == newCartItemHolderData.cartId }] = newCartItemHolderData
 
                             updateShopShownByCartGroup(newCartGroupHolderData)
                             newCartGroupHolderData.isAllSelected =
@@ -2521,8 +2530,10 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    suspend fun emitTokonowUpdated(value: Boolean) {
-        _tokoNowProductUpdater.emit(value)
+    fun emitTokonowUpdated() {
+        viewModelScope.launch {
+            _tokoNowProductUpdater.emit(true)
+        }
     }
 
     fun generateCartBundlingPromotionsAnalyticsData(
@@ -2790,11 +2801,14 @@ class CartViewModel @Inject constructor(
     }
 
     fun isPromoRevamp(): Boolean {
-        cartModel.cartListData?.let { data ->
-            return PromoUsageRollenceManager()
-                .isRevamp(data.promo.lastApplyPromo.lastApplyPromoData.userGroupMetadata)
+        if (cartPromoEntryPointProcessor.isPromoRevamp == null) {
+            val isRevamp = cartModel.cartListData?.let { data ->
+                PromoUsageRollenceManager()
+                    .isRevamp(data.promo.lastApplyPromo.lastApplyPromoData.userGroupMetadata)
+            } ?: false
+            cartPromoEntryPointProcessor.isPromoRevamp = isRevamp
         }
-        return false
+        return cartPromoEntryPointProcessor.isPromoRevamp == true
     }
 
     fun getEntryPointInfoFromLastApply(lastApply: LastApplyUiModel) {
@@ -2812,25 +2826,20 @@ class CartViewModel @Inject constructor(
         )
     }
 
-    fun getEntryPointInfoDefault() {
-        launchCatchError(
-            context = dispatchers.main,
-            block = {
-                _entryPointInfoEvent.postValue(EntryPointInfoEvent.Loading)
-                cartModel.cartListData?.let { data ->
-                    val lastApply = CartUiModelMapper.mapLastApplySimplified(data.promo.lastApplyPromo.lastApplyPromoData)
-                    val entryPointEvent = cartPromoEntryPointProcessor
-                        .getEntryPointInfoFromLastApply(lastApply, cartModel, cartDataList.value)
-                    _entryPointInfoEvent.postValue(entryPointEvent)
-                }
-            },
-            onError = {
-                cartModel.cartListData?.let { data ->
-                    val lastApply = CartUiModelMapper.mapLastApplySimplified(data.promo.lastApplyPromo.lastApplyPromoData)
-                    _entryPointInfoEvent.postValue(EntryPointInfoEvent.Error(lastApply))
-                }
+    fun getEntryPointInfoDefault(appliedPromoCodes: List<String> = emptyList()) {
+        if (isPromoRevamp()) {
+            val lastApplyUiModel = cartModel.cartListData?.let { data ->
+                CartUiModelMapper.mapLastApplySimplified(data.promo.lastApplyPromo.lastApplyPromoData)
             }
-        )
+            lastApplyUiModel?.let {
+                getEntryPointInfoFromLastApply(lastApplyUiModel.copy(additionalInfo = lastApplyUiModel.additionalInfo.copy(usageSummaries = emptyList())))
+            }
+        } else {
+            _entryPointInfoEvent.postValue(
+                cartPromoEntryPointProcessor
+                    .getEntryPointInfoActiveDefault(appliedPromoCodes)
+            )
+        }
     }
 
     fun getEntryPointInfoNoItemSelected() {

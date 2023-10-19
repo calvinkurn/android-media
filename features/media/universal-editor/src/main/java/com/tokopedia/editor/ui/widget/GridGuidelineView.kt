@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class GridGuidelineView @JvmOverloads constructor(
     context: Context,
@@ -19,7 +20,7 @@ class GridGuidelineView @JvmOverloads constructor(
     init {
         val color = MethodChecker.getColor(
             context,
-            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            unifyprinciplesR.color.Unify_GN500
         )
 
         paint.color = color

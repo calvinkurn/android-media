@@ -26,7 +26,7 @@ import com.tokopedia.track.TrackApp
 import javax.inject.Inject
 
 class MainEditorAnalyticsImpl @Inject constructor(
-    paramFetcher: EditorParamFetcher
+    private val paramFetcher: EditorParamFetcher
 ) : MainEditorAnalytics {
     /**
      * {editor_type} with : video/image
@@ -37,19 +37,13 @@ class MainEditorAnalyticsImpl @Inject constructor(
      * {edit_variant} with the tool variant used (if any), e.g. for teks {edit_variant} is normal / highlight
      * {active_tools} = the active tools when clicking Lanjut, e.g. teks, mute, crop, etc. Value is numeric in array {1,3,4, ...} where the number is mapped to a specific tools
      */
-    private val pageSourceString: String
-    private val editorType: String
-    private val customTrackerData: Map<String, String>
-
-    init {
-        paramFetcher.get().let {
-            pageSourceString = it.pageSource.value
-            editorType = getMediaTypeString(it.firstFile)
-            customTrackerData = it.trackerExtra
-        }
-    }
+    private var pageSourceString: String = ""
+    private var editorType: String = ""
+    private var customTrackerData: Map<String, String> = mapOf()
 
     override fun toolTextClick() {
+        getParamValue()
+
         val eventLabel = "$editorType - $pageSourceString - ${customTrackerData.toImmersiveTrackerData()}"
         sendGeneralEvent(
             eventAction = EVENT_TEXT_TOOL_CLICK,
@@ -59,6 +53,8 @@ class MainEditorAnalyticsImpl @Inject constructor(
     }
 
     override fun toolAdjustCropClick() {
+        getParamValue()
+
         val eventLabel = "$editorType - $pageSourceString - ${customTrackerData.toImmersiveTrackerData()}"
         sendGeneralEvent(
             eventAction = EVENT_ADJUST_TOOL_CLICK,
@@ -72,6 +68,8 @@ class MainEditorAnalyticsImpl @Inject constructor(
         isMute: Boolean,
         isCropped: Boolean
     ) {
+        getParamValue()
+
         var activeTool = ""
         if (hasText) {
             activeTool += "$TOOL_TEXT,"
@@ -101,6 +99,8 @@ class MainEditorAnalyticsImpl @Inject constructor(
     }
 
     override fun backPageClick() {
+        getParamValue()
+
         val eventLabel = "$editorType - $pageSourceString - ${customTrackerData.toImmersiveTrackerData()}"
         sendGeneralEvent(
             eventAction = EVENT_BACK_CLICK,
@@ -132,6 +132,14 @@ class MainEditorAnalyticsImpl @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generalEvent.toMap()
         )
+    }
+
+    private fun getParamValue() {
+        paramFetcher.get().let {
+            pageSourceString = it.pageSource.value
+            editorType = getMediaTypeString(it.firstFile)
+            customTrackerData = it.trackerExtra
+        }
     }
 
     companion object {
