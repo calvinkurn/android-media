@@ -4,12 +4,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class GetEpharmacyShopInfo(
-    @SerializedName("data")
-    @Expose
-    val data: Data = Data()
-)
-
-data class Data(
     @SerializedName("getEpharmacyShopInfo")
     @Expose
     val getEpharmacyShopInfo: GetEpharmacyShopInfoData = GetEpharmacyShopInfoData()
