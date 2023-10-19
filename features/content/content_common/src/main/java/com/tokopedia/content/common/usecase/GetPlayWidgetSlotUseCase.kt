@@ -1,22 +1,29 @@
 package com.tokopedia.content.common.usecase
 
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.model.WidgetSlot
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.GqlParam
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
 
 @GqlQuery(GetPlayWidgetSlotUseCase.QUERY_NAME, GetPlayWidgetSlotUseCase.QUERY)
 class GetPlayWidgetSlotUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository
-) : GraphqlUseCase<WidgetSlot>(graphqlRepository) {
+    private val graphqlRepository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+) : CoroutineUseCase<GetPlayWidgetSlotUseCase.Param, WidgetSlot>(dispatchers.io) {
 
-    init {
-        setGraphqlQuery(GetPlayWidgetSlotUseCaseQuery())
-        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        setTypeClass(WidgetSlot::class.java)
+    private val queryObject = GetPlayWidgetSlotUseCaseQuery()
+
+    override fun graphqlQuery(): String {
+        return queryObject.getQuery()
+    }
+
+    override suspend fun execute(params: Param): WidgetSlot {
+        return graphqlRepository.request(queryObject, params)
     }
 
     suspend fun executeOnBackground(
@@ -26,26 +33,20 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
         sourceId: String,
         isWifi: Boolean
     ): WidgetSlot {
-        val request = mapOf(
-            KEY_REQ to mapOf(
-                KEY_GROUP to group,
-                KEY_CURSOR to cursor,
-                KEY_SOURCE_TYPE to sourceType,
-                KEY_SOURCE_ID to sourceId,
-                KEY_WIFI to isWifi
+        val param = Param(
+            Param.Request(
+                group = group,
+                cursor = cursor,
+                sourceType = sourceType,
+                sourceId = sourceId,
+                isWifi = isWifi
             )
         )
-        setRequestParams(request)
-        return executeOnBackground()
+        return execute(param)
     }
 
     companion object {
         private const val KEY_REQ = "req"
-        private const val KEY_GROUP = "group"
-        private const val KEY_CURSOR = "cursor"
-        private const val KEY_SOURCE_TYPE = "source_type"
-        private const val KEY_SOURCE_ID = "source_id"
-        private const val KEY_WIFI = "is_wifi"
 
         const val QUERY_NAME = "GetPlayWidgetSlotUseCaseQuery"
         const val QUERY = """
@@ -137,5 +138,28 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
                 }
             }
         """
+    }
+
+    data class Param(
+        @SerializedName("req")
+        val req: Request
+    ) : GqlParam {
+
+        data class Request(
+            @SerializedName("group")
+            val group: String,
+
+            @SerializedName("cursor")
+            val cursor: String,
+
+            @SerializedName("source_type")
+            val sourceType: String,
+
+            @SerializedName("source_id")
+            val sourceId: String,
+
+            @SerializedName("is_wifi")
+            val isWifi: Boolean
+        )
     }
 }
