@@ -22,9 +22,9 @@ private const val QUERY = """
 """
 
 @GqlQuery("ShopScoreNotYetDeductedQuery", QUERY)
-class GetNotYetDeductedPenaltyUseCase @Inject constructor(
+open class GetNotYetDeductedPenaltyUseCase @Inject constructor(
     gqlRepository: GraphqlRepository
-): GraphqlUseCase<ShopScorePenaltyDetailResponse>(gqlRepository){
+) : GraphqlUseCase<ShopScorePenaltyDetailResponse>(gqlRepository) {
 
     init {
         setTypeClass(ShopScorePenaltyDetailResponse::class.java)
@@ -40,7 +40,7 @@ class GetNotYetDeductedPenaltyUseCase @Inject constructor(
                 startDate = startDate,
                 endDate = endDate,
                 total = MAX_ITEMS_PER_HIT,
-                status = ShopScoreConstant.STATUS_NOT_YET_DEDUCTED,
+                status = ShopScoreConstant.STATUS_NOT_YET_DEDUCTED
             )
         )
         setRequestParams(params)
@@ -55,8 +55,5 @@ class GetNotYetDeductedPenaltyUseCase @Inject constructor(
         @JvmStatic
         fun createParams(shopScorePenaltyDetailParam: ShopScorePenaltyDetailParam): Map<String, Any> =
             mapOf(SHOP_SCORE_PENALTY_DETAIL_INPUT to shopScorePenaltyDetailParam)
-
-
     }
-
 }

@@ -3,7 +3,7 @@ package com.tokopedia.shop.score.cassavatest.features.penalty
 import com.tokopedia.shop.score.cassavatest.base.ShopPenaltyCassavaTest
 import org.junit.Test
 
-class PenaltyCassavaTest: ShopPenaltyCassavaTest() {
+class PenaltyCassavaTest : ShopPenaltyCassavaTest() {
 
     override fun setup() {
         super.setup()

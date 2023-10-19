@@ -6,10 +6,17 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.shop.score.penalty.presentation.activity.ShopPenaltyPageActivity
 import com.tokopedia.shop.score.stub.penalty.presentation.fragment.ShopPenaltyPageFragmentStub
 
-class ShopPenaltyPageActivityStub: ShopPenaltyPageActivity() {
+class ShopPenaltyPageActivityStub : ShopPenaltyPageActivity() {
 
-    override fun getNewFragment(): Fragment {
-        return ShopPenaltyPageFragmentStub.newInstance()
+    override fun getNewFragment(): Fragment? {
+        return null
+    }
+
+    override fun getPenaltyFragments(): List<Fragment> {
+        return listOf(
+            ShopPenaltyPageFragmentStub.newInstance(),
+            ShopPenaltyPageFragmentStub.newInstance()
+        )
     }
 
     companion object {

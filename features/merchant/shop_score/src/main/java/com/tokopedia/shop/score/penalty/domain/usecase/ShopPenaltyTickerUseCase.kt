@@ -27,9 +27,9 @@ private const val QUERY =
     """
 
 @GqlQuery("ShopPenaltyTickerQuery", QUERY)
-class ShopPenaltyTickerUseCase @Inject constructor(
+open class ShopPenaltyTickerUseCase @Inject constructor(
     gqlRepository: GraphqlRepository
-): GraphqlUseCase<ShopPenaltyTickerResponse>(gqlRepository) {
+) : GraphqlUseCase<ShopPenaltyTickerResponse>(gqlRepository) {
 
     init {
         setTypeClass(ShopPenaltyTickerResponse::class.java)
@@ -63,5 +63,4 @@ class ShopPenaltyTickerUseCase @Inject constructor(
             )
         }
     }
-
 }

@@ -22,7 +22,7 @@ import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyPageFra
 import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyPageType
 import javax.inject.Inject
 
-open class ShopPenaltyPageActivity: BaseSimpleActivity(), HasComponent<PenaltyComponent> {
+open class ShopPenaltyPageActivity : BaseSimpleActivity(), HasComponent<PenaltyComponent> {
 
     @Inject
     lateinit var shopScorePenaltyTracking: ShopScorePenaltyTracking
@@ -38,7 +38,6 @@ open class ShopPenaltyPageActivity: BaseSimpleActivity(), HasComponent<PenaltyCo
                 }
                 super.onPageSelected(position)
             }
-
         }
     }
 
@@ -84,7 +83,6 @@ open class ShopPenaltyPageActivity: BaseSimpleActivity(), HasComponent<PenaltyCo
                 goToSystemPenaltyWebview()
             }
         }
-
     }
 
     private fun setupTabs() {
@@ -106,7 +104,7 @@ open class ShopPenaltyPageActivity: BaseSimpleActivity(), HasComponent<PenaltyCo
         }
     }
 
-    private fun getPenaltyFragments(): List<Fragment> {
+    open fun getPenaltyFragments(): List<Fragment> {
         return listOf(
             ShopPenaltyPageFragment.createInstance(ShopPenaltyPageType.ONGOING),
             ShopPenaltyPageFragment.createInstance(ShopPenaltyPageType.HISTORY)
@@ -128,5 +126,4 @@ open class ShopPenaltyPageActivity: BaseSimpleActivity(), HasComponent<PenaltyCo
             .baseAppComponent((application as? BaseMainApplication)?.baseAppComponent)
             .build()
     }
-
 }

@@ -59,7 +59,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-open class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
+open class ShopPenaltyPageFragment :
+    BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
     PenaltyDateFilterBottomSheet.CalenderListener,
     PenaltyFilterBottomSheet.PenaltyFilterFinishListener,
     ItemDetailPenaltyListener,
@@ -92,7 +93,7 @@ open class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAd
         )
     }
 
-    private val penaltyPageAdapter by lazy {
+    open val penaltyPageAdapter by lazy {
         PenaltyPageAdapter(penaltyPageAdapterFactory)
     }
 
@@ -316,13 +317,13 @@ open class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAd
     override fun startRenderPerformanceMonitoring() {
         shopPenaltyPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
         binding?.rvPenaltyPage?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                shopPenaltyPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
-                shopPenaltyPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                binding?.rvPenaltyPage?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-            }
-        })
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    shopPenaltyPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                    shopPenaltyPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                    binding?.rvPenaltyPage?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                }
+            })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): ShopPenaltyPerformanceMonitoringListener? {
@@ -348,7 +349,6 @@ open class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAd
         endlessRecyclerViewScrollListener.resetState()
         viewModelShopPenalty.setTypeFilterData(typeIds)
     }
-
 
     private fun observeUpdateSortFilter() {
         observe(viewModelShopPenalty.updateSortSelectedPeriod) {
@@ -462,7 +462,7 @@ open class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAd
 
     companion object {
 
-        private const val PAGE_TYPE_KEY = "page_type"
+        const val PAGE_TYPE_KEY = "page_type"
 
         @JvmStatic
         fun createInstance(@ShopPenaltyPageType pageType: String): ShopPenaltyPageFragment {
@@ -473,7 +473,5 @@ open class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAd
                 arguments = bundle
             }
         }
-
     }
-
 }
