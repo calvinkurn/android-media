@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.map
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.analytics.performance.util.EmbraceKey
@@ -518,7 +517,7 @@ class DynamicProductDetailViewModel @Inject constructor(
         userLocationLocal: LocalCacheModel,
         urlQuery: String = "",
         extParam: String = ""
-    ) = viewModelScope.launch {
+    ) = launch(context = coroutineContext) {
         runCatching {
             resetVariables(
                 shopDomain = productParams.shopDomain.orEmpty(),
@@ -562,7 +561,10 @@ class DynamicProductDetailViewModel @Inject constructor(
         this.userLocationCache = userLocationCache
     }
 
-    private fun pdpLayoutCollector(urlQuery: String, data: kotlin.Result<ProductDetailDataModel>) {
+    private fun pdpLayoutCollector(
+        urlQuery: String,
+        data: kotlin.Result<ProductDetailDataModel>
+    ) {
         data.onSuccess {
             processPdpLayout(pdpLayout = it)
             getProductP2(cacheState = it.cacheState, urlQuery = urlQuery)
@@ -705,15 +707,17 @@ class DynamicProductDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getProductP2(cacheState: CacheState, urlQuery: String) = viewModelScope.launch {
-        runCatching {
-            if (cacheState.isFromCache) {
-                doBasicProductP2(isFromCache = true)
-            } else {
-                getProductP2WhenCloud(urlQuery = urlQuery)
+    private fun getProductP2(cacheState: CacheState, urlQuery: String) {
+        launch(context = coroutineContext) {
+            runCatching {
+                if (cacheState.isFromCache) {
+                    doBasicProductP2(isFromCache = true)
+                } else {
+                    getProductP2WhenCloud(urlQuery = urlQuery)
+                }
+            }.onFailure {
+                _productLayout.postValue(it.asFail())
             }
-        }.onFailure {
-            _productLayout.postValue(it.asFail())
         }
     }
 
