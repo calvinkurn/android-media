@@ -3404,20 +3404,22 @@ class CartRevampFragment :
                     ?: AddOnPageResult()
 
             if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
-                var newAddOnWording = ""
+                var newAddOnTitle = ""
+                var newAddOnPrice = ""
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
-                    newAddOnWording =
-                        "${addOnProductDataResult.aggregatedData.title} (${
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            addOnProductDataResult.aggregatedData.price,
-                            false
-                        ).removeDecimalSuffix()
-                        })"
+                    newAddOnTitle = addOnProductDataResult.aggregatedData.title
+                    newAddOnPrice = "(${
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        addOnProductDataResult.aggregatedData.price,
+                        false
+                    ).removeDecimalSuffix()
+                    })"
                 }
 
                 viewModel.updateAddOnByCartId(
                     addOnProductDataResult.cartId.toString(),
-                    newAddOnWording,
+                    newAddOnTitle,
+                    newAddOnPrice,
                     addOnProductDataResult.aggregatedData.selectedAddons
                 )
             } else {
