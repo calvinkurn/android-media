@@ -188,6 +188,8 @@ class ComposeQuestionnaireViewModel @Inject constructor(
     }
 
     private fun emitUiEffect(uiEffect: QuestionnaireUiEffect) {
-        _uiEffect.tryEmit(uiEffect)
+        viewModelScope.launch {
+            _uiEffect.emit(uiEffect)
+        }
     }
 }

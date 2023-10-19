@@ -174,6 +174,10 @@ class ComposeQuestionnaireViewModelTest :
             )
 
             assertEquals(dismissLoadingButton.toString(), states[5].toString())
+            assertEquals(
+                QuestionnaireUiEffect.NavigateToResultPage(newPersona).toString(),
+                uiEffects[0].toString()
+            )
         }
     }
 
@@ -240,6 +244,7 @@ class ComposeQuestionnaireViewModelTest :
             )
 
             assertEquals(dismissLoadingButton.toString(), states[5].toString())
+            assert(uiEffects[0] == QuestionnaireUiEffect.ShowGeneralErrorToast)
         }
     }
 
