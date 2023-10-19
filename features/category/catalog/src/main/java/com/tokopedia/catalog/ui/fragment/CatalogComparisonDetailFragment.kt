@@ -1,5 +1,6 @@
 package com.tokopedia.catalog.ui.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.databinding.FragmentCatalogComparisonDetailBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
@@ -16,6 +20,7 @@ import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.viewholder.ComparisonViewHolder
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -25,6 +30,7 @@ import com.tokopedia.oldcatalog.ui.bottomsheet.CatalogComponentBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -97,6 +103,7 @@ class CatalogComparisonDetailFragment :
 
     private fun getComparison(catalogId: String, compareCatalogId: String) {
         binding?.loadingLayout?.root?.show()
+        binding?.gePageError?.gone()
         binding?.rvContent?.gone()
         viewModel.getProductCatalog(catalogId, "")
         if (compareCatalogId.isNotEmpty()) {
@@ -107,15 +114,29 @@ class CatalogComparisonDetailFragment :
     private fun setupObserver(view: View) {
         viewModel.catalogDetailDataModel.observe(viewLifecycleOwner) {
             if (it is Success) {
+                binding?.gePageError?.gone()
+                binding?.rvContent?.show()
                 val comparison = it.data.widgets.find {
                     it is ComparisonUiModel
                 }
                 if (comparison != null) {
                     widgetAdapter.addWidget(listOf(comparison))
                 }
+            } else if (it is Fail){
+                val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                when (it.throwable) {
+                    is UnknownHostException, is SocketTimeoutException -> {
+                        binding?.gePageError?.setType(GlobalError.NO_CONNECTION)
+                    }
+                    else -> {
+                        binding?.gePageError?.setType(GlobalError.SERVER_ERROR)
+                    }
+                }
+                binding?.gePageError?.errorDescription?.text = errorMessage
+                binding?.gePageError?.show()
+                binding?.rvContent?.gone()
             }
             binding?.loadingLayout?.root?.gone()
-            binding?.rvContent?.show()
         }
         viewModel.errorsToasterGetComparison.observe(viewLifecycleOwner) {
             val errorMessage = if (it is UnknownHostException) {
@@ -146,14 +167,18 @@ class CatalogComparisonDetailFragment :
         val layoutManager = LinearLayoutManager(context)
         binding?.rvContent?.layoutManager = layoutManager
         binding?.rvContent?.adapter = widgetAdapter
+        binding?.gePageError?.setActionClickListener {
+            viewModel.getProductCatalogComparisons(catalogId, compareCatalogId)
+        }
     }
 
     private fun setupToolbar() {
-        binding?.toolbar?.cartButton?.hide()
-        binding?.toolbar?.searchButton?.hide()
         context?.let {
             binding?.toolbar?.apply {
                 title = getString(R.string.text_comparison_title)
+                searchButton?.hide()
+                cartButton?.hide()
+                shareButton?.hide()
                 setColors(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950))
                 setNavigationOnClickListener {
                     activity?.finish()
@@ -189,7 +214,18 @@ class CatalogComparisonDetailFragment :
         // no-op
     }
 
+    override fun onComparisonProductClick(id: String) {
+        val catalogProductList =
+            Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG))
+                .buildUpon()
+                .appendPath(id).toString()
+        RouteManager.getIntent(context, catalogProductList).apply {
+            startActivity(this)
+        }
+    }
+
     override fun changeComparison(comparedCatalogId: String) {
+        this.compareCatalogId = comparedCatalogId
         getComparison(catalogId, comparedCatalogId)
     }
 }

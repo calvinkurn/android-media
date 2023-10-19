@@ -28,10 +28,14 @@ class ComparisonItemViewHolder(
         binding?.cardProductAction?.setOnClickListener {
             comparisonItemListener?.onComparisonSwitchButtonClicked(bindingAdapterPosition)
         }
+
     }
 
     fun bind(item: ComparisonUiModel.ComparisonContent, itemWidth: Int) {
         binding?.apply {
+            binding?.clProduct?.setOnClickListener {
+                comparisonItemListener?.onComparisonProductClick(item.id)
+            }
             val specs = if (isDisplayingTopSpec) item.topComparisonSpecs else item.comparisonSpecs
             iuProduct.loadImage(item.imageUrl)
             root.layoutParams.width = itemWidth

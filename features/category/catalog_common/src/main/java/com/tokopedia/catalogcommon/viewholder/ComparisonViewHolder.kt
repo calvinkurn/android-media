@@ -31,6 +31,7 @@ class ComparisonViewHolder(
     interface ComparisonItemListener {
         fun onComparisonSwitchButtonClicked(position: Int)
         fun onComparisonSeeMoreButtonClicked()
+        fun onComparisonProductClick(id: String)
     }
 
     companion object {
