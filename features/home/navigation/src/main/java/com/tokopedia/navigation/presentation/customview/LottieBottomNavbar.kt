@@ -778,6 +778,7 @@ class LottieBottomNavbar : LinearLayout {
                     placeholderSelectedIcon.visibility = View.VISIBLE
                 }
 
+                iconPlaceholderList[it] = placeholderSelectedIcon
                 iconList[it] = Pair(selectedIcon, false)
             } else {
                 if (!selectedIconPair.second) {
