@@ -39,6 +39,8 @@ class ComparisonItemViewHolder(
             tfProductPrice.text = item.price
             rvSpecs.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
             rvSpecs.adapter = ComparisonSpecItemAdapter(specs)
+            tfProductName.maxLines = item.titleHeight
+            tfProductName.minLines = item.titleHeight
 
             tfProductName.setTextColor(item.productTextColor ?: return)
             tfProductPrice.setTextColor(item.productTextColor ?: return)

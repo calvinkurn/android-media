@@ -37,7 +37,8 @@ class ComparisonViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.widget_item_comparison
         private const val DEFAULT_LINE_COUNT = 1
-        private const val DEFAULT_CHAR_WIDTH = 15
+        private const val DEFAULT_CHAR_WIDTH = 20
+        private const val DEFAULT_TITLE_CHAR_WIDTH = 25
     }
 
     private val binding by viewBinding<WidgetItemComparisonBinding>()
@@ -91,9 +92,12 @@ class ComparisonViewHolder(
     ) {
         val specs = if (isDisplayingTopSpec) comparedItem?.topComparisonSpecs else comparedItem?.comparisonSpecs
         val rowsHeight = List(specs?.size.orZero()) { DEFAULT_LINE_COUNT }.toMutableList()
+        var titleHeight = 1
 
         // update list
         comparisonItems.forEach {
+            val tempTitleHeight = ceil((it.productTitle.length * DEFAULT_TITLE_CHAR_WIDTH)/ textAreaWidth).toInt()
+            if (tempTitleHeight > titleHeight) titleHeight = tempTitleHeight
             if (isDisplayingTopSpec)
                 it.topComparisonSpecs.updateRowsHeight(rowsHeight, textAreaWidth)
             else
@@ -103,12 +107,19 @@ class ComparisonViewHolder(
 
         // apply list to object
         comparisonItems.forEach {
+            it.titleHeight = titleHeight
             if (isDisplayingTopSpec)
                 it.topComparisonSpecs.applyRowsHeight(rowsHeight)
             else
                 it.comparisonSpecs.applyRowsHeight(rowsHeight)
         }
         specs?.applyRowsHeight(rowsHeight)
+
+        // apply to comparison title
+        binding?.layoutComparison?.tfProductName?.apply {
+            maxLines = titleHeight
+            minLines = titleHeight
+        }
     }
 
     private fun List<ComparisonUiModel.ComparisonSpec>.updateRowsHeight(

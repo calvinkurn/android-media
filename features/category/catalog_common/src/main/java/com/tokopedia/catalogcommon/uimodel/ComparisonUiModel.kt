@@ -21,7 +21,8 @@ data class ComparisonUiModel(
         val price: String,
         val comparisonSpecs: List<ComparisonSpec>,
         val topComparisonSpecs: List<ComparisonSpec>,
-        var productTextColor: Int? = null
+        var productTextColor: Int? = null,
+        var titleHeight: Int = -1
     )
 
     data class ComparisonSpec(
