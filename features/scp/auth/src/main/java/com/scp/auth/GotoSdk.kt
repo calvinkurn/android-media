@@ -3,9 +3,7 @@ package com.scp.auth
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.os.Build
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.gojek.pin.AppInfo
 import com.gojek.pin.DeviceInfo
@@ -13,7 +11,6 @@ import com.gojek.pin.PinConfig
 import com.gojek.pin.PinManager
 import com.gojek.pin.PinNetwork
 import com.gojek.pin.PinProvider
-import com.gojek.pin.domain.entities.FlowTypes
 import com.gojek.pin.validation.ExtVerificationData
 import com.gojek.pin.validation.ExtVerificationUiConfig
 import com.gojek.pin.validation.PinSdkValidationListener
@@ -43,6 +40,7 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.util.EncoderDecoder
+import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -162,7 +160,7 @@ object GotoSdk {
                     isDebug = TokopediaUrl.getInstance().TYPE == Env.STAGING,
                     language = { LOCALE_ID },
                     isDarkThemeEnabled = {
-                        application.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+                        application.isDarkMode()
                     }
                 ),
                 deviceInfo = DeviceInfo(
