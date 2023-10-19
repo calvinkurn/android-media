@@ -4,7 +4,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
-object EditAddressRevampAnalytics : BaseTrackerConst() {
+object EditAddressAnalytics : BaseTrackerConst() {
 
     //    event name
     private const val EVENT_VIEW = "viewLogisticIris"

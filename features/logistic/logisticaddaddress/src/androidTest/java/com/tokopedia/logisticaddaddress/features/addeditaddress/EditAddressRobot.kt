@@ -25,7 +25,7 @@ import com.tokopedia.logisticaddaddress.features.addeditaddress.addressform.Addr
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert
 
-class EditAddressRevampRobot {
+class EditAddressRobot {
 
     fun launchWithParam(context: Context, rule: ActivityTestRule<AddressFormActivity>) {
         val i = RouteManager.getIntent(context, "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}/12345")
@@ -129,5 +129,5 @@ class EditAddressResultRobot {
     }
 }
 
-fun editAddressRevamp(func: EditAddressRevampRobot.() -> Unit) =
-    EditAddressRevampRobot().apply(func)
+fun editAddressRevamp(func: EditAddressRobot.() -> Unit) =
+    EditAddressRobot().apply(func)

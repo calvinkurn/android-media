@@ -26,7 +26,7 @@ import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert
 
-class AddressRevampRobot {
+class AddAddressRobot {
 
     fun launchWithParam(rule: ActivityTestRule<SearchPageActivity>, screenName: String) {
         val i = Intent()
@@ -258,4 +258,4 @@ class ResultRobot {
     }
 }
 
-fun addAddressRevamp(func: AddressRevampRobot.() -> Unit) = AddressRevampRobot().apply(func)
+fun addAddressRevamp(func: AddAddressRobot.() -> Unit) = AddAddressRobot().apply(func)

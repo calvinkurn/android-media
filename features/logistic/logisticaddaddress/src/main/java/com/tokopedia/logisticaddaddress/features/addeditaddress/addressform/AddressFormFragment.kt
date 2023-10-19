@@ -51,8 +51,8 @@ import com.tokopedia.logisticaddaddress.di.addeditaddress.AddEditAddressComponen
 import com.tokopedia.logisticaddaddress.domain.mapper.SaveAddressMapper
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.domain.model.add_address.ContactData
-import com.tokopedia.logisticaddaddress.features.addeditaddress.addressform.analytics.AddNewAddressRevampAnalytics
-import com.tokopedia.logisticaddaddress.features.addeditaddress.addressform.analytics.EditAddressRevampAnalytics
+import com.tokopedia.logisticaddaddress.features.addeditaddress.addressform.analytics.AddNewAddressAnalytics
+import com.tokopedia.logisticaddaddress.features.addeditaddress.addressform.analytics.EditAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addeditaddress.addressform.widget.BaseFormAddressWidget
 import com.tokopedia.logisticaddaddress.features.addeditaddress.uimodel.FieldType
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
@@ -289,9 +289,9 @@ class AddressFormFragment :
             }
             addressLabelField?.textFieldInput?.run {
                 if (addressUiState.isAdd()) {
-                    AddNewAddressRevampAnalytics.onClickChipsLabelAlamatPositive(userSession.userId)
+                    AddNewAddressAnalytics.onClickChipsLabelAlamatPositive(userSession.userId)
                 } else {
-                    EditAddressRevampAnalytics.onClickChipsLabelAlamat(userSession.userId)
+                    EditAddressAnalytics.onClickChipsLabelAlamat(userSession.userId)
                 }
                 setText(labelAlamat)
                 setSelection(text.length)
@@ -340,15 +340,15 @@ class AddressFormFragment :
                     when (addressUiState) {
                         AddressUiState.AddAddress -> {
                             if (isPositiveFlow) {
-                                AddNewAddressRevampAnalytics.onClickBackPositive(userSession.userId)
+                                AddNewAddressAnalytics.onClickBackPositive(userSession.userId)
                             } else {
-                                AddNewAddressRevampAnalytics.onClickBackNegative(userSession.userId)
+                                AddNewAddressAnalytics.onClickBackNegative(userSession.userId)
                             }
                             activity?.finish()
                         }
 
                         AddressUiState.EditAddress -> {
-                            EditAddressRevampAnalytics.onClickBackArrowEditAddress(userSession.userId)
+                            EditAddressAnalytics.onClickBackArrowEditAddress(userSession.userId)
                             if (isBackDialogClicked) {
                                 activity?.finish()
                             } else {
@@ -372,7 +372,7 @@ class AddressFormFragment :
 
             when (addressUiState) {
                 AddressUiState.EditAddress -> {
-                    EditAddressRevampAnalytics.onViewEditAddressPageNew(userSession.userId)
+                    EditAddressAnalytics.onViewEditAddressPageNew(userSession.userId)
                     addressId = getString(EXTRA_ADDRESS_ID, "")
                 }
 
@@ -519,12 +519,12 @@ class AddressFormFragment :
             when (it) {
                 is Success -> {
                     if (isPositiveFlow) {
-                        AddNewAddressRevampAnalytics.onClickSimpanPositive(
+                        AddNewAddressAnalytics.onClickSimpanPositive(
                             userSession.userId,
                             SUCCESS
                         )
                     } else {
-                        AddNewAddressRevampAnalytics.onClickSimpanNegative(
+                        AddNewAddressAnalytics.onClickSimpanNegative(
                             userSession.userId,
                             SUCCESS
                         )
@@ -534,20 +534,20 @@ class AddressFormFragment :
 
                 is Fail -> {
                     if (isPositiveFlow) {
-                        AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(
+                        AddNewAddressAnalytics.onClickSimpanErrorPositive(
                             userSession.userId,
                             ""
                         )
-                        AddNewAddressRevampAnalytics.onClickSimpanPositive(
+                        AddNewAddressAnalytics.onClickSimpanPositive(
                             userSession.userId,
                             NOT_SUCCESS
                         )
                     } else {
-                        AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(
+                        AddNewAddressAnalytics.onClickSimpanErrorNegative(
                             userSession.userId,
                             ""
                         )
-                        AddNewAddressRevampAnalytics.onClickSimpanNegative(
+                        AddNewAddressAnalytics.onClickSimpanNegative(
                             userSession.userId,
                             NOT_SUCCESS
                         )
@@ -583,14 +583,14 @@ class AddressFormFragment :
                 is Success -> {
                     if (it.data.isSuccess == 1) {
                         onSuccessEditAddress(it.data.isStateChosenAddressChanged)
-                        EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, true)
+                        EditAddressAnalytics.onClickButtonSimpan(userSession.userId, true)
                     } else {
-                        EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
+                        EditAddressAnalytics.onClickButtonSimpan(userSession.userId, false)
                     }
                 }
 
                 is Fail -> {
-                    EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
+                    EditAddressAnalytics.onClickButtonSimpan(userSession.userId, false)
                     showToaster(
                         message = it.throwable.message.toString(),
                         toasterType = Toaster.TYPE_ERROR
@@ -612,12 +612,12 @@ class AddressFormFragment :
                             message = getString(R.string.error_district_pinpoint_mismatch),
                             toasterType = Toaster.TYPE_ERROR
                         )
-                        EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
+                        EditAddressAnalytics.onClickButtonSimpan(userSession.userId, false)
                     }
                 }
 
                 is Fail -> {
-                    EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
+                    EditAddressAnalytics.onClickButtonSimpan(userSession.userId, false)
                     showToaster(
                         message = it.throwable.message.toString(),
                         toasterType = Toaster.TYPE_ERROR
@@ -708,11 +708,11 @@ class AddressFormFragment :
                 phoneNumber = phoneNumber,
                 onClickPhoneNumberFirstIcon = {
                     if (isEdit) {
-                        EditAddressRevampAnalytics.onClickIconPhoneBook(userSession.userId)
+                        EditAddressAnalytics.onClickIconPhoneBook(userSession.userId)
                     } else if (isPositiveFlow) {
-                        AddNewAddressRevampAnalytics.onClickIconPhoneBookPositive(userSession.userId)
+                        AddNewAddressAnalytics.onClickIconPhoneBookPositive(userSession.userId)
                     } else {
-                        AddNewAddressRevampAnalytics.onClickIconPhoneBookNegative(userSession.userId)
+                        AddNewAddressAnalytics.onClickIconPhoneBookNegative(userSession.userId)
                     }
 
                     onNavigateToContact()
@@ -720,9 +720,9 @@ class AddressFormFragment :
                 onClickBtnInfo = {
                     if (isEdit.not()) {
                         if (isPositiveFlow) {
-                            AddNewAddressRevampAnalytics.onClickIconNamaPenerimaPositive(userSession.userId)
+                            AddNewAddressAnalytics.onClickIconNamaPenerimaPositive(userSession.userId)
                         } else {
-                            AddNewAddressRevampAnalytics.onClickIconNamaPenerimaNegative(userSession.userId)
+                            AddNewAddressAnalytics.onClickIconNamaPenerimaNegative(userSession.userId)
                         }
                     }
 
@@ -734,24 +734,24 @@ class AddressFormFragment :
             formAccountWidget.setupOnTextChangeListener(
                 hasFocusInputReceiverName = {
                     if (isEdit) {
-                        EditAddressRevampAnalytics.onClickFieldNamaPenerima(userSession.userId)
+                        EditAddressAnalytics.onClickFieldNamaPenerima(userSession.userId)
                     } else if (isPositiveFlow) {
-                        AddNewAddressRevampAnalytics.onClickFieldNamaPenerimaPositive(
+                        AddNewAddressAnalytics.onClickFieldNamaPenerimaPositive(
                             userSession.userId
                         )
                     } else {
-                        AddNewAddressRevampAnalytics.onClickFieldNamaPenerimaNegative(
+                        AddNewAddressAnalytics.onClickFieldNamaPenerimaNegative(
                             userSession.userId
                         )
                     }
                 },
                 hasFocusInputPhoneNumber = {
                     if (isEdit) {
-                        EditAddressRevampAnalytics.onClickFieldNomorHp(userSession.userId)
+                        EditAddressAnalytics.onClickFieldNomorHp(userSession.userId)
                     } else if (isPositiveFlow) {
-                        AddNewAddressRevampAnalytics.onClickFieldNomorHpPositive(userSession.userId)
+                        AddNewAddressAnalytics.onClickFieldNomorHpPositive(userSession.userId)
                     } else {
-                        AddNewAddressRevampAnalytics.onClickFieldNomorHpNegative(userSession.userId)
+                        AddNewAddressAnalytics.onClickFieldNomorHpNegative(userSession.userId)
                     }
                 }
             )
@@ -794,7 +794,7 @@ class AddressFormFragment :
                     formattedAddress = viewModel.saveDataModel?.formattedAddress
                 ) {
                     goToPinpointPage()
-                    EditAddressRevampAnalytics.onClickAturPinPoint(userSession.userId)
+                    EditAddressAnalytics.onClickAturPinPoint(userSession.userId)
                 }
             } else {
                 cardAddressPinpointWidget.setAddressDistrict(viewModel.saveDataModel?.formattedAddress)
@@ -819,9 +819,9 @@ class AddressFormFragment :
 
             val onFocusDistrict = {
                 if (isEdit) {
-                    EditAddressRevampAnalytics.onClickFieldKotaKecamatan(userSession.userId)
+                    EditAddressAnalytics.onClickFieldKotaKecamatan(userSession.userId)
                 } else {
-                    AddNewAddressRevampAnalytics.onClickFieldKotaKecamatanNegative(
+                    AddNewAddressAnalytics.onClickFieldKotaKecamatanNegative(
                         userSession.userId
                     )
                 }
@@ -829,9 +829,9 @@ class AddressFormFragment :
             }
             val onClickDistrict = {
                 if (isEdit) {
-                    EditAddressRevampAnalytics.onClickFieldKotaKecamatan(userSession.userId)
+                    EditAddressAnalytics.onClickFieldKotaKecamatan(userSession.userId)
                 } else {
-                    AddNewAddressRevampAnalytics.onClickFieldKotaKecamatanNegative(
+                    AddNewAddressAnalytics.onClickFieldKotaKecamatanNegative(
                         userSession.userId
                     )
                 }
@@ -925,8 +925,8 @@ class AddressFormFragment :
         if (!validated) {
             when (addressUiState) {
                 AddressUiState.EditAddress -> {
-                    EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
-                    EditAddressRevampAnalytics.onClickSimpanError(
+                    EditAddressAnalytics.onClickButtonSimpan(userSession.userId, false)
+                    EditAddressAnalytics.onClickSimpanError(
                         userSession.userId,
                         field.joinToString(",")
                     )
@@ -934,12 +934,12 @@ class AddressFormFragment :
 
                 AddressUiState.AddAddress -> {
                     if (isPositiveFlow) {
-                        AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(
+                        AddNewAddressAnalytics.onClickSimpanErrorPositive(
                             userSession.userId,
                             field.joinToString(",")
                         )
                     } else {
-                        AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(
+                        AddNewAddressAnalytics.onClickSimpanErrorNegative(
                             userSession.userId,
                             field.joinToString(",")
                         )
@@ -1158,11 +1158,11 @@ class AddressFormFragment :
             cardAddressNegativeWidget.showBtnChangeNegative {
                 when (addressUiState) {
                     AddressUiState.AddAddress -> {
-                        AddNewAddressRevampAnalytics.onClickAturPinpointNegative(userSession.userId)
+                        AddNewAddressAnalytics.onClickAturPinpointNegative(userSession.userId)
                     }
 
                     AddressUiState.EditAddress -> {
-                        EditAddressRevampAnalytics.onClickAturPinPoint(userSession.userId)
+                        EditAddressAnalytics.onClickAturPinPoint(userSession.userId)
                     }
 
                     else -> {
@@ -1180,11 +1180,11 @@ class AddressFormFragment :
                 if (isChecked) {
                     if (addressUiState.isAdd()) {
                         if (isPositiveFlow) {
-                            AddNewAddressRevampAnalytics.onClickBoxJadikanAlamatUtamaPositive(
+                            AddNewAddressAnalytics.onClickBoxJadikanAlamatUtamaPositive(
                                 userSession.userId
                             )
                         } else {
-                            AddNewAddressRevampAnalytics.onClickBoxJadikanAlamatUtamaNegative(
+                            AddNewAddressAnalytics.onClickBoxJadikanAlamatUtamaNegative(
                                 userSession.userId
                             )
                         }
@@ -1203,14 +1203,14 @@ class AddressFormFragment :
                 eventShowListLabelAlamat()
                 when (addressUiState) {
                     AddressUiState.EditAddress -> {
-                        EditAddressRevampAnalytics.onClickFieldLabelAlamat(userSession.userId)
+                        EditAddressAnalytics.onClickFieldLabelAlamat(userSession.userId)
                     }
 
                     AddressUiState.AddAddress -> {
                         if (isPositiveFlow) {
-                            AddNewAddressRevampAnalytics.onClickFieldLabelAlamatPositive(userSession.userId)
+                            AddNewAddressAnalytics.onClickFieldLabelAlamatPositive(userSession.userId)
                         } else {
-                            AddNewAddressRevampAnalytics.onClickFieldLabelAlamatNegative(userSession.userId)
+                            AddNewAddressAnalytics.onClickFieldLabelAlamatNegative(userSession.userId)
                         }
                     }
 
@@ -1222,14 +1222,14 @@ class AddressFormFragment :
             hasFocusEtAddress = {
                 when (addressUiState) {
                     AddressUiState.EditAddress -> {
-                        EditAddressRevampAnalytics.onClickFieldAlamat(userSession.userId)
+                        EditAddressAnalytics.onClickFieldAlamat(userSession.userId)
                     }
 
                     AddressUiState.AddAddress -> {
                         if (isPositiveFlow) {
-                            AddNewAddressRevampAnalytics.onClickFieldAlamatPositive(userSession.userId)
+                            AddNewAddressAnalytics.onClickFieldAlamatPositive(userSession.userId)
                         } else {
-                            AddNewAddressRevampAnalytics.onClickFieldAlamatNegative(userSession.userId)
+                            AddNewAddressAnalytics.onClickFieldAlamatNegative(userSession.userId)
                         }
                     }
 
@@ -1241,14 +1241,14 @@ class AddressFormFragment :
             hasFocusEtCourierNote = {
                 when (addressUiState) {
                     AddressUiState.EditAddress -> {
-                        EditAddressRevampAnalytics.onClickFieldCatatanKurir(userSession.userId)
+                        EditAddressAnalytics.onClickFieldCatatanKurir(userSession.userId)
                     }
 
                     AddressUiState.AddAddress -> {
                         if (isPositiveFlow) {
-                            AddNewAddressRevampAnalytics.onClickFieldCatatanKurirPositive(userSession.userId)
+                            AddNewAddressAnalytics.onClickFieldCatatanKurirPositive(userSession.userId)
                         } else {
-                            AddNewAddressRevampAnalytics.onClickFieldCatatanKurirNegative(userSession.userId)
+                            AddNewAddressAnalytics.onClickFieldCatatanKurirNegative(userSession.userId)
                         }
                     }
 

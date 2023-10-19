@@ -21,17 +21,14 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class AddNewAddressRevampNegativeTest {
+class AddNewAddressAnalyticTest {
 
     @get:Rule
     var mActivityTestRule = IntentsTestRule(SearchPageActivity::class.java, false, false)
 
     @get:Rule
     var permissionRule: GrantPermissionRule =
-        GrantPermissionRule.grant(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
+        GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
@@ -44,12 +41,10 @@ class AddNewAddressRevampNegativeTest {
     fun setup() {
         AddAddressInterceptor.resetAllCustomResponse()
         AddAddressInterceptor.setupGraphqlMockResponse(context)
-        logisticInterceptor.getDistrictRecommendationResponsePath =
-            getRawString(context, R.raw.district_recommendation_jakarta)
-        logisticInterceptor.saveAddressResponsePath =
-            getRawString(context, R.raw.save_address_success)
-        logisticInterceptor.getCollectionPointResponsePath =
-            getRawString(context, R.raw.get_collection_point_add)
+        logisticInterceptor.autoCompleteResponsePath = getRawString(context, R.raw.autocomplete_tokopedia_tower)
+        logisticInterceptor.getDistrictResponsePath = getRawString(context, R.raw.get_district_tokopedia_tower)
+        logisticInterceptor.saveAddressResponsePath = getRawString(context, R.raw.save_address_success)
+        logisticInterceptor.getCollectionPointResponsePath = getRawString(context, R.raw.get_collection_point_add)
         IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
     }
 
@@ -60,20 +55,16 @@ class AddNewAddressRevampNegativeTest {
 
     @Test
     fun addAddress_fromAddressList() {
-        val queryPath = "tracker/logistic/addaddress_user_revamp_negative.json"
+        val queryPath = "tracker/logistic/addaddress_user_revamp.json"
         val screenName = "/user/address/create"
         addAddressRevamp {
             launchWithParam(mActivityTestRule, screenName)
-            clickManualForm()
+            searchAddressStreet(KEYWORD)
+            clickAddressStreetItem()
+            onClickChooseLocation()
+            fillAddress(ADDRESS)
             fillReceiver(RECEIVER)
-            fillAddressNegative(ADDRESS)
             fillPhoneNumber(PHONE)
-            clickKotaKecamatan()
-            searchKotaKecamatan(KEYWORD)
-            clickKotaKecamatanItem()
-            clickPostalCode()
-            clickPostalCodeItem()
-            clickChoosePostalCode()
             checkTermsAndCondition()
         } submit {
             hasPassedAnalytics(cassavaTestRule, queryPath)
@@ -82,20 +73,16 @@ class AddNewAddressRevampNegativeTest {
 
     @Test
     fun addAddress_fromCart() {
-        val queryPath = "tracker/logistic/addaddress_cart_revamp_negative.json"
+        val queryPath = "tracker/logistic/addaddress_cart_revamp.json"
         val screenName = "/cart/address/create"
         addAddressRevamp {
             launchWithParam(mActivityTestRule, screenName)
-            clickManualForm()
+            searchAddressStreet(KEYWORD)
+            clickAddressStreetItem()
+            onClickChooseLocation()
+            fillAddress(ADDRESS)
             fillReceiver(RECEIVER)
-            fillAddressNegative(ADDRESS)
             fillPhoneNumber(PHONE)
-            clickKotaKecamatan()
-            searchKotaKecamatan(KEYWORD)
-            clickKotaKecamatanItem()
-            clickPostalCode()
-            clickPostalCodeItem()
-            clickChoosePostalCode()
             checkTermsAndCondition()
         } submit {
             hasPassedAnalytics(cassavaTestRule, queryPath)
@@ -104,20 +91,16 @@ class AddNewAddressRevampNegativeTest {
 
     @Test
     fun addAddress_newUser() {
-        val queryPath = "tracker/logistic/addaddress_new_user_revamp_negative.json"
+        val queryPath = "tracker/logistic/addaddress_new_user_revamp.json"
         val screenName = "/user/address/create/cart"
         addAddressRevamp {
             launchWithParam(mActivityTestRule, screenName)
-            clickManualForm()
+            searchAddressStreet(KEYWORD)
+            clickAddressStreetItem()
+            onClickChooseLocation()
+            fillAddress(ADDRESS)
             fillReceiver(RECEIVER)
-            fillAddressNegative(ADDRESS)
             fillPhoneNumber(PHONE)
-            clickKotaKecamatan()
-            searchKotaKecamatan(KEYWORD)
-            clickKotaKecamatanItem()
-            clickPostalCode()
-            clickPostalCodeItem()
-            clickChoosePostalCode()
             checkTermsAndCondition()
         } submit {
             hasPassedAnalytics(cassavaTestRule, queryPath)
@@ -125,7 +108,7 @@ class AddNewAddressRevampNegativeTest {
     }
 
     companion object {
-        const val KEYWORD = "Jakarta"
+        const val KEYWORD = "Tokopedia"
         const val ADDRESS = "Jalan Prof. Dr Satrio 123"
         const val RECEIVER = "Anonymous"
         const val PHONE = "081299875432"

@@ -24,7 +24,7 @@ import org.junit.runner.RunWith
 @CassavaTest
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class EditAddressRevampNoPinpointTest {
+class EditAddressNoPinpointAnalyticTest {
 
     @get:Rule
     var mActivityTestRule = IntentsTestRule(AddressFormActivity::class.java, false, false)

@@ -10,7 +10,6 @@ import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.logisticaddaddress.features.addeditaddress.addressform.AddressFormActivity
 import com.tokopedia.logisticaddaddress.interceptor.AddAddressInterceptor
-import com.tokopedia.logisticaddaddress.test.R
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
@@ -19,11 +18,12 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import com.tokopedia.logisticaddaddress.test.R as logisticaddaddresstestR
 
 @CassavaTest
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class EditAddressRevampTest {
+class EditAddressAnalyticTest {
 
     @get:Rule
     var mActivityTestRule = IntentsTestRule(AddressFormActivity::class.java, false, false)
@@ -43,12 +43,12 @@ class EditAddressRevampTest {
     fun setup() {
         AddAddressInterceptor.resetAllCustomResponse()
         AddAddressInterceptor.setupGraphqlMockResponse(context)
-        logisticInterceptor.autoCompleteResponsePath = getRawString(context, R.raw.autocomplete_tokopedia_tower)
-        logisticInterceptor.getDistrictResponsePath = getRawString(context, R.raw.get_district_tokopedia_tower)
-        logisticInterceptor.getAddressResponsePath = getRawString(context, R.raw.address_detail_tokopedia_tower)
-        logisticInterceptor.pinPointValidationResponsePath = getRawString(context, R.raw.pinpoint_validation)
-        logisticInterceptor.editAddressResponsePath = getRawString(context, R.raw.editaddress_success_response)
-        logisticInterceptor.getCollectionPointResponsePath = getRawString(context, R.raw.get_collection_point_edit)
+        logisticInterceptor.autoCompleteResponsePath = getRawString(context, logisticaddaddresstestR.raw.autocomplete_tokopedia_tower)
+        logisticInterceptor.getDistrictResponsePath = getRawString(context, logisticaddaddresstestR.raw.get_district_tokopedia_tower)
+        logisticInterceptor.getAddressResponsePath = getRawString(context, logisticaddaddresstestR.raw.address_detail_tokopedia_tower)
+        logisticInterceptor.pinPointValidationResponsePath = getRawString(context, logisticaddaddresstestR.raw.pinpoint_validation)
+        logisticInterceptor.editAddressResponsePath = getRawString(context, logisticaddaddresstestR.raw.editaddress_success_response)
+        logisticInterceptor.getCollectionPointResponsePath = getRawString(context, logisticaddaddresstestR.raw.get_collection_point_edit)
         IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
     }
 

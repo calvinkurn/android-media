@@ -3,7 +3,7 @@ package com.tokopedia.logisticaddaddress.features.addeditaddress.addressform.ana
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
-object AddNewAddressRevampAnalytics : BaseTrackerConst() {
+object AddNewAddressAnalytics : BaseTrackerConst() {
 
     private const val CLICK_ADDRESS = "clickAddress"
     private const val CLICK_BACK_ARROW = "click back arrow on top left corner"
