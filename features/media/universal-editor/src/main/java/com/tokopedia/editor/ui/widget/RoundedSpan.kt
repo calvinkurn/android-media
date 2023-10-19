@@ -6,8 +6,6 @@ import android.graphics.Path
 import android.graphics.RectF
 import android.text.style.LineBackgroundSpan
 import com.tokopedia.unifycomponents.toPx
-import kotlin.math.sign
-import kotlin.math.abs
 
 class RoundedSpan(
     backgroundColor: Int,
@@ -51,10 +49,11 @@ class RoundedSpan(
         end: Int,
         lnum: Int
     ) {
+        path.reset()
+
         val width = p.measureText(text, start, end) + 2f * padding
         val shiftLeft: Float
         val shiftRight: Float
-
 
         when (align) {
             ALIGN_LEFT -> {
@@ -75,15 +74,68 @@ class RoundedSpan(
 
         rect.set(shiftLeft, top.toFloat(), shiftRight, bottom.toFloat())
 
+        // ==================
+        if (lnum == 0) {
+            // reset value
+            prevWidth = width + 1 // modified to be wider on index 0
+            prevLeft = left.toFloat()
+            prevTop = top.toFloat()
+            prevRight = right.toFloat()
+            prevBottom = bottom.toFloat()
+            listOfEmptyLine.clear()
+        }
+        // ==================
+
         if (text.substring(start, end).replace("\n","").isEmpty()) {
+            listOfEmptyLine[lnum] = "-"
             return
         }
 
-        val startPoint = Pair(right - (right - left).toFloat(), top.toFloat())
+        // skip spike on index 0
+        val skipSpike = if (lnum == 0 ) true else listOfEmptyLine[lnum - 1]?.isNotEmpty() ?: false
+        val isWiderThenPrev = width > prevWidth
+
+        val startPoint = Pair(prevRight - (prevRight - prevLeft), top.toFloat())
         path.moveTo(startPoint.first, startPoint.second)
 
-        // 1
-        path.lineTo(rect.left + radius, top.toFloat())
+        if (isWiderThenPrev && !skipSpike) {
+            // 12
+            path.lineTo(prevLeft + radius, top.toFloat())
+
+            // 13
+            path.cubicTo(
+                prevLeft, top.toFloat(),
+                prevLeft, top.toFloat(),
+                prevLeft, top.toFloat() - radius
+            )
+
+            if (align != ALIGN_LEFT) {
+                // 14
+                path.cubicTo(
+                    prevLeft, top.toFloat(),
+                    prevLeft, top.toFloat(),
+                    prevLeft - radius, top.toFloat()
+                )
+
+                // 15
+                path.lineTo(rect.left + radius, top.toFloat())
+            } else {
+                // 19
+                path.lineTo(rect.left, rect.top + radius)
+            }
+        } else {
+            // 1
+            path.lineTo(rect.left + radius, top.toFloat())
+        }
+
+        if (!isWiderThenPrev && !skipSpike) {
+            // 10
+            var pathTenPosY =  top.toFloat()
+            if (align == ALIGN_LEFT) {
+                pathTenPosY -= radius
+            }
+            path.lineTo(prevLeft, pathTenPosY)
+        }
 
         // 2
         path.cubicTo(
@@ -115,12 +167,51 @@ class RoundedSpan(
         // 7
         path.lineTo(rect.right, rect.top + radius)
 
-        // 8
-        path.cubicTo(
-            rect.right, rect.top,
-            rect.right, rect.top,
-            rect.right - radius, rect.top
-        )
+        if (!isWiderThenPrev && !skipSpike) {
+            // 11
+            if (align == ALIGN_RIGHT) {
+                path.lineTo(rect.right, rect.top - radius)
+            } else {
+                path.cubicTo(
+                    rect.right, rect.top,
+                    rect.right, rect.top,
+                    prevRight, rect.top
+                )
+            }
+        } else {
+            // 8
+            if (align == ALIGN_RIGHT && !skipSpike) {
+                path.lineTo(rect.right, rect.top - radius)
+            } else {
+                path.cubicTo(
+                    rect.right, rect.top,
+                    rect.right, rect.top,
+                    rect.right - radius, rect.top
+                )
+            }
+
+        }
+
+        if (isWiderThenPrev && !skipSpike) {
+            if (align != ALIGN_RIGHT) {
+                // 16
+                path.lineTo(prevRight + radius, top.toFloat())
+
+                // 17
+                path.cubicTo(
+                    prevRight, top.toFloat(),
+                    prevRight, top.toFloat(),
+                    prevRight, top.toFloat() - radius
+                )
+
+                // 18
+                path.cubicTo(
+                    prevRight, top.toFloat(),
+                    prevRight, top.toFloat(),
+                    prevRight - radius, top.toFloat()
+                )
+            }
+        }
 
         // 9
         path.lineTo(startPoint.first, startPoint.second)
