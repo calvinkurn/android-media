@@ -2829,8 +2829,11 @@ class CartViewModel @Inject constructor(
         )
     }
 
-    fun getEntryPointInfoDefault(appliedPromoCodes: List<String> = emptyList(), isFromError: Boolean = false) {
-        if (isPromoRevamp() && !isFromError) {
+    fun getEntryPointInfoDefault(
+        appliedPromoCodes: List<String> = emptyList(),
+        isError: Boolean = false
+    ) {
+        if (isPromoRevamp() && !isError) {
             val lastApplyUiModel = cartModel.cartListData?.let { data ->
                 CartUiModelMapper.mapLastApplySimplified(data.promo.lastApplyPromo.lastApplyPromoData)
             }
@@ -2858,11 +2861,13 @@ class CartViewModel @Inject constructor(
     }
 
     fun updatePromoSummaryData(lastApplyUiModel: LastApplyUiModel) {
-        cartModel.discountAmount =
-            lastApplyUiModel.additionalInfo.usageSummaries
-                .filter { it.isDiscount() }
-                .sumOf { it.amount.toLong() }
-
+        cartModel.discountAmount = calculateDiscount(lastApplyUiModel)
         reCalculateSubTotal()
+    }
+
+    private fun calculateDiscount(lastApplyUiModel: LastApplyUiModel): Long {
+        return lastApplyUiModel.additionalInfo.usageSummaries
+            .filter { it.isDiscount() }
+            .sumOf { it.amount.toLong() }
     }
 }

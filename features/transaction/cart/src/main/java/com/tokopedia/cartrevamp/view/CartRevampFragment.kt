@@ -3897,9 +3897,9 @@ class CartRevampFragment :
         viewModel.updatePromoSummaryData(lastApplyData)
     }
 
-    private fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>, isFromError: Boolean = false) {
-        viewModel.getEntryPointInfoDefault(listPromoApplied, isFromError)
-        if (listPromoApplied.isEmpty()) {
+    private fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>, isError: Boolean = false) {
+        viewModel.getEntryPointInfoDefault(listPromoApplied, isError)
+        if (isError) {
             viewModel.updatePromoSummaryData(
                 LastApplyUiModel(
                     additionalInfo = LastApplyAdditionalInfoUiModel(
