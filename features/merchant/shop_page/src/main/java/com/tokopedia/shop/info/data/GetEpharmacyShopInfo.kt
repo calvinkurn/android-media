@@ -66,7 +66,7 @@ data class GetEpharmacyShopInfo(
                 val errorCode: Int = 0,
                 @SerializedName("error_message")
                 @Expose
-                val errorMessage: List<Any> = listOf(),
+                val errorMessage: List<String> = listOf(),
                 @SerializedName("process_time")
                 @Expose
                 val processTime: Double = 0.0

@@ -122,6 +122,7 @@ class ShopInfoFragment :
         get() = fragmentShopInfoBinding?.labelReport
 
     private var fragmentShopInfoBinding: FragmentShopInfoBinding? = null
+    private var shopId: String = "0"
     private val userId: String
         get() = shopViewModel?.userId().orEmpty()
 
@@ -299,7 +300,10 @@ class ShopInfoFragment :
         shopViewModel?.shopInfo?.let { shopInfo ->
             observe(shopInfo) { result ->
                 when (result) {
-                    is Success -> renderShopInfo(result.data)
+                    is Success -> {
+                        renderShopInfo(result.data)
+                        getShopEpharmacyData(shopId.toIntOrZero()) // Get detail data for ePharmacy shop
+                    }
                     is Fail -> showError(result.throwable)
                 }
             }
@@ -310,7 +314,15 @@ class ShopInfoFragment :
         shopViewModel?.epharmDetailData?.let { epharmData ->
             observe(epharmData) {
                 when (it) {
-                    is Success -> renderEpharmDetailsData(it.data.data)
+                    is Success -> {
+                        shopViewModel?.let { _viewModel ->
+                            shopInfo?.let { _shopInfo ->
+                                if (_viewModel.isShouldShowLicenseForDrugSeller(isGoApotik = _shopInfo.isGoApotik, fsType = _shopInfo.fsType)) {
+                                    renderEpharmDetailsData(epharmData = it.data.data, shopInfoData = _shopInfo)
+                                }
+                            }
+                        }
+                    }
                     is Fail -> {
                         showToasterError(it.throwable)
                     }
@@ -337,6 +349,7 @@ class ShopInfoFragment :
 
     private fun initView() {
         getShopId()?.let { shopId ->
+            this@ShopInfoFragment.shopId = shopId
             setupShopNotesList()
             setStatisticsVisibility()
 
@@ -347,7 +360,6 @@ class ShopInfoFragment :
             }
 
             getShopNotes(shopId)
-            getShopEpharmacyData(shopId.toIntOrZero())
             setReportStoreView()
 
             registerGlobalErrorClickListener(shopId)
@@ -453,18 +465,18 @@ class ShopInfoFragment :
                 }
             }
 
-            // go apotik info
-            shopViewModel?.let {
-                goApotikInfoContainer.shouldShowWithAction(
-                    shouldShow = it.isShouldShowLicenseForDrugSeller(isGoApotik = shopInfo.isGoApotik, fsType = shopInfo.fsType)
-                ) {
-                    tvSiaDescription.text =
-                        shopInfo.siaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
-                    tvSipaDescription.text =
-                        shopInfo.sipaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
-                    tvApjDescription.text = shopInfo.apj.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
-                }
-            }
+//            // go apotik info
+//            shopViewModel?.let {
+//                goApotikInfoContainer.shouldShowWithAction(
+//                    shouldShow = it.isShouldShowLicenseForDrugSeller(isGoApotik = shopInfo.isGoApotik, fsType = shopInfo.fsType)
+//                ) {
+//                    tvSiaDescription.text =
+//                        shopInfo.siaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+//                    tvSipaDescription.text =
+//                        shopInfo.sipaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+//                    tvApjDescription.text = shopInfo.apj.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+//                }
+//            }
 
             // shop location info
             shopInfoLocation.text = shopInfo.location
@@ -475,9 +487,20 @@ class ShopInfoFragment :
         }
     }
 
-    private fun renderEpharmDetailsData(epharmData: GetEpharmacyShopInfo.Data) {
+    private fun renderEpharmDetailsData(epharmData: GetEpharmacyShopInfo.Data, shopInfoData: ShopInfoData) {
         if (!isErrorGetEpharmData(epharmData.getEpharmacyShopInfo.header)) {
+            fragmentShopInfoBinding?.let { binding ->
+                binding.layoutPartialShopInfoDescription.shopGoApotikContainer.visibility = View.VISIBLE
+
+                binding.layoutPartialShopInfoDescription.tvSiaDescription.text = shopInfoData.siaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+                binding.layoutPartialShopInfoDescription.tvSipaDescription.text = shopInfoData.sipaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+                binding.layoutPartialShopInfoDescription.tvApjDescription.text = shopInfoData.apj.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+            }
         } else {
+            val errMessage: String = epharmData.getEpharmacyShopInfo.header.errorMessage[0]
+            view?.let {
+                Toaster.build(it, errMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+            }
         }
     }
 
