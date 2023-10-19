@@ -167,6 +167,7 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: HomeClaimCouponWidgetItemShimmeringUiModel): Int = HomeClaimCouponWidgetItemShimmeringViewHolder.LAYOUT
     override fun type(uiModel: HomeProductCarouselChipsUiModel): Int = HomeProductCarouselChipsViewHolder.LAYOUT
     override fun type(uiModel: HomeHeaderUiModel): Int = HomeHeaderViewHolder.LAYOUT
+    override fun type(uiModel: com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel): Int = com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestWidgetViewHolder.LAYOUT
     // endregion
 
     // region Global Home Component
@@ -207,6 +208,7 @@ class HomeAdapterTypeFactory(
             HomeClaimCouponWidgetItemShimmeringViewHolder.LAYOUT -> HomeClaimCouponWidgetItemShimmeringViewHolder(view)
             HomeProductCarouselChipsViewHolder.LAYOUT -> HomeProductCarouselChipsViewHolder(view, productCarouselChipListener)
             HomeHeaderViewHolder.LAYOUT -> HomeHeaderViewHolder(view, homeHeaderListener, tokoNowChooseAddressWidgetListener, tokoNowView)
+            com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestWidgetViewHolder.LAYOUT -> com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestWidgetViewHolder(view)
             // endregion
 
             // region Global Home Component
