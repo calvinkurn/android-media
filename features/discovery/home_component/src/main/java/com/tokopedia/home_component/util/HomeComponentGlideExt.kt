@@ -2,12 +2,17 @@ package com.tokopedia.home_component.util
 
 import android.widget.ImageView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.home_component.R
+import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.media.loader.wrapper.MediaDataSource
+import java.io.File
+import java.net.URI
+import java.util.*
+import com.tokopedia.topads.sdk.R as topadssdkR
+import com.tokopedia.home_component.R as home_componentR
 
 const val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
 const val FPM_PRODUCT_ORGANIC_CHANNEL = "home_product_organic"
@@ -22,112 +27,172 @@ const val TRUNCATED_URL_PREFIX = "https://images.tokopedia.net/img/cache/"
 
 fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: ImageHandler.ImageLoaderStateListener? = null){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-    this.loadImage(url) {
-        listener({ _, mediaDataSource ->
-            handleOnResourceReady(mediaDataSource, performanceMonitoring, fpmItemLabel)
-            listener?.successLoad()
-        }, {
-            GlideErrorLogHelper().logError(context, it, url)
-            listener?.failedLoad()
-        })
+    if(url.isGif()) {
+        this.loadAsGif(url) {
+            homeLoadImageListener(url, fpmItemLabel, listener, performanceMonitoring, this@loadImage)
+        }
+    } else {
+        this.loadImage(url) {
+            homeLoadImageListener(url, fpmItemLabel, listener, performanceMonitoring, this@loadImage)
+        }
     }
 }
 
 fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-    this.loadImage(url) {
-        fitCenter()
-        setPlaceHolder(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
-        listener({ _, mediaDataSource ->
-            handleOnResourceReady(mediaDataSource, performanceMonitoring, fpmItemLabel)
-        }, {
-            GlideErrorLogHelper().logError(context, it, url)
-        })
+    if(url.isGif()) {
+        this.loadAsGif(url) {
+            fitCenter()
+            setPlaceHolder(topadssdkR.drawable.placeholder_grey)
+            homeLoadImageListener(url, fpmItemLabel, null, performanceMonitoring, this@loadImageFitCenter)
+        }
+    } else {
+        this.loadImage(url) {
+            fitCenter()
+            setPlaceHolder(topadssdkR.drawable.placeholder_grey)
+            homeLoadImageListener(url, fpmItemLabel, null, performanceMonitoring, this@loadImageFitCenter)
+        }
     }
 }
 
 fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-    this.loadImage(url) {
-        centerCrop()
-        setRoundedRadius(roundedRadius.toFloat())
-        listener({ _, mediaDataSource ->
-            handleOnResourceReady(mediaDataSource, performanceMonitoring, fpmItemLabel)
-        })
+    if(url.isGif()) {
+        this.loadAsGif(url) {
+            centerCrop()
+            setRoundedRadius(roundedRadius.toFloat())
+            homeLoadImageListener(url, fpmItemLabel, null, performanceMonitoring, this@loadImageRounded)
+        }
+    } else {
+        this.loadImage(url) {
+            centerCrop()
+            setRoundedRadius(roundedRadius.toFloat())
+            homeLoadImageListener(url, fpmItemLabel, null, performanceMonitoring, this@loadImageRounded)
+        }
     }
 }
 
 fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: String = "", listener: ImageHandler.ImageLoaderStateListener? = null){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-    this.loadImage(url) {
-        overrideSize(Resize(width, height))
-        setPlaceHolder(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
-        fitCenter()
-        listener({ _, mediaDataSource ->
-            listener?.successLoad()
-            handleOnResourceReady(mediaDataSource, performanceMonitoring, fpmItemLabel)
-        }, {
-            listener?.failedLoad()
-        })
+    if(url.isGif()) {
+        this.loadAsGif(url) {
+            overrideSize(Resize(width, height))
+            setPlaceHolder(topadssdkR.drawable.placeholder_grey)
+            fitCenter()
+            homeLoadImageListener(url, fpmItemLabel, listener, performanceMonitoring, this@loadMiniImage)
+        }
+    } else {
+        this.loadImage(url) {
+            overrideSize(Resize(width, height))
+            setPlaceHolder(topadssdkR.drawable.placeholder_grey)
+            fitCenter()
+            homeLoadImageListener(url, fpmItemLabel, listener, performanceMonitoring, this@loadMiniImage)
+        }
     }
 }
 
 fun ImageView.loadImageCenterCrop(url: String){
-    this.loadImage(url) {
-        centerCrop()
-        setRoundedRadius(15.toFloat())
-        setPlaceHolder(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
+    if(url.isGif()) {
+        this.loadAsGif(url) {
+            centerCrop()
+            setRoundedRadius(15.toFloat())
+            setPlaceHolder(topadssdkR.drawable.placeholder_grey)
+        }
+    } else {
+        this.loadImage(url) {
+            centerCrop()
+            setRoundedRadius(15.toFloat())
+            setPlaceHolder(topadssdkR.drawable.placeholder_grey)
+        }
     }
 }
 
 fun ImageView.loadImageWithoutPlaceholder(url: String){
-    this.loadImageWithoutPlaceholder(url)
+    if(url.isGif()) {
+        this.loadImageWithoutPlaceholder(url) {
+            setPlaceHolder(-1)
+        }
+    } else {
+        this.loadImageWithoutPlaceholder(url)
+    }
 }
 
-fun ImageView.loadImageWithoutPlaceholder(url: String, fpmItemLabel: String = "", listener: ImageHandler.ImageLoaderStateListener? = null){
+fun ImageView.loadImageWithoutPlaceholder(
+    url: String,
+    fpmItemLabel: String = "",
+    listener: ImageHandler.ImageLoaderStateListener? = null,
+    skipErrorPlaceholder: Boolean = false,
+){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-    this.loadImageWithoutPlaceholder(url) {
-        listener({ _, mediaDataSource ->
-            handleOnResourceReady(mediaDataSource, performanceMonitoring, fpmItemLabel)
-            listener?.successLoad()
-        }, {
-            GlideErrorLogHelper().logError(context, it, url)
-            listener?.failedLoad()
-        })
+    if(url.isGif()) {
+        this.loadAsGif(url) {
+            setPlaceHolder(-1)
+            if(skipErrorPlaceholder) setErrorDrawable(home_componentR.drawable.bg_transparent)
+            homeLoadImageListener(url, fpmItemLabel, listener, performanceMonitoring, this@loadImageWithoutPlaceholder)
+        }
+    } else {
+        this.loadImageWithoutPlaceholder(url) {
+            homeLoadImageListener(url, fpmItemLabel, listener, performanceMonitoring, this@loadImageWithoutPlaceholder)
+        }
     }
 }
 
 fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1, listener: ImageHandler.ImageLoaderStateListener? = null){
-    this.loadImage(url) {
-        setPlaceHolder(placeholder)
-        centerCrop()
-        if (listener != null) {
-            listener({ _, mediaDataSource ->
-                listener.successLoad()
-            }, {
-                GlideErrorLogHelper().logError(context, it, url)
-                listener.failedLoad()
-            })
+    if(url.isGif()) {
+        this.loadAsGif(url) {
+            setPlaceHolder(placeholder)
+            centerCrop()
+            if (listener != null) {
+                listener({ _, mediaDataSource ->
+                    listener.successLoad(this@loadImageNoRounded)
+                }, {
+                    GlideErrorLogHelper().logError(context, it, url)
+                    listener.failedLoad(this@loadImageNoRounded)
+                })
+            }
+        }
+    } else {
+        this.loadImage(url) {
+            setPlaceHolder(placeholder)
+            centerCrop()
+            if (listener != null) {
+                listener({ _, mediaDataSource ->
+                    listener.successLoad(this@loadImageNoRounded)
+                }, {
+                    GlideErrorLogHelper().logError(context, it, url)
+                    listener.failedLoad(this@loadImageNoRounded)
+                })
+            }
         }
     }
 }
 
 fun ImageView.loadImageNormal(url: String, placeholder: Int = -1){
-    this.loadImage(url) {
-        setPlaceHolder(placeholder)
+    if(url.isGif()) {
+        this.loadAsGif(url) {
+            setPlaceHolder(placeholder)
+        }
+    } else {
+        this.loadImage(url) {
+            setPlaceHolder(placeholder)
+        }
     }
 }
 
 fun ImageView.loadImageWithDefault(url: String, fpmItemLabel: String = "", defaultImage: Int){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-    this.loadImage(url) {
-        setPlaceHolder(defaultImage)
-        setErrorDrawable(defaultImage)
-        listener({ _, mediaDataSource ->
-            handleOnResourceReady(mediaDataSource, performanceMonitoring, fpmItemLabel)
-        }, {
-            GlideErrorLogHelper().logError(context, it, url)
-        })
+    if(url.isGif()) {
+        this.loadAsGif(url) {
+            setPlaceHolder(defaultImage)
+            setErrorDrawable(defaultImage)
+            homeLoadImageListener(url, fpmItemLabel, null, performanceMonitoring, this@loadImageWithDefault)
+        }
+    } else {
+        this.loadImage(url) {
+            setPlaceHolder(defaultImage)
+            setErrorDrawable(defaultImage)
+            homeLoadImageListener(url, fpmItemLabel, null, performanceMonitoring, this@loadImageWithDefault)
+        }
     }
 }
 
@@ -155,5 +220,38 @@ fun handleOnResourceReady(dataSource: MediaDataSource?,
                           fpmItemLabel: String) {
     if (dataSource == MediaDataSource.REMOTE) {
         performanceMonitoring?.stopTrace()
+    }
+}
+
+private fun Properties.homeLoadImageListener(
+    url: String,
+    fpmItemLabel: String,
+    listener: ImageHandler.ImageLoaderStateListener? = null,
+    performanceMonitoring: PerformanceMonitoring?,
+    view: ImageView,
+) = listener({ _, mediaDataSource ->
+    handleOnResourceReady(mediaDataSource, performanceMonitoring, fpmItemLabel)
+    listener?.successLoad(view)
+}, {
+    GlideErrorLogHelper().logError(view.context, it, url)
+    listener?.failedLoad(view)
+})
+
+private fun String.isGif(): Boolean {
+    val ext = extReader(this)
+    return ext.isNotEmpty() && (ext == "gif" || ext == "gifv")
+}
+
+private fun extReader(url: String): String {
+    val uri: URI? = try {
+        URI(url)
+    } catch (_: Exception) {
+        null
+    }
+
+    return try {
+        File(uri?.path.orEmpty()).extension.lowercase(Locale.ENGLISH)
+    } catch (_: Exception) {
+        ""
     }
 }

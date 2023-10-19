@@ -1395,8 +1395,8 @@ class CartItemViewHolder constructor(
             if (cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM &&
                 !cartItemHolderData.cartBmGmTickerData.isShowBmGmDivider
             ) {
-                binding.bmgmHelperView1.layoutParams.height = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
-                binding.bmgmHelperView2.layoutParams.height = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+                 binding.bmgmHelperView1.visible()
+                 binding.bmgmHelperView2.visible()
 
                 if (cartItemHolderData.cartBmGmTickerData.isShowBmGmHorizontalDivider) {
                     binding.bottomDivider.visible()
@@ -1407,8 +1407,8 @@ class CartItemViewHolder constructor(
                 if (cartItemHolderData.cartBmGmTickerData.isShowTickerBmGm || cartItemHolderData.cartBmGmTickerData.isShowBmGmDivider) {
                     layoutParams.bottomMargin =
                         IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
-                    binding.bmgmHelperView1.layoutParams.height = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
-                    binding.bmgmHelperView2.layoutParams.height = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+                    binding.bmgmHelperView1.visible()
+                    binding.bmgmHelperView2.visible()
                 } else {
                     layoutParams.bottomMargin =
                         PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)

@@ -12,6 +12,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.analytics.CouponTrackingMapper.toTrackingProps
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -79,7 +80,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
             ) { model ->
                 updateImage(
                     position = model.position,
-                    isSubscribed =  model.isSubscribed
+                    isSubscribed = model.isSubscribed
                 )
             }
 
@@ -214,22 +215,22 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
         sendImpressionEventForBanners(data)
     }
 
+    private fun checkSubscriptionStatus(position: Int) {
+        multiBannerViewModel?.campaignSubscribedStatus(position)
+    }
+
     private fun sendImpressionEventForBanners(data: List<DataItem>) {
+        val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+
         if (data.firstOrNull()?.action == BANNER_ACTION_CODE) {
-            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackPromoBannerImpression(
-                data
-            )
+            analytics?.trackCouponImpression(data.toTrackingProps())
         } else {
-            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
+            analytics?.trackBannerImpression(
                 data,
                 null,
                 Utils.getUserId(fragment.context)
             )
         }
-    }
-
-    private fun checkSubscriptionStatus(position: Int) {
-        multiBannerViewModel?.campaignSubscribedStatus(position)
     }
 
     private fun setClickOnBanners(itemData: DataItem, index: Int) {
@@ -239,12 +240,13 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
                 context = context,
                 defaultErrorMessage = context.getString(R.string.discovery_push_notification_banner_subscription_error_toaster_message)
             )
+
+            val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+
             if (itemData.action == BANNER_ACTION_CODE) {
-                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-                    ?.trackPromoBannerClick(itemData, index)
+                analytics?.trackCouponClickEvent(itemData.toTrackingProps())
             } else {
-                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-                    ?.trackBannerClick(itemData, index, Utils.getUserId(fragment.context))
+                analytics?.trackBannerClick(itemData, index, Utils.getUserId(fragment.context))
             }
         }
     }

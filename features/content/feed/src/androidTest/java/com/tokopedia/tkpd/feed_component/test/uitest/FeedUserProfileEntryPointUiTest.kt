@@ -6,7 +6,7 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.domain.repository.FeedPlusRepository
+import com.tokopedia.feedplus.oldFeed.domain.repository.FeedPlusRepository
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tkpd.feed_component.builder.DynamicTabsModelBuilder
 import com.tokopedia.tkpd.feed_component.builder.WhitelistModelBuilder
