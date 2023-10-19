@@ -681,7 +681,9 @@ class ShopPageHomeTracking(
         productId: String,
         productName: String,
         productDisplayedPrice: String,
-        itemListValue: String
+        itemListValue: String,
+        isFulfillment: Boolean?,
+        warehouseId: String?
     ): Bundle {
         return Bundle().apply {
             putString(DIMENSION_40, itemListValue)
@@ -692,6 +694,8 @@ class ShopPageHomeTracking(
             putString(ITEM_NAME, productName)
             putString(ITEM_VARIANT, "")
             putString(PRICE, formatPrice(productDisplayedPrice))
+            putString(DIMENSION_58, isFulfillment?.run { toString() } ?: "")
+            putString(DIMENSION_56, warehouseId.orEmpty())
         }
     }
 
@@ -2337,7 +2341,7 @@ class ShopPageHomeTracking(
             )
             putString(SHOP_ID, shopId)
             putString(USER_ID, userId)
-            putString(DIMENSION_58, isFulfillment?.toString() ?: "")
+            putString(DIMENSION_58, isFulfillment?.run { toString() } ?: "")
             putString(DIMENSION_56, warehouseId.orEmpty())
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventBundle)
@@ -2387,8 +2391,7 @@ class ShopPageHomeTracking(
             )
             putString(SHOP_ID, shopId)
             putString(USER_ID, userId)
-
-            putString(DIMENSION_58, isFulfillment?.toString() ?: "")
+            putString(DIMENSION_58, isFulfillment?.run { toString() } ?: "")
             putString(DIMENSION_56, warehouseId.orEmpty())
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
