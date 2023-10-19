@@ -20,14 +20,18 @@ import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.viewholder.ComparisonViewHolder
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oldcatalog.listener.CatalogDetailListener
 import com.tokopedia.oldcatalog.ui.bottomsheet.CatalogComponentBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -95,10 +99,12 @@ class CatalogComparisonDetailFragment :
                 this
             )
         }
+
     }
 
     private fun getComparison(catalogId: String, compareCatalogId: String) {
         binding?.loadingLayout?.root?.show()
+        binding?.gePageError?.gone()
         binding?.rvContent?.gone()
         viewModel.getProductCatalog(catalogId, "")
         if (compareCatalogId.isNotEmpty()) {
@@ -109,15 +115,29 @@ class CatalogComparisonDetailFragment :
     private fun setupObserver() {
         viewModel.catalogDetailDataModel.observe(viewLifecycleOwner) {
             if (it is Success) {
+                binding?.gePageError?.gone()
+                binding?.rvContent?.show()
                 val comparison = it.data.widgets.find {
                     it is ComparisonUiModel
                 }
                 if (comparison != null) {
                     widgetAdapter.addWidget(listOf(comparison))
                 }
+            }else if(it is Fail){
+                val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                when (it.throwable) {
+                    is UnknownHostException, is SocketTimeoutException -> {
+                        binding?.gePageError?.setType(GlobalError.NO_CONNECTION)
+                    }
+                    else -> {
+                        binding?.gePageError?.setType(GlobalError.SERVER_ERROR)
+                    }
+                }
+                binding?.gePageError?.errorDescription?.text = errorMessage
+                binding?.gePageError?.show()
+                binding?.rvContent?.gone()
             }
             binding?.loadingLayout?.root?.gone()
-            binding?.rvContent?.show()
         }
         viewModel.comparisonUiModel.observe(viewLifecycleOwner) {
             // COMPARISON_CHANGED_POSITION is hardcoded position, will changed at next phase
@@ -129,6 +149,9 @@ class CatalogComparisonDetailFragment :
         val layoutManager = LinearLayoutManager(context)
         binding?.rvContent?.layoutManager = layoutManager
         binding?.rvContent?.adapter = widgetAdapter
+        binding?.gePageError?.setActionClickListener {
+            viewModel.getProductCatalogComparisons(catalogId, compareCatalogId)
+        }
     }
 
     private fun setupToolbar() {
@@ -184,6 +207,7 @@ class CatalogComparisonDetailFragment :
     }
 
     override fun changeComparison(comparedCatalogId: String) {
+        this.compareCatalogId = comparedCatalogId
         getComparison(catalogId, comparedCatalogId)
     }
 }
