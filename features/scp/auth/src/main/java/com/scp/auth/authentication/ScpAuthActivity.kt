@@ -77,6 +77,7 @@ class ScpAuthActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        GotoSdk.setActivty(this)
         val binding = ActivityScpAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initComponents()
@@ -103,7 +104,7 @@ class ScpAuthActivity : BaseActivity() {
             .inject(this)
     }
 
-    private fun isShowGoogleLogin(): Boolean{
+    private fun isShowGoogleLogin(): Boolean {
         return firebaseRemoteConfig.getBoolean(CONFIG_GOOGLE_LOGIN, false)
     }
 
@@ -326,6 +327,11 @@ class ScpAuthActivity : BaseActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        GotoSdk.setActivty(null)
     }
 
     companion object {

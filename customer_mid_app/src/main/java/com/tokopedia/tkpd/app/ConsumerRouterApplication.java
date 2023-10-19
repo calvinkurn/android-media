@@ -147,15 +147,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initIris();
         performLibraryInitialisation();
         initResourceDownloadManager();
-//        initGotoSDK();
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
         return new TkpdAuthenticatorGql(this, this, userSession, new RefreshTokenGql());
-    }
-
-    private void initGotoSDK() {
-        GotoSdk.init(this);
     }
 
     private void warmUpGQLClient() {

@@ -30,6 +30,7 @@ class ScpAuthViewModel @Inject constructor(
                 AuthAnalyticsMapper.trackProfileFetch("success")
                 _onLoginSuccess.postValue(Unit)
             } catch (e: Exception) {
+                // TODO: check with yoris how to handle this
                 e.printStackTrace()
                 AuthAnalyticsMapper.trackProfileFetch("failed - ${e.message}")
             }
