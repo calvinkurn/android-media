@@ -6,9 +6,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
+import com.tokopedia.product.detail.databinding.PdpItemTopadsHeadlineInboxBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_6
@@ -28,8 +30,6 @@ import com.tokopedia.topads.sdk.utils.VALUE_EP
 import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
 import com.tokopedia.topads.sdk.utils.VALUE_ITEM
 import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
-import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
-import com.tokopedia.unifyprinciples.Typography
 
 const val TOPADS_HEADLINE_VALUE_SRC = "pdp"
 const val PRODUCT_ID = "product_id"
@@ -40,10 +40,7 @@ class TopAdsHeadlineViewHolder(
     private val listener: DynamicProductDetailListener
 ) : AbstractViewHolder<TopadsHeadlineUiModel>(view) {
 
-    private val topadsHeadlineView: TopAdsHeadlineView =
-        view.findViewById(R.id.topads_headline_view)
-
-    private val titleView = view.findViewById<Typography>(R.id.title_headline)
+    private val binding = PdpItemTopadsHeadlineInboxBinding.bind(view)
 
     private var topadsHeadlineUiModel: TopadsHeadlineUiModel? = null
 
@@ -53,7 +50,7 @@ class TopAdsHeadlineViewHolder(
     }
 
     private fun fetchTopadsHeadlineAds(topadsHeadLinePage: Int) {
-        topadsHeadlineView.getHeadlineAds(
+        binding.topadsHeadlineView.getHeadlineAds(
             getHeadlineAdsParam(topadsHeadLinePage),
             this::onSuccessResponse,
             this::hideHeadlineView
@@ -84,8 +81,10 @@ class TopAdsHeadlineViewHolder(
     }
 
     private fun hideHeadlineView() {
-        topadsHeadlineView.hideShimmerView()
-        topadsHeadlineView.hide()
+        binding.topadsHeadlineView.hideShimmerView()
+        binding.divider.hide()
+        binding.titleHeadline.hide()
+        binding.topadsHeadlineView.hide()
     }
 
     override fun bind(element: TopadsHeadlineUiModel?) {
@@ -102,9 +101,10 @@ class TopAdsHeadlineViewHolder(
     }
 
     private fun showHeadlineView(cpmModel: CpmModel) {
-        topadsHeadlineView.hideShimmerView()
-        topadsHeadlineView.show()
-        topadsHeadlineView.displayAds(cpmModel)
+        binding.topadsHeadlineView.hideShimmerView()
+        binding.divider.show()
+        binding.topadsHeadlineView.show()
+        binding.topadsHeadlineView.displayAds(cpmModel)
         topadsHeadlineUiModel?.impressHolder?.let {
             view.addOnImpressionListener(it) {
                 topadsHeadlineUiModel?.let { element ->
@@ -118,11 +118,8 @@ class TopAdsHeadlineViewHolder(
     private fun handlingHeadlineTitle(data: List<CpmData>?) {
         data?.let {
             val cpmLayout = it.firstOrNull()?.cpm?.layout
-            if (cpmLayout != null && (cpmLayout == LAYOUT_6 || cpmLayout == LAYOUT_5)) {
-                titleView.hide()
-            } else {
-                titleView.show()
-            }
+            val hideTitleHeadline = cpmLayout != null && (cpmLayout == LAYOUT_6 || cpmLayout == LAYOUT_5)
+            binding.titleHeadline.showWithCondition(hideTitleHeadline.not())
         }
     }
 

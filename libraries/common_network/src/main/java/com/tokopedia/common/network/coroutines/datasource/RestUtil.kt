@@ -12,16 +12,17 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
-import javax.net.ssl.HttpsURLConnection
 
 object RestUtil {
+
+    fun verifyHostname(okkHttpBuilder: TkpdOkHttpBuilder) {
+        okkHttpBuilder.builder.hostnameVerifier { hostname, session -> true }
+    }
 
     fun getApiInterface(interceptors: List<Interceptor?>?, context: Context): RestApi {
         val userSession: UserSessionInterface = UserSession(context.applicationContext)
         val okkHttpBuilder = TkpdOkHttpBuilder(context, OkHttpClient.Builder())
-        okkHttpBuilder.builder.hostnameVerifier { _, session ->
-            HttpsURLConnection.getDefaultHostnameVerifier().verify("bytecdn.cn", session)
-        }
+        verifyHostname(okkHttpBuilder)
         if (interceptors != null) {
             okkHttpBuilder.addInterceptor(FingerprintInterceptor(context.applicationContext as NetworkRouter, userSession))
             for (interceptor in interceptors) {

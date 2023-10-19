@@ -1,10 +1,12 @@
 package com.tokopedia.discovery2.datamapper
 
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.Calendar.DYNAMIC
 import com.tokopedia.discovery2.Constant.Calendar.STATIC
 import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
+import com.tokopedia.discovery2.Constant.PropertyType.TARGETING_BANNER
 import com.tokopedia.discovery2.Constant.TopAdsSdk.TOP_ADS_GSLP_TDN
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.areFiltersApplied
@@ -20,6 +22,7 @@ import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.FORCED_NAVIGATION
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
@@ -51,8 +54,16 @@ fun mapDiscoveryResponseToPageData(
     val pageInfo = discoveryResponse.pageInfo
     val discoveryPageData = DiscoveryPageData(pageInfo, discoveryResponse.additionalInfo)
     discoComponentQuery = queryParameterMap
-    val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap, discoveryResponse.queryParamMapWithRpc, discoveryResponse.queryParamMapWithoutRpc, userAddressData, isLoggedIn, shouldHideSingleProdCard)
-    if (!discoveryResponse.components.isNullOrEmpty()) {
+    val discoveryDataMapper = DiscoveryPageDataMapper(
+        pageInfo,
+        queryParameterMap,
+        discoveryResponse.queryParamMapWithRpc,
+        discoveryResponse.queryParamMapWithoutRpc,
+        userAddressData,
+        isLoggedIn,
+        shouldHideSingleProdCard
+    )
+    if (discoveryResponse.components.isNotEmpty()) {
         discoveryPageData.components = discoveryDataMapper.getDiscoveryComponentListWithQueryParam(
             discoveryResponse.components.filter {
                 pageInfo.identifier?.let { identifier ->
@@ -117,27 +128,42 @@ class DiscoveryPageDataMapper(
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         component.position = position
         when (component.name) {
-            ComponentNames.Tabs.componentName, ComponentNames.TabsIcon.componentName -> listComponents.addAll(
+            ComponentNames.Tabs.componentName,
+            ComponentNames.TabsIcon.componentName,
+            ComponentNames.FlashSaleTokoTab.componentName -> listComponents.addAll(
                 parseTab(component, position)
             )
+
             ComponentNames.ProductCardRevamp.componentName,
             ComponentNames.ProductCardSprintSale.componentName -> {
                 addRecomQueryProdID(component)
                 listComponents.addAll(parseProductVerticalList(component))
             }
-            ComponentNames.BannerInfinite.componentName -> listComponents.addAll(parseProductVerticalList(component, false))
-            ComponentNames.ContentCard.componentName -> listComponents.addAll(parseProductVerticalList(component, false))
-            ComponentNames.ShopCardInfinite.componentName -> listComponents.addAll(parseProductVerticalList(component, component.areFiltersApplied()))
+
+            ComponentNames.BannerInfinite.componentName -> listComponents.addAll(
+                parseProductVerticalList(component, false)
+            )
+
+            ComponentNames.ContentCard.componentName -> listComponents.addAll(
+                parseProductVerticalList(component, false)
+            )
+
+            ComponentNames.ShopCardInfinite.componentName -> listComponents.addAll(
+                parseProductVerticalList(component, component.areFiltersApplied())
+            )
+
             ComponentNames.ProductCardSprintSaleCarousel.componentName,
             ComponentNames.ProductCardCarousel.componentName -> {
                 addRecomQueryProdID(component)
                 updateCarouselWithCart(component)
                 listComponents.add(component)
             }
+
             ComponentNames.Section.componentName -> {
                 saveSectionPosition(component.pageEndPoint, component.sectionId, component.position)
                 listComponents.addAll(parseSectionComponent(component))
             }
+
             ComponentNames.QuickCoupon.componentName -> {
                 if (component.isApplicable) {
                     listComponents.add(component)
@@ -148,6 +174,7 @@ class DiscoveryPageDataMapper(
                 listComponents.add(component)
                 handleQuickFilter(component)
             }
+
             ComponentNames.CalendarWidgetGrid.componentName,
             ComponentNames.CalendarWidgetCarousel.componentName -> {
                 listComponents.add(component)
@@ -179,42 +206,55 @@ class DiscoveryPageDataMapper(
             ComponentNames.SingleBanner.componentName, ComponentNames.DoubleBanner.componentName,
             ComponentNames.TripleBanner.componentName, ComponentNames.QuadrupleBanner.componentName ->
                 listComponents.add(DiscoveryDataMapper.mapBannerComponentData(component))
+
             ComponentNames.BannerTimer.componentName -> {
                 if (addBannerTimerComp(component)) {
                     listComponents.add(component)
                 }
             }
+
             ComponentNames.Video.componentName -> {
                 addAutoPlayController(component)
                 listComponents.add(component)
             }
+
             ComponentNames.MerchantVoucherList.componentName -> {
                 if (isLoggedIn) {
                     listComponents.addAll(setupMerchantVoucherList(component))
                 }
             }
+
             ComponentNames.ProductCardSingle.componentName -> {
                 if (!shouldHideSingleProdCard) {
                     addRecomQueryProdID(component)
                     listComponents.add(component)
                 }
             }
+
             ComponentNames.ExplicitWidget.componentName -> {
                 addPageInfoToExplicitWidget(component)
                 listComponents.add(component)
             }
+
+            ComponentNames.SliderBanner.componentName -> {
+                listComponents.addAll(
+                    getTargetingBannerParsed(
+                        component = component,
+                        position = position
+                    )
+                )
+            }
+
             else -> listComponents.add(component)
         }
         return listComponents
     }
 
     private fun getFiltersFromQuery(component: ComponentsItem) {
-        for ((key, v) in queryParameterMapWithRpc) {
-            v?.let { value ->
-                val adjustedValue = Utils.isRPCFilterApplicableForTab(value, component)
-                if (adjustedValue.isNotEmpty()) {
-                    component.searchParameter.set(key, adjustedValue)
-                }
+        for ((key, value) in queryParameterMapWithRpc) {
+            val adjustedValue = Utils.isRPCFilterApplicableForTab(value, component)
+            if (adjustedValue.isNotEmpty()) {
+                component.searchParameter.set(key, adjustedValue)
             }
         }
     }
@@ -229,9 +269,7 @@ class DiscoveryPageDataMapper(
         if (getSectionPositionMap(pageEndPoint) == null) {
             setSectionPositionMap(mutableMapOf(), pageEndPoint)
         }
-        getSectionPositionMap(pageEndPoint)?.let {
-            it.put(sectionId, position)
-        }
+        getSectionPositionMap(pageEndPoint)?.put(sectionId, position)
     }
 
     private fun addAutoPlayController(component: ComponentsItem) {
@@ -277,128 +315,230 @@ class DiscoveryPageDataMapper(
         component.pageType = pageInfo.type ?: EMPTY_STRING
     }
 
-    private fun parseTab(component: ComponentsItem, position: Int): List<ComponentsItem> {
+    private fun getTargetingBannerParsed(
+        component: ComponentsItem,
+        position: Int
+    ): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
-        val isDynamicTabs = component.properties?.dynamic ?: false
-        component.pinnedActiveTabId = queryParameterMapWithoutRpc[ACTIVE_TAB]
-        component.parentComponentPosition = position
-        when {
-            isDynamicTabs -> {
-                listComponents.add(component)
-            }
-            !component.data.isNullOrEmpty() -> {
-                listComponents.add(component)
-            }
-            else -> {
-                return listComponents
-            }
-        }
-        if (component.getComponentsItem().isNullOrEmpty()) {
-            if (component.name == ComponentNames.TabsIcon.componentName) {
-                component.setComponentsItem(
-                    DiscoveryDataMapper.mapTabsListToComponentList(
-                        component,
-                        ComponentNames.TabsIconItem.componentName
-                    ), component.tabName
+        // set components item if components item is null
+        setComponentsItemTargetingBanner(
+            component = component
+        )
+        // add component
+        listComponents.add(component)
+        // add all items based on component item
+        listComponents.addAll(
+            getComponentsItemListTargetingBannerParsed(
+                component = component,
+                position = position,
+                totalData = listComponents.size
+            )
+        )
+        return listComponents
+    }
+
+    private fun setComponentsItemTargetingBanner(
+        component: ComponentsItem
+    ) {
+        if (component.getComponentsItem().isNullOrEmpty() &&
+            component.properties?.type == TARGETING_BANNER
+        ) {
+            component.setComponentsItem(
+                listComponents = DiscoveryDataMapper().mapListToComponentList(
+                    itemList = component.data.orEmpty(),
+                    subComponentName = component.name.orEmpty(),
+                    properties = component.properties,
+                    creativeName = component.creativeName,
+                    parentComponentPosition = component.position,
+                    parentSectionId = component.parentSectionId
                 )
-            } else {
-                component.setComponentsItem(
-                    DiscoveryDataMapper.mapTabsListToComponentList(
-                        component,
-                        ComponentNames.TabsItem.componentName
-                    ), component.tabName
-                )
-            }
-        } else if (!component.getComponentsItem().isNullOrEmpty() && queryParameterMap[FORCED_NAVIGATION] == "true") { // this is for the forced redirection case only, whenever tabs position is change using the product click from one tab to other
-            val activeTabIndex = queryParameterMapWithoutRpc[ACTIVE_TAB]?.toIntOrNull()
-            if (activeTabIndex != null) {
-                component.getComponentsItem()?.forEachIndexed { index, it ->
-                    if (activeTabIndex == index + 1) {
-                        Utils.setTabSelectedBasedOnDataItem(it, true)
-                    } else {
-                        Utils.setTabSelectedBasedOnDataItem(it, false)
-                    }
-                }
-            }
-            queryParameterMap.remove(FORCED_NAVIGATION)
-            component.shouldRefreshComponent = true
+            )
         }
-        component.getComponentsItem()?.forEachIndexed { index, it ->
-            it.apply {
-                if (!data.isNullOrEmpty()) {
-                    data?.get(0)?.let { tabData ->
-                        if (tabData.isSelected) {
-                            val saleTabStatus = checkSaleTimer(this)
-                            val targetComponentIdList = tabData.targetComponentId?.split(",")?.map {
-                                if (isDynamicTabs) DYNAMIC_COMPONENT_IDENTIFIER + index + it.trim() else it.trim()
-                            }
-                            if (!targetComponentIdList.isNullOrEmpty()) {
-                                val tabsChildComponentsItemList: ArrayList<ComponentsItem> = ArrayList()
-                                targetComponentIdList.forEachIndexed { compIndex, componentId ->
-                                    if (isDynamicTabs) {
-                                        handleDynamicTabsComponents(componentId, index, component, tabData.name)?.let {
-                                            tabsChildComponentsItemList.add(it)
-                                            it.tabPosition = index
-                                            listComponents.addAll(
-                                                parseComponent(
-                                                    it,
-                                                    position + listComponents.size
-                                                )
-                                            )
-                                        }
-                                    } else {
-                                        handleAvailableComponents(componentId, component, tabData.name)?.let {
-                                            tabsChildComponentsItemList.add(it)
-                                            it.tabPosition = index
-                                            listComponents.addAll(
-                                                parseComponent(
-                                                    it,
-                                                    position + listComponents.size
-                                                )
-                                            )
-                                        }
-                                    }
-                                }
-                                if (saleTabStatus) {
-                                    val componentList = handleProductState(this, ComponentNames.SaleEndState.componentName)
-                                    tabsChildComponentsItemList.addAll(componentList)
-                                    listComponents.addAll(componentList)
-                                }
-                                this.setComponentsItem(tabsChildComponentsItemList, tabData.name)
-                            }
+    }
+
+    private fun getComponentsItemListTargetingBannerParsed(
+        component: ComponentsItem,
+        position: Int,
+        totalData: Int
+    ): List<ComponentsItem> {
+        component.getComponentsItem()?.forEachIndexed { index, componentItem ->
+            componentItem.data?.firstOrNull()?.let { dataItem ->
+                if (component.itemPosition == index || component.isFirstShown) {
+                    component.isFirstShown = false
+                    dataItem.targetComponentIds.forEach { id ->
+                        getComponent(
+                            componentId = id.toString(),
+                            pageName = pageInfo.identifier.orEmpty()
+                        )?.let { component ->
+                            return parseComponent(
+                                component = component,
+                                position = position + totalData
+                            )
                         }
                     }
                 }
             }
         }
+        return emptyList()
+    }
+
+    private fun parseTab(component: ComponentsItem, position: Int): List<ComponentsItem> {
+        val isDynamicTabs = component.properties?.dynamic ?: false
+
+        component.apply {
+            pinnedActiveTabId = queryParameterMapWithoutRpc[ACTIVE_TAB]
+            parentComponentPosition = position
+        }
+
+        if (!isDynamicTabs && component.data.isNullOrEmpty()) return emptyList()
+
+        val listComponents: ArrayList<ComponentsItem> = ArrayList()
+
+        listComponents.add(component)
+
+        if (component.getComponentsItem().isNullOrEmpty()) {
+            component.setComponentsItem(
+                DiscoveryDataMapper.mapTabsListToComponentList(
+                    component,
+                    component.name ?: ComponentNames.TabsItem.componentName
+                ),
+                component.tabName
+            )
+        } else {
+            // this is for the forced redirection case only, whenever tabs position is change using
+            // the product click from one tab to other
+            val isForcedRedirection = !component.getComponentsItem().isNullOrEmpty() &&
+                queryParameterMap[FORCED_NAVIGATION] == "true"
+
+            if (isForcedRedirection) {
+                val activeTabIndex = queryParameterMapWithoutRpc[ACTIVE_TAB]?.toIntOrNull()
+                if (activeTabIndex != null) {
+                    component.getComponentsItem()?.forEachIndexed { index, componentItem ->
+                        Utils.setTabSelectedBasedOnDataItem(
+                            componentItem,
+                            activeTabIndex == index + 1
+                        )
+                    }
+                }
+                queryParameterMap.remove(FORCED_NAVIGATION)
+                component.shouldRefreshComponent = true
+            }
+        }
+
+        component.getComponentsItem()?.forEachIndexed { index, componentsItem ->
+            val data = componentsItem.data
+
+            if (data.isNullOrEmpty() || !data.first().isSelected) return@forEachIndexed
+
+            val tabData = data.first()
+
+            val tabIdentifier = generateTabIdentifier(componentsItem, index)
+
+            val targetComponentIdList = tabData
+                .targetComponentId
+                ?.split(",")
+                ?.map {
+                    if (isDynamicTabs) {
+                        DYNAMIC_COMPONENT_IDENTIFIER + tabIdentifier + it.trim()
+                    } else {
+                        it.trim()
+                    }
+                }
+
+            if (targetComponentIdList.isNullOrEmpty()) return@forEachIndexed
+
+            val tabsChildComponentsItemList: ArrayList<ComponentsItem> = ArrayList()
+
+            targetComponentIdList.forEach { componentId ->
+                val tabComponent = if (isDynamicTabs) {
+                    handleDynamicTabsComponents(componentId, tabIdentifier, component, tabData.name)
+                } else {
+                    handleAvailableComponents(componentId, component, tabData.name)
+                }
+
+                tabComponent?.let {
+                    tabsChildComponentsItemList.add(it)
+                    it.tabPosition = index
+                    val addPosition = position + listComponents.size
+
+                    listComponents.addAll(parseComponent(it, addPosition))
+                }
+            }
+
+            val saleTabStatus = checkSaleTimer(componentsItem)
+
+            if (saleTabStatus) {
+                val componentList =
+                    handleProductState(componentsItem, ComponentNames.SaleEndState.componentName)
+                tabsChildComponentsItemList.addAll(componentList)
+                listComponents.addAll(componentList)
+            }
+
+            componentsItem.setComponentsItem(tabsChildComponentsItemList, tabData.name)
+        }
+
         return listComponents
     }
 
-    private fun handleDynamicTabsComponents(targetedComponentId: String, tabItemIndex: Int, tabComponent: ComponentsItem, tabName: String?): ComponentsItem? {
+    private fun generateTabIdentifier(
+        componentsItem: ComponentsItem,
+        index: Int
+    ): String {
+        val isFlashSaleToko = componentsItem.name == ComponentNames.FlashSaleTokoTab.componentName
+
+        return if (isFlashSaleToko) {
+            componentsItem.data?.first()?.filterValue ?: index.toString()
+        } else {
+            index.toString()
+        }
+    }
+
+    private fun handleDynamicTabsComponents(
+        targetedComponentId: String,
+        tabItemIndex: String,
+        tabComponent: ComponentsItem,
+        tabName: String?
+    ): ComponentsItem? {
         var tabChildComponentsItem: ComponentsItem? = null
-        val pageIdentity = pageInfo.identifier ?: ""
-        val originalComponentId = targetedComponentId.removePrefix("$DYNAMIC_COMPONENT_IDENTIFIER$tabItemIndex")
-        if (getComponent(targetedComponentId, pageIdentity) == null) {
-            getComponent(originalComponentId, pageIdentity)?.let { component1 ->
-                component1.copy().apply {
+        val pageIdentity = pageInfo.identifier.orEmpty()
+        val originalComponentId = targetedComponentId
+            .removePrefix("$DYNAMIC_COMPONENT_IDENTIFIER$tabItemIndex")
+
+        val targetComponent = getComponent(targetedComponentId, pageIdentity)
+
+        if (targetComponent == null) {
+            val originalComponent = getComponent(originalComponentId, pageIdentity)
+
+            originalComponent?.let { component ->
+                component.copy().apply {
                     parentComponentId = tabComponent.id
                     id = targetedComponentId
                     this.tabName = tabName
                     dynamicOriginalId = originalComponentId
                     filterController = FilterController()
-                    properties = component1.properties
+                    properties = component.properties
                     properties?.dynamic = tabComponent.properties?.dynamic ?: false
                     setComponent(targetedComponentId, pageIdentity, this)
+
                     tabChildComponentsItem = this
                 }
             }
         } else {
-            tabChildComponentsItem = handleAvailableComponents(targetedComponentId, tabComponent, tabName)
+            tabChildComponentsItem = handleAvailableComponents(
+                targetedComponentId,
+                tabComponent,
+                tabName
+            )
         }
+
         return tabChildComponentsItem
     }
 
-    private fun handleAvailableComponents(targetedComponentId: String, tabComponent: ComponentsItem, tabName: String?): ComponentsItem? {
+    private fun handleAvailableComponents(
+        targetedComponentId: String,
+        tabComponent: ComponentsItem,
+        tabName: String?
+    ): ComponentsItem? {
         val pageIdentity = pageInfo.identifier ?: ""
         var tabChildComponentsItem: ComponentsItem? = null
         getComponent(targetedComponentId, pageIdentity)?.let { component1 ->
@@ -413,7 +553,10 @@ class DiscoveryPageDataMapper(
         tab.apply {
             if (!data.isNullOrEmpty()) {
                 data?.get(0)?.let { tabData ->
-                    val targetComponentIdList = tabData.targetComponentId?.split(",")?.map { it.trim() }
+                    val targetComponentIdList = tabData.targetComponentId
+                        ?.split(",")
+                        ?.map { it.trim() }
+
                     if (!targetComponentIdList.isNullOrEmpty()) {
                         targetComponentIdList.forEach { componentId ->
                             getComponent(componentId, pageInfo.identifier!!)?.let { componentItem ->
@@ -436,7 +579,10 @@ class DiscoveryPageDataMapper(
         return false
     }
 
-    private fun parseProductVerticalList(component: ComponentsItem, showEmptyState: Boolean = true): List<ComponentsItem> {
+    private fun parseProductVerticalList(
+        component: ComponentsItem,
+        showEmptyState: Boolean = true
+    ): List<ComponentsItem> {
         val listComponents: LinkedList<ComponentsItem> = LinkedList()
 
         if (component.verticalProductFailState) {
@@ -446,14 +592,30 @@ class DiscoveryPageDataMapper(
             }
             when (component.errorState) {
                 NetworkErrorState -> {
-                    listComponents.addAll(handleProductState(component, ComponentNames.ProductListNetworkErrorLoad.componentName, queryParameterMap))
+                    listComponents.addAll(
+                        handleProductState(
+                            component,
+                            ComponentNames.ProductListNetworkErrorLoad.componentName,
+                            queryParameterMap
+                        )
+                    )
                 }
+
                 else -> {
-                    listComponents.addAll(handleProductState(component, ComponentNames.ProductListErrorLoad.componentName, queryParameterMap))
+                    listComponents.addAll(
+                        handleProductState(
+                            component,
+                            ComponentNames.ProductListErrorLoad.componentName,
+                            queryParameterMap
+                        )
+                    )
                 }
             }
         } else {
-            if (component.getComponentsItem().isNullOrEmpty() && component.noOfPagesLoaded == 0 && !component.verticalProductFailState) {
+            if (component.getComponentsItem().isNullOrEmpty() &&
+                component.noOfPagesLoaded == 0 &&
+                !component.verticalProductFailState
+            ) {
                 listComponents.add(
                     component.copy().apply {
                         setComponentsItem(component.getComponentsItem(), component.tabName)
@@ -488,7 +650,13 @@ class DiscoveryPageDataMapper(
                     )
                     if (component.name == ComponentNames.ContentCard.componentName) {
                         if ((component.data?.size?.rem(2) ?: 0) != 0) {
-                            listComponents.addAll(handleProductState(component, ComponentNames.ContentCardEmptyState.componentName, queryParameterMap))
+                            listComponents.addAll(
+                                handleProductState(
+                                    component,
+                                    ComponentNames.ContentCardEmptyState.componentName,
+                                    queryParameterMap
+                                )
+                            )
                         }
                     }
                 }
@@ -509,17 +677,37 @@ class DiscoveryPageDataMapper(
                     }
                 }
 
-                if (Utils.nextPageAvailable(component, component.componentsPerPage) && component.showVerticalLoader) {
-                    listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName, queryParameterMap))
+                if (Utils.nextPageAvailable(
+                        component,
+                        component.componentsPerPage
+                    ) && component.showVerticalLoader
+                ) {
+                    listComponents.addAll(
+                        handleProductState(
+                            component,
+                            ComponentNames.LoadMore.componentName,
+                            queryParameterMap
+                        )
+                    )
                 } else if (component.getComponentsItem()?.size == 0 && showEmptyState) {
-                    listComponents.addAll(handleProductState(component, ComponentNames.ProductListEmptyState.componentName, queryParameterMap))
+                    listComponents.addAll(
+                        handleProductState(
+                            component,
+                            ComponentNames.ProductListEmptyState.componentName,
+                            queryParameterMap
+                        )
+                    )
                 }
             }
         }
         return listComponents
     }
 
-    private fun handleProductState(component: ComponentsItem, componentName: String, queryParameterMap: Map<String, String?>? = null): ArrayList<ComponentsItem> {
+    private fun handleProductState(
+        component: ComponentsItem,
+        componentName: String,
+        queryParameterMap: Map<String, String?>? = null
+    ): ArrayList<ComponentsItem> {
         val productState: ArrayList<ComponentsItem> = ArrayList()
         productState.add(
             ComponentsItem(name = componentName).apply {
@@ -544,19 +732,37 @@ class DiscoveryPageDataMapper(
         }
     }
 
-    private fun updateWithCart(list: List<ComponentsItem>, map: Map<MiniCartItemKey, MiniCartItem>?): Boolean {
+    private fun updateWithCart(
+        list: List<ComponentsItem>,
+        map: Map<MiniCartItemKey, MiniCartItem>?
+    ): Boolean {
+        if (map == null) return false
+
         var shouldRefresh = false
-        if (map == null) return shouldRefresh
+
         list.forEach { item ->
             item.data?.firstOrNull()?.let { dataItem ->
-                if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(MiniCartItemKey(dataItem.parentProductId ?: "", type = MiniCartItemType.PARENT))) {
-                    map.getMiniCartItemParentProduct(dataItem.parentProductId ?: "")?.totalQuantity?.let { quantity ->
+                if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(
+                        MiniCartItemKey(
+                                dataItem.parentProductId ?: "",
+                                type = MiniCartItemType.PARENT
+                            )
+                    )
+                ) {
+                    map.getMiniCartItemParentProduct(
+                        dataItem.parentProductId ?: ""
+                    )?.totalQuantity?.let { quantity ->
                         if (updateQuantity(quantity, item)) {
                             shouldRefresh = true
                         }
                     }
-                } else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(MiniCartItemKey(dataItem.productId ?: ""))) {
-                    map.getMiniCartItemProduct(dataItem.productId ?: "")?.quantity?.let { quantity ->
+                } else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(
+                        MiniCartItemKey(dataItem.productId ?: "")
+                    )
+                ) {
+                    map.getMiniCartItemProduct(
+                        dataItem.productId ?: ""
+                    )?.quantity?.let { quantity ->
                         if (updateQuantity(quantity, item)) {
                             shouldRefresh = true
                         }
@@ -605,26 +811,43 @@ class DiscoveryPageDataMapper(
         return listComponents
     }
 
-    private fun handleQuickFilter(component: ComponentsItem){
+    private fun handleQuickFilter(component: ComponentsItem) {
         component.isSticky = component.properties?.chipSize == Constant.ChipSize.LARGE
-        if (!component.isSelectedFiltersFromQueryApplied && !queryParameterMapWithRpc.isNullOrEmpty()) {
+
+        if (!component.isSelectedFiltersFromQueryApplied && queryParameterMapWithRpc.isNotEmpty()) {
             component.isSelectedFiltersFromQueryApplied = true
             getFiltersFromQuery(
                 component
             )
         }
+
         Utils.getTargetComponentOfFilter(component)?.let {
-            if (it.selectedFilters.isNullOrEmpty() &&
-                component.searchParameter.getSearchParameterHashMap().isNotEmpty()
-            ) {
-                it.selectedFilters = component.searchParameter.getSearchParameterHashMap()
+            val parameterMap = component.searchParameter.getSearchParameterHashMap()
+
+            if (it.selectedFilters.isNullOrEmpty() && parameterMap.isNotEmpty()) {
+                it.selectedFilters = parameterMap
             }
         }
+
         component.properties?.targetId?.let {
-            getComponent(it, component.pageEndPoint).apply {
-                this?.parentFilterComponentId = component.id
+            getComponent(it, component.pageEndPoint)?.apply {
+                parentFilterComponentId = component.id
             }
         }
+
+        addQueryParentOnSearchParameter(component)
+    }
+
+    private fun addQueryParentOnSearchParameter(component: ComponentsItem) {
+        val query = discoComponentQuery?.get(QUERY_PARENT)
+
+        val existingParams = component.searchParameter.getSearchParameterMap()
+
+        val parameter = SearchParameterFactory
+            .withExistingParameter(existingParams)
+            .construct(query, component.pagePath)
+
+        parameter?.run { component.searchParameter = SearchParameter(this) }
     }
 }
 

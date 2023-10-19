@@ -6,21 +6,26 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
-import kotlinx.android.synthetic.main.feed_item_topads_banner.view.*
+import com.tokopedia.unifycomponents.ImageUnify
 
-class TopAdsBannerViewHolder(view: View,
-                             private val topAdsBannerListener: TopAdsBannerListener?,
-                             private val cardTitleListener: CardTitleView.CardTitleListener?)
-    : AbstractViewHolder<TopAdsBannerModel>(view) {
+class TopAdsBannerViewHolder(
+    view: View,
+    private val topAdsBannerListener: TopAdsBannerListener?,
+    private val cardTitleListener: CardTitleView.CardTitleListener?
+) : AbstractViewHolder<TopAdsBannerModel>(view) {
     private var topAdsBannerModel: TopAdsBannerModel? = null
 
     private val topAdsImageView: TopAdsImageView = view.findViewById(R.id.top_ads_banner)
+    private val shimmerView: ImageUnify = view.findViewById(R.id.shimmer_view)
+    private val cardTitle: CardTitleView = view.findViewById(R.id.cardTitle)
 
     companion object {
         @LayoutRes
@@ -32,7 +37,7 @@ class TopAdsBannerViewHolder(view: View,
             override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageViewModel>) {
                 topAdsBannerModel?.run {
                     topAdsBannerList = imageDataList
-                    if (!topAdsBannerList.isNullOrEmpty()) {
+                    if (topAdsBannerList.isNotEmpty()) {
                         bindTopAdsBanner(topAdsBannerList.first())
                     }
 
@@ -47,37 +52,42 @@ class TopAdsBannerViewHolder(view: View,
     }
 
     private fun bindTopAdsBanner(topAdsBanner: TopAdsImageViewModel) {
-        itemView.top_ads_banner.loadImage(topAdsBanner)
-        itemView.top_ads_banner.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
+        topAdsImageView.loadImage(topAdsBanner)
+        topAdsImageView.setTopAdsImageViewImpression(object :
+            TopAdsImageViewImpressionListener {
             override fun onTopAdsImageViewImpression(viewUrl: String) {
-                topAdsBannerListener?.onTopAdsViewImpression(topAdsBanner.bannerId
-                        ?: "", topAdsBanner.imageUrl ?: "")
+                topAdsBannerListener?.onTopAdsViewImpression(
+                    topAdsBanner.bannerId
+                        ?: "", topAdsBanner.imageUrl ?: ""
+                )
             }
         })
-        itemView.shimmer_view.hide()
-        itemView.top_ads_banner.show()
+        shimmerView.hide()
+        topAdsImageView.show()
     }
 
     override fun bind(element: TopAdsBannerModel?) {
         topAdsBannerModel = element
         element?.run {
-            if (!topAdsBannerList.isNullOrEmpty()) {
+            if (topAdsBannerList.isNotEmpty()) {
                 bindTopAdsBanner(topAdsBannerList.first())
             } else {
-                itemView.shimmer_view.show()
-                topAdsImageView.getImageData("8",
-                        1,
-                        3,
-                        "",
-                        "",
-                        "")
+                shimmerView.show()
+                topAdsImageView.getImageData(
+                    "8",
+                    1,
+                    3,
+                    "",
+                    "",
+                    ""
+                )
             }
             if (title.text.isNotEmpty()) {
-                itemView.cardTitle.visibility = View.VISIBLE
-                itemView.cardTitle.bind(title, template.cardbanner.title, adapterPosition)
-                itemView.cardTitle.listener = cardTitleListener
+                cardTitle.visible()
+                cardTitle.bind(title, template.cardbanner.title, adapterPosition)
+                cardTitle.listener = cardTitleListener
             } else {
-                itemView.cardTitle.visibility = View.GONE
+                cardTitle.gone()
             }
         }
     }

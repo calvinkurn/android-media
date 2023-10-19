@@ -3,11 +3,13 @@ package com.tokopedia.iris
 import android.content.Context
 import android.os.Bundle
 import com.google.gson.Gson
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.model.Configuration
 import com.tokopedia.iris.model.PerfConfiguration
+import com.tokopedia.iris.model.PerfWhitelistConfiguration
 import com.tokopedia.iris.util.*
 import com.tokopedia.iris.worker.IrisWorker
 import com.tokopedia.logger.ServerLogger
@@ -15,13 +17,13 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
-import kotlin.math.roundToInt
 
 /**
  * @author okasurya on 10/2/18.
@@ -32,9 +34,13 @@ class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineS
     private var cache: Cache = Cache(context)
     private var configuration: Configuration? = null
     private var perfConfiguration: PerfConfiguration? = null
+    private var whitelistConfiguration: PerfWhitelistConfiguration? = null
     private var isAlarmOn: Boolean = false
+    private var isUserWhitelisted = false
 
     private val gson = Gson()
+    private val userSession: UserSessionInterface = UserSession(context)
+
     private lateinit var remoteConfig: RemoteConfig
 
     override val coroutineContext: CoroutineContext by lazy {
@@ -50,7 +56,6 @@ class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineS
             )
         }
     }
-
 
     private var remoteConfigListener: RemoteConfig.Listener = object : RemoteConfig.Listener {
 
@@ -76,8 +81,31 @@ class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineS
         val irisPerformanceConfig =
             remoteConfig?.getString(RemoteConfigKey.IRIS_PERF_CONFIG, DEFAULT_PERF_CONFIG)
                 ?: ""
+        val whitelistPerfConfig =
+            remoteConfig?.getString(RemoteConfigKey.PERFORMANCE_CONFIG_WHITELIST, DEFAULT_WHITELIST_PERF_CONFIG)
+                ?: ""
+
+        this.whitelistConfiguration = ConfigurationMapper.parseWhitelistPerf(whitelistPerfConfig)
+
+        this.isUserWhitelisted = whitelistConfiguration?.let { validateWhitelistUserPerf(it) }
+            ?: false
 
         setService(irisConfig, irisEnable, irisPerformanceConfig, irisPerformanceEnable)
+    }
+
+    private fun validateWhitelistUserPerf(whitelistConfiguration: PerfWhitelistConfiguration): Boolean {
+        val currentAppVersionNameSuffix = GlobalConfig.VERSION_NAME_SUFFIX
+        val currentUserId = userSession.userId
+
+        val appVersionWhitelisted = whitelistConfiguration.whiteListVersion.any {
+            currentAppVersionNameSuffix.equals(it)
+        }
+
+        val userIdWhitelisted = whitelistConfiguration.whitelistUserId.any {
+            currentUserId == it
+        }
+
+        return appVersionWhitelisted || userIdWhitelisted
     }
 
     override fun initialize() {
@@ -189,9 +217,9 @@ class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineS
 
         // convert map to json then save as string
         val event = gson.toJson(map)
-        val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
+        val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId(), cache)
         if (WhiteList.REALTIME_EVENT_LIST.contains(eventName) && trackingRepository.getRemoteConfig()
-                .getBoolean(KEY_REMOTE_CONFIG_SEND_REALTIME, false)
+            .getBoolean(KEY_REMOTE_CONFIG_SEND_REALTIME, false)
         ) {
             sendEvent(map)
         } else {
@@ -200,13 +228,20 @@ class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineS
         }
     }
 
-    suspend private fun saveEventPerformance(irisPerformanceData: IrisPerformanceData) {
+    private suspend fun saveEventPerformance(irisPerformanceData: IrisPerformanceData) {
         val trackingRepository = TrackingRepository.getInstance(context)
 
         val resultEvent =
             TrackingMapper.reformatPerformanceEvent(irisPerformanceData, session.getSessionId())
         if (resultEvent.length() > 0) {
             trackingRepository.savePerformanceEvent(resultEvent.toString())
+            if (isUserWhitelisted) {
+                ServerLogger.log(
+                    Priority.P1,
+                    "DEV_PPS_MONITORING",
+                    TrackingMapper.reformatJsonObjectToMap(resultEvent)
+                )
+            }
             setAlarm(true, force = false)
         }
     }
@@ -270,6 +305,5 @@ class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineS
                 }
             }
         }
-
     }
 }

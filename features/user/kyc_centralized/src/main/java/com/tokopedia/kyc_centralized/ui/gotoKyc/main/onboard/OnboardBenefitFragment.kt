@@ -109,7 +109,8 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
         val onBoardProgressiveBottomSheet = OnboardProgressiveBottomSheet.newInstance(
             projectId = args.parameter.projectId,
             source = source,
-            encryptedName = encryptedName
+            encryptedName = encryptedName,
+            callback = args.parameter.callback
         )
 
         onBoardProgressiveBottomSheet.show(
@@ -125,13 +126,19 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
                 )
             }
         }
+
+        onBoardProgressiveBottomSheet.setOnLaunchCallbackListener {
+            activity?.setResult(KYCConstant.ActivityResult.LAUNCH_CALLBACK)
+            activity?.finish()
+        }
     }
 
     private fun showNonProgressiveBottomSheet(projectId: String, source: String, isAccountLinked: Boolean) {
         val onBoardNonProgressiveBottomSheet = OnboardNonProgressiveBottomSheet.newInstance(
             projectId = projectId,
             source = source,
-            isAccountLinked = isAccountLinked
+            isAccountLinked = isAccountLinked,
+            callback = args.parameter.callback
         )
 
         onBoardNonProgressiveBottomSheet.show(
@@ -139,11 +146,21 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
             TAG_BOTTOM_SHEET_ONBOARD_NON_PROGRESSIVE
         )
 
+        onBoardNonProgressiveBottomSheet.setOnLaunchTokoKycListener {
+            activity?.setResult(KYCConstant.ActivityResult.LAUNCH_TOKO_KYC)
+            activity?.finish()
+        }
+
         onBoardNonProgressiveBottomSheet.setOnDismissWithDataListener { isReload ->
             if (isReload) {
                 activity?.setResult(KYCConstant.ActivityResult.RELOAD)
                 activity?.finish()
             }
+        }
+
+        onBoardNonProgressiveBottomSheet.setOnLaunchCallbackListener {
+            activity?.setResult(KYCConstant.ActivityResult.LAUNCH_CALLBACK)
+            activity?.finish()
         }
     }
 

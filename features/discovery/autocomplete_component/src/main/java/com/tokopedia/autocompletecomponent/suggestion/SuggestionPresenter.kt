@@ -28,8 +28,6 @@ import com.tokopedia.autocompletecomponent.util.getProfileIdFromApplink
 import com.tokopedia.autocompletecomponent.util.getShopIdFromApplink
 import com.tokopedia.autocompletecomponent.util.isMps
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.reimagine.ReimagineRollence
-import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -96,6 +94,10 @@ class SuggestionPresenter @Inject constructor(
                     if (shouldShowSuggestionCoachMark) view?.showSuggestionCoachMark()
                 }
             })
+    }
+
+    override fun isMPS(): Boolean {
+        return searchParameter.isMps()
     }
 
     override fun getSearchParameter(): Map<String, String> {
@@ -379,16 +381,22 @@ class SuggestionPresenter @Inject constructor(
     }
 
     override fun onSuggestionItemClicked(item: BaseSuggestionDataView) {
-        if (!activeKeyword.isSelected) {
-            trackSuggestionItemWithUrl(item.urlTracker)
-            trackSuggestionItemClick(item)
-            trackSuggestionShopAds(item)
+        when {
+            isMPS() -> {
+                view?.addToMPSKeyword(item)
+            }
+            !activeKeyword.isSelected -> {
+                trackSuggestionItemWithUrl(item.urlTracker)
+                trackSuggestionItemClick(item)
+                trackSuggestionShopAds(item)
 
-            view?.dropKeyBoard()
-            view?.route(item.applink, searchParameter, activeKeyword)
-            view?.finish()
-        } else {
-            view?.applySuggestionToSelectedKeyword(item.title, activeKeyword)
+                view?.dropKeyBoard()
+                view?.route(item.applink, searchParameter, activeKeyword)
+                view?.finish()
+            }
+            else -> {
+                view?.applySuggestionToSelectedKeyword(item.title, activeKeyword)
+            }
         }
     }
 

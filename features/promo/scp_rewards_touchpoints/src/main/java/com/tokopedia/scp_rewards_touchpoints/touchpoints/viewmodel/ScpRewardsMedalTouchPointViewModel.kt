@@ -10,6 +10,7 @@ import com.tokopedia.scp_rewards_touchpoints.common.Error
 import com.tokopedia.scp_rewards_touchpoints.common.Loading
 import com.tokopedia.scp_rewards_touchpoints.common.ScpResult
 import com.tokopedia.scp_rewards_touchpoints.common.Success
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.domain.ScpRewardsMedalTouchPointUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -83,6 +84,6 @@ class ScpRewardsMedalTouchPointViewModel @Inject constructor(
 
     data class ScpTouchPointResult(
         val initialLoad: Boolean,
-        val result: ScpResult
+        val result: ScpResult<ScpRewardsMedalTouchPointResponse>
     )
 }

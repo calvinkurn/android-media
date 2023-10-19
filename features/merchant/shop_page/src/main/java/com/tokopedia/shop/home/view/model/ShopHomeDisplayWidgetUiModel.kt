@@ -26,6 +26,7 @@ data class ShopHomeDisplayWidgetUiModel(
         val appLink: String = "",
         val webLinkL: String = "",
         val videoUrl: String = "",
+        val bannerId: String = "",
         var youTubeVideoDetail: YoutubeVideoDetailModel? = null
     ) : ImpressHolder()
 
