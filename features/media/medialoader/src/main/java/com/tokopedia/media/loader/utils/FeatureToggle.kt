@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 
-object RemoteConfig {
+object FeatureToggle {
 
     private const val M3U8_THUMBNAIL_LOADER = "android_enable_m3u8_thumbnail_loader"
     private const val EXPOSE_RESPONSE_HEADER = "android_media_loader_expose_header"

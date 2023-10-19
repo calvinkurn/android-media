@@ -68,7 +68,7 @@ private fun String.generateSecureUrl(
 }
 
 internal fun Properties.generateUrl(): Any {
-    val isWebpEnabled = RemoteConfig.isWebpFormatEnabled()
+    val isWebpEnabled = FeatureToggle.isWebpFormatEnabled()
     val data = data.toString()
 
     // secure image loader
