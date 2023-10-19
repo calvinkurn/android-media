@@ -28,6 +28,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oldcatalog.listener.CatalogDetailListener
 import com.tokopedia.oldcatalog.ui.bottomsheet.CatalogComponentBottomSheet
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.SocketTimeoutException

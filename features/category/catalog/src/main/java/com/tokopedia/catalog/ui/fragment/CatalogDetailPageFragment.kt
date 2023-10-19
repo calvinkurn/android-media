@@ -160,7 +160,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         )
     }
 
-    private var catalogAllReviewBottomSheet: CatalogComponentBottomSheet? = null
     private var title = ""
     private var productSortingStatus = 0
     private var catalogId = ""
@@ -220,18 +219,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             viewModel.getProductCatalog(catalogId, "")
             viewModel.refreshNotification()
         }
-    }
-
-    private fun setupSwitchCatalogBottomsheet() {
-        catalogAllReviewBottomSheet = CatalogComponentBottomSheet.newInstance(
-            "",
-            catalogId,
-            "",
-            categoryId,
-            "",
-            CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,
-            this
-        )
     }
 
     override fun onNavBackClicked() {
@@ -307,7 +294,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 binding?.setupPriceCtaWidget(it.data.priceCtaProperties)
                 binding?.stickySingleHeaderView?.stickyPosition =
                     widgetAdapter.findPositionNavigation()
-                setupSwitchCatalogBottomsheet()
             } else if (it is Fail) {
                 binding?.showPageError(it.throwable)
             }
@@ -692,7 +678,15 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     }
 
     override fun onComparisonSwitchButtonClicked(position: Int) {
-        catalogAllReviewBottomSheet?.show(childFragmentManager, "")
+        CatalogComponentBottomSheet.newInstance(
+            "",
+            catalogId,
+            "",
+            categoryId,
+            compareCatalogId,
+            CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,
+            this
+        ).show(childFragmentManager, "")
     }
 
     override fun onComparisonSeeMoreButtonClicked() {
