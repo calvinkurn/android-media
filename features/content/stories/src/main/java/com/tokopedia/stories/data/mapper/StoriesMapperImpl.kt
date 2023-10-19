@@ -136,7 +136,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
     ) =
         buildList {
             when {
-                !isOwner(author) && template.reportable -> add(
+                !isOwner(author) /*&& template.reportable*/ -> add(
                     ContentMenuItem(
                         iconUnify = IconUnify.WARNING,
                         name = contentcommonR.string.content_common_menu_report,
