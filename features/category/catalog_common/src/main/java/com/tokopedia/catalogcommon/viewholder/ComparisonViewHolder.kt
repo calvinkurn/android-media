@@ -92,7 +92,7 @@ class ComparisonViewHolder(
     ) {
         val specs = if (isDisplayingTopSpec) comparedItem?.topComparisonSpecs else comparedItem?.comparisonSpecs
         val rowsHeight = List(specs?.size.orZero()) { DEFAULT_LINE_COUNT }.toMutableList()
-        var titleHeight = 1
+        var titleHeight = DEFAULT_LINE_COUNT
 
         // update list
         comparisonItems.forEach {
