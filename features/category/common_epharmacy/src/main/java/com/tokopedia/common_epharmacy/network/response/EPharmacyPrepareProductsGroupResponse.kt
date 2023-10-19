@@ -51,7 +51,7 @@ data class EPharmacyPrepareProductsGroupResponse(
                 @SerializedName("prescription_cta")
                 val prescriptionCTA: PrescriptionCTA?,
                 @SerializedName("ticker")
-                val ticker: Ticker?,
+                val ticker: Ticker?
             ) : Parcelable {
 
                 @Parcelize
@@ -110,7 +110,7 @@ data class EPharmacyPrepareProductsGroupResponse(
                         @SerializedName("type")
                         val type: String?,
                         @SerializedName("expiry_date")
-                        val expiryDate: String?,
+                        val expiryDate: String?
                     ) : Parcelable
                 }
 
@@ -218,8 +218,8 @@ data class EPharmacyPrepareProductsGroupResponse(
                         @SerializedName("qty_comparison")
                         val qtyComparison: QtyComparison?,
                         @SerializedName("price")
-                        val price: Double,
-                        ) : Parcelable {
+                        val price: Double?
+                    ) : Parcelable {
                         @Parcelize
                         data class QtyComparison(
                             @SerializedName("initial_qty")
@@ -229,13 +229,12 @@ data class EPharmacyPrepareProductsGroupResponse(
                             @SerializedName("current_qty")
                             var currentQty: Int = 0,
                             @SerializedName("price")
-                            val productPrice: Double?,
+                            val productPrice: Double?
                         ) : Parcelable {
 
                             @IgnoredOnParcel
                             var subTotal: Double? = (initialQty?.toDouble().orZero() * productPrice.orZero())
                         }
-
                     }
                 }
             }
@@ -270,8 +269,8 @@ data class EPharmacyPrepareProductsGroupResponse(
             @SerializedName("redirect_link_apps")
             val redirectLinkApps: String?,
             @SerializedName("state")
-            val state: String?,
+            val state: String?
 
-            ) : Parcelable
+        ) : Parcelable
     }
 }
