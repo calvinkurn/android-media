@@ -15,6 +15,7 @@ import com.tokopedia.discovery2.databinding.PriceBoxBinding
 import com.tokopedia.home_component.util.convertDpToPixel
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.Typography.Companion.BOLD
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -50,13 +51,15 @@ class PriceBoxView @JvmOverloads constructor(
     }
 
     private fun configureMainPrice() {
-        val fontType = when (fontType) {
+        val type = when (fontType) {
             Type.SINGLE -> Typography.DISPLAY_2
             Type.DOUBLE -> Typography.DISPLAY_3
             Type.TRIPLE -> Typography.SMALL
         }
 
-        binding.phProductPrice.setType(fontType)
+        binding.phProductPrice.setType(type)
+
+        if (fontType == Type.TRIPLE) binding.phProductPrice.setWeight(BOLD)
     }
 
     private fun configureSlashPrice() {
