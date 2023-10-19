@@ -10,7 +10,6 @@ import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.logisticaddaddress.features.addeditaddress.search.SearchPageActivity
 import com.tokopedia.logisticaddaddress.interceptor.AddAddressInterceptor
-import com.tokopedia.logisticaddaddress.test.R
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 import org.junit.After
@@ -18,10 +17,11 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import com.tokopedia.logisticaddaddress.test.R as logisticaddaddresstestR
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class AddNewAddressRevampNegativeTest {
+class AddAddressNegativeEdgeCaseTest {
 
     @get:Rule
     var mActivityTestRule = IntentsTestRule(SearchPageActivity::class.java, false, false)
@@ -45,11 +45,11 @@ class AddNewAddressRevampNegativeTest {
         AddAddressInterceptor.resetAllCustomResponse()
         AddAddressInterceptor.setupGraphqlMockResponse(context)
         logisticInterceptor.getDistrictRecommendationResponsePath =
-            getRawString(context, R.raw.district_recommendation_jakarta)
+            getRawString(context, logisticaddaddresstestR.raw.district_recommendation_jakarta)
         logisticInterceptor.saveAddressResponsePath =
-            getRawString(context, R.raw.save_address_success)
+            getRawString(context, logisticaddaddresstestR.raw.save_address_success)
         logisticInterceptor.getCollectionPointResponsePath =
-            getRawString(context, R.raw.get_collection_point_add)
+            getRawString(context, logisticaddaddresstestR.raw.get_collection_point_add)
         IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
     }
 
@@ -59,53 +59,15 @@ class AddNewAddressRevampNegativeTest {
     }
 
     @Test
-    fun addAddress_fromAddressList() {
-        val queryPath = "tracker/logistic/addaddress_user_revamp_negative.json"
-        val screenName = "/user/address/create"
-        addAddressRevamp {
-            launchWithParam(mActivityTestRule, screenName)
-            clickManualForm()
-            fillReceiver(RECEIVER)
-            fillAddressNegative(ADDRESS)
-            fillPhoneNumber(PHONE)
-            clickKotaKecamatan()
-            searchKotaKecamatan(KEYWORD)
-            clickKotaKecamatanItem()
-            clickPostalCode()
-            clickPostalCodeItem()
-            clickChoosePostalCode()
-            checkTermsAndCondition()
-        } submit {
-            hasPassedAnalytics(cassavaTestRule, queryPath)
-        }
-    }
-
-    @Test
-    fun addAddress_fromCart() {
-        val queryPath = "tracker/logistic/addaddress_cart_revamp_negative.json"
-        val screenName = "/cart/address/create"
-        addAddressRevamp {
-            launchWithParam(mActivityTestRule, screenName)
-            clickManualForm()
-            fillReceiver(RECEIVER)
-            fillAddressNegative(ADDRESS)
-            fillPhoneNumber(PHONE)
-            clickKotaKecamatan()
-            searchKotaKecamatan(KEYWORD)
-            clickKotaKecamatanItem()
-            clickPostalCode()
-            clickPostalCodeItem()
-            clickChoosePostalCode()
-            checkTermsAndCondition()
-        } submit {
-            hasPassedAnalytics(cassavaTestRule, queryPath)
-        }
-    }
-
-    @Test
-    fun addAddress_newUser() {
-        val queryPath = "tracker/logistic/addaddress_new_user_revamp_negative.json"
+    fun addAddress_EdgeCaseUiTest() {
         val screenName = "/user/address/create/cart"
+        logisticInterceptor.getDistrictRecommendationResponsePath =
+            getRawString(context, logisticaddaddresstestR.raw.get_district_recom_jakarta)
+        logisticInterceptor.getDistrictCenterResponsePath =
+            getRawString(context, logisticaddaddresstestR.raw.get_district_center_taman_sari)
+        logisticInterceptor.autoCompleteResponsePath =
+            getRawString(context, logisticaddaddresstestR.raw.autocomplete_taman_sari)
+
         addAddressRevamp {
             launchWithParam(mActivityTestRule, screenName)
             clickManualForm()
@@ -118,9 +80,24 @@ class AddNewAddressRevampNegativeTest {
             clickPostalCode()
             clickPostalCodeItem()
             clickChoosePostalCode()
-            checkTermsAndCondition()
-        } submit {
-            hasPassedAnalytics(cassavaTestRule, queryPath)
+            scrollToBottom()
+            logisticInterceptor.autofillResponsePath =
+                getRawString(context, logisticaddaddresstestR.raw.autofill_taman_sari)
+            logisticInterceptor.districtBoundaryResponsePath =
+                getRawString(context, logisticaddaddresstestR.raw.district_boundary_taman_sari)
+            clickPinpointWidgetNegative()
+            clickCariUlang()
+            searchAddressStreet(KEYWORD)
+            logisticInterceptor.getDistrictResponsePath =
+                getRawString(context, logisticaddaddresstestR.raw.get_district_glodok)
+            clickAddressStreetItem()
+            onClickChooseLocation()
+            scrollToBottom()
+        } check {
+            isNegativeFlow()
+            assertAlreadyPinpointNegativeFullFlow()
+            assertKotaKecamatan("Taman Sari, Jakarta Barat, DKI Jakarta")
+            assertAddressDetailNegative(ADDRESS)
         }
     }
 

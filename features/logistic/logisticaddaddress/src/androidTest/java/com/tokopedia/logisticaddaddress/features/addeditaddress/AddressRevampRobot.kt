@@ -16,10 +16,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addeditaddress.search.SearchPageActivity
 import com.tokopedia.logisticaddaddress.util.CustomActionUtils.nestedScrollTo
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert
 
@@ -204,11 +207,54 @@ class AddressRevampRobot {
         onView(withId(R.id.btn_save_address_new)).perform(nestedScrollTo(), click())
         return ResultRobot().apply(func)
     }
+
+    infix fun check(func: ResultRobot.() -> Unit): ResultRobot {
+        return ResultRobot().apply(func)
+    }
 }
 
 class ResultRobot {
     fun hasPassedAnalytics(rule: CassavaTestRule, path: String) {
         MatcherAssert.assertThat(rule.validate(path), hasAllSuccess())
+    }
+
+    fun isNegativeFlow() {
+        onView(
+            allOf(
+                withId(R.id.btn_change_negative),
+                isDescendantOfA(withId(R.id.card_address_negative))
+            )
+
+        ).check { view, _ -> view.isVisible }
+        onView(
+            withId(R.id.et_kota_kecamatan)
+
+        ).check { view, _ -> assert(view.isVisible) }
+    }
+
+    fun assertAlreadyPinpointNegativeFullFlow() {
+        onView(
+            allOf(
+                withId(R.id.address_district),
+                isDescendantOfA(withId(R.id.card_address_negative))
+            )
+        ).check { view, noViewFoundException -> assert((view as Typography).text.contains("Kamu Sudah pinpoint.")) }
+    }
+
+    fun assertKotaKecamatan(kotaKecamatan: String) {
+        onView(
+            withId(R.id.et_kota_kecamatan)
+
+        ).check { view, _ -> assert((view as TextFieldUnify).textFieldInput.text.toString() == kotaKecamatan) }
+    }
+
+    fun assertAddressDetailNegative(addressDetail: String) {
+        onView(
+            allOf(
+                withId(R.id.et_alamat)
+            )
+        )
+            .check { view, _ -> assert((view as TextFieldUnify).textFieldInput.text.toString() == addressDetail) }
     }
 }
 
