@@ -5,19 +5,31 @@ import com.tokopedia.media.loader.data.Properties
 
 object CsvUtil {
 
-    fun createCsvWithHeader(data: List<CsvLoader>): String {
+    fun createComparedLoadTimeCsvWithHeader(data: List<CsvLoader>): String {
         val header = "Iteration, Url, Load Time v1 (millis), Load Time v2 (millis), Width, Height"
 
         return buildString {
             appendLine(header)
 
             data.forEach {
-                appendLine(createCsv(it))
+                appendLine(createComparedLoadTimeCsv(it))
             }
         }
     }
 
-    private fun createCsv(data: CsvLoader): String {
+    fun createBasicLoadTimeCsvWithHeader(data: List<CsvLoader>): String {
+        val header = "#, Url, Load Time"
+
+        return buildString {
+            appendLine(header)
+
+            data.forEach {
+                appendLine(createBasicLoadTimeCsv(it))
+            }
+        }
+    }
+
+    private fun createComparedLoadTimeCsv(data: CsvLoader): String {
         with(data) {
             val bitmapWidth = (bitmap?.width?: 0).toString()
             val bitmapHeight = (bitmap?.height?: 0).toString()
@@ -47,10 +59,28 @@ object CsvUtil {
         }
     }
 
+    private fun createBasicLoadTimeCsv(data: CsvLoader): String {
+        with(data) {
+            return buildString {
+                // iteration index
+                append(iterationIndex.toString())
+                append(", ")
+
+                // url
+                append(properties.data.toString())
+                append(", ")
+
+                // load time (legacy)
+                append(loadTime)
+            }
+        }
+    }
+
     data class CsvLoader(
         val iterationIndex: Int,
         val properties: Properties,
         var improvedLoadTime: String = "0",
-        val bitmap: Bitmap?
+        var loadTime: String = "0",
+        val bitmap: Bitmap? = null
     )
 }

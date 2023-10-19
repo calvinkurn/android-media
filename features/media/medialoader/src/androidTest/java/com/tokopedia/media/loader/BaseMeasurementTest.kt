@@ -4,51 +4,30 @@ import android.graphics.Bitmap
 import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.util.CsvUtil
-import com.tokopedia.media.loader.util.legacyLoadImage
-import com.tokopedia.media.loader.util.v2LoadImage
+import com.tokopedia.media.loader.util.newLoadImage
 import com.tokopedia.test.application.id_generator.FileWriter
 
 abstract class BaseMeasurementTest : BaseTest() {
 
     abstract fun fileName(): String
 
-    private val fileWriter = FileWriter()
+    protected val fileWriter = FileWriter()
 
-    fun saveResult(results: List<CsvUtil.CsvLoader>) {
+    fun saveComparisonResult(results: List<CsvUtil.CsvLoader>) {
         fileWriter.write(
             folderName = "media_loader",
             fileName = fileName(),
-            text = CsvUtil.createCsvWithHeader(results)
+            text = CsvUtil.createComparedLoadTimeCsvWithHeader(results)
         )
     }
 
-    fun loadImageV1Test(
+    fun loadImageTest(
         imageUrl: String = publicImageUrl,
         skipCache: Boolean = false,
         result: (Properties, Bitmap?) -> Unit
     ) {
         onImageView {
-            it.legacyLoadImage(imageUrl) {
-                if (skipCache) {
-                    setSignatureKey(ObjectKey(System.currentTimeMillis()))
-                }
-
-                listener(onSuccess = { bitmap, _ ->
-                    result(this, bitmap)
-                })
-            }
-        }
-
-        Thread.sleep(LOAD_DELAY)
-    }
-
-    fun loadImageV2Test(
-        imageUrl: String = publicImageUrl,
-        skipCache: Boolean = false,
-        result: (Properties, Bitmap?) -> Unit
-    ) {
-        onImageView {
-            it.v2LoadImage(imageUrl) {
+            it.newLoadImage(imageUrl) {
                 if (skipCache) {
                     setSignatureKey(ObjectKey(System.currentTimeMillis()))
                 }

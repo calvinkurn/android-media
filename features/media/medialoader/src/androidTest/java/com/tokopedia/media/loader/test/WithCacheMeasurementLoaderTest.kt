@@ -33,12 +33,12 @@ class WithCacheMeasurementLoaderTest : BaseMeasurementTest() {
 
         // v2
         results.forEach {
-            loadImageV2Test { prop, _ ->
+            loadImageTest { prop, _ ->
                 it.improvedLoadTime = prop.loadTime
             }
         }
 
         // save as csv
-        saveResult(results)
+        saveComparisonResult(results)
     }
 }

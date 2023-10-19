@@ -55,7 +55,7 @@ class InternalCdnAdaptiveLoaderTest : BaseMeasurementTest() {
 
         // v2
         urls.forEachIndexed { index, url ->
-            loadImageV2Test(
+            loadImageTest(
                 imageUrl = url,
                 skipCache = true
             ) { prop, _ ->
@@ -66,6 +66,6 @@ class InternalCdnAdaptiveLoaderTest : BaseMeasurementTest() {
         }
 
         // save as csv
-        saveResult(results)
+        saveComparisonResult(results)
     }
 }
