@@ -274,7 +274,7 @@ object MacroIntent {
 
         fun getPulsaPdpIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
-            intent.data = Uri.parse("tokopedia-android-internal://digital/pdp_pulsa?category_id=1&menu_id=289&template=pulsav2")
+            intent.data = Uri.parse("tokopedia-android-internal://digital/pdp_pulsa_macrobenchmark")
             return intent
         }
     }

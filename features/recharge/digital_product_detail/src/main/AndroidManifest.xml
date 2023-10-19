@@ -10,7 +10,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateAlwaysHidden"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -28,7 +28,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateAlwaysHidden"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -74,6 +74,24 @@
                 <data
                     android:host="@string/host_digital"
                     android:pathPattern="@string/path_digital_pdp_tagihan_listrik"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".presentation.monitoring.activity.DigitalPDPPulsaTestSetupActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_digital"
+                    android:pathPattern="@string/path_digital_pdp_pulsa_macrobenchmark"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

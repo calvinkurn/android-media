@@ -12,6 +12,7 @@ import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.di.DigitalAddToCartQualifier
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.digital_product_detail.presentation.monitoring.DigitalPDPPulsaPerformanceCallback
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -139,5 +140,11 @@ class DigitalPDPModule {
         listInterceptor.add(digitalInterceptor)
         listInterceptor.add(ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse::class.java))
         return listInterceptor
+    }
+
+    @Provides
+    @DigitalPDPScope
+    fun provideDigitalPDPPulsaPerformanceCallback(): DigitalPDPPulsaPerformanceCallback {
+        return DigitalPDPPulsaPerformanceCallback()
     }
 }
