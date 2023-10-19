@@ -55,23 +55,17 @@
                 app:typographyWeight="bold"
                 tools:text="Rp4.199.000" />
 
-            <androidx.legacy.widget.Space
-                android:id="@+id/product_price_space"
-                android:layout_width="0dp"
-                android:layout_height="6dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ph_product_price" />
-
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/ph_discounted_product_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
+                android:layout_marginTop="2dp"
                 android:alpha="0.6"
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/product_price_space"
+                app:layout_constraintTop_toBottomOf="@id/ph_product_price"
                 app:typographyType="small"
                 app:typographyWeight="reguler"
                 tools:text="Rp6.499.000" />
