@@ -531,7 +531,6 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
         checkApplinkCouponCode(intent);
         checkAgeVerificationExtra(intent);
 
@@ -947,9 +946,7 @@ public class MainParentActivity extends BaseActivity implements
 
             @Override
             public void onNotNeedUpdateInApp() {
-                if (!isFinishing()) {
-                    checkIsNeedUpdateIfComeFromUnsupportedApplink(MainParentActivity.this.getIntent());
-                }
+                // noop
             }
 
             @Override
@@ -957,14 +954,6 @@ public class MainParentActivity extends BaseActivity implements
                 globalNavAnalytics.get().eventImpressionAppUpdate(detailUpdate.isForceUpdate());
             }
         };
-    }
-
-    private void checkIsNeedUpdateIfComeFromUnsupportedApplink(Intent intent) {
-        if (intent.getBooleanExtra(ApplinkRouter.EXTRA_APPLINK_UNSUPPORTED, false)) {
-            if (getApplication() instanceof ApplinkRouter) {
-                ((ApplinkRouter) getApplication()).getApplinkUnsupported(this).showAndCheckApplinkUnsupported();
-            }
-        }
     }
 
     private void checkApplinkCouponCode(Intent intent) {
@@ -1311,9 +1300,7 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public void onNotNeedUpdateInApp() {
-        if (!isFinishing()) {
-            checkIsNeedUpdateIfComeFromUnsupportedApplink(MainParentActivity.this.getIntent());
-        }
+        //noop
     }
 
     @Override
