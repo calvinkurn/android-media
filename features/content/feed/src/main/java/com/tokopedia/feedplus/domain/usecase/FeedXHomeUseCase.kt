@@ -44,6 +44,9 @@ class FeedXHomeUseCase @Inject constructor(
                   cursor
                   hasNext
                 }
+                metadata {
+                 entrypoint
+                }
               }
             }
 

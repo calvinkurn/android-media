@@ -53,9 +53,9 @@ class FeedRepository @Inject constructor(
         return@withContext mapperFeedTabs.transform(request.feedXHeaderData, activeTabSource).meta
     }
 
-    suspend fun getPost(source: String, cursor: String = "", detailId: String): FeedModel {
+    suspend fun getPost(source: String, cursor: String = "", detailId: String, entryPoint : String = ""): FeedModel {
         val response = feedXHomeUseCase(
-            feedXHomeUseCase.createParams(source, cursor, detailId = detailId)
+            feedXHomeUseCase.createParams(source, cursor, detailId = detailId, entryPoint = entryPoint)
         )
         return mapperFeed.transform(response)
     }

@@ -764,7 +764,7 @@ class FeedPostViewModel @Inject constructor(
         val detailId = if (postSourceModel?.source == FeedBaseFragment.TAB_TYPE_CDP) postSourceModel.id else ""
 
         while (response.items.isEmpty() && --thresholdGet >= 0) {
-            response = repository.getPost(source, nextCursor, detailId = detailId)
+            response = repository.getPost(source, nextCursor, detailId = detailId) //TODO add entry point
             nextCursor = response.pagination.cursor
         }
 
