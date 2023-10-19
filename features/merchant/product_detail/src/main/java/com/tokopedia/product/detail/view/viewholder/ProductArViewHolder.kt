@@ -11,6 +11,7 @@ import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListe
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ProductArViewHolder(
     val view: View,
@@ -31,7 +32,7 @@ class ProductArViewHolder(
         itemView.setBackgroundColor(
             ContextCompat.getColor(
                 view.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN50
+                unifyprinciplesR.color.Unify_GN50
             )
         )
         imgCustom?.loadImage(element.imageUrl)
