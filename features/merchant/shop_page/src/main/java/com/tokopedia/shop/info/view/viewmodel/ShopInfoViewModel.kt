@@ -16,8 +16,9 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Compani
 import com.tokopedia.shop.common.graphql.data.shopinfo.ChatExistingChat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
-import com.tokopedia.shop.info.data.GetEpharmacyShopInfo
+import com.tokopedia.shop.info.data.GetEpharmacyShopInfoResponse
 import com.tokopedia.shop.info.domain.GetEpharmacyShopInfoUseCase
+import com.tokopedia.shop.info.domain.GetEpharmacyShopInfoV2UseCase
 import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -34,6 +35,7 @@ class ShopInfoViewModel @Inject constructor(
     private val getShopReputationUseCase: GetShopReputationUseCase,
     private val getMessageIdChatUseCase: GetMessageIdChatUseCase,
     private val getEpharmacyShopInfoUseCase: GetEpharmacyShopInfoUseCase,
+    private val getEpharmacyShopInfoV2UseCase: GetEpharmacyShopInfoV2UseCase,
     private val coroutineDispatcherProvider: CoroutineDispatchers
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
@@ -46,8 +48,8 @@ class ShopInfoViewModel @Inject constructor(
     val shopBadgeReputation = MutableLiveData<Result<ShopBadge>>()
     val messageIdOnChatExist = MutableLiveData<Result<String>>()
 
-    private val _epharmDetailData = MutableLiveData<Result<GetEpharmacyShopInfo>>()
-    val epharmDetailData: LiveData<Result<GetEpharmacyShopInfo>>
+    private val _epharmDetailData = MutableLiveData<Result<GetEpharmacyShopInfoResponse>>()
+    val epharmDetailData: LiveData<Result<GetEpharmacyShopInfoResponse>>
         get() = _epharmDetailData
 
     fun getShopInfo(shopId: String) {
@@ -100,8 +102,10 @@ class ShopInfoViewModel @Inject constructor(
         launchCatchError(block = {
             coroutineScope {
                 val shopEpharmData = withContext(coroutineDispatcherProvider.io) {
-                    getEpharmacyShopInfoUseCase.params = GetEpharmacyShopInfoUseCase.createParams(shopId, warehouseId)
-                    getEpharmacyShopInfoUseCase.executeOnBackground()
+                    getEpharmacyShopInfoV2UseCase.params = GetEpharmacyShopInfoV2UseCase.createParams(shopId, warehouseId)
+                    getEpharmacyShopInfoV2UseCase.executeOnBackground()
+//                    getEpharmacyShopInfoUseCase.params = GetEpharmacyShopInfoUseCase.createParams(shopId, warehouseId)
+//                    getEpharmacyShopInfoUseCase.executeOnBackground()
                 }
                 _epharmDetailData.postValue(Success(shopEpharmData))
             }
