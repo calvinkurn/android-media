@@ -8,8 +8,9 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.discovery2.Constant
+import com.tokopedia.discovery2.Constant.ProductHighlight
 import com.tokopedia.discovery2.Constant.ProductHighlight.ATC_OCS
+import com.tokopedia.discovery2.Constant.ProductHighlight.Type
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.databinding.DiscoItemMultiProductHighlightRevampBinding
@@ -18,8 +19,8 @@ import com.tokopedia.discovery2.databinding.DiscoItemTripleProductHighlightRevam
 import com.tokopedia.discovery2.databinding.EmptyStateProductHighlightDoubleBinding
 import com.tokopedia.discovery2.databinding.EmptyStateProductHighlightSingleBinding
 import com.tokopedia.discovery2.viewcontrollers.customview.CashbackView
-import com.tokopedia.discovery2.viewcontrollers.customview.DiscoveryStockBar
 import com.tokopedia.discovery2.viewcontrollers.customview.PriceBoxView
+import com.tokopedia.discovery2.viewcontrollers.customview.ProductHighlightStockShopView
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2
@@ -62,19 +63,19 @@ class ProductHighlightRevampItem(
 
     override fun setDataInCard() {
         when (productHighlightData.typeProductHighlightComponentCard) {
-            Constant.ProductHighlight.SINGLE -> {
+            ProductHighlight.SINGLE -> {
                 singleBinding =
                     DiscoItemSingleProductHighlightRevampBinding.inflate(LayoutInflater.from(context))
                 productHighlightView = singleBinding?.root as ConstraintLayout
                 with(singleBinding) {
                     if (this != null) {
                         productHighlightImage.loadImage(productHighlightData.productImage)
-                        priceBox.fontType = PriceBoxView.Type.SINGLE
+                        priceBox.fontType = Type.SINGLE
 
                         phProductName.text = productHighlightData.productName
 
                         renderOCSButton(checkoutBtn)
-                        renderStockBar(progressBarStock)
+                        renderStockBarShop(progressBarStock, Type.SINGLE)
                         renderCashback(cashbackView)
                         renderPriceBox(priceBox)
                         renderStatus(phImageTextBottom)
@@ -100,33 +101,33 @@ class ProductHighlightRevampItem(
                 }
             }
 
-            Constant.ProductHighlight.DOUBLESINGLEEMPTY, Constant.ProductHighlight.TRIPLESINGLEEMPTY -> {
+            ProductHighlight.DOUBLESINGLEEMPTY, ProductHighlight.TRIPLESINGLEEMPTY -> {
                 emptySingleBinding =
                     EmptyStateProductHighlightSingleBinding.inflate(LayoutInflater.from(context))
                 productHighlightView = emptySingleBinding?.root as CardUnify2
                 emptySingleBinding?.productHighlightCardImageContainer?.cardElevation = 0F
             }
 
-            Constant.ProductHighlight.TRIPLEDOUBLEEMPTY -> {
+            ProductHighlight.TRIPLEDOUBLEEMPTY -> {
                 emptyDoubleBinding =
                     EmptyStateProductHighlightDoubleBinding.inflate(LayoutInflater.from(context))
                 productHighlightView = emptyDoubleBinding?.root as CardUnify2
                 emptyDoubleBinding?.productHighlightCardImageContainer?.cardElevation = 0F
             }
 
-            Constant.ProductHighlight.DOUBLE -> {
+            ProductHighlight.DOUBLE -> {
                 multipleBinding =
                     DiscoItemMultiProductHighlightRevampBinding.inflate(LayoutInflater.from(context))
                 productHighlightView = multipleBinding?.root as ConstraintLayout
                 with(multipleBinding) {
                     if (this != null) {
                         productHighlightImage.loadImage(productHighlightData.productImage)
-                        priceBox.fontType = PriceBoxView.Type.DOUBLE
+                        priceBox.fontType = Type.DOUBLE
 
                         phProductName.text = productHighlightData.productName
 
                         renderOCSButton(checkoutBtn)
-                        renderStockBar(progressBarStock)
+                        renderStockBarShop(progressBarStock, Type.DOUBLE)
                         renderCashback(cashbackView)
                         renderPriceBox(priceBox)
                         renderStatus(phImageTextBottom)
@@ -152,7 +153,7 @@ class ProductHighlightRevampItem(
                 }
             }
 
-            Constant.ProductHighlight.TRIPLE -> {
+            ProductHighlight.TRIPLE -> {
                 tripleBinding =
                     DiscoItemTripleProductHighlightRevampBinding.inflate(LayoutInflater.from(context))
                 productHighlightView = tripleBinding?.root as ConstraintLayout
@@ -162,10 +163,10 @@ class ProductHighlightRevampItem(
 
                         phProductName.text = productHighlightData.productName
 
-                        priceBox.fontType = PriceBoxView.Type.TRIPLE
+                        priceBox.fontType = Type.TRIPLE
 
                         renderOCSButton(checkoutBtn)
-                        renderStockBar(progressBarStock)
+                        renderStockBarShop(progressBarStock, Type.TRIPLE)
                         renderCashback(cashbackView)
                         renderPriceBox(priceBox)
                         renderStatus(phImageTextBottom)
@@ -208,7 +209,7 @@ class ProductHighlightRevampItem(
             )
 
             val benefit = productHighlightData.labelsGroupList
-                ?.firstOrNull { it.position == Constant.ProductHighlight.PROMO }
+                ?.firstOrNull { it.position == ProductHighlight.PROMO }
                 ?.title
 
             renderBenefit(benefit)
@@ -223,21 +224,32 @@ class ProductHighlightRevampItem(
 
     private fun renderCashback(view: CashbackView) {
         val cashbackLabel = productHighlightData.labelsGroupList
-            ?.firstOrNull { it.position == Constant.ProductHighlight.PRICE }
+            ?.firstOrNull { it.position == ProductHighlight.PRICE }
 
         view.renderCashback(cashbackLabel?.title, cashbackLabel?.colors)
     }
 
-    private fun renderStockBar(view: DiscoveryStockBar) {
+    private fun renderStockBarShop(view: ProductHighlightStockShopView, type: Type) {
         view.apply {
-            setValue(productHighlightData.stockSoldPercentage)
-            setLabel(productHighlightData.stockWording?.title)
+            if (productHighlightData.stockWording?.title?.isEmpty() == true || productHighlightData.stockSoldPercentage == null) {
+                renderShopInfo(
+                    productHighlightData.shopBadgeImageUrl,
+                    productHighlightData.shopName
+                )
+
+                fontType = type
+            } else {
+                renderStockBar(
+                    productHighlightData.stockSoldPercentage,
+                    productHighlightData.stockWording?.title
+                )
+            }
         }
     }
 
     private fun renderStatus(phImageTextBottom: Typography) {
         val status = productHighlightData.labelsGroupList
-            ?.firstOrNull { it.position == Constant.ProductHighlight.STATUS }
+            ?.firstOrNull { it.position == ProductHighlight.STATUS }
             ?.title
 
         phImageTextBottom.isVisible = !status.isNullOrEmpty()

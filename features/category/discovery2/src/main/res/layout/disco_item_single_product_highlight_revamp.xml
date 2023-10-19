@@ -84,7 +84,7 @@
             app:typographyWeight="reguler"
             tools:text="IPhone Garmin Instinct Solar Camo Lichen IPhone Garmin Instinct Solar Camo Lichen" />
 
-        <com.tokopedia.discovery2.viewcontrollers.customview.DiscoveryStockBar
+        <com.tokopedia.discovery2.viewcontrollers.customview.ProductHighlightStockShopView
             android:id="@+id/progress_bar_stock"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

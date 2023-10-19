@@ -136,6 +136,11 @@ object Constant {
         const val PRICE = "price"
         const val V2_STYLE = "product_highlight_v2"
         const val ATC_OCS = "ocs"
+        enum class Type {
+            SINGLE,
+            DOUBLE,
+            TRIPLE
+        }
     }
 
     internal object CompType {

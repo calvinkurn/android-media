@@ -11,6 +11,7 @@ import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery2.Constant.ProductHighlight.Type
 import com.tokopedia.discovery2.databinding.PriceBoxBinding
 import com.tokopedia.home_component.util.convertDpToPixel
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -162,11 +163,5 @@ class PriceBoxView @JvmOverloads constructor(
                 MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN200)
             )
         }
-    }
-
-    enum class Type {
-        SINGLE,
-        DOUBLE,
-        TRIPLE
     }
 }
