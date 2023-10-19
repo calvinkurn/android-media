@@ -115,13 +115,15 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
             shippingScheduleWidgets.add(createOtherOptionWidget())
         }
 
-        shippingScheduleWidgets.add(
-            create2HWidget(
-                titleNow2H = titleNow2H,
-                labelNow2H = labelNow2H,
-                scheduleDeliveryUiModel = scheduleDeliveryUiModel
+        if (titleNow2H != null) {
+            shippingScheduleWidgets.add(
+                create2HWidget(
+                    titleNow2H = titleNow2H,
+                    labelNow2H = labelNow2H,
+                    scheduleDeliveryUiModel = scheduleDeliveryUiModel
+                )
             )
-        )
+        }
 
         return shippingScheduleWidgets
     }
@@ -240,7 +242,8 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
             scheduledDeliveryOptionBinding.apply {
                 setRadioButton(
                     shippingNowTimeOption.isSelected,
-                    shippingNowTimeOption.onSelectedWidgetListener
+                    shippingNowTimeOption.onSelectedWidgetListener,
+                    shippingNowTimeOptionModels.size > 1
                 )
                 setOnViewShipmentTextClickListener(
                     shippingNowTimeOption.onClickIconListener
@@ -321,17 +324,25 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
 
     private fun ItemShipmentNowRevampScheduledOptionBinding.setRadioButton(
         isSelected: Boolean,
-        onSelectedWidgetListener: (() -> Unit)?
+        onSelectedWidgetListener: (() -> Unit)?,
+        visible: Boolean
     ) {
-        rbShipment.isChecked = isSelected
-        rbShipment.skipAnimation()
-        rbShipment.setOnCheckedChangeListener { _, isChecked ->
-            delayChangeRadioButton?.cancel()
-            delayChangeRadioButton = GlobalScope.launch(Dispatchers.Main) {
-                delay(DEBOUNCE_TIME_SCHEDULE_RADIO_BUTTON)
-                if (isChecked) {
-                    onSelectedWidgetListener?.invoke()
+        rbShipment.run {
+            if (visible) {
+                isChecked = isSelected
+                skipAnimation()
+                setOnCheckedChangeListener { _, isChecked ->
+                    delayChangeRadioButton?.cancel()
+                    delayChangeRadioButton = GlobalScope.launch(Dispatchers.Main) {
+                        delay(DEBOUNCE_TIME_SCHEDULE_RADIO_BUTTON)
+                        if (isChecked) {
+                            onSelectedWidgetListener?.invoke()
+                        }
+                    }
                 }
+                visible()
+            } else {
+                gone()
             }
         }
     }
