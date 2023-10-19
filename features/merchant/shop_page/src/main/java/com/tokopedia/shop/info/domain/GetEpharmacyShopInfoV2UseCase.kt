@@ -26,13 +26,13 @@ class GetEpharmacyShopInfoV2UseCase @Inject constructor(
             "           sia_number" +
             "           sipa_number" +
             "           apj" +
-            "           epharmacy_working_hours {" +
-            "               days" +
-            "               opening_hours {" +
-            "                   open_time" +
-            "                   close_time" +
-            "               }" +
-            "           }" +
+//            "           epharmacy_working_hours {" +
+//            "               days" +
+//            "               opening_hours {" +
+//            "                   open_time" +
+//            "                   close_time" +
+//            "               }" +
+//            "           }" +
             "           epharmacy_working_hours_fmt" +
             "       }" +
             "   }" +

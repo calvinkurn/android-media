@@ -31,28 +31,28 @@ data class GetEpharmacyShopInfoResponse(
             @SerializedName("sipa_number")
             @Expose
             val sipaNumber: String = "",
-            @SerializedName("epharmacy_working_hours")
-            @Expose
-            val epharmacyWorkingHours: List<EpharmacyWorkingHour> = listOf()
+//            @SerializedName("epharmacy_working_hours")
+//            @Expose
+//            val epharmacyWorkingHours: List<EpharmacyWorkingHour> = listOf()
         )
 
-        data class EpharmacyWorkingHour(
-            @SerializedName("days")
-            @Expose
-            val days: List<String> = listOf(),
-            @SerializedName("opening_hours")
-            @Expose
-            val openingHours: OpeningHours = OpeningHours()
-        )
+//        data class EpharmacyWorkingHour(
+//            @SerializedName("days")
+//            @Expose
+//            val days: List<String> = listOf(),
+//            @SerializedName("opening_hours")
+//            @Expose
+//            val openingHours: OpeningHours = OpeningHours()
+//        )
 
-        data class OpeningHours(
-            @SerializedName("open_time")
-            @Expose
-            val openTime: String = "",
-            @SerializedName("close_time")
-            @Expose
-            val closeTime: String = ""
-        )
+//        data class OpeningHours(
+//            @SerializedName("open_time")
+//            @Expose
+//            val openTime: String = "",
+//            @SerializedName("close_time")
+//            @Expose
+//            val closeTime: String = ""
+//        )
 
         data class Header(
             @SerializedName("error_code")

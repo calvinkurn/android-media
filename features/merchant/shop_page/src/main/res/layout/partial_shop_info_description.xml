@@ -104,7 +104,7 @@
 
     <LinearLayout
         android:id="@+id/shopGoApotikContainer"
-        android:visibility="gone"
+        android:visibility="visible"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -161,7 +161,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_NN600"
-                tools:visibility="visible"
                 android:text="@string/shop_info_go_apotik_apj_title" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -170,7 +169,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_NN600"
-                tools:visibility="visible"
                 tools:text="Hariyadi S.Si.,Apt" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -181,7 +179,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_NN600"
-                tools:visibility="visible"
                 android:text="@string/shop_info_go_apotik_sia_number_title" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -190,7 +187,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_NN600"
-                tools:visibility="visible"
                 tools:text="440/02/SIA-35.79/2017/1.003" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -201,7 +197,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_NN600"
-                tools:visibility="visible"
                 android:text="@string/shop_info_go_apotik_sipa_number_title" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -210,7 +205,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_NN600"
-                tools:visibility="visible"
                 tools:text="19741110/SIPA-35.79/2017/1.003" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -221,7 +215,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_NN600"
-                tools:visibility="visible"
                 android:text="@string/shop_info_go_apotik_open_hours" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -231,8 +224,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_NN600"
                 android:maxLines="7"
-                tools:visibility="visible"
-                tools:text="Senin - Jumat: 09:00 - 18:00" />
+                tools:text="Minggu - Senin: 16:00 - 19:00\nSelasa: 08.00 - 16:00" />
 
         </LinearLayout>
 
