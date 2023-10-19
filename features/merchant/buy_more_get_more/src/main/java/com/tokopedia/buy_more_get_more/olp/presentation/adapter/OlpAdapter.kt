@@ -151,6 +151,17 @@ open class OlpAdapter(
         refreshSticky()
     }
 
+    fun setProductCountVisibility(isVisible: Boolean) {
+        val newList = getNewVisitableItems()
+        val sortFilter = newList
+            .filterIsInstance<OfferProductSortingUiModel>().firstOrNull()
+        sortFilter?.apply {
+            isProductCountVisible = isVisible
+        }
+        submitList(newList)
+        refreshSticky()
+    }
+
     fun removeProductList() {
         val newList = getNewVisitableItems()
         newList.removeAll(newList.filterIsInstance<Product>())

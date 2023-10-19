@@ -6,6 +6,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetV2DataModel
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
@@ -74,6 +75,7 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: TopadsHeadlineUiModel): Int
     fun type(data: ContentWidgetDataModel): Int
     fun type(data: FintechWidgetDataModel): Int
+    fun type(data: FintechWidgetV2DataModel): Int
     fun type(data: ProductRecommendationVerticalDataModel): Int
     fun type(data: ProductRecommendationVerticalPlaceholderDataModel): Int
     fun type(data: LoadingDataModel): Int

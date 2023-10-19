@@ -212,7 +212,7 @@ class PromoUsageViewModel @Inject constructor(
                 AttemptPromoUiAction.Failed(attemptedPromoCodeError.message)
             )
         }
-        items = sortPromo(items, true)
+        items = sortPromo(items)
         items = addTncPromo(items)
         items = updateAttemptedPromo(items, attemptedPromoCode, attemptedPromoCodeError)
         if (initialSelectedPromoCodes == null) {
@@ -220,10 +220,12 @@ class PromoUsageViewModel @Inject constructor(
         }
         _promoPageUiState.postValue(
             PromoPageUiState.Success(
+                hasPromoRecommendationSection = promoRecommendation != null,
                 tickerInfo = tickerInfo,
                 items = items,
                 savingInfo = savingInfo,
-                isReload = true
+                isReload = true,
+                isCalculating = false
             )
         )
         onSuccess?.invoke(items)
@@ -261,7 +263,7 @@ class PromoUsageViewModel @Inject constructor(
         items: List<PromoItem>,
         promoRequest: PromoRequest
     ): PromoRequest {
-        val codes = ArrayList<String>()
+        val codes = ArrayList(promoRequest.codes)
         items.forEach { item ->
             val promoCode = if (item.useSecondaryPromo) {
                 item.secondaryPromo.code
@@ -418,35 +420,53 @@ class PromoUsageViewModel @Inject constructor(
                     _promoCtaUiAction.postValue(PromoCtaUiAction.RegisterGoPayLaterCicil(clickedItem.cta))
                 } else {
                     _promoPageUiState.ifSuccessSuspend { pageState ->
-                        val currentItems = pageState.items
-                        val newClickedItemState = if (clickedItem.state is PromoItemState.Normal) {
-                            PromoItemState.Selected
-                        } else {
-                            PromoItemState.Normal
-                        }
-                        val newClickedItem = clickedItem.copy(
-                            state = newClickedItemState
+                        if (pageState.isCalculating) return@ifSuccessSuspend
+                        var updatedState = pageState.copy()
+                        updatedState = updatedState.copy(
+                            isCalculating = true
+                        )
+                        _promoPageUiState.postValue(updatedState)
+                        val useSecondaryPromo = clickedItem.useSecondaryPromo
+                        var newClickedItem = clickedItem.copy(
+                            state = when (clickedItem.state) {
+                                is PromoItemState.Normal -> {
+                                    PromoItemState.Selected(useSecondaryPromo = clickedItem.state.useSecondaryPromo)
+                                }
+
+                                is PromoItemState.Selected -> {
+                                    PromoItemState.Normal(useSecondaryPromo = clickedItem.state.useSecondaryPromo)
+                                }
+
+                                else -> {
+                                    // Should not process any other state
+                                    return@ifSuccessSuspend
+                                }
+                            }
                         )
 
                         // Show artificial loading for MVC promo
                         var needToShowLoading = false
-                        var updatedItems = pageState.items
+                        var updatedItems = updatedState.items
                             .map { item ->
                                 if (item is PromoRecommendationItem) {
                                     return@map item.copy(isCalculating = true)
                                 } else if (item is PromoItem) {
-                                    val isClickedItem = item.code == clickedItem.code
-                                    val isMvcPromo = item.shopId > 0
+                                    val isClickedItem = item.code == newClickedItem.code
+                                    val isMvcPromoWithSecondary = item.shopId > 0 && item.hasSecondaryPromo
                                     val isDisabledOrIneligibleOrSelected =
                                         item.state is PromoItemState.Disabled ||
                                             item.state is PromoItemState.Ineligible ||
                                             item.state is PromoItemState.Selected
-                                    if (!isClickedItem && isMvcPromo && !isDisabledOrIneligibleOrSelected) {
+                                    val isVisibleAndExpanded =
+                                        item.isVisible && item.isExpanded
+                                    if (isMvcPromoWithSecondary && isVisibleAndExpanded &&
+                                        !isClickedItem && !isDisabledOrIneligibleOrSelected
+                                    ) {
                                         if (!needToShowLoading) {
                                             needToShowLoading = true
                                         }
                                         return@map item.copy(
-                                            state = PromoItemState.Loading
+                                            state = PromoItemState.Loading(useSecondaryPromo = item.state.useSecondaryPromo)
                                         )
                                     } else if (isClickedItem) {
                                         return@map newClickedItem.copy(isCalculating = true)
@@ -457,13 +477,11 @@ class PromoUsageViewModel @Inject constructor(
                                     return@map item
                                 }
                             }
-                        _promoPageUiState.postValue(
-                            pageState.copy(
-                                items = updatedItems,
-                                isCalculating = needToShowLoading,
-                                isReload = false
-                            )
+                        updatedState = updatedState.copy(
+                            items = updatedItems,
+                            isReload = false
                         )
+                        _promoPageUiState.postValue(updatedState)
 
                         if (needToShowLoading) {
                             PromoUsageIdlingResource.increment()
@@ -473,29 +491,20 @@ class PromoUsageViewModel @Inject constructor(
 
                         // Calculate clash
                         val clashCalculationResult =
-                            calculateClickPromo(newClickedItem, currentItems)
+                            calculateClickPromo(newClickedItem, updatedItems, useSecondaryPromo)
+                        newClickedItem = clashCalculationResult.first
                         updatedItems = clashCalculationResult.second
 
                         // Update Promo Recommendation section
                         val recommendationItem = updatedItems.getRecommendationItem()
                         if (recommendationItem != null) {
-                            val (updatedPromoRecommendation, newUpdatedItems) =
+                            val (_, newUpdatedItems) =
                                 calculateRecommendedPromo(
-                                    newClickedItem,
-                                    recommendationItem,
-                                    updatedItems
+                                    clickedItem = newClickedItem,
+                                    recommendationItem = recommendationItem,
+                                    items = updatedItems
                                 )
                             updatedItems = newUpdatedItems
-                            if (updatedPromoRecommendation.selectedCodes
-                                .containsAll(updatedPromoRecommendation.codes)
-                            ) {
-                                _usePromoRecommendationUiAction.postValue(
-                                    UsePromoRecommendationUiAction.Success(
-                                        updatedPromoRecommendation,
-                                        updatedItems
-                                    )
-                                )
-                            }
                         }
 
                         // Sort Promo in each sections
@@ -507,29 +516,34 @@ class PromoUsageViewModel @Inject constructor(
                         // Update SavingInfo section
                         val updatedSavingInfo = calculatePromoSavingInfo(
                             items = updatedItems,
-                            previousSavingInfo = pageState.savingInfo
+                            previousSavingInfo = updatedState.savingInfo
                         )
 
                         // Remove isCalculating after all process is done
                         updatedItems = updatedItems.map { item ->
-                            if (item is PromoRecommendationItem) {
-                                return@map item.copy(isCalculating = false)
-                            } else if (item is PromoItem) {
-                                return@map item.copy(isCalculating = false)
-                            } else {
-                                return@map item
+                            when (item) {
+                                is PromoRecommendationItem -> {
+                                    return@map item.copy(isCalculating = false)
+                                }
+
+                                is PromoItem -> {
+                                    return@map item.copy(isCalculating = false)
+                                }
+
+                                else -> {
+                                    return@map item
+                                }
                             }
                         }
 
                         // Update items
-                        _promoPageUiState.postValue(
-                            pageState.copy(
-                                items = updatedItems,
-                                savingInfo = updatedSavingInfo,
-                                isCalculating = false,
-                                isReload = false
-                            )
+                        updatedState = pageState.copy(
+                            items = updatedItems,
+                            savingInfo = updatedSavingInfo,
+                            isCalculating = false,
+                            isReload = false
                         )
+                        _promoPageUiState.postValue(updatedState)
 
                         // Tell UI about clicked promo (for auto scroll, tracker, etc..)
                         _clickPromoUiAction.postValue(ClickPromoUiAction.Updated(newClickedItem))
@@ -537,7 +551,7 @@ class PromoUsageViewModel @Inject constructor(
                 }
             },
             onError = {
-                // no-op
+                Timber.e(it)
             }
         )
     }
@@ -547,17 +561,26 @@ class PromoUsageViewModel @Inject constructor(
         recommendationItem: PromoRecommendationItem,
         items: List<DelegateAdapterItem>
     ): Pair<PromoRecommendationItem, List<DelegateAdapterItem>> {
-        val selectedRecommendationCodes = if (clickedItem.state is PromoItemState.Selected) {
-            recommendationItem.selectedCodes.plus(clickedItem.code)
+        val initialSelectedCodes = recommendationItem.selectedCodes
+        val isRecommendedCodeSelected = clickedItem.state is PromoItemState.Selected &&
+            clickedItem.isRecommended
+        val currentSelectedCodes = if (isRecommendedCodeSelected) {
+            initialSelectedCodes.plus(clickedItem.code)
         } else {
-            recommendationItem.selectedCodes.minus(clickedItem.code)
+            initialSelectedCodes.minus(clickedItem.code)
         }
         val updatedRecommendationItem = recommendationItem.copy(
-            selectedCodes = selectedRecommendationCodes
+            selectedCodes = currentSelectedCodes
         )
+        val updatedSelectedCodes = updatedRecommendationItem.selectedCodes
         val updatedItems = items.map { item ->
             if (item is PromoRecommendationItem) {
-                return@map updatedRecommendationItem
+                val allRecommendationCodeSelected = updatedSelectedCodes
+                    .containsAll(recommendationItem.codes)
+                val isSelectedCodesChanged = updatedSelectedCodes.size != initialSelectedCodes.size
+                return@map updatedRecommendationItem.copy(
+                    showAnimation = isSelectedCodesChanged && allRecommendationCodeSelected
+                )
             } else {
                 return@map item
             }
@@ -567,7 +590,8 @@ class PromoUsageViewModel @Inject constructor(
 
     private fun calculateClickPromo(
         clickedItem: PromoItem,
-        items: List<DelegateAdapterItem>
+        items: List<DelegateAdapterItem>,
+        useSecondaryPromo: Boolean
     ): Pair<PromoItem, List<DelegateAdapterItem>> {
         var newClickedItem = clickedItem.copy()
         var updatedItems = items
@@ -576,10 +600,17 @@ class PromoUsageViewModel @Inject constructor(
                     return@map newClickedItem
                 } else if (item is PromoRecommendationItem) {
                     if (newClickedItem.isRecommended) {
-                        if (newClickedItem.state is PromoItemState.Normal) {
+                        if (newClickedItem.state is PromoItemState.Normal &&
+                            item.selectedCodes.contains(newClickedItem.code)
+                        ) {
                             return@map item.copy(
-                                selectedCodes = item.selectedCodes.toMutableList()
-                                    .minus(newClickedItem.code)
+                                selectedCodes = item.selectedCodes.minus(newClickedItem.code)
+                            )
+                        } else if (newClickedItem.state is PromoItemState.Selected &&
+                            !item.selectedCodes.contains(newClickedItem.code)
+                        ) {
+                            return@map item.copy(
+                                selectedCodes = item.selectedCodes.plus(newClickedItem.code)
                             )
                         }
                     }
@@ -589,13 +620,22 @@ class PromoUsageViewModel @Inject constructor(
                 }
             }
         // Calculate clash
-        val (resultItems, isCausingClash) = calculateClash(newClickedItem, updatedItems)
-        newClickedItem = newClickedItem.copy(
-            isCausingOtherPromoClash = isCausingClash
-        )
+        val (resultItems, isCausingClash) = calculateClash(newClickedItem, updatedItems, useSecondaryPromo)
         updatedItems = resultItems
             .map { item ->
                 if (item is PromoItem && item.id == newClickedItem.id) {
+                    val updatedState = if (item.state is PromoItemState.Normal &&
+                        item.currentClashingPromoCodes.isEmpty() &&
+                        item.currentClashingSecondaryPromoCodes.isEmpty()
+                    ) {
+                        PromoItemState.Normal(useSecondaryPromo = false)
+                    } else {
+                        item.state
+                    }
+                    newClickedItem = item.copy(
+                        state = updatedState,
+                        isCausingOtherPromoClash = isCausingClash
+                    )
                     return@map newClickedItem
                 } else {
                     return@map item
@@ -606,7 +646,8 @@ class PromoUsageViewModel @Inject constructor(
 
     private fun calculateClash(
         selectedItem: PromoItem,
-        updatedItems: List<DelegateAdapterItem>
+        updatedItems: List<DelegateAdapterItem>,
+        useSecondaryPromo: Boolean
     ): Pair<List<DelegateAdapterItem>, Boolean> {
         var isSelectedPromoCausingClash = false
         var processedItems = updatedItems
@@ -615,10 +656,8 @@ class PromoUsageViewModel @Inject constructor(
                 if (item is PromoItem && item.code != selectedItem.code &&
                     item.state !is PromoItemState.Ineligible
                 ) {
-                    val (resultItem, isCausingClash) = checkAndSetClashOnSelectionEvent(
-                        item,
-                        selectedItem
-                    )
+                    val (resultItem, isCausingClash) =
+                        checkAndSetClashOnSelectionEvent(item, selectedItem, useSecondaryPromo)
                     if (!isSelectedPromoCausingClash) {
                         isSelectedPromoCausingClash = isCausingClash
                     }
@@ -632,7 +671,8 @@ class PromoUsageViewModel @Inject constructor(
                 if (item is PromoItem && item.code != selectedItem.code &&
                     item.state !is PromoItemState.Ineligible
                 ) {
-                    val (resultItem, _) = checkAndSetClashOnDeselectionEvent(item, selectedItem)
+                    val (resultItem, _) =
+                        checkAndSetClashOnDeselectionEvent(item, selectedItem, useSecondaryPromo)
                     return@map resultItem
                 } else {
                     return@map item
@@ -642,23 +682,33 @@ class PromoUsageViewModel @Inject constructor(
             // Re-calculate clash for adjusted selected promo after deselection event
             val snapshotProcessedItems = processedItems
             snapshotProcessedItems.forEach { adjustedItem ->
-                if (adjustedItem is PromoItem &&
-                    adjustedItem.useSecondaryPromo &&
-                    adjustedItem.state is PromoItemState.Selected
-                ) {
-                    if (selectedItem.clashingInfos.isNotEmpty()) {
-                        processedItems = processedItems.map { item ->
-                            if (item is PromoItem) {
-                                val (resultItem, _) = checkAndSetClashOnSelectionEvent(
-                                    item,
-                                    adjustedItem
-                                )
-                                return@map resultItem
-                            } else {
-                                return@map item
-                            }
+                if (adjustedItem is PromoItem && adjustedItem.state is PromoItemState.Selected) {
+                    processedItems = processedItems.map { item ->
+                        if (item is PromoItem && item.code != adjustedItem.code &&
+                            item.state !is PromoItemState.Ineligible
+                        ) {
+                            val (resultItem, _) =
+                                checkAndSetClashOnSelectionEvent(item, adjustedItem, adjustedItem.state.useSecondaryPromo)
+                            return@map resultItem
+                        } else {
+                            return@map item
                         }
                     }
+                }
+            }
+        }
+        // Normalize all disabled promo when there's no selected promo
+        val hasNoSelectedPromo = processedItems.getSelectedPromoCodes().isEmpty()
+        if (hasNoSelectedPromo) {
+            processedItems = processedItems.map { item ->
+                if (item is PromoItem && item.state is PromoItemState.Disabled) {
+                    return@map item.copy(
+                        currentClashingPromoCodes = emptyList(),
+                        currentClashingSecondaryPromoCodes = emptyList(),
+                        state = PromoItemState.Normal(useSecondaryPromo = false)
+                    )
+                } else {
+                    return@map item
                 }
             }
         }
@@ -667,52 +717,100 @@ class PromoUsageViewModel @Inject constructor(
 
     private fun checkAndSetClashOnSelectionEvent(
         currentItem: PromoItem,
-        selectedItem: PromoItem
+        selectedItem: PromoItem,
+        useSecondaryPromo: Boolean
     ): Pair<PromoItem, Boolean> {
         var resultItem = currentItem.copy()
         var isCausingClash = false
-        val selectedPromoCode = if (selectedItem.useSecondaryPromo) {
+        val selectedPromoCode = if (useSecondaryPromo) {
             selectedItem.secondaryPromo.code
         } else {
             selectedItem.code
         }
+        // Check for primary promo code
         val primaryClashingInfo = resultItem.clashingInfos
             .firstOrNull { it.code == selectedPromoCode }
         if (primaryClashingInfo != null &&
             !resultItem.currentClashingPromoCodes.contains(selectedPromoCode)
         ) {
+            // Promo is clashing with current selected code
+            // add selected promo code to current primary clashing list
             val clashingPrimaryCodes = resultItem.currentClashingPromoCodes
                 .plus(selectedPromoCode)
             resultItem = resultItem.copy(
                 currentClashingPromoCodes = clashingPrimaryCodes,
-                state = PromoItemState.Disabled(primaryClashingInfo.message)
+                state = PromoItemState.Disabled(
+                    useSecondaryPromo = false,
+                    message = primaryClashingInfo.message
+                )
             )
             isCausingClash = true
         }
+        // Check for secondary promo code
         if (resultItem.hasSecondaryPromo) {
             val secondaryClashingInfo = resultItem.secondaryPromo.clashingInfos
                 .firstOrNull { it.code == selectedPromoCode }
             if (secondaryClashingInfo != null &&
                 !resultItem.currentClashingSecondaryPromoCodes.contains(selectedPromoCode)
             ) {
+                // Promo is clashing with current selected code
+                // add selected promo code to current secondary clashing list
                 val clashingSecondaryCodes = resultItem.currentClashingSecondaryPromoCodes
                     .plus(selectedPromoCode)
+                val state = when (resultItem.state) {
+                    // Promo is already clashing (with primary code OR other secondary code)
+                    // update current clashing info with latest secondary clashing info
+                    is PromoItemState.Disabled -> {
+                        PromoItemState.Disabled(
+                            useSecondaryPromo = true,
+                            message = secondaryClashingInfo.message
+                        )
+                    }
+
+                    // Promo is clashing with secondary while in selected state
+                    // adjust selected to show primary promo
+                    is PromoItemState.Selected -> {
+                        PromoItemState.Selected(useSecondaryPromo = false)
+                    }
+
+                    // Promo is clashing with secondary while in normal state
+                    // adjust selected to show primary promo
+                    else -> {
+                        PromoItemState.Normal(useSecondaryPromo = false)
+                    }
+                }
                 resultItem = resultItem.copy(
-                    currentClashingSecondaryPromoCodes = clashingSecondaryCodes,
-                    state = PromoItemState.Disabled(secondaryClashingInfo.message)
+                    state = state,
+                    currentClashingSecondaryPromoCodes = clashingSecondaryCodes
                 )
                 isCausingClash = true
             } else {
-                val state = if (resultItem.state is PromoItemState.Disabled) {
-                    PromoItemState.Normal
-                } else {
-                    resultItem.state
+                // Revert item state back to normal with secondary promo
+                // if primary is clashing and secondary is empty
+                if (resultItem.state is PromoItemState.Disabled) {
+                    if (resultItem.currentClashingPromoCodes.contains(selectedPromoCode) &&
+                        resultItem.currentClashingSecondaryPromoCodes.isEmpty()
+                    ) {
+                        resultItem = resultItem.copy(
+                            state = PromoItemState.Normal(useSecondaryPromo = true)
+                        )
+                    }
                 }
-                resultItem = resultItem.copy(
-                    currentClashingSecondaryPromoCodes = emptyList(),
-                    state = state
-                )
                 isCausingClash = false
+            }
+        }
+        // If item is still in loading state after processing change item back to previous normal state
+        if (resultItem.state is PromoItemState.Loading) {
+            val notClashingWithAnyPromo = resultItem.currentClashingPromoCodes.isEmpty() &&
+                resultItem.currentClashingSecondaryPromoCodes.isEmpty()
+            resultItem = if (notClashingWithAnyPromo) {
+                resultItem.copy(
+                    state = PromoItemState.Normal(useSecondaryPromo = false)
+                )
+            } else {
+                resultItem.copy(
+                    state = PromoItemState.Normal(useSecondaryPromo = currentItem.state.useSecondaryPromo)
+                )
             }
         }
         return Pair(resultItem, isCausingClash)
@@ -720,14 +818,25 @@ class PromoUsageViewModel @Inject constructor(
 
     private fun checkAndSetClashOnDeselectionEvent(
         currentItem: PromoItem,
-        selectedItem: PromoItem
+        selectedItem: PromoItem,
+        useSecondaryPromo: Boolean
     ): Pair<PromoItem, Boolean> {
         var resultItem = currentItem.copy()
         var isCausingClash = false
-        val selectedPromoCode = if (selectedItem.useSecondaryPromo) {
+        val selectedPromoCode = if (useSecondaryPromo) {
             selectedItem.secondaryPromo.code
         } else {
             selectedItem.code
+        }
+        if (selectedItem.hasSecondaryPromo) {
+            val isClashingWithCurrentPromoSecondary = !useSecondaryPromo &&
+                resultItem.currentClashingPromoCodes.contains(selectedItem.secondaryPromo.code)
+            if (isClashingWithCurrentPromoSecondary) {
+                resultItem = resultItem.copy(
+                    currentClashingPromoCodes = resultItem.currentClashingPromoCodes
+                        .minus(selectedItem.secondaryPromo.code)
+                )
+            }
         }
         // Check for primary promo
         val primaryClashingInfo = resultItem.clashingInfos
@@ -744,12 +853,33 @@ class PromoUsageViewModel @Inject constructor(
                 if (otherClashingInfo != null) {
                     resultItem = resultItem.copy(
                         currentClashingPromoCodes = clashingPrimaryCodes,
-                        state = PromoItemState.Disabled(otherClashingInfo.message)
+                        state = PromoItemState.Disabled(
+                            useSecondaryPromo = resultItem.useSecondaryPromo,
+                            message = otherClashingInfo.message
+                        )
                     )
                     isCausingClash = true
                 } else {
                     val state = if (resultItem.state is PromoItemState.Disabled) {
-                        PromoItemState.Normal
+                        val isClashingWithSecondaryPromo = resultItem.hasSecondaryPromo &&
+                            resultItem.currentClashingSecondaryPromoCodes.isNotEmpty()
+                        if (isClashingWithSecondaryPromo) {
+                            val secondaryClashingCode =
+                                resultItem.currentClashingSecondaryPromoCodes.first()
+                            val secondaryClashingInfo = resultItem.clashingInfos.firstOrNull {
+                                it.code == secondaryClashingCode
+                            }
+                            if (secondaryClashingInfo != null) {
+                                PromoItemState.Disabled(
+                                    useSecondaryPromo = true,
+                                    message = secondaryClashingInfo.message
+                                )
+                            } else {
+                                resultItem.state
+                            }
+                        } else {
+                            PromoItemState.Normal(useSecondaryPromo = false)
+                        }
                     } else {
                         resultItem.state
                     }
@@ -761,7 +891,29 @@ class PromoUsageViewModel @Inject constructor(
                 }
             } else {
                 val state = if (resultItem.state is PromoItemState.Disabled) {
-                    PromoItemState.Normal
+                    val isClashingWithSecondaryPromo = resultItem.hasSecondaryPromo &&
+                        resultItem.currentClashingSecondaryPromoCodes.isNotEmpty()
+                    if (isClashingWithSecondaryPromo) {
+                        val secondaryClashingCode =
+                            resultItem.currentClashingSecondaryPromoCodes.first()
+                        val secondaryClashingInfo = resultItem.secondaryPromo.clashingInfos.firstOrNull {
+                            it.code == secondaryClashingCode
+                        }
+                        if (secondaryClashingInfo != null) {
+                            PromoItemState.Disabled(
+                                useSecondaryPromo = true,
+                                message = secondaryClashingInfo.message
+                            )
+                        } else {
+                            resultItem.state
+                        }
+                    } else {
+                        PromoItemState.Normal(useSecondaryPromo = false)
+                    }
+                } else if (resultItem.state is PromoItemState.Normal) {
+                    PromoItemState.Normal(useSecondaryPromo = false)
+                } else if (resultItem.state is PromoItemState.Selected) {
+                    PromoItemState.Selected(useSecondaryPromo = false)
                 } else {
                     resultItem.state
                 }
@@ -788,34 +940,89 @@ class PromoUsageViewModel @Inject constructor(
                         .firstOrNull { it.code == otherClashingCode }
                     if (otherClashingInfo != null) {
                         resultItem = resultItem.copy(
-                            currentClashingPromoCodes = clashingSecondaryCodes,
-                            state = PromoItemState.Disabled(otherClashingInfo.message)
+                            currentClashingSecondaryPromoCodes = clashingSecondaryCodes,
+                            state = PromoItemState.Disabled(
+                                useSecondaryPromo = true,
+                                message = otherClashingInfo.message
+                            )
                         )
                         isCausingClash = true
                     } else {
                         val state = if (resultItem.state is PromoItemState.Disabled) {
-                            PromoItemState.Normal
+                            val isClashingWithPromo =
+                                resultItem.currentClashingPromoCodes.isNotEmpty()
+                            if (isClashingWithPromo) {
+                                val clashingCode =
+                                    resultItem.currentClashingPromoCodes.first()
+                                val clashingInfo = resultItem.clashingInfos.firstOrNull {
+                                    it.code == clashingCode
+                                }
+                                if (clashingInfo != null) {
+                                    PromoItemState.Disabled(
+                                        useSecondaryPromo = false,
+                                        message = clashingInfo.message
+                                    )
+                                } else {
+                                    resultItem.state
+                                }
+                            } else {
+                                PromoItemState.Normal(useSecondaryPromo = false)
+                            }
+                        } else if (resultItem.state is PromoItemState.Normal) {
+                            PromoItemState.Normal(useSecondaryPromo = false)
+                        } else if (resultItem.state is PromoItemState.Selected) {
+                            PromoItemState.Selected(useSecondaryPromo = false)
                         } else {
                             resultItem.state
                         }
                         resultItem = resultItem.copy(
-                            currentClashingPromoCodes = clashingSecondaryCodes,
+                            currentClashingSecondaryPromoCodes = clashingSecondaryCodes,
                             state = state
                         )
                         isCausingClash = false
                     }
                 } else {
                     val state = if (resultItem.state is PromoItemState.Disabled) {
-                        PromoItemState.Normal
+                        val isClashingWithPromo = resultItem.currentClashingPromoCodes.isNotEmpty()
+                        if (isClashingWithPromo) {
+                            val clashingCode =
+                                resultItem.currentClashingPromoCodes.first()
+                            val clashingInfo = resultItem.clashingInfos.firstOrNull {
+                                it.code == clashingCode
+                            }
+                            if (clashingInfo != null) {
+                                PromoItemState.Disabled(
+                                    useSecondaryPromo = false,
+                                    message = clashingInfo.message
+                                )
+                            } else {
+                                resultItem.state
+                            }
+                        } else {
+                            PromoItemState.Normal(useSecondaryPromo = false)
+                        }
                     } else {
                         resultItem.state
                     }
                     resultItem = resultItem.copy(
-                        currentClashingPromoCodes = clashingSecondaryCodes,
+                        currentClashingSecondaryPromoCodes = clashingSecondaryCodes,
                         state = state
                     )
                     isCausingClash = false
                 }
+            }
+        }
+        if (resultItem.state is PromoItemState.Loading) {
+            resultItem = if (resultItem.currentClashingPromoCodes.isEmpty() &&
+                resultItem.currentClashingSecondaryPromoCodes.isEmpty()
+            ) {
+                resultItem.copy(
+                    state = PromoItemState.Normal(useSecondaryPromo = false)
+                )
+            } else {
+                resultItem.copy(
+                    state = PromoItemState.Normal(useSecondaryPromo = currentItem.state.useSecondaryPromo)
+                )
             }
         }
         return Pair(resultItem, isCausingClash)
@@ -953,6 +1160,7 @@ class PromoUsageViewModel @Inject constructor(
 
     fun onClickAccordionHeader(clickedItem: PromoAccordionHeaderItem) {
         _promoPageUiState.ifSuccess { pageState ->
+            if (pageState.isCalculating) return@ifSuccess
             val currentItems = pageState.items
             val isHeaderExpanded = !clickedItem.isExpanded
             val firstPromoItem = currentItems
@@ -997,6 +1205,7 @@ class PromoUsageViewModel @Inject constructor(
 
     fun onClickViewAllAccordion(clickedItem: PromoAccordionViewAllItem) {
         _promoPageUiState.ifSuccess { pageState ->
+            if (pageState.isCalculating) return@ifSuccess
             val currentItems = pageState.items
             val updatedItems = currentItems
                 .map { item ->
@@ -1030,7 +1239,8 @@ class PromoUsageViewModel @Inject constructor(
         _promoPageUiState.ifSuccess { pageState ->
             if (isChangedFromInitialState()) {
                 val hasSelectedPromo = pageState.items.getSelectedPromoCodes().isNotEmpty()
-                if (hasSelectedPromo) {
+                val hasSelectedBoPromo = boPromoCodes.isNotEmpty()
+                if (hasSelectedPromo || hasSelectedBoPromo) {
                     onApplyPromo(
                         entryPoint = entryPoint,
                         validateUsePromoRequest = validateUsePromoRequest,
@@ -1236,7 +1446,10 @@ class PromoUsageViewModel @Inject constructor(
                         val errorMessage =
                             redStateMap[item.getPromoCode(redStateMap.keys.toSet())] ?: ""
                         return@map item.copy(
-                            state = PromoItemState.Disabled(errorMessage)
+                            state = PromoItemState.Disabled(
+                                useSecondaryPromo = item.useSecondaryPromo,
+                                message = errorMessage
+                            )
                         )
                     } else {
                         return@map item
@@ -1304,7 +1517,7 @@ class PromoUsageViewModel @Inject constructor(
         items: List<PromoItem>,
         validateUsePromoRequest: ValidateUsePromoRequest
     ): ValidateUsePromoRequest {
-        val codes = ArrayList<String>()
+        val codes = ArrayList(validateUsePromoRequest.codes)
         items.forEach { item ->
             val promoCode: String
             val shopId: Long
@@ -1328,6 +1541,7 @@ class PromoUsageViewModel @Inject constructor(
         val orders = validateUsePromoRequest.orders.map { order ->
             var newOrder = order.copy()
             items.forEach { item ->
+                val newCodes = ArrayList(newOrder.codes)
                 val promoCode: String
                 val uniqueId: String
                 val boAdditionalData: List<BoAdditionalData>
@@ -1340,27 +1554,25 @@ class PromoUsageViewModel @Inject constructor(
                     uniqueId = item.uniqueId
                     boAdditionalData = item.boAdditionalData
                 }
-                if (item.state is PromoItemState.Selected && !item.hasClashingPromo) {
+                if (item.state is PromoItemState.Selected) {
                     // If promo is selected, add promo code to request param
                     // If unique_id == 0, means it's a global promo, else it's promo merchant
-                    if (uniqueId == order.uniqueId && !order.codes.contains(promoCode)) {
-                        val updatedCodes = order.codes
-                        updatedCodes.add(promoCode)
-                        newOrder = order.copy(codes = updatedCodes)
+                    if (uniqueId == order.uniqueId && !newCodes.contains(promoCode)) {
+                        newCodes.add(promoCode)
+                        newOrder = order.copy(codes = newCodes)
                     } else if (item.isBebasOngkir) {
                         // If coupon is bebas ongkir promo, then set shipping id and sp id
                         val boData = boAdditionalData.firstOrNull {
                             order.cartStringGroup == it.cartStringGroup
                         }
                         if (boData != null) {
-                            if (!order.codes.contains(boData.code)) {
+                            if (!newCodes.contains(boData.code)) {
                                 // if code is not already in request param, then add bo additional data
-                                val updatedCodes = order.codes
-                                updatedCodes.add(boData.code)
+                                newCodes.add(boData.code)
                                 newOrder = order.copy(
                                     shippingId = boData.shippingId.toInt(),
                                     spId = boData.spId.toInt(),
-                                    codes = updatedCodes
+                                    codes = newCodes
                                 )
                             } else {
                                 // if code already in request param, set shipping id and sp id again
@@ -1382,21 +1594,19 @@ class PromoUsageViewModel @Inject constructor(
                 } else {
                     // If promo is unselected and exist in current promo request, remove it from promo request
                     // If unique_id == 0, means it's a global promo, else it's promo merchant
-                    if (uniqueId == order.uniqueId && order.codes.contains(promoCode)) {
-                        val updatedCodes = order.codes
-                        updatedCodes.remove(promoCode)
-                        newOrder = order.copy(codes = updatedCodes)
+                    if (uniqueId == order.uniqueId && newCodes.contains(promoCode)) {
+                        newCodes.remove(promoCode)
+                        newOrder = order.copy(codes = newCodes)
                     } else if (item.isBebasOngkir) {
                         // if promo is bebas ongkir promo, then remove code only
                         val boData = item.boAdditionalData.firstOrNull {
                             order.uniqueId == it.uniqueId
                         }
                         if (boData != null) {
-                            if (order.codes.contains(boData.code)) {
-                                val updatedCodes = order.codes
-                                updatedCodes.remove(promoCode)
+                            if (newCodes.contains(boData.code)) {
+                                newCodes.remove(promoCode)
                                 newOrder = order.copy(
-                                    codes = updatedCodes,
+                                    codes = newCodes,
                                     benefitClass = "",
                                     boCampaignId = 0,
                                     shippingPrice = 0.0,
@@ -1414,7 +1624,7 @@ class PromoUsageViewModel @Inject constructor(
                     }
                 }
             }
-            newOrder
+            return@map newOrder
         }
         return validateUsePromoRequest.copy(
             codes = codes,
@@ -1672,17 +1882,21 @@ class PromoUsageViewModel @Inject constructor(
             context = dispatchers.immediate,
             block = {
                 _promoPageUiState.ifSuccess { pageState ->
-                    val currentItems = pageState.items
-                    val recommendedPromoCodes = currentItems
-                        .filterIsInstance<PromoItem>()
-                        .filter { it.isRecommended }
-                        .map { it.code }
-                    var updatedItems = currentItems.map { item ->
+                    if (pageState.isCalculating) return@ifSuccess
+                    val updatedState = pageState.copy(
+                        isCalculating = true
+                    )
+                    _promoPageUiState.postValue(updatedState)
+
+                    var updatedItems = updatedState.items
+                    val recommendedPromoCodes =
+                        updatedItems.getRecommendationItem()?.codes ?: emptyList()
+                    updatedItems = updatedItems.map { item ->
                         when (item) {
                             is PromoItem -> {
                                 if (item.state !is PromoItemState.Ineligible) {
                                     return@map item.copy(
-                                        state = PromoItemState.Normal,
+                                        state = PromoItemState.Normal(useSecondaryPromo = false),
                                         currentClashingPromoCodes = emptyList(),
                                         currentClashingSecondaryPromoCodes = emptyList()
                                     )
@@ -1692,7 +1906,10 @@ class PromoUsageViewModel @Inject constructor(
                             }
 
                             is PromoRecommendationItem -> {
-                                return@map item.copy(selectedCodes = recommendedPromoCodes)
+                                return@map item.copy(
+                                    selectedCodes = recommendedPromoCodes,
+                                    showAnimation = true
+                                )
                             }
 
                             else -> {
@@ -1705,33 +1922,33 @@ class PromoUsageViewModel @Inject constructor(
                             .firstOrNull { item -> item is PromoItem && item.code == code } as? PromoItem
                         if (recommendedPromo != null) {
                             recommendedPromo =
-                                recommendedPromo.copy(state = PromoItemState.Selected)
-                            val (_, newUpdatedItems) = calculateClickPromo(
-                                recommendedPromo,
-                                updatedItems
-                            )
+                                recommendedPromo.copy(state = PromoItemState.Selected(useSecondaryPromo = false))
+                            val (_, newUpdatedItems) =
+                                calculateClickPromo(recommendedPromo, updatedItems, false)
                             updatedItems = newUpdatedItems
                         }
                     }
                     val updatedSavingInfo = calculatePromoSavingInfo(
                         items = updatedItems,
-                        previousSavingInfo = pageState.savingInfo
+                        previousSavingInfo = updatedState.savingInfo
                     )
                     updatedItems = sortPromo(updatedItems)
+                    updatedItems = addTncPromo(updatedItems)
                     _promoPageUiState.postValue(
-                        pageState.copy(
+                        updatedState.copy(
                             items = updatedItems,
                             savingInfo = updatedSavingInfo,
-                            isReload = false
+                            isReload = false,
+                            isCalculating = false
                         )
                     )
                     val promoRecommendation = updatedItems.getRecommendationItem()
                     if (promoRecommendation != null) {
                         _usePromoRecommendationUiAction.postValue(
                             UsePromoRecommendationUiAction.Success(
-                                promoRecommendation,
-                                updatedItems,
-                                true
+                                promoRecommendation = promoRecommendation,
+                                items = updatedItems,
+                                isClickUseRecommendation = true
                             )
                         )
                     }
@@ -1752,7 +1969,8 @@ class PromoUsageViewModel @Inject constructor(
         _promoPageUiState.ifSuccess { pageState ->
             if (isChangedFromInitialState()) {
                 val hasSelectedPromo = pageState.items.getSelectedPromoCodes().isNotEmpty()
-                if (hasSelectedPromo) {
+                val hasSelectedBoPromo = boPromoCodes.isNotEmpty()
+                if (hasSelectedPromo || hasSelectedBoPromo) {
                     onApplyPromo(
                         entryPoint = entryPoint,
                         validateUsePromoRequest = validateUsePromoRequest,
@@ -1846,7 +2064,8 @@ class PromoUsageViewModel @Inject constructor(
             if (isChangedFromInitialState()) {
                 val appliedPromos = pageState.items.getSelectedPromos()
                 val hasSelectedPromo = appliedPromos.isNotEmpty()
-                if (hasSelectedPromo) {
+                val hasSelectedBoPromo = boPromoCodes.isNotEmpty()
+                if (hasSelectedPromo || hasSelectedBoPromo) {
                     onApplyPromo(
                         entryPoint = entryPoint,
                         validateUsePromoRequest = validateUsePromoRequest,
@@ -1907,26 +2126,15 @@ class PromoUsageViewModel @Inject constructor(
     }
 
     private fun isChangedFromInitialState(): Boolean {
-        // Check if
-        // Case 1: has any promo item unchecked, but exist as pre applied promo item
-        // Case 2: has any promo item checked but have not been applied
-        initialSelectedPromoCodes?.let { selectedCodes ->
-            _promoPageUiState.asSuccessOrNull()
-                ?.items?.filterIsInstance<PromoItem>()?.forEach { item ->
-                    val code = if (item.useSecondaryPromo) {
-                        item.secondaryPromo.code
-                    } else {
-                        item.code
-                    }
-                    // Case 1
-                    if (selectedCodes.contains(code) && item.state !is PromoItemState.Selected) {
-                        return true
-                    }
-                    // Case 2
-                    if (!selectedCodes.contains(code) && item.state is PromoItemState.Selected) {
-                        return true
-                    }
-                }
+        val latestSelectedCodes = _promoPageUiState.asSuccessOrNull()
+            ?.items?.getSelectedPromoCodes() ?: emptyList()
+        val initialSelectedCodes = initialSelectedPromoCodes ?: emptyList()
+
+        if (initialSelectedCodes.count() != latestSelectedCodes.count()) {
+            return true
+        }
+        if (!initialSelectedCodes.containsAll(latestSelectedCodes)) {
+            return true
         }
         return false
     }

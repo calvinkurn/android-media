@@ -7,13 +7,13 @@ import com.tokopedia.byteplus.effect.util.asset.manager.AssetManager
 import com.tokopedia.byteplus.effect.util.asset.manager.AssetManagerImpl
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalyticImpl
+import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalyticImpl
-import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.sender.PlayBroadcasterAnalyticSender
 import com.tokopedia.play.broadcaster.analytic.sender.PlayBroadcasterAnalyticSenderImpl
@@ -23,7 +23,6 @@ import com.tokopedia.play.broadcaster.analytic.setup.cover.picker.PlayBroCoverPi
 import com.tokopedia.play.broadcaster.analytic.setup.cover.picker.PlayBroCoverPickerAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalyticImpl
-import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAnalyticImpl
@@ -35,10 +34,9 @@ import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
-import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
-import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerImpl
-import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
-import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.NavigationBarColorDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
+import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
 import com.tokopedia.play.broadcaster.util.countup.PlayCountUp
 import com.tokopedia.play.broadcaster.util.countup.PlayCountUpImpl
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
@@ -70,7 +68,7 @@ abstract class PlayBroadcastBindTestModule {
      */
     @Binds
     @ActivityRetainedScope
-    abstract fun bindNavigationBarColorDialogCustomizer(customizer: NavigationBarColorDialogCustomizer): PlayBroadcastDialogCustomizer
+    abstract fun bindNavigationBarColorDialogCustomizer(customizer: NavigationBarColorDialogCustomizer): ContentDialogCustomizer
 
     /**
      * Analytic
@@ -93,7 +91,7 @@ abstract class PlayBroadcastBindTestModule {
 
     @Binds
     @ActivityRetainedScope
-    abstract fun bindSetupProductAnalytic(setupProductAnalytic: PlayBroSetupProductAnalyticImpl): PlayBroSetupProductAnalytic
+    abstract fun bindSetupProductAnalytic(setupProductAnalytic: PlayBroSetupProductAnalyticImpl): ContentProductPickerSellerAnalytic
 
     @Binds
     @ActivityRetainedScope
@@ -105,7 +103,7 @@ abstract class PlayBroadcastBindTestModule {
 
     @Binds
     @ActivityRetainedScope
-    abstract fun bindPinProductAnalytic(pinProductAnalytic: PlayBroadcastPinProductAnalyticImpl): PlayBroadcastPinProductAnalytic
+    abstract fun bindPinProductAnalytic(pinProductAnalytic: PlayBroadcastPinProductAnalyticImpl): ContentPinnedProductAnalytic
 
     @Binds
     @ActivityRetainedScope

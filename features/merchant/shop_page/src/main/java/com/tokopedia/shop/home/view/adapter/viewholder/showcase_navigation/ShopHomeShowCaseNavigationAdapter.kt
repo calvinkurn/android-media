@@ -10,21 +10,21 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationBinding
-import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
+import com.tokopedia.shop.home.view.listener.ShopHomeReimagineShowcaseNavigationListener
+import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
-import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
-import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ShopHomeShowCaseNavigationAdapter(
     private val appearance: ShopHomeShowcaseNavigationBannerWidgetAppearance,
     private val uiModel: ShowcaseNavigationUiModel,
-    private val listener: ShopHomeShowcaseNavigationListener,
+    private val listener: ShopHomeReimagineShowcaseNavigationListener,
     private val overrideTheme: Boolean,
     private val colorSchema: ShopPageColorSchema
 ) : RecyclerView.Adapter<ShopHomeShowCaseNavigationAdapter.ShowCaseViewHolder>() {
@@ -131,7 +131,6 @@ class ShopHomeShowCaseNavigationAdapter(
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
             return oldItems[oldItemPosition] == newItems[newItemPosition]
         }
-
     }
 
     fun submit(newShowcases: List<Showcase>) {
@@ -143,5 +142,4 @@ class ShopHomeShowCaseNavigationAdapter(
         this.showcases.addAll(newShowcases)
         diffResult.dispatchUpdatesTo(this)
     }
-
 }

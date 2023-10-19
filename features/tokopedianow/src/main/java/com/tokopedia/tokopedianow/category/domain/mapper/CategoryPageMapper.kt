@@ -3,10 +3,10 @@ package com.tokopedia.tokopedianow.category.domain.mapper
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
-import com.tokopedia.tokopedianow.category.domain.mapper.MiniCartMapper.getAddToCartQuantity
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.mapper.AddToCartMapper.getAddToCartQuantity
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 
 internal object CategoryPageMapper {

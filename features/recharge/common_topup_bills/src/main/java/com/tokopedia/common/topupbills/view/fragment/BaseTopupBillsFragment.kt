@@ -16,11 +16,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.R
+import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
+import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
@@ -36,6 +39,7 @@ import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTrackingModel
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -73,6 +77,9 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var commonTopupBillsAnalytics: CommonTopupBillsAnalytics
+
+    @Inject
+    lateinit var commonMultiCheckoutAnalytics: CommonMultiCheckoutAnalytics
 
     open var promoTicker: TickerPromoStackingCheckoutView? = null
 
@@ -119,6 +126,17 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 onLoadingAtc(false)
             }
         )
+
+        addToCartViewModel.addToCartMultiCheckoutResult.observe(
+            viewLifecycleOwner
+        ) { data ->
+            context?.let { context ->
+                onTrackMultiCheckoutAtc(data)
+                RouteManager.route(context, data.redirectUrl)
+            }
+            onLoadingAtc(false)
+        }
+
 
         addToCartViewModel.errorAtc.observe(viewLifecycleOwner) {
             when {
@@ -233,6 +251,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                                 navigateToPayment(it.data)
                             }
                         }
+
                         is Fail -> {
                             var throwable = it.throwable
                             if (it.throwable.message.isNullOrEmpty()) {
@@ -292,11 +311,13 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                     }
                     pendingPromoNavigation = ""
                 }
+
                 REQUEST_CODE_CART_DIGITAL -> {
                     data?.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let { throwable ->
                         showErrorMessage(throwable as Throwable)
                     }
                 }
+
                 REQUEST_CODE_PROMO_LIST, REQUEST_CODE_PROMO_DETAIL -> {
                     data?.let {
                         if (it.hasExtra(EXTRA_PROMO_DATA)) {
@@ -308,6 +329,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                         }
                     }
                 }
+
                 REQUEST_CODE_OTP -> {
                     processExpressCheckout(true)
                 }
@@ -509,6 +531,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         isExpressCheckout = data.isExpressCheckout
         categoryName = data.catalog.label
         rechargeAnalytics.eventViewPdpPage(categoryName, userSession.userId)
+        topupBillsViewModel.multiCheckoutButtons = data.multiCheckoutButtons
+        onUpdateMultiCheckout()
     }
 
     open fun onMenuDetailError(error: Throwable) {
@@ -516,6 +540,10 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     }
 
     abstract fun onLoadingMenuDetail(showLoading: Boolean)
+
+    abstract fun onUpdateMultiCheckout()
+
+    abstract fun onTrackMultiCheckoutAtc(atc: DigitalAtcTrackingModel)
 
     abstract fun onLoadingAtc(showLoading: Boolean)
 

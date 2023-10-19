@@ -16,13 +16,18 @@ object ReviewPendingTrackingConstants {
     const val EVENT_NAME_VALUE_VIEW_ITEM = "view_item"
     const val EVENT_NAME_CLICK_INBOX_REVIEW = "clickInboxReview"
     const val EVENT_NAME_CLICK_PG = "clickPG"
+    const val EVENT_NAME_VIEW_PG = "viewPGIris"
 
     const val EVENT_ACTION_VALUE_CLICK_WIDGET_ON_REVIEW_INBOX = "click - ulasan widget on inbox ulasan"
     const val EVENT_ACTION_VALUE_IMPRESSION_WIDGET_ON_REVIEW_INBOX = "impression - ulasan widget on inbox ulasan"
     const val EVENT_ACTION_VALUE_CLICK_CHECK_REVIEW_CONTRIBUTION = "click - cek kontribusi ulasan"
     const val EVENT_ACTION_VALUE_CLICK_HI_REVIEW_COMPETITION_WINNER = "click - hai juara ulasan"
+    const val EVENT_ACTION_VALUE_CLICK_BULK_REVIEW_CARD = "click - bulk review form card"
+    const val EVENT_ACTION_VALUE_CLICK_STAR_BULK_REVIEW_CARD = "click - star rating to bulk review form"
+    const val EVENT_ACTION_VALUE_IMPRESSION_BULK_REVIEW_CARD = "impression - bulk review form card"
 
     const val EVENT_CATEGORY_VALUE_REVIEW_PAGE_PENDING_REVIEW = "ulasan page - menunggu diulas"
+    const val EVENT_CATEGORY_VALUE_BULK_REVIEW_PAGE = "product review detail page - bulk review form"
 
     const val EVENT_LABEL_VALUE_CAROUSEL_ITEM = "title:%s;"
 
@@ -34,4 +39,7 @@ object ReviewPendingTrackingConstants {
 
     const val TRACKER_ID_CLICK_CHECK_REVIEW_CONTRIBUTION = "22559"
     const val TRACKER_ID_CLICK_HI_REVIEW_COMPETITION_WINNER = "33902"
+    const val TRACKER_ID_CLICK_BULK_REVIEW_CARD = "45187"
+    const val TRACKER_ID_CLICK_STAR_BULK_REVIEW_CARD = "45188"
+    const val TRACKER_ID_IMPRESSION_BULK_REVIEW_CARD = "45463"
 }

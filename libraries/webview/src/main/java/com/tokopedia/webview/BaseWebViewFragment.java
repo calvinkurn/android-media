@@ -123,6 +123,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String KEY_CLEAR_CACHE = "android_webview_clear_cache";
     private static final String LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment";
     private static final String GOJEK_APP_LINK = "https://gojek.link/goclub/membership?source=toko_status_match";
+    private static final String GOFOOD_LINK = "https://gofood.link/";
 
     String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
@@ -309,9 +310,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private String getIdentifierUserAgent() {
         String identifierUserAgent;
         if (GlobalConfig.isSellerApp()) {
-            identifierUserAgent = " Sellerapp Tokopedia webview ";
+            identifierUserAgent = " Sellerapp Tokopedia Mobile webview ";
         } else {
-            identifierUserAgent = " Tokopedia webview ";
+            identifierUserAgent = " Tokopedia Mobile webview ";
         }
         return identifierUserAgent;
     }
@@ -1210,7 +1211,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     private boolean isExternalAppLink(String url) {
-        return url.contains(LINK_AJA_APP_LINK) || url.contains(GOJEK_APP_LINK);
+        return url.contains(LINK_AJA_APP_LINK) || url.contains(GOJEK_APP_LINK) || url.contains(GOFOOD_LINK);
     }
 
     // If back pressed is disabled and the webview has moved to a native page,

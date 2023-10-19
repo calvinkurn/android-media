@@ -61,6 +61,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.questWidget)
     implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
     implementation projectOrAar(rootProject.ext.features.affiliateSDK)
+    implementation projectOrAar(rootProject.ext.features.carouselProductCard)
 
     // Libraries Dependency
     implementation projectOrAar(rootProject.ext.libraries.track)
@@ -90,6 +91,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.sortFilter
+    implementation rootProject.ext.unifyDependencies.viewAllCard
 
     // tkpdInternalLibDependencies Dependency
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
