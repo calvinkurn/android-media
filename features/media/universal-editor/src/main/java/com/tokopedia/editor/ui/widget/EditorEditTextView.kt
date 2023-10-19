@@ -44,7 +44,11 @@ class EditorEditTextView @JvmOverloads constructor(
         setBackgroundColor(Color.TRANSPARENT)
 
         addTextChangedListener(object: TextWatcher{
-            override fun afterTextChanged(newText: Editable?) {}
+            override fun afterTextChanged(newText: Editable?) {
+                if ((newText?.toString()?.length ?: 0) <= 0) {
+                    isSpanImplemented = false
+                }
+            }
 
             override fun beforeTextChanged(p0: CharSequence?, start: Int, end: Int, count: Int) {}
 
