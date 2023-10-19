@@ -606,26 +606,29 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
-    private fun requireTitleAndCover(isTitleAndCoverSet: () -> Unit) {
-        if (parentViewModel.channelTitle.isNotEmpty()) {
-            if (viewModel.isCoverAvailable()) {
-                isTitleAndCoverSet()
-            } else {
-                val errorMessage = getString(R.string.play_bro_cover_empty_error)
+    private fun checkLiveStreamRequirement(startLiveStream: () -> Unit) {
+        when {
+            parentViewModel.channelTitle.isEmpty() -> {
+                val errorMessage = getString(R.string.play_bro_title_empty_error)
+                toaster.showToaster(errorMessage)
+            }
+            !viewModel.isCoverAvailable() -> {
+                showToasterSetUpCover = getString(R.string.play_bro_cover_empty_error)
+                openSetupCoverBottomSheet()
+            }
+            parentViewModel.productSectionList.isEmpty() -> {
+                val errorMessage = getString(R.string.play_bro_cover_setup_product_empty)
                 toaster.showError(
                     err = MessageErrorException(errorMessage),
                     customErrMessage = errorMessage
                 )
-                openSetupCoverBottomSheet()
             }
-        } else {
-            val errorMessage = getString(R.string.play_bro_title_empty_error)
-            toaster.showToaster(errorMessage)
+            else -> startLiveStream.invoke()
         }
     }
 
     private fun validateAndStartLive() {
-        requireTitleAndCover { startCountDown() }
+        checkLiveStreamRequirement { startCountDown() }
     }
 
     private fun setupObserver() {
@@ -871,7 +874,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             eventBus.subscribe().collect { event ->
                 when (event) {
                     Event.ClickSetSchedule -> {
-                        requireTitleAndCover { openScheduleBottomSheet() }
+                        checkLiveStreamRequirement { openScheduleBottomSheet() }
                     }
                     is Event.SaveSchedule -> {
                         parentViewModel.submitAction(
