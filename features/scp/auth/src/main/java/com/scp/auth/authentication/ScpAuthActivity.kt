@@ -4,8 +4,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.scp.auth.GotoSdk
 import com.scp.auth.common.analytics.AuthAnalyticsMapper
 import com.scp.auth.common.utils.TkpdAdditionalHeaders
@@ -15,6 +17,7 @@ import com.scp.auth.common.utils.goToForgotTokoPinArticle
 import com.scp.auth.common.utils.goToHelpGotoPIN
 import com.scp.auth.common.utils.goToInactivePhoneNumber
 import com.scp.auth.di.DaggerScpAuthComponent
+import com.scp.auth.registerpushnotif.services.ScpRegisterPushNotificationWorker
 import com.scp.login.common.utils.LoginImageLoader
 import com.scp.login.core.domain.common.UserCredential
 import com.scp.login.core.domain.contracts.configs.LSdkChooseAccountUiConfigs
@@ -26,21 +29,29 @@ import com.scp.login.core.domain.contracts.listener.LSdkLoginFlowListener
 import com.scp.verification.core.domain.common.entities.Failure
 import com.scp.verification.core.domain.common.listener.ForgetContext
 import com.scp.verification.features.gotopin.CVPinManager
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics
+import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiConstant
 import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
+import com.tokopedia.linker.LinkerConstants
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.scp.auth.databinding.ActivityScpAuthBinding
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
+import com.tokopedia.track.TrackApp
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -199,6 +210,10 @@ class ScpAuthActivity : BaseActivity() {
         )
     }
 
+    private fun setFCM() {
+        (application as AbstractionRouter).onRefreshCM(userSession.deviceId)
+    }
+
     private fun gotoRegisterInitial(userCredential: UserCredential) {
         val intent = RouteManager.getIntent(this@ScpAuthActivity, ApplinkConstInternalUserPlatform.INIT_REGISTER).apply {
             val userCredential = userCredential.phoneNumber.ifEmpty { userCredential.email }
@@ -244,16 +259,16 @@ class ScpAuthActivity : BaseActivity() {
     }
 
     private fun registerPushNotif() {
-//        if (isHitRegisterPushNotif && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            RegisterPushNotificationWorker.scheduleWorker(this)
-//        }
+        if (isHitRegisterPushNotif && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ScpRegisterPushNotificationWorker.scheduleWorker(this)
+        }
     }
 
     fun postLoginAction() {
         registerPushNotif()
         submitIntegrityApi()
-//        setTrackingUserId(userSession.userId)
-//        setFCM()
+        setTrackingUserId(userSession.userId)
+        setFCM()
         SubmitDeviceWorker.scheduleWorker(this, true)
         DataVisorWorker.scheduleWorker(this, true)
         TwoFactorMluHelper.clear2FaInterval(this)
@@ -265,6 +280,52 @@ class ScpAuthActivity : BaseActivity() {
 
     private fun getDefaultChosenAddress() {
 //        GetDefaultChosenAddressService.startService(applicationContext)
+    }
+
+    private fun setTrackingUserId(userId: String) {
+        try {
+            val ctx = this.applicationContext
+            TkpdAppsFlyerMapper.getInstance(ctx).mapAnalytics()
+            TrackApp.getInstance().gtm.pushUserId(userId)
+            val crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
+            if (!GlobalConfig.DEBUG) {
+                crashlytics.setUserId(userId)
+            }
+            ctx?.let {
+                TkpdFirebaseAnalytics.getInstance(ctx).setUserId(userId)
+            }
+
+            if (userSession.isLoggedIn) {
+                val userData = com.tokopedia.linker.model.UserData()
+                userData.userId = userSession.userId
+                userData.medium = userSession.loginMethod
+
+                // Identity Event
+                LinkerManager.getInstance().sendEvent(
+                    LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY, userData)
+                )
+
+                // Login Event
+                LinkerManager.getInstance().sendEvent(
+                    LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData)
+                )
+//                loginEventAppsFlyer(userSession.userId, "")
+            }
+
+//            TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
+//                userSession.userId,
+//                "",
+//                "",
+//                "",
+//                userSession.isGoldMerchant,
+//                userSession.shopName,
+//                userSession.shopId,
+//                userSession.hasShop(),
+//                analytics.getLoginMethodMoengage(userSession.loginMethod)
+//            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     companion object {

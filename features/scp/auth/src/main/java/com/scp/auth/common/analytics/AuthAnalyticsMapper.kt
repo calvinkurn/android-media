@@ -21,7 +21,7 @@ object AuthAnalyticsMapper {
             createData(
                 getTrackerIdScreen(lsdkScreen),
                 VIEW_ACCOUNT_EVENT,
-                createScreenCategory(lsdkScreen),
+                createScreenCategory(mapScreenView(lsdkScreen)),
                 createScreenAction(mapScreenView(lsdkScreen)),
                 getTransactionId(param),
                 createCustomDimension(getSdkVersion(param))
@@ -78,7 +78,7 @@ object AuthAnalyticsMapper {
                 getTrackerIdClick(eventName, lsdkScreen, param),
                 VIEW_ACCOUNT_EVENT,
                 TRIGGER_PAGE_CATEGORY,
-                createScreenAction("goto trigger"),
+                VIEW_ON_MFA_TRIGGER,
                 getVerificationLabel(eventName, param),
                 createCustomDimension(getSdkVersion(param))
             )
@@ -191,7 +191,7 @@ object AuthAnalyticsMapper {
                 VIEW_ACCOUNT_EVENT,
                 TRIGGER_PAGE_CATEGORY,
                 SSO_ACCCOUNT_ACTION,
-                TRIGGERED_EVENT_LABEL,
+                "$TRIGGERED_EVENT_LABEL - ${param[CVEventFieldName.TRANSACTION_ID]}",
                 createCustomDimension(getSdkVersion(param))
             )
         )
@@ -367,7 +367,7 @@ object AuthAnalyticsMapper {
             LSdkEventName.LSDK_CTA_OTHER_ACC -> "continue with other account"
             LSdkEventName.LSDK_INPUT_BOX_CLICKED -> "input box"
             LSdkEventName.LSDK_ACC_RECOVERY_CLICKED -> "cannot access account"
-            LSdkEventName.LSDK_CONTINUE_CTA_CLICKED -> "continue login"
+            LSdkEventName.LSDK_CONTINUE_CTA_CLICKED, LSdkEventName.LSDK_LOGIN_CTA_CLICKED -> "continue login"
             LSdkEventName.LSDK_SOCMED_CTA_CLICKED -> "login with google sso"
             else -> ""
         }
@@ -387,7 +387,7 @@ object AuthAnalyticsMapper {
                 if (param[CVEventFieldName.TYPE] == LSdkPopupErrorType.TokoDialog.status) {
                     return createScreenAction("error popup")
                 } else {
-                    return createScreenAction("error page")
+                    return createScreenAction("error")
                 }
             }
 
@@ -424,7 +424,7 @@ object AuthAnalyticsMapper {
                 if (param[CVEventFieldName.TYPE] == LSdkPopupErrorType.TokoDialog.status) {
                     return "${setCcuButtonValue(param)} - ${param[CVEventFieldName.ERROR_MESSAGE]} - ${getTransactionId(param)}"
                 } else {
-                    return "${param[CVEventFieldName.ERROR_TYPE]} - ${getTransactionId(param)}"
+                    return "${param[CVEventFieldName.TYPE]} - ${getTransactionId(param)}"
                 }
             }
 
@@ -457,7 +457,7 @@ object AuthAnalyticsMapper {
 
     private fun createEventLabelRefreshToken(eventName: String, param: Map<String, Any?>): String {
         return when (eventName) {
-            LSdkEventName.LSDK_REFRESH_TOKEN_SUCCESS -> "success"
+            LSdkEventName.LSDK_REFRESH_TOKEN_SUCCESS -> "success - ${param[LSdkAnalyticFieldName.RETRY_COUNT]}"
             LSdkEventName.LSDK_REFRESH_TOKEN_INIT -> "triggered"
             LSdkEventName.LSDK_REFRESH_TOKEN_FAIL -> "failed - ${param[CVEventFieldName.ERROR_MESSAGE]}"
             else -> ""
@@ -542,8 +542,9 @@ object AuthAnalyticsMapper {
     private const val CLICK_RETRY_ACTION = "click on button coba lagi"
     private const val LOGOUT_ACTION = "view on logout trigger"
     private const val REFRESH_TOKEN_ACTION = "view on refresh token page"
-    private const val SSO_ACCCOUNT_ACTION = "view on sso account"
+    private const val SSO_ACCCOUNT_ACTION = "view on sso account fetch"
     private const val SEAMLESS_ACCOUNT_ACTION = "view on seamless account fetch"
     private const val ONE_TAP_ACTION = "view on onetap account fetch"
     private const val VIEW_ON_PROFILE_FETCH_ACTION = "view on profile fetch"
+    private const val VIEW_ON_MFA_TRIGGER = "view on mfa trigger"
 }

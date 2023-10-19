@@ -4,10 +4,6 @@ import android.app.Application
 import android.content.Intent
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.scp.auth.GotoSdk
-import com.scp.auth.common.utils.ScpUtils
-import com.scp.auth.common.utils.TkpdAdditionalHeaders
-import com.scp.login.core.domain.contracts.listener.LSdkRefreshCompleteListener
 import com.tokopedia.interceptors.forcelogout.ForceLogoutData
 import com.tokopedia.interceptors.forcelogout.ForceLogoutUseCase
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql
@@ -37,7 +33,7 @@ class TkpdAuthenticatorGql(
     val userSession: UserSessionInterface,
     val refreshTokenUseCaseGql: RefreshTokenGql
 ) : Authenticator {
-
+    
     private fun isNeedRefresh() = userSession.isLoggedIn
 
     private fun getRefreshQueryPath(finalRequest: Request, response: Response): String {
@@ -87,13 +83,13 @@ class TkpdAuthenticatorGql(
         })
     }
 
+    @Synchronized
     override fun authenticate(route: Route?, response: Response): Request? {
-        if (ScpUtils.isGotoLoginEnabled()) {
+        return if (networkRouter.isGotoAuthSdkEnabled) {
             isGotoLoginSdkEnabled(response)
         } else {
             isGotoLoginSdkDisabled(response)
         }
-        return response.request
     }
 
     private fun isGotoLoginSdkDisabled(response: Response): Request? {
@@ -162,38 +158,34 @@ class TkpdAuthenticatorGql(
                 return null
             }
         }
-
         return response.request
     }
 
     private fun isGotoLoginSdkEnabled(response: Response): Request? {
         if (isNeedRefresh()) {
-            return if (responseCount(response) == 0) {
+            if (responseCount(response) == 0) {
                 try {
-                    val refreshSuccess = refreshWithGotoSdk()
-                    if (refreshSuccess) {
-                        val originalRequest = response.request
-                        val newAccessToken = GotoSdk.LSDKINSTANCE?.getAccessToken()
-                        val newRefreshToken = GotoSdk.LSDKINSTANCE?.getRefreshToken()
-                        if (newAccessToken?.isNotEmpty() == true && newRefreshToken?.isNotEmpty() == true) {
-                            onRefreshTokenSuccess(
-                                accessToken = newAccessToken,
-                                refreshToken = newRefreshToken,
-                                tokenType = "Bearer"
-                            )
-                            return updateRequestWithNewToken(originalRequest)
-                        } else {
-                            networkRouter.showForceLogoutTokenDialog("/")
-                            logRefreshTokenEvent("", TYPE_RESPONSE_COUNT, "", "")
-                            return null
-                        }
+                    val refreshSuccess = networkRouter.onNewRefreshToken()
+                    val originalRequest = response.request
+                    val newAccessToken = refreshSuccess.accessToken
+                    val newRefreshToken = refreshSuccess.refreshToken
+                    return if (newAccessToken?.isNotEmpty() == true && newRefreshToken?.isNotEmpty() == true) {
+                        onRefreshTokenSuccess(
+                            accessToken = newAccessToken,
+                            refreshToken = newRefreshToken,
+                            tokenType = "Bearer"
+                        )
+                        
+                        updateRequestWithNewToken(originalRequest)
                     } else {
                         networkRouter.showForceLogoutTokenDialog("/")
                         logRefreshTokenEvent("", TYPE_RESPONSE_COUNT, "", "")
-                        return null
+                        null
                     }
                 } catch (ex: Exception) {
-                    null
+                    networkRouter.showForceLogoutTokenDialog("/")
+                    logRefreshTokenEvent("", TYPE_RESPONSE_COUNT, "", "")
+                    return null
                 }
             } else {
                 networkRouter.showForceLogoutTokenDialog("/")
@@ -209,15 +201,6 @@ class TkpdAuthenticatorGql(
         return response.request
     }
 
-    private fun refreshWithGotoSdk(): Boolean {
-        return GotoSdk.LSDKINSTANCE?.refreshToken(
-            additionalHeaders = TkpdAdditionalHeaders(application),
-            refreshCompletionListener = object : LSdkRefreshCompleteListener {
-                override fun onRefreshCompleted(accessToken: String?) {}
-            }
-        ) ?: false
-    }
-
     private fun refreshWithOldMethod(response: Response): Request? {
         return try {
             val newToken = getTokenOld(response)
@@ -225,6 +208,7 @@ class TkpdAuthenticatorGql(
                 // to check how many users success after fallback from gql
                 logRefreshTokenEvent("", TYPE_SUCCESS_REFRESH_TOKEN_REST, "", accessToken = trimToken(newToken))
                 networkRouter.doRelogin(newToken)
+                
                 updateRequestWithNewToken(response.request)
             } else {
                 null

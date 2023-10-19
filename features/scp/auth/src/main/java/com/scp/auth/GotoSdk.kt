@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Build
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.gojek.pin.AppInfo
 import com.gojek.pin.DeviceInfo
@@ -40,6 +41,7 @@ import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.util.EncoderDecoder
 import kotlinx.coroutines.CoroutineScope
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -47,7 +49,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 object GotoSdk {
-    var LSDKINSTANCE: LSdkProvider? = null
+    @JvmField var LSDKINSTANCE: LSdkProvider? = null
 
     private var GOTOPINSDKINSTANCE: PinManager? = null
     private var component: ScpAuthComponent? = null
@@ -64,6 +66,8 @@ object GotoSdk {
 
     @JvmStatic
     fun init(application: Application): LSdkProvider? {
+        println("get global config isDebug: ${GlobalConfig.DEBUG} versionName: ${GlobalConfig.VERSION_NAME} allowDebug: ${GlobalConfig.isAllowDebuggingTools()} isSeller: ${GlobalConfig.isSellerApp()} deviceId: ${GlobalConfig.DEVICE_ID} preinstall: ${GlobalConfig.PREINSTALL_NAME}")
+        Log.d("InitGoto", "get global config isDebug: ${GlobalConfig.DEBUG} versionName: ${GlobalConfig.VERSION_NAME} allowDebug: ${GlobalConfig.isAllowDebuggingTools()} isSeller: ${GlobalConfig.isSellerApp()} deviceId: ${GlobalConfig.DEVICE_ID} preinstall: ${GlobalConfig.PREINSTALL_NAME}")
         val appComponent = (application as BaseMainApplication)
             .baseAppComponent
         component = DaggerScpAuthComponent.builder()
@@ -122,7 +126,7 @@ object GotoSdk {
             LSDKINSTANCE?.getAccessToken()?.isEmpty() == true &&
             LSDKINSTANCE?.getRefreshToken()?.isEmpty() == true
         ) {
-            ScpUtils.saveTokens(accessToken = userSession.accessToken, refreshToken = userSession.freshToken)
+            ScpUtils.saveTokens(accessToken = userSession.accessToken, refreshToken = EncoderDecoder.Decrypt(userSession.freshToken, userSession.refreshTokenIV))
         }
     }
 

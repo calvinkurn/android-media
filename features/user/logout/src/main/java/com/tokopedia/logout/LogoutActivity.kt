@@ -170,7 +170,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
      */
     private fun migrateTokenIfNot() {
         if (GotoSdk.LSDKINSTANCE?.getAccessToken()?.isEmpty() == true) {
-            ScpUtils.saveTokens(userSession.accessToken, userSession.freshToken)
+            ScpUtils.saveTokens(userSession.accessToken, EncoderDecoder.Decrypt(userSession.freshToken, userSession.refreshTokenIV))
         }
     }
 
