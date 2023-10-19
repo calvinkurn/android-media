@@ -165,7 +165,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
         return ShippingScheduleWidgetModel(
             isEnable = available,
             title = getTitleOtherOption(),
-            description = if (available) deliveryProduct.textEta else text,
+            description = text.ifEmpty { deliveryProduct.textEta },
             label = deliveryProduct.promoText.convertToSpannedString(),
             isSelected = isSelected,
             isShowCoachMark = scheduleDeliveryPreferences?.isDisplayedCoachmark?.not() ?: true,
@@ -175,7 +175,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
                 ScheduleDeliveryAnalytics.sendChooseScheduledDeliveryOptionRadioButtonOnTokopediaNowEvent()
             },
             onClickIconListener = onClickIconListener,
-            showOtherScheduleButton = available
+            showOtherScheduleButton = deliveryServices.isNotEmpty()
         )
     }
 
