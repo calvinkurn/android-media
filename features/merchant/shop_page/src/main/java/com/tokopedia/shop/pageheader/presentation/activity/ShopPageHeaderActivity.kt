@@ -21,22 +21,22 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_REIMAGINED_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_REIMAGINED_TRACE_ACTIVITY_PREPARE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_REIMAGINED_TRACE_MIDDLE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_REIMAGINED_TRACE_PREPARE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_REIMAGINED_TRACE_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_ACTIVITY_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_MIDDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_RENDER
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_V4
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_ACTIVITY_PREPARE
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_MIDDLE
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_PREPARE
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_RENDER
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HEADER_TRACE_V3
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HEADER_TRACE_V4
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_TAB_TRACE_V3
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_TAB_TRACE_V4
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE_V3
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE_V4
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HEADER_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_TAB_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_REIMAGINED_HEADER_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_REIMAGINED_HOME_TAB_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_REIMAGINED_PRODUCT_TAB_TRACE
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
@@ -47,6 +47,7 @@ import com.tokopedia.shop.info.view.activity.ShopInfoActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageReimagineHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopPageHeaderActivity :
     BaseSimpleActivity(),
@@ -92,7 +93,7 @@ class ShopPageHeaderActivity :
             configStatusBarAndSetFullScreen()
         }
         super.onCreate(savedInstanceState)
-        window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+        window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, unifyprinciplesR.color.Unify_Background))
     }
 
     private fun configStatusBarAndSetFullScreen() {
@@ -136,17 +137,17 @@ class ShopPageHeaderActivity :
     private fun initPerformanceMonitoring() {
         if (ShopUtil.isEnableShopPageReImagined(this)) {
             performanceMonitoringShop = PageLoadTimePerformanceCallback(
-                SHOP_V4_TRACE_PREPARE,
-                SHOP_V4_TRACE_MIDDLE,
-                SHOP_V4_TRACE_RENDER
+                SHOP_REIMAGINED_TRACE_PREPARE,
+                SHOP_REIMAGINED_TRACE_MIDDLE,
+                SHOP_REIMAGINED_TRACE_RENDER
             )
-            performanceMonitoringShop?.startMonitoring(SHOP_TRACE_V4)
+            performanceMonitoringShop?.startMonitoring(SHOP_REIMAGINED_TRACE)
             performanceMonitoringShop?.startPreparePagePerformanceMonitoring()
-            performanceMonitoringShop?.startCustomMetric(SHOP_V4_TRACE_ACTIVITY_PREPARE)
+            performanceMonitoringShop?.startCustomMetric(SHOP_REIMAGINED_TRACE_ACTIVITY_PREPARE)
 
-            performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_HEADER_TRACE_V4)
-            performanceMonitoringShopHomeTab = PerformanceMonitoring.start(SHOP_HOME_TAB_TRACE_V4)
-            performanceMonitoringShopProductTab = PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE_V4)
+            performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_REIMAGINED_HEADER_TRACE)
+            performanceMonitoringShopHomeTab = PerformanceMonitoring.start(SHOP_REIMAGINED_HOME_TAB_TRACE)
+            performanceMonitoringShopProductTab = PerformanceMonitoring.start(SHOP_REIMAGINED_PRODUCT_TAB_TRACE)
         } else {
             performanceMonitoringShop = PageLoadTimePerformanceCallback(
                 SHOP_TRACE_PREPARE,
@@ -157,9 +158,9 @@ class ShopPageHeaderActivity :
             performanceMonitoringShop?.startPreparePagePerformanceMonitoring()
             performanceMonitoringShop?.startCustomMetric(SHOP_TRACE_ACTIVITY_PREPARE)
 
-            performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_HEADER_TRACE_V3)
-            performanceMonitoringShopHomeTab = PerformanceMonitoring.start(SHOP_HOME_TAB_TRACE_V3)
-            performanceMonitoringShopProductTab = PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE_V3)
+            performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_HEADER_TRACE)
+            performanceMonitoringShopHomeTab = PerformanceMonitoring.start(SHOP_HOME_TAB_TRACE)
+            performanceMonitoringShopProductTab = PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE)
         }
     }
 

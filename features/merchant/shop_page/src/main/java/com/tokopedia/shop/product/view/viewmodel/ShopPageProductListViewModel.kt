@@ -484,37 +484,6 @@ class ShopPageProductListViewModel @Inject constructor(
         getShopProductUseCase.clearCache()
     }
 
-    fun setInitialProductList(
-        shopId: String,
-        productPerPage: Int,
-        initialProductListData: ShopProduct.GetShopProduct,
-        isEnableDirectPurchase: Boolean
-    ) {
-        productListData.postValue(
-            Success(
-                GetShopProductUiModel(
-                    ShopUtil.isHasNextPage(
-                        START_PAGE,
-                        productPerPage,
-                        initialProductListData.totalData
-                    ),
-                    initialProductListData.data.map {
-                        ShopPageProductListMapper.mapShopProductToProductViewModel(
-                            it,
-                            isMyShop(shopId),
-                            "",
-                            isEnableDirectPurchase = isEnableDirectPurchase
-                        )
-                    },
-                    initialProductListData.totalData,
-                    START_PAGE // current page is 1 since its initial product list
-                ).apply {
-                    updateProductCardQuantity(listShopProductUiModel.toMutableList())
-                }
-            )
-        )
-    }
-
     fun getBottomSheetFilterData(shopId: String = "") {
         launchCatchError(coroutineContext, block = {
             val filterBottomSheetData = withContext(dispatcherProvider.io) {

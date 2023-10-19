@@ -950,7 +950,6 @@ class ShopHomeViewModel @Inject constructor(
         shopId: String,
         productPerPage: Int,
         shopProductFilterParameter: ShopProductFilterParameter,
-        initialProductListData: ShopProduct.GetShopProduct?,
         widgetUserAddressLocalData: LocalCacheModel,
         isEnableDirectPurchase: Boolean
     ) {
@@ -958,18 +957,14 @@ class ShopHomeViewModel @Inject constructor(
             val productList = asyncCatchError(
                 dispatcherProvider.io,
                 block = {
-                    if (initialProductListData == null) {
-                        getProductListData(
-                            shopId,
-                            ShopPageConstant.START_PAGE,
-                            productPerPage,
-                            shopProductFilterParameter,
-                            widgetUserAddressLocalData,
-                            isEnableDirectPurchase
-                        )
-                    } else {
-                        null
-                    }
+                    getProductListData(
+                        shopId,
+                        ShopPageConstant.START_PAGE,
+                        productPerPage,
+                        shopProductFilterParameter,
+                        widgetUserAddressLocalData,
+                        isEnableDirectPurchase
+                    )
                 },
                 onError = { null }
             )
@@ -984,22 +979,8 @@ class ShopHomeViewModel @Inject constructor(
                 }
             )
             sortResponse.await()?.let {
-                if (initialProductListData == null) {
-                    productList.await()?.let { productListData ->
-                        _productListData.postValue(Success(productListData))
-                    }
-                } else {
-                    _productListData.postValue(
-                        Success(
-                            mapToShopHomeProductUiModel(
-                                shopId,
-                                productPerPage,
-                                ShopPageConstant.START_PAGE,
-                                initialProductListData,
-                                isEnableDirectPurchase
-                            )
-                        )
-                    )
+                productList.await()?.let { productListData ->
+                    _productListData.postValue(Success(productListData))
                 }
                 it.let { sortResponse ->
                     sortListData = sortResponse

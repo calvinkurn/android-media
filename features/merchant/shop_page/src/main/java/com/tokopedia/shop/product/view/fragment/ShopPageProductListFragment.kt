@@ -112,6 +112,10 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import javax.inject.Inject
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.merchantvoucher.R as merchantvoucherR
+import com.tokopedia.filter.R as filterR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopPageProductListFragment :
     BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
@@ -228,7 +232,6 @@ class ShopPageProductListFragment :
     private var shopChangeProductGridSharedViewModel: ShopChangeProductGridSharedViewModel? = null
     private var shopPageMiniCartSharedViewModel: ShopPageMiniCartSharedViewModel? = null
     private var threeDotsClickShopTrackingType = -1
-    private var initialProductListData: ShopProduct.GetShopProduct? = null
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var remoteConfig: RemoteConfig? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
@@ -342,7 +345,7 @@ class ShopPageProductListFragment :
             return
         }
         shopPageTracking!!.clickUseMerchantVoucher(isOwner, merchantVoucherViewModel, shopId, position)
-        showSnackBarClose(getString(com.tokopedia.merchantvoucher.R.string.title_voucher_code_copied))
+        showSnackBarClose(getString(merchantvoucherR.string.title_voucher_code_copied))
     }
 
     override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
@@ -938,9 +941,6 @@ class ShopPageProductListFragment :
         stopMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_PREPARE)
         startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_MIDDLE)
         showLoading()
-        initialProductListData?.let {
-            viewModel?.setInitialProductList(shopId, ShopUtil.getProductPerPage(context), it, isEnableDirectPurchase)
-        }
         viewModel?.getShopFilterData(shopId)
         isOnViewCreated = false
     }
@@ -988,7 +988,7 @@ class ShopPageProductListFragment :
                     Snackbar.LENGTH_LONG
                 )
                 snackbar.setAction(requireActivity().getString(R.string.label_close)) { snackbar.dismiss() }
-                snackbar.setActionTextColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+                snackbar.setActionTextColor(androidx.core.content.ContextCompat.getColor(it, unifyprinciplesR.color.Unify_Background))
                 snackbar.show()
             }
         }
@@ -1603,10 +1603,10 @@ class ShopPageProductListFragment :
 
     private fun onSuccessGetShopProductFilterCount(count: Int = Int.ZERO, isFulfillmentFilterActive: Boolean = false) {
         val countText = if (isFulfillmentFilterActive) {
-            getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_no_count)
+            getString(filterR.string.bottom_sheet_filter_finish_button_no_count)
         } else {
             String.format(
-                getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
+                getString(filterR.string.bottom_sheet_filter_finish_button_template_text),
                 count.thousandFormatted()
             )
         }
@@ -1714,17 +1714,15 @@ class ShopPageProductListFragment :
                 isEnableDirectPurchase
             )
         }
-        if (initialProductListData == null) {
-            viewModel?.getProductListData(
-                shopId,
-                START_PAGE,
-                ShopUtil.getProductPerPage(context),
-                etalaseItemDataModel.etalaseId,
-                shopProductFilterParameter ?: ShopProductFilterParameter(),
-                ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
-                isEnableDirectPurchase
-            )
-        }
+        viewModel?.getProductListData(
+            shopId,
+            START_PAGE,
+            ShopUtil.getProductPerPage(context),
+            etalaseItemDataModel.etalaseId,
+            shopProductFilterParameter ?: ShopProductFilterParameter(),
+            ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
+            isEnableDirectPurchase
+        )
     }
 
     private fun isShopWidgetAlreadyShown(): Boolean {
@@ -1743,7 +1741,7 @@ class ShopPageProductListFragment :
                         ?: ""
                 )
             } else {
-                showToasterError(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown))
+                showToasterError(getString(abstractionR.string.default_request_error_unknown))
             }
         } else {
             val bottomSheetMembership = MembershipBottomSheetSuccess.newInstance(
@@ -1858,10 +1856,6 @@ class ShopPageProductListFragment :
         viewModel?.getBottomSheetFilterData(shopId)
     }
 
-    fun setInitialProductListData(initialProductListData: ShopProduct.GetShopProduct) {
-        this.initialProductListData = initialProductListData
-    }
-
     private fun changeProductListGridView(gridType: ShopProductViewGridType) {
         shopProductAdapter.updateShopPageProductChangeGridSectionIcon(gridType)
         shopProductAdapter.changeProductCardGridType(gridType)
@@ -1902,7 +1896,6 @@ class ShopPageProductListFragment :
             )
         )
         shopProductAdapter.refreshSticky()
-        initialProductListData = null
         if (!isOnViewCreated) {
             shopProductAdapter.clearProductList()
             loadNewProductData()
