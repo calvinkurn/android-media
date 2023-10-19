@@ -26,6 +26,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.scp.auth.GotoSdk
 import com.scp.auth.common.utils.ScpUtils
+import com.scp.auth.common.utils.TkpdAdditionalHeaders
 import com.scp.login.core.domain.contracts.listener.LSdkLogoutCompletionListener
 import com.scp.login.core.domain.contracts.listener.LSdkOneTapListener
 import com.scp.login.core.domain.logout.mappers.LogoutError
@@ -144,7 +145,9 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     }
 
     private fun logoutUser() {
-        GotoSdk.LSDKINSTANCE?.logout(object: LSdkLogoutCompletionListener {
+        GotoSdk.LSDKINSTANCE?.logout(
+            additionalHeaders = TkpdAdditionalHeaders(this),
+            logoutCompletionListener = object: LSdkLogoutCompletionListener {
             override fun onLogoutSuccessful() {
                 lifecycleScope.launch {
                     clearData()

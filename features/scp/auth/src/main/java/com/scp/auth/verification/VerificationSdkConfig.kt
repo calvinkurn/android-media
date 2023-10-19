@@ -24,10 +24,14 @@ class VerificationSdkConfig(val context: Context) : VerificationSDKConfigs {
         )
     }
 
+    private fun getClientSecret(): String {
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) ScpConstants.DEBUG_CLIENT_SECRET else context.getString(keysR.string.cvsdk_client_secret)
+    }
+
     override fun getAuthConfigs(): VerificationAuthConfig {
         return VerificationAuthConfig(
             clientID = ScpConstants.TOKOPEDIA_CLIENT_ID,
-            clientSecret = context.getString(keysR.string.cvsdk_client_secret)
+            clientSecret = getClientSecret()
         )
     }
 

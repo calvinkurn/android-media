@@ -7,10 +7,13 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.text.format.DateFormat
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.scp.auth.GotoSdk
 import com.scp.auth.common.analytics.AuthAnalyticsMapper
+import com.scp.auth.common.utils.ScpConstants
+import com.scp.auth.common.utils.ScpUtils
 import com.scp.auth.common.utils.TkpdAdditionalHeaders
 import com.scp.auth.common.utils.goToForgotGotoPin
 import com.scp.auth.common.utils.goToForgotPassword
@@ -93,9 +96,21 @@ class ScpAuthActivity : BaseActivity() {
 
         with(viewModel) {
             onLoginSuccess.observe(this@ScpAuthActivity) {
-                postLoginAction()
+                if (it) {
+                    postLoginAction()
+                } else {
+                    handleError()
+                }
             }
         }
+    }
+
+    private fun handleError(){
+        try {
+            ScpUtils.clearTokens()
+            Toast.makeText(this@ScpAuthActivity, "Terjadi Kesalahan", Toast.LENGTH_LONG).show()
+            finish()
+        } catch (ignored: Exception) {}
     }
 
     fun initComponents() {
@@ -278,8 +293,29 @@ class ScpAuthActivity : BaseActivity() {
         TwoFactorMluHelper.clear2FaInterval(this)
         getDefaultChosenAddress()
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
+
+        initTokoChatConnection()
+
+        saveFirstInstallTime()
         setResult(Activity.RESULT_OK)
         finish()
+    }
+
+    private fun saveFirstInstallTime() {
+        val sharedPrefs = getSharedPreferences(
+            ScpConstants.KEY_FIRST_INSTALL_SEARCH,
+            Context.MODE_PRIVATE
+        )
+        sharedPrefs?.edit()?.putLong(
+            ScpConstants.KEY_FIRST_INSTALL_TIME_SEARCH,
+            0
+        )?.apply()
+    }
+
+    private fun initTokoChatConnection() {
+        if (application is AbstractionRouter) {
+            (application as AbstractionRouter).connectTokoChat(true)
+        }
     }
 
     private fun getDefaultChosenAddress() {

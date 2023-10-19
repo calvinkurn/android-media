@@ -17,8 +17,9 @@ class ScpAuthViewModel @Inject constructor(
     val userSessionInterface: UserSessionInterface,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
-    private val _onLoginSuccess = SingleLiveEvent<Unit>()
-    val onLoginSuccess: LiveData<Unit> = _onLoginSuccess
+
+    private val _onLoginSuccess = SingleLiveEvent<Boolean>()
+    val onLoginSuccess: LiveData<Boolean> = _onLoginSuccess
 
     fun getUserInfo() {
         launch {
@@ -28,11 +29,10 @@ class ScpAuthViewModel @Inject constructor(
                 }
                 getUserInfoAndSaveSessionUseCase(Unit)
                 AuthAnalyticsMapper.trackProfileFetch("success")
-                _onLoginSuccess.postValue(Unit)
+                _onLoginSuccess.postValue(true)
             } catch (e: Exception) {
-                // TODO: check with yoris how to handle this
-                e.printStackTrace()
                 AuthAnalyticsMapper.trackProfileFetch("failed - ${e.message}")
+                _onLoginSuccess.postValue(false)
             }
         }
     }
