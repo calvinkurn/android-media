@@ -25,12 +25,7 @@ class MyCouponUseCase @Inject constructor(private val myCouponRepository: MyCoup
             val myCouponResponse = myCouponRepository.getCouponData(myCouponsRequest)
             myCouponResponse.tokopointsCouponListStack?.let { myCouponRes ->
                 if (!myCouponRes.coupons.isNullOrEmpty()) {
-                    couponListData = mapCouponListToComponentList(
-                        myCouponRes.coupons!!,
-                        ComponentNames.MyCouponItem.componentName,
-                        component.name ?: "",
-                        it
-                    )
+                    couponListData = mapCouponListToComponentList(myCouponRes.coupons!!, it)
                 }
             }
             it.setComponentsItem(couponListData)
@@ -41,22 +36,26 @@ class MyCouponUseCase @Inject constructor(private val myCouponRepository: MyCoup
     }
 
     private suspend fun mapCouponListToComponentList(
-        coupons: List<MyCoupon>, subComponentName: String = "",
-        parentComponentName: String = "", component: ComponentsItem
+        coupons: List<MyCoupon>,
+        component: ComponentsItem
     ): ArrayList<ComponentsItem> {
         return withContext(Dispatchers.Default) {
             val list = ArrayList<ComponentsItem>()
             val itemList = getSortedCouponsBasedOnSlugs(component, coupons)
             itemList.forEachIndexed { index, it ->
-                val componentsItem = ComponentsItem()
-                componentsItem.position = index
-                componentsItem.name = subComponentName
-                componentsItem.parentListSize = itemList.size
-                componentsItem.parentComponentName = parentComponentName
-                componentsItem.parentComponentId = component.id
-                val dataItem = mutableListOf<MyCoupon>()
-                dataItem.add(it)
-                componentsItem.myCouponList = dataItem
+                val componentsItem = ComponentsItem().apply {
+                    position = index
+                    name = ComponentNames.MyCouponItem.componentName
+                    parentListSize = itemList.size
+                    parentComponentName = component.name
+                    parentComponentId = component.id
+                    creativeName = component.creativeName
+
+                    myCouponList = mutableListOf(it)
+
+                    data = component.data
+                }
+
                 list.add(componentsItem)
             }
             return@withContext list
@@ -68,8 +67,9 @@ class MyCouponUseCase @Inject constructor(private val myCouponRepository: MyCoup
         coupons: List<MyCoupon>
     ): List<MyCoupon> {
         return withContext(Dispatchers.Default) {
-            if (component.data?.firstOrNull()?.pinnedSlugs.isNullOrEmpty())
+            if (component.data?.firstOrNull()?.pinnedSlugs.isNullOrEmpty()) {
                 return@withContext coupons
+            }
             val map = mutableMapOf<String, MutableList<MyCoupon>>()
             component.data?.firstOrNull()?.pinnedSlugs?.let { slugList ->
                 slugList.forEach { slug ->
@@ -78,8 +78,9 @@ class MyCouponUseCase @Inject constructor(private val myCouponRepository: MyCoup
                     }
                 }
             }
-            if (map.isEmpty())
+            if (map.isEmpty()) {
                 return@withContext coupons
+            }
             val listOfUnPinnedSlugCoupons = mutableListOf<MyCoupon>()
             coupons.forEach { coupon ->
                 var slugFound = false
@@ -90,8 +91,9 @@ class MyCouponUseCase @Inject constructor(private val myCouponRepository: MyCoup
                         break
                     }
                 }
-                if (!slugFound)
+                if (!slugFound) {
                     listOfUnPinnedSlugCoupons.add(coupon)
+                }
             }
             val itemList: LinkedList<MyCoupon> = LinkedList()
             for ((_, couponList) in map) {

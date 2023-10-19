@@ -116,6 +116,10 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                 is AccountLinkingStatusResult.Loading -> {
                     showLoadingScreen()
                 }
+                is AccountLinkingStatusResult.TokoKyc -> {
+                    activity?.setResult(KYCConstant.ActivityResult.LAUNCH_TOKO_KYC)
+                    activity?.finish()
+                }
                 is AccountLinkingStatusResult.Linked -> {
                     viewModel.checkEligibility()
                 }
