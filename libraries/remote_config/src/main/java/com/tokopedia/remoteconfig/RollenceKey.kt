@@ -105,9 +105,6 @@ object RollenceKey {
     // Wishlist
     const val WISHLIST_AFFILIATE_TICKER = "aff_ticker_col"
 
-    // New Universal Share BottomSheet in Shop
-    const val NEW_UNIVERSAL_SHARE_BOTTOM_SHEET = "shop_sharing"
-
     // Search Reimagine
     const val SEARCH_1_INST_AUTO = "search_1_inst_auto"
     const val SEARCH_1_INST_AUTO_CONTROL = "control_variant"
