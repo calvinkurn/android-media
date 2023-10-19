@@ -804,7 +804,7 @@ class StoriesDetailFragment @Inject constructor(
         if (_videoPlayer == null) return
 
         when {
-            (state.event == RESUME || state.event == BUFFERING) && state.content.type == Video -> videoPlayer.resume()
+            (state.event == RESUME || state.event == BUFFERING) && state.content.type == Video && timerState.event != PAUSE -> videoPlayer.resume()
             state.event == PAUSE || timerState.event == PAUSE -> videoPlayer.pause()
         }
     }
