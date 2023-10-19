@@ -1526,18 +1526,26 @@ public class GTMAnalytics extends ContextAnalytics {
             if (!eventName.isEmpty()) {
                 values.put("event", eventName);
             }
-            if (values.get("event") != null && !String.valueOf(values.get("event")).equals("")) {
-                if (!values.containsKey(AppEventTracking.GTM.UTM_MEDIUM)) {
-                    values.put(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
-                }
-                if (!values.containsKey(AppEventTracking.GTM.UTM_CAMPAIGN)) {
-                    values.put(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
-                }
-                if (!values.containsKey(AppEventTracking.GTM.UTM_SOURCE)) {
-                    values.put(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
-                }
+            Object evtName = values.get("event");
+            if (evtName != null && !String.valueOf(evtName).equals("")) {
+                addUtmHolder(values);
                 iris.saveEvent(values);
             }
+        }
+    }
+
+    private void addUtmHolder(Map<String, Object> values) {
+        if (!values.containsKey(AppEventTracking.GTM.UTM_MEDIUM) &&
+                !"".equals(UTM_MEDIUM_HOLDER)) {
+            values.put(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
+        }
+        if (!values.containsKey(AppEventTracking.GTM.UTM_CAMPAIGN) &&
+                !"".equals(UTM_CAMPAIGN_HOLDER)) {
+            values.put(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
+        }
+        if (!values.containsKey(AppEventTracking.GTM.UTM_SOURCE) &&
+                !"".equals(UTM_SOURCE_HOLDER)) {
+            values.put(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
         }
     }
 
