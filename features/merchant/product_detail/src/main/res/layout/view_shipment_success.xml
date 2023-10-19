@@ -24,14 +24,13 @@
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/pdp_shipment_header_logo"
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_header_price"
+            android:layout_height="24dp"
+            app:layout_constraintBottom_toTopOf="@id/pdp_shipment_header_barrier_bottom"
             app:layout_constraintEnd_toStartOf="@id/pdp_shipment_header_price"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/pdp_shipment_header_price"
-            tools:layout_width="100dp"
+            app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -42,6 +41,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@id/pdp_shipment_header_barrier_bottom"
             app:layout_constraintEnd_toStartOf="@id/pdp_shipment_header_slash_price"
             app:layout_constraintStart_toEndOf="@id/pdp_shipment_header_logo"
             app:layout_constraintTop_toTopOf="parent"
@@ -56,10 +56,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:textColor="@color/Unify_NN600"
-            app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_header_price"
+            app:layout_constraintBottom_toTopOf="@id/pdp_shipment_header_barrier_bottom"
             app:layout_constraintEnd_toStartOf="@id/pdp_shipment_chevron"
             app:layout_constraintStart_toEndOf="@id/pdp_shipment_header_price"
-            app:layout_constraintTop_toTopOf="@id/pdp_shipment_header_price"
+            app:layout_constraintTop_toTopOf="parent"
             app:typographyType="display_2"
             tools:text="Rp10.000" />
 
@@ -71,12 +71,20 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/pdp_shipment_header_barrier_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="pdp_shipment_header_logo, pdp_shipment_header_price, pdp_shipment_header_slash_price, pdp_shipment_chevron"
+            tools:visibility="invisible" />
+
         <LinearLayout
             android:id="@+id/pdp_shipment_container_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/pdp_shipment_header_price" />
+            app:layout_constraintTop_toBottomOf="@id/pdp_shipment_header_barrier_bottom" />
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/pdp_shipment_ticker"
