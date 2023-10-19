@@ -499,4 +499,18 @@ public abstract class SellerRouterApplication extends MainApplication implements
         //Do nothing
     }
 
+    @Override
+    public void onRefreshCM(String token) {
+        refreshFCMFromInstantIdService(token);
+    }
+
+    public boolean isGotoAuthSdkEnabled() {
+        return false;
+    }
+
+    @Override
+    public ScpTokenModel onNewRefreshToken() {
+        /* no-op */
+    }
+
 }
