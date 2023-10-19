@@ -776,7 +776,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         return if (shippingWidgetUiModel.freeShippingTitle.isNotEmpty()) {
             // Change duration to promo title after promo is applied
             shippingWidgetUiModel.freeShippingTitle.convertToSpannedString()
-        } else {
+        } else if (shippingWidgetUiModel.courierName.isNotEmpty()) {
             val title = getTitleFromNameAndPrice(
                 courierName = shippingWidgetUiModel.courierName,
                 shipperPrice = shippingWidgetUiModel.courierShipperPrice
@@ -785,6 +785,9 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             StringBuilder().apply {
                 appendHtmlBoldText(title)
             }.toString().convertToSpannedString()
+        } else {
+            // only schelly available (OFOC)
+            return null
         }
     }
 

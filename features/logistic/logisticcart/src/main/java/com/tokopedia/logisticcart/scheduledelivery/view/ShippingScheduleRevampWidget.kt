@@ -115,7 +115,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
             shippingScheduleWidgets.add(createOtherOptionWidget())
         }
 
-        if (titleNow2H != null) {
+        if (!titleNow2H.isNullOrEmpty()) {
             shippingScheduleWidgets.add(
                 create2HWidget(
                     titleNow2H = titleNow2H,

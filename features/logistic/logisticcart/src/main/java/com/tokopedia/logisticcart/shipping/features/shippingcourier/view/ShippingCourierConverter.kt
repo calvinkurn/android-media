@@ -218,6 +218,15 @@ class ShippingCourierConverter @Inject constructor() {
         return courierItemData
     }
 
+    fun schellyToCourierItemData(schelly: ScheduleDeliveryData, validationMetadata: String = ""): CourierItemData {
+        return CourierItemData().apply {
+            setScheduleDeliveryUiModel(
+                schelly,
+                validationMetadata = validationMetadata
+            )
+        }
+    }
+
     private fun CourierItemData.setScheduleDeliveryUiModel(
         scheduleDeliveryData: ScheduleDeliveryData?,
         validationMetadata: String?

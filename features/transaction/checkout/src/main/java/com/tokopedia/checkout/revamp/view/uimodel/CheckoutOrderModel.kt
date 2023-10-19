@@ -130,6 +130,7 @@ data class CheckoutOrderModel(
     var timeslotId: Long = 0L,
     var validationMetadata: String = "",
     val ratesValidationFlow: Boolean = false,
+    val shippingComponents: ShippingComponents = ShippingComponents.RATES,
     var hasSentScheduleDeliveryAnalytics: Boolean = false,
 
     // Multiple Order Plus Coachmark
@@ -188,3 +189,13 @@ data class CheckoutOrderShipment(
 data class CheckoutOrderInsurance(
     var isCheckInsurance: Boolean = false
 )
+
+enum class ShippingComponents(val value: Int) {
+    SCHELLY_WITH_RATES(1),
+    SCHELLY(2),
+    RATES(3);
+
+    companion object {
+        fun fromInt(value: Int) = ShippingComponents.values().first { it.value == value }
+    }
+}
