@@ -6,7 +6,6 @@ import android.graphics.Path
 import android.graphics.RectF
 import android.text.style.LineBackgroundSpan
 import com.tokopedia.unifycomponents.toPx
-import kotlin.math.abs
 
 class RoundedSpan(
     backgroundColor: Int,
@@ -112,7 +111,7 @@ class RoundedSpan(
         val skipSpike = if (lnum == 0 ) true else listOfEmptyLine[lnum - 1]?.isNotEmpty() ?: false
         val isWiderThenPrev = width > prevWidth
 
-        val widerBridgeBlendWidth = radius * 2
+        val bridgeBlendWidth = radius * 2
 
         val startPoint = Pair(prevRight - ((prevRight - prevLeft) / 2), rect.top)
         path.moveTo(startPoint.first, startPoint.second)
@@ -133,7 +132,7 @@ class RoundedSpan(
                 path.cubicTo(
                     prevLeft, rect.top,
                     prevLeft, rect.top,
-                    prevLeft - widerBridgeBlendWidth, rect.top
+                    prevLeft - bridgeBlendWidth, rect.top
                 )
 
                 // 15
@@ -150,10 +149,12 @@ class RoundedSpan(
         if (!isWiderThenPrev && !skipSpike) {
             // 10
             var pathTenPosY =  prevBottom
+            var pathTenPosX = rect.left - bridgeBlendWidth
             if (align == ALIGN_LEFT) {
                 pathTenPosY -= radius
+                pathTenPosX += bridgeBlendWidth
             }
-            path.lineTo(prevLeft, pathTenPosY)
+            path.lineTo(pathTenPosX, pathTenPosY)
         }
 
         // 2
@@ -194,7 +195,7 @@ class RoundedSpan(
                 path.cubicTo(
                     rect.right, rect.top,
                     rect.right, rect.top,
-                    prevRight, rect.top
+                    rect.right + bridgeBlendWidth, rect.top
                 )
             }
         } else {
@@ -214,7 +215,7 @@ class RoundedSpan(
         if (isWiderThenPrev && !skipSpike) {
             if (align != ALIGN_RIGHT) {
                 // 16
-                path.lineTo(prevRight + widerBridgeBlendWidth, rect.top)
+                path.lineTo(prevRight + bridgeBlendWidth, rect.top)
 
                 // 17
                 path.cubicTo(
