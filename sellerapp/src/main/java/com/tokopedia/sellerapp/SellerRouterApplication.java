@@ -22,7 +22,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
-import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.order.DeeplinkMapperOrder;
 import com.tokopedia.cachemanager.CacheManager;
@@ -51,6 +50,7 @@ import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker;
 import com.tokopedia.loginregister.login.router.LoginRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.network.data.model.ScpTokenModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.worker.PushWorker;
@@ -203,11 +203,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
         if (cacheManager == null)
             cacheManager = new PersistentCacheManager(this);
         return cacheManager;
-    }
-
-    @Override
-    public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
-        return null;
     }
 
 
@@ -510,6 +505,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     @Override
     public ScpTokenModel onNewRefreshToken() {
+        return new ScpTokenModel("", "");
         /* no-op */
     }
 

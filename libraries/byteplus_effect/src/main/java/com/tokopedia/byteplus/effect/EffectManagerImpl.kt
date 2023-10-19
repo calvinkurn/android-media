@@ -216,6 +216,7 @@ class EffectManagerImpl @Inject constructor(
         surfaceWidth: Int,
         surfaceHeight: Int,
         dstTexture: Int,
+        isFlip: Boolean,
     ) {
         val drawTransition = ImageUtil.Transition()
             .crop(
@@ -226,6 +227,7 @@ class EffectManagerImpl @Inject constructor(
                 surfaceWidth,
                 surfaceHeight,
             )
+            .flip(isFlip, false)
 
         mImageUtil?.drawFrameOnScreen(
             dstTexture,

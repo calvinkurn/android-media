@@ -830,7 +830,12 @@ class TokoNowHomeViewModel @Inject constructor(
             val warehouses = AddressMapper.mapToWarehousesData(addressData)
             val response = getRepurchaseWidgetUseCase.execute(warehouses)
             if (response.products.isNotEmpty()) {
-                homeLayoutItemList.mapProductPurchaseData(item, response, miniCartData)
+                homeLayoutItemList.mapProductPurchaseData(
+                    item = item,
+                    response = response,
+                    miniCartData = miniCartData,
+                    blockAddToCart = hasBlockedAddToCart
+                )
             } else {
                 homeLayoutItemList.removeItem(item.id)
             }

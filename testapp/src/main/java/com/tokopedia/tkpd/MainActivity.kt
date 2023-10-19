@@ -153,7 +153,7 @@ class MainActivity : BaseActivity() {
         /*
          * Put your default applink here
          */
-        return ApplinkConst.HOME
+        return ""
     }
 
     data class Model(

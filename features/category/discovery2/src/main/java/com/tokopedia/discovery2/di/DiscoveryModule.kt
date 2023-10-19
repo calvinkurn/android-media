@@ -22,6 +22,8 @@ import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatGqlReposit
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.emptystate.EmptyStateRepository
+import com.tokopedia.discovery2.repository.flashsaletoko.FlashSaleTokoGQLRepository
+import com.tokopedia.discovery2.repository.flashsaletoko.FlashSaleTokoRepository
 import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherGQLRepository
 import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherRepository
 import com.tokopedia.discovery2.repository.mycoupon.MyCouponGQLRepository
@@ -80,6 +82,11 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideTabsGQLRepository(): TabsRepository {
         return TabsGQLRepository()
+    }
+
+    @Provides
+    fun provideFlashSaleTokoGQLRepository(): FlashSaleTokoRepository {
+        return FlashSaleTokoGQLRepository()
     }
 
     @Provides

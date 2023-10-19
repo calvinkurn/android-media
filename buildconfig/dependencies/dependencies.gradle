@@ -103,7 +103,7 @@ ext {
     windowVersion = '1.0.0'
     localBroadcastManagerVersion = '1.0.0'
     gojekSSOVersion = '1.0.1-67-0738bd6'
-    gotoLsdkVersion = '1.1.0-a458ceb9-SNAPSHOT'
+    gotoLsdkVersion = '1.1.0-02cda5f2-SNAPSHOT'
     gotoCvsdkVersion = '2.0.0-fef4ff83-SNAPSHOT'
     gotoPinSdkVersion = '0.1.2-dev-4-g1348aec'
     playIntegrityVersion = '1.0.1'
@@ -485,5 +485,23 @@ ext {
             group: 'org.jetbrains.kotlin',
             name: 'kotlin-parcelize-runtime',
             version: '1.7.10'
+    ]
+
+    sellerFeedbackKmpVersion = "1.0.0"
+    gqlKmpVersion = "1.0.0"
+    ktorVersion = "2.3.3"
+    kermitVersion = "2.0.0-RC4"
+
+    kmpDependencies = [
+            sellerFeedbackKmp      : "com.tokopedia.seller.feedback:feedback-android:$sellerFeedbackKmpVersion",
+            gqlKmp                 : "com.tokopedia.gql:gql-android:$gqlKmpVersion",
+    ]
+
+    ktorDependencies = [
+            ktorOkhttp                  : "io.ktor:ktor-client-okhttp:$ktorVersion",
+            ktorContentNegotiation      : "io.ktor:ktor-client-content-negotiation:$ktorVersion",
+            ktorSerializationJson       : "io.ktor:ktor-serialization-kotlinx-json:$ktorVersion",
+            ktorLogging                 : "io.ktor:ktor-client-logging:$ktorVersion",
+            kermitLogging               : "co.touchlab:kermit:$kermitVersion"
     ]
 }

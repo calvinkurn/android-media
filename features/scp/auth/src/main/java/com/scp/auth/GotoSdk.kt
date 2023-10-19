@@ -53,6 +53,7 @@ object GotoSdk {
 
     private var GOTOPINSDKINSTANCE: PinManager? = null
     private var component: ScpAuthComponent? = null
+    private var scpAuthActivity: AppCompatActivity? = null
 
     private const val TOKOPEDIA_APP_TYPE = "Tokopedia"
     private const val DEVICE_TYPE = "android"
@@ -63,6 +64,12 @@ object GotoSdk {
     private const val ACCEPT_LANGUAGE_VALUE = "id_ID"
 
     internal fun getVerifComponent(): ScpAuthComponent? = component
+
+    fun setActivty(activity: AppCompatActivity?) {
+        scpAuthActivity = activity
+    }
+
+    fun getActivity(): AppCompatActivity? = scpAuthActivity
 
     @JvmStatic
     fun init(application: Application): LSdkProvider? {
@@ -161,7 +168,7 @@ object GotoSdk {
                     isDebug = TokopediaUrl.getInstance().TYPE == Env.STAGING,
                     language = { LOCALE_ID },
                     isDarkThemeEnabled = {
-                        application.isDarkMode()
+                        getActivity()?.isDarkMode() ?: false
                     }
                 ),
                 deviceInfo = DeviceInfo(

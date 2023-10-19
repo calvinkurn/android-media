@@ -279,6 +279,17 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         }.show()
     }
 
+    /* Manually delete the lsdk token when the rollence off and the token is not empty */
+    private fun clearLsdkTokens() {
+        if (!ScpUtils.isGotoLoginEnabled()) {
+            try {
+                if (GotoSdk.LSDKINSTANCE?.getAccessToken()?.isNotEmpty() == true) {
+                    ScpUtils.clearTokens()
+                }
+            } catch (ignored: Exception) { }
+        }
+    }
+
     private fun clearData() {
         hideLoading()
         clearCacheGotoKyc()
@@ -299,6 +310,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         clearTemporaryTokenForSeamless()
         instance.refreshFCMTokenFromForeground(userSession.deviceId, true)
 
+        clearLsdkTokens()
         userSession.logoutSession()
         TkpdFirebaseAnalytics.getInstance(this).setUserId(null)
 
