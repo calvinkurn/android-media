@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.sellerfeedback.di.scope.SellerFeedbackScope
+import com.tokopedia.sellerfeedback.presentation.viewmodel.SellerFeedbackKmpViewModel
 import com.tokopedia.sellerfeedback.presentation.viewmodel.SellerFeedbackViewModel
 import dagger.Binds
 import dagger.Module
@@ -21,4 +22,9 @@ interface SellerFeedbackViewModelModule {
     @IntoMap
     @ViewModelKey(SellerFeedbackViewModel::class)
     abstract fun sellerFeedbackViewModel(viewModel: SellerFeedbackViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SellerFeedbackKmpViewModel::class)
+    abstract fun sellerFeedbackKmpViewModel(viewModel: SellerFeedbackKmpViewModel): ViewModel
 }
