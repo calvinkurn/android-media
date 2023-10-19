@@ -1,5 +1,6 @@
 package com.scp.auth.common.analytics
 
+import android.content.Context
 import com.scp.login.core.domain.common.infrastructure.LSdkAnalyticFieldName
 import com.scp.login.core.domain.common.infrastructure.LSdkEventName
 import com.scp.login.core.domain.common.infrastructure.LSdkPopupActionType
@@ -11,6 +12,7 @@ import com.scp.verification.core.domain.common.infrastructure.CVEventFieldName
 import com.scp.verification.core.domain.common.infrastructure.CVEventName
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.user.session.UserSession
 
 object AuthAnalyticsMapper {
 
@@ -109,6 +111,21 @@ object AuthAnalyticsMapper {
                 type,
                 createCustomDimension(com.scp.login.core.BuildConfig.VERSION_CODE)
             )
+        )
+    }
+
+    fun trackMoUser(context: Context, loginMethod: String) {
+        val userSession = UserSession(context)
+        TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
+            userSession.userId,
+            "",
+            "",
+            "",
+            userSession.isGoldMerchant,
+            userSession.shopName,
+            userSession.shopId,
+            userSession.hasShop(),
+            loginMethod
         )
     }
 

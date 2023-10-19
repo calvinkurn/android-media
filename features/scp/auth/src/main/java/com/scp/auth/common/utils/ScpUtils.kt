@@ -1,10 +1,12 @@
 package com.scp.auth.common.utils
 
+import android.content.Context
 import com.scp.auth.GotoSdk
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.user.session.UserSession
 
 object ScpUtils {
 
@@ -40,5 +42,10 @@ object ScpUtils {
             message.put(key, value.toString())
         }
         ServerLogger.log(Priority.P1, ScpConstants.LOGGER_SCP_AUTH_TAG, message)
+    }
+
+    fun updateUserSessionLoginMethod(context: Context, loginMethod: String) {
+        val userSession = UserSession(context)
+        userSession.loginMethod = loginMethod
     }
 }

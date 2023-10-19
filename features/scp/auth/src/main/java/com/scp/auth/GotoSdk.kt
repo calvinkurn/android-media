@@ -30,6 +30,7 @@ import com.scp.verification.core.data.common.services.LocalCVABTestService
 import com.scp.verification.core.data.common.services.LocalCVLogService
 import com.scp.verification.core.data.common.services.contract.ScpAnalyticsEvent
 import com.scp.verification.core.data.common.services.contract.ScpAnalyticsService
+import com.scp.verification.core.domain.common.infrastructure.CVEventFieldName
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -91,7 +92,6 @@ object GotoSdk {
                         eventName: ScpAnalyticsEvent,
                         params: Map<String, Any?>
                     ) {
-                        println("trackersdk: $eventName, $params")
                         AuthAnalyticsMapper.trackScreenLsdk(eventName.eventName, params)
                     }
 
@@ -99,7 +99,6 @@ object GotoSdk {
                         eventName: ScpAnalyticsEvent,
                         params: Map<String, Any?>
                     ) {
-                        println("trackersdk: $eventName, $params")
                         if (eventName.eventName == LSdkEventName.LSDK_VERIFICATION_FAIL || eventName.eventName == LSdkEventName.LSDK_LOGIN_FAIL) {
                             ScpUtils.logError(eventName.eventName, params)
                         }
@@ -110,7 +109,9 @@ object GotoSdk {
                         eventName: ScpAnalyticsEvent,
                         params: MutableMap<String, Any?>
                     ) {
-                        println("trackersdk: $eventName, $params")
+                        if (eventName.eventName == LSdkEventName.LSDK_LOGIN_SUCCESS) {
+                            ScpUtils.updateUserSessionLoginMethod(application, params[CVEventFieldName.METHOD].toString())
+                        }
                         AuthAnalyticsMapper.trackEventLsdk(eventName.eventName, params)
                     }
                 }

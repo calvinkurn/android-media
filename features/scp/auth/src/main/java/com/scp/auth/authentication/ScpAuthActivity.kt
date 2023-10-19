@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
+import android.text.format.DateFormat
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.scp.auth.GotoSdk
@@ -18,6 +19,7 @@ import com.scp.auth.common.utils.goToHelpGotoPIN
 import com.scp.auth.common.utils.goToInactivePhoneNumber
 import com.scp.auth.di.DaggerScpAuthComponent
 import com.scp.auth.registerpushnotif.services.ScpRegisterPushNotificationWorker
+import com.scp.auth.service.GetDefaultChosenAddressService
 import com.scp.login.common.utils.LoginImageLoader
 import com.scp.login.core.domain.common.UserCredential
 import com.scp.login.core.domain.contracts.configs.LSdkChooseAccountUiConfigs
@@ -54,6 +56,7 @@ import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.track.TrackApp
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 import javax.inject.Inject
 
 class ScpAuthActivity : BaseActivity() {
@@ -280,7 +283,7 @@ class ScpAuthActivity : BaseActivity() {
     }
 
     private fun getDefaultChosenAddress() {
-//        GetDefaultChosenAddressService.startService(applicationContext)
+        GetDefaultChosenAddressService.startService(applicationContext)
     }
 
     private fun setTrackingUserId(userId: String) {
@@ -310,20 +313,10 @@ class ScpAuthActivity : BaseActivity() {
                 LinkerManager.getInstance().sendEvent(
                     LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData)
                 )
-//                loginEventAppsFlyer(userSession.userId, "")
+                loginEventAppsFlyer(userSession.userId, "")
             }
 
-//            TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
-//                userSession.userId,
-//                "",
-//                "",
-//                "",
-//                userSession.isGoldMerchant,
-//                userSession.shopName,
-//                userSession.shopId,
-//                userSession.hasShop(),
-//                analytics.getLoginMethodMoengage(userSession.loginMethod)
-//            )
+            AuthAnalyticsMapper.trackMoUser(this, userSession.loginMethod)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -332,6 +325,16 @@ class ScpAuthActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         GotoSdk.setActivty(null)
+    }
+
+    private fun loginEventAppsFlyer(userId: String, userEmail: String) {
+        val dataMap = HashMap<String, Any>()
+        dataMap["user_id"] = userId
+        dataMap["user_email"] = userEmail
+        val date = Date()
+        val stringDate = DateFormat.format("EEEE, MMMM d, yyyy ", date.time)
+        dataMap["timestamp"] = stringDate
+        TrackApp.getInstance().appsFlyer.sendTrackEvent("Login Successful", dataMap)
     }
 
     companion object {
