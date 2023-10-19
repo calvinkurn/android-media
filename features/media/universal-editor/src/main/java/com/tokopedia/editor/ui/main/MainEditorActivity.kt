@@ -22,10 +22,10 @@ import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
 import com.tokopedia.editor.ui.dialog.ConfirmationDialog
-import com.tokopedia.editor.ui.main.component.AudioStateUiComponent
-import com.tokopedia.editor.ui.main.component.GlobalLoaderUiComponent
-import com.tokopedia.editor.ui.main.component.NavigationToolUiComponent
-import com.tokopedia.editor.ui.main.component.PagerContainerUiComponent
+import com.tokopedia.editor.ui.component.AudioStateUiComponent
+import com.tokopedia.editor.ui.component.GlobalLoaderUiComponent
+import com.tokopedia.editor.ui.component.NavigationToolUiComponent
+import com.tokopedia.editor.ui.component.PagerContainerUiComponent
 import com.tokopedia.editor.ui.main.uimodel.InputTextParam
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent

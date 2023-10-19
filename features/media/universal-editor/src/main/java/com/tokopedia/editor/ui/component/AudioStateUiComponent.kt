@@ -1,4 +1,4 @@
-package com.tokopedia.editor.ui.main.component
+package com.tokopedia.editor.ui.component
 
 import android.os.Handler
 import android.os.Looper
