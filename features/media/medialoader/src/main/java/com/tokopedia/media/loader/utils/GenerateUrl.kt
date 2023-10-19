@@ -68,6 +68,7 @@ private fun String.generateSecureUrl(
 }
 
 internal fun Properties.generateUrl(): Any {
+    val isWebpEnabled = RemoteConfig.isWebpFormatEnabled()
     val data = data.toString()
 
     // secure image loader
@@ -75,7 +76,7 @@ internal fun Properties.generateUrl(): Any {
 
     // indicates that the url from our internal CDN, which contains a custom behavior,
     // such as adaptive delivery, webp support, custom header, etc.
-    if (data.isFromInternalCdnImageUrl()) {
+    if (data.isFromInternalCdnImageUrl() && isWebpEnabled) {
         return data.generateWebpUrl()
     }
 
