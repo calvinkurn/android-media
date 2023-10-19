@@ -406,13 +406,16 @@ class CartViewModel @Inject constructor(
                 wishlistIndex = index
             }
         }
-        cartDataList.value.add(++wishlistIndex, cartSectionHeaderHolderData)
-        cartModel.firstCartSectionHeaderPosition = when (cartModel.firstCartSectionHeaderPosition) {
-            -1 -> wishlistIndex
-            else -> min(cartModel.firstCartSectionHeaderPosition, wishlistIndex)
+
+        if (cartDataList.value.isNotEmpty()) {
+            cartDataList.value.add(++wishlistIndex, cartSectionHeaderHolderData)
+            cartModel.firstCartSectionHeaderPosition = when (cartModel.firstCartSectionHeaderPosition) {
+                -1 -> wishlistIndex
+                else -> min(cartModel.firstCartSectionHeaderPosition, wishlistIndex)
+            }
+            cartDataList.value.add(++wishlistIndex, cartWishlistHolderData)
+            cartDataList.notifyObserver()
         }
-        cartDataList.value.add(++wishlistIndex, cartWishlistHolderData)
-        cartDataList.notifyObserver()
     }
 
     fun hasReachAllShopItems(data: Any): Boolean {
@@ -986,13 +989,16 @@ class CartViewModel @Inject constructor(
                 recentViewIndex = index
             }
         }
-        cartDataList.value.add(++recentViewIndex, cartSectionHeaderHolderData)
-        cartModel.firstCartSectionHeaderPosition = when (cartModel.firstCartSectionHeaderPosition) {
-            -1 -> recentViewIndex
-            else -> min(cartModel.firstCartSectionHeaderPosition, recentViewIndex)
+
+        if (cartDataList.value.isNotEmpty()) {
+            cartDataList.value.add(++recentViewIndex, cartSectionHeaderHolderData)
+            cartModel.firstCartSectionHeaderPosition = when (cartModel.firstCartSectionHeaderPosition) {
+                -1 -> recentViewIndex
+                else -> min(cartModel.firstCartSectionHeaderPosition, recentViewIndex)
+            }
+            cartDataList.value.add(++recentViewIndex, cartRecentViewHolderData)
+            cartDataList.notifyObserver()
         }
-        cartDataList.value.add(++recentViewIndex, cartRecentViewHolderData)
-        cartDataList.notifyObserver()
     }
 
     fun processGetWishlistV2Data() {
@@ -1092,20 +1098,23 @@ class CartViewModel @Inject constructor(
                 recommendationIndex = index
             }
         }
-        cartSectionHeaderHolderData?.let {
-            cartDataList.value.add(++recommendationIndex, cartSectionHeaderHolderData)
-            cartModel.firstCartSectionHeaderPosition =
-                when (cartModel.firstCartSectionHeaderPosition) {
-                    -1 -> recommendationIndex
-                    else -> min(cartModel.firstCartSectionHeaderPosition, recommendationIndex)
-                }
-        }
 
-        if (recommendationPage == 1) {
-            addCartTopAdsHeadlineData(++recommendationIndex)
+        if (cartDataList.value.isNotEmpty()) {
+            cartSectionHeaderHolderData?.let {
+                cartDataList.value.add(++recommendationIndex, cartSectionHeaderHolderData)
+                cartModel.firstCartSectionHeaderPosition =
+                    when (cartModel.firstCartSectionHeaderPosition) {
+                        -1 -> recommendationIndex
+                        else -> min(cartModel.firstCartSectionHeaderPosition, recommendationIndex)
+                    }
+            }
+
+            if (recommendationPage == 1) {
+                addCartTopAdsHeadlineData(++recommendationIndex)
+            }
+            cartDataList.value.addAll(++recommendationIndex, cartRecommendationItemHolderDataList)
+            cartDataList.notifyObserver()
         }
-        cartDataList.value.addAll(++recommendationIndex, cartRecommendationItemHolderDataList)
-        cartDataList.notifyObserver()
     }
 
     fun addCartTopAdsHeadlineData(index: Int) {
@@ -2028,7 +2037,7 @@ class CartViewModel @Inject constructor(
 
                             newCartGroupHolderData.productUiModelList[lastItemIndex] =
                                 newCartItemHolderData
-                            // newCartDataList[index + newCartGroupHolderData.productUiModelList.size] = newCartItemHolderData
+                            newCartDataList[newCartDataList.indexOfFirst { it is CartItemHolderData && it.cartId == newCartItemHolderData.cartId }] = newCartItemHolderData
 
                             updateShopShownByCartGroup(newCartGroupHolderData)
                             newCartGroupHolderData.isAllSelected =
@@ -2533,8 +2542,10 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    suspend fun emitTokonowUpdated(value: Boolean) {
-        _tokoNowProductUpdater.emit(value)
+    fun emitTokonowUpdated() {
+        viewModelScope.launch {
+            _tokoNowProductUpdater.emit(true)
+        }
     }
 
     fun generateCartBundlingPromotionsAnalyticsData(
