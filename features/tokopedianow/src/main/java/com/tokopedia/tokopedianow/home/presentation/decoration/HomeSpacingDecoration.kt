@@ -5,10 +5,7 @@ import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
-import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
-import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
-import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class HomeSpacingDecoration : RecyclerView.ItemDecoration() {
@@ -31,38 +28,29 @@ class HomeSpacingDecoration : RecyclerView.ItemDecoration() {
             unifyprinciplesR.dimen.unify_space_0)
         val dimen4dp = parent.context.resources.getDimensionPixelSize(
             unifyprinciplesR.dimen.unify_space_4)
-        val dimen12dp = parent.context.resources.getDimensionPixelSize(
-            unifyprinciplesR.dimen.unify_space_12)
+        val dimen8dp = parent.context.resources.getDimensionPixelSize(
+            unifyprinciplesR.dimen.unify_space_8)
         val dimen16dp = parent.context.resources.getDimensionPixelSize(
             unifyprinciplesR.dimen.unify_space_16)
 
         when (val viewHolder = parent.findViewHolderForLayoutPosition(position)) {
-            is TokoNowCategoryMenuViewHolder -> {
-                viewHolder.itemView.findViewById<RecyclerView?>(R.id.recycler_view)
-                    .setPadding(dimen12dp, dimen4dp, dimen12dp, -dimen4dp)
-                viewHolder.itemView.findViewById<TokoNowDynamicHeaderView?>(R.id.header)
-                    .setLayoutParams {
-                        it.topMargin = if(position == FIRST_ITEM_POSITION) dimen0dp else dimen16dp
-                    }
-            }
             is BannerComponentViewHolder -> {
                 viewHolder.itemView.setLayoutParams {
                     if(position == FIRST_ITEM_POSITION) {
                         it.topMargin = -dimen16dp
                     } else {
                         it.topMargin = -dimen4dp
-                        it.bottomMargin = dimen4dp
                     }
                 }
             }
-            is TokoNowRepurchaseViewHolder -> {
-                viewHolder.itemView.setLayoutParams {
-                    it.topMargin = if(position == FIRST_ITEM_POSITION) dimen0dp else dimen12dp
-                }
+            is HomeSharingWidgetViewHolder -> {
+                viewHolder.itemView.setLayoutParams { it.bottomMargin = -dimen8dp }
             }
             else -> {
                 if(position == FIRST_ITEM_POSITION) {
                     viewHolder?.itemView.setLayoutParams { it.topMargin = dimen0dp }
+                } else {
+                    viewHolder?.itemView.setLayoutParams { it.bottomMargin = dimen0dp }
                 }
             }
         }
