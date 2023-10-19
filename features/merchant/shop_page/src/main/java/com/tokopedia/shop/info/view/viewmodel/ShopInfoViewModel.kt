@@ -98,7 +98,7 @@ class ShopInfoViewModel @Inject constructor(
         }
     }
 
-    fun getShopGoApotikData(shopId: Int, warehouseId: Int) {
+    fun getShopGoApotikData(shopId: Long, warehouseId: Long) {
         launchCatchError(block = {
             coroutineScope {
                 val shopEpharmData = withContext(coroutineDispatcherProvider.io) {

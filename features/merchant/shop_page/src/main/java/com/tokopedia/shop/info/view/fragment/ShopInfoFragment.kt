@@ -26,7 +26,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.network.constant.TkpdBaseURL
@@ -300,7 +300,7 @@ class ShopInfoFragment :
                 when (result) {
                     is Success -> {
                         renderShopInfo(result.data)
-                        getShopEpharmacyData(shopId.toIntOrZero()) // Get detail data for ePharmacy shop
+                        getShopEpharmacyData(shopId.toLongOrZero()) // Get detail data for ePharmacy shop
                     }
                     is Fail -> showError(result.throwable)
                 }
@@ -368,7 +368,7 @@ class ShopInfoFragment :
         fragmentShopInfoBinding?.globalError?.setActionClickListener {
             getShopInfo(shopId)
             getShopNotes(shopId)
-            getShopEpharmacyData(shopId.toIntOrZero())
+            getShopEpharmacyData(shopId.toLongOrZero())
             getShopBadgeReputation()
         }
     }
@@ -400,8 +400,8 @@ class ShopInfoFragment :
         shopViewModel?.getShopNotes(shopId)
     }
 
-    private fun getShopEpharmacyData(shopId: Int) {
-        shopViewModel?.getShopGoApotikData(shopId = shopId, warehouseId = 0)
+    private fun getShopEpharmacyData(shopId: Long) {
+        shopViewModel?.getShopGoApotikData(shopId = shopId, warehouseId = 0L)
     }
 
     private fun setStatisticsVisibility() {

@@ -15,7 +15,7 @@ class GetEpharmacyShopInfoV2UseCase @Inject constructor(
     companion object {
         private const val SHOP_ID = "shop_id"
         private const val WAREHOUSE_ID = "warehouse_id"
-        private const val QUERY = "query getEpharmacyShopInfo(\$shop_id: Int!, \$warehouse_id: Int) {\n" +
+        private const val QUERY = "query getEpharmacyShopInfo(\$shop_id: Int64!, \$warehouse_id: Int64) {\n" +
             "   getEpharmacyShopInfo(shop_id: \$shop_id, warehouse_id: \$warehouse_id) {\n" +
             "       header {" +
             "           process_time" +
@@ -38,9 +38,9 @@ class GetEpharmacyShopInfoV2UseCase @Inject constructor(
             "   }" +
             "}"
 
-        fun createParams(shopId: Int, warehouseId: Int): RequestParams = RequestParams.create().apply {
-            putInt(SHOP_ID, shopId)
-            putInt(WAREHOUSE_ID, warehouseId)
+        fun createParams(shopId: Long, warehouseId: Long): RequestParams = RequestParams.create().apply {
+            putLong(SHOP_ID, shopId)
+            putLong(WAREHOUSE_ID, warehouseId)
         }
     }
 
