@@ -24,7 +24,6 @@ import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.ApplinkRouter;
-import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -394,12 +393,6 @@ public class MyApplication extends BaseMainApplication
     public boolean isSupportApplink(String appLink) {
         Toast.makeText(getApplicationContext(), "check for airbnb deeplink " + appLink, Toast.LENGTH_LONG).show();
         return false;
-    }
-
-    @Deprecated
-    @Override
-    public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
-        return null;
     }
 
     private void setVersionCode() {

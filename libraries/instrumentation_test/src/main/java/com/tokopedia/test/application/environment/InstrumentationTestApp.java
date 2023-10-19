@@ -22,7 +22,6 @@ import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.ApplinkRouter;
-import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
@@ -232,11 +231,6 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     @Override
     public boolean isSupportApplink(String appLink) {
         return false;
-    }
-
-    @Override
-    public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
-        return null;
     }
 
     public static class DummyAppsFlyerAnalytics extends ContextAnalytics {

@@ -22,7 +22,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
-import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.order.DeeplinkMapperOrder;
 import com.tokopedia.cachemanager.CacheManager;
@@ -204,11 +203,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
         if (cacheManager == null)
             cacheManager = new PersistentCacheManager(this);
         return cacheManager;
-    }
-
-    @Override
-    public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
-        return null;
     }
 
 

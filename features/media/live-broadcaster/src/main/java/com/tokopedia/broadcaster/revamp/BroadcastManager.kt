@@ -64,6 +64,8 @@ class BroadcastManager @Inject constructor(
 
     private var mEglCore: EglCore? = null
 
+    private var isFlipGracePeriod = false
+
     private var mConnectionId: Pair<Int, ConnectionConfig>? = null
     private var mConnectionState: Streamer.CONNECTION_STATE? = null
 
@@ -450,7 +452,7 @@ class BroadcastManager @Inject constructor(
     ) {
         val surfaceSize = mSurfaceSize ?: return
 
-        if (mDisplaySurface != null) {
+        if (mDisplaySurface != null && !isFlipGracePeriod) {
             mDisplaySurface?.makeCurrent()
             effectManager.drawFrameBase(
                 textureWidth = surfaceSize.width,
@@ -458,6 +460,7 @@ class BroadcastManager @Inject constructor(
                 surfaceWidth = surfaceSize.width,
                 surfaceHeight = surfaceSize.height,
                 dstTexture = destinationTexture,
+                isFlip = false,
             )
             mDisplaySurface?.swapBuffers()
         }
@@ -468,7 +471,7 @@ class BroadcastManager @Inject constructor(
         textureHeight: Int,
         destinationTexture: Int
     ) {
-        if (mCodecSurface != null) {
+        if (mCodecSurface != null && !isFlipGracePeriod) {
             mStreamerWrapper?.pusherStreamer?.drainEncoder()
             mCodecSurface?.makeCurrent()
             effectManager.drawFrameBase(
@@ -477,6 +480,7 @@ class BroadcastManager @Inject constructor(
                 surfaceWidth = textureWidth,
                 surfaceHeight = textureHeight,
                 dstTexture = destinationTexture,
+                isFlip = mSelectedCamera?.isFront == true,
             )
             mCodecSurface?.setPresentationTime(System.nanoTime())
             mCodecSurface?.swapBuffers()
@@ -650,6 +654,8 @@ class BroadcastManager @Inject constructor(
     }
 
     override fun flip() {
+        if (mWithByteplus == true && isFlipGracePeriod) return
+
         if (mStreamerWrapper?.displayStreamer == null || !isVideoCaptureStarted()) {
             // preventing accidental touch issues
             return
@@ -666,6 +672,10 @@ class BroadcastManager @Inject constructor(
         updateFpsRanges(mSelectedCamera)
 
         if (mBroadcastOn) mAdaptiveBitrate?.resume()
+
+        executeWhenByteplusActive {
+            startDelayFlipCamera()
+        }
     }
 
     override fun snapShot() {
@@ -848,6 +858,19 @@ class BroadcastManager @Inject constructor(
         mStreamerWrapper?.changeFpsRange(fpsRange)
     }
 
+    private fun startDelayFlipCamera() {
+        /**
+         * Need to force delay when flipping camera since
+         * the flip() is not flipping immediately & there's no callbacks that indicate
+         * when larix is rendering front / back camera.
+         */
+        isFlipGracePeriod = true
+
+        Handler().postDelayed({
+            isFlipGracePeriod = false
+        }, FLIP_CAMERA_DELAY)
+    }
+
     private fun findPreferredCamera(cameraList: List<BroadcasterCamera>): BroadcasterCamera {
         val activeCamId = mStreamerWrapper?.activeCameraId()
         if (activeCamId != null) {
@@ -856,7 +879,7 @@ class BroadcastManager @Inject constructor(
                 return activeCamera
         }
 
-        val frontFacingCamera = cameraList.firstOrNull { it.lensFacing == BroadcasterCamera.LENS_FACING_FRONT }
+        val frontFacingCamera = cameraList.firstOrNull { it.isFront }
         if (frontFacingCamera != null)
             return frontFacingCamera
 
@@ -922,9 +945,15 @@ class BroadcastManager @Inject constructor(
         mListeners.forEach { it.onBroadcastStatisticUpdate(mMetric) }
     }
 
+    private fun executeWhenByteplusActive(onExecute: () -> Unit) {
+        if (mWithByteplus == true) onExecute()
+    }
+
     companion object {
         private const val STATISTIC_TIMER_DELAY = 1000L
         private const val STATISTIC_DEFAULT_INTERVAL = 3000L
+
+        private const val FLIP_CAMERA_DELAY = 1000L
 
         private const val TARGET_ASPECT_RATIO = 16.0 / 9.0
     }
