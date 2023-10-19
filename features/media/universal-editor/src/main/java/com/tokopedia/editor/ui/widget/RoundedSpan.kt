@@ -113,6 +113,11 @@ class RoundedSpan(
 
         val bridgeBlendWidth = radius * 2
 
+        /**
+         * For comment note number please refer to the path flow on
+         * universal-editor/src/debug/assets/center_alignment.png || etc
+         */
+
         val startPoint = Pair(prevRight - ((prevRight - prevLeft) / 2), rect.top)
         path.moveTo(startPoint.first, startPoint.second)
 
