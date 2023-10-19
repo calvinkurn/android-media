@@ -2,13 +2,10 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.marginLeft
-import androidx.core.view.marginRight
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -41,13 +38,13 @@ class DynamicOneLinerViewHolder(
         when (status) {
             STATUS_PLACEHOLDER -> {
                 itemView.show()
-                binding.dynamicOneLinerContent.hide()
+                binding.dynamicOneLinerContentParent.hide()
                 binding.dynamicOneLinerShimmering.show()
             }
 
             STATUS_SHOW -> {
                 itemView.show()
-                binding.dynamicOneLinerContent.show()
+                binding.dynamicOneLinerContentParent.show()
                 binding.dynamicOneLinerShimmering.hide()
                 renderContent(this, getComponentTrackData(element))
                 impressComponent(element)
@@ -63,6 +60,9 @@ class DynamicOneLinerViewHolder(
         data: DynamicOneLinerDataModel.Data,
         componentTrackDataModel: ComponentTrackDataModel
     ) = with(binding) {
+
+        configPadding(binding, data)
+
         val title = data.text
         dynamicOneLinerTitle.showIfWithBlock(title.isNotEmpty()) {
             val context = context
@@ -71,8 +71,6 @@ class DynamicOneLinerViewHolder(
             } else {
                 title.renderHtmlBold(context)
             }
-
-            setMargin(marginLeft, data.paddingTopPx, marginRight, data.paddingBottomPx)
         }
 
         val iconUrl = data.icon
@@ -104,6 +102,13 @@ class DynamicOneLinerViewHolder(
 
         dynamicOneLinerSeparatorTop.showWithCondition(data.shouldShowSeparatorTop)
         dynamicOneLinerSeparatorBottom.showWithCondition(data.shouldShowSeparatorBottom)
+    }
+
+    private fun configPadding(
+        binding: ItemDynamicOneLinerBinding,
+        data: DynamicOneLinerDataModel.Data
+    ) = with(binding.dynamicOneLinerContent) {
+        setPadding(paddingLeft, data.paddingTopPx, paddingRight, data.paddingBottomPx)
     }
 
     private fun impressComponent(element: DynamicOneLinerDataModel) {
