@@ -115,7 +115,7 @@ class PriceBoxView @JvmOverloads constructor(
         binding.discountRibbon.isVisible = !percentage.isNullOrEmpty()
 
         binding.discountRibbon.apply {
-            setText("$percentage%")
+            setText(percentage)
             setFontColor(fontColor)
             setBackgroundColor(backgroundColor)
         }

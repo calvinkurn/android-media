@@ -26,7 +26,7 @@ class RibbonView @JvmOverloads constructor(
     private var shapeDrawable: MaterialShapeDrawable? = null
 
     init {
-        binding.percentage.addOneTimeGlobalLayoutListener {
+        binding.percentageValue.addOneTimeGlobalLayoutListener {
             val ribbonPathModel = ShapeAppearanceModel.builder()
                 .setTopRightCorner(
                     CornerFamily.ROUNDED,
@@ -34,7 +34,7 @@ class RibbonView @JvmOverloads constructor(
                 )
                 .setBottomEdge(
                     TriangleEdgeTreatment(
-                        binding.percentage.width.toFloat() / 2,
+                        binding.container.width.toFloat() / 2,
                         HEIGHT_RATIO,
                         false
                     )
@@ -51,12 +51,14 @@ class RibbonView @JvmOverloads constructor(
         }
     }
 
-    fun setText(value: String) {
-        binding.percentage.text = value
+    fun setText(value: String?) {
+        binding.percentageValue.text = value
+        binding.percentageLabel.text = "%"
     }
 
     fun setType(value: Int) {
-        binding.percentage.setType(value)
+        binding.percentageValue.setType(value)
+        binding.percentageLabel.textSize = 8f
     }
 
     fun setBackgroundColor(color: String?) {
@@ -69,11 +71,14 @@ class RibbonView @JvmOverloads constructor(
     fun setFontColor(color: String?) {
         if (color.isNullOrEmpty()) return
 
-        binding.percentage.setTextColor(Color.parseColor(color))
+        val intColor = Color.parseColor(color)
+        binding.percentageValue.setTextColor(intColor)
+        binding.percentageLabel.setTextColor(intColor)
     }
 
     fun changeToDisable(textColor: Int, backgroundColor: Int) {
-        binding.percentage.setTextColor(textColor)
+        binding.percentageValue.setTextColor(textColor)
+        binding.percentageLabel.setTextColor(textColor)
 
         shapeDrawable?.fillColor = ColorStateList.valueOf(backgroundColor)
         background = shapeDrawable
