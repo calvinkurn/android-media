@@ -42,6 +42,7 @@ import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.databinding.FragmentShopInfoBinding
 import com.tokopedia.shop.extension.transformToVisitable
+import com.tokopedia.shop.info.data.GetEpharmacyShopInfoResponse
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity.Companion.EXTRA_SHOP_INFO
@@ -316,7 +317,7 @@ class ShopInfoFragment :
                         shopViewModel?.let { _viewModel ->
                             shopInfo?.let { _shopInfo ->
                                 if (_viewModel.isShouldShowLicenseForDrugSeller(isGoApotik = _shopInfo.isGoApotik, fsType = _shopInfo.fsType)) {
-//                                    renderEpharmDetailsData(epharmData = it.data.data, shopInfoData = _shopInfo)
+                                    renderEpharmDetailsData(epharmData = it.data, shopInfoData = _shopInfo)
                                 }
                             }
                         }
@@ -485,26 +486,26 @@ class ShopInfoFragment :
         }
     }
 
-//    private fun renderEpharmDetailsData(epharmData: GetEpharmacyShopInfo.Data, shopInfoData: ShopInfoData) {
-//        if (!isErrorGetEpharmData(epharmData.getEpharmacyShopInfo.header)) {
-//            fragmentShopInfoBinding?.let { binding ->
-//                binding.layoutPartialShopInfoDescription.shopGoApotikContainer.visibility = View.VISIBLE
-//
-//                binding.layoutPartialShopInfoDescription.tvSiaDescription.text = shopInfoData.siaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
-//                binding.layoutPartialShopInfoDescription.tvSipaDescription.text = shopInfoData.sipaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
-//                binding.layoutPartialShopInfoDescription.tvApjDescription.text = shopInfoData.apj.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
-//            }
-//        } else {
-//            val errMessage: String = epharmData.getEpharmacyShopInfo.header.errorMessage[0]
-//            view?.let {
-//                Toaster.build(it, errMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
-//            }
-//        }
-//    }
+    private fun renderEpharmDetailsData(epharmData: GetEpharmacyShopInfoResponse, shopInfoData: ShopInfoData) {
+        if (!isErrorGetEpharmData(epharmData.getEpharmacyShopInfo.header)) {
+            fragmentShopInfoBinding?.let { binding ->
+                binding.layoutPartialShopInfoDescription.shopGoApotikContainer.visibility = View.VISIBLE
 
-//    private fun isErrorGetEpharmData(errData: GetEpharmacyShopInfo.Data.GetEpharmacyShopInfoData.Header): Boolean {
-//        return errData.errorCode != 0 && errData.errorMessage.isNotEmpty()
-//    }
+                binding.layoutPartialShopInfoDescription.tvSiaDescription.text = shopInfoData.siaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+                binding.layoutPartialShopInfoDescription.tvSipaDescription.text = shopInfoData.sipaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+                binding.layoutPartialShopInfoDescription.tvApjDescription.text = shopInfoData.apj.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+            }
+        } else {
+            val errMessage: String = epharmData.getEpharmacyShopInfo.header.errorMessage[0]
+            view?.let {
+                Toaster.build(it, errMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+            }
+        }
+    }
+
+    private fun isErrorGetEpharmData(errData: GetEpharmacyShopInfoResponse.GetEpharmacyShopInfoData.Header): Boolean {
+        return errData.errorCode != 0 && errData.errorMessage.isNotEmpty()
+    }
 
     private fun renderListNote(notes: List<ShopNoteUiModel>) {
         getShopId()?.let {
