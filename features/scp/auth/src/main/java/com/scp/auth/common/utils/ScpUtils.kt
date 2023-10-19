@@ -17,6 +17,11 @@ object ScpUtils {
             .isNotEmpty() && GlobalConfig.isSellerApp().not()
     }
 
+    fun clearTokens() {
+        GotoSdk.LSDKINSTANCE?.updateSsoToken("")
+        GotoSdk.LSDKINSTANCE?.save("", "")
+    }
+
     fun updateSsoToken(accessToken: String) {
         GotoSdk.LSDKINSTANCE?.updateSsoToken(accessToken = accessToken)
     }
