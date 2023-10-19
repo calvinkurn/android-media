@@ -41,7 +41,7 @@ import com.tokopedia.seller.active.common.features.sellerfeedback.SuccessToaster
 import com.tokopedia.sellerfeedback.BuildConfig
 import com.tokopedia.sellerfeedback.R
 import com.tokopedia.sellerfeedback.SellerFeedbackTracking
-import com.tokopedia.sellerfeedback.data.SubmitResult
+import com.tokopedia.sellerfeedback.data.SubmitResultKmp
 import com.tokopedia.sellerfeedback.di.component.DaggerSellerFeedbackComponent
 import com.tokopedia.sellerfeedback.error.SellerFeedbackException
 import com.tokopedia.sellerfeedback.presentation.SellerFeedback
@@ -53,9 +53,10 @@ import com.tokopedia.sellerfeedback.presentation.uimodel.ImageFeedbackUiModel
 import com.tokopedia.sellerfeedback.presentation.uimodel.Score
 import com.tokopedia.sellerfeedback.presentation.util.ScreenShootPageHelper
 import com.tokopedia.sellerfeedback.presentation.util.ScreenshotManager
+import com.tokopedia.sellerfeedback.presentation.util.SellerFeedbackLogger
 import com.tokopedia.sellerfeedback.presentation.view.SellerFeedbackToolbar
 import com.tokopedia.sellerfeedback.presentation.viewholder.BaseImageFeedbackViewHolder
-import com.tokopedia.sellerfeedback.presentation.viewmodel.SellerFeedbackViewModel
+import com.tokopedia.sellerfeedback.presentation.viewmodel.SellerFeedbackKmpViewModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.TextAreaUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -69,7 +70,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSI
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_MEDIA_IMAGES
 import javax.inject.Inject
 
-class SellerFeedbackFragment :
+class SellerFeedbackKmpFragment :
     BaseDaggerFragment(),
     BaseImageFeedbackViewHolder.ImageClickListener {
 
@@ -84,8 +85,12 @@ class SellerFeedbackFragment :
         private const val EXTRA_TOASTER_MESSAGE = "extra_toaster_message"
         private const val EXTRA_SHOW_SETTINGS = "extra_show_settings"
 
-        fun createInstance(uri: Uri?, shouldShowSettings: Boolean, activityName: String): SellerFeedbackFragment {
-            return SellerFeedbackFragment().apply {
+        fun createInstance(
+            uri: Uri?,
+            shouldShowSettings: Boolean,
+            activityName: String
+        ): SellerFeedbackKmpFragment {
+            return SellerFeedbackKmpFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(EXTRA_URI_IMAGE, uri)
                     putString(EXTRA_ACTIVITY_NAME, activityName)
@@ -108,7 +113,7 @@ class SellerFeedbackFragment :
     private val scoreNeutral by lazy { Score.Neutral() }
     private val scoreGood by lazy { Score.Good() }
 
-    private var viewModel: SellerFeedbackViewModel? = null
+    private var viewModel: SellerFeedbackKmpViewModel? = null
     private var backgroundHeader: FrameLayout? = null
     private var buttonFeedbackBad: Typography? = null
     private var buttonFeedbackNeutral: Typography? = null
@@ -131,7 +136,7 @@ class SellerFeedbackFragment :
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         viewModel =
-            ViewModelProvider(this, viewModelFactory).get(SellerFeedbackViewModel::class.java)
+            ViewModelProvider(this, viewModelFactory).get(SellerFeedbackKmpViewModel::class.java)
         permissionCheckerHelper = PermissionCheckerHelper()
     }
 
@@ -173,6 +178,7 @@ class SellerFeedbackFragment :
         showSettings()
         setDefaultFeedbackResultValue()
         attachScreenshot()
+        SellerFeedbackLogger.sendLogToNewRelic(SellerFeedbackLogger.STATE.OPEN)
     }
 
     override fun onRequestPermissionsResult(
@@ -238,9 +244,11 @@ class SellerFeedbackFragment :
             SellerFeedbackTracking.Click.eventClickPutAttachment()
             val intent =
                 RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER)
-            val currentSelectedImages = getSelectedImageUrl(imageFeedbackAdapter.getImageFeedbackData())
+            val currentSelectedImages =
+                getSelectedImageUrl(imageFeedbackAdapter.getImageFeedbackData())
             imagePickerMultipleSelectionBuilder.initialSelectedImagePathList = currentSelectedImages
-            imagePickerBuilder.imagePickerMultipleSelectionBuilder = imagePickerMultipleSelectionBuilder
+            imagePickerBuilder.imagePickerMultipleSelectionBuilder =
+                imagePickerMultipleSelectionBuilder
             intent.putImagePickerBuilder(imagePickerBuilder)
             intent.putParamPageSource(ImagePickerPageSource.SELLER_FEEDBACK_PAGE)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
@@ -295,13 +303,14 @@ class SellerFeedbackFragment :
                 isClickable = false
                 isLoading = true
                 SellerFeedbackTracking.Click.eventClickSubmit()
+                SellerFeedbackLogger.sendLogToNewRelic(SellerFeedbackLogger.STATE.SUBMIT)
                 val sellerFeedback = SellerFeedback(
                     feedbackScore = getFeedbackScore(),
                     feedbackType = getFeedbackType(),
                     feedbackPage = getFeedbackPage(),
                     feedbackDetail = getFeedbackDetail()
                 )
-                viewModel?.submitFeedback(sellerFeedback)
+                viewModel?.submitFeedbackKmp(sellerFeedback)
             }
         }
     }
@@ -426,7 +435,7 @@ class SellerFeedbackFragment :
     private fun observeViewModel() {
         viewModel?.run {
             getFeedbackImages().observe(viewLifecycleOwner, observerFeedbackImages)
-            getSubmitResult().observe(viewLifecycleOwner, observerSubmitResult)
+            getSubmitResultKmp().observe(viewLifecycleOwner, observerSubmitFeedbackKmp)
         }
     }
 
@@ -435,27 +444,46 @@ class SellerFeedbackFragment :
         checkButtonSend()
     }
 
-    private val observerSubmitResult = Observer<SubmitResult> {
+    private val observerSubmitFeedbackKmp = Observer<SubmitResultKmp> {
         when (it) {
-            is SubmitResult.Success -> setOnSuccessFeedbackSaved()
-            is SubmitResult.UploadFail -> {
+            is SubmitResultKmp.SubmitFeedbackSuccess -> {
+                val submitFeedback = it.submitFeedbackModel
+                SellerFeedbackLogger.sendLogToNewRelic(
+                    SellerFeedbackLogger.STATE.RESULT,
+                    result = SellerFeedbackLogger.SUCCESS,
+                    detailResult = "state:${submitFeedback?.state.orEmpty()};errorMessage:${submitFeedback?.errorMessage.orEmpty()};isError:${submitFeedback?.isError}"
+                )
+                setOnSuccessFeedbackSaved()
+            }
+            is SubmitResultKmp.UploadFail -> {
                 logToCrashlytics(it.cause, ERROR_UPLOAD)
                 showErrorToaster(getString(R.string.feedback_form_toaster_fail_upload))
             }
-            is SubmitResult.SubmitFail -> {
+
+            is SubmitResultKmp.SubmitFail -> {
                 logToCrashlytics(it.cause, ERROR_SUBMIT)
+                SellerFeedbackLogger.sendLogToNewRelic(
+                    SellerFeedbackLogger.STATE.RESULT,
+                    result = SellerFeedbackLogger.FAILED,
+                    detailResult = it.cause.stackTraceToString()
+                )
                 showErrorToaster(getString(R.string.feedback_form_toaster_fail_submit))
             }
-            is SubmitResult.NetworkFail -> {
+
+            is SubmitResultKmp.NetworkFail -> {
                 logToCrashlytics(it.cause, ERROR_NETWORK)
+                SellerFeedbackLogger.sendLogToNewRelic(
+                    SellerFeedbackLogger.STATE.RESULT,
+                    result = SellerFeedbackLogger.FAILED,
+                    detailResult = it.cause.stackTraceToString()
+                )
                 showErrorToaster(getString(R.string.feedback_form_toaster_fail_network))
             }
-
             else -> {
                 // no op
             }
         }
-        buttonSend?.apply {
+        buttonSend?.run {
             isLoading = false
             isClickable = true
         }
