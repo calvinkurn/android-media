@@ -49,7 +49,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.bottom_sheet_edu.BottomSheetEduUiModel
-import com.tokopedia.product.detail.data.model.datamodel.CacheState
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomBottomSheetData
@@ -177,7 +176,6 @@ class DynamicProductDetailViewModel @Inject constructor(
     companion object {
         private const val TEXT_ERROR = "ERROR"
         private const val ATC_ERROR_TYPE = "error_atc"
-        private const val REMOVE_WISHLIST = "false"
         private const val P2_LOGIN_ERROR_TYPE = "error_p2_login"
         private const val P2_DATA_ERROR_TYPE = "error_p2_data"
         private const val TIMEOUT_QUANTITY_FLOW = 500L
@@ -275,10 +273,7 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     var videoTrackerData: Pair<Long, Long>? = null
-
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
-    var pdpLayout: ProductDetailDataModel? = null
-        private set
     var variantData: ProductVariant? = null
     var listOfParentMedia: MutableList<Media>? = null
     var buttonActionText: String = ""
@@ -566,14 +561,14 @@ class DynamicProductDetailViewModel @Inject constructor(
         data: kotlin.Result<ProductDetailDataModel>
     ) {
         data.onSuccess {
-            processPdpLayout(pdpLayout = it)
-            getProductP2(cacheState = it.cacheState, urlQuery = urlQuery)
+            val p1 = processPdpLayout(pdpLayout = it)
+            getProductP2(p1 = p1, urlQuery = urlQuery)
         }.onFailure {
             _productLayout.value = it.asFail()
         }
     }
 
-    private fun processPdpLayout(pdpLayout: ProductDetailDataModel) {
+    private fun processPdpLayout(pdpLayout: ProductDetailDataModel): DynamicProductInfoP1 {
         /**
          * When wishlist clicked, so viewModel should hit addWishlist api and refresh page.
          * refresh page in p1 the isWishlist field value doesn't updated, should updated after hit p2Login.
@@ -581,10 +576,9 @@ class DynamicProductDetailViewModel @Inject constructor(
          */
         var p1 = getDynamicProductInfoP1 ?: DynamicProductInfoP1()
         val isWishlist = p1.data.isWishlist.orFalse()
-        this.pdpLayout = pdpLayout
-        getDynamicProductInfoP1 = pdpLayout.layoutData.run {
-            listOfParentMedia = data.media.toMutableList()
-            copy(data = data.copy(isWishlist = isWishlist))
+        getDynamicProductInfoP1 = pdpLayout.layoutData.let {
+            listOfParentMedia = it.data.media.toMutableList()
+            it.copy(data = it.data.copy(isWishlist = isWishlist))
         }.also { p1 = it }
 
         variantData = if (!p1.isProductVariant()) {
@@ -605,6 +599,8 @@ class DynamicProductDetailViewModel @Inject constructor(
 
         // Render initial data
         _productLayout.value = processedList.asSuccess()
+
+        return p1
     }
 
     fun addToCart(atcParams: Any) {
@@ -707,13 +703,13 @@ class DynamicProductDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getProductP2(cacheState: CacheState, urlQuery: String) {
+    private fun getProductP2(p1: DynamicProductInfoP1, urlQuery: String) {
         launch(context = coroutineContext) {
             runCatching {
-                if (cacheState.isFromCache) {
-                    doBasicProductP2(isFromCache = true)
+                if (p1.cacheState.isFromCache) {
+                    doBasicProductP2(p1 = p1)
                 } else {
-                    getProductP2WhenCloud(urlQuery = urlQuery)
+                    getProductP2WhenCloud(p1 = p1, urlQuery = urlQuery)
                 }
             }.onFailure {
                 _productLayout.postValue(it.asFail())
@@ -721,25 +717,22 @@ class DynamicProductDetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getProductP2WhenCloud(urlQuery: String) {
-        doBasicProductP2(isFromCache = false)
-
-        val p1 = getDynamicProductInfoP1 ?: return
+    private suspend fun getProductP2WhenCloud(p1: DynamicProductInfoP1, urlQuery: String) {
+        doBasicProductP2(p1 = p1)
         getTopAdsImageViewData(p1.basic.productID)
         getProductTopadsStatus(p1.basic.productID, urlQuery)
     }
 
-    private suspend fun doBasicProductP2(isFromCache: Boolean) {
+    private suspend fun doBasicProductP2(p1: DynamicProductInfoP1) {
         val productLayout = (_productLayout.value as? Success)?.data.orEmpty()
         val hasQuantityEditor = productLayout.any {
             it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC)
         }
-        val p1 = getDynamicProductInfoP1 ?: return
         val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive) {
             getProductInfoP2LoginAsync(
                 shopId = p1.basic.getShopId(),
                 productId = p1.basic.productID,
-                isFromCache = isFromCache
+                isFromCache = p1.cacheState.isFromCache
             )
         } else {
             null

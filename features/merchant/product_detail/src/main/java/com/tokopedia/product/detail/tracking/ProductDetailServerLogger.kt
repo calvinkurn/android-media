@@ -7,7 +7,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.product.detail.data.model.datamodel.CacheState
+import com.tokopedia.product.detail.common.data.model.pdplayout.CacheState
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import org.json.JSONObject
 

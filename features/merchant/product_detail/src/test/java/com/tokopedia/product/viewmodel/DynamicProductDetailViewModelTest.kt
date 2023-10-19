@@ -25,6 +25,7 @@ import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirPro
 import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
+import com.tokopedia.product.detail.common.data.model.pdplayout.CacheState
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.Category
@@ -2879,6 +2880,93 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         coVerify {
             getPdpLayoutUseCase.executeOnBackground()
         }
+        assertTrue(viewModel.productLayout.value is Fail)
+    }
+
+    @Test
+    fun `p2 get from basic data when cache is true`() = runTest {
+        val layoutExpected = getMockPdpLayout().run {
+            copy(
+                layoutData = layoutData.copy(
+                    cacheState = CacheState(remoteCacheableActive = true, isFromCache = true)
+                )
+            )
+        }
+        val p2Expected = getMockP2Data()
+
+        coEvery {
+            getPdpLayoutUseCase.executeOnBackground()
+        } returns flowOf(Result.success(layoutExpected))
+
+        coEvery {
+            getP2DataAndMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), captureLambda())
+        } returns p2Expected
+
+        viewModel.getProductP1(ProductParams(), userLocationLocal = getUserLocationCache())
+
+        assertTrue(viewModel.topAdsImageView.value == null)
+
+        coVerify(inverse = true) { topAdsImageViewUseCase.getImageData(any()) }
+        coVerify(inverse = true) { getTopadsIsAdsUseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `p2 get cloud when cache is false`() = runTest {
+        val layoutExpected = getMockPdpLayout().run {
+            copy(
+                layoutData = layoutData.copy(
+                    cacheState = CacheState(remoteCacheableActive = true, isFromCache = false)
+                )
+            )
+        }
+        val p2Expected = getMockP2Data()
+        val expectedResponse = TopadsIsAdsQuery(
+            TopAdsGetDynamicSlottingData(
+                productList = listOf(TopAdsGetDynamicSlottingDataProduct(isCharge = true)),
+                status = TopadsStatus(error_code = 200, message = "OK")
+            )
+        )
+
+        coEvery {
+            getPdpLayoutUseCase.executeOnBackground()
+        } returns flowOf(Result.success(layoutExpected))
+
+        coEvery {
+            getP2DataAndMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), captureLambda())
+        } returns p2Expected
+        coEvery { remoteConfigInstance.getLong(any(), any()) } returns 5000
+        coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns expectedResponse
+
+        viewModel.getProductP1(
+            ProductParams(),
+            userLocationLocal = getUserLocationCache(),
+            urlQuery = "txsc=asdf"
+        )
+
+        coVerify { topAdsImageViewUseCase.getImageData(any()) }
+        coVerify { getTopadsIsAdsUseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `p2 error`() = runTest {
+        val layoutExpected = getMockPdpLayout().run {
+            copy(
+                layoutData = layoutData.copy(
+                    cacheState = CacheState(remoteCacheableActive = true, isFromCache = true)
+                )
+            )
+        }
+
+        coEvery {
+            getPdpLayoutUseCase.executeOnBackground()
+        } returns flowOf(Result.success(layoutExpected))
+
+        coEvery {
+            getP2DataAndMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), captureLambda())
+        } throws Throwable()
+
+        viewModel.getProductP1(ProductParams(), userLocationLocal = getUserLocationCache())
+
         assertTrue(viewModel.productLayout.value is Fail)
     }
 

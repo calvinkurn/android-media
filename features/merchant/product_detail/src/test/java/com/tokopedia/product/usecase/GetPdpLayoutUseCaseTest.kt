@@ -10,10 +10,10 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.pdplayout.CacheState
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
-import com.tokopedia.product.detail.data.model.datamodel.CacheState
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
@@ -185,12 +185,12 @@ class GetPdpLayoutUseCaseTest {
 
         // then
         val actualCacheDataState = results.firstOrNull()
-        val actualCacheData = actualCacheDataState?.getOrNull()?.cacheState
+        val actualCacheData = actualCacheDataState?.getOrNull()?.layoutData?.cacheState
         assertTrue(actualCacheDataState?.isSuccess.orFalse())
         assertEquals(cacheExpected, actualCacheData)
 
         val actualCloudDataState = results.getOrNull(1)
-        val actualCloudData = actualCloudDataState?.getOrNull()?.cacheState
+        val actualCloudData = actualCloudDataState?.getOrNull()?.layoutData?.cacheState
         assertTrue(actualCloudDataState?.isSuccess.orFalse())
         assertEquals(cloudExpected, actualCloudData)
     }
@@ -212,7 +212,7 @@ class GetPdpLayoutUseCaseTest {
         // then
         assertTrue(results.size == 1)
         val actualCacheDataState = results.firstOrNull()
-        val actualCacheData = actualCacheDataState?.getOrNull()?.cacheState
+        val actualCacheData = actualCacheDataState?.getOrNull()?.layoutData?.cacheState
         assertTrue(actualCacheDataState?.isSuccess.orFalse())
         assertEquals(cacheStateExpected, actualCacheData)
     }
@@ -235,7 +235,7 @@ class GetPdpLayoutUseCaseTest {
         assertTrue(results.size == Int.ONE)
 
         val actualCacheDataState = results.firstOrNull()
-        val actualCacheData = actualCacheDataState?.getOrNull()?.cacheState
+        val actualCacheData = actualCacheDataState?.getOrNull()?.layoutData?.cacheState
         assertTrue(actualCacheDataState?.isSuccess.orFalse())
         assertEquals(cacheStateExpected, actualCacheData)
     }
@@ -285,7 +285,7 @@ class GetPdpLayoutUseCaseTest {
         // then
         assertTrue(results.size == Int.ONE)
         val actualCloudDataState = results.firstOrNull()
-        val actualCloudData = actualCloudDataState?.getOrNull()?.cacheState
+        val actualCloudData = actualCloudDataState?.getOrNull()?.layoutData?.cacheState
         assertTrue(actualCloudDataState?.isSuccess.orFalse())
         assertEquals(cloudExpected, actualCloudData)
     }
@@ -371,7 +371,7 @@ class GetPdpLayoutUseCaseTest {
         // then
         assertTrue(results.size == 1)
         val actualCacheDataState = results.firstOrNull()
-        val actualCacheData = actualCacheDataState?.getOrNull()?.cacheState
+        val actualCacheData = actualCacheDataState?.getOrNull()?.layoutData?.cacheState
         assertTrue(actualCacheDataState?.isSuccess.orFalse())
         assertEquals(cacheStateExpected, actualCacheData)
     }

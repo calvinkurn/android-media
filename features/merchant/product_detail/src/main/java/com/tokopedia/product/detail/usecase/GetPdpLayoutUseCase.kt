@@ -11,11 +11,12 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.pdplayout.CacheState
+import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
-import com.tokopedia.product.detail.data.model.datamodel.CacheState
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -546,7 +547,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
     private fun processRequestCacheable(cacheState: CacheState) = flow {
         val pdpLayoutStateFromCache = processRequestCacheOnly(cacheState = cacheState)
         // if from cache is null cause throwable, so that get data from cloud
-        var pdpLayoutCache = pdpLayoutStateFromCache.getOrNull()?.cacheState ?: cacheState
+        var pdpLayoutCache = pdpLayoutStateFromCache.getOrNull()?.layoutData?.cacheState ?: cacheState
 
         if (pdpLayoutCache.isFromCache) {
             // is from cache, emit for the first
@@ -580,7 +581,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
             )
         } else {
             // expected cache state is fromCache is false and cacheFirstThenCloud is false
-            ProductDetailDataModel(cacheState = cacheState)
+            ProductDetailDataModel(layoutData = DynamicProductInfoP1(cacheState = cacheState))
         }
     }.onSuccess {
         Result.success(it)
@@ -660,14 +661,15 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     false
                 }
             }.toMutableList()
-        val getDynamicProductInfoP1 = DynamicProductDetailMapper.mapToDynamicProductDetailP1(this)
-        val p1VariantData = DynamicProductDetailMapper.mapVariantIntoOldDataClass(this)
+        val getDynamicProductInfoP1 = DynamicProductDetailMapper
+            .mapToDynamicProductDetailP1(this)
+            .copy(cacheState = cacheState, isCampaign = isCampaign)
+        val p1VariantData = DynamicProductDetailMapper
+            .mapVariantIntoOldDataClass(this)
         return ProductDetailDataModel(
             layoutData = getDynamicProductInfoP1,
             listOfLayout = initialLayoutData,
-            variantData = p1VariantData,
-            cacheState = cacheState,
-            isCampaign = isCampaign
+            variantData = p1VariantData
         )
     }
 
