@@ -62,7 +62,7 @@ class FeedRepository @Inject constructor(
 
     suspend fun getRelevantPosts(postSourceModel: PostSourceModel): FeedModel {
         val response = feedXHomeUseCase(
-            feedXHomeUseCase.createParamsWithId(postSourceModel.id, postSourceModel.source)
+            feedXHomeUseCase.createParamsWithId(postSourceModel.id, postSourceModel.source, postSourceModel.entryPoint)
         )
         return mapperFeed.transform(response)
     }
