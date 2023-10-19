@@ -210,8 +210,6 @@ class AffiliateAdpFragment :
     private fun afterViewCreated() {
         if (affiliateAdpViewModel?.isUserLoggedIn() == false) {
             loginRequest.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
-        } else {
-            (activity as? AffiliateActivity)?.refreshValidateUserData()
         }
         setAffiliateGreeting()
         binding?.navHeaderGroup?.isVisible = !isAffiliatePromoteHomeEnabled()
@@ -320,37 +318,37 @@ class AffiliateAdpFragment :
     }
 
     private fun setObservers() {
-        affiliateAdpViewModel?.getShimmerVisibility()?.observe(viewLifecycleOwner) { visibility ->
+        affiliateAdpViewModel?.getShimmerVisibility()?.observe(this) { visibility ->
             setShimmerVisibility(visibility)
         }
         affiliateAdpViewModel?.getDataShimmerVisibility()
-            ?.observe(viewLifecycleOwner) { visibility ->
+            ?.observe(this) { visibility ->
                 setDataShimmerVisibility(visibility)
             }
-        affiliateAdpViewModel?.getRangeChanged()?.observe(viewLifecycleOwner) { changed ->
+        affiliateAdpViewModel?.getRangeChanged()?.observe(this) { changed ->
             if (changed) resetItems()
         }
-        affiliateAdpViewModel?.progressBar()?.observe(viewLifecycleOwner) { visibility ->
+        affiliateAdpViewModel?.progressBar()?.observe(this) { visibility ->
             binding?.affiliateProgressBar?.isVisible = visibility.orFalse()
         }
-        affiliateAdpViewModel?.getErrorMessage()?.observe(viewLifecycleOwner) { error ->
+        affiliateAdpViewModel?.getErrorMessage()?.observe(this) { error ->
             onGetError(error)
         }
         (activity as? AffiliateActivity)?.getValidateUserData()
-            ?.observe(viewLifecycleOwner) { validateUserdata ->
+            ?.observe(this) { validateUserdata ->
                 binding?.affiliateProgressBar?.gone()
                 binding?.swipeRefreshLayout?.show()
                 onGetValidateUserData(validateUserdata)
             }
 
-        affiliateAdpViewModel?.getAffiliateDataItems()?.observe(viewLifecycleOwner) { dataList ->
+        affiliateAdpViewModel?.getAffiliateDataItems()?.observe(this) { dataList ->
             isNoPromoItem = dataList.firstOrNull { it is AffiliateNoPromoItemFoundModel } != null
 
             onGetAffiliateDataItems(dataList)
         }
 
         affiliateAdpViewModel?.getAffiliateAnnouncement()
-            ?.observe(viewLifecycleOwner) { announcementData ->
+            ?.observe(this) { announcementData ->
                 if (announcementData.getAffiliateAnnouncementV2?.announcementData?.subType == TICKER_BOTTOM_SHEET &&
                     !isAffiliatePromoteHomeEnabled()
                 ) {

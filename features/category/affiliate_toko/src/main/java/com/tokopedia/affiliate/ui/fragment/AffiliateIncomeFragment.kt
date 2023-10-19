@@ -138,14 +138,14 @@ class AffiliateIncomeFragment :
     private var lastItem: Visitable<AffiliateAdapterTypeFactory>? = null
 
     private fun setObservers() {
-        affiliateIncomeViewModel?.getAffiliateBalanceData()?.observe(viewLifecycleOwner) { balanceData ->
+        affiliateIncomeViewModel?.getAffiliateBalanceData()?.observe(this) { balanceData ->
             onGetAffiliateBalance(balanceData)
         }
 
-        affiliateIncomeViewModel?.getAffiliateDataItems()?.observe(viewLifecycleOwner) { dataList ->
+        affiliateIncomeViewModel?.getAffiliateDataItems()?.observe(this) { dataList ->
             onGetAffiliateDataItems(dataList)
         }
-        affiliateIncomeViewModel?.getShimmerVisibility()?.observe(viewLifecycleOwner) { visibility ->
+        affiliateIncomeViewModel?.getShimmerVisibility()?.observe(this) { visibility ->
             if (visibility != null) {
                 if (visibility) {
                     adapter.addShimmer()
@@ -155,20 +155,20 @@ class AffiliateIncomeFragment :
                 }
             }
         }
-        affiliateIncomeViewModel?.getErrorMessage()?.observe(viewLifecycleOwner) { error ->
+        affiliateIncomeViewModel?.getErrorMessage()?.observe(this) { error ->
             onGetError(error)
         }
-        affiliateIncomeViewModel?.getRangeChange()?.observe(viewLifecycleOwner) { changed ->
+        affiliateIncomeViewModel?.getRangeChange()?.observe(this) { changed ->
             if (changed) {
                 resetItems()
                 binding?.dateRangeText?.text = affiliateIncomeViewModel?.getSelectedDate()
             }
         }
-        affiliateIncomeViewModel?.getAffiliateKycData()?.observe(viewLifecycleOwner) {
+        affiliateIncomeViewModel?.getAffiliateKycData()?.observe(this) {
             onGetAffiliateKycData(it)
         }
 
-        affiliateIncomeViewModel?.getAffiliateKycLoader()?.observe(viewLifecycleOwner) { show ->
+        affiliateIncomeViewModel?.getAffiliateKycLoader()?.observe(this) { show ->
             if (show) {
                 binding?.saldoButtonAffiliate?.invisible()
                 binding?.tarikSaldoLoader?.show()
@@ -178,7 +178,7 @@ class AffiliateIncomeFragment :
             }
         }
 
-        affiliateIncomeViewModel?.getKycErrorMessage()?.observe(viewLifecycleOwner) {
+        affiliateIncomeViewModel?.getKycErrorMessage()?.observe(this) {
             view?.let {
                 Toaster.build(
                     it,
@@ -188,10 +188,10 @@ class AffiliateIncomeFragment :
                 ).show()
             }
         }
-        (activity as? AffiliateActivity)?.getValidateUserData()?.observe(viewLifecycleOwner) { validateUserdata ->
+        (activity as? AffiliateActivity)?.getValidateUserData()?.observe(this) { validateUserdata ->
             onGetValidateUserData(validateUserdata)
         }
-        affiliateIncomeViewModel?.getAffiliateAnnouncement()?.observe(viewLifecycleOwner) { announcementData ->
+        affiliateIncomeViewModel?.getAffiliateAnnouncement()?.observe(this) { announcementData ->
             if (announcementData.getAffiliateAnnouncementV2?.announcementData?.subType != TICKER_BOTTOM_SHEET) {
                 sendTickerImpression(
                     announcementData.getAffiliateAnnouncementV2?.announcementData?.type,
@@ -204,7 +204,7 @@ class AffiliateIncomeFragment :
                 )
             }
         }
-        affiliateIncomeViewModel?.getUnreadNotificationCount()?.observe(viewLifecycleOwner) { count ->
+        affiliateIncomeViewModel?.getUnreadNotificationCount()?.observe(this) { count ->
             binding?.withdrawalNavToolbar?.apply {
                 setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, count)
             }
@@ -425,7 +425,6 @@ class AffiliateIncomeFragment :
                 )
         }
         initDateRangeClickListener()
-        (activity as? AffiliateActivity)?.refreshValidateUserData()
         if (isAffiliateNCEnabled()) {
             affiliateIncomeViewModel?.fetchUnreadNotificationCount()
         }
