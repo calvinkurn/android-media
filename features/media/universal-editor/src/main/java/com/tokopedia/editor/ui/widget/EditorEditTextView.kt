@@ -58,7 +58,12 @@ class EditorEditTextView @JvmOverloads constructor(
 
     private fun setSpan(): SpannableString {
         val spanString = SpannableString(text)
-        val roundedSpan = RoundedSpan(backgroundColor, padding = roundedPadding, radius = roundedPadding / 2).apply {
+        val roundedSpan = RoundedSpan(
+            backgroundColor,
+            padding = roundedPadding,
+            radius = roundedPadding / 2,
+            lineHeightExtra = lineSpacingExtra
+        ).apply {
             this.setAlignment(alignment)
         }
         spanString.setSpan(roundedSpan,0, text?.length ?: 1, SpannableString.SPAN_EXCLUSIVE_INCLUSIVE)
@@ -147,7 +152,7 @@ class EditorEditTextView @JvmOverloads constructor(
     companion object {
         private const val DEFAULT_FONT_SIZE = 16f
 
-        private const val LINE_HEIGHT_EXTRA = 4f
+        private const val LINE_HEIGHT_EXTRA = 12f
         private const val LINE_HEIGHT_MULTIPLIER = 1f
     }
 }

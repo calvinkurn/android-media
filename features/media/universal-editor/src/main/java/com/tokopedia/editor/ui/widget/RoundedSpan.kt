@@ -6,11 +6,13 @@ import android.graphics.Path
 import android.graphics.RectF
 import android.text.style.LineBackgroundSpan
 import com.tokopedia.unifycomponents.toPx
+import kotlin.math.abs
 
 class RoundedSpan(
     backgroundColor: Int,
     private val padding: Int = DEFAULT_PADDING.toPx(),
-    private val radius: Int = DEFAULT_CORNER.toPx()
+    private val radius: Int = DEFAULT_CORNER.toPx(),
+    private val lineHeightExtra: Float
     ) : LineBackgroundSpan {
 
     private val rect = RectF()
@@ -74,14 +76,29 @@ class RoundedSpan(
 
         rect.set(shiftLeft, top.toFloat(), shiftRight, bottom.toFloat())
 
+
+        // ==================
+        if (lnum == 0) {
+            rect.top -= TOP_GAP_FIRST_ROW
+        } else {
+            rect.top -= TOP_GAP_ON_BETWEEN_ROW
+        }
+
+        if (end == text.length && text.substring(end - 1, end) != "\n") {
+            // if last row, increase bottom gap by parent line spacing value
+            rect.bottom += lineHeightExtra
+        } else {
+            rect.bottom -= BOTTOM_GAP_BETWEEN_ROW
+        }
+
         // ==================
         if (lnum == 0) {
             // reset value
             prevWidth = width + 1 // modified to be wider on index 0
-            prevLeft = left.toFloat()
-            prevTop = top.toFloat()
-            prevRight = right.toFloat()
-            prevBottom = bottom.toFloat()
+            prevLeft = rect.left
+            prevTop = rect.top
+            prevRight = rect.right
+            prevBottom = rect.bottom
             listOfEmptyLine.clear()
         }
         // ==================
@@ -95,42 +112,44 @@ class RoundedSpan(
         val skipSpike = if (lnum == 0 ) true else listOfEmptyLine[lnum - 1]?.isNotEmpty() ?: false
         val isWiderThenPrev = width > prevWidth
 
-        val startPoint = Pair(prevRight - (prevRight - prevLeft), top.toFloat())
+        val widerBridgeBlendWidth = radius * 2
+
+        val startPoint = Pair(prevRight - ((prevRight - prevLeft) / 2), rect.top)
         path.moveTo(startPoint.first, startPoint.second)
 
         if (isWiderThenPrev && !skipSpike) {
             // 12
-            path.lineTo(prevLeft + radius, top.toFloat())
+            path.lineTo(prevLeft + radius, rect.top)
 
             // 13
             path.cubicTo(
-                prevLeft, top.toFloat(),
-                prevLeft, top.toFloat(),
-                prevLeft, top.toFloat() - radius
+                prevLeft, rect.top,
+                prevLeft, rect.top,
+                prevLeft, rect.top - radius
             )
 
             if (align != ALIGN_LEFT) {
                 // 14
                 path.cubicTo(
-                    prevLeft, top.toFloat(),
-                    prevLeft, top.toFloat(),
-                    prevLeft - radius, top.toFloat()
+                    prevLeft, rect.top,
+                    prevLeft, rect.top,
+                    prevLeft - widerBridgeBlendWidth, rect.top
                 )
 
                 // 15
-                path.lineTo(rect.left + radius, top.toFloat())
+                path.lineTo(rect.left + radius, rect.top)
             } else {
                 // 19
                 path.lineTo(rect.left, rect.top + radius)
             }
         } else {
             // 1
-            path.lineTo(rect.left + radius, top.toFloat())
+            path.lineTo(rect.left + radius, rect.top)
         }
 
         if (!isWiderThenPrev && !skipSpike) {
             // 10
-            var pathTenPosY =  top.toFloat()
+            var pathTenPosY =  prevBottom
             if (align == ALIGN_LEFT) {
                 pathTenPosY -= radius
             }
@@ -195,20 +214,20 @@ class RoundedSpan(
         if (isWiderThenPrev && !skipSpike) {
             if (align != ALIGN_RIGHT) {
                 // 16
-                path.lineTo(prevRight + radius, top.toFloat())
+                path.lineTo(prevRight + widerBridgeBlendWidth, rect.top)
 
                 // 17
                 path.cubicTo(
-                    prevRight, top.toFloat(),
-                    prevRight, top.toFloat(),
-                    prevRight, top.toFloat() - radius
+                    prevRight, rect.top,
+                    prevRight, rect.top,
+                    prevRight, rect.top - radius
                 )
 
                 // 18
                 path.cubicTo(
-                    prevRight, top.toFloat(),
-                    prevRight, top.toFloat(),
-                    prevRight - radius, top.toFloat()
+                    prevRight, rect.top,
+                    prevRight, rect.top,
+                    prevRight - radius, rect.top
                 )
             }
         }
@@ -233,6 +252,9 @@ class RoundedSpan(
         private const val DEFAULT_PADDING = 8
         private const val DEFAULT_CORNER = 8
 
-        private const val SPACE_GAP_EXTRA = 4f
+        private const val TOP_GAP_FIRST_ROW = 6f
+
+        private const val TOP_GAP_ON_BETWEEN_ROW = 6f
+        private const val BOTTOM_GAP_BETWEEN_ROW = 6f
     }
 }
