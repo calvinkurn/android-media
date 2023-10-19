@@ -1,14 +1,13 @@
 package com.tokopedia.checkout.interceptor
 
-import android.content.Context
+import com.tokopedia.test.application.util.ResourcePathUtil.getJsonFromResource
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
-import com.tokopedia.checkout.test.R as checkouttestR
 
-class CartTestInterceptor(context: Context) : BaseCheckoutInterceptor(context) {
+class CartTestInterceptor : BaseCheckoutInterceptor() {
 
-    var customSafResponsePath: Int? = null
+    var customSafResponsePath: String? = null
     var customSafThrowable: IOException? = null
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -19,9 +18,12 @@ class CartTestInterceptor(context: Context) : BaseCheckoutInterceptor(context) {
             if (customSafThrowable != null) {
                 throw customSafThrowable!!
             } else if (customSafResponsePath != null) {
-                return mockResponse(copy, getRawString(customSafResponsePath!!))
+                return mockResponse(copy, getJsonFromResource(customSafResponsePath!!))
             }
-            return mockResponse(copy, getRawString(SAF_TOKONOW_DEFAULT_RESPONSE))
+            return mockResponse(copy, getJsonFromResource(SAF_TOKONOW_DEFAULT_RESPONSE_PATH))
+        }
+        if (requestString.contains(SAVE_SHIPMENT_KEY)) {
+            return mockResponse(copy, getJsonFromResource(SAVE_SHIPMENT_DEFAULT_RESPONSE_PATH))
         }
         return chain.proceed(chain.request())
     }
@@ -33,4 +35,11 @@ class CartTestInterceptor(context: Context) : BaseCheckoutInterceptor(context) {
 }
 
 const val SHIPMENT_ADDRESS_FORM_KEY = "shipmentAddressFormV4"
-val SAF_TOKONOW_DEFAULT_RESPONSE = checkouttestR.raw.saf_bundle_tokonow_default_response
+const val SAVE_SHIPMENT_KEY = "save_shipment"
+
+const val SAF_TOKONOW_DEFAULT_RESPONSE_PATH = "cart/saf_bundle_tokonow_default_response.json"
+const val SAF_TOKONOW_WITH_FAILED_DEFAULT_DURATION_RESPONSE_PATH = "cart/saf_bundle_tokonow_with_failed_default_duration_response.json"
+const val SAF_TOKONOW_SELLY_RESPONSE_PATH = "cart/saf_tokonow_selly_response.json"
+const val SAF_OWOC_DEFAULT_RESPONSE_PATH = "cart/saf_owoc_default_response.json"
+
+const val SAVE_SHIPMENT_DEFAULT_RESPONSE_PATH = "cart/save_shipment_default_response.json"

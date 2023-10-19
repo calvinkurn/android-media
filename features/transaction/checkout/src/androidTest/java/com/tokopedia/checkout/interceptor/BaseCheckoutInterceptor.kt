@@ -1,8 +1,5 @@
 package com.tokopedia.checkout.interceptor
 
-import android.content.Context
-import androidx.annotation.RawRes
-import com.tokopedia.test.application.util.InstrumentationMockHelper
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Protocol
@@ -11,7 +8,7 @@ import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
 import okio.Buffer
 
-abstract class BaseCheckoutInterceptor(val context: Context) : Interceptor {
+abstract class BaseCheckoutInterceptor : Interceptor {
 
     fun readRequestString(copyRequest: Request): String {
         val buffer = Buffer()
@@ -30,10 +27,6 @@ abstract class BaseCheckoutInterceptor(val context: Context) : Interceptor {
             )
             .addHeader("content-type", "application/json")
             .build()
-    }
-
-    fun getRawString(@RawRes resourceId: Int): String {
-        return InstrumentationMockHelper.getRawString(context, resourceId)
     }
 
     abstract fun resetInterceptor()

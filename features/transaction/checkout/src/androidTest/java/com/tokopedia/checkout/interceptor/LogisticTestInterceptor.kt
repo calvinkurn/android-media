@@ -1,17 +1,16 @@
 package com.tokopedia.checkout.interceptor
 
-import android.content.Context
+import com.tokopedia.test.application.util.ResourcePathUtil.getJsonFromResource
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
-import com.tokopedia.checkout.test.R as checkouttestR
 
-class LogisticTestInterceptor(context: Context) : BaseCheckoutInterceptor(context) {
+class LogisticTestInterceptor : BaseCheckoutInterceptor() {
 
-    var customRatesResponsePath: Int? = null
+    var customRatesResponsePath: String? = null
     var customRatesThrowable: IOException? = null
 
-    var customSellyResponsePath: Int? = null
+    var customSellyResponsePath: String? = null
     var customSellyThrowable: IOException? = null
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -22,17 +21,17 @@ class LogisticTestInterceptor(context: Context) : BaseCheckoutInterceptor(contex
             if (customRatesThrowable != null) {
                 throw customRatesThrowable!!
             } else if (customRatesResponsePath != null) {
-                return mockResponse(copy, getRawString(customRatesResponsePath!!))
+                return mockResponse(copy, getJsonFromResource(customRatesResponsePath!!))
             }
-            return mockResponse(copy, getRawString(RATES_DEFAULT_RESPONSE_PATH))
+            return mockResponse(copy, getJsonFromResource(RATES_DEFAULT_RESPONSE_PATH))
         }
         if (requestString.contains(SELLY_KEY)) {
             if (customSellyThrowable != null) {
                 throw customSellyThrowable!!
             } else if (customSellyResponsePath != null) {
-                return mockResponse(copy, getRawString(customSellyResponsePath!!))
+                return mockResponse(copy, getJsonFromResource(customSellyResponsePath!!))
             }
-            return mockResponse(copy, getRawString(SELLY_DEFAULT_RESPONSE_PATH))
+            return mockResponse(copy, getJsonFromResource(SELLY_DEFAULT_RESPONSE_PATH))
         }
         return chain.proceed(chain.request())
     }
@@ -40,11 +39,18 @@ class LogisticTestInterceptor(context: Context) : BaseCheckoutInterceptor(contex
     override fun resetInterceptor() {
         customRatesResponsePath = null
         customRatesThrowable = null
+
+        customSellyResponsePath = null
+        customSellyThrowable = null
     }
 }
 
 const val RATES_QUERY = "ratesV3"
 const val SELLY_KEY = "ongkirGetScheduledDeliveryRates"
 
-val RATES_DEFAULT_RESPONSE_PATH = checkouttestR.raw.ratesv3_tokonow_default_response
-val SELLY_DEFAULT_RESPONSE_PATH = checkouttestR.raw.selly_default_response
+const val RATES_DEFAULT_RESPONSE_PATH = "logistic/ratesv3_tokonow_default_response.json"
+const val RATES_SELLY_DEFAULT_RESPONSE_PATH = "logistic/ratesv3_selly_default_response.json"
+const val RATES_TOKONOW_WITH_ADDITIONAL_PRICE_RESPONSE_PATH = "logistic/ratesv3_tokonow_with_additional_price_response.json"
+const val RATES_TOKONOW_WITH_NORMAL_PRICE_RESPONSE_PATH = "logistic/ratesv3_tokonow_with_normal_price_response.json"
+
+const val SELLY_DEFAULT_RESPONSE_PATH = "logistic/selly_default_response.json"

@@ -1,15 +1,15 @@
 package com.tokopedia.checkout.interceptor
 
-import android.content.Context
+import com.tokopedia.test.application.util.ResourcePathUtil.getJsonFromResource
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
-import com.tokopedia.checkout.test.R as checkouttestR
 
-class PromoTestInterceptor(context: Context) : BaseCheckoutInterceptor(context) {
+class PromoTestInterceptor : BaseCheckoutInterceptor() {
 
-    var customValidateUseResponsePath: Int? = null
+    var customValidateUseResponsePath: String? = null
     var customValidateUseThrowable: IOException? = null
+
     override fun intercept(chain: Interceptor.Chain): Response {
         val copy = chain.request().newBuilder().build()
         val requestString = readRequestString(copy)
@@ -18,12 +18,12 @@ class PromoTestInterceptor(context: Context) : BaseCheckoutInterceptor(context) 
             if (customValidateUseThrowable != null) {
                 throw customValidateUseThrowable!!
             } else if (customValidateUseResponsePath != null) {
-                return mockResponse(copy, getRawString(customValidateUseResponsePath!!))
+                return mockResponse(copy, getJsonFromResource(customValidateUseResponsePath!!))
             }
-            return mockResponse(copy, getRawString(VALIDATE_USE_PROMO_REVAMP_DEFAULT_RESPONSE))
+            return mockResponse(copy, getJsonFromResource(VALIDATE_USE_DEFAULT_RESPONSE))
         }
         if (requestString.contains(CLEAR_PROMO_QUERY)) {
-            return mockResponse(copy, getRawString(CLEAR_PROMO_DEFAULT_RESPONSE))
+            return mockResponse(copy, getJsonFromResource(CLEAR_PROMO_DEFAULT_RESPONSE))
         }
         return chain.proceed(chain.request())
     }
@@ -37,5 +37,8 @@ class PromoTestInterceptor(context: Context) : BaseCheckoutInterceptor(context) 
 const val VALIDATE_USE_PROMO_REVAMP_QUERY = "validate_use_promo_revamp"
 const val CLEAR_PROMO_QUERY = "clearCacheAutoApplyStack"
 
-val VALIDATE_USE_PROMO_REVAMP_DEFAULT_RESPONSE = checkouttestR.raw.validate_use_tokonow_default_response
-val CLEAR_PROMO_DEFAULT_RESPONSE = checkouttestR.raw.clear_promo_default_response
+const val VALIDATE_USE_DEFAULT_RESPONSE = "promo/validate_use_tokonow_default_response.json"
+const val VALIDATE_USE_SELLY_DEFAULT_RESPONSE = "promo/validate_use_selly_default_response.json"
+const val VALIDATE_USE_SELLY_2HR_RESPONSE = "promo/validate_use_selly_2hr_response.json"
+
+const val CLEAR_PROMO_DEFAULT_RESPONSE = "promo/clear_promo_default_response.json"

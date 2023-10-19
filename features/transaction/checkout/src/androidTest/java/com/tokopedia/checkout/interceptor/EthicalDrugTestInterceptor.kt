@@ -1,12 +1,11 @@
 package com.tokopedia.checkout.interceptor
 
-import android.content.Context
 import com.tokopedia.test.application.util.ResourcePathUtil.getJsonFromResource
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
 
-class EthicalDrugTestInterceptor(context: Context) : BaseCheckoutInterceptor(context) {
+class EthicalDrugTestInterceptor : BaseCheckoutInterceptor() {
 
     var customGetPrescriptionIdsResponsePath: String? = null
     var customGetPrescriptionIdsThrowable: IOException? = null

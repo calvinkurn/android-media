@@ -1,14 +1,13 @@
 package com.tokopedia.checkout.interceptor
 
-import android.content.Context
+import com.tokopedia.test.application.util.ResourcePathUtil.getJsonFromResource
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
-import com.tokopedia.checkout.test.R as checkouttestR
 
-class CheckoutTestInterceptor(context: Context) : BaseCheckoutInterceptor(context) {
+class CheckoutTestInterceptor : BaseCheckoutInterceptor() {
 
-    var customCheckoutResponsePath: Int? = null
+    var customCheckoutResponsePath: String? = null
     var customCheckoutThrowable: IOException? = null
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -19,9 +18,12 @@ class CheckoutTestInterceptor(context: Context) : BaseCheckoutInterceptor(contex
             if (customCheckoutThrowable != null) {
                 throw customCheckoutThrowable!!
             } else if (customCheckoutResponsePath != null) {
-                return mockResponse(copy, getRawString(customCheckoutResponsePath!!))
+                return mockResponse(
+                    copy,
+                    getJsonFromResource(customCheckoutResponsePath!!)
+                )
             }
-            return mockResponse(copy, getRawString(CHECKOUT_DEFAULT_RESPONSE_PATH))
+            return mockResponse(copy, getJsonFromResource(CHECKOUT_DEFAULT_RESPONSE_PATH))
         }
         return chain.proceed(chain.request())
     }
@@ -34,4 +36,4 @@ class CheckoutTestInterceptor(context: Context) : BaseCheckoutInterceptor(contex
 
 const val CHECKOUT_QUERY = "checkout"
 
-val CHECKOUT_DEFAULT_RESPONSE_PATH = checkouttestR.raw.checkout_analytics_default_response
+const val CHECKOUT_DEFAULT_RESPONSE_PATH = "checkout/checkout_analytics_default_response.json"

@@ -17,7 +17,6 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.RevampShipmentActivity
-import com.tokopedia.checkout.revamp.view.viewholder.CheckoutButtonPaymentViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutCostViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutOrderViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutProductViewHolder
@@ -103,18 +102,23 @@ class CheckoutPageRevampRobot {
 
     fun scrollRecyclerViewToChoosePaymentButton(activityRule: IntentsTestRule<RevampShipmentActivity>): Int {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_checkout)
+//        Log.i("qwertyuiop", "scroll")
         val itemCount = (recyclerView.adapter?.itemCount?.minus(1)) ?: return -1
 
-        var position = RecyclerView.NO_POSITION
-        for (i in itemCount downTo 0) {
-            scrollRecyclerViewToPosition(activityRule, recyclerView, i)
-            when (recyclerView.findViewHolderForAdapterPosition(i)) {
-                is CheckoutButtonPaymentViewHolder -> {
-                    position = i
-                    break
-                }
-            }
-        }
+        var position = itemCount
+        scrollRecyclerViewToPosition(activityRule, recyclerView, itemCount)
+//        for (i in itemCount downTo 0) {
+//            Log.i("qwertyuiop", "scroll $i")
+//            val findViewHolderForAdapterPosition = recyclerView.findViewHolderForAdapterPosition(i)
+//            Log.i("qwertyuiop", "scroll $findViewHolderForAdapterPosition")
+//            when (findViewHolderForAdapterPosition) {
+//                is CheckoutButtonPaymentViewHolder -> {
+//                    Log.i("qwertyuiop", "found $i")
+//                    position = i
+//                    break
+//                }
+//            }
+//        }
 
         return position
     }
