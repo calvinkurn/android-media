@@ -593,7 +593,7 @@ class ShopPageHomeTracking(
         sortAndFilterValue: String,
         userId: String,
         selectedTabName: String,
-        warehouseId: String
+        warehouseId: String?
     ) {
         val etalaseChip = String.format(SELECTED_ETALASE_CHIP, ALL_PRODUCT)
         val loginNonLoginEventValue = if (isLogin) LOGIN else NON_LOGIN
@@ -706,7 +706,7 @@ class ShopPageHomeTracking(
         sortAndFilterValue: String,
         userId: String,
         selectedTabName: String,
-        warehouseId: String
+        warehouseId: String?
     ) {
         val etalaseChip = String.format(SELECTED_ETALASE_CHIP, ALL_PRODUCT)
         val loginNonLoginEventValue = if (isLogin) LOGIN else NON_LOGIN
@@ -1247,7 +1247,7 @@ class ShopPageHomeTracking(
         sortAndFilterValue: String,
         listEventValue: String,
         selectedTabName: String,
-        warehouseId: String
+        warehouseId: String?
     ): Map<String, Any> {
         val boe = if (customDimensionShopPage.isFulfillmentExist == true && customDimensionShopPage.isFreeOngkirActive == true) {
             BOE
@@ -1270,7 +1270,7 @@ class ShopPageHomeTracking(
             DIMENSION_90 to customDimensionShopPage.shopRef.orEmpty(),
             DIMENSION_83 to boe,
             DIMENSION_58 to customDimensionShopPage.isFulfillmentExist.toString(),
-            DIMENSION_56 to warehouseId
+            DIMENSION_56 to warehouseId.orEmpty()
         ).apply {
             if (sortAndFilterValue.isNotEmpty()) {
                 put(DIMENSION_61, sortAndFilterValue)
@@ -2301,7 +2301,9 @@ class ShopPageHomeTracking(
         shopId: String,
         userId: String,
         widgetMasterId: String,
-        isFestivity: Boolean
+        isFestivity: Boolean,
+        isFulfillment: Boolean?,
+        warehouseId: String?
     ) {
         var eventLabel = joinDash(
             LABEL_SHOP_DECOR_IMPRESSION,
@@ -2335,6 +2337,8 @@ class ShopPageHomeTracking(
             )
             putString(SHOP_ID, shopId)
             putString(USER_ID, userId)
+            putString(DIMENSION_58, isFulfillment?.toString() ?: "")
+            putString(DIMENSION_56, warehouseId.orEmpty())
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventBundle)
     }
@@ -2347,7 +2351,9 @@ class ShopPageHomeTracking(
         shopId: String,
         userId: String,
         widgetMasterId: String,
-        isFestivity: Boolean
+        isFestivity: Boolean,
+        isFulfillment: Boolean? = null,
+        warehouseId: String? = null
     ) {
         var eventLabel = joinDash(
             LABEL_SHOP_DECOR_CLICK,
@@ -2381,6 +2387,9 @@ class ShopPageHomeTracking(
             )
             putString(SHOP_ID, shopId)
             putString(USER_ID, userId)
+
+            putString(DIMENSION_58, isFulfillment?.toString() ?: "")
+            putString(DIMENSION_56, warehouseId.orEmpty())
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
     }

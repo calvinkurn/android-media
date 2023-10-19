@@ -2678,7 +2678,9 @@ open class ShopPageHomeFragment :
                     displayWidgetUiModel?.widgetId.orEmpty(),
                     ShopUtil.getActualPositionFromIndex(parentPosition),
                     displayWidgetUiModel?.widgetMasterId.orEmpty(),
-                    displayWidgetUiModel?.isFestivity.orFalse()
+                    displayWidgetUiModel?.isFestivity.orFalse(),
+                    displayWidgetItem.isFulfillment,
+                    displayWidgetItem.warehouseId
                 )
                 shopPageHomeTracking.clickDisplayWidget(
                     false,
@@ -2733,7 +2735,9 @@ open class ShopPageHomeFragment :
         widgetId: String,
         position: Int,
         widgetMasterId: String,
-        isFestivity: Boolean
+        isFestivity: Boolean,
+        isFulfillment: Boolean? = null,
+        warehouseId: String? = null
     ) {
         if (!isOwner) {
             shopPageHomeTracking.onImpressionShopHomeWidget(
@@ -2744,7 +2748,9 @@ open class ShopPageHomeFragment :
                 shopId,
                 userId,
                 widgetMasterId,
-                isFestivity
+                isFestivity,
+                isFulfillment,
+                warehouseId
             )
         }
     }
@@ -2755,7 +2761,9 @@ open class ShopPageHomeFragment :
         widgetId: String,
         position: Int,
         widgetMasterId: String,
-        isFestivity: Boolean
+        isFestivity: Boolean,
+        isFulfillment: Boolean? = null,
+        warehouseId: String? = null
     ) {
         if (!isOwner) {
             shopPageHomeTracking.onClickedShopHomeWidget(
@@ -2766,7 +2774,9 @@ open class ShopPageHomeFragment :
                 shopId,
                 userId,
                 widgetMasterId,
-                isFestivity
+                isFestivity,
+                isFulfillment,
+                warehouseId
             )
         }
     }
@@ -2984,7 +2994,10 @@ open class ShopPageHomeFragment :
                 shopHomeCarousellProductUiModel?.widgetId.orEmpty(),
                 ShopUtil.getActualPositionFromIndex(parentPosition),
                 shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
-                shopHomeCarousellProductUiModel?.isFestivity.orFalse()
+                shopHomeCarousellProductUiModel?.isFestivity.orFalse(),
+
+                shopHomeProductViewModel.isFulfillment.orFalse(),
+                shopHomeProductViewModel.warehouseId
             )
             shopPageHomeTracking.clickProductPersonalization(
                 isOwner,
@@ -3495,7 +3508,9 @@ open class ShopPageHomeFragment :
             model.widgetId,
             ShopUtil.getActualPositionFromIndex(adapterPosition),
             model.widgetMasterId,
-            model.isFestivity
+            model.isFestivity,
+            model.productList[adapterPosition].isFulfillment,
+            model.productList[adapterPosition].warehouseId
         )
     }
 

@@ -6,6 +6,8 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.productbundlewidget.model.BundleProductUiModel
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_GROUP_POSITION_FULFILLMENT
 import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopPageHeaderDataUiModel
@@ -127,6 +129,7 @@ object ShopPageHomeMapper {
                 it.parentId = parentId
                 it.averageRating = stats.averageRating
                 it.warehouseId = shopProduct.warehouseId
+                it.isFulfillment = shopProduct.labelGroupList.any { it.position == ShopPageTrackingConstant.LABEL_GROUP_POSITION_FULFILLMENT }
             }
         }
 
@@ -1007,7 +1010,9 @@ object ShopPageHomeMapper {
             data.appLink,
             data.webLink,
             data.videoUrl,
-            data.bannerId
+            data.bannerId,
+            isFulfillment = data.labelGroups.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+            warehouseId = data.warehouseID
         )
     }
 
@@ -1190,6 +1195,8 @@ object ShopPageHomeMapper {
             this.isVariant = response.listChildId.isNotEmpty()
             this.listChildId = response.listChildId
             this.parentId = response.parentId
+            this.isFulfillment = response.labelGroups.any { it.position == ShopPageTrackingConstant.LABEL_GROUP_POSITION_FULFILLMENT }
+            this.warehouseId = response.warehouseID
         }
 
     fun mapToGetCampaignNotifyMeUiModel(model: GetCampaignNotifyMeModel): GetCampaignNotifyMeUiModel {
