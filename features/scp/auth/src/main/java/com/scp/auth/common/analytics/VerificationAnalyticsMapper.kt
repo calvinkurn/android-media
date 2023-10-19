@@ -78,7 +78,7 @@ class VerificationAnalyticsMapper @Inject constructor(private val gtm: ContextAn
 
     private fun createEventLabelCvSdk(param: Map<String, Any?>) =
         EventLabelCvSdk(
-            method = param[CVEventFieldName.METHOD].toString(),
+            method = param[CVEventFieldName.SOURCE].toString(),
             flow = param[CVEventFieldName.FLOW].toString(),
             transactionId = param[CVEventFieldName.TRANSACTION_ID].toString(),
             type = param[CVEventFieldName.TYPE].toString(),

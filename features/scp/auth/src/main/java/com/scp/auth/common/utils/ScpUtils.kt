@@ -10,7 +10,6 @@ object ScpUtils {
 
     private val ROLLENCE_KEY_SCP_LOGIN = "exp_scp_goto_login_sdk"
     fun isGotoLoginEnabled(): Boolean {
-        println("isGotoLoginEnabled: cek is debug ${GlobalConfig.DEBUG} or allowing debug tools ${GlobalConfig.isAllowDebuggingTools()}")
         return RemoteConfigInstance.getInstance()
             .abTestPlatform
             .getString(ROLLENCE_KEY_SCP_LOGIN)
