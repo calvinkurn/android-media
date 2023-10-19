@@ -13,6 +13,7 @@ import com.gojek.pin.PinConfig
 import com.gojek.pin.PinManager
 import com.gojek.pin.PinNetwork
 import com.gojek.pin.PinProvider
+import com.gojek.pin.domain.entities.FlowTypes
 import com.gojek.pin.validation.ExtVerificationData
 import com.gojek.pin.validation.ExtVerificationUiConfig
 import com.gojek.pin.validation.PinSdkValidationListener
@@ -66,8 +67,6 @@ object GotoSdk {
 
     @JvmStatic
     fun init(application: Application): LSdkProvider? {
-        println("get global config isDebug: ${GlobalConfig.DEBUG} versionName: ${GlobalConfig.VERSION_NAME} allowDebug: ${GlobalConfig.isAllowDebuggingTools()} isSeller: ${GlobalConfig.isSellerApp()} deviceId: ${GlobalConfig.DEVICE_ID} preinstall: ${GlobalConfig.PREINSTALL_NAME}")
-        Log.d("InitGoto", "get global config isDebug: ${GlobalConfig.DEBUG} versionName: ${GlobalConfig.VERSION_NAME} allowDebug: ${GlobalConfig.isAllowDebuggingTools()} isSeller: ${GlobalConfig.isSellerApp()} deviceId: ${GlobalConfig.DEVICE_ID} preinstall: ${GlobalConfig.PREINSTALL_NAME}")
         val appComponent = (application as BaseMainApplication)
             .baseAppComponent
         component = DaggerScpAuthComponent.builder()
