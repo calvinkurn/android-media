@@ -422,7 +422,7 @@ class CatalogDetailUiMapper @Inject constructor(
                         val insertedItem = ComparisonUiModel.ComparisonSpec(
                             isSpecCategoryTitle = false,
                             specTitle = if (isFirstData) rowItem.key else "",
-                            specValue = rowItem.value,
+                            specValue = rowItem.value.ifEmpty { "-" },
                         )
                         comparisonSpecs.add(insertedItem)
                     }
