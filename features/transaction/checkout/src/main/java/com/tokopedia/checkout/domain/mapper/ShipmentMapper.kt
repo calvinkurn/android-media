@@ -10,6 +10,7 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellO
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShipping
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.NewUpsell
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.PaymentLevelAddOnItem
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ScheduleDelivery
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
@@ -185,7 +186,8 @@ class ShipmentMapper @Inject constructor() {
             shipmentPlatformFee =
                 mapPlatformFee(shipmentAddressFormDataResponse.shipmentPlatformFee)
             listSummaryAddons = mapSummaryAddOn(shipmentAddressFormDataResponse.listSummaryAddOns)
-            paymentLevelAddOnsPositions = shipmentAddressFormDataResponse.paymentLevelAddOns.map { it.id }
+            paymentLevelAddOnsPositions =
+                mapPaymentLevelAddOns(shipmentAddressFormDataResponse.paymentLevelAddOns)
         }
     }
 
@@ -425,11 +427,12 @@ class ShipmentMapper @Inject constructor() {
                         bmgmOfferName = cartDetail.cartDetailInfo.bmgmData.offerName
                         bmgmOfferMessage = cartDetail.cartDetailInfo.bmgmData.offerMessage
                         bmgmOfferStatus = cartDetail.cartDetailInfo.bmgmData.offerStatus
-                        bmgmItemPosition = if (cartDetail.products.firstOrNull()?.productId == productId) {
-                            BMGM_ITEM_HEADER
-                        } else {
-                            BMGM_ITEM_DEFAULT
-                        }
+                        bmgmItemPosition =
+                            if (cartDetail.products.firstOrNull()?.productId == productId) {
+                                BMGM_ITEM_HEADER
+                            } else {
+                                BMGM_ITEM_DEFAULT
+                            }
                         bmgmTotalDiscount = cartDetail.cartDetailInfo.bmgmData.totalDiscount
                         bmgmTierProductList = mapBmgmTierProductToDomainModel(
                             cartDetail.cartDetailInfo.bmgmData.tierProductList,
@@ -440,7 +443,8 @@ class ShipmentMapper @Inject constructor() {
                     }
                     addOnGiftingProduct = mapAddOnsGiftingData(product.addOns)
                     ethicalDrugs = mapEthicalDrugData(product.ethicalDrugResponse)
-                    addOnProduct = mapAddOnsProductData(product.addOnsProduct, product.productQuantity)
+                    addOnProduct =
+                        mapAddOnsProductData(product.addOnsProduct, product.productQuantity)
                     campaignId = product.campaignId
                 }
                 productListResult.add(productResult)
@@ -615,7 +619,10 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapAddOnsProductData(addOn: AddOnsProduct, productQuantity: Int): AddOnProductDataModel {
+    private fun mapAddOnsProductData(
+        addOn: AddOnsProduct,
+        productQuantity: Int
+    ): AddOnProductDataModel {
         return AddOnProductDataModel().apply {
             iconUrl = addOn.iconUrl
             title = addOn.title
@@ -632,7 +639,10 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapAddOnProductListData(addOnsDataList: List<AddOnsProduct.AddOnsData>, productQuantity: Int): ArrayList<AddOnProductDataItemModel> {
+    private fun mapAddOnProductListData(
+        addOnsDataList: List<AddOnsProduct.AddOnsData>,
+        productQuantity: Int
+    ): ArrayList<AddOnProductDataItemModel> {
         val listAddOnDataItem = arrayListOf<AddOnProductDataItemModel>()
         addOnsDataList.forEach { item ->
             listAddOnDataItem.add(
@@ -652,6 +662,7 @@ class ShipmentMapper @Inject constructor() {
         }
         return listAddOnDataItem
     }
+
     private fun mapSubtotalAddOn(subtotalAddOns: List<SubtotalAddOn>): List<ShipmentSubtotalAddOnData> {
         val listSubtotal = arrayListOf<ShipmentSubtotalAddOnData>()
 
@@ -1071,7 +1082,8 @@ class ShipmentMapper @Inject constructor() {
             subText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.subText
             tickerText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.tickerText
             tooltipText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.tooltipText
-            tooltipTitleText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.tooltipTitleText
+            tooltipTitleText =
+                shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.tooltipTitleText
             hyperlinkText = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.text
             hyperlinkUrl = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.url
             isShowHyperlink = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.isShow
@@ -1330,6 +1342,14 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
+    private fun mapPaymentLevelAddOns(paymentLevelAddOns: List<PaymentLevelAddOnItem>): List<Long> {
+        return if (paymentLevelAddOns.isEmpty()) {
+            DEFAULT_PAYMENT_LEVEL_ADD_ONS_POSITION
+        } else {
+            paymentLevelAddOns.map { it.id }
+        }
+    }
+
     companion object {
         private const val SHOP_TYPE_OFFICIAL_STORE = "official_store"
         private const val SHOP_TYPE_GOLD_MERCHANT = "gold_merchant"
@@ -1350,5 +1370,7 @@ class ShipmentMapper @Inject constructor() {
 
         const val BMGM_ITEM_DEFAULT = 0
         const val BMGM_ITEM_HEADER = 1
+
+        val DEFAULT_PAYMENT_LEVEL_ADD_ONS_POSITION = listOf<Long>(1, 2, 3)
     }
 }
