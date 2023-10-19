@@ -26,28 +26,13 @@ class RibbonView @JvmOverloads constructor(
     private var shapeDrawable: MaterialShapeDrawable? = null
 
     init {
-        binding.percentageValue.addOneTimeGlobalLayoutListener {
-            val ribbonPathModel = ShapeAppearanceModel.builder()
-                .setTopRightCorner(
-                    CornerFamily.ROUNDED,
-                    convertDpToPixel(CORNER_SIZE, context).toFloat()
-                )
-                .setBottomEdge(
-                    TriangleEdgeTreatment(
-                        binding.container.width.toFloat() / 2,
-                        HEIGHT_RATIO,
-                        false
-                    )
-                )
-                .build()
+        val backgroundColor = ContextCompat.getColorStateList(
+            context,
+            unifyprinciplesR.color.Unify_RN600
+        )
 
-            shapeDrawable = MaterialShapeDrawable(ribbonPathModel)
-            shapeDrawable?.fillColor = ContextCompat.getColorStateList(
-                context,
-                unifyprinciplesR.color.Unify_RN600
-            )
-
-            background = shapeDrawable
+        backgroundColor?.let {
+            renderRibbonShape(it)
         }
     }
 
@@ -77,11 +62,38 @@ class RibbonView @JvmOverloads constructor(
     }
 
     fun changeToDisable(textColor: Int, backgroundColor: Int) {
+        renderRibbonShape(ColorStateList.valueOf(backgroundColor))
+
         binding.percentageValue.setTextColor(textColor)
         binding.percentageLabel.setTextColor(textColor)
+    }
 
-        shapeDrawable?.fillColor = ColorStateList.valueOf(backgroundColor)
-        background = shapeDrawable
+    private fun renderRibbonShape(backgroundColor: ColorStateList) {
+        binding.percentageValue.addOneTimeGlobalLayoutListener {
+            val ribbonPathModel = constructShapeAppearance(binding.container.width)
+
+            shapeDrawable = MaterialShapeDrawable(ribbonPathModel).apply {
+                fillColor = backgroundColor
+            }
+
+            background = shapeDrawable
+        }
+    }
+
+    private fun constructShapeAppearance(width: Int): ShapeAppearanceModel {
+        return ShapeAppearanceModel.builder()
+            .setTopRightCorner(
+                CornerFamily.ROUNDED,
+                convertDpToPixel(CORNER_SIZE, context).toFloat()
+            )
+            .setBottomEdge(
+                TriangleEdgeTreatment(
+                    width.toFloat() / 2,
+                    HEIGHT_RATIO,
+                    false
+                )
+            )
+            .build()
     }
 
     companion object {
