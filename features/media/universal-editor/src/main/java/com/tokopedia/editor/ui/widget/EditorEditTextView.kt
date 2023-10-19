@@ -139,6 +139,7 @@ class EditorEditTextView @JvmOverloads constructor(
         val typeface = unifyTypeFaceGetter(context, model.fontDetail.fontName)
         setTypeface(typeface, model.fontDetail.fontStyle)
 
+        this.alignment = model.textAlign.value
         setText(model.text)
         setColor(model.textColor, model.backgroundColor ?: Color.TRANSPARENT)
         setGravity(model.textAlign.toGravity())
