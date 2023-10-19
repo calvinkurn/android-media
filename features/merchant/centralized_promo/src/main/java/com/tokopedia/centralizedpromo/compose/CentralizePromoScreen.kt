@@ -416,6 +416,7 @@ private fun LazyGridScope.PromoCreationSection(
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 private fun LazyGridScope.OnGoingPromoSection(
     result: OnGoingPromoListUiModel,
     onGoingPromoImpressed: (String) -> Unit
@@ -429,19 +430,25 @@ private fun LazyGridScope.OnGoingPromoSection(
             key = { idx, it ->
                 it.title + idx.toString()
             }
-        ) { _, onGoingData ->
+        ) { idx, onGoingData ->
             OnGoingCard(
                 title = onGoingData.title,
                 counter = onGoingData.status.count,
                 counterTitle = onGoingData.status.text,
                 onTitleClicked = {
+                    CentralizedPromoTracking.sendClickOnGoingPromoStatus(
+                        widgetName = onGoingData.title
+                    )
                     RouteManager.route(state.context, onGoingData.status.url)
                 },
                 onFooterClicked = {
+                    CentralizedPromoTracking.sendClickOnGoingPromoFooter(
+                        widgetName = onGoingData.title
+                    )
                     RouteManager.route(state.context, onGoingData.status.url)
                 },
                 modifier = Modifier.addImpression(
-                    uniqueIdentifier = onGoingData.title,
+                    uniqueIdentifier = onGoingData.title + idx.toString(),
                     impressionState = onGoingData.impressHolderCompose,
                     state = state.lazyListState,
                     onItemViewed = {
