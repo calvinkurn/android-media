@@ -807,6 +807,7 @@ class DigitalPDPDataPlanFragment :
                     inputNumberActionType = InputNumberActionType.NOTHING
                 }
             }
+            clearFocusAutoComplete()
         }
     }
 
