@@ -60,9 +60,9 @@ class PlayWidgetCardView : RoundedConstraintLayout {
 
     private fun addTotalWatchView(formattedNumber: String) {
         with(binding.viewPlayWidgetChildContainer) {
+            totalWatchView.setTotalWatch(formattedNumber)
             val index = indexOfChild(totalWatchView)
             if (index == -1) {
-                totalWatchView.setTotalWatch(formattedNumber)
                 addView(totalWatchView)
             }
         }
