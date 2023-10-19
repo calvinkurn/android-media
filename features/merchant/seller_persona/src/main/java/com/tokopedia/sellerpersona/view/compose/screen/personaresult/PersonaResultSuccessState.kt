@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
@@ -37,6 +38,7 @@ import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestNN
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.nest.principles.utils.tag
 import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.view.compose.model.state.PersonaResultState
 import com.tokopedia.sellerpersona.view.compose.model.uievent.ResultUiEvent
@@ -63,7 +65,7 @@ internal fun ResultSuccessState(
         }
     })
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    LazyColumn(modifier = Modifier.fillMaxSize().tag("rvSpResultInfoList")) {
         item {
             ResultHeaderSectionUi(state.data.personaData)
         }
@@ -103,11 +105,14 @@ private fun ResultFooterSectionUi(data: PersonaDataUiModel, onEvent: (ResultUiEv
                     text = stringResource(data.getActiveStatusStringRes()),
                     textStyle = NestTheme.typography.display3.copy(
                         color = NestTheme.colors.NN._600
-                    )
+                    ),
+                    modifier = Modifier.wrapContentWidth().tag("tvSpLblActivatePersonaStatus")
                 )
             }
-            NestSwitch(defaultIsChecked = data.isSwitchChecked) {
-                onEvent(ResultUiEvent.OnSwitchCheckChanged(it))
+            Column(modifier = Modifier.wrapContentWidth().tag("switchSpActivatePersona")) {
+                NestSwitch(defaultIsChecked = data.isSwitchChecked) {
+                    onEvent(ResultUiEvent.OnSwitchCheckChanged(it))
+                }
             }
         }
         NestTypography(
@@ -124,14 +129,21 @@ private fun ResultFooterSectionUi(data: PersonaDataUiModel, onEvent: (ResultUiEv
                 onClick = {
                     onEvent(ResultUiEvent.ApplyChanges(data.persona, data.isSwitchChecked))
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .tag("btnSpApplyPersona")
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
         NestButton(
-            text = stringResource(R.string.sp_retry_questionnaire), onClick = {
+            text = stringResource(R.string.sp_retry_questionnaire),
+            onClick = {
                 onEvent(ResultUiEvent.RetakeQuiz)
-            }, modifier = Modifier.fillMaxWidth(), variant = ButtonVariant.GHOST_ALTERNATE
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .tag("btnSpRetryQuestionnaire"),
+            variant = ButtonVariant.GHOST_ALTERNATE
         )
 
         ManualSelectPersonaComponent(data.persona, onEvent)
@@ -161,7 +173,8 @@ private fun ManualSelectPersonaComponent(persona: String, onEvent: (ResultUiEven
         ),
         modifier = Modifier
             .padding(top = 26.dp, bottom = 18.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .tag("tvSpSelectManualType"),
         onClickText = { spannedRange ->
             when (spannedRange.item) {
                 clickable -> onEvent(ResultUiEvent.SelectPersona(persona))
@@ -209,9 +222,11 @@ private fun LazyListScope.renderResultContentSectionUi(data: PersonaDataUiModel)
             NestTypography(
                 modifier = Modifier.padding(
                     top = 6.dp, bottom = 6.dp, start = 8.dp
-                ), textStyle = NestTheme.typography.display2.copy(
+                ).tag("tvSpResultInfoItem"),
+                textStyle = NestTheme.typography.display2.copy(
                     color = NestTheme.colors.NN._950
-                ), text = it
+                ),
+                text = it
             )
         }
     }
@@ -235,7 +250,7 @@ private fun LazyListScope.renderResultContentSectionUi(data: PersonaDataUiModel)
                     colorLightEnable = NestTheme.colors.GN._500
                 )
                 NestTypography(
-                    modifier = Modifier.padding(start = 8.dp),
+                    modifier = Modifier.padding(start = 8.dp).tag("tvSpLblOwnerInfo"),
                     text = stringResource(R.string.sp_result_create_admin_account),
                     textStyle = NestTheme.typography.display3.copy(
                         color = NestTheme.colors.NN._600
@@ -256,9 +271,9 @@ private fun ResultHeaderSectionUi(persona: PersonaUiModel) {
     ) {
         NestImage(
             source = ImageSource.Remote(source = persona.backgroundImage),
-            modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
-            type = NestImageType.Rect(rounded = 0.dp)
+            type = NestImageType.Rect(rounded = 0.dp),
+            modifier = Modifier.fillMaxSize().tag("imgSpResultBackdrop")
         )
         Column(
             verticalArrangement = Arrangement.Center,
@@ -270,11 +285,11 @@ private fun ResultHeaderSectionUi(persona: PersonaUiModel) {
                 ),
                 contentScale = ContentScale.Crop,
                 type = NestImageType.Circle,
-                modifier = Modifier.size(120.dp)
+                modifier = Modifier.size(120.dp).tag("imgSpResultAvatar")
             )
             Spacer(modifier = Modifier.height(16.dp))
             NestTypography(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().tag("tvSpLblSellerType"),
                 text = stringResource(R.string.sp_result_seller_type),
                 textStyle = NestTheme.typography.display3.copy(
                     color = NestNN.light._0, textAlign = TextAlign.Center
@@ -283,7 +298,8 @@ private fun ResultHeaderSectionUi(persona: PersonaUiModel) {
             NestTypography(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 2.dp),
+                    .padding(top = 2.dp)
+                    .tag("tvSpSellerType"),
                 text = String.format(PERSONA_TITLE, persona.headerTitle),
                 textStyle = NestTheme.typography.heading2.copy(
                     color = NestNN.light._0, textAlign = TextAlign.Center
@@ -292,9 +308,12 @@ private fun ResultHeaderSectionUi(persona: PersonaUiModel) {
             NestTypography(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 2.dp), text = stringResource(
+                    .padding(top = 2.dp)
+                    .tag("tvSpSellerTypeNote"),
+                text = stringResource(
                     R.string.sp_result_account_type, persona.headerSubTitle
-                ), textStyle = NestTheme.typography.small.copy(
+                ),
+                textStyle = NestTheme.typography.small.copy(
                     color = NestNN.light._0,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold

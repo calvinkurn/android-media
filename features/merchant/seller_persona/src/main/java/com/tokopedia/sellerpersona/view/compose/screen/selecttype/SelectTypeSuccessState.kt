@@ -51,6 +51,7 @@ import com.tokopedia.nest.principles.ui.NestGN
 import com.tokopedia.nest.principles.ui.NestNN
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.nest.principles.utils.tag
 import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.view.compose.model.state.SelectTypeState
 import com.tokopedia.sellerpersona.view.compose.model.uievent.SelectTypeUiEvent
@@ -94,7 +95,8 @@ internal fun PersonSuccessState(
         )
         NestButton(modifier = Modifier
             .fillMaxWidth()
-            .padding(all = 16.dp),
+            .padding(all = 16.dp)
+            .tag("btnSpSelectType"),
             isLoading = data.ui.isSelectButtonLoading,
             text = stringResource(R.string.sp_select),
             variant = ButtonVariant.FILLED,
@@ -145,7 +147,7 @@ private fun PersonaTypeItemCard(persona: PersonaUiModel, onClicked: () -> Unit) 
             indication = null,
             interactionSource = MutableInteractionSource(),
             onClick = onClicked
-        )
+        ).tag("containerSpItemPersonaType")
     ) {
         ConstraintLayout(
             modifier = Modifier
@@ -172,7 +174,7 @@ private fun PersonaTypeItemCard(persona: PersonaUiModel, onClicked: () -> Unit) 
                 modifier = Modifier.constrainAs(radio) {
                     end.linkTo(parent.end)
                     top.linkTo(parent.top)
-                },
+                }.tag("radioSpPersonaType"),
                 isChecked = persona.isSelected,
                 onClicked = onClicked
             )
@@ -204,7 +206,9 @@ private fun PersonaTypeItemCard(persona: PersonaUiModel, onClicked: () -> Unit) 
                 modifier = Modifier.constrainAs(tvPersonaType) {
                     top.linkTo(tvSellerTypeLbl.bottom, margin = 2.dp)
                     start.linkTo(anchor = startGuideline)
-                }, text = persona.headerTitle, textStyle = NestTheme.typography.heading1.copy(
+                }.tag("tvSpPersonaType"),
+                text = persona.headerTitle,
+                textStyle = NestTheme.typography.heading1.copy(
                     color = rememberPersonaTypeTextColor(persona.isSelected)
                 )
             )

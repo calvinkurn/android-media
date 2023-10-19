@@ -8,11 +8,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,6 +45,7 @@ import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.tag
 import com.tokopedia.sellerpersona.view.compose.component.disabledHorizontalPointerInputScroll
 import com.tokopedia.sellerpersona.view.compose.model.uievent.QuestionnaireUserEvent
 import com.tokopedia.sellerpersona.view.model.BaseOptionUiModel
@@ -90,6 +95,7 @@ fun QuestionnaireSuccessState(
                         width = Dimension.fillToConstraints
                     }
                     .height(2.dp)
+                    .tag("progressBarPersonaQuestionnaire")
             )
 
             HorizontalPager(
@@ -116,10 +122,12 @@ fun QuestionnaireSuccessState(
             if (pagerState.currentPage > 0) {
                 NestButton(
                     text = stringResource(sellerpersonaR.string.sp_previous),
-                    modifier = Modifier.constrainAs(prevBtn) {
-                        start.linkTo(parent.start, margin = 16.dp)
-                        bottom.linkTo(parent.bottom, margin = 16.dp)
-                    },
+                    modifier = Modifier
+                        .constrainAs(prevBtn) {
+                            start.linkTo(parent.start, margin = 16.dp)
+                            bottom.linkTo(parent.bottom, margin = 16.dp)
+                        }
+                        .tag("btnSpPrev"),
                     variant = ButtonVariant.TEXT_ONLY,
                     onClick = {
                         onEvent(QuestionnaireUserEvent.ClickPrevious)
@@ -134,11 +142,13 @@ fun QuestionnaireSuccessState(
 
             NestButton(
                 text = stringResource(sellerpersonaR.string.sp_next),
-                modifier = Modifier.constrainAs(nextBtn) {
-                    end.linkTo(parent.end, margin = 16.dp)
-                    bottom.linkTo(parent.bottom, margin = 16.dp)
-                    width = Dimension.preferredWrapContent.atLeast(120.dp)
-                },
+                modifier = Modifier
+                    .constrainAs(nextBtn) {
+                        end.linkTo(parent.end, margin = 16.dp)
+                        bottom.linkTo(parent.bottom, margin = 16.dp)
+                        width = Dimension.preferredWrapContent.atLeast(120.dp)
+                    }
+                    .tag("btnSpNext"),
                 isEnabled = isNextButtonEnabled,
                 isLoading = data.isNextButtonLoading,
                 onClick = {
@@ -176,7 +186,7 @@ fun QuestionnairePager(
             .padding(all = 24.dp)
     ) {
         NestTypography(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().tag("tvSpQuestionTitle"),
             text = questionnaire.questionTitle,
             textStyle = NestTheme.typography.display1.copy(
                 fontWeight = FontWeight.Bold
@@ -184,7 +194,7 @@ fun QuestionnairePager(
         )
         Spacer(modifier = Modifier.height(8.dp))
         NestTypography(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().tag("tvSpQuestionSubtitle"),
             text = questionnaire.questionSubtitle,
             textStyle = NestTheme.typography.display3.copy(
                 color = NestTheme.colors.NN._600
@@ -220,14 +230,19 @@ fun QuestionnaireItemMultipleAnswer(
     option: BaseOptionUiModel.QuestionOptionMultipleUiModel,
     event: (QuestionnaireUserEvent) -> Unit
 ) {
-    NestCheckbox(
-        text = option.title,
-        isChecked = option.isSelected,
-        modifier = Modifier.fillMaxWidth(),
-        onCheckedChange = {
-            event(QuestionnaireUserEvent.OnOptionItemSelected(pagePosition, option, it))
-        }
-    )
+    Row(modifier = Modifier.fillMaxWidth()) {
+        NestTypography(text = "", modifier = Modifier.width(0.dp).tag("tvSpMultipleOption"))
+        NestCheckbox(
+            text = option.title,
+            isChecked = option.isSelected,
+            modifier = Modifier
+                .fillMaxWidth()
+                .tag("cbSpMultipleOption"),
+            onCheckedChange = {
+                event(QuestionnaireUserEvent.OnOptionItemSelected(pagePosition, option, it))
+            }
+        )
+    }
 }
 
 @Composable
@@ -265,10 +280,15 @@ fun QuestionnaireItemSingleAnswer(
             }
     ) {
         val optionText = remember { option.getFormattedText() }
+        //for UI automation purpose
+        NestTypography(text = "", modifier = Modifier
+            .requiredSize(0.dp)
+            .tag("tvSpOptionValue"))
         NestTypography(
             text = optionText, modifier = Modifier
                 .fillMaxWidth()
                 .padding(all = 12.dp)
+                .tag("tvSpOptionTitle")
         )
     }
 }
@@ -312,26 +332,6 @@ fun QuestionnaireSuccessStatePreview() {
             data = QuestionnaireDataUiModel(
                 questionnaireList = listOf(
                     QuestionnairePagerUiModel(
-                        id = "1",
-                        questionTitle = "Apa yang biasa kamu lakukan di Tokopedia Seller?",
-                        questionSubtitle = "(Bisa pilih lebih dari 1 jawaban)",
-                        type = QuestionnairePagerUiModel.QuestionnaireType.SINGLE_ANSWER,
-                        options = listOf(
-                            BaseOptionUiModel.QuestionOptionSingleUiModel(
-                                value = "a",
-                                title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
-                            ), BaseOptionUiModel.QuestionOptionSingleUiModel(
-                                value = "b",
-                                title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
-                            ), BaseOptionUiModel.QuestionOptionSingleUiModel(
-                                value = "c",
-                                title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
-                            ), BaseOptionUiModel.QuestionOptionSingleUiModel(
-                                value = "d",
-                                title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
-                            )
-                        )
-                    ), QuestionnairePagerUiModel(
                         id = "2",
                         questionTitle = "Apa yang biasa kamu lakukan di Tokopedia Seller?",
                         questionSubtitle = "(Bisa pilih lebih dari 1 jawaban)",
@@ -347,6 +347,27 @@ fun QuestionnaireSuccessStatePreview() {
                                 value = "c",
                                 title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
                             ), BaseOptionUiModel.QuestionOptionMultipleUiModel(
+                                value = "d",
+                                title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
+                            )
+                        )
+                    ),
+                    QuestionnairePagerUiModel(
+                        id = "1",
+                        questionTitle = "Apa yang biasa kamu lakukan di Tokopedia Seller?",
+                        questionSubtitle = "(Bisa pilih lebih dari 1 jawaban)",
+                        type = QuestionnairePagerUiModel.QuestionnaireType.SINGLE_ANSWER,
+                        options = listOf(
+                            BaseOptionUiModel.QuestionOptionSingleUiModel(
+                                value = "a",
+                                title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
+                            ), BaseOptionUiModel.QuestionOptionSingleUiModel(
+                                value = "b",
+                                title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
+                            ), BaseOptionUiModel.QuestionOptionSingleUiModel(
+                                value = "c",
+                                title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
+                            ), BaseOptionUiModel.QuestionOptionSingleUiModel(
                                 value = "d",
                                 title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
                             )
