@@ -51,6 +51,7 @@ private const val GLOBAL_NAV_HINT = "Cari lagi barang impianmu"
 
 private const val KEY_CONFIG_NEW_NAVIGATION = "app_flag_thankyou_new_navigation"
 private const val KEY_ROLLENCE_SHARE = "share_thankyoupage"
+private const val VALUE_MERCHANT_TOKOPEDIA = "tokopedia"
 
 class ThankYouPageActivity :
     BaseSimpleActivity(),
@@ -355,9 +356,12 @@ class ThankYouPageActivity :
         return try {
             val shareRollence: String = getAbTestPlatform()?.getString(
                 key = KEY_ROLLENCE_SHARE,
-                defaultValue = KEY_ROLLENCE_SHARE // todo: remove default
+                defaultValue = ""
             ) ?: ""
-            if (shareRollence == KEY_ROLLENCE_SHARE) {
+            val merchantCode = intent.data?.getQueryParameter(ARG_MERCHANT)
+            if (shareRollence == KEY_ROLLENCE_SHARE &&
+                merchantCode == VALUE_MERCHANT_TOKOPEDIA
+            ) {
                 getCustomizeIconBuilder()
             } else {
                 getDefaultIconBuilder()

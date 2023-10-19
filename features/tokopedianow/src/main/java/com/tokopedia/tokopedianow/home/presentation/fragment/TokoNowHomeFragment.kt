@@ -130,6 +130,7 @@ import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
+import com.tokopedia.tokopedianow.home.presentation.decoration.HomeSpacingDecoration
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
@@ -892,6 +893,7 @@ class TokoNowHomeFragment :
     private fun setupRecyclerView() {
         context?.let {
             rvHome?.apply {
+                addItemDecoration(HomeSpacingDecoration())
                 adapter = this@TokoNowHomeFragment.adapter
                 rvLayoutManager = CustomLinearLayoutManager(it).also { layoutManager ->
                     layoutManager.recycleChildrenOnDetach = true
@@ -906,7 +908,6 @@ class TokoNowHomeFragment :
                 setRecycledViewPool(mRecycledViewPool)
                 recycledViewPool.setMaxRecycledViews(HomeProductRecomViewHolder.LAYOUT, MAX_VIEW_POOL)
             }
-
             rvHome?.setItemViewCacheSize(ITEM_VIEW_CACHE_SIZE)
             addHomeComponentScrollListener()
         }

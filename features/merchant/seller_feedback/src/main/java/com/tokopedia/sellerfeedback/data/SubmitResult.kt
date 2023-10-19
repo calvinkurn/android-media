@@ -5,14 +5,14 @@ sealed class SubmitResult {
     object Success : SubmitResult()
 
     data class NetworkFail(
-            val cause: Throwable
+        val cause: Throwable
     ) : SubmitResult()
 
     data class UploadFail(
-            val cause: Throwable
+        val cause: Throwable
     ) : SubmitResult()
 
     data class SubmitFail(
-            val cause: Throwable
+        val cause: Throwable
     ) : SubmitResult()
 }

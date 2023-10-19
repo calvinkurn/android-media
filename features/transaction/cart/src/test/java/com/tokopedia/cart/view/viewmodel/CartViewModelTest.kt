@@ -1391,6 +1391,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
         )
         val cartItemHolderDataTwo = CartItemHolderData(cartId = "124")
         val newAddOnWording = "new add on wording"
+        val newAddOnPrice = "(Rp5.000)"
         val addonsOne = AddOnUIModel()
         val addonsTwo = AddOnUIModel()
         val selectedAddons = arrayListOf(addonsOne, addonsTwo)
@@ -1404,7 +1405,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
         spyViewModel.cartDataList.observeForever(cartDataListObserver)
 
         // WHEN
-        spyViewModel.updateAddOnByCartId(cartId, newAddOnWording, selectedAddons)
+        spyViewModel.updateAddOnByCartId(cartId, newAddOnWording, newAddOnPrice, selectedAddons)
 
         // THEN
         assertEquals(selectedAddons.size, cartItemHolderData.addOnsProduct.listData.size)
@@ -1428,6 +1429,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
         )
         val cartItemHolderDataTwo = CartItemHolderData(cartId = "125")
         val newAddOnWording = "new add on wording"
+        val newAddOnPrice = "(Rp5.000)"
         val addonsOne = AddOnUIModel()
         val addonsTwo = AddOnUIModel()
         val selectedAddons = arrayListOf(addonsOne, addonsTwo)
@@ -1441,7 +1443,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
         spyViewModel.cartDataList.observeForever(cartDataListObserver)
 
         // WHEN
-        spyViewModel.updateAddOnByCartId(cartId, newAddOnWording, selectedAddons)
+        spyViewModel.updateAddOnByCartId(cartId, newAddOnWording, newAddOnPrice, selectedAddons)
 
         // THEN
         assertEquals(1, cartItemHolderData.addOnsProduct.listData.size)
@@ -1465,23 +1467,9 @@ class CartViewModelTest : BaseCartViewModelTest() {
                 cartViewModel.tokoNowProductUpdater.first()
             }
 
-            cartViewModel.emitTokonowUpdated(true)
+            cartViewModel.emitTokonowUpdated()
 
             assertTrue(deferred.await())
-        }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun `WHEN emitTokonowUpdated false THEN should emit false`() {
-        runTest(UnconfinedTestDispatcher()) {
-            val deferred = async {
-                cartViewModel.tokoNowProductUpdater.first()
-            }
-
-            cartViewModel.emitTokonowUpdated(false)
-
-            assertFalse(deferred.await())
         }
     }
     // endregion
