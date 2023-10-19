@@ -710,6 +710,7 @@ open class EmoneyPdpFragment :
     }
 
     private fun renderTickerNFCNotSupported() {
+        emoneyPdpViewModel.cancelBCACheckGenJob()
         if (detailPassData.isBCAGenOne) {
             showTickerNotSupported()
             showRecentNumberAndPromo()

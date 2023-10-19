@@ -25,6 +25,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.Job
 import javax.inject.Inject
 
 /**
@@ -37,6 +38,8 @@ class EmoneyPdpViewModel @Inject constructor(
     private val getDppoConsentUseCase: GetDppoConsentUseCase,
     private val getBCAGenCheckerUseCase: GetBCAGenCheckerUseCase
 ) : ViewModel() {
+
+    var bcaCheckGenJob: Job? = null
 
     private val _inputViewError = MutableLiveData<String>()
     val inputViewError: LiveData<String>
@@ -104,7 +107,7 @@ class EmoneyPdpViewModel @Inject constructor(
     }
 
     fun getBCAGenCheck(clientNumber: String) {
-        viewModelScope.launchCatchError(block = {
+        bcaCheckGenJob = viewModelScope.launchCatchError(block = {
             val data = getBCAGenCheckerUseCase.execute(listOf(clientNumber))
             val mappedBCAData = mapDigiPersoToBCAGenCheck(data)
             mutableBcaGenCheckerResult.postValue(Success(mappedBCAData))
@@ -170,6 +173,10 @@ class EmoneyPdpViewModel @Inject constructor(
 
     fun selectedOperatorIsBCA(): Boolean {
         return selectedOperator.value?.operator?.attributes?.name?.contains(BCA_OPERATOR_NAME) ?: false
+    }
+
+    fun cancelBCACheckGenJob() {
+        bcaCheckGenJob?.cancel()
     }
 
     companion object {
