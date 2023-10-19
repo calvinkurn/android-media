@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.catalog.R
 import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_FAQ
@@ -321,9 +322,28 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 type = Toaster.TYPE_ERROR
             ).show()
         }
+        viewModel.errorsToasterGetComparison.observe(viewLifecycleOwner) {
+            val errorMessage = if (it is UnknownHostException) {
+                getString(R.string.catalog_error_message_no_connection)
+            } else ErrorHandler.getErrorMessage(requireView().context, it)
+
+            Toaster.build(
+                view, errorMessage, duration = Toaster.LENGTH_LONG,
+                type = Toaster.TYPE_ERROR,
+                actionText = getString(R.string.catalog_retry_action)
+            ) {
+                changeComparison(compareCatalogId)
+            }.show()
+        }
         viewModel.comparisonUiModel.observe(viewLifecycleOwner) {
             // COMPARISON_CHANGED_POSITION is hardcoded position, will changed at next phase
-            widgetAdapter.changeComparison(COMPARISON_CHANGED_POSITION, it)
+            if (it == null)
+                Toaster.build(
+                    view,
+                    getString(R.string.catalog_error_message_inactive)
+                ).show()
+            else
+                widgetAdapter.changeComparison(COMPARISON_CHANGED_POSITION, it)
         }
 
         CoroutineScope(Dispatchers.Main).launch {

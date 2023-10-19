@@ -48,5 +48,8 @@
     <string name="text_reset_filter">Reset Filter</string>
     <string name="catalog_action_product_list">Lihat Pilihan</string>
     <string name="text_comparison_title">Detail Perbandingan</string>
+    <string name="catalog_retry_action">Coba lagi</string>
+    <string name="catalog_error_message_no_connection">Wah, internet putus. Cek paket data atau WiFi-mu, ya.</string>
+    <string name="catalog_error_message_inactive">1 katalog gagal ditampilkan. Perbandingan produk diubah ke semula, ya.</string>
 
 </resources>

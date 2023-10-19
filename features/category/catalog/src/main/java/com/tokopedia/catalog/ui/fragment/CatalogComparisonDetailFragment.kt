@@ -19,11 +19,13 @@ import com.tokopedia.catalogcommon.viewholder.ComparisonViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oldcatalog.listener.CatalogDetailListener
 import com.tokopedia.oldcatalog.ui.bottomsheet.CatalogComponentBottomSheet
-import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -75,7 +77,7 @@ class CatalogComparisonDetailFragment :
         super.onViewCreated(view, savedInstanceState)
         setupToolbar()
         setupContent()
-        setupObserver()
+        setupObserver(view)
         if (arguments != null) {
             catalogId = requireArguments().getString(ARG_PARAM_CATALOG_ID, "")
             categoryId = requireArguments().getString(ARG_PARAM_CATEGORY_ID, "")
@@ -102,7 +104,7 @@ class CatalogComparisonDetailFragment :
         }
     }
 
-    private fun setupObserver() {
+    private fun setupObserver(view: View) {
         viewModel.catalogDetailDataModel.observe(viewLifecycleOwner) {
             if (it is Success) {
                 val comparison = it.data.widgets.find {
@@ -115,9 +117,28 @@ class CatalogComparisonDetailFragment :
             binding?.loadingLayout?.root?.gone()
             binding?.rvContent?.show()
         }
+        viewModel.errorsToasterGetComparison.observe(viewLifecycleOwner) {
+            val errorMessage = if (it is UnknownHostException) {
+                getString(R.string.catalog_error_message_no_connection)
+            } else ErrorHandler.getErrorMessage(requireView().context, it)
+
+            Toaster.build(
+                requireView(), errorMessage, duration = Toaster.LENGTH_LONG,
+                type = Toaster.TYPE_ERROR,
+                actionText = getString(R.string.catalog_retry_action)
+            ) {
+                changeComparison(compareCatalogId)
+            }.show()
+        }
         viewModel.comparisonUiModel.observe(viewLifecycleOwner) {
             // COMPARISON_CHANGED_POSITION is hardcoded position, will changed at next phase
-            widgetAdapter.changeComparison(COMPARISON_CHANGED_POSITION, it)
+            if (it == null)
+                Toaster.build(
+                    view,
+                    getString(R.string.catalog_error_message_inactive)
+                ).show()
+            else
+                widgetAdapter.changeComparison(COMPARISON_CHANGED_POSITION, it)
         }
     }
 
