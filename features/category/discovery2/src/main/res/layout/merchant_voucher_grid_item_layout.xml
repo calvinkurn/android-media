@@ -4,8 +4,9 @@
     android:id="@+id/merchant_voucher_grid"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="8dp"
     android:theme="@style/Theme.MaterialComponents.Light"
     android:visibility="visible"
-    android:layout_margin="8dp"
+    app:cardElevation="0dp"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />
