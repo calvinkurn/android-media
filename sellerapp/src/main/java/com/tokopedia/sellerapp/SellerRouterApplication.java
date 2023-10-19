@@ -511,6 +511,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     @Override
     public ScpTokenModel onNewRefreshToken() {
+        return new ScpTokenModel("", "");
         /* no-op */
     }
 
