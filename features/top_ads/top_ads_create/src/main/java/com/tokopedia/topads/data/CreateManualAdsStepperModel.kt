@@ -5,7 +5,6 @@ import com.tokopedia.topads.common.data.response.KeywordDataItem
 import kotlinx.parcelize.Parcelize
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.view.adapter.product.viewmodel.ProductViewModel
-import kotlinx.android.parcel.Parcelize
 
 /**
  * Author errysuprayogi on 01,November,2019

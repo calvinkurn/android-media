@@ -32,7 +32,7 @@ class TopAdsImpressionPredictionSearchUseCase @Inject constructor(graphqlReposit
     : GraphqlUseCase<ImpressionPredictionResponse>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(ImpressionPredictionQuerySearch())
+        setGraphqlQuery(IMPRESSION_PREDICTION_QUERY_SEARCH)
         setTypeClass(ImpressionPredictionResponse::class.java)
     }
 

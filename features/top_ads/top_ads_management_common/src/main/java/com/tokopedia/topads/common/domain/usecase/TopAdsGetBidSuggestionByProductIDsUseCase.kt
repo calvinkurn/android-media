@@ -32,7 +32,7 @@ class TopAdsGetBidSuggestionByProductIDsUseCase @Inject constructor(graphqlRepos
     : GraphqlUseCase<TopAdsGetBidSuggestionResponse>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(GetProductBid())
+        setGraphqlQuery(GET_PRODUCT_BID_QUERY)
         setTypeClass(TopAdsGetBidSuggestionResponse::class.java)
     }
 

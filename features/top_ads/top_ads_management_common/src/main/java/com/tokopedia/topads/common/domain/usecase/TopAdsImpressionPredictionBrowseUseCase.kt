@@ -35,7 +35,7 @@ class TopAdsImpressionPredictionBrowseUseCase @Inject constructor(graphqlReposit
     : GraphqlUseCase<ImpressionPredictionResponse>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(ImpressionPredictionQueryBrowse())
+        setGraphqlQuery(IMPRESSION_PREDICTION_QUERY_BROWSE)
         setTypeClass(ImpressionPredictionResponse::class.java)
     }
 
