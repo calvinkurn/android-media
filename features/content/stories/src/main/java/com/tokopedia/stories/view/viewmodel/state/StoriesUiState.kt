@@ -22,7 +22,7 @@ data class StoriesUiState(
 }
 
 enum class BottomSheetType {
-    Kebab, Product, Sharing, GVBS, Unknown;
+    Kebab, Product, Sharing, GVBS, Report, SubmitReport, Unknown;
 }
 
 data class ProductBottomSheetUiState(
@@ -48,15 +48,38 @@ val BottomSheetStatusDefault: Map<BottomSheetType, Boolean>
         BottomSheetType.Product to false,
         BottomSheetType.Kebab to false,
         BottomSheetType.GVBS to false,
+        BottomSheetType.Report to false,
+        BottomSheetType.SubmitReport to false,
     )
 
-data class TimerStatusInfo(val event: StoriesDetailItem.StoriesDetailItemUiEvent, val story: StoryTimer) {
+data class TimerStatusInfo(
+    val event: StoriesDetailItem.StoriesDetailItemUiEvent,
+    val story: StoryTimer
+) {
     companion object {
-        data class StoryTimer(val id: String, val itemCount: Int, val resetValue: Int, val duration: Int, val position: Int) {
+        data class StoryTimer(
+            val id: String,
+            val itemCount: Int,
+            val resetValue: Int,
+            val duration: Int,
+            val position: Int
+        ) {
             companion object {
-                val Empty get() = StoryTimer(id = "", itemCount = 0, resetValue = -1, duration = 0, position = -1)
+                val Empty
+                    get() = StoryTimer(
+                        id = "",
+                        itemCount = 0,
+                        resetValue = -1,
+                        duration = 0,
+                        position = -1
+                    )
             }
         }
-        val Empty get() = TimerStatusInfo(StoriesDetailItem.StoriesDetailItemUiEvent.PAUSE, StoryTimer.Empty)
+
+        val Empty
+            get() = TimerStatusInfo(
+                StoriesDetailItem.StoriesDetailItemUiEvent.PAUSE,
+                StoryTimer.Empty
+            )
     }
 }

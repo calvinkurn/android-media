@@ -220,6 +220,7 @@ class StoriesViewModel @AssistedInject constructor(
             is StoriesUiAction.ProductAction -> handleProductAction(action.action, action.product)
             is StoriesUiAction.ShowVariantSheet -> handleVariantSheet(action.product)
             is StoriesUiAction.UpdateStoryDuration -> handleUpdateDuration(action.duration)
+            is StoriesUiAction.OpenBottomSheet -> handleOpenBottomSheet(action.type)
             StoriesUiAction.SetInitialData -> handleSetInitialData()
             StoriesUiAction.NextDetail -> handleNext()
             StoriesUiAction.PreviousDetail -> handlePrevious()
@@ -483,6 +484,14 @@ class StoriesViewModel @AssistedInject constructor(
             _storiesEvent.emit(StoriesUiEvent.OpenKebab)
             _bottomSheetStatusState.update { bottomSheet ->
                 bottomSheet.mapValues { it.key == BottomSheetType.Kebab }
+            }
+        }
+    }
+
+    private fun handleOpenBottomSheet(type: BottomSheetType) {
+        viewModelScope.launch {
+            _bottomSheetStatusState.update { bottomSheet ->
+                bottomSheet.mapValues { it.key == type }
             }
         }
     }

@@ -215,10 +215,12 @@ class StoriesDetailFragment @Inject constructor(
 
     override fun onCloseButtonClicked() {
         (childFragmentManager.findFragmentByTag(ContentReportBottomSheet.TAG) as ContentReportBottomSheet?)?.dismiss()
+        viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.Report))
     }
 
     override fun onItemReportClick(item: PlayUserReportReasoningUiModel.Reasoning) {
         (childFragmentManager.findFragmentByTag(ContentReportBottomSheet.TAG) as ContentReportBottomSheet?)?.dismiss()
+        viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.Report))
 
         ContentSubmitReportBottomSheet.getOrCreate(
             childFragmentManager,
@@ -227,6 +229,7 @@ class StoriesDetailFragment @Inject constructor(
             setData(item)
         }.show(childFragmentManager, ContentSubmitReportBottomSheet.TAG)
 
+        viewModel.submitAction(StoriesUiAction.OpenBottomSheet(BottomSheetType.SubmitReport))
         viewModel.selectReportReason(item)
     }
 
@@ -239,6 +242,7 @@ class StoriesDetailFragment @Inject constructor(
 
     override fun onBackButtonListener() {
         (childFragmentManager.findFragmentByTag(ContentSubmitReportBottomSheet.TAG) as ContentSubmitReportBottomSheet?)?.dismiss()
+        viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.SubmitReport))
     }
 
     override fun onSubmitReport(desc: String) {
@@ -910,6 +914,8 @@ class StoriesDetailFragment @Inject constructor(
         ).apply {
             updateList(viewModel.userReportReasonList)
         }.show(childFragmentManager, ContentReportBottomSheet.TAG)
+
+        viewModel.submitAction(StoriesUiAction.OpenBottomSheet(BottomSheetType.Report))
     }
 
     private fun showDialog(
