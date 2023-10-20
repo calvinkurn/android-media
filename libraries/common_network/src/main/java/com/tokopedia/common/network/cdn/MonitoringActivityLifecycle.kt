@@ -83,9 +83,9 @@ class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallb
     override fun onActivityStarted(activity: Activity) {
         val className = activity.javaClass.canonicalName ?: return
         cdnConfig?.let { config ->
-//            if (config.pageNameList?.contains(className) == true) {
-            process(activity, config)
-//            }
+            if (config.pageNameList?.contains(className) == true) {
+                process(activity, config)
+            }
         }
     }
 
