@@ -22,6 +22,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -111,6 +112,15 @@ class AffiliateIncomeViewModelTest {
         assertEquals(affiliateIncomeViewModel.getRangeChange().value, true)
     }
 
+    @Test
+    fun `getrangechange should not change when selectedDateRange is not changed`() {
+        val range =
+            AffiliateDatePickerData(AffiliateBottomDatePicker.THIRTY_DAYS)
+        affiliateIncomeViewModel.onRangeChanged(range)
+
+        assertNull(affiliateIncomeViewModel.getRangeChange().value)
+    }
+
     /**************************** getTransactionDetails() *******************************************/
     @Test
     fun getTransactionDetailsTest() {
@@ -168,6 +178,27 @@ class AffiliateIncomeViewModelTest {
         )
         val transaction = AffiliateTransactionHistoryData(
             AffiliateTransactionHistoryData.GetAffiliateTransactionHistory(data)
+        )
+        coEvery {
+            affiliateIncomeViewModel.affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(
+                any(),
+                any()
+            )
+        } returns transaction
+        val response =
+            affiliateIncomeViewModel.convertDataToVisitables(
+                transaction.getAffiliateTransactionHistory?.transactionData
+            )
+
+        affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
+
+        assertEquals(affiliateIncomeViewModel.getAffiliateDataItems().value, response)
+    }
+
+    @Test
+    fun `check visitable when data is null`() {
+        val transaction = AffiliateTransactionHistoryData(
+            AffiliateTransactionHistoryData.GetAffiliateTransactionHistory(null)
         )
         coEvery {
             affiliateIncomeViewModel.affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(
