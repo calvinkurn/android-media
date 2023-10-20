@@ -197,6 +197,8 @@ class CatalogDetailUiMapper @Inject constructor(
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToStickyNavigation(
         remoteModel: CatalogResponseData.CatalogGetDetailModular
     ): StickyNavigationUiModel {
+        val isDarkMode = remoteModel.globalStyle?.darkMode.orFalse()
+        val textColor = getTextColorNav(isDarkMode)
         return StickyNavigationUiModel(
             content = data?.navigation?.map { nav ->
                 val eligibleName = nav.eligibleNames.filter { eligble ->
@@ -208,7 +210,8 @@ class CatalogDetailUiMapper @Inject constructor(
                 StickyNavigationUiModel.StickyNavigationItemData(
                     nav.title,
                     eligibleName,
-                    nav.eligibleNames.joinToString(",")
+                    nav.eligibleNames.joinToString(","),
+                    textColor
                 )
             }.orEmpty()
         )
@@ -418,6 +421,15 @@ class CatalogDetailUiMapper @Inject constructor(
             unifycomponentsR.color.Unify_Static_White
         } else {
             catalogcommonR.color.dms_static_Unify_NN600_light
+        }
+        return MethodChecker.getColor(context, textColorRes)
+    }
+
+    private fun getTextColorNav(darkMode: Boolean): Int {
+        val textColorRes = if (darkMode) {
+            unifycomponentsR.color.Unify_Static_White
+        } else {
+            unifycomponentsR.color.Unify_Static_Black
         }
         return MethodChecker.getColor(context, textColorRes)
     }
