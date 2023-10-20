@@ -193,7 +193,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="12dp"
-                                android:text="@string/label_price_total"
+                                android:text="@string/label_price_total_new"
                                 android:textColor="@color/Unify_NN950"
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintEnd_toStartOf="@id/fl_checkout_button"
