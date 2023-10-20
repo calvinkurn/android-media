@@ -62,6 +62,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlin.math.min
 
 object CartUiModelMapper {
@@ -613,7 +615,13 @@ object CartUiModelMapper {
         return CartAddOnData().apply {
             listData = arrayListAddOnProduct
             widget = CartAddOnWidgetData(
-                wording = addOn.addOnWidget.wording,
+                title = addOn.addOnWidget.title,
+                price = "(${
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    addOn.addOnWidget.price,
+                    false
+                ).removeDecimalSuffix()
+                })",
                 leftIconUrl = addOn.addOnWidget.leftIconUrl,
                 rightIconUrl = addOn.addOnWidget.rightIconUrl
             )
@@ -853,7 +861,11 @@ object CartUiModelMapper {
                     cartDetail,
                     productId
                 )
-            ) CART_BMGM_STATE_TICKER_ACTIVE else CART_BMGM_STATE_TICKER_INACTIVE,
+            ) {
+                CART_BMGM_STATE_TICKER_ACTIVE
+            } else {
+                CART_BMGM_STATE_TICKER_INACTIVE
+            },
             isShowBmGmDivider = checkNeedToShowBmGmDivider(cartDetail, productId),
             isShowBmGmHorizontalDivider = checkNeedToShowBmGmHorizontalDivider(
                 cartDetail,
