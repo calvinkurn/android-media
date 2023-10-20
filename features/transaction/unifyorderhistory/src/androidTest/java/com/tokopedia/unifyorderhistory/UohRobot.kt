@@ -25,9 +25,6 @@ import com.tokopedia.productcard.R as productcardR
 import com.tokopedia.searchbar.R as searchbarR
 import com.tokopedia.sortfilter.R as sortfilterR
 
-/**
- * Created by fwidjaja on 08/11/20.
- */
 class UohRobot {
     fun loading() {
         waitForData()
@@ -41,7 +38,7 @@ class UohRobot {
         onView(withId(R.id.rv_order_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                    0,
+                    1,
                     clickOnViewChild(R.id.uoh_btn_action_1)
                 )
             )
@@ -156,7 +153,7 @@ class UohRobot {
     }
 
     private fun waitForData() {
-        Thread.sleep(5000)
+        Thread.sleep(2000)
     }
 
     private fun nthChildOf(parentMatcher: Matcher<View?>, childPosition: Int): Matcher<View?> {
