@@ -809,19 +809,34 @@ class CheckoutLogisticProcessor @Inject constructor(
                             startDate = orderModel.startDate
                         )
                     )
+                val schellyData =
+                    schellyResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
                 val courierItemData =
                     shippingCourierConverter.schellyToCourierItemData(
-                        schellyResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData,
+                        schellyData,
                         orderModel.validationMetadata
                     )
-                return@withContext RatesResult(
-                    courierItemData,
-                    generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
-                    emptyList()
-                )
-
-                // todo maybe need to add validation here
-                // ex: if there's no schedule
+                handleSyncShipmentCartItemModel(courierItemData, orderModel)
+                if (courierItemData.scheduleDeliveryUiModel?.isSelected == true && courierItemData.scheduleDeliveryUiModel?.deliveryServices?.isNotEmpty() == true) {
+                    return@withContext RatesResult(
+                        courierItemData,
+                        generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
+                        emptyList()
+                    )
+                } else {
+                    val errorReason = "schelly is not selected"
+//                    CheckoutLogger.logOnErrorLoadCourierNew(
+//                        MessageErrorException(
+//                            errorReason
+//                        ),
+//                        orderModel,
+//                        isOneClickShipment,
+//                        isTradeIn,
+//                        isTradeInByDropOff,
+//                        boPromoCode
+//                    )
+                    return@withContext null
+                }
             } catch (t: Throwable) {
                 Timber.d(t)
                 if (t is AkamaiErrorException) {
