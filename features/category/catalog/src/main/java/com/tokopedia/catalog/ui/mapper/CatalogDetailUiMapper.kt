@@ -355,7 +355,7 @@ class CatalogDetailUiMapper @Inject constructor(
                     videoLink = it.videoUrl,
                     textReviewColor = getTextColor(isDarkMode),
                     textTitleColor = getTextColor(isDarkMode),
-                    textSubTitleColor = getTextColor(isDarkMode),
+                    textSubTitleColor = getTextColorTrustmaker(isDarkMode),
                     backgroundColor = colorMapping(
                         isDarkMode,
                         catalogcommonR.drawable.bg_rounded_border_dark,
