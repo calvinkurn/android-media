@@ -353,9 +353,7 @@ class ScpAuthActivity : BaseActivity() {
             }
 
             AuthAnalyticsMapper.trackMoUser(this, userSession.loginMethod)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        } catch (ignored: Exception) { }
     }
 
     override fun onDestroy() {

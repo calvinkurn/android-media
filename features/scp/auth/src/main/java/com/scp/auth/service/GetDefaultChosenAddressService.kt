@@ -74,9 +74,7 @@ class GetDefaultChosenAddressService : JobIntentServiceX(), CoroutineScope {
                         )
                     }
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            } catch (ignored: Exception) { }
         }
     }
 
