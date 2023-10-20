@@ -636,8 +636,8 @@ class ProductManageViewModel @Inject constructor(
                 result = editProductStock(productId, productName, stock, status)
                 if (result is Success) {
                     editProductStatus(productId, productName, stock, status)
-                } else {
-                    throw Throwable()
+                } else if (result is Fail) {
+                    throw result.throwable
                 }
             } else if (stock != null) {
                 result = editProductStock(productId, productName, stock, status)
@@ -697,8 +697,8 @@ class ProductManageViewModel @Inject constructor(
                 data = editVariantStock(result)
                 if (data is Success) {
                     editVariantStatus(result)
-                } else {
-                    throw Throwable()
+                } else if (data is Fail) {
+                    throw data.throwable
                 }
             } else if (result.editStock) {
                 data = editVariantStock(result)
