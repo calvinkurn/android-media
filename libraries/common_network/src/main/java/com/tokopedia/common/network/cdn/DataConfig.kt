@@ -13,8 +13,8 @@ data class DataConfig(
     val imageUrlList: List<Item>?
 ) {
     data class Item(
-        @SerializedName("vendor")
-        val vendor: String,
+        @SerializedName("host")
+        val host: String,
         @SerializedName("cname")
         val cname: String,
         @SerializedName("url")

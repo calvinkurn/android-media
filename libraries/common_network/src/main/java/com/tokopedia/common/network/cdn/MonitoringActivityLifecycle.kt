@@ -64,7 +64,7 @@ class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallb
                                 .build()
                             val request = Request.Builder()
                                 .url(item.url)
-                                .addHeader("host", "images.tokopedia.net")
+                                .addHeader("host", item.host)
                                 .addHeader("user-agent", getUserAgent())
                                 .build()
                             client.newCall(request).execute()
