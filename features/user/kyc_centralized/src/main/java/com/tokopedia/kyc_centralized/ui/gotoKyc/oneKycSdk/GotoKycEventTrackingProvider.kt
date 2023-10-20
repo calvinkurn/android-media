@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import com.gojek.kyc.sdk.config.KycSdkAnalyticsConfig
 import com.gojek.kyc.sdk.core.analytics.IKycSdkEventTrackingProvider
+import com.gojek.kyc.sdk.core.utils.KycSdkPartner
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
 import com.tokopedia.kyc_centralized.ui.gotoKyc.worker.GotoKycCleanupStorageWorker
@@ -39,10 +40,12 @@ class GotoKycEventTrackingProvider @Inject constructor(
         eventProperties: Map<String, Any?>,
         productName: String?
     ) {
-        sendTracker(
-            eventName = eventName,
-            eventProperties = eventProperties
-        )
+        if (eventProperties[SOURCE] == KycSdkPartner.TOKOPEDIA_CORE.name) {
+            sendTracker(
+                eventName = eventName,
+                eventProperties = eventProperties
+            )
+        }
     }
 
     @SuppressLint("PII Data Exposure")
@@ -466,6 +469,7 @@ class GotoKycEventTrackingProvider @Inject constructor(
     }
 
     companion object {
+        private const val SOURCE = "Source"
         private const val SCREEN_TYPE = "ScreenType"
         private const val SCREEN_TYPE_CAMERA = "Camera"
         private const val SCREEN_TYPE_ALL_PREVIEW = "All Document Preview"
