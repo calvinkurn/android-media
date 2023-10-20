@@ -2479,7 +2479,7 @@ HomeRevampFragment :
     }
 
     override fun getRecommendationForYouIndex(): Int? {
-        return getHomeViewModel().homeLiveDynamicChannel.value?.list?.indexOfFirst {
+        return getHomeViewModel().homeDataModel.list.indexOfFirst {
             it is HomeRecommendationFeedDataModel
         }.takeIf { it != RecyclerView.NO_POSITION }
     }
