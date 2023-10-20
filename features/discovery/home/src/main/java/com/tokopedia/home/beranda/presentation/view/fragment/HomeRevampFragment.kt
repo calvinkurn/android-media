@@ -242,6 +242,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.wishlist_common.R as wishlist_commonR
 import com.tokopedia.play.widget.R as playwidgetR
 import com.tokopedia.searchbar.R as searchbarR
+import com.tokopedia.loyalty.R as loyaltyR
 
 /**
  * @author by yoasfs on 12/14/17.
@@ -1836,7 +1837,7 @@ HomeRevampFragment :
             if (activity != null) {
                 showBannerWebViewOnAllPromoClickFromHomeIntent(
                     BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP,
-                    getString(com.tokopedia.loyalty.R.string.title_activity_promo)
+                    getString(loyaltyR.string.title_activity_promo)
                 )
             }
         }
