@@ -43,13 +43,16 @@ class ProductDataView {
     var redirectApplink: String = ""
     var productListType: String = ""
     var isShowButtonAtc: Boolean = false
+    var isReimagineProductCard: Boolean = false
     val defaultView: Int
         get() =
             if (productListType == LIST_VIEW) ViewType.LIST.value
             else ViewType.SMALL_GRID.value
 
     val gridType: String
-        get() = productListType.takeIf { it == FIXED_GRID } ?: ""
+        get() =
+            if (isReimagineProductCard) FIXED_GRID
+            else productListType.takeIf { it == FIXED_GRID } ?: ""
 
     val suggestion: String
         get() = suggestionModel?.suggestion.orEmpty()
