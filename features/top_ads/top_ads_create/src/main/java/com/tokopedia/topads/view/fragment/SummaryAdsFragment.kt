@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -262,14 +263,14 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     }
 
     private fun setUpInitialValues() {
-        suggestion = (stepperModel?.finalSearchBidPerClick ?: 0) * MULTIPLIER
+        suggestion = (stepperModel?.finalSearchBidPerClick ?: Int.ZERO) * MULTIPLIER
         minBudget = if (stepperModel?.autoBidState?.isEmpty() != true)
             AUTOBID_DEFUALT_BUDGET
         else
             suggestion
         stepperModel?.dailyBudget = suggestion
         dailyBudget = if (stepperModel?.autoBidState?.isEmpty() == true)
-            (stepperModel?.finalSearchBidPerClick ?: 0) * MULTIPLIER
+            (stepperModel?.finalSearchBidPerClick ?: Int.ZERO) * MULTIPLIER
         else
             AUTOBID_DEFUALT_BUDGET
         txtDailyBudget?.textFieldInput?.setText(dailyBudget.toString())
@@ -444,7 +445,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             )
             validation2 = false
             actionEnable()
-        } else if (input % DAILYBUDGET_FACTOR != 0) {
+        } else if (input % DAILYBUDGET_FACTOR != Int.ZERO) {
             txtDailyBudget?.setError(true)
             txtDailyBudget?.setMessage(
                 String.format(
@@ -511,14 +512,15 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         val dataKeyword = HashMap<String, Any?>()
         keywordsList.clear()
 
-        if (stepperModel?.autoBidState?.isEmpty() == true && stepperModel?.selectedKeywordStage?.count() ?: 0 > 0) {
+        if (stepperModel?.autoBidState?.isEmpty() == true && (stepperModel?.selectedKeywordStage?.count()
+                ?: Int.ZERO) > Int.ZERO) {
             stepperModel?.selectedKeywordStage?.forEachIndexed { index, _ ->
                 addKeywords(index)
             }
         }
         dataKeyword[POSITIVE_CREATE] = keywordsList
         stepperModel?.suggestedBidPerClick?.toFloat()?.let {
-            if (it > 0.0f) {
+            if (it > Int.ZERO.toFloat()) {
                 val suggestionBidSettings = listOf(
                     GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_SEARCH, it),
                     GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_BROWSE, it)
@@ -532,7 +534,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     private fun getProductData(): Bundle {
         val datProduct = Bundle()
         adsItemsList.clear()
-        if ((stepperModel?.selectedProductIds?.count() ?: 0) > 0) {
+        if ((stepperModel?.selectedProductIds?.count() ?: Int.ZERO) > Int.ZERO) {
             stepperModel?.selectedProductIds?.forEachIndexed { index, _ ->
                 addProducts(index)
             }
@@ -557,7 +559,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         key.id = typeInt.toString()
         key.typeInt = typeInt
         key.name = stepperModel?.selectedKeywordStage?.get(index)?.keyword ?: ""
-        if (stepperModel?.selectedKeywordStage?.get(index)?.bidSuggest?.toDouble() ?: 0.0 != 0.0)
+        if ((stepperModel?.selectedKeywordStage?.get(index)?.bidSuggest?.toDouble() ?: Int.ZERO.toDouble()) != Int.ZERO.toDouble())
             key.priceBid = stepperModel?.selectedKeywordStage?.get(index)?.bidSuggest
                 ?: "0"
         else
@@ -572,7 +574,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             actionEnable()
             groupInput?.setMessage(getString(R.string.topads_create_group_name_message))
         } else {
-            onErrorGroupName(data.errors[0].detail)
+            onErrorGroupName(data.errors[Int.ZERO].detail)
         }
     }
 

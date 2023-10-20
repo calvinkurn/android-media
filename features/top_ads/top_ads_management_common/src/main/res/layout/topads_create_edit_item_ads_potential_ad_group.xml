@@ -102,7 +102,7 @@
         android:id="@+id/btn_load_more_potential"
         android:layout_width="0dp"
         android:layout_height="32dp"
-        android:text="Muat Ulang"
+        android:text="@string/topads_ads_load_performance_data"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

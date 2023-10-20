@@ -3,6 +3,7 @@ package com.tokopedia.topads.common.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.ImpressionPredictionResponse
 import com.tokopedia.usecase.RequestParams
@@ -31,7 +32,7 @@ class TopAdsImpressionPredictionSearchUseCase @Inject constructor(graphqlReposit
     : GraphqlUseCase<ImpressionPredictionResponse>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(IMPRESSION_PREDICTION_QUERY_SEARCH)
+        setGraphqlQuery(ImpressionPredictionQuerySearch())
         setTypeClass(ImpressionPredictionResponse::class.java)
     }
 
@@ -59,10 +60,10 @@ class TopAdsImpressionPredictionSearchUseCase @Inject constructor(graphqlReposit
                                    initialBid: Float,
                                    dailyBudget: Float): RequestParams {
         val requestParams = RequestParams.create()
-        requestParams.putObject("finalBid", finalBid)
-        requestParams.putObject("initialBid", initialBid)
-        requestParams.putObject("dailyBudget", dailyBudget)
-        requestParams.putObject("productIDs", productIds)
+        requestParams.putObject(ParamObject.PARAM_FINAL_BID, finalBid)
+        requestParams.putObject(ParamObject.PARAM_INITIAL_BID, initialBid)
+        requestParams.putObject(ParamObject.PARAM_DAILYBUDGET, dailyBudget)
+        requestParams.putObject(TopAdsCommonConstant.PARAM_PRODUCT_IDS, productIds)
         requestParams.putString(ParamObject.SOURCE, source)
         return requestParams
     }

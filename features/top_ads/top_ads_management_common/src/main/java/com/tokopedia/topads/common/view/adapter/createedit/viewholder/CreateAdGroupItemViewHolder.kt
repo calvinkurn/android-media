@@ -1,9 +1,8 @@
 package com.tokopedia.topads.common.view.adapter.createedit.viewholder
 
-import android.util.TypedValue
-import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.common.R
@@ -42,7 +41,7 @@ class CreateAdGroupItemViewHolder(private val viewBinding: TopadsCreateItemAdGro
         }
         if (element.isEditable) {
             viewBinding.iconUnify.setImage(IconUnify.EDIT)
-            viewBinding.iconUnify.rotation = 0f
+            viewBinding.iconUnify.rotation = Int.ZERO.toFloat()
         }
 
         viewBinding.iconUnify.setOnClickListener {

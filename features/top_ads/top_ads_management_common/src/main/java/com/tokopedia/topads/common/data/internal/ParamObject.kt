@@ -124,4 +124,7 @@ object ParamObject {
     const val AD_TYPE_PRODUCT_ADS = "1"
     const val AD_TYPE_SHOP_ADS = "3"
     const val KEY_AD_TYPE = "ad_type"
+    const val PARAM_FINAL_BID = "finalBid"
+    const val PARAM_INITIAL_BID = "initialBid"
+    const val PARAM_DAILYBUDGET = "dailyBudget"
 }

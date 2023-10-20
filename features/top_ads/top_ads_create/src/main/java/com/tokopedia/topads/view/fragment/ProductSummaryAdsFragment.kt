@@ -13,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.hide
@@ -51,14 +52,13 @@ import java.util.HashMap
 import javax.inject.Inject
 import com.tokopedia.topads.common.R as topadscommonR
 
-
 class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     private var binding by autoClearedNullable<TopadsSummaryEditAdGroupBinding>()
     private val createEditAdGroupAdapter by lazy {
         CreateEditAdGroupAdapter(CreateEditAdGroupTypeFactory())
     }
-    var counter = 0
+    var counter = Int.ZERO
     private var adsItemsList: ArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> =
         arrayListOf()
     private var keywordsList: MutableList<KeySharedModel> = mutableListOf()
@@ -89,8 +89,8 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
         return mutableListOf(
             CreateAdGroupItemUiModel(
                 CreateEditAdGroupItemTag.NAME,
-                "Nama Grup Iklan",
-                "Group 01 ",
+                getString(R.string.topads_ads_name_title),
+                getString(R.string.topads_ads_name_subtitle),
                 isEditable = true,
                 isItemClickable = true
             ) {
@@ -98,18 +98,17 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
             },
             CreateAdGroupItemUiModel(
                 CreateEditAdGroupItemTag.PRODUCT,
-                "Produk",
-                String.format("%d produk", stepperModel?.selectedProductIds?.count()),
+                getString(R.string.topads_create_product),
+                String.format(getString(R.string.topads_create_product_prefix), stepperModel?.selectedProductIds?.count()),
                 isItemClickable = true
             ) { openProductListBottomSheet() },
             CreateAdGroupItemUiModel(
                 CreateEditAdGroupItemTag.ADS_SEARCH,
-                "Iklan di Pencarian",
-                subtitleOne = "Biaya iklan",
-                subtitleOneValue = String.format("Rp%d per klik", stepperModel?.finalSearchBidPerClick),
-                subtitleTwo = "Kata kunci",
-                subtitleTwoValue = String.format("%d kata kunci\n" +
-                    "Rp%s - Rp%s per klik",
+                getString(R.string.topads_ads_search_bid_title),
+                subtitleOne = getString(R.string.ad_group_stats_advertisement_costs_bottomsheet_title),
+                subtitleOneValue = String.format(getString(R.string.topads_ads_search_browse_bid_subtitle_prefix), stepperModel?.finalSearchBidPerClick),
+                subtitleTwo = getString(R.string.keywords),
+                subtitleTwoValue = String.format(getString(R.string.topads_ads_search_bid_subtitle_two_prefix),
                     stepperModel?.selectedKeywordStage?.count(),
                     stepperModel?.minBid.toString(),
                     stepperModel?.maxBid.toString()),
@@ -118,16 +117,16 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
             ) { openKeywordListBottomSheet() },
             CreateAdGroupItemUiModel(
                 CreateEditAdGroupItemTag.ADS_RECOMMENDATION,
-                "Iklan di Rekomendasi",
-                subtitleOne = "Biaya iklan",
-                subtitleOneValue = String.format("Rp%d per klik", stepperModel?.finalRecommendationBidPerClick),
+                getString(R.string.topads_ads_browse_bid_item_title),
+                subtitleOne = getString(R.string.topads_ads_browse_bid_subtitle),
+                subtitleOneValue = String.format(getString(R.string.topads_ads_search_browse_bid_subtitle_prefix), stepperModel?.finalRecommendationBidPerClick),
                 isManualAdBid = true,
                 hasDivider = true
             ) {},
 
             CreateAdGroupDailyBudgetItemUiModel(
-                "Batasi anggaran harian",
-                "Atur anggaran iklan sesuai kebutuhan.",
+                getString(R.string.topads_ads_daily_budget_item_title),
+                getString(R.string.topads_ads_daily_budget_item_subtitle),
                 hasDivider = true,
                 dailyBudget = stepperModel?.dailyBudget.toString(),
                 isDailyBudgetEnabled = false,
@@ -136,31 +135,26 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
             ) {},
             CreateEditAdGroupItemAdsPotentialUiModel(
                 CreateEditAdGroupItemTag.POTENTIAL_PERFORMANCE,
-                "Potensi tampil",
-                "Perkiraan seberapa sering iklanmu tampil berdasarkan produk yang dipilih, biaya grup iklan, dan anggaran harian.",
-                "",
+                getString(R.string.topads_ads_performance_item_title),
+                getString(R.string.topads_ads_performance_item_subtitle),
+                String.EMPTY,
                 if (stepperModel != null)
                     mutableListOf(
                         CreateEditAdGroupItemAdsPotentialWidgetUiModel(
-                            "Di Pencarian", stepperModel?.searchPrediction.toString()
+                            getString(topadscommonR.string.topads_ads_performance_search_stats), stepperModel?.searchPrediction.toString()
                         ),
                         CreateEditAdGroupItemAdsPotentialWidgetUiModel(
-                            "Di Rekomendasi", stepperModel?.recomPrediction.toString()
+                            getString(topadscommonR.string.topads_ads_performance_browse_stats), stepperModel?.recomPrediction.toString()
                         ),
                         CreateEditAdGroupItemAdsPotentialWidgetUiModel(
-                            "Total Tampil ", (stepperModel?.searchPrediction!! + stepperModel?.recomPrediction!!).toString()
+                            getString(topadscommonR.string.topads_ads_performance_total_stats), (stepperModel?.searchPrediction!! + stepperModel?.recomPrediction!!).toString()
                         ),
 
                         )
                 else mutableListOf(),
                 true,
                 CreateEditAdGroupItemState.LOADED
-            ),
-//            CreateApplyAdGroupItemUiModel(
-//                "Iklankan Sekarang",
-//            ) {
-//                createProductAdGroup()
-//            },
+            )
         )
     }
 
@@ -171,7 +165,6 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
     }
 
     private fun openProductListBottomSheet() {
-
         stepperModel?.productList?.let {
             CreateProductListBottomSheet.newInstance(it).show(childFragmentManager)
         }
@@ -206,7 +199,8 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
         val dataKeyword = HashMap<String, Any?>()
         keywordsList.clear()
 
-        if (stepperModel?.autoBidState?.isEmpty() == true && stepperModel?.selectedKeywordStage?.count() ?: 0 > 0) {
+        if (stepperModel?.autoBidState?.isEmpty() == true && (stepperModel?.selectedKeywordStage?.count()
+                ?: Int.ZERO) > Int.ZERO) {
             stepperModel?.selectedKeywordStage?.forEachIndexed { index, _ ->
                 addKeywords(index)
             }
@@ -227,7 +221,7 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
     private fun getProductData(): Bundle {
         val datProduct = Bundle()
         adsItemsList.clear()
-        if ((stepperModel?.selectedProductIds?.count() ?: 0) > 0) {
+        if ((stepperModel?.selectedProductIds?.count() ?: Int.ZERO) > Int.ZERO) {
             stepperModel?.selectedProductIds?.forEachIndexed { index, _ ->
                 addProducts(index)
             }
@@ -242,8 +236,8 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
         dataMap[ParamObject.BUDGET_LIMITED] = isDailyBudgetOn
 
         dataMap[ParamObject.DAILY_BUDGET] = stepperModel?.dailyBudget
-        dataMap[ParamObject.GROUP_NAME] = stepperModel?.groupName ?: ""
-        dataMap[ParamObject.GROUPID] = ""
+        dataMap[ParamObject.GROUP_NAME] = stepperModel?.groupName ?: String.EMPTY
+        dataMap[ParamObject.GROUPID] = String.EMPTY
         dataMap[ParamObject.NAME_EDIT] = true
         dataMap[ParamObject.ACTION_TYPE] = ParamObject.ACTION_CREATE
         if (stepperModel?.autoBidState?.isNotEmpty() == true) {
@@ -321,43 +315,38 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
         return mutableListOf(
             CreateAdGroupItemUiModel(
                 CreateEditAdGroupItemTag.NAME,
-                "Nama Grup Iklan",
-                "Group 01 ",
+                getString(R.string.topads_ads_name_title),
+                getString(R.string.topads_ads_name_subtitle),
                 isEditable = true,
                 isItemClickable = true,
             ) { editGroupName() },
             CreateAdGroupItemUiModel(
                 CreateEditAdGroupItemTag.PRODUCT,
-                "Produk",
-                String.format("%d produk", stepperModel?.selectedProductIds?.count()),
+                getString(R.string.topads_create_product),
+                String.format(getString(R.string.topads_create_product_prefix), stepperModel?.selectedProductIds?.count()),
                 isItemClickable = true
             ) { openProductListBottomSheet() },
             CreateAdGroupItemUiModel(
                 CreateEditAdGroupItemTag.ADS_SEARCH,
-                "Iklan di Pencarian",
-                subtitle = "Diatur sistem TopAds"
+                getString(R.string.topads_ads_search_bid_title),
+                subtitle = getString(R.string.topads_ads_search_browse_bid_auto_subtitle)
             ) {},
             CreateAdGroupItemUiModel(
                 CreateEditAdGroupItemTag.ADS_RECOMMENDATION,
-                "Iklan di Rekomendasi",
-                subtitle = "Diatur sistem TopAds",
+                getString(R.string.topads_ads_browse_bid_item_title),
+                subtitle = getString(R.string.topads_ads_search_browse_bid_auto_subtitle),
                 hasDivider = true
             ) {},
 
             CreateAdGroupDailyBudgetItemUiModel(
-                "Batasi anggaran harian",
-                "Atur anggaran iklan sesuai kebutuhan.",
+                getString(R.string.topads_ads_daily_budget_item_title),
+                getString(R.string.topads_ads_daily_budget_item_subtitle),
                 hasDivider = true,
                 dailyBudget = stepperModel?.dailyBudget.toString(),
                 isDailyBudgetEnabled = false,
                 onSwitchChange = ::onDailyBudgetSwitchToggle,
                 onDailyBudgetChange = ::onDailyBudgetChange
             ) {},
-//            CreateApplyAdGroupItemUiModel(
-//                "Iklankan Sekarang",
-//            ) {
-//                createProductAdGroup()
-//            },
         )
     }
 
@@ -394,11 +383,10 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
         setInitialNameCounter()
         checkForAutoFillGroupName()
         setUpClicksOnViews()
-
     }
 
     private fun setInitialNameCounter() {
-        counter = 0
+        counter = Int.ZERO
     }
 
     private fun setUpClicksOnViews() {
@@ -411,9 +399,9 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
         if (stepperModel?.autoBidState?.isEmpty() == true) {
             stepperModel?.dailyBudget = if ((stepperModel?.finalSearchBidPerClick
                     ?: Int.ZERO) > (stepperModel?.finalRecommendationBidPerClick ?: Int.ZERO)) {
-                (stepperModel?.finalSearchBidPerClick ?: 0) * MULTIPLIER
+                (stepperModel?.finalSearchBidPerClick ?: Int.ZERO) * MULTIPLIER
             } else {
-                (stepperModel?.finalRecommendationBidPerClick ?: 0) * MULTIPLIER
+                (stepperModel?.finalRecommendationBidPerClick ?: Int.ZERO) * MULTIPLIER
             }
         } else {
             stepperModel?.dailyBudget = AUTOBID_DEFUALT_BUDGET
@@ -424,7 +412,7 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
     private fun checkForAutoFillGroupName() {
         val groupName: String =
             getString(topadscommonR.string.topads_common_group) + " " + DateUtil.getCurrentDate()
-                .formatTo(TopAdsProductRecommendationConstants.BASIC_DATE_FORMAT) + (if (counter == 0) "" else " ($counter)")
+                .formatTo(TopAdsProductRecommendationConstants.BASIC_DATE_FORMAT) + (if (counter == Int.ZERO) String.EMPTY else " ($counter)")
         counter++
         viewModel.validateGroup(groupName, ::onValidateNameSuccess, ::onFailure)
     }
@@ -443,7 +431,6 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
 
     }
 
-
     private fun addProducts(index: Int) {
         val id = stepperModel?.selectedProductIds?.get(index).toString()
         adsItemsList.add(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(id))
@@ -460,9 +447,9 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
         key.id = typeInt.toString()
         key.typeInt = typeInt
         key.name = stepperModel?.selectedKeywordStage?.get(index)?.keyword ?: ""
-        if (stepperModel?.selectedKeywordStage?.get(index)?.bidSuggest?.toDouble() ?: 0.0 != 0.0)
+        if ((stepperModel?.selectedKeywordStage?.get(index)?.bidSuggest?.toDouble() ?: 0.0) != 0.0)
             key.priceBid = stepperModel?.selectedKeywordStage?.get(index)?.bidSuggest
-                ?: "0"
+                ?: Int.ZERO.toString()
         else
             key.priceBid = stepperModel?.minSuggestBidKeyword ?: "0"
         keywordsList.add(key)
@@ -475,7 +462,7 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
     }
 
     private fun onSuccess(data: DepositAmount) {
-        val isEnoughDeposit = data.amount > 0
+        val isEnoughDeposit = data.amount > Int.ZERO
         if (isEnoughDeposit) {
             val sheet = TopAdsSuccessSheet()
             sheet.overlayClickDismiss = false

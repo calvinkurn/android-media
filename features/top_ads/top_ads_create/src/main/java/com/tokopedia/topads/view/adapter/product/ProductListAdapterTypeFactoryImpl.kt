@@ -21,8 +21,6 @@ class ProductListAdapterTypeFactoryImpl(var actionSelected: (() -> Unit)?) : Pro
 
     override fun type(model: KeyWordItemViewModel): Int = KeyWordItemViewHolder.LAYOUT
 
-
-
     override fun holder(type: Int, view: View): ProductViewHolder<*> {
         return when(type){
             ProductItemViewHolder.LAYOUT -> ProductItemViewHolder(view, actionSelected)

@@ -11,17 +11,22 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_1
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_2
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemAdsPotentialWidgetUiModel
 import com.tokopedia.topads.common.view.sheet.CreatePotentialPerformanceSheet
 import com.tokopedia.topads.edit.databinding.TopadsEditSheetEditAdGroupDailyBudgetBinding
 import com.tokopedia.topads.edit.di.DaggerTopAdsEditComponent
 import com.tokopedia.topads.edit.di.module.TopAdEditModule
+import com.tokopedia.topads.edit.utils.Constants.MAX_BUDGET_AUTOMATIC
+import com.tokopedia.topads.edit.utils.Constants.MAX_BUDGET_MANUAL
+import com.tokopedia.topads.edit.utils.Constants.MULTIPLIER
 import com.tokopedia.topads.edit.viewmodel.EditAdGroupDailyBudgetViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Success
@@ -34,12 +39,12 @@ class EditAdGroupDailyBudgetBottomSheet : BottomSheetUnify() {
 
     private var performanceData: MutableList<CreateEditAdGroupItemAdsPotentialWidgetUiModel>? = null
     private var isBidAutomatic: Boolean = false
-    private var minBudget: Int = 0
-    private var maxBudget: Int = 0
+    private var minBudget: Int = Int.ZERO
+    private var maxBudget: Int = Int.ZERO
     private var bids: MutableList<Float?> = mutableListOf()
     private var productIds: List<String> = mutableListOf()
-    private var suggestedDailyBudget: String = "0"
-    private var dailyBudget: String = "0"
+    private var suggestedDailyBudget: String = Int.ZERO.toString()
+    private var dailyBudget: String = Int.ZERO.toString()
     private var clickListener: ((dailyBudget: String, isToggleOn: Boolean) -> Unit)? = null
     private var binding: TopadsEditSheetEditAdGroupDailyBudgetBinding? = null
 
@@ -92,11 +97,11 @@ class EditAdGroupDailyBudgetBottomSheet : BottomSheetUnify() {
             when (it) {
                 is Success -> {
                     this.performanceData = it.data
-                    val data = it.data.getOrNull(2)
+                    val data = it.data.getOrNull(CONST_2)
                     data?.let { performanceData ->
-                        binding?.amount?.text = String.format("%sx", performanceData.retention)
-                        if (performanceData.percentage.toIntOrZero() != 0) {
-                            binding?.percentage?.text = String.format("%s %% meningkat", performanceData.percentage)
+                        binding?.amount?.text = String.format(getString(topadseditR.string.top_ads_performce_count_prefix), performanceData.retention)
+                        if (performanceData.percentage.toIntOrZero() != Int.ZERO) {
+                            binding?.percentage?.text = String.format(getString(topadseditR.string.top_ads_performance_increment_text), performanceData.percentage)
                             binding?.percentage?.show()
                         } else {
                             binding?.percentage?.hide()
@@ -111,7 +116,7 @@ class EditAdGroupDailyBudgetBottomSheet : BottomSheetUnify() {
 
     private fun initView() {
         setBudget()
-        if (dailyBudget == "0") {
+        if (dailyBudget == Int.ZERO.toString()) {
             binding?.toggle?.isChecked = false
             binding?.textField?.hide()
             binding?.editAdGroupNamCta?.isEnabled = false
@@ -128,12 +133,13 @@ class EditAdGroupDailyBudgetBottomSheet : BottomSheetUnify() {
         minBudget = if (!isBidAutomatic) {
             val searchBid = bids.firstOrNull()
             val browseBid = bids.getOrNull(CONST_1)
-            if ((searchBid ?: 0f) > (browseBid ?: 0f)) (searchBid?.toInt())?.times(40)
-                ?: 0 else (browseBid?.toInt())?.times(40) ?: 0
+            if ((searchBid ?: Int.ZERO.toFloat()) > (browseBid
+                    ?: Int.ZERO.toFloat())) (searchBid?.toInt())?.times(MULTIPLIER)
+                ?: Int.ZERO else (browseBid?.toInt())?.times(MULTIPLIER) ?: Int.ZERO
         } else {
-            16000
+            MAX_BUDGET_AUTOMATIC
         }
-        maxBudget = 10000000
+        maxBudget = MAX_BUDGET_MANUAL
     }
 
     private fun setListeners() {
@@ -142,11 +148,11 @@ class EditAdGroupDailyBudgetBottomSheet : BottomSheetUnify() {
                 super.onNumberChanged(number)
                 if (number < minBudget) {
                     binding?.textField?.isInputError = true
-                    binding?.textField?.setMessage(String.format("Minimum Rp%s", CurrencyFormatHelper.convertToRupiah(minBudget.toString())))
+                    binding?.textField?.setMessage(String.format(getString(topadseditR.string.top_ads_minimum_budget), CurrencyFormatHelper.convertToRupiah(minBudget.toString())))
                     binding?.editAdGroupNamCta?.isEnabled = false
                 } else if (number > maxBudget) {
                     binding?.textField?.isInputError = true
-                    binding?.textField?.setMessage(String.format("Maksimum Rp%s", CurrencyFormatHelper.convertToRupiah(maxBudget.toString())))
+                    binding?.textField?.setMessage(String.format(getString(topadseditR.string.top_ads_maximum_budget), CurrencyFormatHelper.convertToRupiah(maxBudget.toString())))
                     binding?.editAdGroupNamCta?.isEnabled = false
                 } else {
                     binding?.editAdGroupNamCta?.isEnabled = true
@@ -174,7 +180,7 @@ class EditAdGroupDailyBudgetBottomSheet : BottomSheetUnify() {
                 binding?.textField?.hide()
                 binding?.editAdGroupNamCta?.isEnabled = false
                 binding?.editAdGroupNamCta?.isEnabled = true
-                viewModel.getPerformanceData(productIds, bids, 0f)
+                viewModel.getPerformanceData(productIds, bids, Int.ZERO.toFloat())
             }
         }
         binding?.icon?.setOnClickListener {

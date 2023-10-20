@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_1
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.DataSuggestions
@@ -116,9 +117,9 @@ class EditAdGroupViewModel @Inject constructor(
         validateNameAdGroupUseCase.setParams(groupName, Constants.SOURCE_ANDROID_EDIT_GROUP)
         validateNameAdGroupUseCase.execute(
             {
-                if (it.topAdsGroupValidateName.errors.isEmpty()){
+                if (it.topAdsGroupValidateName.errors.isEmpty()) {
                     onSuccess(it.topAdsGroupValidateName)
-                }else{
+                } else {
                     onFailure.invoke(it.topAdsGroupValidateName.errors.firstOrNull()?.detail)
                 }
             },
@@ -127,7 +128,6 @@ class EditAdGroupViewModel @Inject constructor(
                 onFailure.invoke(throwable.message)
             })
     }
-
 
 
     fun getAds(
@@ -212,9 +212,9 @@ class EditAdGroupViewModel @Inject constructor(
     }
 
     private fun getTotalIncrementPercentage(list: MutableList<Pair<Int, Int>>): Int {
-        val increment = 0
+        val increment = Int.ZERO
         list.forEach {
-            if (it.second > 0) increment + it.second
+            if (it.second > Int.ZERO) increment + it.second
         }
         return increment
     }

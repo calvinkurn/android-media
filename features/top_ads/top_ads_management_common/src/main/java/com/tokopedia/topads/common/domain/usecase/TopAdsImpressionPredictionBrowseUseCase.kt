@@ -3,7 +3,11 @@ package com.tokopedia.topads.common.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_PRODUCT_IDS
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_DAILYBUDGET
+import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_FINAL_BID
+import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_INITIAL_BID
 import com.tokopedia.topads.common.data.response.ImpressionPredictionResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -31,7 +35,7 @@ class TopAdsImpressionPredictionBrowseUseCase @Inject constructor(graphqlReposit
     : GraphqlUseCase<ImpressionPredictionResponse>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(IMPRESSION_PREDICTION_QUERY_BROWSE)
+        setGraphqlQuery(ImpressionPredictionQueryBrowse())
         setTypeClass(ImpressionPredictionResponse::class.java)
     }
 
@@ -59,10 +63,10 @@ class TopAdsImpressionPredictionBrowseUseCase @Inject constructor(graphqlReposit
                                    initialBid: Float,
                                    dailyBudget: Float): RequestParams {
         val requestParams = RequestParams.create()
-        requestParams.putObject("finalBid", finalBid)
-        requestParams.putObject("initialBid", initialBid)
-        requestParams.putObject("dailyBudget", dailyBudget)
-        requestParams.putObject("productIDs", productIds)
+        requestParams.putObject(PARAM_FINAL_BID, finalBid)
+        requestParams.putObject(PARAM_INITIAL_BID, initialBid)
+        requestParams.putObject(PARAM_DAILYBUDGET, dailyBudget)
+        requestParams.putObject(PARAM_PRODUCT_IDS, productIds)
         requestParams.putString(ParamObject.SOURCE, source)
         return requestParams
     }

@@ -52,9 +52,9 @@
                         android:layout_marginTop="16dp"
                         android:text="@string/top_ads_common_text_info_search_bid"
                         android:textColor="@color/Unify_NN950"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:typographyType="paragraph_3" />
 
                     <com.tokopedia.unifycomponents.TextFieldUnify2
@@ -193,7 +193,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Potensi tampil"
+        android:text="@string/topads_ads_performance_item_title"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btnNextSearch"
@@ -204,19 +204,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="300x"
+        android:text="@string/topads_ads_default_performance"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/impressionPerformanceTextSearch"
         app:typographyType="paragraph_2"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"
+        tools:text="300x" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/impressionPerformanceValueSuffixSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
-        android:text="/minggu"
+        android:text="@string/topads_ads_performance_per_day"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintBottom_toBottomOf="@id/impressionPerformanceValueSearch"
         app:layout_constraintStart_toEndOf="@id/impressionPerformanceValueSearch"
@@ -246,6 +247,5 @@
         app:unifyButtonSize="medium"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

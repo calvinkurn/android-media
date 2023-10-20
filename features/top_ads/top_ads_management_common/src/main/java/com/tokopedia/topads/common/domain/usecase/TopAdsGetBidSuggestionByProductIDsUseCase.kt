@@ -3,7 +3,10 @@ package com.tokopedia.topads.common.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_AD_GROUP_TYPE
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_PRODUCT_IDS
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT
 import com.tokopedia.topads.common.data.response.TopAdsGetBidSuggestionResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -29,7 +32,7 @@ class TopAdsGetBidSuggestionByProductIDsUseCase @Inject constructor(graphqlRepos
     : GraphqlUseCase<TopAdsGetBidSuggestionResponse>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(GET_PRODUCT_BID_QUERY)
+        setGraphqlQuery(GetProductBid())
         setTypeClass(TopAdsGetBidSuggestionResponse::class.java)
     }
 
@@ -48,8 +51,8 @@ class TopAdsGetBidSuggestionByProductIDsUseCase @Inject constructor(graphqlRepos
 
     private fun createRequestParam(source: String, productIds: List<String>): RequestParams {
         val requestParams = RequestParams.create()
-        requestParams.putString("adGroupType", "product")
-        requestParams.putObject("productIDs", productIds)
+        requestParams.putString(PARAM_AD_GROUP_TYPE, PRODUCT)
+        requestParams.putObject(PARAM_PRODUCT_IDS, productIds)
         requestParams.putString(ParamObject.SOURCE, source)
         return requestParams
     }

@@ -35,12 +35,12 @@ class CreateEditAdGroupItemViewHolder(private val viewBinding: TopadsCreateEditI
     private fun setSubtitle(element: CreateEditAdGroupItemUiModel) {
         if (element.tag == CreateEditAdGroupItemTag.DAILY_BUDGET) {
             if (element.subtitle.toDoubleOrZero() <= Int.ZERO) {
-                viewBinding.editAdItemSubtitle.text = "Tidak dibatasi"
+                viewBinding.editAdItemSubtitle.text = getString(R.string.topads_ads_unlimited_daily_budget)
             } else {
                 viewBinding.editAdItemSubtitle.text = String.format("Rp. %s", CurrencyFormatHelper.convertToRupiah(element.subtitle.toFloatOrZero().toInt().toString()))
             }
         } else if (element.tag == CreateEditAdGroupItemTag.ADS_RECOMMENDATION) {
-            viewBinding.editAdItemSubtitle.text = String.format("Biaya iklan Rp.%s", CurrencyFormatHelper.convertToRupiah(element.subtitle.removeCommaRawString().toIntOrZero().toString()))
+            viewBinding.editAdItemSubtitle.text = String.format(getString(R.string.topads_ads_browse_bid_item_prefix), CurrencyFormatHelper.convertToRupiah(element.subtitle.removeCommaRawString().toIntOrZero().toString()))
         } else {
             viewBinding.editAdItemSubtitle.text = element.subtitle
         }

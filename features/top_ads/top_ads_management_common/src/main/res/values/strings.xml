@@ -308,4 +308,27 @@
     <string name="top_ads_common_text_info_search_bid"><![CDATA[Iklan di Pencarian adalah iklan yang tampil di halaman Pencarian calon pembeli <strong><span style="color:#00AA5B">Pelajari</span></strong>]]></string>
     <string name="toapds_common_tooltip_text">Untuk menjaga iklanmu tetap aktif.</string>
 
+    <string name="topads_ads_optimal_bid">Biaya optimal ✔️</string>
+    <string name="topads_ads_error_multiple_fifty">Biaya harus kelipatan 50</string>
+    <string name="topads_ads_search_bid_tooltip_title">Biaya Iklan di Pencarian</string>
+    <string name="topads_ads_search_bid_tooltip_description">Biaya iklan baru akan dikenakan setiap ada calon pembeli yang klik iklan produkmu baik itu secara organik ataupun saat iklanmu tampil sesuai dengan kata kunci pilihanmu.
+Tips:
+Semakin tinggi biaya iklanmu, maka semakin tinggi peluang iklanmu ditampilkan.</string>
+    <string name="topads_ads_performance_search_stats">Di Pencarian</string>
+    <string name="topads_ads_performance_browse_stats">Di Rekomendasi</string>
+    <string name="topads_ads_performance_total_stats">Total Tampil </string>
+    <string name="topads_ads_default_performance">0x</string>
+    <string name="topads_ads_performance_per_day">/minggu</string>
+    <string name="topads_ads_minimum_budget">Minimum Rp%s</string>
+    <string name="topads_ads_maximum_budget">Maksimum Rp%s</string>
+    <string name="topads_ads_potential_performance_per_day">%sx/minggu</string>
+    <string name="topads_ads_unlimited_daily_budget">Tidak dibatasi</string>
+    <string name="topads_ads_browse_bid_item_prefix">Biaya iklan Rp.%s</string>
+    <string name="topads_ads_performance_sheet_title">Potensi tampil</string>
+    <string name="topads_ads_create_product_group_button">Iklankan Sekarang</string>
+    <string name="topads_ads_load_performance_data">Muat Ulang</string>
+    <string name="topads_ads_performance_sheet_footer">Perkiraan seberapa sering iklanmu tampil berdasarkan produk yang dipilih, biaya grup iklan, dan anggaran harian.</string>
+
+
+
 </resources>

@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.topads.common.data.response.KeywordDataItem
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.common.databinding.TopadsCreatePotentialPerformanceSheetBinding
 import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemAdsPotentialUiModel
 import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemAdsPotentialWidgetUiModel
@@ -16,11 +17,12 @@ import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItem
 import com.tokopedia.topads.common.view.adapter.createedit.CreateEditAdGroupAdapter
 import com.tokopedia.topads.common.view.adapter.createedit.CreateEditAdGroupTypeFactory
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.topads.common.R
 
 class CreatePotentialPerformanceSheet : BottomSheetUnify() {
 
-    private var searchPrediction: Int = 0
-    private var recomPrediction: Int = 0
+    private var searchPrediction: Int = Int.ZERO
+    private var recomPrediction: Int = Int.ZERO
     private var binding: TopadsCreatePotentialPerformanceSheetBinding? = null
 
     override fun onCreateView(
@@ -31,7 +33,7 @@ class CreatePotentialPerformanceSheet : BottomSheetUnify() {
         isHideable = true
         showCloseIcon = true
         setChild(viewBinding.root)
-        setTitle("Potensi tampil")
+        setTitle(getString(R.string.topads_ads_performance_sheet_title))
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -52,18 +54,18 @@ class CreatePotentialPerformanceSheet : BottomSheetUnify() {
     private fun getPotentialData(): List<Visitable<*>> {
         return mutableListOf(CreateEditAdGroupItemAdsPotentialUiModel(
             CreateEditAdGroupItemTag.POTENTIAL_PERFORMANCE,
-            "",
-            "Perkiraan seberapa sering iklanmu tampil berdasarkan produk yang dipilih, biaya grup iklan, dan anggaran harian.",
-            "",
+            String.EMPTY,
+            getString(R.string.topads_ads_performance_sheet_footer),
+            String.EMPTY,
             mutableListOf(
                 CreateEditAdGroupItemAdsPotentialWidgetUiModel(
-                    "Di Pencarian", searchPrediction.toString()
+                    getString(R.string.topads_ads_performance_search_stats), searchPrediction.toString()
                 ),
                 CreateEditAdGroupItemAdsPotentialWidgetUiModel(
-                    "Di Rekomendasi", recomPrediction.toString()
+                    getString(R.string.topads_ads_performance_browse_stats), recomPrediction.toString()
                 ),
                 CreateEditAdGroupItemAdsPotentialWidgetUiModel(
-                    "Total Tampil ", (searchPrediction + recomPrediction).toString()
+                    getString(R.string.topads_ads_performance_total_stats), (searchPrediction + recomPrediction).toString()
                 )),
             state = CreateEditAdGroupItemState.LOADED
         ))

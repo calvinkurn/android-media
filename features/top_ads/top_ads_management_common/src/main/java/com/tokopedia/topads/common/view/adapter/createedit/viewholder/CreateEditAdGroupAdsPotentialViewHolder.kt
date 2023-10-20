@@ -9,6 +9,9 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.databinding.TopadsCreateEditItemAdsPotentialAdGroupBinding
 import com.tokopedia.topads.common.databinding.TopadsCreateEditItemAdsPotentialWidgetAdGroupBinding
 import com.tokopedia.topads.common.R
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_1
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_2
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_3
 import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemAdsPotentialUiModel
 import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemAdsPotentialWidgetUiModel
 import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemState
@@ -34,19 +37,19 @@ class CreateEditAdGroupAdsPotentialViewHolder(private val viewBinding: TopadsCre
         viewBinding.groupWidget.show()
         viewBinding.btnLoadMorePotential.hide()
         when (list.size) {
-            1 -> {
-                setDataPotentialWidget(viewBinding.potentialWidget1, list[0])
+            CONST_1 -> {
+                setDataPotentialWidget(viewBinding.potentialWidget1, list[Int.ZERO])
             }
 
-            2 -> {
-                setDataPotentialWidget(viewBinding.potentialWidget1, list[0])
-                setDataPotentialWidget(viewBinding.potentialWidget2, list[1])
+            CONST_2 -> {
+                setDataPotentialWidget(viewBinding.potentialWidget1, list[Int.ZERO])
+                setDataPotentialWidget(viewBinding.potentialWidget2, list[CONST_1])
             }
 
-            3 -> {
-                setDataPotentialWidget(viewBinding.potentialWidget1, list[0])
-                setDataPotentialWidget(viewBinding.potentialWidget2, list[1])
-                setDataPotentialWidget(viewBinding.potentialWidget3, list[2])
+            CONST_3 -> {
+                setDataPotentialWidget(viewBinding.potentialWidget1, list[Int.ZERO])
+                setDataPotentialWidget(viewBinding.potentialWidget2, list[CONST_1])
+                setDataPotentialWidget(viewBinding.potentialWidget3, list[CONST_2])
             }
         }
     }
@@ -69,7 +72,7 @@ class CreateEditAdGroupAdsPotentialViewHolder(private val viewBinding: TopadsCre
     ) {
         potentialWidget.root.show()
         potentialWidget.editAdItemWidgetAdsPotentialTitle.text = model.title
-        potentialWidget.editAdItemWidgetAdsPotentialRetention.text = String.format("%sx/minggu", model.retention)
+        potentialWidget.editAdItemWidgetAdsPotentialRetention.text = String.format(getString(R.string.topads_ads_potential_performance_per_day), model.retention)
         potentialWidget.editAdItemWidgetAdsPotentialPercentage.text = model.percentage
         if (model.percentage.toIntOrZero() <= Int.ZERO) {
             potentialWidget.editAdItemWidgetAdsPotentialPercentage.hide()

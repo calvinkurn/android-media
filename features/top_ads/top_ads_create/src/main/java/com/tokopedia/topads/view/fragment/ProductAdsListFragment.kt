@@ -15,19 +15,18 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.UrlConstant
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_1
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_2
 import com.tokopedia.topads.common.data.response.ResponseEtalase
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.view.adapter.etalase.uimodel.EtalaseItemUiModel
 import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseUiModel
-import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
-import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.ProductFilterSheetList
 import com.tokopedia.topads.common.view.sheet.ProductSortSheetList
-import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.di.CreateAdsComponent
@@ -37,8 +36,9 @@ import com.tokopedia.topads.view.adapter.product.ProductListAdapterTypeFactoryIm
 import com.tokopedia.topads.view.adapter.product.viewmodel.ProductEmptyViewModel
 import com.tokopedia.topads.view.adapter.product.viewmodel.ProductItemViewModel
 import com.tokopedia.topads.view.model.ProductAdsListViewModel
-import com.tokopedia.unifycomponents.*
-import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
@@ -46,7 +46,6 @@ import javax.inject.Inject
  * Author errysuprayogi on 29,October,2019
  */
 
-private const val CLICK_TIPS_PRODUCT_IKLAN = "click-tips memilih produk"
 private const val CLICK_PRODUCT_IKLAN = "click-pilih produk"
 private const val PRODUCT_PAGE_NAME = "android.topads_create"
 
@@ -61,16 +60,14 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private var swipeRefreshLayout: SwipeToRefresh? = null
     private var btnNext: UnifyButton? = null
     private var selectProductInfo: Typography? = null
-    private var tvToolTipText: Typography? = null
-    private var imgTooltipIcon: ImageUnify? = null
 
     private lateinit var sortProductList: ProductSortSheetList
     private lateinit var filterSheetProductList: ProductFilterSheetList
     private lateinit var productListAdapter: ProductListAdapter
     private var items = mutableListOf<EtalaseUiModel>()
     private val productData = mutableMapOf(
-        1 to mutableListOf<ProductItemViewModel>(),
-        2 to mutableListOf<ProductItemViewModel>()
+        CONST_1 to mutableListOf<ProductItemViewModel>(),
+        CONST_2 to mutableListOf<ProductItemViewModel>()
     )
 
     @Inject
@@ -343,7 +340,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         productListAdapter.notifyDataSetChanged()
         selectProductInfo?.text = MethodChecker.fromHtml(String.format(
             getString(com.tokopedia.topads.common.R.string.format_selected_produk),
-            0
+            Int.ZERO
         ))
         promoted?.chip_text?.text = String.format("Sudah Diiklankan (%d)", productData[1]?.size)
 
@@ -361,16 +358,16 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         prepareForNextFetch(eof)
         btnNext?.isEnabled = false
         data.forEach { result ->
-            if (result.adID.toFloat() > 0) {
+            if (result.adID.toFloat() > Int.ZERO) {
                 productData[1]?.add(ProductItemViewModel(result))
-            } else if (result.adID == "0") {
+            } else if (result.adID == Int.ZERO.toString()) {
                 productData[2]?.add(ProductItemViewModel(result))
             }
         }
         if (promoted?.chipType == ChipsUnify.TYPE_SELECTED) {
-            setProducts(1)
+            setProducts(CONST_1)
         } else {
-            setProducts(2)
+            setProducts(CONST_2)
         }
         val count = stepperModel?.selectedProductIds?.size ?: 0
         selectProductInfo?.text = MethodChecker.fromHtml(String.format(
@@ -379,8 +376,8 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         ))
         btnNext?.isEnabled = count > 0
         productListAdapter.notifyDataSetChanged()
-        promoted?.chip_text?.text = String.format("Sudah Diiklankan (%d)", productData[1]?.size)
-        notPromoted?.chip_text?.text = String.format("Belum Diiklankan (%d)", productData[2]?.size)
+        promoted?.chip_text?.text = String.format(getString(R.string.topads_ads_chip_title_one), productData[CONST_1]?.size)
+        notPromoted?.chip_text?.text = String.format(getString(R.string.topads_ads_chip_title_two), productData[CONST_2]?.size)
     }
 
     private fun prepareForNextFetch(eof: Boolean) {

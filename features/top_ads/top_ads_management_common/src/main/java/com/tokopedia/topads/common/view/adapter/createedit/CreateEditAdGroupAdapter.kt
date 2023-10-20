@@ -2,6 +2,7 @@ package com.tokopedia.topads.common.view.adapter.createedit
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemAdsPotentialUiModel
 import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemAdsPotentialWidgetUiModel
 import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemState
@@ -41,7 +42,7 @@ class CreateEditAdGroupAdapter(
         val itemToRemove =
             list.find { it is CreateEditItemUiModel && it.itemTag() == desiredTag } as CreateEditItemUiModel
         val positionToRemove = list.indexOf(itemToRemove)
-        if (positionToRemove >= 0) {
+        if (positionToRemove >= Int.ZERO) {
             list.removeAt(positionToRemove)
             notifyItemRemoved(positionToRemove)
         }

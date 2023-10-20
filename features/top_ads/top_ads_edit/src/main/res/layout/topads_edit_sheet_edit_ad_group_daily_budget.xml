@@ -8,28 +8,29 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/toggle_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/top_ads_edit_ad_group_daily_budget_bottom_sheet_toggle_title"
             app:typographyType="display_2"
-            app:typographyWeight="bold"/>
+            app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/toggle_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/top_ads_edit_ad_group_daily_budget_bottom_sheet_toggle_subtitle"
             android:layout_below="@id/toggle_title"
+            android:text="@string/top_ads_edit_ad_group_daily_budget_bottom_sheet_toggle_subtitle"
             app:typographyType="paragraph_3" />
 
         <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
             android:id="@+id/toggle"
             android:layout_width="wrap_content"
             android:layout_height="24dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true" />
     </RelativeLayout>
 
     <View
@@ -40,11 +41,11 @@
         android:id="@+id/text_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:unify_text_field_append_text="per hari"
         app:unify_text_field_input_type="number"
         app:unify_text_field_label="@string/top_ads_edit_ad_group_daily_budget_bottom_sheet_label"
-        app:unify_text_field_prepend_text="Rp."
-        app:unify_text_field_append_text="per hari"
-        app:unify_text_field_label_static="true" />
+        app:unify_text_field_label_static="true"
+        app:unify_text_field_prepend_text="Rp." />
 
     <View
         android:layout_width="match_parent"
@@ -64,7 +65,7 @@
                 android:id="@+id/text_1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Potensi Tampil"
+                android:text="@string/edit_ad_item_title_potential_performance"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -74,10 +75,10 @@
                 android:id="@+id/amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0x"
+                android:text="@string/topads_ads_default_performance"
+                app:layout_constraintBottom_toBottomOf="@id/icon"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/icon"
-                app:layout_constraintBottom_toBottomOf="@id/icon"
                 app:typographyType="paragraph_2"
                 app:typographyWeight="bold" />
 
@@ -85,7 +86,7 @@
                 android:id="@+id/text_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="/minggu"
+                android:text="@string/topads_ads_performance_per_day"
                 app:layout_constraintBottom_toBottomOf="@id/amount"
                 app:layout_constraintStart_toEndOf="@id/amount"
                 app:layout_constraintTop_toTopOf="@id/amount"
@@ -103,8 +104,8 @@
                 android:id="@+id/percentage"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:text="@string/top_ads_recommendation_performance_default_increment"
                 android:visibility="gone"
-                android:text="13% meningkat"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/icon"
                 app:typographyType="small" />

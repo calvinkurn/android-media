@@ -13,9 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:unify_header_title="Produk"
         app:unify_header_is_show_back_button="true"
-        app:unify_header_is_show_shadow="true" />
+        app:unify_header_is_show_shadow="true"
+        app:unify_header_title="Produk" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_count"
@@ -72,15 +72,15 @@
         android:id="@+id/cta_delete_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:unifyButtonSize="medium"
-        app:unifyButtonVariant="filled"
-        android:text="Simpan"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
+        android:text="@string/topads_edit_simpan"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:unifyButtonSize="medium"
+        app:unifyButtonVariant="filled" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -273,8 +273,7 @@ class EditProductFragment : BaseDaggerFragment() {
         adapter.notifyDataSetChanged()
         totalCount += product?.size ?: 0
         updateItemCount()
-        Toaster.build(requireView(), String.format("%d produk berhasil ditambah.", product?.count())
-            ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+        Toaster.build(requireView(), String.format(getString(R.string.top_ads_add_product_toast), product?.count()), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
         btnState = true
         buttonStateCallback?.setButtonState()
     }

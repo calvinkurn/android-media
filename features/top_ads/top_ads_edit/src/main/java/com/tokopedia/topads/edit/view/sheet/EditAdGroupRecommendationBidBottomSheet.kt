@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
@@ -31,13 +32,13 @@ import com.tokopedia.topads.common.R as topadscommonR
 
 class EditAdGroupRecommendationBidBottomSheet : BottomSheetUnify() {
 
-    private var dailyBudgetInput: Float = 0f
+    private var dailyBudgetInput: Float = Int.ZERO.toFloat()
     private var performanceData: MutableList<CreateEditAdGroupItemAdsPotentialWidgetUiModel> = mutableListOf()
-    private var maxBid: String = "0"
-    private var minBid: String = "0"
+    private var maxBid: String = Int.ZERO.toString()
+    private var minBid: String = Int.ZERO.toString()
     private var productListIds: MutableList<String> = mutableListOf()
     private var binding: TopadsEditSheetEditAdGroupRecommendationBidBinding? = null
-    private var priceBid: Float? = 0f
+    private var priceBid: Float? = Int.ZERO.toFloat()
     private var clickListener: ((priceBid: String) -> Unit)? = null
 
     @Inject
@@ -92,14 +93,15 @@ class EditAdGroupRecommendationBidBottomSheet : BottomSheetUnify() {
             when (it) {
                 is Success -> {
                     val data = it.data.umpGetImpressionPrediction.impressionPredictionData.impression
-                    binding?.amount?.text = String.format("%dx", data.finalImpression)
+                    binding?.amount?.text = String.format(getString(topadseditR.string.top_ads_recommendation_performance), data.finalImpression)
                     if (data.increment != 0) {
-                        binding?.percentage?.text = String.format("%d %% meningkat", data.increment)
+                        binding?.percentage?.text = String.format(getString(topadseditR.string.top_ads_performance_increment_text_int), data.increment)
                         binding?.percentage?.show()
                     } else {
                         binding?.percentage?.hide()
                     }
                 }
+
                 else -> {}
             }
         }
@@ -109,24 +111,10 @@ class EditAdGroupRecommendationBidBottomSheet : BottomSheetUnify() {
         binding?.textField?.editText?.addTextChangedListener(object : NumberTextWatcher(binding?.textField?.editText!!) {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
-//                if (number == priceBid?.toDouble()) {
-//                    binding?.editAdGroupNameCta?.isEnabled = false
-//                } else {
-//                    binding?.editAdGroupNameCta?.isEnabled = true
-//                    priceBid?.let { viewModel?.getBrowsePerformanceData(productListIds, number.toFloat(), it, 0f) }
-//                }
                 when {
                     number >= maxBid.toDoubleOrZero() -> {
                         setMessageErrorField(getString(topadscommonR.string.max_bid_error_new), maxBid, true)
                         binding?.editAdGroupNameCta?.isEnabled = false
-//                     else{
-//                        finalRecomBid = result.toString()
-//                        setMessageErrorField("Biaya optimal ✔️", "0", false)
-//                        stepperModel?.selectedProductIds?.let {
-//                            viewModel?.getPerformanceData(it, result.toFloat(), -1f, -1f)
-//                        }
-//                        binding?.btnNext?.isEnabled = true
-//                    }
                     }
 
                     number < minBid.toDoubleOrZero() -> {
@@ -136,11 +124,11 @@ class EditAdGroupRecommendationBidBottomSheet : BottomSheetUnify() {
 
                     else -> {
                         if (number % 50 == 0.0) {
-                            setMessageErrorField("Biaya optimal ✔️", "0", false)
+                            setMessageErrorField(getString(topadscommonR.string.topads_ads_optimal_bid), Int.ZERO.toString(), false)
                             priceBid?.let { viewModel.getBrowsePerformanceData(productListIds, number.toFloat(), it, dailyBudgetInput) }
                             binding?.editAdGroupNameCta?.isEnabled = true
                         } else {
-                            setMessageErrorField("Biaya harus kelipatan 50", "0", true)
+                            setMessageErrorField(getString(topadscommonR.string.topads_ads_error_multiple_fifty), Int.ZERO.toString(), true)
                             binding?.editAdGroupNameCta?.isEnabled = false
                         }
                     }
@@ -155,22 +143,15 @@ class EditAdGroupRecommendationBidBottomSheet : BottomSheetUnify() {
         }
         binding?.browseTxtInfo?.setOnClickListener {
             TopAdsToolTipBottomSheet.newInstance().also {
-                it.setTitle("Iklan di Rekomendasi")
-                it.setDescription(
-                    "Iklanmu akan tampil pada berbagai halaman strategis seperti di halaman home, keranjang, inbox dan detail produk.\n" +
-                        "\n" +
-                        "Sistem Tokopedia akan menampilkan iklan produkmu dengan kemampuan teknologi yang dapat menyesuaikan ketertarikan dan riwayat penjelajahan calon pembeli memungkinkan iklanmu menjangkau calon pembeli dengan lebih luas dan tepat.\n" +
-                        "\n" +
-                        "Tips:\n" +
-                        "Semakin tinggi biaya iklanmu, maka semakin tinggi peluang iklanmu ditampilkan."
-                )
+                it.setTitle(getString(topadseditR.string.edit_ad_item_title_ads_recommendation))
+                it.setDescription(getString(topadseditR.string.top_ads_browse_bid_tooltip_desxription))
             }.show(childFragmentManager)
         }
 
         binding?.icon?.setOnClickListener {
             CreatePotentialPerformanceSheet.newInstance(
                 performanceData.firstOrNull()?.retention.toIntOrZero(),
-                performanceData?.getOrNull(Int.ONE)?.retention.toIntOrZero()
+                performanceData.getOrNull(Int.ONE)?.retention.toIntOrZero()
             ).show(childFragmentManager)
         }
     }

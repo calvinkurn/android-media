@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.style.ClickableSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +11,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.R as topadscommonR
@@ -40,7 +41,6 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
     @Inject
     var viewModelFactory: ViewModelProvider.Factory? = null
     private var viewModel: RecommendationBidViewModel? = null
-
 
     companion object {
 
@@ -71,7 +71,7 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
 
     override fun populateView() {
         if (activity is StepperActivity)
-            (activity as StepperActivity).updateToolbarTitle("Atur Iklan di Rekomendasi")
+            (activity as StepperActivity).updateToolbarTitle(getString(topadscreateR.string.topads_ads_browse_bid_title))
     }
 
     override fun getScreenName(): String {
@@ -97,9 +97,7 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
                     binding?.impressionPerformanceValue?.text = String.format("%sx", it.data.umpGetImpressionPrediction.impressionPredictionData.impression.finalImpression)
                 }
 
-                else -> {
-                    Log.e("BidsInfo", "Inside setObservers $it")
-                }
+                else -> {}
             }
         }
 
@@ -109,13 +107,6 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
         super.onViewCreated(view, savedInstanceState)
         setEditTextListeners()
         setupView()
-//        if (stepperModel?.goToSummary == true) {
-//            setRestoreValue()
-//        } else {
-//            viewModel.getSuggestionKeyword(productId
-//                ?: "", 0, this::onSuccessSuggestionKeyword, this::onEmptySuggestion)
-//        }
-//        setCount()
         setObservers()
         setClicksOnViews()
 
@@ -128,15 +119,8 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
         }
         binding?.txtInfoRecommendation?.setOnClickListener {
             TopAdsToolTipBottomSheet.newInstance().also {
-                it.setTitle("Iklan di Rekomendasi")
-                it.setDescription(
-                    "Iklanmu akan tampil pada berbagai halaman strategis seperti di halaman home, keranjang, inbox dan detail produk.\n" +
-                        "\n" +
-                        "Sistem Tokopedia akan menampilkan iklan produkmu dengan kemampuan teknologi yang dapat menyesuaikan ketertarikan dan riwayat penjelajahan calon pembeli memungkinkan iklanmu menjangkau calon pembeli dengan lebih luas dan tepat.\n" +
-                        "\n" +
-                        "Tips:\n" +
-                        "Semakin tinggi biaya iklanmu, maka semakin tinggi peluang iklanmu ditampilkan."
-                )
+                it.setTitle(getString(topadscreateR.string.topads_ads_browse_bid_tooltip_title))
+                it.setDescription(getString(topadscreateR.string.topads_ads_browse_bid_tooltip_description))
             }.show(childFragmentManager)
         }
         binding?.infoImpressionPrediction?.setOnClickListener {
@@ -164,49 +148,37 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
                 super.onNumberChanged(number)
                 val result = number.toInt()
                 when {
-//                    result >= (stepperModel?.finalRecommendationBidPerClick ?: 0) -> {
-//                        finalRecomBid = result.toString()
-//                        binding?.recommendationBudget?.isInputError = false
-//                        binding?.recommendationBudget?.setMessage(MethodChecker.fromHtml(String.format("Biaya optimal ✔️", "0")))
-//                        stepperModel?.selectedProductIds?.let {
-//                            viewModel?.getPerformanceData(it, result.toFloat(), -1f, -1f)
-//                        }
-//                    }
-//
-//                    else -> {
-//                        stepperModel?.finalRecommendationBidPerClick?.let {
-//                            binding?.recommendationBudget?.setMessage(getClickableString(it))
-//                        }
-//
-//                    }
-                    result >= (stepperModel?.finalRecommendationBidPerClick ?: 0) -> {
-                        if (result > stepperModel?.maxBid.toDoubleOrZero() && stepperModel?.maxBid.toIntOrZero() != 0){
-                            setMessageErrorField(getString(topadscommonR.string.max_bid_error_new), stepperModel?.maxBid?:"", true)
+                    result >= (stepperModel?.finalRecommendationBidPerClick ?: Int.ZERO) -> {
+                        if (result > stepperModel?.maxBid.toDoubleOrZero() && stepperModel?.maxBid.toIntOrZero() != 0) {
+                            setMessageErrorField(getString(topadscommonR.string.max_bid_error_new), stepperModel?.maxBid
+                                ?: "", true)
                             binding?.btnNext?.isEnabled = false
-                        } else{
+                        } else {
                             if (number % 50 == 0.0) {
                                 finalRecomBid = result.toString()
-                                setMessageErrorField("Biaya optimal ✔️", "0", false)
+                                setMessageErrorField(getString(topadscommonR.string.topads_ads_optimal_bid), Int.ZERO.toString(), false)
                                 stepperModel?.selectedProductIds?.let {
                                     viewModel?.getPerformanceData(it, result.toFloat(), -1f, -1f)
                                 }
                                 binding?.btnNext?.isEnabled = true
                             } else {
-                                setMessageErrorField("Biaya harus kelipatan 50", "0", true)
+                                setMessageErrorField(getString(topadscommonR.string.topads_ads_error_multiple_fifty), Int.ZERO.toString(), true)
                                 binding?.btnNext?.isEnabled = false
                             }
                         }
                     }
 
                     result < (stepperModel?.minBid?.toDoubleOrZero()
-                        ?: 0f.toDouble()) && stepperModel?.maxBid.toIntOrZero() != 0 -> {
-                        setMessageErrorField(getString(topadscommonR.string.min_bid_error_new), stepperModel?.minBid?:"", true)
+                        ?: 0f.toDouble()) && stepperModel?.maxBid.toIntOrZero() != Int.ZERO -> {
+                        setMessageErrorField(getString(topadscommonR.string.min_bid_error_new), stepperModel?.minBid
+                            ?: String.EMPTY, true)
                         binding?.btnNext?.isEnabled = false
                     }
 
                     else -> {
                         finalRecomBid = result.toString()
-                        binding?.recommendationBudget?.setMessage(getClickableString(stepperModel?.finalRecommendationBidPerClick?:0))
+                        binding?.recommendationBudget?.setMessage(getClickableString(stepperModel?.finalRecommendationBidPerClick
+                            ?: 0))
                         binding?.btnNext?.isEnabled = true
                         stepperModel?.selectedProductIds?.let {
                             viewModel?.getPerformanceData(it, result.toFloat(), -1f, -1f)
@@ -246,6 +218,7 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
         ss.setSpan(cs, msg.length - 8, msg.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
         return ss
     }
+
     private fun setMessageErrorField(error: String, bid: String, bool: Boolean) {
         binding?.recommendationBudget?.isInputError = bool
         binding?.recommendationBudget?.setMessage(MethodChecker.fromHtml(String.format(error, bid)))

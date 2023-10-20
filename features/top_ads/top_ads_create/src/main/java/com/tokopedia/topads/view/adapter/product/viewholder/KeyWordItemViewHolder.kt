@@ -19,6 +19,7 @@ class KeyWordItemViewHolder(val view: View) : ProductViewHolder<KeyWordItemViewM
 
     override fun bind(item: KeyWordItemViewModel) {
         binding?.title?.text = item.keywordDataItem.keyword
-        binding?.bid?.text = String.format("Rp%s", CurrencyFormatHelper.convertToRupiah(item.keywordDataItem.bidSuggest))
+        binding?.bid?.text = String.format(view.context.getString(R.string.topads_ads_price_format_1),
+            CurrencyFormatHelper.convertToRupiah(item.keywordDataItem.bidSuggest))
     }
 }

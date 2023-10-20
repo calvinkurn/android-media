@@ -74,4 +74,15 @@ object Constants {
     const val LAINNYA_NAME = " Lainnya"
     const val SOURCE_ANDROID_EDIT_GROUP = "android.topads_edit_group"
 
+
+    const val PRODUCT_ID_LIST = "productIdList"
+    const val DAILY_BUDGET_INPUT = "dailyBudgetInput"
+    const val POTENTIAL_PERFORMANCE_LIST = "potentialPerformanceList"
+    const val MIN_MAX_BIDS = "minMaxBids"
+    const val BID_LIST = "bidList"
+    const val IS_AUTO_BID = "isAutoBid"
+    const val EDIT_SOURCE = "android.topads_edit"
+    const val MAX_BUDGET_AUTOMATIC = 16000
+    const val MAX_BUDGET_MANUAL = 10000000
+
 }

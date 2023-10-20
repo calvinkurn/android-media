@@ -127,6 +127,7 @@
     <string name="topads_create_group_name_message">Tulis nama grup berdasarkan kategori atau tema iklanmu. </string>
     <string name="topads_create_submit_button">Iklankan Sekarang</string>
     <string name="topads_create_product">Produk</string>
+    <string name="topads_create_product_prefix">%d produk</string>
     <string name="topads_create_per_hari">per hari</string>
 
     <!-- Manual Budget Page -->
@@ -220,8 +221,30 @@
     <string name="topads_ads_price_format_2">%s dari Rp%s</string>
     <string name="topads_ads_price_format_3">Rp %s</string>
     <string name="topads_ads_price_format_4">Rp %s dari %s</string>
+    <string name="topads_ads_empty_view_title">Tidak ada produk yang Belum Diiklankan</string>
+    <string name="topads_ads_empty_view_description">Kamu belum punya produk yang Belum Diiklankan. Coba cari dengan filter lain, ya</string>
+    <string name="topads_ads_rating_count">(%s)</string>
+    <string name="topads_ads_search_bid_title">Iklan di Pencarian</string>
+    <string name="topads_ads_search_browse_bid_auto_subtitle">Diatur sistem TopAds</string>
+    <string name="topads_ads_browse_bid_item_title">Iklan di Rekomendasi</string>
+    <string name="topads_ads_browse_bid_tooltip_title">Iklan di Rekomendasi</string>
+    <string name="topads_ads_browse_bid_tooltip_description">Iklanmu akan tampil pada berbagai halaman strategis seperti di halaman home, keranjang, inbox dan detail produk.
+Sistem Tokopedia akan menampilkan iklan produkmu dengan kemampuan teknologi yang dapat menyesuaikan ketertarikan dan riwayat penjelajahan calon pembeli memungkinkan iklanmu menjangkau calon pembeli dengan lebih luas dan tepat.
+Tips:
+Semakin tinggi biaya iklanmu, maka semakin tinggi peluang iklanmu ditampilkan.</string>
+    <string name="topads_ads_browse_bid_title">Atur Iklan di Rekomendasi</string>
+    <string name="topads_ads_chip_title_one">Sudah Diiklankan (%d)</string>
+    <string name="topads_ads_chip_title_two">Belum Diiklankan (%d)</string>
+    <string name="topads_ads_name_title">Nama Grup Iklan</string>
+    <string name="topads_ads_name_subtitle">Group 01</string>
+    <string name="topads_ads_search_browse_bid_subtitle_prefix">Rp%d per klik</string>
+    <string name="topads_ads_search_bid_subtitle_two_prefix">%d kata kunci\nRp%s - Rp%s per klik</string>
+    <string name="topads_ads_browse_bid_subtitle">Biaya iklan</string>
+    <string name="topads_ads_daily_budget_item_title">Batasi anggaran harian</string>
+    <string name="topads_ads_daily_budget_item_subtitle">Atur anggaran iklan sesuai kebutuhan.</string>
+    <string name="topads_ads_performance_item_title">Potensi tampil</string>
+    <string name="topads_ads_performance_item_subtitle">Perkiraan seberapa sering iklanmu tampil berdasarkan produk yang dipilih, biaya grup iklan, dan anggaran harian.</string>
 
-<!--    <string name="top_ads_create_text_info_search_bid"><![CDATA[Iklan di Pencarian adalah iklan yang tampil di halaman Pencarian calon pembeli <a href="#b"><strong><span style="color:#00AA5B">Pelajari</span></strong></a>]]></string>-->
     <string name="top_ads_create_text_info_recom_bid"><![CDATA[Iklan di Rekomendasi tampil sesuai ketertarikan pembeli di bagian Rekomendasi Produk. <strong><span style="color:#00AA5B">Pelajari</span></strong>]]></string>
 
 

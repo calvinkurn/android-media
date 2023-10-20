@@ -3,18 +3,16 @@ package com.tokopedia.topads.view.adapter.product.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.view.adapter.product.viewmodel.ProductEmptyViewModel
-import com.tokopedia.unifycomponents.ImageUnify
 
 /**
  * Author errysuprayogi on 11,November,2019
  */
-class ProductEmptyViewHolder(val view: View): ProductViewHolder<ProductEmptyViewModel>(view) {
+class ProductEmptyViewHolder(private val mView: View): ProductViewHolder<ProductEmptyViewModel>(mView) {
 
-    private val emptyStateProductList : GlobalError? = view.findViewById(R.id.emptyStateProductList)
+    private val emptyStateProductList : GlobalError? = mView.findViewById(R.id.emptyStateProductList)
 
     companion object {
         @LayoutRes
@@ -24,8 +22,8 @@ class ProductEmptyViewHolder(val view: View): ProductViewHolder<ProductEmptyView
     override fun bind(item: ProductEmptyViewModel) {
         emptyStateProductList?.apply{
             errorAction.hide()
-            errorTitle.text = "Tidak ada produk yang Belum Diiklankan"
-            errorDescription.text = "Kamu belum punya produk yang Belum Diiklankan. Coba cari dengan filter lain, ya."
+            errorTitle.text = mView.context.getString(R.string.topads_ads_empty_view_title)
+            errorDescription.text = mView.context.getString(R.string.topads_ads_empty_view_description)
         }
     }
 

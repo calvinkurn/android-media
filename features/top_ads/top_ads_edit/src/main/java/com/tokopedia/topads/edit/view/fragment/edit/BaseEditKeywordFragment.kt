@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
@@ -44,8 +45,12 @@ import com.tokopedia.topads.common.view.sheet.TopAdsToolTipBottomSheet
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants
+import com.tokopedia.topads.edit.utils.Constants.BID_LIST
 import com.tokopedia.topads.edit.utils.Constants.BID_TYPE
+import com.tokopedia.topads.edit.utils.Constants.DAILY_BUDGET_INPUT
+import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
 import com.tokopedia.topads.edit.utils.Constants.IS_BID_AUTOMATIC
+import com.tokopedia.topads.edit.utils.Constants.MIN_MAX_BIDS
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_ADDED
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_DELETED
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORD_ALL
@@ -53,8 +58,9 @@ import com.tokopedia.topads.edit.utils.Constants.POSITIVE_CREATE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_DELETE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_EDIT
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_KEYWORD_ALL
+import com.tokopedia.topads.edit.utils.Constants.POTENTIAL_PERFORMANCE_LIST
+import com.tokopedia.topads.edit.utils.Constants.PRODUCT_ID_LIST
 import com.tokopedia.topads.edit.utils.Constants.STRATEGIES
-import com.tokopedia.topads.edit.utils.Utils
 import com.tokopedia.topads.edit.view.activity.EditAdGroupActivity
 import com.tokopedia.topads.edit.view.activity.OnKeywordAction
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
@@ -71,6 +77,7 @@ import com.tokopedia.utils.text.currency.NumberTextWatcher
 import javax.inject.Inject
 import com.tokopedia.topads.common.R as topadscommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.topads.edit.R as topadseditR
 
 private const val CLICK_KATA_KUNCI_POSITIF = "click - kata kunci positif"
 private const val CLICK_KATA_KUNCI_NEGATIF = "click - kata kunci negatif"
@@ -81,7 +88,7 @@ private const val OTOMATIS_LEARN_MORE_LINK = "https://seller.tokopedia.com/edu/t
 
 class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.ButtonAction {
 
-    private var dailyBudgetInput: Float = 0f
+    private var dailyBudgetInput: Float = Int.ZERO.toFloat()
     private var minMaxBids: MutableList<String>? = null
 
     @Inject
@@ -115,7 +122,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     private var autoBidAdvantageDesc: View? = null
     private var tabsUnify: TabsUnify? = null
 
-    private var suggestBidPerClick = 0
+    private var suggestBidPerClick = Int.ZERO
     private var onKeywordAction: OnKeywordAction? = null
     private var productIds: ArrayList<String> = arrayListOf()
     private var impressionPerformanceValueSearch: Typography? = null
@@ -160,25 +167,25 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        productIds = arguments?.getStringArrayList("productIdList")?.let { ArrayList(it) }
+        productIds = arguments?.getStringArrayList(PRODUCT_ID_LIST)?.let { ArrayList(it) }
             ?: arrayListOf()
         context?.resources?.getString(R.string.topads_edit_auto_bid_ticker_title)?.let { autoBidTicker?.setHtmlDescription(it) }
-        this.dailyBudgetInput = arguments?.getFloat("dailyBudgetInput") ?: 0f
+        this.dailyBudgetInput = arguments?.getFloat(DAILY_BUDGET_INPUT) ?: Int.ZERO.toFloat()
         initListeners()
         renderViewPager()
         setTabs()
 
         arguments?.getBoolean(IS_BID_AUTOMATIC)?.let { handleInitialAutoBidState(it) }
         setViews()
-        val groupId = arguments?.getString("groupId")
+        val groupId = arguments?.getString(GROUP_ID)
         val suggestionsDefault = java.util.ArrayList<DataSuggestions>()
-        suggestionsDefault.add(DataSuggestions("", listOf(groupId.toString())))
+        suggestionsDefault.add(DataSuggestions(String.EMPTY, listOf(groupId.toString())))
         viewModel.getSuggestedBid(productIds, this::onBidSuccessSuggestion)
         headerUnify?.setNavigationOnClickListener {
             val fragmentManager = requireActivity().supportFragmentManager
             fragmentManager.popBackStack()
         }
-        val performanceList = arguments?.getStringArrayList("potentialPerformanceList")
+        val performanceList = arguments?.getStringArrayList(POTENTIAL_PERFORMANCE_LIST)
         potentialPerformanceIconUnify?.setOnClickListener {
             CreatePotentialPerformanceSheet.newInstance(
                 performanceList?.firstOrNull().toIntOrZero(),
@@ -186,7 +193,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             ).show(childFragmentManager)
 
         }
-        this.minMaxBids = arguments?.getStringArrayList("minMaxBids")
+        this.minMaxBids = arguments?.getStringArrayList(MIN_MAX_BIDS)
 
     }
 
@@ -201,11 +208,10 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         viewModel.performanceData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    impressionPerformanceValueSearch?.text = String.format("%sx", it.data.umpGetImpressionPrediction.impressionPredictionData.impression.finalImpression)
+                    impressionPerformanceValueSearch?.text = String.format(getString(R.string.top_ads_performce_count_prefix), it.data.umpGetImpressionPrediction.impressionPredictionData.impression.finalImpression)
                 }
 
-                else -> {
-                }
+                else -> {}
             }
         }
     }
@@ -219,37 +225,22 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val result = number.toInt()
-//                when {
-//                    result >= suggestBidPerClick -> {
-//                        setMessageErrorField("Biaya optimal ✔️", "0", false)
-//                        productIds.let {
-//                            viewModel.getPerformanceData(it, result.toFloat(), result.toFloat(), 0f)
-//                        }
-//                        actionEnable(true)
-//                    }
-//
-//                    else -> {
-//                        budget?.setMessage(getClickableString(suggestBidPerClick))
-//                        actionEnable(false)
-//                    }
-//
-//                }
                 val minBid = minMaxBids?.firstOrNull().toDoubleOrZero()
                 val maxBid= minMaxBids?.getOrNull(1).toDoubleOrZero()
                 when {
                     result >= suggestBidPerClick -> {
-                        if (result > maxBid && maxBid.toInt() != 0) {
+                        if (result > maxBid && maxBid.toInt() != Int.ZERO) {
                             setMessageErrorField(getString(topadscommonR.string.max_bid_error_new), maxBid.toString(), true)
                             actionEnable(false)
                         } else {
                             if (number % 50 == 0.0) {
-                                setMessageErrorField("Biaya optimal ✔️", "0", false)
+                                setMessageErrorField(getString(topadscommonR.string.topads_ads_optimal_bid), Int.ZERO.toString(), false)
                                 productIds.let {
                                     viewModel.getPerformanceData(it, result.toFloat(), result.toFloat(), dailyBudgetInput)
                                 }
                                 actionEnable(true)
                             }else{
-                                setMessageErrorField("Biaya harus kelipatan 50", "0", true)
+                                setMessageErrorField(getString(topadscommonR.string.topads_ads_error_multiple_fifty), Int.ZERO.toString(), true)
                                 actionEnable(false)
                             }
                         }
@@ -276,12 +267,9 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     private fun setClicksOnViews() {
         txtInfo?.setOnClickListener {
             TopAdsToolTipBottomSheet.newInstance().also {
-                it.setTitle("Biaya Iklan di Pencarian")
+                it.setTitle(getString(topadscommonR.string.topads_ads_search_bid_tooltip_title))
                 it.setDescription(
-                    "Biaya iklan baru akan dikenakan setiap ada calon pembeli yang klik iklan produkmu baik itu secara organik ataupun saat iklanmu tampil sesuai dengan kata kunci pilihanmu.\n" +
-                        "\n" +
-                        "Tips:\n" +
-                        "Semakin tinggi biaya iklanmu, maka semakin tinggi peluang iklanmu ditampilkan."
+                    getString(topadscommonR.string.topads_ads_search_bid_tooltip_description)
                 )
             }.show(childFragmentManager)
         }
@@ -339,7 +327,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     }
 
     private fun checkForSearchBid() {
-        arguments?.getParcelableArrayList<TopAdsBidSettingsModel>("bidList")?.forEach {
+        arguments?.getParcelableArrayList<TopAdsBidSettingsModel>(BID_LIST)?.forEach {
             if (it.bidType.equals(ParamObject.PRODUCT_SEARCH)) {
                 updateBudgetInputIf(
                     value = (it.priceBid?.toInt() ?: 0).toString(),
@@ -352,8 +340,8 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     private fun setTabs() {
         tabsUnify?.getUnifyTabLayout()?.removeAllTabs()
         tabsUnify?.customTabMode = TabLayout.MODE_FIXED
-        tabsUnify?.addNewTab("Kata Kunci Positif")
-        tabsUnify?.addNewTab("Kata Kunci Negatif")
+        tabsUnify?.addNewTab(getString(topadseditR.string.top_ads_kata_kunci_tab_positive))
+        tabsUnify?.addNewTab(getString(topadseditR.string.top_ads_kata_kunci_tab_negative))
 
     }
 
@@ -475,7 +463,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         var bidSettings: ArrayList<TopAdsBidSettingsModel>? = arrayListOf()
         var bidInfoDataItem: List<GroupEditInput.Group.TopadsSuggestionBidSetting>? = null
         var bidGroup = 0
-        val list = arguments?.getParcelableArrayList<TopAdsBidSettingsModel>("bidList")
+        val list = arguments?.getParcelableArrayList<TopAdsBidSettingsModel>(BID_LIST)
         list?.getOrNull(0)?.priceBid = CurrencyFormatHelper.convertRupiahToDouble(budget?.editText?.text.toString()).toFloat()
 
 
