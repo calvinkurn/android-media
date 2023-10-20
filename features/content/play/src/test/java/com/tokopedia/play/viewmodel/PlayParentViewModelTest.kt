@@ -4,13 +4,18 @@ import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.ClassBuilder
+import com.tokopedia.play.helper.NoValueException
+import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.PlayResponseBuilder
+import com.tokopedia.play.robot.parent.andThen
 import com.tokopedia.play.robot.parent.andWhen
 import com.tokopedia.play.robot.parent.givenParentViewModelRobot
 import com.tokopedia.play.robot.parent.thenVerify
+import com.tokopedia.play.util.assertEqualTo
+import com.tokopedia.play.util.throwsException
 import com.tokopedia.play.view.storage.PagingChannel
 import com.tokopedia.play.view.storage.PlayChannelData
-import com.tokopedia.play.view.storage.PlayChannelStateStorage
+import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -42,15 +47,15 @@ class PlayParentViewModelTest {
         val response = responseBuilder.buildChannelDetailsWithRecomResponse()
         coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
             channelList = mapper.map(response, classBuilder.getMapperExtraParams()),
-            cursor = response.channelDetails.meta.cursor,
+            cursor = response.channelDetails.meta.cursor
         )
 
         givenParentViewModelRobot(
-            repo = repo,
+            repo = repo
         ) thenVerify {
             channelIdResult
-                    .isSuccess()
-                    .isNotEmpty()
+                .isSuccess()
+                .isNotEmpty()
         }
     }
 
@@ -59,11 +64,11 @@ class PlayParentViewModelTest {
         coEvery { repo.getChannels(any(), any()) } throws IllegalStateException("Channel is error")
 
         givenParentViewModelRobot(
-            repo = repo,
+            repo = repo
         ) thenVerify {
             channelIdResult
-                    .isFailure()
-                    .isEmpty()
+                .isFailure()
+                .isEmpty()
         }
     }
 
@@ -75,7 +80,7 @@ class PlayParentViewModelTest {
         every { mockUserSession.userId } returns validUserId
 
         givenParentViewModelRobot(
-                userSession = mockUserSession
+            userSession = mockUserSession
         ) thenVerify {
             userIdResult.shouldBe(validUserId)
         }
@@ -87,14 +92,14 @@ class PlayParentViewModelTest {
         val channelData = mapper.map(response, classBuilder.getMapperExtraParams())
         coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
             channelList = channelData,
-            cursor = response.channelDetails.meta.cursor,
+            cursor = response.channelDetails.meta.cursor
         )
 
         givenParentViewModelRobot(
-            repo = repo,
+            repo = repo
         ) thenVerify {
             channelDataResult(channelData.first().id)
-                    .isAvailable()
+                .isAvailable()
         }
     }
 
@@ -103,14 +108,14 @@ class PlayParentViewModelTest {
         val response = responseBuilder.buildChannelDetailsWithRecomResponse()
         coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
             channelList = mapper.map(response, classBuilder.getMapperExtraParams()),
-            cursor = response.channelDetails.meta.cursor,
+            cursor = response.channelDetails.meta.cursor
         )
 
         givenParentViewModelRobot(
-            repo = repo,
+            repo = repo
         ) thenVerify {
             channelDataResult("invalid channel id")
-                    .isError()
+                .isError()
         }
     }
 
@@ -120,7 +125,7 @@ class PlayParentViewModelTest {
         val mappedData = mapper.map(response, classBuilder.getMapperExtraParams())
         coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
             channelList = mappedData,
-            cursor = response.channelDetails.meta.cursor,
+            cursor = response.channelDetails.meta.cursor
         )
 
         val oldData = mappedData.first()
@@ -128,25 +133,24 @@ class PlayParentViewModelTest {
         val newData: PlayChannelData = mockk(relaxed = true)
 
         givenParentViewModelRobot(
-            repo = repo,
+            repo = repo
         ) thenVerify {
 //            channelDataResult(oldData.id)
 //                    .isDataEqualTo(oldData)
-            //TODO("need to find out why different even though it is identical")
+            // TODO("need to find out why different even though it is identical")
         } andWhen {
             setChannelData(oldData.id, newData)
         } thenVerify {
             channelDataResult(oldData.id)
-                    .isDataNotEqualTo(oldData)
-                    .isDataEqualTo(newData)
+                .isDataNotEqualTo(oldData)
+                .isDataEqualTo(newData)
         }
     }
 
     @Test
     fun `when app wants to refresh channel, it should hit get channel gql again`() {
-
         givenParentViewModelRobot(
-            repo = repo,
+            repo = repo
         ) andWhen {
             viewModel.refreshChannel()
 
@@ -156,18 +160,64 @@ class PlayParentViewModelTest {
 
     @Test
     fun `when app wants to set new channel param, it should load new channels if its not from pip and channelId is not empty`() {
-
         val mockBundle = mockk<Bundle>(relaxed = true)
 
         coEvery { mockBundle.get("channelId") } returns "123"
         coEvery { mockBundle.get("is_from_pip") } returns false
 
         givenParentViewModelRobot(
-            repo = repo,
+            repo = repo
         ) andWhen {
             viewModel.setNewChannelParams(mockBundle)
 
             coVerify(exactly = 2) { repo.getChannels(any(), any()) }
+        }
+    }
+
+    private val preference: PlayPreference = mockk(relaxed = true)
+
+    @Test
+    fun `when it's first page and has not shown onboarding before, should show onboarding`() {
+        val isFirstPage = true
+
+        coEvery { preference.isOnBoardingHasBeenShown() } returns false
+
+        givenParentViewModelRobot(
+            preference = preference
+        ) andWhen {
+            viewModel.setupOnBoarding(isFirstPage)
+        } andThen {
+            viewModel.observableOnBoarding.getOrAwaitValue().peekContent().assertEqualTo(Unit)
+        }
+    }
+
+    @Test
+    fun `when it's first page and has shown onboarding before, should not show onboarding`() {
+        val isFirstPage = true
+
+        coEvery { preference.isOnBoardingHasBeenShown() } returns true
+
+        givenParentViewModelRobot(
+            preference = preference
+        ) andWhen {
+            viewModel.setupOnBoarding(isFirstPage)
+        } andThen {
+            throwsException<NoValueException> {
+                viewModel.observableOnBoarding.getOrAwaitValue()
+            }
+        }
+    }
+
+    @Test
+    fun `when it isn't first page then should not show onboarding`() {
+        val isFirstPage = false
+
+        givenParentViewModelRobot() andWhen {
+            viewModel.setupOnBoarding(isFirstPage)
+        } andThen {
+            throwsException<NoValueException> {
+                viewModel.observableOnBoarding.getOrAwaitValue()
+            }
         }
     }
 }

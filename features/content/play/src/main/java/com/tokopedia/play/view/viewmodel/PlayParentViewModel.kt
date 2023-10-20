@@ -213,19 +213,11 @@ class PlayParentViewModel @AssistedInject constructor(
     }
 
     fun setupOnBoarding(isFirstPage: Boolean) {
-        val hasBeenShown = preference.isOnBoardingHasBeenShown()
-
         if (!isFirstPage) return
 
-        val currentValue = _observableChannelIdsResult.value?.currentValue ?: return
-        if (currentValue.isEmpty()) return
-        val firstChannel = currentValue.first()
+        val hasBeenShown = preference.isOnBoardingHasBeenShown()
 
-        analytic.openScreenWithOnBoarding(
-            firstChannel.id,
-            firstChannel.channelDetail.channelInfo.channelType,
-            !hasBeenShown
-        )
+        sendOpenScreenTracker(hasBeenShown)
 
         if (hasBeenShown) return
 
@@ -235,6 +227,21 @@ class PlayParentViewModel @AssistedInject constructor(
                 preference.setOnBoardingHasShown()
             }
         }
+    }
+
+    /**
+     * only send tracker when there is a channel.
+     */
+    private fun sendOpenScreenTracker(onBoardingHasBeenShown: Boolean) {
+        val currentValue = _observableChannelIdsResult.value?.currentValue ?: return
+        if (currentValue.isEmpty()) return
+        val firstChannel = currentValue.first()
+
+        analytic.openScreenWithOnBoarding(
+            firstChannel.id,
+            firstChannel.channelDetail.channelInfo.channelType,
+            !onBoardingHasBeenShown
+        )
     }
 
     companion object {

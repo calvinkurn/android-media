@@ -2,19 +2,16 @@ package com.tokopedia.play.robot.parent
 
 import androidx.lifecycle.SavedStateHandle
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
-import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
+import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.domain.repository.PlayViewerRepository
-import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.storage.PlayQueryParamStorage
-import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
+import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 
@@ -29,6 +26,8 @@ class PlayParentViewModelRobot(
     repo: PlayViewerRepository,
     pageMonitoring: PlayPltPerformanceCallback,
     queryParamStorage: PlayQueryParamStorage,
+    preference: PlayPreference,
+    analytic: PlayAnalytic
 ) {
 
     val viewModel: PlayParentViewModel
@@ -45,6 +44,8 @@ class PlayParentViewModelRobot(
             repo = repo,
             pageMonitoring = pageMonitoring,
             queryParamStorage = queryParamStorage,
+            preference = preference,
+            analytic = analytic
         )
     }
 
@@ -59,6 +60,8 @@ fun givenParentViewModelRobot(
     repo: PlayViewerRepository = mockk(relaxed = true),
     pageMonitoring: PlayPltPerformanceCallback = mockk(relaxed = true),
     queryParamStorage: PlayQueryParamStorage = mockk(relaxed = true),
+    preference: PlayPreference = mockk(relaxed = true),
+    analytic: PlayAnalytic = mockk(relaxed = true),
     fn: PlayParentViewModelRobot.() -> Unit = {}
 ): PlayParentViewModelRobot {
     return PlayParentViewModelRobot(
@@ -69,23 +72,25 @@ fun givenParentViewModelRobot(
         repo = repo,
         pageMonitoring = pageMonitoring,
         queryParamStorage = queryParamStorage,
+        preference = preference,
+        analytic = analytic
     ).apply(fn)
 }
 
 infix fun PlayParentViewModelRobot.andWhen(
-        fn: PlayParentViewModelRobot.() -> Unit
+    fn: PlayParentViewModelRobot.() -> Unit
 ): PlayParentViewModelRobot {
     return apply(fn)
 }
 
 infix fun PlayParentViewModelRobot.andThen(
-        fn: PlayParentViewModelRobot.() -> Unit
+    fn: PlayParentViewModelRobot.() -> Unit
 ): PlayParentViewModelRobot {
     return apply(fn)
 }
 
 infix fun PlayParentViewModelRobot.thenVerify(
-        fn: PlayParentViewModelRobotResult.() -> Unit
+    fn: PlayParentViewModelRobotResult.() -> Unit
 ): PlayParentViewModelRobot {
     PlayParentViewModelRobotResult(viewModel).apply { fn() }
     return this
