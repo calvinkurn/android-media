@@ -44,6 +44,7 @@ import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.HexValidator;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.iconunify.IconUnifyHelperKt;
 import com.tokopedia.promogamification.common.R;
@@ -229,7 +230,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FloatingEggButtonFragment);
         isDraggable = a.getBoolean(R.styleable.FloatingEggButtonFragment_draggable, false);
         int defaultInitMarginRight = getContext().getResources().getDimensionPixelOffset(R.dimen.gami_core_floating_egg_init_margin_right) / 2 * -1;
-        initialEggMarginRight = a.getDimensionPixelOffset(R.styleable.FloatingEggButtonFragment_margin_right, defaultInitMarginRight);
+        initialEggMarginRight = a.getDimensionPixelOffset(R.styleable.FloatingEggButtonFragment_margin_right, 0);
         initialEggMarginBottom = a.getDimensionPixelOffset(R.styleable.FloatingEggButtonFragment_margin_bottom, 0);
         a.recycle();
     }
@@ -313,7 +314,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         vgFloatingEgg.setVisibility(View.VISIBLE);
     }
 
-    private void hideFLoatingEgg() {
+    private void hideFloatingEgg() {
         vgFloatingEgg.setVisibility(View.GONE);
     }
 
@@ -512,10 +513,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         int visibleCount = getSharedPrefVisibility().getInt(VISIBLE_COUNT, 0);
 
         if(visibleCount >= MAX_VISIBLE){
-            hideFLoatingEgg();
+            hideFloatingEgg();
         } else {
             if (needHideFloatingToken) {
-                hideFLoatingEgg();
+                hideFloatingEgg();
             } else {
                 showFloatingEgg();
                 floatingEggTracker.trackingEggImpression(tokenData.getId(), tokenData.getName());
@@ -620,19 +621,20 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                 Timber.e(e);
             }
         }
+        ivClose.setImageDrawable(IconUnifyHelperKt.getIconUnifyDrawable(getContext(), IconUnify.CLEAR,
+                MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN500)));
         ivClose.setOnClickListener(view -> {
             floatingEggPresenter.get().clickCloseButton(tokenData.getId());
             floatingEggTracker.trackingEggClickCLose(tokenId, tokenName);
+            hideFloatingEgg();
         });
+        ivClose.setVisibility(View.VISIBLE);
 
         if(!isPermanent){
-            ivClose.setVisibility(View.VISIBLE);
             minimizeButtonLeft.setVisibility(View.GONE);
-            ivClose.setImageDrawable(IconUnifyHelperKt.getIconUnifyDrawable(getContext(), IconUnify.CLEAR_SMALL, com.tokopedia.unifyprinciples.R.color.Unify_NN500));
         }
         else{
             minimizeButtonLeft.setVisibility(View.VISIBLE);
-            ivClose.setVisibility(View.GONE);
         }
     }
 
@@ -671,14 +673,11 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             }
         }
         if(!isPermanent){
-            ivClose.setVisibility(View.VISIBLE);
             minimizeButtonLeft.setVisibility(View.GONE);
-            ivClose.setImageDrawable(IconUnifyHelperKt.getIconUnifyDrawable(getContext(), IconUnify.CLEAR_SMALL, com.tokopedia.unifyprinciples.R.color.Unify_NN500));
         }
         else{
             minimizeButtonLeft.setVisibility(View.VISIBLE);
             minimizeButtonLeft.setOnClickListener(v -> hideShowClickListener());
-            ivClose.setVisibility(View.GONE);
         }
         if (sumTokenString == null || TextUtils.isEmpty(sumTokenString)) {
             tvFloatingCounter.setVisibility(View.GONE);
