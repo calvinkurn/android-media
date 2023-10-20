@@ -95,7 +95,7 @@ object CartCalculator {
                 updateCartModel(cartModel.copy(totalQtyWithAddon = totalItemQty))
                 cartItemHolderData.addOnsProduct.listData.forEach {
                     if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY || it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
-                        val qtyAddon = if (it.fixedQuantity) 1 else totalItemQty
+                        val qtyAddon = if (it.fixedQuantity) 1 else itemQty
                         subtotalPrice += (qtyAddon * it.price)
                     }
                 }

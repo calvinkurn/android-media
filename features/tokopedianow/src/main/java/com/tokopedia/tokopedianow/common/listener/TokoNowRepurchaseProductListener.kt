@@ -18,7 +18,8 @@ class TokoNowRepurchaseProductListener(
     private val viewModel: TokoNowHomeViewModel,
     private val analytics: HomeAnalytics,
     private val userSession: UserSessionInterface,
-    private val startActivityForResult: (Intent, Int) -> Unit
+    private val startActivityForResult: (Intent, Int) -> Unit,
+    private val onBlockAddToCartListener: () -> Unit
 ) : TokoNowRepurchaseProductListener {
     override fun onCartQuantityChanged(data: TokoNowRepurchaseProductUiModel, quantity: Int) {
         if (userSession.isLoggedIn) {
@@ -59,6 +60,10 @@ class TokoNowRepurchaseProductListener(
 
     override fun createAffiliateLink(url: String): String {
         return viewModel.createAffiliateLink(url)
+    }
+
+    override fun onBlockAddToCartListener() {
+        onBlockAddToCartListener.invoke()
     }
 
     private fun trackRepurchaseImpression(position: Int, data: TokoNowRepurchaseProductUiModel) {

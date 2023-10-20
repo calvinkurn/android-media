@@ -11,6 +11,7 @@ object GqlResponseStub {
     lateinit var widgetMetaResponse: ResponseStub<UniversalInboxWrapperResponse>
     lateinit var topAdsHeadlineResponse: ResponseStub<TopAdsHeadlineResponse>
     lateinit var productRecommendationResponse: ResponseStub<RecommendationEntity>
+    lateinit var postPurchaseProductRecommendationResponse: ResponseStub<RecommendationEntity>
     lateinit var prePurchaseProductRecommendationResponse: ResponseStub<RecommendationEntity>
 
     init {
@@ -48,6 +49,13 @@ object GqlResponseStub {
 
         prePurchaseProductRecommendationResponse = ResponseStub(
             filePath = "recommendation/success_get_prepurchase_recommendation.json",
+            type = RecommendationEntity::class.java,
+            query = "productRecommendationWidget",
+            isError = false
+        )
+
+        postPurchaseProductRecommendationResponse = ResponseStub(
+            filePath = "recommendation/success_get_postpurchase_recommendation.json",
             type = RecommendationEntity::class.java,
             query = "productRecommendationWidget",
             isError = false
