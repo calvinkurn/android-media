@@ -38,6 +38,7 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
 import com.tokopedia.createpost.common.TYPE_AFFILIATE
 import com.tokopedia.createpost.common.TYPE_CONTENT_USER
+import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.user.session.UserSessionInterface
@@ -150,6 +151,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         DaggerCreatePostComponent.factory()
             .create(
                 baseAppComponent = (applicationContext as BaseMainApplication).baseAppComponent,
+                creationUploaderComponent = CreationUploaderComponentProvider.get(this),
                 context = this
             )
             .inject(this)
@@ -309,7 +311,6 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
                 val uploadData = CreationUploadData.buildForPost(
                     creationId = createPostViewModel.postId,
                     coverUri = createPostViewModel.completeImageList.first().path,
-                    sourceId = "",
                     authorId = if (isTypeAffiliate(createPostViewModel.authorType) || isTypeBuyer(createPostViewModel.authorType)) {
                         userSession.userId
                     } else {
