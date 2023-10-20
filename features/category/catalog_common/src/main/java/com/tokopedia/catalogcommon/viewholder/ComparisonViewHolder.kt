@@ -39,6 +39,7 @@ class ComparisonViewHolder(
         val LAYOUT = R.layout.widget_item_comparison
         private const val DEFAULT_LINE_COUNT = 1
         private const val DEFAULT_CHAR_WIDTH = 15
+        private const val DEFAULT_TITLE_CHAR_WIDTH = 20
     }
 
     private val binding by viewBinding<WidgetItemComparisonBinding>()
@@ -92,9 +93,12 @@ class ComparisonViewHolder(
     ) {
         val specs = if (isDisplayingTopSpec) comparedItem?.topComparisonSpecs else comparedItem?.comparisonSpecs
         val rowsHeight = List(specs?.size.orZero()) { DEFAULT_LINE_COUNT }.toMutableList()
+        var titleHeight = DEFAULT_LINE_COUNT
 
         // update list
         comparisonItems.forEach {
+            val tempTitleHeight = ceil((it.productTitle.length * DEFAULT_TITLE_CHAR_WIDTH)/ textAreaWidth).toInt()
+            if (tempTitleHeight > titleHeight) titleHeight = tempTitleHeight
             if (isDisplayingTopSpec)
                 it.topComparisonSpecs.updateRowsHeight(rowsHeight, textAreaWidth)
             else
@@ -104,12 +108,19 @@ class ComparisonViewHolder(
 
         // apply list to object
         comparisonItems.forEach {
+            it.titleHeight = titleHeight
             if (isDisplayingTopSpec)
                 it.topComparisonSpecs.applyRowsHeight(rowsHeight)
             else
                 it.comparisonSpecs.applyRowsHeight(rowsHeight)
         }
         specs?.applyRowsHeight(rowsHeight)
+
+        // apply to comparison title
+        binding?.layoutComparison?.tfProductName?.apply {
+            maxLines = titleHeight
+            minLines = titleHeight
+        }
     }
 
     private fun List<ComparisonUiModel.ComparisonSpec>.updateRowsHeight(
@@ -117,7 +128,9 @@ class ComparisonViewHolder(
         textAreaWidth: Double
     ) {
         forEachIndexed { index, comparisonSpec ->
-            val lines = ceil((comparisonSpec.specValue.length * DEFAULT_CHAR_WIDTH)/ textAreaWidth).toInt()
+            val lines = comparisonSpec.specValue.split("\n").sumOf { line ->
+                ceil((line.length * DEFAULT_CHAR_WIDTH) / textAreaWidth).toInt()
+            }
             if (rowsHeight.getOrNull(index) != null)
                 if (lines > rowsHeight[index]) rowsHeight[index] = lines
         }
@@ -155,6 +168,7 @@ class ComparisonViewHolder(
     }
 
     override fun bind(element: ComparisonUiModel) {
+        if (element.content.isEmpty()) return
         val comparisonItems = element.content.subList(Int.ONE, element.content.size)
         val comparedItem = element.content.firstOrNull()
         binding?.setupLayoutComparison(comparedItem, comparisonItems)

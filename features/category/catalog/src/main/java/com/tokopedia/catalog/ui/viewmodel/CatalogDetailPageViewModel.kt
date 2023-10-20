@@ -28,6 +28,10 @@ class CatalogDetailPageViewModel @Inject constructor(
     val errorsToaster: LiveData<Throwable>
         get() = _errorsToaster
 
+    private val _errorsToasterGetComparison = MutableLiveData<Throwable>()
+    val errorsToasterGetComparison: LiveData<Throwable>
+        get() = _errorsToasterGetComparison
+
     private val _catalogDetailDataModel = MutableLiveData<Result<CatalogDetailUiModel>>()
     val catalogDetailDataModel: LiveData<Result<CatalogDetailUiModel>>
         get() = _catalogDetailDataModel
@@ -78,7 +82,7 @@ class CatalogDetailPageViewModel @Inject constructor(
                 _comparisonUiModel.postValue(result)
             },
             onError = {
-                _errorsToaster.postValue(it)
+                _errorsToasterGetComparison.postValue(it)
             }
         )
     }

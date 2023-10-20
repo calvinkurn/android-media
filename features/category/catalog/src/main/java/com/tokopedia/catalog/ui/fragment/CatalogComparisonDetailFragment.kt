@@ -27,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oldcatalog.listener.CatalogDetailListener
 import com.tokopedia.oldcatalog.ui.bottomsheet.CatalogComponentBottomSheet
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -45,7 +46,6 @@ class CatalogComparisonDetailFragment :
         const val ARG_PARAM_CATALOG_ID = "catalogId"
         const val ARG_PARAM_CATEGORY_ID = "categoryId"
         const val ARG_PARAM_COMPARE_CATALOG_ID = "compareCatalogId"
-        private const val COMPARISON_CHANGED_POSITION = 1
 
         fun newInstance(
             catalogId: String,
@@ -83,7 +83,7 @@ class CatalogComparisonDetailFragment :
         super.onViewCreated(view, savedInstanceState)
         setupToolbar()
         setupContent()
-        setupObserver()
+        setupObserver(view)
         if (arguments != null) {
             catalogId = requireArguments().getString(ARG_PARAM_CATALOG_ID, "")
             categoryId = requireArguments().getString(ARG_PARAM_CATEGORY_ID, "")
@@ -99,20 +99,16 @@ class CatalogComparisonDetailFragment :
                 this
             )
         }
-
     }
 
     private fun getComparison(catalogId: String, compareCatalogId: String) {
         binding?.loadingLayout?.root?.show()
         binding?.gePageError?.gone()
         binding?.rvContent?.gone()
-        viewModel.getProductCatalog(catalogId, "")
-        if (compareCatalogId.isNotEmpty()) {
-            viewModel.getProductCatalogComparisons(catalogId, compareCatalogId)
-        }
+        viewModel.getProductCatalogComparisons(catalogId, compareCatalogId)
     }
 
-    private fun setupObserver() {
+    private fun setupObserver(view: View) {
         viewModel.catalogDetailDataModel.observe(viewLifecycleOwner) {
             if (it is Success) {
                 binding?.gePageError?.gone()
@@ -123,7 +119,7 @@ class CatalogComparisonDetailFragment :
                 if (comparison != null) {
                     widgetAdapter.addWidget(listOf(comparison))
                 }
-            }else if(it is Fail){
+            } else if (it is Fail){
                 val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
                 when (it.throwable) {
                     is UnknownHostException, is SocketTimeoutException -> {
@@ -139,9 +135,35 @@ class CatalogComparisonDetailFragment :
             }
             binding?.loadingLayout?.root?.gone()
         }
+        viewModel.errorsToasterGetComparison.observe(viewLifecycleOwner) {
+            val errorMessage = if (it is UnknownHostException) {
+                getString(R.string.catalog_error_message_no_connection)
+            } else ErrorHandler.getErrorMessage(requireView().context, it)
+
+            Toaster.build(
+                requireView(), errorMessage, duration = Toaster.LENGTH_LONG,
+                type = Toaster.TYPE_ERROR,
+                actionText = getString(R.string.catalog_retry_action)
+            ) {
+                changeComparison(compareCatalogId)
+            }.show()
+        }
         viewModel.comparisonUiModel.observe(viewLifecycleOwner) {
-            // COMPARISON_CHANGED_POSITION is hardcoded position, will changed at next phase
-            widgetAdapter.changeComparison(COMPARISON_CHANGED_POSITION, it)
+            binding?.gePageError?.gone()
+            binding?.rvContent?.show()
+            binding?.loadingLayout?.root?.gone()
+            if (it == null)
+                Toaster.build(
+                    view,
+                    getString(R.string.catalog_error_message_inactive)
+                ).show()
+            else {
+                if (widgetAdapter.isVisitableEmpty()) {
+                    widgetAdapter.addWidget(listOf(it))
+                } else {
+                    widgetAdapter.changeComparison(it)
+                }
+            }
         }
     }
 

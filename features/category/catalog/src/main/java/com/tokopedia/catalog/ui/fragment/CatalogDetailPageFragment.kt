@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.catalog.R
 import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_FAQ
@@ -126,7 +127,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         private const val LOGIN_REQUEST_CODE = 1001
         private const val POSITION_THREE_IN_WIDGET_LIST = 3
         private const val POSITION_TWO_IN_WIDGET_LIST = 2
-        private const val COMPARISON_CHANGED_POSITION = 1
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
 
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
@@ -159,7 +159,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         )
     }
 
-    private var catalogAllReviewBottomSheet: CatalogComponentBottomSheet? = null
     private var title = ""
     private var productSortingStatus = 0
     private var catalogId = ""
@@ -219,18 +218,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             viewModel.getProductCatalog(catalogId, "")
             viewModel.refreshNotification()
         }
-    }
-
-    private fun setupSwitchCatalogBottomsheet() {
-        catalogAllReviewBottomSheet = CatalogComponentBottomSheet.newInstance(
-            "",
-            catalogId,
-            "",
-            categoryId,
-            "",
-            CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,
-            this
-        )
     }
 
     override fun onNavBackClicked() {
@@ -306,7 +293,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 binding?.setupPriceCtaWidget(it.data.priceCtaProperties)
                 binding?.stickySingleHeaderView?.stickyPosition =
                     widgetAdapter.findPositionNavigation()
-                setupSwitchCatalogBottomsheet()
             } else if (it is Fail) {
                 binding?.showPageError(it.throwable)
             }
@@ -321,9 +307,28 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 type = Toaster.TYPE_ERROR
             ).show()
         }
+        viewModel.errorsToasterGetComparison.observe(viewLifecycleOwner) {
+            val errorMessage = if (it is UnknownHostException) {
+                getString(R.string.catalog_error_message_no_connection)
+            } else ErrorHandler.getErrorMessage(requireView().context, it)
+
+            Toaster.build(
+                view, errorMessage, duration = Toaster.LENGTH_LONG,
+                type = Toaster.TYPE_ERROR,
+                actionText = getString(R.string.catalog_retry_action)
+            ) {
+                changeComparison(compareCatalogId)
+            }.show()
+        }
         viewModel.comparisonUiModel.observe(viewLifecycleOwner) {
             // COMPARISON_CHANGED_POSITION is hardcoded position, will changed at next phase
-            widgetAdapter.changeComparison(COMPARISON_CHANGED_POSITION, it)
+            if (it == null)
+                Toaster.build(
+                    view,
+                    getString(R.string.catalog_error_message_inactive)
+                ).show()
+            else
+                widgetAdapter.changeComparison(it)
         }
 
         CoroutineScope(Dispatchers.Main).launch {
@@ -672,7 +677,15 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     }
 
     override fun onComparisonSwitchButtonClicked(position: Int) {
-        catalogAllReviewBottomSheet?.show(childFragmentManager, "")
+        CatalogComponentBottomSheet.newInstance(
+            "",
+            catalogId,
+            "",
+            categoryId,
+            compareCatalogId,
+            CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,
+            this
+        ).show(childFragmentManager, "")
     }
 
     override fun onComparisonSeeMoreButtonClicked() {

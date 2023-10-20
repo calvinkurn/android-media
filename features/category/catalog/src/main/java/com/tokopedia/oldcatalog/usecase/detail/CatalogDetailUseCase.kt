@@ -24,6 +24,11 @@ class CatalogDetailUseCase @Inject constructor(
     private val userSession: UserSessionInterface,
 ) {
 
+    private companion object {
+        private const val DATA_STRUCT_ERROR_MESSAGE =
+            "Ada gangguan yang lagi dibereskan. Coba lagi atau balik lagi nanti, ya."
+    }
+
     suspend fun getCatalogDetail(catalogId : String ,comparedCatalogId : String, userId : String, device : String,
                                  catalogDetailDataModel: MutableLiveData<Result<CatalogDetailDataModel>>)  {
         val gqlResponse = catalogDetailRepository.getCatalogDetail(catalogId, comparedCatalogId, userId, device)
@@ -56,7 +61,7 @@ class CatalogDetailUseCase @Inject constructor(
     ): ComparisonUiModel? {
         val gqlResponse = catalogDetailRepository.getCatalogDetail(
             catalogId,
-            comparedCatalogId,
+            "$catalogId,$comparedCatalogId",
             userSession.userId,
             CatalogConstant.DEVICE,
             cacheType = CacheType.NONE
@@ -65,7 +70,7 @@ class CatalogDetailUseCase @Inject constructor(
         if (data?.catalogGetDetailModular != null)
             return catalogDetailUiMapper.mapToCatalogDetailUiModel(data.catalogGetDetailModular).widgets.firstOrNull { it is ComparisonUiModel } as? ComparisonUiModel
         else{
-            throw MessageErrorException(MESSAGE_ERROR_NULL_DATA_SHORT)
+            throw MessageErrorException(DATA_STRUCT_ERROR_MESSAGE)
         }
     }
 
