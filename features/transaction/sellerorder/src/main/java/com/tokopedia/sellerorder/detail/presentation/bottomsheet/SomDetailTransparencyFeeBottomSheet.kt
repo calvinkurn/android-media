@@ -1,6 +1,8 @@
 package com.tokopedia.sellerorder.detail.presentation.bottomsheet
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -73,7 +75,11 @@ class SomDetailTransparencyFeeBottomSheet : BottomSheetUnify(),
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         setupTransparencyFeeSummaryWidget()
-        setShowListener { observeTransparencyFee() }
+        setShowListener {
+            Handler(Looper.getMainLooper()).postDelayed({
+                observeTransparencyFee()
+            }, DELAY_OBSERVE)
+        }
         fetchTransparencyFee()
     }
 
@@ -152,6 +158,7 @@ class SomDetailTransparencyFeeBottomSheet : BottomSheetUnify(),
         private val TAG = SomDetailTransparencyFeeBottomSheet::class.java.simpleName
 
         private const val ORDER_ID_KEY = "orderId"
+        private const val DELAY_OBSERVE = 500L
 
         fun newInstance(orderId: String): SomDetailTransparencyFeeBottomSheet {
             return SomDetailTransparencyFeeBottomSheet().apply {
