@@ -20,5 +20,8 @@
             </intent-filter>
 
         </activity>
+        <service
+            android:name="com.scp.auth.service.GetDefaultChosenAddressService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 </manifest>
