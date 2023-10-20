@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
@@ -374,6 +375,19 @@ class GetPdpLayoutUseCaseTest {
         val actualCacheData = actualCacheDataState?.getOrNull()?.layoutData?.cacheState
         assertTrue(actualCacheDataState?.isSuccess.orFalse())
         assertEquals(cacheStateExpected, actualCacheData)
+    }
+
+    @Test
+    fun `handle errors if they occur outside the function of the request process`() = runCoroutineTest {
+        every {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PDP_P1_CACHEABLE)
+        } throws Throwable()
+
+        // when
+        val result = useCaseTest.executeOnBackground().first()
+
+        // then
+        assertFalse(result.isSuccess.orTrue())
     }
     // endregion
 
