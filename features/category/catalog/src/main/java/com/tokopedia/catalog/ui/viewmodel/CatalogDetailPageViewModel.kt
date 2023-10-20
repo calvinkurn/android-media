@@ -40,8 +40,8 @@ class CatalogDetailPageViewModel @Inject constructor(
     val totalCartItem: LiveData<Int>
         get() = _totalCartItem
 
-    private val _comparisonUiModel = MutableLiveData<ComparisonUiModel>()
-    val comparisonUiModel: LiveData<ComparisonUiModel>
+    private val _comparisonUiModel = MutableLiveData<ComparisonUiModel?>()
+    val comparisonUiModel: LiveData<ComparisonUiModel?>
         get() = _comparisonUiModel
 
     private val _scrollEvents = MutableStateFlow(0)
