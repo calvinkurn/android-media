@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import android.view.ViewGroup.LayoutParams
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
@@ -36,16 +37,8 @@ class DynamicOneLinerViewHolder(
 
     override fun bind(element: DynamicOneLinerDataModel) = with(element.data) {
         when (status) {
-            STATUS_PLACEHOLDER -> {
-                itemView.show()
-                binding.dynamicOneLinerContentParent.hide()
-                binding.dynamicOneLinerShimmering.show()
-            }
-
             STATUS_SHOW -> {
-                itemView.show()
-                binding.dynamicOneLinerContentParent.show()
-                binding.dynamicOneLinerShimmering.hide()
+                itemView.setLayoutHeight(LayoutParams.WRAP_CONTENT)
                 renderContent(this, getComponentTrackData(element))
                 impressComponent(element)
             }

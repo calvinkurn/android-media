@@ -9,6 +9,7 @@ import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetV2DataMode
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.pdp.fintech.view.PdpFintechWidgetV2
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 
@@ -25,6 +26,7 @@ class FintechWidgetV2ViewHolder(val view: View, val  listener: DynamicProductDet
 
     override fun bind(element: FintechWidgetV2DataModel) {
         if (isSameSession(element = element)) return
+        view.setLayoutHeight(0)
 
         fintechWidget.updateBaseFragmentContext(
             listener.getParentViewModelStoreOwner(),
