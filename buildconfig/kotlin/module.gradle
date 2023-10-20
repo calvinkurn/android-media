@@ -2,6 +2,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: "com.google.devtools.ksp"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/composeCompilerReport.gradle"
 
 kapt {
     correctErrorTypes = true
