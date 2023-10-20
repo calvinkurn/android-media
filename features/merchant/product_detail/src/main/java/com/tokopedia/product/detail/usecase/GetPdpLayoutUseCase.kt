@@ -489,13 +489,14 @@ open class GetPdpLayoutUseCase @Inject constructor(
     private val forceRefresh
         get() = requestParams.getBoolean(ProductDetailCommonConstant.PARAM_FORCE_REFRESH, false)
 
-    private val excludeComponentInCache by lazy {
+    private val excludeComponentTypeInCache by lazy {
         listOf(
             ProductDetailConstant.PRODUCT_LIST,
             ProductDetailConstant.VIEW_TO_VIEW,
             ProductDetailConstant.PRODUCT_LIST_VERTICAL,
             ProductDetailConstant.TOP_ADS,
             ProductDetailConstant.FINTECH_WIDGET_TYPE,
+            ProductDetailConstant.FINTECH_WIDGET_V2_TYPE,
             ProductDetailConstant.CONTENT_WIDGET,
             ProductDetailConstant.GLOBAL_BUNDLING
         )
@@ -656,7 +657,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
         val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(components)
             .filterNot {
                 if (cacheState.isFromCache) {
-                    getIgnoreComponentInCache().contains(it.type())
+                    getIgnoreComponentTypeInCache().contains(it.type())
                 } else {
                     false
                 }
@@ -674,5 +675,5 @@ open class GetPdpLayoutUseCase @Inject constructor(
     }
 
     // for hansel-able
-    fun getIgnoreComponentInCache() = excludeComponentInCache
+    fun getIgnoreComponentTypeInCache() = excludeComponentTypeInCache
 }

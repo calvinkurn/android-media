@@ -243,7 +243,7 @@ class GetPdpLayoutUseCaseTest {
 
     @Test
     fun `pdp layout from cache don't have topAds layout`() = runCoroutineTest {
-        val ignoreComponentCacheExpected = useCaseTest.getIgnoreComponentInCache()
+        val ignoreComponentTypeCacheExpected = useCaseTest.getIgnoreComponentTypeInCache()
         val results =
             getPdpLayoutCacheable(scope = this, refreshPage = false, type = ErrorType.NON_CAMPAIGN)
 
@@ -252,13 +252,13 @@ class GetPdpLayoutUseCaseTest {
         assertTrue(actualCacheLayoutState?.isSuccess.orFalse())
         val actualCacheLayout =
             actualCacheLayoutState?.getOrNull()?.listOfLayout.orEmpty().map { it.type() }
-        val thenCacheLayout = actualCacheLayout.containsAll(ignoreComponentCacheExpected)
+        val thenCacheLayout = actualCacheLayout.containsAll(ignoreComponentTypeCacheExpected)
         assertFalse(thenCacheLayout)
     }
 
     @Test
     fun `pdp layout from cloud have topAds layout`() = runCoroutineTest {
-        val ignoreComponentCacheExpected = useCaseTest.getIgnoreComponentInCache()
+        val ignoreComponentTypeCacheExpected = useCaseTest.getIgnoreComponentTypeInCache()
         val results =
             getPdpLayoutCacheable(scope = this, refreshPage = false, type = ErrorType.NON_CAMPAIGN)
 
@@ -267,7 +267,7 @@ class GetPdpLayoutUseCaseTest {
         assertTrue(actualCacheLayoutState?.isSuccess.orFalse())
         val actualCacheLayout =
             actualCacheLayoutState?.getOrNull()?.listOfLayout.orEmpty().map { it.type() }
-        val thenCacheLayout = ignoreComponentCacheExpected.filterList {
+        val thenCacheLayout = ignoreComponentTypeCacheExpected.filterList {
             actualCacheLayout.contains(this)
         }.isNotEmpty()
         assertTrue(thenCacheLayout)
