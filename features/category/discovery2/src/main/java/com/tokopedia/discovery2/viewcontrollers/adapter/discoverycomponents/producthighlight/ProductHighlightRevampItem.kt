@@ -57,6 +57,8 @@ class ProductHighlightRevampItem(
     private var emptySingleBinding: EmptyStateProductHighlightSingleBinding? = null
     private var emptyDoubleBinding: EmptyStateProductHighlightDoubleBinding? = null
 
+    private var ocsClickAction: () -> Unit = {}
+
     init {
         addItemConstrains()
     }
@@ -196,6 +198,13 @@ class ProductHighlightRevampItem(
 
     private fun renderOCSButton(checkoutBtn: ImageUnify) {
         checkoutBtn.isVisible = productHighlightData.atcButtonCTA == ATC_OCS
+
+        checkoutBtn.setOnClickListener {
+            ocsClickAction.invoke()
+        }
+    }
+    fun onOCSButtonClicked(action: () -> Unit) {
+        ocsClickAction = action
     }
 
     private fun renderPriceBox(view: PriceBoxView) {

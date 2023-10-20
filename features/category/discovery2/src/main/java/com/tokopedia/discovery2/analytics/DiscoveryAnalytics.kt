@@ -2682,6 +2682,60 @@ open class DiscoveryAnalytics(
         }
     }
 
+    override fun trackProductHighlightOCSClick(productHighlightData: DataItem, productHighlightPosition: Int, components: ComponentsItem?) {
+        if (!components?.data.isNullOrEmpty()) {
+            val list = ArrayList<Map<String, Any>>()
+            val listMap = HashMap<String, Any>()
+            var productItemList = ""
+            productHighlightData.let {
+                productItemList = it.gtmItemName?.replace("#POSITION", (components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
+                productCardImpressionLabel = EMPTY_STRING
+                listMap[KEY_NAME] = it.productName.toString()
+                listMap[KEY_ID] = it.productId.toString()
+                listMap[PRICE] = convertRupiahToInt(it.price ?: "")
+                listMap[KEY_BRAND] = NONE_OTHER
+                listMap[KEY_ITEM_CATEGORY] = NONE_OTHER
+                listMap[KEY_VARIANT] = NONE_OTHER
+                listMap[KEY_POSITION] = (components?.position ?: 0) + 1
+                listMap[LIST] = productItemList
+                listMap[DIMENSION83] = getProductDime83(it)
+                listMap[DIMENSION90] = sourceIdentifier
+                listMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
+                    "${if (it.campaignSoldCount.toIntOrZero() > 0) it.campaignSoldCount else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME ${components?.let { it1 -> getNotificationStatus(it1) }}"
+                listMap[DIMENSION38] = ""
+                listMap[DIMENSION84] = ""
+                val gtmItemName = it.gtmItemName?.replace("#POSITION", (components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
+                listMap[DIMENSION40] = processGtmItemName(gtmItemName, it)
+            }
+            list.add(listMap)
+
+            val eCommerce = mapOf(
+                CLICK to mapOf(
+                    ACTION_FIELD to mapOf(
+                        LIST to productItemList
+                    ),
+                    PRODUCTS to list
+                )
+            )
+            val map = createGeneralEvent(
+                eventName = EVENT_PRODUCT_ATC,
+                eventAction = CLICK_OCS,
+                eventLabel = ComponentNames.ProductBundling.componentName,
+                shouldSendSourceAsDestination = true
+            )
+            map[TRACKER_ID] = "21643"
+            map[KEY_CAMPAIGN_CODE] = campaignCode
+            map[PAGE_TYPE] = pageType
+            map[PAGE_PATH] = removedDashPageIdentifier
+            map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+            map[USER_ID] = (userSession.userId ?: "")
+            map[BUSINESS_UNIT] = HOME_BROWSE
+            map[KEY_E_COMMERCE] = eCommerce
+            getTracker().sendEnhanceEcommerceEvent(map)
+            productCardImpressionLabel = EMPTY_STRING
+        }
+    }
+
     private fun processGtmItemName(gtmItemName: String, dataItem: DataItem): String {
         val dataToAppend = mutableListOf(
             dataItem.title ?: "",

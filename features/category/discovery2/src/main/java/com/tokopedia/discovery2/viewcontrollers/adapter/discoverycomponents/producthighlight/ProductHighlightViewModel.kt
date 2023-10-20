@@ -4,30 +4,51 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.discoveryext.checkForNullAndSize
 import com.tokopedia.discovery2.usecase.producthighlightusecase.ProductHighlightUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ProductHighlightViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class ProductHighlightViewModel(
+    val application: Application,
+    val components: ComponentsItem,
+    val position: Int
+) : DiscoveryBaseViewModel(), CoroutineScope {
     private val productHighlightCardList: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val _hideShimmer = SingleLiveEvent<Boolean>()
     private val _showErrorState = SingleLiveEvent<Boolean>()
 
+    private val _ocsLiveData = MutableLiveData<AddToCartDataModel>()
+    val redirectToOCS: LiveData<AddToCartDataModel>
+        get() = _ocsLiveData
+
     @JvmField
     @Inject
     var productHighlightUseCase: ProductHighlightUseCase? = null
+
+    @JvmField
+    @Inject
+    var atcUseCase: AddToCartOcsUseCase? = null
 
     fun getProductHighlightCardItemsListData(): LiveData<ComponentsItem> = productHighlightCardList
     val hideShimmer: LiveData<Boolean> = _hideShimmer
@@ -43,7 +64,11 @@ class ProductHighlightViewModel(val application: Application, val components: Co
 
     private fun fetchProductHighlightData() {
         launchCatchError(block = {
-            if (productHighlightUseCase?.loadFirstPageComponents(components.id, components.pageEndPoint) == true) {
+            if (productHighlightUseCase?.loadFirstPageComponents(
+                    components.id,
+                    components.pageEndPoint
+                ) == true
+            ) {
                 if (components.data.isNullOrEmpty()) {
                     _hideShimmer.value = true
                 }
@@ -76,6 +101,38 @@ class ProductHighlightViewModel(val application: Application, val components: Co
                 navigate(context, item.applinks)
             }
         }
+    }
+
+    fun onOCSClicked(data: DataItem) {
+        val atcRequestParam = AddToCartOcsRequestParams().apply {
+            productId = data.productId.toZeroStringIfNull()
+            shopId = data.shopId.toZeroStringIfNull()
+            quantity = data.minQuantity
+            customerId = userId
+            productName = data.productName.orEmpty()
+            category = data.category.orEmpty()
+            price = data.price.orEmpty()
+        }
+
+        launchCatchError(block = {
+            val requestParams = RequestParams.create()
+            requestParams.putObject(
+                AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
+                atcRequestParam
+            )
+
+            val result = withContext(Dispatchers.IO) {
+                atcUseCase?.createObservable(requestParams)?.toBlocking()?.single()
+            }
+
+            if (result == null || result.isDataError()) {
+                Timber.e(result?.getAtcErrorMessage())
+            } else {
+                _ocsLiveData.postValue(result)
+            }
+        }, onError = {
+                Timber.e(it)
+            })
     }
 
     fun reload() {

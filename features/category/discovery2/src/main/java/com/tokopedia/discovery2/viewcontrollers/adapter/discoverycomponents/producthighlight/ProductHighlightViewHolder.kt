@@ -4,6 +4,8 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.discovery2.Constant.ProductHighlight.DOUBLE
 import com.tokopedia.discovery2.Constant.ProductHighlight.DOUBLESINGLEEMPTY
 import com.tokopedia.discovery2.Constant.ProductHighlight.TRIPLE
@@ -20,6 +22,7 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.unifycomponents.LocalLoad
 import kotlinx.android.synthetic.main.item_empty_error_state.view.*
 
@@ -36,7 +39,6 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
         }
         addShimmer()
     }
-
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
@@ -59,6 +61,13 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
                     binding.bannerContainerLayout.removeAllViews()
                 }
             }
+
+            mProductHighlightViewModel?.redirectToOCS?.observe(it) {
+                val intent = RouteManager.getIntent(itemView.context, ApplinkConstInternalMarketplace.CHECKOUT)
+                intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
+
+                itemView.context.startActivity(intent)
+            }
         }
     }
 
@@ -68,6 +77,7 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
             mProductHighlightViewModel?.getProductHighlightCardItemsListData()?.removeObservers(it)
             mProductHighlightViewModel?.showErrorState?.removeObservers(it)
             mProductHighlightViewModel?.hideShimmer?.removeObservers(it)
+            mProductHighlightViewModel?.redirectToOCS?.removeObservers(it)
         }
     }
 
@@ -76,7 +86,6 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
         val properties = mProductHighlightViewModel?.components?.properties
 
         val mutableData = data.toMutableList()
-
 
         if (compType == DOUBLE && mutableData.size == 1) {
             mutableData.firstOrNull()?.typeProductHighlightComponentCard = DOUBLE
@@ -136,13 +145,15 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
             productHighlightItemList.add(productHighlightView)
 
             setClickOnProductHighlight(productHighlightItem, index)
+            setClickOnOCSButton(productHighlightItem, index)
         }
         sendImpressionEventForProductHighlight(data)
     }
 
     private fun sendImpressionEventForProductHighlight(data: List<DataItem>) {
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackPromoProductHighlightImpression(
-            data, mProductHighlightViewModel?.components,
+            data,
+            mProductHighlightViewModel?.components
         )
     }
 
@@ -150,7 +161,23 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
         productHighlightItemList[index].productHighlightView.setOnClickListener {
             mProductHighlightViewModel?.onCardClicked(index, itemView.context)
             (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-                ?.trackProductHighlightClick(itemData, index, mProductHighlightViewModel?.components,mProductHighlightViewModel?.isUserLoggedIn() ?: false)
+                ?.trackProductHighlightClick(itemData, index, mProductHighlightViewModel?.components, mProductHighlightViewModel?.isUserLoggedIn() ?: false)
+        }
+    }
+
+    private fun setClickOnOCSButton(itemData: DataItem, index: Int) {
+        val phItem = productHighlightItemList[index]
+        if (phItem !is ProductHighlightRevampItem) return
+
+        phItem.onOCSButtonClicked {
+            mProductHighlightViewModel?.onOCSClicked(itemData)
+
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+                ?.trackProductHighlightOCSClick(
+                    itemData,
+                    index,
+                    mProductHighlightViewModel?.components
+                )
         }
     }
 
@@ -188,6 +215,4 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
             }
         }
     }
-
-
 }
