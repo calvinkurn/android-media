@@ -5,6 +5,7 @@ import com.tokopedia.remoteconfig.RollenceKey
 
 object IconJumperUtil {
 
+    @JvmStatic
     fun isEnabledIconJumper(): Boolean {
         return RemoteConfigInstance.getInstance().abTestPlatform.getString(
             RollenceKey.ICON_JUMPER,

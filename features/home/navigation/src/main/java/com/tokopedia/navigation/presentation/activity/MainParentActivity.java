@@ -86,6 +86,7 @@ import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
 import com.tokopedia.navigation.util.FeedCoachMark;
+import com.tokopedia.navigation.util.IconJumperUtil;
 import com.tokopedia.navigation.util.MainParentServerLogger;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
@@ -1308,7 +1309,7 @@ public class MainParentActivity extends BaseActivity implements
 
     public void populateBottomNavigationView() {
         BottomMenu homeOrForYouMenu;
-        if (bottomNavigation.isIconJumperEnabled()) {
+        if (IconJumperUtil.isEnabledIconJumper()) {
             homeOrForYouMenu = new BottomMenu(R.id.menu_home, getResources().getString(R.string.for_you),
                     new HomeForYouMenu(
                             getResources().getString(R.string.home),
@@ -1382,7 +1383,7 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public boolean isIconJumperEnabled() {
-        return bottomNavigation.isIconJumperEnabled();
+        return IconJumperUtil.isEnabledIconJumper();
     }
 
     @Override

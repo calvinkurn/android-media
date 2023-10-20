@@ -44,7 +44,7 @@ class LottieBottomNavbar : LinearLayout {
             context.isDarkMode()
         }
 
-    val isIconJumperEnabled: Boolean
+    private val isIconJumperEnabled: Boolean
         get() = IconJumperUtil.isEnabledIconJumper()
 
     private val modeAwareContext: Context
