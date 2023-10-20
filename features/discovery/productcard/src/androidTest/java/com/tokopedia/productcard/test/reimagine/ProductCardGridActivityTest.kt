@@ -4,29 +4,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.productcard.reimagine.ProductCardGridCarouselView
+import com.tokopedia.productcard.reimagine.ProductCardGridView
 import com.tokopedia.productcard.reimagine.ProductCardModel
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.productcard.R as productcardR
 import com.tokopedia.productcard.test.R as productcardtestR
 
-class ProductCardGridCarouselActivityTest: AppCompatActivity() {
+class ProductCardGridActivityTest: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(productcardtestR.layout.product_card_reimagine_grid_carousel_activity_test_layout)
+        setContentView(productcardtestR.layout.product_card_reimagine_grid_activity_test_layout)
 
         Typography.isFontTypeOpenSauceOne = true
 
         val recyclerView = findViewById<RecyclerView>(
-            productcardtestR.id.productCardReimagineGridCarouselTestRecyclerView
+            productcardtestR.id.productCardReimagineGridTestRecyclerView
         )
         recyclerView.adapter = Adapter()
         recyclerView.layoutManager = createLayoutManager()
@@ -37,12 +34,12 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
 
     class Adapter: RecyclerView.Adapter<ViewHolder>() {
 
-        private val testData = productCardReimagineCarouselGridTestData
+        private val testData = productCardReimagineGridTestData
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater.from(parent.context)
                 .inflate(
-                    productcardtestR.layout.product_card_reimagine_grid_carousel_item_test_layout,
+                    productcardtestR.layout.product_card_reimagine_grid_item_test_layout,
                     null
                 )
 
@@ -68,25 +65,17 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
         private val testDescription: TextView? by lazy {
             itemView.findViewById(productcardtestR.id.productCardReimagineTestDescription)
         }
-        private val productCardView: ProductCardGridCarouselView? by lazy {
-            itemView.findViewById(productcardtestR.id.productCardReimagineGridCarouselView)
+        private val productCardView: ProductCardGridView? by lazy {
+            itemView.findViewById(productcardtestR.id.productCardReimagineGridView)
         }
 
         fun bind(productCardModel: ProductCardModel, description: String) {
             testDescription?.text = description
 
-            productCardView?.findViewById<CardUnify2?>(
-                productcardR.id.productCardCardUnifyContainer
-            )?.run {
-                layoutParams = layoutParams?.apply { height = WRAP_CONTENT }
-            }
-
             productCardView?.run {
-                layoutParams = layoutParams?.apply { height = WRAP_CONTENT }
-
                 setProductModel(productCardModel)
                 setOnClickListener { toast("Click") }
-                setAddToCartOnClickListener { toast("Click ATC") }
+                setThreeDotsClickListener { toast("Three dots click") }
             }
         }
 

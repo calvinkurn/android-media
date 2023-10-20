@@ -126,6 +126,8 @@ class ProductViewModelMapper(
         productDataView.redirectApplink = searchProductModel.redirectApplink(isUseAceSearchProductV5)
         productDataView.productListType = productListType
         productDataView.isShowButtonAtc = searchProductModel.isShowButtonAtc(isUseAceSearchProductV5)
+        productDataView.isReimagineProductCard =
+            reimagineRollence.search3ProductCard().isReimagineProductCard()
 
         return productDataView
     }
@@ -236,8 +238,6 @@ class ProductViewModelMapper(
         productItem.shopName = productModel.shop.name
         productItem.shopCity = productModel.shop.city
         productItem.shopUrl = productModel.shop.url
-//        productItem.isShopOfficialStore = productModel.shop.isOfficial
-//        productItem.isShopPowerMerchant = productModel.shop.isPowerBadge
         productItem.isWishlisted = productModel.wishlist
         productItem.badgesList = listOf(BadgeItemDataView.create(productModel.badge))
         productItem.categoryID = productModel.category.id
