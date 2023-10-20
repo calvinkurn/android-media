@@ -10,7 +10,7 @@
         android:id="@+id/tv_transparency_fee_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N600"
+        android:textColor="@color/Unify_NN800"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

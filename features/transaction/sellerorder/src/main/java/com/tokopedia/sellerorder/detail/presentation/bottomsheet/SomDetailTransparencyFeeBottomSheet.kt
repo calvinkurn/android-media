@@ -108,6 +108,7 @@ class SomDetailTransparencyFeeBottomSheet : BottomSheetUnify(),
             if (adapter != somDetailTransparencyFeeAdapter) {
                 layoutManager = LinearLayoutManager(context)
                 adapter = somDetailTransparencyFeeAdapter
+                itemAnimator = null
             }
         }
     }
