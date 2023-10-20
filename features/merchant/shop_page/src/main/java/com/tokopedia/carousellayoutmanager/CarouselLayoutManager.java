@@ -490,7 +490,7 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
         for (int i = 0, count = mLayoutHelper.mLayoutOrder.length; i < count; ++i) {
             final LayoutOrder layoutOrder = mLayoutHelper.mLayoutOrder[i];
             final int offset = getCardOffsetByPositionDiff(layoutOrder.mItemPositionDiff);
-            final int start = centerViewStart + offset;
+            final int start = centerViewStart + offset + getPaddingStart();
             final int end = start + mDecoratedChildWidth;
             fillChildItem(start, top, end, bottom, layoutOrder, recycler, i);
         }
@@ -613,7 +613,7 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
     }
 
     public int getHeightNoPadding() {
-        return getHeight() - getPaddingEnd() - getPaddingStart();
+        return getHeight();
     }
 
     private View bindChild(final int position, @NonNull final RecyclerView.Recycler recycler) {
