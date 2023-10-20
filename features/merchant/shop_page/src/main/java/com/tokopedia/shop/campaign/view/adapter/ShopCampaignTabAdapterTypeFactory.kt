@@ -41,6 +41,7 @@ import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER_HIGHLIGHT
 import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopCarouselProductWidgetPlaceholderViewHolder
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
@@ -58,7 +59,8 @@ class ShopCampaignTabAdapterTypeFactory(
     private val sliderBannerHighlightListener: ShopCampaignDisplaySliderBannerHighlightViewHolder.Listener,
     private val shopCampaignVoucherSliderListener: ShopCampaignVoucherSliderViewHolder.Listener,
     private val shopCampaignVoucherSliderItemListener: ShopCampaignVoucherSliderItemViewHolder.Listener,
-    private val shopCampaignVoucherSliderMoreItemListener: ShopCampaignVoucherSliderMoreItemViewHolder.Listener
+    private val shopCampaignVoucherSliderMoreItemListener: ShopCampaignVoucherSliderMoreItemViewHolder.Listener,
+    private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) : BaseAdapterTypeFactory(), ShopWidgetTypeFactory {
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
@@ -165,11 +167,13 @@ class ShopCampaignTabAdapterTypeFactory(
             ShopCampaignCarouselProductHighlightViewHolder.LAYOUT -> ShopCampaignCarouselProductHighlightViewHolder(
                 parent,
                 shopCampaignCarouselProductListener,
-                shopCampaignInterface
+                shopCampaignInterface,
+                recyclerviewPoolListener
             )
 
             ShopCarouselProductWidgetPlaceholderViewHolder.LAYOUT -> ShopCarouselProductWidgetPlaceholderViewHolder(
-                parent
+                parent,
+                recyclerviewPoolListener
             )
 
             ShopCampaignMultipleImageColumnPlaceholderViewHolder.LAYOUT -> ShopCampaignMultipleImageColumnPlaceholderViewHolder(
@@ -179,7 +183,8 @@ class ShopCampaignTabAdapterTypeFactory(
             ShopCampaignMultipleImageColumnViewHolder.LAYOUT -> ShopCampaignMultipleImageColumnViewHolder(
                 parent,
                 shopHomeDisplayWidgetListener,
-                shopCampaignInterface
+                shopCampaignInterface,
+                recyclerviewPoolListener
             )
 
             ShopCampaignVoucherSliderPlaceholderViewHolder.LAYOUT -> ShopCampaignVoucherSliderPlaceholderViewHolder(parent)
@@ -188,7 +193,8 @@ class ShopCampaignTabAdapterTypeFactory(
                 shopCampaignInterface,
                 shopCampaignVoucherSliderListener,
                 shopCampaignVoucherSliderItemListener,
-                shopCampaignVoucherSliderMoreItemListener
+                shopCampaignVoucherSliderMoreItemListener,
+                recyclerviewPoolListener
             )
 
             ShopCampaignSliderSquarePlaceholderViewHolder.LAYOUT_RES -> ShopCampaignSliderSquarePlaceholderViewHolder(
@@ -198,7 +204,8 @@ class ShopCampaignTabAdapterTypeFactory(
             ShopCampaignSliderSquareViewHolder.LAYOUT_RES -> ShopCampaignSliderSquareViewHolder(
                 parent,
                 shopHomeDisplayWidgetListener,
-                shopCampaignInterface
+                shopCampaignInterface,
+                recyclerviewPoolListener
             )
 
             ShopCampaignSliderBannerPlaceholderViewHolder.LAYOUT_RES -> ShopCampaignSliderBannerPlaceholderViewHolder(

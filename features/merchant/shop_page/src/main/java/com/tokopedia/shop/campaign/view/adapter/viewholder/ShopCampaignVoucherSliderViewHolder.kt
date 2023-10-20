@@ -12,6 +12,7 @@ import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
 import com.tokopedia.shop.campaign.view.model.ExclusiveLaunchMoreVoucherUiModel
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.ShopCampaignVoucherSliderWidgetBinding
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -20,7 +21,8 @@ class ShopCampaignVoucherSliderViewHolder(
     private val shopCampaignListener: ShopCampaignInterface,
     private val voucherSliderWidgetListener: Listener,
     private val voucherSliderItemListener: ShopCampaignVoucherSliderItemViewHolder.Listener,
-    private val voucherSliderMoreItemListener: ShopCampaignVoucherSliderMoreItemViewHolder.Listener
+    private val voucherSliderMoreItemListener: ShopCampaignVoucherSliderMoreItemViewHolder.Listener,
+    private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) : AbstractViewHolder<ShopWidgetVoucherSliderUiModel>(itemView) {
 
     companion object {
@@ -74,6 +76,7 @@ class ShopCampaignVoucherSliderViewHolder(
         val voucherListModel = getVoucherListModel(uiModel)
         rvVoucherList?.addHorizontalSpacing()
         rvVoucherList?.adapter = adapterShopCampaignVoucherSlider
+        rvVoucherList?.setRecycledViewPool(recyclerviewPoolListener.parentPool)
         adapterShopCampaignVoucherSlider.setParentUiModel(uiModel)
         adapterShopCampaignVoucherSlider.submit(voucherListModel)
     }

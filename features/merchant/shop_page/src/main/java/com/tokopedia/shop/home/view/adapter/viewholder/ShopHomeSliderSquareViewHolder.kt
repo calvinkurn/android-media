@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.WidgetShopPageHomeSliderSquareBinding
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeSliderSquareAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
@@ -29,7 +30,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopHomeSliderSquareViewHolder(
     itemView: View,
-    private val listener: ShopHomeDisplayWidgetListener
+    private val listener: ShopHomeDisplayWidgetListener,
+    private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(itemView) {
 
     companion object {
@@ -51,6 +53,7 @@ class ShopHomeSliderSquareViewHolder(
                 addItemDecoration(PaddingItemDecorationShopPage(element.name))
             }
             adapter = shopHomeSliderSquareAdapter
+            setRecycledViewPool(recyclerviewPoolListener.parentPool)
         }
         shopHomeSliderSquareAdapter?.displayWidgetUiModel = element
         shopHomeSliderSquareAdapter?.heightRatio = getHeightRatio(element)

@@ -22,6 +22,7 @@ import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.home.WidgetName.TRENDING
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopHomeCarouselProductAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeCarouselProductAdapterTypeFactory
@@ -40,7 +41,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ShopHomeCarouselProductPersonalizationViewHolder(
     itemView: View,
     val shopHomeCarouselProductListener: ShopHomeCarouselProductListener,
-    private val shopHomeListener: ShopHomeListener
+    private val shopHomeListener: ShopHomeListener,
+    private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) : AbstractViewHolder<ShopHomeCarousellProductUiModel>(itemView) {
 
     companion object {
@@ -386,6 +388,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
         productCarouselSingleOrDoubleAdapter?.addElement(listShopHomeProductUiModel)
         recyclerViewCarouselSingleOrDoubleProduct?.adapter = productCarouselSingleOrDoubleAdapter
         recyclerViewCarouselSingleOrDoubleProduct?.layoutManager = layoutManager
+        recyclerViewCarouselSingleOrDoubleProduct?.setRecycledViewPool(recyclerviewPoolListener.parentPool)
     }
 
     private fun configColorTheme(element: ShopHomeCarousellProductUiModel) {

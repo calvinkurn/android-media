@@ -19,6 +19,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopAdvanceCarouselBannerViewholderLayoutBinding
 import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.view.adapter.ShopWidgetAdvanceCarouselBannerAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.PageControl
@@ -29,7 +30,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
     view: View?,
-    private val listener: ShopHomeDisplayAdvanceCarouselBannerWidgetListener
+    private val listener: ShopHomeDisplayAdvanceCarouselBannerWidgetListener,
+    private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view) {
 
     companion object {
@@ -194,6 +196,7 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
             this.adapter = adapterShopWidgetAdvanceCarouselBanner
             this.removeOnItemTouchListener(itemTouchListener)
             this.addOnItemTouchListener(itemTouchListener)
+            this.setRecycledViewPool(recyclerviewPoolListener.parentPool)
         }
         updateRecyclerViewHeightBasedOnFirstChild()
     }

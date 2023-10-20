@@ -76,6 +76,7 @@ import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
@@ -114,7 +115,8 @@ class ShopPageCampaignFragment :
     ShopCampaignVoucherSliderViewHolder.Listener,
     ShopCampaignVoucherSliderItemViewHolder.Listener,
     ShopCampaignVoucherSliderMoreItemViewHolder.Listener,
-    ShopCampaignPlayWidgetListener {
+    ShopCampaignPlayWidgetListener,
+    RecyclerviewPoolListener{
 
     companion object {
         private const val KEY_SHOP_ID = "SHOP_ID"
@@ -160,7 +162,8 @@ class ShopPageCampaignFragment :
             sliderBannerHighlightListener = this,
             shopCampaignVoucherSliderListener = this,
             shopCampaignVoucherSliderItemListener = this,
-            shopCampaignVoucherSliderMoreItemListener = this
+            shopCampaignVoucherSliderMoreItemListener = this,
+            recyclerviewPoolListener = this
         )
     }
 

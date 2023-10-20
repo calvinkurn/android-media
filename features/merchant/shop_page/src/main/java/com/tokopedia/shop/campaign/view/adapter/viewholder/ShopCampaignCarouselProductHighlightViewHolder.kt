@@ -20,6 +20,7 @@ import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
 import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductUiModel
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.ItemShopCampaignProductCarouselBinding
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -29,7 +30,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ShopCampaignCarouselProductHighlightViewHolder(
     itemView: View,
     private val listener: ShopCampaignCarouselProductListener,
-    private val shopCampaignInterface: ShopCampaignInterface
+    private val shopCampaignInterface: ShopCampaignInterface,
+    private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) : AbstractViewHolder<ShopCampaignWidgetCarouselProductUiModel>(itemView) {
 
     companion object {
@@ -193,6 +195,7 @@ class ShopCampaignCarouselProductHighlightViewHolder(
             recyclerViewForSingleOrDoubleProductCard?.adapter =
                 productCarouselSingleOrDoubleAdapter
             recyclerViewForSingleOrDoubleProductCard?.layoutManager = layoutManager
+            recyclerViewForSingleOrDoubleProductCard?.setRecycledViewPool(recyclerviewPoolListener.parentPool)
         }
     }
 
