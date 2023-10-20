@@ -16,9 +16,7 @@ import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.PLAY_KEY_CHANNEL_RECOMMENDATION
 import com.tokopedia.play.R
-import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.cast.PlayCastNotificationAction
-import com.tokopedia.play.view.storage.PlayQueryParamStorage
 import com.tokopedia.play.databinding.ActivityPlayBinding
 import com.tokopedia.play.di.PlayInjector
 import com.tokopedia.play.util.PlayCastHelper
@@ -30,6 +28,7 @@ import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
+import com.tokopedia.play.view.storage.PlayQueryParamStorage
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.ScreenOrientation2
 import com.tokopedia.play.view.type.isCompact
@@ -41,14 +40,11 @@ import com.tokopedia.play.view.viewcomponent.SwipeContainerViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.model.result.PageResultState
-import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import kotlinx.coroutines.delay
 import javax.inject.Inject
-import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
-import kotlin.time.toDuration
 
 /**
  * Created by jegul on 29/11/19
@@ -79,13 +75,7 @@ class PlayActivity :
     lateinit var playParentViewModelFactory: PlayParentViewModel.Factory
 
     @Inject
-    lateinit var playPreference: PlayPreference
-
-    @Inject
     lateinit var router: Router
-
-    @Inject
-    lateinit var analytic: PlayAnalytic
 
     @Inject
     lateinit var queryParamStorage: PlayQueryParamStorage
@@ -274,6 +264,7 @@ class PlayActivity :
     private fun setupObserve() {
         observeChannelList()
         observeFirstChannelEvent()
+        observeOnBoarding()
     }
 
     @OptIn(ExperimentalTime::class)
@@ -294,16 +285,9 @@ class PlayActivity :
                     ivLoading.hide()
                     fragmentErrorViewOnStateChanged(shouldShow = false)
 
-                    if (!state.isFirstPage || it.currentValue.isEmpty()) return@run
-                    val firstChannel = it.currentValue.first()
-
-                    analytic.openScreen(
-                        firstChannel.id,
-                        firstChannel.channelDetail.channelInfo.channelType
-                    )
                     lifecycleScope.launchWhenResumed {
-                        delay(COACHMARK_START_DELAY_IN_SEC.toDuration(DurationUnit.SECONDS))
-                        swipeCoachMarkView.showAnimated()
+                        delay(ON_BOARDING_DELAY)
+                        viewModel.setupOnBoarding(state.isFirstPage)
                     }
                 }
                 is PageResultState.Upcoming -> {
@@ -329,6 +313,15 @@ class PlayActivity :
             this,
             EventObserver {
                 swipeContainerView.reset()
+            }
+        )
+    }
+
+    private fun observeOnBoarding() {
+        viewModel.observableOnBoarding.observe(
+            this,
+            EventObserver {
+                swipeCoachMarkView.showAnimated()
             }
         )
     }
@@ -425,6 +418,6 @@ class PlayActivity :
     companion object {
         private const val PLAY_FRAGMENT_TAG = "FRAGMENT_PLAY"
 
-        private const val COACHMARK_START_DELAY_IN_SEC = 1
+        private const val ON_BOARDING_DELAY = 1000L
     }
 }

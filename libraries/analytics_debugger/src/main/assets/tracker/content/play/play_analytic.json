@@ -35,7 +35,7 @@
       "eventCategory": "null",
       "eventLabel": "null",
       "pageSource": ".*.null.null..*",
-      "screenName": "/group-chat-room/\\d+/(live|vod)/is coachmark true",
+      "screenName": "/group-chat-room/\\d+/(live|vod)/is coachmark (true|false)",
       "sessionIris": ".*",
       "userId": ".*"
     },
