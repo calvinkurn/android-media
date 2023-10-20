@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.Constant.ProductHighlight.Type
 import com.tokopedia.discovery2.databinding.PriceBoxBinding
 import com.tokopedia.home_component.util.convertDpToPixel
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.BOLD
@@ -84,6 +85,10 @@ class PriceBoxView @JvmOverloads constructor(
         background = shapeDrawable
 
         binding.cardBackground.shapeAppearanceModel = shapePathModel
+
+        binding.priceContainer.addOneTimeGlobalLayoutListener {
+            binding.cardBackground.maxHeight = binding.priceContainer.height
+        }
     }
 
     fun renderProductPrice(price: String?) {
@@ -141,6 +146,8 @@ class PriceBoxView @JvmOverloads constructor(
         binding.root.setBackgroundColor(ColorUtils.setAlphaComponent(parseColor, 20))
 
         ImageUtils.loadImage(binding.cardBackground, url)
+
+        binding.freeTextContainer.setBackgroundColor(ColorUtils.setAlphaComponent(parseColor, 45))
     }
 
     fun changeToInactive() {

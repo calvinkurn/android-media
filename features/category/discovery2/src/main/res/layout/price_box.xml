@@ -25,15 +25,15 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
-            android:maxHeight="62dp"
             android:scaleType="fitXY"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/price_container"
             app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/guideline"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/price_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:alpha="0.8"
@@ -66,24 +66,19 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ph_product_price"
+                app:layout_constraintBottom_toTopOf="@id/free_text_container"
                 app:typographyType="small"
                 app:typographyWeight="reguler"
                 tools:text="Rp6.499.000" />
-
-            <androidx.legacy.widget.Space
-                android:id="@+id/discounted_price_space"
-                android:layout_width="0dp"
-                android:layout_height="6dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ph_discounted_product_price" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/free_text_container"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/disco_bg_rounded_bottom"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/discounted_price_space">
+                app:layout_constraintBottom_toBottomOf="parent">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/ph_free_text"
