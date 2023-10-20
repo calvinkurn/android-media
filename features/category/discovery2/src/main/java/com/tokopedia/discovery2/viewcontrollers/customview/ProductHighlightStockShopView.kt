@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.Constant.ProductHighlight.Type
 import com.tokopedia.discovery2.databinding.ProductHighlightStockShopBinding
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -32,13 +33,12 @@ class ProductHighlightStockShopView : ConstraintLayout {
     }
 
     fun renderShopInfo(shopBadge: String?, name: String?) {
-
         binding?.run {
             shopLogo.isVisible = !shopBadge.isNullOrEmpty()
             shopName.isVisible = !name.isNullOrEmpty()
 
             shopBadge?.let { shopLogo.setImageUrl(shopBadge) }
-            shopName.text = name
+            shopName.text = MethodChecker.fromHtml(name)
         }
     }
 
