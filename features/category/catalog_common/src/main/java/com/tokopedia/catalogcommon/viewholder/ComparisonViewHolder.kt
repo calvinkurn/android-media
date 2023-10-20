@@ -1,7 +1,5 @@
 package com.tokopedia.catalogcommon.viewholder
 
-import android.graphics.Paint
-import android.graphics.Rect
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,8 +38,8 @@ class ComparisonViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.widget_item_comparison
         private const val DEFAULT_LINE_COUNT = 1
-        private const val DEFAULT_CHAR_WIDTH = 20
-        private const val DEFAULT_TITLE_CHAR_WIDTH = 25
+        private const val DEFAULT_CHAR_WIDTH = 15
+        private const val DEFAULT_TITLE_CHAR_WIDTH = 20
     }
 
     private val binding by viewBinding<WidgetItemComparisonBinding>()
