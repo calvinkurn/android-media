@@ -21,7 +21,7 @@ import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerInterface
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateRangePickerModel
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShimmerViewModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShimmerUiModel
 import com.tokopedia.affiliate.viewmodel.AffiliateDatePickerBottomSheetViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.kotlin.extensions.view.hide
@@ -134,7 +134,7 @@ class AffiliateBottomDatePicker : BottomSheetUnify(), AffiliateDatePickerInterfa
         affiliateDatePickerBottomSheetViewModel?.getShimmerVisibility()?.observe(this) { shimmer ->
             if (shimmer != null && shimmer) {
                 val itemList: ArrayList<Visitable<AffiliateBottomSheetTypeFactory>> = ArrayList()
-                repeat(SHIMMER_COUNT) { itemList.add(AffiliateShimmerViewModel()) }
+                repeat(SHIMMER_COUNT) { itemList.add(AffiliateShimmerUiModel()) }
                 adapter.submitList(itemList as? List<Visitable<*>>)
             }
         }
