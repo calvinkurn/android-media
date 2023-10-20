@@ -71,7 +71,7 @@ class HomeRecommendationViewModel @Inject constructor(
                     val homeBannerTopAds = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
                     val homeBannerTopAdsMutable = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>().toMutableList()
                     val newList = data.homeRecommendations.toMutableList()
-                    var topAdsBanner = arrayListOf<Pair<String, ArrayList<TopAdsImageViewModel>>>()
+                    val topAdsBanner = arrayListOf<Pair<String, ArrayList<TopAdsImageViewModel>>>()
                     homeBannerTopAds.forEach {
                         if (it.bannerType == TYPE_BANNER_ADS) {
                             val bannerData = topAdsImageViewUseCase.getImageData(
@@ -214,28 +214,57 @@ class HomeRecommendationViewModel @Inject constructor(
             list.remove(loadMoreModel)
             try {
                 val homeBannerTopAds = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
-                val topAdsBanner = topAdsImageViewUseCase.getImageData(
-                    topAdsImageViewUseCase.getQueryMap(
-                        query = "",
-                        source = TOPADS_TDN_RECOM_SOURCE,
-                        pageToken = "",
-                        adsCount = homeBannerTopAds.size,
-                        dimenId = TOPADS_TDN_RECOM_DIMEN,
-                        depId = "",
-                        page = topAdsBannerNextPage
-                    )
-                )
-                incrementTopadsPage()
-                if (topAdsBanner.isEmpty()) {
-                    list.addAll(data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel })
-                } else {
-                    val newList = data.homeRecommendations.toMutableList()
-                    topAdsBanner.forEachIndexed { index, topAdsImageViewModel ->
-                        val visitableBanner = homeBannerTopAds[index]
-                        newList[visitableBanner.position] = HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel)
+                val homeBannerTopAdsMutable = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>().toMutableList()
+                val newList = data.homeRecommendations.toMutableList()
+                val topAdsBanner2 = arrayListOf<Pair<String, ArrayList<TopAdsImageViewModel>>>()
+                homeBannerTopAds.forEachIndexed { index, it->
+                    if (it.bannerType == TYPE_BANNER_ADS) {
+                        val bannerData = topAdsImageViewUseCase.getImageData(
+                            topAdsImageViewUseCase.getQueryMap(
+                                query = "",
+                                source = TOPADS_TDN_RECOM_SOURCE,
+                                pageToken = "",
+                                adsCount = homeBannerTopAds.size,
+                                dimenId = TOPADS_TDN_RECOM_DIMEN,
+                                depId = "",
+                                page = topAdsBannerNextPage
+                            ))
+                        if (bannerData.isNotEmpty()) {
+                            topAdsBanner2.add(Pair(TYPE_BANNER_ADS, bannerData))
+                        } else {
+                            homeBannerTopAdsMutable.remove(it)
+                            list.remove(it)
+                        }
+
+                    } else if (it.bannerType == TYPE_VERTICAL_BANNER_ADS) {
+                        val bannerData = topAdsImageViewUseCase.getImageData(
+                            topAdsImageViewUseCase.getQueryMap(
+                                query = "",
+                                source = TOPADS_TDN_RECOM_VERTICAL_SOURCE,
+                                pageToken = "",
+                                adsCount = homeBannerTopAds.size,
+                                dimenId = TOPADS_TDN_RECOM_VERTICAL_DIMEN,
+                                depId = "",
+                                page = topAdsBannerNextPage
+                            ))
+                        if (bannerData.isNotEmpty()) {
+                            topAdsBanner2.add(Pair(TYPE_VERTICAL_BANNER_ADS, bannerData))
+                        } else {
+                            homeBannerTopAdsMutable.remove(it)
+                            list.remove(it)
+                        }
                     }
-                    list.addAll(newList)
                 }
+
+                incrementTopadsPage()
+                topAdsBanner2.forEachIndexed { index, pair ->
+                    val visitableBanner = homeBannerTopAds[index]
+                    if (newList.size > visitableBanner.position) {
+                        newList[visitableBanner.position] =
+                            HomeRecommendationBannerTopAdsDataModel(pair.second.firstOrNull(), bannerType = pair.first)
+                    }
+                }
+                list.addAll(newList)
             } catch (e: Exception) {
                 list.addAll(data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel })
             }
