@@ -5,9 +5,13 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.discovery2.databinding.DiscoveryStockBarLayoutBinding
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.utils.resources.isDarkMode
+import com.tokopedia.discovery2.R
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.media.loader.loadImage
 
 class DiscoveryStockBar : FrameLayout {
 
@@ -18,6 +22,9 @@ class DiscoveryStockBar : FrameLayout {
 
     init {
         binding = DiscoveryStockBarLayoutBinding.inflate(LayoutInflater.from(context), this, true )
+
+        setIcon()
+        setProgressBarColor()
     }
 
     fun setValue(value: Double?) {
@@ -31,5 +38,21 @@ class DiscoveryStockBar : FrameLayout {
             text = label
             textSize = 8f
         }
+    }
+
+    private fun setIcon() {
+        val iconResId = if (context.isDarkMode()) {
+            R.drawable.ic_stock_dark_mode
+        } else {
+            R.drawable.ic_stock_light_mode
+        }
+
+        binding?.stockIcon?.loadImage(ContextCompat.getDrawable(context, iconResId))
+    }
+
+    private fun setProgressBarColor() {
+        val firstColor = ContextCompat.getColor(context, R.color.discovery2_dms_ph_stock_bar_start)
+        val secondColor = ContextCompat.getColor(context, R.color.discovery2_dms_ph_stock_bar_end)
+        binding?.stockProgressBar?.progressBarColor = intArrayOf(firstColor, secondColor)
     }
 }

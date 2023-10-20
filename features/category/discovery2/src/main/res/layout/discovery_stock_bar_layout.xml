@@ -9,7 +9,7 @@
         android:id="@+id/stock_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         android:scaleY="2"
         app:unify_progress_bar_color_type="color_orange"
@@ -20,18 +20,17 @@
         android:id="@+id/stock_icon"
         android:layout_width="14dp"
         android:layout_height="14dp"
-        app:srcCompat="@drawable/ic_fire_filled" />
+        app:srcCompat="@drawable/ic_stock_light_mode" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:ellipsize="end"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="1dp"
         android:textColor="@color/Unify_NN950"
         app:typographyType="small"
         app:typographyWeight="bold"
-        tools:ignore="SmallSp"
         tools:text="Terbatas!" />
 
 </FrameLayout>
