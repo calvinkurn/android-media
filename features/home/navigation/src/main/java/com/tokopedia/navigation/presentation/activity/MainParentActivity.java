@@ -637,9 +637,7 @@ public class MainParentActivity extends BaseActivity implements
             if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
                 ft.show(frag); // only show fragment what you want to show
                 FragmentLifecycleObserver.INSTANCE.onFragmentSelected(frag);
-                if (!(frag instanceof HomeRevampFragment)) {
-                    frag.setUserVisibleHint(true);
-                }
+                frag.setUserVisibleHint(true);
             } else {
                 ft.hide(frag); // hide all fragment
                 FragmentLifecycleObserver.INSTANCE.onFragmentUnSelected(frag);
@@ -670,19 +668,19 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void scrollToHomeHeader(Fragment fragment) {
-        if (fragment != null && fragment instanceof HomeScrollViewListener) {
+        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof HomeScrollViewListener) {
             ((HomeScrollViewListener) fragment).onScrollToHomeHeader();
         }
     }
 
     private void scrollToHomeForYou(Fragment fragment) {
-        if (fragment != null && fragment instanceof HomeScrollViewListener) {
+        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof HomeScrollViewListener) {
             ((HomeScrollViewListener) fragment).onScrollToRecommendationForYou();
         }
     }
 
     private Integer getRecommendationForYouIndex(Fragment fragment) {
-        if (fragment != null && fragment instanceof HomeScrollViewListener) {
+        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof HomeScrollViewListener) {
            return ((HomeScrollViewListener) fragment).getRecommendationForYouIndex();
         }
         return null;
