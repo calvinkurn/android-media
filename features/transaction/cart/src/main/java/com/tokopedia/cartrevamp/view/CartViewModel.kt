@@ -2200,9 +2200,11 @@ class CartViewModel @Inject constructor(
 
     fun updateBmGmTickerData(toBeDeletedProducts: List<CartItemHolderData>) {
         toBeDeletedProducts.forEach { productWillDelete ->
+            CartDataHelper.getListCartItemHolderWithBmGmByCartStringOrder(cartDataList.value, productWillDelete.cartStringOrder)
             val offerId = productWillDelete.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
+            val cartStringOrder = productWillDelete.cartStringOrder
             val productListByOfferId =
-                CartDataHelper.getListProductByOfferId(cartDataList.value, offerId)
+                CartDataHelper.getListProductByOfferIdAndCartStringOrder(cartDataList.value, offerId, cartStringOrder)
             if (productListByOfferId.size > 1) {
                 productListByOfferId.forEachIndexed { index, product ->
                     // move ticker to next index if product has ticker will be deleted
@@ -2436,7 +2438,7 @@ class CartViewModel @Inject constructor(
         forceExpandCollapsedUnavailableItems: Boolean = false,
         isFromGlobalCheckbox: Boolean = false,
         isFromEditBundle: Boolean = false,
-        listOfferId: ArrayList<Long> = arrayListOf()
+        listCartStringOrder: ArrayList<String> = arrayListOf()
     ) {
         _cartProgressLoading.value = true
         val allCartItemData = CartDataHelper.getAllCartItemData(
@@ -2460,7 +2462,7 @@ class CartViewModel @Inject constructor(
                     addWishList,
                     isFromGlobalCheckbox,
                     isFromEditBundle,
-                    listOfferId
+                    listCartStringOrder
                 )
             },
             onError = { throwable ->
@@ -2789,7 +2791,7 @@ class CartViewModel @Inject constructor(
         cartModel.availableCartItemImpressionList.addAll(availableCartItems)
     }
 
-    fun getBmGmGroupProductTicker(offerId: Long, params: BmGmGetGroupProductTickerParams) {
+    /*fun getBmGmGroupProductTicker(offerId: Long, params: BmGmGetGroupProductTickerParams) {
         if (cartModel.lastOfferId == offerId) {
             cartBmGmGroupTickerJob?.cancel()
         }
@@ -2805,6 +2807,27 @@ class CartViewModel @Inject constructor(
                 withContext(dispatchers.main) {
                     _bmGmGroupProductTickerState.value =
                         GetBmGmGroupProductTickerState.Failed(Pair(offerId, t))
+                }
+            }
+        }
+    }*/
+
+    fun getBmGmGroupProductTicker(cartItemHolderData: CartItemHolderData, params: BmGmGetGroupProductTickerParams) {
+        if (cartModel.lastOfferId == "${cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}|${cartItemHolderData.cartStringOrder}") {
+            cartBmGmGroupTickerJob?.cancel()
+        }
+        cartModel.lastOfferId = "${cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}|${cartItemHolderData.cartStringOrder}"
+        cartBmGmGroupTickerJob = viewModelScope.launch(dispatchers.io) {
+            try {
+                val result = getGroupProductTickerUseCase(params)
+                withContext(dispatchers.main) {
+                    _bmGmGroupProductTickerState.value =
+                        GetBmGmGroupProductTickerState.Success(Pair(cartItemHolderData, result))
+                }
+            } catch (t: Throwable) {
+                withContext(dispatchers.main) {
+                    _bmGmGroupProductTickerState.value =
+                        GetBmGmGroupProductTickerState.Failed(Pair(cartItemHolderData, t))
                 }
             }
         }

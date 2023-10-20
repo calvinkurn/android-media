@@ -90,7 +90,7 @@ sealed interface DeleteCartEvent {
         val addWishList: Boolean,
         val isFromGlobalCheckbox: Boolean,
         val isFromEditBundle: Boolean,
-        val listOfferId: ArrayList<Long>
+        val listCartStringOrder: ArrayList<String>
     ) : DeleteCartEvent
 
     data class Failed(
@@ -253,9 +253,9 @@ class CartMutableLiveData<T>(initialValue: T) : LiveData<T>(initialValue) {
 }
 
 sealed interface GetBmGmGroupProductTickerState {
-    data class Success(val pairOfferIdBmGmTickerResponse: Pair<Long, BmGmGetGroupProductTickerResponse>) :
+    data class Success(val pairOfferIdBmGmTickerResponse: Pair<CartItemHolderData, BmGmGetGroupProductTickerResponse>) :
         GetBmGmGroupProductTickerState
 
-    data class Failed(val pairOfferIdThrowable: Pair<Long, Throwable>) :
+    data class Failed(val pairOfferIdThrowable: Pair<CartItemHolderData, Throwable>) :
         GetBmGmGroupProductTickerState
 }

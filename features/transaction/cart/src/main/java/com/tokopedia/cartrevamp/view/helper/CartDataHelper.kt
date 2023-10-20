@@ -414,17 +414,18 @@ object CartDataHelper {
         return cartItemDataList
     }
 
-    fun checkSelectedCartItemDataWithOfferBmGm(cartDataList: ArrayList<Any>): ArrayList<Long> {
-        val listOfferIdNeedUpdate = ArrayList<Long>()
+    fun checkSelectedCartItemDataWithOfferBmGm(cartDataList: ArrayList<Any>): ArrayList<String> {
+        val listCartStringOrderNeedUpdate = ArrayList<String>()
         loop@ for (data in cartDataList) {
             when (data) {
                 is CartGroupHolderData -> {
                     if ((data.isPartialSelected || data.isAllSelected)) {
                         for (cartItemHolderData in data.productUiModelList) {
-                            if (cartItemHolderData.isSelected && !cartItemHolderData.isError) {
-                                val offerId = cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
-                                val listProductByOfferId = getListProductByOfferId(cartDataList, offerId)
-                                if (listProductByOfferId.size > 1) listOfferIdNeedUpdate.add(offerId)
+                            if (cartItemHolderData.isSelected && !cartItemHolderData.isError &&
+                                cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM
+                            ) {
+                                val listProductByCartStringOrder = getListCartItemHolderWithBmGmByCartStringOrder(cartDataList, cartItemHolderData.cartStringOrder)
+                                if (listProductByCartStringOrder.size > 1) listCartStringOrderNeedUpdate.add(cartItemHolderData.cartStringOrder)
                             }
                         }
                     }
@@ -434,7 +435,7 @@ object CartDataHelper {
             }
         }
 
-        return listOfferIdNeedUpdate
+        return listCartStringOrderNeedUpdate
     }
 
     fun getCartItemByBundleGroupId(
@@ -526,7 +527,7 @@ object CartDataHelper {
         return true
     }
 
-    fun getListOfferId(cartDataList: ArrayList<Any>): List<Long> {
+    /*fun getListOfferId(cartDataList: ArrayList<Any>): List<Long> {
         val listOfferId = arrayListOf<Long>()
         loop@ for (data in cartDataList) {
             when (data) {
@@ -543,7 +544,7 @@ object CartDataHelper {
         }
 
         return listOfferId
-    }
+    }*/
 
     fun getCartItemHolderDataListAndIndexByOfferId(cartDataList: ArrayList<Any>, offerId: Long): Pair<Int, ArrayList<CartItemHolderData>> {
         var indexReturned = RecyclerView.NO_POSITION
@@ -557,14 +558,74 @@ object CartDataHelper {
         return Pair(indexReturned, itemReturned)
     }
 
-    fun getListProductByOfferId(cartDataList: ArrayList<Any>, offerId: Long): ArrayList<CartItemHolderData> {
+    fun getListProductByOfferIdAndCartStringOrder(cartDataList: ArrayList<Any>, offerId: Long, cartStringOrder: String): ArrayList<CartItemHolderData> {
         val listProductByOfferId = arrayListOf<CartItemHolderData>()
         loop@ for (data in cartDataList) {
-            if (data is CartItemHolderData && data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId == offerId) {
+            if (data is CartItemHolderData &&
+                data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId == offerId &&
+                data.cartStringOrder == cartStringOrder
+            ) {
                 listProductByOfferId.add(data)
             }
         }
 
         return listProductByOfferId
+    }
+
+    fun getListCartItemHolderWithBmGmByCartStringOrder(
+        cartDataList: ArrayList<Any>,
+        cartStringOrder: String
+    ): List<CartItemHolderData> {
+        val cartGroupList = arrayListOf<CartItemHolderData>()
+        for (data in cartDataList) {
+            if (data is CartItemHolderData && data.cartStringOrder == cartStringOrder) {
+                cartGroupList.add(data)
+            }
+        }
+        return cartGroupList
+    }
+
+    fun getCartItemHolderDataListAndIndexByCartStringOrder(cartDataList: ArrayList<Any>, cartStringOrder: String): Pair<Int, ArrayList<CartItemHolderData>> {
+        var indexReturned = RecyclerView.NO_POSITION
+        val itemReturned = arrayListOf<CartItemHolderData>()
+        for ((index, data) in cartDataList.withIndex()) {
+            if (data is CartItemHolderData &&
+                data.cartStringOrder == cartStringOrder &&
+                data.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM
+            ) {
+                if (indexReturned == RecyclerView.NO_POSITION) indexReturned = index
+                itemReturned.add(data)
+            }
+        }
+        return Pair(indexReturned, itemReturned)
+    }
+
+    fun getCartItemHolderDataListAndIndexByCartStringOrderAndOfferId(cartDataList: ArrayList<Any>, cartStringOrder: String, offerId: Long): Pair<Int, ArrayList<CartItemHolderData>> {
+        var indexReturned = RecyclerView.NO_POSITION
+        val itemReturned = arrayListOf<CartItemHolderData>()
+        for ((index, data) in cartDataList.withIndex()) {
+            if (data is CartItemHolderData &&
+                data.cartStringOrder == cartStringOrder &&
+                data.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM &&
+                data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId == offerId
+            ) {
+                if (indexReturned == RecyclerView.NO_POSITION) indexReturned = index
+                itemReturned.add(data)
+            }
+        }
+        return Pair(indexReturned, itemReturned)
+    }
+
+    fun getAllCartStringOrderWithBmGm(cartDataList: ArrayList<Any>): ArrayList<String> {
+        val listCartStringOrderWithBmGm = arrayListOf<String>()
+        for (cartItem in cartDataList) {
+            if (cartItem is CartItemHolderData &&
+                cartItem.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM &&
+                listCartStringOrderWithBmGm.contains(cartItem.cartStringOrder)
+            ) {
+                listCartStringOrderWithBmGm.add(cartItem.cartStringOrder)
+            }
+        }
+        return listCartStringOrderWithBmGm
     }
 }

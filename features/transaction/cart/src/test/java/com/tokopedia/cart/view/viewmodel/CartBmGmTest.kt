@@ -29,14 +29,24 @@ class CartBmGmTest : BaseCartViewModelTest() {
     fun `WHEN getBmGmGroupProductTicker success THEN should render ticker success`() {
         // GIVEN
         val valueOfferId = 1L
+        val cartItemHolderData = CartItemHolderData(
+            cartStringOrder = "cart-string-order",
+            cartBmGmTickerData = CartBmGmTickerData(
+                bmGmCartInfoData = CartDetailInfo(
+                    bmGmData = CartDetailInfo.BmGmData(
+                        offerId = 1L
+                    )
+                )
+            )
+        )
         val bmGmData = BmGmGetGroupProductTickerResponse()
-        cartViewModel.cartModel.lastOfferId = 1L
+        cartViewModel.cartModel.lastOfferId = "1L-cart-string-order"
 
         coEvery { bmGmGetGroupProductTickerUseCase(any()) } returns bmGmData
 
         // WHEN
         cartViewModel.getBmGmGroupProductTicker(
-            offerId = valueOfferId,
+            cartItemHolderData = cartItemHolderData,
             params = BmGmGetGroupProductTickerParams()
         )
 
@@ -48,15 +58,25 @@ class CartBmGmTest : BaseCartViewModelTest() {
     fun `WHEN getBmGmGroupProductTicker failed THEN should render ticker error`() {
         // GIVEN
         val valueOfferId = 1L
+        val cartItemHolderData = CartItemHolderData(
+            cartStringOrder = "cart-string-order",
+            cartBmGmTickerData = CartBmGmTickerData(
+                bmGmCartInfoData = CartDetailInfo(
+                    bmGmData = CartDetailInfo.BmGmData(
+                        offerId = 1L
+                    )
+                )
+            )
+        )
         val exception =
             ResponseErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
-        cartViewModel.cartModel.lastOfferId = 1L
+        cartViewModel.cartModel.lastOfferId = "1L-cart-string-order"
 
         coEvery { bmGmGetGroupProductTickerUseCase(any()) } throws exception
 
         // WHEN
         cartViewModel.getBmGmGroupProductTicker(
-            offerId = valueOfferId,
+            cartItemHolderData = cartItemHolderData,
             params = BmGmGetGroupProductTickerParams()
         )
 

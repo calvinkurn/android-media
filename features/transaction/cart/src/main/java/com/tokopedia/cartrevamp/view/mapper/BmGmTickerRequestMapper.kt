@@ -60,7 +60,7 @@ object BmGmTickerRequestMapper {
         )
     }
 
-    fun generateGetGroupProductTickerRequestParams(
+    /*fun generateGetGroupProductTickerRequestParams(
         cartDataList: ArrayList<Any>,
         cartItemHolderData: CartItemHolderData
     ): BmGmGetGroupProductTickerParams {
@@ -72,6 +72,57 @@ object BmGmTickerRequestMapper {
             cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
         ).forEach { product ->
             CartCalculator.calculatePriceWholesaleProduct(product, product.quantity)
+            listProductBmGm.add(
+                BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product(
+                    cartId = product.cartId,
+                    shopId = product.shopHolderData.shopId,
+                    productId = product.productId,
+                    warehouseId = product.warehouseId,
+                    qty = product.quantity,
+                    finalPrice = if (product.wholesalePrice > 0.0) product.wholesalePrice.toString().removeSingleDecimalSuffix() else product.productPrice.toString().removeSingleDecimalSuffix(),
+                    checkboxState = product.isSelected
+                )
+            )
+        }
+
+        cartDetailsBmGm.add(
+            BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails(
+                bundleDetail = BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.BundleDetail(
+                    bundleId = cartItemHolderData.bundleId.toLongOrZero(),
+                    bundleGroupId = cartItemHolderData.bundleGroupId
+                ),
+                offer = BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Offer(
+                    offerId = cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId,
+                    offerJsonData = cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerJsonData
+                ),
+                products = listProductBmGm
+            )
+        )
+
+        listCart.add(
+            BmGmGetGroupProductTickerParams.BmGmCart(
+                cartStringOrder = cartItemHolderData.cartStringOrder,
+                cartDetails = cartDetailsBmGm
+            )
+        )
+
+        return BmGmGetGroupProductTickerParams(
+            carts = listCart
+        )
+    }*/
+
+    fun generateGetGroupProductTickerRequestParams(
+        cartDataList: ArrayList<Any>,
+        cartItemHolderData: CartItemHolderData
+    ): BmGmGetGroupProductTickerParams {
+        val listCart = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart>()
+        val cartDetailsBmGm = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails>()
+        val listProductBmGm = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product>()
+
+        CartDataHelper.getListCartItemHolderWithBmGmByCartStringOrder(
+            cartDataList,
+            cartItemHolderData.cartStringOrder
+        ).forEach { product ->
             listProductBmGm.add(
                 BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product(
                     cartId = product.cartId,
