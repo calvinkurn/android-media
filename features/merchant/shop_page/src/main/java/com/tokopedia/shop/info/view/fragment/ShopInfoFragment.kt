@@ -317,7 +317,7 @@ class ShopInfoFragment :
                         shopViewModel?.let { _viewModel ->
                             shopInfo?.let { _shopInfo ->
                                 if (_viewModel.isShouldShowLicenseForDrugSeller(isGoApotik = _shopInfo.isGoApotik, fsType = _shopInfo.fsType)) {
-                                    renderEpharmDetailsData(epharmData = it.data, shopInfoData = _shopInfo)
+                                    displayShopEpharmDetailsData(epharmData = it.data, shopInfoData = _shopInfo)
                                 }
                             }
                         }
@@ -464,19 +464,6 @@ class ShopInfoFragment :
                 }
             }
 
-//            // go apotik info
-//            shopViewModel?.let {
-//                goApotikInfoContainer.shouldShowWithAction(
-//                    shouldShow = it.isShouldShowLicenseForDrugSeller(isGoApotik = shopInfo.isGoApotik, fsType = shopInfo.fsType)
-//                ) {
-//                    tvSiaDescription.text =
-//                        shopInfo.siaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
-//                    tvSipaDescription.text =
-//                        shopInfo.sipaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
-//                    tvApjDescription.text = shopInfo.apj.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
-//                }
-//            }
-
             // shop location info
             shopInfoLocation.text = shopInfo.location
 
@@ -486,7 +473,7 @@ class ShopInfoFragment :
         }
     }
 
-    private fun renderEpharmDetailsData(epharmData: GetEpharmacyShopInfoResponse, shopInfoData: ShopInfoData) {
+    private fun displayShopEpharmDetailsData(epharmData: GetEpharmacyShopInfoResponse, shopInfoData: ShopInfoData) {
         if (!isErrorGetEpharmData(epharmData.getEpharmacyShopInfo.header)) {
             fragmentShopInfoBinding?.let { binding ->
                 binding.layoutPartialShopInfoDescription.shopGoApotikContainer.visibility = View.VISIBLE
