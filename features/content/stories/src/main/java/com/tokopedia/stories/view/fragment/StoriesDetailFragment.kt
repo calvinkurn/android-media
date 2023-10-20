@@ -21,14 +21,21 @@ import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.ImageLoaderStateListener
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.report_content.bottomsheet.ContentReportBottomSheet
+import com.tokopedia.content.common.report_content.bottomsheet.ContentSubmitReportBottomSheet
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
@@ -76,11 +83,15 @@ import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
 import com.tokopedia.stories.view.viewmodel.state.TimerStatusInfo
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.stories.R as storiesR
 
 class StoriesDetailFragment @Inject constructor(
     private val analyticFactory: StoriesAnalytics.Factory,
@@ -88,6 +99,8 @@ class StoriesDetailFragment @Inject constructor(
 ) : TkpdBaseV4Fragment(),
     StoriesThreeDotsBottomSheet.Listener,
     StoriesProductBottomSheet.Listener,
+    ContentReportBottomSheet.Listener,
+    ContentSubmitReportBottomSheet.Listener,
     VideoListener {
 
     private val mParentPage: StoriesGroupFragment
@@ -135,6 +148,13 @@ class StoriesDetailFragment @Inject constructor(
         ActivityResultContracts.StartActivityForResult()
     ) {}
 
+    private val reportStoryLoginResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (viewModel.userSession.isLoggedIn) {
+                openReportBottomSheet()
+            }
+        }
+
     private val isEligiblePage: Boolean
         get() = groupId == viewModel.mGroup.groupId
 
@@ -156,7 +176,12 @@ class StoriesDetailFragment @Inject constructor(
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
             when (fragment) {
                 is StoriesThreeDotsBottomSheet -> fragment.setListener(this)
+
                 is StoriesProductBottomSheet -> fragment.setListener(this)
+
+                is ContentReportBottomSheet -> fragment.setListener(this)
+
+                is ContentSubmitReportBottomSheet -> fragment.setListener(this)
             }
         }
         super.onCreate(savedInstanceState)
@@ -188,9 +213,50 @@ class StoriesDetailFragment @Inject constructor(
         contentIsLoaded()
     }
 
+    override fun onCloseButtonClicked() {
+        (childFragmentManager.findFragmentByTag(ContentReportBottomSheet.TAG) as ContentReportBottomSheet?)?.dismiss()
+    }
+
+    override fun onItemReportClick(item: PlayUserReportReasoningUiModel.Reasoning) {
+        (childFragmentManager.findFragmentByTag(ContentReportBottomSheet.TAG) as ContentReportBottomSheet?)?.dismiss()
+
+        ContentSubmitReportBottomSheet.getOrCreate(
+            childFragmentManager,
+            requireActivity().classLoader
+        ).apply {
+            setData(item)
+        }.show(childFragmentManager, ContentSubmitReportBottomSheet.TAG)
+
+        viewModel.selectReportReason(item)
+    }
+
+    override fun onFooterClicked() {
+        RouteManager.route(
+            context,
+            getString(contentcommonR.string.content_user_report_footer_weblink)
+        )
+    }
+
+    override fun onBackButtonListener() {
+        (childFragmentManager.findFragmentByTag(ContentSubmitReportBottomSheet.TAG) as ContentSubmitReportBottomSheet?)?.dismiss()
+    }
+
+    override fun onSubmitReport(desc: String) {
+        showDialog(
+            title = getString(storiesR.string.dialog_report_story_title),
+            description = getString(contentcommonR.string.play_user_report_verification_dialog_desc),
+            primaryCTAText = getString(contentcommonR.string.play_user_report_verification_dialog_btn_ok),
+            secondaryCTAText = getString(storiesR.string.dialog_report_story_cancel),
+            primaryAction = {
+                viewModel.submitReport(desc, _videoPlayer?.exoPlayer?.currentPosition.orZero())
+            }
+        )
+    }
+
     private fun setupObserver() {
         setupUiStateObserver()
         setupUiEventObserver()
+        setupReportObserver()
     }
 
     private fun setupUiStateObserver() {
@@ -236,6 +302,8 @@ class StoriesDetailFragment @Inject constructor(
                     }
 
                     StoriesUiEvent.OpenKebab -> {
+                        viewModel.getReportReasonList()
+
                         StoriesThreeDotsBottomSheet
                             .getOrCreateFragment(
                                 childFragmentManager,
@@ -296,6 +364,22 @@ class StoriesDetailFragment @Inject constructor(
                     }
 
                     else -> return@collect
+                }
+            }
+        }
+    }
+
+    private fun setupReportObserver() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.isReported.collectLatest { isReported ->
+                if (isReported == null) return@collectLatest
+
+                when (isReported) {
+                    is Success -> requireView().showToaster(message = getString(storiesR.string.story_reported_successfully_message))
+                    is Fail -> requireView().showToaster(
+                        message = ErrorHandler.getErrorMessage(context, isReported.throwable),
+                        type = Toaster.TYPE_ERROR,
+                    )
                 }
             }
         }
@@ -667,6 +751,16 @@ class StoriesDetailFragment @Inject constructor(
         analytic?.sendClickRemoveStoryEvent(buildEventLabel())
     }
 
+    override fun onReportStoryClicked(view: StoriesThreeDotsBottomSheet) {
+        view.dismiss()
+
+        if (!viewModel.userSession.isLoggedIn) {
+            reportStoryLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+        } else {
+            openReportBottomSheet()
+        }
+    }
+
     override fun onProductActionClicked(
         action: StoriesProductAction,
         product: ContentTaggedProductUiModel,
@@ -806,6 +900,43 @@ class StoriesDetailFragment @Inject constructor(
         when {
             (state.event == RESUME || state.event == BUFFERING) && state.content.type == Video && timerState.event != PAUSE -> videoPlayer.resume()
             state.event == PAUSE || timerState.event == PAUSE -> videoPlayer.pause()
+        }
+    }
+
+    private fun openReportBottomSheet() {
+        ContentReportBottomSheet.getOrCreate(
+            childFragmentManager,
+            requireActivity().classLoader
+        ).apply {
+            updateList(viewModel.userReportReasonList)
+        }.show(childFragmentManager, ContentReportBottomSheet.TAG)
+    }
+
+    private fun showDialog(
+        title: String,
+        description: String,
+        primaryCTAText: String,
+        secondaryCTAText: String,
+        primaryAction: () -> Unit,
+        secondaryAction: () -> Unit = {}
+    ) {
+        activity?.let {
+            val dialog =
+                DialogUnify(context = it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.apply {
+                setTitle(title)
+                setDescription(description)
+                setPrimaryCTAText(primaryCTAText)
+                setPrimaryCTAClickListener {
+                    primaryAction()
+                    dismiss()
+                }
+                setSecondaryCTAText(secondaryCTAText)
+                setSecondaryCTAClickListener {
+                    secondaryAction()
+                    dismiss()
+                }
+            }.show()
         }
     }
 

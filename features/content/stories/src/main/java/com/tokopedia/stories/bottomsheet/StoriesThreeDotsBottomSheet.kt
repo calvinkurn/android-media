@@ -115,12 +115,16 @@ class StoriesThreeDotsBottomSheet @Inject constructor() : BottomSheetUnify() {
                 viewModel.submitAction(StoriesUiAction.ShowDeleteDialog)
             }
 
-            ContentMenuIdentifier.Report -> {}
+            ContentMenuIdentifier.Report -> {
+                mListener?.onReportStoryClicked(this)
+            }
+
             else -> {}
         }
     }
 
     interface Listener {
+        fun onReportStoryClicked(view: StoriesThreeDotsBottomSheet)
         fun onRemoveStory(view: StoriesThreeDotsBottomSheet)
     }
 
