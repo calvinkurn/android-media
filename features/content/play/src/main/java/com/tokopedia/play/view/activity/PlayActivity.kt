@@ -416,8 +416,6 @@ class PlayActivity :
     }
 
     companion object {
-        private const val PLAY_FRAGMENT_TAG = "FRAGMENT_PLAY"
-
         private const val ON_BOARDING_DELAY = 1000L
     }
 }

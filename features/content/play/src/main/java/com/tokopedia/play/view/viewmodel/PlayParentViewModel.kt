@@ -79,7 +79,7 @@ class PlayParentViewModel @AssistedInject constructor(
             id = handle[PLAY_KEY_SOURCE_ID] ?: ""
         )
 
-    val startingChannelId: String?
+    private val startingChannelId: String?
         get() = handle[PLAY_KEY_CHANNEL_ID]
 
     private val pageSourceName: String
@@ -134,11 +134,6 @@ class PlayParentViewModel @AssistedInject constructor(
     }
 
     fun getLatestChannelStorageData(channelId: String): PlayChannelData = playChannelStateStorage.getData(channelId) ?: error("Channel with ID $channelId not found")
-
-    fun getNextChannel(currentChannelId: String): String {
-        val index = playChannelStateStorage.getChannelList().indexOfFirst { it.id == currentChannelId }
-        return playChannelStateStorage.getChannelList()[index + 1].id
-    }
 
     fun setLatestChannelStorageData(
         channelId: String,
