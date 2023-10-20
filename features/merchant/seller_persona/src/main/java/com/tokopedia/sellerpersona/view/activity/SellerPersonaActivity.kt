@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
@@ -34,6 +35,7 @@ import com.tokopedia.sellerpersona.view.model.PERSONA_STATUS_NOT_ROLLED_OUT
 import com.tokopedia.sellerpersona.view.viewmodel.PersonaSharedViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -53,6 +55,9 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
     @Inject
     lateinit var remoteConfig: SellerPersonaRemoteConfig
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     val openingImpressHolder by lazy { ImpressHolder() }
 
     private var binding: ActivitySellerPersonaBinding? = null
@@ -63,6 +68,7 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
+        checkIsLoggedIn()
         setContentView()
         fetchPersonaData()
         setWhiteStatusBar()
@@ -196,6 +202,13 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
         binding?.errorViewPersona?.visible()
         binding?.errorViewPersona?.setOnActionClicked {
             viewModel.fetchPersonaStatus()
+        }
+    }
+
+    private fun checkIsLoggedIn() {
+        if (!userSession.isLoggedIn) {
+            RouteManager.route(this, ApplinkConstInternalUserPlatform.SEAMLESS_LOGIN)
+            finish()
         }
     }
 }
