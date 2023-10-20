@@ -94,7 +94,7 @@ object CentralizedPromoTracking {
 
     fun sendClickOnGoingPromoStatus(widgetName: String) {
         val data = createMap(
-            event = EVENT_NAME_VIEW_PG_IRIS,
+            event = EVENT_NAME_CLICK_PG,
             category = EVENT_CATEGORY_ADS_AND_PROMO,
             action = EVENT_ACTION_ON_GOING_CLICK,
             label = widgetName,
@@ -106,7 +106,7 @@ object CentralizedPromoTracking {
 
     fun sendClickOnGoingPromoFooter(widgetName: String) {
         val data = createMap(
-            event = EVENT_NAME_VIEW_PG_IRIS,
+            event = EVENT_NAME_CLICK_PG,
             category = EVENT_CATEGORY_ADS_AND_PROMO,
             action = EVENT_ACTION_ON_GOING_CLICK,
             label = widgetName,
