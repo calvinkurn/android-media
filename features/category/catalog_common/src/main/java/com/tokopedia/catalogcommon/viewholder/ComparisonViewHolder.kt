@@ -1,5 +1,7 @@
 package com.tokopedia.catalogcommon.viewholder
 
+import android.graphics.Paint
+import android.graphics.Rect
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -128,7 +130,9 @@ class ComparisonViewHolder(
         textAreaWidth: Double
     ) {
         forEachIndexed { index, comparisonSpec ->
-            val lines = ceil((comparisonSpec.specValue.length * DEFAULT_CHAR_WIDTH)/ textAreaWidth).toInt()
+            val lines = comparisonSpec.specValue.split("\n").sumOf { line ->
+                ceil((line.length * DEFAULT_CHAR_WIDTH) / textAreaWidth).toInt()
+            }
             if (rowsHeight.getOrNull(index) != null)
                 if (lines > rowsHeight[index]) rowsHeight[index] = lines
         }
