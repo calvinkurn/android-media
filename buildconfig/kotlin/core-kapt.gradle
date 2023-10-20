@@ -1,6 +1,5 @@
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/composeCompilerReport.gradle"
 
 kapt {
     correctErrorTypes = true
