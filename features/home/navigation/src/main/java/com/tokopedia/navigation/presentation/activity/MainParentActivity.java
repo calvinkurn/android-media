@@ -664,25 +664,25 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void scrollToTop(Fragment fragment) {
-        if (fragment != null && fragment.isVisible() && fragment instanceof FragmentListener) {
+        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof FragmentListener) {
             ((FragmentListener) fragment).onScrollToTop();
         }
     }
 
     private void scrollToHomeHeader(Fragment fragment) {
-        if (fragment != null && fragment.isVisible() && fragment instanceof HomeScrollViewListener) {
+        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof HomeScrollViewListener) {
             ((HomeScrollViewListener) fragment).onScrollToHomeHeader();
         }
     }
 
     private void scrollToHomeForYou(Fragment fragment) {
-        if (fragment != null && fragment.isVisible() && fragment instanceof HomeScrollViewListener) {
+        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof HomeScrollViewListener) {
             ((HomeScrollViewListener) fragment).onScrollToRecommendationForYou();
         }
     }
 
     private Integer getRecommendationForYouIndex(Fragment fragment) {
-        if (fragment != null && fragment.isVisible() && fragment instanceof HomeScrollViewListener) {
+        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof HomeScrollViewListener) {
            return ((HomeScrollViewListener) fragment).getRecommendationForYouIndex();
         }
         return null;
