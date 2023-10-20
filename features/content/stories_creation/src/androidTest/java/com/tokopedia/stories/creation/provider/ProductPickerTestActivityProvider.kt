@@ -24,7 +24,7 @@ object ProductPickerTestActivityProvider {
         enable = true
     )
 
-    var maxProduct: Int = 0
+    var maxProduct: Int = 30
 
     var mockRepository: ContentProductPickerSellerRepository = mockk(relaxed = true)
 }

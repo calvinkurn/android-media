@@ -4,8 +4,9 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
-import com.tokopedia.stories.creation.helper.ProductPickerLauncher
+import com.tokopedia.stories.creation.builder.ProductPickerModelBuilder
 import com.tokopedia.stories.creation.provider.ProductPickerTestActivityProvider
+import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
@@ -23,19 +24,65 @@ class ProductPickerSellerAnalyticTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private val launcher = ProductPickerLauncher(targetContext)
+    /** Helper */
+    private val robot = ProductPickerSellerRobot(targetContext, cassavaTestRule)
 
+    /** Builder */
+    private val productPickerModelBuilder = ProductPickerModelBuilder()
+
+    /** Mock Class */
     private val mockRepository: ContentProductPickerSellerRepository = mockk(relaxed = true)
+
+    /** Mock Data */
+    private val mockEtalaseList = productPickerModelBuilder.buildEtalaseList()
+    private val mockCampaignList = productPickerModelBuilder.buildCampaignList()
+    private val mockEtalaseProductList = productPickerModelBuilder.buildEtalaseProducts()
+    private val mockCampaignProductList = productPickerModelBuilder.buildEtalaseProducts()
+    private val mockTaggedProductList = productPickerModelBuilder.buildProductTagSectionList()
 
     @Before
     fun setUp() {
         ProductPickerTestActivityProvider.mockRepository = mockRepository
-        
-        launcher.launchActivity()
+
+        coEvery { mockRepository.getEtalaseList() } returns mockEtalaseList
+        coEvery { mockRepository.getCampaignList() } returns mockCampaignList
+        coEvery { mockRepository.getProductsInEtalase(any(), any(), any(), any()) } returns mockEtalaseProductList
+        coEvery { mockRepository.getProductsInCampaign(any(), any()) } returns mockCampaignProductList
+        coEvery { mockRepository.getProductTagSummarySection(any(), any()) } returns mockTaggedProductList
     }
 
     @Test
-    fun testAnalytic_storiesCreation_viewProductChooser() {
-
+    fun testAnalytic_storiesCreation_productPickerSeller() {
+        robot.launchActivity()
+            .verifyAction("view - product selection bottom sheet")
+            .selectProduct()
+            .verifyAction("click - product")
+            .clickSearchBarProductPickerSGC()
+            .verifyAction("click - search product")
+            .closeSoftKeyboard()
+            .clickSortChip()
+            .verifyAction("click - sort product")
+            .selectSortType()
+            .verifyAction("click - sorting option")
+            .clickSaveSort()
+            .clickEtalaseAndCampaignChip()
+            .performDelay()
+            .verifyAction("click - filter product")
+            .selectEtalaseOrCampaign(1)
+            .performDelay()
+            .verifyAction("click - campaign option")
+            .clickEtalaseAndCampaignChip()
+            .performDelay()
+            .selectEtalaseOrCampaign(3)
+            .verifyAction("click - etalase option")
+            .performDelay()
+            .clickSubmitProductTag()
+            .verifyAction("click - save product selection")
+            .performDelay(1000)
+            .verifyAction("view - product selection summary bottom sheet")
+            .clickDeleteOnFirstProduct()
+            .verifyAction("click - delete selected product")
+            .clickNextOnProductPickerSummary()
+            .verifyAction("click - save selesai product selection")
     }
 }
