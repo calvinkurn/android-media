@@ -25,6 +25,7 @@ object WidgetType {
     const val CALENDAR = "calendar"
     const val UNIFICATION = "navigationTab"
     const val RICH_LIST = "richList"
+    const val MULTI_COMPONENT = "multiComponent"
 
     fun isValidWidget(widgetType: String): Boolean {
         return getWidgetList().any { it.asLowerCase() == widgetType.asLowerCase() }
@@ -48,7 +49,8 @@ object WidgetType {
             MILESTONE,
             CALENDAR,
             UNIFICATION,
-            RICH_LIST
+            RICH_LIST,
+            MULTI_COMPONENT
         )
     }
 }
