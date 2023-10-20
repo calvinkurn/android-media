@@ -92,15 +92,33 @@ class EventPDPTicketItemPackageAdapter(
         private fun showTicketStatusRedBackground() {
             binding.run {
                 with(txtStatusTicket) {
-                    setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_RN500))
-                    setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_RN50))
+                    setTextColor(getColorResource(unifyprinciplesR.color.Unify_RN500))
+                    setBackgroundColor(getColorResource(unifyprinciplesR.color.Unify_RN50))
                 }
                 with(txtStatusDescTicket) {
-                    setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950))
-                    setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_RN50))
+                    setTextColor(getColorResource(unifyprinciplesR.color.Unify_NN950))
+                    setBackgroundColor(getColorResource(unifyprinciplesR.color.Unify_RN50))
                 }
             }
         }
+
+        private fun showTicketStatusSoldOutBackground() {
+            binding.run {
+                with(txtStatusTicket) {
+                    setTextColor(getColorResource(unifyprinciplesR.color.Unify_NN600))
+                    setBackgroundColor(getColorResource(unifyprinciplesR.color.Unify_NN50))
+                }
+                with(txtStatusDescTicket) {
+                    setTextColor(getColorResource(unifyprinciplesR.color.Unify_NN950))
+                    setBackgroundColor(getColorResource(unifyprinciplesR.color.Unify_NN50))
+                }
+            }
+        }
+
+        private fun getColorResource(unifyResId: Int): Int {
+            return MethodChecker.getColor(itemView.context, unifyResId)
+        }
+
 
         private fun hideTicketStatus() {
             binding.run {
@@ -118,19 +136,6 @@ class EventPDPTicketItemPackageAdapter(
                     txtStatusDescTicket.show()
                 } else {
                     hideTicketStatus()
-                }
-            }
-        }
-
-        private fun showTicketStatusSoldOutBackground() {
-            binding.run {
-                with(txtStatusTicket) {
-                    setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN600))
-                    setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN50))
-                }
-                with(txtStatusDescTicket) {
-                    setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950))
-                    setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN50))
                 }
             }
         }

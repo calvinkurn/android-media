@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.entertainment.databinding.BottomSheetEventSoftbookEndedBinding
+import com.tokopedia.imageassets.TokopediaImageUrl.EVENT_SOFTBOOK_ENDED_BOTTOM_SHEET_IMG_URL
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.entertainment.R as entertainmentR
 
 class EventSoftbookEndedBottomSheet: BottomSheetUnify() {
 
@@ -31,14 +33,14 @@ class EventSoftbookEndedBottomSheet: BottomSheetUnify() {
         overlayClickDismiss = false
 
         binding = BottomSheetEventSoftbookEndedBinding.inflate(LayoutInflater.from(context))
-        setTitle("Sesi Pemesanan Habis")
+        setTitle(getString(entertainmentR.string.ent_event_checkout_softbook_ended_bottom_sheet_title))
         setChild(binding?.root)
 
     }
 
     private fun initView() {
         binding?.run {
-            imgSoftbookEnded.setImageUrl(IMG_URL)
+            imgSoftbookEnded.setImageUrl(EVENT_SOFTBOOK_ENDED_BOTTOM_SHEET_IMG_URL)
             buttonEventSoftbookEnded.setOnClickListener {
                 mListener?.onClickButton()
             }
@@ -58,7 +60,6 @@ class EventSoftbookEndedBottomSheet: BottomSheetUnify() {
     }
 
     companion object {
-        private const val IMG_URL = "https://images.tokopedia.net/img/event/event_checkout_softbook_ended_bottom_sheet.png"
         private const val TAG_EVENT_SOFTBOOK_ENDED_BOTTOM_SHEET = "event_softbook_ended_bottom_sheet"
     }
 }

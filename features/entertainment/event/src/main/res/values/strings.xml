@@ -78,7 +78,7 @@
     <string name="ent_event_checkout_softbook_ended_title">Batas Waktu Pemesanan Habis</string>
     <string name="ent_event_checkout_softbook_ended_desc">Pemesanan belum diproses. Segera cek tiket &amp; isi data lagi, ya supaya ngga kehabisan tiket.</string>
     <string name="ent_event_checkout_softbook_ended_button">Cek Tiket</string>
-
+    <string name="ent_event_checkout_softbook_ended_bottom_sheet_title">Sesi Pemesanan Habis</string>
 
     <string name="ent_pdp_form_ticker_warn_text">Pastikan data pemesan sudah benar. E-tiket bisa dicek lewat halaman Daftar Transaksi dan akan dikirimkan ke email yang terdaftar di akun Tokopedia.</string>
     <string name="ent_pdp_form_ticket_submit_text">Simpan</string>

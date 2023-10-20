@@ -392,4 +392,5 @@ object TokopediaImageUrl {
     const val OLP_GLOBAL_ERROR_ILLUSTRATION = "https://images.tokopedia.net/img/frontend/illustration/global_state_page_not_found.png"
     const val OLP_SERVER_ERROR_ILLUSTRATION = "https://images.tokopedia.net/img/frontend/illustration/global_state_server_error.png"
     const val OLP_BMGM_HEADER_ILLUSTRATION = "https://images.tokopedia.net/img/android/bmgm/OLP_Header.png"
+    const val EVENT_SOFTBOOK_ENDED_BOTTOM_SHEET_IMG_URL = "https://images.tokopedia.net/img/event/event_checkout_softbook_ended_bottom_sheet.png"
 }
