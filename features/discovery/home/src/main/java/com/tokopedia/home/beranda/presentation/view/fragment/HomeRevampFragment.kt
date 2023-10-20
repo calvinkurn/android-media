@@ -238,11 +238,11 @@ import java.net.URLEncoder
 import java.util.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.wishlist_common.R as wishlist_commonR
+import com.tokopedia.loyalty.R as loyaltyR
 import com.tokopedia.play.widget.R as playwidgetR
 import com.tokopedia.searchbar.R as searchbarR
-import com.tokopedia.loyalty.R as loyaltyR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.wishlist_common.R as wishlist_commonR
 
 /**
  * @author by yoasfs on 12/14/17.
@@ -941,43 +941,43 @@ HomeRevampFragment :
 
     private fun observeHomeThematic() {
         getHomeViewModel().thematicLiveData.observe(viewLifecycleOwner) { thematic ->
-            if(thematic.isShown) {
+            if (thematic.isShown) {
                 context?.let { ctx ->
-                    val thematicImageLoadListener = object: ImageHandler.ImageLoaderStateListener {
+                    val thematicImageLoadListener = object : ImageHandler.ImageLoaderStateListener {
                         override fun successLoad(view: ImageView) {
                             view.show()
-                            if(view == thematicBackground) {
+                            if (view == thematicBackground) {
                                 notifyHomeThematicChanges(thematic, true)
                             }
                         }
 
                         override fun failedLoad(view: ImageView) {
                             view.hide()
-                            if(view == thematicBackground) {
+                            if (view == thematicBackground) {
                                 notifyHomeThematicChanges(thematic, false)
                             }
                         }
                     }
 
-                    if(thematic.backgroundImageURL.isNotEmpty()) {
+                    if (thematic.backgroundImageURL.isNotEmpty()) {
                         thematicBackground?.run {
                             setLayoutHeight(thematic.getActualHeightPx(ctx))
                             loadImageWithoutPlaceholder(
                                 thematic.backgroundImageURL,
                                 "thematicBackground",
                                 listener = thematicImageLoadListener,
-                                skipErrorPlaceholder = true,
+                                skipErrorPlaceholder = true
                             )
                         }
                     }
 
-                    if(thematic.foregroundImageURL.isNotEmpty()) {
+                    if (thematic.foregroundImageURL.isNotEmpty()) {
                         thematicForeground?.run {
                             loadImageWithoutPlaceholder(
                                 thematic.foregroundImageURL,
                                 "thematicForeground",
                                 listener = thematicImageLoadListener,
-                                skipErrorPlaceholder = true,
+                                skipErrorPlaceholder = true
                             )
                         }
                     }
@@ -1508,7 +1508,6 @@ HomeRevampFragment :
             performanceTrace?.setBlock(data.take(takeLimit))
 
             adapter?.submitList(data) {
-
             }
         }
     }
@@ -1537,10 +1536,10 @@ HomeRevampFragment :
     }
 
     private fun setupThematicStatusBarAndToolbar() {
-        if(getThematicUtil().isLightMode()) {
+        if (getThematicUtil().isLightMode()) {
             requestStatusBarDark()
             navToolbar?.switchToLightToolbar()
-        } else if(getThematicUtil().isDarkMode()) {
+        } else if (getThematicUtil().isDarkMode()) {
             requestStatusBarLight()
             navToolbar?.switchToDarkToolbar()
         } else {
@@ -1550,8 +1549,11 @@ HomeRevampFragment :
     }
 
     private fun requestStatusBarBasedOnUiMode() {
-        if(context?.isDarkMode() == true) requestStatusBarLight()
-        else requestStatusBarDark()
+        if (context?.isDarkMode() == true) {
+            requestStatusBarLight()
+        } else {
+            requestStatusBarDark()
+        }
     }
 
     private object FixedTheme {
@@ -1663,7 +1665,7 @@ HomeRevampFragment :
             BestSellerWidgetCallback(context, this, getHomeViewModel()),
             SpecialReleaseRevampCallback(this),
             ShopFlashSaleWidgetCallback(this, getHomeViewModel()),
-            getThematicUtil(),
+            getThematicUtil()
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -2476,7 +2478,7 @@ HomeRevampFragment :
     }
 
     override fun getRecommendationForYouIndex(): Int? {
-        return viewModel.get().homeLiveDynamicChannel.value?.list?.indexOfFirst {
+        return getHomeViewModel().homeLiveDynamicChannel.value?.list?.indexOfFirst {
             it is HomeRecommendationFeedDataModel
         }.takeIf { it != RecyclerView.NO_POSITION }
     }
@@ -2963,7 +2965,7 @@ HomeRevampFragment :
     }
 
     private fun getRemoteConfigController(): HomeRemoteConfigController {
-        if(!this::homeRemoteConfigController.isInitialized) initInjectorHome()
+        if (!this::homeRemoteConfigController.isInitialized) initInjectorHome()
         return homeRemoteConfigController
     }
 
@@ -3206,7 +3208,7 @@ HomeRevampFragment :
     }
 
     private fun getThematicUtil(): HomeThematicUtil {
-        if(!::homeThematicUtil.isInitialized) initInjectorHome()
+        if (!::homeThematicUtil.isInitialized) initInjectorHome()
         return homeThematicUtil
     }
 }
