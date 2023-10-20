@@ -1064,8 +1064,7 @@ public class GTMAnalytics extends ContextAnalytics {
         //
         bundle.putString(KEY_EVENT, keyEvent);
 
-        addUtmHolder(bundle);
-        pushEventV5(keyEvent, wrapWithSessionIris(bundle), context);
+        pushEventV5Legacy(keyEvent, wrapWithSessionIris(bundle), context);
     }
 
     @Override
@@ -1198,6 +1197,28 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         return bundle;
         // end of globally put sessionIris
+    }
+
+    @SuppressLint("MissingPermission")
+    public void pushEventV5Legacy(String eventName, Bundle bundle, Context context) {
+        try {
+            if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
+                bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
+            }
+            publishNewRelic(eventName, bundle);
+            FirebaseAnalytics fa = FirebaseAnalytics.getInstance(context);
+            fa.logEvent(eventName, bundle);
+
+            mappingToGA4(fa, eventName, bundle);
+            logV5(context, eventName, bundle);
+
+            addUtmHolder(bundle);
+            pushGeneralEcommerce(bundle);
+
+            trackEmbraceBreadcrumb(eventName, bundle);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @SuppressLint("MissingPermission")
