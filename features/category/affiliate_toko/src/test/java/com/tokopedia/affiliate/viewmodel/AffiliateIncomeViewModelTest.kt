@@ -10,7 +10,6 @@ import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliateBalance
 import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
 import com.tokopedia.affiliate.model.response.AffiliateTransactionHistoryData
-import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -141,7 +140,9 @@ class AffiliateIncomeViewModelTest {
             )
         } returns transaction
         val response =
-            affiliateIncomeViewModel.convertDataToVisitables(transaction.getAffiliateTransactionHistory?.transactionData)
+            affiliateIncomeViewModel.convertDataToVisitables(
+                transaction.getAffiliateTransactionHistory?.transactionData
+            )
 
         affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
 
@@ -175,7 +176,9 @@ class AffiliateIncomeViewModelTest {
             )
         } returns transaction
         val response =
-            affiliateIncomeViewModel.convertDataToVisitables(transaction.getAffiliateTransactionHistory?.transactionData)
+            affiliateIncomeViewModel.convertDataToVisitables(
+                transaction.getAffiliateTransactionHistory?.transactionData
+            )
 
         affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
 
@@ -203,32 +206,6 @@ class AffiliateIncomeViewModelTest {
     fun testAffiliateUserBlackListed() {
         affiliateIncomeViewModel.setBlacklisted(false)
         assertEquals(affiliateIncomeViewModel.getIsBlackListed(), false)
-    }
-
-    /**************************** getAffiliateValidateUser() *******************************************/
-    @Test
-    fun getAffiliateValidateUser() {
-        val affiliateValidateUserData: AffiliateValidateUserData = mockk(relaxed = true)
-        coEvery {
-            affiliateIncomeViewModel.affiliateValidateUseCaseUseCase.validateUserStatus(any())
-        } returns affiliateValidateUserData
-
-        affiliateIncomeViewModel.getAffiliateValidateUser("")
-
-        assertEquals(
-            affiliateIncomeViewModel.getValidateUserdata().value,
-            affiliateValidateUserData
-        )
-    }
-
-    @Test
-    fun getAffiliateValidateUserException() {
-        val throwable = Throwable("Validate Data Exception")
-        coEvery { affiliateIncomeViewModel.affiliateValidateUseCaseUseCase.validateUserStatus(any()) } throws throwable
-
-        affiliateIncomeViewModel.getAffiliateValidateUser("")
-
-        assertEquals(affiliateIncomeViewModel.getErrorMessage().value, throwable)
     }
 
     /**************************** getAnnouncementInformation() *******************************************/
