@@ -13,9 +13,9 @@
         android:id="@+id/card_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:maxHeight="150dp"
         android:adjustViewBounds="true"
         android:gravity="center"
+        android:maxHeight="150dp"
         android:scaleType="fitXY"
         app:layout_constraintDimensionRatio="H,1:1"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,28 +23,28 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_parent"
-        android:layout_margin="8dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
 
         <View
             android:id="@+id/shop_logo_border"
-            app:layout_constraintStart_toStartOf="@id/shop_logo"
-            app:layout_constraintTop_toTopOf="@id/shop_logo"
-            app:layout_constraintEnd_toEndOf="@id/shop_logo"
-            app:layout_constraintBottom_toBottomOf="@id/shop_logo"
             android:layout_width="44dp"
             android:layout_height="44dp"
-            android:background="@drawable/shop_card_shop_border_image" />
+            android:background="@drawable/shop_card_shop_border_image"
+            app:layout_constraintBottom_toBottomOf="@id/shop_logo"
+            app:layout_constraintEnd_toEndOf="@id/shop_logo"
+            app:layout_constraintStart_toStartOf="@id/shop_logo"
+            app:layout_constraintTop_toTopOf="@id/shop_logo" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/shop_logo"
             android:layout_width="44dp"
             android:layout_height="44dp"
             android:adjustViewBounds="true"
+            android:background="@drawable/shop_card_shop_border_image"
             android:gravity="center"
             android:scaleType="fitXY"
-            android:background="@drawable/shop_card_shop_border_image"
             app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -59,10 +59,10 @@
             android:maxLines="2"
             android:textColor="@color/Unify_NN950_96"
             android:visibility="visible"
-            app:layout_constraintStart_toEndOf="@id/shop_logo_border"
-            app:layout_constraintTop_toTopOf="@id/shop_logo_border"
             app:layout_constraintBottom_toBottomOf="@id/shop_logo_border"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/shop_logo_border"
+            app:layout_constraintTop_toTopOf="@id/shop_logo_border"
             app:layout_goneMarginTop="@dimen/unify_space_4"
             app:typographyType="body_2"
             tools:text="Samsung Official Store"
@@ -124,28 +124,29 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/divider"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="2dp"
+            android:layout_marginHorizontal="5dp"
             android:layout_marginTop="8dp"
             android:layerType="software"
-            app:layout_constraintStart_toStartOf="parent"
+            android:src="@drawable/dash_line"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_min_purchase"
-            app:unify_image_placeholder="@android:color/transparent"
-            android:src="@drawable/dash_line" />
+            app:unify_image_placeholder="@android:color/transparent" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/action_btn"
-            android:contentDescription="@string/content_desc_claim_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginVertical="8dp"
-            tools:text="Lihat Produk"
+            android:contentDescription="@string/content_desc_claim_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider"
             app:unifyButtonSize="micro"
             app:unifyButtonVariant="ghost"
-            app:layout_constraintTop_toBottomOf="@id/divider"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            tools:text="Lihat Produk" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
