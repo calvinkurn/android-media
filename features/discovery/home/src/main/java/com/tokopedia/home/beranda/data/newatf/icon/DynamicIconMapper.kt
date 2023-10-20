@@ -41,8 +41,8 @@ class DynamicIconMapper @Inject constructor() {
                         )
                     }
                 ),
+                isMultipleRows = atfData.atfMetadata.component == AtfKey.TYPE_ICON_V2,
                 isCache = atfData.isCache,
-                type = data.type
             )
         }
     }

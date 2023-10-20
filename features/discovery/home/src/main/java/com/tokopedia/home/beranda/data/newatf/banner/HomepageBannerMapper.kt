@@ -35,7 +35,7 @@ class HomepageBannerMapper @Inject constructor(
         return if (atfData.atfStatus == AtfKey.STATUS_ERROR) {
             ErrorStateChannelOneModel()
         } else {
-            mapToBanner(data, index, atfData.isCache, isExpired)
+            mapToBanner(data, index, atfData.isCache, isExpired, atfData.atfMetadata.component == AtfKey.TYPE_BANNER_V2)
         }
     }
 
@@ -44,6 +44,7 @@ class HomepageBannerMapper @Inject constructor(
         index: Int,
         isCache: Boolean,
         isExpired: Boolean,
+        isBleeding: Boolean,
     ): BannerRevampDataModel {
         val channelModel = ChannelModel(
             verticalPosition = index,
@@ -72,7 +73,8 @@ class HomepageBannerMapper @Inject constructor(
         )
         return BannerRevampDataModel(
             channelModel = channelModel,
-            isCache = isCache
+            isCache = isCache,
+            isBleeding = isBleeding,
         )
     }
 }

@@ -13,7 +13,6 @@ import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 class DynamicIconAdapter(private val listener: DynamicIconComponentListener, private val isRevamp: Boolean = false) : RecyclerView.Adapter<DynamicIconItemViewHolder>() {
     private val iconList = mutableListOf<DynamicIconComponent.DynamicIcon>()
     private var position: Int = 0
-    private var type: Int = 1
     private var isCache: Boolean = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicIconItemViewHolder {
@@ -35,16 +34,12 @@ class DynamicIconAdapter(private val listener: DynamicIconComponentListener, pri
             else iconList.size > DynamicIconViewHolder.SCROLLABLE_ITEM
         iconList.getOrNull(position)?.let {
             holder
-                .bind(it, isScrollable, this.position, type, isCache)
+                .bind(it, isScrollable, this.position, isCache)
         }
     }
 
     override fun getItemCount(): Int {
         return iconList.size
-    }
-
-    fun setType(type: Int) {
-        this.type = type
     }
 
     fun updatePosition(position: Int) {

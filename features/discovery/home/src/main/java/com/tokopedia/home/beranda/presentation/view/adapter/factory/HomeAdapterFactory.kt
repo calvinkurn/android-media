@@ -424,7 +424,8 @@ class HomeAdapterFactory(
     }
 
     override fun type(bannerRevampDataModel: BannerRevampDataModel): Int {
-        return BannerRevampViewHolder.LAYOUT
+        return if(bannerRevampDataModel.isBleeding) BannerRevampViewHolder.LAYOUT_BLEEDING
+        else BannerRevampViewHolder.LAYOUT_PADDING
     }
 
     override fun type(todoWidgetListDataModel: TodoWidgetListDataModel): Int {
@@ -612,7 +613,7 @@ class HomeAdapterFactory(
                         view,
                         todoWidgetComponentListener
                     )
-            BannerRevampViewHolder.LAYOUT ->
+            BannerRevampViewHolder.LAYOUT_PADDING, BannerRevampViewHolder.LAYOUT_BLEEDING ->
                 viewHolder =
                     BannerRevampViewHolder(view, bannerComponentListener, cardInteraction = true)
             DealsWidgetViewHolder.LAYOUT ->

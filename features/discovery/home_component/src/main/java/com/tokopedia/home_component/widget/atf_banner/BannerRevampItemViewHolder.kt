@@ -4,11 +4,14 @@ import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
+import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.home_component.R as home_componentR
 
 /**
  * Created by frenzel
@@ -18,13 +21,13 @@ class BannerRevampItemViewHolder(itemView: View, val listener: BannerItemListene
 
     companion object {
         @LayoutRes
-        val LAYOUT = com.tokopedia.home_component.R.layout.layout_banner_revamp_channel_item
+        val LAYOUT = home_componentR.layout.layout_banner_revamp_channel_item
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun bind(item: BannerRevampItemModel) {
-        val imageBanner = itemView.findViewById<ImageUnify>(R.id.image_banner_revamp)
-        imageBanner.setImageUrl(item.url)
+        val imageBanner = itemView.findViewById<AppCompatImageView>(R.id.image_banner_revamp)
+        imageBanner.loadImage(item.url)
         imageBanner.setOnTouchListener { _, motionEvent ->
             listener.onTouchEvent(motionEvent)
             when (motionEvent.action) {

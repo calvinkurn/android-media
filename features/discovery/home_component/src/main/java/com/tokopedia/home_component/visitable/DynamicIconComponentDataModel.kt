@@ -13,8 +13,8 @@ import java.util.*
  */
 data class DynamicIconComponentDataModel(
         val id: String,
+        val isMultipleRows: Boolean,
         val isCache: Boolean,
-        val type: Int,
         val dynamicIconComponent: DynamicIconComponent,
         val currentFetch: Long = Calendar.getInstance().timeInMillis
 ) : HomeComponentVisitable, ImpressHolder(), LoadableComponent by BlocksLoadableComponent(

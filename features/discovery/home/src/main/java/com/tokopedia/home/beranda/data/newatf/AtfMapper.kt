@@ -88,11 +88,11 @@ class AtfMapper @Inject constructor(
 
     private fun AtfCacheEntity.getAtfContent(): AtfContent? {
         return when(this.component) {
-            AtfKey.TYPE_BANNER -> content?.getAtfContent<BannerDataModel>()
-            AtfKey.TYPE_ICON -> content?.getAtfContent<DynamicHomeIcon>()
+            AtfKey.TYPE_BANNER, AtfKey.TYPE_BANNER_V2 -> content?.getAtfContent<BannerDataModel>()
+            AtfKey.TYPE_ICON, AtfKey.TYPE_ICON_V2 -> content?.getAtfContent<DynamicHomeIcon>()
             AtfKey.TYPE_TICKER -> content?.getAtfContent<Ticker>()
             AtfKey.TYPE_CHANNEL -> content?.getAtfContent<DynamicHomeChannel>()
-            AtfKey.TYPE_MISSION -> content?.getAtfContent<HomeMissionWidgetData.GetHomeMissionWidget>()
+            AtfKey.TYPE_MISSION, AtfKey.TYPE_MISSION_V2 -> content?.getAtfContent<HomeMissionWidgetData.GetHomeMissionWidget>()
             AtfKey.TYPE_TODO -> content?.getAtfContent<HomeTodoWidgetData.GetHomeTodoWidget>()
             else -> null
         }

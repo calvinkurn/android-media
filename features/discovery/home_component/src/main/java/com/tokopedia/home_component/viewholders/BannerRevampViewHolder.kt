@@ -1,6 +1,7 @@
 package com.tokopedia.home_component.viewholders
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -10,13 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
+import com.tokopedia.home_component.customview.bannerindicator.BannerIndicator
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicatorListener
-import com.tokopedia.home_component.databinding.HomeComponentBannerRevampBinding
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.NpaLinearLayoutManager
-import com.tokopedia.home_component.util.recordCrashlytics
 import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
 import com.tokopedia.home_component.widget.atf_banner.BannerRevampItemModel
 import com.tokopedia.home_component.viewholders.adapter.BannerRevampChannelAdapter
@@ -28,7 +28,6 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -42,7 +41,6 @@ class BannerRevampViewHolder(
     AbstractViewHolder<BannerRevampDataModel>(itemView),
     BannerItemListener,
     CoroutineScope {
-    private var binding: HomeComponentBannerRevampBinding? by viewBinding()
     private var isCache = true
     private val layoutManager by lazy { NpaLinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL) }
 
@@ -51,6 +49,7 @@ class BannerRevampViewHolder(
         get() = masterJob + Dispatchers.Main
 
     private var channelModel: ChannelModel? = null
+    private var isBleeding: Boolean = false
     private var totalBanner = 0
     private var previousTotalBanner = 0
     private var currentPosition: Int = 0
@@ -58,15 +57,23 @@ class BannerRevampViewHolder(
     private var isFromInitialize = false
 
     private val adapter by lazy { BannerRevampChannelAdapter( this) }
+    
+    private val bannerContainer: CardUnify2 by lazy { itemView.findViewById(R.id.card_container_banner) }
+    private val bannerIndicator: BannerIndicator by lazy { itemView.findViewById(R.id.banner_indicator) }
+    private val recyclerView: RecyclerView by lazy { itemView.findViewById(R.id.rv_banner_revamp) }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun bind(element: BannerRevampDataModel) {
         try {
+            setScrollListener()
             setViewPortImpression(element)
             channelModel = element.channelModel
             isCache = element.isCache
+            isBleeding = element.isBleeding
             renderBanner()
-        } catch (_: Exception) { }
+        } catch (e: Exception) {
+            Log.e("atf3", "bind: ", e)
+        }
     }
 
     private fun renderBanner() {
@@ -75,8 +82,8 @@ class BannerRevampViewHolder(
             totalBanner = banners.size
             initBanner(banners)
             if (previousTotalBanner != totalBanner) {
-                binding?.bannerIndicator?.setBannerIndicators(banners.size)
-                binding?.bannerIndicator?.setBannerListener(object :
+                bannerIndicator.setBannerIndicators(banners.size)
+                bannerIndicator.setBannerListener(object :
                     BannerIndicatorListener {
                     override fun onChangePosition(index: Int, position: Int) {
                         scrollTo(position)
@@ -99,12 +106,11 @@ class BannerRevampViewHolder(
                     bannerListener?.onChannelBannerImpressed(it, element.channelModel.verticalPosition)
                 }
             })
-            setScrollListener()
         }
     }
 
     private fun setScrollListener() {
-        binding?.rvBannerRevamp?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 when (newState) {
                     RecyclerView.SCROLL_STATE_IDLE -> {
@@ -112,7 +118,7 @@ class BannerRevampViewHolder(
                             val currentPagePosition = layoutManager.findFirstCompletelyVisibleItemPosition()
                             currentPosition = currentPagePosition
                             if (currentPagePosition != RecyclerView.NO_POSITION) {
-                                binding?.bannerIndicator?.startIndicatorByPosition(currentPagePosition)
+                                bannerIndicator.startIndicatorByPosition(currentPagePosition)
                                 isFromDrag = false
                             }
                         }
@@ -120,7 +126,7 @@ class BannerRevampViewHolder(
                             val currentPagePosition = layoutManager.findFirstCompletelyVisibleItemPosition()
                             currentPosition = currentPagePosition
                             if (currentPagePosition != RecyclerView.NO_POSITION) {
-                                binding?.bannerIndicator?.setBannerIndicators(totalBanner, currentPagePosition)
+                                bannerIndicator.setBannerIndicators(totalBanner, currentPagePosition)
                                 isFromInitialize = false
                             }
                         }
@@ -131,7 +137,7 @@ class BannerRevampViewHolder(
                 }
             }
         })
-        binding?.rvBannerRevamp?.computeHorizontalScrollOffset()
+        recyclerView.computeHorizontalScrollOffset()
     }
 
     override fun bind(element: BannerRevampDataModel, payloads: MutableList<Any>) {
@@ -141,11 +147,11 @@ class BannerRevampViewHolder(
     private fun scrollTo(position: Int) {
         val resources = itemView.context.resources
         val width = resources.displayMetrics.widthPixels
-        val paddings = MULTIPLY_NO_BOUNCE_BANNER * resources.getDimensionPixelSize(R.dimen.home_component_margin_default)
+        val paddings = if(isBleeding) 0 else MULTIPLY_NO_BOUNCE_BANNER * resources.getDimensionPixelSize(R.dimen.home_component_margin_default)
         if (position == Int.ZERO) {
-            binding?.rvBannerRevamp?.smoothScrollToPosition(position)
+            recyclerView.smoothScrollToPosition(position)
         } else {
-            binding?.rvBannerRevamp?.smoothScrollBy(
+            recyclerView.smoothScrollBy(
                 width - paddings,
                 Int.ZERO,
                 if (isFromDrag) BannerComponentViewHolder.manualScrollInterpolator else BannerComponentViewHolder.autoScrollInterpolator,
@@ -157,22 +163,22 @@ class BannerRevampViewHolder(
     private fun initBanner(list: List<BannerVisitable>) {
         if (list.size > Int.ONE) {
             val snapHelper: SnapHelper = BannerComponentViewHolder.CubicBezierSnapHelper(itemView.context)
-            binding?.rvBannerRevamp?.let {
+            recyclerView.let {
                 it.onFlingListener = null
                 snapHelper.attachToRecyclerView(it)
             }
         }
 
-        val layoutParams = binding?.rvBannerRevamp?.layoutParams as ConstraintLayout.LayoutParams
-        binding?.rvBannerRevamp?.layoutParams = layoutParams
+        val layoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
+        recyclerView.layoutParams = layoutParams
 
-        binding?.rvBannerRevamp?.layoutManager = this.layoutManager
-        binding?.cardContainerBanner?.let {
-            it.animateOnPress = if (cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
-            val halfIntegerSize = Integer.MAX_VALUE / DIVIDE_HALF_BANNER_SIZE_INT_SIZE
-            adapter.submitList(list)
-            binding?.rvBannerRevamp?.layoutManager?.scrollToPosition(halfIntegerSize - halfIntegerSize % totalBanner)
-            binding?.rvBannerRevamp?.adapter = adapter
+        recyclerView.layoutManager = this.layoutManager
+        val halfIntegerSize = Integer.MAX_VALUE / DIVIDE_HALF_BANNER_SIZE_INT_SIZE
+        adapter.submitList(list)
+        recyclerView.layoutManager?.scrollToPosition(halfIntegerSize - halfIntegerSize % totalBanner)
+        recyclerView.adapter = adapter
+        if(!isBleeding) {
+            bannerContainer.animateOnPress = if (cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
         }
     }
 
@@ -195,11 +201,11 @@ class BannerRevampViewHolder(
     }
 
     override fun onLongPress() {
-        binding?.bannerIndicator?.pauseAnimation()
+        bannerIndicator.pauseAnimation()
     }
 
     override fun onRelease() {
-        binding?.bannerIndicator?.continueAnimation()
+        bannerIndicator.continueAnimation()
     }
 
     override fun isDrag(): Boolean {
@@ -207,7 +213,7 @@ class BannerRevampViewHolder(
     }
 
     override fun onTouchEvent(motionEvent: MotionEvent) {
-        binding?.cardContainerBanner?.onTouchEvent(motionEvent)
+        bannerContainer?.onTouchEvent(motionEvent)
     }
 
     private fun ChannelModel.convertToBannerItemModel(): List<BannerVisitable> {
@@ -228,7 +234,9 @@ class BannerRevampViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.home_component_banner_revamp
+        val LAYOUT_PADDING = R.layout.home_component_banner_padding
+        @LayoutRes
+        val LAYOUT_BLEEDING = R.layout.home_component_banner_bleeding
         private const val DIVIDE_HALF_BANNER_SIZE_INT_SIZE = 2
         private const val MULTIPLY_NO_BOUNCE_BANNER = 2
     }

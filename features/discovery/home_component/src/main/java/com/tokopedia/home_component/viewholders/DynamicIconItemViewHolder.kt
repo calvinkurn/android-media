@@ -104,7 +104,6 @@ class DynamicIconItemViewHolder(
         item: DynamicIconComponent.DynamicIcon,
         isScrollable: Boolean,
         parentPosition: Int,
-        type: Int,
         isCache: Boolean
     ) {
         binding?.dynamicIconTypography?.text = item.name
@@ -216,7 +215,7 @@ class DynamicIconItemViewHolder(
             false
         }
         itemView.setOnClickListener {
-            listener.onClickIcon(item, parentPosition, absoluteAdapterPosition, type)
+            listener.onClickIcon(item, parentPosition, absoluteAdapterPosition)
         }
 
         if (!isCache) {
@@ -225,7 +224,6 @@ class DynamicIconItemViewHolder(
                     dynamicIcon = item,
                     iconPosition = absoluteAdapterPosition,
                     parentPosition = parentPosition,
-                    type = type,
                     view = itemView
                 )
             }

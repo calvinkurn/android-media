@@ -17,25 +17,23 @@ class DynamicIconComponentCallback(private val context: Context?, private val ho
     companion object {
         private val TOKONOW_ICON_ID = arrayOf("792", "831")
     }
-    override fun onClickIcon(dynamicIcon: DynamicIconComponent.DynamicIcon, position: Int, iconPosition: Int, type: Int) {
+    override fun onClickIcon(dynamicIcon: DynamicIconComponent.DynamicIcon, position: Int, iconPosition: Int) {
         DynamicIconTracking.sendDynamicIconClick(
             userId = homeCategoryListener.userId,
             position = position,
             iconPosition = iconPosition,
-            type = type,
             dynamicIcon = dynamicIcon
         )
         RouteManager.route(context, dynamicIcon.applink)
     }
 
-    override fun onImpressIcon(dynamicIcon: DynamicIconComponent.DynamicIcon, iconPosition: Int, adapterPosition: Int, type: Int, view: View) {
+    override fun onImpressIcon(dynamicIcon: DynamicIconComponent.DynamicIcon, iconPosition: Int, adapterPosition: Int, view: View) {
         homeCategoryListener.putEEToTrackingQueue(
             DynamicIconTracking.sendDynamicIconImpress(
                 userId = homeCategoryListener.userId,
                 dynamicIcon = dynamicIcon,
                 iconPosition = iconPosition,
                 adapterPposition = adapterPosition,
-                type = type
             )
         )
 

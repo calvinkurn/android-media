@@ -13,12 +13,16 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
+import com.tokopedia.home.constant.AtfKey.TYPE_BANNER_V2
 import com.tokopedia.home.constant.AtfKey.TYPE_CHANNEL
 import com.tokopedia.home.constant.AtfKey.TYPE_ICON
+import com.tokopedia.home.constant.AtfKey.TYPE_ICON_V2
 import com.tokopedia.home.constant.AtfKey.TYPE_MISSION
+import com.tokopedia.home.constant.AtfKey.TYPE_MISSION_V2
 import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
 import com.tokopedia.home.constant.AtfKey.TYPE_TODO
 import com.tokopedia.home_component.model.ChannelGrid
@@ -163,7 +167,7 @@ class HomeVisitableFactoryImpl(
         visitableList.add(viewModelDynamicIcon)
     }
 
-    private fun addDynamicIconData(id: String = "", type: Int = 1, defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf(), isCache: Boolean = false) {
+    private fun addDynamicIconData(id: String = "", defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf(), isCache: Boolean = false, isMultipleRows: Boolean = false) {
         if (isCache && homePrefController.isUsingDifferentAtfRollenceVariant()) return
         val viewModelDynamicIcon = DynamicIconComponentDataModel(
             id = id,
@@ -185,8 +189,8 @@ class HomeVisitableFactoryImpl(
                     )
                 }
             ),
+            isMultipleRows = isMultipleRows,
             isCache = isCache,
-            type = type
         )
 
         visitableList.add(viewModelDynamicIcon)
@@ -266,23 +270,25 @@ class HomeVisitableFactoryImpl(
                 } else {
                     it.dataList.forEachIndexed { index, data ->
                         when (data.component) {
-                            TYPE_ICON -> {
+                            TYPE_ICON, TYPE_ICON_V2 -> {
                                 data.atfStatusCondition(
                                     onLoading = {
                                         visitableList.add(ShimmeringIconDataModel(data.id.toString()))
                                     },
                                     onError = {
                                         visitableList.add(ErrorStateIconModel())
+                                        if(data.component == TYPE_ICON_V2) visitableList.add(ErrorStateIconModel())
                                     },
                                     onSuccess = {
                                         val icon = data.getAtfContent<DynamicHomeIcon>()
-                                        addDynamicIconData(data.id.toString(), icon?.type ?: 1, icon?.dynamicIcon ?: listOf(), isCache)
+                                        val isMultipleRows = data.component == TYPE_ICON_V2
+                                        addDynamicIconData(data.id.toString(), icon?.dynamicIcon ?: listOf(), isCache, isMultipleRows)
                                     }
                                 )
                                 iconPosition++
                             }
 
-                            TYPE_BANNER -> {
+                            TYPE_BANNER, TYPE_BANNER_V2 -> {
                                 data.atfStatusCondition(
                                     onLoading = {
                                         visitableList.add(ShimmeringChannelDataModel(data.id.toString()))
@@ -295,7 +301,11 @@ class HomeVisitableFactoryImpl(
                                         }
                                     },
                                     onSuccess = {
-                                        this.addHomePageBannerData(data.getAtfContent<com.tokopedia.home.beranda.domain.model.banner.BannerDataModel>(), index)
+                                        this.addHomePageBannerData(
+                                            data.getAtfContent<com.tokopedia.home.beranda.domain.model.banner.BannerDataModel>(),
+                                            index,
+                                            data.component == TYPE_BANNER_V2
+                                        )
                                     }
                                 )
                                 channelPosition++
@@ -333,7 +343,7 @@ class HomeVisitableFactoryImpl(
                                 )
                             }
 
-                            TYPE_MISSION -> {
+                            TYPE_MISSION, TYPE_MISSION_V2 -> {
                                 data.atfStatusCondition(
                                     onLoading = {
                                         visitableList.add(
@@ -401,7 +411,11 @@ class HomeVisitableFactoryImpl(
         return this
     }
 
-    private fun addHomePageBannerData(bannerDataModel: com.tokopedia.home.beranda.domain.model.banner.BannerDataModel?, index: Int) {
+    private fun addHomePageBannerData(
+        bannerDataModel: com.tokopedia.home.beranda.domain.model.banner.BannerDataModel?,
+        index: Int,
+        isBleeding: Boolean,
+    ) {
         bannerDataModel?.let {
             val channelModel = ChannelModel(
                 verticalPosition = index,
@@ -419,7 +433,8 @@ class HomeVisitableFactoryImpl(
             visitableList.add(
                 BannerRevampDataModel(
                     channelModel = channelModel,
-                    isCache = isCache
+                    isCache = isCache,
+                    isBleeding = isBleeding,
                 )
             )
         }

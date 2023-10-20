@@ -67,7 +67,6 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         }
         if (icons.isNotEmpty()) {
             adapter.updatePosition(absoluteAdapterPosition)
-            adapter.setType(element.type)
             setRecyclerView(icons)
             launch {
                 val maximalTitleHeight =
