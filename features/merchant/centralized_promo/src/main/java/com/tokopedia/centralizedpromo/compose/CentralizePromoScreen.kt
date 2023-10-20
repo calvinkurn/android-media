@@ -404,7 +404,7 @@ private fun LazyGridScope.PromoCreationSection(
             impressionState = data.impressHolderCompose,
             state = state.lazyGridState,
             onItemViewed = {
-                promoCreationImpressed.invoke(it)
+                promoCreationImpressed.invoke(data.title)
             },
             impressInterval = 0
         ),
@@ -452,7 +452,7 @@ private fun LazyGridScope.OnGoingPromoSection(
                     impressionState = onGoingData.impressHolderCompose,
                     state = state.lazyListState,
                     onItemViewed = {
-                        onGoingPromoImpressed.invoke(it)
+                        onGoingPromoImpressed.invoke(onGoingData.title)
                     },
                     impressInterval = 0L
                 )
