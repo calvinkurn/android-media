@@ -5,4 +5,5 @@ data class RecommendationWidgetTrackingModel(
     val eventActionImpression: String = "",
     val eventActionClick: String = "",
     val listPageName: String = "",
+    val anchorId: String = "",
 )
