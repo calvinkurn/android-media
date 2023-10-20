@@ -4,11 +4,11 @@ import androidx.annotation.FloatRange
 import androidx.annotation.RestrictTo
 import com.google.android.material.shape.EdgeTreatment
 import com.google.android.material.shape.ShapePath
-import com.tokopedia.discovery2.Utils.Companion.dpToPx
 
 class NotchEdgeTreatment(
     private val scallopMargin: Float = 0f,
     private val roundedCornerRadius: Float = 0f,
+    private val cardHeight: Float = 0f,
     cradleVerticalOffset: Float = 0f,
     horizontalOffset: Float = 0f,
     isLeftEdge: Boolean = false
@@ -24,7 +24,6 @@ class NotchEdgeTreatment(
      * @hide
      */
     @get:RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    @set:RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     var scallopDiameter = 0f
     private var cradleVerticalOffset = 0f
     private val horizontalOffset: Float
@@ -57,7 +56,7 @@ class NotchEdgeTreatment(
         // from the bottom to the cradle position. As the card is expanding, the horizontalOffset
         // is added with the increased length so that the cradle appears to stay in the same position.
         val cradlePosition: Float = if (isLeftEdge) {
-            dpToPx(DEFAULT_CARD_HEIGHT) - horizontalOffset
+            cardHeight - (horizontalOffset + (1.5f * scallopDiameter))
         } else {
             horizontalOffset
         }
@@ -151,6 +150,5 @@ class NotchEdgeTreatment(
         private const val ARC_HALF = 180
         private const val ANGLE_UP = 270
         private const val ANGLE_LEFT = 180
-        private const val DEFAULT_CARD_HEIGHT = 150
     }
 }

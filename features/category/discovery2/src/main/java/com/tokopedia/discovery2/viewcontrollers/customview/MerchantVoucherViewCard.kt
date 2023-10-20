@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.databinding.ItemMerchantVoucherCarouselLayoutBinding
 import com.tokopedia.discovery2.viewcontrollers.fragment.NotchEdgeTreatment
+import com.tokopedia.home_component.util.convertDpToPixel
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -29,20 +30,12 @@ class MerchantVoucherViewCard @JvmOverloads constructor(
 
     init {
         binding.divider.addOneTimeGlobalLayoutListener {
-            val rightPosition = binding.divider.y - RIGHT_EDGE_OFFSET
-            val leftPosition = binding.divider.y + SCALLOP_DIAMETER - LEFT_EDGE_OFFSET
-
-            val rightEdge = NotchEdgeTreatment(horizontalOffset = rightPosition)
-                .apply {
-                    scallopDiameter = SCALLOP_DIAMETER
-                }
-
-            val leftEdge = NotchEdgeTreatment(
-                horizontalOffset = leftPosition,
-                isLeftEdge = true
-            ).apply {
-                scallopDiameter = SCALLOP_DIAMETER
-            }
+            val rightEdge = getRightEdge(binding.divider.y, binding.divider.height)
+            val leftEdge = getLeftEdge(
+                binding.divider.y,
+                binding.divider.height,
+                binding.root.height
+            )
 
             val shapePathModel = ShapeAppearanceModel.builder()
                 .setAllCorners(CornerFamily.ROUNDED, CORNER_SIZE)
@@ -52,9 +45,14 @@ class MerchantVoucherViewCard @JvmOverloads constructor(
 
             val materialShapeDrawable = MaterialShapeDrawable(shapePathModel)
             val defaultColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN0)
-            materialShapeDrawable.setTint(defaultColor)
-            background = materialShapeDrawable
+            val strokeColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN600)
 
+            materialShapeDrawable.apply {
+                setTint(defaultColor)
+                setStroke(0.5f, strokeColor)
+            }
+
+            background = materialShapeDrawable
             binding.cardBackground.shapeAppearanceModel = shapePathModel
         }
     }
@@ -87,10 +85,41 @@ class MerchantVoucherViewCard @JvmOverloads constructor(
         }
     }
 
+    private fun getRightEdge(
+        dividerPosition: Float,
+        dividerHeight: Int
+    ): NotchEdgeTreatment {
+        val rightOffset = convertDpToPixel((dividerHeight).toFloat(), context)
+        val rightPosition = dividerPosition - rightOffset
+
+        return NotchEdgeTreatment(
+            horizontalOffset = rightPosition
+        )
+            .apply {
+                scallopDiameter = SCALLOP_DIAMETER
+            }
+    }
+
+    private fun getLeftEdge(
+        dividerPosition: Float,
+        dividerHeight: Int,
+        cardHeight: Int
+    ): NotchEdgeTreatment {
+        val heightPortion = 0.35f
+        val leftOffset = convertDpToPixel((heightPortion * dividerHeight), context)
+        val leftPosition = dividerPosition + leftOffset
+
+        return NotchEdgeTreatment(
+            horizontalOffset = leftPosition,
+            cardHeight = cardHeight.toFloat(),
+            isLeftEdge = true
+        ).apply {
+            scallopDiameter = SCALLOP_DIAMETER
+        }
+    }
+
     companion object {
         private const val SCALLOP_DIAMETER = 40f
         private const val CORNER_SIZE = 40f
-        private const val LEFT_EDGE_OFFSET = 5
-        private const val RIGHT_EDGE_OFFSET = 15
     }
 }
