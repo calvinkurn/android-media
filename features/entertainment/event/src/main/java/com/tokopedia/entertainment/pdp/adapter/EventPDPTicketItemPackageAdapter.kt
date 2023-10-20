@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat=
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.entertainment.R
@@ -28,11 +28,10 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
-import java.util.Calendar
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class EventPDPTicketItemPackageAdapter(
-        val onBindItemTicketListener: OnBindItemTicketListener,
+    val onBindItemTicketListener: OnBindItemTicketListener
 ) : RecyclerView.Adapter<EventPDPTicketItemPackageAdapter.EventPDPTicketItemPackageViewHolder>() {
 
     private var listItemPackage = emptyList<PackageItem>()
@@ -147,7 +146,6 @@ class EventPDPTicketItemPackageAdapter(
 
         private fun renderForMainPackage(items: PackageItem) {
             with(binding) {
-
                 root.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                     if (!hasFocus) {
                         val imm = root.context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -158,8 +156,11 @@ class EventPDPTicketItemPackageAdapter(
                 txtTitleTicket.text = items.name
                 txtSubtitleTicket.text = items.description
                 txtSubtitleTicket.visibility = if (items.description.isNotEmpty()) View.VISIBLE else View.GONE
-                txtPriceTicket.text = if(items.salesPrice.toIntSafely() != ZERO_PRICE) getRupiahFormat(items.salesPrice.toIntSafely())
-                else root.context.resources.getString(R.string.ent_free_price)
+                txtPriceTicket.text = if (items.salesPrice.toIntSafely() != ZERO_PRICE) {
+                    getRupiahFormat(items.salesPrice.toIntSafely())
+                } else {
+                    root.context.resources.getString(R.string.ent_free_price)
+                }
 
                 val isRecomended = checkDate(items.dates, onBindItemTicketListener.getSelectedDate())
                 if (isRecomended) {
@@ -177,10 +178,12 @@ class EventPDPTicketItemPackageAdapter(
                     quantityEditor.setValueChangedListener { newValue, _, _ ->
                         isError = !((quantityEditor.getValue() >= items.minQty.toIntSafely() || quantityEditor.getValue() >= EMPTY_QTY) && quantityEditor.getValue() <= items.maxQty.toIntSafely())
                         val total = if (newValue < items.minQty.toIntSafely()) EMPTY_QTY else newValue
-                        onBindItemTicketListener.quantityEditorValueButtonClicked(idPackage, items.id, items,
-                                items.salesPrice.toIntSafely() * total, total.toString(),
-                                isError, items.name, items.productId, items.salesPrice,
-                                getDate(items.dates, onBindItemTicketListener.getSelectedDate()), packageName)
+                        onBindItemTicketListener.quantityEditorValueButtonClicked(
+                            idPackage, items.id, items,
+                            items.salesPrice.toIntSafely() * total, total.toString(),
+                            isError, items.name, items.productId, items.salesPrice,
+                            getDate(items.dates, onBindItemTicketListener.getSelectedDate()), packageName
+                        )
                         eventPDPTracking.onClickQuantity()
                     }
 
@@ -209,8 +212,9 @@ class EventPDPTicketItemPackageAdapter(
                                     }
                                 }
                                 if (getDigit(txtTotal.toString()) > EMPTY_QTY &&
-                                        getDigit(txtTotal.toString()) >= items.minQty.toIntSafely() &&
-                                        getDigit(txtTotal.toString()) <= items.maxQty.toIntSafely()) {
+                                    getDigit(txtTotal.toString()) >= items.minQty.toIntSafely() &&
+                                    getDigit(txtTotal.toString()) <= items.maxQty.toIntSafely()
+                                ) {
                                     quantityEditor.editText.error = null
                                     isError = false
                                 }
@@ -226,9 +230,11 @@ class EventPDPTicketItemPackageAdapter(
                             }
 
                             val total = if (getDigit(txtTotal.toString()) < items.minQty.toIntSafely()) EMPTY_QTY else getDigit(txtTotal.toString())
-                            onBindItemTicketListener.quantityEditorValueButtonClicked(idPackage, items.id, items, items.salesPrice.toIntSafely() * total,
-                                    total.toString(), isError, items.name, items.productId, items.salesPrice,
-                                    getDate(items.dates, onBindItemTicketListener.getSelectedDate()), packageName)
+                            onBindItemTicketListener.quantityEditorValueButtonClicked(
+                                idPackage, items.id, items, items.salesPrice.toIntSafely() * total,
+                                total.toString(), isError, items.name, items.productId, items.salesPrice,
+                                getDate(items.dates, onBindItemTicketListener.getSelectedDate()), packageName
+                            )
                         }
                     }
 
