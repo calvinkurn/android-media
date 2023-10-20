@@ -51,11 +51,11 @@ class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallb
     }
 
     private fun process(context: Context, config: DataConfig) {
-        try {
-            val interceptor = CdnInterceptor(context)
-            config.imageUrlList?.let {
-                it.forEach { item ->
-                    CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val interceptor = CdnInterceptor(context)
+                config.imageUrlList?.let {
+                    it.forEach { item ->
                         if (config.sendSuccess) {
                             val client = OkHttpClient.Builder()
                                 .dns(CdnDns(item.cname))
@@ -71,8 +71,8 @@ class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallb
                         }
                     }
                 }
+            } catch (ignore: Exception) {
             }
-        } catch (ignore: Exception) {
         }
     }
 
@@ -83,9 +83,9 @@ class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallb
     override fun onActivityStarted(activity: Activity) {
         val className = activity.javaClass.canonicalName ?: return
         cdnConfig?.let { config ->
-            if (config.pageNameList?.contains(className) == true) {
-                process(activity, config)
-            }
+//            if (config.pageNameList?.contains(className) == true) {
+            process(activity, config)
+//            }
         }
     }
 
