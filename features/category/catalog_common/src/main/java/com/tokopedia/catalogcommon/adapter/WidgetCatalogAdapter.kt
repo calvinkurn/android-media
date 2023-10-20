@@ -32,16 +32,16 @@ class WidgetCatalogAdapter(
         result.dispatchUpdatesTo(this)
     }
 
-    fun changeComparison(comparisonIndex: Int, comparison: ComparisonUiModel) {
+    fun changeComparison(comparison: ComparisonUiModel) {
         visitables.forEachIndexed { index, visitable ->
-            val comparisonUiModel = visitable as? ComparisonUiModel
-            val comparisonContent = comparison.content.firstOrNull()
-            if (comparisonContent != null) {
-                comparisonUiModel?.content?.set(comparisonIndex, comparisonContent)
+            if (visitable is ComparisonUiModel) {
+                visitables[index] = comparison
                 notifyItemChanged(index)
             }
         }
     }
+
+    fun isVisitableEmpty() = visitables.isEmpty()
 
     private fun refreshSticky() {
         if (onStickySingleHeaderViewListener != null) {

@@ -127,7 +127,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         private const val LOGIN_REQUEST_CODE = 1001
         private const val POSITION_THREE_IN_WIDGET_LIST = 3
         private const val POSITION_TWO_IN_WIDGET_LIST = 2
-        private const val COMPARISON_CHANGED_POSITION = 1
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
 
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
@@ -329,7 +328,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                     getString(R.string.catalog_error_message_inactive)
                 ).show()
             else
-                widgetAdapter.changeComparison(COMPARISON_CHANGED_POSITION, it)
+                widgetAdapter.changeComparison(it)
         }
 
         CoroutineScope(Dispatchers.Main).launch {

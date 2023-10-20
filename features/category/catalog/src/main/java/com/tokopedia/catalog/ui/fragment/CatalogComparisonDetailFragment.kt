@@ -46,7 +46,6 @@ class CatalogComparisonDetailFragment :
         const val ARG_PARAM_CATALOG_ID = "catalogId"
         const val ARG_PARAM_CATEGORY_ID = "categoryId"
         const val ARG_PARAM_COMPARE_CATALOG_ID = "compareCatalogId"
-        private const val COMPARISON_CHANGED_POSITION = 1
 
         fun newInstance(
             catalogId: String,
@@ -106,10 +105,7 @@ class CatalogComparisonDetailFragment :
         binding?.loadingLayout?.root?.show()
         binding?.gePageError?.gone()
         binding?.rvContent?.gone()
-        viewModel.getProductCatalog(catalogId, "")
-        if (compareCatalogId.isNotEmpty()) {
-            viewModel.getProductCatalogComparisons(catalogId, compareCatalogId)
-        }
+        viewModel.getProductCatalogComparisons(catalogId, compareCatalogId)
     }
 
     private fun setupObserver(view: View) {
@@ -153,14 +149,21 @@ class CatalogComparisonDetailFragment :
             }.show()
         }
         viewModel.comparisonUiModel.observe(viewLifecycleOwner) {
-            // COMPARISON_CHANGED_POSITION is hardcoded position, will changed at next phase
+            binding?.gePageError?.gone()
+            binding?.rvContent?.show()
+            binding?.loadingLayout?.root?.gone()
             if (it == null)
                 Toaster.build(
                     view,
                     getString(R.string.catalog_error_message_inactive)
                 ).show()
-            else
-                widgetAdapter.changeComparison(COMPARISON_CHANGED_POSITION, it)
+            else {
+                if (widgetAdapter.isVisitableEmpty()) {
+                    widgetAdapter.addWidget(listOf(it))
+                } else {
+                    widgetAdapter.changeComparison(it)
+                }
+            }
         }
     }
 
