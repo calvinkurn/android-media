@@ -76,7 +76,7 @@ class MainActivity : BaseActivity() {
     private fun handleNavigationLogin() {
         if (!userSession.isLoggedIn) {
             startActivityForResult(
-                RouteManager.getIntent(this, ApplinkConst.LOGIN),
+                RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.SCP_LOGIN),
                 REQUEST_CODE_LOGIN
             )
         } else {
