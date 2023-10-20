@@ -30,7 +30,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:ellipsize="end"
-        android:maxLength="18"
         android:maxLines="1"
         android:textColor="@color/Unify_NN600"
         android:visibility="gone"

@@ -3,9 +3,12 @@ package com.tokopedia.discovery2.viewcontrollers.customview
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import androidx.core.content.ContextCompat
 import com.google.android.material.bottomappbar.BottomAppBarTopEdgeTreatment
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.shape.CornerFamily
@@ -13,7 +16,9 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.databinding.CashbackLayoutBinding
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @SuppressLint("RestrictedApi")
@@ -43,6 +48,8 @@ class CashbackView @JvmOverloads constructor(
         shapeDrawable?.setTint(defaultColor)
 
         background = shapeDrawable
+
+        binding.cardBackground.shapeAppearanceModel = pathModel
     }
 
     fun renderCashback(title: String?, colors: ArrayList<String>?) {
@@ -54,16 +61,34 @@ class CashbackView @JvmOverloads constructor(
         if (colors.isNullOrEmpty()) return
 
         val drawable = GradientDrawable(
-            GradientDrawable.Orientation.RIGHT_LEFT,
+            GradientDrawable.Orientation.LEFT_RIGHT,
             intArrayOf(Color.parseColor(colors.first()), Color.parseColor(colors[1]))
         )
 
-        binding.container.background = drawable
+        renderBackgroundColor(drawable)
     }
 
     fun changeToInactive() {
-        binding.container.setBackgroundColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN100))
+        val drawable = ColorDrawable(
+            ContextCompat.getColor(
+                context,
+                unifyprinciplesR.color.Unify_NN100
+            )
+        )
+
+        renderBackgroundColor(drawable)
+
         binding.cashback.setTextColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN400))
+    }
+
+    private fun renderBackgroundColor(drawable: Drawable) {
+        binding.cashback.addOneTimeGlobalLayoutListener {
+            binding.cardBackground.apply {
+                maxHeight = binding.cashback.height
+
+                loadImage(drawable)
+            }
+        }
     }
 
     companion object {
