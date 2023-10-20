@@ -18,9 +18,12 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.topads.sdk.widget.BANNER_TYPE_HORIZONTAL
+import com.tokopedia.topads.sdk.widget.BANNER_TYPE_VERTICAL
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeRecommendationBannerTopAdsViewHolder(view: View) : SmartAbstractViewHolder<HomeRecommendationBannerTopAdsDataModel>(view) {
@@ -67,8 +70,10 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) : SmartAbstractViewHo
                 it.imageWidth = recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageWidth
                 it.imageHeight = recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageHeight
                 if (recommendationBannerTopAdsDataModelDataModel.bannerType == TYPE_VERTICAL_BANNER_ADS) {
+                    it.bannerType = BANNER_TYPE_VERTICAL
                     loadVerticalBanner(recommendationBannerTopAdsDataModelDataModel, it)
                 } else {
+                    it.bannerType = BANNER_TYPE_HORIZONTAL
                     Glide.with(itemView.context)
                         .load(recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageUrl)
                         .transform(RoundedCorners(8))
@@ -95,22 +100,21 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) : SmartAbstractViewHo
     }
 
     private fun loadVerticalBanner(recommendationBannerTopAdsDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, appCompatImageView: AppCompatImageView) {
-        Glide.with(itemView.context)
-            .load(recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel?.imageUrl)
-            .fitCenter()
-            .addListener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                    appCompatImageView.hide()
-                    binding?.homeRecomTopadsLoaderImage?.hide()
-                    return false
-                }
-
-                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+        recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel?.imageUrl?.let {
+            appCompatImageView.loadImageRounded(it, 16f)
+            {
+                fitCenter()
+                listener(onSuccess = { _, _ ->
                     appCompatImageView.show()
                     binding?.homeRecomTopadsLoaderImage?.hide()
-                    return false
+                }, onError = {
+                    appCompatImageView.hide()
+                    binding?.homeRecomTopadsLoaderImage?.hide()
                 }
-            })
-            .into(appCompatImageView)
+                )
+            }
+        }
     }
 }
+
+
