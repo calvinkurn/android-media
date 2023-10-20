@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.catalog.R
 import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_FAQ
@@ -61,7 +62,11 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESS
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_TRUSTMAKER
 import com.tokopedia.catalog.databinding.FragmentCatalogReimagineDetailPageBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
+import com.tokopedia.catalog.ui.activity.CatalogComparisonDetailActivity
 import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.EXTRA_CATALOG_URL
+import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Companion.ARG_PARAM_CATALOG_ID
+import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Companion.ARG_PARAM_CATEGORY_ID
+import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Companion.ARG_PARAM_COMPARE_CATALOG_ID
 import com.tokopedia.catalog.ui.model.NavigationProperties
 import com.tokopedia.catalog.ui.model.PriceCtaProperties
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
@@ -82,6 +87,7 @@ import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.catalogcommon.util.DrawableExtension
+import com.tokopedia.catalogcommon.viewholder.ComparisonViewHolder
 import com.tokopedia.catalogcommon.viewholder.StickyNavigationListener
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -91,6 +97,8 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.oldcatalog.listener.CatalogDetailListener
+import com.tokopedia.oldcatalog.ui.bottomsheet.CatalogComponentBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -108,18 +116,19 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     StickyNavigationListener, AccordionListener, BannerListener, TrustMakerListener,
-    TextDescriptionListener, VideoExpertListener, TopFeatureListener, DoubleBannerListener {
+    TextDescriptionListener, VideoExpertListener, TopFeatureListener, DoubleBannerListener,
+    ComparisonViewHolder.ComparisonItemListener, CatalogDetailListener {
 
     companion object {
         private const val QUERY_CATALOG_ID = "catalog_id"
         private const val QUERY_PRODUCT_SORTING_STATUS = "product_sorting_status"
-
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         private const val COLOR_VALUE_MAX = 255
         private const val LOGIN_REQUEST_CODE = 1001
-        const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
         private const val POSITION_THREE_IN_WIDGET_LIST = 3
         private const val POSITION_TWO_IN_WIDGET_LIST = 2
+        const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
+
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
             val fragment = CatalogDetailPageFragment()
             val bundle = Bundle()
@@ -144,25 +153,23 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 textDescriptionListener = this,
                 videoExpertListener = this,
                 topFeatureListener = this,
-                doubleBannerListener = this
+                doubleBannerListener = this,
+                comparisonItemListener = this
             )
         )
     }
 
-    var title = ""
-
-    var productSortingStatus = 0
-
-    var catalogId = ""
-
-    var catalogUrl = ""
+    private var title = ""
+    private var productSortingStatus = 0
+    private var catalogId = ""
+    private var categoryId = ""
+    private var catalogUrl = ""
+    private var compareCatalogId = ""
+    private var selectNavigationFromScroll = true
 
     private val userSession: UserSession by lazy {
         UserSession(activity)
     }
-
-    var selectNavigationFromScroll = true
-
 
     private val recyclerViewScrollListener: RecyclerView.OnScrollListener by lazy {
         object : RecyclerView.OnScrollListener() {
@@ -211,7 +218,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             viewModel.getProductCatalog(catalogId, "")
             viewModel.refreshNotification()
         }
-
     }
 
     override fun onNavBackClicked() {
@@ -252,7 +258,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             if (tabPosition == Int.ZERO) {
                 smoothScroller.targetPosition = anchorToPosition - POSITION_THREE_IN_WIDGET_LIST
                 layoutManager?.startSmoothScroll(smoothScroller)
-            } else if (tabPosition == (widgetAdapter.findNavigationCount()-1)) {
+            } else if (tabPosition == (widgetAdapter.findNavigationCount() - 1)) {
                 smoothScroller.targetPosition = anchorToPosition
                 layoutManager?.startSmoothScroll(smoothScroller)
             } else {
@@ -279,6 +285,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             if (it is Success) {
                 productSortingStatus = it.data.productSortingStatus
                 catalogUrl = it.data.catalogUrl
+                categoryId = it.data.priceCtaProperties.departmentId
                 widgetAdapter.addWidget(it.data.widgets)
                 title = it.data.navigationProperties.title
                 binding?.setupToolbar(it.data.navigationProperties)
@@ -299,6 +306,29 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 view, errorMessage, duration = Toaster.LENGTH_LONG,
                 type = Toaster.TYPE_ERROR
             ).show()
+        }
+        viewModel.errorsToasterGetComparison.observe(viewLifecycleOwner) {
+            val errorMessage = if (it is UnknownHostException) {
+                getString(R.string.catalog_error_message_no_connection)
+            } else ErrorHandler.getErrorMessage(requireView().context, it)
+
+            Toaster.build(
+                view, errorMessage, duration = Toaster.LENGTH_LONG,
+                type = Toaster.TYPE_ERROR,
+                actionText = getString(R.string.catalog_retry_action)
+            ) {
+                changeComparison(compareCatalogId)
+            }.show()
+        }
+        viewModel.comparisonUiModel.observe(viewLifecycleOwner) {
+            // COMPARISON_CHANGED_POSITION is hardcoded position, will changed at next phase
+            if (it == null)
+                Toaster.build(
+                    view,
+                    getString(R.string.catalog_error_message_inactive)
+                ).show()
+            else
+                widgetAdapter.changeComparison(it)
         }
 
         CoroutineScope(Dispatchers.Main).launch {
@@ -452,8 +482,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         imageDescription: List<String>,
         brandImageUrl: List<String>
     ) {
-
-
         val impressionImageDescription = if (imageDescription.isNotEmpty()) {
             imageDescription.subList(Int.ZERO, currentPositionVisibility + 1)
         } else {
@@ -646,5 +674,41 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             labels = catalogId,
             trackerId = TRACKER_ID_IMPRESSION_DOUBLE_BANNER
         )
+    }
+
+    override fun onComparisonSwitchButtonClicked(position: Int) {
+        CatalogComponentBottomSheet.newInstance(
+            "",
+            catalogId,
+            "",
+            categoryId,
+            compareCatalogId,
+            CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,
+            this
+        ).show(childFragmentManager, "")
+    }
+
+    override fun onComparisonSeeMoreButtonClicked() {
+        Intent(activity ?: return, CatalogComparisonDetailActivity::class.java).apply {
+            putExtra(ARG_PARAM_CATALOG_ID, catalogId)
+            putExtra(ARG_PARAM_CATEGORY_ID, categoryId)
+            putExtra(ARG_PARAM_COMPARE_CATALOG_ID, compareCatalogId)
+            startActivity(this)
+        }
+    }
+
+    override fun onComparisonProductClick(id: String) {
+        val catalogProductList =
+            Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG))
+                .buildUpon()
+                .appendPath(id).toString()
+        RouteManager.getIntent(context, catalogProductList).apply {
+            startActivity(this)
+        }
+    }
+
+    override fun changeComparison(selectedComparedCatalogId: String) {
+        compareCatalogId = selectedComparedCatalogId
+        viewModel.getProductCatalogComparisons(catalogId, compareCatalogId)
     }
 }
