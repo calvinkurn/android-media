@@ -28,7 +28,7 @@ internal class ProductCardRibbon(view: View) {
 
 
         cardContainer?.layoutParams = cardContainer?.layoutParams?.apply {
-            val marginLayoutParams = this as ViewGroup.MarginLayoutParams?
+            val marginLayoutParams = this as? ViewGroup.MarginLayoutParams
             marginLayoutParams?.marginStart = if (hasRibbon) 4.toPx() else 0
         }
     }
