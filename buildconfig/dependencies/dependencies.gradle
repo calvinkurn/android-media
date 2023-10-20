@@ -356,7 +356,8 @@ ext {
             livenessCore          : "ai.advance.liveness:guardian_core:2.8@aar",
             mp4parser             : "com.googlecode.mp4parser:isoparser:$mp4parserVersion",
             profileInstaller      : "androidx.profileinstaller:profileinstaller:$profileInstallerVersion",
-            desugarJdk            : "com.android.tools:desugar_jdk_libs:$desugarJdkVersion"
+            desugarJdk            : "com.android.tools:desugar_jdk_libs:$desugarJdkVersion",
+            ffmpeg                : "com.arthenica:mobileffmpeg:4.4@aar",
     ]
 
     testDependencies = [

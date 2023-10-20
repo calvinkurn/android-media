@@ -1272,6 +1272,11 @@ object DeeplinkMainApp {
                 DeeplinkMapperDigital.getRegisteredNavigationDigital(context, deeplink)
             }
         ),
+        "universal-editor" to mutableListOf(
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalMedia.INTERNAL_UNIVERSAL_MEDIA_EDITOR
+            }
+        ),
         "universal-page" to mutableListOf(
             DLP.matchPattern("") { deeplink: String ->
                 DeeplinkMapperSearch.getRegisteredNavigationSearch(deeplink)
