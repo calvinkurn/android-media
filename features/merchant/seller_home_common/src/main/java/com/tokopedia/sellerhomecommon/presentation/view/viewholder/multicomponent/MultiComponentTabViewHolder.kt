@@ -19,7 +19,7 @@ class MultiComponentTabViewHolder(
     private val listener: WidgetListener,
 ) : RecyclerView.ViewHolder(itemView) {
 
-    private var viewBinding: ShcMultiComponentViewBinding? by viewBinding()
+    private val viewBinding: ShcMultiComponentViewBinding? by viewBinding()
 
     private val tabAdapter by lazy {
         MultiComponentTabAdapter(WidgetAdapterFactoryImpl(listener))
