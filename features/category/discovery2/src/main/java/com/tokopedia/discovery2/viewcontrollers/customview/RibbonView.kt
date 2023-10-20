@@ -49,8 +49,7 @@ class RibbonView @JvmOverloads constructor(
     fun setBackgroundColor(color: String?) {
         if (color.isNullOrEmpty()) return
 
-        shapeDrawable?.fillColor = ColorStateList.valueOf(Color.parseColor(color))
-        background = shapeDrawable
+        renderRibbonShape(ColorStateList.valueOf(Color.parseColor(color)))
     }
 
     fun setFontColor(color: String?) {
