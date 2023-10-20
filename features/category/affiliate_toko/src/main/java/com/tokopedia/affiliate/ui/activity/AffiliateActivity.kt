@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.ui.activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -42,6 +43,7 @@ import com.tokopedia.affiliate.ui.fragment.education.AffiliateEducationLandingPa
 import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -75,6 +77,7 @@ class AffiliateActivity :
 
     private var fromHelpAppLink = false
     private var fromAppLink = false
+    private var isLandingOnWebview = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         affiliateComponent.injectActivity(this)
@@ -111,8 +114,10 @@ class AffiliateActivity :
                 it.equals(PAGE_SEGMENT_DISCO_PAGE_LIST, true) ->
                     startActivity(Intent(this, AffiliateDiscoPromoListActivity::class.java))
 
-                it.equals(PAGE_SEGMENT_PROMO_PAGE, true) ->
+                it.equals(PAGE_SEGMENT_PROMO_PAGE, true) -> {
+                    isLandingOnWebview = true
                     selectItem(PROMO_MENU, R.id.menu_promo_affiliate, true)
+                }
 
                 it.equals(PAGE_SEGMENT_PERFORMA, true) ->
                     selectItem(ADP_MENU, R.id.menu_performa_affiliate, true)
@@ -154,6 +159,8 @@ class AffiliateActivity :
 
     private fun afterViewCreated() {
         if (userSessionInterface?.isLoggedIn == true) {
+            isLandingOnWebview = Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()
+                ?.equals(PAGE_SEGMENT_PROMO_PAGE, true).orTrue()
             setObservers()
             affiliateVM?.getAffiliateValidateUser()
         } else {
@@ -221,6 +228,7 @@ class AffiliateActivity :
             selectedTab
         )
         if (selectedTab == PROMO_MENU) {
+            isLandingOnWebview = true
             affiliateBottomNavigation?.hideBottomNav()
         } else {
             affiliateBottomNavigation?.showBottomNav()
@@ -283,8 +291,13 @@ class AffiliateActivity :
 
         affiliateVM?.progressBar()?.observe(this) {
             if (it) {
-                findViewById<LoaderUnify>(R.id.affiliate_home_progress_bar)?.show()
+                if (isLandingOnWebview) {
+                    findViewById<View>(R.id.webview_shimmer)?.show()
+                } else {
+                    findViewById<LoaderUnify>(R.id.affiliate_home_progress_bar)?.show()
+                }
             } else {
+                findViewById<View>(R.id.webview_shimmer)?.hide()
                 findViewById<LoaderUnify>(R.id.affiliate_home_progress_bar)?.hide()
             }
         }
