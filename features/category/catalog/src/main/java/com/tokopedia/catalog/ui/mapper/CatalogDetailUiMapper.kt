@@ -217,6 +217,7 @@ class CatalogDetailUiMapper @Inject constructor(
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToTrustMaker(
         isDarkMode: Boolean
     ): TrustMakerUiModel {
+        val textColorSubtitle = getTextColorTrustmaker(isDarkMode)
         val textColor = getTextColor(isDarkMode)
         return TrustMakerUiModel(
             items = data?.trustmaker.orEmpty().map {
@@ -226,7 +227,7 @@ class CatalogDetailUiMapper @Inject constructor(
                     title = it.title,
                     subTitle = it.subtitle,
                     textColorTitle = textColor,
-                    textColorSubTitle = textColor
+                    textColorSubTitle = textColorSubtitle
                 )
             }
         )
@@ -408,6 +409,15 @@ class CatalogDetailUiMapper @Inject constructor(
             unifycomponentsR.color.Unify_Static_White
         } else {
             unifycomponentsR.color.Unify_Static_Black
+        }
+        return MethodChecker.getColor(context, textColorRes)
+    }
+
+    private fun getTextColorTrustmaker(darkMode: Boolean): Int {
+        val textColorRes = if (darkMode) {
+            unifycomponentsR.color.Unify_Static_White
+        } else {
+            catalogcommonR.color.dms_static_Unify_NN600_light
         }
         return MethodChecker.getColor(context, textColorRes)
     }

@@ -21,10 +21,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:maxLines="2"
-        android:lines="2"
-        android:maxLength="35"
-        android:ellipsize="end"
         app:typographyType="paragraph_3"
         tools:text="Dukungan Service Center"
         />
@@ -34,7 +30,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:maxLength="60"
         android:maxLines="3"
         android:lines="3"
         android:ellipsize="end"

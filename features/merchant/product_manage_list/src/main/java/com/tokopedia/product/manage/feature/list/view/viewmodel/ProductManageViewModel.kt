@@ -92,6 +92,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import com.tokopedia.product.manage.common.R as productmanagecommonR
 
 class ProductManageViewModel @Inject constructor(
     private val editPriceUseCase: EditPriceUseCase,
@@ -627,20 +628,30 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(block = {
             var result: Result<EditStockResult>? = null
 
-            status?.let {
-                result = editProductStatus(productId, productName, stock, it)
+            if (status != null && stock!= null){
+                val resultUpdateStock = editProductStock(productId, productName, stock, status)
+                if (resultUpdateStock is Success){
+                    result = editProductStatus(productId, productName, stock, status)
+                }else{
+                    throw Throwable()
+                }
+            }else{
+                status?.let {
+                    result = editProductStatus(productId, productName, stock, it)
+                }
+
+                stock?.let {
+                    result = editProductStock(productId, productName, it, status)
+                }
             }
 
-            stock?.let {
-                result = editProductStock(productId, productName, it, status)
-            }
 
             result?.let {
                 _editStockResult.postValue(it)
             }
         }) {
             val message =
-                com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()
+                productmanagecommonR.string.product_stock_reminder_toaster_failed_desc.toString()
             val result = EditStockResult(
                 productName,
                 productId,
@@ -896,7 +907,7 @@ class ProductManageViewModel @Inject constructor(
 
                 else -> {
                     val message =
-                        com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()
+                        productmanagecommonR.string.product_stock_reminder_toaster_failed_desc.toString()
                     Fail(
                         EditStockResult(
                             productName,

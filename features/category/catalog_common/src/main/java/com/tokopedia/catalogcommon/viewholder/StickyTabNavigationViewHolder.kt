@@ -65,7 +65,6 @@ class StickyTabNavigationViewHolder(
                 R.drawable.shape_showcase_tab_indicator_color
             )
             catalogTabsUnify.setSelectedTabIndicator(centeredTabIndicator)
-            catalogTabsUnify.setTabTextColors(Color.BLUE, Color.BLACK)
             catalogTabsUnify.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     listener?.onNavigateWidget(
