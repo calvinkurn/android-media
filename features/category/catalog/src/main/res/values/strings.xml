@@ -32,6 +32,7 @@
     <string name="catalog_perbandingan_produk">Perbandingan produk</string>
     <string name="catalog_ganti_perbandingan">Ganti Perbandingan</string>
     <string name="catalog_bandingkan">Bandingkan</string>
+    <string name="catalog_selected">Terpilih</string>
     <string name="catalog_search_product_hint">Cari produk di sini..</string>
     <string name="catalog_cobi_cari_katalog_lain">Coba cari katalog lain,  ya</string>
     <string name="catalog_masih_belum">Masih belum ketemu yang cocok?</string>
