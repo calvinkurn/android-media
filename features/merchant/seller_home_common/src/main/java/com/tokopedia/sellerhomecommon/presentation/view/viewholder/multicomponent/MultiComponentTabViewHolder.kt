@@ -82,7 +82,7 @@ class MultiComponentTabViewHolder(
                 listener.getRvViewPool()?.let {
                     setRecycledViewPool(it)
                 }
-                (layoutManager as LinearLayoutManager).recycleChildrenOnDetach = true
+                (layoutManager as? LinearLayoutManager)?.recycleChildrenOnDetach = true
             }
         }
     }

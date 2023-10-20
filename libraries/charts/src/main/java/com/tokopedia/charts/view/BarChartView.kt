@@ -80,7 +80,7 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
         val barDataSets = mutableListOf<BarDataSet>()
         data.metrics.forEach { metric ->
             val barEntries: List<BarEntry> = metric.values.mapIndexed { i, value ->
-                BarEntry(i.toFloat(), value.value, value)
+                BarEntry(i.toFloat(), value.value.toFloat(), value)
             }
             val dataSet = BarDataSet(barEntries, metric.title)
             dataSet.color = getColor(metric.barHexColor)

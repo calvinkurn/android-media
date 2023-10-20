@@ -23,7 +23,7 @@ class BottomSheetListItemViewHolder(
         val RES_LAYOUT = R.layout.shc_item_bottom_sheet_list_item
     }
 
-    val binding by lazy {
+    private val binding by lazy {
         ShcItemBottomSheetListItemBinding.bind(itemView)
     }
 
@@ -31,13 +31,7 @@ class BottomSheetListItemViewHolder(
         with(element) {
             binding.tvShcBottomSheetListItemTitle.text = title
 
-            if (description.isEmpty()) {
-                binding.tvShcBottomSheetListItemTitle.setType(Typography.DISPLAY_1)
-                binding.tvShcBottomSheetListItemTitle.setMargin(0, 8.toPx(), 0, 0)
-            } else {
-                binding.tvShcBottomSheetListItemTitle.setType(Typography.DISPLAY_2)
-                binding.tvShcBottomSheetListItemTitle.setMargin(0, 0, 0, 0)
-            }
+            setupDescription(description)
 
             binding.dividerShcBottomSheetListItemDesc.showWithCondition(
                 description.isNotEmpty() && !element.isLastPosition
@@ -45,6 +39,16 @@ class BottomSheetListItemViewHolder(
             binding.tvShcBottomSheetListItemDesc.shouldShowWithAction(description.isNotEmpty()) {
                 binding.tvShcBottomSheetListItemDesc.text = description
             }
+        }
+    }
+
+    private fun setupDescription(description : String) {
+        if (description.isEmpty()) {
+            binding.tvShcBottomSheetListItemTitle.setType(Typography.DISPLAY_1)
+            binding.tvShcBottomSheetListItemTitle.setMargin(0, 8.toPx(), 0, 0)
+        } else {
+            binding.tvShcBottomSheetListItemTitle.setType(Typography.DISPLAY_2)
+            binding.tvShcBottomSheetListItemTitle.setMargin(0, 0, 0, 0)
         }
     }
 }
