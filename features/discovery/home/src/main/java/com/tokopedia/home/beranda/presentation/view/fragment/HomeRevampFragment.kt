@@ -2479,9 +2479,8 @@ HomeRevampFragment :
 
     override fun getRecommendationForYouIndex(): Int? {
         return adapter?.currentList?.indexOfFirst {
-                it is HomeRecommendationFeedDataModel
-            }.takeIf { it != RecyclerView.NO_POSITION }
-        }
+            it is HomeRecommendationFeedDataModel
+        }.takeIf { it != RecyclerView.NO_POSITION }
     }
 
     private fun setHomeToForYouMenuBottomNav() {
