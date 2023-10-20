@@ -2995,8 +2995,7 @@ open class ShopPageHomeFragment :
                 ShopUtil.getActualPositionFromIndex(parentPosition),
                 shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
                 shopHomeCarousellProductUiModel?.isFestivity.orFalse(),
-
-                shopHomeProductViewModel.isFulfillment.orFalse(),
+                shopHomeProductViewModel.isFulfillment,
                 shopHomeProductViewModel.warehouseId
             )
             shopPageHomeTracking.clickProductPersonalization(
@@ -3283,7 +3282,9 @@ open class ShopPageHomeFragment :
                         shopHomeCarousellProductUiModel?.name.orEmpty(),
                         shopHomeCarousellProductUiModel?.header?.isATC.orZero(),
                         shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
-                        shopHomeCarousellProductUiModel?.isFestivity.orFalse()
+                        shopHomeCarousellProductUiModel?.isFestivity.orFalse(),
+                        isFulfilment = shopHomeProductViewModel.isFulfillment,
+                        warehouseId = shopHomeProductViewModel.warehouseId
                     )
                 )
             }
@@ -3311,7 +3312,9 @@ open class ShopPageHomeFragment :
                         shopHomeCarousellProductUiModel?.name.orEmpty(),
                         shopHomeCarousellProductUiModel?.header?.isATC.orZero(),
                         shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
-                        shopHomeCarousellProductUiModel?.isFestivity.orFalse()
+                        shopHomeCarousellProductUiModel?.isFestivity.orFalse(),
+                        isFulfilment = shopHomeProductViewModel.isFulfillment,
+                        warehouseId = shopHomeProductViewModel.warehouseId
                     )
                 )
             }

@@ -133,7 +133,9 @@ class ShopPageTrackingBuyer(
                     ShopPageTrackingConstant.DIMENSION_79, shopId,
                     ShopPageTrackingConstant.DIMENSION_90, shopRef,
                     ShopPageTrackingConstant.DIMENSION_83, boe,
-                    ShopPageTrackingConstant.DIMENSION_61, sortAndFilterValue
+                    ShopPageTrackingConstant.DIMENSION_61, sortAndFilterValue,
+                    ShopPageTrackingConstant.DIMENSION_58, viewModel.isFulfillment?.run { toString() } ?: "",
+                    ShopPageTrackingConstant.DIMENSION_56, viewModel.warehouseId.orEmpty()
                 )
             )
             list.add(event)

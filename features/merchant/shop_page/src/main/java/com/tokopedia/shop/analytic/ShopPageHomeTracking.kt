@@ -664,7 +664,9 @@ class ShopPageHomeTracking(
                             productId,
                             productName,
                             productDisplayedPrice,
-                            widgetName
+                            widgetName,
+                            isFulfilment,
+                            warehouseId
                         )
                     )
                 )
@@ -782,7 +784,9 @@ class ShopPageHomeTracking(
                             productId,
                             productName,
                             productDisplayedPrice,
-                            widgetName
+                            widgetName,
+                            isFulfilment,
+                            warehouseId
                         )
                     )
                 )

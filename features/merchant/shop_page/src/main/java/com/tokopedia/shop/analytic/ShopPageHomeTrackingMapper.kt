@@ -14,7 +14,9 @@ object ShopPageHomeTrackingMapper {
         widgetName: String,
         widgetOption: Int,
         widgetMasterId: String,
-        isFestivity: Boolean
+        isFestivity: Boolean,
+        isFulfilment: Boolean?,
+        warehouseId: String?
     ): ProductShopDecorationTrackerDataModel {
         return ProductShopDecorationTrackerDataModel(
             shopId = shopId,
@@ -27,7 +29,9 @@ object ShopPageHomeTrackingMapper {
             widgetName = widgetName,
             widgetOption = widgetOption,
             widgetMasterId = widgetMasterId,
-            isFestivity = isFestivity
+            isFestivity = isFestivity,
+            isFulfilment = isFulfilment,
+            warehouseId = warehouseId
         )
     }
 
