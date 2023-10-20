@@ -25,6 +25,9 @@ import com.tokopedia.play.widget.ui.coordinator.PlayWidgetAutoRefreshCoordinator
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import com.tokopedia.feedplus.R as feedplusR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -34,9 +37,11 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class FeedBrowseChannelViewHolder(
     private val binding: ItemFeedBrowseChannelBinding,
     private val listener: Listener,
-    lifecycleScope: CoroutineScope,
+    private val lifecycleScope: CoroutineScope,
     coroutineDispatchers: CoroutineDispatchers
 ) : RecyclerView.ViewHolder(binding.root), PlayWidgetAutoRefreshCoordinator.Listener {
+
+    private var retryJob: Job? = null
 
     private val dp12 = binding.root.context.resources.getDimensionPixelOffset(R.dimen.feed_space_12)
 
@@ -120,6 +125,15 @@ class FeedBrowseChannelViewHolder(
         recyclerViewChip.adapter = chipAdapter
         recyclerViewChip.addItemDecoration(chipItemDecoration)
         recyclerViewChip.layoutManager = CenterScrollLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+
+        binding.root.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(v: View) {
+            }
+
+            override fun onViewDetachedFromWindow(v: View) {
+                retryJob?.cancel()
+            }
+        })
     }
 
     fun updateItem(item: FeedBrowseUiModel.Channel) {
@@ -152,6 +166,7 @@ class FeedBrowseChannelViewHolder(
             }
             is ChannelUiState.Error -> {
                 showErrorView()
+                errorView.stop()
                 errorView.setOnClickListener {
                     val extraParam = channelUiState.extraParam ?: item.extraParam
                     onRetryClicked(extraParam, item)
@@ -232,8 +247,12 @@ class FeedBrowseChannelViewHolder(
     }
 
     private fun onRetryClicked(extraParam: WidgetRequestModel, widgetModel: FeedBrowseUiModel.Channel) {
-        errorView.startAnimating()
-        listener.onRetryClicked(extraParam, widgetModel)
+        if (retryJob?.isActive == true) return
+        retryJob = lifecycleScope.launch {
+            errorView.startAnimating()
+            delay(DELAY_BEFORE_RETRY)
+            listener.onRetryClicked(extraParam, widgetModel)
+        }
     }
 
     override fun onWidgetShouldRefresh() {
@@ -297,5 +316,7 @@ class FeedBrowseChannelViewHolder(
         const val NOTIFY_CHANNEL_STATE = "NotifyChannelState"
         const val NOTIFY_CHIP_STATE = "NotifyChipState"
         const val NOTIFY_AUTO_REFRESH = "NotifyAutoRefresh"
+
+        private const val DELAY_BEFORE_RETRY = 1_000L
     }
 }

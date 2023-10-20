@@ -36,6 +36,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.extension.withCache
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -148,7 +149,9 @@ class FeedBrowseFragment @Inject constructor(
             )
         }
     }
-    private val adapter by lazy { FeedBrowseAdapter(channelListener, lifecycleScope, coroutineDispatchers) }
+    private val adapter by viewLifecycleBound(
+        { FeedBrowseAdapter(channelListener, it.viewLifecycleOwner.lifecycleScope, coroutineDispatchers) }
+    )
 
     private val viewModel: FeedBrowseViewModel by viewModels { viewModelFactory }
 
