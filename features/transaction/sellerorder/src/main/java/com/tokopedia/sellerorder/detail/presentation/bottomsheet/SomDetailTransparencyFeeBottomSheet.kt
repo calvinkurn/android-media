@@ -10,15 +10,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.sellerorder.databinding.BottomsheetTransparencyFeeBinding
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailTransparencyFeeAdapter
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.DetailTransparencyFeeAdapterFactoryImpl
 import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeErrorStateUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeUiModelWrapper
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailTransparencyFeeViewModel
 import com.tokopedia.sellerorder.detail.presentation.widget.transparency_fee.WidgetTransparencyFeeSummary
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -37,11 +40,11 @@ class SomDetailTransparencyFeeBottomSheet : BottomSheetUnify(),
         arguments?.getString(ORDER_ID_KEY).orEmpty()
     }
 
-    private val somDetailTransparencyFeeAdapter by lazy {
+    private val somDetailTransparencyFeeAdapter by lazy(LazyThreadSafetyMode.NONE) {
         SomDetailTransparencyFeeAdapter(typeFactory)
     }
 
-    private val viewModel: SomDetailTransparencyFeeViewModel by lazy {
+    private val viewModel: SomDetailTransparencyFeeViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(this, viewModelFactory).get(SomDetailTransparencyFeeViewModel::class.java)
     }
 
@@ -70,7 +73,7 @@ class SomDetailTransparencyFeeBottomSheet : BottomSheetUnify(),
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         setupTransparencyFeeSummaryWidget()
-        observeTransparencyFee()
+        setShowListener { observeTransparencyFee() }
         fetchTransparencyFee()
     }
 
@@ -114,20 +117,8 @@ class SomDetailTransparencyFeeBottomSheet : BottomSheetUnify(),
     }
 
     private fun observeTransparencyFee() {
-        observe(viewModel.transparencyFee) {
-            somDetailTransparencyFeeAdapter.hideLoadingShimmer()
-            when (it) {
-                is Success -> {
-                    setBottomSheetTitle(it.data.bottomSheetTitle)
-                    somDetailTransparencyFeeAdapter.updateItems(it.data.transparencyFeeList)
-                    binding?.footerTransparencyFee?.updateUI(it.data.summary)
-                }
-
-                is Fail -> {
-                    somDetailTransparencyFeeAdapter.showError(TransparencyFeeErrorStateUiModel(it.throwable))
-                }
-            }
-        }
+        removeObservers(viewModel.transparencyFee)
+        observe(viewModel.transparencyFee, ::transparencyFeeObserver)
     }
 
     private fun fetchTransparencyFee() {
@@ -139,6 +130,20 @@ class SomDetailTransparencyFeeBottomSheet : BottomSheetUnify(),
 
     private fun setBottomSheetTitle(title: String) {
         setTitle(title)
+    }
+
+    private fun transparencyFeeObserver(result: Result<TransparencyFeeUiModelWrapper>) {
+        somDetailTransparencyFeeAdapter.hideLoadingShimmer()
+        when (result) {
+            is Success -> {
+                setBottomSheetTitle(result.data.bottomSheetTitle)
+                somDetailTransparencyFeeAdapter.updateItems(result.data.transparencyFeeList)
+                binding?.footerTransparencyFee?.updateUI(result.data.summary)
+            }
+            is Fail -> {
+                somDetailTransparencyFeeAdapter.showError(TransparencyFeeErrorStateUiModel(result.throwable))
+            }
+        }
     }
 
     companion object {
