@@ -80,8 +80,9 @@ class GetAddOnUseCase @Inject constructor(
         selectedAddOn: List<AddOnUIModel> = emptyList()
     ) {
         val requestParams = RequestParams.create()
+        val addonRequest = addOnIds.mapToAddonRequest(addOnTypes, addOnWidgetParam, selectedAddOn)
         requestParams.putObject(PARAM_INPUT, GetAddOnRequest(
-            addOnRequest = addOnIds.mapToAddonRequest(addOnTypes, addOnWidgetParam, selectedAddOn),
+            addOnRequest = addonRequest,
             source = Source(usecase = USECASE_GIFTING_VALUE, squad = SQUAD_VALUE)
         ))
         setRequestParams(requestParams.parameters)
@@ -97,11 +98,32 @@ class GetAddOnUseCase @Inject constructor(
         selectedAddOn: List<AddOnUIModel>
     ) = mapIndexed { index, addOnId ->
         val param = addOnWidgetParam ?: AddOnParam()
-        val addonKey = selectedAddOn.firstOrNull()?.uniqueId.orEmpty()
+        val addonKey = selectedAddOn.getOrNull(index)?.uniqueId.orEmpty()
         AddOnRequest(
             addOnID = addOnId,
             addOnType = addOnTypes.getOrNull(index).orEmpty(),
             addOnKey = addonKey,
+            additional = Additional(
+                productID = param.productId,
+                categoryID = param.categoryID,
+                shopID = param.shopID,
+                quantity = param.quantity,
+                price = param.price,
+                discountedPrice = param.discountedPrice,
+                condition = param.condition
+            )
+        )
+    }
+
+    private fun List<AddOnUIModel>.mapToAddonRequest(
+        addOnTypes: List<String>,
+        addOnWidgetParam: AddOnParam?
+    ) = mapIndexed { index, addOn ->
+        val param = addOnWidgetParam ?: AddOnParam()
+        AddOnRequest(
+            addOnID = addOn.id,
+            addOnType = addOnTypes.getOrNull(index).orEmpty(),
+            addOnKey = addOn.uniqueId,
             additional = Additional(
                 productID = param.productId,
                 categoryID = param.categoryID,

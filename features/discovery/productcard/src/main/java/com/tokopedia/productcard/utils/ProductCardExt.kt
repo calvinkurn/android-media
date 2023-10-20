@@ -2,6 +2,7 @@ package com.tokopedia.productcard.utils
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -25,11 +26,14 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageTopRightCrop
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.toPx
@@ -39,6 +43,7 @@ import com.tokopedia.video_widget.VideoPlayerView
 import timber.log.Timber
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.unifyprinciples.R.color as unifyRColor
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 internal val View.isVisible: Boolean
     get() = visibility == View.VISIBLE
@@ -251,7 +256,7 @@ private fun Typography.showTypography(labelGroup: ProductCardModel.LabelGroup) {
     }
 }
 
-private fun String?.toUnifyTextColor(context: Context): Int {
+internal fun String?.toUnifyTextColor(context: Context): Int {
     return try {
         when (this) {
             TEXT_DARK_ORANGE -> ContextCompat.getColor(
@@ -493,7 +498,7 @@ fun <T : View?> View.findViewById(viewStubId: ViewStubId, viewId: ViewId): T? {
     return findViewById<T>(viewId.id)
 }
 
-fun <T : View?> View.showWithCondition(viewStubId: ViewStubId, viewId: ViewId, isShow: Boolean) {
+internal fun <T : View?> View.showWithCondition(viewStubId: ViewStubId, viewId: ViewId, isShow: Boolean) {
     if (isShow) {
         findViewById<T>(viewStubId, viewId)?.show()
     } else {
@@ -722,4 +727,29 @@ internal fun createColorSampleDrawable(context: Context, colorString: String): G
     gradientDrawable.setColor(com.tokopedia.productcard.safeParseColor(colorString))
 
     return gradientDrawable
+}
+
+internal fun rollenceRemoteConfig(): Lazy<RemoteConfig?> =
+    lazyThreadSafetyNone {
+        try {
+            RemoteConfigInstance.getInstance().abTestPlatform
+        } catch (_: Throwable) {
+            null
+        }
+    }
+
+fun Label.forceLightRed() {
+    setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_RN500))
+    val drawable = ContextCompat.getDrawable(context, unifycomponentsR.drawable.label_bg)
+    drawable?.setColorFilter(context.resources.getColor(R.color.dms_static_light_RN100), PorterDuff.Mode.SRC_ATOP)
+
+    setBackgroundDrawable(drawable)
+}
+
+fun Label.forceLightGreen() {
+    setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_GN500))
+    val drawable = ContextCompat.getDrawable(context, unifycomponentsR.drawable.label_bg)
+    drawable?.setColorFilter(context.resources.getColor(R.color.dms_static_light_GN100), PorterDuff.Mode.SRC_ATOP)
+
+    setBackgroundDrawable(drawable)
 }

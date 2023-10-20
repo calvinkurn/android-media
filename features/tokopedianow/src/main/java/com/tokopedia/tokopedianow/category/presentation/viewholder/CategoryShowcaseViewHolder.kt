@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactView
-import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryShowcaseAdapter
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryShowcaseDiffer
@@ -27,8 +26,6 @@ class CategoryShowcaseViewHolder(
     itemView: View,
     private val categoryShowcaseItemListener: CategoryShowcaseItemListener? = null,
     private val categoryShowcaseHeaderListener: TokoNowDynamicHeaderListener? = null,
-    private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener? = null,
-    private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null,
     private val parentRecycledViewPool: RecyclerView.RecycledViewPool? = null,
     private val lifecycleOwner: LifecycleOwner? = null
 ): AbstractViewHolder<CategoryShowcaseUiModel>(itemView) {
@@ -47,8 +44,6 @@ class CategoryShowcaseViewHolder(
         CategoryShowcaseAdapter(
             typeFactory = CategoryShowcaseAdapterTypeFactory(
                 categoryShowcaseItemListener = categoryShowcaseItemListener,
-                productCardCompactListener = productCardCompactListener,
-                productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener,
                 lifecycleOwner = lifecycleOwner
             ),
             differ = CategoryShowcaseDiffer()

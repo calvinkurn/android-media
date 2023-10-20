@@ -11,31 +11,32 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.universalinbox.stub.common.atPositionCheckInstanceOf
 import com.tokopedia.inbox.universalinbox.stub.common.withRecyclerView
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationWidgetUiModel
 import com.tokopedia.carouselproductcard.R as carouselproductcardR
 import com.tokopedia.productcard.R as productcardR
+import com.tokopedia.recommendation_widget_common.R as recommendation_widget_commonR
 
 object RecommendationResult {
     fun assertProductRecommendation(position: Int) {
         onView(withId(R.id.inbox_rv)).check(
             atPositionCheckInstanceOf(
                 position = position,
-                expectedClass = RecommendationItem::class.java
+                expectedClass = UniversalInboxRecommendationUiModel::class.java
             )
         )
     }
 
-    fun assertPrePurchaseRecommendation(position: Int) {
+    fun assertWidgetRecommendation(position: Int) {
         onView(withId(R.id.inbox_rv)).check(
             atPositionCheckInstanceOf(
                 position = position,
-                expectedClass = RecommendationWidgetModel::class.java
+                expectedClass = UniversalInboxRecommendationWidgetUiModel::class.java
             )
         )
     }
 
-    fun assertPrePurchaseRecommendationGone(position: Int) {
+    fun assertWidgetRecommendationGone(position: Int) {
         onView(
             withRecyclerView(R.id.inbox_rv)
                 .atPositionOnView(position, R.id.inbox_recommendation_widget)
@@ -45,7 +46,7 @@ object RecommendationResult {
     fun assertApplinkPDP() {
         Intents.intended(
             IntentMatchers.hasData(
-                "tokopedia-android-internal://marketplace/product-detail/2455862417/"
+                "tokopedia-android-internal://marketplace/product-detail/4637526753/"
             )
         )
     }
@@ -57,9 +58,16 @@ object RecommendationResult {
         ).check(matches(withText(name)))
     }
 
-    fun assertProductWidgetRecommendationName(position: Int, name: String) {
+    fun assertProductWidgetPrePurchaseRecommendationName(position: Int, name: String) {
         onView(
             withRecyclerView(carouselproductcardR.id.carouselProductCardRecyclerView)
+                .atPositionOnView(position, productcardR.id.textViewProductName)
+        ).check(matches(withText(name)))
+    }
+
+    fun assertProductWidgetPostPurchaseRecommendationName(position: Int, name: String) {
+        onView(
+            withRecyclerView(recommendation_widget_commonR.id.rv_recommendation_vertical)
                 .atPositionOnView(position, productcardR.id.textViewProductName)
         ).check(matches(withText(name)))
     }

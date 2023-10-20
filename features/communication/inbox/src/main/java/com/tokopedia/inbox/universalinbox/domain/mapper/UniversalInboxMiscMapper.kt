@@ -1,0 +1,71 @@
+package com.tokopedia.inbox.universalinbox.domain.mapper
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil
+import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactory
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparatorUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationWidgetUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
+import javax.inject.Inject
+
+open class UniversalInboxMiscMapper @Inject constructor() {
+
+    private var topAdsBannerUiModel = UniversalInboxTopAdsBannerUiModel()
+
+    fun generateMiscMenu(): List<Visitable<in UniversalInboxTypeFactory>> {
+        return listOf(
+            UniversalInboxMenuSeparatorUiModel(), // Separator line
+            getTopAdsUiModel(), // Top Ads banner
+            generateRecommendationPostPurchaseWidgetModel(), // Recommendation Widget (post purchase)
+            generateRecommendationPrePurchaseWidgetModel() // Recommendation Widget (pre purchase)
+        )
+    }
+
+    protected open fun getTopAdsUiModel(): UniversalInboxTopAdsBannerUiModel {
+        return topAdsBannerUiModel
+    }
+
+    fun resetTopAdsBanner() {
+        topAdsBannerUiModel = UniversalInboxTopAdsBannerUiModel()
+    }
+
+    private fun generateRecommendationPostPurchaseWidgetModel():
+        UniversalInboxRecommendationWidgetUiModel {
+        return UniversalInboxRecommendationWidgetUiModel(
+            RecommendationWidgetModel(
+                metadata = RecommendationWidgetMetadata(
+                    pageName = UniversalInboxValueUtil.WIDGET_PAGE_NAME_POST_PURCHASE
+                ),
+                trackingModel = RecommendationWidgetTrackingModel(
+                    androidPageName = RecommendationCarouselTrackingConst.Category.INBOX_PAGE,
+                    eventActionImpression = RecommendationCarouselTrackingConst.Action.IMPRESSION_ON_PRODUCT_RECOMMENDATION_INBOX,
+                    eventActionClick = RecommendationCarouselTrackingConst.Action.CLICK_ON_PRODUCT_RECOMMENDATION_INBOX,
+                    listPageName = RecommendationCarouselTrackingConst.List.INBOX
+                )
+            ),
+            UniversalInboxRecommendationWidgetUiModel.Type.POST_PURCHASE
+        )
+    }
+
+    private fun generateRecommendationPrePurchaseWidgetModel():
+        UniversalInboxRecommendationWidgetUiModel {
+        return UniversalInboxRecommendationWidgetUiModel(
+            RecommendationWidgetModel(
+                metadata = RecommendationWidgetMetadata(
+                    pageName = UniversalInboxValueUtil.WIDGET_PAGE_NAME_PRE_PURCHASE
+                ),
+                trackingModel = RecommendationWidgetTrackingModel(
+                    androidPageName = RecommendationCarouselTrackingConst.Category.INBOX_PAGE,
+                    eventActionImpression = RecommendationCarouselTrackingConst.Action.IMPRESSION_ON_PRODUCT_RECOMMENDATION_INBOX,
+                    eventActionClick = RecommendationCarouselTrackingConst.Action.CLICK_ON_PRODUCT_RECOMMENDATION_INBOX,
+                    listPageName = RecommendationCarouselTrackingConst.List.INBOX
+                )
+            ),
+            UniversalInboxRecommendationWidgetUiModel.Type.PRE_PURCHASE
+        )
+    }
+}

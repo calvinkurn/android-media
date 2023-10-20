@@ -1,7 +1,7 @@
 package com.tokopedia.scp_rewards_widgets.medal
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.scp_rewards_common.EARNED_BADGE
+import com.tokopedia.scp_rewards_common.constants.EARNED_BADGE
 
 data class MedalData(
     val id: Int? = null,
@@ -37,11 +37,10 @@ data class MedalItem(
     val isDisabled: Boolean? = false,
     val progression: Int? = 0,
     val cta: Cta? = null,
-    val medalType: String = "",
     val isPlaceHolder: Boolean = false
 ) : Visitable<MedalViewTypeFactory> {
 
-    fun isEarned() = medalType == EARNED_BADGE
+    fun isEarned() = isDisabled == false
 
     fun isNewlyEarned() = isEarned() && showConfetti == true
     override fun type(typeFactory: MedalViewTypeFactory): Int = typeFactory.type(this)
@@ -51,7 +50,8 @@ data class Cta(
     val text: String? = null,
     val isShown: Boolean? = false,
     val appLink: String? = null,
-    val deepLink: String? = null
+    val deepLink: String? = null,
+    val style: String? = null,
 )
 
 class MedalError(val imageUrl: String?) : Visitable<MedalViewTypeFactory> {

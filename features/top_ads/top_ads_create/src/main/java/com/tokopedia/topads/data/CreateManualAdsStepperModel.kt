@@ -2,6 +2,7 @@ package com.tokopedia.topads.data
 
 import com.tokopedia.abstraction.base.view.model.StepperModel
 import com.tokopedia.topads.common.data.response.KeywordDataItem
+import kotlinx.parcelize.Parcelize
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.view.adapter.product.viewmodel.ProductViewModel
 import kotlinx.android.parcel.Parcelize

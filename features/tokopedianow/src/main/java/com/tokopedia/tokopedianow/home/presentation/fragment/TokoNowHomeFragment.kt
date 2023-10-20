@@ -129,6 +129,7 @@ import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
+import com.tokopedia.tokopedianow.home.presentation.decoration.HomeSpacingDecoration
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
@@ -209,8 +210,6 @@ class TokoNowHomeFragment :
         private const val WHILE_SCROLLING_VERTICALLY = 1
         private const val PARAM_AFFILIATE_UUID = "aff_unique_id"
         private const val PARAM_AFFILIATE_CHANNEL = "channel"
-        private const val REPURCHASE_EXPERIMENT_ENABLED = "experiment_variant"
-        private const val REPURCHASE_EXPERIMENT_DISABLED = "control_variant"
         private const val VERTICAL_SCROLL_FULL_BOTTOM_OFFSET = 0
 
         const val CATEGORY_LEVEL_DEPTH = 1
@@ -260,7 +259,6 @@ class TokoNowHomeFragment :
                 bannerComponentListener = createSlideBannerCallback(),
                 homeProductRecomOocListener = createProductRecomOocCallback(),
                 homeProductRecomListener = createProductRecomCallback(),
-                tokoNowProductCardListener = createProductCardListener(),
                 tokoNowRepurchaseListener = createRepurchaseProductListener(),
                 homeSharingEducationListener = this,
                 homeEducationalInformationListener = this,
@@ -811,6 +809,8 @@ class TokoNowHomeFragment :
     }
 
     private fun onClickShareButton() {
+        shareHomeTokonow = createShareHomeTokonow()
+
         updateShareHomeData(
             pageIdConstituents = listOf(PAGE_TYPE_HOME),
             isScreenShot = false,
@@ -885,12 +885,12 @@ class TokoNowHomeFragment :
     private fun setupRecyclerView() {
         context?.let {
             rvHome?.apply {
+                addItemDecoration(HomeSpacingDecoration())
                 adapter = this@TokoNowHomeFragment.adapter
                 rvLayoutManager = CustomLinearLayoutManager(it)
                 layoutManager = rvLayoutManager
                 itemAnimator = null
             }
-
             rvHome?.setItemViewCacheSize(ITEM_VIEW_CACHE_SIZE)
             addHomeComponentScrollListener()
         }
@@ -1624,7 +1624,7 @@ class TokoNowHomeFragment :
                 HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
                 HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
             )
-            viewModelTokoNow.onScroll(lastVisibleItemIndex, it, removeAbleWidgets, isEnableNewRepurchase())
+            viewModelTokoNow.onScroll(lastVisibleItemIndex, it, removeAbleWidgets)
         }
     }
 
@@ -1634,15 +1634,8 @@ class TokoNowHomeFragment :
                 HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
                 HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
             )
-            viewModelTokoNow.getHomeLayout(it, removeAbleWidgets, isEnableNewRepurchase())
+            viewModelTokoNow.getHomeLayout(it, removeAbleWidgets)
         }
-    }
-
-    private fun isEnableNewRepurchase(): Boolean {
-//        val rollence = RemoteConfigInstance.getInstance().abTestPlatform
-//            .getString(RollenceKey.TOKOPEDIA_NOW_REPURCHASE, REPURCHASE_EXPERIMENT_DISABLED)
-//        return rollence == REPURCHASE_EXPERIMENT_ENABLED
-        return true
     }
 
     private fun getMiniCart() {
@@ -2051,7 +2044,8 @@ class TokoNowHomeFragment :
             userSession = userSession,
             viewModel = viewModelTokoNow,
             analytics = analytics,
-            startActivityForResult = this::startActivityForResult
+            startActivityForResult = this::startActivityForResult,
+            onBlockAddToCartListener = ::showToasterWhenAddToCartBlocked
         )
     }
 
@@ -2122,7 +2116,8 @@ class TokoNowHomeFragment :
 
     private fun getMiniCartHeight(): Int {
         return miniCartWidget?.height.orZero() - context?.resources?.getDimension(
-            unifyprinciplesR.dimen.unify_space_16)?.toInt().orZero()
+            unifyprinciplesR.dimen.unify_space_16
+        )?.toInt().orZero()
     }
 
     override fun permissionAction(action: String, label: String) {

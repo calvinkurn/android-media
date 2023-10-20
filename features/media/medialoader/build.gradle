@@ -59,6 +59,8 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 
+    implementation rootProject.ext.firebase.crashlytics
+
     testImplementation rootProject.ext.testDependencies.robolectric
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection

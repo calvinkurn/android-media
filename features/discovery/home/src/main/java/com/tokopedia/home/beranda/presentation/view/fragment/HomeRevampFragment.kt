@@ -18,6 +18,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
@@ -84,6 +85,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeThematicModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
@@ -96,7 +98,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
 import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
+import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.home.beranda.presentation.view.helper.getPositionWidgetVertical
 import com.tokopedia.home.beranda.presentation.view.helper.isHomeTokonowCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.helper.isSubscriptionCoachmarkShown
@@ -133,13 +137,13 @@ import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseCompo
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseRevampCallback
 import com.tokopedia.home.beranda.presentation.view.listener.TodoWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.constant.ConstantKey.CATEGORY_ID
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
-import com.tokopedia.home.constant.HomePerformanceConstant
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.HomeComponentRollenceController
@@ -147,6 +151,8 @@ import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefresh
 import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.ImageHandler
+import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
@@ -156,7 +162,10 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.setLayoutHeight
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.locationmanager.DeviceLocation
@@ -213,6 +222,7 @@ import com.tokopedia.usercomponents.stickylogin.common.helper.saveIsRegisteredFr
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
@@ -226,6 +236,10 @@ import java.net.URLEncoder
 import java.util.Date
 import java.util.concurrent.Executors
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.wishlist_common.R as wishlist_commonR
+import com.tokopedia.play.widget.R as playwidgetR
+import com.tokopedia.searchbar.R as searchbarR
 
 /**
  * @author by yoasfs on 12/14/17.
@@ -306,6 +320,7 @@ open class HomeRevampFragment :
         private const val DEFAULT_MARGIN_VALUE = 0
         private const val POSITION_ARRAY_Y = 1
         private const val isPageRefresh = true
+        private const val DEFAULT_BLOCK_SIZE = 6
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -346,6 +361,9 @@ open class HomeRevampFragment :
     private lateinit var userSession: UserSessionInterface
 
     @Inject
+    lateinit var homeRemoteConfigController: HomeRemoteConfigController
+
+    @Inject
     lateinit var homePrefController: HomePrefController
     private lateinit var root: FrameLayout
     private var refreshLayout: ParentIconSwipeRefreshLayout? = null
@@ -359,6 +377,8 @@ open class HomeRevampFragment :
     private var stickyLoginView: StickyLoginView? = null
     private var homeRecyclerView: NestedRecyclerView? = null
     private var navToolbar: NavToolbar? = null
+    private var thematicBackground: AppCompatImageView? = null
+    private var thematicForeground: AppCompatImageView? = null
     private var homeSnackbar: Snackbar? = null
     private var component: BerandaComponent? = null
     private var adapter: HomeRecycleAdapter? = null
@@ -399,6 +419,7 @@ open class HomeRevampFragment :
     private var positionWidgetTokonow = 0
 
     private var bannerCarouselCallback: BannerComponentCallback? = null
+    private var chooseAddressWidgetCallback: ChooseAddressWidgetCallback? = null
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private var chooseAddressWidgetInitialized: Boolean = false
@@ -410,6 +431,9 @@ open class HomeRevampFragment :
 
     private var performanceTrace: BlocksPerformanceTrace? = null
 
+    @Inject
+    lateinit var homeThematicUtil: HomeThematicUtil
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         createDaggerComponent()
@@ -417,7 +441,7 @@ open class HomeRevampFragment :
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
         homeCoachmarkListener = castContextToHomeCoachmarkListener(context)
         performanceTrace = homePerformanceMonitoringListener?.blocksPerformanceMonitoring
-        requestStatusBarDark()
+        setupThematicStatusBarAndToolbar()
     }
 
     private fun createDaggerComponent() {
@@ -436,13 +460,11 @@ open class HomeRevampFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getPageLoadTimeCallback()?.startCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
         fragmentCreatedForFirstTime = true
         context?.run {
             searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
         }
         startToTransitionOffset = 1f.toDpInt()
-        getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
     }
 
     protected open fun initHomePageFlows(): Boolean {
@@ -558,13 +580,18 @@ open class HomeRevampFragment :
         )
         BenchmarkHelper.endSystraceSection()
         navToolbar = view.findViewById(R.id.navToolbar)
+        thematicBackground = view.findViewById(R.id.thematic_background)
+        thematicForeground = view.findViewById(R.id.thematic_foreground)
         performanceTrace?.addViewPerformanceBlocks(navToolbar)
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerView?.setHasFixedSize(true)
+        if (::homeRemoteConfigController.isInitialized) {
+            getRemoteConfigController().fetchHomeRemoteConfig()
+        }
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
         context?.let {
-            HomeRollenceController.fetchAtfRollenceValue(it)
+            HomeRollenceController.fetchHomeRollenceValue(it)
         }
 
         // show nav toolbar
@@ -584,14 +611,17 @@ open class HomeRevampFragment :
                         override fun onSwitchToDarkToolbar() {
                             navToolbar?.hideShadow()
                             if (HomeRollenceController.isUsingAtf2Variant()) {
-                                requestStatusBarDark()
+                                setupThematicStatusBarAndToolbar()
                             } else {
                                 requestStatusBarLight()
                             }
                         }
 
                         override fun onSwitchToLightToolbar() {
-                            requestStatusBarDark()
+                            requestStatusBarBasedOnUiMode()
+                            if (HomeRollenceController.isUsingAtf2Variant()) {
+                                navToolbar?.switchToolbarBasedOnUiMode()
+                            }
                         }
 
                         override fun onYposChanged(yOffset: Int) {
@@ -600,6 +630,12 @@ open class HomeRevampFragment :
                     isBackgroundColorDefaultColor = HomeRollenceController.isUsingAtf2Variant()
                 )
             )
+            activity?.let { context ->
+                it.setNavToolbarIconCustomColor(
+                    navToolbarIconCustomLightColor = ContextCompat.getColor(context, searchbarR.color.searchbar_dms_state_light_icon),
+                    navToolbarIconCustomDarkColor = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White)
+                )
+            }
             val icons = IconBuilder(
                 IconBuilderFlag(pageSource = NavSource.HOME)
             ).addIcon(getInboxIcon()) {}
@@ -777,6 +813,7 @@ open class HomeRevampFragment :
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 scrollPositionY += dy
+                handleThematicBackgroundScrollListener(recyclerView, scrollPositionY)
                 evaluateHomeComponentOnScroll(recyclerView)
             }
         })
@@ -802,7 +839,7 @@ open class HomeRevampFragment :
                 homeMainToolbarHeight,
                 getScreenWidth(),
                 getScreenHeight() - resources.getDimensionPixelOffset(
-                    com.tokopedia.unifyprinciples.R.dimen.unify_space_48
+                    unifyprinciplesR.dimen.unify_space_48
                 )
             )
 
@@ -833,6 +870,15 @@ open class HomeRevampFragment :
         })
     }
 
+    private fun handleThematicBackgroundScrollListener(recyclerView: RecyclerView, dy: Int) {
+        val scrollThematic = scrollThematic@{ it: View ->
+            if ((layoutManager?.findFirstCompletelyVisibleItemPosition() ?: 0) <= 0 && dy < 0) return@scrollThematic
+            it.translationY = -(dy.toFloat())
+        }
+        thematicBackground?.let { scrollThematic.invoke(it) }
+        thematicForeground?.let { scrollThematic.invoke(it) }
+    }
+
     private fun trackEmbraceBreadcrumbPosition() {
         if (fragmentCurrentScrollPosition != layoutManager?.findLastVisibleItemPosition()) {
             fragmentCurrentScrollPosition = layoutManager?.findLastVisibleItemPosition() ?: -1
@@ -849,7 +895,7 @@ open class HomeRevampFragment :
     private fun setupStatusBar() {
         activity?.let {
             statusBarBackground.background = ColorDrawable(
-                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                ContextCompat.getColor(it, unifyprinciplesR.color.Unify_GN500)
             )
         }
         // status bar background compability, we show view background for android >= Kitkat
@@ -863,6 +909,67 @@ open class HomeRevampFragment :
         }
         // initial condition for status and searchbar
         setStatusBarAlpha(STATUS_BAR_DEFAULT_ALPHA)
+    }
+
+    private fun observeHomeThematic() {
+        getHomeViewModel().thematicLiveData.observe(viewLifecycleOwner) { thematic ->
+            if(thematic.isShown) {
+                context?.let { ctx ->
+                    val thematicImageLoadListener = object: ImageHandler.ImageLoaderStateListener {
+                        override fun successLoad(view: ImageView) {
+                            view.show()
+                            if(view == thematicBackground) {
+                                notifyHomeThematicChanges(thematic, true)
+                            }
+                        }
+
+                        override fun failedLoad(view: ImageView) {
+                            view.hide()
+                            if(view == thematicBackground) {
+                                notifyHomeThematicChanges(thematic, false)
+                            }
+                        }
+                    }
+
+                    if(thematic.backgroundImageURL.isNotEmpty()) {
+                        thematicBackground?.run {
+                            setLayoutHeight(thematic.getActualHeightPx(ctx))
+                            loadImageWithoutPlaceholder(
+                                thematic.backgroundImageURL,
+                                "thematicBackground",
+                                listener = thematicImageLoadListener,
+                                skipErrorPlaceholder = true,
+                            )
+                        }
+                    }
+
+                    if(thematic.foregroundImageURL.isNotEmpty()) {
+                        thematicForeground?.run {
+                            loadImageWithoutPlaceholder(
+                                thematic.foregroundImageURL,
+                                "thematicForeground",
+                                listener = thematicImageLoadListener,
+                                skipErrorPlaceholder = true,
+                            )
+                        }
+                    }
+                }
+            } else {
+                thematicBackground?.hide()
+                thematicForeground?.hide()
+                notifyHomeThematicChanges(thematic)
+            }
+        }
+    }
+
+    private fun notifyHomeThematicChanges(
+        thematicModel: HomeThematicModel,
+        isBackgroundLoaded: Boolean = false
+    ) {
+        getThematicUtil().thematicModel = thematicModel
+        getThematicUtil().isBackgroundLoaded = isBackgroundLoaded
+        setupThematicStatusBarAndToolbar()
+        adapter?.updateThematicTextColor()
     }
 
     private fun evaluateScrollSubscriptionCoachmark() {
@@ -999,9 +1106,6 @@ open class HomeRevampFragment :
     }
 
     override fun onResume() {
-        if (getHomeViewModel().isFirstLoad) {
-            getPageLoadTimeCallback()?.startCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
-        }
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         createAndCallSendScreen()
@@ -1011,7 +1115,6 @@ open class HomeRevampFragment :
             activityStateListener!!.onResume()
         }
         if (getHomeViewModel().isFirstLoad) {
-            getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
             getHomeViewModel().isFirstLoad = false
         }
 
@@ -1109,6 +1212,7 @@ open class HomeRevampFragment :
     }
 
     private fun subscribeHome() {
+        observeHomeThematic()
         observeHomeData()
         observeUpdateNetworkStatusData()
         observeOneClickCheckout()
@@ -1152,9 +1256,6 @@ open class HomeRevampFragment :
             viewLifecycleOwner,
             Observer { data: Event<Boolean> ->
                 val isRequestNetwork = data.peekContent()
-                if (isRequestNetwork && getPageLoadTimeCallback() != null) {
-                    getPageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
-                }
             }
         )
     }
@@ -1173,6 +1274,7 @@ open class HomeRevampFragment :
             viewLifecycleOwner,
             Observer { dynamicChannel: HomeDynamicChannelModel? ->
                 dynamicChannel?.let {
+                    val data = dynamicChannel.list.filter { it is HomeRecommendationFeedDataModel }
                     if (dynamicChannel.list.isNotEmpty()) {
                         setData(dynamicChannel.list, dynamicChannel.isCache)
                     }
@@ -1214,6 +1316,13 @@ open class HomeRevampFragment :
                         NetworkErrorHelper.showEmptyState(activity, root, errorString) { onRefresh() }
                         onPageLoadTimeEnd()
                         performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_ERROR)
+                    }
+                    status == Result.Status.ERROR_ATF_NEW -> {
+                        if (getHomeViewModel().homeDataModel.list.size <= 1) {
+                            val errorString = getErrorStringWithDefault(throwable)
+                            showNetworkError(errorString)
+                            NetworkErrorHelper.showEmptyState(activity, root, errorString) { onRefresh() }
+                        }
                     }
                     else -> {
                         showLoading()
@@ -1288,14 +1397,14 @@ open class HomeRevampFragment :
                     Result.Status.SUCCESS -> if (it.data != null) {
                         showToaster(
                             if (it.data.reminded) {
-                                getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
+                                getString(playwidgetR.string.play_widget_success_add_reminder)
                             } else {
-                                getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
+                                getString(playwidgetR.string.play_widget_success_remove_reminder)
                             },
                             TYPE_NORMAL
                         )
                     }
-                    Result.Status.ERROR -> showToaster(getErrorString(MessageErrorException(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder))), TYPE_ERROR)
+                    Result.Status.ERROR -> showToaster(getErrorString(MessageErrorException(getString(playwidgetR.string.play_widget_error_reminder))), TYPE_ERROR)
                     else -> {
                     }
                 }
@@ -1319,9 +1428,6 @@ open class HomeRevampFragment :
 
     private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
         if (data.isNotEmpty()) {
-            if (needToPerformanceMonitoring(data) && getPageLoadTimeCallback() != null) {
-                finishPageLoadTime(isCache)
-            }
             this.fragmentCurrentCacheState = isCache
             this.fragmentCurrentVisitableCount = data.size
 
@@ -1332,15 +1438,18 @@ open class HomeRevampFragment :
                 visitableListCount = data.size,
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
-            performanceTrace?.setBlock(data.take(6))
-            adapter?.submitList(data)
-        }
-    }
+            val takeLimit: Int = if ((layoutManager?.findLastVisibleItemPosition() ?: DEFAULT_BLOCK_SIZE) >= 0) {
+                layoutManager?.findLastVisibleItemPosition() ?: DEFAULT_BLOCK_SIZE
+            } else {
+                DEFAULT_BLOCK_SIZE
+            }
 
-    private fun finishPageLoadTime(isCache: Boolean) {
-        getPageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
-        getPageLoadTimeCallback()?.startRenderPerformanceMonitoring()
-        setOnRecyclerViewLayoutReady(isCache)
+            performanceTrace?.setBlock(data.take(takeLimit))
+
+            adapter?.submitList(data) {
+
+            }
+        }
     }
 
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {
@@ -1358,12 +1467,30 @@ open class HomeRevampFragment :
 
     private fun requestStatusBarDark() {
         isLightThemeStatusBar = false
-        mainParentStatusBarListener?.requestStatusBarDark()
+        mainParentStatusBarListener?.forceRequestStatusBarDark()
     }
 
     private fun requestStatusBarLight() {
         isLightThemeStatusBar = true
         mainParentStatusBarListener?.requestStatusBarLight()
+    }
+
+    private fun setupThematicStatusBarAndToolbar() {
+        if(getThematicUtil().isLightMode()) {
+            requestStatusBarDark()
+            navToolbar?.switchToLightToolbar()
+        } else if(getThematicUtil().isDarkMode()) {
+            requestStatusBarLight()
+            navToolbar?.switchToDarkToolbar()
+        } else {
+            requestStatusBarBasedOnUiMode()
+            navToolbar?.switchToolbarBasedOnUiMode()
+        }
+    }
+
+    private fun requestStatusBarBasedOnUiMode() {
+        if(context?.isDarkMode() == true) requestStatusBarLight()
+        else requestStatusBarDark()
     }
 
     private object FixedTheme {
@@ -1475,6 +1602,7 @@ open class HomeRevampFragment :
             BestSellerWidgetCallback(context, this, getHomeViewModel()),
             SpecialReleaseRevampCallback(this),
             ShopFlashSaleWidgetCallback(this, getHomeViewModel()),
+            getThematicUtil(),
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1726,12 +1854,15 @@ open class HomeRevampFragment :
     }
 
     override fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean) {
-        chooseAddressWidget.bindChooseAddress(ChooseAddressWidgetCallback(context, this, this))
-        chooseAddressWidget.run {
-            visibility = if (needToShowChooseAddress) {
-                View.VISIBLE
-            } else {
-                View.GONE
+        chooseAddressWidgetCallback = ChooseAddressWidgetCallback(context, this, this, getThematicUtil())
+        chooseAddressWidgetCallback?.let {
+            chooseAddressWidget.bindChooseAddress(it)
+            chooseAddressWidget.run {
+                visibility = if (needToShowChooseAddress) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
             }
         }
     }
@@ -2285,7 +2416,7 @@ open class HomeRevampFragment :
                     }
                 }
             } else {
-                var msg = if (wishlistResult.isAddWishlist) getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg) else getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
+                var msg = if (wishlistResult.isAddWishlist) getString(wishlist_commonR.string.on_failed_add_to_wishlist_msg) else getString(wishlist_commonR.string.on_failed_remove_from_wishlist_msg)
                 if (wishlistResult.messageV2.isNotEmpty()) msg = wishlistResult.messageV2
 
                 context?.let { context ->
@@ -2485,13 +2616,6 @@ open class HomeRevampFragment :
         }
     }
 
-    private fun getPageLoadTimeCallback(): PageLoadTimePerformanceInterface? {
-        if (homePerformanceMonitoringListener != null && homePerformanceMonitoringListener?.pageLoadTimePerformanceInterface != null) {
-            pageLoadTimeCallback = homePerformanceMonitoringListener?.pageLoadTimePerformanceInterface
-        }
-        return pageLoadTimeCallback
-    }
-
     override fun onDetach() {
         if (this::viewModel.isInitialized) {
             this.viewModel.get().onCleared()
@@ -2504,10 +2628,12 @@ open class HomeRevampFragment :
             initInjectorHome()
         }
         val viewmodel = viewModel.get()
-        if (getPageLoadTimeCallback() != null) {
-            getPageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
-        }
         return viewmodel
+    }
+
+    private fun getRemoteConfigController(): HomeRemoteConfigController {
+        if(!this::homeRemoteConfigController.isInitialized) initInjectorHome()
+        return homeRemoteConfigController
     }
 
     private fun showToasterReviewSuccess() {
@@ -2538,7 +2664,9 @@ open class HomeRevampFragment :
 
     override fun onWidgetOpenAppLink(view: View, appLink: String) {
         context?.let {
-            startActivityForResult(RouteManager.getIntent(it, appLink), REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET)
+            val newAppLink = getHomeViewModel().reconstructPlayWidgetAppLink(appLink)
+
+            startActivityForResult(RouteManager.getIntent(it, newAppLink), REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET)
         }
     }
 
@@ -2727,5 +2855,10 @@ open class HomeRevampFragment :
         view?.let {
             refreshLayout?.setContentChildViewPullRefresh(it)
         }
+    }
+
+    private fun getThematicUtil(): HomeThematicUtil {
+        if(!::homeThematicUtil.isInitialized) initInjectorHome()
+        return homeThematicUtil
     }
 }

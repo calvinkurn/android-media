@@ -51,21 +51,27 @@ import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.OOC
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RollenceKey.TOKOPEDIA_NOW_PAGINATION
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.DEFAULT_ROWS
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_DISABLED
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_ENABLED
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_ROWS
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper.mapToWarehouses
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.ProductAdsResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
-import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper.mapToWarehouses
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
-import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
@@ -73,9 +79,9 @@ import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
-import com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
+import com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.home.domain.mapper.oldrepurchase.HomeRepurchaseMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
@@ -141,9 +147,10 @@ abstract class BaseSearchCategoryViewModel(
     protected val cartService: CartService,
     private val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
     protected val setUserPreferenceUseCase: SetUserPreferenceUseCase,
+    private val remoteConfig: RemoteConfig,
     protected val chooseAddressWrapper: ChooseAddressWrapper,
     private val affiliateService: NowAffiliateService,
-    protected val userSession: UserSessionInterface
+    protected val userSession: UserSessionInterface,
 ) : BaseViewModel(baseDispatcher.io) {
     companion object {
         private const val MIN_PRODUCT_COUNT = 6
@@ -176,6 +183,15 @@ abstract class BaseSearchCategoryViewModel(
         private set
     var serviceType = ""
         private set
+
+    private val firstPageSuccessTriggerMutableLiveData = MutableLiveData<Unit>()
+    val firstPageSuccessTriggerLiveData: LiveData<Unit> = firstPageSuccessTriggerMutableLiveData
+
+    private val loadMoreSuccessTriggerMutableLiveData = MutableLiveData<Unit>()
+    val loadMoreSuccessTriggerLiveData: LiveData<Unit> = loadMoreSuccessTriggerMutableLiveData
+
+    private val stopPerformanceMonitoringMutableLiveData = MutableLiveData<Unit>()
+    val stopPerformanceMonitoringLiveData: LiveData<Unit> = stopPerformanceMonitoringMutableLiveData
 
     private val visitableListMutableLiveData = MutableLiveData<List<Visitable<*>>>(visitableList)
     val visitableListLiveData: LiveData<List<Visitable<*>>> = visitableListMutableLiveData
@@ -340,11 +356,13 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun getShopIdBeforeLoadData() {
-        getShopAndWarehouseUseCase.getStateChosenAddress(
-            ::onGetShopAndWarehouseSuccess,
-            ::onGetShopAndWarehouseFailed,
-            DEFAULT_VALUE_SOURCE_SEARCH
-        )
+        launch {
+            try {
+                onGetShopAndWarehouseSuccess(getShopAndWarehouseUseCase(DEFAULT_VALUE_SOURCE_SEARCH))
+            } catch (e: Exception) {
+                onGetShopAndWarehouseFailed(e)
+            }
+        }
     }
 
     private fun onGetShopAndWarehouseSuccess(state: GetStateChosenAddressResponse) {
@@ -359,6 +377,8 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun showOutOfCoverage() {
+        stopPerformanceMonitoringMutableLiveData.value = Unit
+
         updateHeaderBackgroundVisibility(false)
         updateMiniCartVisibility(false)
 
@@ -391,14 +411,14 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun onGetShopAndWarehouseFailed(throwable: Throwable) {
+        stopPerformanceMonitoringMutableLiveData.value = Unit
     }
 
     protected abstract fun loadFirstPage()
 
     protected open fun createRequestParams(): RequestParams {
         val tokonowQueryParam = createTokonowQueryParams()
-        val productAdsParam = createProductAdsParam()
-            .generateQueryParams()
+        val productAdsParam = createGetProductAdsParam()
 
         val requestParams = RequestParams.create()
         requestParams.putObject(TOKONOW_QUERY_PARAMS, tokonowQueryParam)
@@ -418,7 +438,7 @@ abstract class BaseSearchCategoryViewModel(
         return tokonowQueryParam
     }
 
-    protected open fun createProductAdsParam(): GetProductAdsParam = GetProductAdsParam()
+    protected open fun createProductAdsParam(): MutableMap<String?, Any> = mutableMapOf()
 
     protected open fun appendMandatoryParams(tokonowQueryParam: MutableMap<String, Any>) {
         appendDeviceParam(tokonowQueryParam)
@@ -463,11 +483,18 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun appendPaginationParam(tokonowQueryParam: MutableMap<String, Any>) {
         tokonowQueryParam[SearchApiConst.PAGE] = nextPage
         tokonowQueryParam[SearchApiConst.USE_PAGE] = true
-        tokonowQueryParam[SearchApiConst.ROWS] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS_PROFILE
+        tokonowQueryParam[SearchApiConst.ROWS] = getRows()
     }
 
     private fun appendQueryParam(tokonowQueryParam: MutableMap<String, Any>) {
         tokonowQueryParam.putAll(FilterHelper.createParamsWithoutExcludes(queryParam))
+    }
+
+    private fun createGetProductAdsParam(): Map<String?, Any> {
+        val params = createProductAdsParam().also {
+            it.putAll(FilterHelper.createParamsWithoutExcludes(queryParam))
+        }
+        return params
     }
 
     protected fun onGetFirstPageSuccess(
@@ -476,6 +503,8 @@ abstract class BaseSearchCategoryViewModel(
         searchProduct: SearchProduct,
         feedbackFieldIsActive: Boolean = false
     ) {
+        firstPageSuccessTriggerMutableLiveData.value = Unit
+
         totalData = headerDataView.aceSearchProductHeader.totalData
         totalFetchedData += contentDataView.aceSearchProductData.productList.size
         autoCompleteApplink = contentDataView.aceSearchProductData.autocompleteApplink
@@ -802,12 +831,15 @@ abstract class BaseSearchCategoryViewModel(
         contentVisitableList: MutableList<Visitable<*>>,
         response: ProductAdsResponse
     ) {
-        if(response.productList.isNotEmpty()) {
-            contentVisitableList.add(mapProductAdsCarousel(
-                response,
-                miniCartWidgetLiveData.value,
-                hasBlockedAddToCart
-            ))
+        if (response.productList.isNotEmpty()) {
+            contentVisitableList.add(
+                mapProductAdsCarousel(
+                    id = PRODUCT_ADS_CAROUSEL,
+                response =response,
+                    miniCartData =miniCartWidgetLiveData.value,
+                    hasBlockedAddToCart =hasBlockedAddToCart
+                )
+            )
         }
     }
 
@@ -897,11 +929,11 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun createProductCardCompactModel(
-        product: ProductCardCompactCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel
     ): ProductCardCompactUiModel {
         val quantity = cartService.getProductQuantity(
             product.getProductId(),
-            product.parentId,
+            product.parentId
         )
         return product.productCardModel.copy(orderQuantity = quantity)
     }
@@ -1005,6 +1037,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun onGetFirstPageError(throwable: Throwable) {
+        stopPerformanceMonitoringMutableLiveData.value = Unit
         isShowErrorMutableLiveData.value = throwable
     }
 
@@ -1019,6 +1052,7 @@ abstract class BaseSearchCategoryViewModel(
     abstract fun executeLoadMore()
 
     protected open fun onGetLoadMorePageSuccess(contentDataView: ContentDataView) {
+        loadMoreSuccessTriggerMutableLiveData.value = Unit
         totalFetchedData += contentDataView.aceSearchProductData.productList.size
 
         updateVisitableListForNextPage(contentDataView)
@@ -1072,7 +1106,8 @@ abstract class BaseSearchCategoryViewModel(
                 if (needToOpenBottomSheet) {
                     isFilterPageOpenMutableLiveData.postValue(true)
                 }
-            }, onError = { /* do nothing */ }
+            },
+            onError = { /* do nothing */ }
         )
     }
 
@@ -1537,12 +1572,12 @@ abstract class BaseSearchCategoryViewModel(
         }
 
     protected class HeaderDataView(
-            val title: String = "",
-            val aceSearchProductHeader: SearchProductHeader = SearchProductHeader(),
-            categoryFilterDataValue: DataValue = DataValue(),
-            quickFilterDataValue: DataValue = DataValue(),
-            val bannerChannel: Channels = Channels(),
-            val targetedTicker: GetTargetedTickerResponse = GetTargetedTickerResponse()
+        val title: String = "",
+        val aceSearchProductHeader: SearchProductHeader = SearchProductHeader(),
+        categoryFilterDataValue: DataValue = DataValue(),
+        quickFilterDataValue: DataValue = DataValue(),
+        val bannerChannel: Channels = Channels(),
+        val targetedTicker: GetTargetedTickerResponse = GetTargetedTickerResponse()
     ) {
         val categoryFilterDataValue = DataValue(
             filter = FilterHelper.copyFilterWithOptionAsExclude(categoryFilterDataValue.filter)
@@ -1625,7 +1660,6 @@ abstract class BaseSearchCategoryViewModel(
                 affiliateChannel
             )
         }) {
-
         }
     }
 
@@ -1643,7 +1677,13 @@ abstract class BaseSearchCategoryViewModel(
         launchCatchError(block = {
             affiliateService.checkAtcAffiliateCookie(data)
         }) {
-
         }
+    }
+
+    fun getRows(): String = if (getPaginationExperiment()) EXPERIMENT_ROWS else DEFAULT_ROWS
+
+    private fun getPaginationExperiment(): Boolean {
+        val experiment = remoteConfig.getString(TOKOPEDIA_NOW_PAGINATION, EXPERIMENT_DISABLED)
+        return experiment == EXPERIMENT_ENABLED
     }
 }

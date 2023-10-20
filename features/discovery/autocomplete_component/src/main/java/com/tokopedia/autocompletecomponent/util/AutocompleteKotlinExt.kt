@@ -1,5 +1,10 @@
 package com.tokopedia.autocompletecomponent.util
 
+import android.content.Context
+import android.graphics.Typeface
+import android.os.Build
+import android.text.style.StyleSpan
+import android.text.style.TypefaceSpan
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_MANUAL_ENTER
@@ -15,6 +20,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_PO
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_WAREHOUSE_ID
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.WAREHOUSES
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.usecase.RequestParams
 import kotlin.math.cos
 import kotlin.math.roundToInt
@@ -110,3 +116,11 @@ private fun LocalCacheModel.warehousesParams() =
             WAREHOUSE_ID_SERVICE_TYPE_SEPARATOR +
             it.service_type
     }
+
+internal fun getBoldStyle(context: Context?): Any {
+    val typeface = context?.let { getTypeface(it, "OpenSauceOneExtraBold.ttf") }
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && typeface != null)
+        TypefaceSpan(typeface)
+    else
+        StyleSpan(Typeface.BOLD)
+}

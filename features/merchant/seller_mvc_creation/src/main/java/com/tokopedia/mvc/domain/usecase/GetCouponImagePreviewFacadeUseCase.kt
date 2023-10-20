@@ -11,7 +11,7 @@ import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.enums.ImageRatio
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
-import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
+import com.tokopedia.universal_sharing.domain.usecase.ImageGeneratorUseCase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
@@ -71,21 +71,21 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
         imageRatio: ImageRatio
     ): String {
         return coroutineScope {
-            val initiateCoupon = async{
+            val initiateCoupon = async {
                 initiateCoupon(
                     isCreateMode,
                     voucherConfiguration.promoType,
                     voucherConfiguration.isVoucherProduct
                 )
             }
-            val topProductsDeferred = async{ getMostSoldProducts(parentProductId) }
-            val shopDeferred = async{ getShopBasicDataUseCase.execute() }
+            val topProductsDeferred = async { getMostSoldProducts(parentProductId) }
+            val shopDeferred = async { getShopBasicDataUseCase.execute() }
 
             val shop = shopDeferred.await()
             val coupon = initiateCoupon.await()
             val topProducts = topProductsDeferred.await()
 
-            val generateImageDeferred = async{
+            val generateImageDeferred = async {
                 generateCouponImageUrl(
                     GenerateCouponImageParam(
                         isCreateMode = isCreateMode,
@@ -156,11 +156,11 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
         return initiateCouponUseCase.execute(param)
     }
 
-    data class GenerateCouponImageParam (
+    data class GenerateCouponImageParam(
         val isCreateMode: Boolean = false,
         val couponCodePrefix: String = "",
         val voucherConfiguration: VoucherConfiguration = VoucherConfiguration(),
-        val topProductImageUrls : List<String> = emptyList(),
+        val topProductImageUrls: List<String> = emptyList(),
         val imageRatio: ImageRatio = ImageRatio.SQUARE,
         val shop: ShopData = ShopData("", "", "")
     )

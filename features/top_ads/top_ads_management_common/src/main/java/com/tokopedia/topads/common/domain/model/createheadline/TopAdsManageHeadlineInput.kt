@@ -3,7 +3,7 @@ package com.tokopedia.topads.common.domain.model.createheadline
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 data class TopAdsManageHeadlineInput(
     @SerializedName("operation")
@@ -36,8 +36,6 @@ data class TopAdsManageHeadlineInput(
                 var scheduleStart: String = "",
             @SerializedName("shopID")
                 var shopID: String = "",
-            @SerializedName("status")
-                var status: String = ""
         ) {
             @Parcelize
             data class AdOperation(

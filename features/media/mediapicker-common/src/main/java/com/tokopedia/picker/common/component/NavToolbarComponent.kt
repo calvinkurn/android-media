@@ -62,6 +62,14 @@ class NavToolbarComponent(
         btnDone.showWithCondition(visibility)
     }
 
+    fun setTitleVisibility(isVisible: Boolean) {
+        txtTitle.showWithCondition(isVisible)
+    }
+
+    fun setBackVisibility(isVisible: Boolean) {
+        btnAction.showWithCondition(isVisible)
+    }
+
     private fun setActionColor(isTransparent: Boolean) {
         toolbarThemeCondition(isTransparent,
         transparentMode = {

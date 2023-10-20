@@ -10,6 +10,7 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
@@ -55,6 +56,7 @@ class TokoNowSearchViewModel @Inject constructor (
     cartService: CartService,
     getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
     setUserPreferenceUseCase: SetUserPreferenceUseCase,
+    remoteConfig: RemoteConfig,
     chooseAddressWrapper: ChooseAddressWrapper,
     affiliateService: NowAffiliateService,
     userSession: UserSessionInterface
@@ -67,6 +69,7 @@ class TokoNowSearchViewModel @Inject constructor (
     cartService,
     getWarehouseUseCase,
     setUserPreferenceUseCase,
+    remoteConfig,
     chooseAddressWrapper,
     affiliateService,
     userSession,
@@ -163,7 +166,7 @@ class TokoNowSearchViewModel @Inject constructor (
 
     override fun getRecomCategoryId(pageName: String): List<String> = listOf(recommendationCategoryId)
 
-    override fun createProductAdsParam(): GetProductAdsParam {
+    override fun createProductAdsParam(): MutableMap<String?, Any> {
         val query = queryParamMutable[SearchApiConst.Q].orEmpty()
 
         return GetProductAdsParam(
@@ -171,7 +174,7 @@ class TokoNowSearchViewModel @Inject constructor (
             src = GetProductAdsParam.SRC_SEARCH_TOKONOW,
             userId = userSession.userId,
             addressData = chooseAddressData
-        )
+        ).generateQueryParams()
     }
 
     private fun onGetSearchFirstPageSuccess(searchModel: SearchModel) {

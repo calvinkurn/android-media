@@ -20,6 +20,9 @@ android {
 
 dependencies {
     implementation rootProject.ext.firebase.config
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation projectOrAar(rootProject.ext.libraries.graphql)

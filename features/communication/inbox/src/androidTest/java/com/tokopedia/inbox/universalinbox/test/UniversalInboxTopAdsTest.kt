@@ -3,7 +3,7 @@ package com.tokopedia.inbox.universalinbox.test
 import com.tokopedia.inbox.universalinbox.stub.data.response.GqlResponseStub
 import com.tokopedia.inbox.universalinbox.test.base.BaseUniversalInboxTest
 import com.tokopedia.inbox.universalinbox.test.robot.generalRobot
-import com.tokopedia.inbox.universalinbox.test.robot.topads.TopAdsResult.assertHeadline
+import com.tokopedia.inbox.universalinbox.test.robot.topAdsResult
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
@@ -14,12 +14,16 @@ class UniversalInboxTopAdsTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(28) // End of page 1
-            scrollToPosition(45)
+            scrollToPosition(20) // Reach Product Recommendation
+            scrollToPosition(30) // Scroll First Page
+            scrollToPosition(40) // Scroll Second Page
+            scrollToPosition(50) // Scroll to Headline
         }
 
         // Then
-        assertHeadline(44)
+        topAdsResult {
+            assertHeadline(47)
+        }
     }
 
     @Test
@@ -30,11 +34,15 @@ class UniversalInboxTopAdsTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(30) // End of page 1
-            scrollToPosition(47)
+            scrollToPosition(20) // Reach Product Recommendation
+            scrollToPosition(30) // Scroll First Page
+            scrollToPosition(40) // Scroll Second Page
+            scrollToPosition(50) // Scroll to Headline
         }
 
         // Then
-        assertHeadline(46, true)
+        topAdsResult {
+            assertHeadline(47, true)
+        }
     }
 }

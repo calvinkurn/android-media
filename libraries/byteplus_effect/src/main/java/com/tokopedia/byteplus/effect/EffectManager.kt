@@ -38,6 +38,7 @@ interface EffectManager {
         surfaceWidth: Int,
         surfaceHeight: Int,
         dstTexture: Int,
+        isFlip: Boolean,
     )
 
     fun setCameraPosition(isFront: Boolean)

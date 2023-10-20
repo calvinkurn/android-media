@@ -95,8 +95,6 @@ class FeedPostVideoViewHolder(
         binding.feedCommentButton.root,
         binding.menuButton,
         binding.shareButton,
-        binding.productTagButton.root,
-        binding.productTagView.root,
         binding.overlayTop.root,
         binding.overlayBottom.root,
         binding.overlayRight.root,
@@ -351,7 +349,7 @@ class FeedPostVideoViewHolder(
     }
 
     private fun bindAuthor(data: FeedCardVideoContentModel) {
-        authorView.bindData(data.author, false, !data.followers.isFollowed, trackerDataModel)
+        authorView.bindData(data.author, false, !data.followers.isFollowed, trackerDataModel, null)
     }
 
     private fun bindCaption(data: FeedCardVideoContentModel) {
@@ -374,7 +372,8 @@ class FeedPostVideoViewHolder(
             products = data.products,
             totalProducts = data.totalProducts,
             trackerData = trackerDataModel,
-            positionInFeed = absoluteAdapterPosition
+            positionInFeed = absoluteAdapterPosition,
+            topAdsTrackerData = null
         )
 
         productButtonView.bindData(
@@ -387,7 +386,8 @@ class FeedPostVideoViewHolder(
             products = data.products,
             totalProducts = data.totalProducts,
             trackerData = trackerDataModel,
-            positionInFeed = absoluteAdapterPosition
+            positionInFeed = absoluteAdapterPosition,
+            topAdsTrackerData = null
         )
     }
 
@@ -534,6 +534,7 @@ class FeedPostVideoViewHolder(
         )
         campaignView.resetView()
         campaignView.startAnimation()
+        mVideoPlayer?.toggleVideoVolume(listener.isMuted())
         mVideoPlayer?.resume()
         listener.onWatchPostVideo(element, trackerModel)
         onScrolling(false)
