@@ -168,15 +168,16 @@ class HomeRecommendationViewModel @Inject constructor(
                             HomeRecommendationBannerTopAdsDataModel(pair.second.firstOrNull(), bannerType = pair.first)
                     }
                 }
-            }
-            position?.let {
-                if (newList.size >= position + Int.ONE) {
-                    newList.add(
-                        it + Int.ONE,
-                        HomeRecommendationHeadlineTopAdsDataModel(headlineAds.displayAds)
-                    )
+                position?.let {
+                    if (newList.size >= position + topAdsBanner.size) {
+                        newList.add(
+                            it + Int.ONE,
+                            HomeRecommendationHeadlineTopAdsDataModel(headlineAds.displayAds)
+                        )
+                    }
                 }
             }
+
         }
         _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = newList))
     }
@@ -233,7 +234,7 @@ class HomeRecommendationViewModel @Inject constructor(
                             topAdsBanner2.add(Pair(TYPE_BANNER_ADS, bannerData))
                         } else {
                             homeBannerTopAdsMutable.remove(it)
-                            list.remove(it)
+                            newList.remove(it)
                         }
 
                     } else if (it.bannerType == TYPE_VERTICAL_BANNER_ADS) {
@@ -251,7 +252,7 @@ class HomeRecommendationViewModel @Inject constructor(
                             topAdsBanner2.add(Pair(TYPE_VERTICAL_BANNER_ADS, bannerData))
                         } else {
                             homeBannerTopAdsMutable.remove(it)
-                            list.remove(it)
+                            newList.remove(it)
                         }
                     }
                 }
