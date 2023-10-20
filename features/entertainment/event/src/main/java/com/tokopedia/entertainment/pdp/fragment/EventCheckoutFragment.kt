@@ -726,7 +726,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
 
     companion object {
         const val DATE_FORMAT = "EEE, d MMM yyyy"
-        const val COUNTDOWN_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        const val COUNTDOWN_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
         const val REQUEST_CODE_FORM = 100
         const val REQUEST_CODE_ADDITIONAL_ITEM = 101
         const val REQUEST_CODE_ADDITIONAL_PACKAGE = 102
