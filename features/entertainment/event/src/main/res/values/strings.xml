@@ -130,6 +130,7 @@
     <string name="ent_redeem_revamp_ticket">Jenis Tiket</string>
     <string name="ent_redeem_revamp_date">Tanggal Acara</string>
     <string name="ent_redeem_revamp_sum_product">Jumlah Tiket</string>
+    <string name="ent_redeem_revamp_seating_number">Nomor Kursi</string>
     <string name="ent_redeem_revamp_sum_product_error">Pilih Jumlah Tiket</string>
     <string name="ent_redeem_revamp_redeem_button">Redeem</string>
     <string name="ent_redeem_revamp_redeem_title">Redeem Tiket</string>

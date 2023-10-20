@@ -54,6 +54,7 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRecommendationUs
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSalamRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSearchUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSuggestedReviewUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeThematicUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeTodoWidgetUseCase
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
@@ -128,6 +129,7 @@ fun createHomeViewModel(
     homeRemoteConfigController: HomeRemoteConfigController = mockk(relaxed = true),
     homeAtfUseCase: HomeAtfUseCase = mockk(relaxed = true),
     todoWidgetRepository: TodoWidgetRepository = mockk(relaxed = true),
+    homeThematicUseCase: HomeThematicUseCase = mockk(relaxed = true),
 ): HomeRevampViewModel {
     homeBalanceWidgetUseCase.givenGetLoadingStateReturn()
     return spyk(
@@ -154,9 +156,10 @@ fun createHomeViewModel(
             homeTodoWidgetUseCase = { homeTodoWidgetUseCase },
             homeDismissTodoWidgetUseCase = { homeDismissTodoWidgetUseCase },
             homeRateLimit = homeRateLimit,
-            homeRemoteConfigController = homeRemoteConfigController,
-            homeAtfUseCase = homeAtfUseCase,
-            todoWidgetRepository = todoWidgetRepository,
+            homeRemoteConfigController = { homeRemoteConfigController },
+            homeAtfUseCase = { homeAtfUseCase },
+            todoWidgetRepository = { todoWidgetRepository },
+            homeThematicUseCase = { homeThematicUseCase },
         ),
         recordPrivateCalls = true
     )
@@ -242,6 +245,9 @@ fun HomeSuggestedReviewUseCase.givenOnReviewDismissedReturn() {
 }
 
 fun HomeDynamicChannelUseCase.givenGetHomeDataReturn(homeDynamicChannelModel: HomeDynamicChannelModel? = createDefaultHomeDataModel()) {
+    coEvery { getNewHomeDataFlow() } returns flow {
+        emit(homeDynamicChannelModel)
+    }
     coEvery { getHomeDataFlow() } returns flow {
         emit(homeDynamicChannelModel)
     }
@@ -278,7 +284,7 @@ fun HomeDynamicChannelUseCase.givenGetHomeDataError(t: Throwable = Throwable("Un
 }
 
 fun HomeDynamicChannelUseCase.givenUpdateHomeDataReturn(result: com.tokopedia.home.beranda.helper.Result<Any>) {
-    coEvery { updateHomeData(isNewAtfMechanism = false) } returns flow {
+    coEvery { updateHomeData(any(), any()) } returns flow {
         emit(result)
     }
 }
@@ -290,7 +296,7 @@ fun HomeBalanceWidgetUseCase.givenGetLoadingStateReturn() {
 fun HomeDynamicChannelUseCase.givenUpdateHomeDataError(t: Throwable = Throwable("Unit test simulate error")) {
     mockkStatic(Log::class)
     every { Log.getStackTraceString(t) } returns ""
-    coEvery { updateHomeData(isNewAtfMechanism = false) } returns flow {
+    coEvery { updateHomeData(any(), any()) } returns flow {
         throw t
     }
 }
@@ -299,7 +305,7 @@ fun HomeDynamicChannelUseCase.givenUpdateHomeDataErrorNullMessage() {
     val throwable = Throwable()
     mockkStatic(Log::class)
     every { Log.getStackTraceString(throwable) } returns ""
-    coEvery { updateHomeData(isNewAtfMechanism = false) } returns flow {
+    coEvery { updateHomeData(any(), any()) } returns flow {
         throw throwable
     }
 }

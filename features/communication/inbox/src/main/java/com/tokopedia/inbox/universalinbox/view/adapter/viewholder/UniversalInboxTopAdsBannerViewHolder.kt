@@ -20,8 +20,20 @@ class UniversalInboxTopAdsBannerViewHolder constructor(
     private val binding: UniversalInboxTopadsBannerItemBinding? by viewBinding()
 
     override fun bind(uiModel: UniversalInboxTopAdsBannerUiModel) {
+        bindListener()
         bindTopAds(uiModel)
         bindTdnBanner(uiModel)
+    }
+
+    private fun bindTopAds(uiModel: UniversalInboxTopAdsBannerUiModel) {
+        if (!uiModel.hasAds() && !uiModel.requested) {
+            uiModel.requested = true
+            binding?.inboxTopadsBanner?.getTdnData(
+                SOURCE,
+                adsCount = ADS_COUNT,
+                dimenId = DIMEN_ID
+            )
+        }
     }
 
     private fun bindTdnBanner(uiModel: UniversalInboxTopAdsBannerUiModel) {
@@ -30,16 +42,8 @@ class UniversalInboxTopAdsBannerViewHolder constructor(
         }
     }
 
-    private fun bindTopAds(uiModel: UniversalInboxTopAdsBannerUiModel) {
-        if (!uiModel.hasAds() && !uiModel.requested) {
-            binding?.inboxTopadsBanner?.setTdnResponseListener(tdnBannerResponseListener)
-            binding?.inboxTopadsBanner?.getTdnData(
-                SOURCE,
-                adsCount = ADS_COUNT,
-                dimenId = DIMEN_ID
-            )
-            uiModel.requested = true
-        }
+    private fun bindListener() {
+        binding?.inboxTopadsBanner?.setTdnResponseListener(tdnBannerResponseListener)
     }
 
     private fun onTdnBannerClicked(applink: String) {

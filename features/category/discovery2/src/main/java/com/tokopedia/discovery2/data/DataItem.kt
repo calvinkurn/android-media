@@ -445,7 +445,7 @@ data class DataItem(
     @SerializedName("shop_type")
     val shopType: String? = null,
 
-    @SerializedName("shop_badge_image_url")
+    @SerializedName("shop_badge_image_url", alternate = ["shop_badge"])
     val shopBadgeImageUrl: String? = null,
 
     @SerializedName("benefit_title")

@@ -32,11 +32,9 @@ class PostPurchaseShareHelper @Inject constructor(
             val coachMark2Item = arrayListOf(
                 CoachMark2Item(
                     anchorView = anchorView,
-                    title = context.getString(
-                        thankyou_nativeR.string.thankyou_postpurchase_share_onboarding_title
-                    ),
+                    title = "",
                     description = context.getString(
-                        thankyou_nativeR.string.thankyou_postpurchase_share_onboarding_desc
+                        thankyou_nativeR.string.thankyou_postpurchase_share_onboarding
                     )
                 )
             )
