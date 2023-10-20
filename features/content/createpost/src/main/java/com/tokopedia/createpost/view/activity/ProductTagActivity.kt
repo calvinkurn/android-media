@@ -15,6 +15,7 @@ import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.content.common.producttag.view.uimodel.*
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
+import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 import javax.inject.Inject
 
 /**
@@ -106,6 +107,7 @@ class ProductTagActivity : BaseActivity() {
         DaggerCreatePostComponent.factory()
             .create(
                 baseAppComponent = (applicationContext as BaseMainApplication).baseAppComponent,
+                creationUploaderComponent = CreationUploaderComponentProvider.get(this),
                 context = this
             )
             .inject(this)
