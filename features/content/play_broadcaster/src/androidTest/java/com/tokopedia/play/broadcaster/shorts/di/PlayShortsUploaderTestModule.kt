@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.di
 
-import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
+import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import dagger.Module
 import dagger.Provides
 import io.mockk.mockk
@@ -10,9 +10,9 @@ import io.mockk.mockk
  */
 @Module
 class PlayShortsUploaderTestModule(
-    private val mockPlayShortsUploader: PlayShortsUploader = mockk(relaxed = true)
+    private val mockCreationUploader: CreationUploader = mockk(relaxed = true)
 ) {
 
     @Provides
-    fun providePlayShortsUploader(): PlayShortsUploader = mockPlayShortsUploader
+    fun provideCreationUploader(): CreationUploader = mockCreationUploader
 }
