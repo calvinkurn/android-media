@@ -2,17 +2,13 @@ package com.tokopedia.entertainment.pdp.adapter
 
 import android.app.Activity
 import android.text.Editable
-import android.text.SpannableStringBuilder
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat
-import androidx.core.text.bold
-import androidx.core.text.color
+import androidx.core.content.ContextCompat=
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.entertainment.R
@@ -24,8 +20,6 @@ import com.tokopedia.entertainment.pdp.data.AvailabilityStatus
 import com.tokopedia.entertainment.pdp.data.PackageItem
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getDigit
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.checkDate
-import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.checkNotEndSale
-import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.checkStartSale
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getDate
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.kotlin.extensions.view.ONE
