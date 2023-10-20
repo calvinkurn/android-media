@@ -27,7 +27,7 @@ class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallb
     private var cdnConfig: DataConfig? = null
 
     companion object {
-        const val CDN_MONITORING_KEY = "android_cdn_monitoring_static"
+        const val CDN_MONITORING_KEY = "android_cdn_monitoring_static_v2"
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
