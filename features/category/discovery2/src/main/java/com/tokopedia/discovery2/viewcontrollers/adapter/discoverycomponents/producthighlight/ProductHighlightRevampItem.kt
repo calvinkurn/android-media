@@ -164,6 +164,7 @@ class ProductHighlightRevampItem(
                         productHighlightImage.loadImage(productHighlightData.productImage)
 
                         phProductName.text = productHighlightData.productName
+                        phProductName.textSize = 8f
 
                         priceBox.fontType = Type.TRIPLE
 

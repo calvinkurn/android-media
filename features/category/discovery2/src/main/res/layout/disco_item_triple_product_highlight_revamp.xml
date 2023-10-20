@@ -78,8 +78,7 @@
             android:textColor="@color/Unify_NN950"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="display_3"
-            app:typographyWeight="reguler"
+            app:typographyType="small"
             tools:text="IPhone Garmin Instinct Solar Camo Lichen IPhone Garmin Instinct Solar Camo Lichen" />
 
         <com.tokopedia.discovery2.viewcontrollers.customview.ProductHighlightStockShopView
