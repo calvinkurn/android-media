@@ -26,8 +26,10 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.network.exception.UserNotLoginException
@@ -40,6 +42,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.FragmentShopInfoBinding
 import com.tokopedia.shop.extension.transformToVisitable
 import com.tokopedia.shop.info.data.GetEpharmacyShopInfoResponse
@@ -122,6 +125,7 @@ class ShopInfoFragment :
 
     private var fragmentShopInfoBinding: FragmentShopInfoBinding? = null
     private var shopId: String = "0"
+    private var warehouseId: Long = 0L
     private val userId: String
         get() = shopViewModel?.userId().orEmpty()
 
@@ -205,6 +209,7 @@ class ShopInfoFragment :
         observeShopNotes()
         observeShopInfo()
         observeShopEpharmData()
+        observeNearestEpharmWarehouse()
         observeShopBadgeReputation()
         observerMessageIdOnChatExist()
     }
@@ -309,6 +314,21 @@ class ShopInfoFragment :
         }
     }
 
+    private fun observeNearestEpharmWarehouse() {
+        shopViewModel?.nearestEpharmWarehouseData?.let { nearestWarehouseData ->
+            observe(nearestWarehouseData) {
+                when (it) {
+                    is Success -> {
+                        warehouseId = it.data.getNearestEpharmacyWarehouseLocation.warehouseID
+                    }
+                    is Fail -> {
+                        showToasterError(it.throwable)
+                    }
+                }
+            }
+        }
+    }
+
     private fun observeShopEpharmData() {
         shopViewModel?.epharmDetailData?.let { epharmData ->
             observe(epharmData) {
@@ -358,6 +378,14 @@ class ShopInfoFragment :
                 showShopInfo()
             }
 
+            val widgetUserAddressLocalData = ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+
+            // TODO: Logic
+            // 1. get shopId & districtID. Then pass it to getNearestEpharmacyWarehouseLocation -- DONE
+            // 2. getNearestEpharmacyWarehouseLocation to get warehouseID
+            // 3. Pass the warehouseID to getEpharmacyShopInfo
+
+            getNearestEpharmWarehouseData(shopId, widgetUserAddressLocalData.district_id.toIntOrZero())
             getShopNotes(shopId)
             setReportStoreView()
 
@@ -399,6 +427,13 @@ class ShopInfoFragment :
     private fun getShopNotes(shopId: String) {
         showNoteLoading()
         shopViewModel?.getShopNotes(shopId)
+    }
+
+    private fun getNearestEpharmWarehouseData(shopId: String, districtId: Int) {
+        shopViewModel?.getNearestEpharmWarehouseLocation(
+            shopId = shopId.toLongOrZero(),
+            districtId = districtId
+        )
     }
 
     private fun getShopEpharmacyData(shopId: Long) {
