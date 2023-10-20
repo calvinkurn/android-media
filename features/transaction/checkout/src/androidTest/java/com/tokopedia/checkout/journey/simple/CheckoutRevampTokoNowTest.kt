@@ -8,9 +8,11 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.checkout.RevampShipmentActivity
 import com.tokopedia.checkout.interceptor.CheckoutInterceptor
+import com.tokopedia.checkout.interceptor.RATES_TOKONOW_DEFAULT_RESPONSE_PATH
 import com.tokopedia.checkout.interceptor.RATES_TOKONOW_WITH_ADDITIONAL_PRICE_RESPONSE_PATH
 import com.tokopedia.checkout.interceptor.RATES_TOKONOW_WITH_NORMAL_PRICE_RESPONSE_PATH
 import com.tokopedia.checkout.interceptor.SAF_TOKONOW_WITH_FAILED_DEFAULT_DURATION_RESPONSE_PATH
+import com.tokopedia.checkout.interceptor.VALIDATE_USE_TOKONOW_DEFAULT_RESPONSE
 import com.tokopedia.checkout.robot.checkoutPageRevamp
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -42,6 +44,8 @@ class CheckoutRevampTokoNowTest {
 
     @Test
     fun tokoNow_PassedAnalyticsAndPaymentIntent() {
+        interceptor.logisticInterceptor.customRatesResponsePath = RATES_TOKONOW_DEFAULT_RESPONSE_PATH
+        interceptor.promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_TOKONOW_DEFAULT_RESPONSE
         activityRule.launchActivity(null)
         intending(anyIntent())
             .respondWith(ActivityResult(Activity.RESULT_OK, null))
@@ -68,6 +72,8 @@ class CheckoutRevampTokoNowTest {
     @Test
     fun tokoNowWithFailedDefaultDuration_PassedAnalyticsAndPaymentIntent() {
         interceptor.cartInterceptor.customSafResponsePath = SAF_TOKONOW_WITH_FAILED_DEFAULT_DURATION_RESPONSE_PATH
+        interceptor.logisticInterceptor.customRatesResponsePath = RATES_TOKONOW_DEFAULT_RESPONSE_PATH
+        interceptor.promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_TOKONOW_DEFAULT_RESPONSE
         activityRule.launchActivity(null)
 
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
@@ -94,6 +100,7 @@ class CheckoutRevampTokoNowTest {
     @Test
     fun tokoNowWithAdditionalPrice_PassedAnalyticsAndPaymentIntent() {
         interceptor.logisticInterceptor.customRatesResponsePath = RATES_TOKONOW_WITH_ADDITIONAL_PRICE_RESPONSE_PATH
+        interceptor.promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_TOKONOW_DEFAULT_RESPONSE
         activityRule.launchActivity(null)
 
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
@@ -123,6 +130,7 @@ class CheckoutRevampTokoNowTest {
     @Test
     fun tokoNowWithNormalPrice_PassedAnalyticsAndPaymentIntent() {
         interceptor.logisticInterceptor.customRatesResponsePath = RATES_TOKONOW_WITH_NORMAL_PRICE_RESPONSE_PATH
+        interceptor.promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_TOKONOW_DEFAULT_RESPONSE
         activityRule.launchActivity(null)
 
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))

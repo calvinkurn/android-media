@@ -18,11 +18,13 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.RevampShipmentActivity
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutCostViewHolder
+import com.tokopedia.checkout.revamp.view.viewholder.CheckoutCrossSellViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutOrderViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutProductViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutPromoViewHolder
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.Matcher
@@ -100,27 +102,29 @@ class CheckoutPageRevampRobot {
         return position
     }
 
-    fun scrollRecyclerViewToChoosePaymentButton(activityRule: IntentsTestRule<RevampShipmentActivity>): Int {
+    private fun scrollRecyclerViewToCrossSell(activityRule: IntentsTestRule<RevampShipmentActivity>): Int {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_checkout)
-//        Log.i("qwertyuiop", "scroll")
         val itemCount = (recyclerView.adapter?.itemCount?.minus(1)) ?: return -1
 
-        var position = itemCount
-        scrollRecyclerViewToPosition(activityRule, recyclerView, itemCount)
-//        for (i in itemCount downTo 0) {
-//            Log.i("qwertyuiop", "scroll $i")
-//            val findViewHolderForAdapterPosition = recyclerView.findViewHolderForAdapterPosition(i)
-//            Log.i("qwertyuiop", "scroll $findViewHolderForAdapterPosition")
-//            when (findViewHolderForAdapterPosition) {
-//                is CheckoutButtonPaymentViewHolder -> {
-//                    Log.i("qwertyuiop", "found $i")
-//                    position = i
-//                    break
-//                }
-//            }
-//        }
+        var position = RecyclerView.NO_POSITION
+        for (i in itemCount downTo 0) {
+            scrollRecyclerViewToPosition(activityRule, recyclerView, i)
+            when (recyclerView.findViewHolderForAdapterPosition(i)) {
+                is CheckoutCrossSellViewHolder -> {
+                    position = i
+                    break
+                }
+            }
+        }
 
         return position
+    }
+
+    fun scrollRecyclerViewToChoosePaymentButton(activityRule: IntentsTestRule<RevampShipmentActivity>): Int {
+        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_checkout)
+        val itemCount = (recyclerView.adapter?.itemCount?.minus(1)) ?: return -1
+        scrollRecyclerViewToPosition(activityRule, recyclerView, itemCount)
+        return itemCount
     }
 
     private fun scrollRecyclerViewToPromoButton(activityRule: IntentsTestRule<RevampShipmentActivity>): Int {
@@ -198,8 +202,12 @@ class CheckoutPageRevampRobot {
         }
     }
 
-    fun selectFirstShippingDurationOption() {
+    fun selectBebasOngkirDurationOption() {
         onView(ViewMatchers.withText("Bebas Ongkir")).perform(ViewActions.click())
+    }
+
+    fun selectDurationOptionWithText(text: String) {
+        onView(ViewMatchers.withText(text)).perform(ViewActions.click())
     }
 
     fun clickPromoButton(activityRule: IntentsTestRule<RevampShipmentActivity>) {
@@ -509,6 +517,48 @@ class CheckoutPageRevampRobot {
                                     true,
                                     view.findViewById<Typography>(R.id.tv_checkout_shop_name).text.isNotBlank()
                                 )
+                            }
+                        }
+                    )
+                )
+        }
+    }
+
+    fun assertEgold(activityRule: IntentsTestRule<RevampShipmentActivity>, text: String, isChecked: Boolean) {
+        val position = scrollRecyclerViewToCrossSell(activityRule)
+        if (position != RecyclerView.NO_POSITION) {
+            onView(ViewMatchers.withId(R.id.rv_checkout))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        object : ViewAction {
+                            override fun getConstraints(): Matcher<View>? = null
+
+                            override fun getDescription(): String =
+                                "Assert Egold UI"
+
+                            override fun perform(uiController: UiController?, view: View) {
+                                if (view.findViewById<View>(R.id.item_checkout_cross_sell_item).visibility == View.VISIBLE) {
+                                    assertEquals(text, view.findViewById<Typography>(R.id.tv_checkout_cross_sell_item).text.toString())
+                                    assertEquals(isChecked, view.findViewById<CheckboxUnify>(R.id.cb_checkout_cross_sell_item).isChecked)
+                                } else {
+                                    val rv = view.findViewById<RecyclerView>(R.id.rv_checkout_cross_sell)
+                                    val itemCount = rv.adapter?.itemCount ?: 0
+
+                                    for (i in 0 until itemCount) {
+                                        rv.scrollToPosition(i)
+                                        val viewHolder = rv.findViewHolderForAdapterPosition(i)
+                                        val itemView = viewHolder?.itemView
+                                        if (itemView?.findViewById<Typography>(R.id.tv_checkout_cross_sell_item)?.text.toString().contains("emas", ignoreCase = true)) {
+                                            assertEquals(text, itemView?.findViewById<Typography>(R.id.tv_checkout_cross_sell_item)?.text.toString())
+                                            assertEquals(isChecked, itemView?.findViewById<CheckboxUnify>(R.id.cb_checkout_cross_sell_item)?.isChecked)
+                                            return
+                                        }
+                                    }
+
+                                    // not found
+                                    throw AssertionError("not found matching egold")
+                                }
                             }
                         }
                     )

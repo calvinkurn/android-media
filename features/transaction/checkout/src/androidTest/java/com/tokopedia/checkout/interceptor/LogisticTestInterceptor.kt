@@ -48,9 +48,10 @@ class LogisticTestInterceptor : BaseCheckoutInterceptor() {
 const val RATES_QUERY = "ratesV3"
 const val SELLY_KEY = "ongkirGetScheduledDeliveryRates"
 
-const val RATES_DEFAULT_RESPONSE_PATH = "logistic/ratesv3_tokonow_default_response.json"
+const val RATES_TOKONOW_DEFAULT_RESPONSE_PATH = "logistic/ratesv3_tokonow_default_response.json"
 const val RATES_SELLY_DEFAULT_RESPONSE_PATH = "logistic/ratesv3_selly_default_response.json"
 const val RATES_TOKONOW_WITH_ADDITIONAL_PRICE_RESPONSE_PATH = "logistic/ratesv3_tokonow_with_additional_price_response.json"
 const val RATES_TOKONOW_WITH_NORMAL_PRICE_RESPONSE_PATH = "logistic/ratesv3_tokonow_with_normal_price_response.json"
+const val RATES_DEFAULT_RESPONSE_PATH = "logistic/ratesv3_analytics_default_response.json"
 
 const val SELLY_DEFAULT_RESPONSE_PATH = "logistic/selly_default_response.json"

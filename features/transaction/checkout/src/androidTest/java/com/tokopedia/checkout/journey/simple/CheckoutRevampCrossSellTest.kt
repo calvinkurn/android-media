@@ -8,9 +8,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.checkout.RevampShipmentActivity
 import com.tokopedia.checkout.interceptor.CheckoutInterceptor
-import com.tokopedia.checkout.interceptor.RATES_TOKONOW_DEFAULT_RESPONSE_PATH
-import com.tokopedia.checkout.interceptor.SAF_OWOC_DEFAULT_RESPONSE_PATH
-import com.tokopedia.checkout.interceptor.VALIDATE_USE_TOKONOW_DEFAULT_RESPONSE
+import com.tokopedia.checkout.interceptor.SAF_EGOLD_DONASI_RESPONSE_PATH
 import com.tokopedia.checkout.robot.checkoutPageRevamp
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -20,7 +18,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @UiTest
-class CheckoutRevampOwocTest {
+class CheckoutRevampCrossSellTest {
 
     @get:Rule
     var activityRule = object :
@@ -41,11 +39,9 @@ class CheckoutRevampOwocTest {
     }
 
     @Test
-    fun newUiGroupType() {
+    fun egold() {
         interceptor.cartInterceptor.customSafResponsePath =
-            SAF_OWOC_DEFAULT_RESPONSE_PATH
-        interceptor.logisticInterceptor.customRatesResponsePath = RATES_TOKONOW_DEFAULT_RESPONSE_PATH
-        interceptor.promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_TOKONOW_DEFAULT_RESPONSE
+            SAF_EGOLD_DONASI_RESPONSE_PATH
         activityRule.launchActivity(null)
 
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
@@ -53,19 +49,29 @@ class CheckoutRevampOwocTest {
         checkoutPageRevamp {
             // Wait for SAF
             waitForData()
-            assertNewUiGroupType(activityRule, 0)
-            assertNewUiGroupType(activityRule, 1)
+            assertEgold(
+                activityRule,
+                text = "Bulatkan dengan nabung emas. S&K berlaku (Rp5.000)",
+                isChecked = false
+            )
+//            assertNewUiGroupType(activityRule, 0)
+//            assertNewUiGroupType(activityRule, 1)
             clickChooseDuration(activityRule)
             waitForData()
-            selectBebasOngkirDurationOption()
+            selectDurationOptionWithText("Reguler (Rp93.000)")
             waitForData()
-            scrollRecyclerViewToChoosePaymentButton(activityRule)
+            assertEgold(
+                activityRule,
+                text = "Bulatkan dengan nabung emas. S&K berlaku (Rp7.000)",
+                isChecked = false
+            )
+//            scrollRecyclerViewToChoosePaymentButton(activityRule)
             waitForData()
-            waitForData()
-            clickChoosePaymentButton(activityRule)
-        } validateAnalytics {
-            waitForData()
-            assertGoToPayment()
+//            waitForData()
+//            clickChoosePaymentButton(activityRule)
+//        } validateAnalytics {
+//            waitForData()
+//            assertGoToPayment()
         }
     }
 

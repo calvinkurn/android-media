@@ -41,5 +41,6 @@ const val SAF_TOKONOW_DEFAULT_RESPONSE_PATH = "cart/saf_bundle_tokonow_default_r
 const val SAF_TOKONOW_WITH_FAILED_DEFAULT_DURATION_RESPONSE_PATH = "cart/saf_bundle_tokonow_with_failed_default_duration_response.json"
 const val SAF_TOKONOW_SELLY_RESPONSE_PATH = "cart/saf_tokonow_selly_response.json"
 const val SAF_OWOC_DEFAULT_RESPONSE_PATH = "cart/saf_owoc_default_response.json"
+const val SAF_EGOLD_DONASI_RESPONSE_PATH = "cart/saf_egold_donasi_response.json"
 
 const val SAVE_SHIPMENT_DEFAULT_RESPONSE_PATH = "cart/save_shipment_default_response.json"
