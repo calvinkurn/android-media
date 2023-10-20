@@ -1093,6 +1093,7 @@ class CheckoutViewModel @Inject constructor(
         )
         listData.value = checkoutItems
 
+        // todo pass is recommend and start date
         val result = logisticProcessor.getRatesWithScheduleDelivery(
             logisticProcessor.getRatesParam(
                 order,

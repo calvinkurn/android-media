@@ -132,6 +132,8 @@ data class CheckoutOrderModel(
     val ratesValidationFlow: Boolean = false,
     val shippingComponents: ShippingComponents = ShippingComponents.RATES,
     var hasSentScheduleDeliveryAnalytics: Boolean = false,
+    val startDate: String = "",
+    val isRecommend: Boolean = false,
 
     // Multiple Order Plus Coachmark
     var coachmarkPlus: CoachmarkPlusData = CoachmarkPlusData(),

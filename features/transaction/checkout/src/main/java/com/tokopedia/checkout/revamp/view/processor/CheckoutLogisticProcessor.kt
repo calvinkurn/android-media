@@ -600,8 +600,15 @@ class CheckoutLogisticProcessor @Inject constructor(
     ): RatesResult? {
         return withContext(dispatchers.io) {
             try {
+                val schellyParam =
+                    schellyMapper.map(
+                        ratesParam,
+                        fullfilmentId,
+                        startDate = orderModel.startDate,
+                        isRecommend = orderModel.isRecommend
+                    )
                 var shippingRecommendationData =
-                    ratesWithScheduleUseCase(ratesParam to fullfilmentId)
+                    ratesWithScheduleUseCase(ratesParam to schellyParam)
                 shippingRecommendationData = ratesResponseStateConverter.fillState(
                     shippingRecommendationData,
                     shopShipments,
@@ -794,7 +801,14 @@ class CheckoutLogisticProcessor @Inject constructor(
         return withContext(dispatchers.io) {
             try {
                 val schellyResponse =
-                    scheduleDeliveryUseCase(schellyMapper.map(ratesParam, fullfilmentId))
+                    scheduleDeliveryUseCase(
+                        schellyMapper.map(
+                            ratesParam,
+                            fullfilmentId,
+                            isRecommend = orderModel.isRecommend,
+                            startDate = orderModel.startDate
+                        )
+                    )
                 val courierItemData =
                     shippingCourierConverter.schellyToCourierItemData(
                         schellyResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData,

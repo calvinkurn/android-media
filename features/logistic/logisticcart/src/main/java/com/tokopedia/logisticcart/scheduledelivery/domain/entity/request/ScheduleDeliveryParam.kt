@@ -53,7 +53,13 @@ data class ScheduleDeliveryParam(
     @SerializedName("insurance")
     val insurance: Long = 0,
     @SerializedName("product_insurance")
-    val productInsurance: Long = 0
+    val productInsurance: Long = 0,
+    // todo
+    @SerializedName("start_date")
+    val startDate: String? = null,
+    // todo
+    @SerializedName("is_recommend")
+    val isRecommend: Boolean? = null
 ) : GqlParam {
 
     fun toMap() = mapOf(
