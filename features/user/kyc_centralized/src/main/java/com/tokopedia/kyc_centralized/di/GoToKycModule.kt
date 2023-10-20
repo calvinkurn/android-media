@@ -15,6 +15,7 @@ import com.gojek.kyc.sdk.core.constants.KycPlusNetworkConfig
 import com.gojek.kyc.sdk.core.model.UnifiedKycAuroraConfigs
 import com.gojek.kyc.sdk.core.model.UnifiedKycConfigs
 import com.gojek.kyc.sdk.core.utils.KycSdkPartner
+import com.gojek.kyc.sdk.core.utils.OneKycClientApp
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
@@ -142,7 +143,8 @@ open class GoToKycModule {
         partner = KycSdkPartner.TOKOPEDIA_CORE,
         clientAppId = GlobalConfig.APPLICATION_ID,
         clientAppVersion = GlobalConfig.VERSION_NAME,
-        clientKey = GlobalConfig.PACKAGE_APPLICATION
+        clientKey = GlobalConfig.PACKAGE_APPLICATION,
+        clientAppName = OneKycClientApp.TOKOPEDIA_CUSTOMER
     )
 
     @Provides

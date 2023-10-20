@@ -3,7 +3,6 @@ package com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk
 import com.gojek.jago.onekyc.configs.UnifiedKycConfigs
 import com.gojek.kyc.sdk.core.utils.KycSdkPartner
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.url.TokopediaUrl
 
 class GotoKycUnifiedConfigs : UnifiedKycConfigs {
     // Use the given implementation
@@ -59,7 +58,11 @@ class GotoKycUnifiedConfigs : UnifiedKycConfigs {
         * because the url between the both is different and
         * to make it easier to organize logic and content the article, the url set to production only
         * */
-        return "${ApplinkConst.WEBVIEW}?url=https://www.tokopedia.com/help/article/a-4048"
+        val url = if (kycSdkPartner == KycSdkPartner.FINDAYA_MAB_CICIL)
+            "https://www.tokopedia.com/help/article/a-4126"
+        else
+            "https://www.tokopedia.com/help/article/a-4048"
+        return "${ApplinkConst.WEBVIEW}?url=$url"
     }
 
     // Usage for Toko: Deeplink for Help CTA in Consent Screen
@@ -69,7 +72,11 @@ class GotoKycUnifiedConfigs : UnifiedKycConfigs {
         * because the url between the both is different and
         * to make it easier to organize logic and content the article, the url set to production only
         * */
-        return "${ApplinkConst.WEBVIEW}?url=https://www.tokopedia.com/help/article/a-4046"
+        val url = if (kycSdkPartner == KycSdkPartner.FINDAYA_MAB_CICIL)
+            "https://www.tokopedia.com/help/article/a-4123"
+        else
+            "https://www.tokopedia.com/help/article/a-4046"
+        return "${ApplinkConst.WEBVIEW}?url=$url"
     }
 
     // Usage for Toko: Deeplink for Help CTA in Masked User Details Screen
@@ -79,7 +86,11 @@ class GotoKycUnifiedConfigs : UnifiedKycConfigs {
         * because the url between the both is different and
         * to make it easier to organize logic and content the article, the url set to production only
         * */
-        return "${ApplinkConst.WEBVIEW}?url=https://www.tokopedia.com/help/article/a-4047"
+        val url = if (kycSdkPartner == KycSdkPartner.FINDAYA_MAB_CICIL)
+            "https://www.tokopedia.com/help/article/a-4127"
+        else
+            "https://www.tokopedia.com/help/article/a-4047"
+        return "${ApplinkConst.WEBVIEW}?url=$url"
     }
 
     // Use the given implementation

@@ -148,6 +148,8 @@
 
     <!--  OneKYC Challenge Exhausted  -->
     <string name="onekyc_challenge_exhausted_cashloan_title">Kamu belum bisa aktifin GoPay Pinjam</string>
+    <string name="onekyc_challenge_exhausted_cicil_title">Verifikasi diri belum bisa dilanjutin</string>
+    <string name="onekyc_challenge_exhausted_toko_title">Verifikasi diri belum bisa dilanjutin</string>
     <string name="onekyc_challenge_exhausted_description">Kamu udah masukin data yang salah berulang kali. Coba lagi nanti, ya!</string>
     <string name="onekyc_challenge_exhausted_cta">Oke</string>
 
@@ -159,28 +161,36 @@
     <string name="onekyc_userdetails_address">Alamat lengkap</string>
     <string name="onekyc_userdetails_ojk_title">Verifikasi data sesuai aturan OJK</string>
     <string name="onekyc_userdetails_ojk_description_cashloan">Data pribadimu aman bersama kami dan akan digunakan untuk verifikasi akunmu.</string>
+    <string name="onekyc_userdetails_ojk_description_cicil">PT Multifinance Anak Bangsa akan menjaga keamanan dan kerahasiaan data kamu.</string>
+    <string name="onekyc_userdetails_ojk_description_toko">PT Multifinance Anak Bangsa akan menjaga keamanan dan kerahasiaan data kamu.</string>
     <string name="onekyc_userdetails_confirm">Konfirmasi data e-KTP kamu</string>
     <string name="onekyc_userdetails_help">Bukan data e-KTP kamu? Masukin Data Kamu</string>
     <string name="onekyc_userdetails_help_link">Masukin Data Kamu</string>
 
     <!-- OneKyc Consent -->
-    <string name="onekyc_consent_header_title">Sambungin ke GoPay Plus</string>
-    <string name="onekyc_consent_header_description_cashloan">Buat ajuin GoPay Pinjam, kamu nggak perlu foto e-KTP &amp; selfie lagi karena datanya sudah ada di GoPay Plus.</string>
-    <string name="onekyc_consent_registered_id">ID yang terdaftar</string>
-    <string name="onekyc_consent_accountlink_title_cashloan">Sambungin GoPay Pinjam ke GoPay Plus</string>
+    <string name="onekyc_consent_header_title">Hore, kamu udah verifikasi GoPay Plus!</string>
+    <string name="onekyc_consent_header_description_cashloan">Karena udah terdaftar di GoPay Plus, kamu cuma perlu verifikasi wajah untuk aktifkan GoPay Pinjam.</string>
+    <string name="onekyc_consent_header_description_cicil">Karena udah terdaftar di GoPay Plus, kamu cuma perlu verifikasi wajah untuk aktifkan GoPay Later.</string>
+    <string name="onekyc_consent_header_description_toko">Karena sudah terdaftar di GoPay Plus, kamu cuma perlu verifikasi wajah buat lanjut.</string>
+    <string name="onekyc_consent_registered_id">KTP di GoPay Plus</string>
+    <string name="onekyc_consent_accountlink_title_cashloan">Verifikasinya jadi lebih mudah, deh!</string>
+    <string name="onekyc_consent_accountlink_title_cicil">Verifikasinya jadi lebih mudah, deh!</string>
+    <string name="onekyc_consent_accountlink_title_toko">Verifikasinya jadi lebih mudah, deh!</string>
     <string name="onekyc_consent_accountlink_point1">Nggak perlu foto e-KTP lagi</string>
     <string name="onekyc_consent_accountlink_point2">Nggak perlu foto selfie lagi</string>
-    <string name="onekyc_consent_accountlink_point3">Prosesnya cepat dan gampang</string>
-    <string name="onekyc_consent_supervised_title">Diawasi oleh Bank Indonesia</string>
-    <string name="onekyc_consent_supervised_description">Infomu dirahasiakan dan akan kami gunakan hanya untuk verifikasi.</string>
-    <string name="onekyc_consent_link_gopayplus">Hubungkan ke GoPay Plus</string>
-    <string name="onekyc_consent_help">Bantuan</string>
+    <string name="onekyc_consent_accountlink_point3">Proses aplikasi lebih cepat</string>
+    <string name="onekyc_consent_supervised_title">GoPay berizin dan diawasi oleh Bank Indonesia</string>
+    <string name="onekyc_consent_supervised_description">Data pribadi aman dan cuma digunakan untuk verifikasi identitas kamu.</string>
+    <string name="onekyc_consent_link_gopayplus">Mulai Verifikasi</string>
+    <string name="onekyc_consent_help">Butuh Bantuan?</string>
     <string name="onekyc_consent_terms_and_policy">Dengan melanjutkan, kamu menyetujui Kebijakan Privasi serta Syarat &amp; Ketentuan.</string>
     <string name="onekyc_consent_terms_link">Syarat &amp; Ketentuan</string>
     <string name="onekyc_consent_privacy_link">Kebijakan Privasi</string>
 
     <!-- OneKyc Blocked -->
-    <string name="onekyc_blocked_cashloan_title">Kamu belum bisa aktifin GoPay Pinjam</string>
+    <string name="onekyc_blocked_cashloan_title">Kamu belum bisa aktivasi GoPay Pinjam dulu</string>
+    <string name="onekyc_blocked_cicil_title">Kamu belum bisa aktivasi GoPay Later dulu</string>
+    <string name="onekyc_blocked_toko_title">Verifikasi diri belum bisa dilanjutin</string>
     <string name="onekyc_blocked_gopay_inprogress_description">Tunggu sampai upgrade GoPay Plus kamu selesai, ya.</string>
     <string name="onekyc_blocked_fraud_description">Coba daftar akun lagi nanti, ya.</string>
     <string name="onekyc_blocked_cta">Oke</string>
@@ -195,9 +205,15 @@
     <string name="onekyc_upload_failed_retry">Coba Lagi</string>
 
     <!-- OnKyc Onboarding page -->
+    <string name="onekyc_home_widget_cashloan_title">Verifikasinya sebentar aja, kok!</string>
+    <string name="onekyc_home_widget_cicil_title">Verifikasinya sebentar aja, kok!</string>
+    <string name="onekyc_home_widget_toko_title">Verifikasinya sebentar aja, kok!</string>
+    <string name="onekyc_home_toolbar_title">Verifikasi Data Diri</string>
     <string name="onekyc_home_widget_step_ktp_title">Ambil foto e-KTP</string>
     <string name="onekyc_home_widget_step_selfie_title">Ambil foto selfie</string>
-    <string name="onekyc_home_widget_step_personal_details_title">Isi data pribadi kamu</string>
-    <string name="onekyc_home_cashloan_upgrade_card_information">Setelah GoPay Pinjam kamu aktif, akun GoPay kamu akan upgrade ke GoPay Plus!</string>
+    <string name="onekyc_home_widget_step_personal_details_title">Isi data diri</string>
+    <string name="onekyc_home_cashloan_upgrade_card_information">Setelah verifikasi data diri, akun GoPay kamu  akan otomatis di-upgrade ke GoPay Plus.</string>
+    <string name="onekyc_home_cicil_upgrade_card_information">Setelah verifikasi data diri, akun GoPay kamu  akan otomatis di-upgrade ke GoPay Plus.</string>
+    <string name="onekyc_home_toko_upgrade_card_information">Setelah verifikasi data diri, akun GoPay kamu  akan otomatis di-upgrade ke GoPay Plus.</string>
     <string name="onekyc_home_widget_guideline_text">Lihat Tips</string>
 </resources>
