@@ -54,7 +54,7 @@ class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallb
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val interceptor = CdnInterceptor(context)
-                config.imageUrlList?.let {
+                config.urlList?.let {
                     it.forEach { item ->
                         if (config.sendSuccess) {
                             val client = OkHttpClient.Builder()
