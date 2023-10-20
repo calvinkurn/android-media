@@ -554,7 +554,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
             emit(pdpLayoutStateFromCache)
 
             pdpLayoutCache = pdpLayoutCache.copy(cacheFirstThenCloud = true)
-            throw TobacoErrorException("asdf", "asdf", "asdf")
         }
 
         val pdpLayoutCloudState = processRequestAlwaysCloud(cacheState = pdpLayoutCache)
