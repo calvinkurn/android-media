@@ -1135,6 +1135,7 @@ HomeRevampFragment :
 
     override fun onResume() {
         playWidgetOnVisibilityChanged(isViewResumed = true)
+        getUserIdFromViewModel()
         super.onResume()
         createAndCallSendScreen()
         adapter?.onResumeBanner()
@@ -2478,7 +2479,7 @@ HomeRevampFragment :
     }
 
     override fun getRecommendationForYouIndex(): Int? {
-        return adapter?.currentList?.indexOfFirst {
+        return getHomeViewModel().homeLiveDynamicChannel.value?.list?.indexOfFirst {
             it is HomeRecommendationFeedDataModel
         }.takeIf { it != RecyclerView.NO_POSITION }
     }
