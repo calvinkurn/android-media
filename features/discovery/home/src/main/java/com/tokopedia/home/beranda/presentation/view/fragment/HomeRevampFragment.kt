@@ -2478,9 +2478,13 @@ HomeRevampFragment :
     }
 
     override fun getRecommendationForYouIndex(): Int? {
-        return getHomeViewModel().homeLiveDynamicChannel.value?.list?.indexOfFirst {
-            it is HomeRecommendationFeedDataModel
-        }.takeIf { it != RecyclerView.NO_POSITION }
+        return if (this::viewModel.isInitialized) {
+            getHomeViewModel().homeLiveDynamicChannel.value?.list?.indexOfFirst {
+                it is HomeRecommendationFeedDataModel
+            }.takeIf { it != RecyclerView.NO_POSITION }
+        } else {
+            null
+        }
     }
 
     private fun setHomeToForYouMenuBottomNav() {
