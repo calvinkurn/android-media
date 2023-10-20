@@ -123,12 +123,18 @@ class LottieBottomNavbar : LinearLayout {
         adjustBadgePosition()
     }
 
+    // first = isDarKmode = false, mIsForceDarkMode = false
+    // home -> feed, isDarkMode = true, mIsForceDarkMode = true
+    // feed -> os, isDarkMode = false, mIsForceDarkMode = false
+
     fun forceDarkMode(isDarkMode: Boolean) {
         if (context.isDarkMode()) return
         if (isDarkMode == mIsForceDarkMode) return
 
         mIsForceDarkMode = isDarkMode
+
         setupMenuItems(modeAwareContext)
+
         requestLayout()
     }
 
@@ -367,7 +373,9 @@ class LottieBottomNavbar : LinearLayout {
                 }
             }
 
-            iconList.add(index, Pair(icon, selectedItem == index))
+            val isSelected = selectedItem == index
+
+            iconList.add(index, Pair(icon, isSelected))
 
             val imageContainer = FrameLayout(context)
             val fLayoutParams = FrameLayout.LayoutParams(
@@ -476,9 +484,13 @@ class LottieBottomNavbar : LinearLayout {
                 DEFAULT_TITLE_PADDING,
                 DEFAULT_TITLE_PADDING_BOTTOM
             )
-            title.text = bottomMenu.title
+
+            val iconTitle = getIconTitle(index, bottomMenu)
+
+            title.text = iconTitle
             title.tag = context.getString(R.string.tag_title_textview) + bottomMenu.id
             title.setType(Typography.SMALL)
+
             if (selectedItem != null && selectedItem == index) {
                 title.setTextColor(menu[selectedItem!!].activeButtonColor)
             } else {
@@ -586,12 +598,32 @@ class LottieBottomNavbar : LinearLayout {
     private fun getNewAnimationName(index: Int, bottomMenu: BottomMenu): Int? {
         return if (isIconJumperEnabled && index == Int.ZERO) {
             if (isForYouToHomeSelected) {
-                bottomMenu.homeForYou?.animHomeName
+                getOldAnimationName(bottomMenu)
             } else {
-                bottomMenu.homeForYou?.animThumbIdleName
+                if (selectedItem == Int.ZERO) {
+                    bottomMenu.homeForYou?.animThumbIdleName
+                } else {
+                    getOldAnimationName(bottomMenu)
+                }
             }
         } else {
             getOldAnimationName(bottomMenu)
+        }
+    }
+
+    private fun getIconTitle(index: Int, bottomMenu: BottomMenu): String? {
+        return if (isIconJumperEnabled && index == Int.ZERO) {
+            if (isForYouToHomeSelected) {
+                bottomMenu.homeForYou?.homeTitle
+            } else {
+                if (selectedItem == Int.ZERO) {
+                    bottomMenu.homeForYou?.forYouTitle
+                } else {
+                    bottomMenu.homeForYou?.homeTitle
+                }
+            }
+        } else {
+            bottomMenu.title
         }
     }
 
@@ -600,7 +632,11 @@ class LottieBottomNavbar : LinearLayout {
             if (isForYouToHomeSelected) {
                 getOldAnimationToEnabledName(bottomMenu)
             } else {
-                bottomMenu.homeForYou?.animThumbIdleName
+                if (selectedItem == Int.ZERO) {
+                    bottomMenu.homeForYou?.animThumbIdleName
+                } else {
+                    getOldAnimationToEnabledName(bottomMenu)
+                }
             }
         } else {
             getOldAnimationToEnabledName(bottomMenu)
@@ -776,9 +812,9 @@ class LottieBottomNavbar : LinearLayout {
                     selectedIcon.visibility = View.INVISIBLE
                     placeholderSelectedIcon.setImageResource(imageEnabled)
                     placeholderSelectedIcon.visibility = View.VISIBLE
+                    iconPlaceholderList[it] = placeholderSelectedIcon
                 }
 
-                iconPlaceholderList[it] = placeholderSelectedIcon
                 iconList[it] = Pair(selectedIcon, false)
             } else {
                 if (!selectedIconPair.second) {
