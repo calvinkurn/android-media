@@ -139,6 +139,5 @@
     <string name="thanks_va_ticker_description">Tidak disarankan transfer Virtual Account dari bank selain yang dipilih.</string>
 
     <!-- Share -->
-    <string name="thankyou_postpurchase_share_onboarding_title">Bagikan produk yang kamu beli, yuk~</string>
-    <string name="thankyou_postpurchase_share_onboarding_desc">Kalau kamu udah gabung Tokopedia Affiliate, bisa dapat komisi jika ada yang beli, lho!</string>
+    <string name="thankyou_postpurchase_share_onboarding">Suka dengan produk yang baru kamu beli? \nBagikan link-nya, yuk~</string>
 </resources>
