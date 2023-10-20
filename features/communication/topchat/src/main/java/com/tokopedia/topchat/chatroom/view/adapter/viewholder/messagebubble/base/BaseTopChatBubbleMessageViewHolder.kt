@@ -28,26 +28,28 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewH
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getOppositeMargin
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
-import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatRoomMessageBubbleLayout
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatFlexBoxChatLayout
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatRoomMessageBubbleLayout
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatRoomBubbleContainerLayout
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatRoomFlexBoxListener
 import com.tokopedia.unifyprinciples.Typography
+import timber.log.Timber
 
-abstract class BaseTopChatBubbleMessageViewHolder<T: MessageUiModel>(
+abstract class BaseTopChatBubbleMessageViewHolder<T : MessageUiModel>(
     itemView: View,
     msgClickLinkListener: ChatLinkHandlerListener,
     private val commonListener: CommonViewHolderListener,
     private val adapterListener: AdapterListener,
     private val chatMsgListener: TopChatRoomFlexBoxListener,
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener
-): BaseChatViewHolder<T>(itemView) {
+) : BaseChatViewHolder<T>(itemView) {
 
     private val onTouchListener = MessageOnTouchListener(msgClickLinkListener)
 
     private val headerRole: Typography? = itemView.findViewById(R.id.tvRole)
     private val smartReplyBlueDot: ImageView? = itemView.findViewById(
-        R.id.topchat_chatroom_iv_header_role_blue_dot)
+        R.id.topchat_chatroom_iv_header_role_blue_dot
+    )
     private val header: LinearLayout? = itemView.findViewById(R.id.llRoleUser)
 
     private val topMarginOpposite: Int = getOppositeMargin(itemView.context)
@@ -116,7 +118,9 @@ abstract class BaseTopChatBubbleMessageViewHolder<T: MessageUiModel>(
             getFxChat()?.setOnLongClickListener {
                 val menus = LongClickMenuItemGenerator.createLongClickMenuMsgBubble()
                 commonListener.showMsgMenu(
-                    uiModel, getFxChat()?.getMessageText() ?: "", menus
+                    uiModel,
+                    getFxChat()?.getMessageText() ?: "",
+                    menus
                 )
                 true
             }
@@ -130,8 +134,8 @@ abstract class BaseTopChatBubbleMessageViewHolder<T: MessageUiModel>(
             if (chat.replyTime.toLongOrZero() / MILISECONDS < START_YEAR) {
                 chat.replyTime = (chat.replyTime.toLongOrZero() * MILISECONDS).toString()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
         }
     }
 
@@ -235,7 +239,10 @@ abstract class BaseTopChatBubbleMessageViewHolder<T: MessageUiModel>(
     private fun paddingRightMsg() {
         getBubbleChatLayout()?.let {
             it.setPadding(
-                0, it.paddingTop, bubbleToScreenMargin, it.paddingBottom
+                0,
+                it.paddingTop,
+                bubbleToScreenMargin,
+                it.paddingBottom
             )
         }
     }
@@ -243,7 +250,10 @@ abstract class BaseTopChatBubbleMessageViewHolder<T: MessageUiModel>(
     private fun paddingLeftMsg() {
         getBubbleChatLayout()?.let {
             it.setPadding(
-                bubbleToScreenMargin, it.paddingTop, 0, it.paddingBottom
+                bubbleToScreenMargin,
+                it.paddingTop,
+                0,
+                it.paddingBottom
             )
         }
     }
