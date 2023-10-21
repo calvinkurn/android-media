@@ -221,7 +221,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private ApplicationUpdate appUpdate;
     private View lineBottomNav;
-    List<Fragment> fragmentList;
+    List<Fragment> fragmentList = new ArrayList<>();
     private Notification notification;
     Fragment currentFragment;
     private int currentSelectedFragmentPosition = HOME_MENU;
