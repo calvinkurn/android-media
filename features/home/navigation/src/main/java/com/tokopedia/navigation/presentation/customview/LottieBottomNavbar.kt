@@ -646,9 +646,13 @@ class LottieBottomNavbar : LinearLayout {
     private fun getNewImageName(index: Int, bottomMenu: BottomMenu): Int? {
         return if (isIconJumperEnabled && index == Int.ZERO) {
             if (isForYouToHomeSelected) {
-                bottomMenu.homeForYou?.homeImageName
+                getOldImageName(bottomMenu)
             } else {
-                bottomMenu.homeForYou?.forYouImageName
+                if (selectedItem == Int.ZERO) {
+                    bottomMenu.homeForYou?.forYouImageName
+                } else {
+                    getOldImageName(bottomMenu)
+                }
             }
         } else {
             getOldImageName(bottomMenu)
@@ -875,6 +879,7 @@ class LottieBottomNavbar : LinearLayout {
 
             if (textIcon?.text != iconTitle) {
                 textIcon?.text = iconTitle
+                textIcon?.invalidate()
             }
         }
     }

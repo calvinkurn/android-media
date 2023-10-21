@@ -416,7 +416,9 @@ public class MainParentActivity extends BaseActivity implements
         setContentView(R.layout.activity_main_parent);
 
         fragmentContainer = findViewById(R.id.container);
-        fragmentList = fragments();
+
+        fragmentList.clear();
+        fragmentList.addAll(fragments());
 
         bottomNavigation = findViewById(R.id.bottom_navbar);
         lineBottomNav = findViewById(R.id.line_bottom_nav);
