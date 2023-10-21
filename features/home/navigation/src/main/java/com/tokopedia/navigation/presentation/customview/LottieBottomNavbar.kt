@@ -648,11 +648,7 @@ class LottieBottomNavbar : LinearLayout {
             if (isForYouToHomeSelected) {
                 getOldImageName(bottomMenu)
             } else {
-                if (selectedItem == Int.ZERO) {
-                    bottomMenu.homeForYou?.forYouImageName
-                } else {
-                    getOldImageName(bottomMenu)
-                }
+                bottomMenu.homeForYou?.forYouImageName
             }
         } else {
             getOldImageName(bottomMenu)

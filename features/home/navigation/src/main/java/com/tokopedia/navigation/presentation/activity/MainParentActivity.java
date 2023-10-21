@@ -221,7 +221,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private ApplicationUpdate appUpdate;
     private View lineBottomNav;
-    List<Fragment> fragmentList = new ArrayList<>();
+    List<Fragment> fragmentList;
     private Notification notification;
     Fragment currentFragment;
     private int currentSelectedFragmentPosition = HOME_MENU;
@@ -417,8 +417,7 @@ public class MainParentActivity extends BaseActivity implements
 
         fragmentContainer = findViewById(R.id.container);
 
-        fragmentList.clear();
-        fragmentList.addAll(fragments());
+        fragmentList = fragments();
 
         bottomNavigation = findViewById(R.id.bottom_navbar);
         lineBottomNav = findViewById(R.id.line_bottom_nav);

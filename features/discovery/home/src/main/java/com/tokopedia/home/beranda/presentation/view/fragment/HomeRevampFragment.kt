@@ -469,6 +469,7 @@ HomeRevampFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        retainInstance = true
         fragmentCreatedForFirstTime = true
         context?.run {
             searchBarTransitionRange =
@@ -652,8 +653,14 @@ HomeRevampFragment :
             )
             activity?.let { context ->
                 it.setNavToolbarIconCustomColor(
-                    navToolbarIconCustomLightColor = ContextCompat.getColor(context, searchbarR.color.searchbar_dms_state_light_icon),
-                    navToolbarIconCustomDarkColor = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White)
+                    navToolbarIconCustomLightColor = ContextCompat.getColor(
+                        context,
+                        searchbarR.color.searchbar_dms_state_light_icon
+                    ),
+                    navToolbarIconCustomDarkColor = ContextCompat.getColor(
+                        context,
+                        unifyprinciplesR.color.Unify_Static_White
+                    )
                 )
             }
             val icons = IconBuilder(
@@ -900,7 +907,13 @@ HomeRevampFragment :
 
     private fun handleThematicBackgroundScrollListener(recyclerView: RecyclerView, dy: Int) {
         val scrollThematic = scrollThematic@{ it: View ->
-            if ((layoutManager?.findFirstCompletelyVisibleItemPosition() ?: 0) <= 0 && dy < 0) return@scrollThematic
+            if ((
+                layoutManager?.findFirstCompletelyVisibleItemPosition()
+                    ?: 0
+                ) <= 0 && dy < 0
+            ) {
+                return@scrollThematic
+            }
             it.translationY = -(dy.toFloat())
         }
         thematicBackground?.let { scrollThematic.invoke(it) }
@@ -1463,6 +1476,7 @@ HomeRevampFragment :
                         ),
                         TYPE_ERROR
                     )
+
                     else -> {
                     }
                 }
@@ -1979,7 +1993,8 @@ HomeRevampFragment :
         chooseAddressWidget: ChooseAddressWidget,
         needToShowChooseAddress: Boolean
     ) {
-        chooseAddressWidgetCallback = ChooseAddressWidgetCallback(context, this, this, getThematicUtil())
+        chooseAddressWidgetCallback =
+            ChooseAddressWidgetCallback(context, this, this, getThematicUtil())
         chooseAddressWidgetCallback?.let {
             chooseAddressWidget.bindChooseAddress(it)
             chooseAddressWidget.run {
@@ -2456,7 +2471,8 @@ HomeRevampFragment :
     }
 
     private fun setHomeBottomNavBasedOnScrolling() {
-        val isIconJumperEnabled = (activity as? HomeBottomNavListener)?.isIconJumperEnabled() == true
+        val isIconJumperEnabled =
+            (activity as? HomeBottomNavListener)?.isIconJumperEnabled() == true
         if (isIconJumperEnabled) {
             val mLayoutManager = homeRecyclerView?.layoutManager as? LinearLayoutManager
             mLayoutManager?.let { lManager ->
@@ -2479,9 +2495,11 @@ HomeRevampFragment :
     }
 
     override fun getRecommendationForYouIndex(): Int? {
-        return getHomeViewModel().homeDataModel.list.indexOfFirst {
+        val recommendationForYouIndex = getHomeViewModel().homeDataModel.list.indexOfFirst {
             it is HomeRecommendationFeedDataModel
         }.takeIf { it != RecyclerView.NO_POSITION }
+
+        return recommendationForYouIndex
     }
 
     private fun setHomeToForYouMenuBottomNav() {
