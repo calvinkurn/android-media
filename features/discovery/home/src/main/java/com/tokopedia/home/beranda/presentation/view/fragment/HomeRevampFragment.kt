@@ -295,7 +295,6 @@ HomeRevampFragment :
         private const val SOURCE_ACCOUNT = "account"
         private const val SCROLL_RECOMMEND_LIST = "recommend_list"
         private const val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
-        private const val KEY_RECOMMENDATION_FOR_YOU_INDEX = "for_you_recommendation_index"
         private const val CLICK_TIME_INTERVAL: Long = 500
 
         private const val PARAM_APPLINK_AUTOCOMPLETE =
