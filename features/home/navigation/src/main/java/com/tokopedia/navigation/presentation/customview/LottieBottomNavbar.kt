@@ -646,7 +646,7 @@ class LottieBottomNavbar : LinearLayout {
     private fun getNewImageName(index: Int, bottomMenu: BottomMenu): Int? {
         return if (isIconJumperEnabled && index == Int.ZERO) {
             if (isForYouToHomeSelected) {
-                getOldImageName(bottomMenu)
+                bottomMenu.homeForYou?.homeImageName
             } else {
                 bottomMenu.homeForYou?.forYouImageName
             }

@@ -639,7 +639,9 @@ public class MainParentActivity extends BaseActivity implements
             if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
                 ft.show(frag); // only show fragment what you want to show
                 FragmentLifecycleObserver.INSTANCE.onFragmentSelected(frag);
-                frag.setUserVisibleHint(true);
+                if (!(frag instanceof HomeRevampFragment)) {
+                    frag.setUserVisibleHint(true);
+                }
             } else {
                 ft.hide(frag); // hide all fragment
                 FragmentLifecycleObserver.INSTANCE.onFragmentUnSelected(frag);
@@ -670,19 +672,19 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void scrollToHomeHeader(Fragment fragment) {
-        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof HomeScrollViewListener) {
+        if (fragment instanceof HomeScrollViewListener) {
             ((HomeScrollViewListener) fragment).onScrollToHomeHeader();
         }
     }
 
     private void scrollToHomeForYou(Fragment fragment) {
-        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof HomeScrollViewListener) {
+        if (fragment instanceof HomeScrollViewListener) {
             ((HomeScrollViewListener) fragment).onScrollToRecommendationForYou();
         }
     }
 
     private Integer getRecommendationForYouIndex(Fragment fragment) {
-        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof HomeScrollViewListener) {
+        if (fragment instanceof HomeScrollViewListener) {
            return ((HomeScrollViewListener) fragment).getRecommendationForYouIndex();
         }
         return null;
@@ -797,14 +799,18 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void reloadPage(int position, boolean isJustLoggedIn) {
-        getIntent().putExtra(ARGS_TAB_POSITION, position);
-
         boolean isPositionFeed = position == FEED_MENU;
         getIntent().putExtra(
                 ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN,
                 isPositionFeed && isJustLoggedIn
         );
-        recreate();
+        if (isPositionFeed) {
+            recreate();
+        } else {
+            finish();
+            Intent intent = getIntent().putExtra(ARGS_TAB_POSITION, position);
+            startActivity(intent);
+        }
     }
 
     private List<Fragment> fragments() {
@@ -1311,7 +1317,7 @@ public class MainParentActivity extends BaseActivity implements
     public void populateBottomNavigationView() {
         BottomMenu homeOrForYouMenu;
         if (IconJumperUtil.isEnabledIconJumper()) {
-            homeOrForYouMenu = new BottomMenu(R.id.menu_home, getResources().getString(R.string.for_you),
+            homeOrForYouMenu = new BottomMenu(R.id.menu_home, getResources().getString(R.string.home),
                     new HomeForYouMenu(
                             getResources().getString(R.string.home),
                             getResources().getString(R.string.for_you),
