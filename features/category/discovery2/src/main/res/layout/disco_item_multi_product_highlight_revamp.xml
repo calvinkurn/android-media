@@ -88,13 +88,12 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="4dp"
             app:layout_constraintEnd_toStartOf="@id/cashbackView"
-            app:layout_constraintHorizontal_weight="6.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ph_product_name" />
 
         <com.tokopedia.discovery2.viewcontrollers.customview.CashbackView
             android:id="@+id/cashbackView"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -103,8 +102,6 @@
             app:cardElevation="0dp"
             app:layout_constraintBottom_toBottomOf="@id/progress_bar_stock"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_weight="3.5"
-            app:layout_constraintStart_toEndOf="@id/progress_bar_stock"
             app:layout_constraintTop_toTopOf="@id/progress_bar_stock" />
 
         <com.tokopedia.discovery2.viewcontrollers.customview.PriceBoxView

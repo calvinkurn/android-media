@@ -137,19 +137,19 @@ class PriceBoxView @JvmOverloads constructor(
     fun setBackgroundColor(color: String?, url: String?) {
         if (color.isNullOrEmpty() || url.isNullOrEmpty()) return
 
-        binding.root.addOneTimeGlobalLayoutListener {
+        binding.priceContainer.addOneTimeGlobalLayoutListener {
             binding.cardBackground.apply {
-                maxHeight = binding.root.height
-                minimumHeight = binding.root.height
+                maxHeight = binding.priceContainer.height
+                minimumHeight = binding.priceContainer.height
 
-                layoutParams.width = binding.root.width / 2
+                layoutParams.width = binding.priceContainer.width / 2
                 requestLayout()
             }
         }
 
         val parseColor = Color.parseColor(color)
 
-        binding.root.setBackgroundColor(ColorUtils.setAlphaComponent(parseColor, 20))
+        binding.priceContainer.setBackgroundColor(ColorUtils.setAlphaComponent(parseColor, 20))
 
         ImageUtils.loadImage(binding.cardBackground, url)
 
@@ -160,7 +160,7 @@ class PriceBoxView @JvmOverloads constructor(
         val textColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN400)
 
         with(binding) {
-            root.setBackgroundColor(
+            priceContainer.setBackgroundColor(
                 MethodChecker.getColor(
                     context,
                     unifyprinciplesR.color.Unify_NN100
