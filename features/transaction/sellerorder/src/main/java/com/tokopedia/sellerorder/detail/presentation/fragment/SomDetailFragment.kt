@@ -219,15 +219,15 @@ open class SomDetailFragment :
                 doClickChat()
             }
             layoutParams = LinearLayout.LayoutParams(
-                context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+                context.resources.getDimension(unifyprinciplesR.dimen.layout_lvl3)
                     .toInt(),
-                context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+                context.resources.getDimension(unifyprinciplesR.dimen.layout_lvl3)
                     .toInt()
             ).apply {
                 setMargins(
                     0,
                     0,
-                    context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
+                    context.resources.getDimension(unifyprinciplesR.dimen.spacing_lvl2)
                         .toInt(),
                     0
                 )
