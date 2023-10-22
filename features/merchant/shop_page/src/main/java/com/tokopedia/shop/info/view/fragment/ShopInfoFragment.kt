@@ -158,7 +158,6 @@ class ShopInfoFragment :
             removeObservers(it.shopInfo)
             removeObservers(it.shopNotesResp)
             removeObservers(it.messageIdOnChatExist)
-//            removeObservers(it.nearestEpharmWarehouseData)
             removeObservers(it.epharmDetailData)
             it.flush()
         }
@@ -209,7 +208,6 @@ class ShopInfoFragment :
 
     private fun initObservers() {
         observeShopNotes()
-//        observeNearestEpharmWarehouse()
         observeShopInfo()
         observeShopEpharmData()
         observeShopBadgeReputation()
@@ -315,23 +313,6 @@ class ShopInfoFragment :
         }
     }
 
-//    private fun observeNearestEpharmWarehouse() {
-//        shopViewModel?.nearestEpharmWarehouseData?.let { nearestWarehouseData ->
-//            observe(nearestWarehouseData) {
-//                when (it) {
-//                    is Success -> {
-//                        val whId = it.data.getNearestEpharmacyWarehouseLocation.warehouseID
-//                        warehouseId = whId
-//                        getShopEpharmacyData(shopId = shopId.toLongOrZero(), whId = whId)
-//                    }
-//                    is Fail -> {
-//                        showToasterError(it.throwable)
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     private fun observeShopEpharmData() {
         shopViewModel?.epharmDetailData?.let { epharmData ->
             observe(epharmData) {
@@ -342,7 +323,6 @@ class ShopInfoFragment :
                                 if (_viewModel.isShouldShowLicenseForDrugSeller(isGoApotik = _shopInfo.isGoApotik, fsType = _shopInfo.fsType)) {
                                     displayShopEpharmDetailsData(epharmData = it.data, shopInfoData = _shopInfo)
                                 } else {
-
                                 }
                             }
                         }
@@ -379,7 +359,6 @@ class ShopInfoFragment :
 
             val widgetUserAddressLocalData = ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
             getNearestEpharmWarehouseData(shopId, widgetUserAddressLocalData.district_id.toIntOrZero())
-//            getShopEpharmData(shopId = shopId, districtId = widgetUserAddressLocalData.district_id.toIntOrZero())
 
             if (shopInfo == null) {
                 getShopInfo(shopId)
@@ -439,17 +418,6 @@ class ShopInfoFragment :
             districtId = districtId
         )
     }
-//
-//    private fun getShopEpharmData(shopId: String, districtId: Int) {
-//        shopViewModel?.getShopEpharmData(
-//            shopId = shopId.toLongOrZero(),
-//            districtId = districtId
-//        )
-//    }
-//
-//    private fun getShopEpharmacyData(shopId: Long, whId: Long) {
-//        shopViewModel?.getShopGoApotikData(shopId = shopId, warehouseId = whId)
-//    }
 
     private fun setStatisticsVisibility() {
         fragmentShopInfoBinding?.layoutPartialShopInfoStatistic?.root?.visibility = View.GONE
