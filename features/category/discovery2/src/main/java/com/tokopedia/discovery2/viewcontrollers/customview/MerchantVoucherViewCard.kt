@@ -63,7 +63,7 @@ class MerchantVoucherViewCard @JvmOverloads constructor(
             binding.shopLogo.setImageUrl(iconUrl.orEmpty())
         }
 
-        ImageUtils.loadImage(binding.cardBackground, item.backgroundImageUrl.orEmpty())
+        loadCardBackground(item)
 
         binding.actionBtn.text = item.buttonText.orEmpty()
         binding.tvTitle.text = item.title
@@ -116,6 +116,18 @@ class MerchantVoucherViewCard @JvmOverloads constructor(
         ).apply {
             scallopDiameter = SCALLOP_DIAMETER
         }
+    }
+
+    private fun loadCardBackground(item: DataItem) {
+        binding.tvTitle.addOneTimeGlobalLayoutListener {
+            binding.cardBackground.apply {
+                val textViewHeight = convertDpToPixel(binding.tvTitle.height.toFloat(), context)
+                layoutParams.height = binding.tvTitle.y.toInt() + textViewHeight
+                requestLayout()
+            }
+        }
+
+        ImageUtils.loadImage(binding.cardBackground, item.backgroundImageUrl.orEmpty())
     }
 
     companion object {
