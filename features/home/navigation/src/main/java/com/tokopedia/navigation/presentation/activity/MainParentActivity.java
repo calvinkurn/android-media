@@ -733,7 +733,6 @@ public class MainParentActivity extends BaseActivity implements
         // check if the download is finished or is in progress
         checkForInAppUpdateInProgressOrCompleted();
         presenter.get().onResume();
-
         if (userSession.get().isLoggedIn() && isUserFirstTimeLogin) {
             int position = HOME_MENU;
             if (currentFragment.getClass().getSimpleName().equalsIgnoreCase(FEED_PAGE)) {
@@ -816,7 +815,11 @@ public class MainParentActivity extends BaseActivity implements
     private List<Fragment> fragments() {
         List<Fragment> fragmentList = new ArrayList<>();
 
-        fragmentList.add(HomeInternalRouter.getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
+        if (getSupportFragmentManager().findFragmentByTag(FragmentConst.HOME_REVAMP_FRAGMENT) == null) {
+            fragmentList.add(HomeInternalRouter.getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
+        } else {
+            fragmentList.add(getSupportFragmentManager().findFragmentByTag(FragmentConst.HOME_REVAMP_FRAGMENT));
+        }
 
         if (getSupportFragmentManager().findFragmentByTag(FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT) == null) {
             fragmentList.add(
