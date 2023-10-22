@@ -12,10 +12,13 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.Constant.ProductHighlight.Type
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.databinding.PriceBoxBinding
 import com.tokopedia.home_component.util.convertDpToPixel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.BOLD
 import com.tokopedia.utils.image.ImageUtils
@@ -38,9 +41,22 @@ class PriceBoxView @JvmOverloads constructor(
             configureMainPrice()
             configureSlashPrice()
             configureRibbon()
+            configureMargin()
 
             binding.phFreeText.textSize = 8f
         }
+
+    private fun configureMargin() {
+        val vertical = when (fontType) {
+            Type.SINGLE -> R.dimen.dp_6
+            Type.DOUBLE -> R.dimen.dp_4
+            Type.TRIPLE -> R.dimen.dp_2
+        }
+
+        val horizontal = R.dimen.dp_8
+
+        binding.phProductPrice.setMargin(context.resources.getDimensionPixelSize(horizontal), context.resources.getDimensionPixelSize(vertical), context.resources.getDimensionPixelSize(horizontal), context.resources.getDimensionPixelSize(vertical))
+    }
 
     private fun configureRibbon() {
         val fontType = when (fontType) {
@@ -105,6 +121,17 @@ class PriceBoxView @JvmOverloads constructor(
 
     fun renderBenefit(benefit: String?) {
         binding.freeTextContainer.isVisible = !benefit.isNullOrEmpty()
+
+        if (binding.freeTextContainer.isVisible) {
+            binding.priceContainer.setMargin(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
+        } else {
+            val bottom = when (fontType) {
+                Type.SINGLE -> R.dimen.dp_6
+                Type.DOUBLE -> R.dimen.dp_4
+                Type.TRIPLE -> R.dimen.dp_2
+            }
+            binding.priceContainer.setPadding(Int.ZERO, Int.ZERO, Int.ZERO, context.resources.getDimensionPixelSize(bottom))
+        }
 
         binding.phFreeText.text = benefit
     }
