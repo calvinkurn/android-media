@@ -14,6 +14,7 @@ import android.view.ViewOutlineProvider
 import android.widget.FrameLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -32,11 +33,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.kotlin.extensions.view.splitByThousand
@@ -89,7 +88,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -115,9 +114,13 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         private const val BUNDLE_KEY_IS_FLOW_MVC_LOCK_TO_COURIER = "is_flow_mvc_lock_to_courier"
 
         private const val BOTTOM_SHEET_MARGIN_TOP_IN_DP = 64
+        private const val BOTTOM_SHEET_TICKER_INFO_HEIGHT_IN_DP = 40
+        private const val BOTTOM_SHEET_TICKER_INFO_MARGIN_IN_DP = 12
         private const val BOTTOM_SHEET_HEADER_HEIGHT_IN_DP = 56
+        private const val BOTTOM_SHEET_SAVING_INFO_HEIGHT_IN_DP = 56
+        private const val BOTTOM_SHEET_TOTAL_AMOUNT_HEIGHT_IN_DP = 56
 
-        private const val AUTO_SCROLL_DELAY = 300L
+        private const val AUTO_SCROLL_DELAY = 500L
 
         @JvmStatic
         fun newInstance(
@@ -169,9 +172,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private var binding by autoClearedNullable<PromoUsageBottomsheetBinding>()
     var listener: Listener? = null
-    var currentPeekHeight: Int = 0
-    private val maxPeekHeight: Int
-        get() = getScreenHeight() - BOTTOM_SHEET_MARGIN_TOP_IN_DP.toPx()
+    private val maxBottomSheetHeight: Int by lazy {
+        getScreenHeight() - BOTTOM_SHEET_MARGIN_TOP_IN_DP.toPx()
+    }
 
     private val recyclerViewAdapter by lazy {
         CompositeAdapter.Builder()
@@ -245,17 +248,22 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         renderLoadingDialog(false)
+        recyclerViewAdapter.clear()
         binding = null
+        listener = null
     }
 
     private fun applyBottomSheetMaxHeightRule() {
-        val frameDialogView = binding?.rlBottomSheetWrapper?.parent as FrameLayout
-        frameDialogView.setBackgroundColor(Color.TRANSPARENT)
-        frameDialogView.bringToFront()
-        frameDialogView.layoutParams.height = maxPeekHeight
-        val bottomSheetBehavior = BottomSheetBehavior.from(frameDialogView)
-        bottomSheetBehavior.peekHeight = maxPeekHeight
-        bottomSheetBehavior.isDraggable = false
+        binding?.run {
+            val frameDialogView = rlBottomSheetWrapper.parent as FrameLayout
+            frameDialogView.setBackgroundColor(Color.TRANSPARENT)
+            frameDialogView.bringToFront()
+            rlBottomSheetWrapper.maxHeight = maxBottomSheetHeight
+            val bottomSheetBehavior = BottomSheetBehavior.from(frameDialogView)
+            bottomSheetBehavior.peekHeight = maxBottomSheetHeight
+            bottomSheetBehavior.isHideable = false
+            bottomSheetBehavior.isDraggable = false
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -290,19 +298,18 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         val boPromoCodes: List<String> = arguments?.getStringArrayList(BUNDLE_KEY_BO_PROMO_CODES)
             ?: emptyList()
 
-        binding?.tpgBottomSheetHeaderTitle?.text =
-            context?.getString(R.string.promo_usage_label_promo)
-        binding?.btnBottomSheetHeaderClose?.setOnClickListener {
-            renderLoadingDialog(true)
-            viewModel.onClosePromoPage(
-                entryPoint = entryPoint,
-                validateUsePromoRequest = validateUsePromoRequest,
-                boPromoCodes = boPromoCodes,
-                isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
-                    RemoteConfigInstance.getInstance().abTestPlatform
-                ).isRevamp()
-            )
-        }
+        binding?.clBottomSheetHeader?.btnBottomSheetHeaderClose
+            ?.setOnClickListener {
+                renderLoadingDialog(true)
+                viewModel.onClosePromoPage(
+                    entryPoint = entryPoint,
+                    validateUsePromoRequest = validateUsePromoRequest,
+                    boPromoCodes = boPromoCodes,
+                    isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
+                        RemoteConfigInstance.getInstance().abTestPlatform
+                    ).isRevamp()
+                )
+            }
         binding?.clTickerInfo?.gone()
         context?.let {
             binding?.clBottomSheetContent?.background = BottomSheetUtil
@@ -395,65 +402,52 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private fun renderWhiteHeader() {
         context?.let {
-            binding?.clBottomSheetHeader?.background = BottomSheetUtil
-                .generateBackgroundDrawableWithColor(
+            binding?.clBottomSheetHeader?.root?.background =
+                BottomSheetUtil.generateBackgroundDrawableWithColor(
                     it,
                     unifyprinciplesR.color.Unify_Background
                 )
         }
-        binding?.tpgBottomSheetHeaderTitle
+        binding?.clBottomSheetHeader?.tpgBottomSheetHeaderTitle
             ?.setTextColorCompat(unifyprinciplesR.color.Unify_NN950)
         context?.let {
-            binding?.btnBottomSheetHeaderClose?.setImageDrawable(
-                if (binding?.root?.context.isDarkMode()) {
-                    getIconUnifyDrawable(
-                        context = it,
-                        iconId = IconUnify.CLOSE,
-                        assetColor = ContextCompat.getColor(
-                            it,
-                            unifyprinciplesR.color.Unify_Static_White
+            binding?.clBottomSheetHeader?.btnBottomSheetHeaderClose
+                ?.setImageDrawable(
+                    if (binding?.root?.context.isDarkMode()) {
+                        getIconUnifyDrawable(
+                            context = it,
+                            iconId = IconUnify.CLOSE,
+                            assetColor = ContextCompat.getColor(
+                                it,
+                                unifyprinciplesR.color.Unify_Static_White
+                            )
                         )
-                    )
-                } else {
-                    getIconUnifyDrawable(
-                        context = it,
-                        iconId = IconUnify.CLOSE,
-                        assetColor = ContextCompat.getColor(
-                            it,
-                            unifyprinciplesR.color.Unify_Static_Black
+                    } else {
+                        getIconUnifyDrawable(
+                            context = it,
+                            iconId = IconUnify.CLOSE,
+                            assetColor = ContextCompat.getColor(
+                                it,
+                                unifyprinciplesR.color.Unify_Static_Black
+                            )
                         )
-                    )
-                }
-            )
+                    }
+                )
         }
+        binding?.clBottomSheetHeader?.root?.visible()
     }
 
     private fun renderTransparentHeader() {
-        binding?.clBottomSheetHeader?.background = null
-        binding?.tpgBottomSheetHeaderTitle
-            ?.setTextColorCompat(unifyprinciplesR.color.Unify_Static_White)
-        context?.let {
-            binding?.btnBottomSheetHeaderClose?.setImageDrawable(
-                getIconUnifyDrawable(
-                    context = it,
-                    iconId = IconUnify.CLOSE,
-                    assetColor = ContextCompat.getColor(
-                        it,
-                        unifyprinciplesR.color.Unify_Static_White
-                    )
-                )
-            )
-        }
+        binding?.clBottomSheetHeader?.root?.gone()
     }
 
     private fun observeKeyboardVisibility() {
         activity?.let { activity ->
             ViewCompat.setOnApplyWindowInsetsListener(activity.window.decorView) { view: View, insets: WindowInsetsCompat ->
                 val isKeyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
-                val keyboardHeight = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
                 if (isKeyboardVisible) {
                     // isKeyboardVisible means user tap voucher code text field
-                    setFocusOnPromoAttemptTextField(keyboardHeight)
+                    setFocusOnPromoAttemptTextField()
                 } else {
                     resetFocusOnPromoAttemptTextField()
                 }
@@ -462,9 +456,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private fun setFocusOnPromoAttemptTextField(keyboardHeight: Int) {
-        // Add padding to make voucher code text field displayed above keyboard
-        binding?.rvPromo?.setMargin(0, 0, 0, keyboardHeight.toDp())
+    private fun setFocusOnPromoAttemptTextField() {
         binding?.rvPromo?.requestLayout()
 
         val itemCount = recyclerViewAdapter.itemCount
@@ -472,7 +464,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun resetFocusOnPromoAttemptTextField() {
-        binding?.rvPromo?.setMargin(0, 0, 0, 0)
         binding?.rvPromo?.requestLayout()
     }
 
@@ -544,6 +535,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         viewModel.promoPageUiState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is PromoPageUiState.Initial -> {
+                    refreshBottomSheetHeight(state)
                     renderHeader(false)
                     renderContent(isVisible = false, hasPromoRecommendationSection = false)
                     renderLoadingDialog(false)
@@ -551,10 +543,10 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     hideSavingInfo()
                     renderError(false)
                     renderActionButton(state)
-                    refreshBottomSheetHeight(state)
                 }
 
                 is PromoPageUiState.Success -> {
+                    refreshBottomSheetHeight(state)
                     renderHeader(true)
                     submitItems(state.items)
                     renderLoadingDialog(false)
@@ -566,7 +558,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     renderSavingInfo(state.savingInfo)
                     renderError(false)
                     renderTickerInfo(state.tickerInfo)
-                    refreshBottomSheetHeight(state)
                     renderActionButton(state)
                     if (state.isReload) {
                         processAndSendViewAvailablePromoListNewEvent(items = state.items)
@@ -574,13 +565,13 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 }
 
                 is PromoPageUiState.Error -> {
+                    refreshBottomSheetHeight(state)
                     renderHeader(true)
                     renderLoadingShimmer(false)
                     renderLoadingDialog(false)
                     renderContent(isVisible = false, hasPromoRecommendationSection = false)
                     renderError(true, state.exception)
                     hideSavingInfo()
-                    refreshBottomSheetHeight(state)
                     processAndSendViewAvailablePromoListNewEvent(isError = true)
                 }
 
@@ -639,11 +630,17 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             is PromoPageUiState.Success -> {
                 when (entryPoint) {
                     PromoPageEntryPoint.CART_PAGE -> {
-                        binding?.buttonBuy?.isClickable = !state.isCalculating
+                        setBuyButton(
+                            isEnabled = !state.isCalculating,
+                            isLoading = state.isCalculating
+                        )
                     }
 
                     PromoPageEntryPoint.CHECKOUT_PAGE, PromoPageEntryPoint.OCC_PAGE -> {
-                        binding?.buttonBackToShipment?.isClickable = !state.isCalculating
+                        setBackToShipmentButton(
+                            isEnabled = !state.isCalculating,
+                            isLoading = state.isCalculating
+                        )
                     }
                 }
             }
@@ -654,33 +651,81 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
+    private fun setBuyButton(
+        isEnabled: Boolean = true,
+        isLoading: Boolean = false
+    ) {
+        binding?.buttonBuy?.apply {
+            this.buttonType = UnifyButton.Type.MAIN
+            this.buttonVariant = UnifyButton.Variant.FILLED
+            this.isEnabled = isEnabled
+            this.isLoading = isLoading
+        }
+    }
+
+    private fun setBackToShipmentButton(
+        isEnabled: Boolean = true,
+        isLoading: Boolean = false
+    ) {
+        binding?.buttonBackToShipment?.apply {
+            this.buttonType = UnifyButton.Type.MAIN
+            this.buttonVariant = UnifyButton.Variant.FILLED
+            this.isEnabled = isEnabled
+            this.isLoading = isLoading
+        }
+    }
+
     private fun refreshBottomSheetHeight(state: PromoPageUiState) {
-        binding?.root?.addOneTimeGlobalLayoutListener {
-            val contentHeight = when (state) {
-                is PromoPageUiState.Initial -> {
-                    maxPeekHeight
+        when (state) {
+            is PromoPageUiState.Initial -> {
+                binding?.run {
+                    val maxShimmerHeight = getScreenHeight()
+                        .minus(BOTTOM_SHEET_MARGIN_TOP_IN_DP.toPx())
+                        .minus(BOTTOM_SHEET_HEADER_HEIGHT_IN_DP.toPx())
+                    val constraintSet = ConstraintSet()
+                    constraintSet.clone(layoutShimmer.root)
+                    constraintSet.constrainMaxHeight(R.id.clShimmerContainer, maxShimmerHeight)
+                    constraintSet.applyTo(layoutShimmer.root)
                 }
+            }
 
-                is PromoPageUiState.Error -> {
-                    binding?.layoutGlobalError?.root?.height ?: 0
+            is PromoPageUiState.Success -> {
+                binding?.run {
+                    var maxPromoHeight = getScreenHeight()
+                        .minus(BOTTOM_SHEET_MARGIN_TOP_IN_DP.toPx())
+                        .minus(BOTTOM_SHEET_TOTAL_AMOUNT_HEIGHT_IN_DP.toPx())
+                    val hasTickerInfo = state.tickerInfo.message.isNotBlank() &&
+                        state.tickerInfo.iconUrl.isNotBlank() &&
+                        state.tickerInfo.backgroundUrl.isNotBlank()
+                    if (hasTickerInfo) {
+                        maxPromoHeight = maxPromoHeight
+                            .minus(BOTTOM_SHEET_TICKER_INFO_HEIGHT_IN_DP.toPx())
+                    } else {
+                        maxPromoHeight = maxPromoHeight
+                            .minus(BOTTOM_SHEET_TICKER_INFO_MARGIN_IN_DP.toPx())
+                    }
+                    val hasSavingInfo = state.savingInfo.isVisible
+                    if (hasSavingInfo) {
+                        maxPromoHeight = maxPromoHeight
+                            .minus(BOTTOM_SHEET_SAVING_INFO_HEIGHT_IN_DP.toPx())
+                    }
+                    val constraintSet = ConstraintSet()
+                    constraintSet.clone(clBottomSheetContent)
+                    constraintSet.constrainMaxHeight(R.id.rvPromo, maxPromoHeight)
+                    constraintSet.applyTo(clBottomSheetContent)
                 }
+            }
 
-                is PromoPageUiState.Success -> {
-                    binding?.root?.height ?: 0
+            is PromoPageUiState.Error -> {
+                binding?.run {
+                    val maxErrorHeight = getScreenHeight()
+                        .minus(BOTTOM_SHEET_MARGIN_TOP_IN_DP.toPx())
+                    val constraintSet = ConstraintSet()
+                    constraintSet.clone(rlBottomSheetWrapper)
+                    constraintSet.constrainHeight(R.id.layoutGlobalError, maxErrorHeight)
+                    constraintSet.applyTo(rlBottomSheetWrapper)
                 }
             }
-            if (currentPeekHeight == contentHeight) {
-                return@addOneTimeGlobalLayoutListener
-            }
-            currentPeekHeight = if (contentHeight < maxPeekHeight) {
-                contentHeight
-            } else {
-                maxPeekHeight
-            }
-            val frameDialogView = binding?.rlBottomSheetWrapper?.parent as FrameLayout
-            frameDialogView.layoutParams.height = currentPeekHeight
-            val bottomSheetBehavior = BottomSheetBehavior.from(frameDialogView)
-            bottomSheetBehavior.peekHeight = currentPeekHeight
         }
     }
 
@@ -708,9 +753,18 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private fun renderLoadingShimmer(isVisible: Boolean) {
         if (isVisible) {
-            binding?.layoutShimmer?.iuCloseIcon?.setOnClickListener {
-                dismiss()
-            }
+            binding?.layoutShimmer?.clBottomSheetShimmerHeader
+                ?.btnBottomSheetHeaderClose?.setOnClickListener {
+                    dismiss()
+                }
+            binding?.layoutShimmer?.clBottomSheetShimmerHeader
+                ?.btnBottomSheetHeaderClose?.setImage(
+                    newIconId = IconUnify.CLOSE,
+                    newDarkEnable = unifyprinciplesR.color.Unify_NN900,
+                    newLightEnable = unifyprinciplesR.color.Unify_NN900
+                )
+            binding?.layoutShimmer?.clBottomSheetShimmerHeader
+                ?.tpgBottomSheetHeaderTitle?.setTextColorCompat(unifyprinciplesR.color.Unify_NN950)
             context?.let {
                 binding?.rlBottomSheetWrapper?.background =
                     BottomSheetUtil.generateBackgroundDrawableWithColor(
@@ -739,7 +793,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun renderHeader(isVisible: Boolean) {
-        binding?.clBottomSheetHeader?.isVisible = isVisible
+        binding?.clBottomSheetHeader?.root?.isVisible = isVisible
     }
 
     private fun renderContent(isVisible: Boolean, hasPromoRecommendationSection: Boolean) {
@@ -766,7 +820,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
         binding?.rlBottomSheetWrapper?.clipToOutline = true
         binding?.clBottomSheetContent?.clipChildren = true
-        binding?.clBottomSheetHeader?.isVisible = isVisible
+        binding?.clBottomSheetHeader?.root?.isVisible = isVisible
         binding?.rvPromo?.isVisible = isVisible
         binding?.cvTotalAmount?.isVisible = isVisible
         if (isVisible && hasPromoRecommendationSection) {
@@ -793,9 +847,18 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private fun renderError(isVisible: Boolean, throwable: Throwable? = null) {
         if (isVisible) {
-            binding?.layoutGlobalError?.iuCloseIcon?.setOnClickListener {
-                dismiss()
-            }
+            binding?.layoutGlobalError?.clBottomSheetErrorHeader
+                ?.btnBottomSheetHeaderClose?.setOnClickListener {
+                    dismiss()
+                }
+            binding?.layoutGlobalError?.clBottomSheetErrorHeader
+                ?.btnBottomSheetHeaderClose?.setImage(
+                    newIconId = IconUnify.CLOSE,
+                    newDarkEnable = unifyprinciplesR.color.Unify_NN900,
+                    newLightEnable = unifyprinciplesR.color.Unify_NN900
+                )
+            binding?.layoutGlobalError?.clBottomSheetErrorHeader
+                ?.tpgBottomSheetHeaderTitle?.setTextColorCompat(unifyprinciplesR.color.Unify_NN950)
             val errorType = if (throwable != null) {
                 getGlobalErrorType(throwable)
             } else {
@@ -870,7 +933,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
                 is ClearPromoUiAction.Failed -> {
                     renderLoadingDialog(false)
-                    showToastError(uiAction.throwable)
                     listener?.onClearPromoFailed(uiAction.throwable)
                     processAndSendClickCheckoutPromoEvent(false, emptyList())
                     dismiss()
@@ -901,7 +963,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
                 is ApplyPromoUiAction.Failed -> {
                     renderLoadingDialog(false)
-                    showToastError(uiAction.throwable)
                     listener?.onApplyPromoFailed(uiAction.throwable)
                     processAndSendClickCheckoutPromoEvent(false, emptyList())
                     dismiss()
@@ -970,6 +1031,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                             val isIdle =
                                 binding?.rvPromo?.scrollState == RecyclerView.SCROLL_STATE_IDLE
                             if (!isVisibleInCurrentScreen && itemPosition != RecyclerView.NO_POSITION && isIdle) {
+                                // Delay scroll until layout is finish updating
                                 Handler(Looper.getMainLooper()).postDelayed({
                                     binding?.rvPromo?.smoothSnapToPosition(
                                         position = itemPosition,
@@ -1104,11 +1166,11 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun showToastError(throwable: Throwable) {
-        binding?.root?.context?.let { showToastError(throwable.getErrorMessage(it)) }
+        activity?.let { showToastError(throwable.getErrorMessage(it)) }
     }
 
     private fun showToastError(message: String) {
-        binding?.root?.let {
+        parentFragment?.view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
     }

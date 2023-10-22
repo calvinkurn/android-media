@@ -24,7 +24,6 @@ import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.abstraction.R as abstractionR
-import com.tokopedia.design.R as designR
 import com.tokopedia.topads.common.R as topadscommonR
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -342,7 +341,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             }
 
             it.setPrimaryCTAText(getString(abstractionR.string.title_try_again))
-            it.setSecondaryCTAText(getString(designR.string.label_close))
+            it.setSecondaryCTAText(getString(R.string.topads_label_close))
         }
     }
 

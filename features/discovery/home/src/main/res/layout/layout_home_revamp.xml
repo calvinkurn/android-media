@@ -10,6 +10,17 @@
         android:background="@color/Unify_Background"
         android:descendantFocusability="blocksDescendants">
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/thematic_background"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/thematic_foreground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
             android:id="@+id/home_fragment_recycler_view"
             android:layout_width="match_parent"
