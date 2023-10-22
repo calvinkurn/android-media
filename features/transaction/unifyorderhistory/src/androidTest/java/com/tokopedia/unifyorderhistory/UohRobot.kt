@@ -153,7 +153,7 @@ class UohRobot {
     }
 
     private fun waitForData() {
-        Thread.sleep(2000)
+        Thread.sleep(3000)
     }
 
     private fun nthChildOf(parentMatcher: Matcher<View?>, childPosition: Int): Matcher<View?> {

@@ -78,20 +78,6 @@
       "currentSite": "tokopediamarketplace",
       "event": "clickOrderList",
       "userId": ".*",
-      "eventAction": "click primary button on order card marketplace",
-      "eventLabel": ".*",
-      "sessionIris": ".*",
-      "trackerId": "15422",
-      "utm_campaign" : ".*",
-      "utm_medium" : ".*",
-      "utm_source" : ".*"
-    },
-    {
-      "businessUnit": "order management",
-      "eventCategory": "order list",
-      "currentSite": "tokopediamarketplace",
-      "event": "clickOrderList",
-      "userId": ".*",
       "eventAction": "click secondary option on three dot menu marketplace",
       "eventLabel": ".*",
       "sessionIris": ".*"
