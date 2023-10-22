@@ -85,10 +85,6 @@ class PriceBoxView @JvmOverloads constructor(
         background = shapeDrawable
 
         binding.cardBackground.shapeAppearanceModel = shapePathModel
-
-        binding.priceContainer.addOneTimeGlobalLayoutListener {
-            binding.cardBackground.maxHeight = binding.priceContainer.height
-        }
     }
 
     fun renderProductPrice(price: String?) {
@@ -140,6 +136,16 @@ class PriceBoxView @JvmOverloads constructor(
 
     fun setBackgroundColor(color: String?, url: String?) {
         if (color.isNullOrEmpty() || url.isNullOrEmpty()) return
+
+        binding.root.addOneTimeGlobalLayoutListener {
+            binding.cardBackground.apply {
+                maxHeight = binding.root.height
+                minimumHeight = binding.root.height
+
+                layoutParams.width = binding.root.width / 2
+                requestLayout()
+            }
+        }
 
         val parseColor = Color.parseColor(color)
 

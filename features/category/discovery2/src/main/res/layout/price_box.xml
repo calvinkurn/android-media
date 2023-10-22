@@ -8,29 +8,19 @@
     android:clipToPadding="false"
     tools:parentTag="com.google.android.material.card.MaterialCardView">
 
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/card_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:layout_gravity="end"
+        app:layout_constraintDimensionRatio="H,1:1" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.5" />
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/card_background"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            app:layout_constraintBottom_toBottomOf="@id/price_container"
-            app:layout_constraintDimensionRatio="H,1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/price_container"
@@ -54,6 +44,14 @@
                 app:typographyType="display_2"
                 app:typographyWeight="bold"
                 tools:text="Rp4.199.000" />
+
+            <androidx.legacy.widget.Space
+                android:id="@+id/discounted_price_space"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                app:layout_goneMarginTop="2dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/ph_discounted_product_price" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/ph_discounted_product_price"
