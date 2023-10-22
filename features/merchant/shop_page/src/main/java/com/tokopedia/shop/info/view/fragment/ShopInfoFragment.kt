@@ -341,6 +341,8 @@ class ShopInfoFragment :
                             shopInfo?.let { _shopInfo ->
                                 if (_viewModel.isShouldShowLicenseForDrugSeller(isGoApotik = _shopInfo.isGoApotik, fsType = _shopInfo.fsType)) {
                                     displayShopEpharmDetailsData(epharmData = it.data, shopInfoData = _shopInfo)
+                                } else {
+
                                 }
                             }
                         }

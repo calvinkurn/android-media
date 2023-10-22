@@ -6,18 +6,24 @@ import com.google.gson.annotations.SerializedName
 data class GetNearestEpharmacyWarehouseLocationResponse(
     @SerializedName("getNearestEpharmacyWarehouseLocation")
     @Expose
-    val getNearestEpharmacyWarehouseLocation: GetNearestEpharmacyWarehouseLocationData = GetNearestEpharmacyWarehouseLocationData()
+    val getNearestEpharmacyWarehouseLocation: NearestEpharmacyData = NearestEpharmacyData()
 ) {
 
-    data class GetNearestEpharmacyWarehouseLocationData(
-        @SerializedName("gMapsURL")
+    data class NearestEpharmacyData(
+        @SerializedName("data")
         @Expose
-        val gMapsURL: String = "",
-        @SerializedName("address")
-        @Expose
-        val address: String = "",
-        @SerializedName("warehouseID")
-        @Expose
-        val warehouseID: Long = 0L
-    )
+        val data: GetNearestEpharmacyWarehouseLocationDetailData = GetNearestEpharmacyWarehouseLocationDetailData()
+    ) {
+        data class GetNearestEpharmacyWarehouseLocationDetailData(
+            @SerializedName("gMapsURL")
+            @Expose
+            val gMapsURL: String = "",
+            @SerializedName("address")
+            @Expose
+            val address: String = "",
+            @SerializedName("warehouseID")
+            @Expose
+            val warehouseID: Long = 0L
+        )
+    }
 }

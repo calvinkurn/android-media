@@ -27,10 +27,10 @@ class GetNearestEpharmacyWarehouseLocationUseCase @Inject constructor(
 
         fun createParams(
             shopId: Long,
-            districtId: Int
+            districtId: Long
         ): RequestParams = RequestParams.create().apply {
             putLong(SHOP_ID, shopId)
-            putInt(DISTRICT_ID, districtId)
+            putLong(DISTRICT_ID, districtId)
         }
     }
 

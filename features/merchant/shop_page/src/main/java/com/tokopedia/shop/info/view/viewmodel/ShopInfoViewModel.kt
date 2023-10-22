@@ -122,14 +122,14 @@ class ShopInfoViewModel @Inject constructor(
 //            )
 
             nearestEpharmWarehouse.await()?.let {
-                val whId = it.getNearestEpharmacyWarehouseLocation.warehouseID
+//                val whId = it.getNearestEpharmacyWarehouseLocation.warehouseID
             }
         }) {
         }
     }
 
     private suspend fun getNearestEpharmWarehouse(shopId: Long, districtId: Int): GetNearestEpharmacyWarehouseLocationResponse {
-        getNearestEpharmacyWarehouseLocationUseCase.params = GetNearestEpharmacyWarehouseLocationUseCase.createParams(shopId = shopId, districtId = districtId)
+        getNearestEpharmacyWarehouseLocationUseCase.params = GetNearestEpharmacyWarehouseLocationUseCase.createParams(shopId = shopId, districtId = districtId.toLong())
         return getNearestEpharmacyWarehouseLocationUseCase.executeOnBackground()
     }
 
@@ -142,10 +142,10 @@ class ShopInfoViewModel @Inject constructor(
         launchCatchError(block = {
             coroutineScope {
                 val nearestEpharmWarehouseData = withContext(coroutineDispatcherProvider.io) {
-                    getNearestEpharmacyWarehouseLocationUseCase.params = GetNearestEpharmacyWarehouseLocationUseCase.createParams(shopId = shopId, districtId = districtId)
+                    getNearestEpharmacyWarehouseLocationUseCase.params = GetNearestEpharmacyWarehouseLocationUseCase.createParams(shopId = shopId, districtId = districtId.toLong())
                     getNearestEpharmacyWarehouseLocationUseCase.executeOnBackground()
                 }
-                val whId = nearestEpharmWarehouseData.getNearestEpharmacyWarehouseLocation.warehouseID
+                val whId = nearestEpharmWarehouseData.getNearestEpharmacyWarehouseLocation.data.warehouseID
                 getShopGoApotikData(shopId, whId)
 //                _nearestEpharmWarehouseData.postValue(Success(nearestEpharmWarehouseData))
             }
