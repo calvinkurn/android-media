@@ -16,6 +16,7 @@ import com.tokopedia.discovery2.usecase.producthighlightusecase.ProductHighlight
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -41,6 +42,10 @@ class ProductHighlightViewModel(
     private val _ocsLiveData = MutableLiveData<AddToCartDataModel>()
     val redirectToOCS: LiveData<AddToCartDataModel>
         get() = _ocsLiveData
+
+    private val _ocsErrorState = MutableLiveData<String>()
+    val ocsErrorMessage: LiveData<String>
+        get() = _ocsErrorState
 
     @JvmField
     @Inject
@@ -103,7 +108,7 @@ class ProductHighlightViewModel(
         }
     }
 
-    fun onOCSClicked(data: DataItem) {
+    fun onOCSClicked(data: DataItem, context: Context) {
         val atcRequestParam = AddToCartOcsRequestParams().apply {
             productId = data.productId.toZeroStringIfNull()
             shopId = data.shopId.toZeroStringIfNull()
@@ -126,11 +131,15 @@ class ProductHighlightViewModel(
             }
 
             if (result == null || result.isDataError()) {
-                Timber.e(result?.getAtcErrorMessage())
+                val message = result?.getAtcErrorMessage()
+                _ocsErrorState.postValue(message)
+
+                Timber.e(message)
             } else {
                 _ocsLiveData.postValue(result)
             }
         }, onError = {
+            _ocsErrorState.postValue(ErrorHandler.getErrorMessage(context, it))
                 Timber.e(it)
             })
     }

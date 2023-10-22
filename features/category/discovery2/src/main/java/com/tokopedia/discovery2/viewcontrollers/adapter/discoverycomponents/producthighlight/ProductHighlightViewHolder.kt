@@ -24,6 +24,7 @@ import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.unifycomponents.LocalLoad
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.item_empty_error_state.view.*
 
 class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
@@ -67,6 +68,10 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
                 intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
 
                 itemView.context.startActivity(intent)
+            }
+
+            mProductHighlightViewModel?.ocsErrorMessage?.observe(it) { message ->
+                handleErrorOnOCS(message)
             }
         }
     }
@@ -170,7 +175,7 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
         if (phItem !is ProductHighlightRevampItem) return
 
         phItem.onOCSButtonClicked {
-            mProductHighlightViewModel?.onOCSClicked(itemData)
+            mProductHighlightViewModel?.onOCSClicked(itemData, itemView.context)
 
             (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
                 ?.trackProductHighlightOCSClick(
@@ -202,6 +207,16 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
             emptyStateView.isVisible = true
             bannerContainerLayout.addView(emptyStateParentView)
         }
+    }
+
+    private fun handleErrorOnOCS(message: String) {
+        Toaster.build(
+            view = itemView,
+            text = message,
+            duration = Toaster.LENGTH_LONG,
+            type = Toaster.TYPE_ERROR,
+            actionText = itemView.context.getString(R.string.discovery_product_highlight_ocs_error_act)
+        ).show()
     }
 
     private fun addShimmer() {
