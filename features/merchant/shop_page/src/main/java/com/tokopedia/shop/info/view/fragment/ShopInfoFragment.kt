@@ -209,9 +209,9 @@ class ShopInfoFragment :
 
     private fun initObservers() {
         observeShopNotes()
+        observeNearestEpharmWarehouse()
         observeShopInfo()
         observeShopEpharmData()
-        observeNearestEpharmWarehouse()
         observeShopBadgeReputation()
         observerMessageIdOnChatExist()
     }
