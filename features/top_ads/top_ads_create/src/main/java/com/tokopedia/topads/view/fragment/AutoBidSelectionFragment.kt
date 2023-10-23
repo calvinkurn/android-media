@@ -199,4 +199,9 @@ class AutoBidSelectionFragment : BaseStepperFragment<CreateManualAdsStepperModel
         getComponent(CreateAdsComponent::class.java).inject(this)
     }
 
+    override fun onFragmentBackPressed(): Boolean {
+        stepperModel?.redirectionToSummary = false
+        return super.onFragmentBackPressed()
+    }
+
 }

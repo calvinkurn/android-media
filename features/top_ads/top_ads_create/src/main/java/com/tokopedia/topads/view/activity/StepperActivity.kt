@@ -5,6 +5,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
@@ -22,7 +23,6 @@ import com.tokopedia.topads.view.fragment.BudgetingAdsFragment
 import com.tokopedia.topads.view.fragment.ProductAdsListFragment
 import com.tokopedia.topads.view.fragment.ProductRecommendationBidAdsFragment
 import com.tokopedia.topads.view.fragment.ProductSummaryAdsFragment
-import com.tokopedia.topads.view.fragment.SummaryAdsFragment
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.topads.common.R as topadscommonR
 
@@ -100,6 +100,21 @@ class StepperActivity : BaseStepperActivity(), HasComponent<CreateAdsComponent> 
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BACK_BUTTON, "")
         }
         super.onBackEvent()
+    }
+
+    override fun onBackPressed() {
+        try {
+            val fragment = fragmentList?.find { it is AutoBidSelectionFragment }
+            if (fragment is TkpdBaseV4Fragment && fragment.isVisible) {
+                val handled = fragment.onFragmentBackPressed()
+                if (handled) {
+                    return
+                }
+            }
+        } catch (_: Exception) {
+        }
+
+        super.onBackPressed()
     }
 
 }
