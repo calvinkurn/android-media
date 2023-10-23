@@ -439,7 +439,6 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_LOGISTIC, PathType.PATTERN, "/customproductlogistic"),
         // shop_score
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop/performance"),
-        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-penalty-old"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-penalty"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-penalty-detail"),
 
@@ -686,7 +685,6 @@ object DeeplinkDFApp {
 
         // shop_score
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop/performance"),
-        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-penalty-old"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-penalty"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-penalty-detail")
     )
