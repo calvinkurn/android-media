@@ -135,6 +135,9 @@ data class CheckoutOrderModel(
     val startDate: String = "",
     val isRecommend: Boolean = false,
 
+    // OFOC
+    val groupingState: Int = 0,
+
     // Multiple Order Plus Coachmark
     var coachmarkPlus: CoachmarkPlusData = CoachmarkPlusData(),
 

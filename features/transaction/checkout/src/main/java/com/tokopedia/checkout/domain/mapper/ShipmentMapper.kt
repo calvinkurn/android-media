@@ -293,6 +293,8 @@ class ShipmentMapper @Inject constructor() {
                     )
                     scheduleDelivery = mapScheduleDelivery(it.scheduledDelivery)
                     ratesValidationFlow = it.ratesValidationFlow
+                    shippingComponents = it.shippingComponents
+                    groupingState = it.groupingState
                     listSubtotalAddOn = mapSubtotalAddOn(it.listSubtotalAddOns)
                 }
             )
@@ -1263,7 +1265,9 @@ class ShipmentMapper @Inject constructor() {
         return ScheduleDeliveryData(
             scheduleDelivery.timeslotId,
             scheduleDelivery.scheduleDate,
-            scheduleDelivery.validationMetadata
+            scheduleDelivery.validationMetadata,
+            scheduleDelivery.startDate,
+            scheduleDelivery.isRecommend
         )
     }
 

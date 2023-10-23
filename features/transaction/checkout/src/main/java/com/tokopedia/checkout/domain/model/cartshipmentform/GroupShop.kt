@@ -40,6 +40,9 @@ data class GroupShop(
     var courierSelectionErrorData: CourierSelectionErrorData = CourierSelectionErrorData(),
     var scheduleDelivery: ScheduleDeliveryData = ScheduleDeliveryData(),
     var ratesValidationFlow: Boolean = false,
+    // new OFOC
+    var shippingComponents: Int = 1,
+    var groupingState: Int = 1,
 
     // new
     val groupType: Int = 0,

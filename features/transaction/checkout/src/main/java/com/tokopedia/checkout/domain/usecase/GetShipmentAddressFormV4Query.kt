@@ -94,6 +94,8 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                       description
                       description_badge_url
                   }
+                  #shipping_components
+                  #grouping_state
                   add_ons {
                     status
                     add_on_data {
@@ -137,6 +139,8 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                     timeslot_id
                     schedule_date
                     validation_metadata
+                    #start_date
+                    #is_recommend
                   }
                   rates_validation_flow
                   bo_code

@@ -252,12 +252,9 @@ class CheckoutDataConverter @Inject constructor() {
                 scheduleDate = groupShop.scheduleDelivery.scheduleDate,
                 validationMetadata = groupShop.scheduleDelivery.validationMetadata,
                 ratesValidationFlow = groupShop.ratesValidationFlow,
-                // todo
-                shippingComponents = ShippingComponents.fromInt(1),
-                // todo
-                isRecommend = false,
-                // todo
-                startDate = "",
+                shippingComponents = ShippingComponents.fromInt(groupShop.shippingComponents),
+                isRecommend = groupShop.scheduleDelivery.isRecommend,
+                startDate = groupShop.scheduleDelivery.startDate,
                 addOnDefaultTo = receiverName,
                 isProductFcancelPartial = fobject.isFcancelPartial == 1,
                 products = products,
