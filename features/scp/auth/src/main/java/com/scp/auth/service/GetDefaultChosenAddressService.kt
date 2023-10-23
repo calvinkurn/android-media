@@ -87,8 +87,7 @@ class GetDefaultChosenAddressService : JobIntentServiceX(), CoroutineScope {
             try {
                 val intent = Intent(context, GetDefaultChosenAddressService::class.java)
                 enqueueWork(context, GetDefaultChosenAddressService::class.java, JOB_ID, intent)
-            } catch (e: Exception) {
-                e.printStackTrace()
+            } catch (ignored: Exception) {
             }
         }
     }

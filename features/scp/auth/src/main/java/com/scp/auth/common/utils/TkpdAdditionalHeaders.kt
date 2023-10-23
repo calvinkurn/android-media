@@ -14,6 +14,7 @@ import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
 import com.tokopedia.network.authentication.AuthHelper
 
 class TkpdAdditionalHeaders(val context: Context) : AdditionalHeaders {
+
     override fun getBotProtectionHeaders(): AkamaiHeaderData {
         return AkamaiHeaderData(
             USER_AGENT,
@@ -26,12 +27,12 @@ class TkpdAdditionalHeaders(val context: Context) : AdditionalHeaders {
     override fun getAdditionalHeaders(): HashMap<String, String> {
         val fpHash = FingerprintModelGenerator.generateFingerprintModel(context)
         return hashMapOf(
-            "Fingerprint-Data" to fpHash.fingerprintHash,
-            "Fingerprint-Hash" to AuthHelper.Companion.getMD5Hash(fpHash.fingerprintHash + "+" + ""),
-            "X-Device" to "android-" + GlobalConfig.VERSION_NAME,
-            "X-Tkpd-App-Name" to GlobalConfig.getPackageApplicationName(),
-            "X-Tkpd-Akamai" to "login",
-            "X-GA-ID" to fpHash.adsId
+            FINGERPRINT_DATA_KEY to fpHash.fingerprintHash,
+            FINGERPRINT_HASH_KEY to AuthHelper.Companion.getMD5Hash(fpHash.fingerprintHash + "+" + ""),
+            DEVICE_KEY to DEVICE_PREFIX_VALUE + GlobalConfig.VERSION_NAME,
+            X_TKPD_APP_NAME_KEY to GlobalConfig.getPackageApplicationName(),
+            X_TKPD_AKAMAI_KEY to X_GA_ID_VALUE,
+            X_GA_ID_KEY to fpHash.adsId
         )
     }
     private fun getAkamaiValue(): String {
@@ -47,5 +48,13 @@ class TkpdAdditionalHeaders(val context: Context) : AdditionalHeaders {
     companion object {
         private const val AKAMAI_SENSOR_DATA_HEADER = "X-acf-sensor-data"
         private const val USER_AGENT = "User-Agent"
+        private const val FINGERPRINT_DATA_KEY = "Fingerprint-Data"
+        private const val FINGERPRINT_HASH_KEY = "Fingerprint-Hash"
+        private const val DEVICE_KEY = "X-Device"
+        private const val X_TKPD_APP_NAME_KEY = "X-Tkpd-App-Name"
+        private const val X_TKPD_AKAMAI_KEY = "X-Tkpd-Akamai"
+        private const val X_GA_ID_KEY = "X-GA-ID"
+        private const val X_GA_ID_VALUE = "login"
+        private const val DEVICE_PREFIX_VALUE = "android-"
     }
 }
