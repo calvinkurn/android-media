@@ -56,20 +56,29 @@
                 app:typographyWeight="bold"
                 tools:text="01:12:12"/>
         </FrameLayout>
-        <androidx.appcompat.widget.AppCompatImageView
+<!--        <androidx.appcompat.widget.AppCompatImageView-->
+<!--            android:id="@+id/minimize_img_left"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:visibility="invisible"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:layout_gravity="center_vertical|start"/>-->
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/minimize_img_left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:visibility="visible"
             android:layout_marginTop="10dp"
+            android:background="@drawable/gami_core_circle_background"
+            app:icon_name="CHEVRON_RIGHT"
             android:layout_gravity="center_vertical|start"/>
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivClose"
             android:visibility="visible"
-            android:foregroundTint="@color/Unify_NN500"
+            android:foregroundTint="@color/Unify_TN500"
             tools:src="@drawable/iconunify_clear"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_gravity="top|end"/>
     </FrameLayout>
 </FrameLayout>

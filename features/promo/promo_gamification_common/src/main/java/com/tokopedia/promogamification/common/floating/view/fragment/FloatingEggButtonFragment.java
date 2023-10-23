@@ -120,7 +120,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private boolean isHideAnimating;
     private boolean needHideFloatingToken = true;
     private OnDragListener onDragListener;
-    private AppCompatImageView minimizeButtonLeft;
+//    private AppCompatImageView minimizeButtonLeft;
+    private IconUnify minimizeButtonLeft;
     private float newAngleOfMinimizeBtn = 180;
     private float oldAngleOfMinimizeBtn = 0;
     private boolean isMinimized;
@@ -157,7 +158,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         userSession = new UserSession(getContext());
         floatingEggTracker = new FloatingEggTracker(userSession);
 
-        initMinimizeIcon();
+//        initMinimizeIcon();
         prepareScreenHeight();
         return view;
     }
@@ -622,7 +623,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             }
         }
         ivClose.setImageDrawable(IconUnifyHelperKt.getIconUnifyDrawable(getContext(), IconUnify.CLEAR,
-                MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN500)));
+                MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_TN500)));
         ivClose.setOnClickListener(view -> {
             floatingEggPresenter.get().clickCloseButton(tokenData.getId());
             floatingEggTracker.trackingEggClickCLose(tokenId, tokenName);
