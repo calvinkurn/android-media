@@ -7,7 +7,6 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.shouldBe
 import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
@@ -20,8 +19,6 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
     private val adapterPosition = 1
     private val userId = "12345678"
     private val capturedProductItemViewModel = slot<ProductItemDataView>()
-    private var suggestedRelatedKeyword = ""
-    private val suggestedRelatedKeywordSlot = slot<String>()
 
     @Test
     fun `Handle onProductClick with null ProductItemViewModel`() {
@@ -119,7 +116,6 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
         `When handle product click`(productItemViewModel)
 
         `Then verify view interaction is correct for non Top Ads Product`(productItemViewModel)
-        `Then verify relatedKeyword`()
     }
 
     private fun `Given user session data`() {
@@ -129,13 +125,9 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
 
     private fun `Then verify view interaction is correct for non Top Ads Product`(productItemDataView: ProductItemDataView) {
         verify {
-            productListView.sendGTMTrackingProductClick(productItemDataView, userId, capture(suggestedRelatedKeywordSlot))
+            productListView.sendGTMTrackingProductClick(productItemDataView, userId, any())
             productListView.routeToProductDetail(productItemDataView, adapterPosition)
         }
-    }
-
-    private fun `Then verify relatedKeyword`() {
-        suggestedRelatedKeyword shouldBe suggestedRelatedKeywordSlot.captured
     }
 
     @Test
@@ -149,7 +141,6 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
         `When handle product click`(productItemViewModel)
 
         `Then verify view interaction is correct for organic Ads Product`(productItemViewModel)
-        `Then verify relatedKeyword`()
     }
 
     private fun `Then verify view interaction is correct for organic Ads Product`(productItemDataView: ProductItemDataView) {
@@ -165,8 +156,107 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
                     SearchConstant.TopAdsComponent.ORGANIC_ADS
             )
 
-            productListView.sendGTMTrackingProductClick(productItemDataView, userId, capture(suggestedRelatedKeywordSlot))
+            productListView.sendGTMTrackingProductClick(productItemDataView, userId, any())
             productListView.routeToProductDetail(productItemDataView, adapterPosition)
+        }
+    }
+
+    @Test
+    fun `Handle onProductClick for organic product with related keyword`() {
+        val searchProductModel = "searchproduct/impressionclick/related.json".jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given className from view`()
+        `Given view already load data`()
+        `Given user session data`()
+
+        val productItem = findProductItemFromVisitableList(
+            isTopAds = false,
+            isOrganicAds = false
+        )
+
+        `When handle product click`(productItem)
+
+        verify {
+            productListView.sendGTMTrackingProductClick(
+                productItem,
+                userId,
+                searchProductModel.searchProduct.relatedKeyword,
+            )
+        }
+    }
+
+    @Test
+    fun `Handle onProductClick for organic product with suggested keyword`() {
+        val searchProductModel = "searchproduct/impressionclick/suggestion.json"
+            .jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given className from view`()
+        `Given view already load data`()
+        `Given user session data`()
+
+        val productItem = findProductItemFromVisitableList(
+            isTopAds = false,
+            isOrganicAds = false
+        )
+
+        `When handle product click`(productItem)
+
+        verify {
+            productListView.sendGTMTrackingProductClick(
+                productItem,
+                userId,
+                searchProductModel.searchProduct.data.suggestion.suggestion,
+            )
+        }
+    }
+
+    @Test
+    fun `Handle onProductClick for organic product with related keyword for reimagine`() {
+        val searchProductModel = "searchproduct/impressionclick/related-reimagine.json".jsonToObject<SearchProductModel>()
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given className from view`()
+        `Given view already load data`()
+        `Given user session data`()
+
+        val productItem = findProductItemFromVisitableList(
+            isTopAds = false,
+            isOrganicAds = false
+        )
+
+        `When handle product click`(productItem)
+
+        verify {
+            productListView.sendGTMTrackingProductClick(
+                productItem,
+                userId,
+                searchProductModel.searchProductV5.relatedKeyword,
+            )
+        }
+    }
+
+    @Test
+    fun `Handle onProductClick for organic product with suggested keyword for reimagine`() {
+        val searchProductModel = "searchproduct/impressionclick/suggestion-reimagine.json".jsonToObject<SearchProductModel>()
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given className from view`()
+        `Given view already load data`()
+        `Given user session data`()
+
+        val productItem = findProductItemFromVisitableList(
+            isTopAds = false,
+            isOrganicAds = false
+        )
+
+        `When handle product click`(productItem)
+
+        verify {
+            productListView.sendGTMTrackingProductClick(
+                productItem,
+                userId,
+                searchProductModel.searchProductV5.data.suggestion.suggestion,
+            )
         }
     }
 }

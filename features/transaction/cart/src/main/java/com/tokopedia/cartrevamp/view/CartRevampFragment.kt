@@ -180,6 +180,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -504,6 +505,10 @@ class CartRevampFragment :
 
     override fun getFragment(): Fragment {
         return this
+    }
+
+    override fun getScreenName(): String {
+        return ConstantTransactionAnalytics.ScreenName.CART
     }
 
     override fun onClickShopNow() {
@@ -2322,6 +2327,8 @@ class CartRevampFragment :
 
         observeGlobalEvent()
 
+        observeProgressLoading()
+
         observeRecentView()
 
         observeRecommendation()
@@ -3002,14 +3009,6 @@ class CartRevampFragment :
                     }
                 }
 
-                is CartGlobalEvent.ProgressLoading -> {
-                    if (event.isLoading) {
-                        showProgressLoading()
-                    } else {
-                        hideProgressLoading()
-                    }
-                }
-
                 is CartGlobalEvent.LoadGetCartData -> renderLoadGetCartData()
                 is CartGlobalEvent.CartCounterUpdated -> updateCartCounter(event.counter)
                 is CartGlobalEvent.SuccessClearRedPromosThenGoToPromo -> {
@@ -3043,6 +3042,16 @@ class CartRevampFragment :
                     event.wishlistHolderData.wishList.removeAt(event.wishlistIndex)
                     cartAdapter?.cartWishlistAdapter?.updateWishlistItems(event.wishlistHolderData.wishList)
                 }
+            }
+        }
+    }
+
+    private fun observeProgressLoading() {
+        viewModel.cartProgressLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                showProgressLoading()
+            } else {
+                hideProgressLoading()
             }
         }
     }
@@ -3118,7 +3127,7 @@ class CartRevampFragment :
                             showToastMessageRed(data.throwable)
                         }
                     }
-                    renderPromoCheckoutButtonActiveDefault(emptyList())
+                    renderPromoCheckoutButtonActiveDefault(emptyList(), true)
                 }
             }
         }
@@ -3395,20 +3404,22 @@ class CartRevampFragment :
                     ?: AddOnPageResult()
 
             if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
-                var newAddOnWording = ""
+                var newAddOnTitle = ""
+                var newAddOnPrice = ""
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
-                    newAddOnWording =
-                        "${addOnProductDataResult.aggregatedData.title} (${
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            addOnProductDataResult.aggregatedData.price,
-                            false
-                        ).removeDecimalSuffix()
-                        })"
+                    newAddOnTitle = addOnProductDataResult.aggregatedData.title
+                    newAddOnPrice = "(${
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        addOnProductDataResult.aggregatedData.price,
+                        false
+                    ).removeDecimalSuffix()
+                    })"
                 }
 
                 viewModel.updateAddOnByCartId(
                     addOnProductDataResult.cartId.toString(),
-                    newAddOnWording,
+                    newAddOnTitle,
+                    newAddOnPrice,
                     addOnProductDataResult.aggregatedData.selectedAddons
                 )
             } else {
@@ -3911,10 +3922,21 @@ class CartRevampFragment :
         } else {
             binding?.promoCheckoutTickerCart?.gone()
         }
+
+        viewModel.updatePromoSummaryData(lastApplyData)
     }
 
-    private fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>) {
-        viewModel.getEntryPointInfoDefault(listPromoApplied)
+    private fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>, isError: Boolean = false) {
+        viewModel.getEntryPointInfoDefault(listPromoApplied, isError)
+        if (isError) {
+            viewModel.updatePromoSummaryData(
+                LastApplyUiModel(
+                    additionalInfo = LastApplyAdditionalInfoUiModel(
+                        usageSummaries = emptyList()
+                    )
+                )
+            )
+        }
     }
 
     private fun renderPromoCheckoutButtonNoItemIsSelected() {
@@ -4961,6 +4983,7 @@ class CartRevampFragment :
         val lastApplyUiModel =
             LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel)
         renderPromoCheckoutButton(lastApplyUiModel)
+        viewModel.updatePromoSummaryData(lastApplyUiModel)
         if (promoUiModel.globalSuccess) {
             viewModel.cartModel.lastValidateUseResponse =
                 ValidateUsePromoRevampUiModel(promoUiModel = promoUiModel)
