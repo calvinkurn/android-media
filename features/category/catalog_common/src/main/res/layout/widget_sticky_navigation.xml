@@ -20,7 +20,6 @@
             android:layout_height="wrap_content"
             app:tabTextAppearance="@layout/tab_item_layout"
             app:tabPaddingBottom="-18dp"
-            app:tabIndicator="@drawable/shape_showcase_tab_indicator_color"
             android:paddingBottom="4dp" />
     </androidx.cardview.widget.CardView>
 
