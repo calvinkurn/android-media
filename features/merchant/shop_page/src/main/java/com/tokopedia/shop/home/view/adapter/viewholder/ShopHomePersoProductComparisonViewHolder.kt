@@ -4,16 +4,19 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonColorConfig
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetInterface
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetView
 import com.tokopedia.recommendation_widget_common.widget.comparison.RecommendationTrackingModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomePersoProductComparisonBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomePersoProductComparisonUiModel
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema.ColorSchemaName
 
 class ShopHomePersoProductComparisonViewHolder(
     itemView: View,
@@ -48,6 +51,8 @@ class ShopHomePersoProductComparisonViewHolder(
 
     private fun setComparisonWidget(uiModel: ShopHomePersoProductComparisonUiModel) {
         uiModel.recommendationWidget?.let {
+            val colorConfig = determineWidgetColorScheme(uiModel.header.colorSchema)
+           
             comparisonWidget?.setComparisonWidgetData(
                 it,
                 this,
@@ -57,8 +62,33 @@ class ShopHomePersoProductComparisonViewHolder(
                     ShopPageTrackingConstant.CLICK_PG,
                     ShopPageTrackingConstant.SHOP_PAGE_BUYER
                 ),
-                shopHomeListener.getFragmentTrackingQueue()
+                shopHomeListener.getFragmentTrackingQueue(),
+                null,
+                colorConfig
             )
+        }
+    }
+
+    private fun determineWidgetColorScheme(colorSchema: ShopPageColorSchema): ComparisonColorConfig {
+        val textColor = colorSchema.listColorSchema.firstOrNull { colorSchema ->
+            colorSchema.name == ColorSchemaName.TEXT_HIGH_EMPHASIS.value
+        }
+        val ctaTextColor = colorSchema.listColorSchema.firstOrNull { colorSchema ->
+            colorSchema.name == ColorSchemaName.ICON_ENABLED_HIGH_COLOR.value
+        }
+        val anchorBackgroundColor = colorSchema.listColorSchema.firstOrNull { colorSchema ->
+            colorSchema.name == ColorSchemaName.BG_PRIMARY_COLOR.value
+        }
+
+        return if (shopHomeListener.isOverrideTheme()) {
+            ComparisonColorConfig(
+                textColor = textColor?.value.orEmpty(),
+                anchorBackgroundColor = anchorBackgroundColor?.value.orEmpty(),
+                ctaTextColor = ctaTextColor?.value.orEmpty(), 
+                productCardForceLightMode = true
+            )
+        } else {
+            ComparisonColorConfig()
         }
     }
 
