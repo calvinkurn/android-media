@@ -3273,7 +3273,9 @@ open class ShopPageHomeFragment :
                 shopHomeCarousellProductUiModel?.widgetId.orEmpty(),
                 ShopUtil.getActualPositionFromIndex(parentPosition),
                 shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
-                shopHomeCarousellProductUiModel?.isFestivity.orFalse()
+                shopHomeCarousellProductUiModel?.isFestivity.orFalse(),
+                isFulfillment = shopHomeProductViewModel.isFulfillment,
+                warehouseId = shopHomeProductViewModel.warehouseId
             )
             if (!isOwner) {
                 shopPageHomeTracking.clickProductShopDecoration(
@@ -3357,8 +3359,8 @@ open class ShopPageHomeFragment :
                 ShopUtil.getActualPositionFromIndex(parentPosition),
                 shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
                 shopHomeCarousellProductUiModel?.isFestivity.orFalse(),
-                isFulfillment = shopHomeProductViewModel.isFulfillment,
-                warehouseId = shopHomeProductViewModel.warehouseId
+                isFulfillment = shopHomeProductUiModel.isFulfillment,
+                warehouseId = shopHomeProductUiModel.warehouseId
             )
             shopPageHomeTracking.clickCarouselProductShowcaseItem(
                 isOwner,
