@@ -2855,7 +2855,9 @@ class ShopPageHomeTracking(
                         productId = productCardUiModel.id.orEmpty(),
                         productName = productCardUiModel.name.orEmpty(),
                         productPrice = productCardUiModel.displayedPrice?.getDigits().orZero().toLong(),
-                        itemListValue = itemListValue
+                        itemListValue = itemListValue,
+                        isFulfillment = productCardUiModel.isFulfillment,
+                        warehouseId = productCardUiModel.warehouseId
                     )
                 )
             }
@@ -2897,7 +2899,9 @@ class ShopPageHomeTracking(
                         productId = product.id.orEmpty(),
                         productName = product.name.orEmpty(),
                         productPrice = product.displayedPrice?.getDigits().orZero().toLong(),
-                        itemListValue = itemListValue
+                        itemListValue = itemListValue,
+                        isFulfillment = product.isFulfillment,
+                        warehouseId = product.warehouseId
                     )
                 )
             )
@@ -3008,7 +3012,9 @@ class ShopPageHomeTracking(
         productBrand: String = "",
         productCategory: String = "",
         productVariant: String = "",
-        itemListValue: String
+        itemListValue: String,
+        isFulfillment: Boolean?,
+        warehouseId: String
     ): Bundle {
         return Bundle().apply {
             putString(INDEX, position.toString())
@@ -3019,6 +3025,8 @@ class ShopPageHomeTracking(
             putString(ITEM_VARIANT, productVariant)
             putString(DIMENSION_40, itemListValue)
             putLong(PRICE, productPrice)
+            putString(DIMENSION_58, isFulfillment?.run { toString() } ?: "")
+            putString(DIMENSION_56, warehouseId.orEmpty())
         }
     }
 

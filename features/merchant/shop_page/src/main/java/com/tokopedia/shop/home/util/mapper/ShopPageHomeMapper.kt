@@ -982,7 +982,9 @@ object ShopPageHomeMapper {
                             type = labelGroup.type
                         )
                     },
-                    rating = it.rating.toDoubleOrZero()
+                    rating = it.rating.toDoubleOrZero(),
+                    isFulfillment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups),
+                    warehouseId = it.warehouseId
                 )
             } ?: listOf(),
             imageBanner = widgetResponse.data.firstOrNull()?.listBanner?.firstOrNull()?.imageUrl.orEmpty(),

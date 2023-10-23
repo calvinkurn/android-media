@@ -145,6 +145,7 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
                           title
                           url
                         }
+                        warehouseID
                       }
                     }
                   }
