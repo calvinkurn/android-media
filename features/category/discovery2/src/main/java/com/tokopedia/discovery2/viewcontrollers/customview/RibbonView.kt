@@ -96,7 +96,7 @@ class RibbonView @JvmOverloads constructor(
     }
 
     companion object {
-        private const val HEIGHT_RATIO = 2
+        private const val HEIGHT_RATIO = 3
         private const val CORNER_SIZE = 12f
     }
 }
