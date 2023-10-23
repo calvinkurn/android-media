@@ -26,7 +26,7 @@ object CartCalculator {
         val subtotalWholesaleCashbackMap = HashMap<String, Double>()
         val cartItemParentIdMap = HashMap<String, CartItemHolderData>()
         val calculatedBundlingGroupId = HashSet<String>()
-        val totalDiscountBmGmMap = HashMap<Long, Double>()
+        val totalDiscountBmGmMap = HashMap<String, Double>()
 
         for (cartItemHolderData in allCartItemDataList) {
             var itemQty =
@@ -101,8 +101,9 @@ object CartCalculator {
             }
 
             if (cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM && cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.totalDiscount > 0.0) {
-                if (!totalDiscountBmGmMap.containsKey(cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId)) {
-                    totalDiscountBmGmMap[cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId] = cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.totalDiscount
+                val keyBmGmDiscByOfferAndCartStringOrder = "${cartItemHolderData.cartStringOrder}-${cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}"
+                if (!totalDiscountBmGmMap.containsKey(keyBmGmDiscByOfferAndCartStringOrder)) {
+                    totalDiscountBmGmMap[keyBmGmDiscByOfferAndCartStringOrder] = cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.totalDiscount
                 }
             }
         }

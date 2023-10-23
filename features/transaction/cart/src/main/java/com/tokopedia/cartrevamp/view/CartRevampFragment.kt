@@ -640,29 +640,6 @@ class CartRevampFragment :
         }
     }
 
-    /*private fun checkBmGmOffers(cartGroupHolderData: CartGroupHolderData) {
-        if (cartGroupHolderData.cartGroupBmGmHolderData.hasBmGmOffer) {
-            val listOfferId = arrayListOf<Long>()
-            cartGroupHolderData.productUiModelList.forEach {
-                if (it.cartBmGmTickerData.isShowTickerBmGm) {
-                    listOfferId.add(it.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId)
-                }
-            }
-            if (listOfferId.isNotEmpty()) {
-                listOfferId.forEach { offerId ->
-                    val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByOfferId(viewModel.cartDataList.value, offerId)
-                    if (index > RecyclerView.NO_POSITION) {
-                        for (cartItem in cartItems) {
-                            cartItem.cartBmGmTickerData.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
-                        }
-                        cartAdapter?.notifyItemChanged(index)
-                        getGroupProductTicker(CartDataHelper.getListProductByOfferId(viewModel.cartDataList.value, offerId))
-                    }
-                }
-            }
-        }
-    }*/
-
     private fun checkBmGmOffers(cartGroupHolderData: CartGroupHolderData) {
         if (cartGroupHolderData.cartGroupBmGmHolderData.hasBmGmOffer) {
             val listCartStringOrderWithBmGm = arrayListOf<String>()

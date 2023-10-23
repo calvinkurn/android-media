@@ -2791,27 +2791,6 @@ class CartViewModel @Inject constructor(
         cartModel.availableCartItemImpressionList.addAll(availableCartItems)
     }
 
-    /*fun getBmGmGroupProductTicker(offerId: Long, params: BmGmGetGroupProductTickerParams) {
-        if (cartModel.lastOfferId == offerId) {
-            cartBmGmGroupTickerJob?.cancel()
-        }
-        cartModel.lastOfferId = offerId
-        cartBmGmGroupTickerJob = viewModelScope.launch(dispatchers.io) {
-            try {
-                val result = getGroupProductTickerUseCase(params)
-                withContext(dispatchers.main) {
-                    _bmGmGroupProductTickerState.value =
-                        GetBmGmGroupProductTickerState.Success(Pair(offerId, result))
-                }
-            } catch (t: Throwable) {
-                withContext(dispatchers.main) {
-                    _bmGmGroupProductTickerState.value =
-                        GetBmGmGroupProductTickerState.Failed(Pair(offerId, t))
-                }
-            }
-        }
-    }*/
-
     fun getBmGmGroupProductTicker(cartItemHolderData: CartItemHolderData, params: BmGmGetGroupProductTickerParams) {
         if (cartModel.lastOfferId == "${cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}|${cartItemHolderData.cartStringOrder}") {
             cartBmGmGroupTickerJob?.cancel()
