@@ -1,6 +1,8 @@
 package com.tokopedia.entertainment.pdp.bottomsheet
 
+import android.app.Dialog
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +13,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.entertainment.R as entertainmentR
 
-class EventSoftbookEndedBottomSheet: BottomSheetUnify() {
+class EventSoftbookEndedBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomSheetEventSoftbookEndedBinding>()
     private var mListener: OnClickSoftbookEndedButton? = null
@@ -26,6 +28,18 @@ class EventSoftbookEndedBottomSheet: BottomSheetUnify() {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.setOnKeyListener { _, keyCode, keyEvent ->
+            if (keyCode == KeyEvent.KEYCODE_BACK && keyEvent.action == KeyEvent.ACTION_UP) {
+                activity?.finish()
+                true
+            }
+            false
+        }
+        return dialog
+    }
+
     private fun initBottomSheet() {
         isFullpage = false
         isDragable = false
@@ -35,7 +49,6 @@ class EventSoftbookEndedBottomSheet: BottomSheetUnify() {
         binding = BottomSheetEventSoftbookEndedBinding.inflate(LayoutInflater.from(context))
         setTitle(getString(entertainmentR.string.ent_event_checkout_softbook_ended_bottom_sheet_title))
         setChild(binding?.root)
-
     }
 
     private fun initView() {

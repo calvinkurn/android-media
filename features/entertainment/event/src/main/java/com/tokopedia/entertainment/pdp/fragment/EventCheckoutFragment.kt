@@ -321,6 +321,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         initProgressDialog()
         initTimerCountdown()
         requestData()
+        showSoftbookEndedBottomSheet()
     }
 
     private fun initTimerCountdown() {
