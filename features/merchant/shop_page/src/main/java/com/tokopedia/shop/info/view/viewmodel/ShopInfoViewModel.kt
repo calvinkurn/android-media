@@ -16,9 +16,10 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Compani
 import com.tokopedia.shop.common.graphql.data.shopinfo.ChatExistingChat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
-import com.tokopedia.shop.info.data.GetEpharmacyShopInfoResponse
+import com.tokopedia.shop.info.data.GetNearestEpharmacyWarehouseLocationResponse
 import com.tokopedia.shop.info.domain.GetEpharmacyShopInfoUseCase
 import com.tokopedia.shop.info.domain.GetNearestEpharmacyWarehouseLocationUseCase
+import com.tokopedia.shop.info.view.model.ShopEpharmacyDetailData
 import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -48,8 +49,8 @@ class ShopInfoViewModel @Inject constructor(
     val shopBadgeReputation = MutableLiveData<Result<ShopBadge>>()
     val messageIdOnChatExist = MutableLiveData<Result<String>>()
 
-    private val _epharmDetailData = MutableLiveData<Result<GetEpharmacyShopInfoResponse>>()
-    val epharmDetailData: LiveData<Result<GetEpharmacyShopInfoResponse>>
+    private val _epharmDetailData = MutableLiveData<Result<ShopEpharmacyDetailData>>()
+    val epharmDetailData: LiveData<Result<ShopEpharmacyDetailData>>
         get() = _epharmDetailData
 
     fun getShopInfo(shopId: String) {
@@ -105,20 +106,34 @@ class ShopInfoViewModel @Inject constructor(
                     getNearestEpharmacyWarehouseLocationUseCase.params = GetNearestEpharmacyWarehouseLocationUseCase.createParams(shopId = shopId, districtId = districtId.toLong())
                     getNearestEpharmacyWarehouseLocationUseCase.executeOnBackground()
                 }
-                val whId = nearestEpharmWarehouseData.getNearestEpharmacyWarehouseLocation.data.warehouseID
-                getShopGoApotikData(shopId, whId)
+                val dataLocation = nearestEpharmWarehouseData.getNearestEpharmacyWarehouseLocation.data
+                getShopGoApotikData(shopId = shopId, dataLocation = dataLocation)
             }
         }, onError = { })
     }
 
-    fun getShopGoApotikData(shopId: Long, warehouseId: Long) {
+    private fun getShopGoApotikData(shopId: Long, dataLocation: GetNearestEpharmacyWarehouseLocationResponse.NearestEpharmacyData.GetNearestEpharmacyWarehouseLocationDetailData) {
         launchCatchError(block = {
             coroutineScope {
                 val shopEpharmData = withContext(coroutineDispatcherProvider.io) {
-                    getEpharmacyShopInfoUseCase.params = GetEpharmacyShopInfoUseCase.createParams(shopId, warehouseId)
+                    getEpharmacyShopInfoUseCase.params = GetEpharmacyShopInfoUseCase.createParams(shopId, dataLocation.warehouseID)
                     getEpharmacyShopInfoUseCase.executeOnBackground()
                 }
-                _epharmDetailData.postValue(Success(shopEpharmData))
+                val shopEpharmDetailData = shopEpharmData.getEpharmacyShopInfo
+                _epharmDetailData.postValue(
+                    Success(
+                        ShopEpharmacyDetailData(
+                            gMapsUrl = dataLocation.gMapsURL,
+                            address = dataLocation.address,
+                            errorCode = shopEpharmDetailData.header.errorCode,
+                            errMessages = shopEpharmDetailData.header.errorMessage,
+                            apj = shopEpharmDetailData.dataEpharm.apj,
+                            siaNumber = shopEpharmDetailData.dataEpharm.siaNumber,
+                            sipaNumber = shopEpharmDetailData.dataEpharm.sipaNumber,
+                            epharmacyWorkingHoursFmt = shopEpharmDetailData.dataEpharm.epharmacyWorkingHoursFmt
+                        )
+                    )
+                )
             }
         }, onError = { error ->
                 _epharmDetailData.postValue(Fail(error))

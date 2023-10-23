@@ -45,12 +45,12 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.FragmentShopInfoBinding
 import com.tokopedia.shop.extension.transformToVisitable
-import com.tokopedia.shop.info.data.GetEpharmacyShopInfoResponse
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity.Companion.EXTRA_SHOP_INFO
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapter
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapterTypeFactory
+import com.tokopedia.shop.info.view.model.ShopEpharmacyDetailData
 import com.tokopedia.shop.info.view.viewmodel.ShopInfoViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity.Companion.SHOP_ID
 import com.tokopedia.shop.report.activity.ReportShopWebViewActivity
@@ -487,30 +487,29 @@ class ShopInfoFragment :
         }
     }
 
-    private fun displayShopEpharmDetailsData(epharmData: GetEpharmacyShopInfoResponse, shopInfoData: ShopInfoData) {
-        if (!isErrorGetEpharmData(epharmData.getEpharmacyShopInfo.header)) {
+    private fun displayShopEpharmDetailsData(epharmData: ShopEpharmacyDetailData, shopInfoData: ShopInfoData) {
+        if (!isErrorGetEpharmData(epharmData)) {
             fragmentShopInfoBinding?.let { binding ->
                 binding.layoutPartialShopInfoDescription.shopGoApotikContainer.visibility = View.VISIBLE
 
                 val emptyChar = "-"
-                val dataEpharm = epharmData.getEpharmacyShopInfo.dataEpharm
-                binding.layoutPartialShopInfoDescription.tvSiaDescription.text = if (dataEpharm.siaNumber.isNotEmpty()) dataEpharm.siaNumber else emptyChar
-                binding.layoutPartialShopInfoDescription.tvSipaDescription.text = if (dataEpharm.sipaNumber.isNotEmpty()) dataEpharm.sipaNumber else emptyChar
-                binding.layoutPartialShopInfoDescription.tvApjDescription.text = if (dataEpharm.apj.isNotEmpty()) dataEpharm.apj else emptyChar
+                binding.layoutPartialShopInfoDescription.tvSiaDescription.text = if (epharmData.siaNumber.isNotEmpty()) epharmData.siaNumber else emptyChar
+                binding.layoutPartialShopInfoDescription.tvSipaDescription.text = if (epharmData.sipaNumber.isNotEmpty()) epharmData.sipaNumber else emptyChar
+                binding.layoutPartialShopInfoDescription.tvApjDescription.text = if (epharmData.apj.isNotEmpty()) epharmData.apj else emptyChar
 
-                val workingHoursText = epharmData.getEpharmacyShopInfo.dataEpharm.epharmacyWorkingHoursFmt.joinToString("\n")
+                val workingHoursText = epharmData.epharmacyWorkingHoursFmt.joinToString("\n")
                 binding.layoutPartialShopInfoDescription.tvOpenHoursDescription.text = if (workingHoursText.isNotEmpty()) workingHoursText else emptyChar
             }
         } else {
-            val errMessage: String = epharmData.getEpharmacyShopInfo.header.errorMessage[0]
+            val errMessage: String = epharmData.errMessages[0]
             view?.let {
                 Toaster.build(it, errMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
             }
         }
     }
 
-    private fun isErrorGetEpharmData(errData: GetEpharmacyShopInfoResponse.GetEpharmacyShopInfoData.Header): Boolean {
-        return errData.errorCode != 0 && errData.errorMessage.isNotEmpty()
+    private fun isErrorGetEpharmData(errData: ShopEpharmacyDetailData): Boolean {
+        return errData.errorCode != 0 && errData.errMessages.isNotEmpty()
     }
 
     private fun renderListNote(notes: List<ShopNoteUiModel>) {
