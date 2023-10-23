@@ -13,7 +13,7 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class ProductMiniSocialProofDataModel(
     val type: String = "",
     val name: String = "",
-    var items: List<SocialProofUiModel> = emptyList()
+    val items: List<SocialProofUiModel> = emptyList()
 ) : DynamicPdpDataModel,
     LoadableComponent by BlocksLoadableComponent(
         isFinishedLoading = { false },
