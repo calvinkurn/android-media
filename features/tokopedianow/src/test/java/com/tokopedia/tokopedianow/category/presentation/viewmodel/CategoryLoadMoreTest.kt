@@ -160,7 +160,7 @@ class CategoryLoadMoreTest : TokoNowCategoryViewModelTestFixture() {
 
         // map category recommendation
         val categoryRecommendationUiModel = categoryDetailResponse
-            .mapToCategoryRecommendation()
+            .mapToCategoryRecommendation(source = "tokonow_category_l1")
 
         val resultList = mutableListOf(
             headerSpaceUiModel,

@@ -5,8 +5,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactView
-import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.listener.CategoryTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
@@ -37,16 +35,14 @@ import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategory
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener
 
 class CategoryAdapterTypeFactory(
-    private val categoryTitleListener: CategoryTitleListener,
-    private val categoryNavigationListener: CategoryNavigationListener,
-    private val categoryShowcaseItemListener: CategoryShowcaseItemListener,
-    private val categoryShowcaseHeaderListener: TokoNowDynamicHeaderListener,
-    private val tokoNowCategoryMenuListener: TokoNowCategoryMenuListener,
-    private val tokoNowProductRecommendationListener: TokoNowProductRecommendationListener,
-    private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener,
-    private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener,
-    private val recycledViewPool: RecyclerView.RecycledViewPool,
-    private val lifecycleOwner: LifecycleOwner,
+    private var categoryTitleListener: CategoryTitleListener? = null,
+    private var categoryNavigationListener: CategoryNavigationListener? = null,
+    private var categoryShowcaseItemListener: CategoryShowcaseItemListener? = null,
+    private var categoryShowcaseHeaderListener: TokoNowDynamicHeaderListener? = null,
+    private var tokoNowCategoryMenuListener: TokoNowCategoryMenuListener? = null,
+    private var tokoNowProductRecommendationListener: TokoNowProductRecommendationListener? = null,
+    private var recycledViewPool: RecyclerView.RecycledViewPool? = null,
+    private val lifecycleOwner: LifecycleOwner? = null,
     tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetListener,
     productAdsCarouselListener: ProductAdsCarouselListener,
     tokoNowView: TokoNowView
@@ -70,7 +66,7 @@ class CategoryAdapterTypeFactory(
     override fun type(uiModel: TokoNowProductRecommendationUiModel): Int = TokoNowProductRecommendationViewHolder.LAYOUT
     override fun type(uiModel: TokoNowProgressBarUiModel): Int = TokoNowProgressBarViewHolder.LAYOUT
     override fun type(uiModel: TokoNowTickerUiModel): Int = TokoNowTickerViewHolder.LAYOUT
-    
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             /* Category Component View Holder */
@@ -86,8 +82,6 @@ class CategoryAdapterTypeFactory(
                 itemView = view,
                 categoryShowcaseItemListener = categoryShowcaseItemListener,
                 categoryShowcaseHeaderListener = categoryShowcaseHeaderListener,
-                productCardCompactListener = productCardCompactListener,
-                productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener,
                 parentRecycledViewPool = recycledViewPool,
                 lifecycleOwner = lifecycleOwner
             )
@@ -109,5 +103,15 @@ class CategoryAdapterTypeFactory(
             )
             else -> super.createViewHolder(view, type)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        categoryTitleListener = null
+        categoryNavigationListener = null
+        categoryShowcaseItemListener = null
+        categoryShowcaseHeaderListener = null
+        tokoNowCategoryMenuListener = null
+        tokoNowProductRecommendationListener = null
     }
 }

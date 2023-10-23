@@ -2,7 +2,6 @@ package com.tokopedia.topads.dashboard.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
-import com.tokopedia.topads.common.data.model.WhiteListUserResponse
 import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.data.response.Error
@@ -11,7 +10,6 @@ import com.tokopedia.topads.common.domain.usecase.GetWhiteListedUserUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsTickerUseCase
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.IS_TOP_UP_CREDIT_NEW_UI
 import com.tokopedia.topads.dashboard.data.model.GetPersonalisedCopyResponse
 import com.tokopedia.topads.dashboard.data.model.beranda.RecommendationStatistics
 import com.tokopedia.topads.dashboard.data.model.beranda.TopAdsLatestReading
@@ -76,7 +74,6 @@ class TopAdsDashboardViewModelTest {
             topadsTickerUseCase,
             autoTopUpUSeCase,
             topAdsGetSelectedTopUpTypeUseCase,
-            whiteListedUserUseCase,
             topAdsListAllInsightCountsUseCase,
             topAdsGetTotalAdGroupsWithInsightUseCase
         )
@@ -329,35 +326,5 @@ class TopAdsDashboardViewModelTest {
             (viewModel.getAutoTopUpDefaultSate.value as Fail).throwable.message,
             actual.message
         )
-    }
-
-    @Test
-    fun `test success in getWhiteListedUser when credit performance is IS_TOP_UP_CREDIT_NEW_UI`() {
-        val actual = WhiteListUserResponse.TopAdsGetShopWhitelistedFeature(
-            listOf(
-                WhiteListUserResponse.TopAdsGetShopWhitelistedFeature.Data(featureName = IS_TOP_UP_CREDIT_NEW_UI)
-            )
-        )
-        every { whiteListedUserUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
-            firstArg<(WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) -> Unit>().invoke(
-                actual
-            )
-        }
-        viewModel.getWhiteListedUser()
-
-        assertTrue((viewModel.isUserWhitelisted.value as Success).data)
-    }
-
-    @Test
-    fun `test Fail in getWhiteListedUser `() {
-        val actual = Throwable("my exception")
-        every { whiteListedUserUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(
-                actual
-            )
-        }
-        viewModel.getWhiteListedUser()
-
-        assertEquals((viewModel.isUserWhitelisted.value as Fail).throwable.message, actual.message)
     }
 }
