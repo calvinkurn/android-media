@@ -8,14 +8,21 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.carousellayoutmanager.CarouselLayoutManager
 import com.tokopedia.carousellayoutmanager.CarouselZoomPostLayoutListener
 import com.tokopedia.carousellayoutmanager.CenterScrollListener
 import com.tokopedia.carousellayoutmanager.DefaultChildSelectionListener
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopAdvanceCarouselBannerViewholderLayoutBinding
@@ -27,6 +34,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+
 
 class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
     view: View?,
@@ -52,6 +60,7 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
         null
     private var uiModel: ShopHomeDisplayWidgetUiModel = ShopHomeDisplayWidgetUiModel()
     private var timer = Timer()
+    private val snapHelper: SnapHelper = PagerSnapHelper()
 
     private val itemSelectionListener: CarouselLayoutManager.OnCenterItemSelectionListener =
         CarouselLayoutManager.OnCenterItemSelectionListener { position ->
@@ -195,6 +204,9 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
             this.adapter = adapterShopWidgetAdvanceCarouselBanner
             this.removeOnItemTouchListener(itemTouchListener)
             this.addOnItemTouchListener(itemTouchListener)
+            if (onFlingListener == null) {
+                snapHelper.attachToRecyclerView(this)
+            }
         }
         updateRecyclerViewHeightBasedOnFirstChild()
     }

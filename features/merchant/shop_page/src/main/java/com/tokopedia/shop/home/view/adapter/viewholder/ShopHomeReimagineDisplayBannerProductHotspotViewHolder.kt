@@ -5,7 +5,9 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.carousellayoutmanager.CarouselLayoutManager
@@ -73,6 +75,7 @@ class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
                 adapterPosition
             )
         }
+    private val snapHelper: SnapHelper = PagerSnapHelper()
 
     override fun bind(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel) {
         this.uiModel = uiModel
@@ -210,6 +213,9 @@ class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
             this.setHasFixedSize(true)
             this.addOnScrollListener(CenterScrollListener())
             this.adapter = adapterShopWidgetProductHotspot
+            if (onFlingListener == null) {
+                snapHelper.attachToRecyclerView(this)
+            }
         }
         updateRecyclerViewHeightBasedOnFirstChild()
     }
