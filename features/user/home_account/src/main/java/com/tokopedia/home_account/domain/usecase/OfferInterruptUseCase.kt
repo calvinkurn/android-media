@@ -6,7 +6,6 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.home_account.data.model.OfferInterruptResponse
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class OfferInterruptUseCase @Inject constructor(
@@ -20,6 +19,7 @@ class OfferInterruptUseCase @Inject constructor(
 
     override fun graphqlQuery(): String = """
         query offerInterrupt(${'$'}supportBiometric: Boolean!, ${'$'}device_biometrics: String!) {
+            status
             offer_interrupt(supportBiometric: ${'$'}supportBiometric, device_biometrics: ${'$'}device_biometrics) {
                 errorMessage
                 interval

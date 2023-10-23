@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_height="wrap_content"
-    android:layout_width="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tp_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:typographyType="display_1"
-        android:textColor="@color/Unify_NN950"
-        app:typographyWeight="bold"
-        android:layout_marginTop="20dp"
         android:layout_marginHorizontal="15dp"
+        android:textColor="@color/Unify_NN950"
         android:visibility="gone"
-        tools:text="Mau cashback 25rb?"/>
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="Mau cashback 25rb?" />
 
-    <androidx.cardview.widget.CardView android:id="@+id/cv_sharing_education"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_sharing_education"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="0dp"
         android:visibility="visible"
-        app:cardUseCompatPadding="true"
-        app:contentPadding="-10dp"
         app:cardCornerRadius="10dp"
-        app:cardElevation="10dp">
+        app:cardElevation="10dp"
+        app:cardUseCompatPadding="true"
+        app:contentPadding="-10dp">
 
         <ImageView
             android:id="@+id/iv_bg_image_top"
@@ -55,8 +56,8 @@
                 android:id="@+id/iu_close_sharing"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                android:layout_marginTop="27dp"
                 android:layout_marginStart="24dp"
+                android:layout_marginTop="27dp"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -65,31 +66,31 @@
                 android:id="@+id/tp_sharing"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginStart="@dimen/unify_space_24"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginEnd="11dp"
                 android:layout_marginBottom="16dp"
-                android:translationZ="1dp"
-                android:layout_marginTop="@dimen/unify_space_32"
                 android:textColor="@color/Unify_NN950"
+                android:translationZ="1dp"
                 app:layout_constraintBottom_toTopOf="@+id/btn_sharing"
-                app:layout_constraintStart_toStartOf="@+id/iu_close_sharing"
                 app:layout_constraintEnd_toStartOf="@+id/barrier"
+                app:layout_constraintStart_toStartOf="@+id/iu_close_sharing"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="display_3"/>
+                app:typographyType="display_3" />
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrier"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="iu_sharing, lottie_referral"
-                app:barrierDirection="start"/>
+                app:barrierDirection="start"
+                app:constraint_referenced_ids="iu_sharing, lottie_referral" />
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iu_sharing"
                 android:layout_width="96dp"
                 android:layout_height="96dp"
-                android:layout_marginEnd="24dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
                 android:layout_marginBottom="24dp"
                 android:translationZ="1dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -100,34 +101,34 @@
                 android:id="@+id/lottie_referral"
                 android:layout_width="96dp"
                 android:layout_height="96dp"
-                android:layout_marginEnd="24dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
                 android:layout_marginBottom="24dp"
                 android:translationZ="1dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <com.tokopedia.unifycomponents.UnifyButton
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_sharing"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="24dp"
                 android:layout_marginBottom="24dp"
-                app:unifyButtonSize="small"
                 android:text="@string/tokopedianow_home_sharing_education_button"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/barrier"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/barrier" />
+                app:unifyButtonSize="small" />
 
             <ImageView
                 android:id="@+id/iv_bg_image_btm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:scaleX="2"
                 android:contentDescription="@string/tokopedianow_sharing_education_background_content_description"
                 android:scaleType="fitXY"
+                android:scaleX="2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>

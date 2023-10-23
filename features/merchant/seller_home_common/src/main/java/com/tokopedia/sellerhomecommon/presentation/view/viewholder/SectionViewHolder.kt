@@ -68,7 +68,7 @@ class SectionViewHolder(
 
                 tooltipAnchor.setUnifyDrawableEnd(
                     iconId = IconUnify.INFORMATION,
-                    colorIcon = root.context.getResColor(unifyprinciplesR.color.Unify_NN900)
+                    colorIcon = root.context.getResColor(unifyprinciplesR.color.Unify_NN500)
                 )
                 tooltipAnchor.setOnClickListener {
                     showSectionTooltip(element, tooltip)

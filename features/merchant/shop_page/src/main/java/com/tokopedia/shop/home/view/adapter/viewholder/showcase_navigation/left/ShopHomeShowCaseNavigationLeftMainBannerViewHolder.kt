@@ -81,7 +81,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         }
 
         val chevronColor = if (overrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
-            colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
+            colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR)
         } else {
             ContextCompat.getColor(viewBinding?.iconChevron?.context ?: return, unifycomponentsR.color.Unify_NN950)
         }
