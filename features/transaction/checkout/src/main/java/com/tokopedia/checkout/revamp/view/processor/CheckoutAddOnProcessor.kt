@@ -50,7 +50,7 @@ class CheckoutAddOnProcessor @Inject constructor(
                         for (prescription in prescriptions!!) {
                             prescriptionIds.add(prescription!!.prescriptionId!!)
                         }
-                        setPrescriptionIds(prescriptionIds, listData)
+                        setPrescriptionIds(prescriptionIds, listData, uploadPrescriptionUiModel)
                         uploadPrescriptionUiModel.isError = false
                     }
                 } catch (e: Throwable) {
@@ -268,6 +268,15 @@ class CheckoutAddOnProcessor @Inject constructor(
     fun setPrescriptionIds(prescriptionIds: ArrayList<String>, listData: List<CheckoutItem>) {
         val uploadPrescriptionUiModel =
             listData.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java)?.epharmacy ?: return
+        for (shipmentCartItemModel in listData) {
+            if (shipmentCartItemModel is CheckoutOrderModel && !shipmentCartItemModel.isError && shipmentCartItemModel.hasEthicalProducts) {
+                shipmentCartItemModel.prescriptionIds = prescriptionIds
+            }
+        }
+        uploadPrescriptionUiModel.uploadedImageCount = prescriptionIds.size
+    }
+
+    fun setPrescriptionIds(prescriptionIds: ArrayList<String>, listData: List<CheckoutItem>, uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
         for (shipmentCartItemModel in listData) {
             if (shipmentCartItemModel is CheckoutOrderModel && !shipmentCartItemModel.isError && shipmentCartItemModel.hasEthicalProducts) {
                 shipmentCartItemModel.prescriptionIds = prescriptionIds
