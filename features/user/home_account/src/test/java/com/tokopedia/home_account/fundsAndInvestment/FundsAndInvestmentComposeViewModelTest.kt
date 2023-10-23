@@ -65,7 +65,6 @@ class FundsAndInvestmentComposeViewModelTest {
 
         val result = viewModel.uiState.getOrAwaitValue()
         assertTrue(result is FundsAndInvestmentResult.Failed)
-        assertEquals(throwable, (result as FundsAndInvestmentResult.Failed).throwable)
     }
 
     @Test
@@ -77,7 +76,6 @@ class FundsAndInvestmentComposeViewModelTest {
 
         val result = viewModel.uiState.getOrAwaitValue()
         assertTrue(result is FundsAndInvestmentResult.Failed)
-        assertEquals(throwable, (result as FundsAndInvestmentResult.Failed).throwable)
     }
 
     @Test
