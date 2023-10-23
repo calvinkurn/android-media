@@ -198,6 +198,6 @@ enum class ShippingComponents(val value: Int) {
     RATES(3);
 
     companion object {
-        fun fromInt(value: Int) = ShippingComponents.values().first { it.value == value }
+        fun fromInt(value: Int) = ShippingComponents.values().firstOrNull { it.value == value } ?: RATES
     }
 }
