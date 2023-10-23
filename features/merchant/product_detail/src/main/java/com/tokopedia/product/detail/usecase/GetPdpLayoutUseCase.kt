@@ -1,33 +1,46 @@
 package com.tokopedia.product.detail.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.pdplayout.CacheState
+import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.NAME_LAYOUT_ID_DAGGER
+import com.tokopedia.product.detail.view.util.CacheStrategyUtil
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 import javax.inject.Named
 
 open class GetPdpLayoutUseCase @Inject constructor(
     private val gqlUseCase: MultiRequestGraphqlUseCase,
-    @Named(NAME_LAYOUT_ID_DAGGER) private val layoutIdTest: String
-) : UseCase<ProductDetailDataModel>() {
+    @Named(NAME_LAYOUT_ID_DAGGER) private val layoutIdTest: String,
+    private val remoteConfig: RemoteConfig,
+    private val dispatcher: CoroutineDispatchers
+) {
 
     companion object {
         const val QUERY = """
@@ -447,7 +460,8 @@ open class GetPdpLayoutUseCase @Inject constructor(
             layoutId: String,
             userLocationRequest: UserLocationRequest,
             extParam: String,
-            tokonow: TokoNowParam
+            tokonow: TokoNowParam,
+            refreshPage: Boolean
         ): RequestParams =
             RequestParams.create().apply {
                 putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
@@ -458,49 +472,212 @@ open class GetPdpLayoutUseCase @Inject constructor(
                 putString(ProductDetailCommonConstant.PARAM_EXT_PARAM, extParam.encodeToUtf8())
                 putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, userLocationRequest)
                 putObject(ProductDetailCommonConstant.PARAM_TOKONOW, tokonow)
+                putObject(ProductDetailCommonConstant.PARAM_FORCE_REFRESH, refreshPage)
             }
     }
 
-    var requestParams = RequestParams.EMPTY
+    var requestParams: RequestParams = RequestParams.EMPTY
+
+    private val shouldCacheable
+        get() = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PDP_P1_CACHEABLE)
+
+    private val cacheAge
+        get() = remoteConfig.getLong(
+            RemoteConfigKey.ENABLE_PDP_P1_CACHE_AGE,
+            CacheStrategyUtil.EXPIRY_TIME_MULTIPLIER
+        )
+
+    private val layoutId
+        get() = requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
+
+    private val forceRefresh
+        get() = requestParams.getBoolean(ProductDetailCommonConstant.PARAM_FORCE_REFRESH, false)
+
+    private val excludeComponentTypeInCache by lazy {
+        listOf(
+            ProductDetailConstant.PRODUCT_LIST,
+            ProductDetailConstant.VIEW_TO_VIEW,
+            ProductDetailConstant.PRODUCT_LIST_VERTICAL,
+            ProductDetailConstant.TOP_ADS,
+            ProductDetailConstant.FINTECH_WIDGET_TYPE,
+            ProductDetailConstant.FINTECH_WIDGET_V2_TYPE,
+            ProductDetailConstant.CONTENT_WIDGET,
+            ProductDetailConstant.GLOBAL_BUNDLING
+        )
+    }
+
+    private fun RequestParams.putOrNotLayoutIdTest() {
+        if (layoutId.isEmpty() && layoutIdTest.isNotBlank()) {
+            putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutIdTest)
+        }
+    }
+
+    private fun GraphqlResponse.getPdpLayout() = runCatching {
+        getData<ProductDetailLayout>(ProductDetailLayout::class.java).data
+    }.getOrNull()
+
+    private fun GraphqlResponse.getPdpLayoutError() = runCatching {
+        getError(ProductDetailLayout::class.java)
+    }.getOrNull()
 
     @GqlQuery("PdpGetLayoutQuery", QUERY)
-    override suspend fun executeOnBackground(): ProductDetailDataModel {
-        gqlUseCase.clearRequest()
-        val layoutId = requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
-        if (layoutId.isEmpty() && layoutIdTest.isNotBlank()) {
-            requestParams.putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutIdTest)
-        }
+    suspend fun executeOnBackground(): Flow<Result<ProductDetailDataModel>> = flow {
+        prepareRequest()
 
-        gqlUseCase.addRequest(GraphqlRequest(PdpGetLayoutQuery(), ProductDetailLayout::class.java, requestParams.parameters))
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-
-        val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
-
-        val gqlResponse = gqlUseCase.executeOnBackground()
-        val error: List<GraphqlError>? = gqlResponse.getError(ProductDetailLayout::class.java)
-        val data: PdpGetLayout = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java).data
-            ?: PdpGetLayout()
-
-        if (gqlResponse.isCached) {
-            ServerLogger.log(Priority.P2, "PDP_CACHE", mapOf("type" to "true", "productId" to productId))
+        val cache = CacheState(remoteCacheableActive = shouldCacheable)
+        emit(cache)
+    }.flatMapLatest {
+        if (shouldCacheable && !forceRefresh) {
+            processRequestCacheable(cacheState = it)
         } else {
-            ServerLogger.log(Priority.P2, "PDP_CACHE", mapOf("type" to "false", "productId" to productId))
+            flowOf(processRequestAlwaysCloud(cacheState = it))
         }
-        val blacklistMessage = data.basicInfo.blacklistMessage
+    }.catch {
+        emit(Result.failure(it))
+    }
 
-        if (error != null && error.isNotEmpty()) {
-            throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "), error.firstOrNull()?.extensions?.code.toString())
+    private fun prepareRequest() {
+        gqlUseCase.clearRequest()
+        requestParams.putOrNotLayoutIdTest()
+
+        gqlUseCase.addRequest(
+            GraphqlRequest(
+                gqlQueryInterface = PdpGetLayoutQuery(),
+                typeOfT = ProductDetailLayout::class.java,
+                variables = requestParams.parameters
+            )
+        )
+    }
+
+    private fun processRequestCacheable(cacheState: CacheState) = flow {
+        val pdpLayoutStateFromCache = processRequestCacheOnly(cacheState = cacheState)
+        // if from cache is null cause throwable, so that get data from cloud
+        var pdpLayoutCache = pdpLayoutStateFromCache.getOrNull()?.layoutData?.cacheState ?: cacheState
+
+        if (pdpLayoutCache.isFromCache) {
+            // is from cache, emit for the first
+            emit(pdpLayoutStateFromCache)
+
+            pdpLayoutCache = pdpLayoutCache.copy(cacheFirstThenCloud = true)
+        }
+
+        val pdpLayoutCloudState = processRequestAlwaysCloud(cacheState = pdpLayoutCache)
+        emit(pdpLayoutCloudState)
+    }.flowOn(dispatcher.io)
+
+    private suspend fun processRequestCacheOnly(cacheState: CacheState) = runCatching {
+        val response = GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY).build().let {
+            gqlUseCase.setCacheStrategy(it)
+            gqlUseCase.executeOnBackground()
+        }
+        val error = response.getPdpLayoutError()
+        val data = response.getPdpLayout()
+        val hasCacheAvailable = error.isNullOrEmpty() && data != null
+        val isCampaign = isProductCampaign(layout = data)
+
+        // if cache data available and product non campaign, so emit to VM
+        if (hasCacheAvailable && !isCampaign) {
+            // expected cache state is fromCache is true and cacheFirstThenCloud is false
+            processResponse(
+                pdpLayout = data,
+                error = error,
+                cacheState = cacheState.copy(isFromCache = true),
+                isCampaign = false // always false in here
+            )
+        } else {
+            // expected cache state is fromCache is false and cacheFirstThenCloud is false
+            ProductDetailDataModel(layoutData = DynamicProductInfoP1(cacheState = cacheState))
+        }
+    }.onSuccess {
+        Result.success(it)
+    }.onFailure {
+        Result.failure<Throwable>(it)
+    }
+
+    private suspend fun processRequestAlwaysCloud(cacheState: CacheState) = runCatching {
+        val response = CacheStrategyUtil.getCacheStrategy(forceRefresh = true, cacheAge = cacheAge)
+            .let {
+                gqlUseCase.setCacheStrategy(it)
+                gqlUseCase.executeOnBackground()
+            }
+        val data = response.getPdpLayout()
+        val error = response.getPdpLayoutError()
+        val isCampaign = isProductCampaign(layout = data)
+
+        processResponse(
+            pdpLayout = data,
+            error = error,
+            cacheState = cacheState.copy(isFromCache = false),
+            isCampaign = isCampaign
+        )
+    }.onSuccess {
+        Result.success(it)
+    }.onFailure {
+        Result.failure<Throwable>(it)
+    }
+
+    private fun isProductCampaign(layout: PdpGetLayout?): Boolean {
+        val pdpLayout = layout ?: return false
+
+        return pdpLayout.components.any { component ->
+            component.componentData.any { it.campaign.isActive }
+        }
+    }
+
+    private fun processResponse(
+        pdpLayout: PdpGetLayout?,
+        error: List<GraphqlError>?,
+        cacheState: CacheState,
+        isCampaign: Boolean
+    ): ProductDetailDataModel {
+        val data = pdpLayout ?: PdpGetLayout()
+
+        if (!error.isNullOrEmpty()) {
+            val errorMsg = MessageErrorException(
+                error.mapNotNull { it.message }.joinToString(separator = ", "),
+                error.firstOrNull()?.extensions?.code.toString()
+            )
+            throw errorMsg
         } else if (data.basicInfo.isBlacklisted) {
             gqlUseCase.clearCache()
-            throw TobacoErrorException(blacklistMessage.description, blacklistMessage.title, blacklistMessage.button, blacklistMessage.url)
+            val tobaccoError = data.basicInfo.blacklistMessage.let {
+                TobacoErrorException(
+                    messages = it.description,
+                    title = it.title,
+                    button = it.button,
+                    url = it.url
+                )
+            }
+            throw tobaccoError
         }
-        return mapIntoModel(data)
+
+        return data.mapIntoModel(cacheState = cacheState, isCampaign = isCampaign)
     }
 
-    private fun mapIntoModel(data: PdpGetLayout): ProductDetailDataModel {
-        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(data.components)
-        val getDynamicProductInfoP1 = DynamicProductDetailMapper.mapToDynamicProductDetailP1(data)
-        val p1VariantData = DynamicProductDetailMapper.mapVariantIntoOldDataClass(data)
-        return ProductDetailDataModel(getDynamicProductInfoP1, initialLayoutData, p1VariantData)
+    private fun PdpGetLayout.mapIntoModel(
+        cacheState: CacheState,
+        isCampaign: Boolean
+    ): ProductDetailDataModel {
+        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(components)
+            .filterNot {
+                if (cacheState.isFromCache) {
+                    getIgnoreComponentTypeInCache().contains(it.type())
+                } else {
+                    false
+                }
+            }.toMutableList()
+        val getDynamicProductInfoP1 = DynamicProductDetailMapper
+            .mapToDynamicProductDetailP1(this)
+            .copy(cacheState = cacheState, isCampaign = isCampaign)
+        val p1VariantData = DynamicProductDetailMapper
+            .mapVariantIntoOldDataClass(this)
+        return ProductDetailDataModel(
+            layoutData = getDynamicProductInfoP1,
+            listOfLayout = initialLayoutData,
+            variantData = p1VariantData
+        )
     }
+
+    // for hansel-able
+    fun getIgnoreComponentTypeInCache() = excludeComponentTypeInCache
 }
