@@ -51,7 +51,7 @@ class CartBmGmTest : BaseCartViewModelTest() {
         )
 
         // THEN
-        assertEquals(GetBmGmGroupProductTickerState.Success(Pair(valueOfferId, bmGmData)), cartViewModel.bmGmGroupProductTickerState.value)
+        assertEquals(GetBmGmGroupProductTickerState.Success(Pair(cartItemHolderData, bmGmData)), cartViewModel.bmGmGroupProductTickerState.value)
     }
 
     @Test
@@ -81,7 +81,7 @@ class CartBmGmTest : BaseCartViewModelTest() {
         )
 
         // THEN
-        assertEquals(GetBmGmGroupProductTickerState.Failed(Pair(valueOfferId, exception)), cartViewModel.bmGmGroupProductTickerState.value)
+        assertEquals(GetBmGmGroupProductTickerState.Failed(Pair(cartItemHolderData, exception)), cartViewModel.bmGmGroupProductTickerState.value)
     }
 
     @Test
