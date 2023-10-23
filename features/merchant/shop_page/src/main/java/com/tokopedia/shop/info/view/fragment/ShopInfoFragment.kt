@@ -493,9 +493,14 @@ class ShopInfoFragment :
                 binding.layoutPartialShopInfoDescription.shopGoApotikContainer.visibility = View.VISIBLE
 
                 val emptyChar = "-"
+                val weblinkPrefix = "tokopedia://webview?url="
+                binding.layoutPartialShopInfoDescription.shopInfoNearestPickupLocation.text = if (epharmData.address.isNotEmpty()) epharmData.address else emptyChar
                 binding.layoutPartialShopInfoDescription.tvSiaDescription.text = if (epharmData.siaNumber.isNotEmpty()) epharmData.siaNumber else emptyChar
                 binding.layoutPartialShopInfoDescription.tvSipaDescription.text = if (epharmData.sipaNumber.isNotEmpty()) epharmData.sipaNumber else emptyChar
                 binding.layoutPartialShopInfoDescription.tvApjDescription.text = if (epharmData.apj.isNotEmpty()) epharmData.apj else emptyChar
+                binding.layoutPartialShopInfoDescription.btnLihatLokasi.setOnClickListener {
+                    RouteManager.route(context, "$weblinkPrefix${epharmData.gMapsUrl}")
+                }
 
                 val workingHoursText = epharmData.epharmacyWorkingHoursFmt.joinToString("\n")
                 binding.layoutPartialShopInfoDescription.tvOpenHoursDescription.text = if (workingHoursText.isNotEmpty()) workingHoursText else emptyChar
