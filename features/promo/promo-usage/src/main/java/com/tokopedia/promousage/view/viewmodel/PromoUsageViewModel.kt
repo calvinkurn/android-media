@@ -1960,6 +1960,24 @@ class PromoUsageViewModel @Inject constructor(
         )
     }
 
+    fun onRecommendationAnimationEnd() {
+        _promoPageUiState.ifSuccess { pageState ->
+            val updatedItems = pageState.items.map { item ->
+                if (item is PromoRecommendationItem) {
+                    return@map item.copy(
+                        showAnimation = false
+                    )
+                } else {
+                    return@map item
+                }
+            }
+
+            _promoPageUiState.postValue(
+                pageState.copy(items = updatedItems)
+            )
+        }
+    }
+
     fun onClickBackToCheckout(
         entryPoint: PromoPageEntryPoint,
         validateUsePromoRequest: ValidateUsePromoRequest,

@@ -183,6 +183,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     onClickUsePromoRecommendation,
                     onClickRecommendationPromo,
                     onImpressionPromo,
+                    onRecommendationAnimationEnd,
                     onClickClose
                 )
             )
@@ -1086,6 +1087,10 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private val onImpressionPromo = { item: PromoItem ->
         processAndSendImpressionOfPromoCardNewEvent(item)
+    }
+
+    private val onRecommendationAnimationEnd = {
+        viewModel.onRecommendationAnimationEnd()
     }
 
     private val onClickClose = {

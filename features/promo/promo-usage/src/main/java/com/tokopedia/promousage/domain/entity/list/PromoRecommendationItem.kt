@@ -17,7 +17,7 @@ data class PromoRecommendationItem(
     val showAnimation: Boolean = false,
 
     // Property only for UI
-    val promos: List<PromoItem> = emptyList(),
+    val promos: List<PromoItem> = emptyList()
 ) : DelegateAdapterItem {
 
     override fun getChangePayload(other: Any): Any? {
@@ -25,10 +25,12 @@ data class PromoRecommendationItem(
             val isPromoStateUpdated = promos.any { oldPromo ->
                 val newPromo = other.promos.firstOrNull { newPromo -> newPromo.id == oldPromo.id }
                 oldPromo.state != newPromo?.state || oldPromo.isCalculating != newPromo.isCalculating
-            }
+            } || showAnimation != other.showAnimation
+            val isPromoStartAnimation = !showAnimation && other.showAnimation
             return DelegatePayload.UpdatePromoRecommendation(
                 isReload = false,
-                isPromoStateUpdated = isPromoStateUpdated
+                isPromoStateUpdated = isPromoStateUpdated,
+                isPromoStartAnimating = isPromoStartAnimation
             )
         }
         return null
