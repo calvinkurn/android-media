@@ -42,7 +42,6 @@ import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 import kotlin.time.ExperimentalTime
 
@@ -286,7 +285,6 @@ class PlayActivity :
                     fragmentErrorViewOnStateChanged(shouldShow = false)
 
                     lifecycleScope.launchWhenResumed {
-                        delay(ON_BOARDING_DELAY)
                         viewModel.setupOnBoarding(state.isFirstPage)
                     }
                 }
@@ -413,9 +411,5 @@ class PlayActivity :
 
     private fun removePip() {
         pipAdapter.removeByKey(PlayVideoFragment.FLOATING_WINDOW_KEY)
-    }
-
-    companion object {
-        private const val ON_BOARDING_DELAY = 1000L
     }
 }

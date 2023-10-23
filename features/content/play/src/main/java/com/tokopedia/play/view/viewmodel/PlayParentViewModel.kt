@@ -32,6 +32,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -222,10 +223,9 @@ class PlayParentViewModel @AssistedInject constructor(
         if (hasBeenShown) return
 
         viewModelScope.launch {
-            withContext(dispatchers.main) {
-                _observableOnBoarding.value = Event(Unit)
-                preference.setOnBoardingHasShown()
-            }
+            delay(ON_BOARDING_DELAY)
+            _observableOnBoarding.value = Event(Unit)
+            preference.setOnBoardingHasShown()
         }
     }
 
@@ -248,5 +248,7 @@ class PlayParentViewModel @AssistedInject constructor(
         private const val KEY_START_TIME = "start_time"
         private const val IS_FROM_PIP = "is_from_pip"
         private const val KEY_SHOULD_TRACK = "should_track"
+
+        private const val ON_BOARDING_DELAY = 1000L
     }
 }
