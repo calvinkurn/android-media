@@ -64,15 +64,10 @@ class CatalogComparisonDetailFragment :
 
     @Inject
     lateinit var viewModel: CatalogDetailPageViewModel
-
     private var binding by autoClearedNullable<FragmentCatalogComparisonDetailBinding>()
-
-    var catalogId = ""
-    var categoryId = ""
-    var compareCatalogId = ""
-
-    private var catalogAllReviewBottomSheet: CatalogComponentBottomSheet? = null
-
+    private var catalogId = ""
+    private var categoryId = ""
+    private var compareCatalogId = ""
     private val widgetAdapter by lazy {
         WidgetCatalogAdapter(
             CatalogAdapterFactoryImpl(isDisplayingTopSpec = false, comparisonItemListener = this)
@@ -89,15 +84,6 @@ class CatalogComparisonDetailFragment :
             categoryId = requireArguments().getString(ARG_PARAM_CATEGORY_ID, "")
             compareCatalogId = requireArguments().getString(ARG_PARAM_COMPARE_CATALOG_ID, "")
             getComparison(catalogId, compareCatalogId)
-            catalogAllReviewBottomSheet = CatalogComponentBottomSheet.newInstance(
-                "",
-                catalogId,
-                "",
-                categoryId,
-                "",
-                CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,
-                this
-            )
         }
     }
 
@@ -211,7 +197,15 @@ class CatalogComparisonDetailFragment :
     }
 
     override fun onComparisonSwitchButtonClicked(position: Int) {
-        catalogAllReviewBottomSheet?.show(childFragmentManager, "")
+        CatalogComponentBottomSheet.newInstance(
+            "",
+            catalogId,
+            "",
+            categoryId,
+            compareCatalogId,
+            CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,
+            this
+        ).show(childFragmentManager, "")
     }
 
     override fun onComparisonSeeMoreButtonClicked() {
