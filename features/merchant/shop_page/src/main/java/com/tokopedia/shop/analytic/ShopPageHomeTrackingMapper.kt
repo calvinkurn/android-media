@@ -83,7 +83,9 @@ object ShopPageHomeTrackingMapper {
         isFestivity: Boolean,
         productId: String,
         productName: String,
-        productPrice: String
+        productPrice: String,
+        isFulfilment: Boolean?,
+        warehouseId: String?
     ): ShopHomeCampaignWidgetProductTrackerModel {
         return ShopHomeCampaignWidgetProductTrackerModel(
             shopId = shopId,
@@ -97,7 +99,9 @@ object ShopPageHomeTrackingMapper {
             isFestivity = isFestivity,
             productId = productId,
             productName = productName,
-            productPrice = productPrice
+            productPrice = productPrice,
+            isFulfilment = isFulfilment,
+            warehouseId = warehouseId
         )
     }
 

@@ -3872,7 +3872,10 @@ open class ShopPageHomeFragment :
                         shopHomeNewProductLaunchCampaignUiModel.isFestivity,
                         shopHomeProductViewModel?.id.orEmpty(),
                         shopHomeProductViewModel?.name.orEmpty(),
-                        shopHomeProductViewModel?.displayedPrice.orEmpty()
+                        shopHomeProductViewModel?.displayedPrice.orEmpty(),
+                        shopHomeProductViewModel?.isFulfillment,
+                        shopHomeProductViewModel?.warehouseId
+
                     )
                 )
             }
@@ -3903,7 +3906,9 @@ open class ShopPageHomeFragment :
                         shopHomeNewProductLaunchCampaignUiModel.isFestivity,
                         shopHomeProductViewModel?.id.orEmpty(),
                         shopHomeProductViewModel?.name.orEmpty(),
-                        shopHomeProductViewModel?.displayedPrice.orEmpty()
+                        shopHomeProductViewModel?.displayedPrice.orEmpty(),
+                        shopHomeProductViewModel?.isFulfillment,
+                        shopHomeProductViewModel?.warehouseId
                     )
                 )
             }
@@ -4048,7 +4053,9 @@ open class ShopPageHomeFragment :
                         widgetModel.isFestivity,
                         model.id,
                         model.name,
-                        model.displayedPrice
+                        model.displayedPrice,
+                        model.isFulfillment,
+                        model.warehouseId
                     )
                 )
             }
@@ -4077,7 +4084,9 @@ open class ShopPageHomeFragment :
                         flashSaleUiModel.isFestivity,
                         shopHomeProductUiModel.id,
                         shopHomeProductUiModel.name,
-                        shopHomeProductUiModel.displayedPrice
+                        shopHomeProductUiModel.displayedPrice,
+                        shopHomeProductUiModel.isFulfillment,
+                        shopHomeProductUiModel.warehouseId
                     )
                 )
             }
