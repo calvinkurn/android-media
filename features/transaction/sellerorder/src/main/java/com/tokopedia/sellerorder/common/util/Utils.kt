@@ -36,6 +36,9 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -252,6 +255,13 @@ object Utils {
             remoteConfigImpl.getString(RollenceKey.KEY_SOM_OG, "") == RollenceKey.KEY_SOM_OG
         } catch (ignore: Exception) {
             true
+        }
+    }
+
+    fun Throwable.getGlobalErrorType(): Int {
+        return when (this) {
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> GlobalError.NO_CONNECTION
+            else -> GlobalError.SERVER_ERROR
         }
     }
 }
