@@ -29,6 +29,7 @@ import rx.Subscriber
 import com.tokopedia.filter.quick.SortFilterItem as SortFilterItemReimagine
 
 private const val searchProductModelWithQuickFilter = "searchproduct/quickfilter/with-quick-filter.json"
+private const val searchProductModelWithQuickFilterReimagine = "searchproduct/quickfilter/with-quick-filter-reimagine.json"
 private const val searchProductModelNoQuickFilter = "searchproduct/quickfilter/no-quick-filter.json"
 private const val searchProductModelWithMultipleOptionQuickFilter = "searchproduct/quickfilter/with-multiple-option-quick-filter.json"
 
@@ -48,7 +49,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
         `Then verify initialize filter interactions`(
             searchProductModel.quickFilterModel,
-            searchProductModel.backendFiltersToggle
+            searchProductModel.searchProduct.backendFiltersToggle
         )
     }
 
@@ -139,6 +140,20 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     }
 
     @Test
+    fun `Search Product initialize filter for reimagine product card`() {
+        val searchProductModel = searchProductModelWithQuickFilterReimagine.jsonToObject<SearchProductModel>()
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+
+        `When Load Data`()
+
+        `Then verify initialize filter interactions`(
+            searchProductModel.quickFilterModel,
+            searchProductModel.searchProductV5.header.backendFiltersToggle
+        )
+    }
+
+    @Test
     fun `Search Product has No Quick Filter`() {
         val searchProductModel = searchProductModelNoQuickFilter.jsonToObject<SearchProductModel>()
         `Given Search Product API will return SearchProductModel`(searchProductModel)
@@ -147,7 +162,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
         `Then verify initialize filter interactions`(
             createSearchProductDefaultQuickFilter(),
-            searchProductModel.backendFiltersToggle
+            searchProductModel.searchProduct.backendFiltersToggle
         )
     }
 
@@ -198,7 +213,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
         `Then verify initialize filter interactions`(
             searchProductModel.quickFilterModel,
-            searchProductModel.backendFiltersToggle
+            searchProductModel.searchProduct.backendFiltersToggle
         )
     }
 
