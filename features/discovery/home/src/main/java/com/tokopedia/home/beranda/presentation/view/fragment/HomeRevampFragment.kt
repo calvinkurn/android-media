@@ -857,7 +857,7 @@ open class HomeRevampFragment :
                 val playViewHolder = viewHolders.firstOrNull { it is CarouselPlayWidgetViewHolder }
 
                 if (playViewHolder != null) {
-                    val visiblePortion = playViewHolder.itemView.getVisiblePortion(contentRect)
+                    val visiblePortion = playViewHolder.itemView.getVisiblePortion()
                     if (visiblePortion[1] >= PLAY_CAROUSEL_WIDGET_VISIBLE_PORTION_THRESHOLD) {
                         playWidgetCoordinator.onVisible()
                     } else {

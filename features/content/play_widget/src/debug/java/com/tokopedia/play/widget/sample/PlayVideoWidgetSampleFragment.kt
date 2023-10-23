@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.databinding.FragmentPlayVideoWidgetSampleBinding
 import com.tokopedia.play.widget.databinding.ItemPlayVideoWidgetSampleBinding
+import com.tokopedia.play.widget.player.PlayVideoWidgetVideoManager
 import com.tokopedia.play.widget.ui.model.PlayVideoWidgetUiModel
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 
 /**
  * Created by kenny.hadisaputra on 19/10/23
@@ -21,7 +23,17 @@ class PlayVideoWidgetSampleFragment : Fragment() {
     private var _binding: FragmentPlayVideoWidgetSampleBinding? = null
     private val binding get() = _binding!!
 
-    private val adapter = Adapter()
+    private val videoWidgetManager by viewLifecycleBound(
+        creator = { PlayVideoWidgetVideoManager(
+            binding.root,
+            viewLifecycleOwner,
+            config = PlayVideoWidgetVideoManager.Config(autoPlayAmount = 3)
+        ) }
+    )
+
+    private val adapter by viewLifecycleBound(
+        creator = { Adapter(videoWidgetManager) }
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,12 +66,13 @@ class PlayVideoWidgetSampleFragment : Fragment() {
                     avatarUrl = "",
                     partnerName = "Partner $it",
                     coverUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSC6rQmJ_kshzM2fwpkthP-Tg_3VugPnz_vrw&usqp=CAU",
+                    videoUrl = "https://vod-stream.tokopedia.net/view/adaptive.m3u8?id=0e6a19506f8271eebfd736a5e8aa0102",
                 )
             }
         )
     }
 
-    class Adapter : ListAdapter<PlayVideoWidgetUiModel, ViewHolder>(
+    class Adapter(private val manager: PlayVideoWidgetVideoManager) : ListAdapter<PlayVideoWidgetUiModel, ViewHolder>(
         object : DiffUtil.ItemCallback<PlayVideoWidgetUiModel>() {
             override fun areItemsTheSame(
                 oldItem: PlayVideoWidgetUiModel,
@@ -82,7 +95,8 @@ class PlayVideoWidgetSampleFragment : Fragment() {
                     LayoutInflater.from(parent.context),
                     parent,
                     false,
-                )
+                ),
+                manager,
             )
         }
 
@@ -93,7 +107,12 @@ class PlayVideoWidgetSampleFragment : Fragment() {
 
     class ViewHolder(
         private val binding: ItemPlayVideoWidgetSampleBinding,
+        manager: PlayVideoWidgetVideoManager,
     ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            manager.bind(binding.root)
+        }
 
         fun bind(model: PlayVideoWidgetUiModel) {
             binding.root.bind(model)

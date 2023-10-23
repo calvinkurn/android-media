@@ -217,18 +217,18 @@ val screenRect: Rect
         return Rect(0, 0, getScreenWidth(), getScreenHeight())
     }
 
-fun View.getVisiblePortion(boundsRect: Rect = screenRect): FloatArray {
+fun View.getVisiblePortion(): FloatArray {
     val visibleRect = globalVisibleRect
     val visibleHeightPortion = if (height <= 0) {
         0f
     } else {
-        visibleRect.height().toFloat() / boundsRect.height()
+        visibleRect.height().toFloat() / height
     }
 
     val visibleWidthPortion = if (width <= 0) {
         0f
     } else {
-        visibleRect.width().toFloat() / boundsRect.width()
+        visibleRect.width().toFloat() / width
     }
 
     return floatArrayOf(visibleWidthPortion, visibleHeightPortion)

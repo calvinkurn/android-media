@@ -1,13 +1,19 @@
 package com.tokopedia.play.widget.ui
 
 import android.content.Context
+import android.net.Uri
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
+import com.google.android.exoplayer2.Player
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.play.widget.databinding.ViewPlayVideoWidgetBinding
-import com.tokopedia.play.widget.ui.model.PlayVideoWidgetUiModel
 import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.databinding.ViewPlayVideoWidgetBinding
+import com.tokopedia.play.widget.player.VideoPlayer
+import com.tokopedia.play.widget.ui.model.PlayVideoWidgetUiModel
 import com.tokopedia.unifycomponents.CardUnify2
 
 /**
@@ -27,8 +33,31 @@ class PlayVideoWidgetView : CardUnify2 {
 
     private var mSizeMode = SizeMode.FollowWidth
 
+    private val playerListener = object : Player.EventListener {
+        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+            binding.playerView.showWithCondition(
+                playWhenReady && playbackState == Player.STATE_READY
+            )
+        }
+    }
+    private val player by lazyThreadSafetyNone {
+        VideoPlayer(context).apply {
+            addPlayerListener(playerListener)
+        }
+    }
+
     init {
         animateOnPress = ANIMATE_BOUNCE
+
+        addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(v: View) {
+
+            }
+
+            override fun onViewDetachedFromWindow(v: View) {
+                pauseVideo()
+            }
+        })
     }
 
     private fun initAttrs(attrs: AttributeSet) {
@@ -83,6 +112,29 @@ class PlayVideoWidgetView : CardUnify2 {
         binding.imgBadge.showWithCondition(model.badgeUrl.isNotBlank())
         binding.imgBadge.loadImage(model.badgeUrl)
         binding.tvPartnerName.text = model.partnerName
+
+        bindPlayer(model.videoUrl)
+    }
+
+    fun pauseVideo() {
+        Log.d("PlayVideoWidget", "Pause")
+        player.pause()
+    }
+
+    fun resumeVideo() {
+        Log.d("PlayVideoWidget", "Resume")
+        player.start()
+    }
+
+    fun releaseVideo() {
+        Log.d("PlayVideoWidget", "Release")
+        player.release()
+    }
+
+    private fun bindPlayer(videoUrl: String) {
+        binding.playerView.player = player.player
+        player.stop()
+        player.loadUri(Uri.parse(videoUrl))
     }
 
     enum class SizeMode(internal val value: Int) {
