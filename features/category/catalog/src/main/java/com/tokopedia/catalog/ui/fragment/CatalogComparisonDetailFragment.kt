@@ -173,6 +173,7 @@ class CatalogComparisonDetailFragment :
                 shareButton?.hide()
                 setColors(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950))
                 setNavigationOnClickListener {
+                    onFragmentBackPressed()
                     activity?.finish()
                 }
             }
