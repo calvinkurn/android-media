@@ -44,7 +44,10 @@ import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import timber.log.Timber
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * Created By @ilhamsuaib on 27/10/20
@@ -243,13 +246,13 @@ class MultiLineGraphViewHolder(
 
                 val dimen12dp = root.context.resources.getDimension(R.dimen.shc_dimen_12dp).toInt()
                 val dimen8dp =
-                    root.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
+                    root.context.resources.getDimension(unifyprinciplesR.dimen.layout_lvl1)
                         .toInt()
                 rvShcGraphMetrics.setMargin(dimen12dp, dimen8dp, dimen12dp, Int.ZERO)
             } else {
                 val dimen12dp = root.context.resources.getDimension(R.dimen.shc_dimen_12dp).toInt()
                 val dimen16dp =
-                    root.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
+                    root.context.resources.getDimension(unifyprinciplesR.dimen.layout_lvl2)
                         .toInt()
                 tvShcMultiLineGraphTitle.gone()
                 rvShcGraphMetrics.setMargin(dimen12dp, dimen16dp, dimen12dp, Int.ZERO)
@@ -331,6 +334,7 @@ class MultiLineGraphViewHolder(
         element?.let { element ->
             with(binding.shcMultiLineGraphEmptyStateView) {
                 val emptyState = element.emptyState
+
                 multiLineEmptyState.visible()
                 tvLineGraphEmptyStateTitle.text = emptyState.title
                 tvLineGraphEmptyStateDescription.text = emptyState.description
@@ -340,6 +344,8 @@ class MultiLineGraphViewHolder(
                         listener.sendMultiLineGraphEmptyStateCtaClick(element)
                     }
                 }
+
+                setCardBackground()
                 animateShowEmptyState()
             }
         }
@@ -357,6 +363,17 @@ class MultiLineGraphViewHolder(
         }
     }
 
+    private fun setCardBackground() {
+        with(binding.shcMultiLineGraphEmptyStateView.multiLineEmptyState) {
+            val cardBg = if (context.isDarkMode()) {
+                unifyprinciplesR.color.Unify_NN100
+            } else {
+                unifycomponentsR.color.cardunify_background
+            }
+            setCardBackgroundColor(context.getResColor(cardBg))
+        }
+    }
+
     private fun setupCta(element: MultiLineGraphWidgetUiModel) = with(binding) {
         val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
         val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
@@ -368,13 +385,13 @@ class MultiLineGraphViewHolder(
             }
 
             val iconColor = root.context.getResColor(
-                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                unifyprinciplesR.color.Unify_GN500
             )
             val iconWidth = root.context.resources.getDimension(
-                com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                unifyprinciplesR.dimen.layout_lvl3
             )
             val iconHeight = root.context.resources.getDimension(
-                com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                unifyprinciplesR.dimen.layout_lvl3
             )
             tvShcMultiLineCta.setUnifyDrawableEnd(
                 IconUnify.CHEVRON_RIGHT,
@@ -471,7 +488,7 @@ class MultiLineGraphViewHolder(
             xAxis {
                 val xAxisLabels = lineChartData?.chartEntry?.map { it.xLabel }.orEmpty()
                 gridEnabled { false }
-                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600) }
+                textColor { itemView.context.getResColor(unifyprinciplesR.color.Unify_NN600) }
                 labelFormatter {
                     ChartXAxisLabelFormatter(xAxisLabels)
                 }
@@ -479,7 +496,7 @@ class MultiLineGraphViewHolder(
 
             yAxis {
                 val yAxisLabels = lineChartData?.yAxisLabel.orEmpty()
-                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600) }
+                textColor { itemView.context.getResColor(unifyprinciplesR.color.Unify_NN600) }
                 labelFormatter {
                     ChartYAxisLabelFormatter(yAxisLabels)
                 }

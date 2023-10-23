@@ -50,6 +50,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.resources.isDarkMode
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By @ilhamsuaib on 08/06/20
@@ -106,7 +107,6 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         }
 
         binding = ActivityStcStatisticBinding.inflate(layoutInflater).apply {
-            root.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
             setContentView(root)
         }
 
@@ -157,6 +157,11 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         return coachMark.isShowing
     }
 
+    private fun setContentBackground() {
+        val background = getResColor(unifyprinciplesR.color.Unify_Background)
+        window.decorView.setBackgroundColor(background)
+    }
+
     private fun initInjector() {
         component.inject(this)
     }
@@ -205,6 +210,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
             dismissCoachMarkOnTabSelected()
             StatisticTracker.sendPageTabClickEvent(userSession.userId, title)
         }
+        setContentBackground()
     }
 
     private fun setupViewPager(isWhiteListed: Boolean) {

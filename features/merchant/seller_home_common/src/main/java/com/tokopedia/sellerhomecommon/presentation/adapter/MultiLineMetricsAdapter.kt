@@ -6,10 +6,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcItemMultiLineMetricBinding
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineMetricUiModel
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * Created By @ilhamsuaib on 27/10/20
@@ -76,6 +80,7 @@ class MultiLineMetricsAdapter(
                     tvShcMetricsValue.text = root.context.getString(R.string.shc_failed_to_load)
                     tvShcMetricsSubValue.text = String.EMPTY
                 }
+                setCardBackground()
             }
         }
 
@@ -89,6 +94,17 @@ class MultiLineMetricsAdapter(
             val rvLeftAndRightMargin = itemView.context.dpToPx(24).toInt()
             val divider = itemView.context.resources.getInteger(R.integer.shc_card_metric_width)
             return (recyclerViewWidth / divider) - (cardSpace + rvLeftAndRightMargin)
+        }
+
+        private fun setCardBackground() {
+            with(binding.shcCardMetric) {
+                val cardBg = if (context.isDarkMode()) {
+                    unifyprinciplesR.color.Unify_NN100
+                } else {
+                    unifycomponentsR.color.cardunify_background
+                }
+                setCardBackgroundColor(context.getResColor(cardBg))
+            }
         }
     }
 
