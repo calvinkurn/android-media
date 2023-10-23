@@ -1,5 +1,7 @@
 package com.tokopedia.catalog.ui.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -229,5 +231,13 @@ class CatalogComparisonDetailFragment :
     override fun changeComparison(comparedCatalogId: String) {
         this.compareCatalogId = comparedCatalogId
         getComparison(catalogId, comparedCatalogId)
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        val intent = Intent().apply {
+            putExtra(ARG_PARAM_COMPARE_CATALOG_ID, compareCatalogId)
+        }
+        activity?.setResult(Activity.RESULT_OK, intent)
+        return super.onFragmentBackPressed()
     }
 }

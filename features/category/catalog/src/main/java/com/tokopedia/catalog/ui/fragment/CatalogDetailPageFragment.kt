@@ -126,6 +126,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         private const val COLOR_VALUE_MAX = 255
         private const val LOGIN_REQUEST_CODE = 1001
+        private const val CATALOG_COMPARE_REQUEST_CODE = 1002
         private const val POSITION_THREE_IN_WIDGET_LIST = 3
         private const val POSITION_TWO_IN_WIDGET_LIST = 2
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
@@ -242,6 +243,10 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             viewModel.refreshNotification()
+        }
+        if (requestCode == CATALOG_COMPARE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val comparedCatalogId = data?.getStringExtra(ARG_PARAM_COMPARE_CATALOG_ID)
+            if (!comparedCatalogId.isNullOrEmpty()) changeComparison(comparedCatalogId)
         }
     }
 
@@ -698,7 +703,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             putExtra(ARG_PARAM_CATALOG_ID, catalogId)
             putExtra(ARG_PARAM_CATEGORY_ID, categoryId)
             putExtra(ARG_PARAM_COMPARE_CATALOG_ID, compareCatalogId)
-            startActivity(this)
+            startActivityForResult(this, CATALOG_COMPARE_REQUEST_CODE)
         }
     }
 
