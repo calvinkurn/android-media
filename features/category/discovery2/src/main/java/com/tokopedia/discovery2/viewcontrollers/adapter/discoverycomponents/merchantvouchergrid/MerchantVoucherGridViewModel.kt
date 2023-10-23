@@ -43,6 +43,7 @@ class MerchantVoucherGridViewModel(
             }
         }, onError = {
                 Timber.e(it)
+                _loadError.value = true
             })
     }
 
