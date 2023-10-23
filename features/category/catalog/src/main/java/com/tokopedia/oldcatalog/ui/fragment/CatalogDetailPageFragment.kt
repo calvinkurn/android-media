@@ -26,33 +26,11 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog.R
-import com.tokopedia.oldcatalog.adapter.CatalogAnimationListener
-import com.tokopedia.oldcatalog.adapter.CatalogDetailDiffUtil
-import com.tokopedia.oldcatalog.adapter.CatalogLinearLayoutManager
-import com.tokopedia.oldcatalog.adapter.decorators.DividerItemDecorator
-import com.tokopedia.oldcatalog.adapter.factory.CatalogDetailAdapterFactoryImpl
-import com.tokopedia.oldcatalog.analytics.CatalogDetailAnalytics
-import com.tokopedia.oldcatalog.analytics.CatalogUniversalShareAnalytics
 import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
-import com.tokopedia.oldcatalog.listener.CatalogDetailListener
-import com.tokopedia.oldcatalog.model.datamodel.BaseCatalogDataModel
-import com.tokopedia.oldcatalog.model.datamodel.CatalogComparisonNewDataModel
-import com.tokopedia.oldcatalog.model.datamodel.CatalogFullSpecificationDataModel
-import com.tokopedia.oldcatalog.model.raw.*
-import com.tokopedia.oldcatalog.model.util.CatalogConstant
-import com.tokopedia.oldcatalog.model.util.CatalogUiUpdater
-import com.tokopedia.oldcatalog.model.util.CatalogUtil
-import com.tokopedia.oldcatalog.model.util.nestedrecyclerview.NestedRecyclerView
-import com.tokopedia.oldcatalog.ui.activity.CatalogGalleryActivity
-import com.tokopedia.oldcatalog.ui.activity.CatalogYoutubePlayerActivity
-import com.tokopedia.oldcatalog.ui.bottomsheet.CatalogComponentBottomSheet
-import com.tokopedia.oldcatalog.ui.bottomsheet.CatalogPreferredProductsBottomSheet
-import com.tokopedia.oldcatalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
-import com.tokopedia.oldcatalog.viewmodel.CatalogDetailPageViewModel
-import com.tokopedia.oldcatalog.viewmodel.CatalogDetailProductListingViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -64,6 +42,28 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.oldcatalog.adapter.CatalogAnimationListener
+import com.tokopedia.oldcatalog.adapter.CatalogDetailDiffUtil
+import com.tokopedia.oldcatalog.adapter.CatalogLinearLayoutManager
+import com.tokopedia.oldcatalog.adapter.decorators.DividerItemDecorator
+import com.tokopedia.oldcatalog.adapter.factory.CatalogDetailAdapterFactoryImpl
+import com.tokopedia.oldcatalog.analytics.CatalogDetailAnalytics
+import com.tokopedia.oldcatalog.analytics.CatalogUniversalShareAnalytics
+import com.tokopedia.oldcatalog.listener.CatalogDetailListener
+import com.tokopedia.oldcatalog.model.datamodel.BaseCatalogDataModel
+import com.tokopedia.oldcatalog.model.datamodel.CatalogComparisonNewDataModel
+import com.tokopedia.oldcatalog.model.datamodel.CatalogFullSpecificationDataModel
+import com.tokopedia.oldcatalog.model.raw.*
+import com.tokopedia.oldcatalog.model.util.CatalogConstant
+import com.tokopedia.oldcatalog.model.util.CatalogUiUpdater
+import com.tokopedia.oldcatalog.model.util.CatalogUtil
+import com.tokopedia.oldcatalog.model.util.nestedrecyclerview.NestedRecyclerView
+import com.tokopedia.oldcatalog.ui.activity.CatalogGalleryActivity
+import com.tokopedia.oldcatalog.ui.bottomsheet.CatalogComponentBottomSheet
+import com.tokopedia.oldcatalog.ui.bottomsheet.CatalogPreferredProductsBottomSheet
+import com.tokopedia.oldcatalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
+import com.tokopedia.oldcatalog.viewmodel.CatalogDetailPageViewModel
+import com.tokopedia.oldcatalog.viewmodel.CatalogDetailProductListingViewModel
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -365,7 +365,8 @@ class CatalogDetailPageFragment :
 
     private fun setProductCountText(productCount: Int) {
         if (productCount == CatalogConstant.ZERO_VALUE) {
-            mProductsCountText?.text = getString(R.string.catalog_product_count_view_text_empty
+            mProductsCountText?.text = getString(
+                R.string.catalog_product_count_view_text_empty
             )
             mToBottomLayout?.hide()
         } else {
@@ -737,9 +738,8 @@ class CatalogDetailPageFragment :
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                 == YouTubeInitializationResult.SUCCESS
             ) {
-                catalogVideo.url?.let { videoUrl ->
-                    // Sending only one video so selectedIndex to be 0 always
-                    startActivity(CatalogYoutubePlayerActivity.createIntent(it, listOf(videoUrl), 0))
+                catalogVideo.videoId?.let { videoId ->
+                    redirectToYoutubePlayerPage(videoId)
                 }
             } else {
                 // Handle if user didn't have any apps to open Youtube * Usually rooted phone
@@ -755,6 +755,10 @@ class CatalogDetailPageFragment :
                 }
             }
         }
+    }
+
+    private fun redirectToYoutubePlayerPage(videoId: String) {
+        RouteManager.route(context, ApplinkConst.YOUTUBE_PLAYER, videoId)
     }
 
     override fun comparisonCatalogClicked(comparisonCatalogId: String) {

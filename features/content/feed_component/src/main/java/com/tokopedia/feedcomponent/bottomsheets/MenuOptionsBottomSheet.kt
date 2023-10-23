@@ -50,12 +50,12 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         _binding = BottomsheetMenuOptionsBinding.inflate(layoutInflater)
         clearContentPadding = true
         setChild(binding.root)
 
-        return binding.root
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
