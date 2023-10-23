@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
@@ -54,6 +55,10 @@ class ProductHighlightViewModel(
     @Inject
     var atcUseCase: AddToCartOcsUseCase? = null
 
+    @JvmField
+    @Inject
+    var dispatcher: CoroutineDispatchers? = null
+
     fun getProductHighlightCardItemsListData(): LiveData<ComponentsItem> = productHighlightCardList
     val hideShimmer: LiveData<Boolean> = _hideShimmer
     val showErrorState: LiveData<Boolean> = _showErrorState
@@ -79,14 +84,14 @@ class ProductHighlightViewModel(
             }
             productHighlightCardList.value = components
         }, onError = {
-            components.noOfPagesLoaded = 1
-            if (it is UnknownHostException || it is SocketTimeoutException) {
-                components.verticalProductFailState = true
-                _showErrorState.value = true
-            } else {
-                _hideShimmer.value = true
-            }
-        })
+                components.noOfPagesLoaded = 1
+                if (it is UnknownHostException || it is SocketTimeoutException) {
+                    components.verticalProductFailState = true
+                    _showErrorState.value = true
+                } else {
+                    _hideShimmer.value = true
+                }
+            })
     }
 
     fun layoutSelector(): Int {
@@ -125,8 +130,10 @@ class ProductHighlightViewModel(
                 atcRequestParam
             )
 
-            val result = withContext(Dispatchers.IO) {
-                atcUseCase?.createObservable(requestParams)?.toBlocking()?.single()
+            val result = dispatcher?.io?.run {
+                withContext(this) {
+                    atcUseCase?.createObservable(requestParams)?.toBlocking()?.single()
+                }
             }
 
             if (result?.isDataError() == true) {
@@ -142,9 +149,9 @@ class ProductHighlightViewModel(
                 Timber.e(message)
             }
         }, onError = {
-            _ocsErrorState.postValue(ErrorHandler.getErrorMessage(context, it))
-            Timber.e(it)
-        })
+                _ocsErrorState.postValue(ErrorHandler.getErrorMessage(context, it))
+                Timber.e(it)
+            })
     }
 
     fun reload() {
