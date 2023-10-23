@@ -91,6 +91,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.sortFilter
+    implementation rootProject.ext.unifyDependencies.viewAllCard
 
     // tkpdInternalLibDependencies Dependency
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants

@@ -66,18 +66,20 @@
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/flash_sale_reminder_view"
         android:layout_width="wrap_content"
-        android:layout_height="26dp"
+        android:layout_height="24dp"
         android:visibility="gone"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="-12dp"
-        app:cardCornerRadius="20dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/tus_flash_sale_timer"
         app:layout_constraintBottom_toBottomOf="@id/tus_flash_sale_timer">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
+            android:id="@+id/layout_container_remind_me"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
             android:paddingHorizontal="8dp">
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -102,7 +104,7 @@
                 app:typographyWeight="bold"
                 tools:text="Ingatkan" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </com.tokopedia.unifycomponents.CardUnify2>
 
