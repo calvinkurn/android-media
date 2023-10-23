@@ -35,6 +35,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlin.math.abs
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 // need to surpress this one, since there are no pii related data defined on this class
 @SuppressLint("PII Data Exposure")
@@ -75,18 +76,7 @@ class ThematicWidgetViewHolder(
     private var isFirstAttached: Boolean = true
     private var trackerProductsModel = mutableListOf<ProductCardUiModel>()
 
-    private val adapter by lazy {
-        ProductCardAdapter(
-            baseListAdapterTypeFactory = ProductCardTypeFactoryImpl(
-                productCardGridListener = productCardGridListenerImpl(),
-                productCardListListener = productCardListListenerImpl(),
-                productCardSeeAllListener = productCardSeeAllListenerImpl(),
-                totalProductSize = uiModel?.productList?.size.orZero(),
-                isOverrideWidgetTheme = isOverrideTheme
-            ),
-            differ = ProductCardDiffer()
-        )
-    }
+    private var adapter: ProductCardAdapter? = null
 
     init {
         binding?.let {
@@ -122,7 +112,7 @@ class ThematicWidgetViewHolder(
         resetShopReimaginedContainerMargin()
         configColorTheme(element)
         checkTotalProduct(element)
-        setShopReimaginedContainerMargin()
+        setShopReimaginedContainerMargin(element.name)
     }
 
     private fun resetShopReimaginedContainerMargin() {
@@ -175,8 +165,8 @@ class ThematicWidgetViewHolder(
         }
     }
 
-    private fun setShopReimaginedContainerMargin() {
-        if(uiModel?.isFestivity == false) {
+    private fun setShopReimaginedContainerMargin(widgetName: String) {
+        if(uiModel?.isFestivity == false || widgetName != BIG_CAMPAIGN_THEMATIC) {
             containerMixLeft?.let {
                 it.clipToOutline = true
                 it.background = MethodChecker.getDrawable(
@@ -238,6 +228,16 @@ class ThematicWidgetViewHolder(
     }
 
     private fun setupRecyclerView() {
+        adapter = ProductCardAdapter(
+            baseListAdapterTypeFactory = ProductCardTypeFactoryImpl(
+                productCardGridListener = productCardGridListenerImpl(),
+                productCardListListener = productCardListListenerImpl(),
+                productCardSeeAllListener = productCardSeeAllListenerImpl(),
+                totalProductSize = uiModel?.productList?.size.orZero(),
+                isOverrideWidgetTheme = isOverrideTheme
+            ),
+            differ = ProductCardDiffer()
+        )
         restoreInstanceStateToLayoutManager()
         setHeightRecyclerView()
         rvProduct?.isNestedScrollingEnabled = false
@@ -270,7 +270,7 @@ class ThematicWidgetViewHolder(
         val products = element.productList
         val newList = mutableListOf<Visitable<*>>()
         newList.addAll(products)
-        adapter.submitList(newList)
+        adapter?.submitList(newList)
         trackForTheFirstTimeViewHolderAttached(element)
     }
 
@@ -288,7 +288,7 @@ class ThematicWidgetViewHolder(
         if (element.header.ctaTextLink.isNotBlank()) {
             newList.add(ProductCardSeeAllUiModel(element.header.ctaTextLink))
         }
-        adapter.submitList(newList)
+        adapter?.submitList(newList)
         trackForTheFirstTimeViewHolderAttached(element)
     }
 
@@ -356,8 +356,8 @@ class ThematicWidgetViewHolder(
 
     private fun setupBackgroundColor(startBackGroundColor: String?, endBackGroundColor: String?) {
         val colors = intArrayOf(
-            getBackGroundColor(itemView.context, startBackGroundColor, com.tokopedia.unifyprinciples.R.color.Unify_NN50),
-            getBackGroundColor(itemView.context, endBackGroundColor, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+            getBackGroundColor(itemView.context, startBackGroundColor, unifyprinciplesR.color.Unify_NN50),
+            getBackGroundColor(itemView.context, endBackGroundColor, unifyprinciplesR.color.Unify_NN50)
         )
         val gradientDrawable = GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, colors)
         viewParallaxBackground?.background = gradientDrawable
