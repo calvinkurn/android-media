@@ -42,13 +42,15 @@ internal object CdnTracker : CoroutineScope {
     @JvmStatic
     fun log(
         context: Context,
-        response: Response
+        response: Response,
+        cost: Long
     ) {
         ServerLogger.log(
             priority = Priority.P1,
             tag = TAG_ANALYTIC,
             message = response.mapping(context).apply {
                 put("error_description", response.message)
+                put("response_time_total", cost.toString())
             }
         )
     }

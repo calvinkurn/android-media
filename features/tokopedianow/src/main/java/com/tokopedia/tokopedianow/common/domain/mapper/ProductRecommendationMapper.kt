@@ -74,6 +74,7 @@ object ProductRecommendationMapper {
             appLink = recommendationWidget.seeMoreAppLink
         )
         val headerModel = TokoNowDynamicHeaderUiModel(
+            channelId = recommendationWidget.channelId,
             title = recommendationWidget.title,
             subTitle = recommendationWidget.subtitle,
             ctaTextLink = recommendationWidget.seeMoreAppLink

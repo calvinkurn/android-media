@@ -13,6 +13,9 @@ data class BroadcasterCamera(
     val physicalCameras: List<BroadcasterCamera>?,
 ) {
 
+    val isFront: Boolean
+        get() = lensFacing == LENS_FACING_FRONT
+
     override fun toString(): String {
         val sb = StringBuilder(DEFAULT_STRING_CAPACITY)
             .append("cameraId=").append(cameraId)

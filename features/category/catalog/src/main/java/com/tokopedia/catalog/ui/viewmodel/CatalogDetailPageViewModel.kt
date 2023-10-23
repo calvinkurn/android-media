@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
+import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.oldcatalog.usecase.detail.CatalogDetailUseCase
 import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCase
@@ -27,6 +28,10 @@ class CatalogDetailPageViewModel @Inject constructor(
     val errorsToaster: LiveData<Throwable>
         get() = _errorsToaster
 
+    private val _errorsToasterGetComparison = MutableLiveData<Throwable>()
+    val errorsToasterGetComparison: LiveData<Throwable>
+        get() = _errorsToasterGetComparison
+
     private val _catalogDetailDataModel = MutableLiveData<Result<CatalogDetailUiModel>>()
     val catalogDetailDataModel: LiveData<Result<CatalogDetailUiModel>>
         get() = _catalogDetailDataModel
@@ -34,6 +39,10 @@ class CatalogDetailPageViewModel @Inject constructor(
     private val _totalCartItem = MutableLiveData<Int>()
     val totalCartItem: LiveData<Int>
         get() = _totalCartItem
+
+    private val _comparisonUiModel = MutableLiveData<ComparisonUiModel?>()
+    val comparisonUiModel: LiveData<ComparisonUiModel?>
+        get() = _comparisonUiModel
 
     private val _scrollEvents = MutableStateFlow(0)
     val scrollEvents: Flow<Int> = _scrollEvents.asStateFlow()
@@ -46,7 +55,7 @@ class CatalogDetailPageViewModel @Inject constructor(
         return userSession.userId
     }
 
-    fun getProductCatalog(catalogId: String, comparedCatalogId : String) {
+    fun getProductCatalog(catalogId: String, comparedCatalogId: String) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -58,6 +67,22 @@ class CatalogDetailPageViewModel @Inject constructor(
             },
             onError = {
                 _catalogDetailDataModel.postValue(Fail(it))
+            }
+        )
+    }
+
+    fun getProductCatalogComparisons(catalogId: String, comparedCatalogId: String) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = catalogDetailUseCase.getCatalogDetailV4Comparison(
+                    catalogId,
+                    comparedCatalogId
+                )
+                _comparisonUiModel.postValue(result)
+            },
+            onError = {
+                _errorsToasterGetComparison.postValue(it)
             }
         )
     }
