@@ -3030,7 +3030,9 @@ open class ShopPageHomeFragment :
             shopHomeCarousellProductUiModel?.widgetId.orEmpty(),
             ShopUtil.getActualPositionFromIndex(parentPosition),
             shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
-            shopHomeCarousellProductUiModel?.isFestivity.orFalse()
+            shopHomeCarousellProductUiModel?.isFestivity.orFalse(),
+            isFulfillment = shopHomeProductViewModel?.isFulfillment,
+            warehouseId = shopHomeProductViewModel?.warehouseId
         )
         shopHomeProductViewModel?.let {
             shopPageHomeTracking.clickProductPersonalizationReminder(
@@ -3063,7 +3065,9 @@ open class ShopPageHomeFragment :
             shopHomeCarousellProductUiModel.widgetId,
             ShopUtil.getActualPositionFromIndex(parentPosition),
             shopHomeCarousellProductUiModel.widgetMasterId,
-            shopHomeCarousellProductUiModel.isFestivity
+            shopHomeCarousellProductUiModel.isFestivity,
+            isFulfillment = shopHomeProductViewModel.isFulfillment,
+            warehouseId = shopHomeProductViewModel.warehouseId
         )
         shopPageHomeTracking.clickProductPersonalizationTrendingWidget(
             itemPosition,
@@ -3352,7 +3356,9 @@ open class ShopPageHomeFragment :
                 shopHomeCarousellProductUiModel?.widgetId.orEmpty(),
                 ShopUtil.getActualPositionFromIndex(parentPosition),
                 shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
-                shopHomeCarousellProductUiModel?.isFestivity.orFalse()
+                shopHomeCarousellProductUiModel?.isFestivity.orFalse(),
+                isFulfillment = shopHomeProductViewModel.isFulfillment,
+                warehouseId = shopHomeProductViewModel.warehouseId
             )
             shopPageHomeTracking.clickCarouselProductShowcaseItem(
                 isOwner,
@@ -3845,7 +3851,9 @@ open class ShopPageHomeFragment :
             shopHomeNewProductLaunchCampaignUiModel.widgetId,
             ShopUtil.getActualPositionFromIndex(parentPosition),
             shopHomeNewProductLaunchCampaignUiModel.widgetMasterId,
-            shopHomeNewProductLaunchCampaignUiModel.isFestivity
+            shopHomeNewProductLaunchCampaignUiModel.isFestivity,
+            isFulfillment = shopHomeProductViewModel?.isFulfillment,
+            warehouseId = shopHomeProductViewModel?.warehouseId
         )
         shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
             if (!isOwner) {
