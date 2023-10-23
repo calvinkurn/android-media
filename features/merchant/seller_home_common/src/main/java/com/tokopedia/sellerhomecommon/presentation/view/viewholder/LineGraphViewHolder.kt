@@ -34,6 +34,8 @@ import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
@@ -267,6 +269,8 @@ class LineGraphViewHolder(
     private fun showEmptyState(element: LineGraphWidgetUiModel) {
         with(element.emptyState) {
             emptyStateBinding.root.visible()
+            setEmptyStateBackground()
+
             emptyStateBinding.tvLineGraphEmptyStateTitle.text = title
             emptyStateBinding.tvLineGraphEmptyStateDescription.text = description
             emptyStateBinding.tvShcMultiLineEmptyStateCta.text = ctaText
@@ -275,6 +279,17 @@ class LineGraphViewHolder(
                 RouteManager.route(itemView.context, appLink)
             }
             animateShowEmptyState()
+        }
+    }
+
+    private fun setEmptyStateBackground() {
+        with(emptyStateBinding.multiLineEmptyState) {
+            val cardBg = if (context.isDarkMode()) {
+                unifyprinciplesR.color.Unify_NN100
+            } else {
+                unifycomponentsR.color.cardunify_background
+            }
+            setCardBackgroundColor(context.getResColor(cardBg))
         }
     }
 
