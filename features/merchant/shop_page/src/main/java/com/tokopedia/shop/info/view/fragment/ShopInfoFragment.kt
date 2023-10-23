@@ -492,12 +492,14 @@ class ShopInfoFragment :
             fragmentShopInfoBinding?.let { binding ->
                 binding.layoutPartialShopInfoDescription.shopGoApotikContainer.visibility = View.VISIBLE
 
-                binding.layoutPartialShopInfoDescription.tvSiaDescription.text = epharmData.getEpharmacyShopInfo.dataEpharm.siaNumber
-                binding.layoutPartialShopInfoDescription.tvSipaDescription.text = epharmData.getEpharmacyShopInfo.dataEpharm.sipaNumber
-                binding.layoutPartialShopInfoDescription.tvApjDescription.text = epharmData.getEpharmacyShopInfo.dataEpharm.apj
+                val emptyChar = "-"
+                val dataEpharm = epharmData.getEpharmacyShopInfo.dataEpharm
+                binding.layoutPartialShopInfoDescription.tvSiaDescription.text = if (dataEpharm.siaNumber.isNotEmpty()) dataEpharm.siaNumber else emptyChar
+                binding.layoutPartialShopInfoDescription.tvSipaDescription.text = if (dataEpharm.sipaNumber.isNotEmpty()) dataEpharm.sipaNumber else emptyChar
+                binding.layoutPartialShopInfoDescription.tvApjDescription.text = if (dataEpharm.apj.isNotEmpty()) dataEpharm.apj else emptyChar
 
                 val workingHoursText = epharmData.getEpharmacyShopInfo.dataEpharm.epharmacyWorkingHoursFmt.joinToString("\n")
-                binding.layoutPartialShopInfoDescription.tvOpenHoursDescription.text = workingHoursText
+                binding.layoutPartialShopInfoDescription.tvOpenHoursDescription.text = if (workingHoursText.isNotEmpty()) workingHoursText else emptyChar
             }
         } else {
             val errMessage: String = epharmData.getEpharmacyShopInfo.header.errorMessage[0]
