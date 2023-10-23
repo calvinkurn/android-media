@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Player.EventListener
 import com.google.android.exoplayer2.video.VideoListener
@@ -181,6 +182,11 @@ class StoriesDetailFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
         resumeStories()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pauseStories()
     }
 
     override fun onRenderedFirstFrame() {
@@ -400,7 +406,8 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun buildEventLabel(): String = "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
+    private fun buildEventLabel(): String =
+        "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
 
     private fun renderAuthor(state: StoriesDetailItem) {
         with(binding.vStoriesPartner) {
@@ -646,7 +653,7 @@ class StoriesDetailFragment @Inject constructor(
         binding.layoutStoriesContent.root.showWithCondition(!isShow)
         root.showWithCondition(isShow)
 
-        if(!isShow) return@with
+        if (!isShow) return@with
         renderTimer(null, TimerStatusInfo.Empty) //will be improved in rendered failed
     }
 
@@ -668,8 +675,19 @@ class StoriesDetailFragment @Inject constructor(
         position: Int,
         view: StoriesProductBottomSheet
     ) {
-        val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
-        if (action == StoriesProductAction.Atc) analytic?.sendClickAtcButtonEvent(eventLabel, listOf(product), position, viewModel.mDetail.author.name) else analytic?.sendClickBuyButtonEvent(eventLabel, listOf(product), position, viewModel.mDetail.author.name)
+        val eventLabel =
+            "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
+        if (action == StoriesProductAction.Atc) analytic?.sendClickAtcButtonEvent(
+            eventLabel,
+            listOf(product),
+            position,
+            viewModel.mDetail.author.name
+        ) else analytic?.sendClickBuyButtonEvent(
+            eventLabel,
+            listOf(product),
+            position,
+            viewModel.mDetail.author.name
+        )
     }
 
     override fun onClickedProduct(
@@ -677,15 +695,22 @@ class StoriesDetailFragment @Inject constructor(
         position: Int,
         view: StoriesProductBottomSheet
     ) {
-        val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
-        analytic?.sendClickProductCardEvent(eventLabel, "/stories-room - ${viewModel.storyId} - product card", listOf(product), position)
+        val eventLabel =
+            "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
+        analytic?.sendClickProductCardEvent(
+            eventLabel,
+            "/stories-room - ${viewModel.storyId} - product card",
+            listOf(product),
+            position
+        )
     }
 
     override fun onImpressedProduct(
         product: Map<ContentTaggedProductUiModel, Int>,
         view: StoriesProductBottomSheet
     ) {
-        val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.keys.firstOrNull()?.id.orEmpty()}"
+        val eventLabel =
+            "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.keys.firstOrNull()?.id.orEmpty()}"
         analytic?.sendViewProductCardEvent(eventLabel, product)
     }
 
@@ -736,6 +761,11 @@ class StoriesDetailFragment @Inject constructor(
                             viewModel.submitAction(StoriesUiAction.VideoBuffering)
                         }
                     }
+                }
+
+                override fun onPlayerError(error: ExoPlaybackException) {
+                    super.onPlayerError(error)
+                    setNoContent(true)
                 }
             })
 
