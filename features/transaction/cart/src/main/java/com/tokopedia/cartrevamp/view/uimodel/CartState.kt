@@ -90,7 +90,7 @@ sealed interface DeleteCartEvent {
         val addWishList: Boolean,
         val isFromGlobalCheckbox: Boolean,
         val isFromEditBundle: Boolean,
-        val listCartStringOrder: ArrayList<String>
+        val listCartStringOrderAndOfferId: ArrayList<String>
     ) : DeleteCartEvent
 
     data class Failed(

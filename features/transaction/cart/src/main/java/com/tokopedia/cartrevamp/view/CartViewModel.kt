@@ -2200,7 +2200,6 @@ class CartViewModel @Inject constructor(
 
     fun updateBmGmTickerData(toBeDeletedProducts: List<CartItemHolderData>) {
         toBeDeletedProducts.forEach { productWillDelete ->
-            CartDataHelper.getListCartItemHolderWithBmGmByCartStringOrder(cartDataList.value, productWillDelete.cartStringOrder)
             val offerId = productWillDelete.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
             val cartStringOrder = productWillDelete.cartStringOrder
             val productListByOfferId =
@@ -2438,7 +2437,7 @@ class CartViewModel @Inject constructor(
         forceExpandCollapsedUnavailableItems: Boolean = false,
         isFromGlobalCheckbox: Boolean = false,
         isFromEditBundle: Boolean = false,
-        listCartStringOrder: ArrayList<String> = arrayListOf()
+        listCartStringOrderAndBmGmOfferId: ArrayList<String> = arrayListOf()
     ) {
         _cartProgressLoading.value = true
         val allCartItemData = CartDataHelper.getAllCartItemData(
@@ -2462,7 +2461,7 @@ class CartViewModel @Inject constructor(
                     addWishList,
                     isFromGlobalCheckbox,
                     isFromEditBundle,
-                    listCartStringOrder
+                    listCartStringOrderAndBmGmOfferId
                 )
             },
             onError = { throwable ->

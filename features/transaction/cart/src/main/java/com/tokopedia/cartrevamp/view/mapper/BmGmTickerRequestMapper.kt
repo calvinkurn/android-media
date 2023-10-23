@@ -68,8 +68,9 @@ object BmGmTickerRequestMapper {
         val cartDetailsBmGm = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails>()
         val listProductBmGm = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product>()
 
-        CartDataHelper.getListCartItemHolderWithBmGmByCartStringOrder(
+        CartDataHelper.getListProductByOfferIdAndCartStringOrder(
             cartDataList,
+            cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId,
             cartItemHolderData.cartStringOrder
         ).forEach { product ->
             listProductBmGm.add(
