@@ -55,6 +55,6 @@
         android:id="@+id/verLineStcDefault"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/Unify_NN300"
+        android:background="@color/Unify_NN50"
         app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
