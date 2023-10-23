@@ -7,4 +7,5 @@ data class CarouselProductCardModel(
     val itemList: List<Visitable<CarouselProductCardTypeFactory>> = listOf(),
     val scrollToPosition: Int = 0,
     val recycledViewPool: RecycledViewPool = RecycledViewPool(),
+    val onHeightCalculated: () -> Unit = { },
 )
