@@ -136,18 +136,12 @@ class ProductHighlightViewModel(
                 }
             }
 
-            if (result?.isDataError() == true) {
-                val message = result.getAtcErrorMessage()
-                message?.run { _ocsErrorState.postValue(this) }
-
-                Timber.e(message)
-            } else if (result != null) {
-                _ocsLiveData.postValue(result)
-            } else {
-                val message = "Failed to request ATC"
-                _ocsErrorState.postValue(message)
-                Timber.e(message)
+            result?.let {
+                handleAvailableResult(it, result)
+                return@launchCatchError
             }
+
+            handleUnavailableResult()
         }, onError = {
                 _ocsErrorState.postValue(ErrorHandler.getErrorMessage(context, it))
                 Timber.e(it)
@@ -165,5 +159,25 @@ class ProductHighlightViewModel(
 
     fun isUserLoggedIn(): Boolean {
         return UserSession(application).isLoggedIn
+    }
+
+    private fun handleAvailableResult(
+        it: AddToCartDataModel,
+        result: AddToCartDataModel
+    ) {
+        if (it.isDataError()) {
+            val message = result.getAtcErrorMessage()
+            message?.run { _ocsErrorState.postValue(this) }
+
+            Timber.e(message)
+        } else {
+            _ocsLiveData.postValue(it)
+        }
+    }
+
+    private fun handleUnavailableResult() {
+        val message = "Failed to request ATC"
+        _ocsErrorState.postValue(message)
+        Timber.e(message)
     }
 }
