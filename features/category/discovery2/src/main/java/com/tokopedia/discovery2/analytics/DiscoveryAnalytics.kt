@@ -1480,7 +1480,7 @@ open class DiscoveryAnalytics(
             mapOf(
                 KEY_ID to "${components.parentComponentId}_$shopId",
                 KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${components.parentComponentPosition + 1} - $componentName",
-                KEY_CREATIVE to "${dataItem?.title ?: EMPTY_STRING} - ${components.creativeName ?: EMPTY_STRING}",
+                KEY_CREATIVE to "${dataItem?.shopInfo?.name ?: EMPTY_STRING} - ${components.creativeName ?: EMPTY_STRING}",
                 KEY_POSITION to horizontalPosition
             )
         )
