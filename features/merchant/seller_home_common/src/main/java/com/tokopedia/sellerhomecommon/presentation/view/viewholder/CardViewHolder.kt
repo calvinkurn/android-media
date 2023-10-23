@@ -5,6 +5,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
@@ -21,7 +22,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.viewhelper.URLSpanNoUnderline
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.stringToUnifyColor
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * Created By @ilhamsuaib on 19/05/20
@@ -44,6 +45,7 @@ class CardViewHolder(
 
     override fun bind(element: CardWidgetUiModel) {
         binding.tvCardTitle.text = element.title
+        setCardBackground()
         observeState(element)
     }
 
@@ -121,15 +123,7 @@ class CardViewHolder(
         if (!isShown) return
 
         with(binding) {
-            if (element.getWidgetAppLink().isNotBlank()) {
-                val selectableItemBg = TypedValue()
-                root.context.theme.resolveAttribute(
-                    android.R.attr.selectableItemBackground, selectableItemBg, true
-                )
-                containerCard.setBackgroundResource(selectableItemBg.resourceId)
-            } else {
-                containerCard.setBackgroundColor(root.context.getResColor(unifyprinciplesR.color.Unify_NN0))
-            }
+            setCardBackground(element.getWidgetAppLink())
 
             if (shouldLoadAnimation) {
                 tvCardValue.invisible()
@@ -282,6 +276,21 @@ class CardViewHolder(
             shimmerCardValue.visibility = visibility
             if (isLoading) {
                 icShcRefreshCard.gone()
+            }
+        }
+    }
+
+    private fun setCardBackground(appLink: String = String.EMPTY) {
+        with(binding) {
+            if (appLink.isNotBlank()) {
+                val selectableItemBg = TypedValue()
+                root.context.theme.resolveAttribute(
+                    android.R.attr.selectableItemBackground, selectableItemBg, true
+                )
+                containerCard.setBackgroundResource(selectableItemBg.resourceId)
+            } else {
+                val color = unifycomponentsR.color.cardunify_background
+                containerCard.setBackgroundColor(root.context.getResColor(color))
             }
         }
     }
