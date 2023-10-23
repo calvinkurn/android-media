@@ -359,7 +359,7 @@ open class PinpointViewModelTest {
         viewModel.fetchData()
 
         assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).title == title)
-        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).description == "$cityName, $districtName, $provinceName")
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).description == "$districtName, $cityName, $provinceName")
         assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonPrimary.enable)
         assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonPrimary.show)
         assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonPrimary.success)
@@ -526,7 +526,7 @@ open class PinpointViewModelTest {
         val districtName = "district name"
         val cityName = "city name"
         val provinceName = "province name"
-        val formattedAddress = "$cityName, $districtName, $provinceName"
+        val formattedAddress = "$districtName, $cityName, $provinceName"
         viewModel.onViewCreated(
             placeId = "",
             isEditWarehouse = false,
