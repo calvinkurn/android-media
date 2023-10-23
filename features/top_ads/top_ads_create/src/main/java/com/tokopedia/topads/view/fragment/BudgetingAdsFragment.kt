@@ -438,22 +438,20 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                     CLICK_DAILY_BUDGET_BOX, "")
                 stepperModel?.finalSearchBidPerClick = result
                 when {
+                    result % 50 != 0 -> {
+                        setMessageErrorField(getString(topadscommonR.string.topads_ads_error_multiple_fifty), Int.ZERO.toString(), true)
+                        actionEnable(false)
+                    }
                     result >= suggestBidPerClick -> {
-                        if (result > maxBid.toDoubleOrZero() && maxBid.toIntOrZero() != 0){
+                        if (result > maxBid.toDoubleOrZero() && maxBid.toIntOrZero() != 0) {
                             setMessageErrorField(getString(topadscommonR.string.max_bid_error_new), maxBid, true)
                             actionEnable(false)
-                        } else{
-                            if (number % 50 == 0.0) {
-                                setMessageErrorField(getString(topadscommonR.string.topads_ads_optimal_bid), Int.ZERO.toString(), false)
-                                stepperModel?.selectedProductIds?.let {
-                                    viewModel.getPerformanceData(it, result.toFloat(), -1f, -1f)
-                                }
-                                actionEnable(true)
-                            }else{
-                                setMessageErrorField(getString(topadscommonR.string.topads_ads_error_multiple_fifty), Int.ZERO.toString(), true)
-                                actionEnable(false)
+                        } else {
+                            setMessageErrorField(getString(topadscommonR.string.topads_ads_optimal_bid), Int.ZERO.toString(), false)
+                            stepperModel?.selectedProductIds?.let {
+                                viewModel.getPerformanceData(it, result.toFloat(), -1f, -1f)
                             }
-
+                            actionEnable(true)
                         }
                     }
 

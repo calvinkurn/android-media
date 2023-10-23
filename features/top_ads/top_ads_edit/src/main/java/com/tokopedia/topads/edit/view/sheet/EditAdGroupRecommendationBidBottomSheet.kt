@@ -112,7 +112,7 @@ class EditAdGroupRecommendationBidBottomSheet : BottomSheetUnify() {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 when {
-                    number >= maxBid.toDoubleOrZero() -> {
+                    number > maxBid.toDoubleOrZero() -> {
                         setMessageErrorField(getString(topadscommonR.string.max_bid_error_new), maxBid, true)
                         binding?.editAdGroupNameCta?.isEnabled = false
                     }

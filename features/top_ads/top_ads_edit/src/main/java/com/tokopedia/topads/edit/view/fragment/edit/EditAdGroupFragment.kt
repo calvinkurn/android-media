@@ -728,6 +728,7 @@ class EditAdGroupFragment : BaseDaggerFragment() {
                     dataGroup[Constants.DAILY_BUDGET] = dailyBudget
                 else
                     dataGroup[Constants.DAILY_BUDGET] = Int.ZERO.toString()
+                dataProduct.clear()
                 submitEditGroup(CreateEditAdGroupItemTag.DAILY_BUDGET)
             }
         }
@@ -755,7 +756,7 @@ class EditAdGroupFragment : BaseDaggerFragment() {
             bidTypeData.add(
                 TopAdsBidSettingsModel(ParamObject.PRODUCT_BROWSE,
                     if (editedRecomBid.isEmpty()) groupInfoResponse?.bidSettings?.getOrNull(1)?.priceBid
-                    else editedRecomBid.toFloatOrZero())
+                    else CurrencyFormatHelper.convertRupiahToDouble(editedRecomBid).toFloat())
             )
         }
         return bidTypeData

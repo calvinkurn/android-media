@@ -31,7 +31,7 @@ class TopAdsToolTipBottomSheet : BottomSheetUnify() {
 
     private fun initChildLayout() {
         val contentView =
-            View.inflate(context, R.layout.topads_dash_sheet_info, null)
+            View.inflate(context, R.layout.topads_tooltip_description_sheet_info, null)
         setChild(contentView)
         showCloseIcon = true
         descriptionTypography = contentView?.findViewById(R.id.toolTipDescription)

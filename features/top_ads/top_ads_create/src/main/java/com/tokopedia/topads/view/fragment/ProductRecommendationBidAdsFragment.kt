@@ -148,23 +148,22 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
                 super.onNumberChanged(number)
                 val result = number.toInt()
                 when {
+                    result % 50 != 0 -> {
+                        setMessageErrorField(getString(topadscommonR.string.topads_ads_error_multiple_fifty), Int.ZERO.toString(), true)
+                        binding?.btnNext?.isEnabled = false
+                    }
                     result >= (stepperModel?.finalRecommendationBidPerClick ?: Int.ZERO) -> {
                         if (result > stepperModel?.maxBid.toDoubleOrZero() && stepperModel?.maxBid.toIntOrZero() != 0) {
                             setMessageErrorField(getString(topadscommonR.string.max_bid_error_new), stepperModel?.maxBid
                                 ?: "", true)
                             binding?.btnNext?.isEnabled = false
                         } else {
-                            if (number % 50 == 0.0) {
-                                finalRecomBid = result.toString()
-                                setMessageErrorField(getString(topadscommonR.string.topads_ads_optimal_bid), Int.ZERO.toString(), false)
-                                stepperModel?.selectedProductIds?.let {
-                                    viewModel?.getPerformanceData(it, result.toFloat(), -1f, -1f)
-                                }
-                                binding?.btnNext?.isEnabled = true
-                            } else {
-                                setMessageErrorField(getString(topadscommonR.string.topads_ads_error_multiple_fifty), Int.ZERO.toString(), true)
-                                binding?.btnNext?.isEnabled = false
+                            finalRecomBid = result.toString()
+                            setMessageErrorField(getString(topadscommonR.string.topads_ads_optimal_bid), Int.ZERO.toString(), false)
+                            stepperModel?.selectedProductIds?.let {
+                                viewModel?.getPerformanceData(it, result.toFloat(), -1f, -1f)
                             }
+                            binding?.btnNext?.isEnabled = true
                         }
                     }
 
@@ -176,6 +175,7 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
                     }
 
                     else -> {
+                        binding?.recommendationBudget?.isInputError = false
                         finalRecomBid = result.toString()
                         binding?.recommendationBudget?.setMessage(getClickableString(stepperModel?.finalRecommendationBidPerClick
                             ?: 0))

@@ -228,26 +228,25 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
                 val minBid = minMaxBids?.firstOrNull().toDoubleOrZero()
                 val maxBid= minMaxBids?.getOrNull(1).toDoubleOrZero()
                 when {
+                    result % 50 != 0 -> {
+                        setMessageErrorField(getString(topadscommonR.string.topads_ads_error_multiple_fifty), Int.ZERO.toString(), true)
+                        actionEnable(false)
+                    }
                     result >= suggestBidPerClick -> {
                         if (result > maxBid && maxBid.toInt() != Int.ZERO) {
-                            setMessageErrorField(getString(topadscommonR.string.max_bid_error_new), maxBid.toString(), true)
+                            setMessageErrorField(getString(topadscommonR.string.max_bid_error_new), maxBid.toInt().toString(), true)
                             actionEnable(false)
                         } else {
-                            if (number % 50 == 0.0) {
-                                setMessageErrorField(getString(topadscommonR.string.topads_ads_optimal_bid), Int.ZERO.toString(), false)
-                                productIds.let {
-                                    viewModel.getPerformanceData(it, result.toFloat(), result.toFloat(), dailyBudgetInput)
-                                }
-                                actionEnable(true)
-                            }else{
-                                setMessageErrorField(getString(topadscommonR.string.topads_ads_error_multiple_fifty), Int.ZERO.toString(), true)
-                                actionEnable(false)
+                            setMessageErrorField(getString(topadscommonR.string.topads_ads_optimal_bid), Int.ZERO.toString(), false)
+                            productIds.let {
+                                viewModel.getPerformanceData(it, result.toFloat(), result.toFloat(), dailyBudgetInput)
                             }
+                            actionEnable(true)
                         }
                     }
 
                     result < minBid && maxBid.toInt() != 0 -> {
-                        setMessageErrorField(getString(topadscommonR.string.min_bid_error_new), minBid.toString(), true)
+                        setMessageErrorField(getString(topadscommonR.string.min_bid_error_new), minBid.toInt().toString(), true)
                         actionEnable(false)
                     }
 
