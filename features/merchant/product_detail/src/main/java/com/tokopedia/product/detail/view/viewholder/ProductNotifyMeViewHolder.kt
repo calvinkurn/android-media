@@ -3,8 +3,8 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -13,7 +13,8 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
 
 class ProductNotifyMeViewHolder(
-    private val view: View, private val listener: DynamicProductDetailListener
+    private val view: View,
+    private val listener: DynamicProductDetailListener
 ) : AbstractViewHolder<ProductNotifyMeDataModel>(view) {
 
     companion object {
@@ -31,7 +32,12 @@ class ProductNotifyMeViewHolder(
             campaignRibbon?.setDynamicProductDetailListener(listener)
             campaignRibbon?.setComponentTrackDataModel(trackDataModel)
             campaignRibbon?.renderUpComingCampaignRibbon(element, element.upcomingNplData.upcomingType)
-            view.addOnImpressionListener(element.impressHolder) {
+            view.addOnImpressionListener(
+                holder = element.impressHolder,
+                holders = listener.getImpressionHolders(),
+                name = element.name,
+                useHolders = listener.isRemoteCacheableActive()
+            ) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
         } else {
@@ -44,7 +50,7 @@ class ProductNotifyMeViewHolder(
         upcomingCampaignRibbon.requestLayout()
     }
 
-    private fun hideContainer() = with(binding){
+    private fun hideContainer() = with(binding) {
         upcomingCampaignRibbon.layoutParams?.height = 0
         upcomingCampaignRibbon.requestLayout()
     }

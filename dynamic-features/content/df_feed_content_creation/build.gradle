@@ -68,4 +68,5 @@ dependencies {
 
     // Media
     implementation projectOrAar(rootProject.ext.features.mediaeditor)
+    implementation projectOrAar(rootProject.ext.features.universalEditor)
 }

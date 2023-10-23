@@ -1,7 +1,6 @@
 package com.tokopedia.keys
 
 import android.content.Context
-import android.provider.Settings.Global.getString
 import com.tokopedia.config.GlobalConfig
 
 object Keys {
@@ -25,6 +24,12 @@ object Keys {
     private val AUTH_CHROMECAST_APPLICATION_ID_SA = decodeKey(CHROMECAST_APPLICATION_ID_SA)
 
     @JvmField
+    val LSDK_KEY_MA = decodeKey(LSDK_KEY)
+
+    @JvmField
+    val GTP_KEY_MA = decodeKey(GTP_KEY)
+
+    @JvmField
     val NEW_RELIC_TOKEN_SA = decodeKey(NEW_RELIC_APPLICATION_TOKEN_SA)
 
     @JvmField
@@ -32,35 +37,33 @@ object Keys {
 
     @JvmStatic
     val AUTH_NEW_RELIC_API_KEY
-            get() =
-                    when(GlobalConfig.APPLICATION_TYPE) {
-                        GlobalConfig.CONSUMER_APPLICATION -> {
-                            AUTH_NEW_RELIC_API_KEY_MA
-                        }
-                        GlobalConfig.SELLER_APPLICATION -> {
-                            AUTH_NEW_RELIC_API_KEY_SA
-                        }
-                        else -> {
-                            AUTH_NEW_RELIC_API_KEY_PRO
-                        }
-                    }
-
-
+        get() =
+            when (GlobalConfig.APPLICATION_TYPE) {
+                GlobalConfig.CONSUMER_APPLICATION -> {
+                    AUTH_NEW_RELIC_API_KEY_MA
+                }
+                GlobalConfig.SELLER_APPLICATION -> {
+                    AUTH_NEW_RELIC_API_KEY_SA
+                }
+                else -> {
+                    AUTH_NEW_RELIC_API_KEY_PRO
+                }
+            }
 
     @JvmStatic
     val AUTH_NEW_RELIC_USER_ID
-            get() =
-                when(GlobalConfig.APPLICATION_TYPE) {
-                    GlobalConfig.CONSUMER_APPLICATION -> {
-                        AUTH_NEW_RELIC_USER_ID_MA
-                    }
-                    GlobalConfig.SELLER_APPLICATION -> {
-                        AUTH_NEW_RELIC_USER_ID_SA
-                    }
-                    else -> {
-                        AUTH_NEW_RELIC_USER_ID_PRO
-                    }
+        get() =
+            when (GlobalConfig.APPLICATION_TYPE) {
+                GlobalConfig.CONSUMER_APPLICATION -> {
+                    AUTH_NEW_RELIC_USER_ID_MA
                 }
+                GlobalConfig.SELLER_APPLICATION -> {
+                    AUTH_NEW_RELIC_USER_ID_SA
+                }
+                else -> {
+                    AUTH_NEW_RELIC_USER_ID_PRO
+                }
+            }
 
     @JvmStatic
     val AUTH_SCALYR_API_KEY
