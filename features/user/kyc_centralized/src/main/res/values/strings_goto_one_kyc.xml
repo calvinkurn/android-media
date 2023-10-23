@@ -92,14 +92,14 @@
     <string name="onekyc_review_document_delete_confirmation_cancel">Batal</string>
 
     <!-- Auto capture exhausted -->
-    <string name="onekyc_auto_capture_exhausted_dialog_title">Mau coba foto manual aja?</string>
-    <string name="onekyc_auto_capture_exhausted_dialog_description">Sepertinya kamu kesulitan saat ambil foto otomatis, coba foto manual buat lanjutin.</string>
-    <string name="onekyc_auto_capture_continue_cta">Foto Otomatis</string>
+    <string name="onekyc_auto_capture_exhausted_dialog_title">Oops, gagal ambil foto otomatis</string>
+    <string name="onekyc_auto_capture_exhausted_dialog_description">Tenang, kamu bisa foto manual buat lanjutin.</string>
+    <string name="onekyc_auto_capture_continue_cta">Coba Lagi</string>
     <string name="onekyc_auto_capture_switch_mode_cta">Foto Manual</string>
 
     <!-- OneKyc FR Challenge - Selfie Prepare-->
-    <string name="onekyc_fr_selfie_prepare_card_title">Siap-siap buat verifikasi wajah</string>
-    <string name="onekyc_fr_selfie_prepare_card_ready_cta">Mulai Selfie</string>
+    <string name="onekyc_fr_selfie_prepare_card_title">Biar selfienya bagus, ikuti tips ini!</string>
+    <string name="onekyc_fr_selfie_prepare_card_ready_cta">Mulai Verifikasi Wajah</string>
     <string name="onekyc_fr_selfie_prepare_card_warning_title">PERINGATAN FOTOSENSITIF</string>
     <string name="onekyc_fr_selfie_prepare_card_warning_message">Di layar berikutnya, akan ada cahaya terang dan flash yang bisa memicu epilepsi.</string>
 
