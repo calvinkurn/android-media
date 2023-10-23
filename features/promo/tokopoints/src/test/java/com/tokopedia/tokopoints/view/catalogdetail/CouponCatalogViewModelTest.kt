@@ -14,6 +14,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -22,7 +23,6 @@ import kotlin.reflect.KClass
 
 @ExperimentalCoroutinesApi
 class CouponCatalogViewModelTest {
-
 
     lateinit var viewModel: CouponCatalogViewModel
     val repository = mockk<CouponCatalogRepository>()
@@ -247,20 +247,16 @@ class CouponCatalogViewModelTest {
 
     @Test
     fun `start Send Gift success`() {
-        val observer = mockk<Observer<Resources<SendGiftPage>>>()
         val id = 1
         val title = "title"
         val pointStr = "pointerString"
         val banner = "banner"
-        coEvery { repository.startSendGift(id) } returns mockk {
-            every { preValidateRedeem } returns mockk {
-                every { isValid } returns 1
-            }
-        }
-        viewModel.sendGiftPageLiveData.observeForever(observer)
+
+        coEvery { repository.startSendGift(id) } returns PreValidateRedeemBase(
+            preValidateRedeem = PreValidateRedeemBaseValue(isValid = 1)
+        )
         viewModel.startSendGift(id, title, pointStr, banner)
 
-        verify(exactly = 1) { observer.onChanged(ofType(Success::class as KClass<Success<SendGiftPage>>)) }
         val result = viewModel.sendGiftPageLiveData.value as Success
         assert(result.data.banner == banner)
         assert(result.data.id == id)
@@ -309,4 +305,24 @@ class CouponCatalogViewModelTest {
 
     }
 
+    @Test
+    fun `given error message equals 1 when startSendGift should update sendGiftPageLiveData with first error message`() {
+        val errorMessage = "internal server error"
+
+        val id = 1
+        val title = "title"
+        val pointStr = "pointerString"
+        val banner = "banner"
+
+        coEvery { repository.startSendGift(id) } throws MessageErrorException(errorMessage)
+
+        viewModel.startSendGift(id, title, pointStr, banner)
+
+        val data = (viewModel.sendGiftPageLiveData.value as ValidationError<SendGiftPage, Any>).data
+        val preValidateError = data as PreValidateError
+        val actualErrorMessage = preValidateError.message
+        val expectedErrorMessage = "internal server error"
+
+        assertEquals(expectedErrorMessage, actualErrorMessage)
+    }
 }
