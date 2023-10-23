@@ -61,9 +61,9 @@ class MerchantVoucherGridViewModel(
     // This capability will be enabled once we support pagination for landing page
     @Suppress("unused")
     private fun setSeeMoreInfo(component: ComponentsItem) {
-        val redirection = component.compAdditionalInfo?.redirection
+        val redirection = component.compAdditionalInfo?.redirection ?: return
 
-        if (redirection?.ctaText?.isEmpty() == false) {
+        if (!redirection.ctaText.isNullOrBlank()) {
             _seeMore.value = redirection
         }
     }
