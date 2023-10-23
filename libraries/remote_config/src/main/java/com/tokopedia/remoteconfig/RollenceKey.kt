@@ -42,6 +42,11 @@ object RollenceKey {
     const val RECOM_PAGE_CPM_VARIANT = "ShopAdsIMVariant"
     // end of Recommendation page section
 
+    // Icon Jumper For You
+    const val ICON_JUMPER_DEFAULT = "control_variant"
+    const val ICON_JUMPER_EXP = "VariantA"
+    const val ICON_JUMPER = "IconJumper"
+
     // Auto Complete
     const val SEARCH_BROAD_MATCH_TRACKER_UNIFICATION = "keyword_track_broad"
 

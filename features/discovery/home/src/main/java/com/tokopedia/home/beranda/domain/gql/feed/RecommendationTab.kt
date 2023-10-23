@@ -15,5 +15,7 @@ data class RecommendationTab(
     val imageUrl: String = "",
     @SerializedName("sourceType")
     @Expose
-    val sourceType: String = ""
+    val sourceType: String = "",
+    @SerializedName("isJumperTab")
+    val isJumperTab: Boolean = false
 )
