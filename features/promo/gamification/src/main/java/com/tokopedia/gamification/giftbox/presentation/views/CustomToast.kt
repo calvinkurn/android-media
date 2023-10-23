@@ -4,10 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.widget.Toast
 import androidx.annotation.NonNull
-import androidx.core.content.ContextCompat
-import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.unifyprinciples.Typography
-
 
 object CustomToast {
 
