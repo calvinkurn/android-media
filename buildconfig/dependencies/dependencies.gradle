@@ -102,7 +102,7 @@ ext {
     newRelicVersion = '6.6.0'
     windowVersion = '1.0.0'
     localBroadcastManagerVersion = '1.0.0'
-    gojekSSOVersion = '1.0.0'
+    gojekSSOVersion = '1.0.1-67-0738bd6'
     gotoLsdkVersion = '2.0.0'
     gotoCvsdkVersion = '2.1.0'
     gotoPinSdkVersion = '0.2.1'
