@@ -32,6 +32,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
+import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.components.NestButton
@@ -47,6 +48,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
 import com.tokopedia.stories.creation.R
+import com.tokopedia.stories.creation.view.model.StoriesMedia
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
@@ -75,7 +77,7 @@ fun StoriesCreationScreen(
         return
     }
 
-    if (uiState.mediaFilePath.isEmpty()) {
+    if (uiState.media.filePath.isEmpty()) {
         return
     }
 
@@ -126,7 +128,7 @@ fun StoriesCreationScreen(
         )
 
         StoriesCreationMediaCover(
-            mediaFilePath = uiState.mediaFilePath,
+            mediaFilePath = uiState.media.filePath,
             onLoadMediaPreview = onLoadMediaPreview,
             modifier = Modifier.constrainAs(mediaCover) {
                 top.linkTo(headerDivider.bottom, 16.dp)
@@ -393,7 +395,10 @@ private fun StoriesCreationScreenPreview() {
     NestTheme {
         Surface {
             val uiState = StoriesCreationUiState.Empty.copy(
-                mediaFilePath = "asfk"
+                media = StoriesMedia(
+                    filePath = "asdf",
+                    type = ContentMediaType.Video
+                )
             )
 
             StoriesCreationScreen(

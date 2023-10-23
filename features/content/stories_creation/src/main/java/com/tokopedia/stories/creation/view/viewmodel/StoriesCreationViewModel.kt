@@ -108,8 +108,10 @@ class StoriesCreationViewModel @Inject constructor(
     ) {
         _uiState.update {
             it.copy(
-                mediaFilePath = mediaFilePath,
-                mediaType = mediaType,
+                media = it.media.copy(
+                    filePath = mediaFilePath,
+                    type = mediaType,
+                )
             )
         }
     }
@@ -130,8 +132,8 @@ class StoriesCreationViewModel @Inject constructor(
 
             val data = CreationUploadData.buildForStories(
                 creationId = state.config.storiesId,
-                mediaUriList = listOf(state.mediaFilePath),
-                mediaTypeList = listOf(state.mediaType.code),
+                mediaUriList = listOf(state.media.filePath),
+                mediaTypeList = listOf(state.media.type.code),
                 coverUri = "",
                 authorId = state.selectedAccount.id,
                 authorType = state.selectedAccount.type,
