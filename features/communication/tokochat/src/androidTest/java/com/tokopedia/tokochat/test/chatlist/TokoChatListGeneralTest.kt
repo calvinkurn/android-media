@@ -14,6 +14,7 @@ import com.tokopedia.tokochat.test.base.BaseTokoChatListTest
 import com.tokopedia.tokochat.test.chatlist.robot.generalResult
 import com.tokopedia.tokochat.test.chatlist.robot.generalRobot
 import org.junit.Test
+import java.util.concurrent.TimeUnit
 import com.tokopedia.tokochat_common.R as tokochat_commonR
 
 @UiTest
@@ -132,9 +133,11 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
 
     @Test
     fun should_show_date_month_timestamp() {
+        // Given
+        val oneWeekAgeDate = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(6)
         ApiResponseStub.channelListResponse.responseEditor = {
             var result = it
-            result = result.replace("1690441670772", "1687849670000")
+            result = result.replace("1690441670772", "$oneWeekAgeDate")
             result
         }
 
@@ -143,8 +146,8 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
 
         // Then
         generalResult {
-            assertDriverName(1, "Kartolo") // Move to position 1
-            assertTimeStamp(1, "27 Jun")
+            assertDriverName(0, "Kartolo")
+            assertTimeStampWithinMonthFormat(0)
         }
     }
 

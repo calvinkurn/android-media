@@ -35,15 +35,18 @@ class UpdateCartTest : BaseCartViewModelTest() {
 
     private lateinit var observer: Observer<UpdateCartCheckoutState>
     private lateinit var cartGlobalEventObserver: Observer<CartGlobalEvent>
+    private lateinit var progressLoadingObserver: Observer<Boolean>
 
     override fun setUp() {
         super.setUp()
         mockkObject(CartPageAnalyticsUtil)
         observer = mockk { every { onChanged(any()) } just Runs }
         cartGlobalEventObserver = mockk { every { onChanged(any()) } just Runs }
+        progressLoadingObserver = mockk { every { onChanged(any()) } just Runs }
 
         cartViewModel.updateCartForCheckoutState.observeForever(observer)
         cartViewModel.globalEvent.observeForever(cartGlobalEventObserver)
+        cartViewModel.cartProgressLoading.observeForever(progressLoadingObserver)
     }
 
     @Test
@@ -784,7 +787,7 @@ class UpdateCartTest : BaseCartViewModelTest() {
 
         // THEN
         verify(inverse = true) {
-            cartGlobalEventObserver.onChanged(CartGlobalEvent.ProgressLoading(true))
+            progressLoadingObserver.onChanged(true)
         }
     }
 
