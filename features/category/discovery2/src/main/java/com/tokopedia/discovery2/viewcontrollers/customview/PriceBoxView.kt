@@ -91,7 +91,7 @@ class PriceBoxView @JvmOverloads constructor(
 
     init {
         val shapePathModel = ShapeAppearanceModel.builder()
-            .setAllCorners(CornerFamily.ROUNDED, convertDpToPixel(12f, context).toFloat())
+            .setAllCorners(CornerFamily.ROUNDED, convertDpToPixel(CORNER_SIZE, context).toFloat())
             .build()
 
         shapeDrawable = MaterialShapeDrawable(shapePathModel)
@@ -156,7 +156,7 @@ class PriceBoxView @JvmOverloads constructor(
         with(binding) {
             phProductPrice.setTextColor(Color.parseColor(color))
             phDiscountedProductPrice.setTextColor(Color.parseColor(color))
-            phDiscountedProductPrice.alpha = 0.6f
+            phDiscountedProductPrice.alpha = SLASH_PRICE_ALPHA
             phFreeText.setTextColor(Color.parseColor(color))
         }
     }
@@ -176,11 +176,11 @@ class PriceBoxView @JvmOverloads constructor(
 
         val parseColor = Color.parseColor(color)
 
-        binding.priceContainer.setBackgroundColor(ColorUtils.setAlphaComponent(parseColor, 20))
+        binding.priceContainer.setBackgroundColor(ColorUtils.setAlphaComponent(parseColor, PRICE_BG_ALPHA))
 
         ImageUtils.loadImage(binding.cardBackground, url)
 
-        binding.freeTextContainer.setBackgroundColor(ColorUtils.setAlphaComponent(parseColor, 45))
+        binding.freeTextContainer.setBackgroundColor(ColorUtils.setAlphaComponent(parseColor, FREE_TEXT_BG_ALPHA))
     }
 
     fun changeToInactive() {
@@ -195,13 +195,30 @@ class PriceBoxView @JvmOverloads constructor(
             )
             phProductPrice.setTextColor(textColor)
             phDiscountedProductPrice.setTextColor(textColor)
-            phDiscountedProductPrice.alpha = 0.6f
+            phDiscountedProductPrice.alpha = SLASH_PRICE_ALPHA
             phFreeText.setTextColor(textColor)
 
-            discountRibbon.changeToDisable(
-                textColor,
-                MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN200)
+            val inactiveBackgroundColor = MethodChecker.getColor(
+                context,
+                unifyprinciplesR.color.Unify_NN200
+            )
+
+            discountRibbon.changeToDisable(textColor, inactiveBackgroundColor)
+
+            binding.freeTextContainer.setBackgroundColor(
+                ColorUtils.setAlphaComponent(
+                    inactiveBackgroundColor,
+                    FREE_TEXT_IN_ACTIVE_BG_ALPHA
+                )
             )
         }
+    }
+
+    companion object {
+        private const val CORNER_SIZE = 12f
+        private const val SLASH_PRICE_ALPHA = 0.6f
+        private const val FREE_TEXT_BG_ALPHA = 45
+        private const val FREE_TEXT_IN_ACTIVE_BG_ALPHA = 180
+        private const val PRICE_BG_ALPHA = 20
     }
 }
