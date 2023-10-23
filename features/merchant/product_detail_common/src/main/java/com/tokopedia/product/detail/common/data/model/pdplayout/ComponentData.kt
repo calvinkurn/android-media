@@ -183,6 +183,7 @@ data class ComponentData(
     @SerializedName("socialProofContent")
     @Expose
     val socialProof: List<SocialProofData> = emptyList()
+    // endregion
 ) {
     companion object {
         private const val PRODUCT_IMAGE_TYPE = "image"
