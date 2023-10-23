@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductChooseAddressLayoutBinding
@@ -19,6 +20,7 @@ internal class ChooseAddressViewHolder(
     private val chooseAddressListener: ChooseAddressListener,
     private val changeViewListener: ChangeViewListener,
     private val fragmentProvider: FragmentProvider,
+    private val isReimagineProductCard: Boolean,
 ): AbstractViewHolder<ChooseAddressDataView>(itemView) {
 
     companion object {
@@ -73,14 +75,18 @@ internal class ChooseAddressViewHolder(
     }
 
     private fun bindChangeViewButton() {
-        setChangeViewIcon(changeViewListener.viewType.icon)
+        val changeViewButton = binding?.searchProductChooseAddressChangeViewButton ?: return
 
-        binding?.searchProductChooseAddressChangeViewButton?.setOnClickListener {
-            changeViewListener.onChangeViewClicked()
+        changeViewButton.shouldShowWithAction(!isReimagineProductCard) {
             setChangeViewIcon(changeViewListener.viewType.icon)
-        }
 
-        changeViewListener.checkShouldShowViewTypeOnBoarding()
+            changeViewButton.setOnClickListener {
+                changeViewListener.onChangeViewClicked()
+                setChangeViewIcon(changeViewListener.viewType.icon)
+            }
+
+            changeViewListener.checkShouldShowViewTypeOnBoarding()
+        }
     }
 
     private fun setChangeViewIcon(id: Int) {

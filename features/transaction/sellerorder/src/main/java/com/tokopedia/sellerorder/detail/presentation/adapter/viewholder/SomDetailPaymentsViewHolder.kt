@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.DetailPaymentsItemBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
@@ -47,6 +48,9 @@ class SomDetailPaymentsViewHolder(itemView: View?) : AbstractViewHolder<SomDetai
 
                 totalPriceValue.text = somDetailPayments.paymentDataUiModel.value
                 totalPriceLabel.text = somDetailPayments.paymentDataUiModel.label
+                subsidyInfoLabel.showIfWithBlock(somDetailPayments.subsidyInfo.isNotBlank()) {
+                    text = somDetailPayments.subsidyInfo
+                }
             }
         }
     }
