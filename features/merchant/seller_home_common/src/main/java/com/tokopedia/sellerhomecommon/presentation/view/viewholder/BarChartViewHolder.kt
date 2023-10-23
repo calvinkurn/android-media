@@ -38,6 +38,9 @@ import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * Created By @ilhamsuaib on 09/07/20
@@ -200,12 +203,12 @@ class BarChartViewHolder(
 
     private fun getBarChartConfig(element: BarChartWidgetUiModel): BarChartConfigModel {
         val labelTextColor =
-            itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+            itemView.context.getResColor(unifyprinciplesR.color.Unify_NN900)
         val data = getBarChartData(element.data?.chartData)
         return BarChartConfig.create {
             xAnimationDuration { ANIMATION_DURATION }
             yAnimationDuration { ANIMATION_DURATION }
-            barBorderRadius { itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1) }
+            barBorderRadius { itemView.context.resources.getDimensionPixelSize(unifyprinciplesR.dimen.layout_lvl1) }
 
             xAxis {
                 val xAxisLabels = data.xAxisLabels.map { it.valueFmt }
@@ -326,13 +329,13 @@ class BarChartViewHolder(
 
             if (isCtaVisible) {
                 val iconColor = root.context.getResColor(
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    unifyprinciplesR.color.Unify_GN500
                 )
                 val iconWidth = root.context.resources.getDimension(
-                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                    unifyprinciplesR.dimen.layout_lvl3
                 )
                 val iconHeight = root.context.resources.getDimension(
-                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                    unifyprinciplesR.dimen.layout_lvl3
                 )
                 btnShcBarChartMore.setUnifyDrawableEnd(
                     IconUnify.CHEVRON_RIGHT,
@@ -358,6 +361,7 @@ class BarChartViewHolder(
 
     private fun setupEmptyState(element: BarChartWidgetUiModel) {
         with(element.emptyState) {
+            setEmptyStateBackground()
             emptyStateBinding.tvShcBarChartEmptyStateTitle.text = title
             emptyStateBinding.tvShcBarChartEmptyStateDesc.text = description
             emptyStateBinding.tvShcBarChartEmptyStateCta.run {
@@ -370,6 +374,17 @@ class BarChartViewHolder(
             }
             setMarginFromLongestYAxisValue(element)
             animateShowEmptyState()
+        }
+    }
+
+    private fun setEmptyStateBackground() {
+        with(emptyStateBinding.shcBarChartEmptyState) {
+            val cardBg = if (context.isDarkMode()) {
+                unifyprinciplesR.color.Unify_NN100
+            } else {
+                unifycomponentsR.color.cardunify_background
+            }
+            setCardBackgroundColor(context.getResColor(cardBg))
         }
     }
 
@@ -423,7 +438,7 @@ class BarChartViewHolder(
             val pxPerChar =
                 itemView.resources?.getDimensionPixelOffset(R.dimen.shc_dimen_6dp).orZero()
             val startMargin =
-                itemView.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
+                itemView.resources?.getDimensionPixelOffset(unifyprinciplesR.dimen.layout_lvl2)
                     .orZero()
             val textMarginPx = pxPerChar * valueLength
             val emptyStateLayoutParams =
