@@ -56,6 +56,16 @@
             app:layout_constraintStart_toStartOf="@id/ll_partner_credibility"
             />
 
+        <include
+            android:id="@+id/view_play_widget_action_button"
+            layout="@layout/view_play_widget_lottie_action_button"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/total_watch_view"
+            />
+
         <LinearLayout
             android:id="@+id/ll_partner_credibility"
             android:layout_width="match_parent"
