@@ -3,9 +3,11 @@ package com.tokopedia.oldcatalog.ui.bottomsheet
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.catalog.R
+import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment
 import com.tokopedia.oldcatalog.listener.CatalogDetailListener
 import com.tokopedia.oldcatalog.ui.fragment.CatalogAllReviewFragment
 import com.tokopedia.oldcatalog.ui.fragment.CatalogDetailPageFragment
+import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment as CatalogDetailPageFragmentV4
 import com.tokopedia.oldcatalog.ui.fragment.CatalogProductComparisonFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
@@ -76,7 +78,19 @@ class CatalogComponentBottomSheet : BottomSheetUnify(), CatalogDetailListener {
     }
 
     override fun changeComparison(comparedCatalogId: String) {
-        (parentFragment as? CatalogDetailPageFragment)?.changeComparison(comparedCatalogId)
+        when (parentFragment) {
+            is CatalogComparisonDetailFragment -> {
+                (parentFragment as? CatalogComparisonDetailFragment)?.changeComparison(comparedCatalogId)
+            }
+
+            is CatalogDetailPageFragment -> {
+                (parentFragment as? CatalogDetailPageFragment)?.changeComparison(comparedCatalogId)
+            }
+
+            is CatalogDetailPageFragmentV4 -> {
+                (parentFragment as? CatalogDetailPageFragmentV4)?.changeComparison(comparedCatalogId)
+            }
+        }
     }
 
     companion object {

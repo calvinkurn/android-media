@@ -1,4 +1,3 @@
-
 package com.tokopedia.home.beranda.presentation.view.fragment
 
 import android.annotation.SuppressLint
@@ -158,6 +157,7 @@ import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -172,8 +172,10 @@ import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
+import com.tokopedia.navigation_common.listener.HomeBottomNavListener
 import com.tokopedia.navigation_common.listener.HomeCoachmarkListener
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
+import com.tokopedia.navigation_common.listener.HomeScrollViewListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener
 import com.tokopedia.network.exception.MessageErrorException
@@ -228,14 +230,14 @@ import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
-import java.util.Date
+import java.util.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.wishlist_common.R as wishlist_commonR
+import com.tokopedia.loyalty.R as loyaltyR
 import com.tokopedia.play.widget.R as playwidgetR
 import com.tokopedia.searchbar.R as searchbarR
-import com.tokopedia.loyalty.R as loyaltyR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.wishlist_common.R as wishlist_commonR
 
 /**
  * @author by yoasfs on 12/14/17.
@@ -249,6 +251,7 @@ open class HomeRevampFragment :
     HomeCategoryListener,
     AllNotificationListener,
     FragmentListener,
+    HomeScrollViewListener,
     HomeEggListener,
     HomeTabFeedListener,
     HomeFeedsListener,
@@ -370,6 +373,7 @@ open class HomeRevampFragment :
     private lateinit var statusBarBackground: View
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var remoteConfigInstance: RemoteConfigInstance
+    private var stickyLoginView: StickyLoginView? = null
     private var homeRecyclerView: NestedRecyclerView? = null
     private var navToolbar: NavToolbar? = null
     private var thematicBackground: AppCompatImageView? = null
@@ -565,7 +569,11 @@ open class HomeRevampFragment :
     private fun castContextToHomeCoachmarkListener(context: Context): HomeCoachmarkListener? =
         if (context is HomeCoachmarkListener) context else null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
         isUsingNewPullRefresh = isUseNewPullRefresh()
         val view = inflater.inflate(
@@ -619,8 +627,14 @@ open class HomeRevampFragment :
             )
             activity?.let { context ->
                 it.setNavToolbarIconCustomColor(
-                    navToolbarIconCustomLightColor = ContextCompat.getColor(context, searchbarR.color.searchbar_dms_state_light_icon),
-                    navToolbarIconCustomDarkColor = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White)
+                    navToolbarIconCustomLightColor = ContextCompat.getColor(
+                        context,
+                        searchbarR.color.searchbar_dms_state_light_icon
+                    ),
+                    navToolbarIconCustomDarkColor = ContextCompat.getColor(
+                        context,
+                        unifyprinciplesR.color.Unify_Static_White
+                    )
                 )
             }
             val icons = IconBuilder(
@@ -728,7 +742,10 @@ open class HomeRevampFragment :
                                 setSubscriptionCoachmarkShown(it)
                                 showTokonowCoachmark()
                             }
-                            subscriptionCoachMark.showCoachMark(step = coachMarkItemSubscription, index = COACHMARK_FIRST_INDEX)
+                            subscriptionCoachMark.showCoachMark(
+                                step = coachMarkItemSubscription,
+                                index = COACHMARK_FIRST_INDEX
+                            )
                             subscriptionCoachmarkIsShowing = true
                         }
                     } catch (e: Exception) {
@@ -752,7 +769,10 @@ open class HomeRevampFragment :
                             setHomeTokonowCoachmarkShown(it)
                             homeCoachmarkListener?.onHomeCoachMarkFinished()
                         }
-                        coachmarkTokonow.showCoachMark(step = coachMarkItemTokonow, index = COACHMARK_FIRST_INDEX)
+                        coachmarkTokonow.showCoachMark(
+                            step = coachMarkItemTokonow,
+                            index = COACHMARK_FIRST_INDEX
+                        )
                         tokonowCoachmarkIsShowing = true
                     } else {
                         homeCoachmarkListener?.onHomeCoachMarkFinished()
@@ -767,9 +787,10 @@ open class HomeRevampFragment :
     }
 
     private fun getSubscriptionBalanceWidgetView(): View? {
-        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
+        val view = homeRecyclerView?.findViewHolderForLayoutPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let {
-            val balanceWidgetSubscriptionView = getBalanceWidgetViewSubscriptionOnly(it.itemView.findViewById(R.id.view_balance_widget))
+            val balanceWidgetSubscriptionView =
+                getBalanceWidgetViewSubscriptionOnly(it.itemView.findViewById(R.id.view_balance_widget))
             if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && (
                 (
                     balanceWidgetSubscriptionView?.y
@@ -1059,6 +1080,7 @@ open class HomeRevampFragment :
 
     override fun onResume() {
         playWidgetOnVisibilityChanged(isViewResumed = true)
+        getUserIdFromViewModel()
         super.onResume()
         createAndCallSendScreen()
         adapter?.onResumeBanner()
@@ -1109,7 +1131,12 @@ open class HomeRevampFragment :
                 return sendScreen()
             }
         }
-        executeWeaveCoRoutineWithFirebase(sendScrWeave, RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, context?.applicationContext, true)
+        executeWeaveCoRoutineWithFirebase(
+            sendScrWeave,
+            RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR,
+            context?.applicationContext,
+            true
+        )
     }
 
     override fun onPause() {
@@ -1265,7 +1292,11 @@ open class HomeRevampFragment :
                     status == Result.Status.ERROR_GENERAL -> {
                         val errorString = getErrorStringWithDefault(throwable)
                         showNetworkError(errorString)
-                        NetworkErrorHelper.showEmptyState(activity, root, errorString) { onRefresh() }
+                        NetworkErrorHelper.showEmptyState(
+                            activity,
+                            root,
+                            errorString
+                        ) { onRefresh() }
                         onPageLoadTimeEnd()
                         performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_ERROR)
                     }
@@ -1273,7 +1304,11 @@ open class HomeRevampFragment :
                         if (getHomeViewModel().homeDataModel.list.size <= 1) {
                             val errorString = getErrorStringWithDefault(throwable)
                             showNetworkError(errorString)
-                            NetworkErrorHelper.showEmptyState(activity, root, errorString) { onRefresh() }
+                            NetworkErrorHelper.showEmptyState(
+                                activity,
+                                root,
+                                errorString
+                            ) { onRefresh() }
                         }
                     }
                     else -> {
@@ -1356,7 +1391,16 @@ open class HomeRevampFragment :
                             TYPE_NORMAL
                         )
                     }
-                    Result.Status.ERROR -> showToaster(getErrorString(MessageErrorException(getString(playwidgetR.string.play_widget_error_reminder))), TYPE_ERROR)
+
+                    Result.Status.ERROR -> showToaster(
+                        getErrorString(
+                            MessageErrorException(
+                                getString(playwidgetR.string.play_widget_error_reminder)
+                            )
+                        ),
+                        TYPE_ERROR
+                    )
+
                     else -> {
                     }
                 }
@@ -1368,7 +1412,10 @@ open class HomeRevampFragment :
         getHomeViewModel().playWidgetReminderEvent.observe(
             viewLifecycleOwner,
             Observer {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME)
+                startActivityForResult(
+                    RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                    REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME
+                )
             }
         )
     }
@@ -1612,7 +1659,24 @@ open class HomeRevampFragment :
     }
 
     private fun goToOvo(appLinkScheme: String?) {
-        val intent = if (appLinkScheme == null || appLinkScheme.isEmpty()) RouteManager.getIntent(activity, ApplinkConst.WEBVIEW).putExtra("EXTRA_URL", appLinkScheme) else if (RouteManager.isSupportApplink(activity, appLinkScheme)) RouteManager.getIntent(activity, appLinkScheme).setData(Uri.parse(appLinkScheme)) else RouteManager.getIntent(activity, ApplinkConst.WEBVIEW).putExtra("EXTRA_URL", appLinkScheme)
+        val intent = if (appLinkScheme == null || appLinkScheme.isEmpty()) {
+            RouteManager.getIntent(
+                activity,
+                ApplinkConst.WEBVIEW
+            ).putExtra("EXTRA_URL", appLinkScheme)
+        } else if (RouteManager.isSupportApplink(
+                activity,
+                appLinkScheme
+            )
+        ) {
+            RouteManager.getIntent(activity, appLinkScheme)
+                .setData(Uri.parse(appLinkScheme))
+        } else {
+            RouteManager.getIntent(
+                activity,
+                ApplinkConst.WEBVIEW
+            ).putExtra("EXTRA_URL", appLinkScheme)
+        }
         startActivityForResult(intent, DEFAULT_WALLET_APPLINK_REQUEST_CODE)
     }
 
@@ -1649,7 +1713,20 @@ open class HomeRevampFragment :
         if (mShowTokopointNative) {
             openApplink(appLink, "")
         } else {
-            if (TextUtils.isEmpty(pageTitle)) RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, tokoPointUrl) else RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW_TITLE, pageTitle, tokoPointUrl)
+            if (TextUtils.isEmpty(pageTitle)) {
+                RouteManager.route(
+                    activity,
+                    ApplinkConstInternalGlobal.WEBVIEW,
+                    tokoPointUrl
+                )
+            } else {
+                RouteManager.route(
+                    activity,
+                    ApplinkConstInternalGlobal.WEBVIEW_TITLE,
+                    pageTitle,
+                    tokoPointUrl
+                )
+            }
         }
     }
 
@@ -1693,7 +1770,10 @@ open class HomeRevampFragment :
             RouteManager.route(requireActivity(), ApplinkConstInternalPromo.PROMO_LIST)
         } else {
             if (activity != null) {
-                showBannerWebViewOnAllPromoClickFromHomeIntent(BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP, getString(loyaltyR.string.title_activity_promo))
+                showBannerWebViewOnAllPromoClickFromHomeIntent(
+                    BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP,
+                    getString(loyaltyR.string.title_activity_promo)
+                )
             }
         }
     }
@@ -1787,6 +1867,7 @@ open class HomeRevampFragment :
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
+        stickyLoginView?.loadContent()
         loadEggData(isPageRefresh)
     }
 
@@ -1799,13 +1880,20 @@ open class HomeRevampFragment :
             )
             chooseAddressWidgetInitialized = false
             if (getHomeViewModel().homeDataModel.list.isNotEmpty()) {
-                getHomeViewModel().refreshWithThreeMinsRules(forceRefresh = true, isFirstInstall = isFirstInstall())
+                getHomeViewModel().refreshWithThreeMinsRules(
+                    forceRefresh = true,
+                    isFirstInstall = isFirstInstall()
+                )
             }
         }
     }
 
-    override fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean) {
-        chooseAddressWidgetCallback = ChooseAddressWidgetCallback(context, this, this, getThematicUtil())
+    override fun initializeChooseAddressWidget(
+        chooseAddressWidget: ChooseAddressWidget,
+        needToShowChooseAddress: Boolean
+    ) {
+        chooseAddressWidgetCallback =
+            ChooseAddressWidgetCallback(context, this, this, getThematicUtil())
         chooseAddressWidgetCallback?.let {
             chooseAddressWidget.bindChooseAddress(it)
             chooseAddressWidget.run {
@@ -1840,6 +1928,7 @@ open class HomeRevampFragment :
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
+        stickyLoginView?.loadContent()
         loadEggData()
     }
 
@@ -1868,6 +1957,7 @@ open class HomeRevampFragment :
     }
 
     private fun onPageLoadTimeEnd() {
+        stickyLoginView?.loadContent()
         pageLoadTimeCallback?.invalidate()
         loadEggData(isPageRefresh)
     }
@@ -1904,7 +1994,10 @@ open class HomeRevampFragment :
     private fun saveLocation(context: Context?, latitude: Double, longitude: Double) {
         val editor: SharedPreferences.Editor
         if (context != null && !TextUtils.isEmpty(ConstantKey.LocationCache.KEY_LOCATION)) {
-            sharedPrefs = context.getSharedPreferences(ConstantKey.LocationCache.KEY_LOCATION, Context.MODE_PRIVATE)
+            sharedPrefs = context.getSharedPreferences(
+                ConstantKey.LocationCache.KEY_LOCATION,
+                Context.MODE_PRIVATE
+            )
             editor = sharedPrefs.edit()
         } else {
             return
@@ -1958,7 +2051,11 @@ open class HomeRevampFragment :
         return false
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         activity?.let {
             permissionCheckerHelper.get().onRequestPermissionsResult(it, requestCode, permissions, grantResults)
@@ -2017,12 +2114,18 @@ open class HomeRevampFragment :
         for (visitable in visitables) {
             if (visitable is HomeVisitable) {
                 if (!visitable.isTrackingCombined && visitable.trackingData != null) {
-                    HomePageTracking.eventEnhancedImpressionWidgetHomePage(getTrackingQueueObj(), visitable.trackingData)
+                    HomePageTracking.eventEnhancedImpressionWidgetHomePage(
+                        getTrackingQueueObj(),
+                        visitable.trackingData
+                    )
                 }
             }
         }
         if (combinedTracking.isNotEmpty()) {
-            HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(getTrackingQueueObj(), combinedTracking)
+            HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
+                getTrackingQueueObj(),
+                combinedTracking
+            )
         }
     }
 
@@ -2062,7 +2165,11 @@ open class HomeRevampFragment :
         return getHomeViewModel().currentTopAdsBannerPage
     }
 
-    override fun getDynamicChannelData(visitable: Visitable<*>, channelModel: ChannelModel, channelPosition: Int) {
+    override fun getDynamicChannelData(
+        visitable: Visitable<*>,
+        channelModel: ChannelModel,
+        channelPosition: Int
+    ) {
         getHomeViewModel().getDynamicChannelDataOnExpired(visitable, channelModel, channelPosition)
     }
 
@@ -2074,7 +2181,11 @@ open class HomeRevampFragment :
         getHomeViewModel().onCloseBuyAgain(id, position)
     }
 
-    override fun getOneClickCheckoutHomeComponent(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
+    override fun getOneClickCheckoutHomeComponent(
+        channelModel: ChannelModel,
+        channelGrid: ChannelGrid,
+        position: Int
+    ) {
         getHomeViewModel().getOneClickCheckoutHomeComponent(channelModel, channelGrid, position)
     }
 
@@ -2100,7 +2211,10 @@ open class HomeRevampFragment :
         }
     }
 
-    private fun appendTrackerAttributionIfNeeded(applink: String, trackingAttribution: String): String {
+    private fun appendTrackerAttributionIfNeeded(
+        applink: String,
+        trackingAttribution: String
+    ): String {
         if (TextUtils.isEmpty(trackingAttribution)) {
             return applink
         }
@@ -2162,7 +2276,11 @@ open class HomeRevampFragment :
     }
 
     override fun onPromoScrolled(bannerSlidesModel: BannerSlidesModel) {
-        HomeTrackingUtils.homeSlidingBannerImpression(context, bannerSlidesModel, bannerSlidesModel.position)
+        HomeTrackingUtils.homeSlidingBannerImpression(
+            context,
+            bannerSlidesModel,
+            bannerSlidesModel.position
+        )
         if (bannerSlidesModel.type == BannerSlidesModel.TYPE_BANNER_PERSO) {
             putEEToTrackingQueue(getOverlayBannerImpression(bannerSlidesModel) as HashMap<String, Any>)
         } else {
@@ -2227,6 +2345,75 @@ open class HomeRevampFragment :
         return true
     }
 
+    private fun goToJumperForYouTab(recommendationFeedDataIndex: Int) {
+        homeRecyclerView?.post {
+            val homeRecommendationFeedViewHolder =
+                homeRecyclerView?.findViewHolderForAdapterPosition(
+                    recommendationFeedDataIndex
+                )
+
+            if (homeRecommendationFeedViewHolder is HomeRecommendationFeedViewHolder) {
+                homeRecommendationFeedViewHolder.selectJumperTab()
+            }
+        }
+    }
+
+    private fun setHomeBottomNavBasedOnScrolling() {
+        val isIconJumperEnabled =
+            (activity as? HomeBottomNavListener)?.isIconJumperEnabled() == true
+        if (isIconJumperEnabled) {
+            val mLayoutManager = homeRecyclerView?.layoutManager as? LinearLayoutManager
+            mLayoutManager?.let { lManager ->
+                val firstVisiblePosition = lManager.findFirstVisibleItemPosition()
+                val lastVisiblePosition = lManager.findLastVisibleItemPosition()
+
+                val recommendationForYouIndex = getRecommendationForYouIndex()
+
+                recommendationForYouIndex?.let {
+                    if (firstVisiblePosition == it ||
+                        lastVisiblePosition == it
+                    ) {
+                        setForYouToHomeMenuBottomNav()
+                    } else {
+                        setHomeToForYouMenuBottomNav()
+                    }
+                }
+            }
+        }
+    }
+
+    override fun getRecommendationForYouIndex(): Int? {
+        val recommendationForYouIndex = getHomeViewModel().homeDataModel.list.indexOfFirst {
+            it is HomeRecommendationFeedDataModel
+        }.takeIf { it != RecyclerView.NO_POSITION }
+
+        return recommendationForYouIndex
+    }
+
+    private fun setHomeToForYouMenuBottomNav() {
+        (activity as? HomeBottomNavListener?)?.setHomeToForYouTabSelected()
+    }
+
+    private fun setForYouToHomeMenuBottomNav() {
+        (activity as? HomeBottomNavListener?)?.setForYouToHomeMenuTabSelected()
+    }
+
+    override fun onScrollToTop() {
+        homeRecyclerView?.smoothScrollToPosition(0)
+    }
+
+    override fun onScrollToHomeHeader() {
+        homeRecyclerView?.scrollToPosition(Int.ZERO)
+    }
+
+    override fun onScrollToRecommendationForYou() {
+        val recommendationForYouIndex = getRecommendationForYouIndex()
+        recommendationForYouIndex?.let {
+            homeRecyclerView?.scrollToPosition(it)
+            goToJumperForYouTab(it)
+        }
+    }
+
     override val isMainViewVisible: Boolean
         get() = userVisibleHint
 
@@ -2258,30 +2445,82 @@ open class HomeRevampFragment :
         putEEToIris(tracker)
     }
 
-    override fun onPopularKeywordSectionReloadClicked(position: Int, channel: DynamicHomeChannel.Channels) {
+    override fun onPopularKeywordSectionReloadClicked(
+        position: Int,
+        channel: DynamicHomeChannel.Channels
+    ) {
         getHomeViewModel().getPopularKeywordOnRefresh()
         PopularKeywordTracking.sendPopularKeywordClickReload(channel, getUserSession().userId)
     }
 
-    override fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, popularKeywordDataModel: PopularKeywordDataModel, positionInWidget: Int) {
-        getTrackingQueueObj()?.putEETracking(PopularKeywordTracking.getPopularKeywordImpressionItem(channel, position, popularKeywordDataModel, positionInWidget, getUserSession().userId) as HashMap<String, Any>)
+    override fun onPopularKeywordItemImpressed(
+        channel: DynamicHomeChannel.Channels,
+        position: Int,
+        popularKeywordDataModel: PopularKeywordDataModel,
+        positionInWidget: Int
+    ) {
+        getTrackingQueueObj()?.putEETracking(
+            PopularKeywordTracking.getPopularKeywordImpressionItem(
+                channel,
+                position,
+                popularKeywordDataModel,
+                positionInWidget,
+                getUserSession().userId
+            ) as HashMap<String, Any>
+        )
     }
 
-    override fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, popularKeywordDataModel: PopularKeywordDataModel, positionInWidget: Int) {
+    override fun onPopularKeywordItemClicked(
+        applink: String,
+        channel: DynamicHomeChannel.Channels,
+        position: Int,
+        popularKeywordDataModel: PopularKeywordDataModel,
+        positionInWidget: Int
+    ) {
         RouteManager.route(context, applink)
-        PopularKeywordTracking.sendPopularKeywordClickItem(channel, position, popularKeywordDataModel, positionInWidget, getUserSession().userId)
+        PopularKeywordTracking.sendPopularKeywordClickItem(
+            channel,
+            position,
+            popularKeywordDataModel,
+            positionInWidget,
+            getUserSession().userId
+        )
     }
 
-    override fun onBestSellerClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-        BestSellerWidgetTracker.sendClickTracker(recommendationItem, bestSellerDataModel, userId, widgetPosition)
+    override fun onBestSellerClick(
+        bestSellerDataModel: BestSellerDataModel,
+        recommendationItem: RecommendationItem,
+        widgetPosition: Int
+    ) {
+        BestSellerWidgetTracker.sendClickTracker(
+            recommendationItem,
+            bestSellerDataModel,
+            userId,
+            widgetPosition
+        )
         RouteManager.route(context, recommendationItem.appUrl)
     }
 
-    override fun onBestSellerImpress(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-        trackingQueue?.putEETracking(BestSellerWidgetTracker.getImpressionTracker(recommendationItem, bestSellerDataModel, userId, widgetPosition) as HashMap<String, Any>)
+    override fun onBestSellerImpress(
+        bestSellerDataModel: BestSellerDataModel,
+        recommendationItem: RecommendationItem,
+        widgetPosition: Int
+    ) {
+        trackingQueue?.putEETracking(
+            BestSellerWidgetTracker.getImpressionTracker(
+                recommendationItem,
+                bestSellerDataModel,
+                userId,
+                widgetPosition
+            ) as HashMap<String, Any>
+        )
     }
 
-    override fun onBestSellerThreeDotsClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+    override fun onBestSellerThreeDotsClick(
+        bestSellerDataModel: BestSellerDataModel,
+        recommendationItem: RecommendationItem,
+        widgetPosition: Int
+    ) {
         recommendationWishlistItem = recommendationItem
         showProductCardOptions(
             this,
@@ -2327,16 +2566,36 @@ open class HomeRevampFragment :
             ncpRank = filter.ncpRank,
             chipsValue = filter.title
         )
-        getHomeViewModel().getRecommendationWidget(filter, bestSellerDataModel, selectedChipsPosition = selectedChipsPosition)
+        getHomeViewModel().getRecommendationWidget(
+            filter,
+            bestSellerDataModel,
+            selectedChipsPosition = selectedChipsPosition
+        )
     }
 
-    override fun onBestSellerSeeMoreTextClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
-        BestSellerWidgetTracker.sendViewAllClickTracker(bestSellerDataModel.id, bestSellerDataModel.title, userId)
+    override fun onBestSellerSeeMoreTextClick(
+        bestSellerDataModel: BestSellerDataModel,
+        appLink: String,
+        widgetPosition: Int
+    ) {
+        BestSellerWidgetTracker.sendViewAllClickTracker(
+            bestSellerDataModel.id,
+            bestSellerDataModel.title,
+            userId
+        )
         RouteManager.route(context, appLink)
     }
 
-    override fun onBestSellerSeeAllCardClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
-        BestSellerWidgetTracker.sendViewAllCardClickTracker(bestSellerDataModel.id, bestSellerDataModel.title, userId)
+    override fun onBestSellerSeeAllCardClick(
+        bestSellerDataModel: BestSellerDataModel,
+        appLink: String,
+        widgetPosition: Int
+    ) {
+        BestSellerWidgetTracker.sendViewAllCardClickTracker(
+            bestSellerDataModel.id,
+            bestSellerDataModel.title,
+            userId
+        )
         RouteManager.route(context, appLink)
     }
 
@@ -2365,7 +2624,14 @@ open class HomeRevampFragment :
                     }
                 }
             } else {
-                var msg = if (wishlistResult.isAddWishlist) getString(wishlist_commonR.string.on_failed_add_to_wishlist_msg) else getString(wishlist_commonR.string.on_failed_remove_from_wishlist_msg)
+                var msg =
+                    if (wishlistResult.isAddWishlist) {
+                        getString(wishlist_commonR.string.on_failed_add_to_wishlist_msg)
+                    } else {
+                        getString(
+                            wishlist_commonR.string.on_failed_remove_from_wishlist_msg
+                        )
+                    }
                 if (wishlistResult.messageV2.isNotEmpty()) msg = wishlistResult.messageV2
 
                 context?.let { context ->
@@ -2422,7 +2688,11 @@ open class HomeRevampFragment :
 
     private fun getProductIntent(productId: String): Intent? {
         return if (activity != null) {
-            RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+            RouteManager.getIntent(
+                activity,
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                productId
+            )
         } else {
             null
         }
@@ -2455,17 +2725,18 @@ open class HomeRevampFragment :
 
     private fun initEggDragListener() {
         val floatingEggButtonFragment = floatingEggButtonFragment
-        floatingEggButtonFragment?.setOnDragListener(object : FloatingEggButtonFragment.OnDragListener {
-            override fun onDragStart() {
-                refreshLayout?.setCanChildScrollUp(true)
-                refreshLayoutOld?.setCanChildScrollUp(true)
-            }
+        floatingEggButtonFragment?.setOnDragListener(object :
+                FloatingEggButtonFragment.OnDragListener {
+                override fun onDragStart() {
+                    refreshLayout?.setCanChildScrollUp(true)
+                    refreshLayoutOld?.setCanChildScrollUp(true)
+                }
 
-            override fun onDragEnd() {
-                refreshLayout?.setCanChildScrollUp(false)
-                refreshLayoutOld?.setCanChildScrollUp(false)
-            }
-        })
+                override fun onDragEnd() {
+                    refreshLayout?.setCanChildScrollUp(false)
+                    refreshLayoutOld?.setCanChildScrollUp(false)
+                }
+            })
     }
 
     override fun onPromoDragStart() {}
@@ -2540,7 +2811,12 @@ open class HomeRevampFragment :
         }
     }
 
-    private fun showToasterWithAction(message: String, typeToaster: Int, actionText: String, clickListener: View.OnClickListener) {
+    private fun showToasterWithAction(
+        message: String,
+        typeToaster: Int,
+        actionText: String,
+        clickListener: View.OnClickListener
+    ) {
         if (errorToaster != null || errorToaster?.isShown != true) {
             errorToaster?.dismiss()
             errorToaster = null
@@ -2604,11 +2880,19 @@ open class HomeRevampFragment :
         context?.let {
             val newAppLink = getHomeViewModel().reconstructPlayWidgetAppLink(appLink)
 
-            startActivityForResult(RouteManager.getIntent(it, newAppLink), REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET)
+            startActivityForResult(
+                RouteManager.getIntent(it, newAppLink),
+                REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET
+            )
         }
     }
 
-    override fun onToggleReminderClicked(view: PlayWidgetMediumView, channelId: String, reminderType: PlayWidgetReminderType, position: Int) {
+    override fun onToggleReminderClicked(
+        view: PlayWidgetMediumView,
+        channelId: String,
+        reminderType: PlayWidgetReminderType,
+        position: Int
+    ) {
         getHomeViewModel().shouldUpdatePlayWidgetToggleReminder(channelId, reminderType)
     }
 
@@ -2642,7 +2926,13 @@ open class HomeRevampFragment :
     }
 
     private fun playWidgetOnVisibilityChanged(
-        isViewResumed: Boolean = if (view == null) false else viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED),
+        isViewResumed: Boolean = if (view == null) {
+            false
+        } else {
+            viewLifecycleOwner.lifecycle.currentState.isAtLeast(
+                Lifecycle.State.RESUMED
+            )
+        },
         isUserVisibleHint: Boolean = userVisibleHint
     ) {
         if (::playWidgetCoordinator.isInitialized) {
@@ -2667,13 +2957,16 @@ open class HomeRevampFragment :
 
     private fun gotoNewUserZone() {
         context?.let {
+            if (isRegisteredFromStickyLogin(it)) saveIsRegisteredFromStickyLogin(it, false)
             startActivity(RouteManager.getIntent(it, ApplinkConst.DISCOVERY_NEW_USER))
         }
     }
 
     private fun isSuccessReset(): Boolean {
         context?.let {
-            val isResetPasswordSuccess = it.getSharedPreferences(KEY_MANAGE_PASSWORD, Context.MODE_PRIVATE).getBoolean(IS_SUCCESS_RESET, false)
+            val isResetPasswordSuccess =
+                it.getSharedPreferences(KEY_MANAGE_PASSWORD, Context.MODE_PRIVATE)
+                    .getBoolean(IS_SUCCESS_RESET, false)
             if (isResetPasswordSuccess) {
                 saveStateReset(false)
                 return true

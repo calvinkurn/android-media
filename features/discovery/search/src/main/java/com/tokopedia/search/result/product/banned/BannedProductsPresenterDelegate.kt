@@ -2,7 +2,7 @@ package com.tokopedia.search.result.product.banned
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.di.scope.SearchScope
-import com.tokopedia.search.result.domain.model.SearchProductModel.SearchProduct
+import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import javax.inject.Inject
@@ -13,11 +13,11 @@ class BannedProductsPresenterDelegate @Inject constructor(
     private val viewUpdater: ViewUpdater,
 ) {
 
-    fun isBannedProducts(searchProduct: SearchProduct): Boolean =
+    fun isBannedProducts(searchProduct: SearchProductModel): Boolean =
         searchProduct.errorMessage.isNotEmpty()
 
     fun processBannedProducts(
-        searchProduct: SearchProduct,
+        searchProduct: SearchProductModel,
         globalNavDataView: GlobalNavDataView?,
     ) {
         val bannedProductsVisitableList = createBannedProductsVisitableList(
@@ -31,12 +31,12 @@ class BannedProductsPresenterDelegate @Inject constructor(
     }
 
     private fun createBannedProductsVisitableList(
-        searchProduct: SearchProduct,
+        searchProduct: SearchProductModel,
         globalNavDataView: GlobalNavDataView?,
     ): List<Visitable<*>> =
         mutableListOf<Visitable<*>>().apply {
             globalNavDataView?.let { add(it) }
 
-            add(BannedProductsEmptySearchDataView(searchProduct.header.errorMessage))
+            add(BannedProductsEmptySearchDataView(searchProduct.errorMessage))
         }
 }

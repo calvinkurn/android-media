@@ -38,10 +38,12 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         `When Load Data`(searchParameter)
 
         `Then verify use case request params`()
-        `Then verify view interaction when load data success`(searchProductModel)
+        `Then verify view interaction when load data success`(
+            searchProductModel.searchProduct.data.autocompleteApplink,
+        )
         `Then verify start from is incremented`()
         `Then verify visitable list with product items`(visitableListSlot, searchProductModel)
-        `Then assert page component id`(searchProductModel)
+        `Then assert page component id`(searchProductModel.searchProduct.header.componentId)
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
@@ -72,7 +74,9 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         requestParams.getBoolean(SEARCH_PRODUCT_SKIP_TDN_BANNER, false) shouldBe false
     }
 
-    private fun `Then verify view interaction when load data success`(searchProductModel: SearchProductModel) {
+    private fun `Then verify view interaction when load data success`(
+        expectedAutoCompleteApplink: String,
+    ) {
         verifyOrder {
             productListView.isAnyFilterActive
 
@@ -81,8 +85,8 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
             verifyProcessingData(
                 productListView,
                 performanceMonitoring,
-                searchProductModel,
-                visitableListSlot
+                visitableListSlot,
+                expectedAutoCompleteApplink,
             )
 
             productListView.updateScrollListener()
@@ -99,11 +103,33 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         startFrom shouldBe SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS.toInt()
     }
 
-    private fun `Then assert page component id`(searchProductModel: SearchProductModel) {
-        assertThat(
-            productListPresenter.pageComponentId,
-            `is`(searchProductModel.searchProduct.header.componentId)
+    private fun `Then assert page component id`(expectedComponentId: String) {
+        assertThat(productListPresenter.pageComponentId, `is`(expectedComponentId))
+    }
+
+    @Test
+    fun `Load Data Success for reimagine`() {
+        val searchProductModel = searchProductFirstPageReimagineJSON.jsonToObject<SearchProductModel>()
+        val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
+            it[SearchApiConst.Q] = "samsung"
+            it[SearchApiConst.START] = "0"
+            it[SearchApiConst.UNIQUE_ID] = "unique_id"
+            it[SearchApiConst.USER_ID] = productListPresenter.userId
+        }
+
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given View getQueryKey will return the keyword`(searchParameter[SearchApiConst.Q].toString())
+
+        `When Load Data`(searchParameter)
+
+        `Then verify use case request params`()
+        `Then verify view interaction when load data success`(
+            searchProductModel.searchProductV5.header.autocompleteApplink
         )
+        `Then verify start from is incremented`()
+        `Then verify visitable list with product items for reimagine`(visitableListSlot, searchProductModel)
+        `Then assert page component id`(searchProductModel.searchProductV5.header.componentID)
     }
 
     @Test
@@ -170,7 +196,9 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         `When View is created`()
 
         `Then verify use case request params`()
-        `Then verify view interaction when created`(searchProductModel)
+        `Then verify view interaction when created`(
+            searchProductModel.searchProduct.data.autocompleteApplink
+        )
         `Then verify start from is incremented`()
         `Then verify visitable list with product items`(visitableListSlot, searchProductModel)
     }
@@ -196,7 +224,9 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         productListPresenter.onViewCreated()
     }
 
-    private fun `Then verify view interaction when created`(searchProductModel: SearchProductModel) {
+    private fun `Then verify view interaction when created`(
+        expectedAutoCompleteApplink: String
+    ) {
         verifyOrder {
             productListView.isFirstActiveTab
             productListView.reloadData()
@@ -208,8 +238,8 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
             verifyProcessingData(
                 productListView,
                 performanceMonitoring,
-                searchProductModel,
-                visitableListSlot
+                visitableListSlot,
+                expectedAutoCompleteApplink
             )
 
             productListView.updateScrollListener()
