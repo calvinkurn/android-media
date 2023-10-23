@@ -223,6 +223,70 @@ class CheckoutPageRevampRobot {
         }
     }
 
+    fun clickEgold(activityRule: IntentsTestRule<RevampShipmentActivity>) {
+        val position = scrollRecyclerViewToCrossSell(activityRule)
+        if (position != RecyclerView.NO_POSITION) {
+            onView(ViewMatchers.withId(R.id.rv_checkout))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        object : ViewAction {
+                            override fun getConstraints(): Matcher<View>? = null
+
+                            override fun getDescription(): String =
+                                "Click Egold UI"
+
+                            override fun perform(uiController: UiController?, view: View) {
+                                if (view.findViewById<View>(R.id.item_checkout_cross_sell_item).visibility == View.VISIBLE) {
+                                    val checkbox =
+                                        view.findViewById<CheckboxUnify>(R.id.cb_checkout_cross_sell_item)
+                                    checkbox.isChecked = !checkbox.isChecked
+                                } else {
+                                    val rv = view.findViewById<RecyclerView>(R.id.rv_checkout_cross_sell)
+                                    val itemCount = rv.adapter?.itemCount ?: 0
+
+                                    for (i in 0 until itemCount) {
+                                        rv.scrollToPosition(i)
+                                        val viewHolder = rv.findViewHolderForAdapterPosition(i)
+                                        val itemView = viewHolder?.itemView
+                                        if (itemView?.findViewById<Typography>(R.id.tv_checkout_cross_sell_item)?.text.toString().contains("emas", ignoreCase = true)) {
+                                            val checkbox = itemView?.findViewById<CheckboxUnify>(R.id.cb_checkout_cross_sell_item) ?: return
+                                            checkbox.isChecked = !checkbox.isChecked
+                                            return
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    )
+                )
+        }
+    }
+
+    fun expandShoppingSummary(activityRule: IntentsTestRule<RevampShipmentActivity>) {
+        val position = scrollRecyclerViewToShoppingSummary(activityRule)
+        if (position != RecyclerView.NO_POSITION) {
+            onView(ViewMatchers.withId(R.id.rv_checkout))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        object : ViewAction {
+                            override fun getConstraints(): Matcher<View>? = null
+
+                            override fun getDescription(): String =
+                                "Expand Shopping Summary"
+
+                            override fun perform(uiController: UiController?, view: View) {
+                                if (view.findViewById<View>(R.id.tv_checkout_cost_others_title).visibility == View.VISIBLE && view.findViewById<View>(R.id.ll_checkout_cost_others_expanded).visibility == View.GONE) {
+                                    view.findViewById<View>(R.id.ic_checkout_cost_others_toggle).performClick()
+                                }
+                            }
+                        }
+                    )
+                )
+        }
+    }
+
     fun clickChoosePaymentButton(activityRule: IntentsTestRule<RevampShipmentActivity>) {
         val position = scrollRecyclerViewToChoosePaymentButton(activityRule)
         if (position != RecyclerView.NO_POSITION) {
@@ -648,6 +712,60 @@ class CheckoutPageRevampRobot {
                                     totalPrice,
                                     view.findViewById<Typography>(R.id.tv_checkout_cost_total_value).text.toString()
                                 )
+                            }
+                        }
+                    )
+                )
+        }
+    }
+
+    fun assertEgoldShoppingSummary(
+        activityRule: IntentsTestRule<RevampShipmentActivity>,
+        hasEgold: Boolean,
+        egoldPrice: String
+    ) {
+        val position = scrollRecyclerViewToShoppingSummary(activityRule)
+        if (position != RecyclerView.NO_POSITION) {
+            onView(ViewMatchers.withId(R.id.rv_checkout))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        object : ViewAction {
+                            override fun getConstraints(): Matcher<View>? = null
+
+                            override fun getDescription(): String =
+                                "Assert Egold Shopping Summary UI"
+
+                            override fun perform(uiController: UiController?, view: View) {
+                                val llOthers =
+                                    view.findViewById<LinearLayout>(R.id.ll_checkout_cost_others)
+                                if (llOthers.visibility == View.VISIBLE && llOthers.childCount > 0) {
+                                    for (child in llOthers.children) {
+                                        if (child.findViewById<Typography>(R.id.tv_checkout_cost_item_title).text.contains("emas")) {
+                                            assertEquals(egoldPrice, child.findViewById<Typography>(R.id.tv_checkout_cost_item_value).text.toString())
+                                            assertEquals(true, hasEgold)
+                                            return
+                                        }
+                                    }
+                                    assertEquals(false, hasEgold)
+                                    return
+                                }
+
+                                val llOtherExpanded =
+                                    view.findViewById<LinearLayout>(R.id.ll_checkout_cost_others_expanded)
+                                if (llOtherExpanded.visibility == View.VISIBLE) {
+                                    for (child in llOtherExpanded.children) {
+                                        if (child.findViewById<Typography>(R.id.tv_checkout_cost_item_title).text.contains("emas")) {
+                                            assertEquals(egoldPrice, child.findViewById<Typography>(R.id.tv_checkout_cost_item_value).text.toString())
+                                            assertEquals(true, hasEgold)
+                                            return
+                                        }
+                                    }
+                                    assertEquals(false, hasEgold)
+                                    return
+                                }
+
+                                assertEquals(false, hasEgold)
                             }
                         }
                     )

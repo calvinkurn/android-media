@@ -54,8 +54,6 @@ class CheckoutRevampCrossSellTest {
                 text = "Bulatkan dengan nabung emas. S&K berlaku (Rp5.000)",
                 isChecked = false
             )
-//            assertNewUiGroupType(activityRule, 0)
-//            assertNewUiGroupType(activityRule, 1)
             clickChooseDuration(activityRule)
             waitForData()
             selectDurationOptionWithText("Reguler (Rp93.000)")
@@ -65,13 +63,14 @@ class CheckoutRevampCrossSellTest {
                 text = "Bulatkan dengan nabung emas. S&K berlaku (Rp7.000)",
                 isChecked = false
             )
-//            scrollRecyclerViewToChoosePaymentButton(activityRule)
+            expandShoppingSummary(activityRule)
+            assertEgoldShoppingSummary(activityRule, false, "")
+            clickEgold(activityRule)
+            assertEgoldShoppingSummary(activityRule, false, "Rp7.000")
+            clickChoosePaymentButton(activityRule)
+        } validateAnalytics {
             waitForData()
-//            waitForData()
-//            clickChoosePaymentButton(activityRule)
-//        } validateAnalytics {
-//            waitForData()
-//            assertGoToPayment()
+            assertGoToPayment()
         }
     }
 
