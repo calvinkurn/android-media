@@ -266,7 +266,6 @@ open class HomeRevampFragment :
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
         private const val REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
-        private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
         private const val REQUEST_CODE_LOGIN = 131
         private const val REQUEST_CODE_LOGIN_WIDGET_LOGIN = 133
         private const val REQUEST_CODE_REVIEW = 999
@@ -373,7 +372,6 @@ open class HomeRevampFragment :
     private lateinit var statusBarBackground: View
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var remoteConfigInstance: RemoteConfigInstance
-    private var stickyLoginView: StickyLoginView? = null
     private var homeRecyclerView: NestedRecyclerView? = null
     private var navToolbar: NavToolbar? = null
     private var thematicBackground: AppCompatImageView? = null
@@ -1080,7 +1078,6 @@ open class HomeRevampFragment :
 
     override fun onResume() {
         playWidgetOnVisibilityChanged(isViewResumed = true)
-        getUserIdFromViewModel()
         super.onResume()
         createAndCallSendScreen()
         adapter?.onResumeBanner()
@@ -1842,7 +1839,6 @@ open class HomeRevampFragment :
                     it.finish()
                 }
             }
-            REQUEST_CODE_LOGIN_STICKY_LOGIN,
             REQUEST_CODE_LOGIN_WIDGET_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
@@ -1867,7 +1863,6 @@ open class HomeRevampFragment :
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
-        stickyLoginView?.loadContent()
         loadEggData(isPageRefresh)
     }
 
@@ -1928,7 +1923,6 @@ open class HomeRevampFragment :
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
-        stickyLoginView?.loadContent()
         loadEggData()
     }
 
@@ -1957,7 +1951,6 @@ open class HomeRevampFragment :
     }
 
     private fun onPageLoadTimeEnd() {
-        stickyLoginView?.loadContent()
         pageLoadTimeCallback?.invalidate()
         loadEggData(isPageRefresh)
     }
@@ -2431,10 +2424,6 @@ open class HomeRevampFragment :
 
     override fun setActivityStateListener(activityStateListener: ActivityStateListener) {
         this.activityStateListener = activityStateListener
-    }
-
-    override fun onScrollToTop() {
-        homeRecyclerView?.smoothScrollToPosition(0)
     }
 
     override fun isLightThemeStatusBar(): Boolean {
@@ -2952,13 +2941,6 @@ open class HomeRevampFragment :
             this?.encodeToUtf8() ?: ""
         } catch (throwable: Throwable) {
             ""
-        }
-    }
-
-    private fun gotoNewUserZone() {
-        context?.let {
-            if (isRegisteredFromStickyLogin(it)) saveIsRegisteredFromStickyLogin(it, false)
-            startActivity(RouteManager.getIntent(it, ApplinkConst.DISCOVERY_NEW_USER))
         }
     }
 
