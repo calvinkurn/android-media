@@ -11,13 +11,13 @@
     <string name="onekyc_zero_clicks_selfie_manual_capture_info">Ambil fotonya kalau udah siap</string>
 
     <!-- Zero Click Flow Selfie Prepare Dialog -->
-    <string name="onekyc_zero_clicks_selfie_prepare_card_title">Siap-siap buat selfie</string>
+    <string name="onekyc_zero_clicks_selfie_prepare_card_title">Biar selfienya bagus, ikuti tips ini!</string>
     <string name="onekyc_zero_clicks_selfie_prepare_card_info1">Tanpa masker</string>
     <string name="onekyc_zero_clicks_selfie_prepare_card_info2">Tanpa topi</string>
     <string name="onekyc_zero_clicks_selfie_prepare_card_info3">Tanpa kacamata</string>
     <string name="onekyc_zero_clicks_selfie_prepare_card_info4">Cahaya cukup</string>
-    <string name="onekyc_zero_clicks_selfie_prepare_card_ready_cta">Mulai Selfie</string>
-    <string name="onekyc_zero_clicks_selfie_prepare_card_needtime_cta">Siap-siap Dulu</string>
+    <string name="onekyc_zero_clicks_selfie_prepare_card_ready_cta">Mulai Verifikasi Wajah</string>
+    <string name="onekyc_zero_clicks_selfie_prepare_card_needtime_cta">Nanti Saja</string>
 
     <!-- Zero Click Flow Feedbacks -->
     <string name="onekyc_zero_clicks_feedback_ktp_face_not_detected">Fotomu yang ada di e-KTP harus masuk di kotak</string>
@@ -68,11 +68,11 @@
 
     <!-- Zero Click Flow All Doc Review -->
     <string name="onekyc_review_screen_title">Review &amp; Kirim Dokumen</string>
-    <string name="onekyc_review_document_info">Pastikan foto dokumen kamu terlihat jelas biar bisa langsung dikirim dan diproses.</string>
+    <string name="onekyc_review_document_info">Pastiin foto dokumen kamu terlihat jelas biar bisa diproses lebih cepat.</string>
     <string name="onekyc_review_document_ktp">Foto e-KTP</string>
     <string name="onekyc_review_document_selfie">Foto selfie</string>
     <string name="onekyc_review_document_take_photo">Ambil Foto</string>
-    <string name="onekyc_review_document_submit">Kirim Dokumen</string>
+    <string name="onekyc_review_document_submit">Kirim</string>
 
     <!-- Zero Click Flow Detailed Preview -->
     <string name="onekyc_review_document_ktp_title">Review Foto e-KTP</string>
@@ -81,8 +81,8 @@
     <string name="onekyc_review_document_guideline_info1">Pas di bingkai.</string>
     <string name="onekyc_review_document_guideline_info2">Cukup terang cahayanya.</string>
     <string name="onekyc_review_document_guideline_info3">Terlihat jelas dan tidak buram.</string>
-    <string name="onekyc_review_document_full_instruction">Ingin tau lebih jelas?</string>
-    <string name="onekyc_review_document_retake">Foto Ulang</string>
+    <string name="onekyc_review_document_full_instruction">Ingin tahu selengkapnya?</string>
+    <string name="onekyc_review_document_retake">Coba Lagi</string>
     <string name="onekyc_review_document_looksgood">Pakai Foto Ini</string>
 
     <!-- Zero Click Flow Delete Dialog -->
@@ -101,7 +101,7 @@
     <string name="onekyc_fr_selfie_prepare_card_title">Siap-siap buat verifikasi wajah</string>
     <string name="onekyc_fr_selfie_prepare_card_ready_cta">Mulai Selfie</string>
     <string name="onekyc_fr_selfie_prepare_card_warning_title">PERINGATAN FOTOSENSITIF</string>
-    <string name="onekyc_fr_selfie_prepare_card_warning_message">Layar berikutnya terdapat cahaya terang &amp; flash yang dapat memicu epilepsi.</string>
+    <string name="onekyc_fr_selfie_prepare_card_warning_message">Di layar berikutnya, akan ada cahaya terang dan flash yang bisa memicu epilepsi.</string>
 
     <!-- OneKyc FR Challenge - Polling Screen-->
     <string name="onekyc_fr_verification_polling">Lagi proses verifikasi wajahmu, jangan gerak ya.</string>
@@ -154,25 +154,25 @@
     <string name="onekyc_challenge_exhausted_cta">Oke</string>
 
     <!-- OneKyc Masked User Information -->
-    <string name="onekyc_userdetails_header_title">Konfirmasi data e-KTP kamu</string>
-    <string name="onekyc_userdetails_header_description">Data dari GoPay ini hanya dipakai untuk proses aktivasi akun kamu.</string>
-    <string name="onekyc_userdetails_name">Nama</string>
-    <string name="onekyc_userdetails_nik">NIK</string>
-    <string name="onekyc_userdetails_address">Alamat lengkap</string>
+    <string name="onekyc_userdetails_header_title">Datanya sudah benar?</string>
+    <string name="onekyc_userdetails_header_description">Ini data akun kamu yang diperoleh dari GoPay Plus.</string>
+    <string name="onekyc_userdetails_name">Nama Lengkap</string>
+    <string name="onekyc_userdetails_nik">Nomor e-KTP</string>
+    <string name="onekyc_userdetails_address">Alamat</string>
     <string name="onekyc_userdetails_ojk_title">Verifikasi data sesuai aturan OJK</string>
     <string name="onekyc_userdetails_ojk_description_cashloan">Data pribadimu aman bersama kami dan akan digunakan untuk verifikasi akunmu.</string>
     <string name="onekyc_userdetails_ojk_description_cicil">PT Multifinance Anak Bangsa akan menjaga keamanan dan kerahasiaan data kamu.</string>
-    <string name="onekyc_userdetails_ojk_description_toko">PT Multifinance Anak Bangsa akan menjaga keamanan dan kerahasiaan data kamu.</string>
-    <string name="onekyc_userdetails_confirm">Konfirmasi data e-KTP kamu</string>
-    <string name="onekyc_userdetails_help">Bukan data e-KTP kamu? Masukin Data Kamu</string>
-    <string name="onekyc_userdetails_help_link">Masukin Data Kamu</string>
+    <string name="onekyc_userdetails_ojk_description_toko">Data pribadimu aman bersama kami dan akan digunakan untuk verifikasi akunmu.</string>
+    <string name="onekyc_userdetails_confirm">Ya, Semua Benar</string>
+    <string name="onekyc_userdetails_help">Tidak, Hubungi Tim Tokopedia Care</string>
+    <string name="onekyc_userdetails_help_link">Tokopedia Care</string>
 
     <!-- OneKyc Consent -->
     <string name="onekyc_consent_header_title">Hore, kamu udah verifikasi GoPay Plus!</string>
     <string name="onekyc_consent_header_description_cashloan">Karena udah terdaftar di GoPay Plus, kamu cuma perlu verifikasi wajah untuk aktifkan GoPay Pinjam.</string>
     <string name="onekyc_consent_header_description_cicil">Karena udah terdaftar di GoPay Plus, kamu cuma perlu verifikasi wajah untuk aktifkan GoPay Later.</string>
     <string name="onekyc_consent_header_description_toko">Karena sudah terdaftar di GoPay Plus, kamu cuma perlu verifikasi wajah buat lanjut.</string>
-    <string name="onekyc_consent_registered_id">KTP di GoPay Plus</string>
+    <string name="onekyc_consent_registered_id">e-KTP di GoPay Plus</string>
     <string name="onekyc_consent_accountlink_title_cashloan">Verifikasinya jadi lebih mudah, deh!</string>
     <string name="onekyc_consent_accountlink_title_cicil">Verifikasinya jadi lebih mudah, deh!</string>
     <string name="onekyc_consent_accountlink_title_toko">Verifikasinya jadi lebih mudah, deh!</string>
@@ -183,7 +183,7 @@
     <string name="onekyc_consent_supervised_description">Data pribadi aman dan cuma digunakan untuk verifikasi identitas kamu.</string>
     <string name="onekyc_consent_link_gopayplus">Mulai Verifikasi</string>
     <string name="onekyc_consent_help">Butuh Bantuan?</string>
-    <string name="onekyc_consent_terms_and_policy">Dengan melanjutkan, kamu menyetujui Kebijakan Privasi serta Syarat &amp; Ketentuan.</string>
+    <string name="onekyc_consent_terms_and_policy">Saya menyetujui Syarat &amp; Ketentuan dan Kebijakan Privasi Verifikasi Data Diri.</string>
     <string name="onekyc_consent_terms_link">Syarat &amp; Ketentuan</string>
     <string name="onekyc_consent_privacy_link">Kebijakan Privasi</string>
 
@@ -196,12 +196,12 @@
     <string name="onekyc_blocked_cta">Oke</string>
 
     <!--  OneKyc Document Uploading  -->
-    <string name="onekyc_upload_inprogress_title">Lagi upload dokumen…</string>
-    <string name="onekyc_upload_inprogress_description">Kamu bisa tutup halaman ini dulu, kami bakal cek setelah upload selesai.</string>
+    <string name="onekyc_upload_inprogress_title">Lagi upload dokumen kamu…</string>
+    <string name="onekyc_upload_inprogress_description">Pastiin koneksi internetmu lancar, ya.</string>
 
     <!--  OneKyc Document Upload Failed  -->
-    <string name="onekyc_upload_failed_title">Yaah, belum berhasil upload dokumennya</string>
-    <string name="onekyc_upload_failed_description">Koneksi internetmu terganggu, pastikan internetmu lancar dan coba lagi.</string>
+    <string name="onekyc_upload_failed_title">Oops, upload belum berhasil</string>
+    <string name="onekyc_upload_failed_description">Cek Wi-Fi atau paket datamu lalu coba lagi, yuk.</string>
     <string name="onekyc_upload_failed_retry">Coba Lagi</string>
 
     <!-- OnKyc Onboarding page -->
@@ -209,8 +209,9 @@
     <string name="onekyc_home_widget_cicil_title">Verifikasinya sebentar aja, kok!</string>
     <string name="onekyc_home_widget_toko_title">Verifikasinya sebentar aja, kok!</string>
     <string name="onekyc_home_toolbar_title">Verifikasi Data Diri</string>
-    <string name="onekyc_home_widget_step_ktp_title">Ambil foto e-KTP</string>
-    <string name="onekyc_home_widget_step_selfie_title">Ambil foto selfie</string>
+    <string name="onekyc_home_widget_step_ktp_title">Foto e-KTP</string>
+    <string name="onekyc_home_widget_step_selfie_title">Foto selfie</string>
+    <string name="onekyc_home_cta_text">Mulai Verifikasi</string>
     <string name="onekyc_home_widget_step_personal_details_title">Isi data diri</string>
     <string name="onekyc_home_cashloan_upgrade_card_information">Setelah verifikasi data diri, akun GoPay kamu  akan otomatis di-upgrade ke GoPay Plus.</string>
     <string name="onekyc_home_cicil_upgrade_card_information">Setelah verifikasi data diri, akun GoPay kamu  akan otomatis di-upgrade ke GoPay Plus.</string>
