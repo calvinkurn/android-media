@@ -470,8 +470,8 @@ object DeeplinkMainApp {
             DLP.startsWith("qr") { _: String ->
                 ApplinkConstInternalUserPlatform.QR_LOGIN
             },
-            DLP.matchPattern("") { _: String ->
-                ApplinkConstInternalUserPlatform.LOGIN
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "marketplace" to mutableListOf(
@@ -832,13 +832,13 @@ object DeeplinkMainApp {
             }
         ),
         "register-init" to mutableListOf(
-            DLP.goTo { _: String ->
-                ApplinkConstInternalUserPlatform.INIT_REGISTER
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "registration" to mutableListOf(
-            DLP.matchPattern("") { _: String ->
-                ApplinkConstInternalUserPlatform.INIT_REGISTER
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "rekomendasi" to mutableListOf(
@@ -1214,6 +1214,12 @@ object DeeplinkMainApp {
                 DeeplinkMapperOrder.getSnapshotOrderInternalAppLink(deeplink)
             }
         ),
+        "stories" to mutableListOf(
+            DLP.matchPattern(
+                "shop/{shop_id}",
+                DeeplinkMapperContent::getRegisteredNavigation
+            )
+        ),
         "talk" to mutableListOf(
             DLP.goTo { deeplink: String ->
                 DeeplinkMapper.getRegisteredNavigationTalk(deeplink)
@@ -1264,6 +1270,11 @@ object DeeplinkMainApp {
         "travelentertainment" to mutableListOf(
             DLP.goTo { context: Context, deeplink: String ->
                 DeeplinkMapperDigital.getRegisteredNavigationDigital(context, deeplink)
+            }
+        ),
+        "universal-editor" to mutableListOf(
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalMedia.INTERNAL_UNIVERSAL_MEDIA_EDITOR
             }
         ),
         "universal-page" to mutableListOf(

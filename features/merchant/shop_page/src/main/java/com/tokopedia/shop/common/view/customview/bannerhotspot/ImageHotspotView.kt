@@ -61,15 +61,7 @@ class ImageHotspotView @JvmOverloads constructor(
     }
 
     private fun setOnImageShoppingBagClicked() {
-        imageShoppingBag.setOnClickListener {
-            hideAllBubbleView()
-            isAllHotspotTagViewVisible = !isAllHotspotTagViewVisible
-            if (isAllHotspotTagViewVisible) {
-                showAllHotspotTag()
-            } else {
-                hideAllHotspotTag()
-            }
-        }
+        imageShoppingBag.setOnClickListener { toggleAllHotspotTagsVisibility() }
     }
 
     private fun hideAllHotspotTag() {
@@ -153,9 +145,20 @@ class ImageHotspotView @JvmOverloads constructor(
             (imageBanner.layoutParams as? LayoutParams)?.dimensionRatio = ratio.takeIf { !it.isNullOrEmpty() } ?: DEFAULT_RATIO
             loadImage(imageBannerUrl)
             this.cornerRadius = cornerRadius
+            setOnClickListener { toggleAllHotspotTagsVisibility() }
         }
     }
 
+    private fun toggleAllHotspotTagsVisibility() {
+        hideAllBubbleView()
+        isAllHotspotTagViewVisible = !isAllHotspotTagViewVisible
+        if (isAllHotspotTagViewVisible) {
+            showAllHotspotTag()
+        } else {
+            hideAllHotspotTag()
+        }
+    }
+    
     override fun onHotspotTagClicked(
         hotspotData: ImageHotspotData.HotspotData,
         view: View

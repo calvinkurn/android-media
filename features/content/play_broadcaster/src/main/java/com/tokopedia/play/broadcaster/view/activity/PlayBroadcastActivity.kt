@@ -74,7 +74,7 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteraction
 import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationSetupFragment
-import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
+import com.tokopedia.content.common.view.fragment.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.scale.BroadcasterFrameScalingManager
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -85,7 +85,6 @@ import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.TestOnly

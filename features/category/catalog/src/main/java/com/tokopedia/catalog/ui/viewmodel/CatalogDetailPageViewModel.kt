@@ -5,12 +5,16 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
+import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.oldcatalog.usecase.detail.CatalogDetailUseCase
 import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 class CatalogDetailPageViewModel @Inject constructor(
@@ -24,6 +28,10 @@ class CatalogDetailPageViewModel @Inject constructor(
     val errorsToaster: LiveData<Throwable>
         get() = _errorsToaster
 
+    private val _errorsToasterGetComparison = MutableLiveData<Throwable>()
+    val errorsToasterGetComparison: LiveData<Throwable>
+        get() = _errorsToasterGetComparison
+
     private val _catalogDetailDataModel = MutableLiveData<Result<CatalogDetailUiModel>>()
     val catalogDetailDataModel: LiveData<Result<CatalogDetailUiModel>>
         get() = _catalogDetailDataModel
@@ -31,6 +39,13 @@ class CatalogDetailPageViewModel @Inject constructor(
     private val _totalCartItem = MutableLiveData<Int>()
     val totalCartItem: LiveData<Int>
         get() = _totalCartItem
+
+    private val _comparisonUiModel = MutableLiveData<ComparisonUiModel?>()
+    val comparisonUiModel: LiveData<ComparisonUiModel?>
+        get() = _comparisonUiModel
+
+    private val _scrollEvents = MutableStateFlow(0)
+    val scrollEvents: Flow<Int> = _scrollEvents.asStateFlow()
 
     fun isUserLoggedIn(): Boolean {
         return getUserId().isNotBlank()
@@ -40,7 +55,7 @@ class CatalogDetailPageViewModel @Inject constructor(
         return userSession.userId
     }
 
-    fun getProductCatalog(catalogId: String, comparedCatalogId : String) {
+    fun getProductCatalog(catalogId: String, comparedCatalogId: String) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -56,6 +71,22 @@ class CatalogDetailPageViewModel @Inject constructor(
         )
     }
 
+    fun getProductCatalogComparisons(catalogId: String, comparedCatalogId: String) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = catalogDetailUseCase.getCatalogDetailV4Comparison(
+                    catalogId,
+                    comparedCatalogId
+                )
+                _comparisonUiModel.postValue(result)
+            },
+            onError = {
+                _errorsToasterGetComparison.postValue(it)
+            }
+        )
+    }
+
     fun refreshNotification() {
         launchCatchError(
             dispatchers.io,
@@ -67,5 +98,9 @@ class CatalogDetailPageViewModel @Inject constructor(
                 _errorsToaster.postValue(it)
             }
         )
+    }
+
+    fun emitScrollEvent(y: Int) {
+        _scrollEvents.value = y
     }
 }

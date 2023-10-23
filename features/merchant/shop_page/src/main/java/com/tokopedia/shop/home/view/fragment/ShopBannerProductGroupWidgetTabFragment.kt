@@ -142,9 +142,13 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         val showMainBanner = (hasMainBanner && isHorizontalMainBanner) || (hasMainBanner && isUnspecifiedOrientationMainBanner) 
         
         if (showMainBanner) {
+            binding?.spaceMainBannerTop?.visible()
+            
             binding?.imgMainBanner?.visible()
             binding?.imgMainBanner?.cornerRadius = CORNER_RADIUS_IMAGE_BANNER
-
+            
+            binding?.spaceProductCarouselTop?.visible()
+            
             val mainBanner = displaySingleColumnComponent?.data?.getOrNull(0)
             val mainBannerImageUrl = mainBanner?.imageUrl.orEmpty()
 
@@ -156,7 +160,9 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
             )
 
         } else {
+            binding?.spaceMainBannerTop?.gone()
             binding?.imgMainBanner?.gone()
+            binding?.spaceProductCarouselTop?.gone()
         }
     }
 
@@ -186,13 +192,14 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
             adapter = bannerProductGroupAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
-        bannerProductGroupAdapter.setOnProductClick { selectedProduct ->
+        bannerProductGroupAdapter.setOnProductClick { selectedProduct, index ->
             onProductClick(selectedProduct)
             tracker.sendProductCarouselProductCardClick(
                 selectedProduct,
                 widgetStyle,
                 shopId,
-                userSession.userId
+                userSession.userId,
+                index
             )
         }
 
@@ -220,6 +227,13 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
                     showMainBanner()
                     showProducts(result.data)
                     onProductSuccessfullyLoaded(true)
+                    tracker.sendProductCarouselImpression(
+                        widgetStyle,
+                        widgets,
+                        result.data,
+                        shopId,
+                        userSession.userId
+                    )
                 }
 
                 is ShopBannerProductGroupWidgetTabViewModel.UiState.Error -> {
@@ -269,7 +283,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     }
 
     private fun sendProductCarouselImpressionTracker(widgets: List<BannerProductGroupUiModel.Tab.ComponentList>) {
-        tracker.sendProductCarouselImpression(
+        tracker.sendBannerOnProductCarouselImpression(
             widgetStyle,
             widgets,
             shopId,

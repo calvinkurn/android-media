@@ -5,11 +5,11 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
@@ -57,6 +57,7 @@ open class CategoryTestFixtures {
     protected val getRecommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
     protected val getCategoryListUseCase = mockk<GetCategoryListUseCase>(relaxed = true)
     protected val setUserPreferenceUseCase = mockk<SetUserPreferenceUseCase>(relaxed = true)
+    protected val remoteConfig = mockk<RemoteConfig>(relaxed = true)
     protected val chooseAddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
     protected val affiliateService = mockk<NowAffiliateService>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true).also {
@@ -74,6 +75,19 @@ open class CategoryTestFixtures {
     open fun setUp() {
         `Given choose address data`()
         `Given category view model`()
+    }
+
+    protected fun `Given remote config`(
+        defaultValue: String,
+        key: String,
+        value: String
+    ) {
+        every {
+            remoteConfig.getString(
+                key,
+                defaultValue
+            )
+        } returns value
     }
 
     protected open fun `Given choose address data`(
@@ -105,6 +119,7 @@ open class CategoryTestFixtures {
             getWarehouseUseCase,
             getCategoryListUseCase,
             setUserPreferenceUseCase,
+            remoteConfig,
             chooseAddressWrapper,
             affiliateService,
             userSession

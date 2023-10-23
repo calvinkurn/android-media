@@ -37,7 +37,8 @@ class GlobalRecommendationViewHolder(
             metadata = RecommendationWidgetMetadata(
                 pageName = element.name,
                 productIds = listOf(element.productId),
-                queryParam = element.queryParam
+                queryParam = element.queryParam,
+                criteriaThematicIDs = listOf(element.thematicId)
             ),
             miniCart = RecommendationWidgetMiniCart(
                 miniCartSource = MiniCartSource.PDP
@@ -64,4 +65,9 @@ class GlobalRecommendationViewHolder(
                 callback.removeComponent(element.id)
             }
         }
+
+    override fun onViewRecycled() {
+        super.onViewRecycled()
+        binding.postAtcGlobalRecom.recycle()
+    }
 }

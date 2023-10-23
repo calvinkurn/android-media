@@ -17,10 +17,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
@@ -35,6 +38,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
+import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTrackingModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.showUnifyError
 import com.tokopedia.kotlin.extensions.view.show
@@ -66,6 +70,9 @@ import com.tokopedia.vouchergame.detail.widget.ProductDetailWidget
 import com.tokopedia.vouchergame.detail.widget.VoucherGameEnquiryResultWidget
 import java.util.regex.Pattern
 import javax.inject.Inject
+import com.tokopedia.globalerror.R as globalerrorR
+import com.tokopedia.resources.common.R as resourcescommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by resakemal on 16/08/19.
@@ -106,11 +113,17 @@ class VoucherGameDetailFragment :
     lateinit var enquiryData: List<CatalogProductInput>
     var inputData: MutableMap<String, String> = mutableMapOf()
     private var inputFieldCount = 0
+    private var loyaltyStatus = ""
+    private var isAlreadyTrackImpressionMultiButton: Boolean = false
     var isEnquired = false
         set(value) {
             field = value
             setInputFieldsError(!value)
         }
+
+    override fun onUpdateMultiCheckout() {
+        //do nothing
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -153,6 +166,7 @@ class VoucherGameDetailFragment :
                 when (it) {
                     is Success -> {
                         voucherGameOperatorData = it.data.attributes
+                        operatorName = voucherGameOperatorData.name
                         setupOperatorDetail()
                     }
                     is Fail -> {
@@ -282,8 +296,10 @@ class VoucherGameDetailFragment :
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
         super.processMenuDetail(data)
+        topupBillsViewModel.multiCheckoutButtons = data.multiCheckoutButtons
         if (data.catalog.label.isNotEmpty()) {
             categoryName = data.catalog.label
+            loyaltyStatus = data.userPerso.loyaltyStatus
             voucherGameAnalytics.categoryName = categoryName
             (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
         }
@@ -298,7 +314,7 @@ class VoucherGameDetailFragment :
             vgDetailErrorView.showUnifyError(OperatorNotFoundException(), {
                 activity?.onBackPressed()
             })
-            vgDetailErrorView.findViewById<GlobalError>(com.tokopedia.globalerror.R.id.globalerror_view)?.apply {
+            vgDetailErrorView.findViewById<GlobalError>(globalerrorR.id.globalerror_view)?.apply {
                 gravity = Gravity.CENTER
             }
         }
@@ -313,7 +329,7 @@ class VoucherGameDetailFragment :
                 ErrorHandler.getErrorMessage(context, error),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
-                getString(com.tokopedia.resources.common.R.string.general_label_ok),
+                getString(resourcescommonR.string.general_label_ok),
                 View.OnClickListener { enquireFields() }
             ).show()
         }
@@ -343,7 +359,7 @@ class VoucherGameDetailFragment :
                 ErrorHandler.getErrorMessage(requireContext(), error),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
-                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                getString(resourcescommonR.string.general_label_ok)
             ).show()
         }
     }
@@ -355,7 +371,7 @@ class VoucherGameDetailFragment :
                 ErrorHandler.getErrorMessage(requireContext(), error),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
-                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                getString(resourcescommonR.string.general_label_ok)
             ).show()
         }
     }
@@ -539,7 +555,7 @@ class VoucherGameDetailFragment :
         context?.run {
             if (value) {
                 binding?.inputFieldLabel?.text = getString(R.string.vg_input_field_error_message)
-                binding?.inputFieldLabel?.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
+                binding?.inputFieldLabel?.setTextColor(ContextCompat.getColor(this, unifyprinciplesR.color.Unify_RN500))
             } else {
                 binding?.inputFieldLabel?.visibility = View.GONE
             }
@@ -722,11 +738,20 @@ class VoucherGameDetailFragment :
 
     private fun showCheckoutView() {
         binding?.checkoutView?.setVisibilityLayout(true)
+        binding?.checkoutView?.showMulticheckoutButtonSupport(topupBillsViewModel.multiCheckoutButtons)
         selectedProduct?.attributes?.run {
             binding?.checkoutView?.setTotalPrice(promo?.newPrice ?: price)
         }
         // Try to enquire if currently not enquired
         enquireFields()
+        if (!isAlreadyTrackImpressionMultiButton) {
+            isAlreadyTrackImpressionMultiButton = true
+            commonMultiCheckoutAnalytics.onImpressMultiCheckoutButtons(
+                categoryName,
+                multiCheckoutButtonImpressTrackerButtonType(topupBillsViewModel.multiCheckoutButtons),
+                userSession.userId
+            )
+        }
     }
 
     override fun getCheckoutView(): TopupBillsCheckoutWidget? {
@@ -738,6 +763,27 @@ class VoucherGameDetailFragment :
     }
 
     override fun onClickNextBuyButton() {
+        processCheckoutData()
+    }
+
+    override fun onTrackMultiCheckoutAtc(atc: DigitalAtcTrackingModel) {
+        commonMultiCheckoutAnalytics.onClickMultiCheckout(
+            categoryName,
+            operatorName,
+            atc.channelId,
+            userSession.userId,
+            multiCheckoutButtonPromotionTracker(topupBillsViewModel.multiCheckoutButtons)
+        )
+    }
+
+    override fun onCloseCoachMark() {
+        commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
+            categoryName, loyaltyStatus
+        )
+    }
+
+    override fun onClickMultiCheckout() {
+        addToCartViewModel.setAtcMultiCheckoutParam()
         processCheckoutData()
     }
 

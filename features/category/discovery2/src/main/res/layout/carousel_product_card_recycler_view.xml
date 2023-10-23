@@ -67,10 +67,39 @@
             android:id="@+id/products_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/timer_shop_flash_sale" />
+
+        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+            android:id="@+id/timer_shop_flash_sale"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:timer_unify_single_showClockIcon="true"
+            app:timer_unify_single_text="Berakhir dalam"
+            app:timer_unify_single_textWidth="full_radius"
+            app:timer_unify_single_variant="general"
+            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="16dp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/shimmer_timer_shop_flash_sale"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="@id/timer_shop_flash_sale"
+            app:layout_constraintEnd_toEndOf="@id/timer_shop_flash_sale"
+            app:layout_constraintTop_toTopOf="@id/timer_shop_flash_sale"
+            app:layout_constraintBottom_toBottomOf="@id/timer_shop_flash_sale"
+            app:loader_type="rect"
+            android:visibility="gone"
+            tools:visibility="invisible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

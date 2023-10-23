@@ -8,16 +8,16 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class RechargeOrderDetailSimpleModel(
-        val label: String,
-        val detail: String,
-        val isTitleBold: Boolean,
-        val isDetailBold: Boolean,
-        val alignment: RechargeSimpleAlignment,
-        val isCopyable: Boolean = false,
-        val textColor: String = "",
-        val textSize: String = "",
-        val backgroundColor: String = "",
-        val imageUrl: String = ""
+    val label: String,
+    val detail: String,
+    val isTitleBold: Boolean,
+    val isDetailBold: Boolean,
+    val alignment: RechargeSimpleAlignment,
+    val isCopyable: Boolean = false,
+    val textColor: String = "",
+    val textSize: String = "",
+    val backgroundColor: String = "",
+    val imageUrl: String = ""
 ) : Parcelable
 
 enum class RechargeSimpleAlignment {

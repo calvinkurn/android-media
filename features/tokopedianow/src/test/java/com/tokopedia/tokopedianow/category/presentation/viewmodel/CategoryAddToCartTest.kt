@@ -4,9 +4,9 @@ import com.tokopedia.productcard.compact.productcard.presentation.uimodel.Produc
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAtcTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
-import com.tokopedia.tokopedianow.category.presentation.util.AddToCartMapper.mapAddToCartResponse
+import com.tokopedia.tokopedianow.category.mapper.AddToCartMapper.mapAddToCartResponse
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
-import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
+import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
@@ -16,7 +16,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
+class CategoryAddToCartTest : TokoNowCategoryViewModelTestFixture() {
 
     @Test
     fun `when adding product to cart, request should be successful`() = runTest {
@@ -30,7 +30,7 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         val productPosition = 0
         val showcaseTitle = "Buah- Buahan"
         val showcaseId = "133333"
-        val privateFieldNameLayout = "layout"
+        val privateFieldNameLayout = "visitableList"
         val newProductOrderQuantity = 2
 
         val addToCartDataModel = mapAddToCartResponse(addToCartGqlResponse)
@@ -57,7 +57,7 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         )
 
         val mockLayout = mutableListOf(categoryShowcaseUiModel)
-        viewModel.mockPrivateField(
+        viewModel.mockSuperClassField(
             name = privateFieldNameLayout,
             value = mockLayout
         )
@@ -95,9 +95,9 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
                 )
             )
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .getOrAwaitValue()
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(
                 mockLayout.map {
                     it.copy(
@@ -124,7 +124,7 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         val productPrice = "Rp. 2000"
         val showcaseTitle = "Buah- Buahan"
         val showcaseId = "133333"
-        val privateFieldNameLayout = "layout"
+        val privateFieldNameLayout = "visitableList"
         val newProductOrderQuantity = 2
         val isLoggedIn = true
         val userId = "14445"
@@ -159,7 +159,7 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         )
 
         val mockLayout = mutableListOf(categoryShowcaseUiModel)
-        viewModel.mockPrivateField(
+        viewModel.mockSuperClassField(
             name = privateFieldNameLayout,
             value = mockLayout
         )
@@ -194,9 +194,9 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
                 )
             )
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .getOrAwaitValue()
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(
                 mockLayout.map {
                     it.copy(
@@ -223,7 +223,7 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         val productPrice = "Rp. 2000"
         val showcaseTitle = "Buah- Buahan"
         val showcaseId = "133333"
-        val privateFieldNameLayout = "layout"
+        val privateFieldNameLayout = "visitableList"
         val newProductOrderQuantity = 0
         val isLoggedIn = true
         val userId = "14445"
@@ -258,7 +258,7 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         )
 
         val mockLayout = mutableListOf(categoryShowcaseUiModel)
-        viewModel.mockPrivateField(
+        viewModel.mockSuperClassField(
             name = privateFieldNameLayout,
             value = mockLayout
         )
@@ -292,9 +292,9 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
                 )
             )
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .getOrAwaitValue()
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(
                 mockLayout.map {
                     it.copy(
@@ -321,7 +321,7 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         val productPrice = "Rp. 2000"
         val showcaseTitle = "Buah- Buahan"
         val showcaseId = "133333"
-        val privateFieldNameLayout = "layout"
+        val privateFieldNameLayout = "visitableList"
         val newProductOrderQuantity = 2
 
         val exception = Exception()
@@ -348,7 +348,7 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         )
 
         val mockLayout = mutableListOf(categoryShowcaseUiModel)
-        viewModel.mockPrivateField(
+        viewModel.mockSuperClassField(
             name = privateFieldNameLayout,
             value = mockLayout
         )
@@ -367,9 +367,9 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         viewModel.addItemToCart
             .verifyValueEquals(Fail(exception))
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .getOrAwaitValue()
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(
                 mockLayout.map {
                     it.copy(
@@ -396,7 +396,7 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         val productPrice = "Rp. 2000"
         val showcaseTitle = "Buah- Buahan"
         val showcaseId = "133333"
-        val privateFieldNameLayout = "layout"
+        val privateFieldNameLayout = "visitableList"
         val newProductOrderQuantity = 2
         val isLoggedIn = true
         val userId = "14445"
@@ -432,7 +432,7 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         )
 
         val mockLayout = mutableListOf(categoryShowcaseUiModel)
-        viewModel.mockPrivateField(
+        viewModel.mockSuperClassField(
             name = privateFieldNameLayout,
             value = mockLayout
         )
@@ -454,9 +454,9 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         viewModel.updateCartItem
             .verifyValueEquals(Fail(exception))
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .getOrAwaitValue()
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(
                 mockLayout.map {
                     it.copy(
@@ -483,7 +483,7 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         val productPrice = "Rp. 2000"
         val showcaseTitle = "Buah- Buahan"
         val showcaseId = "133333"
-        val privateFieldNameLayout = "layout"
+        val privateFieldNameLayout = "visitableList"
         val newProductOrderQuantity = 0
         val isLoggedIn = true
         val userId = "14445"
@@ -519,7 +519,7 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         )
 
         val mockLayout = mutableListOf(categoryShowcaseUiModel)
-        viewModel.mockPrivateField(
+        viewModel.mockSuperClassField(
             name = privateFieldNameLayout,
             value = mockLayout
         )
@@ -541,9 +541,9 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
         viewModel.removeCartItem
             .verifyValueEquals(Fail(exception))
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .getOrAwaitValue()
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(
                 mockLayout.map {
                     it.copy(

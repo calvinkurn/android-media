@@ -83,7 +83,7 @@ class ShippingEditorViewModel @Inject constructor(
                     OngkirShippingEditorSaveInput(
                         shopId,
                         activatedSpIds,
-                        featuresId.orEmpty()
+                        featuresId
                     )
                 )
             _saveShippingData.value =

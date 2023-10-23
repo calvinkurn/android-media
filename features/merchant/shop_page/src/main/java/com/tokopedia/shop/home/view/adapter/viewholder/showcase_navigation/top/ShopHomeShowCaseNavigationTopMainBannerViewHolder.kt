@@ -15,17 +15,17 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationTopMainBannerBinding
 import com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.ShopHomeShowCaseNavigationAdapter
-import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
-import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
-import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.listener.ShopHomeReimagineShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
     itemView: View,
-    private val listener: ShopHomeShowcaseNavigationListener
+    private val listener: ShopHomeReimagineShowcaseNavigationListener
 ) : AbstractViewHolder<ShowcaseNavigationUiModel>(itemView) {
 
     companion object {
@@ -36,7 +36,6 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
     }
 
     private val viewBinding: ItemShopHomeShowcaseNavigationTopMainBannerBinding? by viewBinding()
-
 
     override fun bind(model: ShowcaseNavigationUiModel) {
         if (model.appearance is TopMainBannerAppearance) {
@@ -135,7 +134,7 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
 
     private fun setupColors(overrideTheme: Boolean, colorSchema: ShopPageColorSchema) {
         val chevronColor = if (overrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
-            colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
+            colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR)
         } else {
             ContextCompat.getColor(viewBinding?.iconChevron?.context ?: return, unifycomponentsR.color.Unify_NN950)
         }
@@ -145,7 +144,6 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
         } else {
             ContextCompat.getColor(viewBinding?.tpgTitle?.context ?: return, unifycomponentsR.color.Unify_NN950)
         }
-
 
         val mainBannerColor = ContextCompat.getColor(viewBinding?.tpgMainBannerTitle?.context ?: return, R.color.clr_dms_icon_white)
 
