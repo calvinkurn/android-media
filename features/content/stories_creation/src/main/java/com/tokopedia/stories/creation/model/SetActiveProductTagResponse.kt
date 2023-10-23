@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
  * Created By : Jonathan Darwin on September 11, 2023
  */
 data class SetActiveProductTagResponse(
-    @SerializedName("contentCreatorSetActiveProductTag")
+    @SerializedName("contentCreatorStorySetActiveProductTags")
     val data: Data = Data()
 ) {
 

@@ -27,10 +27,10 @@ class GetStoryProductDetailsUseCase @Inject constructor(
         private const val PARAM_REQ = "req"
 
         private const val QUERY = """
-            query contentStoryGetProductDetails(
-                ${"$$PARAM_REQ"}: ContentStoryGetProductDetailsRequest!,
+            query contentCreatorStoryGetProductDetails(
+                ${"$$PARAM_REQ"}: ContentCreatorStoryGetProductDetailsRequest!
             ) {
-                contentStoryGetProductDetails(
+                contentCreatorStoryGetProductDetails(
                     $PARAM_REQ: ${"$$PARAM_REQ"}
                 ) {
                     products {
