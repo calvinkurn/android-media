@@ -6,10 +6,13 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp">
 
-    <com.tokopedia.unifycomponents.TabsUnify
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/catalogTabsUnify"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:tabTextAppearance="@layout/tab_item_layout"
+        app:tabPaddingBottom="-18dp"
+        android:paddingBottom="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

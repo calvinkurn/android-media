@@ -15,11 +15,10 @@ import com.tokopedia.productbundlewidget.listener.ProductBundleAdapterListener
 import com.tokopedia.productbundlewidget.model.BundleTypes
 import com.tokopedia.productbundlewidget.model.BundleUiModel
 
-class ProductBundleWidgetAdapter(
-    private val isOverrideWidgetTheme: Boolean
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ProductBundleWidgetAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var bundleListItem: List<BundleUiModel> = listOf()
     private var listener: ProductBundleAdapterListener? = null
+    private var isOverrideWidgetTheme: Boolean = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val displayMetrics = parent.resources.displayMetrics
@@ -84,6 +83,10 @@ class ProductBundleWidgetAdapter(
     fun updateDataSet(newList: List<BundleUiModel>) {
         bundleListItem = newList
         notifyDataSetChanged()
+    }
+
+    fun setIsOverrideWidgetTheme(isOverrideTheme: Boolean) {
+        this.isOverrideWidgetTheme = isOverrideTheme
     }
 
     fun setListener(listener: ProductBundleAdapterListener) {

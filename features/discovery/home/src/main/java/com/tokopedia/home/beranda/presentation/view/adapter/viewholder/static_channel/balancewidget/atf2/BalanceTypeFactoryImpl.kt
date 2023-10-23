@@ -5,11 +5,15 @@ import android.view.ViewGroup
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceAtf2DividerModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BaseBalanceViewHolder
+import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 
 /**
 * Created by frenzel
 */
-class BalanceTypeFactoryImpl(private val totalItems: Int) : BalanceTypeFactory {
+class BalanceTypeFactoryImpl(
+    private val totalItems: Int,
+    private val homeThematicUtil: HomeThematicUtil,
+) : BalanceTypeFactory {
     override fun type(visitable: BalanceDrawerItemModel): Int {
         return BalanceAtf2ViewHolder.LAYOUT
     }
@@ -23,9 +27,9 @@ class BalanceTypeFactoryImpl(private val totalItems: Int) : BalanceTypeFactory {
             .from(viewGroup.context)
             .inflate(viewType, viewGroup, false)
         return when(viewType) {
-            BalanceAtf2DividerViewHolder.LAYOUT -> BalanceAtf2DividerViewHolder(view)
-            BalanceAtf2ViewHolder.LAYOUT -> BalanceAtf2ViewHolder(view, totalItems)
-            else -> BalanceAtf2ViewHolder(view, totalItems)
+            BalanceAtf2DividerViewHolder.LAYOUT -> BalanceAtf2DividerViewHolder(view, homeThematicUtil)
+            BalanceAtf2ViewHolder.LAYOUT -> BalanceAtf2ViewHolder(view, totalItems, homeThematicUtil)
+            else -> BalanceAtf2ViewHolder(view, totalItems, homeThematicUtil)
         } as BaseBalanceViewHolder<BalanceVisitable>
     }
 }

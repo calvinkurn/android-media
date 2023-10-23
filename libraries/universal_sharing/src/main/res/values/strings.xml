@@ -69,4 +69,17 @@
     <string name="title_update_app">Yuk, Update dulu aplikasimu</string>
     <string name="description_error_not_found">Untuk membuka halaman ini, kamu perlu update ke aplikasi Tokopedia versi terbaru.</string>
     <string name="cta_update_app">Update Aplikasi</string>
+
+    <string name="title_deeplink_not_found">Oops</string>
+    <string name="description_deeplink_not_found">Maaf, halaman yang Anda tuju tidak ditemukan</string>
+    <string name="cta_deeplink_not_found">Mengerti</string>
+
+    <!-- post purchase -->
+    <string name="universal_sharing_post_purchase_bottomsheet_title">Bagikan produk yang kamu beli</string>
+    <string name="universal_sharing_post_purchase_button_text">Bagikan</string>
+    <string name="universal_sharing_post_purchase_error_network">Wah, internet putus. Cek Wi-Fi atau paket datamu, ya.</string>
+    <string name="universal_sharing_post_purchase_try_again">Coba Lagi</string>
+    <string name="universal_sharing_post_purchase_product_unavailable">Yaah, barang ini sudah nggak tersedia. move on ke barang lainnya, yuk!</string>
+    <string name="universal_sharing_post_purchase_ok">Oke</string>
+    <string name="universal_sharing_post_purchase_og_desc">Coba cek ini di Tokopedia, deh. Harganya %1$s.</string>
 </resources>

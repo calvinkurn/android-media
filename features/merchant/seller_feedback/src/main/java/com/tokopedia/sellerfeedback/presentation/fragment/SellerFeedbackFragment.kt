@@ -69,7 +69,8 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSI
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_MEDIA_IMAGES
 import javax.inject.Inject
 
-class SellerFeedbackFragment : BaseDaggerFragment(),
+class SellerFeedbackFragment :
+    BaseDaggerFragment(),
     BaseImageFeedbackViewHolder.ImageClickListener {
 
     companion object {
@@ -219,11 +220,17 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
 
     override fun onClickAddImage() {
         context?.let {
-            if (!permissionCheckerHelper?.hasPermission(it, arrayOf(if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                    PERMISSION_READ_MEDIA_IMAGES
-                }else{
-                    PERMISSION_READ_EXTERNAL_STORAGE
-                })).orFalse()) {
+            if (!permissionCheckerHelper?.hasPermission(
+                    it,
+                    arrayOf(
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                PERMISSION_READ_MEDIA_IMAGES
+                            } else {
+                                PERMISSION_READ_EXTERNAL_STORAGE
+                            }
+                        )
+                ).orFalse()
+            ) {
                 checkPermission()
                 return@let
             }
@@ -271,7 +278,8 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
 
         val pageClassName = arguments?.getString(EXTRA_ACTIVITY_NAME).orEmpty()
         textFieldFeedbackPage?.text = ScreenShootPageHelper.getPageByClassName(
-            requireContext(), pageClassName
+            requireContext(),
+            pageClassName
         )
         checkButtonSend()
         textFieldFeedbackPage?.setOnClickListener { v ->
@@ -393,9 +401,9 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
     private fun checkButtonSend() {
         val isValidFeedbackPage = !textFieldFeedbackPage?.text.isNullOrBlank()
         buttonSend?.isEnabled = isValidFeedbackPage &&
-                isValidFeedbackDetail &&
-                activeScore != null &&
-                imageFeedbackAdapter.itemCount > 1
+            isValidFeedbackDetail &&
+            activeScore != null &&
+            imageFeedbackAdapter.itemCount > 1
     }
 
     private fun getFeedbackScore(): String {
@@ -442,6 +450,10 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
                 logToCrashlytics(it.cause, ERROR_NETWORK)
                 showErrorToaster(getString(R.string.feedback_form_toaster_fail_network))
             }
+
+            else -> {
+                // no op
+            }
         }
         buttonSend?.apply {
             isLoading = false
@@ -463,10 +475,13 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
                     it.context,
                     isScreenShootTriggerEnabled
                 )
-                activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                    putExtra(EXTRA_SCREEN_SHOOT_TRIGGER, isScreenShootTriggerEnabled)
-                    putExtra(EXTRA_TOASTER_MESSAGE, toasterMessage)
-                })
+                activity?.setResult(
+                    Activity.RESULT_OK,
+                    Intent().apply {
+                        putExtra(EXTRA_SCREEN_SHOOT_TRIGGER, isScreenShootTriggerEnabled)
+                        putExtra(EXTRA_TOASTER_MESSAGE, toasterMessage)
+                    }
+                )
                 activity?.finish()
             }
         }
@@ -489,7 +504,8 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
     }
 
     private fun checkPermission() {
-        permissionCheckerHelper?.checkPermission(this,
+        permissionCheckerHelper?.checkPermission(
+            this,
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 PERMISSION_READ_MEDIA_IMAGES
             } else {
@@ -508,7 +524,8 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
                 override fun onPermissionGranted() {
                     attachScreenshot()
                 }
-            })
+            }
+        )
     }
 
     private fun buildImagePicker(): ImagePickerBuilder {

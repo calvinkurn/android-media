@@ -11,7 +11,9 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.response.valida
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UsageSummaries
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUsePromoRevamp
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.VoucherOrdersItem
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.BebasOngkirInfo
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSpId
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyBebasOngkirInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.AdditionalInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.DetailsItemUiModel
@@ -131,7 +133,15 @@ class ValidateUsePromoCheckoutMapper {
             }
             additionalInfoUiModel.promoSpIds = promoSpIdUiModels
             additionalInfoUiModel.pomlAutoApplied = additionalInfo.pomlAutoApplied
+            additionalInfoUiModel.bebasOngkirInfo = mapBebasOngkirInfo(additionalInfo.bebasOngkirInfo)
             return additionalInfoUiModel
+        }
+
+        private fun mapBebasOngkirInfo(bebasOngkirInfo: BebasOngkirInfo): LastApplyBebasOngkirInfoUiModel {
+            return LastApplyBebasOngkirInfoUiModel(
+                isBoUnstackEnabled = bebasOngkirInfo.isBoUnstackEnabled,
+                isUseBebasOngkirOnly = bebasOngkirInfo.isUseBebasOngkirOnly
+            )
         }
 
         private fun mapPromoSpId(promoSpId: PromoSpId): PromoSpIdUiModel {

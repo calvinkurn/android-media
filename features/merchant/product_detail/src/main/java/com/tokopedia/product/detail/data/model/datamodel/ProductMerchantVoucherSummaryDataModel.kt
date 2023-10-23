@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
+import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.LoadableComponent
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
@@ -9,7 +11,11 @@ data class ProductMerchantVoucherSummaryDataModel(
     val type: String = "",
     val name: String = "",
     var uiModel: UiModel = UiModel()
-) : DynamicPdpDataModel {
+) : DynamicPdpDataModel,
+    LoadableComponent by BlocksLoadableComponent(
+        isFinishedLoading = { false },
+        customBlocksName = "ProductMerchantVoucherSummaryDataModel"
+    ) {
 
     data class UiModel(
         val animatedInfo: List<AnimatedInfos> = listOf(),
@@ -43,5 +49,9 @@ data class ProductMerchantVoucherSummaryDataModel(
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         return null
+    }
+
+    override fun isLoading(): Boolean {
+        return uiModel.animatedInfo.isEmpty()
     }
 }

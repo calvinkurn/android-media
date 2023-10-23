@@ -1,5 +1,6 @@
 package com.tokopedia.topupbills.telco.common.di
 
+import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import dagger.Module
@@ -21,5 +22,11 @@ class DigitalTelcoModule {
     @Provides
     fun provideDigitalTopupAnalytics(): DigitalTopupAnalytics {
         return DigitalTopupAnalytics()
+    }
+
+    @DigitalTelcoScope
+    @Provides
+    fun provideAnalyticsCommonMultiCheckout(): CommonMultiCheckoutAnalytics {
+        return CommonMultiCheckoutAnalytics()
     }
 }

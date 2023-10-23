@@ -210,7 +210,7 @@ enum class VariantPageSource(val source: String) {
     HOMEPAGE_PAGESOURCE("homepage"),
     DISCOVERY_PAGESOURCE("discovery page"),
     SHOP_PAGE_PAGESOURCE("shop-direct-purchase"),
-    SHOP_PAGE_REIMAGINED_DIRECT_PURCHASE_WIDGET_PAGESOURCE("/shoppage"),
+    SHOP_PAGE_REIMAGINED_DIRECT_PURCHASE_WIDGET_PAGESOURCE("/shoppage reimagined"),
     CART_PAGESOURCE("cart"),
     SEARCH_PAGESOURCE("search result"),
     CATEGORY_PAGESOURCE("category page"),
@@ -221,5 +221,6 @@ enum class VariantPageSource(val source: String) {
     SRP_PAGESOURCE("srp_search"),
     FEED_PAGESOURCE("feed"),
     BUY_MORE_GET_MORE("offerpage"),
-    CATALOG_PAGESOURCE("catalog")
+    CATALOG_PAGESOURCE("catalog"),
+    STORIES_PAGESOURCE("stories"),
 }

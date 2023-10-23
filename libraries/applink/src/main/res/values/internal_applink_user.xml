@@ -9,8 +9,6 @@
     <string name="path_image_quality_setting" translatable="false">/media-quality-setting</string>
     <string name="path_new_home_account">/new-home-account</string>
     <string name="path_funds_and_investment">/funds-and-investment</string>
-    <string name="path_link_account_webview">/link-account-webview</string>
-    <string name="path_link_account">/link-account</string>
     <string name="path_explicit_profile">/explicit-profile</string>
     <string name="path_privacy_account">/privacy-account</string>
     <string name="path_dsar">/dsar</string>
@@ -59,6 +57,8 @@
 
     <string name="applink_choose_account">/choose-account</string>
 
+    <string name="applink_scp_login">/scp-login</string>
+
     <string name="applink_account_setting_fingerprint">/biometric-setting</string>
     <string name="applink_account_verify_fingerprint">/verify-fingerprint</string>
     <string name="applink_account_register_fingerprint">/register-fingerprint</string>
@@ -72,7 +72,7 @@
     <string name="applink_telephony">Telephony Masking</string>
 
     <string name="applink_global_sharing">/sharing</string>
-    <string name="applink_sharing_not_found">/sharing-not-found</string>
+    <string name="applink_deeplink_not_found">/deeplink-not-found</string>
 
     <string name="applink_profile_info">/setting-profile</string>
 

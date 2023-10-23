@@ -195,6 +195,7 @@ const val GQL_CATALOG_REIMAGINE_QUERY = """query catalogGetDetailModular(${'$'}c
     layout{
       name
       type
+      position
       data {
         ... on CatalogCompHero {
           hero {
@@ -337,6 +338,47 @@ const val GQL_CATALOG_REIMAGINE_QUERY = """query catalogGetDetailModular(${'$'}c
           }
           navInfo {
             title
+          }
+        }
+                ... on CatalogCompComparison {
+          section {
+            title
+          }
+          comparison {
+            id
+            name
+            url
+            mobileUrl
+            applink
+            catalogImage {
+              imageUrl
+              isPrimary
+            }
+            marketPrice {
+              max
+              min
+              minFmt
+              maxFmt
+              date
+              name
+            }
+            fullSpec {
+              name
+              icon
+              row {
+                key
+                value
+                flags
+              }
+            }
+            topSpec {
+              key
+              value
+              icon
+            }
+          }
+          style {
+            isHidden
           }
         }
         ... on CatalogCompFeatureSupport {

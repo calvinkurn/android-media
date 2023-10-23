@@ -27,6 +27,20 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.mediauploader)
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
 
+    implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
+    implementation rootProject.ext.ktorDependencies.ktorOkhttp
+    implementation rootProject.ext.ktorDependencies.ktorContentNegotiation
+    implementation rootProject.ext.ktorDependencies.ktorSerializationJson
+    implementation rootProject.ext.ktorDependencies.ktorLogging
+    implementation rootProject.ext.ktorDependencies.kermitLogging
+
+    implementation rootProject.ext.kmpDependencies.sellerFeedbackKmp
+    implementation rootProject.ext.kmpDependencies.gqlKmp
+
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
