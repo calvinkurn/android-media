@@ -105,7 +105,6 @@
     <string name="selected_product">%d produk dipilih</string>
     <string name="ads_search_item_template">Biaya iklan %s dan %s kata kunci</string>
     <string name="top_ads_text_info_browse_bid"><![CDATA[Iklanmu akan tampil pada bagian halaman strategis seperti di halaman home, keranjang, inbox dan detail produk. <strong><span style="color:#00AA5B">Pelajari</span></strong>]]></string>
-    <string name="top_ads_performce_count_prefix">%sx</string>
     <string name="top_ads_kata_kunci_tab_positive">Kata Kunci Positif</string>
     <string name="top_ads_kata_kunci_tab_negative">Kata Kunci Negatif</string>
     <string name="top_ads_search_browse_item_settings_subtitle_manual">Iklan diatur manual</string>

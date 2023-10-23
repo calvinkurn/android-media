@@ -208,7 +208,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         viewModel.performanceData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    impressionPerformanceValueSearch?.text = String.format(getString(R.string.top_ads_performce_count_prefix), it.data.umpGetImpressionPrediction.impressionPredictionData.impression.finalImpression)
+                    impressionPerformanceValueSearch?.text = String.format(getString(topadscommonR.string.top_ads_performce_count_prefix), it.data.umpGetImpressionPrediction.impressionPredictionData.impression.finalImpression)
                 }
 
                 else -> {}

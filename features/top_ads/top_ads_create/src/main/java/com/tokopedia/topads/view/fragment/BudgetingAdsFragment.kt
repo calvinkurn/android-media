@@ -89,14 +89,14 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private lateinit var ticker: Ticker
     private lateinit var buttonNext: UnifyButton
     private lateinit var addKeyword: Typography
-    private lateinit var budget: TextFieldUnify2
+    private var budget: TextFieldUnify2? = null
     private lateinit var selectedkeyword: Typography
     private lateinit var loading: LoaderUnify
     private lateinit var info2: ImageUnify
     private lateinit var bidList: RecyclerView
-    private lateinit var txtInfo: Typography
-    private lateinit var potentialPerformanceIcon: IconUnify
-    private lateinit var impressionPerformanceValueSearch: Typography
+    private var txtInfo: Typography? = null
+    private var potentialPerformanceIcon: IconUnify? = null
+    private var impressionPerformanceValueSearch: Typography? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -240,8 +240,8 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     override fun gotoNextPage() {
         try {
-            stepperModel?.finalSearchBidPerClick = budget.editText.text.toString().removeCommaRawString().toIntOrZero()
-            stepperModel?.finalRecommendationBidPerClick = budget.editText.text.toString().removeCommaRawString().toIntOrZero()
+            stepperModel?.finalSearchBidPerClick = budget?.editText?.text.toString().removeCommaRawString().toIntOrZero()
+            stepperModel?.finalRecommendationBidPerClick = budget?.editText?.text.toString().removeCommaRawString().toIntOrZero()
         } catch (e: NumberFormatException) {
             e.printStackTrace()
         }
@@ -308,7 +308,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             when (it) {
                 is Success -> {
                     stepperModel?.searchPrediction = it.data.umpGetImpressionPrediction.impressionPredictionData.impression.finalImpression
-                    impressionPerformanceValueSearch.text = String.format("%sx", it.data.umpGetImpressionPrediction.impressionPredictionData.impression.finalImpression)
+                    impressionPerformanceValueSearch?.text = String.format(getString(topadscommonR.string.top_ads_performce_count_prefix), it.data.umpGetImpressionPrediction.impressionPredictionData.impression.finalImpression)
                 }
                 else -> {
                 }
@@ -332,7 +332,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     private fun onSuccessBidProductData(bidData: TopAdsGetBidSuggestionResponse.TopAdsGetBidSuggestionByProductIDs.BidData) {
         suggestBidPerClick = bidData.bidSuggestion
-        budget.editText.setText(suggestBidPerClick.toString())
+        budget?.editText?.setText(suggestBidPerClick.toString())
     }
 
     private fun onSuccessSuggestionKeyword(keywords: List<KeywordData>) {
@@ -381,7 +381,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             maxBid = it.maxBid
             minBid = it.minBid
         }
-        budget.editText.setText(suggestBidPerClick)
+        budget?.editText?.setText(suggestBidPerClick)
     }
 
     private fun onEmptySuggestion() {
@@ -421,66 +421,69 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         info2.setOnClickListener {
             InfoBottomSheet.newInstance().show(childFragmentManager, 1)
         }
-        txtInfo.text = MethodChecker.fromHtml(getString(topadscommonR.string.top_ads_common_text_info_search_bid))
+        txtInfo?.text = MethodChecker.fromHtml(getString(topadscommonR.string.top_ads_common_text_info_search_bid))
         setClicksOnViews()
-        budget.editText.setOnFocusChangeListener { v, hasFocus ->
+        budget?.editText?.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 val eventLabel = "$shopID - $EVENT_CLICK_BUDGET"
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUDGET, eventLabel, userID)
             }
         }
 
-        budget.editText.addTextChangedListener(object : NumberTextWatcher(budget.editText) {
-            override fun onNumberChanged(number: Double) {
-                super.onNumberChanged(number)
-                val result = number.toInt()
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(
-                    CLICK_DAILY_BUDGET_BOX, "")
-                stepperModel?.finalSearchBidPerClick = result
-                when {
-                    result % 50 != 0 -> {
-                        setMessageErrorField(getString(topadscommonR.string.topads_ads_error_multiple_fifty), Int.ZERO.toString(), true)
-                        actionEnable(false)
-                    }
-                    result >= suggestBidPerClick -> {
-                        if (result > maxBid.toDoubleOrZero() && maxBid.toIntOrZero() != 0) {
-                            setMessageErrorField(getString(topadscommonR.string.max_bid_error_new), maxBid, true)
+        budget?.let {
+            it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText) {
+                override fun onNumberChanged(number: Double) {
+                    super.onNumberChanged(number)
+                    val result = number.toInt()
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(
+                        CLICK_DAILY_BUDGET_BOX, "")
+                    stepperModel?.finalSearchBidPerClick = result
+                    when {
+                        result % 50 != 0 -> {
+                            setMessageErrorField(getString(topadscommonR.string.topads_ads_error_multiple_fifty), Int.ZERO.toString(), true)
                             actionEnable(false)
-                        } else {
-                            setMessageErrorField(getString(topadscommonR.string.topads_ads_optimal_bid), Int.ZERO.toString(), false)
-                            stepperModel?.selectedProductIds?.let {
-                                viewModel.getPerformanceData(it, result.toFloat(), -1f, -1f)
+                        }
+                        result >= suggestBidPerClick -> {
+                            if (result > maxBid.toDoubleOrZero() && maxBid.toIntOrZero() != 0) {
+                                setMessageErrorField(getString(topadscommonR.string.max_bid_error_new), maxBid, true)
+                                actionEnable(false)
+                            } else {
+                                setMessageErrorField(getString(topadscommonR.string.topads_ads_optimal_bid), Int.ZERO.toString(), false)
+                                stepperModel?.selectedProductIds?.let {
+                                    viewModel.getPerformanceData(it, result.toFloat(), -1f, -1f)
+                                }
+                                actionEnable(true)
                             }
+                        }
+
+                        result < minBid.toDouble() && maxBid.toIntOrZero() != 0 -> {
+                            setMessageErrorField(getString(topadscommonR.string.min_bid_error_new), minBid, true)
+                            actionEnable(false)
+                        }
+
+                        else -> {
+                            it.isInputError = false
+                            it.setMessage(getClickableString(suggestBidPerClick))
                             actionEnable(true)
                         }
                     }
 
-                    result < minBid.toDouble() && maxBid.toIntOrZero() != 0 -> {
-                        setMessageErrorField(getString(topadscommonR.string.min_bid_error_new), minBid, true)
-                        actionEnable(false)
-                    }
-
-                    else -> {
-                        budget.isInputError = false
-                        budget.setMessage(getClickableString(suggestBidPerClick))
-                        actionEnable(true)
-                    }
                 }
+            })
+        }
 
-            }
-        })
         bidList.adapter = bidInfoAdapter
         bidList.layoutManager = LinearLayoutManager(context)
     }
 
     private fun setClicksOnViews() {
-        txtInfo.setOnClickListener {
+        txtInfo?.setOnClickListener {
             TopAdsToolTipBottomSheet.newInstance().also {
                 it.setTitle(getString(topadscommonR.string.topads_ads_search_bid_tooltip_title))
                 it.setDescription(getString(topadscommonR.string.topads_ads_search_bid_tooltip_description))
             }.show(childFragmentManager)
         }
-        potentialPerformanceIcon.setOnClickListener {
+        potentialPerformanceIcon?.setOnClickListener {
             CreatePotentialPerformanceSheet.newInstance(
                 stepperModel?.searchPrediction
                     ?: 0,
@@ -499,7 +502,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         val ss = SpannableString(msg)
         val cs = object : ClickableSpan() {
             override fun onClick(p0: View) {
-                budget.editText.setText(bid.toString())
+                budget?.editText?.setText(bid.toString())
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -547,8 +550,8 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun setMessageErrorField(error: String, bid: String, bool: Boolean) {
-        budget.isInputError = bool
-        budget.setMessage(MethodChecker.fromHtml(String.format(error, bid)))
+        budget?.isInputError = bool
+        budget?.setMessage(MethodChecker.fromHtml(String.format(error, bid)))
     }
 
 }
