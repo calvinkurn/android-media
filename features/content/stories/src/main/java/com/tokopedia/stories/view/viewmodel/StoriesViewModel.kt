@@ -17,6 +17,7 @@ import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.BUFFERING
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.PAUSE
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.RESUME
 import com.tokopedia.stories.view.model.StoriesGroupHeader
@@ -72,7 +73,9 @@ class StoriesViewModel @AssistedInject constructor(
             val groupPosition = _groupPos.value
             return try {
                 _storiesMainDataState.value.groupItems[groupPosition]
-            } catch (_: Exception) { StoriesGroupItem() }
+            } catch (_: Exception) {
+                StoriesGroupItem()
+            }
         }
 
     val mDetail: StoriesDetailItem
@@ -83,7 +86,9 @@ class StoriesViewModel @AssistedInject constructor(
                 _storiesMainDataState.value
                     .groupItems[groupPosition]
                     .detail.detailItems[detailPosition]
-            } catch (_: Exception) { StoriesDetailItem() }
+            } catch (_: Exception) {
+                StoriesDetailItem()
+            }
         }
 
     private val _impressedGroupHeader = mutableListOf<StoriesGroupHeader>()
@@ -108,7 +113,9 @@ class StoriesViewModel @AssistedInject constructor(
             return try {
                 _storiesMainDataState.value.groupItems[groupPosition]
                     .detail.detailItems.size
-            } catch (_: Exception) { 0 }
+            } catch (_: Exception) {
+                0
+            }
         }
 
     val storyId: String
@@ -161,12 +168,17 @@ class StoriesViewModel @AssistedInject constructor(
     fun submitAction(action: StoriesUiAction) {
         when (action) {
             is StoriesUiAction.SetMainData -> handleMainData(action.selectedGroup)
-            is StoriesUiAction.SelectGroup -> handleSelectGroup(action.selectedGroup, action.showAnimation)
+            is StoriesUiAction.SelectGroup -> handleSelectGroup(
+                action.selectedGroup,
+                action.showAnimation
+            )
+
             is StoriesUiAction.CollectImpressedGroup -> handleCollectImpressedGroup(action.data)
             is StoriesUiAction.Navigate -> handleNav(action.appLink)
             is StoriesUiAction.DismissSheet -> handleDismissSheet(action.type)
             is StoriesUiAction.ProductAction -> handleProductAction(action.action, action.product)
             is StoriesUiAction.ShowVariantSheet -> handleVariantSheet(action.product)
+            is StoriesUiAction.UpdateStoryDuration -> handleUpdateDuration(action.duration)
             StoriesUiAction.SetInitialData -> handleSetInitialData()
             StoriesUiAction.NextDetail -> handleNext()
             StoriesUiAction.PreviousDetail -> handlePrevious()
@@ -180,6 +192,7 @@ class StoriesViewModel @AssistedInject constructor(
             StoriesUiAction.DeleteStory -> handleDeleteStory()
             StoriesUiAction.ContentIsLoaded -> handleContentIsLoaded()
             StoriesUiAction.PageIsSelected -> handlePageIsSelected()
+            StoriesUiAction.VideoBuffering -> handleVideoBuffering()
         }
     }
 
@@ -255,7 +268,10 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun handleOnResumeStories() {
-        updateDetailData(event = if (mDetail.isContentLoaded && mIsPageSelected) RESUME else PAUSE, isSameContent = true)
+        updateDetailData(
+            event = if (mDetail.isContentLoaded && mIsPageSelected) RESUME else PAUSE,
+            isSameContent = true
+        )
     }
 
     private fun handlePageIsSelected() {
@@ -413,14 +429,18 @@ class StoriesViewModel @AssistedInject constructor(
     private fun handleGetProducts() {
         viewModelScope.launchCatchError(block = {
             _productsState.update { product -> product.copy(resultState = ResultState.Loading) }
-            val productList = repository.getStoriesProducts(args.authorId, storyId, mGroup.groupName)
+            val productList =
+                repository.getStoriesProducts(args.authorId, storyId, mGroup.groupName)
             _productsState.value = productList
         }) { exception ->
             _productsState.update { product -> product.copy(resultState = ResultState.Fail(exception)) }
         }
     }
 
-    private fun handleProductAction(action: StoriesProductAction, product: ContentTaggedProductUiModel) {
+    private fun handleProductAction(
+        action: StoriesProductAction,
+        product: ContentTaggedProductUiModel
+    ) {
         requiredLogin {
             addToCart(product, action)
         }
@@ -496,6 +516,42 @@ class StoriesViewModel @AssistedInject constructor(
         viewModelScope.launch {
             _storiesEvent.emit(StoriesUiEvent.NavigateEvent(appLink))
         }
+    }
+
+    private fun handleUpdateDuration(duration: Int) {
+        updateMainData(
+            detail = mGroup.detail.copy(
+                detailItems = mGroup.detail.detailItems.mapIndexed { index, storiesDetailItem ->
+                    if (index == mDetailPos) {
+                        storiesDetailItem.copy(
+                            content = storiesDetailItem.content.copy(
+                                duration = duration
+                            )
+                        )
+                    } else {
+                        storiesDetailItem
+                    }
+                }
+            ),
+            groupPosition = mGroupPos
+        )
+    }
+
+    private fun handleVideoBuffering() {
+        updateMainData(
+            detail = mGroup.detail.copy(
+                detailItems = mGroup.detail.detailItems.mapIndexed { index, storiesDetailItem ->
+                    if (index == mDetailPos) {
+                        storiesDetailItem.copy(
+                            event = BUFFERING
+                        )
+                    } else {
+                        storiesDetailItem
+                    }
+                }
+            ),
+            groupPosition = mGroupPos
+        )
     }
 
     private fun moveToOtherStories() {
