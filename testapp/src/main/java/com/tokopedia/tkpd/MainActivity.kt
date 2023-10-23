@@ -153,7 +153,7 @@ class MainActivity : BaseActivity() {
         /*
          * Put your default applink here
          */
-        return "tokopedia://digital/form?category_id=1&menu_id=289&template=pulsav2"
+        return ""
     }
 
     data class Model(
