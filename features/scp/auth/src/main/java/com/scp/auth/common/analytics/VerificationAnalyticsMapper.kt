@@ -71,7 +71,7 @@ class VerificationAnalyticsMapper @Inject constructor(private val gtm: ContextAn
     }
 
     private fun createCustomDimension(sdkVersion: String): Map<String, Any> {
-        return mapOf(ANDROID_ID to userSession.deviceId, SDK_VERSION to sdkVersion, BUSINESS_UNIT to "")
+        return mapOf(ANDROID_ID to userSession.deviceId, SDK_VERSION to sdkVersion, BUSINESS_UNIT to BUSINESS_UNIT_VALUE)
     }
 
     private fun getSdkVersion(param: Map<String, Any?>): String = param[SDK_VERSION].toString()
@@ -93,7 +93,6 @@ class VerificationAnalyticsMapper @Inject constructor(private val gtm: ContextAn
         return when (eventName) {
             CVEventName.CVSDK_FAILED, CVEventName.CVSDK_INPUT_SCREEN_FORGOT_PASSWORD_CLICKED -> param[CVEventFieldName.METHOD].toString()
             else -> param[CVEventFieldName.SOURCE].toString()
-
         }
     }
 
@@ -142,6 +141,7 @@ class VerificationAnalyticsMapper @Inject constructor(private val gtm: ContextAn
         private const val ANDROID_ID = "androidId"
         private const val SDK_VERSION = "sdkVersion"
         private const val BUSINESS_UNIT = "businessUnit"
+        private const val BUSINESS_UNIT_VALUE = "Shared Consumer Platform"
         private const val TRACKER_ID = "trackerId"
 
         // Tracker ID
