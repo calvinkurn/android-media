@@ -17,7 +17,6 @@ import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.trackingoptimizer.repository.TrackRepository
 import com.tokopedia.trackingoptimizer.sendTrack
-import com.tokopedia.unifyorderhistory.test.R
 import com.tokopedia.unifyorderhistory.util.UohIdlingResource
 import com.tokopedia.unifyorderhistory.view.activity.UohListActivity
 import kotlinx.coroutines.GlobalScope
@@ -28,10 +27,8 @@ import org.junit.Rule
 import org.junit.Test
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import com.tokopedia.unifyorderhistory.test.R as unifyorderhistorytestR
 
-/**
- * Created by fwidjaja on 06/11/20.
- */
 @CassavaTest
 class UohListTrackingTest {
 
@@ -57,7 +54,7 @@ class UohListTrackingTest {
                 KEY_UOH_FILTER_CATEGORY,
                 InstrumentationMockHelper.getRawString(
                     context,
-                    R.raw.response_uoh_filter_category
+                    unifyorderhistorytestR.raw.response_uoh_filter_category
                 ),
                 MockModelConfig.FIND_BY_CONTAINS
             )
@@ -65,7 +62,7 @@ class UohListTrackingTest {
                 KEY_UOH_PMS_NOTIFICATION,
                 InstrumentationMockHelper.getRawString(
                     context,
-                    R.raw.response_uoh_get_pms_notification
+                    unifyorderhistorytestR.raw.response_uoh_get_pms_notification
                 ),
                 MockModelConfig.FIND_BY_CONTAINS
             )
@@ -73,7 +70,7 @@ class UohListTrackingTest {
                 KEY_UOH_ORDERS,
                 InstrumentationMockHelper.getRawString(
                     context,
-                    R.raw.response_mock_uoh_orders_succeed_manual
+                    unifyorderhistorytestR.raw.response_mock_uoh_orders_succeed_manual
                 ),
                 MockModelConfig.FIND_BY_CONTAINS
             )
@@ -81,7 +78,7 @@ class UohListTrackingTest {
                 KEY_ATC,
                 InstrumentationMockHelper.getRawString(
                     context,
-                    R.raw.add_to_cart_multi_success_response
+                    unifyorderhistorytestR.raw.add_to_cart_multi_success_response
                 ),
                 MockModelConfig.FIND_BY_CONTAINS
             )
@@ -126,7 +123,7 @@ class UohListTrackingTest {
             // Force TrackingQueue to send trackers
             runBlocking {
                 suspendCoroutine<Any?> {
-                    sendTrack(GlobalScope, TrackRepository(context)) {
+                    sendTrack(GlobalScope, TrackRepository.Companion.getInstance(context)) {
                         Log.i("UohListTracking", "finish send track")
                         it.resume(null)
                     }

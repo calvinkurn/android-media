@@ -4,6 +4,7 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelatedProduct
+import com.tokopedia.search.result.domain.model.SearchProductV5
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
@@ -36,7 +37,7 @@ data class BroadMatchItemDataView(
     val topAdsWishlistUrl: String = "",
     val ratingAverage: String = "",
     val labelGroupDataList: List<LabelGroupDataView> = listOf(),
-    val carouselProductType: CarouselProductType,
+    val carouselProductType: CarouselProductType = BroadMatchProduct(),
     val dimension90: String = "",
     val componentId: String = "",
     val originalPrice: String = "",
@@ -62,6 +63,7 @@ data class BroadMatchItemDataView(
             "variant", "none / other",
             "list", carouselProductType.getDataLayerList(isOrganicAds, componentId),
             "position", position,
+            "dimension40", carouselProductType.getDataLayerList(isOrganicAds, componentId),
             "dimension90", dimension90,
             "dimension115", labelGroupDataList.getFormattedPositionName(),
             "dimension131", externalReference.orNone(),
@@ -148,6 +150,39 @@ data class BroadMatchItemDataView(
             externalReference = externalReference,
             stockBarDataView = product.stockBarDataView,
             warehouseID = product.warehouseID,
+        )
+
+        fun create(
+            otherRelatedProduct: SearchProductV5.Data.Related.OtherRelated.Product,
+            position: Int,
+            alternativeKeyword: String,
+            dimension90: String,
+            externalReference: String,
+        ) = BroadMatchItemDataView(
+            id = otherRelatedProduct.id,
+            name = otherRelatedProduct.name,
+            price = otherRelatedProduct.price.number,
+            priceString = otherRelatedProduct.price.text,
+            imageUrl = otherRelatedProduct.mediaURL.image,
+            url = otherRelatedProduct.url,
+            applink = otherRelatedProduct.applink,
+            shopLocation = otherRelatedProduct.shop.city,
+            badgeItemDataViewList = listOf(BadgeItemDataView.create(otherRelatedProduct.badge)),
+            freeOngkirDataView = FreeOngkirDataView.create(otherRelatedProduct.freeShipping),
+            isWishlisted = otherRelatedProduct.isWishlisted,
+            position = position,
+            alternativeKeyword = alternativeKeyword,
+            isOrganicAds = otherRelatedProduct.isOrganicAds(),
+            topAdsViewUrl = otherRelatedProduct.ads.productViewURL,
+            topAdsClickUrl = otherRelatedProduct.ads.productClickURL,
+            topAdsWishlistUrl = otherRelatedProduct.ads.productWishlistURL,
+            ratingAverage = otherRelatedProduct.rating,
+            labelGroupDataList = otherRelatedProduct.labelGroupList.map(LabelGroupDataView::create),
+            carouselProductType = BroadMatchProduct(),
+            dimension90 = dimension90,
+            componentId = otherRelatedProduct.meta.componentID,
+            externalReference = externalReference,
+            warehouseID = otherRelatedProduct.meta.warehouseID,
         )
     }
 }

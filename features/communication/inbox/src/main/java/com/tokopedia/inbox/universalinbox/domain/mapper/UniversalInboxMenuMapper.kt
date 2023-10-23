@@ -118,7 +118,7 @@ class UniversalInboxMenuMapper @Inject constructor(
         // Chat seller
         chatMenuList.add(
             UniversalInboxMenuDataResponse(
-                icon = IconUnify.CHAT_BUYER.toString(),
+                icon = IconUnify.CHAT_SELLER.toString(),
                 title = resourceProvider.getMenuChatSellerTitle(),
                 applink = getFallbackChatSellerApplink(),
                 type = MenuItemType.CHAT_SELLER.counterType

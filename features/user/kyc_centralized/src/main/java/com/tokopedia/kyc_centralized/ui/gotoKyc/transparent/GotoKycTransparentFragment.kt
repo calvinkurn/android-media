@@ -29,6 +29,7 @@ import com.tokopedia.kyc_centralized.common.KycServerLogger
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.AwaitingApprovalGopayBottomSheet
+import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.BlockedKycBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.DobChallengeExhaustedBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.FailedSavePreferenceBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardNonProgressiveBottomSheet
@@ -43,6 +44,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.getGotoKycErrorMessage
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.removeGotoKycImage
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.removeGotoKycPreference
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -60,6 +62,9 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
     lateinit var kycSharedPreference: KycSharedPreference
 
     @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
+    @Inject
     lateinit var oneKycSdk: OneKycSdk
 
     private var isReVerify = false
@@ -71,10 +76,39 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 directShowBottomSheetInOnboardBenefit = true
                 viewModel.getProjectInfo(viewModel.projectId.toIntSafely())
             }
+            KYCConstant.ActivityResult.LAUNCH_CALLBACK -> {
+                gotoCallbackApplink(viewModel.callback)
+            }
+            KYCConstant.ActivityResult.LAUNCH_TOKO_KYC -> {
+                gotoTokoKyc(viewModel.projectId)
+            }
+            KYCConstant.ActivityResult.BLOCKED_KYC -> {
+                val isBlockedMultipleAccount = result.data?.getBooleanExtra(
+                    KYCConstant.PARAM_BLOCKED_IS_MULTIPLE_ACCOUNT,
+                    false
+                ) == true
+                showBlockedKycBottomSheet(isBlockedMultipleAccount)
+            }
             else -> {
                 finishWithResult(result.resultCode)
             }
         }
+    }
+
+    private val startLoginForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        when (result.resultCode) {
+            Activity.RESULT_OK -> {
+                saveInitDataToPreference()
+            }
+            else -> {
+                finishWithResult(Activity.RESULT_CANCELED)
+            }
+        }
+    }
+
+    // this callback for support when user re-verify flow
+    private val startCallbackForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _: ActivityResult ->
+        finishWithResult(Activity.RESULT_OK)
     }
 
     private fun finishWithResult(result: Int) {
@@ -119,21 +153,47 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         oneKycSdk.init()
         val projectId = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID)
         val source = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_SOURCE)
+        val callback = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_CALL_BACK)
         isReVerify = activity?.intent?.extras?.getBoolean(IS_RE_VERIFY).orFalse()
-        validationParameter(projectId = projectId, source = source)
+        validationParameter(projectId = projectId, source = source, callback)
         initObserver()
     }
 
-    private fun validationParameter(projectId: String?, source: String?) {
+    private fun validationParameter(projectId: String?, source: String?, callback: String?) {
         if (projectId?.toIntOrNull() == null) {
             finishWithResult(Activity.RESULT_CANCELED)
         } else {
             // set value project id
             viewModel.setProjectId(projectId)
             viewModel.setSource(source.orEmpty())
+            viewModel.setCallback(callback.orEmpty())
 
-            saveInitDataToPreference()
+            handleRequireLogin()
         }
+    }
+
+    private fun handleRequireLogin() {
+        if (userSessionInterface.isLoggedIn) {
+            saveInitDataToPreference()
+        } else {
+            gotoLogin()
+        }
+    }
+
+    private fun gotoLogin() {
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalUserPlatform.LOGIN
+        )
+        startLoginForResult.launch(intent)
+    }
+
+    private fun gotoCallbackApplink(callback: String) {
+        val intent = RouteManager.getIntent(
+            context,
+            callback
+        )
+        startCallbackForResult.launch(intent)
     }
 
     private fun saveInitDataToPreference() {
@@ -172,7 +232,8 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                         sourcePage = viewModel.source,
                         status = it.status,
                         rejectionReason = it.rejectionReason,
-                        waitMessage = it.waitMessage
+                        waitMessage = it.waitMessage,
+                        callback = viewModel.callback
                     )
                     gotoStatusSubmission(parameter)
                 }
@@ -182,6 +243,9 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                     } else {
                         handleNonProgressiveFlow()
                     }
+                }
+                is ProjectInfoResult.Blocked -> {
+                    showBlockedKycBottomSheet(it.isMultipleAccount)
                 }
                 is ProjectInfoResult.Failed -> {
                     showToaster(it.throwable)
@@ -215,6 +279,12 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 is AccountLinkingStatusResult.Loading -> {
                     binding?.gotoKycLoader?.show()
                 }
+                is AccountLinkingStatusResult.TokoKyc -> {
+                    gotoTokoKyc(viewModel.projectId)
+                }
+                is AccountLinkingStatusResult.Blocked -> {
+                    showBlockedKycBottomSheet(it.isMultipleAccount)
+                }
                 is AccountLinkingStatusResult.Linked -> {
                     viewModel.checkEligibility()
                 }
@@ -239,13 +309,15 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 encryptedName = encryptedName,
                 isAccountLinked = viewModel.isAccountLinked,
                 sourcePage = viewModel.source,
-                directShowBottomSheet = directShowBottomSheetInOnboardBenefit
+                directShowBottomSheet = directShowBottomSheetInOnboardBenefit,
+                callback = viewModel.callback
             )
             gotoOnboardBenefit(parameter)
         } else {
             showProgressiveBottomSheet(
                 source = viewModel.source,
-                encryptedName = encryptedName
+                encryptedName = encryptedName,
+                callback = viewModel.callback
             )
         }
     }
@@ -257,14 +329,16 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 gotoKycType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE,
                 isAccountLinked = viewModel.isAccountLinked,
                 sourcePage = viewModel.source,
-                directShowBottomSheet = directShowBottomSheetInOnboardBenefit
+                directShowBottomSheet = directShowBottomSheetInOnboardBenefit,
+                callback = viewModel.callback
             )
             gotoOnboardBenefit(parameter)
         } else {
             showNonProgressiveBottomSheet(
                 projectId = viewModel.projectId,
                 source = viewModel.source,
-                isAccountLinked = viewModel.isAccountLinked
+                isAccountLinked = viewModel.isAccountLinked,
+                callback = viewModel.callback
             )
         }
     }
@@ -275,7 +349,8 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 projectId = viewModel.projectId,
                 gotoKycType = KYCConstant.GotoKycFlow.AWAITING_APPROVAL_GOPAY,
                 sourcePage = viewModel.source,
-                directShowBottomSheet = directShowBottomSheetInOnboardBenefit
+                directShowBottomSheet = directShowBottomSheetInOnboardBenefit,
+                callback = viewModel.callback
             )
             gotoOnboardBenefit(parameter)
         } else {
@@ -325,11 +400,12 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showProgressiveBottomSheet(source: String, encryptedName: String) {
+    private fun showProgressiveBottomSheet(source: String, encryptedName: String, callback: String) {
         val onBoardProgressiveBottomSheet = OnboardProgressiveBottomSheet.newInstance(
             projectId = viewModel.projectId,
             source = source,
-            encryptedName = encryptedName
+            encryptedName = encryptedName,
+            callback = callback
         )
 
         onBoardProgressiveBottomSheet.show(
@@ -347,19 +423,32 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 finishWithResult(Activity.RESULT_CANCELED)
             }
         }
+
+        onBoardProgressiveBottomSheet.setOnLaunchCallbackListener {
+            gotoCallbackApplink(viewModel.callback)
+        }
     }
 
-    private fun showNonProgressiveBottomSheet(projectId: String, source: String, isAccountLinked: Boolean) {
+    private fun showNonProgressiveBottomSheet(projectId: String, source: String, isAccountLinked: Boolean, callback: String) {
         val onBoardNonProgressiveBottomSheet = OnboardNonProgressiveBottomSheet.newInstance(
             projectId = projectId,
             source = source,
-            isAccountLinked = isAccountLinked
+            isAccountLinked = isAccountLinked,
+            callback = callback
         )
 
         onBoardNonProgressiveBottomSheet.show(
             childFragmentManager,
             TAG_BOTTOM_SHEET_ONBOARD_NON_PROGRESSIVE
         )
+
+        onBoardNonProgressiveBottomSheet.setOnLaunchTokoKycListener {
+            gotoTokoKyc(viewModel.projectId)
+        }
+
+        onBoardNonProgressiveBottomSheet.setOnLaunchBlockedKycListener { isBlockedMultipleAccount ->
+            showBlockedKycBottomSheet(isBlockedMultipleAccount)
+        }
 
         onBoardNonProgressiveBottomSheet.setOnDismissWithDataListener { isReload ->
             if (isReload) {
@@ -369,6 +458,10 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 activity?.setResult(Activity.RESULT_CANCELED)
                 activity?.finish()
             }
+        }
+
+        onBoardNonProgressiveBottomSheet.setOnLaunchCallbackListener {
+            gotoCallbackApplink(viewModel.callback)
         }
     }
 
@@ -407,6 +500,15 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun showBlockedKycBottomSheet(isMultipleAccount: Boolean) {
+        val blockedKycBottomSheet = BlockedKycBottomSheet.newInstance(isMultipleAccount, viewModel.projectId)
+
+        blockedKycBottomSheet.show(
+            childFragmentManager,
+            TAG_BOTTOM_SHEET_BLOCKED_KYC
+        )
+    }
+
     private fun showToaster(throwable: Throwable?) {
         val message = throwable?.getGotoKycErrorMessage(requireContext())
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
@@ -425,6 +527,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         private const val TAG_BOTTOM_SHEET_ONBOARD_PROGRESSIVE = "bottom_sheet_progressive"
         private const val TAG_BOTTOM_SHEET_FAILED_SAVE_PREFERENCE = "bottom_sheet_failed_save_preference"
         private const val TAG_BOTTOM_SHEET_DOB_CHALLENGE_EXHAUSTED = "bottom_sheet_dob_challenge_exhausted"
+        private const val TAG_BOTTOM_SHEET_BLOCKED_KYC = "bottom_sheet_blocked_kyc"
 
         fun createInstance(): Fragment = GotoKycTransparentFragment()
     }

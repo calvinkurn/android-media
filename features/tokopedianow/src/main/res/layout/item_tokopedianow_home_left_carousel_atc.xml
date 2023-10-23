@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@id/real_time_recommendation_carousel"
+        app:layout_constraintBottom_toTopOf="@id/real_time_recommendation_view_stub"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dynamic_header_custom_view" />
@@ -39,7 +39,7 @@
         android:alpha="1"
         android:scaleType="centerCrop"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@id/real_time_recommendation_carousel"
+        app:layout_constraintBottom_toTopOf="@id/real_time_recommendation_view_stub"
         app:layout_constraintStart_toStartOf="@+id/parallax_background"
         app:layout_constraintTop_toBottomOf="@id/dynamic_header_custom_view"
         app:layout_constraintVertical_bias="0.0" />
@@ -54,7 +54,7 @@
         android:paddingBottom="16dp"
         android:layout_marginTop="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@+id/real_time_recommendation_carousel"
+        app:layout_constraintBottom_toTopOf="@+id/real_time_recommendation_view_stub"
         app:layout_constraintEnd_toEndOf="@+id/parallax_background"
         app:layout_constraintStart_toStartOf="@+id/parallax_background"
         app:layout_constraintTop_toBottomOf="@id/dynamic_header_custom_view"
@@ -65,10 +65,11 @@
         tools:spanCount="3"
         tools:ignore="RtlSymmetry" />
 
-    <com.tokopedia.tokopedianow.common.view.RealTimeRecommendationCarouselView
-        android:id="@+id/real_time_recommendation_carousel"
+    <ViewStub
+        android:id="@+id/real_time_recommendation_view_stub"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inflatedId="@+id/real_time_recommendation_view_stub"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/parallax_background" />
 </androidx.constraintlayout.widget.ConstraintLayout>

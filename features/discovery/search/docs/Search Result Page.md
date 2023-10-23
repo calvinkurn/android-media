@@ -4,19 +4,20 @@ labels:
 - Search
 ---
 <!--left header table-->
-| **Status** | <!--start status:Green-->RELEASE<!--end status--> |
-| --- | --- |
-| Team | Minion Dave |
-| Module type | <!--start status:Yellow-->FEATURE<!--end status--> |
-| Release date | - |
-| Product Manager | @Hefrian, @Sheila, @Matthew, @Melvin, @Jefferson, @Gilang |
-| Contributors | @Zulfikar Rahman @Darian Thedy @Muhammad Fiqri Muthohar |
+| **Status**      | <!--start status:Green-->RELEASE<!--end status-->                  |
+|-----------------|--------------------------------------------------------------------|
+| Team            | Minion Dave                                                        |
+| Module type     | <!--start status:Yellow-->FEATURE<!--end status-->                 |
+| Release date    | -                                                                  |
+| Product Manager | @Hefrian, @Sheila, @Gilang                                         |
+| Contributors    | @Zulfikar Rahman @Darian Thedy @Willybrodus                        |
 | Module Location | features.search / features/discovery/search / com.tokopedia.search |
-| Product PRD | - |
+| Product PRD     | -                                                                  |
 
 <!--toc-->
 ## Release Notes
-
+MA-3.238 -> Search Reimagine Phase 2: Carousel Product Card, Shop Ads, Quick Filter
+MA-3.242 -> Search Reimagine Phase 3: Product Card
 
 ## Overview
 

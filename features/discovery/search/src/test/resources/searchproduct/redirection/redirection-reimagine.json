@@ -1,0 +1,18 @@
+{
+  "searchProductV5": {
+    "header": {
+      "responseCode": 6,
+      "keywordProcess": "0",
+      "totalData": 1048,
+      "additionalParams": "rf=true&nuq=produk wardah",
+      "autocompleteApplink": "tokopedia://search-autocomplete?q=produk%20wardyah",
+      "isQuerySafe": true
+    },
+    "data": {
+      "totalDataText": "1.048",
+      "redirection": {
+        "applink": "tokopedia://discovery/wardah-1"
+      }
+    }
+  }
+}

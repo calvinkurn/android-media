@@ -58,6 +58,7 @@ class RecommendationWidgetViewModel @Inject constructor(
                 categoryIds = model.metadata.categoryIds,
                 keywords = model.metadata.keyword,
                 isTokonow = model.metadata.isTokonow,
+                criteriaThematicIDs = model.metadata.criteriaThematicIDs,
             )
         )
 

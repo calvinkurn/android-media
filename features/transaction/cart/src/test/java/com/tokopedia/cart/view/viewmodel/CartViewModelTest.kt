@@ -27,6 +27,7 @@ import com.tokopedia.cartrevamp.view.uimodel.DisabledCollapsedHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledReasonHolderData
 import com.tokopedia.cartrevamp.view.uimodel.RemoveFromWishlistEvent
+import com.tokopedia.cartrevamp.view.uimodel.SubTotalState
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -63,14 +64,17 @@ class CartViewModelTest : BaseCartViewModelTest() {
     private lateinit var cartGlobalEventObserver: Observer<CartGlobalEvent>
     private lateinit var cartDataListObserver: Observer<ArrayList<Any>>
     private lateinit var cartCheckoutButtonStateObserver: Observer<CartCheckoutButtonState>
+    private lateinit var cartSubTotalStateObserver: Observer<SubTotalState>
 
     override fun setUp() {
         super.setUp()
         cartGlobalEventObserver = mockk { every { onChanged(any()) } just Runs }
         cartDataListObserver = mockk { every { onChanged(any()) } just Runs }
         cartCheckoutButtonStateObserver = mockk { every { onChanged(any()) } just Runs }
+        cartSubTotalStateObserver = mockk { every { onChanged(any()) } just Runs }
         cartViewModel.globalEvent.observeForever(cartGlobalEventObserver)
         cartViewModel.cartCheckoutButtonState.observeForever(cartCheckoutButtonStateObserver)
+        cartViewModel.subTotalState.observeForever(cartSubTotalStateObserver)
     }
 
     // region setAllAvailableItemCheck
@@ -301,29 +305,29 @@ class CartViewModelTest : BaseCartViewModelTest() {
 
     // region removeAccordionDisabledItem
     @Test
-    fun `WHEN removeAccordionDisabledItem THEN DisabledItemHeaderHolderData should be removed`() {
+    fun `WHEN removeAccordionDisabledItem THEN DisabledAccordionHolderData should be removed`() {
         // GIVEN
-        val disabledItemHeaderHolderData = DisabledItemHeaderHolderData()
-        cartViewModel.cartDataList.value = arrayListOf(disabledItemHeaderHolderData)
+        val disabledAccordionHolderData = DisabledAccordionHolderData()
+        val cartDataList = arrayListOf<Any>(disabledAccordionHolderData)
 
         // WHEN
-        cartViewModel.removeAccordionDisabledItem()
+        cartViewModel.removeAccordionDisabledItem(cartDataList)
 
         // THEN
         assertEquals(
-            true,
-            cartViewModel.cartDataList.value.any { it is DisabledItemHeaderHolderData }
+            false,
+            cartDataList.any { it is DisabledAccordionHolderData }
         )
     }
 
     @Test
     fun `WHEN removeAccordionDisabledItem but DisabledItemHeaderHolderData not found THEN cartDataList should have same size`() {
         // GIVEN
-        cartViewModel.cartDataList.value = arrayListOf(CartGroupHolderData(), CartItemHolderData())
+        val cartDataList = arrayListOf<Any>(CartGroupHolderData(), CartItemHolderData())
         val previousSize = cartViewModel.cartDataList.value.size
 
         // WHEN
-        cartViewModel.removeAccordionDisabledItem()
+        cartViewModel.removeAccordionDisabledItem(cartDataList)
 
         // THEN
         assertEquals(previousSize, cartViewModel.cartDataList.value.size)
@@ -1387,6 +1391,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
         )
         val cartItemHolderDataTwo = CartItemHolderData(cartId = "124")
         val newAddOnWording = "new add on wording"
+        val newAddOnPrice = "(Rp5.000)"
         val addonsOne = AddOnUIModel()
         val addonsTwo = AddOnUIModel()
         val selectedAddons = arrayListOf(addonsOne, addonsTwo)
@@ -1400,14 +1405,14 @@ class CartViewModelTest : BaseCartViewModelTest() {
         spyViewModel.cartDataList.observeForever(cartDataListObserver)
 
         // WHEN
-        spyViewModel.updateAddOnByCartId(cartId, newAddOnWording, selectedAddons)
+        spyViewModel.updateAddOnByCartId(cartId, newAddOnWording, newAddOnPrice, selectedAddons)
 
         // THEN
         assertEquals(selectedAddons.size, cartItemHolderData.addOnsProduct.listData.size)
         verifyOrder {
             cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(1))
             spyViewModel.reCalculateSubTotal()
-            cartGlobalEventObserver.onChanged(CartGlobalEvent.SubTotalUpdated(0.0, "0", 0.0, false))
+            cartSubTotalStateObserver.onChanged(SubTotalState(0.0, "0", 0.0, false))
         }
     }
 
@@ -1424,6 +1429,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
         )
         val cartItemHolderDataTwo = CartItemHolderData(cartId = "125")
         val newAddOnWording = "new add on wording"
+        val newAddOnPrice = "(Rp5.000)"
         val addonsOne = AddOnUIModel()
         val addonsTwo = AddOnUIModel()
         val selectedAddons = arrayListOf(addonsOne, addonsTwo)
@@ -1437,7 +1443,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
         spyViewModel.cartDataList.observeForever(cartDataListObserver)
 
         // WHEN
-        spyViewModel.updateAddOnByCartId(cartId, newAddOnWording, selectedAddons)
+        spyViewModel.updateAddOnByCartId(cartId, newAddOnWording, newAddOnPrice, selectedAddons)
 
         // THEN
         assertEquals(1, cartItemHolderData.addOnsProduct.listData.size)
@@ -1461,23 +1467,9 @@ class CartViewModelTest : BaseCartViewModelTest() {
                 cartViewModel.tokoNowProductUpdater.first()
             }
 
-            cartViewModel.emitTokonowUpdated(true)
+            cartViewModel.emitTokonowUpdated()
 
             assertTrue(deferred.await())
-        }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun `WHEN emitTokonowUpdated false THEN should emit false`() {
-        runTest(UnconfinedTestDispatcher()) {
-            val deferred = async {
-                cartViewModel.tokoNowProductUpdater.first()
-            }
-
-            cartViewModel.emitTokonowUpdated(false)
-
-            assertFalse(deferred.await())
         }
     }
     // endregion
@@ -1872,18 +1864,14 @@ class CartViewModelTest : BaseCartViewModelTest() {
     }
 
     @Test
-    fun `WHEN checkAvailableShopBottomHolderData for tokonow THEN should expand if after deletion is less than or equal 3`() {
+    fun `WHEN checkAvailableShopBottomHolderData for tokonow THEN should expand if after deletion is less than or equal 1`() {
         // GIVEN
         val cartItemHolderData = CartItemHolderData(cartId = "123", isSelected = true)
-        val cartItemHolderDataTwo = CartItemHolderData(cartId = "124", isSelected = false)
-        val cartItemHolderDataThree = CartItemHolderData(cartId = "125", isSelected = true)
         val cartGroupHolderData = CartGroupHolderData(
             isTokoNow = true,
             isCollapsed = true,
             productUiModelList = mutableListOf(
-                cartItemHolderData,
-                cartItemHolderDataTwo,
-                cartItemHolderDataThree
+                cartItemHolderData
             )
         )
         val cartShopBottomHolderData = CartShopBottomHolderData(cartGroupHolderData)
@@ -1904,16 +1892,16 @@ class CartViewModelTest : BaseCartViewModelTest() {
 
         // THEN
         val newCartGroupHolderData = newCartDataList[0] as CartGroupHolderData
-        val newCartShopBottomHolderData = newCartDataList[4] as CartShopBottomHolderData
+        val newCartShopBottomHolderData = newCartDataList[2] as CartShopBottomHolderData
         assertTrue(toBeRemovedItems.isEmpty())
-        assertEquals(5, newCartDataList.size)
+        assertEquals(3, newCartDataList.size)
         assertEquals(newCartGroupHolderData, newCartShopBottomHolderData.shopData)
         assertFalse(newCartGroupHolderData.isCollapsible)
         assertFalse(newCartGroupHolderData.isCollapsed)
     }
 
     @Test
-    fun `WHEN checkAvailableShopBottomHolderData for tokonow THEN should update data only if after deletion is more than 3`() {
+    fun `WHEN checkAvailableShopBottomHolderData for tokonow THEN should update data only if after deletion is more than 1`() {
         // GIVEN
         val cartItemHolderData = CartItemHolderData(cartId = "123", isSelected = true)
         val cartItemHolderDataTwo = CartItemHolderData(cartId = "124", isSelected = false)

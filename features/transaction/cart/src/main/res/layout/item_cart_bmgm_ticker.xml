@@ -5,8 +5,7 @@
     android:id="@+id/layout_basket_building_ticker"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="12dp"
-    android:layout_marginBottom="10dp">
+    android:layout_marginBottom="4dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_ticker_bg"
@@ -22,9 +21,11 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginStart="6dp"
+        app:unify_image_corner_radius="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/iv_ticker_bg"
-        app:layout_constraintBottom_toBottomOf="@id/iv_ticker_bg"/>
+        app:layout_constraintBottom_toBottomOf="@id/iv_ticker_bg"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_bmgm_ticker"
@@ -34,6 +35,7 @@
         android:maxLines="1"
         android:ellipsize="end"
         app:typographyType="display_3"
+        android:textColor="@color/Unify_TN500"
         app:layout_constraintStart_toEndOf="@id/ic_bmgm_ticker"
         app:layout_constraintTop_toTopOf="@id/iv_ticker_bg"
         app:layout_constraintBottom_toBottomOf="@id/iv_ticker_bg"
@@ -45,22 +47,25 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         app:icon_name="CHEVRON_RIGHT"
+        android:visibility="gone"
         android:layout_centerVertical="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/iv_ticker_bg"
         app:layout_constraintBottom_toBottomOf="@id/iv_ticker_bg"/>
 
-    <View
-        android:id="@+id/v_bmgm_product_separator"
-        android:layout_width="2dp"
-        android:layout_height="10dp"
-        android:layout_marginTop="6dp"
-        android:background="@color/Unify_NN100"
-        app:layout_constraintTop_toBottomOf="@id/iv_ticker_bg"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/ic_bmgm_ticker"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:visibility="visible" />
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_chevron_right_bmgm"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:icon_name="CHEVRON_RIGHT"
+        android:visibility="gone"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_centerVertical="true"
+        app:layout_constraintStart_toEndOf="@id/tv_bmgm_ticker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_ticker_bg"
+        app:layout_constraintBottom_toBottomOf="@id/iv_ticker_bg"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/cart_shop_ticker_small_loader"
@@ -86,6 +91,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:loader_type="line" />
 
+    <!--this placeholder view for constraint mini vertical divider-->
 
+    <View
+        android:id="@+id/v_bmgm_placeholder"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_ticker_bg"
+        app:layout_constraintBottom_toBottomOf="@id/iv_ticker_bg"
+        android:visibility="invisible"/>
+
+    <View
+        android:id="@+id/v_bmgm_separator"
+        android:layout_width="2dp"
+        android:layout_height="6dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/Unify_NN100"
+        app:layout_constraintTop_toBottomOf="@id/iv_ticker_bg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/v_bmgm_placeholder"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

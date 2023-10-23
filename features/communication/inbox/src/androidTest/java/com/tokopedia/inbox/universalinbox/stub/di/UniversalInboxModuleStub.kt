@@ -5,6 +5,8 @@ import com.gojek.conversations.courier.BabbleCourierClient
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.inbox.universalinbox.data.datastore.UniversalInboxDataStore
+import com.tokopedia.inbox.universalinbox.domain.mapper.UniversalInboxMiscMapper
+import com.tokopedia.inbox.universalinbox.stub.common.UniversalInboxMiscMapperStub
 import com.tokopedia.inbox.universalinbox.stub.common.UserSessionStub
 import com.tokopedia.inbox.universalinbox.stub.common.util.FakeAbTestPlatformImpl
 import com.tokopedia.inbox.universalinbox.stub.data.datastore.UniversalInboxDataStoreStub
@@ -81,5 +83,11 @@ object UniversalInboxModuleStub {
     @Provides
     fun provideDataStore(): UniversalInboxDataStore {
         return UniversalInboxDataStoreStub()
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideMiscMenuMapper(): UniversalInboxMiscMapper {
+        return UniversalInboxMiscMapperStub()
     }
 }

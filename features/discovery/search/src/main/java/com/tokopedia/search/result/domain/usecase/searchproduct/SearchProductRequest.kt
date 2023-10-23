@@ -1,9 +1,11 @@
 package com.tokopedia.search.result.domain.usecase.searchproduct
 
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.search.result.domain.model.AceSearchProductModel
+import com.tokopedia.search.result.domain.model.AceSearchProductModelV5
 import com.tokopedia.search.result.domain.model.HeadlineAdsModel
 import com.tokopedia.search.result.domain.model.ProductTopAdsModel
 import com.tokopedia.usecase.RequestParams
@@ -13,8 +15,16 @@ internal fun graphqlRequests(request: MutableList<GraphqlRequest>.() -> Unit) =
                 request()
         }
 
-internal fun MutableList<GraphqlRequest>.addAceSearchProductRequest(params: String) {
-        add(createAceSearchProductRequest(params))
+internal fun MutableList<GraphqlRequest>.addAceSearchProductRequest(
+    reimagineRollence: ReimagineRollence,
+    params: String,
+) {
+    val request = if (reimagineRollence.search3ProductCard().isUseAceSearchProductV5())
+        createAceSearchProductV5Request(params)
+    else
+        createAceSearchProductRequest(params)
+
+    add(request)
 }
 
 @GqlQuery("AceSearchProduct", ACE_SEARCH_PRODUCT_QUERY)
@@ -24,6 +34,14 @@ internal fun createAceSearchProductRequest(params: String) =
                 AceSearchProductModel::class.java,
                 mapOf(SearchConstant.GQL.KEY_PARAMS to params)
         )
+
+@GqlQuery("AceSearchProductV5", ACE_SEARCH_PRODUCT_V5_QUERY)
+internal fun createAceSearchProductV5Request(params: String) =
+    GraphqlRequest(
+        AceSearchProductV5(),
+        AceSearchProductModelV5::class.java,
+        mapOf(SearchConstant.GQL.KEY_PARAMS to params)
+    )
 
 internal fun MutableList<GraphqlRequest>.addProductAdsRequest(requestParams: RequestParams, params: String) {
         if (!requestParams.isSkipProductAds()) {
@@ -55,6 +73,191 @@ internal fun createHeadlineAdsRequest(headlineParams: String) =
         HeadlineAdsModel::class.java,
         mapOf(SearchConstant.GQL.KEY_HEADLINE_PARAMS to headlineParams)
     )
+
+private const val ACE_SEARCH_PRODUCT_V5_QUERY = """
+    query SearchProductQueryV5(${'$'}params: String!) {
+      searchProductV5(params: ${'$'}params) {
+        header {
+          totalData
+          responseCode
+          keywordProcess
+          keywordIntention
+          componentID
+          meta {
+            productListType
+            hasPostProcessing
+            hasButtonATC
+          }
+          isQuerySafe
+          additionalParams
+          autocompleteApplink
+          backendFilters
+          backendFiltersToggle
+        }
+        data {
+          redirection {
+            applink
+          }
+          ticker {
+            id
+            text
+            query
+            componentID
+            trackingOption
+          }
+          related {
+            relatedKeyword
+            position
+            trackingOption
+            otherRelated {
+              keyword
+              url
+              applink
+              componentID
+              products {
+                id
+                name
+                url
+                applink
+                mediaURL {
+                  image
+                }
+                shop {
+                  id
+                  name
+                  city
+                  tier
+                }
+                badge {
+                  id
+                  title
+                  url
+                }
+                price {
+                  text
+                  number
+                }
+                freeShipping {
+                  url
+                }
+                labelGroups {
+                  id
+                  position
+                  title
+                  type
+                  url
+                }
+                rating
+                wishlist
+                ads {
+                  id
+                  productClickURL
+                  productViewURL
+                  productWishlistURL
+                  tag
+                }
+                meta {
+                  warehouseID
+                  componentID
+                }
+              }
+            }
+          }
+          suggestion {
+            suggestion
+            query
+            text
+            componentID
+            trackingOption
+          }
+          banner {
+            position
+            text
+            applink
+            imageURL
+            componentID
+            trackingOption
+          }
+          violation {
+            headerText
+            descriptionText
+            imageURL
+            ctaURL
+            ctaApplink
+            buttonText
+            buttonType
+          }
+          products {
+            id
+            name
+            url
+            applink
+            mediaURL {
+              image
+              image300
+              image700
+              videoCustom
+            }
+            shop {
+              id
+              name
+              url
+              city
+              tier
+            }
+            badge {
+              id
+              title
+              url
+            }
+            price {
+              text
+              number
+              range
+              original
+              discountPercentage
+            }
+            freeShipping {
+              url
+            }
+            labelGroups {
+              id
+              position
+              title
+              type
+              url
+            }
+            labelGroupsVariant {
+              title
+              type
+              typeVariant
+              hexColor
+            }
+            category {
+              id
+              name
+              breadcrumb
+            }
+            rating
+            wishlist
+            ads {
+              id
+              productClickURL
+              productViewURL
+              productWishlistURL
+              tag
+            }
+            meta {
+              parentID
+              warehouseID
+              isPortrait
+            }
+          }
+          totalDataText
+        }
+      }
+    }
+"""
 
 private const val ACE_SEARCH_PRODUCT_QUERY = """
     query SearchProduct(${'$'}params: String!) {
@@ -129,6 +332,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                             }
                             badges {
                                 imageUrl
+                                title
                                 show
                             }
                             freeOngkir {

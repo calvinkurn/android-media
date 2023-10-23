@@ -84,35 +84,34 @@
         app:typographyWeight="bold"
         tools:text="2 Juli 2022" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_see_all"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_cta_chevron"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginEnd="16dp"
-        android:textColor="@color/Unify_GN500"
+        app:icon_name="CHEVRON_RIGHT"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/npl_timer"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/npl_timer"
-        app:typographyType="display_3"
-        app:typographyWeight="bold"
-        tools:text="Lihat Semua"
+        app:layout_constraintTop_toTopOf="@id/text_title"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/button_remind_me"
         android:layout_width="wrap_content"
-        android:layout_height="26dp"
+        android:layout_height="24dp"
         android:layout_marginEnd="12dp"
         android:visibility="visible"
-        app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="@id/npl_timer"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/npl_timer">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
+            android:id="@+id/layout_container_remind_me"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
             android:paddingHorizontal="8dp">
 
             <com.tokopedia.unifycomponents.LoaderUnify
@@ -148,7 +147,7 @@
                 app:typographyWeight="bold"
                 tools:text="Ingatkan" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </com.tokopedia.unifycomponents.CardUnify2>
 

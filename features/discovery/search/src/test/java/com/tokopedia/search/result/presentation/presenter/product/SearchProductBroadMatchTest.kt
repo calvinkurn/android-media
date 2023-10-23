@@ -5,6 +5,7 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.domain.model.SearchProductV5
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatch
@@ -29,10 +30,11 @@ import org.junit.Assert.assertFalse
 import org.junit.Test
 import rx.Subscriber
 
-private const val broadMatchResponseCode1EmptySearch = "searchproduct/broadmatch/response-code-1-empty-search.json"
+private const val broadMatchResponseCodeUnrecognizedEmptySearch = "searchproduct/broadmatch/response-code-unrecognized-empty-search.json"
 private const val broadMatchResponseCode1NotEmptySearch = "searchproduct/broadmatch/response-code-1-not-empty-search.json"
 private const val broadMatchResponseCode1Page2NotEmptySearch = "searchproduct/broadmatch/response-code-1-page-2-not-empty-search.json"
 private const val broadMatchResponseCode4 = "searchproduct/broadmatch/response-code-4.json"
+private const val broadMatchResponseCode4Reimagine = "searchproduct/broadmatch/response-code-4-reimagine.json"
 private const val broadMatchResponseCode4ButNoBroadmatch = "searchproduct/broadmatch/response-code-4-but-no-broadmatch.json"
 private const val broadMatchResponseCode4NoSuggestion = "searchproduct/broadmatch/response-code-4-no-suggestion.json"
 private const val broadMatchResponseCode5With5Products = "searchproduct/broadmatch/response-code-5-with-5-products.json"
@@ -55,6 +57,19 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val keyword = "samsung"
+
+    @Test
+    fun `Show empty result when response code is NOT 0, 4, or 5`() {
+        val searchProductModel = broadMatchResponseCodeUnrecognizedEmptySearch.jsonToObject<SearchProductModel>()
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+
+        `When Load Data`()
+
+        `Then assert view will only show empty search`()
+        `Then verify recommendation use case is called`()
+    }
+
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
         every { searchProductFirstPageUseCase.execute(any(), any()) }.answers {
             secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
@@ -179,6 +194,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         expectedActualKeyword: String,
     ) {
         keyword shouldBe otherRelated.keyword
+        url shouldBe otherRelated.url
         applink shouldBe otherRelated.applink
         broadMatchItemDataViewList.size shouldBe otherRelated.productList.size
         carouselOptionType shouldBe BroadMatch
@@ -216,6 +232,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         badgeItemDataViewList.listShouldBe(otherRelatedProduct.badgeList) { actual, expected ->
             actual.imageUrl shouldBe expected.imageUrl
             actual.isShown shouldBe expected.isShown
+            actual.title shouldBe expected.title
         }
 
         labelGroupDataList.listShouldBe(otherRelatedProduct.labelGroupList) { actual, expected ->
@@ -230,7 +247,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
         isOrganicAds shouldBe otherRelatedProduct.ads.id.isNotEmpty()
         topAdsViewUrl shouldBe otherRelatedProduct.ads.productViewUrl
-        this.topAdsClickUrl shouldBe otherRelatedProduct.ads.productClickUrl
+        topAdsClickUrl shouldBe otherRelatedProduct.ads.productClickUrl
         topAdsWishlistUrl shouldBe otherRelatedProduct.ads.productWishlistUrl
 
         carouselProductType.shouldBeInstanceOf<BroadMatchProduct>()
@@ -238,6 +255,123 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
         componentId shouldBe otherRelatedProduct.componentId
         warehouseID shouldBe otherRelatedProduct.warehouseIdDefault
+    }
+
+    @Test
+    fun `Show broad match and DO NOT show empty search for response code 4 and no product list for reimagine`() {
+        val searchProductModel = broadMatchResponseCode4Reimagine.jsonToObject<SearchProductModel>()
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given keyword from view`(keyword)
+
+        `When Load Data`()
+
+        `Then assert view updater will show product list`()
+
+        val visitableList = visitableListSlot.captured
+        `Then assert visitable list contains SuggestionViewModel as first item`(visitableList)
+        `Then assert visitable list contains BroadMatchViewModel for reimagine`(
+            1,
+            visitableList,
+            searchProductModel,
+            keyword,
+        )
+        `Then assert visitable list does not contain Separator`(visitableList)
+        `Then verify recommendation use case is not called`()
+    }
+
+    private fun `Then assert visitable list contains BroadMatchViewModel for reimagine`(
+        expectedBroadMatchStartingPosition: Int,
+        visitableList: List<Visitable<*>>,
+        searchProductModel: SearchProductModel,
+        expectedActualKeyword: String,
+    ) {
+        val related = searchProductModel.searchProductV5.data.related
+        val expectedTrackingOption = related.trackingOption
+        val otherRelated = related.otherRelatedList
+        visitableList.filterIsInstance<BroadMatchDataView>().size shouldBe otherRelated.size
+
+        var index = visitableList.indexOfFirst { it is BroadMatchDataView }
+        index shouldBe expectedBroadMatchStartingPosition
+
+        otherRelated.forEach {
+            val visitable = visitableList[index]
+            visitable.shouldBeInstanceOf<BroadMatchDataView>()
+
+            val broadMatchViewModel = visitable as BroadMatchDataView
+            broadMatchViewModel.assertBroadMatchViewModel(
+                it,
+                expectedTrackingOption,
+                expectedActualKeyword,
+            )
+
+            index++
+        }
+    }
+
+    private fun BroadMatchDataView.assertBroadMatchViewModel(
+        otherRelated: SearchProductV5.Data.Related.OtherRelated,
+        expectedTrackingOption: Int,
+        expectedActualKeyword: String,
+    ) {
+        keyword shouldBe otherRelated.keyword
+        applink shouldBe otherRelated.applink
+        url shouldBe otherRelated.url
+        broadMatchItemDataViewList.size shouldBe otherRelated.productList.size
+        carouselOptionType shouldBe BroadMatch
+        trackingOption shouldBe expectedTrackingOption
+        componentId shouldBe otherRelated.componentID
+        actualKeyword shouldBe expectedActualKeyword
+
+        otherRelated.productList.forEachIndexed { index, otherRelatedProduct ->
+            broadMatchItemDataViewList[index].assertBroadMatchItemViewModel(
+                otherRelatedProduct,
+                index + 1,
+                otherRelated.keyword,
+            )
+        }
+    }
+
+    private fun BroadMatchItemDataView.assertBroadMatchItemViewModel(
+        otherRelatedProduct: SearchProductV5.Data.Related.OtherRelated.Product,
+        expectedPosition: Int,
+        expectedAlternativeKeyword: String,
+    ) {
+        id shouldBe otherRelatedProduct.id
+        name shouldBe otherRelatedProduct.name
+        price shouldBe otherRelatedProduct.price.number
+        priceString shouldBe otherRelatedProduct.price.text
+        imageUrl shouldBe otherRelatedProduct.mediaURL.image
+        url shouldBe otherRelatedProduct.url
+        applink shouldBe otherRelatedProduct.applink
+        position shouldBe expectedPosition
+        alternativeKeyword shouldBe expectedAlternativeKeyword
+        isWishlisted shouldBe otherRelatedProduct.isWishlisted
+        shopLocation shouldBe otherRelatedProduct.shop.city
+        ratingAverage shouldBe otherRelatedProduct.rating
+
+        badgeItemDataViewList.first().imageUrl shouldBe otherRelatedProduct.badge.url
+        badgeItemDataViewList.first().title shouldBe otherRelatedProduct.badge.title
+
+        labelGroupDataList.listShouldBe(otherRelatedProduct.labelGroupList) { actual, expected ->
+            actual.title shouldBe expected.title
+            actual.position shouldBe expected.position
+            actual.type shouldBe expected.type
+            actual.imageUrl shouldBe expected.url
+        }
+
+        freeOngkirDataView.imageUrl shouldBe otherRelatedProduct.freeShipping.url
+
+        isOrganicAds shouldBe otherRelatedProduct.ads.id.isNotEmpty()
+        topAdsViewUrl shouldBe otherRelatedProduct.ads.productViewURL
+        topAdsClickUrl shouldBe otherRelatedProduct.ads.productClickURL
+        topAdsWishlistUrl shouldBe otherRelatedProduct.ads.productWishlistURL
+
+        carouselProductType.shouldBeInstanceOf<BroadMatchProduct>()
+        carouselProductType.hasThreeDots shouldBe true
+
+        componentId shouldBe otherRelatedProduct.meta.componentID
+        warehouseID shouldBe otherRelatedProduct.meta.warehouseID
     }
 
     @Test

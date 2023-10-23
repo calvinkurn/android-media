@@ -13,15 +13,12 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.activities.SomPrintAwbActivity
 import com.tokopedia.sellerorder.common.util.SomConsts
-import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment
-import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
-import java.net.URLDecoder
 
 object SomNavigator {
 
@@ -42,25 +39,15 @@ object SomNavigator {
         }
     }
 
-    fun goToTrackingPage(context: Context?, orderId: String, url: String) {
+    fun goToTrackingPage(context: Context?, url: String) {
         context?.run {
-            var routingAppLink: String = ApplinkConst.ORDER_TRACKING.replace("{order_id}", orderId)
-            val uriBuilder = Uri.Builder()
-            val decodedUrl = if (url.startsWith(SomConsts.PREFIX_HTTPS)) {
-                url
-            } else {
-                URLDecoder.decode(url, SomConsts.ENCODING_UTF_8)
-            }
-            uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, decodedUrl)
-            uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_CALLER, SomConsts.PARAM_SELLER)
-            routingAppLink += uriBuilder.toString()
-            RouteManager.route(this, routingAppLink)
+            RouteManager.route(this, url)
         }
     }
 
     fun goToConfirmShippingPage(fragment: Fragment, orderId: String) {
         fragment.run {
-            Intent(context, SomConfirmShippingActivity::class.java).apply {
+            RouteManager.getIntent(fragment.context, ApplinkConstInternalLogistic.CONFIRM_SHIPPING).apply {
                 putExtra(SomConsts.PARAM_ORDER_ID, orderId)
                 putExtra(SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING, false)
                 startActivityForResult(this, REQUEST_CONFIRM_SHIPPING)
@@ -69,8 +56,9 @@ object SomNavigator {
     }
 
     fun goToRequestPickupPage(fragment: Fragment, orderId: String) {
+
         fragment.run {
-            Intent(context, SomConfirmReqPickupActivity::class.java).apply {
+            RouteManager.getIntent(fragment.context, ApplinkConstInternalLogistic.REQUEST_PICKUP).apply {
                 putExtra(SomConsts.PARAM_ORDER_ID, orderId)
                 startActivityForResult(this, REQUEST_CONFIRM_REQUEST_PICKUP)
             }
@@ -79,7 +67,7 @@ object SomNavigator {
 
     fun goToChangeCourierPage(fragment: Fragment, orderId: String) {
         fragment.run {
-            Intent(activity, SomConfirmShippingActivity::class.java).apply {
+            RouteManager.getIntent(fragment.context, ApplinkConstInternalLogistic.CONFIRM_SHIPPING).apply {
                 putExtra(SomConsts.PARAM_ORDER_ID, orderId)
                 putExtra(SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING, true)
                 startActivityForResult(this, REQUEST_CHANGE_COURIER)
@@ -89,7 +77,11 @@ object SomNavigator {
 
     fun goToReschedulePickupPage(fragment: Fragment, orderId: String) {
         fragment.run {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.RESCHEDULE_PICKUP.replace("{order_id}", orderId))
+            val intent =
+                RouteManager.getIntent(
+                    activity,
+                    ApplinkConstInternalLogistic.RESCHEDULE_PICKUP.replace("{order_id}", orderId)
+                )
             startActivityForResult(intent, REQUEST_RESCHEDULE_PICKUP)
         }
     }
@@ -103,13 +95,15 @@ object SomNavigator {
 
     fun goToFindNewDriver(fragment: Fragment, orderId: String, invoice: String?) {
         fragment.run {
-            startActivityForResult(RouteManager.getIntent(
-                activity,
-                ApplinkConstInternalLogistic.FIND_NEW_DRIVER
-            ).apply {
+            startActivityForResult(
+                RouteManager.getIntent(
+                    activity,
+                    ApplinkConstInternalLogistic.FIND_NEW_DRIVER
+                ).apply {
                     putExtra(SomConsts.PARAM_ORDER_ID, orderId)
                     putExtra(SomConsts.PARAM_INVOICE, invoice.orEmpty())
-                }, REQUEST_FIND_NEW_DRIVER
+                },
+                REQUEST_FIND_NEW_DRIVER
             )
         }
     }
@@ -130,7 +124,12 @@ object SomNavigator {
                 }
             } else {
                 view?.let {
-                    Toaster.build(it, getString(R.string.som_detail_som_print_not_available), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+                    Toaster.build(
+                        it,
+                        getString(R.string.som_detail_som_print_not_available),
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_NORMAL
+                    ).show()
                 }
             }
         }

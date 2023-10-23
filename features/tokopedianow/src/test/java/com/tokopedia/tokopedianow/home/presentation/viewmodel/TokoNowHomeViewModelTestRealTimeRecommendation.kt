@@ -10,6 +10,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
+import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.home.domain.model.Grid
 import com.tokopedia.tokopedianow.home.domain.model.Header
@@ -88,47 +89,48 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
-                removeAbleWidgets = listOf(),
-                enableNewRepurchase = true
+                removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, productId, 1, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
-        val productList = listOf(
-            ProductCardCompactCarouselItemUiModel(
-                shopId = "5",
-                shopType = "pm",
-                categoryBreadcrumbs = "Bahan Masak/Sayur",
-                productCardModel = ProductCardCompactUiModel(
-                    productId = "2",
-                    imageUrl = "https://tokopedia.com/image.jpg",
-                    isVariant = false,
-                    price = "0",
-                    orderQuantity = 1,
-                    usePreDraw = true,
-                    needToShowQuantityEditor = true
-                ),
-                parentId = "0"
-            )
+            val productList = listOf(
+                ProductCardCompactCarouselItemUiModel(
+                    channelId = channelId,
+                    headerName = "Lagi Diskon",
+                    shopId = "5",
+                    shopType = "pm",
+                    categoryBreadcrumbs = "Bahan Masak/Sayur",
+                    productCardModel = ProductCardCompactUiModel(
+                        productId = "2",
+                        imageUrl = "https://tokopedia.com/image.jpg",
+                        isVariant = false,
+                        price = "0",
+                        orderQuantity = 1,
+                        usePreDraw = true,
+                        needToShowQuantityEditor = true
+                    ),
+                    parentId = "0"
+                )
         )
 
-        val rtrProductList = listOf(
-            ProductCardCompactCarouselItemUiModel(
-                shopId = "5",
-                appLink = "tokopedia://product/detail/1",
-                headerName = "Lagi Diskon",
-                categoryBreadcrumbs = "Bahan Masak/Sayur",
-                productCardModel = ProductCardCompactUiModel(
-                    productId = "5",
-                    name = "Tahu Bulat",
-                    usePreDraw = true,
-                    needToShowQuantityEditor = true,
-                    needToChangeMaxLinesName = true
-                ),
-                parentId = "0"
+            val rtrProductList = listOf(
+                ProductCardCompactCarouselItemUiModel(
+                    shopId = "5",
+                    appLink = "tokopedia://product/detail/1",
+                    headerName = "Lagi Diskon",
+                    categoryBreadcrumbs = "Bahan Masak/Sayur",
+                    productCardModel = ProductCardCompactUiModel(
+                        productId = "5",
+                        name = "Tahu Bulat",
+                        usePreDraw = true,
+                        needToShowQuantityEditor = true,
+                        needToChangeMaxLinesName = true
+                    ),
+                    parentId = "0"
+                )
             )
-        )
 
             val realTimeRecom = HomeRealTimeRecomUiModel(
                 channelId = channelId,
@@ -144,11 +146,11 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 type = TokoNowLayoutType.PRODUCT_RECOM
             )
 
-        val seeMoreUiModel = ProductCardCompactCarouselSeeMoreUiModel(
-            id = "5",
-            headerName = "Lagi Diskon",
-            appLink = "tokopedia://now"
-        )
+            val seeMoreUiModel = ProductCardCompactCarouselSeeMoreUiModel(
+                id = "1001",
+                headerName = "Lagi Diskon",
+                appLink = "tokopedia://now"
+            )
 
             val headerUiModel = TokoNowDynamicHeaderUiModel(
                 title = "Lagi Diskon",
@@ -166,7 +168,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 productList = productList,
                 seeMoreModel = seeMoreUiModel,
                 headerModel = headerUiModel,
-                realTimeRecom = realTimeRecom,
+                realTimeRecom = realTimeRecom
             )
 
             val homeLayoutItems = listOf(
@@ -252,8 +254,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
-                removeAbleWidgets = listOf(),
-                enableNewRepurchase = true
+                removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, "2", 1, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
@@ -261,8 +262,10 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             viewModel.onCartQuantityChanged(channelId, "5", 2, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
-        val productList = listOf(
-            ProductCardCompactCarouselItemUiModel(
+            val productList = listOf(
+                ProductCardCompactCarouselItemUiModel(
+                    channelId = channelId,
+                headerName = "Lagi Diskon",
                 parentId = "3",
                 shopId = "5",
                 shopType = "pm",
@@ -278,39 +281,41 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 )
             ),
             ProductCardCompactCarouselItemUiModel(
-                parentId = "7",
-                shopId = "2",
-                shopType = "pm",
-                categoryBreadcrumbs = "Bahan Masak/Daging",
-                productCardModel = ProductCardCompactUiModel(
-                    productId = "5",
-                    imageUrl = "https://tokopedia.com/image_5.jpg",
-                    price = "3000",
-                    orderQuantity = 2,
-                    isVariant = true,
-                    usePreDraw = true,
-                    needToShowQuantityEditor = true
-                )
-            )
-        )
-
-        val rtrProductList = listOf(
-            ProductCardCompactCarouselItemUiModel(
-                parentId = "2",
-                shopId = "2",
+                channelId = channelId,
                 headerName = "Lagi Diskon",
-                categoryBreadcrumbs = "Bahan Masak/Sayur",
-                productCardModel = ProductCardCompactUiModel(
-                    productId = "5",
-                    name = "Tahu Bulat",
-                    orderQuantity = 2,
-                    isVariant = true,
-                    usePreDraw = true,
-                    needToShowQuantityEditor = true,
-                    needToChangeMaxLinesName = true
+                    parentId = "7",
+                    shopId = "2",
+                    shopType = "pm",
+                    categoryBreadcrumbs = "Bahan Masak/Daging",
+                    productCardModel = ProductCardCompactUiModel(
+                        productId = "5",
+                        imageUrl = "https://tokopedia.com/image_5.jpg",
+                        price = "3000",
+                        orderQuantity = 2,
+                        isVariant = true,
+                        usePreDraw = true,
+                        needToShowQuantityEditor = true
+                    )
                 )
             )
-        )
+
+            val rtrProductList = listOf(
+                ProductCardCompactCarouselItemUiModel(
+                    parentId = "2",
+                    shopId = "2",
+                    headerName = "Lagi Diskon",
+                    categoryBreadcrumbs = "Bahan Masak/Sayur",
+                    productCardModel = ProductCardCompactUiModel(
+                        productId = "5",
+                        name = "Tahu Bulat",
+                        orderQuantity = 2,
+                        isVariant = true,
+                        usePreDraw = true,
+                        needToShowQuantityEditor = true,
+                        needToChangeMaxLinesName = true
+                    )
+                )
+            )
 
             val realTimeRecom = HomeRealTimeRecomUiModel(
                 channelId = channelId,
@@ -326,11 +331,11 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 type = TokoNowLayoutType.PRODUCT_RECOM
             )
 
-        val seeMoreUiModel = ProductCardCompactCarouselSeeMoreUiModel(
-            id = "",
-            headerName = "Lagi Diskon",
-            appLink = ""
-        )
+            val seeMoreUiModel = ProductCardCompactCarouselSeeMoreUiModel(
+                id = "1001",
+                headerName = "Lagi Diskon",
+                appLink = ""
+            )
 
             val headerUiModel = TokoNowDynamicHeaderUiModel(
                 title = "Lagi Diskon",
@@ -431,8 +436,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
-                removeAbleWidgets = listOf(),
-                enableNewRepurchase = true
+                removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, productId, 1, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
@@ -442,39 +446,41 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             viewModel.refreshRealTimeRecommendation(channelId, productId, TokoNowLayoutType.PRODUCT_RECOM)
 
-        val productList = listOf(
-            ProductCardCompactCarouselItemUiModel(
-                shopId = "5",
-                shopType = "pm",
-                categoryBreadcrumbs = "Bahan Masak/Sayur",
-                productCardModel = ProductCardCompactUiModel(
-                    productId = "2",
-                    imageUrl = "https://tokopedia.com/image.jpg",
-                    isVariant = false,
-                    price = "0",
-                    orderQuantity = 1,
-                    usePreDraw = true,
-                    needToShowQuantityEditor = true
-                ),
-                parentId = "0"
+            val productList = listOf(
+                ProductCardCompactCarouselItemUiModel(
+                    channelId = channelId,
+                    headerName = "Lagi Diskon",
+                    shopId = "5",
+                    shopType = "pm",
+                    categoryBreadcrumbs = "Bahan Masak/Sayur",
+                    productCardModel = ProductCardCompactUiModel(
+                        productId = "2",
+                        imageUrl = "https://tokopedia.com/image.jpg",
+                        isVariant = false,
+                        price = "0",
+                        orderQuantity = 1,
+                        usePreDraw = true,
+                        needToShowQuantityEditor = true
+                    ),
+                    parentId = "0"
+                )
             )
-        )
 
-        val rtrProductList = listOf(
-            ProductCardCompactCarouselItemUiModel(
-                shopId = "5",
-                headerName = "Lagi Diskon",
-                categoryBreadcrumbs = "Bahan Masak/Sayur",
-                productCardModel = ProductCardCompactUiModel(
-                    productId = "5",
-                    name = "Tahu Bulat",
-                    usePreDraw = true,
-                    needToShowQuantityEditor = true,
-                    needToChangeMaxLinesName = true
-                ),
-                parentId = "0"
+            val rtrProductList = listOf(
+                ProductCardCompactCarouselItemUiModel(
+                    shopId = "5",
+                    headerName = "Lagi Diskon",
+                    categoryBreadcrumbs = "Bahan Masak/Sayur",
+                    productCardModel = ProductCardCompactUiModel(
+                        productId = "5",
+                        name = "Tahu Bulat",
+                        usePreDraw = true,
+                        needToShowQuantityEditor = true,
+                        needToChangeMaxLinesName = true
+                    ),
+                    parentId = "0"
+                )
             )
-        )
 
             val realTimeRecom = HomeRealTimeRecomUiModel(
                 channelId = channelId,
@@ -490,11 +496,11 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 type = TokoNowLayoutType.PRODUCT_RECOM
             )
 
-        val seeMoreUiModel = ProductCardCompactCarouselSeeMoreUiModel(
-            id = "5",
-            headerName = "Lagi Diskon",
-            appLink = "tokopedia://now"
-        )
+            val seeMoreUiModel = ProductCardCompactCarouselSeeMoreUiModel(
+                id = "1001",
+                headerName = "Lagi Diskon",
+                appLink = "tokopedia://now"
+            )
 
             val headerUiModel = TokoNowDynamicHeaderUiModel(
                 title = "Lagi Diskon",
@@ -512,7 +518,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 productList = productList,
                 seeMoreModel = seeMoreUiModel,
                 headerModel = headerUiModel,
-                realTimeRecom = realTimeRecom,
+                realTimeRecom = realTimeRecom
             )
 
             val homeLayoutItems = listOf(
@@ -590,8 +596,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
-                removeAbleWidgets = listOf(),
-                enableNewRepurchase = true
+                removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, productId, 1, "5", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
@@ -599,6 +604,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             val productList = listOf(
                 ProductCardCompactCarouselItemUiModel(
+                    channelId = channelId,
+                    headerName = "Lagi Diskon",
                     shopId = "5",
                     shopType = "pm",
                     categoryBreadcrumbs = "Bahan Masak/Sayur",
@@ -630,7 +637,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             )
 
             val seeMoreUiModel = ProductCardCompactCarouselSeeMoreUiModel(
-                id = "5",
+                id = "1001",
                 headerName = "Lagi Diskon",
                 appLink = "tokopedia://now"
             )
@@ -651,7 +658,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 productList = productList,
                 seeMoreModel = seeMoreUiModel,
                 headerModel = headerUiModel,
-                realTimeRecom = realTimeRecom,
+                realTimeRecom = realTimeRecom
             )
 
             val homeLayoutItems = listOf(
@@ -710,8 +717,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
-                removeAbleWidgets = listOf(),
-                enableNewRepurchase = true
+                removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, productId, 1, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
@@ -776,8 +782,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
-                removeAbleWidgets = listOf(),
-                enableNewRepurchase = true
+                removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, productId, 1, "5", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
@@ -787,6 +792,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             val productList = listOf(
                 ProductCardCompactCarouselItemUiModel(
+                    channelId = channelId,
+                    headerName = "Lagi Diskon",
                     shopId = "5",
                     shopType = "pm",
                     categoryBreadcrumbs = "Bahan Masak/Sayur",
@@ -818,7 +825,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             )
 
             val seeMoreUiModel = ProductCardCompactCarouselSeeMoreUiModel(
-                id = "5",
+                id = "1001",
                 headerName = "Lagi Diskon",
                 appLink = "tokopedia://now"
             )
@@ -839,7 +846,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 productList = productList,
                 seeMoreModel = seeMoreUiModel,
                 headerModel = headerUiModel,
-                realTimeRecom = realTimeRecom,
+                realTimeRecom = realTimeRecom
             )
 
             val homeLayoutItems = listOf(

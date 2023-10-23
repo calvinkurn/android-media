@@ -180,6 +180,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.attachproduct)
     implementation projectOrAar(rootProject.ext.features.basemvvm)
     implementation projectOrAar(rootProject.ext.features.loginregister)
+    implementation projectOrAar(rootProject.ext.features.accountlinking)
     implementation projectOrAar(rootProject.ext.features.homeAccountUser)
     implementation projectOrAar(rootProject.ext.features.logout)
     implementation projectOrAar(rootProject.ext.features.chooseaccount)
@@ -211,6 +212,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.inboxCommon)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.shopAdminCommon)
+    implementation projectOrAar(rootProject.ext.features.orderManagementCommon)
     implementation projectOrAar(rootProject.ext.features.youtubeCommon)
     implementation projectOrAar(rootProject.ext.features.merchantVoucher)
     implementation projectOrAar(rootProject.ext.features.navigationCommon)
@@ -227,6 +229,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.promoGamificationCommon)
     implementation projectOrAar(rootProject.ext.libraries.shakeDetect)
     implementation projectOrAar(rootProject.ext.libraries.mapviewer)
+    implementation projectOrAar(rootProject.ext.features.scpAuth)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.features.install_referral)
     implementation projectOrAar(rootProject.ext.features.additional_check)
@@ -302,7 +305,6 @@ dependencies {
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
-    implementation rootProject.ext.firebase.auth
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true

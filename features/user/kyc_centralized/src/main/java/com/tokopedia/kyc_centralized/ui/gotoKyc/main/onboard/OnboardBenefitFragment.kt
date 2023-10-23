@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.main.onboard
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -109,7 +110,8 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
         val onBoardProgressiveBottomSheet = OnboardProgressiveBottomSheet.newInstance(
             projectId = args.parameter.projectId,
             source = source,
-            encryptedName = encryptedName
+            encryptedName = encryptedName,
+            callback = args.parameter.callback
         )
 
         onBoardProgressiveBottomSheet.show(
@@ -125,13 +127,19 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
                 )
             }
         }
+
+        onBoardProgressiveBottomSheet.setOnLaunchCallbackListener {
+            activity?.setResult(KYCConstant.ActivityResult.LAUNCH_CALLBACK)
+            activity?.finish()
+        }
     }
 
     private fun showNonProgressiveBottomSheet(projectId: String, source: String, isAccountLinked: Boolean) {
         val onBoardNonProgressiveBottomSheet = OnboardNonProgressiveBottomSheet.newInstance(
             projectId = projectId,
             source = source,
-            isAccountLinked = isAccountLinked
+            isAccountLinked = isAccountLinked,
+            callback = args.parameter.callback
         )
 
         onBoardNonProgressiveBottomSheet.show(
@@ -139,11 +147,28 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
             TAG_BOTTOM_SHEET_ONBOARD_NON_PROGRESSIVE
         )
 
+        onBoardNonProgressiveBottomSheet.setOnLaunchBlockedKycListener { isBlockedMultipleAccount ->
+            val intent = Intent()
+            intent.putExtra(KYCConstant.PARAM_BLOCKED_IS_MULTIPLE_ACCOUNT, isBlockedMultipleAccount)
+            activity?.setResult(KYCConstant.ActivityResult.BLOCKED_KYC, intent)
+            activity?.finish()
+        }
+
+        onBoardNonProgressiveBottomSheet.setOnLaunchTokoKycListener {
+            activity?.setResult(KYCConstant.ActivityResult.LAUNCH_TOKO_KYC)
+            activity?.finish()
+        }
+
         onBoardNonProgressiveBottomSheet.setOnDismissWithDataListener { isReload ->
             if (isReload) {
                 activity?.setResult(KYCConstant.ActivityResult.RELOAD)
                 activity?.finish()
             }
+        }
+
+        onBoardNonProgressiveBottomSheet.setOnLaunchCallbackListener {
+            activity?.setResult(KYCConstant.ActivityResult.LAUNCH_CALLBACK)
+            activity?.finish()
         }
     }
 

@@ -509,6 +509,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 ratingScore
                 totalRating
                 totalReviewTextAndImage
+                showRatingReview
             }
            arInfo{
               productIDs
@@ -601,10 +602,33 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 icon
                 status
                 chevronPos
+                padding {
+                  t
+                  b
+                }
+            }
+            bmgm {
+              separator
+              data {
+                backgroundColor
+                titleColor
+                iconUrl
+                title
+                action {
+                  type
+                  link
+                }
+                contents {
+                  imageUrl
+                }
+                loadMoreText
+                productIDs
+                offerID
+              }
             }
           }
         }
-""".trimIndent()
+        """.trimIndent()
     }
 
     private var mCacheManager: GraphqlCacheManager? = null

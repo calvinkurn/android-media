@@ -414,6 +414,10 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       icon
                       status
                       chevronPos
+                      padding {
+                        t
+                        b
+                      }
                     }
                     ... on pdpDataProductDetailMediaComponent {
                       title
@@ -424,6 +428,10 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       }
                       show
                       ctaText
+                    }
+                    ... on pdpDataProductListComponent {
+                      queryParam
+                      thematicID
                     }
                   }
                 }

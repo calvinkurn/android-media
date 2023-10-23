@@ -54,6 +54,7 @@ class HomeHeaderViewHolder(
     override fun bind(header: HomeHeaderUiModel, payloads: MutableList<Any>) {
         if (payloads.firstOrNull() == true) {
             setupThematicHeader(header)
+            updateChooseAddressWidget()
         }
     }
 
@@ -265,6 +266,10 @@ class HomeHeaderViewHolder(
                 header.warehouses
             )
         }
+    }
+
+    private fun updateChooseAddressWidget() {
+        binding?.chooseAddressWidget?.updateWidget()
     }
 
     interface HomeHeaderListener {

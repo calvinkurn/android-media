@@ -6,12 +6,13 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.util.Log
+import android.os.Trace
 import android.view.Choreographer
 import android.view.View
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.analytics.performance.perf.PerformanceTraceDebugger.takeScreenshot
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.IrisPerformanceData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -43,6 +44,11 @@ class BlocksPerformanceTrace(
 
         const val FINISHED_LOADING_TTFL_BLOCKS_THRESHOLD = 1
         const val FINISHED_LOADING_TTIL_BLOCKS_THRESHOLD = 3
+
+        const val ANDROID_TRACE_FULLY_DRAWN = "reportFullyDrawn() for %s"
+
+        const val COOKIE_TTFL = 77
+        const val COOKIE_TTIL = 78
     }
 
     private var startCurrentTimeMillis = 0L
@@ -89,6 +95,7 @@ class BlocksPerformanceTrace(
             )
         }
         initialize(context, scope, onLaunchTimeFinished)
+        Log.d("BlocksTrace", "Start...")
     }
 
     private fun initialize(
@@ -108,6 +115,14 @@ class BlocksPerformanceTrace(
 
         if (isPerformanceTraceEnabled) {
             startCurrentTimeMillis = System.currentTimeMillis()
+            beginAsyncSystraceSection(
+                "PageLoadTime.AsyncTTFL$traceName",
+                COOKIE_TTFL
+            )
+            beginAsyncSystraceSection(
+                "PageLoadTime.AsyncTTIL$traceName",
+                COOKIE_TTIL
+            )
             TTFLperformanceMonitoring?.startTrace("ttfl_perf_trace_$traceName")
             TTILperformanceMonitoring?.startTrace("ttil_perf_trace_$traceName")
 
@@ -115,10 +130,15 @@ class BlocksPerformanceTrace(
                 perfBlockFlow.collect {
                     if (!ttflMeasured && TTFLperformanceMonitoring != null && it >= FINISHED_LOADING_TTFL_BLOCKS_THRESHOLD) {
                         measureTTFL(performanceBlocks)
+                        endAsyncSystraceSection("PageLoadTime.AsyncTTFL$traceName", COOKIE_TTFL)
                     }
 
                     if (!ttilMeasured && TTILperformanceMonitoring != null && it >= FINISHED_LOADING_TTIL_BLOCKS_THRESHOLD) {
                         measureTTIL(performanceBlocks)
+                        endAsyncSystraceSection("PageLoadTime.AsyncTTIL$traceName", COOKIE_TTIL)
+                        scope.launch(Dispatchers.Main) {
+                            putFullyDrawnTrace(traceName)
+                        }
                     }
                 }
             }
@@ -134,13 +154,38 @@ class BlocksPerformanceTrace(
         }
     }
 
-    private fun debugPerformanceTrace(
+    fun beginAsyncSystraceSection(methodName: String, cookie: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Trace.beginAsyncSection(methodName, cookie)
+        }
+    }
+
+    fun endAsyncSystraceSection(methodName: String, cookie: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Trace.endAsyncSection(methodName, cookie)
+        }
+    }
+
+    private fun putFullyDrawnTrace(traceName: String) {
+        try {
+            Trace.beginSection(
+                String.format(
+                    ANDROID_TRACE_FULLY_DRAWN,
+                    traceName
+                )
+            )
+        } finally {
+            Trace.endSection()
+        }
+    }
+
+    fun debugPerformanceTrace(
         activity: Activity?,
         summaryModel: BlocksSummaryModel,
         type: String,
         view: View
     ) {
-        activity?.takeScreenshot(type, view)
+//        activity?.takeScreenshot(type, view)
         Toaster.build(
             view,
             "" +
@@ -238,6 +283,7 @@ class BlocksPerformanceTrace(
         this.onLaunchTimeFinished = null
         TTILperformanceMonitoring = null
         performanceTraceJob?.cancel()
+        Log.d("BlocksTrace", "TTIL: " + summaryModel.get().ttil())
     }
 
     private fun trackIris() {
