@@ -13,7 +13,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
@@ -28,6 +27,7 @@ import com.tokopedia.home.constant.AtfKey.TYPE_TODO
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.DynamicIconComponent
+import com.tokopedia.home_component.model.DynamicIconComponent.DynamicIcon
 import com.tokopedia.home_component.model.TrackingAttributionModel
 import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
 import com.tokopedia.home_component.usecase.todowidget.HomeTodoWidgetData
@@ -167,13 +167,15 @@ class HomeVisitableFactoryImpl(
         visitableList.add(viewModelDynamicIcon)
     }
 
-    private fun addDynamicIconData(id: String = "", defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf(), isCache: Boolean = false, isMultipleRows: Boolean = false) {
+    private fun addDynamicIconData(id: String = "", defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf(), isCache: Boolean = false, componentName: String) {
         if (isCache && homePrefController.isUsingDifferentAtfRollenceVariant()) return
+        val iconType = if(componentName == TYPE_ICON_V2) DynamicIconComponentDataModel.Type.SMALL else DynamicIconComponentDataModel.Type.BIG
+        val numOfRows = if(componentName == TYPE_ICON_V2) 2 else 1
         val viewModelDynamicIcon = DynamicIconComponentDataModel(
             id = id,
             dynamicIconComponent = DynamicIconComponent(
-                defaultIconList.map {
-                    DynamicIconComponent.DynamicIcon(
+                defaultIconList.mapIndexed { idx, it ->
+                    DynamicIcon(
                         id = it.id,
                         applink = it.applinks,
                         imageUrl = it.imageUrl,
@@ -185,11 +187,13 @@ class HomeVisitableFactoryImpl(
                         brandId = it.brandId,
                         categoryPersona = it.categoryPersona,
                         campaignCode = it.campaignCode,
-                        withBackground = it.withBackground
+                        withBackground = it.withBackground,
+                        position = idx,
                     )
                 }
             ),
-            isMultipleRows = isMultipleRows,
+            numOfRows = numOfRows,
+            type = iconType,
             isCache = isCache,
         )
 
@@ -281,8 +285,7 @@ class HomeVisitableFactoryImpl(
                                     },
                                     onSuccess = {
                                         val icon = data.getAtfContent<DynamicHomeIcon>()
-                                        val isMultipleRows = data.component == TYPE_ICON_V2
-                                        addDynamicIconData(data.id.toString(), icon?.dynamicIcon ?: listOf(), isCache, isMultipleRows)
+                                        addDynamicIconData(data.id.toString(), icon?.dynamicIcon ?: listOf(), isCache, data.component)
                                     }
                                 )
                                 iconPosition++

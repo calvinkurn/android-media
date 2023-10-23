@@ -10,31 +10,26 @@ import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 /**
  * Created by dhaba
  */
-class DynamicIconAdapter(private val listener: DynamicIconComponentListener, private val isRevamp: Boolean = false) : RecyclerView.Adapter<DynamicIconItemViewHolder>() {
+class DynamicIconAdapter(private val listener: DynamicIconComponentListener) : RecyclerView.Adapter<DynamicIconBigItemViewHolder>() {
     private val iconList = mutableListOf<DynamicIconComponent.DynamicIcon>()
     private var position: Int = 0
     private var isCache: Boolean = false
+    private var isScrollable = false
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicIconItemViewHolder {
-        return DynamicIconItemViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicIconBigItemViewHolder {
+        return DynamicIconBigItemViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                if (isRevamp) DynamicIconItemViewHolder.LAYOUT_REVAMP else DynamicIconItemViewHolder.LAYOUT,
+                DynamicIconBigItemViewHolder.LAYOUT,
                 parent,
                 false
             ),
             listener,
-            isRevamp
         )
     }
 
-    override fun onBindViewHolder(holder: DynamicIconItemViewHolder, position: Int) {
-        val isScrollable =
-            if (isRevamp && iconList.size > DynamicIconViewHolder.SCROLLABLE_ITEM_REVAMP) true
-            else if (isRevamp && iconList.size <= DynamicIconViewHolder.SCROLLABLE_ITEM_REVAMP) false
-            else iconList.size > DynamicIconViewHolder.SCROLLABLE_ITEM
+    override fun onBindViewHolder(holder: DynamicIconBigItemViewHolder, position: Int) {
         iconList.getOrNull(position)?.let {
-            holder
-                .bind(it, isScrollable, this.position, isCache)
+            holder.bind(it, isScrollable, this.position, isCache)
         }
     }
 
@@ -47,8 +42,9 @@ class DynamicIconAdapter(private val listener: DynamicIconComponentListener, pri
     }
 
     fun submitList(list: DynamicIconComponentDataModel) {
+        this.isCache = list.isCache
+        this.isScrollable = list.dynamicIconComponent.dynamicIcon.size > list.scrollableItemThreshold
         iconList.clear()
         iconList.addAll(list.dynamicIconComponent.dynamicIcon)
-        this.isCache = list.isCache
     }
 }

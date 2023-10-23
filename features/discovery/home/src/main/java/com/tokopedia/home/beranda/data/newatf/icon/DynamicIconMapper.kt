@@ -21,10 +21,13 @@ class DynamicIconMapper @Inject constructor() {
         return if(atfData.atfStatus == AtfKey.STATUS_ERROR) {
             ErrorStateIconModel()
         } else {
+            val componentName = atfData.atfMetadata.component
+            val iconType = if(componentName == AtfKey.TYPE_ICON_V2) DynamicIconComponentDataModel.Type.SMALL else DynamicIconComponentDataModel.Type.BIG
+            val numOfRows = if(componentName == AtfKey.TYPE_ICON_V2) 2 else 1
             DynamicIconComponentDataModel(
                 id = atfData.atfMetadata.id.toString(),
                 dynamicIconComponent = DynamicIconComponent(
-                    data.dynamicIcon.map {
+                    data.dynamicIcon.mapIndexed { idx, it ->
                         DynamicIconComponent.DynamicIcon(
                             id = it.id,
                             applink = it.applinks,
@@ -37,11 +40,13 @@ class DynamicIconMapper @Inject constructor() {
                             brandId = it.brandId,
                             categoryPersona = it.categoryPersona,
                             campaignCode = it.campaignCode,
-                            withBackground = it.withBackground
+                            withBackground = it.withBackground,
+                            position = idx,
                         )
                     }
                 ),
-                isMultipleRows = atfData.atfMetadata.component == AtfKey.TYPE_ICON_V2,
+                numOfRows = numOfRows,
+                type = iconType,
                 isCache = atfData.isCache,
             )
         }
