@@ -38,13 +38,13 @@ class DynamicOneLinerViewHolder(
         when (status) {
             STATUS_PLACEHOLDER -> {
                 itemView.show()
-                binding.dynamicOneLinerContent.hide()
+                binding.dynamicOneLinerContentParent.hide()
                 binding.dynamicOneLinerShimmering.show()
             }
 
             STATUS_SHOW -> {
                 itemView.show()
-                binding.dynamicOneLinerContent.show()
+                binding.dynamicOneLinerContentParent.show()
                 binding.dynamicOneLinerShimmering.hide()
                 renderContent(this, getComponentTrackData(element))
                 impressComponent(element)
@@ -60,6 +60,9 @@ class DynamicOneLinerViewHolder(
         data: DynamicOneLinerDataModel.Data,
         componentTrackDataModel: ComponentTrackDataModel
     ) = with(binding) {
+
+        configPadding(binding, data)
+
         val title = data.text
         dynamicOneLinerTitle.showIfWithBlock(title.isNotEmpty()) {
             val context = context
@@ -99,6 +102,13 @@ class DynamicOneLinerViewHolder(
 
         dynamicOneLinerSeparatorTop.showWithCondition(data.shouldShowSeparatorTop)
         dynamicOneLinerSeparatorBottom.showWithCondition(data.shouldShowSeparatorBottom)
+    }
+
+    private fun configPadding(
+        binding: ItemDynamicOneLinerBinding,
+        data: DynamicOneLinerDataModel.Data
+    ) = with(binding.dynamicOneLinerContent) {
+        setPadding(paddingLeft, data.paddingTopPx, paddingRight, data.paddingBottomPx)
     }
 
     private fun impressComponent(element: DynamicOneLinerDataModel) {

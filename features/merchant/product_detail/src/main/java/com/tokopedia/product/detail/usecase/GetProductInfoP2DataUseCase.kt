@@ -602,6 +602,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 icon
                 status
                 chevronPos
+                padding {
+                  t
+                  b
+                }
             }
             bmgm {
               separator
