@@ -29,7 +29,10 @@ class ComparisonViewHolder(
 ) : AbstractViewHolder<ComparisonUiModel>(itemView) {
 
     interface ComparisonItemListener {
-        fun onComparisonSwitchButtonClicked(position: Int)
+        fun onComparisonSwitchButtonClicked(
+            position: Int,
+            item: ComparisonUiModel.ComparisonContent
+        )
         fun onComparisonSeeMoreButtonClicked()
         fun onComparisonProductClick(id: String)
     }

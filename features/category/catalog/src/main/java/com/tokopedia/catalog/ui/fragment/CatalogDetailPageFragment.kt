@@ -83,6 +83,7 @@ import com.tokopedia.catalogcommon.listener.TrustMakerListener
 import com.tokopedia.catalogcommon.listener.VideoExpertListener
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
+import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
@@ -286,11 +287,11 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 productSortingStatus = it.data.productSortingStatus
                 catalogUrl = it.data.catalogUrl
                 categoryId = it.data.priceCtaProperties.departmentId
-                widgetAdapter.addWidget(it.data.widgets)
                 title = it.data.navigationProperties.title
                 binding?.setupToolbar(it.data.navigationProperties)
                 binding?.setupRvWidgets(it.data.navigationProperties)
                 binding?.setupPriceCtaWidget(it.data.priceCtaProperties)
+                widgetAdapter.addWidget(it.data.widgets)
                 binding?.stickySingleHeaderView?.stickyPosition =
                     widgetAdapter.findPositionNavigation()
             } else if (it is Fail) {
@@ -676,7 +677,11 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         )
     }
 
-    override fun onComparisonSwitchButtonClicked(position: Int) {
+    override fun onComparisonSwitchButtonClicked(
+        position: Int,
+        item: ComparisonUiModel.ComparisonContent
+    ) {
+        compareCatalogId = item.id
         CatalogComponentBottomSheet.newInstance(
             "",
             catalogId,

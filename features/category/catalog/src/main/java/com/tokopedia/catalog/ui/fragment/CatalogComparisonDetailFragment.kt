@@ -196,7 +196,11 @@ class CatalogComparisonDetailFragment :
             .inject(this)
     }
 
-    override fun onComparisonSwitchButtonClicked(position: Int) {
+    override fun onComparisonSwitchButtonClicked(
+        position: Int,
+        item: ComparisonUiModel.ComparisonContent
+    ) {
+        compareCatalogId = item.id
         CatalogComponentBottomSheet.newInstance(
             "",
             catalogId,
