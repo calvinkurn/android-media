@@ -23,6 +23,7 @@ class MultiLineMetricsAdapter(
     private val listener: MetricsListener
 ) : RecyclerView.Adapter<MultiLineMetricsAdapter.ViewHolder>() {
 
+    var isMultiComponentWidget = false
     var items: List<MultiLineMetricUiModel> = emptyList()
         private set
     private var recyclerViewWidth = 0
@@ -98,10 +99,16 @@ class MultiLineMetricsAdapter(
 
         private fun setCardBackground() {
             with(binding.shcCardMetric) {
-                val cardBg = if (context.isDarkMode()) {
-                    unifyprinciplesR.color.Unify_NN100
-                } else {
-                    unifycomponentsR.color.cardunify_background
+                val cardBg = when {
+                    context.isDarkMode() && isMultiComponentWidget -> {
+                        unifyprinciplesR.color.Unify_NN200
+                    }
+
+                    context.isDarkMode() -> {
+                        unifyprinciplesR.color.Unify_NN100
+                    }
+
+                    else -> unifycomponentsR.color.cardunify_background
                 }
                 setCardBackgroundColor(context.getResColor(cardBg))
             }

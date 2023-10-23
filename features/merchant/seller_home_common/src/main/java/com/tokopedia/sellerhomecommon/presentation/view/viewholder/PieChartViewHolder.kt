@@ -28,7 +28,9 @@ import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
 import com.tokopedia.unifycomponents.NotificationUnify
-import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.unifycomponents.R as unifycomponentsR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By @ilhamsuaib on 06/07/20
@@ -59,6 +61,7 @@ class PieChartViewHolder(
             tvPieChartTitle.text = element.title
             setTagNotification(element.tag)
             setupTooltip(element)
+            setWidgetCardBackground(element.isMultiComponentWidget)
 
             observeState(element)
         }
@@ -100,6 +103,17 @@ class PieChartViewHolder(
                     NotificationUnify.COLOR_TEXT_TYPE
                 )
             }
+        }
+    }
+
+    private fun setWidgetCardBackground(isMultiComponentWidget: Boolean) {
+        with(binding.shcCardPieChart) {
+            val cardBg = if (context.isDarkMode() && isMultiComponentWidget) {
+                unifyprinciplesR.color.Unify_NN100
+            } else {
+                unifycomponentsR.color.cardunify_background
+            }
+            setCardBackgroundColor(context.getResColor(cardBg))
         }
     }
 
@@ -232,13 +246,13 @@ class PieChartViewHolder(
 
             if (isCtaVisible) {
                 val iconColor = root.context.getResColor(
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    unifyprinciplesR.color.Unify_GN500
                 )
                 val iconWidth = root.context.resources.getDimension(
-                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                    unifyprinciplesR.dimen.layout_lvl3
                 )
                 val iconHeight = root.context.resources.getDimension(
-                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                    unifyprinciplesR.dimen.layout_lvl3
                 )
                 btnShcPieChartSeeMore.setUnifyDrawableEnd(
                     IconUnify.CHEVRON_RIGHT,

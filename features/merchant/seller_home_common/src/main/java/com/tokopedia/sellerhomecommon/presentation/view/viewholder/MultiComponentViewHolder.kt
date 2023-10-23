@@ -22,6 +22,8 @@ import com.tokopedia.sellerhomecommon.databinding.ShcMultiComponentWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentTab
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.adapter.MultiComponentAdapter
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class MultiComponentViewHolder(
     itemView: View,
@@ -109,12 +111,12 @@ class MultiComponentViewHolder(
         binding.shimmerShcMultiComponent.root.gone()
         binding.errorShcMultiComponent.gone()
 
-
         setupTab(element)
         impressAndShowCoachmark(element)
     }
 
     private fun setupTab(element: MultiComponentWidgetUiModel) {
+        setTabBackground()
         onTabSelectedListener?.let {
             binding.tabsShcMultiComponent.tabLayout.removeOnTabSelectedListener(it)
         }
@@ -152,6 +154,17 @@ class MultiComponentViewHolder(
         // It will prevent gql call because we are checking if the component is loaded or not
         element.data?.tabs?.getOrNull(element.data?.selectedTabPosition.orZero())?.let {
             listener.multiComponentTabSelected(it)
+        }
+    }
+
+    private fun setTabBackground() {
+        with(binding.tabsShcMultiComponent.tabLayout) {
+            val backgroundColor = if (context.isDarkMode()) {
+                unifycomponentsR.color.cardunify_background
+            } else {
+                unifycomponentsR.drawable.unify_tabs_border_bottom
+            }
+            setBackgroundResource(backgroundColor)
         }
     }
 
