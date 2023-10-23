@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:translationZ="1dp"
@@ -27,6 +28,8 @@
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="CLOSE"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view_timer" />
 
@@ -90,6 +93,12 @@
         app:layout_constraintTop_toBottomOf="@+id/loader_circle_3"
         app:loader_type="rect" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/loader_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="loader_circle_1, loader_circle_2,loader_circle_3, loader_react_1, loader_react_2, loader_react_3"/>
+
     <LinearLayout
         android:id="@+id/container_error"
         android:layout_width="match_parent"
@@ -103,33 +112,46 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/stories_error_icon"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="center_horizontal"
             app:icon_color_light_enable="@color/Unify_Static_White"
             app:icon_color_night_enable="@color/Unify_Static_White"
-            app:icon_name="RELOAD" />
+            app:icon_name="SIGNAL_INACTIVE" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/stories_error_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:layout_marginTop="12dp"
-            android:text="@string/stories_retry_description"
+            tools:text="@string/stories_content_no_network_title"
             android:textColor="@color/Unify_Static_White"
             app:typographyType="heading_3" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/stories_error_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            tools:text="@string/stories_content_no_network_description"
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="display_2" />
+
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_stories_failed_load"
+            android:id="@+id/btn_stories_no_inet_retry"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:clickable="true"
+            android:focusable="true"
             android:text="@string/stories_retry"
             app:unifyButtonInvers="true"
             app:unifyButtonSize="medium"
             app:unifyButtonType="alternate"
             app:unifyButtonVariant="ghost" />
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

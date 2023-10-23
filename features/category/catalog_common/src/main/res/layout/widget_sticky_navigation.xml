@@ -6,15 +6,21 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/catalogTabsUnify"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabTextAppearance="@layout/tab_item_layout"
-        app:tabPaddingBottom="-18dp"
-        android:paddingBottom="4dp"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="3dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/catalogTabsUnify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabTextAppearance="@layout/tab_item_layout"
+            app:tabPaddingBottom="-18dp"
+            android:paddingBottom="4dp" />
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
