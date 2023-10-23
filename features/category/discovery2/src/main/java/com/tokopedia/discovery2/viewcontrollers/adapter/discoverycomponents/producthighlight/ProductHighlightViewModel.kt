@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -80,14 +79,14 @@ class ProductHighlightViewModel(
             }
             productHighlightCardList.value = components
         }, onError = {
-                components.noOfPagesLoaded = 1
-                if (it is UnknownHostException || it is SocketTimeoutException) {
-                    components.verticalProductFailState = true
-                    _showErrorState.value = true
-                } else {
-                    _hideShimmer.value = true
-                }
-            })
+            components.noOfPagesLoaded = 1
+            if (it is UnknownHostException || it is SocketTimeoutException) {
+                components.verticalProductFailState = true
+                _showErrorState.value = true
+            } else {
+                _hideShimmer.value = true
+            }
+        })
     }
 
     fun layoutSelector(): Int {
@@ -122,7 +121,7 @@ class ProductHighlightViewModel(
         launchCatchError(block = {
             val requestParams = RequestParams.create()
             requestParams.putObject(
-                AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
+                AddToCartOcsUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
                 atcRequestParam
             )
 
@@ -130,18 +129,22 @@ class ProductHighlightViewModel(
                 atcUseCase?.createObservable(requestParams)?.toBlocking()?.single()
             }
 
-            if (result == null || result.isDataError()) {
-                val message = result?.getAtcErrorMessage()
-                _ocsErrorState.postValue(message)
+            if (result?.isDataError() == true) {
+                val message = result.getAtcErrorMessage()
+                message?.run { _ocsErrorState.postValue(this) }
 
                 Timber.e(message)
-            } else {
+            } else if (result != null) {
                 _ocsLiveData.postValue(result)
+            } else {
+                val message = "Failed to request ATC"
+                _ocsErrorState.postValue(message)
+                Timber.e(message)
             }
         }, onError = {
             _ocsErrorState.postValue(ErrorHandler.getErrorMessage(context, it))
-                Timber.e(it)
-            })
+            Timber.e(it)
+        })
     }
 
     fun reload() {
