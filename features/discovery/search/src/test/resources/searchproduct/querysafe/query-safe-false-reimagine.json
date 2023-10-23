@@ -1,0 +1,24 @@
+{
+  "searchProductV5": {
+    "header": {
+      "totalData": 0,
+      "responseCode": 1,
+      "keywordProcess": "2",
+      "keywordIntention": 1,
+      "componentID": "01.02.02.01",
+      "meta": {
+        "productListType": "var_reposition",
+        "hasPostProcessing": false,
+        "hasButtonATC": false
+      },
+      "isQuerySafe": false,
+      "additionalParams": "",
+      "autocompleteApplink": "tokopedia://search-autocomplete?q=samsung",
+      "backendFilters": "",
+      "backendFiltersToggle": ""
+    },
+    "data": {
+      "products": []
+    }
+  }
+}

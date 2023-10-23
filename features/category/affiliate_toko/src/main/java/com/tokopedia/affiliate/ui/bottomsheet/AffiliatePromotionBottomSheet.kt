@@ -123,6 +123,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
         private const val KEY_PARAMS = "KEY_PARAMS"
 
         private const val SHOP_ID_PARAM = "{shop_id}"
+        private const val PRODUCT_ID_PARAM = "{product_id}"
 
         const val ORIGIN_PROMOSIKAN = 1
         const val ORIGIN_HOME = 2
@@ -253,28 +254,40 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 commission = params?.commission ?: bundle.getString(KEY_COMMISON_PRICE, "")
                 status = params?.status ?: bundle.getString(KEY_STATUS, "")
 
-                when (originScreen) {
-                    ORIGIN_SSA_SHOP -> iconSsaMessage.setOnClickListener {
-                        RouteManager.route(
-                            context,
-                            ApplinkConst.SHOP.replace(
-                                SHOP_ID_PARAM,
-                                productId
-                            )
-                        )
-                    }
-
-                    ORIGIN_PROMO_TOKO_NOW -> {
-                        iconSsaMessage.setOnClickListener {
+                when (type) {
+                    PAGE_TYPE_PDP -> {
+                        redirectionGroup.setOnClickListener {
                             RouteManager.route(
                                 context,
-                                ApplinkConst.TokopediaNow.HOME
+                                ApplinkConst.PRODUCT_INFO.replace(
+                                    PRODUCT_ID_PARAM,
+                                    productId
+                                )
                             )
                         }
                     }
 
-                    ORIGIN_PROMO_DISCO_BANNER, ORIGIN_PROMO_DISCO_BANNER_LIST -> {
-                        iconSsaMessage.setOnClickListener {
+                    PAGE_TYPE_SHOP -> redirectionGroup.setOnClickListener {
+                        if (originScreen == ORIGIN_PROMO_TOKO_NOW) {
+                            redirectionGroup.setOnClickListener {
+                                RouteManager.route(
+                                    context,
+                                    ApplinkConst.TokopediaNow.HOME
+                                )
+                            }
+                        } else {
+                            RouteManager.route(
+                                context,
+                                ApplinkConst.SHOP.replace(
+                                    SHOP_ID_PARAM,
+                                    productId
+                                )
+                            )
+                        }
+                    }
+
+                    PAGE_TYPE_CAMPAIGN -> {
+                        redirectionGroup.setOnClickListener {
                             RouteManager.route(
                                 context,
                                 appUrl

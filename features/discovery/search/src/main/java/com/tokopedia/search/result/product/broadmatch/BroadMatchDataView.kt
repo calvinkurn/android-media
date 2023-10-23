@@ -5,6 +5,7 @@ import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelated
+import com.tokopedia.search.result.domain.model.SearchProductV5
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
@@ -21,7 +22,7 @@ data class BroadMatchDataView(
     val isAppendTitleInTokopedia: Boolean = false,
     val broadMatchItemDataViewList: List<BroadMatchItemDataView> = listOf(),
     val dimension90: String = "",
-    val carouselOptionType: CarouselOptionType,
+    val carouselOptionType: CarouselOptionType = BroadMatch,
     val componentId: String = "",
     val trackingOption: Int = 0,
     val actualKeyword: String = "",
@@ -143,5 +144,33 @@ data class BroadMatchDataView(
             else if (hasBottom) VerticalSeparator.Bottom
             else VerticalSeparator.None
         }
+
+        fun create(
+            otherRelated: SearchProductV5.Data.Related.OtherRelated,
+            isLocalSearch: Boolean,
+            dimension90: String,
+            trackingOption: Int,
+            actualKeyword: String,
+            externalReference: String,
+        ): BroadMatchDataView = BroadMatchDataView(
+            keyword = otherRelated.keyword,
+            url = otherRelated.url,
+            applink = otherRelated.applink,
+            isAppendTitleInTokopedia = isLocalSearch,
+            broadMatchItemDataViewList = otherRelated.productList.mapIndexed { index, product ->
+                BroadMatchItemDataView.create(
+                    product,
+                    index + 1,
+                    otherRelated.keyword,
+                    dimension90,
+                    externalReference
+                )
+            },
+            dimension90 = dimension90,
+            carouselOptionType = BroadMatch,
+            componentId = otherRelated.componentID,
+            trackingOption = trackingOption,
+            actualKeyword = actualKeyword,
+        )
     }
 }
