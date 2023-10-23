@@ -253,6 +253,7 @@ class StoriesDetailFragment @Inject constructor(
             secondaryCTAText = getString(storiesR.string.dialog_report_story_cancel),
             primaryAction = {
                 viewModel.submitReport(desc, _videoPlayer?.exoPlayer?.currentPosition.orZero())
+                (childFragmentManager.findFragmentByTag(ContentSubmitReportBottomSheet.TAG) as ContentSubmitReportBottomSheet?)?.dismiss()
             }
         )
     }
