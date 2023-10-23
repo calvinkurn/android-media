@@ -24,7 +24,11 @@ data class SomDynamicPriceResponse(
         @SerializedName("promo_shipping")
         val promoShipping: PromoShipping? = null,
         @SerializedName("pof_data")
-        val pofData: PofData? = null
+        val pofData: PofData? = null,
+        @SerializedName("note")
+        val note: String? = "",
+        @SerializedName("income_detail_label")
+        val incomeDetailLabel: String? = ""
     ) {
         data class PaymentMethod(
             @Expose

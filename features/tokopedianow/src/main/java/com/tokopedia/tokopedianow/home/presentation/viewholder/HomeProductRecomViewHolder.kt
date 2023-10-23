@@ -3,23 +3,30 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder
 import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView
+import com.tokopedia.tokopedianow.common.util.ViewUtil.inflateView
+import com.tokopedia.tokopedianow.common.view.RealTimeRecommendationCarouselView
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductRecommendationBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel.RealTimeRecomWidgetState
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeProductRecomViewHolder(
     itemView: View,
     private val listener: HomeProductRecomListener? = null,
     private val rtrListener: RealTimeRecommendationListener? = null,
-    private val rtrAnalytics: RealTimeRecommendationAnalytics? = null
+    private val rtrAnalytics: RealTimeRecommendationAnalytics? = null,
+    private val recycledViewPool: RecycledViewPool? = null
 ) : AbstractViewHolder<HomeProductRecomUiModel>(itemView),
     ProductCardCompactCarouselView.ProductCardCompactCarouselListener,
     TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
@@ -30,23 +37,12 @@ class HomeProductRecomViewHolder(
     }
 
     private var binding: ItemTokopedianowProductRecommendationBinding? by viewBinding()
-
-    private var channelId = ""
-    private var headerName = ""
+    private var realtimeRecommendationView: RealTimeRecommendationCarouselView? = null
 
     override fun bind(element: HomeProductRecomUiModel) {
-        binding?.apply {
-            channelId = element.id
-            headerName = element.headerModel?.title.orEmpty()
-
-            renderProductItems(element)
-            renderRealTimeRecom(element)
-
-            productRecommendation.setListener(
-                productCardCarouselListener = this@HomeProductRecomViewHolder,
-                headerCarouselListener = this@HomeProductRecomViewHolder
-            )
-        }
+        renderProductItems(element)
+        renderRealTimeRecom(element)
+        setupListener()
     }
 
     override fun bind(element: HomeProductRecomUiModel?, payloads: MutableList<Any>) {
@@ -57,23 +53,49 @@ class HomeProductRecomViewHolder(
     }
 
     private fun renderProductItems(element: HomeProductRecomUiModel) {
-        binding?.productRecommendation?.bind(
-            items = element.productList,
-            seeMoreModel = element.seeMoreModel,
-            header = element.headerModel
-        )
+        binding?.productRecommendation?.apply {
+            bind(
+                items = element.productList,
+                seeMoreModel = element.seeMoreModel,
+                header = element.headerModel
+            )
+            setRecycledViewPool(
+                recycledViewPool = recycledViewPool
+            )
+        }
     }
 
     private fun renderRealTimeRecom(element: HomeProductRecomUiModel) {
-        binding?.realTimeRecommendationCarousel?.apply {
-            listener = rtrListener
-            analytics = rtrAnalytics
-            bind(element.realTimeRecom)
+        if(element.realTimeRecom.widgetState != RealTimeRecomWidgetState.IDLE) {
+            binding?.apply {
+                if(realtimeRecommendationView == null) {
+                    val view = realTimeRecommendationViewStub
+                        .inflateView(R.layout.layout_tokopedianow_rtr_carousel_view)
+                    realtimeRecommendationView = view as? RealTimeRecommendationCarouselView
+                }
+
+                realtimeRecommendationView?.apply {
+                    listener = rtrListener
+                    analytics = rtrAnalytics
+                    bind(element.realTimeRecom)
+                }
+                realtimeRecommendationView?.show()
+            }
+        } else {
+            realtimeRecommendationView?.hide()
         }
+    }
+
+    private fun setupListener() {
+        binding?.productRecommendation?.setListener(
+            productCardCarouselListener = this,
+            headerCarouselListener = this
+        )
     }
 
     override fun onSeeAllClicked(
         context: Context,
+        channelId: String,
         headerName: String,
         appLink: String,
         widgetId: String
@@ -89,7 +111,7 @@ class HomeProductRecomViewHolder(
         seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel
     ) {
         listener?.onSeeMoreClicked(
-            channelId = channelId,
+            channelId = seeMoreUiModel.id,
             appLink = seeMoreUiModel.appLink,
             headerName = seeMoreUiModel.headerName
         )
@@ -105,8 +127,8 @@ class HomeProductRecomViewHolder(
     ) {
         listener?.onProductRecomClicked(
             product = product,
-            channelId = channelId,
-            headerName = headerName,
+            channelId = product.channelId,
+            headerName = product.headerName,
             position = layoutPosition
         )
     }
@@ -117,8 +139,8 @@ class HomeProductRecomViewHolder(
     ) {
         listener?.onProductRecomImpressed(
             product = product,
-            channelId = channelId,
-            headerName = headerName,
+            channelId = product.channelId,
+            headerName = product.headerName,
             position = layoutPosition
         )
     }
@@ -131,7 +153,7 @@ class HomeProductRecomViewHolder(
         listener?.onProductRecomQuantityChanged(
             product = product,
             quantity = quantity,
-            channelId = channelId
+            channelId = product.channelId
         )
     }
 

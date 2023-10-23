@@ -3,6 +3,7 @@ package com.tokopedia.search.result.domain.usecase.searchproduct
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_NETWORK_USE_CASE_ATTRIBUTION
@@ -20,6 +21,7 @@ class SearchProductTypoCorrectionUseCase(
     private val searchProductTopAdsUseCase: UseCase<TopAdsModel>,
     performanceMonitoringProvider: PerformanceMonitoringProvider,
     schedulersProvider: SchedulersProvider = ProductionSchedulersProvider(),
+    private val reimagineRollence: ReimagineRollence,
 ) : UseCase<SearchProductModel>(
     schedulersProvider.io(),
     schedulersProvider.ui()
@@ -27,12 +29,11 @@ class SearchProductTypoCorrectionUseCase(
     private val typoCorrectionCodes = listOf("3", "6")
     private val performanceMonitoring: PageLoadTimePerformanceInterface? =
         performanceMonitoringProvider.get()
+    private val isUseAceSearchProductV5
+        get() = reimagineRollence.search3ProductCard().isUseAceSearchProductV5()
 
-    private fun shouldCallTopAdsGqlForTypoCorrection(
-        searchProductModel: SearchProductModel
-    ): Boolean {
-        return searchProductModel.searchProduct.header.responseCode in typoCorrectionCodes
-    }
+    private fun shouldCallTopAdsGqlForTypoCorrection(searchProductModel: SearchProductModel): Boolean =
+        searchProductModel.responseCode(isUseAceSearchProductV5) in typoCorrectionCodes
 
     override fun createObservable(
         requestParams: RequestParams
@@ -61,7 +62,7 @@ class SearchProductTypoCorrectionUseCase(
     ): Observable<SearchProductModel> {
         val modifiedSearchParameter = mutableMapOf<String, Any>().apply {
             putAll(requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String, Any>)
-            put(SearchApiConst.Q, searchProductModel.searchProduct.data.related.relatedKeyword)
+            put(SearchApiConst.Q, searchProductModel.relatedKeyword(isUseAceSearchProductV5))
             put(SearchApiConst.IS_TYPO_CORRECTED, true)
         }
         val topAdsRequestParams = RequestParams.create().apply {

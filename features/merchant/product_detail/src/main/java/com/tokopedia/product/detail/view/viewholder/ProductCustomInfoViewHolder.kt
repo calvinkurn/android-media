@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import android.view.ViewGroup.LayoutParams
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
@@ -11,6 +10,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicCustomInfoBinding
 import com.tokopedia.product.detail.databinding.ItemDynamicInfoContentBinding
@@ -66,9 +66,13 @@ class ProductCustomInfoViewHolder(
         setupAppLink(element = element)
     }
 
-
     private fun ItemDynamicInfoContentBinding.impressComponent(element: ProductCustomInfoDataModel) {
-        root.addOnImpressionListener(holder = element.impressHolder) {
+        root.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.name,
+            useHolders = listener.isRemoteCacheableActive()
+        ) {
             val componentTrack = getComponentTrackData(element)
             listener.onImpressComponent(componentTrack)
         }

@@ -569,7 +569,6 @@ class DiscoveryHomeFactory {
                 ::ViewAllCarouselViewHolder,
                 ::ViewAllCarouselViewModel
             )
-
             // Merchant Voucher Grid
             initializeComponent(
                 ComponentsList.MerchantVoucherGrid,
