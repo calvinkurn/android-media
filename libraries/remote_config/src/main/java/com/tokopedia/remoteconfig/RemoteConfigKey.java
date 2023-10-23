@@ -287,4 +287,8 @@ public class RemoteConfigKey {
     public static final String ANDROID_ENABLE_GENERATE_WIDEVINE_ID = "android_enable_generate_widevine_id";
     public static final String ANDROID_ENABLE_GENERATE_WIDEVINE_ID_SUSPEND = "android_enable_generate_widevine_id_suspend";
     public static final String ANDROID_WHITELIST_DISABLE_GENERATE_WIDEVINE_ID = "android_whitelist_disable_generate_widevine_id_hansel";
+
+    public static final String ENABLE_PDP_P1_CACHEABLE = "android_pdp_p1_should_cacheable";
+
+    public static final String ENABLE_PDP_P1_CACHE_AGE = "android_pdp_p1_cache_age";
 }

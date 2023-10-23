@@ -7,4 +7,5 @@ package com.tokopedia.statistic.view.viewhelper
 interface FragmentListener {
 
     fun setHeaderSubTitle(subTitle: String)
+    fun isTabCoachMarkShowing() : Boolean
 }

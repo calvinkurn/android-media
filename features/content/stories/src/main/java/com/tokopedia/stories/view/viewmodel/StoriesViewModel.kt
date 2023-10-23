@@ -180,6 +180,7 @@ class StoriesViewModel @AssistedInject constructor(
             StoriesUiAction.DeleteStory -> handleDeleteStory()
             StoriesUiAction.ContentIsLoaded -> handleContentIsLoaded()
             StoriesUiAction.PageIsSelected -> handlePageIsSelected()
+            else -> {}
         }
     }
 

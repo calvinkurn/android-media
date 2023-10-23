@@ -16,6 +16,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class ProjectInfoUseCaseTest {
@@ -115,5 +116,68 @@ class ProjectInfoUseCaseTest {
         assertEquals(status, result.status)
         assertEquals(rejectionReason.joinToString(), result.rejectionReason)
         assertEquals(messageWaiting, result.waitMessage)
+    }
+
+    @Test
+    fun `get project info then return blocked general`() = runBlocking {
+        val projectId = 7
+        val isBlocked = true
+        val nonEligibleGoToKYCReason = "Terjadi kesalahan!"
+        val response = createSuccessResponse(
+            ProjectInfoResponse(
+                KycProjectInfo(
+                    isBlocked = isBlocked,
+                    nonEligibleGoToKYCReason = nonEligibleGoToKYCReason
+                )
+            )
+        )
+
+        coEvery { repository.response(any(), any()) } returns response
+
+        val result = useCase(projectId)
+        assertTrue(result is ProjectInfoResult.Blocked)
+        assertFalse(result.isMultipleAccount)
+    }
+
+    @Test
+    fun `get project info then return blocked multiple account - reason 1`() = runBlocking {
+        val projectId = 7
+        val isBlocked = true
+        val nonEligibleGoToKYCReason = "ALREADY_REGISTERED_OTHER_PROFILE"
+        val response = createSuccessResponse(
+            ProjectInfoResponse(
+                KycProjectInfo(
+                    isBlocked = isBlocked,
+                    nonEligibleGoToKYCReason = nonEligibleGoToKYCReason
+                )
+            )
+        )
+
+        coEvery { repository.response(any(), any()) } returns response
+
+        val result = useCase(projectId)
+        assertTrue(result is ProjectInfoResult.Blocked)
+        assertTrue(result.isMultipleAccount)
+    }
+
+    @Test
+    fun `get project info then return blocked multiple account - reason 2`() = runBlocking {
+        val projectId = 7
+        val isBlocked = true
+        val nonEligibleGoToKYCReason = "NOT_ELIGIBLE_ACC_LINK"
+        val response = createSuccessResponse(
+            ProjectInfoResponse(
+                KycProjectInfo(
+                    isBlocked = isBlocked,
+                    nonEligibleGoToKYCReason = nonEligibleGoToKYCReason
+                )
+            )
+        )
+
+        coEvery { repository.response(any(), any()) } returns response
+
+        val result = useCase(projectId)
+        assertTrue(result is ProjectInfoResult.Blocked)
+        assertTrue(result.isMultipleAccount)
     }
 }

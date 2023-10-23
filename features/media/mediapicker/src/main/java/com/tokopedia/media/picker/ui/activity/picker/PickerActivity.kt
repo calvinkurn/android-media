@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.MotionEvent
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -19,6 +20,7 @@ import com.tokopedia.media.R
 import com.tokopedia.media.picker.analytics.LogType
 import com.tokopedia.media.picker.analytics.Logger
 import com.tokopedia.media.picker.analytics.PickerAnalytics
+import com.tokopedia.media.picker.data.FeatureToggleManager
 import com.tokopedia.media.picker.di.PickerInjector
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerFragmentFactoryImpl
@@ -64,6 +66,9 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
     @Inject
     lateinit var eventBus: PickerEventBus
+
+    @Inject
+    lateinit var featureToggleManager: FeatureToggleManager
 
     protected val medias = arrayListOf<MediaUiModel>()
 
@@ -139,6 +144,15 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     override fun onDestroy() {
         super.onDestroy()
         eventBus.reset()
+    }
+
+    private val immersiveEditorIntent = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            val data = it.data?.getParcelableExtra<PickerResult>(RESULT_UNIVERSAL_EDITOR) ?: return@registerForActivityResult
+            onFinishIntent(data)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -369,7 +383,22 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     }
 
     private fun onEditorIntent(data: PickerResult) {
-        viewModel.navigateToEditorPage(data)
+        if (param.get().isImmersiveEditorEnabled() && featureToggleManager.isImmersiveEditorEnable()) {
+            // immersive editor
+            val intent = UniversalEditor.
+            intent(this) {
+                param.get().let { pickerParam ->
+                    trackerExtra = pickerParam.immersiveTrackerData()
+                    setPageSource(param.get().pageSource())
+                }
+                filePaths(data.originalPaths)
+            }
+
+            immersiveEditorIntent.launch(intent)
+        } else {
+            // old editor
+            viewModel.navigateToEditorPage(data)
+        }
     }
 
     override fun onPermissionGranted() {

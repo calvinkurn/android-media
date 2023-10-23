@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.google.android.play.core.splitcompat.SplitCompat
+import com.scp.auth.common.utils.ScpUtils
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -69,6 +70,8 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         private const val SPAN_61 = 61
         private const val SPAN_78 = 78
         private const val FLAG_0 = 0
+
+        private const val BEARER = "Bearer"
 
         fun createInstance(bundle: Bundle): AddNameRegisterPhoneFragment {
             val fragment = AddNameRegisterPhoneFragment()
@@ -289,13 +292,19 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
 
     }
 
+    private fun saveTokens(data: RegisterInfo) {
+        userSession.setToken(
+            data.accessToken,
+            BEARER,
+            EncoderDecoder.Encrypt(data.refreshToken, userSession.refreshTokenIV)
+        )
+        /* Migrate token to lsdk */
+        ScpUtils.saveTokens(accessToken = data.accessToken, refreshToken = data.refreshToken)
+    }
+
     override fun onSuccessRegister(registerInfo: RegisterInfo) {
         userSession.clearToken()
-        userSession.setToken(
-            registerInfo.accessToken,
-            "Bearer",
-            EncoderDecoder.Encrypt(registerInfo.refreshToken, userSession.refreshTokenIV)
-        )
+        saveTokens(registerInfo)
 
         activity?.run {
             dismissLoading()

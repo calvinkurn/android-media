@@ -2,6 +2,7 @@ package com.tokopedia.kyc_centralized.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.BlockedKycBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.webview.GotoKycWebWrapperFragment
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardNonProgressiveBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveBottomSheet
@@ -31,6 +32,7 @@ interface GoToKycComponent {
     fun inject(fragment: DobChallengeFragment)
     fun inject(bottomSheet: OnboardProgressiveBottomSheet)
     fun inject(bottomSheet: OnboardNonProgressiveBottomSheet)
+    fun inject(bottomSheet: BlockedKycBottomSheet)
     fun inject(fragment: BridgingAccountLinkingFragment)
     fun inject(fragment: FinalLoaderFragment)
     fun inject(fragment: CaptureKycDocumentsFragment)

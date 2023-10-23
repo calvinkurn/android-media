@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp">
+    android:paddingTop="8dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcBottomSheetListItemTitle"
@@ -26,5 +25,11 @@
         android:textColor="@color/Unify_NN600"
         app:typographyType="display_2"
         tools:text="Jumlah calon pembeli" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerShcBottomSheetListItemDesc"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp" />
 
 </LinearLayout>

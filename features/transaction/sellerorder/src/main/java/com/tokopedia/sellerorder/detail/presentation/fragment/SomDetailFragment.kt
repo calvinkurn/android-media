@@ -33,6 +33,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
@@ -40,6 +43,7 @@ import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
@@ -108,6 +112,7 @@ import com.tokopedia.sellerorder.databinding.FragmentSomDetailBinding
 import com.tokopedia.sellerorder.detail.analytic.performance.SomDetailLoadTimeMonitoring
 import com.tokopedia.sellerorder.detail.data.model.GetResolutionTicketStatusResponse
 import com.tokopedia.sellerorder.detail.data.model.SetDelivered
+import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.data.model.SomDynamicPriceResponse
 import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
@@ -118,14 +123,17 @@ import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticI
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailAddOnViewHolder
+import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailIncomeViewHolder
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.BottomSheetManager
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBaseRejectOrderBottomSheet
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectOrderAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectReasonsAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetSetDelivered
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomDetailTransparencyFeeBottomSheet
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
 import com.tokopedia.sellerorder.detail.presentation.mapper.SomDetailMapper
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
+import com.tokopedia.sellerorder.detail.presentation.model.SomDetailIncomeUiModel
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
@@ -145,6 +153,7 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.sellerorder.R as sellerorderR
 
 /**x
  * Created by fwidjaja on 2019-09-30.
@@ -170,7 +179,8 @@ open class SomDetailFragment :
 
     private var somToaster: Snackbar? = null
 
-    private var dynamicPriceResponse: SomDynamicPriceResponse.GetSomDynamicPrice? = SomDynamicPriceResponse.GetSomDynamicPrice()
+    private var dynamicPriceResponse: SomDynamicPriceResponse.GetSomDynamicPrice? =
+        SomDynamicPriceResponse.GetSomDynamicPrice()
     private var acceptOrderResponse = SomAcceptOrderResponse.Data.AcceptOrder()
     private var successEditAwbResponse = SomEditRefNumResponse.Data()
     private var failEditAwbResponse = SomEditRefNumResponse.Error()
@@ -185,13 +195,17 @@ open class SomDetailFragment :
     private val chatIcon: IconUnify by lazy {
         createChatIcon(requireContext())
     }
+    private val transparencyFeeCoachMarkHandler by lazy(LazyThreadSafetyMode.NONE) {
+        TransparencyFeeCoachMarkHandler()
+    }
     protected val orderExtensionViewModel: SomOrderExtensionViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SomOrderExtensionViewModel::class.java)
     }
 
     protected var orderId = ""
 
-    protected var detailResponse: SomDetailOrder.GetSomDetail? = SomDetailOrder.GetSomDetail()
+    protected var detailResponse: SomDetailOrder.GetSomDetail? =
+        SomDetailOrder.GetSomDetail()
     protected val somDetailViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
@@ -205,10 +219,18 @@ open class SomDetailFragment :
                 doClickChat()
             }
             layoutParams = LinearLayout.LayoutParams(
-                context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3).toInt(),
-                context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3).toInt()
+                context.resources.getDimension(unifyprinciplesR.dimen.layout_lvl3)
+                    .toInt(),
+                context.resources.getDimension(unifyprinciplesR.dimen.layout_lvl3)
+                    .toInt()
             ).apply {
-                setMargins(0, 0, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toInt(), 0)
+                setMargins(
+                    0,
+                    0,
+                    context.resources.getDimension(unifyprinciplesR.dimen.spacing_lvl2)
+                        .toInt(),
+                    0
+                )
             }
             val outValue = TypedValue()
             context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
@@ -233,6 +255,9 @@ open class SomDetailFragment :
         private const val ERROR_REJECT_ORDER = "Error when rejecting order."
         private const val PAGE_NAME = "seller order detail page."
 
+        private const val SHARED_PREF_DETAIL_TRANSPARENCY_FEE_COACH_MARK =
+            "transparencyFeeCoachMark"
+
         @JvmStatic
         fun newInstance(bundle: Bundle): SomDetailFragment {
             return SomDetailFragment().apply {
@@ -244,7 +269,10 @@ open class SomDetailFragment :
     }
 
     private fun doClickChat() {
-        SomAnalytics.eventClickChatOnHeaderDetail(detailResponse?.statusCode.toString(), detailResponse?.statusText.toString())
+        SomAnalytics.eventClickChatOnHeaderDetail(
+            detailResponse?.statusCode.toString(),
+            detailResponse?.statusText.toString()
+        )
         goToAskBuyer()
     }
 
@@ -260,7 +288,10 @@ open class SomDetailFragment :
             detailResponse?.customer?.name,
             detailResponse?.customer?.image
         ).apply {
-            putExtra(ApplinkConst.Chat.INVOICE_ID, orderId) // it's actually require the id of the order
+            putExtra(
+                ApplinkConst.Chat.INVOICE_ID,
+                orderId
+            ) // it's actually require the id of the order
             putExtra(ApplinkConst.Chat.INVOICE_CODE, detailResponse?.invoice)
             if (firstProduct != null) {
                 putExtra(ApplinkConst.Chat.INVOICE_TITLE, firstProduct.name)
@@ -288,7 +319,11 @@ open class SomDetailFragment :
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         setHasOptionsMenu(false)
         binding = FragmentSomDetailBinding.inflate(inflater, container, false)
         return binding?.root
@@ -448,7 +483,7 @@ open class SomDetailFragment :
     }
 
     private fun observingAcceptOrder() {
-        somDetailViewModel.acceptOrderResult.observe(viewLifecycleOwner, {
+        somDetailViewModel.acceptOrderResult.observe(viewLifecycleOwner) {
             binding?.btnPrimary?.isLoading = false
             when (it) {
                 is Success -> {
@@ -474,15 +509,18 @@ open class SomDetailFragment :
                     it.throwable.showErrorToaster()
                 }
             }
-        })
+        }
     }
 
     private fun observingRejectReasons() {
-        somDetailViewModel.rejectReasonResult.observe(viewLifecycleOwner, {
+        somDetailViewModel.rejectReasonResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessRejectReason(it.data)
                 is Fail -> {
-                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_REJECT_REASONS)
+                    SomErrorHandler.logExceptionToCrashlytics(
+                        it.throwable,
+                        ERROR_GET_ORDER_REJECT_REASONS
+                    )
                     it.throwable.showErrorToaster()
                     SomErrorHandler.logExceptionToServer(
                         errorTag = SomErrorHandler.SOM_TAG,
@@ -493,7 +531,7 @@ open class SomDetailFragment :
                     )
                 }
             }
-        })
+        }
     }
 
     private fun onSuccessRejectReason(data: SomReasonRejectData.Data) {
@@ -501,21 +539,24 @@ open class SomDetailFragment :
     }
 
     private fun observingSetDelivered() {
-        somDetailViewModel.setDelivered.observe(viewLifecycleOwner, {
+        somDetailViewModel.setDelivered.observe(viewLifecycleOwner) {
             setLoadingIndicator(false)
             when (it) {
                 is Success -> onSuccessSetDelivered(it.data.setDelivered)
                 is Fail -> {
-                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_WHEN_SET_DELIVERED)
+                    SomErrorHandler.logExceptionToCrashlytics(
+                        it.throwable,
+                        ERROR_WHEN_SET_DELIVERED
+                    )
                     it.throwable.showErrorToaster()
                     bottomSheetManager?.getSomBottomSheetSetDelivered()?.onFailedSetDelivered()
                 }
             }
-        })
+        }
     }
 
     private fun observingUserRoles() {
-        somDetailViewModel.somDetailChatEligibility.observe(viewLifecycleOwner, { result ->
+        somDetailViewModel.somDetailChatEligibility.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     result.data.let { (isSomDetailEligible, isReplyChatEligible) ->
@@ -537,11 +578,11 @@ open class SomDetailFragment :
                     result.throwable.showGlobalError()
                 }
             }
-        })
+        }
     }
 
     private fun observeRejectCancelOrder() {
-        somDetailViewModel.rejectCancelOrderResult.observe(viewLifecycleOwner, { result ->
+        somDetailViewModel.rejectCancelOrderResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     if (result.data.rejectCancelRequest.success == 1) {
@@ -551,7 +592,10 @@ open class SomDetailFragment :
                 }
 
                 is Fail -> {
-                    SomErrorHandler.logExceptionToCrashlytics(result.throwable, SomConsts.ERROR_REJECT_CANCEL_ORDER)
+                    SomErrorHandler.logExceptionToCrashlytics(
+                        result.throwable,
+                        SomConsts.ERROR_REJECT_CANCEL_ORDER
+                    )
                     SomErrorHandler.logExceptionToServer(
                         errorTag = SomErrorHandler.SOM_TAG,
                         throwable = result.throwable,
@@ -562,7 +606,7 @@ open class SomDetailFragment :
                     result.throwable.showErrorToaster()
                 }
             }
-        })
+        }
     }
 
     private fun onUserNotAllowedToViewSOM() {
@@ -609,6 +653,7 @@ open class SomDetailFragment :
                 resolutionTicketStatusResponse
             )
         )
+        transparencyFeeCoachMarkHandler.attach()
     }
 
     private fun renderButtons() {
@@ -619,13 +664,23 @@ open class SomDetailFragment :
                 binding?.btnPrimary?.apply {
                     text = buttonResp.displayName
                     setOnClickListener {
-                        eventClickCtaActionInOrderDetail(buttonResp.displayName, detailResponse?.statusText.orEmpty())
+                        eventClickCtaActionInOrderDetail(
+                            buttonResp.displayName,
+                            detailResponse?.statusText.orEmpty()
+                        )
                         when {
                             buttonResp.key.equals(KEY_ACCEPT_ORDER, true) -> {
                                 binding?.btnPrimary?.isLoading = true
-                                setActionAcceptOrder(buttonResp.displayName, orderId, skipOrderValidation())
+                                setActionAcceptOrder(
+                                    buttonResp.displayName,
+                                    orderId,
+                                    skipOrderValidation()
+                                )
                             }
-                            buttonResp.key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackShipmentPage(buttonResp)
+                            buttonResp.key.equals(
+                                KEY_TRACK_SELLER,
+                                true
+                            ) -> setActionGoToTrackShipmentPage(buttonResp)
                             buttonResp.key.equals(KEY_REQUEST_PICKUP, true) -> {
                                 binding?.btnPrimary?.isLoading = true
                                 setActionRequestPickup(buttonResp.displayName)
@@ -636,35 +691,50 @@ open class SomDetailFragment :
                                 setActionConfirmShipping(buttonResp.displayName)
                             }
 
-                            buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
+buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
                                 KEY_CONFIRM_SHIPPING_DROP_OFF,
                                 true
                             ) -> {
                                 binding?.btnPrimary?.isLoading = true
                                 setActionConfirmShippingAuto(buttonResp)
-                            }
+                            }                            buttonResp.key.equals(
+                                KEY_VIEW_COMPLAINT_SELLER,
+                                true
+                            ) -> setActionSeeComplaint(buttonResp.url)
 
-                            buttonResp.key.equals(KEY_VIEW_COMPLAINT_SELLER, true) -> setActionSeeComplaint(buttonResp.url)
-                            buttonResp.key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
+                            buttonResp.key.equals(
+                                KEY_BATALKAN_PESANAN,
+                                true
+                            ) -> setActionRejectOrder()
                             buttonResp.key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
                             buttonResp.key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
-                            buttonResp.key.equals(KEY_RESPOND_TO_CANCELLATION, true) -> onShowBuyerRequestCancelReasonBottomSheet(
-                                buttonResp
-                            )
+                            buttonResp.key.equals(
+                                KEY_RESPOND_TO_CANCELLATION,
+                                true
+                            ) -> onShowBuyerRequestCancelReasonBottomSheet(buttonResp)
 
-                            buttonResp.key.equals(KEY_UBAH_NO_RESI, true) -> bottomSheetManager?.showSomOrderEditAwbBottomSheet(
-                                this@SomDetailFragment
-                            )
+                            buttonResp.key.equals(
+                                KEY_UBAH_NO_RESI,
+                                true
+                            ) -> bottomSheetManager?.showSomOrderEditAwbBottomSheet(this@SomDetailFragment)
 
-                            buttonResp.key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
+                            buttonResp.key.equals(
+                                KEY_CHANGE_COURIER,
+                                true
+                            ) -> setActionChangeCourier()
+
                             buttonResp.key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(
                                 activity,
                                 view,
                                 listOf(detailResponse?.orderId.orEmpty()),
                                 true
+
                             )
 
-                            buttonResp.key.equals(KEY_ORDER_EXTENSION_REQUEST, true) -> setActionRequestExtension()
+                            buttonResp.key.equals(
+                                KEY_ORDER_EXTENSION_REQUEST,
+                                true
+                            ) -> setActionRequestExtension()
                             buttonResp.key.equals(
                                 KEY_RETURN_TO_SHIPPER,
                                 true
@@ -678,9 +748,10 @@ open class SomDetailFragment :
                 binding?.btnSecondary?.visibility = View.VISIBLE
                 binding?.btnSecondary?.setOnClickListener {
                     val actions = HashMap<String, String>()
-                    detailResponse?.button?.filterIndexed { index, _ -> (index != 0) }?.forEach { btn ->
-                        actions[btn.key] = btn.displayName
-                    }
+                    detailResponse?.button?.filterIndexed { index, _ -> (index != 0) }
+                        ?.forEach { btn ->
+                            actions[btn.key] = btn.displayName
+                        }
                     bottomSheetManager?.showSomDetailSecondaryActionBottomSheet(actions, this)
                 }
                 setupSecondaryButtonBackground()
@@ -697,7 +768,8 @@ open class SomDetailFragment :
             background = GradientDrawable().apply {
                 shape = GradientDrawable.RECTANGLE
                 setColor(ContextCompat.getColor(context, android.R.color.transparent))
-                cornerRadius = resources.getDimension(unifycomponentsR.dimen.button_corner_radius)
+                cornerRadius =
+                    resources.getDimension(unifycomponentsR.dimen.button_corner_radius)
                 setStroke(
                     resources.getDimensionPixelSize(unifycomponentsR.dimen.button_stroke_width),
                     ContextCompat.getColor(context, R.color._dms_secondary_button_stroke_color)
@@ -716,7 +788,11 @@ open class SomDetailFragment :
         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 
-    private fun setActionAcceptOrder(actionName: String, orderId: String, skipOrderValidation: Boolean) {
+    private fun setActionAcceptOrder(
+        actionName: String,
+        orderId: String,
+        skipOrderValidation: Boolean
+    ) {
         if (detailResponse?.flagOrderMeta?.flagFreeShipping == true) {
             showFreeShippingAcceptOrderDialog(orderId)
         } else {
@@ -762,41 +838,42 @@ open class SomDetailFragment :
                     dialogMaxWidth = getScreenWidth() / 2
                 }
                 setUnlockVersion()
-                val dialogView = View.inflate(it, R.layout.dialog_accept_order_free_shipping_som, null).apply {
-                    val binding = DialogAcceptOrderFreeShippingSomBinding.bind(this)
-                    val msgReguler1 = getString(R.string.confirm_msg_1a)
-                    val msgBold1 = getString(R.string.confirm_msg_1b)
-                    val str1 = SpannableString("$msgReguler1 $msgBold1")
-                    str1.setSpan(
-                        StyleSpan(Typeface.BOLD),
-                        msgReguler1.length + 1,
-                        str1.length,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    binding.labelConfirmationMsg1.text = str1
+                val dialogView =
+                    View.inflate(it, R.layout.dialog_accept_order_free_shipping_som, null).apply {
+                        val binding = DialogAcceptOrderFreeShippingSomBinding.bind(this)
+                        val msgReguler1 = getString(R.string.confirm_msg_1a)
+                        val msgBold1 = getString(R.string.confirm_msg_1b)
+                        val str1 = SpannableString("$msgReguler1 $msgBold1")
+                        str1.setSpan(
+                            StyleSpan(Typeface.BOLD),
+                            msgReguler1.length + 1,
+                            str1.length,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+                        binding.labelConfirmationMsg1.text = str1
 
-                    val msgReguler2 = getString(R.string.confirm_msg_2a)
-                    val msgBold2 = getString(R.string.confirm_msg_2b)
-                    val str2 = SpannableString("$msgReguler2 $msgBold2")
-                    str2.setSpan(
-                        StyleSpan(Typeface.BOLD),
-                        msgReguler2.length + 1,
-                        str2.length,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    binding.labelConfirmationMsg2.text = str2
+                        val msgReguler2 = getString(R.string.confirm_msg_2a)
+                        val msgBold2 = getString(R.string.confirm_msg_2b)
+                        val str2 = SpannableString("$msgReguler2 $msgBold2")
+                        str2.setSpan(
+                            StyleSpan(Typeface.BOLD),
+                            msgReguler2.length + 1,
+                            str2.length,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+                        binding.labelConfirmationMsg2.text = str2
 
-                    val msg3 = getString(R.string.confirm_msg_3)
-                    binding.labelConfirmationMsg3.text = msg3
+                        val msg3 = getString(R.string.confirm_msg_3)
+                        binding.labelConfirmationMsg3.text = msg3
 
-                    binding.btnBatal.setOnClickListener { dismiss() }
-                    binding.btnTerima.setOnClickListener {
-                        if (orderId.isNotBlank()) {
-                            somDetailViewModel.acceptOrder(orderId)
-                            dismiss()
+                        binding.btnBatal.setOnClickListener { dismiss() }
+                        binding.btnTerima.setOnClickListener {
+                            if (orderId.isNotBlank()) {
+                                somDetailViewModel.acceptOrder(orderId)
+                                dismiss()
+                            }
                         }
                     }
-                }
                 setChild(dialogView)
 
                 setAcceptOrderFreeShippingDialogDismissListener()
@@ -864,21 +941,37 @@ open class SomDetailFragment :
                         key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackShipmentPage(it)
                         key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
                         key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
-                        key.equals(KEY_UBAH_NO_RESI, true) -> bottomSheetManager?.showSomOrderEditAwbBottomSheet(this)
+                        key.equals(
+                            KEY_UBAH_NO_RESI,
+                            true
+                        ) -> bottomSheetManager?.showSomOrderEditAwbBottomSheet(this)
+
                         key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(it)
                         key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
-                        key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(it.displayName, orderId, skipOrderValidation())
+                        key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(
+                            it.displayName,
+                            orderId,
+                            skipOrderValidation()
+                        )
+
                         key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
-                        key.equals(KEY_SET_DELIVERED, true) -> bottomSheetManager?.showSomBottomSheetSetDelivered(this)
+                        key.equals(
+                            KEY_SET_DELIVERED,
+                            true
+                        ) -> bottomSheetManager?.showSomBottomSheetSetDelivered(this)
+
                         key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(
                             activity,
                             view,
                             listOf(detailResponse?.orderId.orEmpty()),
                             true
                         )
-
                         key.equals(KEY_ORDER_EXTENSION_REQUEST, true) -> setActionRequestExtension()
-                        key.equals(KEY_RESCHEDULE_PICKUP, true) -> goToReschedulePickupPage(this, orderId)
+                        key.equals(KEY_RESCHEDULE_PICKUP, true) -> goToReschedulePickupPage(
+                            this,
+                            orderId
+                        )
+
                         key.equals(
                             KEY_RETURN_TO_SHIPPER,
                             true
@@ -1008,7 +1101,8 @@ open class SomDetailFragment :
     }
 
     override fun onTextCopied(label: String, str: String, readableDataName: String) {
-        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboardManager =
+            context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.setPrimaryClip(ClipData.newPlainText(label, str))
         showCommonToaster(getString(R.string.message_success_copy, readableDataName))
     }
@@ -1018,7 +1112,10 @@ open class SomDetailFragment :
     }
 
     override fun onSeeInvoice(invoiceUrl: String, invoice: String) {
-        SomAnalytics.eventClickViewInvoice(detailResponse?.statusCode?.toString().orEmpty(), detailResponse?.statusText.orEmpty())
+        SomAnalytics.eventClickViewInvoice(
+            detailResponse?.statusCode?.toString().orEmpty(),
+            detailResponse?.statusText.orEmpty()
+        )
         Intent(activity, SomSeeInvoiceActivity::class.java).apply {
             putExtra(KEY_URL, invoiceUrl)
             putExtra(PARAM_INVOICE, invoice)
@@ -1029,19 +1126,22 @@ open class SomDetailFragment :
     }
 
     override fun onCopiedInvoice(invoice: String, str: String) {
-        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboardManager =
+            context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.setPrimaryClip(ClipData.newPlainText(invoice, str))
         showCommonToaster(getString(R.string.invoice_tersalin))
     }
 
     override fun onCopiedAddress(address: String, str: String) {
-        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboardManager =
+            context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.setPrimaryClip(ClipData.newPlainText(address, str))
         showCommonToaster(getString(R.string.alamat_pengiriman_tersalin))
     }
 
     override fun onCopyAddOnDescription(label: String, description: CharSequence) {
-        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboardManager =
+            context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.setPrimaryClip(ClipData.newPlainText(label, description))
         showCommonToaster(getString(R.string.som_detail_add_on_description_copied_message))
     }
@@ -1071,11 +1171,20 @@ open class SomDetailFragment :
         // no op
     }
 
+    override fun onDetailIncomeClicked() {
+        val somDetailTransparencyFeeBottomSheet =
+            SomDetailTransparencyFeeBottomSheet.newInstance(orderId)
+        somDetailTransparencyFeeBottomSheet.show(childFragmentManager)
+    }
+
     private fun doRejectOrder(orderRejectRequestParam: SomRejectRequestParam) {
         activity?.resources?.let {
             somDetailViewModel.rejectOrder(orderRejectRequestParam)
         }
-        SomAnalytics.eventClickTolakPesanan(detailResponse?.statusText.orEmpty(), orderRejectRequestParam.reason)
+        SomAnalytics.eventClickTolakPesanan(
+            detailResponse?.statusText.orEmpty(),
+            orderRejectRequestParam.reason
+        )
     }
 
     private fun observingRejectOrder() {
@@ -1113,7 +1222,10 @@ open class SomDetailFragment :
             Intent(activity, SomDetailLogisticInfoActivity::class.java).apply {
                 val logisticInfo = LogisticInfoAllWrapper(ArrayList(logisticInfoList))
                 val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
-                cacheManager?.put(SomDetailLogisticInfoFragment.KEY_SOM_LOGISTIC_INFO_ALL, logisticInfo)
+                cacheManager?.put(
+                    SomDetailLogisticInfoFragment.KEY_SOM_LOGISTIC_INFO_ALL,
+                    logisticInfo
+                )
                 putExtra(KEY_ID_CACHE_MANAGER_INFO_ALL, cacheManager?.id)
             }
         )
@@ -1167,7 +1279,10 @@ open class SomDetailFragment :
         val intent = RouteManager.getIntent(activity, appLinkSnapShot)
         intent.putExtra(ApplinkConstInternalOrder.IS_SNAPSHOT_FROM_SOM, true)
         startActivity(intent)
-        SomAnalytics.clickProductNameToSnapshot(detailResponse?.statusText.orEmpty(), userSession.userId.orEmpty())
+        SomAnalytics.clickProductNameToSnapshot(
+            detailResponse?.statusText.orEmpty(),
+            userSession.userId.orEmpty()
+        )
     }
 
     override fun onRefresh(view: View?) {
@@ -1187,7 +1302,8 @@ open class SomDetailFragment :
         startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url))
     }
 
-    private fun isShowDetailEligible(value: Result<Pair<Boolean, Boolean>>?): Boolean = (value as? Success)?.data?.first == true
+    private fun isShowDetailEligible(value: Result<Pair<Boolean, Boolean>>?): Boolean =
+        (value as? Success)?.data?.first == true
 
     private fun Throwable.showGlobalError() {
         val type = if (this is UnknownHostException || this is SocketTimeoutException) {
@@ -1279,8 +1395,14 @@ open class SomDetailFragment :
     }
 
     protected open fun handleRequestPickUpResult(resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
-            val message = data.getStringExtra(RESULT_PROCESS_REQ_PICKUP).orEmpty()
+        if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(
+                RESULT_PROCESS_REQ_PICKUP
+            )
+        ) {
+            val message =
+                data.getStringExtra(
+                    RESULT_PROCESS_REQ_PICKUP
+                ).orEmpty()
             showCommonToaster(message)
         }
 
@@ -1297,7 +1419,10 @@ open class SomDetailFragment :
     }
 
     protected open fun handleChangeCourierAndConfirmShippingResult(resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(RESULT_CONFIRM_SHIPPING)) {
+        if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(
+                RESULT_CONFIRM_SHIPPING
+            )
+        ) {
             val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
             activity?.setResult(
                 Activity.RESULT_OK,
@@ -1372,7 +1497,7 @@ open class SomDetailFragment :
     }
 
     private fun observeValidateOrder() {
-        somDetailViewModel.validateOrderResult.observe(viewLifecycleOwner, { result ->
+        somDetailViewModel.validateOrderResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> onSuccessValidateOrder(result.data)
                 is Fail -> {
@@ -1386,7 +1511,7 @@ open class SomDetailFragment :
                     )
                 }
             }
-        })
+        }
     }
 
     protected open fun observeOrderExtensionRequestInfo() {
@@ -1447,7 +1572,8 @@ open class SomDetailFragment :
     }
 
     private fun getOrderIdExtra(): String {
-        return arguments?.getString(PARAM_ORDER_ID)?.takeIf { it.isNotBlank() } ?: SomConsts.DEFAULT_INVALID_ORDER_ID
+        return arguments?.getString(PARAM_ORDER_ID)?.takeIf { it.isNotBlank() }
+            ?: SomConsts.DEFAULT_INVALID_ORDER_ID
     }
 
     protected open fun onGoToOrderDetailButtonClicked() {
@@ -1484,7 +1610,11 @@ open class SomDetailFragment :
             )
             activity?.finish()
         } else {
-            showToaster(rejectOrderData.message.firstOrNull() ?: getString(R.string.global_error), view, TYPE_ERROR)
+            showToaster(
+                rejectOrderData.message.firstOrNull() ?: getString(R.string.global_error),
+                view,
+                TYPE_ERROR
+            )
         }
     }
 
@@ -1493,7 +1623,10 @@ open class SomDetailFragment :
             activity?.setResult(
                 Activity.RESULT_OK,
                 Intent().apply {
-                    putExtra(RESULT_SET_DELIVERED, getString(R.string.message_set_delivered_success))
+                    putExtra(
+                        RESULT_SET_DELIVERED,
+                        getString(R.string.message_set_delivered_success)
+                    )
                 }
             )
             activity?.finish()
@@ -1524,5 +1657,96 @@ open class SomDetailFragment :
 
     protected fun getAdapterTypeFactory(): SomDetailAdapterFactoryImpl {
         return SomDetailAdapterFactoryImpl(this, recyclerViewSharedPool)
+    }
+
+    inner class TransparencyFeeCoachMarkHandler: RecyclerView.OnScrollListener() {
+
+        private val transparencyFeeEntryPointCoachMark by lazy(LazyThreadSafetyMode.NONE) {
+            context?.let { CoachMark2(it) }
+        }
+
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
+            val firstCompletelyVisibleItemPos = layoutManager.findFirstCompletelyVisibleItemPosition()
+            val lastCompletelyVisibleItemPos = layoutManager.findLastVisibleItemPosition()
+            var isTransparencyFeeItemCompletelyVisible = false
+            var transparencyFeeChevron: View? = null
+            for (i in firstCompletelyVisibleItemPos..lastCompletelyVisibleItemPos) {
+                val itemView = layoutManager.findViewByPosition(i)
+                transparencyFeeChevron = itemView?.findViewById(R.id.detail_income_icon)
+                if (
+                    itemView != null &&
+                    transparencyFeeChevron != null &&
+                    layoutManager.getItemViewType(itemView) == SomDetailIncomeViewHolder.LAYOUT
+                ) {
+                    isTransparencyFeeItemCompletelyVisible = true
+                    break
+                }
+            }
+            if (isTransparencyFeeItemCompletelyVisible && transparencyFeeChevron != null) {
+                showCoachMarkTransparencyFee(transparencyFeeChevron)
+            } else {
+                hideCoachMarkTransparencyFee()
+            }
+        }
+
+        fun attach() {
+            val containIncomeDetailSection = somDetailAdapter.list.any {
+                it is SomDetailData && it.dataObject is SomDetailIncomeUiModel
+            }
+            binding?.rvDetail?.removeOnScrollListener(this)
+            if (containIncomeDetailSection && !transparencyFeeCoachMarkHasShown()) {
+                binding?.rvDetail?.addOnScrollListener(this)
+            }
+        }
+
+        private fun transparencyFeeCoachMarkHasShown(): Boolean {
+            return context?.let { context ->
+                CoachMarkPreference.hasShown(
+                    context = context,
+                    tag = SHARED_PREF_DETAIL_TRANSPARENCY_FEE_COACH_MARK
+                )
+            }.orFalse()
+        }
+
+        private fun showCoachMarkTransparencyFee(transparencyFeeEntryPointView: View) {
+            context?.let { context ->
+                if (
+                    transparencyFeeEntryPointCoachMark?.isShowing != true &&
+                    !transparencyFeeCoachMarkHasShown()
+                ) {
+                    val coachMarkMessage = getString(
+                        sellerorderR.string.som_transparency_fee_entry_point_coachmark
+                    )
+
+                    val coachMarkItem = CoachMark2Item(
+                        anchorView = transparencyFeeEntryPointView,
+                        title = String.EMPTY,
+                        description = coachMarkMessage,
+                        position = CoachMark2.POSITION_TOP
+                    )
+
+                    transparencyFeeEntryPointCoachMark?.run {
+                        onDismissListener = {
+                            CoachMarkPreference.setShown(
+                                context = context,
+                                tag = SHARED_PREF_DETAIL_TRANSPARENCY_FEE_COACH_MARK,
+                                hasShown = true
+                            )
+                            binding?.rvDetail?.removeOnScrollListener(this@TransparencyFeeCoachMarkHandler)
+                        }
+                        isDismissed = false
+                        showCoachMark(step = arrayListOf(coachMarkItem))
+                    }
+                }
+            }
+        }
+
+        private fun hideCoachMarkTransparencyFee() {
+            transparencyFeeEntryPointCoachMark?.run {
+                onDismissListener = {}
+                dismissCoachMark()
+            }
+        }
     }
 }

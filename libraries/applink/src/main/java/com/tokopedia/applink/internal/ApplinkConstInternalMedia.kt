@@ -5,8 +5,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.INTERNAL_GLOBAL
 object ApplinkConstInternalMedia {
     // Editor
     private const val HOST_MEDIA_EDITOR = "media-editor"
+    private const val HOST_UNIVERSAL_MEDIA_EDITOR = "universal-editor"
 
     const val INTERNAL_MEDIA_EDITOR = "$INTERNAL_GLOBAL/$HOST_MEDIA_EDITOR"
+    const val INTERNAL_UNIVERSAL_MEDIA_EDITOR = "$INTERNAL_GLOBAL/$HOST_UNIVERSAL_MEDIA_EDITOR"
 
     // Picker
     private const val HOST_MEDIA_PICKER = "media-picker"
