@@ -32,11 +32,12 @@
             android:maxLines="1"
             android:paddingHorizontal="4dp"
             android:textAlignment="center"
-            android:textColor="@color/Unify_NN0"
+            android:textColor="@color/white"
             android:textSize="8sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:typographyWeight="bold"
             tools:ignore="SmallSp"
             tools:text="Cashback 100rb" />
 
