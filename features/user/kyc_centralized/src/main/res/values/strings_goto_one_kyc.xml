@@ -114,13 +114,13 @@
     <string name="onekyc_fr_status_guideline">Tips ambil foto yang jelas</string>
     <string name="onekyc_fr_status_plus_registered">e-KTP kamu yang terdaftar di GoPay Plus</string>
     <string name="onekyc_fr_status_help">Butuh Bantuan?</string>
-    <string name="onekyc_fr_status_failed_title">Yaah, belum berhasil terverifikasi</string>
-    <string name="onekyc_fr_status_failed_description">Pastikan kamu sendiri yang kirim data GoPay Plus &amp; wajahmu terlihat jelas saat verifikasi.</string>
-    <string name="onekyc_fr_status_failed_attempts">Kamu punya %s kali coba lagi.</string>
-    <string name="onekyc_fr_status_exhausted_title">Verifikasi wajah masih belum berhasil</string>
-    <string name="onekyc_fr_status_exhausted_description">Kamu udah verifikasi wajah terlalu sering. Santai dulu aja, coba lagi nanti ya!</string>
+    <string name="onekyc_fr_status_failed_title">Oops, verifikasi gagal</string>
+    <string name="onekyc_fr_status_failed_description">Pastiin foto kamu sudah jelas dan sesuai ketentuan. Coba lagi, ya.</string>
+    <string name="onekyc_fr_status_failed_attempts">Kamu bisa coba %s kali lagi</string>
+    <string name="onekyc_fr_status_exhausted_title">Oops, verifikasi gagal</string>
+    <string name="onekyc_fr_status_exhausted_description">Foto kamu kurang jelas atau tidak sesuai ketentuan.</string>
     <string name="onekyc_fr_status_retake">Verifikasi Ulang</string>
-    <string name="onekyc_fr_status_contact">Bantuan</string>
+    <string name="onekyc_fr_status_contact">Cari Bantuan</string>
 
     <!-- OneKyc Selfie Exhausted dialog-->
     <string name="onekyc_selfie_exhausted_title">Biar verifikasinya lancar, pastikan:</string>
