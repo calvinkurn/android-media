@@ -1,4 +1,5 @@
 apply plugin: 'kotlin-android'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/composeCompilerReport.gradle"
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion

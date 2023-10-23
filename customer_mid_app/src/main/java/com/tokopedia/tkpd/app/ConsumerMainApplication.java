@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import com.scp.auth.GotoSdk;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -202,6 +203,11 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         Typography.Companion.setFontTypeOpenSauceOne(true);
 
         showDevOptNotification();
+        initGotoSDK();
+    }
+
+    private void initGotoSDK() {
+        GotoSdk.init(this);
     }
 
     private void initializationNewRelic() {
@@ -683,9 +689,11 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         SharedPreferences sharedPreferences = getSharedPreferences(AbTestPlatform.Companion.getSHARED_PREFERENCE_AB_TEST_PLATFORM(), Context.MODE_PRIVATE);
         long timestampAbTest = sharedPreferences.getLong(AbTestPlatform.Companion.getKEY_SP_TIMESTAMP_AB_TEST(), 0);
         long current = new Date().getTime();
-        if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
-            RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
-        }
+//        if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
+//            RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
+//        }
+        // Init abtest each time launch the app, for testing purpose
+        RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
     }
 
     protected AbTestPlatform.Listener getRemoteConfigListener() {
