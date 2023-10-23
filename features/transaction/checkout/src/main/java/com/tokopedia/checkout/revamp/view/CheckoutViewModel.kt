@@ -999,7 +999,8 @@ class CheckoutViewModel @Inject constructor(
                 listData.value.promo()!!
             ),
             fullfilmentId = order.fulfillmentId.toString(),
-            orderModel = order
+            orderModel = order,
+            isOneClickShipment = isOneClickShipment
         )
         val list = listData.value.toMutableList()
         val orderModel = list[cartPosition] as? CheckoutOrderModel

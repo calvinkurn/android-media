@@ -796,7 +796,8 @@ class CheckoutLogisticProcessor @Inject constructor(
     suspend fun getScheduleDelivery(
         ratesParam: RatesParam,
         fullfilmentId: String,
-        orderModel: CheckoutOrderModel
+        orderModel: CheckoutOrderModel,
+        isOneClickShipment: Boolean
     ): RatesResult? {
         return withContext(dispatchers.io) {
             try {
@@ -825,16 +826,19 @@ class CheckoutLogisticProcessor @Inject constructor(
                     )
                 } else {
                     val errorReason = "schelly is not selected"
-//                    CheckoutLogger.logOnErrorLoadCourierNew(
-//                        MessageErrorException(
-//                            errorReason
-//                        ),
-//                        orderModel,
-//                        isOneClickShipment,
-//                        isTradeIn,
-//                        isTradeInByDropOff,
-//                        boPromoCode
-//                    )
+                    val boPromoCode = getBoPromoCode(
+                        orderModel
+                    )
+                    CheckoutLogger.logOnErrorLoadCourierNew(
+                        MessageErrorException(
+                            errorReason
+                        ),
+                        orderModel,
+                        isOneClickShipment,
+                        false,
+                        false,
+                        boPromoCode
+                    )
                     return@withContext null
                 }
             } catch (t: Throwable) {
