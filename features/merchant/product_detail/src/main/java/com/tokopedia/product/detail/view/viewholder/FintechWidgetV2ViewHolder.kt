@@ -2,16 +2,15 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
+import com.tokopedia.pdp.fintech.view.PdpFintechWidgetV2
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetV2DataModel
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.setLayoutHeight
-import com.tokopedia.pdp.fintech.view.PdpFintechWidgetV2
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
 class FintechWidgetV2ViewHolder(val view: View, val  listener: DynamicProductDetailListener)
     : AbstractViewHolder<FintechWidgetV2DataModel>(view), ProductUpdateListner {
@@ -26,7 +25,6 @@ class FintechWidgetV2ViewHolder(val view: View, val  listener: DynamicProductDet
 
     override fun bind(element: FintechWidgetV2DataModel) {
         if (isSameSession(element = element)) return
-        view.setLayoutHeight(0)
 
         fintechWidget.updateBaseFragmentContext(
             listener.getParentViewModelStoreOwner(),
@@ -54,20 +52,14 @@ class FintechWidgetV2ViewHolder(val view: View, val  listener: DynamicProductDet
 
     override fun removeWidget() {
         if (listener.getProductInfo()?.isProductVariant() == true) {
-            val params = itemView.layoutParams
-            params.height = 0
-            params.width = ViewGroup.LayoutParams.MATCH_PARENT
-            itemView.layoutParams = params
+            itemView.setLayoutHeight(0)
         } else {
             listener.removeComponent(ProductDetailConstant.FINTECH_WIDGET_V2_NAME)
         }
     }
 
     override fun showWidget() {
-        val params = itemView.layoutParams
-        params.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT
-        itemView.layoutParams = params
+        itemView.setLayoutHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
     override fun fintechChipClicked(

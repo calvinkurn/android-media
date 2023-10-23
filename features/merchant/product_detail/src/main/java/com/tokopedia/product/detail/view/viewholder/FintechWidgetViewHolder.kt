@@ -25,7 +25,6 @@ class FintechWidgetViewHolder(val view: View, val listener: DynamicProductDetail
 
     override fun bind(element: FintechWidgetDataModel) {
         if (isSameSession(element = element)) return
-        view.setLayoutHeight(0)
 
         fintechWidget.updateBaseFragmentContext(
             parentViewModelStore = listener.getParentViewModelStoreOwner(),
@@ -59,22 +58,15 @@ class FintechWidgetViewHolder(val view: View, val listener: DynamicProductDetail
         // remove this widget if product non-variant
         // when product is variant, possibility to visible when variant changed
         if (listener.getProductInfo()?.isProductVariant() == true) {
-            val params = itemView.layoutParams
-            params.height = 0
-            params.width = ViewGroup.LayoutParams.MATCH_PARENT
-            itemView.layoutParams = params
+            itemView.setLayoutHeight(0)
         } else {
             listener.removeComponent(ProductDetailConstant.FINTECH_WIDGET_NAME)
         }
     }
 
     override fun showWidget() {
-        val params = itemView.layoutParams
-        params.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT
-        itemView.layoutParams = params
-        listener
-            .getBlocksPerformanceTrace()?.addViewPerformanceBlocks(itemView)
+        itemView.setLayoutHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
+        listener.getBlocksPerformanceTrace()?.addViewPerformanceBlocks(itemView)
     }
 
     override fun fintechChipClicked(

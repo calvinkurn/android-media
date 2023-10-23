@@ -3,10 +3,8 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import android.view.ViewGroup.LayoutParams
 import androidx.constraintlayout.widget.ConstraintSet
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
@@ -26,9 +24,6 @@ class DynamicOneLinerViewHolder(
         val LAYOUT = R.layout.item_dynamic_one_liner
 
         private const val STATUS_SHOW = "show"
-        private const val STATUS_HIDE = "hide"
-        private const val STATUS_PLACEHOLDER = "placeholder"
-
         private const val CHEVRON_POS_FOLLOW = "follow_text"
         private const val CHEVRON_POS_END = "end"
     }
