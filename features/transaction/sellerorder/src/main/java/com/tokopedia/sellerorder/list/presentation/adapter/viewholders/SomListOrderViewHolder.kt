@@ -43,6 +43,8 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.sellerorder.R as sellerorderR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 open class SomListOrderViewHolder(
     itemView: View,
@@ -296,7 +298,7 @@ open class SomListOrderViewHolder(
             val deadlineBackground = Utils.getColoredDeadlineBackground(
                 context = root.context,
                 colorHex = element.deadlineColor,
-                defaultColor = com.tokopedia.unifyprinciples.R.color.Unify_YN600
+                defaultColor = unifyprinciplesR.color.Unify_YN600
             )
             layoutSomListDeadline.background = deadlineBackground
         }
@@ -312,16 +314,16 @@ open class SomListOrderViewHolder(
     }
 
     private fun ItemSomListOrderBinding.setDeadlineLowerThan12Hours() {
-        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.sellerorder.R.color._dms_som_operational_less_than_24_hour_color)
-        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, sellerorderR.color._dms_som_operational_less_than_24_hour_color)
+        val colorDeadline = MethodChecker.getColor(root.context, unifyprinciplesR.color.Unify_Static_White)
         layoutSomListDeadline.background = bgDeadline
         icDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
         tvSomListDeadline.setTextColor(colorDeadline)
     }
 
     private fun ItemSomListOrderBinding.setDeadlineBetween12To24Hours() {
-        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN50)
-        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN600)
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, unifyprinciplesR.color.Unify_RN50)
+        val colorDeadline = MethodChecker.getColor(root.context, unifyprinciplesR.color.Unify_RN600)
         layoutSomListDeadline.background = bgDeadline
         icDeadline.setImage(
             newIconId = IconUnify.CLOCK,
@@ -332,8 +334,8 @@ open class SomListOrderViewHolder(
     }
 
     private fun ItemSomListOrderBinding.setDeadlineMoreThan24Hours() {
-        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.sellerorder.R.color._dms_som_operational_more_than_24_hour_color)
-        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, sellerorderR.color._dms_som_operational_more_than_24_hour_color)
+        val colorDeadline = MethodChecker.getColor(root.context, unifyprinciplesR.color.Unify_Static_White)
         layoutSomListDeadline.background = bgDeadline
         icDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
         tvSomListDeadline.setTextColor(colorDeadline)
