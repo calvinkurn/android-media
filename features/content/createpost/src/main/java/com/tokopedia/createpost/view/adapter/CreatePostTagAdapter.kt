@@ -6,8 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.createpost.createpost.R
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.inflateLayout
-import kotlinx.android.synthetic.main.content_item_product_tag_view.view.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * @author by shruti on 01/08/21.
@@ -32,14 +34,17 @@ class CreatePostTagAdapter(
     }
 
     inner class CreatePostViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(productData: RelatedProductItem) {
-            with(itemView) {
-                productName.text = productData.name
-                productPrice.text = productData.price
-                productImage.setImageUrl(productData.image)
 
-                product_content_tag_delete_button.setOnClickListener { removeProduct(adapterPosition) }
-            }
+        private val productName: Typography = view.findViewById(R.id.productName)
+        private val productPrice: Typography = view.findViewById(R.id.productPrice)
+        private val productImage: ImageUnify = view.findViewById(R.id.productImage)
+        private val productDeleteButton: IconUnify = view.findViewById(R.id.product_content_tag_delete_button)
+
+        fun bind(productData: RelatedProductItem) {
+            productName.text = productData.name
+            productPrice.text = productData.price
+            productImage.setImageUrl(productData.image)
+            productDeleteButton.setOnClickListener { removeProduct(adapterPosition) }
         }
     }
 
