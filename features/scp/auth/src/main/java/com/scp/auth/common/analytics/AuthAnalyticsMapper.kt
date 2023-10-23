@@ -282,7 +282,7 @@ object AuthAnalyticsMapper {
     }
 
     private fun createCustomDimension(sdkVersion: String): Map<String, Any> {
-        return mapOf(SDK_VERSION to sdkVersion, BUSINESS_UNIT to "")
+        return mapOf(SDK_VERSION to sdkVersion, BUSINESS_UNIT to BUSINESS_UNIT_VALUE)
     }
 
     private fun mapScreenView(lsdkScreen: String): String {
@@ -503,7 +503,7 @@ object AuthAnalyticsMapper {
                         return ""
                     }
                 } else {
-                    return "${param[CVEventFieldName.ERROR_TYPE]} - ${getTransactionId(param)}"
+                    return "${param[CVEventFieldName.TYPE]} - ${getTransactionId(param)}"
                 }
             }
 
@@ -585,6 +585,7 @@ object AuthAnalyticsMapper {
 
     private const val SDK_VERSION = "sdkVersion"
     private const val BUSINESS_UNIT = "businessUnit"
+    private const val BUSINESS_UNIT_VALUE = "Shared Consumer Platform"
     private const val TRACKER_ID = "trackerId"
     private const val CCU_BUTTON_VALUE = "with CCU button"
     private const val WITHOUT_CCU_BUTTON_VALUE = "no CCU button"
