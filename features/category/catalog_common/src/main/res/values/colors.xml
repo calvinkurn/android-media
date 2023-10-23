@@ -4,4 +4,5 @@
     <color name="dms_static_Unify_NN600_light">#6D7588</color>
     <color name="static_color_divider">#33AAB4C8</color>
     <color name="dms_static_dark_mode_nav">#00A958</color>
+    <color name="dms_static_divider">#AAB4C8</color>
 </resources>
