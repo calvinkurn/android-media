@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -182,13 +183,15 @@ fun StoriesCreationScreen(
         NestButton(
             text = stringResource(id = R.string.stories_creation_upload),
             onClick = onClickUpload,
-            modifier = Modifier.constrainAs(uploadButton) {
-                bottom.linkTo(parent.bottom, 8.dp)
-                start.linkTo(parent.start, 16.dp)
-                end.linkTo(parent.end, 16.dp)
+            modifier = Modifier
+                .testTag(stringResource(R.string.stories_creation_upload_test_tag))
+                .constrainAs(uploadButton) {
+                    bottom.linkTo(parent.bottom, 8.dp)
+                    start.linkTo(parent.start, 16.dp)
+                    end.linkTo(parent.end, 16.dp)
 
-                width = Dimension.fillToConstraints
-            }
+                    width = Dimension.fillToConstraints
+                }
         )
     }
 }
@@ -271,6 +274,7 @@ private fun StoriesCreationAddProductSection(
 ) {
     ConstraintLayout(
         modifier = modifier
+            .testTag(stringResource(R.string.stories_creation_add_product_test_tag))
             .fillMaxWidth()
             .clickable(
                 interactionSource = MutableInteractionSource(),
