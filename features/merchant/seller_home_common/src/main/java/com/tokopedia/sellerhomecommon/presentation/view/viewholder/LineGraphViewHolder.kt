@@ -102,7 +102,7 @@ class LineGraphViewHolder(
             }
 
             else -> {
-                removeIfEmpty(element)
+                removeWidgetWithCondition(element)
                 onStateLoading(false)
                 onStateError(element, false)
                 showViewComponent(true, element)
@@ -110,7 +110,7 @@ class LineGraphViewHolder(
         }
     }
 
-    private fun removeIfEmpty(element: LineGraphWidgetUiModel) {
+    private fun removeWidgetWithCondition(element: LineGraphWidgetUiModel) {
         val shouldRemove = !element.data?.showWidget.orFalse()
         if (shouldRemove) {
             listener.removeWidget(absoluteAdapterPosition, element)

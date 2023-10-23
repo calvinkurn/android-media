@@ -3,10 +3,10 @@ package com.tokopedia.product.detail.view.viewholder.product_variant_thumbail
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.databinding.ItemThumbnailVariantViewHolderBinding
@@ -82,7 +82,12 @@ class ProductThumbnailVariantViewHolder(
     }
 
     private fun setImpression(element: ProductSingleVariantDataModel) {
-        view.addOnImpressionListener(element.impressHolder) {
+        view.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = pdpListener.getImpressionHolders(),
+            name = element.name,
+            useHolders = pdpListener.isRemoteCacheableActive()
+        ) {
             val trackData = getComponentTrackData(element)
             pdpListener.onImpressComponent(
                 trackData.copy(componentName = element.getComponentNameAsThumbnail())

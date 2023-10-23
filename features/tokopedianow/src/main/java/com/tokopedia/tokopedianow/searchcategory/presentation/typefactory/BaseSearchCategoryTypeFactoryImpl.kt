@@ -139,7 +139,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
                 itemView = view,
                 listener = productItemListener,
                 productCardCompactListener = productCardCompactListener,
-                productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener
+                similarProductTrackerListener = productCardCompactSimilarProductTrackerListener
             )
             BannerViewHolder.LAYOUT -> BannerViewHolder(
                 itemView = view,
