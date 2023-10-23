@@ -24,6 +24,7 @@ import com.scp.auth.di.DaggerScpAuthComponent
 import com.scp.auth.registerpushnotif.services.ScpRegisterPushNotificationWorker
 import com.scp.auth.service.GetDefaultChosenAddressService
 import com.scp.login.common.utils.LoginImageLoader
+import com.scp.login.core.domain.accountlist.entities.GeneralAccountDetails
 import com.scp.login.core.domain.common.UserCredential
 import com.scp.login.core.domain.contracts.configs.LSdkChooseAccountUiConfigs
 import com.scp.login.core.domain.contracts.configs.LSdkInputCredentialsUiConfigs
@@ -34,6 +35,8 @@ import com.scp.login.core.domain.contracts.listener.LSdkLoginFlowListener
 import com.scp.verification.core.domain.common.entities.Failure
 import com.scp.verification.core.domain.common.listener.ForgetContext
 import com.scp.verification.features.gotopin.CVPinManager
+import com.scp.verification.utils.gone
+import com.scp.verification.utils.visible
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -102,6 +105,13 @@ class ScpAuthActivity : BaseActivity() {
                     handleError()
                 }
             }
+            showFullScreenLoading.observe(this@ScpAuthActivity) {
+                if (it) {
+                    binding.screenLoader.root.visible()
+                } else {
+                    binding.screenLoader.root.gone()
+                }
+            }
         }
     }
 
@@ -161,6 +171,10 @@ class ScpAuthActivity : BaseActivity() {
 
                 override fun onUserNotRegistered(credential: UserCredential, activity: Activity?) {
                     gotoRegisterInitial(credential)
+                }
+
+                override fun onProgressiveSignupFlow(accountDetails: GeneralAccountDetails) {
+                    viewModel.register(accountDetails)
                 }
             },
             clientFlowListener = object : LSdkClientFlowListener {

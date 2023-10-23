@@ -20,7 +20,8 @@ class LoginSdkConfigs(val context: Context) : LSdkConfig {
             appLocale = ScpConstants.APP_LOCALE,
             userLang = ScpConstants.APP_LOCALE,
             userType = ScpConstants.TOKO_USER_TYPE,
-            uniqueId = uniqueId
+            uniqueId = uniqueId,
+            isSupportProgressiveSignup = true
         )
     }
 

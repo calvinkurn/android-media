@@ -23,5 +23,9 @@ data class RegisterV2Param(
     val validateToken: String = "",
 
     @SerializedName("h")
-    val hash: String = ""
+    val hash: String = "",
+
+    @SerializedName("auth_code")
+    val auth_code: String = ""
+
 ) : GqlParam

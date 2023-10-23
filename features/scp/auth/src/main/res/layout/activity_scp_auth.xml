@@ -10,4 +10,9 @@
         android:layout_height="36dp"
         app:loader_type="circular"
         android:layout_gravity="center"/>
+
+    <include
+        android:id="@+id/screenLoader"
+        android:visibility="gone"
+        layout="@layout/layout_full_screen_loader"/>
 </FrameLayout>
