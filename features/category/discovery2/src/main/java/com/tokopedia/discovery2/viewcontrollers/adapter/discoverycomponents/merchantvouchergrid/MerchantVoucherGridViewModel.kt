@@ -41,10 +41,9 @@ class MerchantVoucherGridViewModel(
 
                 this@MerchantVoucherGridViewModel.syncData.value = this
             }
-
         }, onError = {
-            Timber.e(it)
-        })
+                Timber.e(it)
+            })
     }
 
     private fun setVoucherList() {
@@ -52,14 +51,14 @@ class MerchantVoucherGridViewModel(
             if (it.isNotEmpty()) {
                 _loadError.value = false
                 _couponList.value = it
-
-                setSeeMoreInfo(it.first())
             } else {
                 _loadError.value = true
             }
         }
     }
 
+    // This capability will be enabled once we support pagination for landing page
+    @Suppress("unused")
     private fun setSeeMoreInfo(component: ComponentsItem) {
         val redirection = component.compAdditionalInfo?.redirection
 
