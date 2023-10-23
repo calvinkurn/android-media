@@ -56,6 +56,8 @@
 
     <string name="applink_choose_account">/choose-account</string>
 
+    <string name="applink_scp_login">/scp-login</string>
+
     <string name="applink_account_setting_fingerprint">/biometric-setting</string>
     <string name="applink_account_verify_fingerprint">/verify-fingerprint</string>
     <string name="applink_account_register_fingerprint">/register-fingerprint</string>
@@ -69,7 +71,7 @@
     <string name="applink_telephony">Telephony Masking</string>
 
     <string name="applink_global_sharing">/sharing</string>
-    <string name="applink_sharing_not_found">/sharing-not-found</string>
+    <string name="applink_deeplink_not_found">/deeplink-not-found</string>
 
     <string name="applink_profile_info">/setting-profile</string>
 

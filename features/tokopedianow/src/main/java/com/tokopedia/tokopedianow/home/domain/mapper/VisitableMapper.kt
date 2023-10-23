@@ -22,7 +22,7 @@ object VisitableMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel?>.getItemIndex(visitableId: String?): Int? {
-        return firstOrNull { it?.layout?.getVisitableId() == visitableId }?.let { indexOf(it) }
+        return toMutableList().firstOrNull { it?.layout?.getVisitableId() == visitableId }?.let { indexOf(it) }
     }
 
     fun Visitable<*>.getVisitableId(): String? {

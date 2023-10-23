@@ -194,7 +194,7 @@ class DigitalPDPPulsaFragment :
                         it,
                         getString(digital_product_detailR.string.check_balance_failed_verification),
                         Toaster.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL
+                        Toaster.TYPE_ERROR
                     ).show()
                 }
             }
