@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.model
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_FULFILLMENT
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
 import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelGroup
+import com.tokopedia.search.result.domain.model.SearchProductV5
 
 data class LabelGroupDataView(
     val position: String,
@@ -25,8 +26,15 @@ data class LabelGroupDataView(
                 productLabelGroup.title,
                 productLabelGroup.url,
             )
-
         fun hasFulfillment(labelGroupList: List<LabelGroupDataView>?): Boolean =
             labelGroupList?.any(LabelGroupDataView::isLabelFulfillment) == true
+
+        fun create(labelGroup: SearchProductV5.Data.LabelGroup): LabelGroupDataView =
+            LabelGroupDataView(
+                labelGroup.position,
+                labelGroup.type,
+                labelGroup.title,
+                labelGroup.url,
+            )
     }
 }

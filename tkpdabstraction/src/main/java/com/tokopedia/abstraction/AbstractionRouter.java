@@ -41,4 +41,6 @@ public interface AbstractionRouter {
     void connectTokoChat(Boolean isFromLoginFlow);
 
     void disconnectTokoChat();
+
+    void onRefreshCM(String token);
 }

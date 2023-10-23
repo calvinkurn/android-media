@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.catalogcommon.OnStickySingleHeaderListener
 import com.tokopedia.catalogcommon.StickySingleHeaderView
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
+import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
 import com.tokopedia.catalogcommon.viewholder.StickyTabNavigationViewHolder
 import com.tokopedia.kotlin.extensions.orFalse
@@ -21,7 +22,6 @@ class WidgetCatalogAdapter(
 
     private var recyclerView: RecyclerView? = null
     private val differ = CatalogDifferImpl()
-
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
 
     fun addWidget(itemList: List<Visitable<*>>) {
@@ -32,7 +32,18 @@ class WidgetCatalogAdapter(
         result.dispatchUpdatesTo(this)
     }
 
-    fun refreshSticky() {
+    fun changeComparison(comparison: ComparisonUiModel) {
+        visitables.forEachIndexed { index, visitable ->
+            if (visitable is ComparisonUiModel) {
+                visitables[index] = comparison
+                notifyItemChanged(index)
+            }
+        }
+    }
+
+    fun isVisitableEmpty() = visitables.isEmpty()
+
+    private fun refreshSticky() {
         if (onStickySingleHeaderViewListener != null) {
             recyclerView?.post { onStickySingleHeaderViewListener?.refreshSticky() }
         }

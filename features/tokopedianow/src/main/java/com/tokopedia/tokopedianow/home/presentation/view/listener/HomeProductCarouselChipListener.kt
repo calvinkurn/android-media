@@ -16,7 +16,8 @@ class HomeProductCarouselChipListener(
     private val context: Context,
     private val viewModel: TokoNowHomeViewModel,
     private val analytics: HomeProductCarouselChipsAnalytics,
-    private val startActivityForResult: (Intent, Int) -> Unit
+    private val startActivityForResult: (Intent, Int) -> Unit,
+    private val onBlockAddToCart: () -> Unit
 ): HomeProductCarouselChipsViewListener {
 
     override fun onProductCardQuantityChanged(
@@ -75,5 +76,9 @@ class HomeProductCarouselChipListener(
 
     override fun onWidgetImpressed() {
         analytics.trackWidgetImpression()
+    }
+
+    override fun onAddToCartBlocked() {
+        onBlockAddToCart.invoke()
     }
 }
