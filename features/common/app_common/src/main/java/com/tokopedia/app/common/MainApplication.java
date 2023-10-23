@@ -71,6 +71,8 @@ public abstract class MainApplication extends CoreNetworkApplication {
         initBranch();
         NotificationUtils.setNotificationChannel(this);
         createAndCallBgWork();
+
+        registerActivityLifecycleCallbacks(new AppActivityLifecycleCallback());
     }
 
     private void createAndCallBgWork(){
