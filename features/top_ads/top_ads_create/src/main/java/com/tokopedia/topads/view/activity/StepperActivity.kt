@@ -100,9 +100,10 @@ class StepperActivity : BaseStepperActivity(), HasComponent<CreateAdsComponent> 
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BACK_BUTTON, "")
         }
         super.onBackEvent()
+        autoBidSelectionBackPressed()
     }
 
-    override fun onBackPressed() {
+    private fun autoBidSelectionBackPressed() {
         try {
             val fragment = fragmentList?.find { it is AutoBidSelectionFragment }
             if (fragment is TkpdBaseV4Fragment && fragment.isVisible) {
@@ -113,8 +114,5 @@ class StepperActivity : BaseStepperActivity(), HasComponent<CreateAdsComponent> 
             }
         } catch (_: Exception) {
         }
-
-        super.onBackPressed()
     }
-
 }

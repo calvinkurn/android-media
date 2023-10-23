@@ -34,6 +34,7 @@ import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import javax.inject.Inject
 import com.tokopedia.topads.edit.R as topadseditR
+import com.tokopedia.topads.common.R as topadscommonR
 
 class EditAdGroupDailyBudgetBottomSheet : BottomSheetUnify() {
 
@@ -99,7 +100,7 @@ class EditAdGroupDailyBudgetBottomSheet : BottomSheetUnify() {
                     this.performanceData = it.data
                     val data = it.data.getOrNull(CONST_2)
                     data?.let { performanceData ->
-                        binding?.amount?.text = String.format(getString(topadseditR.string.top_ads_performce_count_prefix), performanceData.retention)
+                        binding?.amount?.text = String.format(getString(topadscommonR.string.top_ads_performce_count_prefix), performanceData.retention)
                         if (performanceData.percentage.toIntOrZero() != Int.ZERO) {
                             binding?.percentage?.text = String.format(getString(topadseditR.string.top_ads_performance_increment_text), performanceData.percentage)
                             binding?.percentage?.show()
