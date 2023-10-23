@@ -12,6 +12,7 @@ import rx.Subscriber
 
 private const val searchProductModelWithSafeQueryTrue = "searchproduct/querysafe/query-safe-true.json"
 private const val searchProductModelWithSafeQueryFalse = "searchproduct/querysafe/query-safe-false.json"
+private const val searchProductModelWithSafeQueryFalseReimagine = "searchproduct/querysafe/query-safe-false-reimagine.json"
 
 internal class SearchProductQuerySafeTest: ProductListPresenterTestFixtures() {
     private val requestParamsSlot = slot<RequestParams>()
@@ -52,5 +53,16 @@ internal class SearchProductQuerySafeTest: ProductListPresenterTestFixtures() {
 
     private fun `Then Verify Adult PopUp Will Show`() {
         verify(exactly = 1) { productListView.showAdultRestriction() }
+    }
+
+    @Test
+    fun `Search Product Has Safe Query False for reimagine`() {
+        val searchProductModel = searchProductModelWithSafeQueryFalseReimagine.jsonToObject<SearchProductModel>()
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+
+        `When Load Data`()
+
+        `Then Verify Adult PopUp Will Show`()
     }
 }

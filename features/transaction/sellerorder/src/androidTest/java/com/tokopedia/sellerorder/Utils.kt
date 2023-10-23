@@ -9,11 +9,11 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.user.session.UserSession
 import org.hamcrest.CoreMatchers
+import com.tokopedia.loginregister.R as loginregisterR
 
 object Utils {
 
@@ -33,7 +33,7 @@ object Utils {
             activityRuleLogin.launchActivity(intent)
 
             Log.d("SOMListPLTTest", "Checking email...")
-            Espresso.onView(ViewMatchers.withId(R.id.register_btn)).perform(ViewActions.click())
+            Espresso.onView(ViewMatchers.withId(loginregisterR.id.register_btn)).perform(ViewActions.click())
 
             waitForCondition {
                 try {
@@ -48,7 +48,7 @@ object Utils {
             getPasswordView().perform(ViewActions.click()).perform(ViewActions.typeText(PASSWORD_LOGIN))
 
             Log.d("SOMListPLTTest", "Logging in...")
-            Espresso.onView(ViewMatchers.withId(R.id.register_btn)).perform(ViewActions.click())
+            Espresso.onView(ViewMatchers.withId(loginregisterR.id.register_btn)).perform(ViewActions.click())
 
             waitForCondition {
                 userSession.isLoggedIn
@@ -64,6 +64,6 @@ object Utils {
     }
 
     private fun getPasswordView(): ViewInteraction {
-        return Espresso.onView(CoreMatchers.allOf(ViewMatchers.withId(R.id.text_field_input), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.wrapper_password))))
+        return Espresso.onView(CoreMatchers.allOf(ViewMatchers.withId(loginregisterR.id.field_password), ViewMatchers.isDescendantOfA(ViewMatchers.withId(loginregisterR.id.wrapper_password))))
     }
 }

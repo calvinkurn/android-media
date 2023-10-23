@@ -29,6 +29,7 @@ import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BlankUiModel
 import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
+import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
@@ -53,7 +54,10 @@ class CatalogDetailUiMapper @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
     companion object {
-        private val LAYOUT_VERSION_4_VALUE = 4
+        private const val LAYOUT_VERSION_4_VALUE = 4
+        private const val COMPARISON_COUNT = 2
+        private const val TOP_COMPARISON_SPEC_COUNT = 5
+        private const val INVALID_CATALOG_ID = "0"
     }
 
     fun mapToWidgetVisitables(
@@ -67,21 +71,16 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_HERO.type -> it.mapToHeroBanner(isDarkMode)
                 WidgetTypes.CATALOG_FEATURE_TOP.type -> it.mapToTopFeature(remoteModel)
                 WidgetTypes.CATALOG_TRUSTMAKER.type -> it.mapToTrustMaker(isDarkMode)
-                WidgetTypes.CATALOG_CHARACTERISTIC.type -> {
-                    it.mapToCharacteristic(isDarkMode)
-                }
-
+                WidgetTypes.CATALOG_CHARACTERISTIC.type -> it.mapToCharacteristic(isDarkMode)
                 WidgetTypes.CATALOG_BANNER_SINGLE.type -> it.mapToBannerImage(isDarkMode)
                 WidgetTypes.CATALOG_BANNER_DOUBLE.type -> it.mapToDoubleBannerImage(isDarkMode)
                 WidgetTypes.CATALOG_NAVIGATION.type -> it.mapToStickyNavigation(remoteModel)
                 WidgetTypes.CATALOG_SLIDER_IMAGE.type -> it.mapToSliderImageText(isDarkMode)
                 WidgetTypes.CATALOG_TEXT.type -> it.mapToTextDescription(isDarkMode)
                 WidgetTypes.CATALOG_REVIEW_EXPERT.type -> it.mapToExpertReview(isDarkMode)
-                WidgetTypes.CATALOG_FEATURE_SUPPORT.type -> {
-                    it.mapToSupportFeature(remoteModel)
-                }
-
+                WidgetTypes.CATALOG_FEATURE_SUPPORT.type -> it.mapToSupportFeature(remoteModel)
                 WidgetTypes.CATALOG_ACCORDION.type -> it.mapToAccordion(isDarkMode)
+                WidgetTypes.CATALOG_COMPARISON.type -> it.mapToComparison()
                 else -> {
                     BlankUiModel()
                 }
@@ -123,6 +122,7 @@ class CatalogDetailUiMapper @Inject constructor(
 
             PriceCtaProperties(
                 catalogId = remoteModel.basicInfo.id,
+                departmentId = remoteModel.basicInfo.departmentID.orEmpty(),
                 price = displayedPrice,
                 productName = priceCta.name,
                 bgColor = "#$bgColor".stringHexColorParseToInt(),
@@ -401,6 +401,47 @@ class CatalogDetailUiMapper @Inject constructor(
                 )
             }.orEmpty()
         )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToComparison(): BaseCatalogUiModel {
+        var isFirstData = true
+        val displayedComparisons = data?.comparison.orEmpty()
+            .filter { it.id != INVALID_CATALOG_ID }
+            .take(COMPARISON_COUNT)
+        return if (displayedComparisons.isEmpty()) {
+            BlankUiModel()
+        } else {
+            ComparisonUiModel(content = displayedComparisons.map {
+                val comparisonSpecs = mutableListOf<ComparisonUiModel.ComparisonSpec>()
+                it.fullSpec.forEach { spec ->
+                    comparisonSpecs.add(ComparisonUiModel.ComparisonSpec(
+                        isSpecCategoryTitle = true,
+                        specCategoryTitle = if (isFirstData) spec.name else ""
+                    ))
+                    spec.row.forEach { rowItem ->
+                        val insertedItem = ComparisonUiModel.ComparisonSpec(
+                            isSpecCategoryTitle = false,
+                            specTitle = if (isFirstData) rowItem.key else "",
+                            specValue = rowItem.value.ifEmpty { "-" },
+                        )
+                        comparisonSpecs.add(insertedItem)
+                    }
+                }
+                isFirstData = false
+                ComparisonUiModel.ComparisonContent(
+                    id =  it.id,
+                    imageUrl = it.catalogImage.firstOrNull{ image -> image.isPrimary }?.imageUrl.orEmpty(),
+                    productTitle = it.name,
+                    price = it.marketPrice.firstOrNull()?.let { marketPrice ->
+                        marketPrice.minFmt + " - " + marketPrice.maxFmt
+                    }.orEmpty() ,
+                    comparisonSpecs = comparisonSpecs,
+                    topComparisonSpecs = comparisonSpecs
+                        .filter { comparisonSpec -> !comparisonSpec.isSpecCategoryTitle }
+                        .take(TOP_COMPARISON_SPEC_COUNT)
+                )
+            }.toMutableList())
+        }
     }
 
     private fun getTextColor(darkMode: Boolean): Int {

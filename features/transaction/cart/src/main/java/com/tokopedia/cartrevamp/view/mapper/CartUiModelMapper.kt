@@ -61,6 +61,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlin.math.min
 
 object CartUiModelMapper {
@@ -130,7 +132,8 @@ object CartUiModelMapper {
                 val shopUiModel = mapGroupShop(availableShop.shop, availableShop.cartDetails)
                 availableShop.cartDetails.forEachIndexed { cartDetailIndex, cartDetail ->
                     cartDetail.products.forEachIndexed { productIndex, product ->
-                        shouldShowBmGmBottomDivider = productIndex == availableShop.cartDetails.size - 1 &&
+                        shouldShowBmGmBottomDivider =
+                            productIndex == availableShop.cartDetails.size - 1 &&
                             cartDetailIndex + 1 < availableShop.cartDetails.size &&
                             cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM
                         val productUiModel = mapProductUiModel(
@@ -143,13 +146,18 @@ object CartUiModelMapper {
                             shopData = shopUiModel,
                             shouldShowBmGmBottomDivider
                         ).apply {
-                            isShopShown = availableGroup.isUsingOWOCDesign() && cartDetailIndex == 0 && productIndex == 0
+                            isShopShown =
+                                availableGroup.isUsingOWOCDesign() && cartDetailIndex == 0 && productIndex == 0
                         }
                         productUiModelList.add(productUiModel)
                     }
 
                     if (cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM) {
-                        cartGroupBmGmHolderData = mapGroupBmGmHolder(availableGroup.cartString, cartDetail, availableShop.cartStringOrder)
+                        cartGroupBmGmHolderData = mapGroupBmGmHolder(
+                            availableGroup.cartString,
+                            cartDetail,
+                            availableShop.cartStringOrder
+                        )
                     }
                 }
                 productUiModelList.lastOrNull()?.isFinalItem = shopIndex == groupShopCount - 1
@@ -179,7 +187,9 @@ object CartUiModelMapper {
                     availableGroup.shipmentInformation.freeShippingGeneral.isBoTypePlus()
                 maximumWeightWording =
                     availableGroup.groupShopCartData.getOrNull(0)?.shop?.maximumWeightWording ?: ""
-                maximumShippingWeight = availableGroup.groupShopCartData.getOrNull(0)?.shop?.maximumShippingWeight ?: 0.0
+                maximumShippingWeight =
+                    availableGroup.groupShopCartData.getOrNull(0)?.shop?.maximumShippingWeight
+                        ?: 0.0
                 if (availableGroup.checkboxState) {
                     isAllSelected = availableGroup.checkboxState
                     isPartialSelected = false
@@ -187,7 +197,8 @@ object CartUiModelMapper {
                     isAllSelected = false
                     isPartialSelected = isPartialSelected(availableGroup)
                 }
-                isCollapsible = isTokoNow && cartData.availableSection.availableGroupGroups.size > 1 && productUiModelList.size > 1
+                isCollapsible =
+                    isTokoNow && cartData.availableSection.availableGroupGroups.size > 1 && productUiModelList.size > 1
                 isCollapsed = isCollapsible
                 isError = false
                 promoCodes = availableGroup.promoCodes
@@ -304,7 +315,8 @@ object CartUiModelMapper {
 
         var showAccordion = false
 
-        val totalUnavailableProduct = cartData.unavailableSections.sumOf { unavailableSection -> unavailableSection.productsCount }
+        val totalUnavailableProduct =
+            cartData.unavailableSections.sumOf { unavailableSection -> unavailableSection.productsCount }
 
         if (totalUnavailableProduct > 3) {
             showAccordion = true
@@ -333,9 +345,11 @@ object CartUiModelMapper {
                 }
                 productUiModelList.lastOrNull()?.apply {
                     isFinalItem = true
-                    showErrorBottomDivider = sectionIndex != cartData.unavailableSections.lastIndex ||
+                    showErrorBottomDivider =
+                        sectionIndex != cartData.unavailableSections.lastIndex ||
                         (sectionIndex == cartData.unavailableSections.lastIndex && groupIndex != unavailableSection.unavailableGroups.lastIndex)
-                    shouldDivideHalfErrorBottomDivider = showErrorBottomDivider && groupIndex != unavailableSection.unavailableGroups.lastIndex
+                    shouldDivideHalfErrorBottomDivider =
+                        showErrorBottomDivider && groupIndex != unavailableSection.unavailableGroups.lastIndex
                 }
                 val groupUiModel = CartGroupHolderData().apply {
                     this.productUiModelList = productUiModelList
@@ -595,7 +609,13 @@ object CartUiModelMapper {
         return CartAddOnData().apply {
             listData = arrayListAddOnProduct
             widget = CartAddOnWidgetData(
-                wording = addOn.addOnWidget.wording,
+                title = addOn.addOnWidget.title,
+                price = "(${
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    addOn.addOnWidget.price,
+                    false
+                ).removeDecimalSuffix()
+                })",
                 leftIconUrl = addOn.addOnWidget.leftIconUrl,
                 rightIconUrl = addOn.addOnWidget.rightIconUrl
             )
@@ -774,7 +794,11 @@ object CartUiModelMapper {
         }
     }
 
-    private fun mapGroupBmGmHolder(cartString: String, cartDetail: CartDetail, cartStringOrder: String): CartGroupBmGmHolderData {
+    private fun mapGroupBmGmHolder(
+        cartString: String,
+        cartDetail: CartDetail,
+        cartStringOrder: String
+    ): CartGroupBmGmHolderData {
         return CartGroupBmGmHolderData(
             hasBmGmOffer = true,
             discountBmGmAmount = cartDetail.cartDetailInfo.bmgmData.totalDiscount,
@@ -805,7 +829,10 @@ object CartUiModelMapper {
         return cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM && !isLastIndexProduct
     }
 
-    private fun checkNeedToShowBmGmHorizontalDivider(cartDetail: CartDetail, productId: String): Boolean {
+    private fun checkNeedToShowBmGmHorizontalDivider(
+        cartDetail: CartDetail,
+        productId: String
+    ): Boolean {
         val isLastIndexProduct = if (cartDetail.products.isNotEmpty()) {
             cartDetail.products[cartDetail.products.size - 1].productId == productId
         } else {
@@ -816,20 +843,39 @@ object CartUiModelMapper {
             isLastIndexProduct
     }
 
-    private fun mapCartBmGmTickerData(cartDetail: CartDetail, shopData: CartShopHolderData, productId: String): CartBmGmTickerData {
+    private fun mapCartBmGmTickerData(
+        cartDetail: CartDetail,
+        shopData: CartShopHolderData,
+        productId: String
+    ): CartBmGmTickerData {
         return CartBmGmTickerData(
             bmGmCartInfoData = mapBmGmProductData(cartDetail, shopData),
             isShowTickerBmGm = checkNeedToShowTickerBmGm(cartDetail, productId),
-            stateTickerBmGm = if (checkNeedToShowTickerBmGm(cartDetail, productId)) CART_BMGM_STATE_TICKER_ACTIVE else CART_BMGM_STATE_TICKER_INACTIVE,
+            stateTickerBmGm = if (checkNeedToShowTickerBmGm(
+                    cartDetail,
+                    productId
+                )
+            ) {
+                CART_BMGM_STATE_TICKER_ACTIVE
+            } else {
+                CART_BMGM_STATE_TICKER_INACTIVE
+            },
             isShowBmGmDivider = checkNeedToShowBmGmDivider(cartDetail, productId),
-            isShowBmGmHorizontalDivider = checkNeedToShowBmGmHorizontalDivider(cartDetail, productId)
+            isShowBmGmHorizontalDivider = checkNeedToShowBmGmHorizontalDivider(
+                cartDetail,
+                productId
+            )
         )
     }
 
-    private fun mapBmGmProductData(cartDetail: CartDetail, shopData: CartShopHolderData): CartDetailInfo {
+    private fun mapBmGmProductData(
+        cartDetail: CartDetail,
+        shopData: CartShopHolderData
+    ): CartDetailInfo {
         if (cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM) {
             val listTiersApplied = arrayListOf<CartDetailInfo.BmGmTierProductData>()
-            val listProductTiersApplied = arrayListOf<CartDetailInfo.BmGmTierProductData.BmGmProductData>()
+            val listProductTiersApplied =
+                arrayListOf<CartDetailInfo.BmGmTierProductData.BmGmProductData>()
             cartDetail.cartDetailInfo.bmgmData.tierProductList.forEach { tierProduct ->
                 tierProduct.listProduct.forEach { bmGmProduct ->
                     loop@ for (product in cartDetail.products) {

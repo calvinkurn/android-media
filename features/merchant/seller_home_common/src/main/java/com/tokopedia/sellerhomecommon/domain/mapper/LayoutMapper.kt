@@ -28,6 +28,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiMode
 import com.tokopedia.sellerhomecommon.presentation.model.FilterTabWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
@@ -144,6 +145,9 @@ class LayoutMapper @Inject constructor(
                 } else {
                     mapToSectionWidget(widget, isFromCache)
                 }
+            }
+            WidgetType.MULTI_COMPONENT.asLowerCase() -> {
+                mapToMultiComponentWidget(widget, isFromCache)
             }
 
             else -> null
@@ -621,6 +625,32 @@ class LayoutMapper @Inject constructor(
             isFromCache = fromCache,
             emptyState = widget.emptyStateModel.mapToUiModel(),
             useRealtime = widget.useRealtime
+        )
+    }
+
+    private fun mapToMultiComponentWidget(
+        widget: WidgetModel,
+        fromCache: Boolean
+    ): MultiComponentWidgetUiModel {
+        return MultiComponentWidgetUiModel(
+            id = (widget.id.orZero()).toString(),
+            widgetType = widget.widgetType.orEmpty(),
+            title = widget.title.orEmpty(),
+            subtitle = widget.subtitle.orEmpty(),
+            tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
+            appLink = widget.appLink.orEmpty(),
+            dataKey = widget.dataKey.orEmpty(),
+            ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_4),
+            isShowEmpty = widget.isShowEmpty.orFalse(),
+            data = null,
+            isLoaded = false,
+            isLoading = false,
+            isFromCache = fromCache,
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime,
+            sectionId = widget.sectionId.toString()
         )
     }
 
