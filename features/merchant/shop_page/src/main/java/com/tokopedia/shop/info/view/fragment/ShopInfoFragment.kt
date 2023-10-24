@@ -494,10 +494,12 @@ class ShopInfoFragment :
 
                 val emptyChar = "-"
                 val weblinkPrefix = "tokopedia://webview?url="
-                binding.layoutPartialShopInfoDescription.shopInfoNearestPickupLocation.text = if (epharmData.address.isNotEmpty()) epharmData.address else emptyChar
+                val shopAddress = if (epharmData.address.isNotEmpty()) epharmData.address else emptyChar
+                binding.layoutPartialShopInfoDescription.shopInfoNearestPickupLocation.text = shopAddress
                 binding.layoutPartialShopInfoDescription.tvSiaDescription.text = if (epharmData.siaNumber.isNotEmpty()) epharmData.siaNumber else emptyChar
                 binding.layoutPartialShopInfoDescription.tvSipaDescription.text = if (epharmData.sipaNumber.isNotEmpty()) epharmData.sipaNumber else emptyChar
                 binding.layoutPartialShopInfoDescription.tvApjDescription.text = if (epharmData.apj.isNotEmpty()) epharmData.apj else emptyChar
+                binding.layoutPartialShopInfoDescription.btnLihatLokasi.visibility = if (shopAddress == emptyChar) View.GONE else View.VISIBLE
                 binding.layoutPartialShopInfoDescription.btnLihatLokasi.setOnClickListener {
                     RouteManager.route(context, "$weblinkPrefix${epharmData.gMapsUrl}")
                 }
