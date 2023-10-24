@@ -10,14 +10,11 @@ import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.util.*
 import kotlinx.coroutines.Dispatchers
-
-import java.lang.NullPointerException
 import javax.inject.Inject
 
 
 @TokoPointScope
 class CouponDetailViewModel @Inject constructor(bundle: Bundle, private val repository: CouponDetailRepository) : BaseViewModel(Dispatchers.Main) {
-
 
     val detailLiveData = MutableLiveData<Resources<CouponValueEntity>>()
     val swipeDetail = MutableLiveData<CouponSwipeDetail>()
@@ -47,19 +44,16 @@ class CouponDetailViewModel @Inject constructor(bundle: Bundle, private val repo
         launchCatchError(block = {
             detailLiveData.value = Loading()
             val response = repository.getCouponDetail(couponCode).getSuccessData<CouponDetailOuter>().detail
-            if (response != null) {
-                detailLiveData.value = Success(response)
-                data = response
-                checkAndShowSwipe(data)
-
-            } else throw NullPointerException("data is Null")
+            detailLiveData.value = Success(response)
+            data = response
+            checkAndShowSwipe(data)
         }) {
             detailLiveData.value = ErrorMessage(it.message ?: "")
         }
     }
 
     private fun checkAndShowSwipe(data: CouponValueEntity): Boolean {
-        data.swipe?.let { swipe ->
+        data.swipe.let { swipe ->
             if (swipe.isNeedSwipe) {
                 swipeDetail.value = swipe
                 return true
@@ -70,7 +64,7 @@ class CouponDetailViewModel @Inject constructor(bundle: Bundle, private val repo
 
 
     fun onSwipeComplete() {
-        data.swipe?.apply {
+        data.swipe.apply {
             if (isNeedSwipe) {
                 if (pin.isPinRequire) {
                     pinPageData.value = PinPageData(data.realCode, pin.text)
@@ -83,18 +77,17 @@ class CouponDetailViewModel @Inject constructor(bundle: Bundle, private val repo
 
     private fun swipeMyCoupon(data: CouponValueEntity) {
         launchCatchError(block = {
-            val data = repository.swipeMyCoupon(data.realCode, "").getSuccessData<CouponSwipeUpdateOuter>().swipeCoupon
-            if (data != null) {
-                if (data.resultStatus.code == CommonConstant.CouponRedemptionCode.SUCCESS) {
-                    onCouponSwipe.value = Success(data)
-                } else {
-                    if (data.resultStatus.messages?.isNotEmpty() == true) {
-                        onCouponSwipe.value = data.resultStatus.messages?.get(0)?.let {
-                            ErrorMessage(it)
-                        }
+            val swipeCouponResponse = repository.swipeMyCoupon(data.realCode, "")
+                .getSuccessData<CouponSwipeUpdateOuter>().swipeCoupon
+            if (swipeCouponResponse.resultStatus.code == CommonConstant.CouponRedemptionCode.SUCCESS) {
+                onCouponSwipe.value = Success(swipeCouponResponse)
+            } else {
+                if (swipeCouponResponse.resultStatus.messages?.isNotEmpty() == true) {
+                    onCouponSwipe.value = swipeCouponResponse.resultStatus.messages?.get(0)?.let {
+                        ErrorMessage(it)
                     }
                 }
-            } else throw NullPointerException("data is null")
+            }
         }) {
         }
     }
@@ -106,9 +99,7 @@ class CouponDetailViewModel @Inject constructor(bundle: Bundle, private val repo
     fun reFetchRealCode() {
         launchCatchError(block = {
             val data = repository.reFetchRealCode(couponCode).getSuccessData<CouponDetailOuter>().detail
-            if (data != null) {
-                onReFetch.value = Success(data.realCode)
-            } else throw NullPointerException("data is null")
+            onReFetch.value = Success(data.realCode)
         }) {
             onReFetch.value = ErrorMessage(it.message ?: "")
         }

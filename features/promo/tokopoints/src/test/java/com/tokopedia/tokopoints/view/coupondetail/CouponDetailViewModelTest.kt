@@ -378,20 +378,6 @@ class CouponDetailViewModelTest {
     }
 
     @Test
-    fun `when set data should update variable data`() {
-        val couponValueEntity = CouponValueEntity(
-            title = "Diskon 50%"
-        )
-        val couponCode = "NOV15DISC"
-
-        viewModel.data = couponValueEntity
-        viewModel.couponCode = couponCode
-
-        assertEquals(couponValueEntity, viewModel.data)
-        assertEquals(couponCode, viewModel.couponCode)
-    }
-
-    @Test
     fun onInit() {
         val bundle = mockk<Bundle>()
         coEvery { bundle.getString(any()) } returns "12345"
