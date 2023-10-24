@@ -11,6 +11,7 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
 import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.module.AppGlideModule
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.media.loader.module.interceptor.NetworkLogInterceptor
 import com.tokopedia.media.loader.module.model.AdaptiveImageSizeLoader
@@ -30,9 +31,7 @@ class LoaderGlideModule : AppGlideModule() {
                 (LIMIT_CACHE_SIZE_IN_MB * SIZE_IN_MB * SIZE_IN_MB).toLong()
             )
         )
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            builder.setLogLevel(Log.DEBUG)
-        }
+
         super.applyOptions(context, builder)
     }
 
@@ -40,12 +39,23 @@ class LoaderGlideModule : AppGlideModule() {
         super.registerComponents(context, glide, registry)
 
         // custom network interceptor
-        if (FeatureToggle.shouldAbleToExposeResponseHeader(context)) {
+        if (hasNetworkClientOverridden()) {
             val client = OkHttpClient.Builder()
-                .addInterceptor(NetworkLogInterceptor(context))
-                .build()
 
-            val okHttpLoaderFactory = OkHttpUrlLoader.Factory(client)
+            if (FeatureToggle.shouldAbleToExposeResponseHeader(context)) {
+                client.addInterceptor(NetworkLogInterceptor(context))
+            }
+
+            if (GlobalConfig.isAllowDebuggingTools()) {
+                client.addInterceptor(
+                    ChuckerInterceptor(
+                        context = context,
+                        maxContentLength = 5000
+                    )
+                )
+            }
+
+            val okHttpLoaderFactory = OkHttpUrlLoader.Factory(client.build())
             registry.replace(GlideUrl::class.java, InputStream::class.java, okHttpLoaderFactory)
         }
 
@@ -68,6 +78,10 @@ class LoaderGlideModule : AppGlideModule() {
         * avoid some potential problems with trying to parse metadata.
         * */
         return false
+    }
+
+    private fun hasNetworkClientOverridden(): Boolean {
+        return true
     }
 
     companion object {
