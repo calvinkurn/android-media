@@ -165,7 +165,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
         return ShippingScheduleWidgetModel(
             isEnable = available,
             title = getTitleOtherOption(),
-            description = text.ifEmpty { deliveryProduct.textEta },
+            description = text.ifEmpty { if (available) deliveryProduct.textEta else "" },
             label = deliveryProduct.promoText.convertToSpannedString(),
             isSelected = isSelected,
             isShowCoachMark = scheduleDeliveryPreferences?.isDisplayedCoachmark?.not() ?: true,
