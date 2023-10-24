@@ -71,6 +71,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapPlayWid
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductBundleRecomData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductPurchaseData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestData
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestWidget
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapSharingEducationData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapSharingReferralData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeItem
@@ -796,6 +797,7 @@ class TokoNowHomeViewModel @Inject constructor(
         when (item) {
             is HomeSharingEducationWidgetUiModel -> getSharingEducationAsync(item, localCacheModel).await()
             is HomeSharingReferralWidgetUiModel -> getSharingReferralAsync(item).await()
+            is com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel -> getQuestListAsync(item).await()
             is HomeQuestSequenceWidgetUiModel -> getQuestListAsync(item).await()
             is HomePlayWidgetUiModel -> getPlayWidgetAsync(item).await()
             is HomeClaimCouponWidgetUiModel -> getCatalogCouponListAsync(item).await()
@@ -912,6 +914,14 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getQuestListAsync(item: com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            getQuestListData(item)
+        }) {
+            homeLayoutItemList.removeItem(item.id)
+        }
+    }
+
     private suspend fun getQuestListData(item: HomeQuestSequenceWidgetUiModel) {
         val questListResponse = getQuestWidgetListUseCase.execute().questWidgetList
         val questData = QuestMapper.mapQuestData(questListResponse.questWidgetList)
@@ -925,6 +935,18 @@ class TokoNowHomeViewModel @Inject constructor(
             )
         } else {
             homeLayoutItemList.mapQuestData(
+                item = item,
+                questList = questData,
+                state = HomeLayoutItemState.LOADED
+            )
+        }
+    }
+
+    private suspend fun getQuestListData(item: com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel) {
+        val questListResponse = getQuestWidgetListUseCase.execute().questWidgetList
+        val questData = QuestMapper.mapQuestCardData(questListResponse.questWidgetList)
+        if (questData.isNotEmpty()) {
+            homeLayoutItemList.mapQuestWidget(
                 item = item,
                 questList = questData,
                 state = HomeLayoutItemState.LOADED

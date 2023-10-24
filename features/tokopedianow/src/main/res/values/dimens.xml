@@ -21,4 +21,7 @@
     <dimen name="tokopedianow_chip_list_spacing">4dp</dimen>
     <dimen name="tokopedianow_chip_list_margin">16dp</dimen>
     <dimen name="tokopedianow_repurchase_product_card_spacing">14dp</dimen>
+    <dimen name="tokopedianow_quest_card_horizontal_padding">32dp</dimen>
+    <dimen name="tokopedianow_quest_card_horizontal_additional_padding">12dp</dimen>
+    <dimen name="tokopedianow_quest_card_title_start_padding">6dp</dimen>
 </resources>

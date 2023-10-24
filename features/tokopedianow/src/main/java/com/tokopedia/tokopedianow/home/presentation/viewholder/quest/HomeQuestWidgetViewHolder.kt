@@ -11,7 +11,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.listener.SnapPositionChangeListener
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestBinding
 import com.tokopedia.tokopedianow.common.util.SnapHelperUtil.attachSnapHelperWithListener
-import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestCardItemUiModel
+import com.tokopedia.tokopedianow.home.presentation.decoration.QuestCardItemDecoration
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.adapter.HomeQuestCardAdapter
 import com.tokopedia.utils.view.binding.viewBinding
@@ -43,6 +43,7 @@ class HomeQuestWidgetViewHolder(
         binding?.rvQuestCards?.apply {
             adapter = mAdapter
             layoutManager = mLayoutManager
+            addItemDecoration(QuestCardItemDecoration())
 
             attachSnapHelperWithListener(
                 snapHelper = PagerSnapHelper(),
@@ -52,29 +53,7 @@ class HomeQuestWidgetViewHolder(
     }
 
     override fun bind(element: HomeQuestWidgetUiModel) {
-        mAdapter.submitList(
-            listOf(
-                HomeQuestCardItemUiModel(
-                    id = "1212",
-                    title = "Belanja min. Rp80rb untuk dapat",
-                    description = "Kupon Cashback 10rb",
-                    isLockedShown = false
-                ),
-                HomeQuestCardItemUiModel(
-                    id = "1333",
-                    title = "Belanja min. Rp90rb untuk dapat",
-                    description = "Kupon Cashback 20rb",
-                    isLockedShown = true
-                ),
-                HomeQuestCardItemUiModel(
-                    id = "1212",
-                    title = "Belanja min. Rp70rb untuk dapat",
-                    description = "Kupon Cashback 30rb",
-                    isLockedShown = true
-                )
-            )
-        )
-        mLayoutManager.scrollToPosition(2)
+        mAdapter.submitList(element.questList + element.questList)
     }
 
     override fun onSnapPositionChange(position: Int) {

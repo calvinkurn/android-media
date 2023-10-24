@@ -8,6 +8,8 @@ import com.tokopedia.tokopedianow.home.domain.model.QuestList
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestCardItemUiModel
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestWidgetViewHolder.Companion.STATUS_IDLE
 
 object QuestMapper {
 
@@ -19,6 +21,15 @@ object QuestMapper {
         val uiModel = HomeQuestSequenceWidgetUiModel(
             id = response.id,
             state = HomeLayoutItemState.LOADING
+        )
+        return HomeLayoutItemUiModel(uiModel, state)
+    }
+
+    fun mapQuestWidgetUiModel(response: HomeLayoutResponse, state: HomeLayoutItemState): HomeLayoutItemUiModel {
+        val uiModel = com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel(
+            id = response.id,
+            state = HomeLayoutItemState.LOADING,
+            questList = listOf()
         )
         return HomeLayoutItemUiModel(uiModel, state)
     }
@@ -38,6 +49,15 @@ object QuestMapper {
             ))
         }
         return questList
+    }
+
+    fun mapQuestCardData(questListResponse: List<QuestList>): List<HomeQuestCardItemUiModel> = questListResponse.map {
+        HomeQuestCardItemUiModel(
+            id = it.id,
+            title = it.title,
+            description = it.description,
+            isLockedShown = it.questUser.status == STATUS_IDLE
+        )
     }
 
     private fun getValueFromConfig(config: Map<String, String>, key: String): String {

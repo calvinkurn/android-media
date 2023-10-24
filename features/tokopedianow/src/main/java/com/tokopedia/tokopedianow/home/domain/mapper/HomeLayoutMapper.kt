@@ -101,7 +101,9 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiM
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.HOME_HEADER
+import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.mapQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestCardItemUiModel
 import com.tokopedia.unifycomponents.ticker.TickerData
 
 object HomeLayoutMapper {
@@ -374,6 +376,21 @@ object HomeLayoutMapper {
     ) {
         updateItemById(item.visitableId) {
             val quest = HomeQuestSequenceWidgetUiModel(
+                id = MAIN_QUEST,
+                state = state,
+                questList = questList
+            )
+            HomeLayoutItemUiModel(quest, HomeLayoutItemState.LOADED)
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel?>.mapQuestWidget(
+        item: com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel,
+        questList: List<HomeQuestCardItemUiModel>,
+        state: HomeLayoutItemState
+    ) {
+        updateItemById(item.visitableId) {
+            val quest = com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel(
                 id = MAIN_QUEST,
                 state = state,
                 questList = questList
@@ -955,7 +972,7 @@ object HomeLayoutMapper {
             CATEGORY -> mapToCategoryLayout(response, notLoadedState)
             BUNDLING_WIDGET -> mapToProductBundleLayout(response, notLoadedState)
             REPURCHASE_PRODUCT -> mapRepurchaseUiModel(response, notLoadedState)
-            MAIN_QUEST -> mapQuestUiModel(response, notLoadedState)
+            MAIN_QUEST -> if (true) mapQuestWidgetUiModel(response, notLoadedState) else mapQuestUiModel(response, notLoadedState)
             SHARING_EDUCATION -> mapSharingEducationUiModel(response, notLoadedState, serviceType)
             SHARING_REFERRAL -> mapSharingReferralUiModel(response, notLoadedState, warehouseId)
             MEDIUM_PLAY_WIDGET -> mapToMediumPlayWidget(response, notLoadedState)
