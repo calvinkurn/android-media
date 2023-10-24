@@ -154,7 +154,7 @@ data class DataItem(
     @SerializedName("box_color", alternate = ["background_color", "header_color"])
     val boxColor: String? = "",
 
-    @SerializedName("font_color", alternate = ["text_color"])
+    @SerializedName("font_color", alternate = ["text_color", "benefit_text_color"])
     val fontColor: String? = "",
 
     @SerializedName("variant")
@@ -163,7 +163,7 @@ data class DataItem(
     @SerializedName("color")
     val color: String? = "",
 
-    @SerializedName("button_text")
+    @SerializedName("button_text", alternate = ["cta_redirection_text"])
     var buttonText: String? = "",
 
     @SerializedName("creative_name")
@@ -262,7 +262,7 @@ data class DataItem(
     @SerializedName("subtitle")
     val subtitle: String? = "",
 
-    @SerializedName("subtitle_1")
+    @SerializedName("subtitle_1", alternate = ["min_purchase_str"])
     val subtitle_1: String? = "",
 
     @SerializedName("thumbnail_url")
@@ -492,7 +492,7 @@ data class DataItem(
 
     var quantity: Int = 0,
 
-    @SerializedName("backgroud_image_url")
+    @SerializedName("backgroud_image_url", alternate = ["background_image_url"])
     var backgroundImageUrl: String? = "",
 
     @SerializedName("catalog_slugs")
