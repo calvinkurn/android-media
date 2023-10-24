@@ -365,11 +365,11 @@ object AtcCommonMapper {
      * @isInitialState means user not yet select any variant, so we need to calculate total stock
      */
     private fun generateHeaderDataModel(selectedChild: VariantChild?): Pair<String, ProductHeaderData> {
-        val productImage = selectedChild?.picture?.original ?: ""
+        val productImage = selectedChild?.picture?.original.orEmpty()
         val isCampaignActive = if (selectedChild?.campaign?.hideGimmick == true) {
             false
         } else {
-            selectedChild?.campaign?.isActive ?: false
+            selectedChild?.campaign?.isActive.orFalse()
         }
         val priceFmt = selectedChild?.priceFmt.ifNullOrBlank {
             selectedChild?.finalMainPrice?.getCurrencyFormatted().orEmpty()

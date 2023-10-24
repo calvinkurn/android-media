@@ -231,6 +231,15 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         campaign.priceFmt = price.priceFmt.ifNullOrBlank {
                             campaign.originalPrice.getCurrencyFormatted()
                         }
+
+                        /**
+                         * refer to [AtcCommonMapper]
+                         */
+                        if (campaign.hideGimmick) {
+                            campaign.priceFmt = price.slashPriceFmt.ifNullOrBlank {
+                                campaign.discountedPrice.getCurrencyFormatted()
+                            }
+                        }
                     }
 
                     shouldShowCampaign = ongoingCampaignData == null
@@ -251,10 +260,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         isProductActive = it.basic.isActive()
                     ).apply {
                         campaign.slashPriceFmt = price.slashPriceFmt.ifNullOrBlank {
-                            campaign.originalPrice.getCurrencyFormatted()
+                            campaign.discountedPrice.getCurrencyFormatted()
                         }
                         campaign.priceFmt = price.priceFmt.ifNullOrBlank {
-                            campaign.discountedPrice.getCurrencyFormatted()
+                            campaign.originalPrice.getCurrencyFormatted()
                         }
                     }
                 }
