@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_Background"
+    android:background="@drawable/bg_saldo_history"
     android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -14,7 +14,7 @@
         android:lineSpacingExtra="4sp"
         android:paddingStart="@dimen/sd_dp_18"
         android:paddingLeft="@dimen/sd_dp_18"
-        android:paddingTop="@dimen/sd_dp_6"
+        android:paddingTop="12dp"
         android:paddingEnd="@dimen/sd_dp_18"
         android:paddingRight="@dimen/sd_dp_18"
         android:text="@string/sp_transaction_history_heading"
