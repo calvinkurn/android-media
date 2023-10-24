@@ -128,10 +128,10 @@ class AtcVariantHeaderViewHolder(
     }
 
     private fun renderCampaignActive(headerData: ProductHeaderData) = with(view) {
-        productPrice.text = headerData.productSlashPrice
+        productPrice.text = headerData.productMainPrice
 
         productSlashPrice.shouldShowWithAction(headerData.productSlashPrice.isNotBlank()) {
-            productSlashPrice?.text = headerData.productMainPrice
+            productSlashPrice?.text = headerData.productSlashPrice
             productSlashPrice.paintFlags = productSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
 
