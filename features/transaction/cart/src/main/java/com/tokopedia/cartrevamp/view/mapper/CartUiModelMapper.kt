@@ -603,7 +603,8 @@ object CartUiModelMapper {
                 uniqueId = it.uniqueId,
                 status = it.status,
                 type = it.type,
-                price = it.price
+                price = it.price,
+                fixedQuantity = it.fixedQuantity
             )
             arrayListAddOnProduct.add(cartAddOnProductData)
         }

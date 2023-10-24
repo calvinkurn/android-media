@@ -7,18 +7,21 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-
+import com.scp.auth.GotoSdk;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.TaskStackBuilder;
 import androidx.preference.PreferenceManager;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.scp.auth.common.utils.ScpRefreshHelper;
+import com.scp.auth.common.utils.ScpUtils;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
+import com.tokopedia.network.data.model.ScpTokenModel;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
@@ -89,6 +92,7 @@ import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
+import java.util.Objects;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -113,7 +117,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LoyaltyModuleRouter,
         NetworkRouter,
         TkpdAppsFlyerRouter,
-        LinkerRouter {
+        LinkerRouter
+{
 
     private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
     private static final String ENABLE_ASYNC_IRIS_INIT = "android_async_iris_init";
@@ -609,5 +614,20 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void disconnectTokoChat() {
         TokoChatConnection.disconnect();
+    }
+
+    @Override
+    public void onRefreshCM(String token) {
+        refreshFCMFromInstantIdService(token);
+    }
+
+    @Override
+    public boolean isGotoAuthSdkEnabled() {
+        return ScpUtils.INSTANCE.isGotoLoginEnabled();
+    }
+
+    @Override
+    public ScpTokenModel onNewRefreshToken() {
+        return new ScpRefreshHelper(this).refreshToken();
     }
 }
