@@ -12,6 +12,8 @@ import com.google.gson.Gson
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import javax.inject.Inject
 
 class TokoChatCourierRemoteConfigImpl @Inject constructor(
@@ -25,7 +27,11 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
     }
 
     private fun initCourierRemoteConfigData() {
-        val data = remoteConfig.getString(COURIER_CONFIG_JSON, "")
+        val keyRemoteConfig = when (TokopediaUrl.getInstance().TYPE) {
+            Env.LIVE -> COURIER_CONFIG_JSON
+            Env.STAGING -> COURIER_CONFIG_STAGING_JSON
+        }
+        val data = remoteConfig.getString(keyRemoteConfig, "")
         try {
             if (data.isNotBlank()) {
                 courierConfigData = Gson().fromJson(data, CourierConfigData::class.java)
@@ -158,6 +164,10 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
      * Set the strategy on how to store the token
      * Token expiration is depend on the use cases
      * For example 1 hour or 6 hours
+     *
+     * Because of project skynet in Gojek side,
+     * we need to temporary changed the value in Remote Config from disk to memory
+     * this is needed to reduce the edge case of old broker token cached in user's device
      */
     override val tokenCachingMechanism: TokenCachingMechanism
         get() {
@@ -261,8 +271,17 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
     override val shouldUseNewSSLFlow: Boolean
         get() = courierConfigData.shouldUseNewSSLFlow
 
+    /**
+     * Setup to limit the token expiry
+     * The usage is for broker token and 6 hours is the threshold expiry in backend side
+     * 360 minutes -> expired in 6 hours
+     */
+    override val tokenExpiryIntervalMins: Long
+        get() = courierConfigData.tokenExpiryIntervalMins
+
     companion object {
         private const val COURIER_CONFIG_JSON = "android_courier_config_json"
+        private const val COURIER_CONFIG_STAGING_JSON = "android_courier_config_staging_json"
         private const val ERROR_TAG = "COURIER_CONNECTION_CONFIG"
         private const val DATA_KEY = "data"
         private const val STACKTRACE_KEY = "stacktrace"

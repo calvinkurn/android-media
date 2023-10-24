@@ -101,5 +101,8 @@ data class CourierConfigData(
     val isMessageEnvelopeEnabled: Boolean = true,
 
     @SerializedName("shouldUseNewSSLFlow")
-    val shouldUseNewSSLFlow: Boolean = true
+    val shouldUseNewSSLFlow: Boolean = true,
+
+    @SerializedName("tokenExpiryIntervalMins")
+    val tokenExpiryIntervalMins: Long = 360
 )
