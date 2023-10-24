@@ -1,57 +1,35 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.WindowManager
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kyc_centralized.databinding.LayoutGotoKycBottomSheetBinding
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.unifycomponents.BottomSheetUnify
 
-@SuppressLint("UnifyComponentUsage")
-class GotoKycBottomSheetDialog(
-    context: Context,
-    theme: Int,
-    val showCloseIcon: Boolean,
-    val content: View
-) : BottomSheetDialog(context, theme) {
-
-    private var binding: LayoutGotoKycBottomSheetBinding? = null
+class GotoKycBottomSheetDialog : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = LayoutGotoKycBottomSheetBinding.inflate(LayoutInflater.from(context))
-        initView()
-
-        initListener()
-    }
-
-    private fun initView() {
-        binding?.root?.let {
-            it.addView(content)
-
-            binding?.spacing?.showWithCondition(!showCloseIcon)
-            binding?.icDismiss?.showWithCondition(showCloseIcon)
-
-            setContentView(it)
+        arguments?.let {
+            showCloseIcon = it.getBoolean(SHOW_CLOSE_ICON).orFalse()
         }
-
-        setUpAttribute()
+        overlayClickDismiss = showCloseIcon
+        clearContentPadding = true
     }
 
-    private fun setUpAttribute() {
-        window?.setLayout(
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.WRAP_CONTENT
-        )
+    fun setView(view: View) {
+        setChild(view)
     }
 
-    private fun initListener() {
-        binding?.icDismiss?.setOnClickListener {
-            dismiss()
-        }
+    companion object {
+        private const val SHOW_CLOSE_ICON = "SHOW_CLOSE_ICON"
+        fun newInstance(showCloseIcon: Boolean) =
+            GotoKycBottomSheetDialog().apply {
+                arguments = Bundle().apply {
+                    putBoolean(SHOW_CLOSE_ICON, showCloseIcon)
+                }
+            }
+
+        const val TAG = "GOTO_KYC_BOTTOM_SHEET_DIALOG"
     }
 
 }

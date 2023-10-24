@@ -123,9 +123,9 @@
     <string name="onekyc_fr_status_contact">Cari Bantuan</string>
 
     <!-- OneKyc Selfie Exhausted dialog-->
-    <string name="onekyc_selfie_exhausted_title">Biar verifikasinya lancar, pastikan:</string>
-    <string name="onekyc_selfie_exhausted_ready_cta">Mulai Selfie</string>
-    <string name="onekyc_selfie_exhausted_close_cta">Siap-siap Dulu</string>
+    <string name="onekyc_selfie_exhausted_title">Biar selfie-nya bagus, ikuti tips ini!</string>
+    <string name="onekyc_selfie_exhausted_ready_cta">Lanjut Verifikasi Wajah</string>
+    <string name="onekyc_selfie_exhausted_close_cta">Nanti Saja</string>
 
     <!-- OneKyc Dob/Nik Challenge-->
     <string name="onekyc_dob_nik_challenge_title">Konfirmasi data pribadi kamu</string>
