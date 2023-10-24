@@ -1376,7 +1376,7 @@ class CartRevampFragment :
             if (cartItemHolderData.isTokoNow) {
                 viewModel.emitTokonowUpdated()
             }
-            viewModel.getEntryPointInfoDefault()
+            updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
         }
 
         if (cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM && cartAdapter != null) {
