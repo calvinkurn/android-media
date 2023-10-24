@@ -18,7 +18,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.media.loader.loadImage
 import javax.inject.Inject
 
 class CouponListResultVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -32,18 +32,24 @@ class CouponListResultVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private val button: UnifyButton = itemView.findViewById(R.id.btn)
     private val imageView: AppCompatImageView = itemView.findViewById(R.id.appCompatImageView)
-    private val tvTitle: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.tvTitle)
-    private val tvSubTitle: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.tvSubTitle)
+    private val tvTitle: com.tokopedia.unifyprinciples.Typography =
+        itemView.findViewById(R.id.tvTitle)
+    private val tvSubTitle: com.tokopedia.unifyprinciples.Typography =
+        itemView.findViewById(R.id.tvSubTitle)
 
     init {
         val component = DaggerGiftBoxComponent.builder()
-                .activityContextModule(ActivityContextModule(itemView.context))
-                .appModule(AppModule((itemView.context as AppCompatActivity).application))
-                .build()
+            .activityContextModule(ActivityContextModule(itemView.context))
+            .appModule(AppModule((itemView.context as AppCompatActivity).application))
+            .build()
         component.inject(this)
     }
 
-    fun setData(data: GetCouponDetail, crackBenefitEntity: CrackBenefitEntity, crackButtonEntity: CrackButtonEntity?) {
+    fun setData(
+        data: GetCouponDetail,
+        crackBenefitEntity: CrackBenefitEntity,
+        crackButtonEntity: CrackButtonEntity?
+    ) {
         setGetCouponDetail(data)
 
         if (crackBenefitEntity.isAutoApply) {
@@ -54,7 +60,10 @@ class CouponListResultVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
                     if (!crackButtonEntity?.applink.isNullOrEmpty()) {
                         RouteManager.route(itemView.context, crackButtonEntity?.applink)
                     }
-                    presenter.autoApply(crackBenefitEntity.dummyCode, crackBenefitEntity.autoApplyMsg)
+                    presenter.autoApply(
+                        crackBenefitEntity.dummyCode,
+                        crackBenefitEntity.autoApplyMsg
+                    )
 
                     val userSession = UserSession(it.context)
                     GtmGiftTapTap.clickUseCoupon(crackBenefitEntity.referenceID, userSession.userId)
@@ -75,7 +84,7 @@ class CouponListResultVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         }
 
         data.imageUrl?.let {
-            ImageUtils.loadImage(imageView, it)
+            imageView.loadImage(it)
         }
     }
 }

@@ -27,9 +27,9 @@ import com.tokopedia.gamification.giftbox.presentation.fragments.DisplayType
 import com.tokopedia.gamification.giftbox.presentation.helpers.CouponItemDecoration
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.utils.image.ImageUtils
 import timber.log.Timber
 import kotlin.math.min
 
@@ -248,7 +248,9 @@ open class RewardContainerDaily @JvmOverloads constructor(
                     DisplayType.IMAGE -> {
                         isRp0 = true
                         if(!benefit.imageUrl.isNullOrEmpty()){
-                            ImageUtils.loadImage(imageCircleReward, benefit.imageUrl, isAnimate = false)
+                            imageCircleReward.loadImage(benefit.imageUrl) {
+                                this.isAnimate(false)
+                            }
                             GtmEvents.viewRewards(benefit.benefitType,benefit.text, userSession?.userId)
                         }
                     }

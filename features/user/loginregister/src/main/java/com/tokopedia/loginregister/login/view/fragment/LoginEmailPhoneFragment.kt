@@ -105,6 +105,7 @@ import com.tokopedia.loginregister.login.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
@@ -134,7 +135,6 @@ import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
@@ -1861,19 +1861,18 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         if (dynamicBannerDataModel.banner.isEnable) {
             context?.run {
                 viewBinding?.bannerLogin?.let { banner ->
-                    ImageUtils.loadImage(
-                        imageView = banner,
-                        url = dynamicBannerDataModel.banner.imgUrl,
-                        imageLoaded = {
-                            if (it) {
+                    banner.loadImage(url = dynamicBannerDataModel.banner.imgUrl) {
+                        this.listener(
+                            onSuccess = { bitmap, mediaDataSource ->
                                 viewBinding?.bannerLogin?.show()
                                 analytics.eventViewBanner(dynamicBannerDataModel.banner.imgUrl)
-                            } else {
+                            },
+                            onError = {
                                 viewBinding?.bannerLogin?.hide()
                                 showTicker()
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         } else {

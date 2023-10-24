@@ -7,13 +7,13 @@ import android.view.WindowManager
 import android.widget.ImageView
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.pxToDp
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.view.component.uimodel.ButtonUiModel
 import com.tokopedia.onboarding.view.component.uimodel.ImageUiModel
 import com.tokopedia.onboarding.view.component.uimodel.TitleUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.image.ImageUtils
 
 class ComponentViewHolder(itemView: View) : BaseViewHolder(itemView) {
 
@@ -39,10 +39,7 @@ class ComponentViewHolder(itemView: View) : BaseViewHolder(itemView) {
             setVisible(imageDataModel.visibility)
         }
 
-        ImageUtils.loadImage(
-                imageView = image,
-                url = imageDataModel.imageUrl
-        )
+        image.loadImage(imageDataModel.imageUrl)
     }
 
     fun bindButton(buttonDataModel: ButtonUiModel) {

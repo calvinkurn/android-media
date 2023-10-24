@@ -6,7 +6,7 @@ import com.tokopedia.home_account.R
 import com.tokopedia.home_account.data.model.MemberItemDataView
 import com.tokopedia.home_account.databinding.HomeAccountItemMemberBinding
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
-import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.media.loader.loadImageWithoutPlaceholderAndError
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -24,9 +24,7 @@ class MemberItemViewHolder(itemView: View, val listener: HomeAccountUserListener
         binding?.homeAccountItemMemberSubtitle?.text = member.subtitle
         binding?.homeAccountItemMemberTitle?.text = member.title
         binding?.homeAccountItemMemberIcon?.let {
-            ImageUtils.loadImageWithoutPlaceholderAndError(
-                it, member.icon
-            )
+            it.loadImageWithoutPlaceholderAndError(member.icon)
         }
         binding?.root?.setOnClickListener {
             listener.onMemberItemClicked(member.applink, member.type)

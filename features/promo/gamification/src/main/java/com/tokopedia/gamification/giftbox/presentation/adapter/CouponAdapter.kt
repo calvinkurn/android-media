@@ -19,7 +19,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.image.ImageUtils
 
 class CouponAdapter(
     @RewardContainer.RewardSourceType val type: Int,
@@ -30,11 +29,31 @@ class CouponAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CouponListVHDaily {
         val inflater = LayoutInflater.from(parent.context)
         val vh: CouponListVHDaily = when (viewType) {
-            RewardContainer.AdapterType.AdapterTypeOvo -> OvoVh(inflater.inflate(CouponListVHDaily.LAYOUT_OVO, parent, false)){}
-            RewardContainer.AdapterType.AdapterTypeDaily -> CouponListVHDaily(inflater.inflate(CouponListVHDaily.LAYOUT_DAILY, parent, false)){
+            RewardContainer.AdapterType.AdapterTypeOvo -> OvoVh(
+                inflater.inflate(
+                    CouponListVHDaily.LAYOUT_OVO,
+                    parent,
+                    false
+                )
+            ) {}
+
+            RewardContainer.AdapterType.AdapterTypeDaily -> CouponListVHDaily(
+                inflater.inflate(
+                    CouponListVHDaily.LAYOUT_DAILY,
+                    parent,
+                    false
+                )
+            ) {
                 onItemClick(it)
             }
-            else -> CouponListVHTapTap(inflater.inflate(CouponListVHDaily.LAYOUT_TAP_TAP, parent, false)){}
+
+            else -> CouponListVHTapTap(
+                inflater.inflate(
+                    CouponListVHDaily.LAYOUT_TAP_TAP,
+                    parent,
+                    false
+                )
+            ) {}
         }
 
         if (couponList.size > 1 && !isTablet) {
@@ -60,18 +79,21 @@ class CouponAdapter(
     }
 }
 
-class CouponListVHTapTap(itemView: View, onItemClicked: (Int) -> Unit) : CouponListVHDaily(itemView,
+class CouponListVHTapTap(itemView: View, onItemClicked: (Int) -> Unit) : CouponListVHDaily(
+    itemView,
     onItemClicked
 ) {
 
     private val clTransaction: ConstraintLayout = itemView.findViewById(R.id.clTransaction)
-    private val tvTitle: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.tvTitle)
-    private val tvSubTitle: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.tvSubTitle)
+    private val tvTitle: com.tokopedia.unifyprinciples.Typography =
+        itemView.findViewById(R.id.tvTitle)
+    private val tvSubTitle: com.tokopedia.unifyprinciples.Typography =
+        itemView.findViewById(R.id.tvSubTitle)
 
     override fun setCouponTapTap(data: CouponTapTap) {
         clTransaction.gone()
         data.imageUrl?.let {
-            ImageUtils.loadImage(imageView, it)
+            imageView.loadImage(it)
         }
         super.setCouponTapTap(data)
     }
@@ -89,7 +111,8 @@ class CouponListVHTapTap(itemView: View, onItemClicked: (Int) -> Unit) : CouponL
     }
 }
 
-class OvoVh(itemView: View, onItemClicked: (Int) -> Unit) : CouponListVHDaily(itemView,
+class OvoVh(itemView: View, onItemClicked: (Int) -> Unit) : CouponListVHDaily(
+    itemView,
     onItemClicked
 ) {
     val tvTitle: Typography = itemView.findViewById(R.id.tvTitle)
@@ -97,19 +120,23 @@ class OvoVh(itemView: View, onItemClicked: (Int) -> Unit) : CouponListVHDaily(it
     override fun setData(data: CouponType) {
         if (data is OvoListItem) {
             val item = data as OvoListItem
-            tvTitle.setTextFuture(PrecomputedTextCompat.getTextFuture(
+            tvTitle.setTextFuture(
+                PrecomputedTextCompat.getTextFuture(
                     item.text,
                     TextViewCompat.getTextMetricsParams(tvTitle),
-                     null))
+                    null
+                )
+            )
 
-            if(!data.imageUrl.isNullOrEmpty()){
+            if (!data.imageUrl.isNullOrEmpty()) {
                 imageView.loadImage(data.imageUrl)
             }
         }
     }
 }
 
-open class CouponListVHDaily(itemView: View, onItemClicked: (Int) -> Unit) : RecyclerView.ViewHolder(itemView) {
+open class CouponListVHDaily(itemView: View, onItemClicked: (Int) -> Unit) :
+    RecyclerView.ViewHolder(itemView) {
 
     companion object {
         val LAYOUT_TAP_TAP = com.tokopedia.gamification.R.layout.list_item_coupons
@@ -142,13 +169,13 @@ open class CouponListVHDaily(itemView: View, onItemClicked: (Int) -> Unit) : Rec
 
     open fun setCouponTapTap(data: CouponTapTap) {
         data.imageUrl?.let {
-            ImageUtils.loadImage(imageView, it)
+            imageView.loadImage(it)
         }
     }
 
     open fun setGetCouponDetail(data: GetCouponDetail) {
         data.imageUrl?.let {
-            ImageUtils.loadImage(imageView, it)
+            imageView.loadImage(it)
         }
     }
 }
