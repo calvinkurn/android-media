@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gifting.di.DaggerGiftingComponent
@@ -28,7 +29,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class GiftingBottomSheet(private val addOnId: String) : BottomSheetUnify() {
+class GiftingBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var viewModel: GiftingViewModel
@@ -50,6 +51,7 @@ class GiftingBottomSheet(private val addOnId: String) : BottomSheetUnify() {
 
     private var shopTier: Long? = null
     private var shopIdDisplayed: String = ""
+    private var addOnId: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         clearContentPadding = true
@@ -137,7 +139,7 @@ class GiftingBottomSheet(private val addOnId: String) : BottomSheetUnify() {
     }
 
     private fun setupShopSection(shop: Shop) {
-        textShopName?.text = shop.name
+        textShopName?.text = MethodChecker.fromHtml(shop.name)
     }
 
     private fun setPageLoading(isLoading: Boolean) {
@@ -163,5 +165,9 @@ class GiftingBottomSheet(private val addOnId: String) : BottomSheetUnify() {
                 shopTier.orZero()
             )
         }
+    }
+
+    fun setAddonId(addOnId: String) {
+        this.addOnId = addOnId
     }
 }
