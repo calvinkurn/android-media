@@ -60,6 +60,9 @@ class ComposeQuestionnaireViewModelTest :
             val successState = getSuccessState()
 
             runTestFetchQuestionnaire(successState)
+
+            assert(states[0] == QuestionnaireState.Loading)
+            assertEquals(successState.toString(), states[1].toString())
         }
     }
 
@@ -251,14 +254,12 @@ class ComposeQuestionnaireViewModelTest :
     @Test
     fun `when click previous button and current page is more then 0 should move to previous page`() {
         runStateAndUiEffectTest {
-            val data = getSuccessState()
-            val successState = data.copy(
-                data = data.data.copy(
-                    currentPage = data.data.questionnaireList.size.minus(1)
-                )
-            )
+            val successState = getSuccessState()
 
-            runTestFetchQuestionnaire(data)
+            runTestFetchQuestionnaire(successState)
+
+            assert(states[0] == QuestionnaireState.Loading)
+            assertEquals(successState.toString(), states[1].toString())
 
             //move to next 2 page
             viewModel.onEvent(QuestionnaireUserEvent.ClickNext)
@@ -267,9 +268,15 @@ class ComposeQuestionnaireViewModelTest :
             //first click prev button
             viewModel.onEvent(QuestionnaireUserEvent.ClickPrevious)
 
-            val firstClick = successState.copy(
+            val clickPreviousState = successState.copy(
                 data = successState.data.copy(
-                    currentPage = successState.data.currentPage.minus(1)
+                    currentPage = successState.data.questionnaireList.size.minus(1)
+                )
+            )
+
+            val firstClick = clickPreviousState.copy(
+                data = clickPreviousState.data.copy(
+                    currentPage = clickPreviousState.data.currentPage.minus(1)
                 )
             )
             assertEquals(firstClick.toString(), states[4].toString())
@@ -307,6 +314,9 @@ class ComposeQuestionnaireViewModelTest :
 
             runTestFetchQuestionnaire(successState)
 
+            assert(states[0] == QuestionnaireState.Loading)
+            assertEquals(successState.toString(), states[1].toString())
+
             successState.data.questionnaireList.forEach {
                 it.options.forEach { o ->
                     o.isSelected = true
@@ -326,9 +336,90 @@ class ComposeQuestionnaireViewModelTest :
 
             runTestFetchQuestionnaire(successState)
 
+            assert(states[0] == QuestionnaireState.Loading)
+            assertEquals(successState.toString(), states[1].toString())
+
             val actual = viewModel.isAnyChanges()
 
             assert(!actual)
+        }
+    }
+
+    @Test
+    fun `when click single questionnaire answer option should update the state data`() {
+        runStateAndUiEffectTest {
+            val successState = getSuccessState()
+            runTestFetchQuestionnaire(successState)
+
+            assert(states[0] == QuestionnaireState.Loading)
+            assertEquals(successState.toString(), states[1].toString())
+
+            val pagePosition = 0
+            val questionnaireList = successState.data.questionnaireList.toMutableList()
+            val question = successState.data.questionnaireList[pagePosition]
+            val options = question.options.toMutableList()
+            val option = options[0]
+
+            viewModel.onEvent(
+                QuestionnaireUserEvent.OnOptionItemSelected(
+                    pagePosition = pagePosition,
+                    option = option,
+                    isChecked = true
+                )
+            )
+
+            options[0] = option.copyData(true)
+            questionnaireList[pagePosition] = question.copy(options = options.toList())
+
+            val newStateData = successState.copy(data = successState.data.copy(
+                questionnaireList = questionnaireList.toList()
+            ))
+
+            assertEquals(newStateData.toString(), states[2].toString())
+
+            //when click selected answer should done nothing
+
+            viewModel.onEvent(
+                QuestionnaireUserEvent.OnOptionItemSelected(
+                    pagePosition = pagePosition,
+                    option = option.copyData(true),
+                    isChecked = true
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `when click multiple questionnaire answer option should update the state data`() {
+        runStateAndUiEffectTest {
+            val successState = getSuccessState()
+            runTestFetchQuestionnaire(successState)
+
+            assert(states[0] == QuestionnaireState.Loading)
+            assertEquals(successState.toString(), states[1].toString())
+
+            val pagePosition = 1
+            val questionnaireList = successState.data.questionnaireList.toMutableList()
+            val question = successState.data.questionnaireList[pagePosition]
+            val options = question.options.toMutableList()
+            val option = options[0]
+
+            viewModel.onEvent(
+                QuestionnaireUserEvent.OnOptionItemSelected(
+                    pagePosition = pagePosition,
+                    option = option,
+                    isChecked = true
+                )
+            )
+
+            options[0] = option.copyData(true)
+            questionnaireList[pagePosition] = question.copy(options = options.toList())
+
+            val newStateData = successState.copy(data = successState.data.copy(
+                questionnaireList = questionnaireList.toList()
+            ))
+
+            assertEquals(newStateData.toString(), states[2].toString())
         }
     }
 
@@ -342,10 +433,6 @@ class ComposeQuestionnaireViewModelTest :
         coVerify {
             getPersonaQuestionnaireUseCase.execute()
         }
-
-        assert(states[0] == QuestionnaireState.Loading)
-
-        assertEquals(successState.toString(), states[1].toString())
     }
 
     private fun TestScope.runTestClickNextEventToMoveToNextPage(successState: QuestionnaireState.Success) {
