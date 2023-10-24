@@ -1158,6 +1158,10 @@ class TokoNowHomeFragment :
                 )
             }
         }
+
+        observe(viewModelTokoNow.openLoginPage) {
+            openLoginPage()
+        }
     }
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
@@ -2151,5 +2155,9 @@ class TokoNowHomeFragment :
             message = getString(R.string.tokopedianow_home_toaster_description_you_are_not_be_able_to_shop),
             type = TYPE_ERROR
         )
+    }
+
+    private fun openLoginPage() {
+        RouteManager.route(context, ApplinkConst.LOGIN)
     }
 }
