@@ -6,5 +6,5 @@ package com.tokopedia.feedplus.presentation.model
 data class PostSourceModel(
     val id: String,
     val source: String?,
-    val entryPoint: String = "", //TODO temp with default value
+    val entryPoint: String = "",
 )

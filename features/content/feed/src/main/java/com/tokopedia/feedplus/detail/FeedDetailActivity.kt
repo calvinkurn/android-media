@@ -25,6 +25,7 @@ import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.type.FeedContentType
 import com.tokopedia.feedplus.presentation.model.type.isPlayContent
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play_common.util.extension.commit
 import com.tokopedia.play_common.util.extension.marginLp
@@ -46,6 +47,9 @@ class FeedDetailActivity : BaseActivity() {
 
     private val postId: String
         get() = intent.data?.lastPathSegment.orEmpty()
+
+    private val categoryId: String
+        get() = intent.getStringExtra(KEY_QUERY_CAT_ID).ifNullOrBlank { "" }
 
     private val viewModel: FeedDetailViewModel by viewModels { viewModelFactory }
 
@@ -97,6 +101,7 @@ class FeedDetailActivity : BaseActivity() {
         val source = intent.data?.getQueryParameter(KEY_QUERY_SOURCE) ?: TAB_TYPE_CDP
         val extrasData = Bundle().apply {
             putString(ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID, postId)
+            putString(KEY_QUERY_CAT_ID, categoryId)
             intent.extras?.let {
                 putAll(it)
             }
@@ -211,5 +216,6 @@ class FeedDetailActivity : BaseActivity() {
 
     companion object {
         private const val KEY_QUERY_SOURCE = "source"
+        const val KEY_QUERY_CAT_ID = "category_id"
     }
 }

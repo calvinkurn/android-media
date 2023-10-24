@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.model
 
+import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
 
 /**
@@ -17,7 +18,8 @@ data class FeedTrackerDataModel(
     val contentScore: String,
     val hasVoucher: Boolean,
     val campaignStatus: String,
-    val entryPoint: String
+    val entryPoint: String,
+    val entrySource: MapperFeedModelToTrackerDataModel.FeedEntrySource,
 )
 
 data class FeedTopAdsTrackerDataModel(

@@ -61,6 +61,7 @@ import com.tokopedia.feedplus.analytics.FeedMVCAnalytics
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
+import com.tokopedia.feedplus.detail.FeedDetailActivity
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
@@ -99,6 +100,7 @@ import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -220,10 +222,12 @@ class FeedFragment :
     private val feedMvcAnalytics = FeedMVCAnalytics()
     private val trackerModelMapper: MapperFeedModelToTrackerDataModel by lazy {
         isCdp = arguments?.getBoolean(ARGUMENT_IS_CDP, false) ?: false
+        val categoryId = arguments?.getString(FeedDetailActivity.KEY_QUERY_CAT_ID).ifNullOrBlank { "" }
 
         MapperFeedModelToTrackerDataModel(
             if (isCdp) FeedBaseFragment.TAB_TYPE_CDP else data?.type.orEmpty(),
-            arguments?.getString(ARGUMENT_ENTRY_POINT) ?: ENTRY_POINT_DEFAULT
+            arguments?.getString(ARGUMENT_ENTRY_POINT) ?: ENTRY_POINT_DEFAULT,
+            MapperFeedModelToTrackerDataModel.FeedEntrySource(categoryId = categoryId, arguments?.getString(ARGUMENT_ENTRY_POINT).ifNullOrBlank { ENTRY_POINT_DEFAULT } )
         )
     }
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
