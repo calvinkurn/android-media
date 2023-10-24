@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Player.EventListener
 import com.google.android.exoplayer2.video.VideoListener
@@ -49,6 +50,7 @@ import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.animation.StoriesProductNudge
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
 import com.tokopedia.stories.view.components.player.StoriesExoPlayer
+import com.tokopedia.stories.view.custom.StoriesErrorView
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
@@ -207,6 +209,11 @@ class StoriesDetailFragment @Inject constructor(
         resumeStories()
     }
 
+    override fun onPause() {
+        super.onPause()
+        pauseStories()
+    }
+
     override fun onRenderedFirstFrame() {
         super.onRenderedFirstFrame()
         contentIsLoaded()
@@ -292,17 +299,11 @@ class StoriesDetailFragment @Inject constructor(
                 if (!isEligiblePage) return@collect
                 when (event) {
                     is StoriesUiEvent.EmptyDetailPage -> {
-                        setNoContent(true)
+                        setErrorType(StoriesErrorView.Type.EmptyCategory, isTimerAvailable = false)
                     }
 
                     is StoriesUiEvent.ErrorDetailPage -> {
-                        if (event.throwable.isNetworkError) {
-                            setNoInternet(true)
-                            binding.layoutStoriesNoInet.btnStoriesNoInetRetry.setOnClickListener { run { event.onClick() } }
-                        } else {
-                            setFailed(true)
-                            binding.layoutStoriesFailed.btnStoriesFailedLoad.setOnClickListener { run { event.onClick() } }
-                        }
+                        setErrorType(if (event.throwable.isNetworkError) StoriesErrorView.Type.NoInternet else StoriesErrorView.Type.FailedLoad) { event.onClick()}
                     }
 
                     StoriesUiEvent.OpenKebab -> {
@@ -416,9 +417,6 @@ class StoriesDetailFragment @Inject constructor(
             state.detailItems.isEmpty()
         ) return
 
-        setNoInternet(false)
-        setFailed(false)
-
         val prevItem = prevState?.detailItems?.getOrNull(prevState.selectedDetailPosition)
         val currentItem = state.detailItems.getOrNull(state.selectedDetailPosition) ?: return
 
@@ -443,13 +441,14 @@ class StoriesDetailFragment @Inject constructor(
                         content.data,
                         object : ImageLoaderStateListener {
                             override fun successLoad() {
-                                setNoContent(false)
                                 contentIsLoaded()
                                 analytic?.sendImpressionStoriesContent(viewModel.storyId)
+                                hideError()
                             }
 
                             override fun failedLoad() {
-                                setNoContent(true)
+                                setErrorType(StoriesErrorView.Type.NoContent)
+                                contentIsLoaded()
                             }
                         }
                     )
@@ -462,12 +461,12 @@ class StoriesDetailFragment @Inject constructor(
                     showVideoContent()
                     showVideoLoading()
                     renderVideoMedia(content)
-                    setNoContent(false)
+                    hideError()
                 }
             }
 
             Unknown -> {
-                setNoContent(true)
+                setErrorType(StoriesErrorView.Type.EmptyCategory)
                 contentIsLoaded()
             }
         }
@@ -723,23 +722,18 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun setNoInternet(isShow: Boolean) = with(binding.layoutStoriesNoInet) {
-        root.showWithCondition(isShow)
-        icCloseLoading.setOnClickListener { activity?.finish() }
+    private fun setErrorType(errorType: StoriesErrorView.Type, isTimerAvailable: Boolean = true, onClick: () -> Unit = {}) = with(binding.vStoriesError) {
+        show()
+        type = errorType
+        setAction { onClick() }
+        setCloseAction { activity?.finish() }
+        translationZ = if (errorType == StoriesErrorView.Type.NoContent || errorType == StoriesErrorView.Type.EmptyCategory) 0f else 1f
+
+        if(errorType != StoriesErrorView.Type.EmptyCategory && isTimerAvailable) return@with
+        renderTimer(null, TimerStatusInfo.Empty)
     }
 
-    private fun setFailed(isShow: Boolean) = with(binding.layoutStoriesFailed) {
-        root.showWithCondition(isShow)
-        icCloseLoading.setOnClickListener { activity?.finish() }
-    }
-
-    private fun setNoContent(isShow: Boolean) = with(binding.layoutNoContent) {
-        binding.layoutStoriesContent.root.showWithCondition(!isShow)
-        root.showWithCondition(isShow)
-
-        if (!isShow) return@with
-        renderTimer(null, TimerStatusInfo.Empty) //will be improved in rendered failed
-    }
+    private fun hideError() = binding.vStoriesError.gone()
 
     override fun onDestroyView() {
         _videoPlayer?.destroy()
@@ -856,6 +850,11 @@ class StoriesDetailFragment @Inject constructor(
                         }
                     }
                 }
+
+                override fun onPlayerError(error: ExoPlaybackException) {
+                    super.onPlayerError(error)
+                    setErrorType(StoriesErrorView.Type.NoContent)
+                }
             })
 
             binding.layoutStoriesContent.playerStoriesDetailContent.player = videoPlayer.exoPlayer
@@ -890,7 +889,7 @@ class StoriesDetailFragment @Inject constructor(
             }
 
             StoryStatus.Unknown -> {
-                setNoContent(true)
+                setErrorType(StoriesErrorView.Type.NoContent)
                 contentIsLoaded()
             }
         }

@@ -4,7 +4,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.constants.SearchConstant.ProductListType.FIXED_GRID
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
+import com.tokopedia.discovery.common.reimagine.Search3ProductCard
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.discovery.common.utils.SimilarSearchCoachMarkLocalCache
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -12,6 +14,7 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.domain.model.SearchProductV5
 import com.tokopedia.search.result.domain.model.SearchSameSessionRecommendationModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
@@ -83,6 +86,11 @@ internal open class ProductListPresenterTestFixtures {
     protected val searchProductCommonResponseJSON = "searchproduct/common-response.json"
     protected val searchProductFirstPageJSON = "searchproduct/loaddata/first-page.json"
     protected val searchProductSecondPageJSON = "searchproduct/loaddata/second-page.json"
+
+    protected val searchProductCommonResponseReimagineJSON = "searchproduct/common-response-reimagine.json"
+    protected val searchProductFirstPageReimagineJSON = "searchproduct/loaddata/reimagine/first-page.json"
+    protected val searchProductSecondPageReimagineJSON = "searchproduct/loaddata/reimagine/second-page.json"
+
     protected val className = "SearchClassName"
 
     protected val productListView = mockk<ProductListSectionContract.View>(relaxed = true)
@@ -304,13 +312,52 @@ internal open class ProductListPresenterTestFixtures {
         topAdsPositionStart: Int = 0,
         organicPositionStart: Int = 0
     ) {
+        val expectedProductListType = searchProductModel.searchProduct.header.meta.productListType
+        val expectedShowButtonATC = searchProductModel.searchProduct.header.meta.showButtonAtc
+
+        `Then verify visitable list with product items`(
+            searchProductModel,
+            visitableListSlot,
+            topAdsPositionStart,
+            organicPositionStart,
+            expectedProductListType,
+            expectedShowButtonATC
+        )
+    }
+
+    protected fun `Then verify visitable list with product items for reimagine`(
+        visitableListSlot: CapturingSlot<List<Visitable<*>>>,
+        searchProductModel: SearchProductModel,
+        topAdsPositionStart: Int = 0,
+        organicPositionStart: Int = 0
+    ) {
+        val expectedShowButtonATC = searchProductModel.searchProductV5.header.meta.showButtonAtc
+
+        `Then verify visitable list with product items for reimagine`(
+            searchProductModel,
+            visitableListSlot,
+            topAdsPositionStart,
+            organicPositionStart,
+            FIXED_GRID,
+            expectedShowButtonATC
+        )
+    }
+
+    private fun `Then verify visitable list with product items`(
+        searchProductModel: SearchProductModel,
+        visitableListSlot: CapturingSlot<List<Visitable<*>>>,
+        topAdsPositionStart: Int,
+        organicPositionStart: Int,
+        expectedProductListType: String,
+        expectedShowButtonATC: Boolean
+    ) {
+        val organicProductList = searchProductModel.searchProduct.data.productList
+        val topAdsProductList = searchProductModel.topAdsModel.data
+
         val visitableList = visitableListSlot.captured
         val productItemViewModelList = visitableList.filterIsInstance<ProductItemDataView>()
 
         val topAdsTemplatePosition = getTopAdsProductPositionByTemplate(searchProductModel)
-
-        val organicProductList = searchProductModel.searchProduct.data.productList
-        val topAdsProductList = searchProductModel.topAdsModel.data
 
         var expectedTopAdsProductPosition = topAdsPositionStart + 1
         var expectedOrganicProductPosition = organicPositionStart + 1
@@ -323,8 +370,8 @@ internal open class ProductListPresenterTestFixtures {
                 productItem.assertTopAdsProduct(
                     topAdsProductList[topAdsProductListIndex],
                     expectedTopAdsProductPosition,
-                    searchProductModel.getProductListType(),
-                    searchProductModel.isShowButtonAtc,
+                    expectedProductListType,
+                    expectedShowButtonATC,
                 )
                 expectedTopAdsProductPosition++
                 topAdsProductListIndex++
@@ -333,8 +380,8 @@ internal open class ProductListPresenterTestFixtures {
                     organicProductList[organicProductListIndex],
                     expectedOrganicProductPosition,
                     "",
-                    searchProductModel.getProductListType(),
-                    searchProductModel.isShowButtonAtc,
+                    expectedProductListType,
+                    expectedShowButtonATC,
                 )
                 expectedOrganicProductPosition++
                 organicProductListIndex++
@@ -354,7 +401,7 @@ internal open class ProductListPresenterTestFixtures {
         topAdsProduct: Data,
         position: Int,
         productListType: String,
-        isShowButtonAtc: Boolean,
+        isShowButtonAtc: Boolean = false,
     ) {
         val productItem = this as ProductItemDataView
 
@@ -408,6 +455,136 @@ internal open class ProductListPresenterTestFixtures {
         productItem.priceRange shouldBe organicProduct.priceRange
     }
 
+    private fun `Then verify visitable list with product items for reimagine`(
+        searchProductModel: SearchProductModel,
+        visitableListSlot: CapturingSlot<List<Visitable<*>>>,
+        topAdsPositionStart: Int,
+        organicPositionStart: Int,
+        expectedProductListType: String,
+        expectedShowButtonATC: Boolean
+    ) {
+        val organicProductList = searchProductModel.searchProductV5.data.productList
+        val topAdsProductList = searchProductModel.topAdsModel.data
+
+        val visitableList = visitableListSlot.captured
+        val productItemViewModelList = visitableList.filterIsInstance<ProductItemDataView>()
+
+        val topAdsTemplatePosition = getTopAdsProductPositionByTemplate(searchProductModel)
+
+        var expectedTopAdsProductPosition = topAdsPositionStart + 1
+        var expectedOrganicProductPosition = organicPositionStart + 1
+
+        var topAdsProductListIndex = 0
+        var organicProductListIndex = 0
+
+        productItemViewModelList.forEachIndexed { index, productItem ->
+            if (topAdsTemplatePosition.contains(index)) {
+                productItem.assertTopAdsProduct(
+                    topAdsProductList[topAdsProductListIndex],
+                    expectedTopAdsProductPosition,
+                    expectedProductListType,
+                    expectedShowButtonATC,
+                )
+                expectedTopAdsProductPosition++
+                topAdsProductListIndex++
+            } else {
+                productItem.assertOrganicProductReimagine(
+                    organicProductList[organicProductListIndex],
+                    expectedOrganicProductPosition,
+                    "",
+                    expectedProductListType,
+                )
+                expectedOrganicProductPosition++
+                organicProductListIndex++
+            }
+        }
+    }
+
+    protected fun Visitable<*>.assertOrganicProductReimagine(
+        organicProduct: SearchProductV5.Data.Product,
+        position: Int,
+        expectedPageTitle: String = "",
+        productListType: String = "",
+    ) {
+        val productItem = this as ProductItemDataView
+
+        productItem.isOrganicAds shouldBe organicProduct.isOrganicAds()
+        productItem.position shouldBe position
+
+        if (organicProduct.isOrganicAds()) {
+            productItem.topadsClickUrl shouldBe organicProduct.ads.productClickURL
+            productItem.topadsImpressionUrl shouldBe organicProduct.ads.productViewURL
+            productItem.topadsWishlistUrl shouldBe organicProduct.ads.productWishlistURL
+            productItem.topadsTag shouldBe organicProduct.ads.tag
+        } else {
+            productItem.topadsClickUrl shouldBe ""
+            productItem.topadsImpressionUrl shouldBe ""
+            productItem.topadsWishlistUrl shouldBe ""
+            productItem.topadsTag shouldBe 0
+        }
+
+        productItem.productID shouldBe organicProduct.id
+        productItem.productName shouldBe organicProduct.name
+        productItem.price shouldBe organicProduct.price.text
+        productItem.pageTitle shouldBe expectedPageTitle
+        productItem.productListType shouldBe productListType
+        productItem.parentId shouldBe organicProduct.meta.parentID
+        productItem.priceRange shouldBe organicProduct.price.range
+        productItem.priceInt shouldBe organicProduct.price.number
+        productItem.originalPrice shouldBe organicProduct.price.original
+        productItem.discountPercentage shouldBe organicProduct.price.discountPercentage.toInt()
+        productItem.ratingString shouldBe organicProduct.rating
+        productItem.imageUrl shouldBe organicProduct.mediaURL.image
+        productItem.imageUrl300 shouldBe organicProduct.mediaURL.image300
+        productItem.imageUrl700 shouldBe organicProduct.mediaURL.image700
+        productItem.warehouseID shouldBe organicProduct.meta.warehouseID
+        productItem.shopID shouldBe organicProduct.shop.id
+        productItem.shopName shouldBe organicProduct.shop.name
+        productItem.shopCity shouldBe organicProduct.shop.city
+        productItem.shopUrl shouldBe organicProduct.shop.url
+        productItem.isWishlisted shouldBe organicProduct.wishlist
+
+        productItem.badgesList?.size shouldBe 1
+        productItem.badgesList!!.first().run {
+            this@run.imageUrl shouldBe organicProduct.badge.url
+            this@run.title shouldBe organicProduct.badge.title
+            this@run.isShown shouldBe true
+        }
+
+        productItem.categoryID shouldBe organicProduct.category.id
+        productItem.categoryName shouldBe organicProduct.category.name
+        productItem.categoryBreadcrumb shouldBe organicProduct.category.breadcrumb
+
+        productItem.labelGroupList?.size shouldBe organicProduct.labelGroupList.size
+        productItem.labelGroupList!!.forEachIndexed { index, labelGroupDataView ->
+            labelGroupDataView.position shouldBe organicProduct.labelGroupList[index].position
+            labelGroupDataView.title shouldBe organicProduct.labelGroupList[index].title
+            labelGroupDataView.type shouldBe organicProduct.labelGroupList[index].type
+            labelGroupDataView.imageUrl shouldBe organicProduct.labelGroupList[index].url
+        }
+
+        productItem.labelGroupVariantList.size shouldBe organicProduct.labelGroupVariantList.size
+        productItem.labelGroupVariantList.forEachIndexed { index, labelGroupVariantDataView ->
+            val labelGroupVariantModel = organicProduct.labelGroupVariantList[index]
+            labelGroupVariantDataView.title shouldBe labelGroupVariantModel.title
+            labelGroupVariantDataView.type shouldBe labelGroupVariantModel.type
+            labelGroupVariantDataView.typeVariant shouldBe labelGroupVariantModel.typeVariant
+            labelGroupVariantDataView.hexColor shouldBe labelGroupVariantModel.hexColor
+        }
+
+        productItem.freeOngkirDataView.imageUrl shouldBe organicProduct.freeShipping.url
+        productItem.freeOngkirDataView.isActive shouldBe true
+
+        productItem.productUrl shouldBe organicProduct.url
+        productItem.applink shouldBe organicProduct.applink
+        productItem.customVideoURL shouldBe organicProduct.mediaURL.videoCustom
+        productItem.isPortrait shouldBe organicProduct.meta.isPortrait
+
+        productItem.boosterList shouldBe ""
+        productItem.sourceEngine shouldBe ""
+        productItem.showButtonAtc shouldBe false
+    }
+
     @Suppress("UNCHECKED_CAST")
     internal fun RequestParams.getSearchProductParams(): Map<String, Any> =
         parameters[SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS] as Map<String, Any>
@@ -435,6 +612,10 @@ internal open class ProductListPresenterTestFixtures {
                 )
             }
         }
+    }
+
+    protected fun `Given search reimagine rollence product card will return non control variant`() {
+        every { reimagineRollence.search3ProductCard() } returns Search3ProductCard.VAR_1A
     }
 
     @After

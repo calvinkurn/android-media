@@ -30,6 +30,7 @@ private const val bannerPosition12WithBroadMatchPage1Response = "searchproduct/b
 private const val bottomBannerWithBroadMatchPage1Response = "searchproduct/banner/banner-bottom-page-1-with-broadmatch.json"
 private const val bottomBannerPage1Response = "searchproduct/banner/banner-bottom-page-1.json"
 private const val bannerPage2Response = "searchproduct/banner/banner-page-2.json"
+private const val bottomBannerReimagineResponse = "searchproduct/banner/banner-bottom-reimagine.json"
 
 internal class SearchProductBannerTest: ProductListPresenterTestFixtures() {
 
@@ -117,6 +118,8 @@ internal class SearchProductBannerTest: ProductListPresenterTestFixtures() {
         this.text shouldBe bannerModel.text
         this.applink shouldBe bannerModel.applink
         this.imageUrl shouldBe bannerModel.imageUrl
+        this.componentId shouldBe bannerModel.componentId
+        this.trackingOption shouldBe bannerModel.trackingOption
     }
 
     @Test
@@ -388,5 +391,19 @@ internal class SearchProductBannerTest: ProductListPresenterTestFixtures() {
         `When load more data`(searchParameter)
 
         `Then assert banner in middle of page with broad match`(searchProductModel)
+    }
+
+    @Test
+    fun `show banner for reimagine`() {
+        val searchProductModel = bottomBannerReimagineResponse.jsonToObject<SearchProductModel>()
+
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given search product API will success`(searchProductModel)
+        `Given view will set and add product list`()
+
+        `When load data`(mapOf(SearchApiConst.Q to "hampers"))
+
+        val bannerDataView = visitableList.find { it is BannerDataView }
+        (bannerDataView as BannerDataView).assert(searchProductModel.searchProductV5.data.banner)
     }
 }

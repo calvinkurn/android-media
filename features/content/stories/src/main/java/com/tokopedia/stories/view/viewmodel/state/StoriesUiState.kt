@@ -68,17 +68,17 @@ data class TimerStatusInfo(
                 val Empty
                     get() = StoryTimer(
                         id = "",
-                        itemCount = 0,
-                        resetValue = -1,
-                        duration = 0,
-                        position = -1
+                        itemCount = 1,
+                        resetValue = 0,
+                        duration = 3000,
+                        position = 0
                     )
             }
         }
 
         val Empty
             get() = TimerStatusInfo(
-                StoriesDetailItem.StoriesDetailItemUiEvent.PAUSE,
+                StoriesDetailItem.StoriesDetailItemUiEvent.RESUME,
                 StoryTimer.Empty
             )
     }

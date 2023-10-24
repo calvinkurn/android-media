@@ -235,6 +235,7 @@ class StoriesViewModel @AssistedInject constructor(
             StoriesUiAction.ContentIsLoaded -> handleContentIsLoaded()
             StoriesUiAction.PageIsSelected -> handlePageIsSelected()
             StoriesUiAction.VideoBuffering -> handleVideoBuffering()
+            else -> {}
         }
     }
 

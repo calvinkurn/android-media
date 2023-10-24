@@ -162,7 +162,7 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
         }
         productPrice?.let {
             priceToMessages[it]?.let { model ->
-                if (model.messages.firstOrNull()?.equals(String.EMPTY) == true) {
+                if (model.messages.firstOrNull()?.trimStart().equals(String.EMPTY) || model.messages.isEmpty()) {
                     instanceProductUpdateListner?.removeWidget()
                     return
                 }
