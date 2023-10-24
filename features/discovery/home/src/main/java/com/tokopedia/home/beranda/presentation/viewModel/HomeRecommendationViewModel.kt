@@ -27,6 +27,7 @@ import dagger.Lazy
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.util.*
 import javax.inject.Inject
 
 class HomeRecommendationViewModel @Inject constructor(
@@ -52,6 +53,7 @@ class HomeRecommendationViewModel @Inject constructor(
     private val loadingModel = HomeRecommendationLoading()
     private val loadMoreModel = HomeRecommendationLoadMore()
     private val emptyModel = HomeRecommendationEmpty()
+    private val errorModel = HomeRecommendationError()
     val homeRecommendationLiveData get() = _homeRecommendationLiveData
     private val _homeRecommendationLiveData: MutableLiveData<HomeRecommendationDataModel> =
         MutableLiveData()
@@ -78,12 +80,23 @@ class HomeRecommendationViewModel @Inject constructor(
                 locationParam
             )
             if (result.homeRecommendations.isEmpty()) {
-                _homeRecommendationCardState.emit(HomeRecommendationCardState.EmptyData(listOf(emptyModel)))
+                _homeRecommendationCardState.emit(
+                    HomeRecommendationCardState.EmptyData(
+                        listOf(
+                            emptyModel
+                        )
+                    )
+                )
             } else {
                 _homeRecommendationCardState.emit(HomeRecommendationCardState.Success(result))
             }
         }, onError = {
-                _homeRecommendationCardState.emit(HomeRecommendationCardState.Fail(it))
+                _homeRecommendationCardState.emit(
+                    HomeRecommendationCardState.Fail(
+                        errorList = listOf(errorModel),
+                        throwable = it
+                    )
+                )
             })
     }
 
@@ -92,23 +105,43 @@ class HomeRecommendationViewModel @Inject constructor(
         locationParam: String,
         sourceType: String
     ) {
-        _homeRecommendationCardState.tryEmit(HomeRecommendationCardState.LoadingMore(listOf(loadMoreModel)))
+        val homeRecommendationCardStateValue = homeRecommendationCardState.value
+        if (homeRecommendationCardStateValue is HomeRecommendationCardState.Success) {
+            val existingRecommendationData =
+                homeRecommendationCardStateValue.data.homeRecommendations.toMutableList()
 
-        launchCatchError(coroutineContext, block = {
-            val existingRecommendationData = homeRecommendationCardState.value
-            val result = getHomeRecommendationCardUseCase.get().execute(
-                page,
-                sourceType,
-                locationParam
+            _homeRecommendationCardState.tryEmit(
+                HomeRecommendationCardState.LoadingMore(
+                    existingRecommendationData.apply {
+                        add(loadMoreModel)
+                    }.toList()
+                )
             )
-            if (result.homeRecommendations.isEmpty()) {
-                _homeRecommendationCardState.emit(HomeRecommendationCardState.EmptyData(listOf(emptyModel)))
-            } else {
-                _homeRecommendationCardState.emit(HomeRecommendationCardState.Success(result))
-            }
-        }, onError = {
-                _homeRecommendationCardState.emit(HomeRecommendationCardState.Fail(it))
-            })
+
+            launchCatchError(coroutineContext, block = {
+                val result = getHomeRecommendationCardUseCase.get().execute(
+                    page,
+                    sourceType,
+                    locationParam
+                )
+                existingRecommendationData.remove(loadMoreModel)
+
+                existingRecommendationData.addAll(result.homeRecommendations)
+                _homeRecommendationCardState.emit(
+                    HomeRecommendationCardState.SuccessLoadMore(
+                        result.copy(homeRecommendations = existingRecommendationData.toList())
+                    )
+                )
+            }, onError = {
+                    existingRecommendationData.remove(loadMoreModel)
+                    _homeRecommendationCardState.emit(
+                        HomeRecommendationCardState.FailLoadMore(
+                            existingList = existingRecommendationData.toList(),
+                            throwable = it
+                        )
+                    )
+                })
+        }
     }
 
     fun loadInitialPage(
@@ -130,7 +163,8 @@ class HomeRecommendationViewModel @Inject constructor(
             // todo will remove
 //            getHomeRecommendationUseCase.get().setParams(tabName, recommendationId, count, 1, locationParam, sourceType)
             val data =
-                getHomeRecommendationCardUseCase.get().execute(Int.ONE, sourceType, locationParam)
+                getHomeRecommendationCardUseCase.get()
+                    .execute(Int.ONE, sourceType, locationParam)
             if (data.homeRecommendations.isEmpty()) {
                 _homeRecommendationLiveData.postValue(
                     data.copy(
@@ -149,7 +183,8 @@ class HomeRecommendationViewModel @Inject constructor(
                         data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
                             .toMutableList()
                     val newList = data.homeRecommendations.toMutableList()
-                    val topAdsBanner = arrayListOf<Pair<String, ArrayList<TopAdsImageViewModel>>>()
+                    val topAdsBanner =
+                        arrayListOf<Pair<String, ArrayList<TopAdsImageViewModel>>>()
                     homeBannerTopAds.forEach {
                         if (it.bannerType == TYPE_BANNER_ADS) {
                             val bannerData = topAdsImageViewUseCase.get().getImageData(
@@ -409,7 +444,8 @@ class HomeRecommendationViewModel @Inject constructor(
         var recommendationItem: HomeRecommendationItemDataModel? = null
         var recommendationItemPosition: Int = -1
         if (homeRecomendationList.getOrNull(position)?.getUniqueIdentity() == id) {
-            recommendationItem = homeRecomendationList[position] as HomeRecommendationItemDataModel
+            recommendationItem =
+                homeRecomendationList[position] as HomeRecommendationItemDataModel
             recommendationItemPosition = position
         } else {
             homeRecomendationList.withIndex()

@@ -8,7 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -43,13 +46,13 @@ import com.tokopedia.home.beranda.listener.HomeEggListener
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemGridViewHolder.Companion.LAYOUT
+import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
@@ -65,6 +68,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import com.tokopedia.abstraction.R as abstractionR
@@ -161,6 +165,7 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
         setupRecyclerView()
         loadFirstPageData()
         initListeners()
+        observeStateFlow()
         observeLiveData()
     }
 
@@ -199,7 +204,6 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
         viewModel.homeRecommendationLiveData.observe(
             viewLifecycleOwner
         ) { data ->
-            val existingData = adapter.currentList.filterIsInstance<HomeRecommendationVisitable>()
             adapter.submitList(data.homeRecommendations)
         }
 
@@ -223,6 +227,61 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
                 }
             } else {
                 updateScrollEndlessListener(result.getOrNull()?.isHasNextPage ?: false)
+            }
+        }
+    }
+
+    private fun observeStateFlow() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.homeRecommendationCardState.collect {
+                    when (it) {
+                        is HomeRecommendationCardState.Success -> {
+                            adapter.submitList(it.data.homeRecommendations)
+                            updateScrollEndlessListener(it.data.isHasNextPage)
+                        }
+                        is HomeRecommendationCardState.Loading -> {
+                            adapter.submitList(it.loadingList)
+                        }
+
+                        is HomeRecommendationCardState.EmptyData -> {
+                            adapter.submitList(it.emptyList)
+                        }
+                        is HomeRecommendationCardState.Fail -> {
+                            adapter.submitList(it.errorList)
+                            showToasterError()
+                        }
+                        is HomeRecommendationCardState.SuccessLoadMore -> {
+                            adapter.submitList(it.data.homeRecommendations)
+                            updateScrollEndlessListener(it.data.isHasNextPage)
+                        }
+
+                        is HomeRecommendationCardState.FailLoadMore -> {
+                            adapter.submitList(it.existingList)
+                            showToasterError()
+                        }
+                        is HomeRecommendationCardState.LoadingMore -> {
+                            adapter.submitList(it.loadingMoreList)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showToasterError() {
+        view?.let {
+            if (adapter.itemCount > 1) {
+                Toaster.build(
+                    it,
+                    getString(R.string.home_error_connection),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    getString(abstractionR.string.title_try_again),
+                    View.OnClickListener {
+                        endlessRecyclerViewScrollListener?.loadMoreNextPage()
+                    }
+                ).show()
             }
         }
     }
@@ -267,10 +326,15 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
         endlessRecyclerViewScrollListener =
             object : HomeFeedEndlessScrollListener(recyclerView?.layoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                    viewModel.loadNextData(
-                        tabName,
-                        recomId,
-                        DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
+//                    viewModel.loadNextData(
+//                        tabName,
+//                        recomId,
+//                        DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
+//                        page,
+//                        getLocationParamString(),
+//                        sourceType
+//                    )
+                    viewModel.fetchNextHomeRecommendationCard(
                         page,
                         getLocationParamString(),
                         sourceType
@@ -425,13 +489,14 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
     }
 
     override fun onRetryGetProductRecommendationData() {
-        viewModel.loadInitialPage(
-            tabName,
-            recomId,
-            DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
-            getLocationParamString(),
-            sourceType = sourceType
-        )
+//        viewModel.loadInitialPage(
+//            tabName,
+//            recomId,
+//            DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
+//            getLocationParamString(),
+//            sourceType = sourceType
+//        )
+        viewModel.fetchHomeRecommendationCard(getLocationParamString(), sourceType)
     }
 
     private fun initListeners() {
@@ -491,14 +556,15 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
     private fun loadFirstPageData() {
         if (userVisibleHint && isAdded && activity != null && !hasLoadData) {
             hasLoadData = true
-            viewModel.loadInitialPage(
-                tabName,
-                recomId,
-                DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
-                getLocationParamString(),
-                tabIndex,
-                sourceType = sourceType
-            )
+//            viewModel.loadInitialPage(
+//                tabName,
+//                recomId,
+//                DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
+//                getLocationParamString(),
+//                tabIndex,
+//                sourceType = sourceType
+//            )
+            viewModel.fetchHomeRecommendationCard(getLocationParamString(), sourceType)
         }
     }
 

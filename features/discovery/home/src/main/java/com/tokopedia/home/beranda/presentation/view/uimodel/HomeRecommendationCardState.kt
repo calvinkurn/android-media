@@ -4,10 +4,26 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVi
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 
 sealed class HomeRecommendationCardState {
-    data class Loading(val homeRecommendationLoading: List<HomeRecommendationVisitable>) : HomeRecommendationCardState()
+    data class Loading(val loadingList: List<HomeRecommendationVisitable>) :
+        HomeRecommendationCardState()
 
-    data class EmptyData(val homeRecommendationLoading: List<HomeRecommendationVisitable>) : HomeRecommendationCardState()
-    data class LoadingMore(val homeRecommendationLoadingMore: List<HomeRecommendationVisitable>) : HomeRecommendationCardState()
+    data class LoadingMore(val loadingMoreList: List<HomeRecommendationVisitable>) :
+        HomeRecommendationCardState()
+
+    data class EmptyData(val emptyList: List<HomeRecommendationVisitable>) :
+        HomeRecommendationCardState()
+
     data class Success(val data: HomeRecommendationDataModel) : HomeRecommendationCardState()
-    data class Fail(val throwable: Throwable) : HomeRecommendationCardState()
+    data class SuccessLoadMore(val data: HomeRecommendationDataModel) :
+        HomeRecommendationCardState()
+
+    data class Fail(
+        val errorList: List<HomeRecommendationVisitable>,
+        val throwable: Throwable
+    ) : HomeRecommendationCardState()
+
+    data class FailLoadMore(
+        val existingList: List<HomeRecommendationVisitable>,
+        val throwable: Throwable
+    ) : HomeRecommendationCardState()
 }
