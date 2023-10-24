@@ -204,7 +204,8 @@ class CheckoutLogisticProcessor @Inject constructor(
                 destinationDistrictId = recipientAddressModel.destinationDistrictId,
                 destinationPostalCode = recipientAddressModel.postalCode,
                 destinationLatitude = recipientAddressModel.latitude,
-                destinationLongitude = recipientAddressModel.longitude
+                destinationLongitude = recipientAddressModel.longitude,
+                groupingState = order.groupingState
             )
         }
     }
@@ -240,7 +241,8 @@ class CheckoutLogisticProcessor @Inject constructor(
             isTradeInDropOff = isTradeInDropOff,
             preOrderDuration = shipmentDetailData.shipmentCartData!!.preOrderDuration,
             isFulfillment = shipmentDetailData.shipmentCartData!!.isFulfillment,
-            boMetadata = shipmentDetailData.shipmentCartData!!.boMetadata
+            boMetadata = shipmentDetailData.shipmentCartData!!.boMetadata,
+            groupingState = shipmentDetailData.shipmentCartData!!.groupingState ?: 0
         )
         if (isTradeInDropOff && recipientAddressModel.locationDataModel != null) {
             shippingParam.destinationDistrictId = recipientAddressModel.locationDataModel.district
@@ -656,7 +658,10 @@ class CheckoutLogisticProcessor @Inject constructor(
                                                     )
                                                 return@withContext RatesResult(
                                                     courierItemData,
-                                                    generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
+                                                    generateCheckoutOrderInsuranceFromCourier(
+                                                        courierItemData,
+                                                        orderModel
+                                                    ),
                                                     shippingDurationUiModel.shippingCourierViewModelList
                                                 )
                                             }
@@ -722,7 +727,10 @@ class CheckoutLogisticProcessor @Inject constructor(
                                             }
                                             return@withContext RatesResult(
                                                 courierItemData,
-                                                generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
+                                                generateCheckoutOrderInsuranceFromCourier(
+                                                    courierItemData,
+                                                    orderModel
+                                                ),
                                                 shippingDurationUiModel.shippingCourierViewModelList
                                             )
                                         }
@@ -757,7 +765,10 @@ class CheckoutLogisticProcessor @Inject constructor(
                                     }
                                     return@withContext RatesResult(
                                         courierItemData,
-                                        generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
+                                        generateCheckoutOrderInsuranceFromCourier(
+                                            courierItemData,
+                                            orderModel
+                                        ),
                                         shippingDuration.shippingCourierViewModelList
                                     )
                                 }

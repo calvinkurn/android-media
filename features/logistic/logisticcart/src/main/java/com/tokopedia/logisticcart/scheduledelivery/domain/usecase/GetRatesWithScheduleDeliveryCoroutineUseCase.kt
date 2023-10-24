@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.entity.request.ScheduleDeliveryParam
 import com.tokopedia.logisticcart.scheduledelivery.domain.entity.response.ScheduleDeliveryRatesResponse
-import com.tokopedia.logisticcart.scheduledelivery.domain.mapper.ScheduleDeliveryMapper
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesCoroutineUseCase
@@ -15,7 +14,6 @@ import javax.inject.Inject
 class GetRatesWithScheduleDeliveryCoroutineUseCase @Inject constructor(
     private val getRatesCoroutineUseCase: GetRatesCoroutineUseCase,
     private val getScheduleDeliveryUseCase: GetScheduleDeliveryCoroutineUseCase,
-    private val mapper: ScheduleDeliveryMapper,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<Pair<RatesParam, ScheduleDeliveryParam>, ShippingRecommendationData>(dispatcher.io) {
 
