@@ -238,6 +238,7 @@ open class BaseTokoNowViewModel(
                     quantity.isZero() -> deleteCartItem(miniCartItem, onSuccessDeleteCart, onError)
                     else -> updateCartItem(product, miniCartItem, onSuccessUpdateCart, onError)
                 }
+                removeChangeQuantityJob(productId)
             }, delay = CHANGE_QUANTITY_DELAY).let {
                 changeQuantityJob[productId] = it
             }
@@ -329,5 +330,9 @@ open class BaseTokoNowViewModel(
         val warehouseId = addressData.getWarehouseId()
         val outOfCoverage = warehouseId == OOC_WAREHOUSE_ID
         return shopId != INVALID_SHOP_ID && !outOfCoverage && userSession.isLoggedIn
+    }
+
+    private fun removeChangeQuantityJob(productId: String) {
+        changeQuantityJob.remove(productId)
     }
 }
