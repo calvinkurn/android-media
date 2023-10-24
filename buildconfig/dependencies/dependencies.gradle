@@ -468,7 +468,6 @@ ext {
     composeCoil = "2.2.2"
     accompanistPagerVersion = "0.23.1"
     accompanistFlowLayout = "0.28.0"
-    lifecycleRuntimeComposeVersion = "2.6.1"
 
     composeDependencies = [
             composeCompiler     : "androidx.compose.compiler:compiler:$composeVersion",
@@ -487,7 +486,6 @@ ext {
             composeAndroidUiTest: "androidx.compose.ui:ui-test-manifest:$composeVersion",
             accompanistPager    : "com.google.accompanist:accompanist-pager:$accompanistPagerVersion",
             accompanistFlowLayout : "com.google.accompanist:accompanist-flowlayout:$accompanistFlowLayout",
-            lifecycleRuntimeCompose : "androidx.lifecycle:lifecycle-runtime-compose:$lifecycleRuntimeComposeVersion"
     ]
 
     kotlinParcelizeRuntimeDependencies = [
