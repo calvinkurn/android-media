@@ -6,17 +6,18 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.forEach
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recommendation_widget_common.viewutil.asLifecycleOwner
 import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
-import com.tokopedia.recommendation_widget_common.viewutil.launchRepeatOnStarted
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import android.R as androidR
 
 /**
@@ -66,7 +67,7 @@ class RecommendationWidgetView : LinearLayout {
 
         job = mutableListOf<Job>().apply {
             add(
-                lifecycleOwner.launchRepeatOnStarted {
+                lifecycleOwner.lifecycleScope.launch {
                     recommendationWidgetViewModel
                         ?.stateFlow
                         ?.map { it.widgetMap[model.id] }
@@ -76,7 +77,7 @@ class RecommendationWidgetView : LinearLayout {
             )
 
             add(
-                lifecycleOwner.launchRepeatOnStarted {
+                lifecycleOwner.lifecycleScope.launch {
                     recommendationWidgetViewModel
                         ?.stateFlow
                         ?.map { it.successMessage }
@@ -86,7 +87,7 @@ class RecommendationWidgetView : LinearLayout {
             )
 
             add(
-                lifecycleOwner.launchRepeatOnStarted {
+                lifecycleOwner.lifecycleScope.launch {
                     recommendationWidgetViewModel
                         ?.stateFlow
                         ?.map { it.errorMessage }

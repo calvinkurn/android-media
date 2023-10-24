@@ -16,8 +16,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.gms.common.util.DeviceProperties
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -34,6 +36,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
+import com.tokopedia.sellerhomecommon.common.const.ShcConst.Payload.UPDATE_MULTI_COMPONENT_DETAIL
 import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
 import com.tokopedia.sellerhomecommon.domain.model.TabModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
@@ -48,6 +51,8 @@ import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.FilterTabUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentTab
+import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
@@ -84,11 +89,13 @@ import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.databinding.FragmentStcStatisticBinding
 import com.tokopedia.statistic.di.StatisticComponent
+import com.tokopedia.statistic.view.adapter.StatisticAdapter
 import com.tokopedia.statistic.view.bottomsheet.ActionMenuBottomSheet
 import com.tokopedia.statistic.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.statistic.view.viewhelper.FragmentListener
 import com.tokopedia.statistic.view.viewhelper.RejectedOrderRateCoachMark
+import com.tokopedia.statistic.view.viewhelper.MultiComponentTabUiInteractor
 import com.tokopedia.statistic.view.viewhelper.StatisticItemDecoration
 import com.tokopedia.statistic.view.viewhelper.StatisticLayoutManager
 import com.tokopedia.statistic.view.viewmodel.StatisticViewModel
@@ -152,6 +159,17 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val mViewModel: StatisticViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(StatisticViewModel::class.java)
     }
+
+    private val multiComponentUiInteractor: MultiComponentTabUiInteractor? by lazy {
+        context?.let {
+            MultiComponentTabUiInteractor(it)
+        }
+    }
+
+    private val viewPool: RecycledViewPool by lazy {
+        RecycledViewPool()
+    }
+
     private var mLayoutManager: StatisticLayoutManager? = null
     private val recyclerView by lazy { super.getRecyclerView(view) }
     private val defaultStartDate by lazy {
@@ -237,6 +255,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         observeWidgetData(mViewModel.pieChartWidgetData, WidgetType.PIE_CHART)
         observeWidgetData(mViewModel.barChartWidgetData, WidgetType.BAR_CHART)
         observeWidgetData(mViewModel.announcementWidgetData, WidgetType.ANNOUNCEMENT)
+        observeWidgetData(mViewModel.multiComponentWidgetData, WidgetType.MULTI_COMPONENT)
+        observeMultiComponentData()
         observeTickers()
         rejectedOrderRateCoachMark.init(view.context, userSession.userId)
     }
@@ -253,11 +273,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         super.onPause()
         hideTooltipIfExist()
         hideMonthPickerIfExist()
+        multiComponentUiInteractor?.hideCoachMark()
         rejectedOrderRateCoachMark.dismiss()
     }
 
     override fun onDestroyView() {
         rejectedOrderRateCoachMark.destroy()
+        multiComponentUiInteractor?.destroy()
         mLayoutManager = null
         super.onDestroyView()
     }
@@ -292,6 +314,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun getAdapterTypeFactory(): WidgetAdapterFactoryImpl {
         return WidgetAdapterFactoryImpl(this)
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl> {
+        return StatisticAdapter(adapterTypeFactory) {
+            multiComponentUiInteractor?.hideCoachMark()
+        }
     }
 
     override fun getScreenName(): String = SCREEN_NAME
@@ -348,6 +376,21 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             }
         }
         getWidgetsData(widgets)
+    }
+
+    override fun onReloadWidgetMultiComponent(tab: MultiComponentTab, widgetType: String) {
+        //Show loading
+        adapter.data.forEach {
+            val isTheSameWidget = it.widgetType == widgetType
+            if (isTheSameWidget) {
+                it.showLoadingState = true
+                notifyWidgetChanged(it)
+            }
+        }
+
+        // Hit appropriate widget, regardless its loaded or not
+        // Because it will show error widget
+        mViewModel.getMultiComponentDetailTabWidgetData(tab)
     }
 
     override fun sendCardClickTracking(model: CardWidgetUiModel) {
@@ -549,6 +592,32 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 reloadPage()
             }
         }.show(childFragmentManager)
+    }
+
+    override fun multiComponentTabSelected(tab: MultiComponentTab) {
+        if (!tab.isLoaded) {
+            mViewModel.getMultiComponentDetailTabWidgetData(tab)
+        }
+    }
+
+    override fun showCoachMarkFirstTab(view: View) {
+        val listener = activity as? FragmentListener
+
+        if (listener?.isTabCoachMarkShowing() == false) {
+            multiComponentUiInteractor?.showCoachMarkMultiComponent(view, userSession.userId)
+        }
+    }
+
+    override fun clickMultiComponentTab(tabName: String) {
+        StatisticTracker.sendClickMultiComponentTab(tabName)
+    }
+
+    override fun impressComponentDetailTab() {
+        StatisticTracker.impressClickMultiComponentTab()
+    }
+
+    override fun getRvViewPool(): RecycledViewPool {
+        return viewPool
     }
 
     override fun setCoachMarkView(dataKey: String, view: View) {
@@ -839,6 +908,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         mViewModel.getAnnouncementWidgetData(dataKeys)
     }
 
+    private fun fetchMultiComponentData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.forEach { it.isLoaded = true }
+        val dataKeys: List<String> = Utils.getWidgetDataKeys<MultiComponentWidgetUiModel>(widgets)
+        mViewModel.getMultiComponentWidgetData(dataKeys)
+    }
+
     private fun selectDateRange() {
         if (!isAdded || context == null) return
         StatisticTracker.sendDateFilterEvent(userSession)
@@ -917,6 +992,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         super.renderList(mWidgetList)
 
         scrollToWidgetBySelectedDataKey()
+        scrollToWawasanPlus(mWidgetList)
 
         if (isFirstLoad) {
             recyclerView?.post {
@@ -925,6 +1001,33 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             isFirstLoad = false
         } else {
             requestVisibleWidgetsData()
+        }
+    }
+
+    private fun scrollToWawasanPlus(mWidgetList: MutableList<BaseWidgetUiModel<*>>) {
+        val listener = activity as? FragmentListener
+
+        if ((selectedWidget.isNotEmpty() ||
+            multiComponentUiInteractor?.alreadyAutoScroll(userSession.userId) == true) ||
+            listener?.isTabCoachMarkShowing() == true
+        ) return
+
+        try {
+            val wawasanPlusIndex = mWidgetList.indexOfFirst {
+                it is MultiComponentWidgetUiModel
+            }
+
+            if (wawasanPlusIndex == RecyclerView.NO_POSITION) {
+                return
+            }
+
+            recyclerView?.post {
+                mLayoutManager?.scrollToPositionWithOffset(wawasanPlusIndex, 100)
+                multiComponentUiInteractor?.setAlreadyAutoScroll(userSession.userId)
+            }
+
+        } catch (e: Throwable) {
+            Timber.e(e)
         }
     }
 
@@ -965,6 +1068,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         groupedWidgets[WidgetType.PIE_CHART]?.run { fetchPieChartData(this) }
         groupedWidgets[WidgetType.BAR_CHART]?.run { fetchBarChartData(this) }
         groupedWidgets[WidgetType.ANNOUNCEMENT]?.run { fetchAnnouncementData(this) }
+        groupedWidgets[WidgetType.MULTI_COMPONENT]?.run { fetchMultiComponentData(this) }
     }
 
     private fun setOnErrorGetLayout(throwable: Throwable) = view?.run {
@@ -1086,6 +1190,39 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
+    private fun updateMultiComponentData(
+        widget: MultiComponentWidgetUiModel,
+        tab: MultiComponentTab
+    ) {
+        val test = widget.apply {
+            val widgetTabs = data?.tabs?.toMutableList() ?: mutableListOf()
+            val mapWidget = widgetTabs.map {
+                if (it.id == tab.id) {
+                    tab.copy(isLoaded = true)
+                } else {
+                    it
+                }
+            }
+
+            data = data?.copy(
+                tabs = mapWidget
+            )
+            showLoadingState = false
+        }
+
+        notifyWidgetChangedPayload(test, UPDATE_MULTI_COMPONENT_DETAIL)
+    }
+
+    private fun notifyWidgetChangedPayload(widget: BaseWidgetUiModel<*>, payload: Int) {
+        recyclerView?.post {
+            val widgetPosition = adapter.data.indexOf(widget)
+            if (widgetPosition != RecyclerView.NO_POSITION) {
+                adapter.notifyItemChanged(widgetPosition, payload)
+                binding?.swipeRefreshStc?.isRefreshing = false
+            }
+        }
+    }
+
     private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
         recyclerView?.post {
             val widgetPosition = adapter.data.indexOf(widget)
@@ -1133,6 +1270,18 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
             stopPLTPerformanceMonitoring()
             stopWidgetPerformanceMonitoring(type)
+        }
+    }
+
+    private fun observeMultiComponentData() {
+        mViewModel.multiComponentTabsData.observe(viewLifecycleOwner) { tab ->
+            adapter.data.filterIsInstance<MultiComponentWidgetUiModel>().find { widget ->
+                widget.data?.tabs?.any {
+                    it.id == tab.id
+                } == true
+            }?.let { multiComponentWidget ->
+                updateMultiComponentData(multiComponentWidget, tab)
+            }
         }
     }
 

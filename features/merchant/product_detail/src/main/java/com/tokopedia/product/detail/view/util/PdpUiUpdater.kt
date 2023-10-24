@@ -1320,6 +1320,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     ): PdpRecommendationWidgetDataModel {
         return copy(
             recommendationWidgetModel = recommendationWidgetModel.copy(
+                trackingModel = recommendationWidgetModel.trackingModel.copy(
+                    anchorId = productId
+                ),
                 metadata = recommendationWidgetModel.metadata.copy(
                     productIds = if (productId.isBlank()) listOf() else listOf(productId)
                 )
@@ -1338,7 +1341,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     separator = item.separator,
                     icon = item.icon,
                     status = item.status,
-                    chevronPos = item.chevronPos
+                    chevronPos = item.chevronPos,
+                    paddingTop = item.padding.top,
+                    paddingBottom = item.padding.bottom
                 )
             }
         }

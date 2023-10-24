@@ -14,8 +14,11 @@ data class PickerResult(
     // the collection of images (only) has compressed
     val compressedImages: List<String> = emptyList(),
 
-    // if picker using editor feature
+    // (old/legacy): if picker using editor feature.
     val editedImages: List<String> = emptyList(),
+
+    // if picker using editor feature (nit: universal editor)
+    val editedPaths: List<String> = emptyList(),
 
     // list of selected of included media from picker param
     val selectedIncludeMedia: List<String> = emptyList()

@@ -13,10 +13,10 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.firebase.FirebaseApp;
+import com.scp.auth.GotoSdk;
+import com.scp.auth.common.utils.ScpRefreshHelper;
+import com.scp.auth.common.utils.ScpUtils;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
-import com.tokopedia.linker.interfaces.LinkerRouter;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.tokochat.config.util.TokoChatConnection;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
@@ -42,11 +42,15 @@ import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.network.data.model.ScpTokenModel;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tokochat.config.util.TokoChatConnection;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.url.TokopediaUrl;
@@ -54,6 +58,7 @@ import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 
 import okhttp3.Response;
 import timber.log.Timber;
@@ -149,6 +154,14 @@ public class MyApplication extends BaseMainApplication
 
         new DevOptNotificationManager(this).start();
         TokoChatConnection.init(this, false);
+
+        UserSession userSession = new UserSession(this);
+
+        GotoSdk.init(this);
+
+        if (userSession.isLoggedIn() && Objects.requireNonNull(GotoSdk.LSDKINSTANCE).getAccessToken().isEmpty()) {
+            GotoSdk.LSDKINSTANCE.save(userSession.getAccessToken(), userSession.getFreshToken());
+        }
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -464,5 +477,20 @@ public class MyApplication extends BaseMainApplication
     @Override
     public void disconnectTokoChat() {
 
+    }
+
+    @Override
+    public void onRefreshCM(String token) {
+        refreshFCMFromInstantIdService(token);
+    }
+
+    @Override
+    public boolean isGotoAuthSdkEnabled() {
+        return ScpUtils.INSTANCE.isGotoLoginEnabled();
+    }
+
+    @Override
+    public ScpTokenModel onNewRefreshToken() {
+        return new ScpRefreshHelper(this).refreshToken();
     }
 }

@@ -12,6 +12,7 @@ data class CatalogDetailUiModel(
 
 data class PriceCtaProperties (
     val catalogId: String = "",
+    val departmentId : String = "",
     val price: String = "",
     val productName: String = "",
     val bgColor: Int = 0,
