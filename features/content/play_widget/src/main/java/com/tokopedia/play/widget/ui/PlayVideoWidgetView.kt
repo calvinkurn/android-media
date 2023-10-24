@@ -129,6 +129,7 @@ class PlayVideoWidgetView : CardUnify2 {
         binding.imgBadge.showWithCondition(model.badgeUrl.isNotBlank())
         binding.imgBadge.loadImage(model.badgeUrl)
         binding.tvPartnerName.text = model.partnerName
+        binding.tvLiveBadge.root.showWithCondition(model.isLive)
 
         bindMute(model.isMuted)
         bindPlayer(model.videoUrl)

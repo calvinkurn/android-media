@@ -32,13 +32,24 @@
             app:use_controller="false"
             />
 
+        <include
+            android:id="@+id/tv_live_badge"
+            layout="@layout/view_play_widget_live_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginStart="12dp"
+            app:layout_constraintBottom_toBottomOf="@id/total_watch_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/total_watch_view"
+            />
+
         <com.tokopedia.play.widget.ui.custom.PlayTotalWatchBadgeView
             android:id="@+id/total_watch_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="10dp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_live_badge"
             app:layout_constraintTop_toTopOf="parent"
             />
 

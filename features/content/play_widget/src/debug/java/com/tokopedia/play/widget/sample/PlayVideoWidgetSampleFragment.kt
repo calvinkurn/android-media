@@ -67,6 +67,7 @@ class PlayVideoWidgetSampleFragment : Fragment() {
                     partnerName = "Partner $it",
                     coverUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSC6rQmJ_kshzM2fwpkthP-Tg_3VugPnz_vrw&usqp=CAU",
                     videoUrl = "https://vod-stream.tokopedia.net/view/adaptive.m3u8?id=0e6a19506f8271eebfd736a5e8aa0102",
+                    isLive = it % 2 == 0,
                 )
             }
         )
