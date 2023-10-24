@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.main.onboard
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -145,6 +146,13 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
             childFragmentManager,
             TAG_BOTTOM_SHEET_ONBOARD_NON_PROGRESSIVE
         )
+
+        onBoardNonProgressiveBottomSheet.setOnLaunchBlockedKycListener { isBlockedMultipleAccount ->
+            val intent = Intent()
+            intent.putExtra(KYCConstant.PARAM_BLOCKED_IS_MULTIPLE_ACCOUNT, isBlockedMultipleAccount)
+            activity?.setResult(KYCConstant.ActivityResult.BLOCKED_KYC, intent)
+            activity?.finish()
+        }
 
         onBoardNonProgressiveBottomSheet.setOnLaunchTokoKycListener {
             activity?.setResult(KYCConstant.ActivityResult.LAUNCH_TOKO_KYC)

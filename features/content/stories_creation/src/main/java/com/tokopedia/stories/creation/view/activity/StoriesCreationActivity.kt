@@ -200,6 +200,7 @@ class StoriesCreationActivity : BaseActivity() {
             pageType(PageType.GALLERY)
             modeType(ModeType.COMMON)
             singleSelectionMode()
+            withImmersiveEditor()
             previewActionText(getString(R.string.stories_creation_continue))
         }
 

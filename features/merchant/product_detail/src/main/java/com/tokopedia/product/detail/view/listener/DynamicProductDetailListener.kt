@@ -545,4 +545,12 @@ interface DynamicProductDetailListener {
 
     // region BMGM
     fun onBMGMClicked(title: String, offerId: String, component: ComponentTrackDataModel)
+
+    /**
+     * PDP Impression
+     */
+    fun getImpressionHolders(): MutableList<String>
+
+    // remote config for pdp cacheable
+    fun isRemoteCacheableActive(): Boolean
 }

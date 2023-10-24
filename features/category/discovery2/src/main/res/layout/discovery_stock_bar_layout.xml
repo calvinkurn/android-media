@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ProgressBarUnify
+        android:id="@+id/stock_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:scaleY="2"
+        app:unify_progress_bar_color_type="color_orange"
+        app:unify_progress_bar_height="6"
+        app:unify_progress_bar_value="75" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/stock_icon"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        app:srcCompat="@drawable/ic_stock_light_mode" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="1dp"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="Terbatas!" />
+
+</FrameLayout>

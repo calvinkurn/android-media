@@ -3,7 +3,7 @@
     "data": {
       "notifications": {
         "buyerOrderStatus": {
-          "paymentStatus": 0
+          "paymentStatus": 1
         }
       }
     }
