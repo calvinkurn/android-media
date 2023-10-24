@@ -52,6 +52,8 @@ public class RemoteConfigKey {
     public static final String IRIS_GTM_CONFIG_TOGGLE = "android_customer_iris_config";
     public static final String IRIS_PERF_CONFIG = "android_customer_iris_perf_config";
     public static final String IRIS_PERFORMANCE_TOGGLE = "android_customer_iris_performance_config";
+
+    public static final String PERFORMANCE_CONFIG_WHITELIST = "android_pps_monitoring_nr_whitelist";
     public static final String IRIS_WORK_MANAGER_ENABLE = "android_iris_work_manager_enabled";
 
 
@@ -250,6 +252,8 @@ public class RemoteConfigKey {
 
     public static final String IS_SHOP_PENALTY_NEW_PAGE = "android_shop_penalty_new";
 
+    public static final String SELLER_FEEDBACK_KMP = "android_seller_feedback_kmp";
+
     public static final String SCP_REWARDS_MEDALI_TOUCH_POINT = "android_scp_rewards_medali_touch_point";
 
     public static final String ANDROID_FINTECH_ENABLE_RISK_BASED_PRICING = "android_fintech_enable_risk_based_pricing";
@@ -283,4 +287,8 @@ public class RemoteConfigKey {
     public static final String ANDROID_ENABLE_GENERATE_WIDEVINE_ID = "android_enable_generate_widevine_id";
     public static final String ANDROID_ENABLE_GENERATE_WIDEVINE_ID_SUSPEND = "android_enable_generate_widevine_id_suspend";
     public static final String ANDROID_WHITELIST_DISABLE_GENERATE_WIDEVINE_ID = "android_whitelist_disable_generate_widevine_id_hansel";
+
+    public static final String ENABLE_PDP_P1_CACHEABLE = "android_pdp_p1_should_cacheable";
+
+    public static final String ENABLE_PDP_P1_CACHE_AGE = "android_pdp_p1_cache_age";
 }

@@ -39,6 +39,12 @@ class StoriesCreationViewModel @Inject constructor(
     val maxStoriesConfig: StoriesCreationConfiguration.MaxStoriesConfig
         get() = _uiState.value.config.maxStoriesConfig
 
+    val minVideoDuration: Int
+        get() = _uiState.value.config.minVideoDuration
+
+    val maxVideoDuration: Int
+        get() = _uiState.value.config.maxVideoDuration
+
     val storyId: String
         get() = _uiState.value.config.storiesId
 

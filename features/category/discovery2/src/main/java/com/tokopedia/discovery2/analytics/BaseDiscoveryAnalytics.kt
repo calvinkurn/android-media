@@ -173,6 +173,7 @@ open class BaseDiscoveryAnalytics(
     open fun trackContentCardClick(componentsItems: ComponentsItem, userID: String?) {}
     open fun trackPromoProductHighlightImpression(productHighlightData: List<DataItem>, components: ComponentsItem?) {}
     open fun trackProductHighlightClick(productHighlightData: DataItem, productHighlightPosition: Int, components: ComponentsItem?, isLogin: Boolean) {}
+    open fun trackProductHighlightOCSClick(productHighlightData: DataItem, productHighlightPosition: Int, components: ComponentsItem?) {}
     open fun trackCouponImpression(properties: List<CouponTrackingProperties>) {}
     open fun trackCouponClickEvent(properties: CouponTrackingProperties) {}
     open fun trackCouponCTAClickEvent(properties: CouponTrackingProperties) {}

@@ -69,6 +69,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentcommonR
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 import com.tokopedia.creation.common.R as creationcommonR
 
 /**
@@ -86,8 +89,10 @@ class FeedBaseFragment :
     internal lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
     private val feedMainViewModel: FeedMainViewModel by viewModels {
         FeedMainViewModel.provideFactory(viewModelAssistedFactory, activeTabSource)
     }

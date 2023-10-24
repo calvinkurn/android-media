@@ -4,8 +4,10 @@ import android.content.Context
 import android.graphics.Color
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewStub
 import android.view.ViewTreeObserver
 import android.widget.TextView
+import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 
@@ -55,5 +57,10 @@ internal object ViewUtil {
             FirebaseCrashlytics.getInstance().recordException(e)
             defaultColor
         }
+    }
+
+    fun ViewStub.inflateView(@LayoutRes layoutResource: Int): View {
+        this.layoutResource = layoutResource
+        return inflate()
     }
 }

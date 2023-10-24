@@ -135,7 +135,7 @@ object RecommendationCarouselTracking {
                         item.pageName,
                         item.recommendationType,
                         if (item.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
-                    ),
+                    ) + if(trackingModel.anchorId.isNotEmpty()) " - ${trackingModel.anchorId}" else "",
                     DIMENSION_56 to item.warehouseId.toString(),
                     KEY_INDEX to item.position + 1,
                     ITEM_BRAND to VALUE_NONE_OTHER,
@@ -169,7 +169,7 @@ object RecommendationCarouselTracking {
                         item.pageName,
                         item.recommendationType,
                         if (item.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
-                    ))
+                    ) + if(trackingModel.anchorId.isNotEmpty()) " - ${trackingModel.anchorId}" else "")
                     putString(DIMENSION_56, item.warehouseId.toString())
                     putInt(KEY_INDEX, item.position + 1)
                     putString(ITEM_BRAND, VALUE_NONE_OTHER)
