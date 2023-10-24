@@ -43,6 +43,26 @@ class PdpFintechWidgetAnalytics @Inject constructor(
                 analyticsEvent.promoName,
                 analyticsEvent.subtitle
             )
+            is FintechWidgetAnalyticsEvent.BnplWidgetClick -> sendBnplClickEvent(
+                analyticsEvent.usecaseRank,
+                analyticsEvent.linkingStatus,
+                analyticsEvent.userState,
+                analyticsEvent.widgetType,
+                analyticsEvent.productId,
+                analyticsEvent.productPrice,
+                analyticsEvent.installmentAmt,
+                analyticsEvent.partner,
+            )
+            is FintechWidgetAnalyticsEvent.BnplWidgetImpression -> sendBnplImpressionEvent(
+                analyticsEvent.usecaseRank,
+                analyticsEvent.linkingStatus,
+                analyticsEvent.userState,
+                analyticsEvent.widgetType,
+                analyticsEvent.productId,
+                analyticsEvent.productPrice,
+                analyticsEvent.installmentAmt,
+                analyticsEvent.partner,
+            )
         }
     }
 
@@ -114,6 +134,44 @@ class PdpFintechWidgetAnalytics @Inject constructor(
 
     }
 
+    private fun sendBnplClickEvent(
+        usecaseRank: String,
+        linkingStatus: String,
+        userState: String,
+        widgetType: String,
+        installmentAmt: String,
+        productId: String,
+        productPrice: String,
+        partner: String,
+    ) {
+        val map = TrackAppUtils.gtmData(
+            clickEvent,
+            eventCategory,
+            CLICK_BNPL_PDP_WIDGET,
+            "$usecaseRank - $linkingStatus - $userState - $widgetType - $productId - $productPrice - $installmentAmt - $partner"
+        )
+        sendGeneralEvent(map)
+    }
+
+    private fun sendBnplImpressionEvent(
+        usecaseRank: String,
+        linkingStatus: String,
+        userState: String,
+        widgetType: String,
+        installmentAmt: String,
+        productId: String,
+        productPrice: String,
+        partner: String,
+    ) {
+        val map = TrackAppUtils.gtmData(
+            viewEvent,
+            eventCategory,
+            IMPRESSION_BNPL_PDP_WIDGET,
+            "$usecaseRank - $linkingStatus - $userState - $widgetType - $productId - $productPrice - $installmentAmt - $partner"
+        )
+        sendGeneralEvent(map)
+    }
+
 
     companion object {
         const val viewEvent = "viewFintechIris"
@@ -128,6 +186,8 @@ class PdpFintechWidgetAnalytics @Inject constructor(
         const val FINTECH_PAYLATER_BUSIONNES = "fintechPaylater"
         const val FINTECH_PAYLATER_CURRENTSITE = "TokopediaFintech"
         const val CLICK_FINTECH_PDP_WIDGET = "bnpl chips - click buyer"
+        const val CLICK_BNPL_PDP_WIDGET = "bnpl click - click new buyer"
+        const val IMPRESSION_BNPL_PDP_WIDGET = "pdp page - impression new bnpl widget"
     }
 
 

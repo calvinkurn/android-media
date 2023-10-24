@@ -13,7 +13,6 @@ data class ScheduleDelivery(
     val scheduleDate: String = "",
     @SerializedName("validation_metadata")
     val validationMetadata: String = "",
-    // new OFOC
     @SerializedName("start_date")
     val startDate: String = "",
     @SerializedName("is_recommend")

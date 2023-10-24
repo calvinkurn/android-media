@@ -830,10 +830,11 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderProductAddOns(data: CartItemHolderData) {
-        if (data.addOnsProduct.listData.isNotEmpty() && data.addOnsProduct.widget.wording.isNotEmpty()) {
+        if (data.addOnsProduct.listData.isNotEmpty() && data.addOnsProduct.widget.title.isNotEmpty()) {
             binding.itemAddonCart.apply {
                 root.show()
-                this.descAddon.text = MethodChecker.fromHtml(data.addOnsProduct.widget.wording)
+                this.descAddon.text = MethodChecker.fromHtml(data.addOnsProduct.widget.title)
+                this.priceAddon.text = MethodChecker.fromHtml(data.addOnsProduct.widget.price)
                 val addOnType = data.addOnsProduct.listData.firstOrNull()?.type ?: 0
                 root.setOnClickListener {
                     actionListener?.onProductAddOnClicked(data)
@@ -1395,8 +1396,8 @@ class CartItemViewHolder constructor(
             if (cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM &&
                 !cartItemHolderData.cartBmGmTickerData.isShowBmGmDivider
             ) {
-                binding.bmgmHelperView1.layoutParams.height = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
-                binding.bmgmHelperView2.layoutParams.height = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+                 binding.bmgmHelperView1.visible()
+                 binding.bmgmHelperView2.visible()
 
                 if (cartItemHolderData.cartBmGmTickerData.isShowBmGmHorizontalDivider) {
                     binding.bottomDivider.visible()
@@ -1407,8 +1408,8 @@ class CartItemViewHolder constructor(
                 if (cartItemHolderData.cartBmGmTickerData.isShowTickerBmGm || cartItemHolderData.cartBmGmTickerData.isShowBmGmDivider) {
                     layoutParams.bottomMargin =
                         IMAGE_PRODUCT_MARGIN_START_4.dpToPx(itemView.resources.displayMetrics)
-                    binding.bmgmHelperView1.layoutParams.height = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
-                    binding.bmgmHelperView2.layoutParams.height = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
+                    binding.bmgmHelperView1.visible()
+                    binding.bmgmHelperView2.visible()
                 } else {
                     layoutParams.bottomMargin =
                         PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
@@ -1421,16 +1422,20 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderDivider(cartItemHolderData: CartItemHolderData) {
+        val layoutParams = binding.bottomDivider.layoutParams as MarginLayoutParams
         if (cartItemHolderData.showErrorBottomDivider) {
             binding.bottomDivider.layoutParams.height =
                 DEFAULT_DIVIDER_HEIGHT.dpToPx(itemView.resources.displayMetrics)
-            val layoutParams = binding.bottomDivider.layoutParams as MarginLayoutParams
             if (cartItemHolderData.shouldDivideHalfErrorBottomDivider) {
                 layoutParams.marginStart =
                     BOTTOM_DIVIDER_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
             } else {
                 layoutParams.marginStart = 0
             }
+            binding.bottomDivider.visible()
+        } else if (cartItemHolderData.showBmGmBottomDivider) {
+            layoutParams.marginStart = BOTTOM_DIVIDER_BMGM_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+            layoutParams.bottomMargin = PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
             binding.bottomDivider.visible()
         } else {
             binding.bottomDivider.gone()
@@ -1540,6 +1545,7 @@ class CartItemViewHolder constructor(
         private const val BUNDLING_SEPARATOR_MARGIN_START = 38
         private const val BOTTOM_DIVIDER_MARGIN_START = 114
         private const val IMAGE_PRODUCT_MARGIN_START_6 = 6
+        private const val BOTTOM_DIVIDER_BMGM_MARGIN_START = 52
 
         private const val CART_MAIN_COACH_MARK = "cart_main_coach_mark"
     }

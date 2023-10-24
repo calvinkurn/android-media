@@ -11,6 +11,7 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippi
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.NewUpsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ScheduleDelivery
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAction
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentPlatformFee
@@ -110,6 +111,7 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import javax.inject.Inject
+import kotlin.collections.HashMap
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress as GroupAddressResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop as GroupShopResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShopV2 as GroupShopV2Response
@@ -243,7 +245,8 @@ class ShipmentMapper @Inject constructor() {
                     groupInfoName = it.groupInformation.name,
                     groupInfoBadgeUrl = it.groupInformation.badgeUrl,
                     groupInfoDescription = it.groupInformation.description,
-                    groupInfoDescriptionBadgeUrl = it.groupInformation.descriptionBadgeUrl
+                    groupInfoDescriptionBadgeUrl = it.groupInformation.descriptionBadgeUrl,
+                    shipmentAction = mapShipmentAction(it.shipmentAction)
                 ).apply {
                     isError =
                         it.errors.isNotEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
@@ -1331,6 +1334,10 @@ class ShipmentMapper @Inject constructor() {
                 }
             )
         }
+    }
+
+    private fun mapShipmentAction(shipmentAction: List<ShipmentAction>): HashMap<Long, String> {
+        return HashMap(shipmentAction.associateBy({ it.spId }, { it.action }))
     }
 
     companion object {

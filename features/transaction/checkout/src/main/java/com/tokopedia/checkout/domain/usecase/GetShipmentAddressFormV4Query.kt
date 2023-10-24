@@ -421,6 +421,10 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                       minimum_weight
                     }
                   }
+                  shipment_action {
+                    sp_id
+                    action
+                  }
                   dropshipper {
                     name
                     telp_no

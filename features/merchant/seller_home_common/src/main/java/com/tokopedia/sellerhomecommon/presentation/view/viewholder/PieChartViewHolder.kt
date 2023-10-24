@@ -7,6 +7,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.charts.config.PieChartConfig
 import com.tokopedia.charts.model.PieChartEntry
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
@@ -98,7 +99,15 @@ class PieChartViewHolder(
         }
     }
 
+    private fun removeWidgetWithCondition(element: PieChartWidgetUiModel) {
+        val shouldRemove = !element.data?.showWidget.orFalse()
+        if (shouldRemove) {
+            listener.removeWidget(absoluteAdapterPosition, element)
+        }
+    }
+
     private fun setOnSuccess(element: PieChartWidgetUiModel) = with(binding) {
+        removeWidgetWithCondition(element)
         loadingStateBinding.shimmerWidgetCommon.gone()
         shcPieChartErrorState.gone()
         pieChartShc.visible()

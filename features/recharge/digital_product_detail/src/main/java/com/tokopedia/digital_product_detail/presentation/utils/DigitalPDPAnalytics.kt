@@ -639,7 +639,7 @@ class DigitalPDPAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    fun impressionProductMCCM(
+    fun impressionProductMCCMGrid(
         categoryName: String,
         operatorName: String,
         loyaltyStatus: String,
@@ -650,8 +650,7 @@ class DigitalPDPAnalytics {
 
     ) {
         val isMCCMorFlashSale =
-            if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
-                denomType == DenomWidgetEnum.MCCM_FULL_TYPE
+            if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE
             ) {
                 MCCM
             } else {
@@ -674,7 +673,7 @@ class DigitalPDPAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventDataLayer)
     }
 
-    fun impressMCCMProductNew(
+    fun impressMCCMProductFullVertical(
         productListName: String,
         categoryName: String,
         operatorName: String,
@@ -728,7 +727,7 @@ class DigitalPDPAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    fun clickMCCMProduct(
+    fun clickMCCMGridProduct(
         productListName: String,
         categoryName: String,
         operatorName: String,
@@ -739,8 +738,7 @@ class DigitalPDPAnalytics {
         position: Int
     ) {
         val isMCCMorFlashSale =
-            if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
-                denomType == DenomWidgetEnum.MCCM_FULL_TYPE
+            if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE
             ) {
                 MCCM
             } else {
@@ -764,7 +762,7 @@ class DigitalPDPAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
     }
 
-    fun clickMCCMProductNew(
+    fun clickMCCMProductFullVertical(
         productListName: String,
         categoryName: String,
         operatorName: String,
@@ -856,10 +854,7 @@ class DigitalPDPAnalytics {
         denomType: DenomWidgetEnum
     ) {
         val isMCCMorFlashSale =
-            if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
-                denomType == DenomWidgetEnum.MCCM_FULL_TYPE ||
-                denomType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE
-            ) {
+            if (denomType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
                 MCCM
             } else {
                 FLASH_SALE
@@ -1054,7 +1049,6 @@ class DigitalPDPAnalytics {
         denomType: DenomWidgetEnum
     ) {
         val recommendationLogic = if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
-            denomType == DenomWidgetEnum.MCCM_FULL_TYPE ||
             denomType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE
         ) {
             MCCM
@@ -1091,7 +1085,6 @@ class DigitalPDPAnalytics {
         position: Int
     ) {
         val recommendationLogic = if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
-            denomType == DenomWidgetEnum.MCCM_FULL_TYPE ||
             denomType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE
         ) {
             MCCM

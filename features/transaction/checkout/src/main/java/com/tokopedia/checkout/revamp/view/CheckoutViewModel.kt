@@ -139,6 +139,8 @@ class CheckoutViewModel @Inject constructor(
 
     var isPlusSelected: Boolean = false
 
+    var courierAction: String = "merge"
+
     var checkoutPageSource: String = CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
 
     val cornerId: String?
@@ -194,7 +196,8 @@ class CheckoutViewModel @Inject constructor(
                 checkoutLeasingId,
                 isPlusSelected,
                 isReloadData,
-                isReloadAfterPriceChangeHigher
+                isReloadAfterPriceChangeHigher,
+                courierAction
             )
             stopEmbraceTrace()
             when (saf) {
@@ -749,6 +752,15 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
+    private fun cleanPromoFromPromoRequest(promoRequest: PromoRequest): PromoRequest {
+        return promoRequest.copy(
+            codes = arrayListOf(),
+            orders = promoRequest.orders.map {
+                return@map it.copy(codes = mutableListOf())
+            }
+        )
+    }
+
     private suspend fun getEntryPointInfo(
         checkoutItems: List<CheckoutItem>,
         oldCheckoutItems: List<CheckoutItem>
@@ -761,7 +773,7 @@ class CheckoutViewModel @Inject constructor(
 
             if (checkoutModel != null && oldCheckoutModel != null) {
                 val entryPointInfo = promoProcessor
-                    .getEntryPointInfo(generateCouponListRecommendationRequest())
+                    .getEntryPointInfo(cleanPromoFromPromoRequest(generateCouponListRecommendationRequestWithListData(checkoutItems)))
                 return checkoutItems.map { model ->
                     if (model is CheckoutPromoModel) {
                         return@map model.copy(
@@ -1424,9 +1436,27 @@ class CheckoutViewModel @Inject constructor(
         )
     }
 
+    fun generateValidateUsePromoRequestForPromoUsage(): ValidateUsePromoRequest {
+        return promoProcessor.generateValidateUsePromoRequestForPromoUsage(
+            listData.value,
+            isTradeIn,
+            isTradeInByDropOff,
+            isOneClickShipment
+        )
+    }
+
     fun generateCouponListRecommendationRequest(): PromoRequest {
         return promoProcessor.generateCouponListRecommendationRequest(
             listData.value,
+            isTradeIn,
+            isTradeInByDropOff,
+            isOneClickShipment
+        )
+    }
+
+    fun generateCouponListRecommendationRequestWithListData(newListData: List<CheckoutItem>): PromoRequest {
+        return promoProcessor.generateCouponListRecommendationRequest(
+            newListData,
             isTradeIn,
             isTradeInByDropOff,
             isOneClickShipment
