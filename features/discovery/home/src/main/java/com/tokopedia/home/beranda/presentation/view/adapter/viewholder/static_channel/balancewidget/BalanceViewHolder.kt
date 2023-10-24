@@ -14,11 +14,14 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_SUBSCRIPTION
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_NOT_LINKED
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.home.databinding.ItemBalanceWidgetAtf2Binding
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -47,17 +50,18 @@ class BalanceViewHolder(
     private val successContainerLayoutParams by lazy { binding?.homeContainerBalance?.homeContainerBalance?.layoutParams }
     private val titleLayoutParams by lazy { binding?.homeContainerBalance?.homeTvTitle?.layoutParams as? ConstraintLayout.LayoutParams }
     private val subtitleLayoutParams by lazy { binding?.homeContainerBalance?.homeTvSubtitle?.layoutParams as? ConstraintLayout.LayoutParams }
+    private val isAtf3 by lazy { HomeRollenceController.isUsingAtf3Variant() }
 
     override fun bind(
-        drawerItem: BalanceDrawerItemModel?,
+        model: BalanceDrawerItemModel?,
         listener: HomeCategoryListener?
     ) {
         this.listener = listener
-        setWidth()
-        renderDrawerItem(drawerItem)
+        setLayoutParams()
+        renderDrawerItem(model)
         this.itemView.tag = String.format(
             itemView.context.getString(R.string.tag_balance_widget),
-            drawerItem?.drawerItemType.toString()
+            model?.drawerItemType.toString()
         )
     }
 
@@ -75,12 +79,13 @@ class BalanceViewHolder(
         }
     }
 
-    private fun setWidth() {
+    private fun setLayoutParams() {
         if (DeviceScreenInfo.isTablet(itemView.context) || totalItems <= BALANCE_FILL_WIDTH_THRESHOLD) {
             setFillWidth()
         } else {
             setDynamicWidth()
         }
+        setupPadding()
         binding?.containerBalance?.layoutParams = containerLayoutParams
         binding?.homeContainerBalance?.homeContainerBalance?.layoutParams = successContainerLayoutParams
         binding?.homeContainerBalance?.homeTvTitle?.layoutParams = titleLayoutParams
@@ -97,9 +102,20 @@ class BalanceViewHolder(
     private fun setDynamicWidth() {
         containerLayoutParams?.width = ViewGroup.LayoutParams.WRAP_CONTENT
         successContainerLayoutParams?.width = ViewGroup.LayoutParams.WRAP_CONTENT
-        val textMaxWidth = BalanceUtil.getBalanceTextWidth(itemView.context)
+        val textMaxWidth = BalanceUtil.getBalanceTextWidth(itemView.context, isAtf3)
         titleLayoutParams?.matchConstraintMaxWidth = textMaxWidth
         subtitleLayoutParams?.matchConstraintMaxWidth = textMaxWidth
+    }
+
+    private fun setupPadding() {
+        val leftPadding = itemView.context.resources.getDimensionPixelSize(homeR.dimen.balance_inner_left_padding)
+        val rightPadding = if(isAtf3) {
+            itemView.context.resources.getDimensionPixelSize(homeR.dimen.balance_atf2_inner_right_padding)
+        } else {
+            itemView.context.resources.getDimensionPixelSize(homeR.dimen.balance_atf3_inner_right_padding)
+        }
+        binding?.shimmerItemBalanceWidget?.homeContainerBalanceShimmer?.setPadding(leftPadding, Int.ZERO, rightPadding, Int.ZERO)
+        binding?.homeContainerBalance?.homeContainerBalance?.setPadding(leftPadding, Int.ZERO, rightPadding, Int.ZERO)
     }
 
     private fun renderDrawerItem(element: BalanceDrawerItemModel?) {
@@ -166,9 +182,7 @@ class BalanceViewHolder(
     private fun renderItemSuccess(element: BalanceDrawerItemModel) {
         showImageSuccess(element)
 
-        // Load Text
-        val balanceText = element.balanceTitleTextAttribute?.text ?: ""
-        binding?.homeContainerBalance?.homeTvTitle?.text = balanceText
+        renderTitle(element)
 
         // load subtitle
         val subtitle = element.balanceSubTitleTextAttribute?.text ?: ""
@@ -178,6 +192,15 @@ class BalanceViewHolder(
         handleClickSuccess(element, subtitle)
         binding?.shimmerItemBalanceWidget?.root?.gone()
         binding?.homeContainerBalance?.homeContainerBalance?.show()
+    }
+
+    private fun renderTitle(element: BalanceDrawerItemModel) {
+        val balanceText = element.balanceTitleTextAttribute?.text ?: ""
+        binding?.homeContainerBalance?.homeTvTitle?.apply {
+            val type = if(isAtf3) Typography.DISPLAY_3 else Typography.DISPLAY_2
+            setType(type)
+            text = balanceText
+        }
     }
 
     private fun renderTextColor(element: BalanceDrawerItemModel) {
@@ -260,7 +283,7 @@ class BalanceViewHolder(
         if (!element.iconImageUrl.isNullOrBlank()) {
             binding?.homeContainerBalance?.homeIvLogoBalance?.run {
                 type = ImageUnify.TYPE_RECT
-                setImageUrl(element.iconImageUrl)
+                loadImage(element.iconImageUrl)
             }
         } else {
             showFailedImage()

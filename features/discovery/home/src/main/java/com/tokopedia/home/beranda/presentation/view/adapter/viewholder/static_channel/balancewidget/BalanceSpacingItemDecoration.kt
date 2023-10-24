@@ -19,7 +19,7 @@ class BalanceSpacingItemDecoration : RecyclerView.ItemDecoration() {
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        val margin = view.context.resources.getDimensionPixelSize(com.tokopedia.home.R.dimen.balance_atf2_outer_margin)
+        val margin = view.context.resources.getDimensionPixelSize(com.tokopedia.home.R.dimen.balance_outer_margin)
         when (parent.getChildAdapterPosition(view)) {
             FIRST_POSITION -> {
                 outRect.left = margin
