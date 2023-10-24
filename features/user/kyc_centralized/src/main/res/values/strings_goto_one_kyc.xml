@@ -17,7 +17,7 @@
     <string name="onekyc_zero_clicks_selfie_prepare_card_info3">Tanpa kacamata</string>
     <string name="onekyc_zero_clicks_selfie_prepare_card_info4">Cahaya cukup</string>
     <string name="onekyc_zero_clicks_selfie_prepare_card_ready_cta">Mulai Verifikasi Wajah</string>
-    <string name="onekyc_zero_clicks_selfie_prepare_card_needtime_cta">Nanti Saja</string>
+    <string name="onekyc_zero_clicks_selfie_prepare_card_needtime_cta">Nanti Aja</string>
 
     <!-- Zero Click Flow Feedbacks -->
     <string name="onekyc_zero_clicks_feedback_ktp_face_not_detected">Fotomu yang ada di e-KTP harus masuk di kotak</string>
@@ -125,7 +125,7 @@
     <!-- OneKyc Selfie Exhausted dialog-->
     <string name="onekyc_selfie_exhausted_title">Biar selfie-nya bagus, ikuti tips ini!</string>
     <string name="onekyc_selfie_exhausted_ready_cta">Lanjut Verifikasi Wajah</string>
-    <string name="onekyc_selfie_exhausted_close_cta">Nanti Saja</string>
+    <string name="onekyc_selfie_exhausted_close_cta">Nanti Aja</string>
 
     <!-- OneKyc Dob/Nik Challenge-->
     <string name="onekyc_dob_nik_challenge_title">Konfirmasi data pribadi kamu</string>
