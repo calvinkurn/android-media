@@ -1,12 +1,12 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk
 
 import android.app.Activity
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.gojek.kyc.plus.utils.KycSdkErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.SomethingWrongBottomSheet
 import javax.inject.Inject
-import com.tokopedia.kyc_centralized.R
 
 class GotoKycErrorHandler  @Inject constructor(): KycSdkErrorHandler {
     override fun onUserAuthenticationFailed(activity: Activity) {
@@ -21,8 +21,15 @@ class GotoKycErrorHandler  @Inject constructor(): KycSdkErrorHandler {
         ctaClickListener: () -> Unit,
         userDismissListener: () -> Unit
     ) {
-        if (!activity.isFinishing) {
-            Toast.makeText(activity.applicationContext, activity.getString(R.string.goto_kyc_internet_issue), Toast.LENGTH_SHORT).show()
+        if (!activity.isFinishing && activity is AppCompatActivity) {
+            val bottomSheet = SomethingWrongBottomSheet.newInstance(type = SomethingWrongBottomSheet.TAG_CONNECTION_ISSUE)
+            bottomSheet.setOnClickRetryListener {
+                ctaClickListener()
+            }
+            bottomSheet.setOnDismissListener {
+                userDismissListener()
+            }
+            bottomSheet.show(activity.supportFragmentManager, SomethingWrongBottomSheet.TAG_CONNECTION_ISSUE)
         }
     }
 
@@ -34,8 +41,20 @@ class GotoKycErrorHandler  @Inject constructor(): KycSdkErrorHandler {
         onClickCta: () -> Unit,
         userDismissListener: () -> Unit
     ) {
-        if (!activity.isFinishing) {
-            Toast.makeText(activity.applicationContext, activity.getString(R.string.goto_kyc_error_from_be), Toast.LENGTH_SHORT).show()
+        if (!activity.isFinishing && activity is AppCompatActivity) {
+            val bottomSheet = SomethingWrongBottomSheet.newInstance(
+                type = SomethingWrongBottomSheet.TAG_SOMETHING_WRONG,
+                title = title,
+                description = description,
+                button = buttonText
+            )
+            bottomSheet.setOnClickRetryListener {
+                onClickCta()
+            }
+            bottomSheet.setOnDismissListener {
+                userDismissListener()
+            }
+            bottomSheet.show(activity.supportFragmentManager, SomethingWrongBottomSheet.TAG_SOMETHING_WRONG)
         }
     }
 }
