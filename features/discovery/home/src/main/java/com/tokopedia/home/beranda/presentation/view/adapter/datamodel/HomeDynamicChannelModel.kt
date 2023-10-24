@@ -120,11 +120,11 @@ data class HomeDynamicChannelModel(
 
     fun evaluateChooseAddressData() {
         val processList = _list.copy()
-        val homeHeaderOvoDataModel = processList.find { visitable -> visitable is HomeHeaderDataModel }
+        val dataModel = processList.find { visitable -> visitable is HomeHeaderDataModel }
         val headerIndex = processList.indexOfFirst { visitable -> visitable is HomeHeaderDataModel }
-        (homeHeaderOvoDataModel as? HomeHeaderDataModel)?.let {
+        (dataModel as? HomeHeaderDataModel)?.let {
             it.needToShowChooseAddress = homeChooseAddressData.isActive
-            _list[headerIndex] = homeHeaderOvoDataModel
+            _list[headerIndex] = dataModel
         }
     }
 

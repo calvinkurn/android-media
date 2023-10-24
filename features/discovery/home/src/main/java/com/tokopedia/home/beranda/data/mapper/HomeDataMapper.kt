@@ -48,7 +48,7 @@ class HomeDataMapper(
             context,
             homeDynamicChannelDataMapper
         )
-            .addHomeHeaderOvo()
+            .addHomeHeader()
             .addAtfComponentVisitable(processingAtf, isCache)
 
         if (!processingDynamicChannel && !isLoadingAtf) {

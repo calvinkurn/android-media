@@ -101,7 +101,7 @@ class HomeVisitableFactoryImpl(
         return this
     }
 
-    override fun addHomeHeaderOvo(): HomeVisitableFactory {
+    override fun addHomeHeader(): HomeVisitableFactory {
         val homeHeader = HomeHeaderDataModel()
         val headerViewModel = HeaderDataModel()
         headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn ?: false

@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewStub
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home.R
+import com.tokopedia.home.R as homeR
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_HEADER_OVO
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
@@ -14,7 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.LoginWidgetView
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
-import com.tokopedia.home.databinding.HomeHeaderAtf2Binding
+import com.tokopedia.home.databinding.HomeHeaderBinding
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -27,13 +27,13 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by dhaba
  */
-class HomeHeaderAtf2ViewHolder(
+class HomeHeaderViewHolder(
     itemView: View,
     private val listener: HomeCategoryListener,
     private val homeThematicUtil: HomeThematicUtil,
 ) : AbstractViewHolder<HomeHeaderDataModel>(itemView) {
 
-    private var binding: HomeHeaderAtf2Binding? by viewBinding()
+    private var binding: HomeHeaderBinding? by viewBinding()
     private var balanceWidgetView: BalanceWidgetView? = null
     private var loginWidgetView: LoginWidgetView? = null
     private var chooseAddressView: ChooseAddressWidget? = null
@@ -42,7 +42,7 @@ class HomeHeaderAtf2ViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.home_header_atf_2
+        val LAYOUT = homeR.layout.home_header
     }
 
     override fun bind(element: HomeHeaderDataModel) {

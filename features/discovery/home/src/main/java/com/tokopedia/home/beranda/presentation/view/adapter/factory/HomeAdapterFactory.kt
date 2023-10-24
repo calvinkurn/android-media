@@ -47,8 +47,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicIconSectionViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicIconTwoRowsSectionViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.EmptyBannerViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderAtf2ViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderOvoViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeLoadingMoreViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomePayLaterWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder
@@ -343,8 +342,8 @@ class HomeAdapterFactory(
         return EmptyBannerViewHolder.LAYOUT
     }
 
-    override fun type(homeHeaderOvoDataModel: HomeHeaderDataModel): Int {
-        return HomeHeaderAtf2ViewHolder.LAYOUT
+    override fun type(homeHeaderDataModel: HomeHeaderDataModel): Int {
+        return HomeHeaderViewHolder.LAYOUT
     }
 
     override fun type(homeInitialShimmerDataModel: HomeInitialShimmerDataModel): Int {
@@ -456,8 +455,7 @@ class HomeAdapterFactory(
         val viewHolder: AbstractViewHolder<*>
         when (type) {
             EmptyBannerViewHolder.LAYOUT -> viewHolder = EmptyBannerViewHolder(view, listener)
-            HomeHeaderOvoViewHolder.LAYOUT -> viewHolder = HomeHeaderOvoViewHolder(view, listener)
-            HomeHeaderAtf2ViewHolder.LAYOUT -> viewHolder = HomeHeaderAtf2ViewHolder(view, listener, homeThematicUtil)
+            HomeHeaderViewHolder.LAYOUT -> viewHolder = HomeHeaderViewHolder(view, listener, homeThematicUtil)
             HomeInitialShimmerViewHolder.LAYOUT -> viewHolder = HomeInitialShimmerViewHolder(view, listener)
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
