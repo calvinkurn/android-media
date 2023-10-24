@@ -76,7 +76,7 @@ open class BaseTokoNowViewModel(
     private val _updateCartItem = MutableLiveData<Result<Triple<String, UpdateCartV2Data, Int>>>()
     private val _openLoginPage = MutableLiveData<Unit>()
 
-    private var changeQuantityJob: Job? = null
+    private var changeQuantityJob: MutableMap<String, Job> = mutableMapOf()
     private var getMiniCartJob: Job? = null
 
     var miniCartSource: MiniCartSource? = null
@@ -223,8 +223,9 @@ open class BaseTokoNowViewModel(
             // this only blocks add to cart when using repurchase widget
             _blockAddToCart.postValue(Unit)
         } else {
-            changeQuantityJob?.cancel()
             val productId = product.id
+            changeQuantityJob[productId]?.cancel()
+
             val quantity = product.quantity
 
             val miniCartItem = getMiniCartItem(productId)
@@ -238,7 +239,7 @@ open class BaseTokoNowViewModel(
                     else -> updateCartItem(product, miniCartItem, onSuccessUpdateCart, onError)
                 }
             }, delay = CHANGE_QUANTITY_DELAY).let {
-                changeQuantityJob = it
+                changeQuantityJob[productId] = it
             }
         }
     }
