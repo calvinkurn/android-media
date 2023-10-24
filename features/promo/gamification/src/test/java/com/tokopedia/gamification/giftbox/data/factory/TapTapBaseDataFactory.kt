@@ -1,10 +1,18 @@
-package com.tokopedia.gamification.giftbox.data
+package com.tokopedia.gamification.giftbox.data.factory
 
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity
 import com.tokopedia.gamification.data.entity.CrackResultEntity
 import com.tokopedia.gamification.data.entity.ResponseCrackResultEntity
+import com.tokopedia.gamification.giftbox.data.entities.Benefits
 import com.tokopedia.gamification.giftbox.data.entities.CouponDetailResponse
+import com.tokopedia.gamification.giftbox.data.entities.GameRemindMe
+import com.tokopedia.gamification.giftbox.data.entities.GamiCrack
 import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
+import com.tokopedia.gamification.giftbox.data.entities.GiftBoxRewardEntity
+import com.tokopedia.gamification.giftbox.data.entities.Recommendation
+import com.tokopedia.gamification.giftbox.data.entities.RemindMeEntity
+import com.tokopedia.gamification.giftbox.data.entities.ResultStatus
+import com.tokopedia.gamification.giftbox.presentation.fragments.DisplayType
 import com.tokopedia.gamification.taptap.data.entiity.ActionButton
 import com.tokopedia.gamification.taptap.data.entiity.GamiTapEggHome
 import com.tokopedia.gamification.taptap.data.entiity.TapTapBaseEntity
@@ -50,14 +58,62 @@ object TapTapBaseDataFactory {
         )
     )
 
-    fun createCouponDetailResponse(referenceId: String) = CouponDetailResponse(
+    fun createCouponDetailResponse(referenceId: String?) = CouponDetailResponse(
         couponDetailList = listOf(
             GetCouponDetail(
                 minimumUsageLabel = "23",
                 minimumUsage = "12",
                 icon = "https://images.tokopedia.com/icon",
                 imageUrl = "https://images.tokopedia.com/image",
-                referenceId = referenceId
+                referenceId = referenceId,
+            )
+        )
+    )
+
+    fun createRemindMeEntity(isReminder: Boolean) = RemindMeEntity(
+        GameRemindMe(
+            resultStatus = ResultStatus(
+                code = "200",
+                message = arrayListOf("message"),
+                reason = ""
+            ),
+            requestToSetReminder = isReminder
+        )
+    )
+
+    fun createGiftBoxRewardEntity(
+        referenceId: String?,
+        displayType: String = DisplayType.UNDEFINED,
+        benefits: List<Benefits>? = listOf
+        (
+            Benefits(
+                color = "#12123",
+                text = "you got benefit",
+                isBigPrize = false,
+                isAutoApply = false,
+                autoApplyMsg = "auto",
+                dummyCode = "#112FFF",
+                benefitType = null,
+                displayType = displayType,
+                imageUrl = null,
+                referenceID = referenceId
+            )
+        )
+    ) = GiftBoxRewardEntity(
+        gamiCrack = GamiCrack(
+            resultStatus = ResultStatus(
+                code = "200",
+                message = listOf("success"),
+                reason = "no reason"
+            ),
+            imageUrl = "https://images.tokopedia.com",
+            benefitText = listOf(),
+            benefits = benefits,
+            actionButton = listOf(),
+            recommendation = Recommendation(
+                isShow = false,
+                shopId = "1233312",
+                pageName = "home"
             )
         )
     )

@@ -3,9 +3,9 @@ package com.tokopedia.gamification.giftbox.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity
 import com.tokopedia.gamification.data.entity.ResponseCrackResultEntity
-import com.tokopedia.gamification.giftbox.data.TapTapBaseDataFactory.createCouponDetailResponse
-import com.tokopedia.gamification.giftbox.data.TapTapBaseDataFactory.createTapTapBaseEntity
-import com.tokopedia.gamification.giftbox.data.TapTapBaseDataFactory.createTapTapCrackEntity
+import com.tokopedia.gamification.giftbox.data.factory.TapTapBaseDataFactory.createCouponDetailResponse
+import com.tokopedia.gamification.giftbox.data.factory.TapTapBaseDataFactory.createTapTapBaseEntity
+import com.tokopedia.gamification.giftbox.data.factory.TapTapBaseDataFactory.createTapTapCrackEntity
 import com.tokopedia.gamification.giftbox.data.entities.CouponDetailResponse
 import com.tokopedia.gamification.giftbox.domain.CouponDetailUseCase
 import com.tokopedia.gamification.giftbox.domain.GiftBoxTapTapCrackUseCase
@@ -54,7 +54,7 @@ class GiftBoxTapTapViewModelTest {
         )
     }
 
-    private fun mockGiftBoxTapTapHomeResponse(
+    private fun stubGiftBoxTapTapHomeResponse(
         entity: TapTapBaseEntity
     ) {
         coEvery {
@@ -62,7 +62,7 @@ class GiftBoxTapTapViewModelTest {
         } returns entity
     }
 
-    private fun mockCouponDetailResponse(
+    private fun stubCouponDetailResponse(
         couponIdList: List<String>,
         response: CouponDetailResponse
     ) {
@@ -71,7 +71,7 @@ class GiftBoxTapTapViewModelTest {
         } returns response
     }
 
-    private fun mockGiftBoxTapTapCrackResponse(
+    private fun stubGiftBoxTapTapCrackResponse(
         tokenId: String,
         campaignId: Long,
         entity: ResponseCrackResultEntity
@@ -86,7 +86,7 @@ class GiftBoxTapTapViewModelTest {
         } returns entity
     }
 
-    private fun mockGiftBoxTapTapHomeResponse(
+    private fun stubGiftBoxTapTapHomeResponse(
         error: Throwable
     ) {
         coEvery {
@@ -94,7 +94,7 @@ class GiftBoxTapTapViewModelTest {
         } throws error
     }
 
-    private fun mockGiftBoxTapTapCrackResponse(
+    private fun stubGiftBoxTapTapCrackResponse(
         error: Throwable
     ) {
         coEvery {
@@ -102,7 +102,7 @@ class GiftBoxTapTapViewModelTest {
         } throws error
     }
 
-    private fun mockCouponDetailResponse(
+    private fun stubCouponDetailResponse(
         couponIdList: List<String>,
         error: Throwable
     ) {
@@ -135,7 +135,7 @@ class GiftBoxTapTapViewModelTest {
     fun `after successfully getting gift box, livedata should provide the expected result`() {
         val result = createTapTapBaseEntity()
 
-        mockGiftBoxTapTapHomeResponse(result)
+        stubGiftBoxTapTapHomeResponse(result)
 
         viewModel.getGiftBoxHome()
 
@@ -153,7 +153,7 @@ class GiftBoxTapTapViewModelTest {
     fun `after successfully getting gift box although canShowLoader is false, livedata should provide the expected result`() {
         val result = createTapTapBaseEntity()
 
-        mockGiftBoxTapTapHomeResponse(result)
+        stubGiftBoxTapTapHomeResponse(result)
 
         viewModel.canShowLoader = false
 
@@ -171,7 +171,7 @@ class GiftBoxTapTapViewModelTest {
 
     @Test
     fun `when getting gift box but there is an error, livedata should provide null as a result`() {
-        mockGiftBoxTapTapHomeResponse(Throwable())
+        stubGiftBoxTapTapHomeResponse(Throwable())
 
         viewModel.getGiftBoxHome()
 
@@ -191,7 +191,7 @@ class GiftBoxTapTapViewModelTest {
         val tokenId = "123121"
         val campaignId = 23121L
 
-        mockGiftBoxTapTapCrackResponse(
+        stubGiftBoxTapTapCrackResponse(
             tokenId = tokenId,
             campaignId = campaignId,
             entity = result
@@ -220,7 +220,7 @@ class GiftBoxTapTapViewModelTest {
 
     @Test
     fun `when cracking gift box but there is an error, livedata should provide null as a result`() {
-        mockGiftBoxTapTapCrackResponse(Throwable())
+        stubGiftBoxTapTapCrackResponse(Throwable())
 
         viewModel.waitingForCrackResult = false
 
@@ -249,7 +249,7 @@ class GiftBoxTapTapViewModelTest {
         val result = createCouponDetailResponse(referenceId)
         val couponIdList = viewModel.mapBenefitsToIds(benefitItems)
 
-        mockCouponDetailResponse(
+        stubCouponDetailResponse(
             couponIdList = couponIdList,
             response = result
         )
@@ -281,7 +281,7 @@ class GiftBoxTapTapViewModelTest {
 
         val couponIdList = viewModel.mapBenefitsToIds(benefitItems)
 
-        mockCouponDetailResponse(
+        stubCouponDetailResponse(
             couponIdList = couponIdList,
             error = Throwable()
         )

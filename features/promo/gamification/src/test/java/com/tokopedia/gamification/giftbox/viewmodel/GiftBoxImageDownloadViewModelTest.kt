@@ -49,25 +49,25 @@ class GiftBoxImageDownloadViewModelTest {
         )
     }
 
-    private fun mockDownloadBgImage(bitmap: Bitmap?) {
+    private fun stubDownloadBgImage(bitmap: Bitmap?) {
         coEvery {
             lidImagesDownloaderUseCase.downloadBgImage(application, url)
         } returns bitmap
     }
 
-    private fun mockDownloadImages(bitmapList: List<Bitmap>, urlList: List<String>) {
+    private fun stubDownloadImages(bitmapList: List<Bitmap>, urlList: List<String>) {
         coEvery {
             lidImagesDownloaderUseCase.downloadImages(application, urlList)
         } returns bitmapList
     }
 
-    private fun mockDownloadImages(error: Throwable, urlList: List<String>) {
+    private fun stubDownloadImages(error: Throwable, urlList: List<String>) {
         coEvery {
             lidImagesDownloaderUseCase.downloadImages(application, urlList)
         } throws error
     }
 
-    private fun mockDownloadBgImage(error: Throwable) {
+    private fun stubDownloadBgImage(error: Throwable) {
         coEvery {
             lidImagesDownloaderUseCase.downloadBgImage(application, url)
         } throws error
@@ -90,7 +90,7 @@ class GiftBoxImageDownloadViewModelTest {
         val imageLiveData = MutableLiveData<LiveDataResult<Bitmap?>>()
         val result = bitmap
 
-        mockDownloadBgImage(result)
+        stubDownloadBgImage(result)
 
         viewModel.downloadImage(
             url = url,
@@ -111,7 +111,7 @@ class GiftBoxImageDownloadViewModelTest {
         val imageLiveData = MutableLiveData<LiveDataResult<Bitmap?>>()
         val result: Bitmap? = null
 
-        mockDownloadBgImage(result)
+        stubDownloadBgImage(result)
 
         viewModel.downloadImage(
             url = url,
@@ -132,7 +132,7 @@ class GiftBoxImageDownloadViewModelTest {
         val imageLiveData = MutableLiveData<LiveDataResult<Bitmap?>>()
         val result: Bitmap? = null
 
-        mockDownloadBgImage(Throwable())
+        stubDownloadBgImage(Throwable())
 
         viewModel.downloadImage(
             url = url,
@@ -154,7 +154,7 @@ class GiftBoxImageDownloadViewModelTest {
         val result: List<Bitmap> = listOf(bitmap, bitmap)
         val urlList: List<String> = listOf(url, url)
 
-        mockDownloadImages(
+        stubDownloadImages(
             bitmapList = result,
             urlList = urlList
         )
@@ -179,7 +179,7 @@ class GiftBoxImageDownloadViewModelTest {
         val result: List<Bitmap>? = null
         val urlList: List<String> = listOf(url)
 
-        mockDownloadImages(
+        stubDownloadImages(
             bitmapList = listOf(bitmap, bitmap),
             urlList = urlList
         )
@@ -204,7 +204,7 @@ class GiftBoxImageDownloadViewModelTest {
         val result: List<Bitmap>? = null
         val urlList: List<String> = listOf(url)
 
-        mockDownloadImages(
+        stubDownloadImages(
             error = Throwable(),
             urlList = urlList
         )

@@ -59,7 +59,7 @@ class CouponListResultPresenterTest {
         presenter.mockPrivateField(customToastPrivateField, customToast)
     }
 
-    private fun mockQueryParams(
+    private fun stubQueryParams(
         code: String,
         queryParams: HashMap<String, Any>
     ) {
@@ -68,7 +68,7 @@ class CouponListResultPresenterTest {
         } returns queryParams
     }
 
-    private fun mockAutoApplyResponse(
+    private fun stubAutoApplyResponse(
         autoApplyResponse: AutoApplyResponse,
         queryParams: HashMap<String, Any>
     ) {
@@ -77,7 +77,7 @@ class CouponListResultPresenterTest {
         } returns autoApplyResponse
     }
 
-    private fun mockAutoApplyResponse(
+    private fun stubAutoApplyResponse(
         error: Throwable,
         queryParams: HashMap<String, Any>
     ) {
@@ -116,11 +116,11 @@ class CouponListResultPresenterTest {
             CODE to code
         )
 
-        mockQueryParams(
+        stubQueryParams(
             code = code,
             queryParams = queryParams
         )
-        mockAutoApplyResponse(
+        stubAutoApplyResponse(
             error = Throwable(),
             queryParams = queryParams
         )
@@ -157,11 +157,11 @@ class CouponListResultPresenterTest {
             CODE to code
         )
 
-        mockQueryParams(
+        stubQueryParams(
             code = code,
             queryParams = queryParams
         )
-        mockAutoApplyResponse(
+        stubAutoApplyResponse(
             autoApplyResponse = response,
             queryParams = queryParams
         )
@@ -198,10 +198,10 @@ class CouponListResultPresenterTest {
             CODE to code
         )
 
-        mockQueryParams(
+        stubQueryParams(
             code = code,
             queryParams = queryParams)
-        mockAutoApplyResponse(
+        stubAutoApplyResponse(
             autoApplyResponse = response,
             queryParams = queryParams
         )
@@ -238,11 +238,11 @@ class CouponListResultPresenterTest {
             CODE to code
         )
 
-        mockQueryParams(
+        stubQueryParams(
             code = code,
             queryParams = queryParams
         )
-        mockAutoApplyResponse(
+        stubAutoApplyResponse(
             autoApplyResponse = response,
             queryParams = queryParams
         )
@@ -279,11 +279,11 @@ class CouponListResultPresenterTest {
             CODE to code
         )
 
-        mockQueryParams(
+        stubQueryParams(
             code = code,
             queryParams = queryParams
         )
-        mockAutoApplyResponse(
+        stubAutoApplyResponse(
             autoApplyResponse = response,
             queryParams = queryParams
         )
@@ -318,11 +318,11 @@ class CouponListResultPresenterTest {
             CODE to code
         )
 
-        mockQueryParams(
+        stubQueryParams(
             code = code,
             queryParams = queryParams
         )
-        mockAutoApplyResponse(
+        stubAutoApplyResponse(
             autoApplyResponse = response,
             queryParams = queryParams
         )
@@ -358,11 +358,11 @@ class CouponListResultPresenterTest {
             CODE to code
         )
 
-        mockQueryParams(
+        stubQueryParams(
             code = code,
             queryParams = queryParams
         )
-        mockAutoApplyResponse(
+        stubAutoApplyResponse(
             autoApplyResponse = response,
             queryParams = queryParams
         )
@@ -398,11 +398,11 @@ class CouponListResultPresenterTest {
             CODE to code
         )
 
-        mockQueryParams(
+        stubQueryParams(
             code = code,
             queryParams = queryParams
         )
-        mockAutoApplyResponse(
+        stubAutoApplyResponse(
             autoApplyResponse = response,
             queryParams = queryParams
         )
@@ -439,11 +439,11 @@ class CouponListResultPresenterTest {
             CODE to code
         )
 
-        mockQueryParams(
+        stubQueryParams(
             code = code,
             queryParams = queryParams
         )
-        mockAutoApplyResponse(
+        stubAutoApplyResponse(
             autoApplyResponse = response,
             queryParams = queryParams
         )
@@ -475,11 +475,11 @@ class CouponListResultPresenterTest {
             CODE to code
         )
 
-        mockQueryParams(
+        stubQueryParams(
             code = code,
             queryParams = queryParams
         )
-        mockAutoApplyResponse(
+        stubAutoApplyResponse(
             autoApplyResponse = response,
             queryParams = queryParams
         )
@@ -509,11 +509,11 @@ class CouponListResultPresenterTest {
             CODE to code
         )
 
-        mockQueryParams(
+        stubQueryParams(
             code = code,
             queryParams = queryParams
         )
-        mockAutoApplyResponse(
+        stubAutoApplyResponse(
             autoApplyResponse = response,
             queryParams = queryParams
         )
