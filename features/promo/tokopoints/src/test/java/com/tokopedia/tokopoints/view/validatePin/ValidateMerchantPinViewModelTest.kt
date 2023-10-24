@@ -78,4 +78,36 @@ class ValidateMerchantPinViewModelTest {
             observer.onChanged(ofType(ErrorMessage::class as KClass<ErrorMessage<CouponSwipeUpdate>>))
         }
     }
+
+    @Test
+    fun `given status code NOT 200 and error message list empty when swipeMyCoupon should NOT update swipeCouponLiveData`(){
+        val statusCode = 404
+        val messageList = emptyList<String>()
+        val statusResponse = ResultStatusEntity(code = statusCode, messages = messageList)
+
+        coEvery{ useCase.execute("","")} returns CouponSwipeUpdateOuter(
+            swipeCoupon = CouponSwipeUpdate(resultStatus = statusResponse)
+        )
+
+        viewModel.swipeMyCoupon("","")
+
+        viewModel.swipeCouponLiveData
+            .verifyValueEquals(null)
+    }
+
+    @Test
+    fun `given status code NOT 200 and error message null when swipeMyCoupon should NOT update swipeCouponLiveData`(){
+        val statusCode = 404
+        val messageList = null
+        val statusResponse = ResultStatusEntity(code = statusCode, messages = messageList)
+
+        coEvery{ useCase.execute("","")} returns CouponSwipeUpdateOuter(
+            swipeCoupon = CouponSwipeUpdate(resultStatus = statusResponse)
+        )
+
+        viewModel.swipeMyCoupon("","")
+
+        viewModel.swipeCouponLiveData
+            .verifyValueEquals(null)
+    }
 }

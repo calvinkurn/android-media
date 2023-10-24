@@ -151,6 +151,16 @@ class CatalogListingViewModelTest {
     }
 
     @Test
+    fun `given getPointData throws exception when getPointData should catch error`() {
+        coEvery{ repository.getPointData() } throws NullPointerException()
+
+        viewModel.getPointData()
+
+        viewModel.pointLiveData
+            .verifyValueEquals(null)
+    }
+
+    @Test
     fun `getPointData error case`(){
         coEvery{ repository.getPointData() } returns null
 
