@@ -33,7 +33,7 @@ data class DynamicIconComponentDataModel(
         fun isSmallIcons() = this == SMALL
     }
 
-    val scrollableItemThreshold: Int = type.scrollableItemThreshold * numOfRows
+    val scrollableItemThreshold: Int = if(numOfRows == 1) type.scrollableItemThreshold else 0
     val dynamicIconUtil: DynamicIconUtil = when(type) {
         Type.SMALL -> DynamicIconSmallUtil()
         else -> DynamicIconBigUtil()
