@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_component.R
+import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicator
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicatorListener
 import com.tokopedia.home_component.listener.BannerComponentListener
@@ -58,9 +58,10 @@ class BannerRevampViewHolder(
 
     private val adapter by lazy { BannerRevampChannelAdapter( this) }
     
-    private val bannerContainer: CardUnify2 by lazy { itemView.findViewById(R.id.card_container_banner) }
-    private val bannerIndicator: BannerIndicator by lazy { itemView.findViewById(R.id.banner_indicator) }
-    private val recyclerView: RecyclerView by lazy { itemView.findViewById(R.id.rv_banner_revamp) }
+    private val bannerCardContainer: CardUnify2 by lazy { itemView.findViewById(home_componentR.id.card_container_banner) }
+    private val bannerContainer: ConstraintLayout by lazy { itemView.findViewById(home_componentR.id.container_banner) }
+    private val bannerIndicator: BannerIndicator by lazy { itemView.findViewById(home_componentR.id.banner_indicator) }
+    private val recyclerView: RecyclerView by lazy { itemView.findViewById(home_componentR.id.rv_banner_revamp) }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun bind(element: BannerRevampDataModel) {
@@ -71,6 +72,7 @@ class BannerRevampViewHolder(
             isCache = element.isCache
             isBleeding = element.isBleeding
             renderBanner()
+            setContainerPadding(element)
         } catch (e: Exception) {
             Log.e("atf3", "bind: ", e)
         }
@@ -96,6 +98,15 @@ class BannerRevampViewHolder(
             } else {
                 isFromInitialize = true
             }
+        }
+    }
+
+    private fun setContainerPadding(element: BannerRevampDataModel) {
+        if(element.isBleeding) {
+            val topPadding = itemView.context.resources.getDimensionPixelSize(home_componentR.dimen.home_hpb_bleeding_padding_top)
+            bannerContainer.setPadding(Int.ZERO, topPadding, Int.ZERO, Int.ZERO)
+        } else {
+            bannerContainer.setPadding(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
         }
     }
 
@@ -147,7 +158,7 @@ class BannerRevampViewHolder(
     private fun scrollTo(position: Int) {
         val resources = itemView.context.resources
         val width = resources.displayMetrics.widthPixels
-        val paddings = if(isBleeding) 0 else MULTIPLY_NO_BOUNCE_BANNER * resources.getDimensionPixelSize(R.dimen.home_component_margin_default)
+        val paddings = if(isBleeding) 0 else MULTIPLY_NO_BOUNCE_BANNER * resources.getDimensionPixelSize(home_componentR.dimen.home_component_margin_default)
         if (position == Int.ZERO) {
             recyclerView.smoothScrollToPosition(position)
         } else {
@@ -178,7 +189,7 @@ class BannerRevampViewHolder(
         recyclerView.layoutManager?.scrollToPosition(halfIntegerSize - halfIntegerSize % totalBanner)
         recyclerView.adapter = adapter
         if(!isBleeding) {
-            bannerContainer.animateOnPress = if (cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
+            bannerCardContainer.animateOnPress = if (cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
         }
     }
 
@@ -213,7 +224,7 @@ class BannerRevampViewHolder(
     }
 
     override fun onTouchEvent(motionEvent: MotionEvent) {
-        bannerContainer?.onTouchEvent(motionEvent)
+        bannerCardContainer?.onTouchEvent(motionEvent)
     }
 
     private fun ChannelModel.convertToBannerItemModel(): List<BannerVisitable> {
@@ -234,9 +245,9 @@ class BannerRevampViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT_PADDING = R.layout.home_component_banner_padding
+        val LAYOUT_PADDING = home_componentR.layout.home_component_banner_padding
         @LayoutRes
-        val LAYOUT_BLEEDING = R.layout.home_component_banner_bleeding
+        val LAYOUT_BLEEDING = home_componentR.layout.home_component_banner_bleeding
         private const val DIVIDE_HALF_BANNER_SIZE_INT_SIZE = 2
         private const val MULTIPLY_NO_BOUNCE_BANNER = 2
     }
