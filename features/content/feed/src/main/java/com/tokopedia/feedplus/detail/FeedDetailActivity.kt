@@ -48,9 +48,6 @@ class FeedDetailActivity : BaseActivity() {
     private val postId: String
         get() = intent.data?.lastPathSegment.orEmpty()
 
-    private val categoryId: String
-        get() = intent.getStringExtra(KEY_QUERY_CAT_ID).ifNullOrBlank { "" }
-
     private val viewModel: FeedDetailViewModel by viewModels { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,7 +98,6 @@ class FeedDetailActivity : BaseActivity() {
         val source = intent.data?.getQueryParameter(KEY_QUERY_SOURCE) ?: TAB_TYPE_CDP
         val extrasData = Bundle().apply {
             putString(ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID, postId)
-            putString(KEY_QUERY_CAT_ID, categoryId)
             intent.extras?.let {
                 putAll(it)
             }
@@ -216,6 +212,5 @@ class FeedDetailActivity : BaseActivity() {
 
     companion object {
         private const val KEY_QUERY_SOURCE = "source"
-        const val KEY_QUERY_CAT_ID = "category_id"
     }
 }

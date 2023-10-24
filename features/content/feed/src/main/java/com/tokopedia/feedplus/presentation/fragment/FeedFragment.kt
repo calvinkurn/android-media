@@ -28,6 +28,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_CATEGORY_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -222,12 +224,13 @@ class FeedFragment :
     private val feedMvcAnalytics = FeedMVCAnalytics()
     private val trackerModelMapper: MapperFeedModelToTrackerDataModel by lazy {
         isCdp = arguments?.getBoolean(ARGUMENT_IS_CDP, false) ?: false
-        val categoryId = arguments?.getString(FeedDetailActivity.KEY_QUERY_CAT_ID).ifNullOrBlank { "" }
+        val categoryId = arguments?.getString(UF_EXTRA_FEED_CATEGORY_ID).ifNullOrBlank { "" }
+        val entryPoint = arguments?.getString(UF_EXTRA_FEED_ENTRY_POINT).ifNullOrBlank { ENTRY_POINT_DEFAULT }
 
         MapperFeedModelToTrackerDataModel(
             if (isCdp) FeedBaseFragment.TAB_TYPE_CDP else data?.type.orEmpty(),
-            arguments?.getString(ARGUMENT_ENTRY_POINT) ?: ENTRY_POINT_DEFAULT,
-            MapperFeedModelToTrackerDataModel.FeedEntrySource(categoryId = categoryId, arguments?.getString(ARGUMENT_ENTRY_POINT).ifNullOrBlank { ENTRY_POINT_DEFAULT } )
+            entryPoint,
+            MapperFeedModelToTrackerDataModel.FeedEntrySource(categoryId = categoryId, entryPoint = entryPoint)
         )
     }
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
