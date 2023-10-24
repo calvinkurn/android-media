@@ -58,7 +58,7 @@ class SendGiftViewModel @Inject constructor(private val repository: SendGiftResp
         launchCatchError(block = {
             prevalidateLiveData.value = Loading()
             val validateCoupon = repository.preValidateGift(id, email)
-            if (validateCoupon.validateCoupon != null && validateCoupon.validateCoupon.isValid == 1) {
+            if (validateCoupon.validateCoupon.isValid == 1) {
                 prevalidateLiveData.value = Success(null)
             } else throw NullPointerException()
         }) {

@@ -17,14 +17,12 @@ class ValidateMerchantPinViewModel @Inject constructor(private val mUseCase: Swi
     override fun swipeMyCoupon(code: String, pin: String) {
         launchCatchError(block = {
             val data = mUseCase.execute(code,pin)
-            if (data.swipeCoupon != null) {
-                if (data.swipeCoupon.resultStatus.code == CommonConstant.CouponRedemptionCode.SUCCESS) {
-                    swipeCouponLiveData.value = Success(data.swipeCoupon)
-                } else {
-                    if (data.swipeCoupon.resultStatus.messages?.isNotEmpty() == true) {
-                        swipeCouponLiveData.value =data.swipeCoupon.resultStatus.messages?.get(0)?.let {
-                            ErrorMessage(it)
-                        }
+            if (data.swipeCoupon.resultStatus.code == CommonConstant.CouponRedemptionCode.SUCCESS) {
+                swipeCouponLiveData.value = Success(data.swipeCoupon)
+            } else {
+                if (data.swipeCoupon.resultStatus.messages?.isNotEmpty() == true) {
+                    swipeCouponLiveData.value =data.swipeCoupon.resultStatus.messages?.get(0)?.let {
+                        ErrorMessage(it)
                     }
                 }
             }
