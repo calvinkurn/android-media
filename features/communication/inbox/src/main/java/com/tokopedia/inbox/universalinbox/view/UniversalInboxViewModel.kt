@@ -101,12 +101,12 @@ class UniversalInboxViewModel @Inject constructor(
         observeDriverChannelFlow()
         observeInboxMenuWidgetMetaAndCounterFlow()
         observeProductRecommendationFlow()
-        loadInboxMenuAndWidgetMeta()
+        loadInboxMenuAndWidgetMeta() // do not use processAction
     }
 
     fun processAction(action: UniversalInboxAction) {
         viewModelScope.launch {
-            _actionFlow.tryEmit(action)
+            _actionFlow.emit(action)
         }
     }
 
@@ -127,6 +127,7 @@ class UniversalInboxViewModel @Inject constructor(
 
                 // General process
                 is UniversalInboxAction.RefreshPage -> {
+                    inboxMiscMapper.resetTopAdsBanner()
                     removeAllProductRecommendation(false)
                     loadInboxMenuAndWidgetMeta()
                 }
@@ -389,19 +390,23 @@ class UniversalInboxViewModel @Inject constructor(
     }
 
     private fun navigateWithIntent(intent: Intent) {
-        _inboxNavigationState.tryEmit(
-            UniversalInboxNavigationUiState(
-                intent = intent
+        viewModelScope.launch {
+            _inboxNavigationState.emit(
+                UniversalInboxNavigationUiState(
+                    intent = intent
+                )
             )
-        )
+        }
     }
 
     private fun navigateToPage(applink: String) {
-        _inboxNavigationState.tryEmit(
-            UniversalInboxNavigationUiState(
-                applink = applink
+        viewModelScope.launch {
+            _inboxNavigationState.emit(
+                UniversalInboxNavigationUiState(
+                    applink = applink
+                )
             )
-        )
+        }
     }
 
     private fun loadProductRecommendation() {

@@ -14,6 +14,7 @@ object TrackingConstant {
     const val USER_ID = "userId"
     const val BUSINESS_UNIT = "businessUnit"
     const val CURRENT_SITE = "currentSite"
+    const val TRACKER_ID = "trackerId"
 
     //event
     const val VIEW_SELLER_WIDGET = "viewSellerWidget"
@@ -35,6 +36,8 @@ object TrackingConstant {
     const val STATISTIC_FIREWALL = "statistics firewall"
 
     //action
+    const val CLICK_MULTI_COMPONENT_TAB = "click plus and bo performance tab"
+    const val VIEW_MULTI_COMPONENT_TAB = "impression plus and bo performance tab"
     const val CLICK_WIDGET_CARD = "click widget card"
     const val CLICK_WIDGET_LINE_GRAPH = "click widget trend line"
     const val CLICK_WIDGET_DESCRIPTION = "click widget description"
@@ -86,7 +89,9 @@ object TrackingConstant {
     const val SHOP_PM = "PM"
     const val SHOP_RM = "RM"
     const val PHYSICAL_GOODS = "physicalgoods"
+    const val PHYSICAL_GOODS_SPACE = "Physical Goods"
     const val TOKOPEDIASELLER = "tokopediaseller"
+    const val CURRENT_SITE_MARKETPLACE = "tokopediamarketplace"
     const val DATE_FILTER_FORMAT = "%s - %s until %s"
     const val SEPARATOR = " - "
 

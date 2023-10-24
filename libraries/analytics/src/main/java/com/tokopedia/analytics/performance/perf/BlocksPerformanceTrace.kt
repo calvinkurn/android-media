@@ -46,6 +46,9 @@ class BlocksPerformanceTrace(
         const val FINISHED_LOADING_TTIL_BLOCKS_THRESHOLD = 3
 
         const val ANDROID_TRACE_FULLY_DRAWN = "reportFullyDrawn() for %s"
+
+        const val COOKIE_TTFL = 77
+        const val COOKIE_TTIL = 78
     }
 
     private var startCurrentTimeMillis = 0L
@@ -112,6 +115,14 @@ class BlocksPerformanceTrace(
 
         if (isPerformanceTraceEnabled) {
             startCurrentTimeMillis = System.currentTimeMillis()
+            beginAsyncSystraceSection(
+                "PageLoadTime.AsyncTTFL$traceName",
+                COOKIE_TTFL
+            )
+            beginAsyncSystraceSection(
+                "PageLoadTime.AsyncTTIL$traceName",
+                COOKIE_TTIL
+            )
             TTFLperformanceMonitoring?.startTrace("ttfl_perf_trace_$traceName")
             TTILperformanceMonitoring?.startTrace("ttil_perf_trace_$traceName")
 
@@ -119,10 +130,12 @@ class BlocksPerformanceTrace(
                 perfBlockFlow.collect {
                     if (!ttflMeasured && TTFLperformanceMonitoring != null && it >= FINISHED_LOADING_TTFL_BLOCKS_THRESHOLD) {
                         measureTTFL(performanceBlocks)
+                        endAsyncSystraceSection("PageLoadTime.AsyncTTFL$traceName", COOKIE_TTFL)
                     }
 
                     if (!ttilMeasured && TTILperformanceMonitoring != null && it >= FINISHED_LOADING_TTIL_BLOCKS_THRESHOLD) {
                         measureTTIL(performanceBlocks)
+                        endAsyncSystraceSection("PageLoadTime.AsyncTTIL$traceName", COOKIE_TTIL)
                         scope.launch(Dispatchers.Main) {
                             putFullyDrawnTrace(traceName)
                         }
@@ -138,6 +151,18 @@ class BlocksPerformanceTrace(
                 }
             }
             this.onLaunchTimeFinished = onLaunchTimeFinished
+        }
+    }
+
+    fun beginAsyncSystraceSection(methodName: String, cookie: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Trace.beginAsyncSection(methodName, cookie)
+        }
+    }
+
+    fun endAsyncSystraceSection(methodName: String, cookie: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Trace.endAsyncSection(methodName, cookie)
         }
     }
 

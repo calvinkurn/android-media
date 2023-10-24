@@ -1,0 +1,6 @@
+package com.tokopedia.sellerorder.detail.presentation.model.transparency_fee
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.sellerorder.detail.presentation.adapter.factory.TransparencyFeeAttributesAdapterFactoryImpl
+
+interface BaseTransparencyFeeAttributes: Visitable<TransparencyFeeAttributesAdapterFactoryImpl>

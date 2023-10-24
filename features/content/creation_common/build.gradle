@@ -16,14 +16,6 @@ buildscript {
 android {
     namespace 'com.tokopedia.creation.common'
     testNamespace 'com.tokopedia.creation.common.test'
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
-    }
 
     defaultConfig {
         multiDexEnabled true

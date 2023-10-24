@@ -13,6 +13,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
+import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.Player.EventListener
+import com.google.android.exoplayer2.video.VideoListener
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -39,9 +43,13 @@ import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.animation.StoriesProductNudge
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
+import com.tokopedia.stories.view.components.player.StoriesExoPlayer
+import com.tokopedia.stories.view.custom.StoriesErrorView
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.BUFFERING
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.PAUSE
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.RESUME
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContent
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Image
@@ -79,7 +87,10 @@ import javax.inject.Inject
 class StoriesDetailFragment @Inject constructor(
     private val analyticFactory: StoriesAnalytics.Factory,
     private val router: Router
-) : TkpdBaseV4Fragment(), StoriesThreeDotsBottomSheet.Listener, StoriesProductBottomSheet.Listener {
+) : TkpdBaseV4Fragment(),
+    StoriesThreeDotsBottomSheet.Listener,
+    StoriesProductBottomSheet.Listener,
+    VideoListener {
 
     private val mParentPage: StoriesGroupFragment
         get() = (requireParentFragment() as StoriesGroupFragment)
@@ -89,7 +100,6 @@ class StoriesDetailFragment @Inject constructor(
         get() = _binding!!
 
     val viewModelProvider by lazyThreadSafetyNone { mParentPage.viewModelProvider }
-
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
 
     private val mAdapter: StoriesGroupAdapter by lazyThreadSafetyNone {
@@ -134,6 +144,12 @@ class StoriesDetailFragment @Inject constructor(
         StoriesSharingComponent(rootView = requireView())
     }
 
+    private var _videoPlayer: StoriesExoPlayer? = null
+    private val videoPlayer: StoriesExoPlayer
+        get() = _videoPlayer!!
+
+    private var currentPlayingVideoUrl: String = ""
+
     override fun getScreenName(): String {
         return TAG_FRAGMENT_STORIES_DETAIL
     }
@@ -169,6 +185,16 @@ class StoriesDetailFragment @Inject constructor(
         resumeStories()
     }
 
+    override fun onPause() {
+        super.onPause()
+        pauseStories()
+    }
+
+    override fun onRenderedFirstFrame() {
+        super.onRenderedFirstFrame()
+        contentIsLoaded()
+    }
+
     private fun setupObserver() {
         setupUiStateObserver()
         setupUiEventObserver()
@@ -197,17 +223,11 @@ class StoriesDetailFragment @Inject constructor(
                 if (!isEligiblePage) return@collect
                 when (event) {
                     is StoriesUiEvent.EmptyDetailPage -> {
-                        setNoContent(true)
+                        setErrorType(StoriesErrorView.Type.EmptyCategory, isTimerAvailable = false)
                     }
 
                     is StoriesUiEvent.ErrorDetailPage -> {
-                        if (event.throwable.isNetworkError) {
-                            setNoInternet(true)
-                            binding.layoutStoriesNoInet.btnStoriesNoInetRetry.setOnClickListener { run { event.onClick() } }
-                        } else {
-                            setFailed(true)
-                            binding.layoutStoriesFailed.btnStoriesFailedLoad.setOnClickListener { run { event.onClick() } }
-                        }
+                        setErrorType(if (event.throwable.isNetworkError) StoriesErrorView.Type.NoInternet else StoriesErrorView.Type.FailedLoad) { event.onClick()}
                     }
 
                     StoriesUiEvent.OpenKebab -> {
@@ -217,22 +237,30 @@ class StoriesDetailFragment @Inject constructor(
                                 requireActivity().classLoader
                             ).show(childFragmentManager)
                     }
+
                     StoriesUiEvent.OpenProduct -> openProductBottomSheet()
                     is StoriesUiEvent.Login -> {
                         val intent = router.getIntent(requireContext(), ApplinkConst.LOGIN)
                         router.route(activityResult, intent)
                     }
+
                     is StoriesUiEvent.NavigateEvent -> goTo(event.appLink)
                     is StoriesUiEvent.ShowVariantSheet -> openVariantBottomSheet(event.product)
                     is StoriesUiEvent.TapSharing -> {
                         sharingComponent.setListener(object : StoriesSharingComponent.Listener {
-                            override fun onDismissEvent(isFromClick: Boolean, view: StoriesSharingComponent) {
+                            override fun onDismissEvent(
+                                isFromClick: Boolean,
+                                view: StoriesSharingComponent
+                            ) {
                                 viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.Sharing))
                                 if (isFromClick) analytic?.onCloseShareSheet(viewModel.storyId)
                             }
 
                             override fun onShareChannel(shareModel: ShareModel) {
-                                analytic?.onClickShareOptions(viewModel.storyId, shareModel.channel.orEmpty())
+                                analytic?.onClickShareOptions(
+                                    viewModel.storyId,
+                                    shareModel.channel.orEmpty()
+                                )
                             }
 
                             override fun onShowSharing(view: StoriesSharingComponent) {
@@ -240,8 +268,14 @@ class StoriesDetailFragment @Inject constructor(
                             }
                         })
                         analytic?.onClickShareIcon(viewModel.storyId)
-                        sharingComponent.show(childFragmentManager, event.metadata, viewModel.userId, viewModel.storyId)
+                        sharingComponent.show(
+                            childFragmentManager,
+                            event.metadata,
+                            viewModel.userId,
+                            viewModel.storyId
+                        )
                     }
+
                     is StoriesUiEvent.ShowErrorEvent -> {
                         if (viewModel.isAnyBottomSheetShown) return@collect
                         requireView().showToaster(
@@ -249,11 +283,13 @@ class StoriesDetailFragment @Inject constructor(
                             type = Toaster.TYPE_ERROR
                         )
                     }
+
                     is StoriesUiEvent.ShowInfoEvent -> {
                         if (viewModel.isAnyBottomSheetShown) return@collect
                         val message = getString(event.message)
                         requireView().showToaster(message = message)
                     }
+
                     else -> return@collect
                 }
             }
@@ -279,7 +315,7 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun renderStoriesDetail(
         prevState: StoriesDetail?,
-        state: StoriesDetail?,
+        state: StoriesDetail?
     ) {
         if (prevState == state ||
             state == StoriesDetail() ||
@@ -289,11 +325,10 @@ class StoriesDetailFragment @Inject constructor(
             state.detailItems.isEmpty()
         ) return
 
-        setNoInternet(false)
-        setFailed(false)
-
         val prevItem = prevState?.detailItems?.getOrNull(prevState.selectedDetailPosition)
         val currentItem = state.detailItems.getOrNull(state.selectedDetailPosition) ?: return
+
+        handleVideoPlayState(currentItem)
 
         if (currentItem.isContentLoaded) return
 
@@ -305,40 +340,43 @@ class StoriesDetailFragment @Inject constructor(
         binding.vStoriesKebabIcon.showWithCondition(currentItem.menus.isNotEmpty())
     }
 
-    private fun renderMedia(content: StoriesItemContent, status: StoryStatus) {
+    private fun renderMedia(
+        content: StoriesItemContent,
+        status: StoryStatus,
+    ) {
         when (content.type) {
             Image -> {
-                when (status) {
-                    StoryStatus.Active -> {
-                        binding.layoutStoriesContent.ivStoriesDetailContent.loadImage(
-                            content.data,
-                            object : ImageLoaderStateListener {
-                                override fun successLoad() {
-                                    setNoContent(false)
-                                    contentIsLoaded()
-                                    analytic?.sendImpressionStoriesContent(viewModel.storyId)
-                                }
-                                override fun failedLoad() {
-                                    setNoContent(true)
-                                }
+                renderStoryBasedOnStatus(status) {
+                    binding.layoutStoriesContent.ivStoriesDetailContent.loadImage(
+                        content.data,
+                        object : ImageLoaderStateListener {
+                            override fun successLoad() {
+                                contentIsLoaded()
+                                analytic?.sendImpressionStoriesContent(viewModel.storyId)
+                                hideError()
                             }
-                        )
-                    }
 
-                    StoryStatus.Unknown -> {
-                        setNoContent(true)
-                        contentIsLoaded()
-                    }
+                            override fun failedLoad() {
+                                setErrorType(StoriesErrorView.Type.NoContent)
+                                contentIsLoaded()
+                            }
+                        }
+                    )
+                    showImageContent()
                 }
             }
 
             Video -> {
-                // todo
-                setNoContent(false)
+                renderStoryBasedOnStatus(status) {
+                    showVideoContent()
+                    showVideoLoading()
+                    renderVideoMedia(content)
+                    hideError()
+                }
             }
 
             Unknown -> {
-                setNoContent(true)
+                setErrorType(StoriesErrorView.Type.EmptyCategory)
                 contentIsLoaded()
             }
         }
@@ -361,7 +399,8 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun buildEventLabel(): String = "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
+    private fun buildEventLabel(): String =
+        "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
 
     private fun renderAuthor(state: StoriesDetailItem) {
         with(binding.vStoriesPartner) {
@@ -401,14 +440,17 @@ class StoriesDetailFragment @Inject constructor(
                     showStoriesComponent(false)
                     pauseStories()
                 }
+
                 TouchEventStories.RESUME -> {
                     showStoriesComponent(true)
                     resumeStories()
                 }
+
                 TouchEventStories.NEXT_PREV -> {
                     trackTapPreviousDetail()
                     viewModelAction(PreviousDetail)
                 }
+
                 else -> {}
             }
         }
@@ -418,14 +460,17 @@ class StoriesDetailFragment @Inject constructor(
                     showStoriesComponent(false)
                     pauseStories()
                 }
+
                 TouchEventStories.RESUME -> {
                     showStoriesComponent(true)
                     resumeStories()
                 }
+
                 TouchEventStories.NEXT_PREV -> {
                     trackTapNextDetail()
                     viewModelAction(NextDetail)
                 }
+
                 else -> {}
             }
         }
@@ -445,6 +490,7 @@ class StoriesDetailFragment @Inject constructor(
                     if (!isEligiblePage || !viewModel.isProductAvailable) return@onTouchEventStories
                     viewModelAction(StoriesUiAction.OpenProduct)
                 }
+
                 else -> {}
             }
         }
@@ -586,27 +632,25 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun setNoInternet(isShow: Boolean) = with(binding.layoutStoriesNoInet) {
-        root.showWithCondition(isShow)
-        icCloseLoading.setOnClickListener { activity?.finish() }
+    private fun setErrorType(errorType: StoriesErrorView.Type, isTimerAvailable: Boolean = true, onClick: () -> Unit = {}) = with(binding.vStoriesError) {
+        show()
+        type = errorType
+        setAction { onClick() }
+        setCloseAction { activity?.finish() }
+        translationZ = if (errorType == StoriesErrorView.Type.NoContent || errorType == StoriesErrorView.Type.EmptyCategory) 0f else 1f
+
+        if(errorType != StoriesErrorView.Type.EmptyCategory && isTimerAvailable) return@with
+        renderTimer(null, TimerStatusInfo.Empty)
     }
 
-    private fun setFailed(isShow: Boolean) = with(binding.layoutStoriesFailed) {
-        root.showWithCondition(isShow)
-        icCloseLoading.setOnClickListener { activity?.finish() }
-    }
-
-    private fun setNoContent(isShow: Boolean) = with(binding.layoutNoContent) {
-        binding.layoutStoriesContent.root.showWithCondition(!isShow)
-        root.showWithCondition(isShow)
-
-        if(!isShow) return@with
-        renderTimer(null, TimerStatusInfo.Empty) //will be improved in rendered failed
-    }
+    private fun hideError() = binding.vStoriesError.gone()
 
     override fun onDestroyView() {
-        super.onDestroyView()
+        _videoPlayer?.destroy()
+        _videoPlayer = null
+
         _binding = null
+        super.onDestroyView()
     }
 
     override fun onRemoveStory(view: StoriesThreeDotsBottomSheet) {
@@ -619,8 +663,19 @@ class StoriesDetailFragment @Inject constructor(
         position: Int,
         view: StoriesProductBottomSheet
     ) {
-        val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
-        if (action == StoriesProductAction.Atc) analytic?.sendClickAtcButtonEvent(eventLabel, listOf(product), position, viewModel.mDetail.author.name) else analytic?.sendClickBuyButtonEvent(eventLabel, listOf(product), position, viewModel.mDetail.author.name)
+        val eventLabel =
+            "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
+        if (action == StoriesProductAction.Atc) analytic?.sendClickAtcButtonEvent(
+            eventLabel,
+            listOf(product),
+            position,
+            viewModel.mDetail.author.name
+        ) else analytic?.sendClickBuyButtonEvent(
+            eventLabel,
+            listOf(product),
+            position,
+            viewModel.mDetail.author.name
+        )
     }
 
     override fun onClickedProduct(
@@ -628,21 +683,124 @@ class StoriesDetailFragment @Inject constructor(
         position: Int,
         view: StoriesProductBottomSheet
     ) {
-        val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
-        analytic?.sendClickProductCardEvent(eventLabel, "/stories-room - ${viewModel.storyId} - product card", listOf(product), position)
+        val eventLabel =
+            "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
+        analytic?.sendClickProductCardEvent(
+            eventLabel,
+            "/stories-room - ${viewModel.storyId} - product card",
+            listOf(product),
+            position
+        )
     }
 
     override fun onImpressedProduct(
         product: Map<ContentTaggedProductUiModel, Int>,
         view: StoriesProductBottomSheet
     ) {
-        val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.keys.firstOrNull()?.id.orEmpty()}"
+        val eventLabel =
+            "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.keys.firstOrNull()?.id.orEmpty()}"
         analytic?.sendViewProductCardEvent(eventLabel, product)
     }
 
     private fun setupAnalytic() {
         if (analytic == null && mParentPage.args != StoriesArgsModel()) {
             analytic = analyticFactory.create(mParentPage.args)
+        }
+    }
+
+    private fun showImageContent() {
+        binding.layoutStoriesContent.ivStoriesDetailContent.show()
+        binding.layoutStoriesContent.containerVideoStoriesContent.hide()
+    }
+
+    private fun showVideoContent() {
+        binding.layoutStoriesContent.ivStoriesDetailContent.hide()
+        binding.layoutStoriesContent.containerVideoStoriesContent.show()
+    }
+
+    private fun renderVideoMedia(content: StoriesItemContent) {
+        context?.let {
+            if (_videoPlayer == null) {
+                _videoPlayer = StoriesExoPlayer(it)
+            }
+
+            videoPlayer.pause()
+            videoPlayer.setVideoListener(this)
+            videoPlayer.setEventListener(object : EventListener {
+                override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                    val isPlaying = playWhenReady && playbackState == Player.STATE_READY
+                    val isBuffering = playbackState == Player.STATE_BUFFERING
+
+                    when {
+                        isPlaying -> {
+                            val videoDuration = videoPlayer.exoPlayer.duration.toInt()
+                            if (content.duration != videoDuration) {
+                                viewModel.submitAction(
+                                    StoriesUiAction.UpdateStoryDuration(
+                                        videoDuration
+                                    )
+                                )
+                            }
+                            hideVideoLoading()
+                            contentIsLoaded()
+                        }
+
+                        isBuffering -> {
+                            viewModel.submitAction(StoriesUiAction.VideoBuffering)
+                        }
+                    }
+                }
+
+                override fun onPlayerError(error: ExoPlaybackException) {
+                    super.onPlayerError(error)
+                    setErrorType(StoriesErrorView.Type.NoContent)
+                }
+            })
+
+            binding.layoutStoriesContent.playerStoriesDetailContent.player = videoPlayer.exoPlayer
+
+            if (currentPlayingVideoUrl != content.data) {
+                videoPlayer.start(content.data)
+                currentPlayingVideoUrl = content.data
+            } else if (!videoPlayer.exoPlayer.isPlaying) {
+                videoPlayer.resume(shouldReset = true)
+            }
+        }
+    }
+
+    private fun showVideoLoading() {
+        binding.layoutStoriesContent.loaderStoriesDetailContent.show()
+        binding.layoutStoriesContent.playerStoriesDetailContent.hide()
+    }
+
+    private fun hideVideoLoading() {
+        binding.layoutStoriesContent.loaderStoriesDetailContent.hide()
+        binding.layoutStoriesContent.playerStoriesDetailContent.show()
+
+    }
+
+    private fun renderStoryBasedOnStatus(
+        status: StoryStatus,
+        onActive: () -> Unit
+    ) {
+        when (status) {
+            StoryStatus.Active -> {
+                onActive()
+            }
+
+            StoryStatus.Unknown -> {
+                setErrorType(StoriesErrorView.Type.NoContent)
+                contentIsLoaded()
+            }
+        }
+    }
+
+    private fun handleVideoPlayState(state: StoriesDetailItem) {
+        if (_videoPlayer == null) return
+
+        when {
+            (state.event == RESUME || state.event == BUFFERING) && state.content.type == Video -> videoPlayer.resume()
+            state.event == PAUSE -> videoPlayer.pause()
         }
     }
 
