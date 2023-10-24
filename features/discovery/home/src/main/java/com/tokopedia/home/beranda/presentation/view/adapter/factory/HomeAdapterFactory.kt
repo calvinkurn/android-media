@@ -74,8 +74,8 @@ import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CarouselPlayWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
+import com.tokopedia.home.beranda.presentation.view.uimodel.HomeInitialShimmerDataModel
+import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.BestSellerListener
@@ -146,8 +146,8 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
-import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetListener
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetListener
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetViewHolder
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampListener
@@ -204,7 +204,7 @@ class HomeAdapterFactory(
     private val bestSellerListener: BestSellerListener,
     private val specialReleaseRevampListener: SpecialReleaseRevampListener,
     private val shopFlashSaleWidgetListener: ShopFlashSaleWidgetListener,
-    private val homeThematicUtil: HomeThematicUtil,
+    private val homeThematicUtil: HomeThematicUtil
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,

@@ -10,6 +10,7 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.GetHomeRecommendatio
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
+import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -23,6 +24,9 @@ import com.tokopedia.topads.sdk.utils.VALUE_ITEM
 import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 class HomeRecommendationViewModel @Inject constructor(
@@ -45,14 +49,67 @@ class HomeRecommendationViewModel @Inject constructor(
         private const val HEADLINE_PRODUCT_COUNT = "2"
     }
 
-    val homeRecommendationLiveData get() = _homeRecommendationLiveData
-    private val _homeRecommendationLiveData: MutableLiveData<HomeRecommendationDataModel> = MutableLiveData()
-    val homeRecommendationNetworkLiveData get() = _homeRecommendationNetworkLiveData
-    private val _homeRecommendationNetworkLiveData: MutableLiveData<Result<HomeRecommendationDataModel>> = MutableLiveData()
     private val loadingModel = HomeRecommendationLoading()
     private val loadMoreModel = HomeRecommendationLoadMore()
+    private val emptyModel = HomeRecommendationEmpty()
+    val homeRecommendationLiveData get() = _homeRecommendationLiveData
+    private val _homeRecommendationLiveData: MutableLiveData<HomeRecommendationDataModel> =
+        MutableLiveData()
+    val homeRecommendationNetworkLiveData get() = _homeRecommendationNetworkLiveData
+    private val _homeRecommendationNetworkLiveData: MutableLiveData<Result<HomeRecommendationDataModel>> =
+        MutableLiveData()
+
+    private val _homeRecommendationCardState = MutableStateFlow<HomeRecommendationCardState>(
+        HomeRecommendationCardState.Loading(listOf(loadingModel))
+    )
+    val homeRecommendationCardState: StateFlow<HomeRecommendationCardState>
+        get() = _homeRecommendationCardState.asStateFlow()
 
     var topAdsBannerNextPage = TOPADS_PAGE_DEFAULT
+
+    fun fetchHomeRecommendationCard(
+        locationParam: String,
+        sourceType: String
+    ) {
+        launchCatchError(coroutineContext, block = {
+            val result = getHomeRecommendationCardUseCase.get().execute(
+                Int.ONE,
+                sourceType,
+                locationParam
+            )
+            if (result.homeRecommendations.isEmpty()) {
+                _homeRecommendationCardState.emit(HomeRecommendationCardState.EmptyData(listOf(emptyModel)))
+            } else {
+                _homeRecommendationCardState.emit(HomeRecommendationCardState.Success(result))
+            }
+        }, onError = {
+                _homeRecommendationCardState.emit(HomeRecommendationCardState.Fail(it))
+            })
+    }
+
+    fun fetchNextHomeRecommendationCard(
+        page: Int,
+        locationParam: String,
+        sourceType: String
+    ) {
+        _homeRecommendationCardState.tryEmit(HomeRecommendationCardState.LoadingMore(listOf(loadMoreModel)))
+
+        launchCatchError(coroutineContext, block = {
+            val existingRecommendationData = homeRecommendationCardState.value
+            val result = getHomeRecommendationCardUseCase.get().execute(
+                page,
+                sourceType,
+                locationParam
+            )
+            if (result.homeRecommendations.isEmpty()) {
+                _homeRecommendationCardState.emit(HomeRecommendationCardState.EmptyData(listOf(emptyModel)))
+            } else {
+                _homeRecommendationCardState.emit(HomeRecommendationCardState.Success(result))
+            }
+        }, onError = {
+                _homeRecommendationCardState.emit(HomeRecommendationCardState.Fail(it))
+            })
+    }
 
     fun loadInitialPage(
         tabName: String,
@@ -62,19 +119,35 @@ class HomeRecommendationViewModel @Inject constructor(
         tabIndex: Int = 0,
         sourceType: String
     ) {
-        _homeRecommendationLiveData.postValue(HomeRecommendationDataModel(homeRecommendations = listOf(loadingModel)))
+        _homeRecommendationLiveData.postValue(
+            HomeRecommendationDataModel(
+                homeRecommendations = listOf(
+                    loadingModel
+                )
+            )
+        )
         launchCatchError(coroutineContext, block = {
             // todo will remove
 //            getHomeRecommendationUseCase.get().setParams(tabName, recommendationId, count, 1, locationParam, sourceType)
-            val data = getHomeRecommendationCardUseCase.get().execute(Int.ONE, sourceType, locationParam)
+            val data =
+                getHomeRecommendationCardUseCase.get().execute(Int.ONE, sourceType, locationParam)
             if (data.homeRecommendations.isEmpty()) {
-                _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = listOf(HomeRecommendationEmpty())))
+                _homeRecommendationLiveData.postValue(
+                    data.copy(
+                        homeRecommendations = listOf(
+                            HomeRecommendationEmpty()
+                        )
+                    )
+                )
             } else {
                 // todo bakal dihapus terkait topads
                 try {
                     val headlineAds = fetchHeadlineAds(tabIndex)
-                    val homeBannerTopAds = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
-                    val homeBannerTopAdsMutable = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>().toMutableList()
+                    val homeBannerTopAds =
+                        data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
+                    val homeBannerTopAdsMutable =
+                        data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
+                            .toMutableList()
                     val newList = data.homeRecommendations.toMutableList()
                     val topAdsBanner = arrayListOf<Pair<String, ArrayList<TopAdsImageViewModel>>>()
                     homeBannerTopAds.forEach {
@@ -118,7 +191,13 @@ class HomeRecommendationViewModel @Inject constructor(
                         }
                     }
                     // todo bakal dihapus karena udah di merge
-                    handleTopAdsWidgets(data, topAdsBanner, homeBannerTopAdsMutable, headlineAds, newList)
+                    handleTopAdsWidgets(
+                        data,
+                        topAdsBanner,
+                        homeBannerTopAdsMutable,
+                        headlineAds,
+                        newList
+                    )
                 } catch (e: Exception) {
                     // todo bakal dihapus
                     _homeRecommendationLiveData.postValue(
@@ -130,7 +209,13 @@ class HomeRecommendationViewModel @Inject constructor(
             }
             _homeRecommendationNetworkLiveData.postValue(Result.success(data))
         }) {
-            _homeRecommendationLiveData.postValue(HomeRecommendationDataModel(homeRecommendations = listOf(HomeRecommendationError())))
+            _homeRecommendationLiveData.postValue(
+                HomeRecommendationDataModel(
+                    homeRecommendations = listOf(
+                        HomeRecommendationError()
+                    )
+                )
+            )
             _homeRecommendationNetworkLiveData.postValue(Result.failure(it))
         }
     }
@@ -159,12 +244,18 @@ class HomeRecommendationViewModel @Inject constructor(
             }
         } else {
             if (position == Int.ZERO) {
-                newList.add(position, HomeRecommendationHeadlineTopAdsDataModel(headlineAds.displayAds))
+                newList.add(
+                    position,
+                    HomeRecommendationHeadlineTopAdsDataModel(headlineAds.displayAds)
+                )
                 topAdsBanner.forEachIndexed { index, pair ->
                     val visitableBanner = homeBannerTopAds[index]
                     if (newList.size > visitableBanner.position + Int.ONE) {
                         newList[visitableBanner.position + Int.ONE] =
-                            HomeRecommendationBannerTopAdsDataModel(pair.second.firstOrNull(), bannerType = pair.first)
+                            HomeRecommendationBannerTopAdsDataModel(
+                                pair.second.firstOrNull(),
+                                bannerType = pair.first
+                            )
                     }
                 }
             } else {
@@ -172,7 +263,10 @@ class HomeRecommendationViewModel @Inject constructor(
                     val visitableBanner = homeBannerTopAds[index]
                     if (newList.size > visitableBanner.position) {
                         newList[visitableBanner.position] =
-                            HomeRecommendationBannerTopAdsDataModel(pair.second.firstOrNull(), bannerType = pair.first)
+                            HomeRecommendationBannerTopAdsDataModel(
+                                pair.second.firstOrNull(),
+                                bannerType = pair.first
+                            )
                     }
                 }
                 position?.let {
@@ -200,14 +294,22 @@ class HomeRecommendationViewModel @Inject constructor(
                 item = VALUE_ITEM,
                 seenAds = null
             )
-            getTopAdsHeadlineUseCase.get().setParams(params, topAdsAddressHelper.get().getAddressData())
+            getTopAdsHeadlineUseCase.get()
+                .setParams(params, topAdsAddressHelper.get().getAddressData())
             getTopAdsHeadlineUseCase.get().executeOnBackground()
         } else {
             TopAdsHeadlineResponse()
         }
     }
 
-    fun loadNextData(tabName: String, recomId: Int, count: Int, page: Int, locationParam: String = "", sourceType: String) {
+    fun loadNextData(
+        tabName: String,
+        recomId: Int,
+        count: Int,
+        page: Int,
+        locationParam: String = "",
+        sourceType: String
+    ) {
         val list = _homeRecommendationLiveData.value?.homeRecommendations?.toMutableList()
             ?: mutableListOf()
         list.add(loadMoreModel)
@@ -220,12 +322,16 @@ class HomeRecommendationViewModel @Inject constructor(
         launchCatchError(coroutineContext, block = {
             // todo will remove
 //            getHomeRecommendationUseCase.get().setParams(tabName, recomId, count, page, locationParam, sourceType)
-            val data = getHomeRecommendationCardUseCase.get().execute(page, sourceType, locationParam)
+            val data =
+                getHomeRecommendationCardUseCase.get().execute(page, sourceType, locationParam)
             list.remove(loadMoreModel)
             // todo will remove the logic
             try {
-                val homeBannerTopAds = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
-                val homeBannerTopAdsMutable = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>().toMutableList()
+                val homeBannerTopAds =
+                    data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
+                val homeBannerTopAdsMutable =
+                    data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
+                        .toMutableList()
                 val newList = data.homeRecommendations.toMutableList()
                 val topAdsBanner2 = arrayListOf<Pair<String, ArrayList<TopAdsImageViewModel>>>()
                 homeBannerTopAds.forEachIndexed { index, it ->
@@ -273,7 +379,10 @@ class HomeRecommendationViewModel @Inject constructor(
                     val visitableBanner = homeBannerTopAds[index]
                     if (newList.size > visitableBanner.position) {
                         newList[visitableBanner.position] =
-                            HomeRecommendationBannerTopAdsDataModel(pair.second.firstOrNull(), bannerType = pair.first)
+                            HomeRecommendationBannerTopAdsDataModel(
+                                pair.second.firstOrNull(),
+                                bannerType = pair.first
+                            )
                     }
                 }
                 list.addAll(newList)
@@ -284,23 +393,31 @@ class HomeRecommendationViewModel @Inject constructor(
             _homeRecommendationNetworkLiveData.postValue(Result.success(data))
         }) {
             list.remove(loadMoreModel)
-            _homeRecommendationLiveData.postValue(_homeRecommendationLiveData.value?.copy(homeRecommendations = list.copy()))
+            _homeRecommendationLiveData.postValue(
+                _homeRecommendationLiveData.value?.copy(
+                    homeRecommendations = list.copy()
+                )
+            )
             _homeRecommendationNetworkLiveData.postValue(Result.failure(it))
         }
     }
 
     fun updateWishlist(id: String, position: Int, isWishlisted: Boolean) {
-        val homeRecomendationList = _homeRecommendationLiveData.value?.homeRecommendations?.toMutableList() ?: mutableListOf()
+        val homeRecomendationList =
+            _homeRecommendationLiveData.value?.homeRecommendations?.toMutableList()
+                ?: mutableListOf()
         var recommendationItem: HomeRecommendationItemDataModel? = null
         var recommendationItemPosition: Int = -1
         if (homeRecomendationList.getOrNull(position)?.getUniqueIdentity() == id) {
             recommendationItem = homeRecomendationList[position] as HomeRecommendationItemDataModel
             recommendationItemPosition = position
         } else {
-            homeRecomendationList.withIndex().find { it.value.getUniqueIdentity() == id && it.value is HomeRecommendationItemDataModel }?.let {
-                recommendationItemPosition = it.index
-                recommendationItem = (it.value as? HomeRecommendationItemDataModel)
-            }
+            homeRecomendationList.withIndex()
+                .find { it.value.getUniqueIdentity() == id && it.value is HomeRecommendationItemDataModel }
+                ?.let {
+                    recommendationItemPosition = it.index
+                    recommendationItem = (it.value as? HomeRecommendationItemDataModel)
+                }
         }
         if (recommendationItemPosition != -1) {
             recommendationItem?.let {

@@ -43,6 +43,7 @@ import com.tokopedia.home.beranda.listener.HomeEggListener
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
@@ -198,6 +199,7 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
         viewModel.homeRecommendationLiveData.observe(
             viewLifecycleOwner
         ) { data ->
+            val existingData = adapter.currentList.filterIsInstance<HomeRecommendationVisitable>()
             adapter.submitList(data.homeRecommendations)
         }
 
@@ -458,9 +460,9 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
     }
 
     private fun goToProductDetail(productId: String, position: Int) {
-        if (activity != null) {
+        activity?.let {
             val intent = RouteManager.getIntent(
-                activity,
+                it,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                 productId
             )

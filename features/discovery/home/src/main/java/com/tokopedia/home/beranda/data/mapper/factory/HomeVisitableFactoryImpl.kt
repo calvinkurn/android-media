@@ -14,7 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
+import com.tokopedia.home.beranda.presentation.view.uimodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
 import com.tokopedia.home.constant.AtfKey.TYPE_CHANNEL
@@ -324,7 +324,7 @@ class HomeVisitableFactoryImpl(
                                             TodoWidgetListDataModel(
                                                 status = TodoWidgetListDataModel.STATUS_LOADING,
                                                 showShimmering = data.isShimmer,
-                                                source = TodoWidgetListDataModel.SOURCE_ATF,
+                                                source = TodoWidgetListDataModel.SOURCE_ATF
                                             )
                                         )
                                     },
@@ -334,7 +334,7 @@ class HomeVisitableFactoryImpl(
                                             data.id,
                                             data.param,
                                             index,
-                                            data.isShimmer,
+                                            data.isShimmer
                                         )
                                     }
                                 )
@@ -347,7 +347,7 @@ class HomeVisitableFactoryImpl(
                                             MissionWidgetListDataModel(
                                                 status = MissionWidgetListDataModel.STATUS_LOADING,
                                                 showShimmering = data.isShimmer,
-                                                source = MissionWidgetListDataModel.SOURCE_ATF,
+                                                source = MissionWidgetListDataModel.SOURCE_ATF
                                             )
                                         )
                                     },
@@ -358,7 +358,7 @@ class HomeVisitableFactoryImpl(
                                             data.name,
                                             index,
                                             data.isShimmer,
-                                            isCache,
+                                            isCache
                                         )
                                     }
                                 )
@@ -479,10 +479,10 @@ class HomeVisitableFactoryImpl(
         id: Int,
         param: String,
         index: Int,
-        isShimmer: Boolean,
+        isShimmer: Boolean
     ) {
         data?.let {
-            val todo = if(!isCache) {
+            val todo = if (!isCache) {
                 TodoWidgetListDataModel(
                     id = id.toString(),
                     todoWidgetList = LazyLoadDataMapper.mapTodoWidgetData(it.todos),
@@ -492,18 +492,17 @@ class HomeVisitableFactoryImpl(
                     verticalPosition = index,
                     status = TodoWidgetListDataModel.STATUS_SUCCESS,
                     showShimmering = isShimmer,
-                    source = TodoWidgetListDataModel.SOURCE_ATF,
+                    source = TodoWidgetListDataModel.SOURCE_ATF
                 )
             } else {
                 TodoWidgetListDataModel(
                     status = TodoWidgetListDataModel.STATUS_LOADING,
                     showShimmering = isShimmer,
-                    source = TodoWidgetListDataModel.SOURCE_ATF,
+                    source = TodoWidgetListDataModel.SOURCE_ATF
                 )
             }
             visitableList.add(todo)
         }
-
     }
 
     private fun addMissionWidgetData(
@@ -512,10 +511,10 @@ class HomeVisitableFactoryImpl(
         name: String,
         index: Int,
         isShimmer: Boolean,
-        isCache: Boolean,
+        isCache: Boolean
     ) {
         data?.let {
-            val mission = if(!isCache) {
+            val mission = if (!isCache) {
                 MissionWidgetListDataModel(
                     id = id.toString(),
                     name = name,
@@ -525,18 +524,17 @@ class HomeVisitableFactoryImpl(
                     verticalPosition = index,
                     status = MissionWidgetListDataModel.STATUS_SUCCESS,
                     showShimmering = isShimmer,
-                    source = MissionWidgetListDataModel.SOURCE_ATF,
+                    source = MissionWidgetListDataModel.SOURCE_ATF
                 )
             } else {
                 MissionWidgetListDataModel(
                     status = MissionWidgetListDataModel.STATUS_LOADING,
                     showShimmering = isShimmer,
-                    source = MissionWidgetListDataModel.SOURCE_ATF,
+                    source = MissionWidgetListDataModel.SOURCE_ATF
                 )
             }
             visitableList.add(mission)
         }
-
     }
 
     private fun mapIntoGrids(bannerDataModel: com.tokopedia.home.beranda.domain.model.banner.BannerDataModel): List<ChannelGrid> {

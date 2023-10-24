@@ -1,16 +1,27 @@
-package com.tokopedia.home.beranda.presentation.view.viewmodel
+package com.tokopedia.home.beranda.presentation.view.uimodel
 
 import android.os.Bundle
+import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 
-data class HomeInitialShimmerDataModel(
-        val id: Int = 1234
+/**
+ * Created by devarafikry on 27/08/19.
+ */
+
+data class HomeRecommendationFeedDataModel(
+        var homeChooseAddressData: HomeChooseAddressData? = null,
+        var recommendationTabDataModel: List<RecommendationTabDataModel>? = null,
+        var hasSwitchTab: Boolean = false
 ) : HomeVisitable {
+    var isNewData = true
 
     //keep this section if exist, because this viewholder is heavy to render
     override fun equalsWith(b: Any?): Boolean {
+        (b as? HomeRecommendationFeedDataModel)?.let { newRecomDataModel ->
+            return newRecomDataModel == this
+        }
         return true
     }
 
@@ -43,7 +54,7 @@ data class HomeInitialShimmerDataModel(
     }
 
     override fun visitableId(): String {
-        return "homeInitialShimmer"
+        return "recommendationSection"
     }
 
     override fun type(typeFactory: HomeTypeFactory): Int {

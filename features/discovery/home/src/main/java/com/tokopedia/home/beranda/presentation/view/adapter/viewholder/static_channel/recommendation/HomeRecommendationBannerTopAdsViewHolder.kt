@@ -26,16 +26,72 @@ import com.tokopedia.topads.sdk.widget.BANNER_TYPE_HORIZONTAL
 import com.tokopedia.topads.sdk.widget.BANNER_TYPE_VERTICAL
 import com.tokopedia.utils.view.binding.viewBinding
 
-class HomeRecommendationBannerTopAdsViewHolder(view: View) : SmartAbstractViewHolder<HomeRecommendationBannerTopAdsDataModel>(view) {
+class HomeRecommendationBannerTopAdsViewHolder(view: View) :
+    SmartAbstractViewHolder<HomeRecommendationBannerTopAdsDataModel>(view) {
     companion object {
         val LAYOUT = R.layout.item_home_banner_topads_layout
         private const val HOME_RECOM_TAB_BANNER = "home_recom_tab_banner"
     }
 
-    private var binding: ItemHomeBannerTopadsLayoutBinding? by viewBinding()
+    private val binding: ItemHomeBannerTopadsLayoutBinding? by viewBinding()
 
     override fun bind(element: HomeRecommendationBannerTopAdsDataModel, listener: SmartListener) {
         loadImageTopAds(element, listener as HomeRecommendationListener)
+        setBannerTopAdsClickListener(element, listener)
+    }
+
+    private fun loadImageTopAds(
+        recommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsDataModel,
+        listener: HomeRecommendationListener
+    ) {
+        recommendationBannerTopAdsDataModel.topAdsImageViewModel?.let {
+            setBannerTopAdsImpressionListener(recommendationBannerTopAdsDataModel, listener)
+
+            binding?.homeRecomTopadsLoaderImage?.show()
+            binding?.homeRecomTopadsImageView?.let {
+                it.imageWidth = recommendationBannerTopAdsDataModel.topAdsImageViewModel.imageWidth
+                it.imageHeight =
+                    recommendationBannerTopAdsDataModel.topAdsImageViewModel.imageHeight
+                if (recommendationBannerTopAdsDataModel.bannerType == TYPE_VERTICAL_BANNER_ADS) {
+                    it.bannerType = BANNER_TYPE_VERTICAL
+                    loadVerticalBanner(recommendationBannerTopAdsDataModel, it)
+                } else {
+                    it.bannerType = BANNER_TYPE_HORIZONTAL
+                    loadHorizontalBanner(recommendationBannerTopAdsDataModel, it)
+                }
+            }
+        }
+    }
+
+    private fun setBannerTopAdsImpressionListener(
+        recommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsDataModel,
+        listener: HomeRecommendationListener
+    ) {
+        itemView.addOnImpressionListener(
+            recommendationBannerTopAdsDataModel,
+            object : ViewHintListener {
+                override fun onViewHint() {
+                    TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                        this::class.java.simpleName,
+                        recommendationBannerTopAdsDataModel.topAdsImageViewModel?.adViewUrl,
+                        "",
+                        "",
+                        recommendationBannerTopAdsDataModel.topAdsImageViewModel?.imageUrl,
+                        HOME_RECOM_TAB_BANNER
+                    )
+                    listener.onBannerTopAdsImpress(
+                        recommendationBannerTopAdsDataModel,
+                        bindingAdapterPosition
+                    )
+                }
+            }
+        )
+    }
+
+    private fun setBannerTopAdsClickListener(
+        element: HomeRecommendationBannerTopAdsDataModel,
+        listener: HomeRecommendationListener
+    ) {
         binding?.homeRecomTopadsImageView?.setOnClickListener {
             TopAdsUrlHitter(itemView.context).hitClickUrl(
                 this::class.java.simpleName,
@@ -45,76 +101,60 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) : SmartAbstractViewHo
                 element.topAdsImageViewModel?.imageUrl,
                 HOME_RECOM_TAB_BANNER
             )
-            listener.onBannerTopAdsClick(element, adapterPosition)
+            listener.onBannerTopAdsClick(element, bindingAdapterPosition)
         }
     }
 
-
-    private fun loadImageTopAds(recommendationBannerTopAdsDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, listener: HomeRecommendationListener) {
-        recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel?.let {
-            itemView.addOnImpressionListener(recommendationBannerTopAdsDataModelDataModel, object : ViewHintListener {
-                override fun onViewHint() {
-                    TopAdsUrlHitter(itemView.context).hitImpressionUrl(
-                        this::class.java.simpleName,
-                        recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.adViewUrl,
-                        "",
-                        "",
-                        recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageUrl,
-                        HOME_RECOM_TAB_BANNER
-                    )
-                    listener.onBannerTopAdsImpress(recommendationBannerTopAdsDataModelDataModel, adapterPosition)
-                }
-            })
-            binding?.homeRecomTopadsLoaderImage?.show()
-            binding?.homeRecomTopadsImageView?.let {
-                it.imageWidth = recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageWidth
-                it.imageHeight = recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageHeight
-                if (recommendationBannerTopAdsDataModelDataModel.bannerType == TYPE_VERTICAL_BANNER_ADS) {
-                    it.bannerType = BANNER_TYPE_VERTICAL
-                    loadVerticalBanner(recommendationBannerTopAdsDataModelDataModel, it)
-                } else {
-                    it.bannerType = BANNER_TYPE_HORIZONTAL
-                    Glide.with(itemView.context)
-                        .load(recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageUrl)
-                        .transform(RoundedCorners(8))
-                        .fitCenter()
-                        .addListener(object : RequestListener<Drawable> {
-                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                                it.hide()
-                                binding?.homeRecomTopadsLoaderImage?.hide()
-                                return false
-                            }
-
-                            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                it.show()
-                                binding?.homeRecomTopadsLoaderImage?.hide()
-                                return false
-                            }
-                        })
-                        .into(it)
-                }
-
-            }
-
-        }
-    }
-
-    private fun loadVerticalBanner(recommendationBannerTopAdsDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, appCompatImageView: AppCompatImageView) {
+    private fun loadVerticalBanner(
+        recommendationBannerTopAdsDataModelDataModel: HomeRecommendationBannerTopAdsDataModel,
+        appCompatImageView: AppCompatImageView
+    ) {
         recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel?.imageUrl?.let {
-            appCompatImageView.loadImageRounded(it, 16f)
-            {
+            appCompatImageView.loadImageRounded(it, 16f) {
                 fitCenter()
                 listener(onSuccess = { _, _ ->
                     appCompatImageView.show()
                     binding?.homeRecomTopadsLoaderImage?.hide()
                 }, onError = {
-                    appCompatImageView.hide()
-                    binding?.homeRecomTopadsLoaderImage?.hide()
-                }
-                )
+                        appCompatImageView.hide()
+                        binding?.homeRecomTopadsLoaderImage?.hide()
+                    })
             }
         }
     }
+
+    private fun loadHorizontalBanner(
+        item: HomeRecommendationBannerTopAdsDataModel,
+        appCompatImageView: AppCompatImageView
+    ) {
+        Glide.with(itemView.context)
+            .load(item.topAdsImageViewModel?.imageUrl)
+            .transform(RoundedCorners(8))
+            .fitCenter()
+            .addListener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    appCompatImageView.hide()
+                    binding?.homeRecomTopadsLoaderImage?.hide()
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    appCompatImageView.show()
+                    binding?.homeRecomTopadsLoaderImage?.hide()
+                    return false
+                }
+            })
+            .into(appCompatImageView)
+    }
 }
-
-

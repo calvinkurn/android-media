@@ -22,7 +22,7 @@ data class AdsBannerItemResponse(
             @SerializedName("banner")
             val banner: Banner = Banner(),
             @SerializedName("ID")
-            val iD: String = "0",
+            val id: String = "0",
             @SerializedName("redirect")
             val redirect: String = ""
         ) {
@@ -66,7 +66,7 @@ data class Shop(
     @SerializedName("domain")
     val domain: String = "",
     @SerializedName("ID")
-    val iD: String = "0",
+    val id: String = "0",
     @SerializedName("image")
     val image: ShopImage = ShopImage(),
     @SerializedName("isOfficial")
@@ -116,7 +116,7 @@ data class Shop(
         @SerializedName("freeShippingCampaign")
         val freeShippingCampaign: FreeShippingCampaign = FreeShippingCampaign(),
         @SerializedName("ID")
-        val iD: String = "0",
+        val id: String = "0",
         @SerializedName("image")
         val image: ImageM = ImageM(),
         @SerializedName("imageProduct")
