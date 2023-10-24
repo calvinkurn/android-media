@@ -113,11 +113,19 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-
-class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
-    StickyNavigationListener, AccordionListener, BannerListener, TrustMakerListener,
-    TextDescriptionListener, VideoExpertListener, TopFeatureListener, DoubleBannerListener,
-    ComparisonViewHolder.ComparisonItemListener, CatalogDetailListener {
+class CatalogDetailPageFragment :
+    BaseDaggerFragment(),
+    HeroBannerListener,
+    StickyNavigationListener,
+    AccordionListener,
+    BannerListener,
+    TrustMakerListener,
+    TextDescriptionListener,
+    VideoExpertListener,
+    TopFeatureListener,
+    DoubleBannerListener,
+    ComparisonViewHolder.ComparisonItemListener,
+    CatalogDetailListener {
 
     companion object {
         private const val QUERY_CATALOG_ID = "catalog_id"
@@ -267,17 +275,16 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             }
             Handler(Looper.getMainLooper()).postDelayed({
                 selectNavigationFromScroll = true
-            }, 500)
+            }, 800)
         }
 
         CatalogReimagineDetailAnalytics.sendEvent(
             event = EVENT_VIEW_PG_IRIS,
             action = EVENT_ACTION_CLICK_NAVIGATION,
             category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
-            labels = "$catalogId - item: {${tabTitle}}",
+            labels = "$catalogId - item: {$tabTitle}",
             trackerId = TRACKER_ID_CLICK_NAVIGATION
         )
-
     }
 
     private fun setupObservers(view: View) {
@@ -303,17 +310,23 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         viewModel.errorsToaster.observe(viewLifecycleOwner) {
             val errorMessage = ErrorHandler.getErrorMessage(view.context, it)
             Toaster.build(
-                view, errorMessage, duration = Toaster.LENGTH_LONG,
+                view,
+                errorMessage,
+                duration = Toaster.LENGTH_LONG,
                 type = Toaster.TYPE_ERROR
             ).show()
         }
         viewModel.errorsToasterGetComparison.observe(viewLifecycleOwner) {
             val errorMessage = if (it is UnknownHostException) {
                 getString(R.string.catalog_error_message_no_connection)
-            } else ErrorHandler.getErrorMessage(requireView().context, it)
+            } else {
+                ErrorHandler.getErrorMessage(requireView().context, it)
+            }
 
             Toaster.build(
-                view, errorMessage, duration = Toaster.LENGTH_LONG,
+                view,
+                errorMessage,
+                duration = Toaster.LENGTH_LONG,
                 type = Toaster.TYPE_ERROR,
                 actionText = getString(R.string.catalog_retry_action)
             ) {
@@ -322,13 +335,14 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         }
         viewModel.comparisonUiModel.observe(viewLifecycleOwner) {
             // COMPARISON_CHANGED_POSITION is hardcoded position, will changed at next phase
-            if (it == null)
+            if (it == null) {
                 Toaster.build(
                     view,
                     getString(R.string.catalog_error_message_inactive)
                 ).show()
-            else
+            } else {
                 widgetAdapter.changeComparison(it)
+            }
         }
 
         CoroutineScope(Dispatchers.Main).launch {
@@ -355,7 +369,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 val bannerRect = Rect()
                 layoutManager.findViewByPosition(Int.ZERO)?.getGlobalVisibleRect(bannerRect)
                 val scrollProgress = Int.ONE - if (bannerRect.height()
-                        .isMoreThanZero() && bannerHeight.isMoreThanZero()
+                    .isMoreThanZero() && bannerHeight.isMoreThanZero()
                 ) {
                     bannerRect.height() / bannerHeight.toFloat()
                 } else {
