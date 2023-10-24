@@ -22,13 +22,11 @@ class SendGiftViewModel @Inject constructor(private val repository: SendGiftResp
     override fun sendGift(id: Int?, email: String, notes: String) {
         launchCatchError(block = {
             sendGiftLiveData.value = Loading()
-            val redeemCouponBaseEntity = repository.sendGift(id, email, notes)
-            if (redeemCouponBaseEntity.hachikoRedeem != null) {
-                val title = R.string.tp_send_gift_success_title
-                val message = R.string.tp_send_gift_success_message
-                success = 1
-                sendGiftLiveData.value = Success(SendGiftData(title = title, messsage = message, success = success))
-            } else throw NullPointerException()
+            repository.sendGift(id, email, notes)
+            val title = R.string.tp_send_gift_success_title
+            val message = R.string.tp_send_gift_success_message
+            success = 1
+            sendGiftLiveData.value = Success(SendGiftData(title = title, messsage = message, success = success))
         }) {
             //show error
             if (it is MessageErrorException) {
