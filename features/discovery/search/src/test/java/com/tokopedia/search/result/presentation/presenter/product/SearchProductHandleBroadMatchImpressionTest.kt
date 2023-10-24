@@ -5,17 +5,22 @@ import com.tokopedia.discovery.common.constants.SearchConstant.TopAdsComponent.B
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.product.broadmatch.BroadMatchItemDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchItemDataView
 import com.tokopedia.search.result.product.broadmatch.DynamicCarouselProduct
-import io.mockk.*
+import io.mockk.confirmVerified
+import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
+import io.mockk.slot
+import io.mockk.verify
 import org.junit.Test
 import rx.Subscriber
 
 private const val broadMatchResponseCode0Page1Position1 = "searchproduct/broadmatch/response-code-0-page-1-position-1.json"
 private const val dynamicProductCarousel = "searchproduct/inspirationcarousel/dynamic-product.json"
 
-internal class SearchProductHandleBroadMatchImpression: ProductListPresenterTestFixtures() {
+internal class SearchProductHandleBroadMatchImpressionTest: ProductListPresenterTestFixtures() {
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
 

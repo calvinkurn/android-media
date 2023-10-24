@@ -7,8 +7,9 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.BottomSheetAdapterTyp
  */
 
 data class BottomSheetListItemUiModel(
-        val title: String, val
-        description: String
+    val title: String,
+    val description: String,
+    val isLastPosition: Boolean
 ) : BaseBottomSheetUiModel {
 
     override fun type(typeFactory: BottomSheetAdapterTypeFactory): Int {

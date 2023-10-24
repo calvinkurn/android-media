@@ -32,6 +32,7 @@
     <string name="catalog_perbandingan_produk">Perbandingan produk</string>
     <string name="catalog_ganti_perbandingan">Ganti Perbandingan</string>
     <string name="catalog_bandingkan">Bandingkan</string>
+    <string name="catalog_selected">Terpilih</string>
     <string name="catalog_search_product_hint">Cari produk di sini..</string>
     <string name="catalog_cobi_cari_katalog_lain">Coba cari katalog lain,  ya</string>
     <string name="catalog_masih_belum">Masih belum ketemu yang cocok?</string>
@@ -47,5 +48,9 @@
     <string name="text_empty_state_desc">Coba kurangi filter yang lagi aktif atau reset filter.</string>
     <string name="text_reset_filter">Reset Filter</string>
     <string name="catalog_action_product_list">Lihat Pilihan</string>
+    <string name="text_comparison_title">Detail Perbandingan</string>
+    <string name="catalog_retry_action">Coba lagi</string>
+    <string name="catalog_error_message_no_connection">Wah, internet putus. Cek paket data atau WiFi-mu, ya.</string>
+    <string name="catalog_error_message_inactive">1 katalog gagal ditampilkan. Perbandingan produk diubah ke semula, ya.</string>
 
 </resources>

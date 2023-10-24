@@ -24,5 +24,7 @@
     <string name="img_url_goto_kyc_dob_challenge_failed">https://images.tokopedia.net/img/android/user/kyc/img_url_goto_kyc_dob_challenge_failed.png</string>
     <string name="img_url_goto_kyc_error_timeout">https://images.tokopedia.net/img/android/user/kyc/img_url_goto_kyc_error_timeout.png</string>
     <string name="img_url_goto_kyc_fail_save_preference">https://images.tokopedia.net/img/android/user/kyc/img_goto_kyc_fail_save_preference.png</string>
+    <string name="img_url_goto_kyc_blocked_multiple_account">https://images.tokopedia.net/img/android/user/kyc/img_goto_kyc_blocked_multiple_account.png</string>
+    <string name="img_url_goto_kyc_blocked_general">https://images.tokopedia.net/img/android/user/kyc/img_goto_kyc_blocked_general.png</string>
     <string name="img_goto_kyc_connection_issue"> https://images.tokopedia.net/img/android/user/kyc/img_goto_kyc_connection_issue.png</string>
 </resources>

@@ -6,6 +6,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
+import com.tokopedia.tokochat.stub.common.matcher.hasTextFormat
 import com.tokopedia.tokochat.stub.common.matcher.withItemCount
 import com.tokopedia.tokochat.stub.common.matcher.withRecyclerView
 import org.hamcrest.CoreMatchers.equalTo
@@ -65,6 +66,14 @@ object GeneralResult {
             withRecyclerView(tokochat_commonR.id.tokochat_list_rv)
                 .atPositionOnView(position, tokochat_commonR.id.tokochat_list_tv_time)
         ).check(matches(withSubstring(timeStamp)))
+    }
+
+    fun assertTimeStampWithinMonthFormat(position: Int) {
+        val pattern = "^[0-3]?\\d (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)$".toRegex()
+        onView(
+            withRecyclerView(tokochat_commonR.id.tokochat_list_rv)
+                .atPositionOnView(position, tokochat_commonR.id.tokochat_list_tv_time)
+        ).check(hasTextFormat(pattern))
     }
 
     fun assertNoTimeStamp(position: Int) {

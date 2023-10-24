@@ -15,7 +15,7 @@ class PostProcessingFilter {
     fun checkPostProcessingFilter(
         isPostProcessing: Boolean,
         searchParameter: Map<String, Any>,
-        totalData: Int,
+        totalData: Long,
         callbackLoadData: (Map<String, Any>) -> Unit,
         handleEmptyState: () -> Unit,
     ) {
@@ -32,7 +32,7 @@ class PostProcessingFilter {
 
     private fun handlePostProcessingFilter(
         searchParameter: Map<String, Any>,
-        totalData: Int,
+        totalData: Long,
         callbackLoad: (Map<String, Any>) -> Unit,
         handleEmptyState: () -> Unit,
     ) {

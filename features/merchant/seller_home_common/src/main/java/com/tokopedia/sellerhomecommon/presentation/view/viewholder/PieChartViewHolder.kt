@@ -9,10 +9,12 @@ import com.tokopedia.charts.model.PieChartEntry
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
@@ -26,6 +28,7 @@ import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.unifycomponents.toPx
 
 /**
  * Created By @ilhamsuaib on 06/07/20
@@ -52,6 +55,7 @@ class PieChartViewHolder(
             if (!listener.getIsShouldRemoveWidget()) {
                 root.toggleWidgetHeight(true)
             }
+            containerPieChart.minHeight = root.getDimens(R.dimen.shc_large_widget_height)
             tvPieChartTitle.text = element.title
             setTagNotification(element.tag)
             setupTooltip(element)
@@ -201,8 +205,15 @@ class PieChartViewHolder(
     private fun setupPieChart(element: PieChartWidgetUiModel) {
         with(binding) {
             val data = element.data?.data
-            tvPieChartValue.text = data?.summary?.valueFmt.orEmpty()
-            tvPieChartSubValue.text = data?.summary?.diffPercentageFmt.orEmpty().parseAsHtml()
+            containerPieChart.minHeight = 0
+            tvPieChartValue.shouldShowWithAction(data?.summary?.valueFmt.orEmpty().isNotEmpty()) {
+                tvPieChartValue.text = data?.summary?.valueFmt.orEmpty()
+            }
+            tvPieChartSubValue.shouldShowWithAction(
+                data?.summary?.diffPercentageFmt.orEmpty().isNotEmpty()
+            ) {
+                tvPieChartSubValue.text = data?.summary?.diffPercentageFmt.orEmpty().parseAsHtml()
+            }
 
             pieChartShc.init(PieChartConfig.getDefaultConfig())
             pieChartShc.setData(getPieChartData(element))
