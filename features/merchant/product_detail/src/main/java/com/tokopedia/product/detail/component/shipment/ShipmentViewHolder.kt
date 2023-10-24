@@ -253,7 +253,7 @@ class ShipmentViewHolder(
         pdpShipmentErrorSubtitle.showIfWithBlock(subtitle.isNotEmpty()) {
             text = subtitle.renderHtmlBold(
                 context = context,
-                boldColor = unifyprinciplesR.color.Unify_NN600
+                boldColor = unifyprinciplesR.color.Unify_GN500
             )
         }
 
