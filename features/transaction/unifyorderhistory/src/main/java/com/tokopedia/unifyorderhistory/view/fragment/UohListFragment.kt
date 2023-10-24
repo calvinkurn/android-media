@@ -71,7 +71,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH
 import com.tokopedia.remoteconfig.RemoteConfigKey.SCP_REWARDS_MEDALI_TOUCH_POINT
 import com.tokopedia.scp_rewards_touchpoints.common.Error
 import com.tokopedia.scp_rewards_touchpoints.common.ORDER_LIST_HISTORY_PAGE
@@ -94,6 +93,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyorderhistory.R
 import com.tokopedia.unifyorderhistory.analytics.UohAnalytics
+import com.tokopedia.unifyorderhistory.analytics.UohAnalytics.ULAS_TYPE_STAR
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAdd
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAddRecommendation
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceClick
@@ -218,6 +218,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.atc_common.R as atc_commonR
 
 /**
  * Created by fwidjaja on 29/06/20.
@@ -280,6 +281,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     private lateinit var trackingQueue: TrackingQueue
     private var _buttonAction = ""
     private var _atcOccParams: AddToCartOccMultiRequestParams? = null
+    private val impressedUUIDs = mutableListOf<String>()
 
     private var binding by autoClearedNullable<FragmentUohListBinding>()
 
@@ -361,15 +363,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         const val POF_REQUEST_CODE = 600
     }
 
-    private fun isAutoRefreshEnabled(): Boolean {
-        return try {
-            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
-            return firebaseRemoteConfig.getBoolean(HOME_ENABLE_AUTO_REFRESH_UOH)
-        } catch (e: Exception) {
-            false
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userSession = UserSession(context)
@@ -401,27 +394,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         refreshUohData()
     }
 
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        launchAutoRefresh(isVisibleToUser)
-    }
-
     private fun checkLogin() {
         if (userSession.isLoggedIn) {
             loadFilters()
         } else {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
-        }
-    }
-
-    private fun launchAutoRefresh(isVisibleToUser: Boolean = true) {
-        if (isVisibleToUser && isAutoRefreshEnabled()) {
-            binding?.run {
-                globalErrorUoh.gone()
-                rvOrderList.visible()
-                rvOrderList.scrollToPosition(0)
-            }
-            refreshUohData()
         }
     }
 
@@ -574,7 +551,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     private fun observeUohPmsCounter() {
         uohListViewModel.getUohPmsCounterResult.observe(viewLifecycleOwner) {
             if (it is Success) {
-                if (!paramUohOrder.hasActiveFilter()) {
+                if (!paramUohOrder.hasActiveFilter() && it.data.notifications.buyerOrderStatus.paymentStatus > 0) {
                     val data = UohTypeData(
                         dataObject = it.data,
                         typeLayout = UohConsts.TYPE_PMS_BUTTON
@@ -582,7 +559,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     uohItemAdapter.appendPmsButton(data) { position ->
                         binding?.rvOrderList?.smoothScrollToPosition(position)
                     }
+                } else {
+                    uohItemAdapter.removePmsButton()
                 }
+            } else {
+                uohItemAdapter.removePmsButton()
             }
         }
     }
@@ -755,6 +736,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         uohListViewModel.orderHistoryListResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    if (currPage == 1) impressedUUIDs.clear()
                     refreshHandler?.finishRefresh()
                     orderList = it.data
                     if (orderList.orders.isNotEmpty()) {
@@ -1873,11 +1855,13 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
             if (!paramUohOrder.hasActiveFilter()) {
                 uohListViewModel.getUohPmsCounterResult.value?.let {
-                    if (it is Success) {
+                    if (it is Success && it.data.notifications.buyerOrderStatus.paymentStatus > 0) {
                         val data = UohTypeData(dataObject = it.data, typeLayout = UohConsts.TYPE_PMS_BUTTON)
                         uohItemAdapter.appendPmsButton(data) { position ->
                             binding?.rvOrderList?.smoothScrollToPosition(position)
                         }
+                    } else {
+                        uohItemAdapter.removePmsButton()
                     }
                 }
             } else {
@@ -2473,6 +2457,15 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         handleRouting(appLink, index, order)
     }
 
+    override fun onReviewRatingImpressed(
+        orderUUID: String,
+        componentData: UohListOrder.UohOrders.Order.Metadata.ExtraComponent
+    ) {
+        if (!isReviewRatingImpressed(orderUUID)) {
+            UohAnalytics.sendViewBeriUlasanButtonEvent(ULAS_TYPE_STAR)
+        }
+    }
+
     private fun doChatSeller(appUrl: String, order: UohListOrder.UohOrders.Order) {
         var invoiceCode = ""
         var invoiceUrl = ""
@@ -2530,7 +2523,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 userSession.userId ?: "",
                 GraphqlHelper.loadRawString(
                     activity?.resources,
-                    com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi
+                    atc_commonR.raw.mutation_add_to_cart_multi
                 ),
                 _listParamAtcMulti,
                 _atcVerticalCategory
@@ -2627,6 +2620,15 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 context?.getString(R.string.fail_cancellation)
                     ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
             }
+        }
+    }
+
+    private fun isReviewRatingImpressed(orderUUID: String): Boolean {
+        return if (impressedUUIDs.contains(orderUUID)) {
+            true
+        } else {
+            impressedUUIDs.add(orderUUID)
+            false
         }
     }
 

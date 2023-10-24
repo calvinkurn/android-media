@@ -1,9 +1,7 @@
 package com.tokopedia.inbox.universalinbox.view.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.annotation.VisibleForTesting
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -20,9 +18,9 @@ import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInbox
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxTopAdsBannerViewHolder
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxTopAdsHeadlineViewHolder
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxWidgetMetaViewHolder
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparatorUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationTitleUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationWidgetUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -36,25 +34,27 @@ class UniversalInboxAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return typeFactory.createViewHolder(view, viewType)
+        val holder = typeFactory.createViewHolder(view, viewType)
+        val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+        when (viewType) {
+            UniversalInboxMenuItemViewHolder.LAYOUT -> layout.isFullSpan = true
+            UniversalInboxMenuSeparatorViewHolder.LAYOUT -> layout.isFullSpan = true
+            UniversalInboxWidgetMetaViewHolder.LAYOUT -> layout.isFullSpan = true
+            UniversalInboxRecommendationWidgetViewHolder.LAYOUT -> layout.isFullSpan = true
+            UniversalInboxTopAdsBannerViewHolder.LAYOUT -> layout.isFullSpan = true
+            UniversalInboxTopAdsHeadlineViewHolder.LAYOUT -> layout.isFullSpan = true
+            UniversalInboxRecommendationLoaderViewHolder.LAYOUT -> layout.isFullSpan = true
+            UniversalInboxRecommendationTitleViewHolder.LAYOUT -> layout.isFullSpan = true
+        }
+        return holder
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
         try {
-            val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
-            when (getItemViewType(position)) {
-                UniversalInboxMenuItemViewHolder.LAYOUT -> layout.isFullSpan = true
-                UniversalInboxMenuSeparatorViewHolder.LAYOUT -> layout.isFullSpan = true
-                UniversalInboxWidgetMetaViewHolder.LAYOUT -> layout.isFullSpan = true
-                UniversalInboxRecommendationWidgetViewHolder.LAYOUT -> layout.isFullSpan = true
-                UniversalInboxTopAdsBannerViewHolder.LAYOUT -> layout.isFullSpan = true
-                UniversalInboxTopAdsHeadlineViewHolder.LAYOUT -> layout.isFullSpan = true
-                UniversalInboxRecommendationLoaderViewHolder.LAYOUT -> layout.isFullSpan = true
-                UniversalInboxRecommendationTitleViewHolder.LAYOUT -> layout.isFullSpan = true
-            }
+            @Suppress("UNCHECKED_CAST")
             (holder as AbstractViewHolder<Visitable<*>>).bind(visitables[position])
         } catch (throwable: Throwable) {
-            Timber.e(throwable)
+            Timber.d(throwable)
         }
     }
 
@@ -70,9 +70,10 @@ class UniversalInboxAdapter(
         holder.onViewRecycled()
     }
 
+    private var menuSeparatorPosition: Int? = null
     private var recommendationFirstPosition: Int? = null
     private var recommendationTitlePosition: Int? = null
-    private var recommendationWidgetPosition: Int? = null
+    private var topAdsBannerFirstPosition: Int? = null
 
     private val loaderUiModel by lazy {
         LoadingMoreModel()
@@ -105,25 +106,6 @@ class UniversalInboxAdapter(
     private fun checkCachedRecommendationFirstPosition(): Boolean {
         return recommendationFirstPosition?.let {
             it < visitables.size && visitables[it] is UniversalInboxRecommendationUiModel
-        } ?: false
-    }
-
-    private fun getRecommendationWidgetPosition(): Int? {
-        return if (checkCachedRecommendationWidgetPosition()) {
-            recommendationWidgetPosition
-        } else {
-            // get first index or -1
-            visitables.indexOfFirst {
-                it is UniversalInboxRecommendationWidgetUiModel
-            }.takeIf { it >= 0 }?.also { // get result when it not -1 (found)
-                recommendationWidgetPosition = it
-            }
-        }
-    }
-
-    private fun checkCachedRecommendationWidgetPosition(): Boolean {
-        return recommendationWidgetPosition?.let {
-            it < visitables.size && visitables[it] is UniversalInboxRecommendationWidgetUiModel
         } ?: false
     }
 
@@ -168,38 +150,55 @@ class UniversalInboxAdapter(
         } ?: false
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun updateFirstTopAdsBanner(listAds: List<TopAdsImageViewModel>) {
-        visitables.forEach loop@{ item ->
-            if (item is UniversalInboxTopAdsBannerUiModel) {
-                item.ads = listAds
-                return@loop
+    fun getMenuSeparatorPosition(): Int? {
+        return if (checkCachedMenuSeparatorPosition()) {
+            menuSeparatorPosition
+        } else {
+            // get first index or -1
+            visitables.indexOfFirst {
+                it is UniversalInboxMenuSeparatorUiModel
+            }.takeIf { it >= 0 }?.also { // get result when it not -1 (found)
+                menuSeparatorPosition = it
             }
         }
-        // Need to use notify data set changed, because need to trigger TDN's onAttachedToWindow
-        // onAttachedToWindow is needed to be recalled after we get TDN response
-        notifyDataSetChanged()
+    }
+
+    private fun checkCachedMenuSeparatorPosition(): Boolean {
+        return menuSeparatorPosition?.let {
+            it < visitables.size && visitables[it] is UniversalInboxMenuSeparatorUiModel
+        } ?: false
+    }
+
+    private fun getTopAdsBannerFirstPosition(): Int? {
+        return if (checkCachedTopAdsBannerFirstPosition()) {
+            topAdsBannerFirstPosition
+        } else {
+            // get first index or -1
+            visitables.indexOfFirst {
+                it is UniversalInboxTopAdsBannerUiModel
+            }.takeIf { it >= 0 }?.also { // get result when it not -1 (found)
+                topAdsBannerFirstPosition = it
+            }
+        }
+    }
+
+    private fun checkCachedTopAdsBannerFirstPosition(): Boolean {
+        return topAdsBannerFirstPosition?.let {
+            it < visitables.size && visitables[it] is UniversalInboxTopAdsBannerUiModel
+        } ?: false
+    }
+
+    fun updateFirstTopAdsBanner(listAds: List<TopAdsImageViewModel>) {
+        getTopAdsBannerFirstPosition()?.let {
+            if (visitables[it] is UniversalInboxTopAdsBannerUiModel) {
+                (visitables[it] as UniversalInboxTopAdsBannerUiModel).ads = listAds
+                updateItems(visitables)
+            }
+        }
     }
 
     fun isWidgetMetaAdded(): Boolean {
         return visitables.firstOrNull() is UniversalInboxWidgetMetaUiModel
-    }
-
-    fun getWidgetPosition(widgetType: Int): Int {
-        var position = -1
-        try {
-            if (isWidgetMetaAdded()) {
-                val widgetMetaUiModel = visitables.firstOrNull() as? UniversalInboxWidgetMetaUiModel
-                widgetMetaUiModel?.widgetList?.forEachIndexed { index, uiModel ->
-                    if (uiModel.type == widgetType) {
-                        position = index
-                    }
-                }
-            }
-        } catch (throwable: Throwable) {
-            Timber.d(throwable)
-        }
-        return position
     }
 
     fun tryUpdateMenuItemsAtPosition(newList: List<Visitable<in UniversalInboxTypeFactory>>) {
@@ -294,13 +293,6 @@ class UniversalInboxAdapter(
         }
     }
 
-    fun refreshRecommendationWidget() {
-        getRecommendationWidgetPosition()?.let {
-            notifyItemChanged(it)
-        }
-    }
-
-    @VisibleForTesting
     fun getInboxItem(position: Int): Visitable<in UniversalInboxTypeFactory> {
         return visitables[position]
     }

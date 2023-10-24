@@ -13,6 +13,7 @@ import com.tokopedia.cartrevamp.view.uimodel.CartTopAdsHeadlineData
 import com.tokopedia.cartrevamp.view.uimodel.CartWishlistHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
+import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
 
 object CartDataHelper {
 
@@ -413,6 +414,31 @@ object CartDataHelper {
         return cartItemDataList
     }
 
+    fun checkSelectedCartItemDataWithOfferBmGm(cartDataList: ArrayList<Any>): ArrayList<String> {
+        val listCartStringOrderWithBmGmOfferId = ArrayList<String>()
+        loop@ for (data in cartDataList) {
+            when (data) {
+                is CartGroupHolderData -> {
+                    if ((data.isPartialSelected || data.isAllSelected)) {
+                        for (cartItemHolderData in data.productUiModelList) {
+                            if (cartItemHolderData.isSelected &&
+                                !cartItemHolderData.isError &&
+                                cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM &&
+                                !listCartStringOrderWithBmGmOfferId.contains("${cartItemHolderData.cartStringOrder}||${cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}")
+                            ) {
+                                listCartStringOrderWithBmGmOfferId.add("${cartItemHolderData.cartStringOrder}||${cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}")
+                            }
+                        }
+                    }
+                }
+
+                hasReachAllShopItems(data) -> break@loop
+            }
+        }
+
+        return listCartStringOrderWithBmGmOfferId
+    }
+
     fun getCartItemByBundleGroupId(
         cartDataList: ArrayList<Any>,
         bundleId: String,
@@ -500,5 +526,48 @@ object CartDataHelper {
         }
 
         return true
+    }
+
+    fun getListProductByOfferIdAndCartStringOrder(cartDataList: ArrayList<Any>, offerId: Long, cartStringOrder: String): ArrayList<CartItemHolderData> {
+        val listProductByOfferId = arrayListOf<CartItemHolderData>()
+        loop@ for (data in cartDataList) {
+            if (data is CartItemHolderData &&
+                data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId == offerId &&
+                data.cartStringOrder == cartStringOrder
+            ) {
+                listProductByOfferId.add(data)
+            }
+        }
+
+        return listProductByOfferId
+    }
+
+    fun getCartItemHolderDataListAndIndexByCartStringOrderAndOfferId(cartDataList: ArrayList<Any>, cartStringOrder: String, offerId: Long): Pair<Int, ArrayList<CartItemHolderData>> {
+        var indexReturned = RecyclerView.NO_POSITION
+        val itemReturned = arrayListOf<CartItemHolderData>()
+        for ((index, data) in cartDataList.withIndex()) {
+            if (data is CartItemHolderData &&
+                data.cartStringOrder == cartStringOrder &&
+                data.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM &&
+                data.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId == offerId
+            ) {
+                if (indexReturned == RecyclerView.NO_POSITION) indexReturned = index
+                itemReturned.add(data)
+            }
+        }
+        return Pair(indexReturned, itemReturned)
+    }
+
+    fun getAllCartStringOrderWithBmGmOfferId(cartDataList: ArrayList<Any>): ArrayList<String> {
+        val listCartStringOrderWithBmGmOfferId = arrayListOf<String>()
+        for (cartItem in cartDataList) {
+            if (cartItem is CartItemHolderData &&
+                cartItem.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM &&
+                !listCartStringOrderWithBmGmOfferId.contains("${cartItem.cartStringOrder}||${cartItem.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}")
+            ) {
+                listCartStringOrderWithBmGmOfferId.add("${cartItem.cartStringOrder}||${cartItem.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}")
+            }
+        }
+        return listCartStringOrderWithBmGmOfferId
     }
 }

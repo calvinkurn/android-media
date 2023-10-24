@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SdkSuppress
-import androidx.test.platform.app.InstrumentationRegistry
 import com.tkpd.macrobenchmark.base.BaseFrameTimingBenchmark
 import com.tkpd.macrobenchmark.util.MacroDevOps
 import com.tkpd.macrobenchmark.util.MacroIntent
@@ -29,15 +28,11 @@ class ProductDetailFrameTimingBenchmark : BaseFrameTimingBenchmark() {
     }
 
     override fun pageInteractionTest(currentIteration: Int) {
-        val density = InstrumentationRegistry.getInstrumentation()
-            .context.resources.displayMetrics.density
-        val defaultFeelingSpeed = 7500
-        val speed = (defaultFeelingSpeed * density).toInt()
-
+        Thread.sleep(10000)
         MacroInteration.basicFlingInteraction(
             MacroIntent.ProductDetail.PACKAGE_NAME,
             MacroIntent.ProductDetail.RECYCLER_VIEW_ID,
-            flingSpeed = speed
+            flingSpeed = 3000
         )
     }
 

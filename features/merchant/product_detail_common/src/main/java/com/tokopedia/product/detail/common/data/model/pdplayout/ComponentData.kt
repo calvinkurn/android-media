@@ -159,6 +159,8 @@ data class ComponentData(
     val text: String = "",
     @SerializedName("chevronPos")
     val chevronPos: String = "",
+    @SerializedName("padding")
+    val padding: Padding = Padding(),
 
     // region a plus content data
     @SerializedName("contentMedia")
@@ -166,7 +168,14 @@ data class ComponentData(
     @SerializedName("show")
     val show: Boolean = false,
     @SerializedName("ctaText")
-    val ctaText: String = ""
+    val ctaText: String = "",
+    // endregion
+
+    // region product-list / recommendation
+    @SerializedName("queryParam")
+    val queryParam: String = "",
+    @SerializedName("thematicID")
+    val thematicId: String = ""
     // endregion
 ) {
     companion object {
@@ -255,3 +264,10 @@ data class ContentMedia(
 ) {
     fun valid() = url.isNotBlank() && ratio.validDimensionRatio()
 }
+
+data class Padding(
+    @SerializedName("t")
+    val top: Int = 0,
+    @SerializedName("b")
+    val bottom: Int = 0
+)

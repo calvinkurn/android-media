@@ -29,6 +29,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiSta
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
+import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.uimodel.ScpRewardsMedalTouchPointWidgetUiModel
 
 @Suppress("UNCHECKED_CAST")
@@ -96,6 +97,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         addProductListHeaderSection(context, productListUiModel.productListHeaderUiModel)
         addTickerDetailsSection(context, productListUiModel.tickerInfo)
         addPofHeaderSection(context, productListUiModel.productFulfilledHeaderLabel)
+        addProductBmgmListSection(productListUiModel.productBmgmList)
         addProductBundlingListSection(productListUiModel.productBundlingList)
         addProductListSection(context, productListUiModel.productList)
         addAddonsListSection(productListUiModel.addonsListUiModel)
@@ -283,6 +285,12 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         courierInfoUiModel: ShipmentInfoUiModel.CourierInfoUiModel
     ) {
         if (courierInfoUiModel.shouldShow(context)) add(courierInfoUiModel)
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductBmgmListSection(
+        productBmgmList: List<ProductBmgmSectionUiModel>
+    ) {
+        (productBmgmList as? List<Visitable<BuyerOrderDetailTypeFactory>>)?.let { addAll(it) }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductBundlingListSection(

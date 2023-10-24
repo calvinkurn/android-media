@@ -10,8 +10,13 @@ import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.ShipmentViewModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.promousage.data.request.GetPromoListRecommendationParam
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
+import com.tokopedia.promousage.domain.usecase.PromoUsageGetPromoListRecommendationEntryPointUseCase
+import com.tokopedia.promousage.view.mapper.PromoUsageGetPromoListRecommendationMapper
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
 import com.tokopedia.purchase_platform.common.constant.CartConstant
@@ -41,12 +46,16 @@ import javax.inject.Inject
 class CheckoutPromoProcessor @Inject constructor(
     private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
     private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
+    private val getPromoListRecommendationEntryPointUseCase: PromoUsageGetPromoListRecommendationEntryPointUseCase,
+    private val getPromoListRecommendationMapper: PromoUsageGetPromoListRecommendationMapper,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
     private val mTrackerShipment: CheckoutAnalyticsCourierSelection,
     private val toasterProcessor: CheckoutToasterProcessor,
     private val helper: CheckoutDataHelper,
     private val dispatchers: CoroutineDispatchers
 ) {
 
+    var isCartCheckoutRevamp: Boolean = false
     var bboPromoCodes: List<String> = emptyList()
     internal var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = null
 
@@ -73,6 +82,8 @@ class CheckoutPromoProcessor @Inject constructor(
                         productDetail.productId = cartItemModel.productId
                         productDetail.quantity = cartItemModel.quantity
                         productDetail.bundleId = cartItemModel.bundleId.toLongOrZero()
+                        productDetail.cartId = cartItemModel.cartId.toString()
+                        productDetail.isChecked = true
                         productDetailsItems.add(productDetail)
                     }
                     ordersItem.product_details = productDetailsItems
@@ -158,6 +169,7 @@ class CheckoutPromoProcessor @Inject constructor(
             globalPromoCodes.addAll(lastApplyUiModel.codes)
         }
         promoRequest.codes = globalPromoCodes
+        promoRequest.isCartCheckoutRevamp = isCartCheckoutRevamp
         return promoRequest
     }
 
@@ -236,6 +248,7 @@ class CheckoutPromoProcessor @Inject constructor(
         validateUsePromoRequest.state = CheckoutConstant.PARAM_CHECKOUT
         validateUsePromoRequest.cartType = CartConstant.PARAM_DEFAULT
         validateUsePromoRequest.skipApply = 0
+        validateUsePromoRequest.isCartCheckoutRevamp = isCartCheckoutRevamp
         if (isTradeIn) {
             validateUsePromoRequest.isTradeIn = 1
             validateUsePromoRequest.isTradeInDropOff = if (isTradeInByDropOff) 1 else 0
@@ -255,6 +268,22 @@ class CheckoutPromoProcessor @Inject constructor(
             validateUsePromoRequest.cartType = "default"
         }
         this.bboPromoCodes = bboPromoCodes
+        return validateUsePromoRequest
+    }
+
+    fun generateValidateUsePromoRequestForPromoUsage(
+        shipmentCartItemModelList: List<CheckoutItem>,
+        isTradeIn: Boolean,
+        isTradeInByDropOff: Boolean,
+        isOneClickShipment: Boolean
+    ): ValidateUsePromoRequest {
+        val validateUsePromoRequest = generateValidateUsePromoRequest(
+            shipmentCartItemModelList,
+            isTradeIn,
+            isTradeInByDropOff,
+            isOneClickShipment
+        )
+        setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
         return validateUsePromoRequest
     }
 
@@ -708,6 +737,27 @@ class CheckoutPromoProcessor @Inject constructor(
         }
     }
 
+    suspend fun clearPromoValidate(clearPromoOrder: ClearPromoOrder): Boolean {
+        return withContext(dispatchers.io) {
+            try {
+                val responseData = clearCacheAutoApplyStackUseCase.setParams(
+                    ClearPromoRequest(
+                        ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                        false,
+                        ClearPromoOrderData(
+                            emptyList(),
+                            arrayListOf(clearPromoOrder)
+                        )
+                    )
+                ).executeOnBackground()
+                return@withContext responseData.successDataModel.success
+            } catch (t: Throwable) {
+                Timber.d(t)
+                return@withContext false
+            }
+        }
+    }
+
     private fun onSuccessClearPromo(
         responseData: ClearPromoUiModel,
         promoCode: String
@@ -1117,6 +1167,23 @@ class CheckoutPromoProcessor @Inject constructor(
             }
         }
         validateUsePromoRevampUiModel = null
+    }
+
+    suspend fun getEntryPointInfo(
+        promoRequest: PromoRequest
+    ): PromoEntryPointInfo {
+        return try {
+            val param = GetPromoListRecommendationParam.create(
+                promoRequest = promoRequest,
+                chosenAddress = chosenAddressRequestHelper.getChosenAddress(),
+                isPromoRevamp = true
+            )
+            val response = getPromoListRecommendationEntryPointUseCase(param)
+            getPromoListRecommendationMapper
+                .mapPromoListRecommendationEntryPointResponseToEntryPointInfo(response)
+        } catch (_: Throwable) {
+            PromoEntryPointInfo(isSuccess = false)
+        }
     }
 
     companion object {

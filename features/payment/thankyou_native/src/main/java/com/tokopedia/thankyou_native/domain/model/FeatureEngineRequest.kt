@@ -17,7 +17,7 @@ data class FeatureEngineRequest (
         @SerializedName("operators")
         val operators : FeatureEngineRequestOperators,
         @SerializedName("thresholds")
-        val thresholds : FeatureEngineRequestThresholds
+        val thresholds : FeatureEngineRequestThresholds,
 )
 
 

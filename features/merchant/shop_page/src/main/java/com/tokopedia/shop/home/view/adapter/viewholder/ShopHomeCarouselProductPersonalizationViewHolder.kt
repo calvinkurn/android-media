@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeProductRecommendationCarouselBinding
 import com.tokopedia.shop.home.WidgetName.ADD_ONS
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
@@ -30,6 +31,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel.Companion.IS_ATC
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.carouselproductcard.R as carouselproductcardR
 
 /**
  * author by Rafli Syam on 17/02/2021
@@ -63,10 +65,12 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
         // product list
         bindProductCardData(element)
         setWidgetImpressionListener(element)
-        checkFestivity(element)
+        configColorTheme(element)
     }
 
     private fun bindProductCardData(element: ShopHomeCarousellProductUiModel) {
+        recyclerView?.findViewById<RecyclerView>(carouselproductcardR.id.carouselProductCardRecyclerView)?.isNestedScrollingEnabled = false
+        recyclerViewCarouselSingleOrDoubleProduct?.isNestedScrollingEnabled = false
         val carouselProductList = element.productList.map {
             ShopPageHomeMapper.mapToProductCardPersonalizationModel(
                 shopHomeProductViewModel = it,
@@ -75,8 +79,8 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                 occButtonText = if (isAtcOcc(element.name)) {
                     itemView.context.getString(R.string.occ_text)
                 } else "",
-                element.name
-
+                element.name,
+                forceLightModeColor = shopHomeListener.isOverrideTheme()
             )
         }
 
@@ -369,13 +373,14 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
         recyclerViewCarouselSingleOrDoubleProduct?.show()
         productCarouselSingleOrDoubleAdapter = ShopHomeCarouselProductAdapter(
             ShopHomeCarouselProductAdapterTypeFactory(
-                element,
-                listProductCardModel,
-                carouselProductCardOnItemAddToCartListener,
-                carouselProductCardOnItemClickListener,
-                carouselProductCardOnItemImpressedListener,
-                carouselProductCardOnItemATCNonVariantClickListener,
-                carouselProductCardOnItemAddVariantClickListener
+                shopHomeCarouselProductUiModel = element,
+                listProductCardModel = listProductCardModel,
+                carouselProductCardOnItemAddToCartListener = carouselProductCardOnItemAddToCartListener,
+                carouselProductCardOnItemClickListener = carouselProductCardOnItemClickListener,
+                carouselProductCardOnItemImpressedListener = carouselProductCardOnItemImpressedListener,
+                carouselProductCardOnItemATCNonVariantClickListener = carouselProductCardOnItemATCNonVariantClickListener,
+                carouselProductCardOnItemAddVariantClickListener = carouselProductCardOnItemAddVariantClickListener,
+                isOverrideWidgetTheme = element.header.isOverrideTheme
             )
         )
         val totalProductSize = listShopHomeProductUiModel.size
@@ -386,12 +391,23 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
         recyclerViewCarouselSingleOrDoubleProduct?.layoutManager = layoutManager
     }
 
-    private fun checkFestivity(element: ShopHomeCarousellProductUiModel) {
+    private fun configColorTheme(element: ShopHomeCarousellProductUiModel) {
         if (element.isFestivity) {
             configFestivity()
         } else {
-            configNonFestivity()
+            if (element.header.isOverrideTheme) {
+                configReimaginedColor(element.header.colorSchema)
+            } else {
+                configDefaultColor()
+            }
         }
+    }
+
+    private fun configReimaginedColor(colorSchema: ShopPageColorSchema) {
+        val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        val subTitleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+        tvCarouselTitle?.setTextColor(titleColor)
+        tvCarouselSubTitle?.setTextColor(subTitleColor)
     }
 
     private fun configFestivity() {
@@ -403,7 +419,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
         tvCarouselSubTitle?.setTextColor(festivityTextColor)
     }
 
-    private fun configNonFestivity() {
+    private fun configDefaultColor() {
         val defaultTitleColor = MethodChecker.getColor(
             itemView.context,
             com.tokopedia.unifyprinciples.R.color.Unify_NN950

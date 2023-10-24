@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.pdp.fintech.view.FintechPriceDataModel
+import com.tokopedia.pdp.fintech.view.FintechPriceURLDataModel
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
@@ -24,11 +24,14 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
+import com.tokopedia.product.detail.data.model.bmgm.BMGMData
+import com.tokopedia.product.detail.data.model.bmgm.asUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetV2DataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
@@ -74,7 +77,8 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONO
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_VERTICAL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.VIEW_TO_VIEW
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
-import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
+import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
+import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiState
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.extension.toViewToViewItemModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -112,6 +116,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val fintechWidgetMap: FintechWidgetDataModel?
         get() = mapOfData[ProductDetailConstant.FINTECH_WIDGET_NAME] as? FintechWidgetDataModel
+
+    val fintechWidgetV2Map: FintechWidgetV2DataModel?
+        get() = mapOfData[ProductDetailConstant.FINTECH_WIDGET_V2_NAME] as? FintechWidgetV2DataModel
 
     val productTradeinMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.TRADE_IN] as? ProductGeneralInfoDataModel
@@ -187,6 +194,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val ongoingCampaignData: OngoingCampaignDataModel?
         get() = mapOfData[ProductDetailConstant.ONGOING_CAMPAIGN] as? OngoingCampaignDataModel
+
+    val bmgmSneakPeak: BMGMUiModel?
+        get() = mapOfData[ProductDetailConstant.BMGM_SNEAK_PEEK_NAME] as? BMGMUiModel
 
     fun updateDataP1(
         dataP1: DynamicProductInfoP1?,
@@ -381,16 +391,17 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         loggedIn: Boolean
     ) {
         productInfo?.let { productDetail ->
-            val productIdToPriceURLMap = HashMap<String, FintechPriceDataModel>()
+            val productIdToPriceURLMap = HashMap<String, FintechPriceURLDataModel>()
             val productCategoryId: String = productDetail.basic.category.id
             if (variantData == null) {
                 productIdToPriceURLMap[productDetail.basic.productID] =
-                    FintechPriceDataModel(productDetail.data.price.value.toString())
+                    FintechPriceURLDataModel(productDetail.data.price.value.toString(), productDetail.basic.url)
             } else {
                 for (i in variantData.children.indices) {
                     productIdToPriceURLMap[variantData.children[i].productId] =
-                        FintechPriceDataModel(
-                            variantData.children[i].price.toString()
+                        FintechPriceURLDataModel(
+                            variantData.children[i].price.toString(),
+                            variantData.children[i].url.orEmpty(),
                         )
                 }
             }
@@ -405,12 +416,30 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     parentId = variantData?.parentId ?: productId
                 }
             }
+
+            updateData(ProductDetailConstant.FINTECH_WIDGET_V2_NAME) {
+                fintechWidgetV2Map?.run {
+                    productId = selectedProductId
+                    categoryId = productCategoryId
+                    idToPriceUrlMap = productIdToPriceURLMap
+                    isLoggedIn = loggedIn
+                    shopId = productDetail.basic.shopID
+                    parentId = variantData?.parentId ?: productId
+                }
+            }
         }
     }
 
     fun updateFintechDataWithProductId(selectedProductId: String, loggedIn: Boolean) {
         updateData(ProductDetailConstant.FINTECH_WIDGET_NAME) {
             fintechWidgetMap?.run {
+                productId = selectedProductId
+                isLoggedIn = loggedIn
+            }
+        }
+
+        updateData(ProductDetailConstant.FINTECH_WIDGET_V2_NAME) {
+            fintechWidgetV2Map?.run {
                 productId = selectedProductId
                 isLoggedIn = loggedIn
             }
@@ -438,6 +467,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         } else {
                             it.shopInfo.shopLastActive.getRelativeDate(context)
                         }
+                    shopId = it.shopInfo.shopCore.shopID
                     shopName = it.shopInfo.shopCore.name
                     shopAva = it.shopInfo.shopAssets.avatar
                     partnerLabel = it.shopInfo.partnerLabel
@@ -570,6 +600,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 updateReviewList(it)
             }
             updateDynamicOneLiner(it)
+
+            updateBMGMSneakPeak(productId = productId, bmgm = it.bmgm)
         }
     }
 
@@ -803,6 +835,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
+    fun getVerticalRecommendationPlaceholder(pageName: String) =
+        mapOfData[pageName] as? ProductRecommendationVerticalPlaceholderDataModel
+
     fun getVerticalRecommendationNextPage(pageName: String): Int? {
         val dataModel = (mapOfData[pageName] as? ProductRecommendationVerticalPlaceholderDataModel)
         return dataModel?.recomWidgetData?.nextPage
@@ -834,7 +869,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             removeComponent(ProductDetailConstant.ORDER_PRIORITY)
         }
 
-        if (it.helpfulReviews?.isEmpty() == true && countReview.toIntOrZero() == 0) {
+        if (!it.rating.showRatingReview) {
             removeComponent(ProductDetailConstant.REVIEW)
         }
 
@@ -1260,6 +1295,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     ): PdpRecommendationWidgetDataModel {
         return copy(
             recommendationWidgetModel = recommendationWidgetModel.copy(
+                trackingModel = recommendationWidgetModel.trackingModel.copy(
+                    anchorId = productId
+                ),
                 metadata = recommendationWidgetModel.metadata.copy(
                     productIds = if (productId.isBlank()) listOf() else listOf(productId)
                 )
@@ -1278,7 +1316,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     separator = item.separator,
                     icon = item.icon,
                     status = item.status,
-                    chevronPos = item.chevronPos
+                    chevronPos = item.chevronPos,
+                    paddingTop = item.padding.top,
+                    paddingBottom = item.padding.bottom
                 )
             }
         }
@@ -1340,4 +1380,24 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }?.name()
 
     private fun getAPlusMediaCount() = mapOfData.values.count { it is APlusImageUiModel }
+
+    fun updateBMGMSneakPeak(productId: String, bmgm: BMGMData) {
+        updateData(ProductDetailConstant.BMGM_SNEAK_PEEK_NAME) {
+            if (bmgm.data.isEmpty()) {
+                removeComponent(ProductDetailConstant.BMGM_SNEAK_PEEK_NAME)
+            } else {
+                val bmgmSelected = bmgm.data.firstOrNull {
+                    it.productIDs.contains(productId)
+                }
+
+                if (bmgmSelected == null) {
+                    bmgmSneakPeak?.state = BMGMWidgetUiState.Hide
+                } else {
+                    bmgmSneakPeak?.state = BMGMWidgetUiState.Show(
+                        uiModel = bmgmSelected.asUiModel(separator = bmgm.separator)
+                    )
+                }
+            }
+        }
+    }
 }

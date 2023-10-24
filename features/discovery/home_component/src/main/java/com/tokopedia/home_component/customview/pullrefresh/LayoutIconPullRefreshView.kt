@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import kotlin.math.roundToInt
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by dhaba
@@ -60,6 +61,7 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
     private val paddingTopGreen = 14f.toDpInt()
     private val paddingTopWhite = 6f.toDpInt()
     private val paddingBottomGreen = 8f.toDpInt()
+    private var colorType: Int? = null
 
     companion object {
         private const val MAXIMUM_HEIGHT_SCROLL = 120
@@ -68,8 +70,8 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
         private const val TIME_DURATION_ANIMATION_HEIGHT: Long = 300
         private const val HEIGHT_LAYOUT_GONE = 0
         private const val MAXIMUM_ALPHA = 1.0
-        private const val TYPE_WHITE = 0
-        private const val TYPE_GREEN = 1
+        const val TYPE_WHITE = 0
+        const val TYPE_GREEN = 1
         private val pathInterpolator = PathInterpolatorCompat.create(.2f, .64f, .21f, 1f)
     }
 
@@ -93,12 +95,14 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
         attributeArray.recycle()
     }
 
-    private fun setColorPullRefresh(colorType: Int) {
+    fun setColorPullRefresh(colorType: Int) {
+        if(colorType == this.colorType) return
+        this.colorType = colorType
         if (colorType == TYPE_WHITE) {
             pullRefreshIcon?.setColorFilter(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                    unifyprinciplesR.color.Unify_Static_White
                 )
             )
             loaderPullRefresh?.type = LoaderUnify.TYPE_DECORATIVE_WHITE
@@ -107,7 +111,7 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
             pullRefreshIcon?.setColorFilter(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    unifyprinciplesR.color.Unify_GN500
                 )
             )
             loaderPullRefresh?.type = LoaderUnify.TYPE_DECORATIVE

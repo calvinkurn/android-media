@@ -17,6 +17,8 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.asUiModel
 import com.tokopedia.product.detail.data.util.OnErrorLog
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import kotlinx.coroutines.CoroutineScope
@@ -29,12 +31,21 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by Yehezkiel on 20/07/20
  */
-class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) : UseCase<ProductInfoP2UiData>(), CoroutineScope {
+class GetProductInfoP2DataUseCase @Inject constructor(
+    private val graphqlRepository: GraphqlRepository,
+    private val remoteConfig: RemoteConfig
+) : UseCase<ProductInfoP2UiData>(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext get() = Dispatchers.Main + SupervisorJob()
 
     companion object {
-        fun createParams(productId: String, pdpSession: String, deviceId: String, userLocationRequest: UserLocationRequest, tokonow: TokoNowParam): RequestParams =
+        fun createParams(
+            productId: String,
+            pdpSession: String,
+            deviceId: String,
+            userLocationRequest: UserLocationRequest,
+            tokonow: TokoNowParam
+        ): RequestParams =
             RequestParams.create().apply {
                 putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
                 putString(ProductDetailCommonConstant.PARAM_PDP_SESSION, pdpSession)
@@ -509,6 +520,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 ratingScore
                 totalRating
                 totalReviewTextAndImage
+                showRatingReview
             }
            arInfo{
               productIDs
@@ -601,22 +613,55 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 icon
                 status
                 chevronPos
+                padding {
+                  t
+                  b
+                }
+            }
+            bmgm {
+              separator
+              data {
+                backgroundColor
+                titleColor
+                iconUrl
+                title
+                action {
+                  type
+                  link
+                }
+                contents {
+                  imageUrl
+                }
+                loadMoreText
+                productIDs
+                offerID
+              }
             }
           }
         }
-""".trimIndent()
+        """.trimIndent()
     }
 
     private var mCacheManager: GraphqlCacheManager? = null
     private var mFingerprintManager: FingerprintManager? = null
-    private var cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.NONE).build()
+    private var cacheStrategy: GraphqlCacheStrategy =
+        GraphqlCacheStrategy.Builder(CacheType.NONE).build()
 
     private var requestParams: RequestParams = RequestParams.EMPTY
     private var forceRefresh: Boolean = false
 
     private var errorLogListener: OnErrorLog? = null
 
-    suspend fun executeOnBackground(requestParams: RequestParams, forceRefresh: Boolean): ProductInfoP2UiData {
+    private val cacheAge
+        get() = remoteConfig.getLong(
+            RemoteConfigKey.ENABLE_PDP_P1_CACHE_AGE,
+            CacheStrategyUtil.EXPIRY_TIME_MULTIPLIER
+        )
+
+    suspend fun executeOnBackground(
+        requestParams: RequestParams,
+        forceRefresh: Boolean
+    ): ProductInfoP2UiData {
         this.requestParams = requestParams
         this.forceRefresh = forceRefresh
         return executeOnBackground()
@@ -629,7 +674,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             ProductInfoP2Data.Response::class.java,
             requestParams.parameters
         )
-        val cacheStrategy = CacheStrategyUtil.getCacheStrategy(forceRefresh)
+        val cacheStrategy = CacheStrategyUtil.getCacheStrategy(
+            forceRefresh = forceRefresh,
+            cacheAge = cacheAge
+        )
 
         try {
             val gqlResponse = graphqlRepository.response(listOf(p2DataRequest), cacheStrategy)

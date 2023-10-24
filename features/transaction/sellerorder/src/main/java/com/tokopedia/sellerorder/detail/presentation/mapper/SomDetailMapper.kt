@@ -14,7 +14,7 @@ object SomDetailMapper {
     private const val THICK_DIVIDER_VERTICAL_MARGIN = 16
 
     private fun ArrayList<Visitable<SomDetailAdapterFactory>>.includeHeader(
-        somGetOrderDetailResponse: SomDetailOrder.Data.GetSomDetail?
+        somGetOrderDetailResponse: SomDetailOrder.GetSomDetail?
     ) {
         SomGetOrderDetailResponseMapper.mapResponseToHeaderUiModel(somGetOrderDetailResponse)?.let {
             add(it)
@@ -35,7 +35,7 @@ object SomDetailMapper {
     }
 
     private fun ArrayList<Visitable<SomDetailAdapterFactory>>.includeProducts(
-        somGetOrderDetailResponse: SomDetailOrder.Data.GetSomDetail?
+        somGetOrderDetailResponse: SomDetailOrder.GetSomDetail?
     ) {
         SomGetOrderDetailResponseMapper.mapResponseToProductsHeaderUiModel(somGetOrderDetailResponse)
             ?.let {
@@ -49,7 +49,7 @@ object SomDetailMapper {
     }
 
     private fun ArrayList<Visitable<SomDetailAdapterFactory>>.includeShipment(
-        somGetOrderDetailResponse: SomDetailOrder.Data.GetSomDetail?
+        somGetOrderDetailResponse: SomDetailOrder.GetSomDetail?
     ) {
         SomGetOrderDetailResponseMapper.mapResponseToShipmentUiModel(somGetOrderDetailResponse)?.let {
             add(it)
@@ -61,6 +61,18 @@ object SomDetailMapper {
     ) {
         add(SomDynamicPaymentResponseMapper.mapResponseToPaymentsUiModel(somGetSomDynamicPrice))
     }
+
+    private fun ArrayList<Visitable<SomDetailAdapterFactory>>.includeIncomeDetail(
+        somGetSomDynamicPrice: SomDynamicPriceResponse.GetSomDynamicPrice?
+    ) {
+        if (!somGetSomDynamicPrice?.incomeDetailLabel.isNullOrBlank())  {
+            SomDynamicPaymentResponseMapper.mapResponseToDetailIncomeUiModel(somGetSomDynamicPrice)?.let {
+                this.includeDivider()
+                add(it)
+            }
+        }
+    }
+
 
     private fun ArrayList<Visitable<SomDetailAdapterFactory>>.includeMvc(
         somGetSomDynamicPrice: SomDynamicPriceResponse.GetSomDynamicPrice?
@@ -93,7 +105,7 @@ object SomDetailMapper {
     }
 
     fun mapSomGetOrderDetailResponseToVisitableList(
-        somGetOrderDetailResponse: SomDetailOrder.Data.GetSomDetail?,
+        somGetOrderDetailResponse: SomDetailOrder.GetSomDetail?,
         somGetSomDynamicPrice: SomDynamicPriceResponse.GetSomDynamicPrice?,
         resolutionTicketStatusResponse: GetResolutionTicketStatusResponse.ResolutionGetTicketStatus.ResolutionData?
     ): List<Visitable<SomDetailAdapterFactory>> {
@@ -106,6 +118,7 @@ object SomDetailMapper {
             includeShipment(somGetOrderDetailResponse)
             includeDivider()
             includePayment(somGetSomDynamicPrice)
+            includeIncomeDetail(somGetSomDynamicPrice)
             includePofData(somGetSomDynamicPrice?.pofData)
             includeMvc(somGetSomDynamicPrice)
         }

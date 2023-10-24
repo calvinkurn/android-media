@@ -28,6 +28,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.scp.auth.GotoSdk
+import com.scp.auth.common.utils.ScpUtils
+import com.scp.auth.common.utils.TkpdAdditionalHeaders
+import com.scp.login.core.domain.contracts.listener.LSdkCheckOneTapStatusListener
+import com.scp.login.core.domain.onetaplogin.mappers.OneTapLoginError
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.constant.TkpdCache
@@ -752,15 +757,6 @@ open class HomeAccountUserFragment :
             }
         )
 
-        viewModel.phoneNo.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (it.isNotEmpty()) {
-                    getData()
-                }
-            }
-        )
-
         viewModel.safeModeStatus.observe(
             viewLifecycleOwner,
             Observer {
@@ -1112,8 +1108,17 @@ open class HomeAccountUserFragment :
         setupSettingList()
         getFirstRecommendation()
         viewModel.getSafeModeValue()
-        if (oclUtils.isOclEnabled()) {
-            viewModel.getOclStatus()
+        if (ScpUtils.isGotoLoginEnabled()) {
+            GotoSdk.LSDKINSTANCE?.getOneTapStatus(lifecycle, additionalHeaders = TkpdAdditionalHeaders(requireContext()), object: LSdkCheckOneTapStatusListener {
+                override fun onCompleted(isEligible: Boolean) {
+                    viewModel.setOneTapStatus(isEligible)
+                }
+                override fun onError(error: OneTapLoginError) {}
+            })
+        } else {
+            if (oclUtils.isOclEnabled()) {
+                viewModel.getOclStatus()
+            }
         }
     }
 
@@ -1453,9 +1458,9 @@ open class HomeAccountUserFragment :
     }
 
     private fun checkLogoutOffering() {
-        if (viewModel.getOclStatus.value?.isShowing == true) {
+        if (viewModel.isOclEligible.value == true) {
             showOclBtmSheet()
-        } else if (isEnableBiometricOffering()) {
+        } else if (DeeplinkMapperUser.isGotoLoginDisabled() && isEnableBiometricOffering()) {
             homeAccountAnalytic.trackOnClickLogoutDialog()
             viewModel.getFingerprintStatus()
         } else {
@@ -1824,8 +1829,6 @@ open class HomeAccountUserFragment :
 
     override fun onClick(pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) {
         tokopediaAnalytics.sendClickOnTokopediaPlusButtonEvent(tokopediaPlusDataModel.isSubscriber)
-        val intent = RouteManager.getIntent(context, tokopediaPlusDataModel.applink)
-        startActivity(intent)
     }
 
     override fun onAddPhoneClicked() {

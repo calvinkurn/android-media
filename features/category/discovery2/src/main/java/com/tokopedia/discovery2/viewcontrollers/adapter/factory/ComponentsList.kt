@@ -105,6 +105,10 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     // Rilisan Spesial ItemView
     ShopCardItemView(R.layout.shop_card_item_layout, ComponentNames.ShopCardItemView.componentName),
 
+    FlashSaleTokoTab(R.layout.discovery_flash_sale_toko_tabs, ComponentNames.FlashSaleTokoTab.componentName),
+
+    ViewAllCarouselCard(R.layout.discovery_carousel_view_all_card, ComponentNames.ViewAllCardCarousel.componentName),
+
     // Calendar Widget
     CalendarWidgetCarousel(R.layout.discovery_calendar_widget_carousel_layout, ComponentNames.CalendarWidgetCarousel.componentName),
     CalendarWidgetGrid(R.layout.discovery_calendar_widget_grid_layout, ComponentNames.CalendarWidgetGrid.componentName),
@@ -122,5 +126,14 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ContentCardItem(R.layout.disco_content_card_item, ComponentNames.ContentCardItem.componentName),
     ProductHighlight(R.layout.multi_banner_layout, ComponentNames.ProductHighlight.componentName),
     ThematicHeader(R.layout.disco_thematic_header_layout, ComponentNames.ThematicHeader.componentName),
-    ExplicitWidget(R.layout.explicit_widget_layout, ComponentNames.ExplicitWidget.componentName)
+    ExplicitWidget(R.layout.explicit_widget_layout, ComponentNames.ExplicitWidget.componentName),
+
+    // Product Card Column List
+    ProductCardColumnList(
+        id = R.layout.item_discovery_product_card_column_list_layout,
+        componentName = ComponentNames.ProductCardColumnList.componentName
+    ),
+
+    MerchantVoucherGrid(R.layout.merchant_voucher_grid_layout, ComponentNames.MerchantVoucherGrid.componentName),
+    MerchantVoucherGridItem(R.layout.merchant_voucher_grid_item_layout, ComponentNames.MerchantVoucherGridItem.componentName)
 }

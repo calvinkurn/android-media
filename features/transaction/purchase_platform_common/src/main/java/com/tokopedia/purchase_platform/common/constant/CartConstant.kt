@@ -23,4 +23,6 @@ object CartConstant {
     const val PARAM_CART = "cart"
     const val IS_TESTING_FLOW = "isTesting"
     const val QTY_ADDON_REPLACE = "{{qty}}"
+    const val RESULT_OK = "OK"
+    const val ACTION_RELOAD = "RELOAD"
 }

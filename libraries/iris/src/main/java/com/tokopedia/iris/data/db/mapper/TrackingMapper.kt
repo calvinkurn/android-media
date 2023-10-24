@@ -7,14 +7,14 @@ import com.tokopedia.iris.IrisPerformanceData
 import com.tokopedia.iris.data.db.table.PerformanceTracking
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.util.*
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
-import java.util.*
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.track.TrackApp
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import java.lang.Exception
+import java.util.*
 
 /**
  * Created by meta on 23/11/18.
@@ -25,15 +25,15 @@ class TrackingMapper {
         track: String,
         sessionId: String,
         userId: String,
-        deviceId: String
+        deviceId: String,
+        cache: Cache
     ): String {
-
         val result = JSONObject()
         val data = JSONArray()
         val row = JSONObject()
         val event = JSONArray()
 
-        event.put(reformatEvent(track, sessionId))
+        event.put(reformatEvent(track, sessionId, cache))
 
         row.put(DEVICE_ID, deviceId)
         row.put(USER_ID, userId)
@@ -120,7 +120,8 @@ class TrackingMapper {
                         KEY_APP,
                         JSONObject().apply {
                             put(
-                                KEY_VERSION, if (item.appVersion.isEmpty()) {
+                                KEY_VERSION,
+                                if (item.appVersion.isEmpty()) {
                                     ANDROID_DASH + GlobalConfig.VERSION_NAME + " " + ANDROID_PREV_VERSION_SUFFIX
                                 } else {
                                     ANDROID_DASH + item.appVersion
@@ -170,8 +171,10 @@ class TrackingMapper {
         const val KEY_LOW_POWER = "low_power"
         const val ANDROID_DASH = "android-"
         const val ANDROID_PREV_VERSION_SUFFIX = "before"
+        const val EVENT_OPEN_SCREEN = "openScreen"
+        const val KEY_NEW_VISIT = "newVisit"
 
-        fun reformatEvent(event: String, sessionId: String): JSONObject {
+        fun reformatEvent(event: String, sessionId: String, cache: Cache): JSONObject {
             return try {
                 val valueEvent = if (GlobalConfig.isSellerApp()) {
                     VALUE_EVENT_SELLERAPP
@@ -180,7 +183,12 @@ class TrackingMapper {
                 }
                 val item = JSONObject(event)
                 if (item.has(KEY_EVENT)) {
-                    item.put(KEY_EVENT_GA, item.get(KEY_EVENT))
+                    val eventName = item.get(KEY_EVENT)
+                    if (!cache.hasVisit() && eventName == EVENT_OPEN_SCREEN) {
+                        item.put(KEY_NEW_VISIT, "1")
+                        cache.setVisit()
+                    }
+                    item.put(KEY_EVENT_GA, eventName)
                     item.remove(KEY_EVENT)
                 }
                 item.put(KEY_CLIENT_ID, TrackApp.getInstance().gtm.clientIDString)
@@ -221,16 +229,23 @@ class TrackingMapper {
                     put(KEY_SCREEN, irisPerformanceData.screenName)
                     put(KEY_EVENT, VALUE_EVENT_PERFORMANCE)
                     put(KEY_EVENT_GA, VALUE_EVENT_PERFORMANCE)
-                    put(KEY_METRICS, JSONArray().apply {
-                        put(JSONObject().apply {
-                            put(KEY, "ttfl")
-                            put(VALUE, irisPerformanceData.ttflInMs)
-                        })
-                        put(JSONObject().apply {
-                            put(KEY, "ttil")
-                            put(VALUE, irisPerformanceData.ttilInMs)
-                        })
-                    })
+                    put(
+                        KEY_METRICS,
+                        JSONArray().apply {
+                            put(
+                                JSONObject().apply {
+                                    put(KEY, "ttfl")
+                                    put(VALUE, irisPerformanceData.ttflInMs)
+                                }
+                            )
+                            put(
+                                JSONObject().apply {
+                                    put(KEY, "ttil")
+                                    put(VALUE, irisPerformanceData.ttilInMs)
+                                }
+                            )
+                        }
+                    )
                     put("iris_session_id", sessionId)
                     put("container", KEY_CONTAINER)
                     val hits_time = Calendar.getInstance().timeInMillis
@@ -239,6 +254,20 @@ class TrackingMapper {
             } catch (e: JSONException) {
                 JSONObject()
             }
+        }
+
+        fun reformatJsonObjectToMap(jsonObject: JSONObject): Map<String, String> {
+            val map = mutableMapOf<String, String>()
+
+            // Iterate through the keys in the JSONObject
+            val keys = jsonObject.keys()
+            while (keys.hasNext()) {
+                val key = keys.next()
+                val value = jsonObject.getString(key)
+                map[key] = value
+            }
+
+            return map
         }
     }
 }

@@ -101,12 +101,12 @@ class UniversalInboxViewModel @Inject constructor(
         observeDriverChannelFlow()
         observeInboxMenuWidgetMetaAndCounterFlow()
         observeProductRecommendationFlow()
-        loadInboxMenuAndWidgetMeta()
+        loadInboxMenuAndWidgetMeta() // do not use processAction
     }
 
     fun processAction(action: UniversalInboxAction) {
         viewModelScope.launch {
-            _actionFlow.tryEmit(action)
+            _actionFlow.emit(action)
         }
     }
 
@@ -127,6 +127,7 @@ class UniversalInboxViewModel @Inject constructor(
 
                 // General process
                 is UniversalInboxAction.RefreshPage -> {
+                    inboxMiscMapper.resetTopAdsBanner()
                     removeAllProductRecommendation(false)
                     loadInboxMenuAndWidgetMeta()
                 }
@@ -196,7 +197,8 @@ class UniversalInboxViewModel @Inject constructor(
                 onSuccessGetMenuAndCounter(
                     result.menu.data,
                     result.counter.data,
-                    result.driverChannel
+                    result.driverChannel,
+                    shouldTrackImpression = true
                 )
             }
 
@@ -231,7 +233,8 @@ class UniversalInboxViewModel @Inject constructor(
     private fun onSuccessGetMenuAndCounter(
         inboxResponse: UniversalInboxWrapperResponse?,
         counterResponse: UniversalInboxAllCounterResponse,
-        driverResponse: Result<List<ConversationsChannel>>
+        driverResponse: Result<List<ConversationsChannel>>,
+        shouldTrackImpression: Boolean = false
     ) {
         try {
             if (inboxResponse == null) {
@@ -260,7 +263,8 @@ class UniversalInboxViewModel @Inject constructor(
                     widgetMeta = widgetMeta,
                     menuList = menuList,
                     miscList = miscList,
-                    notificationCounter = counterResponse.notifCenterUnread.notifUnread
+                    notificationCounter = counterResponse.notifCenterUnread.notifUnread,
+                    shouldTrackImpression = shouldTrackImpression
                 )
             }
         } catch (throwable: Throwable) {
@@ -356,7 +360,8 @@ class UniversalInboxViewModel @Inject constructor(
         viewModelScope.launch {
             _inboxMenuUiState.update {
                 it.copy(
-                    isLoading = true
+                    isLoading = true,
+                    shouldTrackImpression = false
                 )
             }
         }
@@ -372,7 +377,8 @@ class UniversalInboxViewModel @Inject constructor(
                             isLocalLoadLoading = false
                         )
                     ),
-                    isLoading = false
+                    isLoading = false,
+                    shouldTrackImpression = false
                 )
             }
         }
@@ -384,19 +390,23 @@ class UniversalInboxViewModel @Inject constructor(
     }
 
     private fun navigateWithIntent(intent: Intent) {
-        _inboxNavigationState.tryEmit(
-            UniversalInboxNavigationUiState(
-                intent = intent
+        viewModelScope.launch {
+            _inboxNavigationState.emit(
+                UniversalInboxNavigationUiState(
+                    intent = intent
+                )
             )
-        )
+        }
     }
 
     private fun navigateToPage(applink: String) {
-        _inboxNavigationState.tryEmit(
-            UniversalInboxNavigationUiState(
-                applink = applink
+        viewModelScope.launch {
+            _inboxNavigationState.emit(
+                UniversalInboxNavigationUiState(
+                    applink = applink
+                )
             )
-        )
+        }
     }
 
     private fun loadProductRecommendation() {
