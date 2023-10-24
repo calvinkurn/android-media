@@ -27,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -102,7 +103,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private View vgRoot;
     private View vgFloatingEgg;
     private ImageView ivFloatingEgg;
-    private ImageUnify ivClose;
+    private IconUnify ivClose;
     private TextView tvFloatingCounter;
     private TextView tvFloatingTimer;
 
@@ -192,6 +193,11 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         }
         // hide tracker
         floatingEggTracker.trackingEggHide(tokenId, tokenName, isMinimized);
+        if(!isMinimized) {
+            ivClose.setVisibility(View.VISIBLE);
+        } else {
+            ivClose.setVisibility(View.GONE);
+        }
     }
 
     private void shiftEggTowardsLeftOrRight(float oldAngle, float newAngle, float oldX, float newX) {
@@ -231,7 +237,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FloatingEggButtonFragment);
         isDraggable = a.getBoolean(R.styleable.FloatingEggButtonFragment_draggable, false);
         int defaultInitMarginRight = getContext().getResources().getDimensionPixelOffset(R.dimen.gami_core_floating_egg_init_margin_right) / 2 * -1;
-        initialEggMarginRight = a.getDimensionPixelOffset(R.styleable.FloatingEggButtonFragment_margin_right, 0);
+        initialEggMarginRight = a.getDimensionPixelOffset(R.styleable.FloatingEggButtonFragment_margin_right, defaultInitMarginRight);
         initialEggMarginBottom = a.getDimensionPixelOffset(R.styleable.FloatingEggButtonFragment_margin_bottom, 0);
         a.recycle();
     }
@@ -250,7 +256,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         PropertyValuesHolder pvhScaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_NORMAL, 0);
         PropertyValuesHolder pvhScaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_NORMAL, 0);
         ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhScaleX, pvhScaleY);
-        objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
+        objectAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         objectAnimator.setDuration(SHORT_ANIMATION_DURATION);
         objectAnimator.addListener(new Animator.AnimatorListener() {
             @Override
@@ -303,7 +309,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             PropertyValuesHolder pvhScaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 0, SCALE_NORMAL);
             PropertyValuesHolder pvhScaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0, SCALE_NORMAL);
             ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhScaleX, pvhScaleY);
-            objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
+            objectAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
             objectAnimator.setDuration(SHORT_ANIMATION_DURATION);
             objectAnimator.start();
         }
@@ -622,8 +628,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                 Timber.e(e);
             }
         }
-        ivClose.setImageDrawable(IconUnifyHelperKt.getIconUnifyDrawable(getContext(), IconUnify.CLEAR,
-                MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_TN500)));
+
         ivClose.setOnClickListener(view -> {
             floatingEggPresenter.get().clickCloseButton(tokenData.getId());
             floatingEggTracker.trackingEggClickCLose(tokenId, tokenName);
