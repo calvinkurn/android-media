@@ -1,13 +1,13 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicMerchantVoucherSummaryBinding
 import com.tokopedia.product.detail.databinding.ItemDynamicMvcContentBinding
@@ -46,11 +46,21 @@ class ProductMerchantVoucherSummaryViewHolder(
     }
 
     private fun setImpression(element: ProductMerchantVoucherSummaryDataModel) {
-        mvcWidget.addOnImpressionListener(ImpressHolder()) {
+        mvcWidget.addOnImpressionListener(
+            holder = ImpressHolder(),
+            holders = listener.getImpressionHolders(),
+            name = element.name,
+            useHolders = listener.isRemoteCacheableActive()
+        ) {
             mvcWidget.sendImpressionTrackerForPdp()
         }
 
-        view.addOnImpressionListener(element.impressHolder) {
+        view.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.name,
+            useHolders = listener.isRemoteCacheableActive()
+        ) {
             listener.onImpressComponent(getComponentTrackData(element))
         }
     }
