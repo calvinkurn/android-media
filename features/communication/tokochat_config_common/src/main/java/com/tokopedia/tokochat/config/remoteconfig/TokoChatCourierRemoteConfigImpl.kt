@@ -27,18 +27,32 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
     }
 
     private fun initCourierRemoteConfigData() {
-        val keyRemoteConfig = when (TokopediaUrl.getInstance().TYPE) {
-            Env.LIVE -> COURIER_CONFIG_JSON
-            Env.STAGING -> COURIER_CONFIG_STAGING_JSON
-        }
-        val data = remoteConfig.getString(keyRemoteConfig, "")
+        val data = remoteConfig.getString(COURIER_CONFIG_JSON, "")
         try {
             if (data.isNotBlank()) {
-                courierConfigData = Gson().fromJson(data, CourierConfigData::class.java)
+                val courierConfig = Gson().fromJson(data, CourierConfig::class.java)
+                val courierConfigByEnv = when (TokopediaUrl.getInstance().TYPE) {
+                    Env.LIVE -> courierConfig.configList
+                    Env.STAGING -> courierConfig.configListStaging
+                }
+                courierConfigData = getCourierConfigData(courierConfigByEnv)
             }
         } catch (throwable: Throwable) {
             ServerLogger.log(Priority.P2, ERROR_TAG, createErrorMessage(data, throwable))
         }
+    }
+
+    private fun getCourierConfigData(courierConfigList: List<CourierConfigWrapper>): CourierConfigData {
+        var result = CourierConfigData()
+        run loop@{
+            courierConfigList.reversed().forEach {
+                if (it.configVersion == COURIER_CONFIG_VERSION) {
+                    result = it.data
+                    return@loop
+                }
+            }
+        }
+        return result
     }
 
     private fun createErrorMessage(
@@ -280,13 +294,15 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
         get() = courierConfigData.tokenExpiryIntervalMins
 
     companion object {
-        private const val COURIER_CONFIG_JSON = "android_courier_config_json"
-        private const val COURIER_CONFIG_STAGING_JSON = "android_courier_config_staging_json"
+        private const val COURIER_CONFIG_JSON = "android_courier_config_list_json"
         private const val ERROR_TAG = "COURIER_CONNECTION_CONFIG"
         private const val DATA_KEY = "data"
         private const val STACKTRACE_KEY = "stacktrace"
 
         const val SHOULD_TRACK_MESSAGE_RECEIVE_EVENT = "android_tokochat_shouldTrackMessageReceiveEvent"
         const val LOCAL_PUSH_NOTIFICATION = "android_tokochat_local_push_notif_enabled"
+
+        // Config Version in Remote Config
+        private const val COURIER_CONFIG_VERSION = 1
     }
 }
