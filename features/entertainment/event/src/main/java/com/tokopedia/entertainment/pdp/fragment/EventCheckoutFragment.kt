@@ -321,7 +321,6 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         initProgressDialog()
         initTimerCountdown()
         requestData()
-        showSoftbookEndedBottomSheet()
     }
 
     private fun initTimerCountdown() {
@@ -636,6 +635,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                     }
                 }
             }
+            initTimerCountdown()
         } else if (resultCode == PAYMENT_SUCCESS) {
             val taskStackBuilder = TaskStackBuilder.create(context)
             val intentHomeEvent = RouteManager.getIntent(context, ApplinkConstInternalEntertainment.EVENT_HOME)
@@ -647,7 +647,6 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                 taskStackBuilder.addNextIntent(this)
                 taskStackBuilder.startActivities()
             }
-            showSoftbookEndedBottomSheet()
         } else if (resultCode == PAYMENT_FAILED || resultCode == PAYMENT_CANCELLED) {
             initTimerCountdown()
         }
