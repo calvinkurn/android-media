@@ -193,10 +193,9 @@ class StoriesCreationActivity : BaseActivity() {
 
     private fun openMediaPicker() {
         val intent = MediaPicker.intent(this) {
-            /** TODO JOE: setup media picker for stories */
             pageSource(PageSource.Stories)
-            minVideoDuration(1000)
-            maxVideoDuration(90000)
+            minVideoDuration(viewModel.minVideoDuration)
+            maxVideoDuration(viewModel.maxVideoDuration)
             pageType(PageType.GALLERY)
             modeType(ModeType.COMMON)
             singleSelectionMode()
