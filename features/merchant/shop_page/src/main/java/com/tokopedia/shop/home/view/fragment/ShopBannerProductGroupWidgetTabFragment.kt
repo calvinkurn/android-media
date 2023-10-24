@@ -142,9 +142,13 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         val showMainBanner = (hasMainBanner && isHorizontalMainBanner) || (hasMainBanner && isUnspecifiedOrientationMainBanner) 
         
         if (showMainBanner) {
+            binding?.spaceMainBannerTop?.visible()
+            
             binding?.imgMainBanner?.visible()
             binding?.imgMainBanner?.cornerRadius = CORNER_RADIUS_IMAGE_BANNER
-
+            
+            binding?.spaceProductCarouselTop?.visible()
+            
             val mainBanner = displaySingleColumnComponent?.data?.getOrNull(0)
             val mainBannerImageUrl = mainBanner?.imageUrl.orEmpty()
 
@@ -156,7 +160,9 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
             )
 
         } else {
+            binding?.spaceMainBannerTop?.gone()
             binding?.imgMainBanner?.gone()
+            binding?.spaceProductCarouselTop?.gone()
         }
     }
 

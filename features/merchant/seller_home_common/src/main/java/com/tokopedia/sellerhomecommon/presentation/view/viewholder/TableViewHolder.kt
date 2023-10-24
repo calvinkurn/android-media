@@ -64,6 +64,7 @@ class TableViewHolder(
     }
 
     private fun setOnSuccess(element: TableWidgetUiModel) {
+        removeWidgetWithCondition(element)
         val dataSet = element.data?.dataSet.orEmpty()
         itemView.addOnImpressionListener(element.impressHolder) {
             listener.sendTableImpressionEvent(
@@ -119,6 +120,13 @@ class TableViewHolder(
             setupCta(element)
 
             horLineShcTableBtm.isVisible = btnTableCta.isVisible || luvShcTable.isVisible
+        }
+    }
+
+    private fun removeWidgetWithCondition(element: TableWidgetUiModel) {
+        val shouldRemove = !element.data?.showWidget.orFalse()
+        if (shouldRemove) {
+            listener.removeWidget(absoluteAdapterPosition, element)
         }
     }
 
