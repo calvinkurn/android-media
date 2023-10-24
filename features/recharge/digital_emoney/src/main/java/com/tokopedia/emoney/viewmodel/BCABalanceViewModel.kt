@@ -1,6 +1,7 @@
 package com.tokopedia.emoney.viewmodel
 
 import android.nfc.tech.IsoDep
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -113,6 +114,7 @@ class BCABalanceViewModel @Inject constructor(
 
             val encResult = bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
             val result = decryptPayload(encResult.data, rawPrivateKeyString)
+            Log.d("BCALOGWKPendingBalance", result.toString())
 
             if (result.status == BCAFlazzStatus.WRITE.status) {
                 getGenerateTrxIdProcess(
@@ -158,6 +160,7 @@ class BCABalanceViewModel @Inject constructor(
 
             val encResult = bcaFlazzUseCase.execute(paramGetGenerateTrxIdQuery)
             val result = decryptPayload(encResult.data, rawPrivateKeyString)
+            Log.d("BCALOGWKTrxId", result.toString())
 
             if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.transactionID.isNotEmpty()) {
                 processSDKBCADataSession1(
@@ -254,6 +257,7 @@ class BCABalanceViewModel @Inject constructor(
 
             val encResult = bcaFlazzUseCase.execute(paramGetSessionKeyQuery)
             val result = decryptPayload(encResult.data, rawPrivateKeyString)
+            Log.d("BCALOGWKSessionKey", result.toString())
 
             if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.cardData.isNotEmpty()) {
                 processSDKBCADataSession2(
@@ -395,6 +399,7 @@ class BCABalanceViewModel @Inject constructor(
 
             val encResult = bcaFlazzUseCase.execute(paramGetBetweenTopUpQuery)
             val result = decryptPayload(encResult.data, rawPrivateKeyString)
+            Log.d("BCALOGWKTopUp", result.toString())
 
             if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.cardData.isNotEmpty()) {
                 processSDKBCATopUp2(
@@ -455,25 +460,41 @@ class BCABalanceViewModel @Inject constructor(
                 try {
                     val topUp2 = bcaLibrary.BCATopUp_2(bcaFlazzData.attributes.cardData)
                     val updatedBalance = checkLatestBalance()
-                    if (topUp2.isSuccess == SUCCESS_JNI && getBCAPrefixSuccess(topUp2.strLogRsp)) {
-                        getACKProcess(
-                            cardNumber, rawPublicKeyString, rawPrivateKeyString,
-                            cardType, strTransactionId, separateCardDataFromResponseCode(topUp2.strLogRsp), updatedBalance.balance
-                        )
-                    } else if (topUp2.strLogRsp.isNotEmpty()) {
-                        // Ada kemungkinan saldo Flazz sudah bertambah walaupun output BCATopUp2 bukan SUCCESS.
-                        // Cek saldo Flazz sebelum & setelah top up untuk memastikan apakah saldo bertambah atau tidak.
-                        // Tetap kirimkan output BCATopUp2 ke BCA melalui API /flazz/ack
-                        getACKProcess(
-                            cardNumber, rawPublicKeyString, rawPrivateKeyString,
-                            cardType, strTransactionId, separateCardDataFromResponseCode(topUp2.strLogRsp), updatedBalance.balance
-                        )
-                    } else if (topUp2.strLogRsp.isEmpty()) {
-                        // Output BCATopUp_2 tidak ada / hilang
-                        // Panggil function library BCAlastBCATopUp dan kirimkan output-nya ke BCA
-                        // melalui API ACK
-                        processSDKBCAlastBCATopUp(isoDep, strTransactionId, cardNumber, rawPublicKeyString,
-                            rawPrivateKeyString, cardType)
+                    if (updatedBalance.isSuccess == SUCCESS_JNI) {
+                        if (topUp2.isSuccess == SUCCESS_JNI && getBCAPrefixSuccess(topUp2.strLogRsp)) {
+                            getACKProcess(
+                                cardNumber,
+                                rawPublicKeyString,
+                                rawPrivateKeyString,
+                                cardType,
+                                strTransactionId,
+                                separateCardDataFromResponseCode(topUp2.strLogRsp),
+                                updatedBalance.balance
+                            )
+                        } else if (topUp2.strLogRsp.isNotEmpty()) {
+                            // Ada kemungkinan saldo Flazz sudah bertambah walaupun output BCATopUp2 bukan SUCCESS.
+                            // Cek saldo Flazz sebelum & setelah top up untuk memastikan apakah saldo bertambah atau tidak.
+                            // Tetap kirimkan output BCATopUp2 ke BCA melalui API /flazz/ack
+                            getACKProcess(
+                                cardNumber,
+                                rawPublicKeyString,
+                                rawPrivateKeyString,
+                                cardType,
+                                strTransactionId,
+                                separateCardDataFromResponseCode(topUp2.strLogRsp),
+                                updatedBalance.balance
+                            )
+                        } else if (topUp2.strLogRsp.isEmpty()) {
+                            // Output BCATopUp_2 tidak ada / hilang
+                            // Panggil function library BCAlastBCATopUp dan kirimkan output-nya ke BCA
+                            // melalui API ACK
+                            processSDKBCAlastBCATopUp(
+                                isoDep, strTransactionId, cardNumber, rawPublicKeyString,
+                                rawPrivateKeyString, cardType
+                            )
+                        }
+                    } else {
+                        errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     }
                 } catch (e: IOException) {
                     isoDep.close()
@@ -507,6 +528,7 @@ class BCABalanceViewModel @Inject constructor(
 
             val encResult = bcaFlazzUseCase.execute(paramGetACKQuery)
             val result = decryptPayload(encResult.data, rawPrivateKeyString)
+            Log.d("BCALOGWKSACK", result.toString())
 
             bcaInquiryMutable.postValue(
                 BCAFlazzResponseMapper.bcaMapper(
@@ -516,7 +538,8 @@ class BCABalanceViewModel @Inject constructor(
                     getIsBCAGenOne(cardType),
                     result.attributes.amount,
                     result.status,
-                    result.attributes.message
+                    result.attributes.message,
+                    ackStatusOverride = true
                 )
             )
         }) {
@@ -524,15 +547,16 @@ class BCABalanceViewModel @Inject constructor(
         }
     }
 
-    private fun processSDKReversal(isoDep: IsoDep,
-                                   strTransactionId: String,
-                                   ATD: String,
-                                   cardNumber: String,
-                                   lastBalance: Int,
-                                   rawPublicKeyString: String,
-                                   rawPrivateKeyString: String,
-                                   cardType: String,
-                                   bcaFlazzData: BCAFlazzData
+    private fun processSDKReversal(
+        isoDep: IsoDep,
+        strTransactionId: String,
+        ATD: String,
+        cardNumber: String,
+        lastBalance: Int,
+        rawPublicKeyString: String,
+        rawPrivateKeyString: String,
+        cardType: String,
+        bcaFlazzData: BCAFlazzData
     ) {
         if (isoDep != null) {
             run {
@@ -540,8 +564,14 @@ class BCABalanceViewModel @Inject constructor(
                     val reversal = bcaLibrary.BCAdataReversal(strTransactionId, ATD)
                     if (reversal.isSuccess == SUCCESS_JNI) {
                         getReversalProcess(
-                            cardNumber, lastBalance, rawPublicKeyString, rawPrivateKeyString,
-                            cardType, strTransactionId, bcaFlazzData, separateCardDataFromResponseCode(reversal.strLogRsp)
+                            cardNumber,
+                            lastBalance,
+                            rawPublicKeyString,
+                            rawPrivateKeyString,
+                            cardType,
+                            strTransactionId,
+                            bcaFlazzData,
+                            separateCardDataFromResponseCode(reversal.strLogRsp)
                         )
                     }
                 } catch (e: IOException) {
@@ -580,6 +610,7 @@ class BCABalanceViewModel @Inject constructor(
 
             val encResult = bcaFlazzUseCase.execute(paramGetReversalQuery)
             val result = decryptPayload(encResult.data, rawPrivateKeyString)
+            Log.d("BCALOGWKReversal", result.toString())
 
             bcaInquiryMutable.postValue(
                 BCAFlazzResponseMapper.bcaMapper(
@@ -594,12 +625,13 @@ class BCABalanceViewModel @Inject constructor(
         }
     }
 
-    private fun processSDKBCAlastBCATopUp(isoDep: IsoDep,
-                                   strTransactionId: String,
-                                   cardNumber: String,
-                                   rawPublicKeyString: String,
-                                   rawPrivateKeyString: String,
-                                   cardType: String,
+    private fun processSDKBCAlastBCATopUp(
+        isoDep: IsoDep,
+        strTransactionId: String,
+        cardNumber: String,
+        rawPublicKeyString: String,
+        rawPrivateKeyString: String,
+        cardType: String,
     ) {
         if (isoDep != null) {
             run {
@@ -608,8 +640,13 @@ class BCABalanceViewModel @Inject constructor(
                     val updatedBalance = checkLatestBalance()
                     if (lastTopUp.isSuccess == SUCCESS_JNI) {
                         getACKProcess(
-                            cardNumber, rawPublicKeyString, rawPrivateKeyString,
-                            cardType, strTransactionId, separateCardDataFromResponseCode(lastTopUp.strLogRsp), updatedBalance.balance
+                            cardNumber,
+                            rawPublicKeyString,
+                            rawPrivateKeyString,
+                            cardType,
+                            strTransactionId,
+                            separateCardDataFromResponseCode(lastTopUp.strLogRsp),
+                            updatedBalance.balance
                         )
                     }
                 } catch (e: IOException) {
