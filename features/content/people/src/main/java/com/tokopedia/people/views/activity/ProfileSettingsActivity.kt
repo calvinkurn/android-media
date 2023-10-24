@@ -25,6 +25,7 @@ import com.tokopedia.people.views.uimodel.action.UserProfileSettingsAction
 import javax.inject.Inject
 import com.tokopedia.people.R
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
+import com.tokopedia.people.di.UserProfileInjector
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.views.screen.ProfileSettingsScreen
 import com.tokopedia.people.views.uimodel.event.UserProfileSettingsEvent
@@ -98,13 +99,7 @@ class ProfileSettingsActivity : AppCompatActivity() {
     }
 
     private fun inject() {
-        DaggerUserProfileComponent.builder()
-            .baseAppComponent(
-                (applicationContext as BaseMainApplication).baseAppComponent,
-            )
-            .userProfileModule(UserProfileModule(this))
-            .build()
-            .inject(this)
+        UserProfileInjector.get(this).inject(this)
     }
 
     private fun setupListener() {
