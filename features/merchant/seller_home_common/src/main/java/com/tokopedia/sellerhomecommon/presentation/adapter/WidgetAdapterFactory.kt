@@ -19,6 +19,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TickerWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentWidgetUiModel
 
 /**
  * Created By @ilhamsuaib on 19/05/20
@@ -63,4 +64,6 @@ interface WidgetAdapterFactory {
     fun type(richListWidget: RichListWidgetUiModel): Int
 
     fun type(filterTabWidgetUiModel: FilterTabWidgetUiModel): Int
+
+    fun type(multiComponentWidget: MultiComponentWidgetUiModel): Int
 }

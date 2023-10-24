@@ -258,8 +258,8 @@ class MultiLineGraphViewHolder(
     }
 
     private fun setOnSuccessState(element: MultiLineGraphWidgetUiModel) {
+        removeWidgetWithCondition(element)
         val metricItems = element.data?.metrics.orEmpty()
-
         val metric = if (metricItems.contains(lastSelectedMetric)) {
             lastSelectedMetric
         } else {
@@ -298,6 +298,13 @@ class MultiLineGraphViewHolder(
             root.addOnImpressionListener(element.impressHolder) {
                 listener.sendMultiLineGraphImpressionEvent(element)
             }
+        }
+    }
+
+    private fun removeWidgetWithCondition(element: MultiLineGraphWidgetUiModel) {
+        val shouldRemove = !element.data?.showWidget.orFalse()
+        if (shouldRemove) {
+            listener.removeWidget(absoluteAdapterPosition, element)
         }
     }
 

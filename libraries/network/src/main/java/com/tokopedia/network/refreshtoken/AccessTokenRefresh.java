@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
+import com.tokopedia.network.data.model.ScpTokenModel;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthenticator;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
@@ -41,8 +42,32 @@ public class AccessTokenRefresh {
         return refreshToken(context, userSession, networkRouter, "/");
     }
 
+    public String newRefreshToken(NetworkRouter networkRouter, UserSessionInterface userSession) {
+        try {
+            ScpTokenModel token = networkRouter.onNewRefreshToken();
+            if (!token.getAccessToken().isEmpty() && !token.getRefreshToken().isEmpty()) {
+                saveNewTokens(token.getAccessToken(), token.getRefreshToken(), userSession);
+                return token.getAccessToken();
+            } else {
+                return "";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            networkRouter.sendRefreshTokenAnalytics(e.toString());
+            networkRouter.logRefreshTokenException(TkpdAuthenticator.Companion.formatThrowable(e), "failed_refresh_token", "/", userSession.getAccessToken());
+            forceLogoutAndShowDialogForLoggedInUsers(userSession, networkRouter, "/");
+        }
+        return "";
+    }
+
     public String refreshToken(Context context, UserSessionInterface userSession, NetworkRouter
             networkRouter, String path) {
+
+        System.out.println("refresh From: AuthIntercept, ");
+
+        if (networkRouter.isGotoAuthSdkEnabled()) {
+            return newRefreshToken(networkRouter, userSession);
+        }
 
         Map<String, String> params = new HashMap<>();
 
@@ -103,6 +128,11 @@ public class AccessTokenRefresh {
         } else {
             return "";
         }
+    }
+
+    private void saveNewTokens(String accessToken, String refreshToken, UserSessionInterface userSession) {
+        userSession.setToken(accessToken, "Bearer");
+        userSession.setRefreshToken(EncoderDecoder.Encrypt(refreshToken, userSession.getRefreshTokenIV()));
     }
 
     private void forceLogoutAndShowDialogForLoggedInUsers(UserSessionInterface userSession, NetworkRouter networkRouter, String path) {

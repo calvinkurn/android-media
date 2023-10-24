@@ -8,6 +8,8 @@ import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulRespons
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.product.detail.view.util.doActionIfNotNull
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import timber.log.Timber
@@ -16,20 +18,31 @@ import javax.inject.Inject
 /**
  * Created by Yehezkiel on 27/07/20
  */
-class GetProductInfoP2OtherUseCase @Inject constructor(private val rawQueries: Map<String, String>,
-                                                       private val graphqlRepository: GraphqlRepository) : UseCase<ProductInfoP2Other>() {
+class GetProductInfoP2OtherUseCase @Inject constructor(
+    private val rawQueries: Map<String, String>,
+    private val graphqlRepository: GraphqlRepository,
+    private val remoteConfig: RemoteConfig
+) : UseCase<ProductInfoP2Other>() {
     companion object {
         fun createParams(productId: String, shopId: Int): RequestParams =
-                RequestParams.create().apply {
-                    putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
-                    putInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
-                }
+            RequestParams.create().apply {
+                putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
+                putInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
+            }
     }
 
     private var requestParams: RequestParams = RequestParams.EMPTY
     private var forceRefresh: Boolean = false
+    private val cacheAge
+        get() = remoteConfig.getLong(
+            RemoteConfigKey.ENABLE_PDP_P1_CACHE_AGE,
+            CacheStrategyUtil.EXPIRY_TIME_MULTIPLIER
+        )
 
-    suspend fun executeOnBackground(requestParams: RequestParams, forceRefresh:Boolean) : ProductInfoP2Other{
+    suspend fun executeOnBackground(
+        requestParams: RequestParams,
+        forceRefresh: Boolean
+    ): ProductInfoP2Other {
         this.requestParams = requestParams
         this.forceRefresh = forceRefresh
         return executeOnBackground()
@@ -42,24 +55,30 @@ class GetProductInfoP2OtherUseCase @Inject constructor(private val rawQueries: M
 
         //region Discussion/Talk
         val discussionMostHelpfulParams = generateDiscussionMosthelpfulParam(productId, shopId.toString())
-        val discussionMostHelpfulRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_DISCUSSION_MOST_HELPFUL],
-                DiscussionMostHelpfulResponseWrapper::class.java, discussionMostHelpfulParams)
+        val discussionMostHelpfulRequest = GraphqlRequest(
+            rawQueries[RawQueryKeyConstant.QUERY_DISCUSSION_MOST_HELPFUL],
+            DiscussionMostHelpfulResponseWrapper::class.java,
+            discussionMostHelpfulParams
+        )
         //endregion
 
         val requests = mutableListOf(discussionMostHelpfulRequest)
 
         try {
-            val gqlResponse = graphqlRepository.response(requests, CacheStrategyUtil.getCacheStrategy(forceRefresh))
+            val cacheStrategy =
+                CacheStrategyUtil.getCacheStrategy(forceRefresh = forceRefresh, cacheAge = cacheAge)
+            val gqlResponse = graphqlRepository.response(requests, cacheStrategy)
 
             //region Discussion
-            if (gqlResponse.getError(DiscussionMostHelpfulResponseWrapper::class.java)?.isNotEmpty() != true) {
+            if (gqlResponse.getError(DiscussionMostHelpfulResponseWrapper::class.java)
+                ?.isNotEmpty() != true
+            ) {
                 gqlResponse.doActionIfNotNull<DiscussionMostHelpfulResponseWrapper> {
                     p2GeneralData.discussionMostHelpful = it.discussionMostHelpful
                 }
             }
 
             //endregion
-
         } catch (e: Throwable) {
             Timber.d(e)
         }
@@ -67,9 +86,9 @@ class GetProductInfoP2OtherUseCase @Inject constructor(private val rawQueries: M
     }
 
     private fun generateDiscussionMosthelpfulParam(productId: String, shopId: String): Map<String, Any> {
-        return mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId,
-                ProductDetailCommonConstant.PARAM_SHOP_ID to shopId)
+        return mapOf(
+            ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId,
+            ProductDetailCommonConstant.PARAM_SHOP_ID to shopId
+        )
     }
-
-
 }

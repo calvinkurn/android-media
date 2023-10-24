@@ -4,11 +4,14 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.discovery2.Constant.ProductHighlight.DOUBLE
 import com.tokopedia.discovery2.Constant.ProductHighlight.DOUBLESINGLEEMPTY
 import com.tokopedia.discovery2.Constant.ProductHighlight.TRIPLE
 import com.tokopedia.discovery2.Constant.ProductHighlight.TRIPLEDOUBLEEMPTY
 import com.tokopedia.discovery2.Constant.ProductHighlight.TRIPLESINGLEEMPTY
+import com.tokopedia.discovery2.Constant.ProductHighlight.V2_STYLE
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.databinding.MultiBannerLayoutBinding
@@ -19,14 +22,16 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.unifycomponents.LocalLoad
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.item_empty_error_state.view.*
 
 class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private val binding: MultiBannerLayoutBinding = MultiBannerLayoutBinding.bind(itemView)
     private var mProductHighlightViewModel: ProductHighlightViewModel? = null
     private var bannerName: String = ""
-    var productHighlightItemList: ArrayList<ProductHighlightItem> = arrayListOf()
+    var productHighlightItemList: ArrayList<BaseProductHighlightItem> = arrayListOf()
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mProductHighlightViewModel = discoveryBaseViewModel as ProductHighlightViewModel
@@ -35,7 +40,6 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
         }
         addShimmer()
     }
-
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
@@ -58,6 +62,17 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
                     binding.bannerContainerLayout.removeAllViews()
                 }
             }
+
+            mProductHighlightViewModel?.redirectToOCS?.observe(it) {
+                val intent = RouteManager.getIntent(itemView.context, ApplinkConstInternalMarketplace.CHECKOUT)
+                intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
+
+                itemView.context.startActivity(intent)
+            }
+
+            mProductHighlightViewModel?.ocsErrorMessage?.observe(it) { message ->
+                handleErrorOnOCS(message)
+            }
         }
     }
 
@@ -67,6 +82,7 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
             mProductHighlightViewModel?.getProductHighlightCardItemsListData()?.removeObservers(it)
             mProductHighlightViewModel?.showErrorState?.removeObservers(it)
             mProductHighlightViewModel?.hideShimmer?.removeObservers(it)
+            mProductHighlightViewModel?.redirectToOCS?.removeObservers(it)
         }
     }
 
@@ -75,7 +91,6 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
         val properties = mProductHighlightViewModel?.components?.properties
 
         val mutableData = data.toMutableList()
-
 
         if (compType == DOUBLE && mutableData.size == 1) {
             mutableData.firstOrNull()?.typeProductHighlightComponentCard = DOUBLE
@@ -95,7 +110,7 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
         }
 
         for ((index, productHighlightItem) in mutableData.withIndex()) {
-            var productHighlightView: ProductHighlightItem
+            var productHighlightView: BaseProductHighlightItem
             val isLastItem = index == mutableData.size - 1
             if (productHighlightItem.parentComponentName.isNullOrEmpty()) {
                 productHighlightItem.parentComponentName = bannerName
@@ -103,27 +118,47 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
             mProductHighlightViewModel?.let { viewModel ->
                 productHighlightItem.positionForParentItem = viewModel.position
             }
-            if (index == 0) {
-                productHighlightView = ProductHighlightItem(
-                    productHighlightItem, properties, binding.bannerContainerLayout, constraintSet, index,
-                    null, itemView.context, isLastItem, compType
+
+            val previous = if (index == 0) null else productHighlightItemList[index - 1]
+
+            productHighlightView = if (properties?.style == V2_STYLE) {
+                ProductHighlightRevampItem(
+                    productHighlightItem,
+                    properties,
+                    binding.bannerContainerLayout,
+                    constraintSet,
+                    index,
+                    previous,
+                    itemView.context,
+                    isLastItem,
+                    compType
                 )
             } else {
-                productHighlightView = ProductHighlightItem(
-                    productHighlightItem, properties, binding.bannerContainerLayout, constraintSet, index,
-                    productHighlightItemList[index - 1], itemView.context, isLastItem, compType
+                ProductHighlightItem(
+                    productHighlightItem,
+                    properties,
+                    binding.bannerContainerLayout,
+                    constraintSet,
+                    index,
+                    previous,
+                    itemView.context,
+                    isLastItem,
+                    compType
                 )
             }
+
             productHighlightItemList.add(productHighlightView)
 
             setClickOnProductHighlight(productHighlightItem, index)
+            setClickOnOCSButton(productHighlightItem, index)
         }
         sendImpressionEventForProductHighlight(data)
     }
 
     private fun sendImpressionEventForProductHighlight(data: List<DataItem>) {
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackPromoProductHighlightImpression(
-            data, mProductHighlightViewModel?.components,
+            data,
+            mProductHighlightViewModel?.components
         )
     }
 
@@ -131,7 +166,23 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
         productHighlightItemList[index].productHighlightView.setOnClickListener {
             mProductHighlightViewModel?.onCardClicked(index, itemView.context)
             (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-                ?.trackProductHighlightClick(itemData, index, mProductHighlightViewModel?.components,mProductHighlightViewModel?.isUserLoggedIn() ?: false)
+                ?.trackProductHighlightClick(itemData, index, mProductHighlightViewModel?.components, mProductHighlightViewModel?.isUserLoggedIn() ?: false)
+        }
+    }
+
+    private fun setClickOnOCSButton(itemData: DataItem, index: Int) {
+        val phItem = productHighlightItemList[index]
+        if (phItem !is ProductHighlightRevampItem) return
+
+        phItem.onOCSButtonClicked {
+            mProductHighlightViewModel?.onOCSClicked(itemData, itemView.context)
+
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+                ?.trackProductHighlightOCSClick(
+                    itemData,
+                    index,
+                    mProductHighlightViewModel?.components
+                )
         }
     }
 
@@ -158,6 +209,16 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
         }
     }
 
+    private fun handleErrorOnOCS(message: String) {
+        Toaster.build(
+            view = itemView,
+            text = message,
+            duration = Toaster.LENGTH_LONG,
+            type = Toaster.TYPE_ERROR,
+            actionText = itemView.context.getString(R.string.discovery_product_highlight_ocs_error_act)
+        ).show()
+    }
+
     private fun addShimmer() {
         mProductHighlightViewModel?.let { viewModel ->
             if (viewModel.shouldShowShimmer()) {
@@ -169,6 +230,4 @@ class ProductHighlightViewHolder(itemView: View, private val fragment: Fragment)
             }
         }
     }
-
-
 }
