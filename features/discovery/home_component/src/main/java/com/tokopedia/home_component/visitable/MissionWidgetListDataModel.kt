@@ -5,6 +5,10 @@ import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
 import com.tokopedia.analytics.performance.perf.LoadableComponent
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelConfig
+import com.tokopedia.home_component.util.ChannelStyleUtil.parseWithSubtitle
+import com.tokopedia.home_component.util.MissionWidgetCardUtil
+import com.tokopedia.home_component.util.MissionWidgetClearUtil
+import com.tokopedia.home_component.util.MissionWidgetUtil
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.kotlin.model.ImpressHolder
 
@@ -21,6 +25,7 @@ data class MissionWidgetListDataModel(
     val status: Int = STATUS_LOADING,
     val showShimmering: Boolean = true,
     val source: Int,
+    val type: Type = Type.CARD,
 ) : HomeComponentVisitable, ImpressHolder(),
     LoadableComponent by BlocksLoadableComponent(
         { status != STATUS_LOADING },
@@ -36,6 +41,11 @@ data class MissionWidgetListDataModel(
         const val PAYLOAD_IS_REFRESH = "isRefresh"
     }
 
+    val missionWidgetUtil: MissionWidgetUtil = when(type) {
+        Type.CLEAR -> MissionWidgetClearUtil()
+        else -> MissionWidgetCardUtil()
+    }
+
     fun isShowMissionWidget(): Boolean {
         return when(status) {
             STATUS_SUCCESS -> missionWidgetList.isNotEmpty()
@@ -43,6 +53,8 @@ data class MissionWidgetListDataModel(
             else -> true
         }
     }
+
+    fun isWithSubtitle(): Boolean = config.styleParam.parseWithSubtitle()
 
     override fun visitableId(): String {
         return id
@@ -68,5 +80,10 @@ data class MissionWidgetListDataModel(
 
     override fun type(typeFactory: HomeComponentTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    enum class Type {
+        CARD,
+        CLEAR
     }
 }

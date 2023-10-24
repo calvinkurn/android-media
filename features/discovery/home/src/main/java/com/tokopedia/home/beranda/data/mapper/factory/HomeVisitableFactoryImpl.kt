@@ -6,6 +6,7 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.model.AtfData
+import com.tokopedia.home.beranda.data.newatf.mission.MissionWidgetMapper
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.helper.LazyLoadDataMapper
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -359,11 +360,9 @@ class HomeVisitableFactoryImpl(
                                     },
                                     onSuccess = {
                                         addMissionWidgetData(
+                                            data,
                                             data.getAtfContent<HomeMissionWidgetData.GetHomeMissionWidget>(),
-                                            data.id,
-                                            data.name,
                                             index,
-                                            data.isShimmer,
                                             isCache,
                                         )
                                     }
@@ -476,36 +475,26 @@ class HomeVisitableFactoryImpl(
     }
 
     private fun addMissionWidgetData(
+        atfData: AtfData,
         data: HomeMissionWidgetData.GetHomeMissionWidget?,
-        id: Int,
-        name: String,
         index: Int,
-        isShimmer: Boolean,
         isCache: Boolean,
     ) {
         data?.let {
-            val mission = if(!isCache) {
-                MissionWidgetListDataModel(
-                    id = id.toString(),
-                    name = name,
-                    missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(it.missions, isCache),
-                    header = data.header.getAsHomeComponentHeader(),
-                    config = data.config.getAsChannelConfig(),
-                    verticalPosition = index,
-                    status = MissionWidgetListDataModel.STATUS_SUCCESS,
-                    showShimmering = isShimmer,
-                    source = MissionWidgetListDataModel.SOURCE_ATF,
-                )
-            } else {
-                MissionWidgetListDataModel(
-                    status = MissionWidgetListDataModel.STATUS_LOADING,
-                    showShimmering = isShimmer,
-                    source = MissionWidgetListDataModel.SOURCE_ATF,
-                )
-            }
+            val mission = MissionWidgetListDataModel(
+                id = atfData.id.toString(),
+                name = atfData.name,
+                missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(it.missions, isCache),
+                header = data.header.getAsHomeComponentHeader(),
+                config = data.config.getAsChannelConfig(),
+                verticalPosition = index,
+                status = MissionWidgetListDataModel.STATUS_SUCCESS,
+                showShimmering = atfData.isShimmer,
+                source = MissionWidgetListDataModel.SOURCE_ATF,
+                type = MissionWidgetMapper.getMissionWidgetType(atfData.component)
+            )
             visitableList.add(mission)
         }
-
     }
 
     private fun mapIntoGrids(bannerDataModel: com.tokopedia.home.beranda.domain.model.banner.BannerDataModel): List<ChannelGrid> {

@@ -32,8 +32,10 @@
     <dimen name="special_release_rv_padding_style_bottom">8dp</dimen>
     <dimen name="special_release_padding_card_compat_padding">-4.0dp</dimen>
 
-    <dimen name="home_mission_widget_image_size">128dp</dimen>
-    <dimen name="home_mission_widget_margin_horizontal_subtitle">8dp</dimen>
+    <dimen name="home_mission_widget_card_image_size">128dp</dimen>
+    <dimen name="home_mission_widget_card_margin_horizontal_subtitle">8dp</dimen>
+    <dimen name="home_mission_widget_clear_image_size">100dp</dimen>
+    <dimen name="home_mission_widget_clear_image_corner_radius">8dp</dimen>
 
     <dimen name="home_mix_left_image_width">148dp</dimen>
 

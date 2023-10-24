@@ -192,8 +192,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_VPS_WIDGET -> {
                     createVpsWidget(channel, position)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_MISSION_WIDGET -> {
-                    createMissionWidgetChannel(channel, position)
+                DynamicHomeChannel.Channels.LAYOUT_MISSION_WIDGET,
+                DynamicHomeChannel.Channels.LAYOUT_MISSION_WIDGET_V2 -> {
+                    createMissionWidgetChannel(channel, position, channel.layout)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_4_PRODUCT -> {
                     createLego4Product(channel, position)
@@ -776,20 +777,27 @@ class HomeDynamicChannelVisitableFactoryImpl(
 
     private fun createMissionWidgetChannel(
         channel: DynamicHomeChannel.Channels,
-        verticalPosition: Int
+        verticalPosition: Int,
+        layout: String
     ) {
-        if (!isCache) {
-            visitableList.add(
-                MissionWidgetListDataModel(
-                    id = channel.id,
-                    name = channel.name,
-                    verticalPosition = verticalPosition,
-                    status = MissionWidgetListDataModel.STATUS_LOADING,
-                    showShimmering = channel.isShimmer,
-                    source = MissionWidgetListDataModel.SOURCE_DC,
-                )
+        visitableList.add(
+            MissionWidgetListDataModel(
+                id = channel.id,
+                name = channel.name,
+                verticalPosition = verticalPosition,
+                status = MissionWidgetListDataModel.STATUS_LOADING,
+                showShimmering = channel.isShimmer,
+                source = MissionWidgetListDataModel.SOURCE_DC,
+                type = getMissionWidgetType(layout)
             )
-        }
+        )
+    }
+
+    private fun getMissionWidgetType(layout: String): MissionWidgetListDataModel.Type {
+        return if(layout == DynamicHomeChannel.Channels.LAYOUT_MISSION_WIDGET_V2)
+            MissionWidgetListDataModel.Type.CLEAR
+        else
+            MissionWidgetListDataModel.Type.CARD
     }
 
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {

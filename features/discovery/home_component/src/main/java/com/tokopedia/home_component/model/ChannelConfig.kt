@@ -13,6 +13,7 @@ data class ChannelConfig(
     val isAutoRefreshAfterExpired: Boolean = false,
     val enableTimeDiffMoreThan24h: Boolean = false,
     val dividerType: Int = DIVIDER_NO_DIVIDER,
+    val styleParam: String = "",
     val dividerSize: Int = DEFAULT_DIVIDER_SIZE,
     val borderStyle: String = BORDER_STYLE_BLEEDING,
     val imageStyle: String = IMAGE_STYLE_DEFAULT

@@ -6,12 +6,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.util.toDpInt
 
 /**
- * Created by dhaba
+ * Created by frenzel
  */
-class MissionWidgetItemDecoration : RecyclerView.ItemDecoration() {
+class MissionWidgetClearItemDecoration : RecyclerView.ItemDecoration() {
     companion object {
         private const val FIRST_POSITION = 0
-        private var OUTSIDE_MARGIN = 14f.toDpInt()
+        private var OUTSIDE_MARGIN = 16f.toDpInt()
         private var INNER_MARGIN = 2f.toDpInt()
     }
 

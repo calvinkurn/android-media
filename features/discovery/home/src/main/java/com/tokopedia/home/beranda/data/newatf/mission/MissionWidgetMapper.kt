@@ -40,7 +40,17 @@ class MissionWidgetMapper @Inject constructor() {
                 status = MissionWidgetListDataModel.STATUS_SUCCESS,
                 showShimmering = atfData.atfMetadata.isShimmer,
                 source = MissionWidgetListDataModel.SOURCE_ATF,
+                type = getMissionWidgetType(atfData.atfMetadata.component)
             )
+        }
+    }
+
+    companion object {
+        fun getMissionWidgetType(component: String): MissionWidgetListDataModel.Type {
+            return if(component == AtfKey.TYPE_MISSION_V2)
+                MissionWidgetListDataModel.Type.CLEAR
+            else
+                MissionWidgetListDataModel.Type.CARD
         }
     }
 }
