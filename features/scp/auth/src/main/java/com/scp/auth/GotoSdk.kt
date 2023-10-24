@@ -84,7 +84,7 @@ object GotoSdk {
                         eventName: ScpAnalyticsEvent,
                         params: Map<String, Any?>
                     ) {
-                        AuthAnalyticsMapper.trackScreenLsdk(eventName.eventName, params)
+                        trackLsdk(eventName.eventName, params)
                     }
 
                     override fun trackError(
@@ -94,7 +94,7 @@ object GotoSdk {
                         if (eventName.eventName == LSdkEventName.LSDK_VERIFICATION_FAIL || eventName.eventName == LSdkEventName.LSDK_LOGIN_FAIL) {
                             ScpUtils.logError(eventName.eventName, params)
                         }
-                        AuthAnalyticsMapper.trackEventLsdk(eventName.eventName, params)
+                        trackLsdk(eventName.eventName, params)
                     }
 
                     override fun trackEvent(
@@ -104,7 +104,7 @@ object GotoSdk {
                         if (eventName.eventName == LSdkEventName.LSDK_LOGIN_SUCCESS) {
                             ScpUtils.updateUserSessionLoginMethod(application, params[CVEventFieldName.METHOD].toString())
                         }
-                        AuthAnalyticsMapper.trackEventLsdk(eventName.eventName, params)
+                        trackLsdk(eventName.eventName, params)
                     }
                 }
             )
@@ -174,6 +174,11 @@ object GotoSdk {
             )
         )
         return GOTOPINSDKINSTANCE!!
+    }
+
+    private fun trackLsdk(eventName: String, params: Map<String, Any?>) {
+        AuthAnalyticsMapper.trackScreenLsdk(eventName, params)
+        AuthAnalyticsMapper.trackEventLsdk(eventName, params)
     }
 
     private fun getDeviceName(): String {
