@@ -53,6 +53,8 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
         private const val JUMP_TO_FULL_SPEC_INDEX = "JUMP_TO_FULL_SPEC_INDEX"
         const val PAGE_DESCRIPTION = 0
         const val PAGE_SPECIFICATIONS = 1
+        const val FIRST_TAB = 0
+        const val SECOND_TAB = 1
         fun newInstance(catalogName : String, catalogId :String, description: String, specifications: ArrayList<FullSpecificationsComponentData>,
                         openPage : String, jumpTo : Int = 0): CatalogSpecsAndDetailBottomSheet {
             return CatalogSpecsAndDetailBottomSheet().apply {
@@ -193,8 +195,8 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
                 gravity = Gravity.CENTER
                 setTextColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950_44))
             }
-            tabLayout.getTabAt(0)?.customView = tabOne
-            tabLayout.getTabAt(1)?.customView = tabTwo
+            tabLayout.getTabAt(FIRST_TAB)?.customView = tabOne
+            tabLayout.getTabAt(SECOND_TAB)?.customView = tabTwo
         }
     }
 
