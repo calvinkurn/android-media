@@ -28,19 +28,19 @@ fun MockKVerificationScope.verifyShowLoading(
 fun MockKVerificationScope.verifyProcessingData(
     productListView: ProductListSectionContract.View,
     performanceMonitoring: PageLoadTimePerformanceInterface,
-    searchProductModel: SearchProductModel,
-    visitableListSlot: CapturingSlot<List<Visitable<*>>>
+    visitableListSlot: CapturingSlot<List<Visitable<*>>>,
+    expectedAutoCompleteApplink: String = "",
 ) {
     performanceMonitoring.stopNetworkRequestPerformanceMonitoring()
     performanceMonitoring.startRenderPerformanceMonitoring()
-
-    productListView.isLandingPage
 
     productListView.clearLastProductItemPositionFromCache()
     productListView.lastProductItemPositionFromCache
     productListView.saveLastProductItemPositionToCache(any())
 
-    productListView.setAutocompleteApplink(searchProductModel.searchProduct.data.autocompleteApplink)
+    productListView.isLandingPage
+
+    productListView.setAutocompleteApplink(expectedAutoCompleteApplink)
     productListView.setDefaultLayoutType(ViewType.SMALL_GRID.value)
     productListView.removeLoading()
     productListView.setProductList(capture(visitableListSlot))
