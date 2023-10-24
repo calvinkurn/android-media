@@ -46,6 +46,10 @@ class GotoKycEventTrackingProvider @Inject constructor(
                 eventProperties = eventProperties
             )
         }
+
+        if (eventName == IMAGE_CAPTURED) {
+            GotoKycCleanupStorageWorker.scheduleWorker(context)
+        }
     }
 
     @SuppressLint("PII Data Exposure")
@@ -430,8 +434,6 @@ class GotoKycEventTrackingProvider @Inject constructor(
                 }
             }
             IMAGE_CAPTURED -> {
-                GotoKycCleanupStorageWorker.scheduleWorker(context)
-
                 when (eventProperties[CAPTURE_MODE]) {
                     AUTO_CAPTURE -> {
                         when (eventProperties[TYPE]) {
