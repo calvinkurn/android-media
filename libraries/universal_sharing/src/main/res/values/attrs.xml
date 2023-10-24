@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="UniversalShareWidget" parent="UnifyIcon">
+        <attr name="channel_share" format="enum">
+            <enum name="WHATSAPP" value="0"/>
+            <enum name="TELEGRAM" value="1"/>
+            <enum name="SMS" value="2"/>
+        </attr>
+    </declare-styleable>
+</resources>
