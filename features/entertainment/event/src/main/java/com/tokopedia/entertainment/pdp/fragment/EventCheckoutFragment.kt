@@ -135,6 +135,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        TimeZone.setDefault(TimeZone.getTimeZone(GMT))
         initializePerformance()
         activity?.let {
             saveInstanceManager = SaveInstanceCacheManager(it, savedInstanceState)
@@ -725,6 +726,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     }
 
     companion object {
+        const val GMT = "GMT+7"
         const val DATE_FORMAT = "EEE, d MMM yyyy"
         const val COUNTDOWN_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
         const val REQUEST_CODE_FORM = 100
