@@ -642,21 +642,31 @@ class CartRevampFragment :
 
     private fun checkBmGmOffers(cartGroupHolderData: CartGroupHolderData) {
         if (cartGroupHolderData.cartGroupBmGmHolderData.hasBmGmOffer) {
-            val listOfferId = arrayListOf<Long>()
+            val listCartStringOrderWithBmGmOfferId = arrayListOf<String>()
             cartGroupHolderData.productUiModelList.forEach {
-                if (it.cartBmGmTickerData.isShowTickerBmGm) {
-                    listOfferId.add(it.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId)
+                val cartStringOrderWithBmGmOfferId = "${it.cartStringOrder}||${it.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}"
+                if (it.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM &&
+                    !listCartStringOrderWithBmGmOfferId.contains(cartStringOrderWithBmGmOfferId)
+                ) {
+                    listCartStringOrderWithBmGmOfferId.add(cartStringOrderWithBmGmOfferId)
                 }
             }
-            if (listOfferId.isNotEmpty()) {
-                listOfferId.forEach { offerId ->
-                    val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByOfferId(viewModel.cartDataList.value, offerId)
-                    if (index > RecyclerView.NO_POSITION) {
-                        for (cartItem in cartItems) {
-                            cartItem.cartBmGmTickerData.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
+            if (listCartStringOrderWithBmGmOfferId.isNotEmpty()) {
+                listCartStringOrderWithBmGmOfferId.forEach { cartStringOrderAndBmGmOfferId ->
+                    val cartStringOrderOfferIdSplit = cartStringOrderAndBmGmOfferId.split("||")
+                    if (cartStringOrderOfferIdSplit.isNotEmpty() && cartStringOrderOfferIdSplit.size > 1) {
+                        val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByCartStringOrderAndOfferId(
+                            viewModel.cartDataList.value,
+                            cartStringOrderOfferIdSplit[0],
+                            cartStringOrderOfferIdSplit[1].toLongOrZero()
+                        )
+                        if (index > RecyclerView.NO_POSITION) {
+                            for (cartItem in cartItems) {
+                                cartItem.cartBmGmTickerData.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
+                            }
+                            cartAdapter?.notifyItemChanged(index)
+                            getGroupProductTicker(cartItems)
                         }
-                        cartAdapter?.notifyItemChanged(index)
-                        getGroupProductTicker(CartDataHelper.getListProductByOfferId(viewModel.cartDataList.value, offerId))
                     }
                 }
             }
@@ -1088,13 +1098,13 @@ class CartRevampFragment :
         cartPageAnalytics.eventClickGlobalDelete()
         val deletedCartItems = CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
         val dialog = getMultipleItemsDialogDeleteConfirmation(deletedCartItems.size)
-        val listOfferIdNeedUpdated = CartDataHelper.checkSelectedCartItemDataWithOfferBmGm(viewModel.cartDataList.value)
+        val listCartStringOrderNeedUpdated = CartDataHelper.checkSelectedCartItemDataWithOfferBmGm(viewModel.cartDataList.value)
         dialog?.setPrimaryCTAClickListener {
             viewModel.processDeleteCartItem(
                 removedCartItems = deletedCartItems,
                 addWishList = false,
                 isFromGlobalCheckbox = true,
-                listOfferId = listOfferIdNeedUpdated
+                listCartStringOrderAndBmGmOfferId = listCartStringOrderNeedUpdated
             )
             dialog.dismiss()
         }
@@ -1159,8 +1169,10 @@ class CartRevampFragment :
                 forceExpand = true
             }
 
-            val listOfferIdNeedUpdated = arrayListOf<Long>()
-            listOfferIdNeedUpdated.add(cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId)
+            val listCartStringOrderOfferId = arrayListOf<String>()
+            if (cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM) {
+                listCartStringOrderOfferId.add("${cartItemHolderData.cartStringOrder}||${cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}")
+            }
 
             viewModel.processDeleteCartItem(
                 toBeDeletedProducts,
@@ -1168,7 +1180,7 @@ class CartRevampFragment :
                 forceExpand,
                 isFromGlobalCheckbox = false,
                 isFromEditBundle = false,
-                listOfferId = listOfferIdNeedUpdated
+                listCartStringOrderAndBmGmOfferId = listCartStringOrderOfferId
             )
             if (isFromDeleteButton) {
                 cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromTrashBin(
@@ -1368,7 +1380,11 @@ class CartRevampFragment :
         }
 
         if (cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM && cartAdapter != null) {
-            val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByOfferId(viewModel.cartDataList.value, cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId)
+            val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByCartStringOrderAndOfferId(
+                viewModel.cartDataList.value,
+                cartItemHolderData.cartStringOrder,
+                cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
+            )
             if (index > RecyclerView.NO_POSITION) {
                 for (cartItem in cartItems) {
                     cartItem.cartBmGmTickerData.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
@@ -2364,17 +2380,24 @@ class CartRevampFragment :
         binding?.checkboxGlobal?.checks()?.debounce(DELAY_CHECK_BOX_GLOBAL)?.onEach { pair ->
             handleCheckboxGlobalChangeEvent()
             if (pair.first) {
-                val listOfferId = CartDataHelper.getListOfferId(viewModel.cartDataList.value)
-                if (listOfferId.isNotEmpty()) {
-                    listOfferId.forEach { offerId ->
-                        val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByOfferId(viewModel.cartDataList.value, offerId)
-                        if (index > RecyclerView.NO_POSITION) {
-                            for (cartItem in cartItems) {
-                                cartItem.cartBmGmTickerData.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
-                            }
+                val listCartStringOrderWithBmGmOfferId = CartDataHelper.getAllCartStringOrderWithBmGmOfferId(viewModel.cartDataList.value)
+                if (listCartStringOrderWithBmGmOfferId.isNotEmpty()) {
+                    listCartStringOrderWithBmGmOfferId.forEach { cartStringOrderWithBmGmOfferId ->
+                        val cartStringOrderWithBmGmOfferIdSplit = cartStringOrderWithBmGmOfferId.split("||")
+                        if (cartStringOrderWithBmGmOfferIdSplit.isNotEmpty() && cartStringOrderWithBmGmOfferIdSplit.size > 1) {
+                            val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByCartStringOrderAndOfferId(
+                                viewModel.cartDataList.value,
+                                cartStringOrderWithBmGmOfferIdSplit[0],
+                                cartStringOrderWithBmGmOfferIdSplit[1].toLongOrZero()
+                            )
+                            if (index > RecyclerView.NO_POSITION) {
+                                for (cartItem in cartItems) {
+                                    cartItem.cartBmGmTickerData.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
+                                }
 
-                            cartAdapter?.notifyItemChanged(index)
-                            getGroupProductTicker(CartDataHelper.getListProductByOfferId(viewModel.cartDataList.value, offerId))
+                                cartAdapter?.notifyItemChanged(index)
+                                getGroupProductTicker(cartItems)
+                            }
                         }
                     }
                 }
@@ -2563,7 +2586,7 @@ class CartRevampFragment :
                             addWishList,
                             isFromGlobalCheckbox,
                             isFromEditBundle,
-                            listOfferId
+                            listCartStringOrderAndOfferId
                         )
 
                         val params = generateParamGetLastApplyPromo()
@@ -3137,7 +3160,11 @@ class CartRevampFragment :
         viewModel.bmGmGroupProductTickerState.observe(viewLifecycleOwner) { data ->
             when (data) {
                 is GetBmGmGroupProductTickerState.Success -> {
-                    val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByOfferId(viewModel.cartDataList.value, data.pairOfferIdBmGmTickerResponse.first)
+                    val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByCartStringOrderAndOfferId(
+                        viewModel.cartDataList.value,
+                        data.pairOfferIdBmGmTickerResponse.first.cartStringOrder,
+                        data.pairOfferIdBmGmTickerResponse.first.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
+                    )
                     if (index > RecyclerView.NO_POSITION) {
                         for (cartItem in cartItems) {
                             if (data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.action == BMGM_TICKER_RELOAD_ACTION) {
@@ -3159,7 +3186,11 @@ class CartRevampFragment :
                 }
 
                 is GetBmGmGroupProductTickerState.Failed -> {
-                    val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByOfferId(viewModel.cartDataList.value, data.pairOfferIdThrowable.first)
+                    val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByCartStringOrderAndOfferId(
+                        viewModel.cartDataList.value,
+                        data.pairOfferIdThrowable.first.cartStringOrder,
+                        data.pairOfferIdThrowable.first.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
+                    )
 
                     if (index > RecyclerView.NO_POSITION) {
                         for (cartItem in cartItems) {
@@ -3262,7 +3293,7 @@ class CartRevampFragment :
         isMoveToWishlist: Boolean,
         isFromGlobalCheckbox: Boolean,
         isFromEditBundle: Boolean,
-        listOfferId: ArrayList<Long>
+        listCartStringOrderAndOfferId: ArrayList<String>
     ) {
         var message =
             String.format(getString(R.string.message_product_already_deleted), deletedCartIds.size)
@@ -3309,9 +3340,18 @@ class CartRevampFragment :
             }
         }
 
-        if (listOfferId.isNotEmpty()) {
-            listOfferId.forEach {
-                getGroupProductTicker(CartDataHelper.getListProductByOfferId(viewModel.cartDataList.value, it))
+        if (listCartStringOrderAndOfferId.isNotEmpty()) {
+            listCartStringOrderAndOfferId.forEach { cartStringOrderAndOfferId ->
+                val splitCartStringOrderAndOfferId = cartStringOrderAndOfferId.split("||")
+                if (splitCartStringOrderAndOfferId.isNotEmpty() && splitCartStringOrderAndOfferId.size > 1) {
+                    getGroupProductTicker(
+                        CartDataHelper.getListProductByOfferIdAndCartStringOrder(
+                            viewModel.cartDataList.value,
+                            splitCartStringOrderAndOfferId[1].toLongOrZero(),
+                            splitCartStringOrderAndOfferId[0]
+                        )
+                    )
+                }
             }
         }
     }
@@ -5295,7 +5335,7 @@ class CartRevampFragment :
 
     private fun getGroupProductTicker(cartItemHolderData: CartItemHolderData) {
         viewModel.getBmGmGroupProductTicker(
-            cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId,
+            cartItemHolderData,
             BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(
                 viewModel.cartDataList.value,
                 cartItemHolderData
@@ -5307,7 +5347,7 @@ class CartRevampFragment :
         if (listProduct.isNotEmpty()) {
             val cartItemData = listProduct.first()
             viewModel.getBmGmGroupProductTicker(
-                cartItemData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId,
+                cartItemData,
                 BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(
                     listProduct,
                     cartItemData.bundleId.toLongOrZero(),
