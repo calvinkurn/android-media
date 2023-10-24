@@ -15,8 +15,6 @@ class ContentCreationRemoteConfigManager(context: Context) {
 
     private val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context)
 
-    private var configData: ContentCreationRemoteConfigModel? = null
-
     fun isShowingShopEntryPoint(): Boolean = if (GlobalConfig.isSellerApp())
         getSellerAppConfigData().shopEntryPointItem
     else getMainAppConfigData().shopEntryPointItem
@@ -27,15 +25,15 @@ class ContentCreationRemoteConfigManager(context: Context) {
         getSellerAppConfigData().creation
     else getMainAppConfigData().creation
 
-    private fun getConfigData(): ContentCreationRemoteConfigModel = configData ?: try {
+    private fun getConfigData(): ContentCreationRemoteConfigModel = try {
         val rawString = remoteConfig.getString(APP_CONTENT_CREATION_STORIES_CONFIG)
         Gson().fromJson(rawString, ContentCreationRemoteConfigModel::class.java)
     } catch (t: Throwable) {
         ContentCreationRemoteConfigModel()
     }
 
-    private fun getMainAppConfigData() = getConfigData().mainapp
+    private fun getMainAppConfigData() = getConfigData().mainApp
 
-    private fun getSellerAppConfigData() = getConfigData().sellerapp
+    private fun getSellerAppConfigData() = getConfigData().sellerApp
 
 }

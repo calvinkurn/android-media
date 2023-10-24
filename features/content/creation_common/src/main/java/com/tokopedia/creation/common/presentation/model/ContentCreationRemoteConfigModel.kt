@@ -7,9 +7,9 @@ import com.google.gson.annotations.SerializedName
  */
 class ContentCreationRemoteConfigModel(
     @SerializedName("mainapp")
-    val mainapp: ContentCreationRemoteConfigItemModel = ContentCreationRemoteConfigItemModel(),
+    val mainApp: ContentCreationRemoteConfigItemModel = ContentCreationRemoteConfigItemModel(),
     @SerializedName("sellerapp")
-    val sellerapp: ContentCreationRemoteConfigItemModel = ContentCreationRemoteConfigItemModel(),
+    val sellerApp: ContentCreationRemoteConfigItemModel = ContentCreationRemoteConfigItemModel(),
 )
 
 class ContentCreationRemoteConfigItemModel(
