@@ -103,7 +103,7 @@ ext {
     windowVersion = '1.0.0'
     localBroadcastManagerVersion = '1.0.0'
     gojekSSOVersion = '1.0.1-67-0738bd6'
-    gotoLsdkVersion = '1.1.0-a07e80e0-SNAPSHOT'
+    gotoLsdkVersion = '1.1.0-70670034-SNAPSHOT'
     gotoCvsdkVersion = '2.0.1'
     gotoPinSdkVersion = '0.1.2-dev-4-g1348aec'
     playIntegrityVersion = '1.0.1'
@@ -481,6 +481,8 @@ ext {
             composeLiveData     : "androidx.compose.runtime:runtime-livedata:$composeVersion",
             composeCoil         : "io.coil-kt:coil-compose:$composeCoil",
             composeVideoCoil    : "io.coil-kt:coil-video:$composeCoil",
+            composeUiTest       : "androidx.compose.ui:ui-test-junit4:$composeVersion",
+            composeAndroidUiTest: "androidx.compose.ui:ui-test-manifest:$composeVersion",
             accompanistPager    : "com.google.accompanist:accompanist-pager:$accompanistPagerVersion"
     ]
 

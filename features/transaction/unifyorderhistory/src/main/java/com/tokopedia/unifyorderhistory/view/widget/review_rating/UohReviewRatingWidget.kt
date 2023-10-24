@@ -73,6 +73,7 @@ private enum class Slots { Content, Background }
 fun UohReviewRatingWidget(config: UohReviewRatingWidgetConfig) {
     var rating by rememberRating(config.componentData)
     SetupRatingChangedListener(rating, config)
+    SetupImpressionListener(config)
     DrawContent(
         modifier = Modifier.fillMaxWidth(),
         config = config,
@@ -91,6 +92,13 @@ private fun SetupRatingChangedListener(rating: Int, config: UohReviewRatingWidge
             delay(DELAY_RATING_CHANGED_REDIRECTION)
             config.onRatingChanged(composeAppLink(rating, config.componentData.action.appUrl))
         }
+    }
+}
+
+@Composable
+fun SetupImpressionListener(config: UohReviewRatingWidgetConfig) {
+    LaunchedEffect(config.show, config.componentData) {
+        if (shouldShowRatingWidget(config.componentData.type)) config.onImpressed()
     }
 }
 
@@ -196,7 +204,8 @@ private fun SubcomposeMeasureScope.createContentSubCompose(
             if (shouldShowRatingWidget(config.componentData.type)) {
                 Spacer(modifier = Modifier.size(width = SPACER_WIDTH.dp, height = SPACER_HEIGHT.dp))
                 WidgetReviewAnimatedRating(
-                    modifier = Modifier, config = reviewRatingWidgetConfig.value
+                    modifier = Modifier,
+                    config = reviewRatingWidgetConfig.value
                 )
             }
         }
