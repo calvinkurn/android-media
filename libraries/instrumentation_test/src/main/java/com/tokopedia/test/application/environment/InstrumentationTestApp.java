@@ -22,7 +22,6 @@ import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.ApplinkRouter;
-import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
@@ -42,6 +41,7 @@ import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.network.data.model.ScpTokenModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface;
 import com.tokopedia.test.application.environment.interceptor.TopAdsDetectorInterceptor;
@@ -231,11 +231,6 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     @Override
     public boolean isSupportApplink(String appLink) {
         return false;
-    }
-
-    @Override
-    public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
-        return null;
     }
 
     public static class DummyAppsFlyerAnalytics extends ContextAnalytics {
@@ -439,6 +434,16 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
     }
 
+    @Override
+    public ScpTokenModel onNewRefreshToken() {
+        return null;
+    }
+
+    @Override
+    public boolean isGotoAuthSdkEnabled() {
+        return false;
+    }
+
 
     @Override
     public void connectTokoChat(Boolean isFromLoginFlow) {
@@ -447,6 +452,11 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
     @Override
     public void disconnectTokoChat() {
+
+    }
+
+    @Override
+    public void onRefreshCM(String token) {
 
     }
 }

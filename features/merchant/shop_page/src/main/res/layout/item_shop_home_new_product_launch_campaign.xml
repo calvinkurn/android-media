@@ -99,7 +99,7 @@
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/npl_reminder_view"
         android:layout_width="wrap_content"
-        android:layout_height="26dp"
+        android:layout_height="24dp"
         android:layout_marginEnd="16dp"
         android:visibility="visible"
         app:cardCornerRadius="20dp"
@@ -107,9 +107,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/npl_timer">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
+            android:id="@+id/layout_container_remind_me"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
             android:paddingHorizontal="8dp">
 
             <com.tokopedia.unifycomponents.LoaderUnify
@@ -145,7 +148,7 @@
                 app:typographyWeight="bold"
                 tools:text="Ingatkan" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </com.tokopedia.unifycomponents.CardUnify2>
     <FrameLayout

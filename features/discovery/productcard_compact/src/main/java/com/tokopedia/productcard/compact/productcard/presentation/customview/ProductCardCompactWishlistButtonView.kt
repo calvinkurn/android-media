@@ -152,7 +152,7 @@ class ProductCardCompactWishlistButtonView @JvmOverloads constructor(
         }
     }
 
-    fun setListener(wishlistButtonListener: WishlistButtonListener) {
+    fun setListener(wishlistButtonListener: WishlistButtonListener?) {
         listener = wishlistButtonListener
     }
 

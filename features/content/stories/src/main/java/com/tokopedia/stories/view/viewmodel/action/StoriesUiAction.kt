@@ -16,6 +16,9 @@ sealed interface StoriesUiAction {
         val product: ContentTaggedProductUiModel
     ) : StoriesUiAction
 
+    data class UpdateStoryDuration(val duration: Int): StoriesUiAction
+
+    object VideoBuffering : StoriesUiAction
     object PageIsSelected : StoriesUiAction
     object NextDetail : StoriesUiAction
     object PreviousDetail : StoriesUiAction

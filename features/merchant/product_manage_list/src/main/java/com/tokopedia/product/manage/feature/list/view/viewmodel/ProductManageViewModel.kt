@@ -92,6 +92,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import com.tokopedia.product.manage.common.R as productmanagecommonR
 
 class ProductManageViewModel @Inject constructor(
     private val editPriceUseCase: EditPriceUseCase,
@@ -365,11 +366,15 @@ class ProductManageViewModel @Inject constructor(
                     val warehouseId = getWarehouseId(shopId)
                     val extraInfo =
                         if (filterOptions?.contains(FilterOption.FilterByCondition.ProductArchival)
-                                .orFalse() || filterOptions?.contains(FilterOption.FilterByCondition.ProductPotentialArchivedStatus)
+                            .orFalse() || filterOptions?.contains(FilterOption.FilterByCondition.ProductPotentialArchivedStatus)
                                 .orFalse()
                         ) {
-                            listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC,ExtraInfo.IS_DT_INBOUND, ExtraInfo.ARCHIVAL)
-
+                            listOf(
+                                ExtraInfo.TOPADS,
+                                ExtraInfo.RBAC,
+                                ExtraInfo.IS_DT_INBOUND,
+                                ExtraInfo.ARCHIVAL
+                            )
                         } else {
                             listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC, ExtraInfo.IS_DT_INBOUND)
                         }
@@ -596,7 +601,7 @@ class ProductManageViewModel @Inject constructor(
                                 productName,
                                 productId,
                                 price,
-                                NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString())
+                                NetworkErrorException(productmanagecommonR.string.product_stock_reminder_toaster_failed_desc.toString())
                             )
                         )
                     )
@@ -609,7 +614,7 @@ class ProductManageViewModel @Inject constructor(
                         productName,
                         productId,
                         price,
-                        NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString())
+                        NetworkErrorException(productmanagecommonR.string.product_stock_reminder_toaster_failed_desc.toString())
                     )
                 )
             )
@@ -627,12 +632,19 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(block = {
             var result: Result<EditStockResult>? = null
 
-            status?.let {
-                result = editProductStatus(productId, productName, stock, it)
-            }
-
-            stock?.let {
-                result = editProductStock(productId, productName, it, status)
+            if (status != null && stock != null) {
+                result = editProductStock(productId, productName, stock, status)
+                if (result is Success) {
+                    editProductStatus(productId, productName, stock, status)
+                } else if (result is Fail) {
+                    throw result.throwable
+                }
+            } else if (stock != null) {
+                result = editProductStock(productId, productName, stock, status)
+            } else {
+                status?.let {
+                    result = editProductStatus(productId, productName, stock, status)
+                }
             }
 
             result?.let {
@@ -640,7 +652,7 @@ class ProductManageViewModel @Inject constructor(
             }
         }) {
             val message =
-                com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()
+                productmanagecommonR.string.product_stock_reminder_toaster_failed_desc.toString()
             val result = EditStockResult(
                 productName,
                 productId,
@@ -681,12 +693,17 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(block = {
             var data: Result<EditVariantResult>? = null
 
-            if (result.editStatus) {
-                data = editVariantStatus(result)
-            }
-
-            if (result.editStock) {
+            if (result.editStatus && result.editStock) {
                 data = editVariantStock(result)
+                if (data is Success) {
+                    editVariantStatus(result)
+                } else if (data is Fail) {
+                    throw data.throwable
+                }
+            } else if (result.editStock) {
+                data = editVariantStock(result)
+            } else if (result.editStatus) {
+                data = editVariantStatus(result)
             }
 
             _editVariantStockResult.value = data
@@ -750,7 +767,7 @@ class ProductManageViewModel @Inject constructor(
                             DeleteProductResult(
                                 productName,
                                 productId,
-                                NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString())
+                                NetworkErrorException(productmanagecommonR.string.product_stock_reminder_toaster_failed_desc.toString())
                             )
                         )
                     )
@@ -762,7 +779,7 @@ class ProductManageViewModel @Inject constructor(
                     DeleteProductResult(
                         productName,
                         productId,
-                        NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString())
+                        NetworkErrorException(productmanagecommonR.string.product_stock_reminder_toaster_failed_desc.toString())
                     )
                 )
             )
@@ -896,7 +913,7 @@ class ProductManageViewModel @Inject constructor(
 
                 else -> {
                     val message =
-                        com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()
+                        productmanagecommonR.string.product_stock_reminder_toaster_failed_desc.toString()
                     Fail(
                         EditStockResult(
                             productName,
@@ -934,7 +951,7 @@ class ProductManageViewModel @Inject constructor(
     private suspend fun editVariantStatus(result: EditVariantResult): Result<EditVariantResult> {
         return withContext(dispatchers.io) {
             val shopId = userSessionInterface.shopId
-            val variantInputParam = mapResultToUpdateParam(shopId, result)
+            val variantInputParam = mapResultToUpdateParam(shopId, result, false)
             val requestParams = EditProductVariantUseCase.createRequestParams(variantInputParam)
             val response = editProductVariantUseCase.execute(requestParams).productUpdateV3Data
 
@@ -946,7 +963,7 @@ class ProductManageViewModel @Inject constructor(
                 }
 
                 else -> {
-                    val message = com.tokopedia.product.manage.common.R.string
+                    val message = productmanagecommonR.string
                         .product_stock_reminder_toaster_failed_desc.toString()
                     Fail(MessageErrorException(message))
                 }
@@ -965,8 +982,8 @@ class ProductManageViewModel @Inject constructor(
             }
             _productArchivalInfo.value = Success(result)
         }, onError = {
-            _productArchivalInfo.value = Fail(it)
-        })
+                _productArchivalInfo.value = Fail(it)
+            })
     }
 
     private suspend fun editVariantStock(result: EditVariantResult): Result<EditVariantResult> {
