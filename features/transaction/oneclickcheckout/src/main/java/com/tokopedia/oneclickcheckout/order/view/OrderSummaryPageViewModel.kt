@@ -805,15 +805,27 @@ class OrderSummaryPageViewModel @Inject constructor(
             globalEvent.value = OccGlobalEvent.Loading
             try {
                 val metadata = JsonParser().parse(param.profile.metadata)
-                val expressCheckoutParams = metadata.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM)
+                val jsonObject = metadata.asJsonObject
+                val expressCheckoutParams = jsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM)
+                if (jsonObject.get(UpdateCartOccProfileRequest.GATEWAY_CODE) == null) {
+                    // unexpected null gateway code param
+                    throw IllegalStateException()
+                }
+                jsonObject.addProperty(UpdateCartOccProfileRequest.GATEWAY_CODE, selectedInstallmentTerm.gatewayCode)
                 if (expressCheckoutParams.get(UpdateCartOccProfileRequest.INSTALLMENT_TERM) == null) {
                     // unexpected null installment term param
                     throw IllegalStateException()
                 }
                 expressCheckoutParams.addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedInstallmentTerm.term.toString())
                 param = param.copy(
-                    profile = param.profile.copy(metadata = metadata.toString(), gatewayCode = selectedInstallmentTerm.gatewayCode),
-                    skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value),
+                    profile = param.profile.copy(
+                        metadata = metadata.toString(),
+                        gatewayCode = selectedInstallmentTerm.gatewayCode,
+                        tenureType = selectedInstallmentTerm.term
+                    ),
+                    skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(
+                        orderShipment.value
+                    ),
                     source = SOURCE_UPDATE_OCC_PAYMENT
                 )
             } catch (e: RuntimeException) {

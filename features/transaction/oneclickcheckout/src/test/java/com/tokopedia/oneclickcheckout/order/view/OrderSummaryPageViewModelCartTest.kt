@@ -589,7 +589,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                             arrayListOf(
                                 UpdateCartOccCartRequest(cartId = "", quantity = 1, productId = helper.product.productId)
                             ),
-                            UpdateCartOccProfileRequest(serviceId = 1, addressId = "1", gatewayCode = gatewayCode, spId = "1", shippingId = "1"),
+                            UpdateCartOccProfileRequest(serviceId = 1, addressId = "1", gatewayCode = gatewayCode, spId = "1", shippingId = "1", metadata = "{\"gateway_code\":\"gateway 2\",\"express_checkout_param\":{}}"),
                             source = UpdateCartOccRequest.SOURCE_UPDATE_QTY_NOTES
                         ),
                         it
@@ -643,7 +643,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                     assertEquals(
                         UpdateCartOccRequest(
                             arrayListOf(UpdateCartOccCartRequest(cartId = "", quantity = 1, productId = helper.product.productId)),
-                            UpdateCartOccProfileRequest(serviceId = 0, addressId = "1", gatewayCode = "", spId = "0", shippingId = "0"),
+                            UpdateCartOccProfileRequest(serviceId = 0, addressId = "1", gatewayCode = "", spId = "0", shippingId = "0", metadata = "{\"gateway_code\":\"\",\"express_checkout_param\":{}}"),
                             skipShippingValidation = true,
                             source = UpdateCartOccRequest.SOURCE_UPDATE_QTY_NOTES
                         ),
@@ -662,6 +662,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             payment = preference.payment.copy(
                 metadata = """
             {
+                "gateway_code": "term1",
                 "express_checkout_param" : {"installment_term": "1"}
             }
                 """.trimIndent()
@@ -681,7 +682,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(term2.copy(isSelected = true), orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
         assertEquals(listOf(term1.copy(isSelected = false), term2.copy(isSelected = true)), orderSummaryPageViewModel.orderPayment.value.creditCard.availableTerms)
         assertEquals("term2", orderSummaryPageViewModel.orderPayment.value.gatewayCode)
-        coVerify { updateCartOccUseCase.executeSuspend(match { it.profile.gatewayCode == "term2" }) }
+        coVerify { updateCartOccUseCase.executeSuspend(match { it.profile.gatewayCode == "term2" && it.profile.metadata.contains("\"gateway_code\":\"term2\"") && it.profile.tenureType == 2 }) }
         coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(match { it.profile.gatewayCode != "term2" }) }
     }
 
@@ -693,6 +694,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             payment = preference.payment.copy(
                 metadata = """
             {
+                "gateway_code": "term1",
                 "express_checkout_param" : {"installment_term": "1"}
             }
                 """.trimIndent()
@@ -721,6 +723,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             payment = preference.payment.copy(
                 metadata = """
             {
+                "gateway_code": "term1",
                 "express_checkout_param" : {"installment_term": "1"}
             }
                 """.trimIndent()
@@ -750,6 +753,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             payment = preference.payment.copy(
                 metadata = """
             {
+                "gateway_code": "term1",
                 "express_checkout_param" : {"installment_term": "1"}
             }
                 """.trimIndent()
@@ -855,6 +859,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             payment = preference.payment.copy(
                 metadata = """
             {
+                "gateway_code": "",
                 "express_checkout_param" : {"installment_term": "1"}
             }
                 """.trimIndent()
