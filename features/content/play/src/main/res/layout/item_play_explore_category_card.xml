@@ -97,15 +97,15 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_play_category_rank"
-        android:layout_width="wrap_content"
+        app:layout_constraintWidth_percent="0.1"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingStart="0dp"
-        android:paddingEnd="@dimen/unify_space_8"
-        app:layout_constraintEnd_toStartOf="@id/iv_play_category_video"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/iv_play_category_video"
         app:layout_constraintTop_toTopOf="@+id/iv_play_category_video"
+        android:maxLines="1"
+        android:ellipsize="end"
         app:typographyType="display_1"
         app:typographyWeight="bold"
-        tools:text="1." />
+        tools:text="10." />
 </androidx.constraintlayout.widget.ConstraintLayout>

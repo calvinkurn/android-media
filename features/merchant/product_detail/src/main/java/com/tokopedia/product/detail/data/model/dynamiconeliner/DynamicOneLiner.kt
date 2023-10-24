@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.model.dynamiconeliner
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.detail.common.data.model.pdplayout.Padding
 
 data class DynamicOneLiner(
     @SerializedName("name")
@@ -30,5 +31,9 @@ data class DynamicOneLiner(
 
     @SerializedName("chevronPos")
     @Expose
-    val chevronPos: String = ""
+    val chevronPos: String = "",
+
+    @SerializedName("padding")
+    @Expose
+    val padding: Padding = Padding()
 )
