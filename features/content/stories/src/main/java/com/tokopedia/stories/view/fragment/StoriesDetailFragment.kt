@@ -21,7 +21,6 @@ import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.ImageLoaderStateListener
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.common.report_content.bottomsheet.ContentReportBottomSheet
 import com.tokopedia.content.common.report_content.bottomsheet.ContentSubmitReportBottomSheet
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
@@ -214,12 +213,12 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     override fun onCloseButtonClicked() {
-        (childFragmentManager.findFragmentByTag(ContentReportBottomSheet.TAG) as ContentReportBottomSheet?)?.dismiss()
+        (childFragmentManager.findFragmentByTag(ContentReportBottomSheet.TAG) as? ContentReportBottomSheet?)?.dismiss()
         viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.Report))
     }
 
     override fun onItemReportClick(item: PlayUserReportReasoningUiModel.Reasoning) {
-        (childFragmentManager.findFragmentByTag(ContentReportBottomSheet.TAG) as ContentReportBottomSheet?)?.dismiss()
+        (childFragmentManager.findFragmentByTag(ContentReportBottomSheet.TAG) as? ContentReportBottomSheet?)?.dismiss()
         viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.Report))
 
         ContentSubmitReportBottomSheet.getOrCreate(
@@ -234,14 +233,14 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     override fun onFooterClicked() {
-        RouteManager.route(
+        router.route(
             context,
             getString(contentcommonR.string.content_user_report_footer_weblink)
         )
     }
 
     override fun onBackButtonListener() {
-        (childFragmentManager.findFragmentByTag(ContentSubmitReportBottomSheet.TAG) as ContentSubmitReportBottomSheet?)?.dismiss()
+        (childFragmentManager.findFragmentByTag(ContentSubmitReportBottomSheet.TAG) as? ContentSubmitReportBottomSheet?)?.dismiss()
         viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.SubmitReport))
     }
 
@@ -253,7 +252,7 @@ class StoriesDetailFragment @Inject constructor(
             secondaryCTAText = getString(storiesR.string.dialog_report_story_cancel),
             primaryAction = {
                 viewModel.submitReport(desc, _videoPlayer?.exoPlayer?.currentPosition.orZero())
-                (childFragmentManager.findFragmentByTag(ContentSubmitReportBottomSheet.TAG) as ContentSubmitReportBottomSheet?)?.dismiss()
+                (childFragmentManager.findFragmentByTag(ContentSubmitReportBottomSheet.TAG) as? ContentSubmitReportBottomSheet?)?.dismiss()
             }
         )
     }
@@ -307,8 +306,6 @@ class StoriesDetailFragment @Inject constructor(
                     }
 
                     StoriesUiEvent.OpenKebab -> {
-                        viewModel.getReportReasonList()
-
                         StoriesThreeDotsBottomSheet
                             .getOrCreateFragment(
                                 childFragmentManager,
@@ -760,7 +757,7 @@ class StoriesDetailFragment @Inject constructor(
         view.dismiss()
 
         if (!viewModel.userSession.isLoggedIn) {
-            reportStoryLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+            reportStoryLoginResult.launch(router.getIntent(context, ApplinkConst.LOGIN))
         } else {
             openReportBottomSheet()
         }

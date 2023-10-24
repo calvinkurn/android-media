@@ -238,7 +238,7 @@ class StoriesViewModel @AssistedInject constructor(
         }
     }
 
-    fun getReportReasonList() {
+    private fun getReportReasonList() {
         viewModelScope.launchCatchError(block = {
             if (userReportReasonList is Success && (userReportReasonList as Success).data.isNotEmpty()) return@launchCatchError
 
@@ -485,6 +485,8 @@ class StoriesViewModel @AssistedInject constructor(
             _bottomSheetStatusState.update { bottomSheet ->
                 bottomSheet.mapValues { it.key == BottomSheetType.Kebab }
             }
+
+            getReportReasonList()
         }
     }
 
