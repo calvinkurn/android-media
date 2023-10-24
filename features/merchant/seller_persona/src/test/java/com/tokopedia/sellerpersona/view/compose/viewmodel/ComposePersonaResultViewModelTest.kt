@@ -17,7 +17,9 @@ import com.tokopedia.sellerpersona.view.model.PersonaUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import org.junit.Assert.assertEquals
@@ -152,9 +154,197 @@ class ComposePersonaResultViewModelTest : BaseViewModelTest<PersonaResultState, 
     }
 
     @Test
-    fun `when toggle persona active should be success`() {
+    fun `when toggle persona switch should update the states and emit tracking ui effect`() {
         runStateAndUiEffectTest {
+            val successState = getSuccessState(getMockDefaultPersona())
 
+            runTestFetchPersonaDataWithSuccessResult(successState)
+
+            assertEquals(getDefaultState().toString(), states[0].toString())
+            assertEquals(successState.toString(), states[1].toString())
+
+            viewModel.onEvent(ResultUiEvent.OnSwitchCheckChanged(false))
+
+            val switchToUnchecked =
+                successState.copy(data = successState.data.copy(isSwitchChecked = false))
+            assertEquals(switchToUnchecked.toString(), states[2].toString())
+            assert(uiEffects[0] == ResultUiEffect.SendSwitchCheckedChangedTracking)
+
+            viewModel.onEvent(ResultUiEvent.OnSwitchCheckChanged(true))
+
+            val switchToChecked =
+                successState.copy(data = successState.data.copy(isSwitchChecked = true))
+            assertEquals(switchToChecked.toString(), states[3].toString())
+            assert(uiEffects[1] == ResultUiEffect.SendSwitchCheckedChangedTracking)
+        }
+    }
+
+    @Test
+    fun `given persona status active then apply changes should success`() {
+        runStateAndUiEffectTest {
+            val successState = getSuccessState(getMockDefaultPersona())
+
+            runTestFetchPersonaDataWithSuccessResult(successState)
+
+            assertEquals(getDefaultState().toString(), states[0].toString())
+            assertEquals(successState.toString(), states[1].toString())
+
+            /** Emit Event ApplyPersona **/
+
+            val shopId = anyString()
+            val personaStatus = PersonaStatus.ACTIVE
+
+            every { userSession.shopId } returns shopId
+            coEvery { togglePersonaUseCase.execute(shopId, personaStatus) } returns personaStatus
+
+            val applyChangesEvent = ResultUiEvent.ApplyChanges(
+                persona = successState.data.persona,
+                isActive = successState.data.isSwitchChecked
+            )
+            viewModel.onEvent(applyChangesEvent)
+
+            verify { userSession.shopId }
+            coVerify { togglePersonaUseCase.execute(shopId, any()) }
+
+            //send tracker
+            assert(
+                uiEffects[0] == ResultUiEffect.SendClickApplyTracking(
+                    persona = applyChangesEvent.persona,
+                    isActive = applyChangesEvent.isActive
+                )
+            )
+
+            //show button loading state
+            val loadingButton = successState.copy(
+                data = successState.data.copy(isApplyLoading = true)
+            )
+            assertEquals(loadingButton.toString(), states[2].toString())
+
+            //dismiss loading button and update UI
+            val personaStatusState = loadingButton.copy(
+                data = loadingButton.data.copy(isApplyLoading = false, personaStatus = personaStatus),
+                hasImpressed = false
+            )
+            assertEquals(personaStatusState.toString(), states[3].toString())
+
+            //set on persona status changed
+            val actualStatus = (uiEffects[1] as ResultUiEffect.OnPersonaStatusChanged).personaStatus
+            assertEquals(personaStatus, actualStatus)
+        }
+    }
+
+    @Test
+    fun `given persona status inactive then apply changes should success`() {
+        runStateAndUiEffectTest {
+            val successState = getSuccessState(getMockDefaultPersona())
+
+            runTestFetchPersonaDataWithSuccessResult(successState)
+
+            assertEquals(getDefaultState().toString(), states[0].toString())
+            assertEquals(successState.toString(), states[1].toString())
+
+            viewModel.onEvent(ResultUiEvent.OnSwitchCheckChanged(false))
+
+            val switchToUnchecked =
+                successState.copy(data = successState.data.copy(isSwitchChecked = false))
+            assertEquals(switchToUnchecked.toString(), states[2].toString())
+            assert(uiEffects[0] == ResultUiEffect.SendSwitchCheckedChangedTracking)
+
+            /** Emit Event ApplyPersona **/
+
+            val shopId = anyString()
+            val personaStatus = PersonaStatus.INACTIVE
+
+            every { userSession.shopId } returns shopId
+            coEvery { togglePersonaUseCase.execute(shopId, personaStatus) } returns personaStatus
+
+            val applyChangesEvent = ResultUiEvent.ApplyChanges(
+                persona = switchToUnchecked.data.persona,
+                isActive = switchToUnchecked.data.isSwitchChecked
+            )
+            viewModel.onEvent(applyChangesEvent)
+
+            verify { userSession.shopId }
+            coVerify { togglePersonaUseCase.execute(shopId, any()) }
+
+            //send tracker
+            assert(
+                uiEffects[1] == ResultUiEffect.SendClickApplyTracking(
+                    persona = applyChangesEvent.persona,
+                    isActive = applyChangesEvent.isActive
+                )
+            )
+
+            //show button loading state
+            val loadingButton = switchToUnchecked.copy(
+                data = switchToUnchecked.data.copy(isApplyLoading = true)
+            )
+            assertEquals(loadingButton.toString(), states[3].toString())
+
+            //dismiss loading button and update UI
+            val personaStatusState = loadingButton.copy(
+                data = loadingButton.data.copy(isApplyLoading = false, personaStatus = personaStatus),
+                hasImpressed = false
+            )
+            assertEquals(personaStatusState.toString(), states[4].toString())
+
+            //set on persona status changed
+            val actualStatus = (uiEffects[2] as ResultUiEffect.OnPersonaStatusChanged).personaStatus
+            assertEquals(personaStatus, actualStatus)
+        }
+    }
+
+    @Test
+    fun `given persona status active or inactive then apply changes should failed`() {
+        runStateAndUiEffectTest {
+            val successState = getSuccessState(getMockDefaultPersona())
+
+            runTestFetchPersonaDataWithSuccessResult(successState)
+
+            assertEquals(getDefaultState().toString(), states[0].toString())
+            assertEquals(successState.toString(), states[1].toString())
+
+            /** Emit Event ApplyPersona **/
+
+            val shopId = anyString()
+            val personaStatus = PersonaStatus.ACTIVE
+            val throwable = Throwable()
+
+            every { userSession.shopId } returns shopId
+            coEvery { togglePersonaUseCase.execute(shopId, personaStatus) } throws throwable
+
+            val applyChangesEvent = ResultUiEvent.ApplyChanges(
+                persona = successState.data.persona,
+                isActive = successState.data.isSwitchChecked
+            )
+            viewModel.onEvent(applyChangesEvent)
+
+            verify { userSession.shopId }
+            coVerify { togglePersonaUseCase.execute(shopId, any()) }
+
+            //send tracker
+            assert(
+                uiEffects[0] == ResultUiEffect.SendClickApplyTracking(
+                    persona = applyChangesEvent.persona,
+                    isActive = applyChangesEvent.isActive
+                )
+            )
+
+            //show button loading state
+            val loadingButton = successState.copy(
+                data = successState.data.copy(isApplyLoading = true)
+            )
+            assertEquals(loadingButton.toString(), states[2].toString())
+
+            //dismiss loading button and update UI
+            val dismissLoading = loadingButton.copy(
+                data = loadingButton.data.copy(isApplyLoading = false)
+            )
+            assertEquals(dismissLoading.toString(), states[3].toString())
+
+            //set effect on persona status changed failed
+            val actualThrowable = (uiEffects[1] as ResultUiEffect.OnPersonaStatusChanged).throwable
+            assertEquals(throwable.toString(), actualThrowable.toString())
         }
     }
 
@@ -164,6 +354,39 @@ class ComposePersonaResultViewModelTest : BaseViewModelTest<PersonaResultState, 
             viewModel.onEvent(ResultUiEvent.RetakeQuiz)
 
             assert(uiEffects[0] == ResultUiEffect.NavigateToQuestionnaire)
+        }
+    }
+
+    @Test
+    fun `when page impression invoked should update the data state`() {
+        runStateAndUiEffectTest {
+            //on fetch initial data
+            val successState = getSuccessState(getMockDefaultPersona())
+            runTestFetchPersonaDataWithSuccessResult(successState)
+            assertEquals(getDefaultState().toString(), states[0].toString())
+            assertEquals(successState.toString(), states[1].toString())
+
+            viewModel.onEvent(ResultUiEvent.OnResultImpressedEvent)
+
+            val impressedState = successState.copy(hasImpressed = true)
+            assertEquals(impressedState.toString(), states[2].toString())
+        }
+    }
+
+    @Test
+    fun `given select persona event should navigate to select persona page`() {
+        runStateAndUiEffectTest {
+            //on fetch initial data
+            val successState = getSuccessState(getMockDefaultPersona())
+            runTestFetchPersonaDataWithSuccessResult(successState)
+            assertEquals(getDefaultState().toString(), states[0].toString())
+            assertEquals(successState.toString(), states[1].toString())
+
+            val currentPersona = successState.data.persona
+
+            viewModel.onEvent(ResultUiEvent.SelectPersona(currentPersona))
+
+            assert(uiEffects[0] == ResultUiEffect.NavigateToSelectPersona(currentPersona))
         }
     }
 

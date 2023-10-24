@@ -80,7 +80,12 @@ class ComposePersonaResultViewModel @Inject constructor(
                     )
                 }
                 updatePersonaLocalData(toggleStatus)
-                setEffect(ResultUiEffect.OnPersonaStatusChanged(personaStatus = toggleStatus))
+                setEffect(
+                    ResultUiEffect.OnPersonaStatusChanged(
+                        personaStatus = toggleStatus,
+                        throwable = null
+                    )
+                )
             }.onFailure {
                 emitApplyButtonLoadingState(isLoading = false)
                 setEffect(ResultUiEffect.OnPersonaStatusChanged(throwable = it))
@@ -108,18 +113,19 @@ class ComposePersonaResultViewModel @Inject constructor(
     }
 
     private fun onApplyClicked(event: ResultUiEvent.ApplyChanges) {
-        val status = if (event.isActive) {
-            PersonaStatus.ACTIVE
-        } else {
-            PersonaStatus.INACTIVE
-        }
-        toggleUserPersona(status)
         setEffect(
             ResultUiEffect.SendClickApplyTracking(
                 persona = event.persona,
                 isActive = event.isActive
             )
         )
+
+        val status = if (event.isActive) {
+            PersonaStatus.ACTIVE
+        } else {
+            PersonaStatus.INACTIVE
+        }
+        toggleUserPersona(status)
     }
 
     private fun emitApplyButtonLoadingState(isLoading: Boolean) {
