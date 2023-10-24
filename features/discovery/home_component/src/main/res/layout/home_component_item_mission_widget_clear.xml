@@ -11,7 +11,7 @@
         android:layout_width="@dimen/home_mission_widget_clear_image_size"
         android:layout_height="@dimen/home_mission_widget_clear_image_size"
         android:contentDescription="@string/content_desc_mission_widget"
-        app:unify_image_corner_radius="@dimen/home_mission_widget_clear_image_corner_radius"
+        app:unify_image_corner_radius="8"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
