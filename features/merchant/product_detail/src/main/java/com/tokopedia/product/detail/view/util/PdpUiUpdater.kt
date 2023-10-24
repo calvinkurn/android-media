@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.pdp.fintech.view.FintechPriceDataModel
+import com.tokopedia.pdp.fintech.view.FintechPriceURLDataModel
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
@@ -31,6 +31,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetV2DataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
@@ -115,6 +116,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val fintechWidgetMap: FintechWidgetDataModel?
         get() = mapOfData[ProductDetailConstant.FINTECH_WIDGET_NAME] as? FintechWidgetDataModel
+
+    val fintechWidgetV2Map: FintechWidgetV2DataModel?
+        get() = mapOfData[ProductDetailConstant.FINTECH_WIDGET_V2_NAME] as? FintechWidgetV2DataModel
 
     val productTradeinMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.TRADE_IN] as? ProductGeneralInfoDataModel
@@ -387,16 +391,17 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         loggedIn: Boolean
     ) {
         productInfo?.let { productDetail ->
-            val productIdToPriceURLMap = HashMap<String, FintechPriceDataModel>()
+            val productIdToPriceURLMap = HashMap<String, FintechPriceURLDataModel>()
             val productCategoryId: String = productDetail.basic.category.id
             if (variantData == null) {
                 productIdToPriceURLMap[productDetail.basic.productID] =
-                    FintechPriceDataModel(productDetail.data.price.value.toString())
+                    FintechPriceURLDataModel(productDetail.data.price.value.toString(), productDetail.basic.url)
             } else {
                 for (i in variantData.children.indices) {
                     productIdToPriceURLMap[variantData.children[i].productId] =
-                        FintechPriceDataModel(
-                            variantData.children[i].price.toString()
+                        FintechPriceURLDataModel(
+                            variantData.children[i].price.toString(),
+                            variantData.children[i].url.orEmpty(),
                         )
                 }
             }
@@ -411,12 +416,30 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     parentId = variantData?.parentId ?: productId
                 }
             }
+
+            updateData(ProductDetailConstant.FINTECH_WIDGET_V2_NAME) {
+                fintechWidgetV2Map?.run {
+                    productId = selectedProductId
+                    categoryId = productCategoryId
+                    idToPriceUrlMap = productIdToPriceURLMap
+                    isLoggedIn = loggedIn
+                    shopId = productDetail.basic.shopID
+                    parentId = variantData?.parentId ?: productId
+                }
+            }
         }
     }
 
     fun updateFintechDataWithProductId(selectedProductId: String, loggedIn: Boolean) {
         updateData(ProductDetailConstant.FINTECH_WIDGET_NAME) {
             fintechWidgetMap?.run {
+                productId = selectedProductId
+                isLoggedIn = loggedIn
+            }
+        }
+
+        updateData(ProductDetailConstant.FINTECH_WIDGET_V2_NAME) {
+            fintechWidgetV2Map?.run {
                 productId = selectedProductId
                 isLoggedIn = loggedIn
             }
@@ -811,6 +834,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
         }
     }
+
+    fun getVerticalRecommendationPlaceholder(pageName: String) =
+        mapOfData[pageName] as? ProductRecommendationVerticalPlaceholderDataModel
 
     fun getVerticalRecommendationNextPage(pageName: String): Int? {
         val dataModel = (mapOfData[pageName] as? ProductRecommendationVerticalPlaceholderDataModel)
@@ -1269,6 +1295,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     ): PdpRecommendationWidgetDataModel {
         return copy(
             recommendationWidgetModel = recommendationWidgetModel.copy(
+                trackingModel = recommendationWidgetModel.trackingModel.copy(
+                    anchorId = productId
+                ),
                 metadata = recommendationWidgetModel.metadata.copy(
                     productIds = if (productId.isBlank()) listOf() else listOf(productId)
                 )
@@ -1287,7 +1316,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     separator = item.separator,
                     icon = item.icon,
                     status = item.status,
-                    chevronPos = item.chevronPos
+                    chevronPos = item.chevronPos,
+                    paddingTop = item.padding.top,
+                    paddingBottom = item.padding.bottom
                 )
             }
         }

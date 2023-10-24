@@ -19,6 +19,7 @@ class OfferInterruptUseCase @Inject constructor(
 
     override fun graphqlQuery(): String = """
 	query offerInterrupt(${'$'}supportBiometric: Boolean!, ${'$'}device_biometrics: String!){
+      status
 	  offer_interrupt(supportBiometric: ${'$'}supportBiometric, device_biometrics: ${'$'}device_biometrics){
 	    errorMessage
 	    offers {

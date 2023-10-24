@@ -21,7 +21,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -40,6 +39,7 @@ import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.animation.StoriesProductNudge
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
+import com.tokopedia.stories.view.custom.StoriesErrorView
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
@@ -68,7 +68,7 @@ import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PreviousDetai
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ResumeStories
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
-import com.tokopedia.stories.view.viewmodel.state.isAnyShown
+import com.tokopedia.stories.view.viewmodel.state.TimerStatusInfo
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.Job
@@ -186,8 +186,8 @@ class StoriesDetailFragment @Inject constructor(
                     val curr = currState.storiesMainData.groupItems
                         .getOrNull(currState.storiesMainData.selectedGroupPosition)?.detail
                     renderStoriesDetail(prev, curr)
+                    renderTimer(prevState.timerStatus, currState.timerStatus)
                 }
-                observeBottomSheetStatus(prevState?.bottomSheetStatus, currState.bottomSheetStatus)
             }
         }
     }
@@ -198,17 +198,11 @@ class StoriesDetailFragment @Inject constructor(
                 if (!isEligiblePage) return@collect
                 when (event) {
                     is StoriesUiEvent.EmptyDetailPage -> {
-                        setNoContent(true)
+                        setErrorType(StoriesErrorView.Type.EmptyCategory, isTimerAvailable = false)
                     }
 
                     is StoriesUiEvent.ErrorDetailPage -> {
-                        if (event.throwable.isNetworkError) {
-                            setNoInternet(true)
-                            binding.layoutStoriesNoInet.btnStoriesNoInetRetry.setOnClickListener { run { event.onClick() } }
-                        } else {
-                            setFailed(true)
-                            binding.layoutStoriesFailed.btnStoriesFailedLoad.setOnClickListener { run { event.onClick() } }
-                        }
+                        setErrorType(if (event.throwable.isNetworkError) StoriesErrorView.Type.NoInternet else StoriesErrorView.Type.FailedLoad) { event.onClick()}
                     }
 
                     StoriesUiEvent.OpenKebab -> {
@@ -280,7 +274,7 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun renderStoriesDetail(
         prevState: StoriesDetail?,
-        state: StoriesDetail?
+        state: StoriesDetail?,
     ) {
         if (prevState == state ||
             state == StoriesDetail() ||
@@ -290,13 +284,8 @@ class StoriesDetailFragment @Inject constructor(
             state.detailItems.isEmpty()
         ) return
 
-        setNoInternet(false)
-        setFailed(false)
-
         val prevItem = prevState?.detailItems?.getOrNull(prevState.selectedDetailPosition)
         val currentItem = state.detailItems.getOrNull(state.selectedDetailPosition) ?: return
-
-        renderTimer(state)
 
         if (currentItem.isContentLoaded) return
 
@@ -317,57 +306,47 @@ class StoriesDetailFragment @Inject constructor(
                             content.data,
                             object : ImageLoaderStateListener {
                                 override fun successLoad() {
-                                    setNoContent(false)
                                     contentIsLoaded()
                                     analytic?.sendImpressionStoriesContent(viewModel.storyId)
+                                    hideError()
                                 }
                                 override fun failedLoad() {
-                                    setNoContent(true)
+                                    setErrorType(StoriesErrorView.Type.NoContent)
+                                    contentIsLoaded()
                                 }
                             }
                         )
                     }
 
                     StoryStatus.Unknown -> {
-                        setNoContent(true)
+                        setErrorType(StoriesErrorView.Type.EmptyCategory)
                         contentIsLoaded()
                     }
                 }
             }
 
             Video -> {
-                // todo
-                setNoContent(false)
+                hideError()
             }
 
             Unknown -> {
-                setNoContent(true)
+                setErrorType(StoriesErrorView.Type.EmptyCategory)
                 contentIsLoaded()
             }
         }
     }
 
-    private fun observeBottomSheetStatus(
-        prevState: Map<BottomSheetType, Boolean>?,
-        state: Map<BottomSheetType, Boolean>
-    ) {
-        if (prevState == state) return
-        if (state.isAnyShown.orFalse()) pauseStories() else resumeStories()
-    }
+    private fun renderTimer(prevTimer: TimerStatusInfo?, timerState: TimerStatusInfo) {
+        if (prevTimer == timerState) return
 
-    private fun renderTimer(state: StoriesDetail) {
-        val data = state.detailItems[state.selectedDetailPosition]
-
-        showStoriesActionView(data.event == RESUME)
+        showStoriesActionView(timerState.event == RESUME)
 
         with(binding.cvStoriesDetailTimer) {
             apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     StoriesDetailTimer(
-                        currentPosition = state.selectedDetailPosition,
-                        itemCount = state.detailItems.size,
-                        data = data,
+                        timerInfo = timerState,
                     ) { if (isEligiblePage) viewModelAction(NextDetail) }
                 }
             }
@@ -599,23 +578,18 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun setNoInternet(isShow: Boolean) = with(binding.layoutStoriesNoInet) {
-        root.showWithCondition(isShow)
-        icCloseLoading.setOnClickListener { activity?.finish() }
+    private fun setErrorType(errorType: StoriesErrorView.Type, isTimerAvailable: Boolean = true, onClick: () -> Unit = {}) = with(binding.vStoriesError) {
+        show()
+        type = errorType
+        setAction { onClick() }
+        setCloseAction { activity?.finish() }
+        translationZ = if (errorType == StoriesErrorView.Type.NoContent || errorType == StoriesErrorView.Type.EmptyCategory) 0f else 1f
+
+        if(errorType != StoriesErrorView.Type.EmptyCategory && isTimerAvailable) return@with
+        renderTimer(null, TimerStatusInfo.Empty)
     }
 
-    private fun setFailed(isShow: Boolean) = with(binding.layoutStoriesFailed) {
-        root.showWithCondition(isShow)
-        icCloseLoading.setOnClickListener { activity?.finish() }
-    }
-
-    private fun setNoContent(isShow: Boolean) = with(binding.layoutNoContent) {
-        binding.layoutStoriesContent.root.showWithCondition(!isShow)
-        root.showWithCondition(isShow)
-
-        if(!isShow) return@with
-        renderTimer(StoriesDetail.Empty)
-    }
+    private fun hideError() = binding.vStoriesError.gone()
 
     override fun onDestroyView() {
         super.onDestroyView()
