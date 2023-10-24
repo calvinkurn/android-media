@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
@@ -16,14 +16,6 @@ buildscript {
 android {
     namespace 'com.tokopedia.stories.creation'
     testNamespace 'com.tokopedia.stories.creation.test'
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
-    }
 
     defaultConfig {
         multiDexEnabled true
@@ -101,6 +93,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.workManager
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.components

@@ -50,7 +50,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
-    androidTestImplementation 'androidx.benchmark:benchmark-macro-junit4:1.2.0-alpha06'
+    androidTestImplementation 'androidx.benchmark:benchmark-macro-junit4:1.2.0-alpha15'
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     implementation projectOrAar(rootProject.ext.libraries.macrobenchmarkUtil)
     implementation rootProject.ext.supportLibDependencies.constraintLayout

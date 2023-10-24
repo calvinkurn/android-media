@@ -13,10 +13,10 @@ data class StoriesCreationConfigResponse(
     val draftStoryId: String = "",
 
     @SerializedName("min_video_duration")
-    val minVideoDuration: Long = 0L,
+    val minVideoDuration: Int = 0,
 
     @SerializedName("max_video_duration")
-    val maxVideoDuration: Long = 0L,
+    val maxVideoDuration: Int = 0,
 
     @SerializedName("min_product_tag")
     val minProductTag: Int = 0,

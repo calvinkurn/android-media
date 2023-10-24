@@ -17,6 +17,8 @@ data class ParamCommonWidgetModel(
     val pageSource: String = "",
     @SerializedName("date_type")
     val dateType: String = DateFilterType.DATE_TYPE_WEEK,
+    @SerializedName("widget_source")
+    val widgetSource: String = ""
 ) {
 
     fun toJsonString(): String {
