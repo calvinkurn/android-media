@@ -17,6 +17,7 @@ import rx.Subscriber
 
 private const val searchProductFirstPage8ProductsJSON = "searchproduct/loaddata/first-page-8-products.json"
 private const val searchProductThirdPageJSON = "searchproduct/loaddata/third-page.json"
+private const val searchProductThirdPageReimagineJSON = "searchproduct/loaddata/reimagine/third-page.json"
 
 internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
 
@@ -37,7 +38,9 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
 
         val expectedStart = 8
         `Then verify load more use case request params`(expectedStart, searchProductModelFirstPage.searchProduct.header.additionalParams)
-        `Then verify view interaction when load more data success`(searchProductModelFirstPage)
+        `Then verify view interaction when load more data success`(
+            searchProductModelFirstPage.searchProduct.data.autocompleteApplink,
+        )
         `Then verify start from is incremented twice`()
         val topAdsIndexStart = searchProductModelFirstPage.topAdsModel.data.size
         val organicIndexStart = searchProductModelFirstPage.searchProduct.data.productList.size
@@ -109,7 +112,9 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         }
     }
 
-    private fun `Then verify view interaction when load more data success`(searchProductModelFirstPage: SearchProductModel) {
+    private fun `Then verify view interaction when load more data success`(
+        expectedAutoCompleteApplink: String,
+    ) {
         verifyOrder {
             productListView.isAnyFilterActive
 
@@ -118,8 +123,8 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
             verifyProcessingData(
                 productListView,
                 performanceMonitoring,
-                searchProductModelFirstPage,
-                slot()
+                slot(),
+                expectedAutoCompleteApplink,
             )
 
             productListView.updateScrollListener()
@@ -179,8 +184,8 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
             verifyProcessingData(
                 productListView,
                 performanceMonitoring,
-                searchProductModelFirstPage,
-                slot()
+                slot(),
+                searchProductModelFirstPage.searchProduct.data.autocompleteApplink,
             )
 
             productListView.updateScrollListener()
@@ -238,5 +243,64 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         verify (exactly = 0) {
             searchProductLoadMoreUseCase.execute(any(), any())
         }
+    }
+
+    @Test
+    fun `Load More Data Success for reimagine`() {
+        val searchProductModelFirstPage = searchProductFirstPageReimagineJSON.jsonToObject<SearchProductModel>()
+        val searchProductModelSecondPage = searchProductSecondPageReimagineJSON.jsonToObject<SearchProductModel>()
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given Search Product API will return SearchProductModel`(searchProductModelFirstPage)
+        `Given Search Product Load More API will return SearchProductModel`(searchProductModelSecondPage)
+        `Given Mechanism to save and get product position from cache`()
+        `Given Product List Presenter already Load Data`()
+
+        val loadMoreSearchParameter = createLoadMoreSearchParameter()
+        `When Product List Presenter Load More Data`(loadMoreSearchParameter)
+
+        val expectedStart = 8
+        `Then verify load more use case request params`(
+            expectedStart,
+            searchProductModelFirstPage.searchProductV5.header.additionalParams
+        )
+        `Then verify view interaction when load more data success`(
+            searchProductModelFirstPage.searchProductV5.header.autocompleteApplink
+        )
+        `Then verify start from is incremented twice`()
+
+        val topAdsIndexStart = searchProductModelFirstPage.topAdsModel.data.size
+        val organicIndexStart = searchProductModelFirstPage.searchProductV5.data.productList.size
+        `Then verify visitable list with product items for reimagine`(
+            visitableListSlot = visitableListSlot,
+            searchProductModel = searchProductModelSecondPage,
+            topAdsPositionStart = topAdsIndexStart,
+            organicPositionStart = organicIndexStart,
+        )
+    }
+
+    @Test
+    fun `Load More for third page should send additional params from second page for reimagine`() {
+        val searchProductModelFirstPage = searchProductFirstPageReimagineJSON.jsonToObject<SearchProductModel>()
+        val searchProductModelSecondPage = searchProductSecondPageReimagineJSON.jsonToObject<SearchProductModel>()
+        val searchProductModelThirdPage = searchProductThirdPageReimagineJSON.jsonToObject<SearchProductModel>()
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given Search Product API will return SearchProductModel`(searchProductModelFirstPage)
+
+        every { searchProductLoadMoreUseCase.execute(capture(requestParamsSlot), any()) }.answers {
+            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelSecondPage)
+        } andThenAnswer {
+            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelThirdPage)
+        }
+
+        `Given Mechanism to save and get product position from cache`()
+        `Given Product List Presenter already Load Data`()
+
+        val loadMoreSearchParameter = createLoadMoreSearchParameter()
+        `When Product List Presenter Load More Data`(loadMoreSearchParameter)
+
+        `When Product List Presenter Load More Data`(createLoadMoreSearchParameter())
+
+        val expectedStart = 16
+        `Then verify load more use case request params`(expectedStart, searchProductModelSecondPage.searchProductV5.header.additionalParams)
     }
 }

@@ -6,6 +6,7 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -41,6 +42,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.view.binding.viewBinding
@@ -73,6 +75,7 @@ class ShopHomeNplCampaignViewHolder(
     private var iconCtaChevron: IconUnify? = viewBinding?.iconCtaChevron
     private val loaderRemindMe: LoaderUnify? = viewBinding?.loaderRemindMe
     private val nplReminderView: CardUnify2? = viewBinding?.nplReminderView
+    private val layoutContainerRemindMe: LinearLayout? = viewBinding?.layoutContainerRemindMe
     private val remindMeText: Typography? = viewBinding?.tvNplRemindMe
     private val imageRemindMeNotification: IconUnify? = viewBinding?.ivRemindMeBell
     private val imageTnc: ImageView? = viewBinding?.imageTnc
@@ -92,6 +95,9 @@ class ShopHomeNplCampaignViewHolder(
         private const val RV_CAROUSEL_MARGIN_TOP = 24f
         private const val BANNER_IMAGE_RATIO_EMPTY_PRODUCT = "1:1"
         private val SHOP_RE_IMAGINE_MARGIN = 16f.dpToPx()
+        private val REMINDER_BUTTON_RADIUS = 20f.dpToPx()
+        private val REMINDER_BUTTON_PADDING_NO_TEXT = 4.toPx()
+        private val REMINDER_BUTTON_PADDING_WITH_TEXT = 8.toPx()
     }
 
     private var productListCampaignAdapter: ShopCampaignCarouselProductAdapter? = null
@@ -337,6 +343,7 @@ class ShopHomeNplCampaignViewHolder(
         isRemindMe = model.data?.firstOrNull()?.isRemindMe
         isRemindMe?.let {
             nplReminderView?.show()
+            nplReminderView?.radius = REMINDER_BUTTON_RADIUS
             nplReminderView?.setOnClickListener {
                 if (loaderRemindMe?.isVisible == false) {
                     shopHomeCampaignNplWidgetListener.onClickRemindMe(model)
@@ -385,10 +392,22 @@ class ShopHomeNplCampaignViewHolder(
             setTextColor(MethodChecker.getColor(itemView.context, colorText))
             if (totalNotifyWording.isEmpty()) {
                 hide()
+                layoutContainerRemindMe?.setPadding(
+                    REMINDER_BUTTON_PADDING_NO_TEXT,
+                    0,
+                    REMINDER_BUTTON_PADDING_NO_TEXT,
+                    0
+                )
             } else {
                 val totalNotify = model.data?.firstOrNull()?.totalNotify ?: 0
                 val totalNotifyFormatted = totalNotify.thousandFormatted(1, RoundingMode.DOWN)
                 show()
+                layoutContainerRemindMe?.setPadding(
+                    REMINDER_BUTTON_PADDING_WITH_TEXT,
+                    0,
+                    REMINDER_BUTTON_PADDING_WITH_TEXT,
+                    0
+                )
                 text = totalNotifyFormatted
             }
         }

@@ -4,6 +4,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -209,7 +210,9 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
                 val firstChildHeight = recyclerView.findViewHolderForAdapterPosition(
                     Int.ZERO
                 )?.itemView?.height.orZero()
-                recyclerView.setLayoutHeight(firstChildHeight)
+                val lp = recyclerView.layoutParams as? ViewGroup.LayoutParams
+                lp?.height = firstChildHeight
+                recyclerView.layoutParams = lp
                 recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })

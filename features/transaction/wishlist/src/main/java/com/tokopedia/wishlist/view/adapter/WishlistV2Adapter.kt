@@ -56,7 +56,6 @@ import com.tokopedia.wishlist.view.adapter.viewholder.WishlistV2RecommendationIt
 import com.tokopedia.wishlist.view.adapter.viewholder.WishlistV2RecommendationTitleViewHolder
 import com.tokopedia.wishlist.view.adapter.viewholder.WishlistV2TdnViewHolder
 import com.tokopedia.wishlist.view.adapter.viewholder.WishlistV2TickerViewHolder
-import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 import com.tokopedia.wishlistcollection.view.adapter.viewholder.WishlistCollectionEmptyStateViewHolder
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
 
@@ -479,10 +478,6 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         listTypeData.forEach {
             it.isChecked = true
         }
-    }
-
-    fun setActionListener(v2Fragment: WishlistV2Fragment) {
-        this.actionListener = v2Fragment
     }
 
     fun setActionListener(v2Fragment: WishlistCollectionDetailFragment) {

@@ -32,6 +32,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel.Companion.IS_ATC
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.carouselproductcard.R as carouselproductcardR
 
 /**
  * author by Rafli Syam on 17/02/2021
@@ -70,6 +71,8 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
     }
 
     private fun bindProductCardData(element: ShopHomeCarousellProductUiModel) {
+        recyclerView?.findViewById<RecyclerView>(carouselproductcardR.id.carouselProductCardRecyclerView)?.isNestedScrollingEnabled = false
+        recyclerViewCarouselSingleOrDoubleProduct?.isNestedScrollingEnabled = false
         val carouselProductList = element.productList.map {
             ShopPageHomeMapper.mapToProductCardPersonalizationModel(
                 shopHomeProductViewModel = it,

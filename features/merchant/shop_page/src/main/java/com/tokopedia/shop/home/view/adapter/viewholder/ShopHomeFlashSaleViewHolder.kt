@@ -7,6 +7,7 @@ import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -32,6 +33,7 @@ import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 import java.math.RoundingMode
@@ -58,6 +60,7 @@ class ShopHomeFlashSaleViewHolder(
     private val flashSaleReminderView: CardUnify2? = itemView.findViewById(R.id.flash_sale_reminder_view)
     private val reminderBellView: AppCompatImageView? = itemView.findViewById(R.id.iv_remind_me_bell)
     private val reminderCountView: Typography? = itemView.findViewById(R.id.tgp_remind_me)
+    private val layoutContainerRemindMe: LinearLayout? = itemView.findViewById(R.id.layout_container_remind_me)
     private val productCarouselView: RecyclerView? = itemView.findViewById(R.id.rv_flash_sale_product_carousel)
     private val rvContainer: FrameLayout? = itemView.findViewById(R.id.rv_container)
     private val bgContainer: ConstraintLayout? = itemView.findViewById(R.id.bg_container)
@@ -83,6 +86,9 @@ class ShopHomeFlashSaleViewHolder(
         private const val RV_CONTAINER_DEFAULT_MARGIN_TOP = 12f
         private val SHOP_RE_IMAGINE_MARGIN_BG_CONTAINER = 16f.dpToPx()
         private val SHOP_RE_IMAGINE_PADDING_RV = 28f.dpToPx()
+        private val REMINDER_BUTTON_RADIUS = 20f.dpToPx()
+        private val REMINDER_BUTTON_PADDING_NO_TEXT = 4.toPx()
+        private val REMINDER_BUTTON_PADDING_WITH_TEXT = 8.toPx()
     }
 
     init {
@@ -419,6 +425,12 @@ class ShopHomeFlashSaleViewHolder(
         handler.postDelayed({
             reminderCountView?.text = reminderWording
             reminderCountView?.showWithCondition(reminderWording.isNotEmpty())
+            layoutContainerRemindMe?.setPadding(
+                REMINDER_BUTTON_PADDING_NO_TEXT,
+                0,
+                REMINDER_BUTTON_PADDING_NO_TEXT,
+                0
+            )
         }, DELAY_IN_THREE_SECONDS)
     }
 
@@ -445,6 +457,7 @@ class ShopHomeFlashSaleViewHolder(
         if (isOngoing) {
             flashSaleReminderView?.hide()
         } else {
+            flashSaleReminderView?.radius = REMINDER_BUTTON_RADIUS
             flashSaleReminderView?.show()
         }
     }

@@ -16,6 +16,7 @@ import org.junit.Test
 import rx.Subscriber
 
 private const val ticker = "searchproduct/ticker/ticker.json"
+private const val tickerReimagine = "searchproduct/ticker/ticker-reimagine.json"
 
 internal class SearchProductTickerTest: ProductListPresenterTestFixtures() {
 
@@ -85,4 +86,21 @@ internal class SearchProductTickerTest: ProductListPresenterTestFixtures() {
 
     private fun getTickerDataView() =
         visitableList.filterIsInstance<TickerDataView>().first()
+
+    @Test
+    fun `show ticker in visitable list reimagine`() {
+        val searchProductModel = tickerReimagine.jsonToObject<SearchProductModel>()
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given view will return keyword`(keyword)
+
+        `When Load Data`(searchParameter)
+
+        `Then verify view set visitable list`()
+        `Then assert ticker data view`(
+            searchProductModel.searchProductV5.data.ticker,
+            keyword,
+            Dimension90Utils.getDimension90(searchParameter),
+        )
+    }
 }
