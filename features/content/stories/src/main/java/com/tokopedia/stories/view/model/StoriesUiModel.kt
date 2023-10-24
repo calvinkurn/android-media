@@ -71,7 +71,7 @@ data class StoriesDetailItem(
     }
 
     enum class StoriesDetailItemUiEvent {
-        PAUSE, RESUME,
+        PAUSE, RESUME, BUFFERING
     }
 
     data class Sharing(

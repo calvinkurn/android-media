@@ -28,7 +28,7 @@ class CreateStoryUseCase @Inject constructor(
 
         private const val QUERY = """
             mutation contentCreatorStoryCreateStory(
-                ${"$$PARAM_REQ"}: ContentCreatorStoryCreateStoryRequest!,
+                ${"$$PARAM_REQ"}: contentCreatorStoryCreateStoryRequest!
             ) {
                 contentCreatorStoryCreateStory(
                     $PARAM_REQ: ${"$$PARAM_REQ"}

@@ -6,16 +6,15 @@ import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
 import com.tokopedia.catalogcommon.databinding.ItemSliderTextImageBinding
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
-
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 class ImageSlidePagerAdapter(private var imageList: List<SliderImageTextUiModel.ItemSliderImageText>) :
     PagerAdapter() {
 
-    companion object{
+    companion object {
         private const val SEVENTY_FIVE_PERCENT_TRANSPARANT = 0.75f
         private const val ADDITIONAL_HEIGHT = 15
-
     }
 
     override fun getCount(): Int {
@@ -41,9 +40,9 @@ class ImageSlidePagerAdapter(private var imageList: List<SliderImageTextUiModel.
             binding.tvDescription.text = item.textDescription
 
             binding.tvHighlight.setTextColor(item.textHighlightColor)
+            binding.tvHighlight.showWithCondition(item.textHighlight.isNotEmpty())
             binding.tvTitle.setTextColor(item.textTitleColor)
             binding.tvDescription.setTextColor(item.textDescriptionColor)
-
             val lineHeight = binding.tvDescription.lineHeight
 
             val totalHeight = lineHeight * binding.tvDescription.maxLines
@@ -61,5 +60,4 @@ class ImageSlidePagerAdapter(private var imageList: List<SliderImageTextUiModel.
     override fun getPageWidth(position: Int): Float {
         return SEVENTY_FIVE_PERCENT_TRANSPARANT
     }
-
 }

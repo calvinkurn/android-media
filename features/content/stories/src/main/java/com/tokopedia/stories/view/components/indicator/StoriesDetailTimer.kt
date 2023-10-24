@@ -34,11 +34,12 @@ fun StoriesDetailTimer(
     timerInfo: TimerStatusInfo,
     timerFinished: () -> Unit,
 ) {
-    val anim = remember(timerInfo.story.id, timerInfo.story.resetValue) { Animatable(INITIAL_ANIMATION) }
+    val anim =
+        remember(timerInfo.story.id, timerInfo.story.resetValue) { Animatable(INITIAL_ANIMATION) }
 
     LaunchedEffect(timerInfo) {
         when (timerInfo.event) {
-            StoriesDetailItemUiEvent.PAUSE -> anim.stop()
+            StoriesDetailItemUiEvent.PAUSE, StoriesDetailItemUiEvent.BUFFERING -> anim.stop()
             StoriesDetailItemUiEvent.RESUME -> {
                 delay(100)
                 anim.animateTo(
@@ -81,7 +82,11 @@ private fun StoriesDetailTimerContent(
                         .height(2.dp)
                         .clip(RoundedCornerShape(60))
                         .weight(1f)
-                        .background(colorResource(id = unifyprinciplesR.color.Unify_Static_White).copy(alpha = 0.4f))
+                        .background(
+                            colorResource(id = unifyprinciplesR.color.Unify_Static_White).copy(
+                                alpha = 0.4f
+                            )
+                        )
                 ) {
                     Box(
                         modifier = Modifier

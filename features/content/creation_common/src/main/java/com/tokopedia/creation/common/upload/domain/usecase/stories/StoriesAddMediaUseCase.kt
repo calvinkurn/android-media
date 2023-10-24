@@ -28,7 +28,7 @@ class StoriesAddMediaUseCase @Inject constructor(
 
         private const val QUERY = """
             mutation contentCreatorStoryAddMedia(
-                ${"$$PARAM_REQ"}: ContentCreatorStoryAddMediaRequest!,
+                ${"$$PARAM_REQ"}: ContentCreatorStoryAddMediaRequest!
             ) {
                 contentCreatorStoryAddMedia(
                     $PARAM_REQ: ${"$$PARAM_REQ"}

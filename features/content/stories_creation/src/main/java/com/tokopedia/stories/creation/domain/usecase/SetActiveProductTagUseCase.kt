@@ -27,10 +27,10 @@ class SetActiveProductTagUseCase @Inject constructor(
         private const val PARAM_REQ = "req"
 
         private const val QUERY = """
-            mutation contentCreatorSetActiveProductTag(
-                ${"$$PARAM_REQ"}: contentCreatorSetActiveProductTagRequest!,
+            mutation contentCreatorStorySetActiveProductTags(
+                ${"$$PARAM_REQ"}: ContentCreatorStorySetActiveProductTagsRequest!
             ) {
-                contentCreatorSetActiveProductTag(
+                contentCreatorStorySetActiveProductTags(
                     $PARAM_REQ: ${"$$PARAM_REQ"}
                 ) {
                     productIDs

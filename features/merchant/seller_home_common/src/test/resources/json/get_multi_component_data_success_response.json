@@ -1,0 +1,48 @@
+{
+  "data": {
+    "fetchMultiComponentWidgetData": {
+      "data": [
+        {
+          "dataKey": "verifiedOrdersPlusImpact",
+          "error": false,
+          "errorMsg": "",
+          "showWidget": true,
+          "tabs": [
+            {
+              "components": [
+                {
+                  "componentType": "pieChart",
+                  "configuration": "{\"title\":\"Detail potensi penjualan\",\"tooltip\":{\"content\":\"Berdasarkan pesanan baru yang memakai Bebas Ongkir.\",\"show\":true},\"gridSize\":2,\"emptyState\":{\"imageUrl\":\"https://images.tokopedia.net/img/seller-statistics/statistics-board.png\",\"title\":\"Belum ada penjualan dari Bebas Ongkir\",\"description\":\"Detail penjualan akan ditampilkan jika ada produk yang dibeli dengan Bebas Ongkir.\",\"ctaText\":\"Pelajari Strategi Berjualan\",\"url\":\"https://seller.tokopedia.com/edu/strategi-penjualan/\",\"applink\":\"tokopedia://webview?url=https://seller.tokopedia.com/edu/strategi-penjualan/\"}}",
+                  "dataKey": "verifiedOrdersBONetAmount",
+                  "metricsParam": "{\"widget_source\":\"multi-component-widget\"}"
+                },
+                {
+                  "componentType": "pieChart",
+                  "configuration": "{\"title\":\"Detail pesanan baru\",\"tooltip\":{\"content\":\"Jumlah pesanan baru yang memakai Bebas Ongkir.\",\"show\":true},\"gridSize\":2,\"emptyState\":{\"imageUrl\":\"https://images.tokopedia.net/img/seller-statistics/statistics-board.png\",\"title\":\"Belum ada penjualan dari Bebas Ongkir\",\"description\":\"Detail penjualan akan ditampilkan jika ada produk yang dibeli dengan Bebas Ongkir.\",\"ctaText\":\"Pelajari Strategi Berjualan\",\"url\":\"https://seller.tokopedia.com/edu/strategi-penjualan/\",\"applink\":\"tokopedia://webview?url=https://seller.tokopedia.com/edu/strategi-penjualan/\"}}",
+                  "dataKey": "verifiedOrdersBOQuantity",
+                  "metricsParam": "{\"widget_source\":\"multi-component-widget\"}"
+                }
+              ],
+              "id": "tab_bebas_ongkir",
+              "ticker": "Data performa Bebas Ongkir diambil dari pesanan PLUS dan Non-PLUS yang menggunakan fitur Bebas Ongkir.",
+              "title": "Bebas Ongkir"
+            },
+            {
+              "components": [
+                {
+                  "componentType": "multiTrendline",
+                  "configuration": "{\"tooltip\":{\"content\":\"\",\"show\":false},\"url\":\"https://seller.tokopedia.com/statistic/operational\",\"applink\":\"tokopedia://gold-merchant-statistic-dashboard?page=operational-insight\",\"ctaText\":\"Pantau Performa Pesanan PLUS\",\"gridSize\":4,\"emptyState\":{}}",
+                  "dataKey": "plusVerifiedTrendline",
+                  "metricsParam": "{\"widget_source\":\"multi-component-widget\"}"
+                }
+              ],
+              "id": "tab_plus",
+              "ticker": "",
+              "title": "PLUS"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
