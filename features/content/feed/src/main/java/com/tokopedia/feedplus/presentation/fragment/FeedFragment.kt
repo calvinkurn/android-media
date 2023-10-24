@@ -506,7 +506,8 @@ class FeedFragment :
                     FeedBaseFragment.TAB_TYPE_CDP
                 } else {
                     arguments?.getString(UF_EXTRA_FEED_SOURCE_NAME)
-                }
+                },
+                entryPoint = feedEntrySource.entryPoint,
             )
         }
 
