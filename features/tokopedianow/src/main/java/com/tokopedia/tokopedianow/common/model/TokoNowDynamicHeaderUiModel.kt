@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.common.model
 import com.tokopedia.kotlin.extensions.view.EMPTY
 
 data class TokoNowDynamicHeaderUiModel(
+    val channelId: String = "",
     val title: String = "",
     val subTitle: String = "",
     val ctaText: String = "",

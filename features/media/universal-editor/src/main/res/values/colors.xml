@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="dms_universal_editor_nn_0">#FFFFFF</color>
+    <color name="dms_universal_editor_nn_900">#2E3137</color>
+    <color name="dms_universal_editor_yn_500">#FF7F17</color>
+    <color name="dms_universal_editor_rn_500">#F94D63</color>
+    <color name="dms_universal_editor_pn_500">#9342ED</color>
+    <color name="dms_universal_editor_bn_500">#0094CF</color>
+    <color name="dms_universal_editor_tn_500">#009F92</color>
+    <color name="dms_universal_editor_gn_500">#00AA5B</color>
+
+    <color name="dms_universal_editor_tool_icon_color">#E9EBF5</color>
+    <color name="dms_universal_editor_tool_text_color">#F5F6FF</color>
+    <color name="dms_universal_editor_tool_background_color">#222329</color>
+
+    <color name="dms_universal_editor_loader_overlay">#AD2E3137</color>
+
+    <color name="dms_universal_editor_input_text_overlay">#AD000000</color>
+
+    <color name="dms_universal_editor_input_text_style_font_color_active">#121212</color>
+    <color name="dms_universal_editor_input_text_style_background_color_inactive">#222329</color>
+
+    <color name="dms_universal_editor_input_text_alignment_background_color">#222329</color>
+</resources>

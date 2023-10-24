@@ -50,7 +50,8 @@ object ProductCarouselChipsMapper {
         item: HomeProductCarouselChipsUiModel,
         recomWidget: RecommendationWidget,
         miniCartData: MiniCartSimplifiedData?,
-        selectedChip: TokoNowChipUiModel
+        selectedChip: TokoNowChipUiModel,
+        hasBlockedAddToCart: Boolean
     ) {
         updateItemById(item.id) {
             val chipList = item.chipList.toMutableList()
@@ -65,7 +66,8 @@ object ProductCarouselChipsMapper {
                 headerName = item.header?.title.orEmpty(),
                 recomWidget = recomWidget,
                 miniCartData = miniCartData,
-                needToChangeMaxLinesName = true
+                needToChangeMaxLinesName = true,
+                hasBlockedAddToCart = hasBlockedAddToCart
             )
 
             val newItem = item.copy(
