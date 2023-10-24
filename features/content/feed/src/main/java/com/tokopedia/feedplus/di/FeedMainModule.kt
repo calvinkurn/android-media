@@ -23,6 +23,7 @@ class FeedMainModule(private val activityContext: Context) {
     fun provideActivityContext(): Context = activityContext
 
     @Provides
+    @FeedMainScope
     fun provideGraphqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
