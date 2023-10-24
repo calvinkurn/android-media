@@ -17,6 +17,7 @@ const val GET_HOME_RECOMMENDATION_CARD_QUERY = """
             recommendationCards {
               id
               layout
+              dataStringJson
               url
               name
               subtitle

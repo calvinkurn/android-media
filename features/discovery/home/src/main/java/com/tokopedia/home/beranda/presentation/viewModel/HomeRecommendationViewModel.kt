@@ -3,10 +3,10 @@ package com.tokopedia.home.beranda.presentation.viewModel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.GetHomeRecommendationCardUseCase
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper.Companion.TYPE_BANNER_ADS
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper.Companion.TYPE_VERTICAL_BANNER_ADS
+import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.GetHomeRecommendationCardUseCase
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
@@ -79,8 +79,8 @@ class HomeRecommendationViewModel @Inject constructor(
                     val topAdsBanner = arrayListOf<Pair<String, ArrayList<TopAdsImageViewModel>>>()
                     homeBannerTopAds.forEach {
                         if (it.bannerType == TYPE_BANNER_ADS) {
-                            val bannerData = topAdsImageViewUseCase.getImageData(
-                                topAdsImageViewUseCase.getQueryMap(
+                            val bannerData = topAdsImageViewUseCase.get().getImageData(
+                                topAdsImageViewUseCase.get().getQueryMap(
                                     query = "",
                                     source = TOPADS_TDN_RECOM_SOURCE,
                                     pageToken = "",
@@ -88,15 +88,15 @@ class HomeRecommendationViewModel @Inject constructor(
                                     dimenId = TOPADS_TDN_RECOM_DIMEN,
                                     depId = "",
                                     page = topAdsBannerNextPage
-                                ))
+                                )
+                            )
                             if (bannerData.isNotEmpty()) {
                                 // todo bakal dihapus karena udah di merge
-                        topAdsBanner.add(Pair(TYPE_BANNER_ADS, bannerData))
+                                topAdsBanner.add(Pair(TYPE_BANNER_ADS, bannerData))
                             } else {
                                 homeBannerTopAdsMutable.remove(it)
                                 newList.remove(it)
                             }
-
                         } else if (it.bannerType == TYPE_VERTICAL_BANNER_ADS) {
                             val bannerData = topAdsImageViewUseCase.get().getImageData(
                                 topAdsImageViewUseCase.get().getQueryMap(
@@ -107,7 +107,8 @@ class HomeRecommendationViewModel @Inject constructor(
                                     dimenId = TOPADS_TDN_RECOM_VERTICAL_DIMEN,
                                     depId = "",
                                     page = topAdsBannerNextPage
-                                ))
+                                )
+                            )
                             if (bannerData.isNotEmpty()) {
                                 topAdsBanner.add(Pair(TYPE_VERTICAL_BANNER_ADS, bannerData))
                             } else {
@@ -166,7 +167,6 @@ class HomeRecommendationViewModel @Inject constructor(
                             HomeRecommendationBannerTopAdsDataModel(pair.second.firstOrNull(), bannerType = pair.first)
                     }
                 }
-
             } else {
                 topAdsBanner.forEachIndexed { index, pair ->
                     val visitableBanner = homeBannerTopAds[index]
@@ -184,7 +184,6 @@ class HomeRecommendationViewModel @Inject constructor(
                     }
                 }
             }
-
         }
         _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = newList))
     }
@@ -229,7 +228,7 @@ class HomeRecommendationViewModel @Inject constructor(
                 val homeBannerTopAdsMutable = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>().toMutableList()
                 val newList = data.homeRecommendations.toMutableList()
                 val topAdsBanner2 = arrayListOf<Pair<String, ArrayList<TopAdsImageViewModel>>>()
-                homeBannerTopAds.forEachIndexed { index, it->
+                homeBannerTopAds.forEachIndexed { index, it ->
                     if (it.bannerType == TYPE_BANNER_ADS) {
                         val bannerData = topAdsImageViewUseCase.get().getImageData(
                             topAdsImageViewUseCase.get().getQueryMap(
@@ -240,17 +239,17 @@ class HomeRecommendationViewModel @Inject constructor(
                                 dimenId = TOPADS_TDN_RECOM_DIMEN,
                                 depId = "",
                                 page = topAdsBannerNextPage
-                            ))
+                            )
+                        )
                         if (bannerData.isNotEmpty()) {
                             topAdsBanner2.add(Pair(TYPE_BANNER_ADS, bannerData))
                         } else {
                             homeBannerTopAdsMutable.remove(it)
                             newList.remove(it)
                         }
-
                     } else if (it.bannerType == TYPE_VERTICAL_BANNER_ADS) {
-                        val bannerData = topAdsImageViewUseCase.getImageData(
-                            topAdsImageViewUseCase.getQueryMap(
+                        val bannerData = topAdsImageViewUseCase.get().getImageData(
+                            topAdsImageViewUseCase.get().getQueryMap(
                                 query = "",
                                 source = TOPADS_TDN_RECOM_VERTICAL_SOURCE,
                                 pageToken = "",
@@ -258,7 +257,8 @@ class HomeRecommendationViewModel @Inject constructor(
                                 dimenId = TOPADS_TDN_RECOM_VERTICAL_DIMEN,
                                 depId = "",
                                 page = topAdsBannerNextPage
-                            ))
+                            )
+                        )
                         if (bannerData.isNotEmpty()) {
                             topAdsBanner2.add(Pair(TYPE_VERTICAL_BANNER_ADS, bannerData))
                         } else {

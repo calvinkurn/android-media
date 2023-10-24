@@ -35,6 +35,8 @@ data class RecommendationCard(
     val labelGroup: List<LabelGroup> = listOf(),
     @SerializedName("layout")
     val layout: String = "",
+    @SerializedName("dataStringJson")
+    val dataStringJson: String = "",
     @SerializedName("name")
     val name: String = "",
     @SerializedName("price")
