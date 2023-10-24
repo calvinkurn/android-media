@@ -1,17 +1,14 @@
 package com.tokopedia.play.widget.ui
 
-import android.animation.Animator
 import android.content.Context
 import android.net.Uri
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import com.airbnb.lottie.LottieDrawable
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.google.android.exoplayer2.source.BehindLiveWindowException
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
@@ -39,13 +36,20 @@ class PlayVideoWidgetView : CardUnify2 {
 
     private var mSizeMode = SizeMode.FollowWidth
 
-    private val lottieLoadHelper = PlayWidgetLottieLoadHelper(context)
+    private var mModel = PlayVideoWidgetUiModel.Empty
 
     private val playerListener = object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             binding.playerView.showWithCondition(
                 playWhenReady && playbackState == Player.STATE_READY
             )
+        }
+
+        override fun onPlayerError(error: ExoPlaybackException) {
+            if (error.type != ExoPlaybackException.TYPE_SOURCE) return
+            if (error.sourceException !is BehindLiveWindowException) return
+
+            bindPlayer(mModel.videoUrl)
         }
     }
     private val player by lazyThreadSafetyNone {
@@ -66,15 +70,6 @@ class PlayVideoWidgetView : CardUnify2 {
                 pauseVideo()
             }
         })
-
-        listOf(
-            R.string.lottie_sound_on_off,
-            R.string.lottie_sound_off_on,
-            R.string.lottie_sound_on_loop
-        ).forEach { res ->
-            lottieLoadHelper.preload(context.getString(res))
-        }
-
     }
 
     private fun initAttrs(attrs: AttributeSet) {
@@ -122,6 +117,8 @@ class PlayVideoWidgetView : CardUnify2 {
     }
 
     fun bind(model: PlayVideoWidgetUiModel) {
+        mModel = model
+
         binding.totalWatchView.setTotalWatch(model.totalView)
         binding.imgCover.loadImage(model.coverUrl)
         binding.tvTitle.text = model.title
@@ -131,7 +128,6 @@ class PlayVideoWidgetView : CardUnify2 {
         binding.tvPartnerName.text = model.partnerName
         binding.tvLiveBadge.root.showWithCondition(model.isLive)
 
-        bindMute(model.isMuted)
         bindPlayer(model.videoUrl)
     }
 
@@ -152,79 +148,10 @@ class PlayVideoWidgetView : CardUnify2 {
 
     private fun bindPlayer(videoUrl: String) {
         binding.playerView.player = player.player
+        player.repeat(true)
+        player.mute(true)
         player.stop()
         player.loadUri(Uri.parse(videoUrl))
-    }
-
-    private fun bindMute(isMuted: Boolean) {
-        if (isMuted) setMuted()
-        else setNotMuted()
-    }
-
-    private fun setMuted() {
-        val lottieUrl = context.getString(R.string.lottie_sound_on_off)
-        if (lottieLoadHelper.hasLoaded(lottieUrl)) {
-            binding.viewPlayWidgetActionButton.lottieAction.cancelAnimation()
-            binding.viewPlayWidgetActionButton.lottieAction.hide()
-            binding.viewPlayWidgetActionButton.iconActionFallback.setImage(IconUnify.VOLUME_MUTE)
-            binding.viewPlayWidgetActionButton.iconActionFallback.show()
-        } else {
-            binding.viewPlayWidgetActionButton.iconActionFallback.hide()
-            binding.viewPlayWidgetActionButton.lottieAction.removeAllAnimatorListeners()
-            binding.viewPlayWidgetActionButton.lottieAction.cancelAnimation()
-            binding.viewPlayWidgetActionButton.lottieAction.setAnimationFromUrl(lottieUrl)
-            binding.viewPlayWidgetActionButton.lottieAction.repeatCount = 0
-            binding.viewPlayWidgetActionButton.lottieAction.show()
-            binding.viewPlayWidgetActionButton.lottieAction.playAnimation()
-        }
-    }
-
-    private fun setNotMuted() {
-        val lottieUrl = context.getString(R.string.lottie_sound_off_on)
-        val loopingLottieUrl = context.getString(R.string.lottie_sound_on_loop)
-
-        if (!lottieLoadHelper.hasLoaded(lottieUrl) || !lottieLoadHelper.hasLoaded(loopingLottieUrl)) {
-            binding.viewPlayWidgetActionButton.lottieAction.cancelAnimation()
-            binding.viewPlayWidgetActionButton.lottieAction.hide()
-            binding.viewPlayWidgetActionButton.iconActionFallback.setImage(IconUnify.VOLUME_UP)
-            binding.viewPlayWidgetActionButton.iconActionFallback.show()
-        } else {
-            binding.viewPlayWidgetActionButton.iconActionFallback.hide()
-            binding.viewPlayWidgetActionButton.lottieAction.removeAllAnimatorListeners()
-            binding.viewPlayWidgetActionButton.lottieAction.cancelAnimation()
-            binding.viewPlayWidgetActionButton.lottieAction.addAnimatorListener(
-                object : Animator.AnimatorListener {
-                    override fun onAnimationStart(animator: Animator) {
-                    }
-
-                    override fun onAnimationEnd(animator: Animator) {
-                        setSoundLoopLottie()
-                    }
-
-                    override fun onAnimationCancel(animator: Animator) {
-                    }
-
-                    override fun onAnimationRepeat(animator: Animator) {
-                    }
-                }
-            )
-            binding.viewPlayWidgetActionButton.lottieAction.setAnimationFromUrl(lottieUrl)
-            binding.viewPlayWidgetActionButton.lottieAction.repeatCount = 0
-            binding.viewPlayWidgetActionButton.lottieAction.show()
-            binding.viewPlayWidgetActionButton.lottieAction.playAnimation()
-        }
-    }
-
-    private fun setSoundLoopLottie() {
-        val lottieUrl = context.getString(R.string.lottie_sound_on_loop)
-
-        binding.viewPlayWidgetActionButton.iconActionFallback.hide()
-        binding.viewPlayWidgetActionButton.lottieAction.removeAllAnimatorListeners()
-        binding.viewPlayWidgetActionButton.lottieAction.cancelAnimation()
-        binding.viewPlayWidgetActionButton.lottieAction.setAnimationFromUrl(lottieUrl)
-        binding.viewPlayWidgetActionButton.lottieAction.repeatCount = LottieDrawable.INFINITE
-        binding.viewPlayWidgetActionButton.lottieAction.show()
-        binding.viewPlayWidgetActionButton.lottieAction.playAnimation()
     }
 
     enum class SizeMode(internal val value: Int) {

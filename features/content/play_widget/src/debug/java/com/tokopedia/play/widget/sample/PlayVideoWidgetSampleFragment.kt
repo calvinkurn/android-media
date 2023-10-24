@@ -62,11 +62,12 @@ class PlayVideoWidgetSampleFragment : Fragment() {
                 PlayVideoWidgetUiModel(
                     id = it.toString(),
                     totalView = "${it + 1}k",
-                    title = "Widget $it",
+                    title = "Title $it sangat panjang sekali, wow gila ini panjang banget lagi woi ini biar panjang",
                     avatarUrl = "",
                     partnerName = "Partner $it",
                     coverUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSC6rQmJ_kshzM2fwpkthP-Tg_3VugPnz_vrw&usqp=CAU",
                     videoUrl = "https://vod-stream.tokopedia.net/view/adaptive.m3u8?id=0e6a19506f8271eebfd736a5e8aa0102",
+                    badgeUrl = "",
                     isLive = it % 2 == 0,
                 )
             }

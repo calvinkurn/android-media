@@ -12,6 +12,16 @@ data class PlayVideoWidgetUiModel(
     val coverUrl: String,
     val videoUrl: String = "",
     val badgeUrl: String = "",
-    val isMuted: Boolean = true,
     val isLive: Boolean = false,
-)
+) {
+    companion object {
+        val Empty = PlayVideoWidgetUiModel(
+            id = "",
+            totalView = "",
+            title = "",
+            avatarUrl = "",
+            partnerName = "",
+            coverUrl = "",
+        )
+    }
+}

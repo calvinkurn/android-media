@@ -32,12 +32,36 @@
             app:use_controller="false"
             />
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_play_widget_top_gradient"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.143"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0"
+            />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_play_widget_bottom_gradient"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.286"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1"
+            />
+
         <include
             android:id="@+id/tv_live_badge"
             layout="@layout/view_play_widget_live_badge"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="8dp"
             app:layout_constraintBottom_toBottomOf="@id/total_watch_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/total_watch_view"
@@ -47,34 +71,27 @@
             android:id="@+id/total_watch_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="10dp"
             app:layout_constraintStart_toEndOf="@id/tv_live_badge"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginStart="8dp"
             />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintHorizontal_bias="0"
             android:layout_marginBottom="4dp"
             android:ellipsize="end"
             android:maxLines="2"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toTopOf="@id/ll_partner_credibility"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/ll_partner_credibility"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="@id/ll_partner_credibility"
-            />
-
-        <include
-            android:id="@+id/view_play_widget_action_button"
-            layout="@layout/view_play_widget_lottie_action_button"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_marginEnd="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/total_watch_view"
+            app:typographyType="display_2"
             />
 
         <LinearLayout

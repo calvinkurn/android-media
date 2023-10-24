@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.player
 
+import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -12,34 +13,49 @@ import com.tokopedia.play_common.util.extension.getVisiblePortion
  * Created by kenny.hadisaputra on 23/10/23
  */
 class PlayVideoWidgetVideoManager(
-    recyclerView: RecyclerView,
-    lifecycleOwner: LifecycleOwner,
+    private val recyclerView: RecyclerView,
+    private val lifecycleOwner: LifecycleOwner,
     private val config: Config = Config(),
 ) {
 
     private val widgets = mutableSetOf<PlayVideoWidgetView>()
+
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            val layoutManager = recyclerView.layoutManager
+            setupVideoAutoplay(newState, layoutManager)
+        }
+    }
+
+    private val layoutChangeListener = View.OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+        setupVideoAutoplay(recyclerView.scrollState, recyclerView.layoutManager)
+    }
 
     init {
         lifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 when (event) {
                     Lifecycle.Event.ON_PAUSE -> pause()
+                    Lifecycle.Event.ON_RESUME -> resume()
                     Lifecycle.Event.ON_DESTROY -> release()
                     else -> {}
                 }
             }
         })
 
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                val layoutManager = recyclerView.layoutManager
-                setupVideoAutoplay(newState, layoutManager)
+        recyclerView.addOnScrollListener(scrollListener)
+        recyclerView.addOnLayoutChangeListener(layoutChangeListener)
+
+        recyclerView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(v: View) {
+
+            }
+
+            override fun onViewDetachedFromWindow(v: View) {
+                recyclerView.removeOnScrollListener(scrollListener)
+                recyclerView.removeOnLayoutChangeListener(layoutChangeListener)
             }
         })
-
-        recyclerView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-            setupVideoAutoplay(recyclerView.scrollState, recyclerView.layoutManager)
-        }
     }
 
     fun bind(videoWidget: PlayVideoWidgetView) {
@@ -48,6 +64,10 @@ class PlayVideoWidgetVideoManager(
 
     fun pause() {
         widgets.forEach { it.pauseVideo() }
+    }
+
+    fun resume() {
+        setupVideoAutoplay(recyclerView.scrollState, recyclerView.layoutManager)
     }
 
     fun release() {
@@ -69,6 +89,7 @@ class PlayVideoWidgetVideoManager(
         state: Int,
         layoutManager: LinearLayoutManager,
     ) {
+        if (!lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) return
         if (state != RecyclerView.SCROLL_STATE_IDLE) return
         val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
         val lastVisiblePosition = layoutManager.findLastVisibleItemPosition()

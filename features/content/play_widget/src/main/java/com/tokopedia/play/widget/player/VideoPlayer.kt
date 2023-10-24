@@ -3,6 +3,7 @@ package com.tokopedia.play.widget.player
 import android.content.Context
 import android.net.Uri
 import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Player.EventListener
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -14,6 +15,8 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
+import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.util.Util
 
 /**
@@ -27,7 +30,7 @@ class VideoPlayer(private val context: Context) {
     val player: Player = exoPlayer
 
     init {
-        exoPlayer.addListener(object : Player.EventListener {
+        exoPlayer.addListener(object : EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
 
             }
@@ -66,6 +69,14 @@ class VideoPlayer(private val context: Context) {
         exoPlayer.volume = if (shouldMute) 0f else 100f
     }
 
+    fun repeat(shouldRepeat: Boolean) {
+        exoPlayer.repeatMode = if (shouldRepeat) {
+            ExoPlayer.REPEAT_MODE_ONE
+        } else {
+            ExoPlayer.REPEAT_MODE_OFF
+        }
+    }
+
     private fun getMediaSource(uri: Uri): MediaSource {
         val dataSourceFactory = DefaultDataSourceFactory(context, getUserAgent())
         val mediaSourceFactory = getMediaSourceFactory(uri, dataSourceFactory)
@@ -80,12 +91,21 @@ class VideoPlayer(private val context: Context) {
         uri: Uri,
         dataSourceFactory: DataSource.Factory,
     ): MediaSourceFactory {
+        val errorHandlingPolicy = getDefaultLoadErrorHandlingPolicy()
         return when (val type = Util.inferContentType(uri)) {
             C.TYPE_SS -> SsMediaSource.Factory(dataSourceFactory)
+                .setLoadErrorHandlingPolicy(errorHandlingPolicy)
             C.TYPE_DASH -> DashMediaSource.Factory(dataSourceFactory)
+                .setLoadErrorHandlingPolicy(errorHandlingPolicy)
             C.TYPE_HLS -> HlsMediaSource.Factory(dataSourceFactory)
+                .setLoadErrorHandlingPolicy(errorHandlingPolicy)
             C.TYPE_OTHER -> ProgressiveMediaSource.Factory(dataSourceFactory)
+                .setLoadErrorHandlingPolicy(errorHandlingPolicy)
             else -> throw IllegalStateException("Unsupported type: $type")
         }
+    }
+
+    private fun getDefaultLoadErrorHandlingPolicy(): LoadErrorHandlingPolicy {
+        return DefaultLoadErrorHandlingPolicy()
     }
 }
