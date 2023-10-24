@@ -18,7 +18,6 @@ data class FeedTrackerDataModel(
     val contentScore: String,
     val hasVoucher: Boolean,
     val campaignStatus: String,
-    val entryPoint: String,
     val entrySource: MapperFeedModelToTrackerDataModel.FeedEntrySource,
 )
 

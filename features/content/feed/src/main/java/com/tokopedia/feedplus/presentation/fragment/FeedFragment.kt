@@ -222,15 +222,22 @@ class FeedFragment :
     private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
 
     private val feedMvcAnalytics = FeedMVCAnalytics()
-    private val trackerModelMapper: MapperFeedModelToTrackerDataModel by lazy {
-        isCdp = arguments?.getBoolean(ARGUMENT_IS_CDP, false) ?: false
+
+    private val feedEntrySource : MapperFeedModelToTrackerDataModel.FeedEntrySource by lazyThreadSafetyNone {
         val categoryId = arguments?.getString(UF_EXTRA_FEED_CATEGORY_ID).ifNullOrBlank { "" }
         val entryPoint = arguments?.getString(UF_EXTRA_FEED_ENTRY_POINT).ifNullOrBlank { ENTRY_POINT_DEFAULT }
+        MapperFeedModelToTrackerDataModel.FeedEntrySource(categoryId = categoryId, entryPoint = entryPoint)
+    }
 
+    private val tabType : String get() {
+        isCdp = arguments?.getBoolean(ARGUMENT_IS_CDP, false) ?: false
+        return if (isCdp) FeedBaseFragment.TAB_TYPE_CDP else data?.type.orEmpty()
+    }
+
+    private val trackerModelMapper: MapperFeedModelToTrackerDataModel by lazy {
         MapperFeedModelToTrackerDataModel(
-            if (isCdp) FeedBaseFragment.TAB_TYPE_CDP else data?.type.orEmpty(),
-            entryPoint,
-            MapperFeedModelToTrackerDataModel.FeedEntrySource(categoryId = categoryId, entryPoint = entryPoint)
+            tabType,
+            feedEntrySource
         )
     }
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
@@ -338,7 +345,8 @@ class FeedFragment :
             if (newState == SCROLL_STATE_IDLE) {
                 feedAnalytics.eventSwipeUpDownContent(
                     trackerModelMapper.tabType,
-                    trackerModelMapper.entryPoint
+                    trackerModelMapper.entrySource.entryPoint,
+                    trackerModelMapper.entrySource.categoryId,
                 )
 
                 val position = getCurrentPosition()
@@ -416,7 +424,7 @@ class FeedFragment :
         override fun onSwipeProfileRecommendation() {
             feedFollowRecommendationAnalytics.eventSwipeProfileRecommendation(
                 tabType = trackerModelMapper.tabType,
-                entryPoint = trackerModelMapper.entryPoint
+                entryPoint = trackerModelMapper.entrySource.entryPoint
             )
         }
 

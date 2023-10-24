@@ -12,7 +12,6 @@ import com.tokopedia.feedplus.presentation.model.type.AuthorType
  */
 class MapperFeedModelToTrackerDataModel(
     val tabType: String,
-    val entryPoint: String,
     val entrySource: FeedEntrySource,
 ) {
 
@@ -54,7 +53,6 @@ class MapperFeedModelToTrackerDataModel(
                         else -> it
                     }
                 },
-            entryPoint = entryPoint,
             entrySource = entrySource,
         )
 
@@ -84,7 +82,6 @@ class MapperFeedModelToTrackerDataModel(
                         else -> it
                     }
                 },
-            entryPoint = entryPoint,
             entrySource = entrySource,
         )
 
@@ -114,7 +111,6 @@ class MapperFeedModelToTrackerDataModel(
                         else -> it
                     }
                 },
-            entryPoint = entryPoint,
             entrySource = entrySource,
         )
 
@@ -132,7 +128,6 @@ class MapperFeedModelToTrackerDataModel(
         contentScore = "",
         hasVoucher = false,
         campaignStatus = "",
-        entryPoint = entryPoint,
         entrySource = entrySource,
     )
 }

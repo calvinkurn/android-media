@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.analytics
 
 import android.os.Bundle
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.content.analytic.Key
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
@@ -122,8 +123,9 @@ class FeedAnalytics @Inject constructor(
                         trackerData.type,
                         trackerData.mediaType
                     )
-                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}",
-                "41567"
+                } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entrySource.entryPoint}",
+                "41567",
+                pageSource = generatePageSource(categoryId = trackerData.entrySource.categoryId, entryPoint = trackerData.entrySource.entryPoint),
             ).also {
                 it.putParcelableArrayList(
                     EnhanceEcommerce.KEY_PROMOTIONS,
@@ -183,7 +185,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.WATCH_VIDEO_POST,
                 getEventLabel(trackerData),
-                "41570"
+                "41570",
+                pageSource = generatePageSource(categoryId = trackerData.entrySource.categoryId, entryPoint = trackerData.entrySource.entryPoint),
             ).toMutableMap()
         trackerData[KEY_IS_LOGGED_IN_STATUS] = userSession.isLoggedIn
         trackerData[KEY_SCREEN_NAME] = UNIFIED_FEED_WATCH_VIDEO_POST
@@ -193,7 +196,8 @@ class FeedAnalytics @Inject constructor(
 
     fun eventSwipeUpDownContent(
         tabType: String,
-        entryPoint: String
+        entryPoint: String,
+        categoryId: String,
     ) {
         sendEventTracker(
             generateGeneralTrackerData(
@@ -201,7 +205,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.SWIPE_UP_DOWN_CONTENT,
                 "${getPrefix(tabType)} - $entryPoint",
-                "41571"
+                "41571",
+                pageSource = generatePageSource(categoryId, entryPoint)
             )
         )
     }
@@ -214,7 +219,7 @@ class FeedAnalytics @Inject constructor(
                 Event.CLICK_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.SWIPE_RIGHT_LEFT_MULTIPLE_POST,
-                "${getPrefix(trackerData.tabType)} - ${trackerData.entryPoint}",
+                "${getPrefix(trackerData.tabType)} - ${trackerData.entrySource.entryPoint}",
                 "41572"
             )
         )
@@ -290,7 +295,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_LIKE_BUTTON,
                 getEventLabel(trackerData),
-                "41577"
+                "41577",
+                pageSource = generatePageSource(trackerData.entrySource.categoryId, trackerData.entrySource.entryPoint)
             )
         )
     }
@@ -304,7 +310,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_DOUBLE_LIKE_BUTTON,
                 getEventLabel(trackerData),
-                "41578"
+                "41578",
+                pageSource = generatePageSource(trackerData.entrySource.categoryId, trackerData.entrySource.entryPoint)
             )
         )
     }
@@ -376,7 +383,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_PRODUCT_TAG,
                 getEventLabel(trackerData),
-                "41603"
+                "41603",
+                pageSource = generatePageSource(trackerData.entrySource.categoryId, trackerData.entrySource.entryPoint)
             )
         )
     }
@@ -391,7 +399,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_PRODUCT_LABEL_PDP,
                 "${getEventLabel(trackerData)} - ${productList.firstOrNull()?.id ?: ""}",
-                "41604"
+                "41604",
+                pageSource = generatePageSource(trackerData.entrySource.categoryId, trackerData.entrySource.entryPoint)
             ).also {
                 it.putString(
                     EnhanceEcommerce.KEY_ITEM_LIST,
@@ -430,7 +439,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.VIEW_PRODUCT_LIST_BOTTOMSHEET,
                 "${getEventLabel(trackerData)} - ${productList.firstOrNull()?.id ?: ""}",
-                "41605"
+                "41605",
+                pageSource = generatePageSource(trackerData.entrySource.categoryId, trackerData.entrySource.entryPoint)
             ).also {
                 it.putString(
                     EnhanceEcommerce.KEY_ITEM_LIST,
@@ -467,7 +477,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.VIEW_VOUCHER_BOTTOMSHEET,
                 getEventLabel(trackerData),
-                "41606"
+                "41606",
+                pageSource = generatePageSource(trackerData.entrySource.categoryId, trackerData.entrySource.entryPoint)
             ).also {
                 it.putParcelableArrayList(
                     EnhanceEcommerce.KEY_PROMOTIONS,
@@ -500,7 +511,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_PRODUCT,
                 "${getEventLabel(trackerData)} - $productId",
-                "41608"
+                "41608",
+                pageSource = generatePageSource(trackerData.entrySource.categoryId, trackerData.entrySource.entryPoint)
             ).also {
                 it.putString(
                     EnhanceEcommerce.KEY_ITEM_LIST,
@@ -544,7 +556,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_BUY_BUTTON,
                 "${getEventLabel(trackerData)} - $productId",
-                "41609"
+                "41609",
+                pageSource = generatePageSource(trackerData.entrySource.categoryId, trackerData.entrySource.entryPoint)
             ).also {
                 it.putParcelableArrayList(
                     EnhanceEcommerce.KEY_ITEMS,
@@ -579,7 +592,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_CART_BUTTON,
                 "${getEventLabel(trackerData)} - $productId",
-                "41610"
+                "41610",
+                pageSource = generatePageSource(trackerData.entrySource.categoryId, trackerData.entrySource.entryPoint)
             ).also {
                 it.putParcelableArrayList(
                     EnhanceEcommerce.KEY_ITEMS,
@@ -629,7 +643,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_FOLLOW_BUTTON,
                 getEventLabel(trackerData),
-                "41613"
+                "41613",
+                pageSource = generatePageSource(trackerData.entrySource.categoryId, trackerData.entrySource.entryPoint)
             )
         )
     }
@@ -677,7 +692,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_CONTENT_PRODUCT_LABEL,
                 getEventLabel(trackerData),
-                "41688"
+                "41688",
+                pageSource = generatePageSource(trackerData.entrySource.categoryId, trackerData.entrySource.entryPoint)
             )
         )
     }
@@ -689,7 +705,8 @@ class FeedAnalytics @Inject constructor(
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_BUTTON_COMMENT,
                 getEventLabel(trackerData),
-                "41579"
+                "41579",
+                pageSource = generatePageSource(trackerData.entrySource.categoryId, trackerData.entrySource.entryPoint)
             )
         )
     }
@@ -759,7 +776,7 @@ class FeedAnalytics @Inject constructor(
                 trackerData.type,
                 trackerData.mediaType
             )
-        } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entryPoint}"
+        } - ${trackerData.contentScore} - ${trackerData.hasVoucher} - ${trackerData.campaignStatus} - ${trackerData.entrySource.entryPoint}"
 
     private fun getProductTrackerBundle(
         index: Int,
@@ -796,8 +813,9 @@ class FeedAnalytics @Inject constructor(
         eventCategory: String,
         eventAction: String,
         eventLabel: String,
-        trackerId: String
-    ): Map<String, Any> = mapOf(
+        trackerId: String,
+        pageSource: String = "",
+    ): Map<String, Any> = mutableMapOf(
         EVENT to eventName,
         EVENT_CATEGORY to eventCategory,
         EVENT_ACTION to eventAction,
@@ -806,14 +824,17 @@ class FeedAnalytics @Inject constructor(
         KEY_BUSINESS_UNIT_EVENT to BUSINESS_UNIT_CONTENT,
         KEY_CURRENT_SITE_EVENT to CURRENT_SITE_MARKETPLACE,
         KEY_TRACKER_ID to trackerId
-    )
+    ).apply {
+        if (pageSource.isNotEmpty()) put(Key.pageSource, pageSource)
+    }
 
     private fun generateGeneralTrackerBundleData(
         eventName: String,
         eventCategory: String,
         eventAction: String,
         eventLabel: String,
-        trackerId: String
+        trackerId: String,
+        pageSource: String = "",
     ): Bundle = Bundle().apply {
         putString(EVENT, eventName)
         putString(EVENT_ACTION, eventAction)
@@ -823,6 +844,7 @@ class FeedAnalytics @Inject constructor(
         putString(KEY_BUSINESS_UNIT_EVENT, BUSINESS_UNIT_CONTENT)
         putString(KEY_CURRENT_SITE_EVENT, CURRENT_SITE_MARKETPLACE)
         putString(KEY_TRACKER_ID, trackerId)
+        if (pageSource.isNotEmpty()) putString(Key.pageSource, pageSource)
     }
 
     fun sendClickShareButtonEvent(trackerData: FeedTrackerDataModel) {
@@ -880,6 +902,8 @@ class FeedAnalytics @Inject constructor(
             .build()
             .send()
     }
+
+    private fun generatePageSource(categoryId: String, entryPoint: String) : String = "$entryPoint.0.0.$categoryId"
 
     companion object {
         const val KEY_EVENT_USER_ID = "userId"

@@ -43,7 +43,7 @@ class FeedFollowRecommendationAnalytics @Inject constructor(
                 event = Event.promoView,
                 category = EventCategory.unifiedFeed,
                 action = "view - follow recommendations",
-                label = getEventLabel(data.tabType, data.entryPoint, data.authorType, data.authorId),
+                label = getEventLabel(data.tabType, data.entrySource.entryPoint, data.authorType, data.authorId),
             ),
             hashMapOf(
                 Key.ecommerce to hashMapOf(
@@ -77,7 +77,7 @@ class FeedFollowRecommendationAnalytics @Inject constructor(
                 event = Event.promoClick,
                 category = EventCategory.unifiedFeed,
                 action = "click - follow profile recommendations",
-                label = getEventLabel(data.tabType, data.entryPoint, data.authorType, data.authorId),
+                label = getEventLabel(data.tabType, data.entrySource.entryPoint, data.authorType, data.authorId),
             ),
             hashMapOf(
                 Key.ecommerce to hashMapOf(
@@ -108,7 +108,7 @@ class FeedFollowRecommendationAnalytics @Inject constructor(
     ) {
         sendGeneralTracker(
             eventAction = "click - follow recommendations",
-            eventLabel = getEventLabel(data.tabType, data.entryPoint, data.authorType, data.authorId, data.isFollowing),
+            eventLabel = getEventLabel(data.tabType, data.entrySource.entryPoint, data.authorType, data.authorId, data.isFollowing),
             trackerId = "45541"
         )
     }
@@ -119,7 +119,7 @@ class FeedFollowRecommendationAnalytics @Inject constructor(
     ) {
         sendGeneralTracker(
             eventAction = "click - x - profile recommendation",
-            eventLabel = getEventLabel(data.tabType, data.entryPoint, data.authorType, data.authorId),
+            eventLabel = getEventLabel(data.tabType, data.entrySource.entryPoint, data.authorType, data.authorId),
             trackerId = "45542"
         )
     }
