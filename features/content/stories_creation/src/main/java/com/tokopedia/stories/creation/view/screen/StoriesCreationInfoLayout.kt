@@ -29,9 +29,9 @@ fun StoriesCreationInfoLayout(
     subtitle: String,
     primaryText: String,
     secondaryText: String,
-    modifier: Modifier = Modifier,
     onPrimaryButtonClicked: () -> Unit,
     onSecondaryButtonClicked: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     
     ConstraintLayout(
