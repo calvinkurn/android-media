@@ -24,9 +24,10 @@ import java.net.UnknownHostException
  */
 class StoriesCreationErrorBottomSheet : BottomSheetUnify() {
 
-    private var throwable: Throwable = Throwable()
-
     var listener: Listener? = null
+
+    private val errorType: Int
+        get() = arguments?.getInt(KEY_ERROR_TYPE) ?: GlobalError.SERVER_ERROR
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,17 +53,10 @@ class StoriesCreationErrorBottomSheet : BottomSheetUnify() {
                     modifier = Modifier.padding(bottom = 16.dp),
                     factory = { context ->
                         GlobalError(context).apply {
-                            setType(
-                                when (throwable) {
-                                    is ConnectException,
-                                    is UnknownHostException,
-                                    is SocketTimeoutException -> GlobalError.NO_CONNECTION
-                                    is AccountNotEligibleException -> GlobalError.PAGE_NOT_FOUND
-                                    else -> GlobalError.SERVER_ERROR
-                                }
-                            )
+                            setType(errorType)
+
                             setActionClickListener {
-                                listener?.onRetry(throwable)
+                                listener?.onRetry(errorType)
                             }
                         }
                     }
@@ -75,14 +69,12 @@ class StoriesCreationErrorBottomSheet : BottomSheetUnify() {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    fun show(fragmentManager: FragmentManager, throwable: Throwable) {
-        this.throwable = throwable
-
+    fun show(fragmentManager: FragmentManager) {
         if (!isAdded) show(fragmentManager, TAG)
     }
 
     interface Listener {
-        fun onRetry(throwable: Throwable)
+        fun onRetry(errorType: Int)
 
         fun onClose()
     }
@@ -90,16 +82,35 @@ class StoriesCreationErrorBottomSheet : BottomSheetUnify() {
     companion object {
         private const val TAG = "StoriesCreationErrorBottomSheet"
 
+        private const val KEY_ERROR_TYPE = "KEY_ERROR_TYPE"
+
         fun getFragment(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader
+            classLoader: ClassLoader,
+            throwable: Throwable
         ): StoriesCreationErrorBottomSheet {
             val oldInstance =
                 fragmentManager.findFragmentByTag(TAG) as? StoriesCreationErrorBottomSheet
-            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+            val instance = oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 StoriesCreationErrorBottomSheet::class.java.name
             ) as StoriesCreationErrorBottomSheet
+
+            return instance.apply {
+                arguments = Bundle().apply {
+                    putInt(KEY_ERROR_TYPE, getErrorType(throwable))
+                }
+            }
+        }
+
+        private fun getErrorType(throwable: Throwable): Int {
+            return when (throwable) {
+                is ConnectException,
+                is UnknownHostException,
+                is SocketTimeoutException -> GlobalError.NO_CONNECTION
+                is AccountNotEligibleException -> GlobalError.PAGE_NOT_FOUND
+                else -> GlobalError.SERVER_ERROR
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -19,17 +20,19 @@ import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.play_common.util.VideoSnapshotHelper
+import com.tokopedia.play_common.view.getBitmapFromUrl
 import com.tokopedia.stories.creation.di.DaggerStoriesCreationComponent
-import com.tokopedia.stories.creation.di.StoriesCreationModule
 import com.tokopedia.stories.creation.view.screen.StoriesCreationScreen
 import com.tokopedia.stories.creation.view.viewmodel.StoriesCreationViewModel
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import com.tokopedia.stories.creation.R
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationErrorBottomSheet
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationInfoBottomSheet
+import com.tokopedia.stories.creation.view.model.StoriesMediaCover
 import com.tokopedia.stories.creation.view.model.StoriesMediaType
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
+import kotlinx.coroutines.launch
 import com.tokopedia.stories.creation.view.model.exception.AccountNotEligibleException
 import javax.inject.Inject
 
@@ -64,15 +67,14 @@ class StoriesCreationActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
-        super.onCreate(savedInstanceState)
         setupAttachFragmentListener()
+        super.onCreate(savedInstanceState)
         setupContentView()
     }
 
     private fun inject() {
         DaggerStoriesCreationComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .storiesCreationModule(StoriesCreationModule(this))
             .build()
             .inject(this)
     }
@@ -146,7 +148,12 @@ class StoriesCreationActivity : BaseActivity() {
                     StoriesCreationScreen(
                         uiState = uiState,
                         onLoadMediaPreview = { mediaFilePath ->
-                            videoSnapshotHelper.snapVideoBitmap(context, mediaFilePath)
+                            val bitmap = getBitmapFromUrl(mediaFilePath)
+
+                            if (bitmap != null)
+                                StoriesMediaCover.Success(bitmap)
+                            else
+                                StoriesMediaCover.Error
                         },
                         onBackPressed = {
                             finish()
@@ -170,23 +177,25 @@ class StoriesCreationActivity : BaseActivity() {
     }
 
     private fun observeUiEvent() {
-        lifecycleScope.launchWhenStarted {
-            viewModel.uiEvent.collect { event ->
-                when (event) {
-                    is StoriesCreationUiEvent.OpenMediaPicker -> {
-                        openMediaPicker()
+        lifecycleScope.launch {
+            viewModel.uiEvent
+                .flowWithLifecycle(lifecycle)
+                .collect { event ->
+                    when (event) {
+                        is StoriesCreationUiEvent.OpenMediaPicker -> {
+                            openMediaPicker()
+                        }
+                        is StoriesCreationUiEvent.ErrorPreparePage -> {
+                            StoriesCreationErrorBottomSheet
+                                .getFragment(supportFragmentManager, classLoader, event.throwable)
+                                .show(supportFragmentManager)
+                        }
+                        is StoriesCreationUiEvent.ShowTooManyStoriesReminder -> {
+                            StoriesCreationInfoBottomSheet
+                                .getFragment(supportFragmentManager, classLoader)
+                                .show(supportFragmentManager)
+                        }
                     }
-                    is StoriesCreationUiEvent.ErrorPreparePage -> {
-                        StoriesCreationErrorBottomSheet
-                            .getFragment(supportFragmentManager, classLoader)
-                            .show(supportFragmentManager, event.throwable)
-                    }
-                    is StoriesCreationUiEvent.ShowTooManyStoriesReminder -> {
-                        StoriesCreationInfoBottomSheet
-                            .getFragment(supportFragmentManager, classLoader)
-                            .show(supportFragmentManager)
-                    }
-                }
             }
         }
     }

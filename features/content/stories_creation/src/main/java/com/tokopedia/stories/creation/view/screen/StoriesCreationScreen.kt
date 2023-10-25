@@ -1,6 +1,7 @@
 package com.tokopedia.stories.creation.view.screen
 
-import android.graphics.Bitmap
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -24,6 +25,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,7 +49,9 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
 import com.tokopedia.stories.creation.R
+import com.tokopedia.stories.creation.view.model.StoriesMediaCover
 import com.tokopedia.unifycomponents.R as unifycomponentsR
+import com.tokopedia.nest.components.R as nestcomponentsR
 
 /**
  * Created By : Jonathan Darwin on September 06, 2023
@@ -55,7 +59,7 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 @Composable
 fun StoriesCreationScreen(
     uiState: StoriesCreationUiState,
-    onLoadMediaPreview: suspend (filePath: String) -> Bitmap?,
+    onLoadMediaPreview: suspend (filePath: String) -> StoriesMediaCover,
     onBackPressed: () -> Unit,
     onClickChangeAccount: () -> Unit,
     onClickAddProduct: () -> Unit,
@@ -153,7 +157,7 @@ fun StoriesCreationScreen(
         )
 
         StoriesCreationShowDurationSection(
-            showDuration = uiState.config.showDuration,
+            storyDuration = uiState.config.storyDuration,
             modifier = Modifier.constrainAs(showDurationSection) {
                 top.linkTo(addProductSection.bottom, 20.dp)
                 start.linkTo(parent.start)
@@ -226,7 +230,7 @@ private fun StoriesCreationHeader(
 @Composable
 private fun StoriesCreationMediaCover(
     mediaFilePath: String,
-    onLoadMediaPreview: suspend (filePath: String) -> Bitmap?,
+    onLoadMediaPreview: suspend (filePath: String) -> StoriesMediaCover,
     modifier: Modifier = Modifier,
 ) {
     val storiesMediaPreviewModifier = modifier
@@ -234,25 +238,39 @@ private fun StoriesCreationMediaCover(
         .width(108.dp)
         .height(192.dp)
 
-    var storiesBitmap: Bitmap? by remember {
-        mutableStateOf(null)
+    var storiesMediaCover: StoriesMediaCover by remember {
+        mutableStateOf(StoriesMediaCover.Loading)
     }
 
     LaunchedEffect(mediaFilePath) {
-        storiesBitmap = onLoadMediaPreview(mediaFilePath)
+        storiesMediaCover = onLoadMediaPreview(mediaFilePath)
     }
 
-    storiesBitmap?.let { bitmap ->
-        NestImage(
-            source = ImageSource.ImageBitmap(bitmap.asImageBitmap()),
-            modifier = storiesMediaPreviewModifier,
-            contentScale = ContentScale.Crop
-        )
-    } ?: run {
-        NestLoader(
-            variant = NestLoaderType.Shimmer(type = NestShimmerType.Rect(8.dp)),
-            modifier = storiesMediaPreviewModifier
-        )
+    when (val mediaCover = storiesMediaCover) {
+        is StoriesMediaCover.Loading -> {
+            NestLoader(
+                variant = NestLoaderType.Shimmer(type = NestShimmerType.Rect(8.dp)),
+                modifier = storiesMediaPreviewModifier
+            )
+        }
+        is StoriesMediaCover.Success -> {
+            NestImage(
+                source = ImageSource.ImageBitmap(mediaCover.bitmap.asImageBitmap()),
+                modifier = storiesMediaPreviewModifier,
+                contentScale = ContentScale.Crop
+            )
+        }
+        is StoriesMediaCover.Error -> {
+            Box(
+                modifier = storiesMediaPreviewModifier.background(NestTheme.colors.NN._100),
+                contentAlignment = Alignment.Center,
+            ) {
+                Image(
+                    painter = painterResource(id = nestcomponentsR.drawable.imagestate_error),
+                    contentDescription = "Stories Cover Not Loaded"
+                )
+            }
+        }
     }
 }
 
@@ -331,7 +349,7 @@ private fun StoriesCreationAddProductSection(
 
 @Composable
 private fun StoriesCreationShowDurationSection(
-    showDuration: String,
+    storyDuration: String,
     modifier: Modifier = Modifier,
 ) {
     ConstraintLayout(
@@ -368,7 +386,7 @@ private fun StoriesCreationShowDurationSection(
         )
 
         NestTypography(
-            text = showDuration,
+            text = storyDuration,
             textStyle = NestTheme.typography.display3.copy(
                 color = colorResource(id = unifycomponentsR.color.Unify_NN600)
             ),
@@ -393,7 +411,7 @@ private fun StoriesCreationScreenPreview() {
 
             StoriesCreationScreen(
                 uiState = uiState,
-                onLoadMediaPreview = { null },
+                onLoadMediaPreview = { StoriesMediaCover.Loading },
                 onBackPressed = {},
                 onClickChangeAccount = {},
                 onClickAddProduct = {},
