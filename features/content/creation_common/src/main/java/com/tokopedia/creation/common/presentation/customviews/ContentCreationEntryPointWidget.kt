@@ -27,6 +27,7 @@ import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.creation.common.di.ContentCreationComponent
+import com.tokopedia.creation.common.di.ContentCreationModule
 import com.tokopedia.creation.common.di.DaggerContentCreationComponent
 import com.tokopedia.creation.common.presentation.bottomsheet.ContentCreationBottomSheet
 import com.tokopedia.creation.common.presentation.viewmodel.ContentCreationViewModel
@@ -112,6 +113,7 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
     private fun createComponent(): ContentCreationComponent =
         DaggerContentCreationComponent.builder()
             .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
+            .contentCreationModule(ContentCreationModule(context))
             .build()
 
     private fun getFragmentManager(): FragmentManager? =
