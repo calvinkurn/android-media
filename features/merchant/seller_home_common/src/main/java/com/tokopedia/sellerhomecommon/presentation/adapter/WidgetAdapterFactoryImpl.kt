@@ -14,6 +14,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiMode
 import com.tokopedia.sellerhomecommon.presentation.model.FilterTabWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
@@ -33,6 +34,7 @@ import com.tokopedia.sellerhomecommon.presentation.view.viewholder.DescriptionVi
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.FilterTabViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.LineGraphViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.MilestoneViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.MultiComponentViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.MultiLineGraphViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.PieChartViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.PostListViewHolder
@@ -128,6 +130,10 @@ class WidgetAdapterFactoryImpl(
         return FilterTabViewHolder.RES_LAYOUT
     }
 
+    override fun type(multiComponentWidget: MultiComponentWidgetUiModel): Int {
+        return MultiComponentViewHolder.RES_LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             SectionViewHolder.RES_LAYOUT -> SectionViewHolder(parent, listener)
@@ -148,6 +154,7 @@ class WidgetAdapterFactoryImpl(
             CalendarViewHolder.RES_LAYOUT -> CalendarViewHolder(parent, listener)
             UnificationViewHolder.RES_LAYOUT -> UnificationViewHolder(parent, listener)
             RichListViewHolder.RES_LAYOUT -> RichListViewHolder(parent, listener)
+            MultiComponentViewHolder.RES_LAYOUT -> MultiComponentViewHolder(parent, listener)
             FilterTabViewHolder.RES_LAYOUT -> FilterTabViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }

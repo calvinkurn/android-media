@@ -2,6 +2,7 @@ package com.tokopedia.productbundlewidget.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -28,12 +29,14 @@ class ProductBundleMultiplePackageViewHolder(
     private var typographyBundleProductName: Typography? = null
     private var imageBundleProduct: ImageUnify? = null
     private var bundleProductsContainer: ConstraintLayout? = null
+    private var layoutBundleMultipleImg: LinearLayoutCompat? = null
 
     init {
         viewBinding?.apply {
             typographyBundleProductName = tvBundleProductMultipleName
             imageBundleProduct = ivBundleProductMultiple
             bundleProductsContainer = multipleBundleProductsContainer
+            layoutBundleMultipleImg = layoutBundleMultipleImage
         }
     }
 
@@ -56,6 +59,9 @@ class ProductBundleMultiplePackageViewHolder(
     private fun overrideWidgetTheme(isOverrideWidgetTheme: Boolean) {
         if (isOverrideWidgetTheme) {
             typographyBundleProductName?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+
+            val bgDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.bg_productbundle_image_light_mode)
+            layoutBundleMultipleImg?.background = bgDrawable
         }
     }
 }

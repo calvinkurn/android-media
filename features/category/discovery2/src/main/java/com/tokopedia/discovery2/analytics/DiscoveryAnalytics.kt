@@ -5,7 +5,6 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils.Companion.getParentPosition
 import com.tokopedia.discovery2.data.*
-import com.tokopedia.discovery2.data.claim_coupon.CatalogWithCouponList
 import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
@@ -23,6 +22,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import kotlin.collections.HashMap
 import kotlin.collections.set
 
 open class DiscoveryAnalytics(
@@ -43,29 +43,7 @@ open class DiscoveryAnalytics(
     private var viewedCalendarSet: MutableSet<String> = HashSet()
     private var viewedAnchorTabsSet: MutableSet<String> = HashSet()
 
-    private fun createGeneralEvent(
-        eventName: String = EVENT_CLICK_DISCOVERY,
-        eventAction: String,
-        eventLabel: String = EMPTY_STRING,
-        isPageSourceRequired: Boolean = true,
-        shouldSendSourceAsDestination: Boolean = false
-    ): MutableMap<String, Any> {
-        val map = HashMap<String, Any>()
-        map[KEY_EVENT] = eventName
-        map[KEY_EVENT_CATEGORY] = eventDiscoveryCategory
-        map[KEY_EVENT_ACTION] = eventAction
-        map[KEY_EVENT_LABEL] = eventLabel
-        if (isPageSourceRequired) {
-            if (shouldSendSourceAsDestination) {
-                map[PAGE_DESTINATION] = sourceIdentifier
-            } else {
-                map[PAGE_SOURCE] = sourceIdentifier
-            }
-        }
-
-        return map
-    }
-
+    //region do not change
     override fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int?, userID: String?) {
         if (banners.isNotEmpty()) {
             banners.forEachIndexed { index, banner ->
@@ -84,7 +62,7 @@ open class DiscoveryAnalytics(
                     hashMap[KEY_ID] = "${bannerID}_0"
                     hashMap[KEY_NAME] = it.gtmItemName?.replace("#POSITION", (banner.positionForParentItem + 1).toString()).toString()
                     hashMap[KEY_CREATIVE] = it.creativeName ?: EMPTY_STRING
-                    hashMap[KEY_POSITION] = componentPosition?.plus(1) ?: index + 1
+                    hashMap[KEY_POSITION] = componentPosition?.plus(1) ?: (index + 1)
                 }
                 list.add(hashMap)
                 val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
@@ -96,40 +74,6 @@ open class DiscoveryAnalytics(
                 map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
                 map[BUSINESS_UNIT] = HOME_BROWSE
                 map[USER_ID] = userID ?: EMPTY_STRING
-                trackingQueue.putEETracking(map as HashMap<String, Any>)
-            }
-        }
-    }
-
-    override fun trackPromoBannerImpression(banners: List<DataItem>) {
-        if (banners.isNotEmpty()) {
-            banners.forEachIndexed { index, banner ->
-                val map = createGeneralEvent(
-                    eventName = EVENT_PROMO_VIEW,
-                    eventAction = ACTION_VIEW_COUPON_BANNER
-                )
-                map[KEY_EVENT_CATEGORY] = VALUE_DISCOVERY_PAGE
-                map[PAGE_TYPE] = pageType
-                map[PAGE_PATH] = removedDashPageIdentifier
-                map[PAGE_SOURCE] = sourceIdentifier
-                val list = ArrayList<Map<String, Any>>()
-                val hashMap = HashMap<String, Any>()
-                banner.let {
-                    hashMap[KEY_ID] = "${it.id ?: 0} - ${it.code}"
-                    hashMap[KEY_NAME] = it.gtmItemName?.replace("#POSITION", (banner.positionForParentItem + 1).toString()).toString()
-                    hashMap[KEY_CREATIVE] = "${it.creativeName ?: EMPTY_STRING} - ${it.name}"
-                    hashMap[KEY_POSITION] = index + 1
-                }
-                list.add(hashMap)
-                val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
-                    EVENT_PROMO_VIEW to mapOf(
-                        KEY_PROMOTIONS to list
-                    )
-                )
-                map[KEY_E_COMMERCE] = eCommerce
-                map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
-                map[BUSINESS_UNIT] = HOME_BROWSE
-                map[USER_ID] = userSession.userId
                 trackingQueue.putEETracking(map as HashMap<String, Any>)
             }
         }
@@ -175,34 +119,31 @@ open class DiscoveryAnalytics(
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
-    override fun trackPromoBannerClick(banner: DataItem, bannerPosition: Int) {
-        val componentName = banner.componentPromoName ?: EMPTY_STRING
-        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = ACTION_CLICK_COUPON_BANNER, eventLabel = "$componentName - ${banner.code}")
+    override fun trackQuickCouponImpression(clickCouponData: ClickCouponData) {
+        val map = createGeneralEvent(
+            eventName = EVENT_PROMO_VIEW,
+            eventAction = if (clickCouponData.couponApplied == true) IMPRESSION_MINI_COUPON_CANCEL else IMPRESSION_MINI_COUPON_USE,
+            eventLabel = "${clickCouponData.codePromo} - ${clickCouponData.realCode}"
+        )
         val list = ArrayList<Map<String, Any>>()
-        banner.let {
-            list.add(
-                mapOf(
-                    KEY_ID to "${it.id} - ${it.code ?: EMPTY_STRING}",
-                    KEY_NAME to it.gtmItemName?.replace("#POSITION", (banner.positionForParentItem + 1).toString()).toString(),
-                    KEY_CREATIVE to it.creativeName.toString(),
-                    KEY_POSITION to bannerPosition + 1
-                )
+        list.add(
+            mapOf(
+                KEY_ID to clickCouponData.componentID,
+                KEY_NAME to "/tokopoints/penukaran points - ${clickCouponData.componentPosition} - promo list - mini coupon",
+                KEY_CREATIVE to (clickCouponData.componentName ?: EMPTY_STRING),
+                KEY_POSITION to clickCouponData.componentPosition
             )
-        }
+        )
+
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
-            EVENT_PROMO_CLICK to mapOf(
+            EVENT_PROMO_VIEW to mapOf(
                 KEY_PROMOTIONS to list
             )
         )
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
-        map[PAGE_SOURCE] = sourceIdentifier
-        map[KEY_EVENT_CATEGORY] = VALUE_DISCOVERY_PAGE
-        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
-        map[BUSINESS_UNIT] = HOME_BROWSE
-        map[USER_ID] = userSession.userId
         map[KEY_E_COMMERCE] = eCommerce
-        getTracker().sendEnhanceEcommerceEvent(map)
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
     override fun trackBrandRecommendationImpression(items: List<ComponentsItem>, componentPosition: Int, componentID: String) {
@@ -1005,131 +946,6 @@ open class DiscoveryAnalytics(
         return NOTIFY_ON
     }
 
-    override fun trackEventImpressionCoupon(componentsItems: ArrayList<ComponentsItem>) {
-        if (componentsItems.isNotEmpty()) {
-            val parentComp =
-                getComponent(componentsItems[0].parentComponentId, componentsItems[0].pageEndPoint)
-            val list = ArrayList<Map<String, Any>>()
-            componentsItems.forEachIndexed { index, coupon ->
-                val data: ArrayList<CatalogWithCouponList> = ArrayList()
-                coupon.claimCouponList?.let {
-                    data.addAll(it)
-                }
-                val map = HashMap<String, Any>()
-                data[0].let {
-                    map[KEY_ID] = "${it.id} - ${it.baseCode}"
-                    map[KEY_POSITION] = index + 1
-                    map[KEY_CREATIVE] = "${it.slug} - ${it.baseCode}"
-                    map[KEY_NAME] = "/discovery/$removedDashPageIdentifier - $pageType - ${
-                    getParentPosition(
-                        coupon
-                    ) + 1
-                    } - - - ${parentComp?.parentSectionId ?: ""} - ${ComponentNames.ClaimCoupon.componentName}"
-                }
-                list.add(map)
-            }
-
-            val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
-                EVENT_PROMO_VIEW to mapOf(
-                    KEY_PROMOTIONS to list
-                )
-            )
-            val map = createGeneralEvent(
-                eventName = EVENT_PROMO_VIEW,
-                eventAction = CLAIM_COUPON_IMPRESSION,
-                shouldSendSourceAsDestination = true
-            )
-            map[PAGE_TYPE] = pageType
-            map[TRACKER_ID] = CLAIM_COUPON_TRACKER_ID
-            map[BUSINESS_UNIT] = HOME_BROWSE
-            map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
-            map[PAGE_PATH] = removedDashPageIdentifier
-            map[KEY_E_COMMERCE] = eCommerce
-            map[USER_ID] = userSession.userId
-            trackingQueue.putEETracking(map as HashMap<String, Any>)
-        }
-    }
-
-    override fun trackClickClaimCoupon(couponName: String?, baseCode: String?) {
-        val map = createGeneralEvent(
-            eventName = CLICK_HOMEPAGE_EVENT,
-            eventAction = CLICK_BUTTON_CLAIM_COUPON_ACTION,
-            eventLabel = "claim coupon - click - $baseCode",
-            shouldSendSourceAsDestination = true
-        )
-        map[PAGE_TYPE] = pageType
-        map[PAGE_PATH] = removedDashPageIdentifier
-        map[TRACKER_ID] = "2726"
-        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
-        map[BUSINESS_UNIT] = HOME_BROWSE
-        getTracker().sendGeneralEvent(map)
-    }
-
-    override fun trackEventClickCoupon(componentsItems: ComponentsItem, position: Int, isDouble: Boolean) {
-        val list = ArrayList<Map<String, Any>>()
-        val parentComp =
-            getComponent(componentsItems.parentComponentId, componentsItems.pageEndPoint)
-        componentsItems.claimCouponList?.firstOrNull()?.let {
-            list.add(
-                mapOf(
-                    KEY_ID to "${it.id} - ${it.baseCode}",
-                    KEY_POSITION to (position + 1).toString(),
-                    KEY_CREATIVE to "${it.slug} - ${it.baseCode}",
-                    KEY_NAME to "/discovery/$removedDashPageIdentifier - $pageType - ${
-                    getParentPosition(
-                        componentsItems
-                    ) + 1
-                    } - - - ${parentComp?.parentSectionId ?: ""} - ${ComponentNames.ClaimCoupon.componentName}"
-                )
-            )
-            val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
-                EVENT_PROMO_CLICK to mapOf(
-                    KEY_PROMOTIONS to list
-                )
-            )
-            val map = createGeneralEvent(
-                eventName = EVENT_PROMO_CLICK,
-                eventAction = CLAIM_COUPON_CLICK,
-                eventLabel = "claim coupon - ${it.baseCode}",
-                shouldSendSourceAsDestination = true
-            )
-            map[PAGE_TYPE] = pageType
-            map[PAGE_PATH] = removedDashPageIdentifier
-            map[TRACKER_ID] = "2727"
-            map[BUSINESS_UNIT] = HOME_BROWSE
-            map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
-            map[KEY_E_COMMERCE] = eCommerce
-            getTracker().sendEnhanceEcommerceEvent(map)
-        }
-    }
-
-    override fun trackQuickCouponImpression(clickCouponData: ClickCouponData) {
-        val map = createGeneralEvent(
-            eventName = EVENT_PROMO_VIEW,
-            eventAction = if (clickCouponData.couponApplied == true) IMPRESSION_MINI_COUPON_CANCEL else IMPRESSION_MINI_COUPON_USE,
-            eventLabel = "${clickCouponData.codePromo} - ${clickCouponData.realCode}"
-        )
-        val list = ArrayList<Map<String, Any>>()
-        list.add(
-            mapOf(
-                KEY_ID to clickCouponData.componentID,
-                KEY_NAME to "/tokopoints/penukaran points - ${clickCouponData.componentPosition} - promo list - mini coupon",
-                KEY_CREATIVE to (clickCouponData.componentName ?: EMPTY_STRING),
-                KEY_POSITION to clickCouponData.componentPosition
-            )
-        )
-
-        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
-            EVENT_PROMO_VIEW to mapOf(
-                KEY_PROMOTIONS to list
-            )
-        )
-        map[PAGE_TYPE] = pageType
-        map[PAGE_PATH] = removedDashPageIdentifier
-        map[KEY_E_COMMERCE] = eCommerce
-        trackingQueue.putEETracking(map as HashMap<String, Any>)
-    }
-
     override fun trackQuickCouponClick(clickCouponData: ClickCouponData) {
         val map = createGeneralEvent(
             eventName = EVENT_PROMO_CLICK,
@@ -1664,7 +1480,7 @@ open class DiscoveryAnalytics(
             mapOf(
                 KEY_ID to "${components.parentComponentId}_$shopId",
                 KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${components.parentComponentPosition + 1} - $componentName",
-                KEY_CREATIVE to "${dataItem?.title ?: EMPTY_STRING} - ${components.creativeName ?: EMPTY_STRING}",
+                KEY_CREATIVE to "${dataItem?.shopInfo?.name ?: EMPTY_STRING} - ${components.creativeName ?: EMPTY_STRING}",
                 KEY_POSITION to horizontalPosition
             )
         )
@@ -2260,63 +2076,6 @@ open class DiscoveryAnalytics(
         map[USER_ID] = userSession.userId
         map[KEY_E_COMMERCE] = eCommerce
         trackingQueue.putEETracking(map as HashMap<String, Any>)
-    }
-
-    override fun trackEventViewMyCouponList(componentsItems: ComponentsItem, userID: String) {
-        val list = ArrayList<Map<String, Any>>()
-        list.add(
-            mapOf(
-                KEY_NAME to "/discovery/$removedDashPageIdentifier - $pageType - ${getParentPosition(componentsItems) + 1} - - - ${componentsItems.parentComponentName}",
-                KEY_ID to "${componentsItems.myCouponList?.firstOrNull()?.catalogID}",
-                KEY_POSITION to "${componentsItems.position + 1}",
-                KEY_CREATIVE to "${componentsItems.myCouponList?.firstOrNull()?.code ?: EMPTY_STRING} - "
-            )
-        )
-        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
-            EVENT_PROMO_VIEW to mapOf(
-                KEY_PROMOTIONS to list
-            )
-        )
-        val map = createGeneralEvent(
-            eventName = EVENT_PROMO_VIEW,
-            eventAction = ACTION_VIEW_MY_COUPON
-        )
-        map[BUSINESS_UNIT] = HOME_BROWSE
-        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
-        map[KEY_E_COMMERCE] = eCommerce
-        map[PAGE_PATH] = removedDashPageIdentifier
-        map[PAGE_TYPE] = pageType
-        map[USER_ID] = userID
-        trackingQueue.putEETracking(map as HashMap<String, Any>)
-    }
-
-    override fun trackEventClickMyCouponList(componentsItems: ComponentsItem, userID: String) {
-        val list = ArrayList<Map<String, Any>>()
-        list.add(
-            mapOf(
-                KEY_NAME to "/discovery/$removedDashPageIdentifier - $pageType - ${getParentPosition(componentsItems) + 1} - - - ${componentsItems.parentComponentName}",
-                KEY_ID to "${componentsItems.myCouponList?.firstOrNull()?.catalogID}",
-                KEY_POSITION to "${componentsItems.position + 1}",
-                KEY_CREATIVE to "${componentsItems.myCouponList?.firstOrNull()?.code ?: EMPTY_STRING} - "
-            )
-        )
-        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
-            EVENT_PROMO_CLICK to mapOf(
-                KEY_PROMOTIONS to list
-            )
-        )
-        val map = createGeneralEvent(
-            eventName = EVENT_PROMO_CLICK,
-            eventAction = ACTION_CLICK_MY_COUPON,
-            eventLabel = "${componentsItems.myCouponList?.firstOrNull()?.code} "
-        )
-        map[BUSINESS_UNIT] = HOME_BROWSE
-        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
-        map[KEY_E_COMMERCE] = eCommerce
-        map[PAGE_PATH] = removedDashPageIdentifier
-        map[PAGE_TYPE] = pageType
-        map[USER_ID] = userID
-        getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     override fun trackShopCardImpression(componentsItems: ComponentsItem) {
@@ -2923,6 +2682,60 @@ open class DiscoveryAnalytics(
         }
     }
 
+    override fun trackProductHighlightOCSClick(productHighlightData: DataItem, productHighlightPosition: Int, components: ComponentsItem?) {
+        if (!components?.data.isNullOrEmpty()) {
+            val list = ArrayList<Map<String, Any>>()
+            val listMap = HashMap<String, Any>()
+            var productItemList = ""
+            productHighlightData.let {
+                productItemList = it.gtmItemName?.replace("#POSITION", (components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
+                productCardImpressionLabel = EMPTY_STRING
+                listMap[KEY_NAME] = it.productName.toString()
+                listMap[KEY_ID] = it.productId.toString()
+                listMap[PRICE] = convertRupiahToInt(it.price ?: "")
+                listMap[KEY_BRAND] = NONE_OTHER
+                listMap[KEY_ITEM_CATEGORY] = NONE_OTHER
+                listMap[KEY_VARIANT] = NONE_OTHER
+                listMap[KEY_POSITION] = (components?.position ?: 0) + 1
+                listMap[LIST] = productItemList
+                listMap[DIMENSION83] = getProductDime83(it)
+                listMap[DIMENSION90] = sourceIdentifier
+                listMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
+                    "${if (it.campaignSoldCount.toIntOrZero() > 0) it.campaignSoldCount else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME ${components?.let { it1 -> getNotificationStatus(it1) }}"
+                listMap[DIMENSION38] = ""
+                listMap[DIMENSION84] = ""
+                val gtmItemName = it.gtmItemName?.replace("#POSITION", (components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
+                listMap[DIMENSION40] = processGtmItemName(gtmItemName, it)
+            }
+            list.add(listMap)
+
+            val eCommerce = mapOf(
+                CLICK to mapOf(
+                    ACTION_FIELD to mapOf(
+                        LIST to productItemList
+                    ),
+                    PRODUCTS to list
+                )
+            )
+            val map = createGeneralEvent(
+                eventName = EVENT_PRODUCT_ATC,
+                eventAction = CLICK_OCS,
+                eventLabel = ComponentNames.ProductBundling.componentName,
+                shouldSendSourceAsDestination = true
+            )
+            map[TRACKER_ID] = "21643"
+            map[KEY_CAMPAIGN_CODE] = campaignCode
+            map[PAGE_TYPE] = pageType
+            map[PAGE_PATH] = removedDashPageIdentifier
+            map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+            map[USER_ID] = (userSession.userId ?: "")
+            map[BUSINESS_UNIT] = HOME_BROWSE
+            map[KEY_E_COMMERCE] = eCommerce
+            getTracker().sendEnhanceEcommerceEvent(map)
+            productCardImpressionLabel = EMPTY_STRING
+        }
+    }
+
     private fun processGtmItemName(gtmItemName: String, dataItem: DataItem): String {
         val dataToAppend = mutableListOf(
             dataItem.title ?: "",
@@ -2945,4 +2758,141 @@ open class DiscoveryAnalytics(
         }
         return gtmNameParts.joinToString("-") { " $it " }
     }
+    //endregion
+
+    override fun trackCouponImpression(properties: List<CouponTrackingProperties>) {
+        val generalProps = createGeneralCouponEvent(
+            EVENT_PROMO_VIEW,
+            ACTION_VIEW_COUPON_BANNER
+        )
+
+        val impressionProperties = hashMapOf<String, Any>(
+            KEY_EVENT_LABEL to EMPTY_STRING,
+            TRACKER_ID to COUPON_IMPRESSION_TRACKER_ID,
+            USER_ID to userSession.userId,
+            KEY_E_COMMERCE to constructPromotionsProps(EVENT_PROMO_VIEW, properties)
+        )
+
+        impressionProperties.putAll(generalProps)
+        trackingQueue.putEETracking(impressionProperties)
+    }
+
+    override fun trackCouponClickEvent(properties: CouponTrackingProperties) {
+        val generalProps = createGeneralCouponEvent(
+            EVENT_PROMO_CLICK,
+            ACTION_CLICK_COUPON_BANNER
+        )
+
+        val clickProperties = hashMapOf<String, Any>(
+            KEY_EVENT_LABEL to "${properties.componentName} - ${properties.promoCode}",
+            TRACKER_ID to COUPON_CLICK_TRACKER_ID,
+            USER_ID to userSession.userId,
+            KEY_E_COMMERCE to constructPromotionsProps(EVENT_PROMO_CLICK, listOf(properties))
+        )
+
+        clickProperties.putAll(generalProps)
+        getTracker().sendEnhanceEcommerceEvent(clickProperties)
+    }
+
+    override fun trackCouponCTAClickEvent(properties: CouponTrackingProperties) {
+        val generalProps = createGeneralCouponEvent(
+            CLICK_HOMEPAGE_EVENT,
+            CLICK_BUTTON_CLAIM_COUPON_ACTION
+        )
+
+        val label = with(properties) {
+            "$componentName - $action - $tabName - $creativeName - $promoCode"
+        }
+
+        val ctaClickProperties = hashMapOf<String, Any>(
+            KEY_EVENT_LABEL to label,
+            TRACKER_ID to COUPON_CLICK_CTA_TRACKER_ID
+        )
+
+        ctaClickProperties.putAll(generalProps)
+        getTracker().sendGeneralEvent(ctaClickProperties)
+    }
+
+    //region private methods
+    private fun createGeneralEvent(
+        eventName: String = EVENT_CLICK_DISCOVERY,
+        eventAction: String,
+        eventLabel: String = EMPTY_STRING,
+        isPageSourceRequired: Boolean = true,
+        shouldSendSourceAsDestination: Boolean = false
+    ): MutableMap<String, Any> {
+        val map = HashMap<String, Any>()
+        map[KEY_EVENT] = eventName
+        map[KEY_EVENT_CATEGORY] = eventDiscoveryCategory
+        map[KEY_EVENT_ACTION] = eventAction
+        map[KEY_EVENT_LABEL] = eventLabel
+        if (isPageSourceRequired) {
+            if (shouldSendSourceAsDestination) {
+                map[PAGE_DESTINATION] = sourceIdentifier
+            } else {
+                map[PAGE_SOURCE] = sourceIdentifier
+            }
+        }
+
+        return map
+    }
+
+    private fun createGeneralCouponEvent(
+        event: String,
+        action: String
+    ): HashMap<String, Any> {
+        return hashMapOf(
+            KEY_EVENT to event,
+            KEY_EVENT_CATEGORY to eventDiscoveryCategory,
+            KEY_EVENT_ACTION to action,
+            BUSINESS_UNIT to HOME_BROWSE,
+            CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
+            PAGE_PATH to removedDashPageIdentifier,
+            PAGE_TYPE to pageType,
+            PAGE_DESTINATION to sourceIdentifier
+        )
+    }
+
+    private fun constructPromotionsProps(
+        keyEvent: String,
+        propsList: List<CouponTrackingProperties>
+    ): Map<String, Map<String, ArrayList<Map<String, Any>>>> {
+        val list = ArrayList<Map<String, Any>>()
+
+        propsList.forEach { dataItem ->
+            val itemName = if (dataItem.gtmItem.isNotEmpty()) {
+                replacePlaceholder(dataItem)
+            } else {
+                EMPTY_STRING
+            }
+
+            list.add(
+                mapOf(
+                    KEY_CREATIVE to dataItem.creativeName,
+                    KEY_POSITION to (dataItem.position + 1).toString(),
+                    KEY_ID to "${dataItem.id} - ${dataItem.promoCode}",
+                    KEY_NAME to itemName
+                )
+            )
+        }
+
+        return mapOf(
+            keyEvent to mapOf(
+                KEY_PROMOTIONS to list
+            )
+        )
+    }
+
+    private fun replacePlaceholder(props: CouponTrackingProperties): String {
+        var replacedName = props.gtmItem.replace(
+            "#POSITION",
+            (props.position + 1).toString()
+        )
+
+        replacedName = replacedName.replace("#MEGA_TAB_VALUE", props.tabName)
+
+        return replacedName
+    }
+
+    //endregion
 }

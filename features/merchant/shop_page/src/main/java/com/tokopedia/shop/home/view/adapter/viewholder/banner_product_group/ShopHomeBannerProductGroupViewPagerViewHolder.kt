@@ -63,7 +63,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
     private fun setupViewAllChevron(model: BannerProductGroupUiModel) {
         val hasVerticalBanner = model.widgetStyle == BannerProductGroupUiModel.WidgetStyle.VERTICAL.id
 
-        viewBinding?.iconChevron?.isVisible = hasVerticalBanner
+        viewBinding?.iconChevron?.isVisible = hasVerticalBanner && model.viewAllChevronAppLink.isNotEmpty()
         viewBinding?.iconChevron?.setOnClickListener {
             listener.onBannerProductGroupViewAllClick(model.viewAllChevronAppLink)
         }
@@ -133,7 +133,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
         }
 
         tabTitle?.apply {
-            setTypeface(Typography.getFontType(context, true, Typography.DISPLAY_3))
+            typeface = Typography.getFontType(context, true, Typography.DISPLAY_3)
             setTextColor(highEmphasizeColor)
             invalidate()
         }
@@ -149,7 +149,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
         }
 
         tabTitle?.apply {
-            setTypeface(Typography.getFontType(context, false, Typography.DISPLAY_3))
+            typeface = Typography.getFontType(context, false, Typography.DISPLAY_3)
             setTextColor(disabledTextColor)
             invalidate()
         }
@@ -217,7 +217,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
 
     private fun setupColors(overrideTheme: Boolean, colorSchema: ShopPageColorSchema) {
         val chevronColor = if (overrideTheme) {
-            colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
+            colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR)
         } else {
             ContextCompat.getColor(viewBinding?.iconChevron?.context ?: return, unifycomponentsR.color.Unify_NN950)
         }

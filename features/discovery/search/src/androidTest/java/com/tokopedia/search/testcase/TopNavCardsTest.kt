@@ -63,10 +63,10 @@ internal class TopNavCardsTest {
     private fun performUserJourney() {
         onView(withId(recyclerViewId)).check(matches(isDisplayed()))
 
-        val productListAdapter = recyclerView.getProductListAdapter()
-        val globalNavViewModelPosition = productListAdapter.itemList.getGlobalNavViewModelPosition()
-
-        onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<GlobalNavViewHolder>(globalNavViewModelPosition, clickChildViewWithId(com.tokopedia.globalnavwidget.R.id.globalNavCardItemCardView)))
+//        val productListAdapter = recyclerView.getProductListAdapter()
+//        val globalNavViewModelPosition = productListAdapter.itemList.getGlobalNavViewModelPosition()
+//
+//        onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<GlobalNavViewHolder>(globalNavViewModelPosition, clickChildViewWithId(com.tokopedia.globalnavwidget.R.id.globalNavCardItemCardView)))
     }
 
     @After

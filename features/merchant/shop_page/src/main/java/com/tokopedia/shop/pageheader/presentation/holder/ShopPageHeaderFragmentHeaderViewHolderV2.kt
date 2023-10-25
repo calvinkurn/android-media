@@ -17,6 +17,7 @@ import android.widget.ImageView
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -45,6 +46,7 @@ import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
+import com.tokopedia.shop.common.util.ShopTimer
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.convertUrlToBitmapAndLoadImage
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
@@ -79,7 +81,10 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
-import java.util.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopPageHeaderFragmentHeaderViewHolderV2(
@@ -93,8 +98,9 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
 ) {
 
     companion object {
-        private const val CYCLE_DURATION = 5000L
+        private const val CYCLE_DURATION = 3500L
         private const val MAXIMUM_WIDTH_STATIC_USP = 100
+        private const val DELAY_DURATION_TICKER_MILLIS = 1000L
         private const val NEW_SELLER_TEXT_HTML = "Penjual Baru"
     }
 
@@ -157,8 +163,8 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     private var coachMark: CoachMark2? = null
     private val tickerShopStatus: Ticker? = viewBinding?.tickerShopStatus
     private var playVideoWrapper: PlayVideoWrapper? = null
-    private var timer: Timer? = null
     private var currentIndexUspDynamicValue: Int = 0
+    private val timer = ShopTimer()
 
     fun setupChooseAddressWidget(isMyShop: Boolean) {
         chooseAddressWidget?.apply {
@@ -685,14 +691,15 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         isMyShop: Boolean = false
     ) {
         tickerShopStatus?.show()
+        tickerShopStatus?.tickerTitle =
+            HtmlLinkHelper(context, shopOperationalHourStatus.tickerTitle).spannedString.toString()
+        tickerShopStatus?.setHtmlDescription(shopOperationalHourStatus.tickerMessage)
         tickerShopStatus?.tickerType = if (isMyShop) {
             Ticker.TYPE_WARNING
         } else {
             Ticker.TYPE_ANNOUNCEMENT
         }
-        tickerShopStatus?.tickerTitle =
-            HtmlLinkHelper(context, shopOperationalHourStatus.tickerTitle).spannedString.toString()
-        tickerShopStatus?.setHtmlDescription(shopOperationalHourStatus.tickerMessage)
+  
         tickerShopStatus?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 listenerHeader?.onShopStatusTickerClickableDescriptionClicked(linkUrl)
@@ -705,6 +712,12 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         } else {
             tickerShopStatus?.closeButtonVisibility = View.VISIBLE
         }
+        
+        doOnDelayFinished(DELAY_DURATION_TICKER_MILLIS) {
+            tickerShopStatus?.tickerTitle =
+                HtmlLinkHelper(context, shopOperationalHourStatus.tickerTitle).spannedString.toString()
+            tickerShopStatus?.setHtmlDescription(shopOperationalHourStatus.tickerMessage)
+        }
     }
 
     private fun showShopStatusTicker(shopInfo: ShopInfo, isMyShop: Boolean = false) {
@@ -715,13 +728,6 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         val shopId = shopInfo.shopCore.shopID
         val isOfficialStore = shopInfo.goldOS.isOfficialStore()
         val isGoldMerchant = shopInfo.goldOS.isGoldMerchant()
-        tickerShopStatus?.show()
-        tickerShopStatus?.tickerType = when (shopTickerType) {
-            ShopTickerType.INFO -> Ticker.TYPE_ANNOUNCEMENT
-            ShopTickerType.WARNING -> Ticker.TYPE_WARNING
-            ShopTickerType.DANGER -> Ticker.TYPE_ERROR
-            else -> Ticker.TYPE_WARNING
-        }
         tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(statusTitle).toString()
         tickerShopStatus?.setHtmlDescription(
             if (shopStatus == ShopStatusDef.MODERATED && isMyShop) {
@@ -730,6 +736,14 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                 statusMessage
             }
         )
+        tickerShopStatus?.show()
+        tickerShopStatus?.tickerType = when (shopTickerType) {
+            ShopTickerType.INFO -> Ticker.TYPE_ANNOUNCEMENT
+            ShopTickerType.WARNING -> Ticker.TYPE_WARNING
+            ShopTickerType.DANGER -> Ticker.TYPE_ERROR
+            else -> Ticker.TYPE_WARNING
+        }
+      
         tickerShopStatus?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 // set tracker data based on shop status
@@ -785,8 +799,30 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                 tickerShopStatus?.closeButtonVisibility = View.VISIBLE
             }
         }
+        
+        doOnDelayFinished(DELAY_DURATION_TICKER_MILLIS) {
+            tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(statusTitle).toString()
+            tickerShopStatus?.setHtmlDescription(
+                if (shopStatus == ShopStatusDef.MODERATED && isMyShop) {
+                    generateShopModerateTickerDescription(statusMessage)
+                } else {
+                    statusMessage
+                }
+            )
+        }
     }
 
+    private fun doOnDelayFinished(delayMillis: Long, block: () -> Unit) {
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(delayMillis)
+            try {
+                block()
+            } catch (e: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(e)
+            }
+        }
+    }
+    
     private fun hideShopStatusTicker() {
         tickerShopStatus?.hide()
     }
@@ -957,28 +993,21 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
 
     fun startDynamicUspCycle(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>) {
         val listDynamicUspValue = listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
-        if (timer == null && listDynamicUspValue.isNotEmpty()) {
-            timer = Timer()
-            timer?.scheduleAtFixedRate(
-                object : TimerTask() {
-                    override fun run() {
-                        if (currentIndexUspDynamicValue == listDynamicUspValue.size - Int.ONE) {
-                            currentIndexUspDynamicValue = Int.ZERO
-                        } else {
-                            ++currentIndexUspDynamicValue
-                        }
-                        val currentValue = listDynamicUspValue[currentIndexUspDynamicValue]
-                        cycleDynamicUspText(currentValue)
-                    }
-                },
-                CYCLE_DURATION, CYCLE_DURATION
-            )
+        if (listDynamicUspValue.isNotEmpty()) {
+            timer.startTimer(CYCLE_DURATION) {
+                if (currentIndexUspDynamicValue == listDynamicUspValue.size - Int.ONE) {
+                    currentIndexUspDynamicValue = Int.ZERO
+                } else {
+                    ++currentIndexUspDynamicValue
+                }
+                val currentValue = listDynamicUspValue[currentIndexUspDynamicValue]
+                cycleDynamicUspText(currentValue)
+            }
         }
     }
 
     fun clearTimerDynamicUsp() {
-        timer?.cancel()
-        timer = null
+        timer.stopTimer()
         currentIndexUspDynamicValue = Int.ZERO
         updateDynamicUspValue(String.EMPTY)
     }
@@ -992,8 +1021,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     }
 
     fun pauseTimerDynamicUspCycle() {
-        timer?.cancel()
-        timer = null
+        timer.stopTimer()
     }
 
     fun resumeTimerDynamicUspCycle() {

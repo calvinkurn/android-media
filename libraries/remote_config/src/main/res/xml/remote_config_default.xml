@@ -639,6 +639,14 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>android_pdp_p1_should_cacheable</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_pdp_p1_cache_age</key>
+        <value>30</value>
+    </entry>
+    <entry>
         <key>android_enable_compose_centralized_promo</key>
         <value>false</value>
     </entry>

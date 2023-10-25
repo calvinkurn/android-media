@@ -7,10 +7,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactView.ProductCardCompactListener
 import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.listener.CategoryL2TabAdapterFactory
-import com.tokopedia.tokopedianow.category.presentation.model.CategoryEmptyStateDivider
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryDividerUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryProductListUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
-import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryEmptyStateDividerViewHolder
+import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryDividerViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryProductListViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryQuickFilterViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryQuickFilterViewHolder.CategoryQuickFilterListener
@@ -93,7 +93,7 @@ class CategoryL2TabAdapterTypeFactory(
 
     override fun type(productItemDataView: ProductItemDataView): Int = ProductItemViewHolder.LAYOUT
 
-    override fun type(uiModel: CategoryEmptyStateDivider): Int = CategoryEmptyStateDividerViewHolder.LAYOUT
+    override fun type(uiModel: CategoryDividerUiModel): Int = CategoryDividerViewHolder.LAYOUT
     // endregion
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -142,11 +142,11 @@ class CategoryL2TabAdapterTypeFactory(
                     itemView = view,
                     listener = productItemListener,
                     productCardCompactListener = productCardCompactListener,
-                    productCardCompactSimilarProductTrackerListener = similarProductTrackerListener
+                    similarProductTrackerListener = similarProductTrackerListener
                 )
             }
             CategoryProductListViewHolder.LAYOUT -> CategoryProductListViewHolder(view)
-            CategoryEmptyStateDividerViewHolder.LAYOUT -> CategoryEmptyStateDividerViewHolder(view)
+            CategoryDividerViewHolder.LAYOUT -> CategoryDividerViewHolder(view)
             // endregion
             else -> super.createViewHolder(view, type)
         }

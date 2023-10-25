@@ -26,7 +26,7 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
         const val SIZE_HOST = 31
-        const val SIZE_PATH = 71
+        const val SIZE_PATH = 72
     }
 
     @Throws(RuntimeException::class)
@@ -150,6 +150,12 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
     fun `check top ads picker appLink then should return tokopedia internal top ads picker in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://topads/ad-picker"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.TOPADS_CREATE_CHOOSER, expectedDeepLink)
+    }
+
+    @Test
+    fun `check top ads product recommendation applink then should return tokopedia internal top ads product recommendation in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://topads/product-recommendation"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.TOPADS_PRODUCT_RECOMMENDATION, expectedDeepLink)
     }
 
     @Test

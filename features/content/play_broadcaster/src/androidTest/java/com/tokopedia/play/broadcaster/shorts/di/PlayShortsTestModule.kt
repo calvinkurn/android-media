@@ -15,6 +15,9 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
+import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -23,10 +26,8 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
-import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
-import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
@@ -56,6 +57,7 @@ class PlayShortsTestModule(
     private val mockBroRepo: PlayBroadcastRepository,
     private val mockProductTagRepo: ProductTagRepository,
     private val mockUgcOnboardingRepo: UGCOnboardingRepository,
+    private val mockContentProductPickerSGCRepo: ContentProductPickerSellerRepository,
     private val mockDataStore: PlayBroadcastDataStore,
     private val mockUserSession: UserSessionInterface,
     private val mockAccountManager: PlayShortsAccountManager,
@@ -81,6 +83,10 @@ class PlayShortsTestModule(
 
     @Provides
     fun provideProductTagRepository(): ProductTagRepository = mockProductTagRepo
+
+    @Provides
+    @PlayShortsScope
+    fun provideContentProductPickerSGCRepository(): ContentProductPickerSellerRepository = mockContentProductPickerSGCRepo
 
     @Provides
     fun provideDataStore(): PlayBroadcastDataStore = mockDataStore
@@ -127,10 +133,10 @@ class PlayShortsTestModule(
         setupMenuAnalytic: PlayBroSetupMenuAnalytic,
         setupTitleAnalytic: PlayBroSetupTitleAnalytic,
         setupCoverAnalytic: PlayBroSetupCoverAnalytic,
-        setupProductAnalytic: PlayBroSetupProductAnalytic,
+        setupProductAnalytic: ContentProductPickerSellerAnalytic,
         summaryAnalytic: PlayBroadcastSummaryAnalytic,
         scheduleAnalytic: PlayBroScheduleAnalytic,
-        pinProductAnalytic: PlayBroadcastPinProductAnalytic,
+        pinProductAnalytic: ContentPinnedProductAnalytic,
         accountAnalytic: PlayBroadcastAccountAnalytic,
         shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
         playBroadcastPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,

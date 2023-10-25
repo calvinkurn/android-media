@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.google.android.material.tabs.TabLayout
@@ -17,8 +16,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.unifycomponents.R as unifycomponentsR
-
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class StickyTabNavigationViewHolder(
     itemView: View,
@@ -32,7 +30,6 @@ class StickyTabNavigationViewHolder(
     }
 
     private val binding by viewBinding<WidgetStickyNavigationBinding>()
-
 
     override fun bind(element: StickyNavigationUiModel?) {
         binding?.let {
@@ -50,16 +47,14 @@ class StickyTabNavigationViewHolder(
         widgetBackgroundColor: Int
     ) {
         binding?.run {
-
-            if (catalogTabsUnify.tabCount == Int.ZERO){
+            if (catalogTabsUnify.tabCount == Int.ZERO) {
                 element?.content?.forEachIndexed { index, item ->
                     val customText = LayoutInflater.from(itemView.context)
                         .inflate(R.layout.custom_tab_text, null) as LinearLayout
                     val textView = customText.findViewById<Typography>(R.id.tab_item_text_id)
                     textView.setText(item.title)
-                    textView.setLineSpacing(4f,1f)
+                    textView.setLineSpacing(4f, 1f)
                     catalogTabsUnify.addTab(catalogTabsUnify.newTab().setCustomView(customText))
-
                 }
             }
             catalogTabsUnify.getTabAt(element?.currentSelectTab.orZero())?.select()
@@ -70,30 +65,27 @@ class StickyTabNavigationViewHolder(
                 catalogTabsUnify.context,
                 R.drawable.shape_showcase_tab_indicator_color
             )
+            catalogTabsUnify.setSelectedTabIndicatorColor(ContextCompat.getColor(catalogTabsUnify.context,unifyprinciplesR.color.Unify_GN500))
             catalogTabsUnify.setSelectedTabIndicator(centeredTabIndicator)
-            catalogTabsUnify.setTabTextColors(Color.BLUE, Color.BLACK)
             catalogTabsUnify.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     listener?.onNavigateWidget(
                         element?.content?.get(tab?.position.orZero())?.anchorTo.orEmpty(),
                         tab?.position.orZero(),
-                        element?.content?.getOrNull(tab?.position.orZero())?.title.orEmpty(),
+                        element?.content?.getOrNull(tab?.position.orZero())?.title.orEmpty()
                     )
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
-                                  }
-
-                override fun onTabReselected(tab: TabLayout.Tab?) {
-
                 }
 
+                override fun onTabReselected(tab: TabLayout.Tab?) {
+                }
             })
 
             listener?.onStickyNavigationImpression()
         }
     }
-
 }
 
 interface StickyNavigationListener {
@@ -101,5 +93,4 @@ interface StickyNavigationListener {
     fun onNavigateWidget(anchorTo: String, tabPosition: Int, tabTitle: String?)
 
     fun onStickyNavigationImpression()
-
 }
