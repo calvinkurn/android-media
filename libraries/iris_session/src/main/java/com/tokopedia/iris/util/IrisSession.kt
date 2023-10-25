@@ -2,32 +2,53 @@ package com.tokopedia.iris.util
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.util.Base64
 import java.nio.charset.Charset
-import java.util.*
+import java.util.UUID
 
-class IrisSession(val context: Context) : Session {
+class IrisSession(context: Context) : Session {
 
-    private val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
-    private val editor = sharedPreferences.edit()
+    val appContext: Context
 
-    // variable to hold current session Id
-    private var sessionId: String? = null
-
-    // variable to hold first time Iris Session is created
-    private var initialVisit: Long = 0L
-    private var timestampOfDayChanged: Long = 0L
-
-    // variable to hold last time Iris Session is accessed
-    private var lastTrackingActivity: Long = 0L
-    // variable to hold last time Iris Session is accessed (from shared Preference)
-    private var lastTrackingActivityPref: Long = 0L
+    init {
+        this.appContext = context.applicationContext
+    }
 
     companion object {
+        private val LOCK = Any()
         const val THRESHOLD_EXPIRED_IF_NO_ACTIVITY = 1_800_000L //30 minutes
         const val ONE_DAY_MILLIS = 86_400_000L
         const val GMT_MILLIS = 25_200_000L // 7 hours
-        const val THRESHOLD_UPDATE_LAST_ACTIVITY = 10_000L // 10 seconds to prevent burst update shared pref
+        const val THRESHOLD_UPDATE_LAST_ACTIVITY =
+            10_000L // 10 seconds to prevent burst update shared pref
+
+        private var sharedPreferences: SharedPreferences? = null
+
+        // variable to hold current session Id
+        private var sessionId: String? = null
+
+        // variable to hold first time Iris Session is created
+        private var initialVisit: Long = 0L
+        private var timestampOfDayChanged: Long = 0L
+
+        // variable to hold last time Iris Session is accessed
+        private var lastTrackingActivity: Long = 0L
+
+        // variable to hold last time Iris Session is accessed (from shared Preference)
+        private var lastTrackingActivityPref: Long = 0L
+    }
+
+    private fun getSharedPref(): SharedPreferences {
+        val sp = sharedPreferences
+        return if (sp == null) {
+            val spTemp = appContext.getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).also {
+                sharedPreferences = it
+            }
+            spTemp
+        } else {
+            sp
+        }
     }
 
     /**
@@ -37,8 +58,15 @@ class IrisSession(val context: Context) : Session {
      * The session will be renew if the day changed (GMT +7)
      */
     override fun getSessionId(): String {
+        // we want to synchronized getSessionId, so no multiple session will be created in diff thread.
+        synchronized(LOCK) {
+            return getSessionidNonLock()
+        }
+    }
+
+    private fun getSessionidNonLock(): String {
         if (sessionId.isNullOrEmpty()) {
-            val sessionIdFromPref = sharedPreferences.getString(KEY_SESSION_ID, "")
+            val sessionIdFromPref = getSharedPref().getString(KEY_SESSION_ID, "")
             if (sessionIdFromPref.isNullOrEmpty()) {
                 // The session is created when there is no existing session
                 return generateSessionId(System.currentTimeMillis())
@@ -49,7 +77,7 @@ class IrisSession(val context: Context) : Session {
 
         val currentTimeStamp = System.currentTimeMillis()
         if (lastTrackingActivity == 0L) {
-            lastTrackingActivity = sharedPreferences.getLong(KEY_TIMESTAMP_LAST_ACTIVITY, 0L)
+            lastTrackingActivity = getSharedPref().getLong(KEY_TIMESTAMP_LAST_ACTIVITY, 0L)
             lastTrackingActivityPref = lastTrackingActivity
         }
         if (currentTimeStamp - lastTrackingActivity > THRESHOLD_EXPIRED_IF_NO_ACTIVITY) {
@@ -58,7 +86,7 @@ class IrisSession(val context: Context) : Session {
         }
 
         if (initialVisit == 0L) {
-            initialVisit = sharedPreferences.getLong(KEY_INITIAL_VISIT, 0L)
+            initialVisit = getSharedPref().getLong(KEY_INITIAL_VISIT, 0L)
             timestampOfDayChanged = generateNextDayGMT7(initialVisit)
         }
         if (currentTimeStamp > timestampOfDayChanged) {
@@ -106,6 +134,7 @@ class IrisSession(val context: Context) : Session {
     }
 
     private fun setPrefSessionId(id: String) {
+        val editor = getSharedPref().edit()
         editor.putString(KEY_SESSION_ID, id)
         editor.apply()
     }
@@ -117,15 +146,17 @@ class IrisSession(val context: Context) : Session {
         lastTrackingActivity = timestamp
         if (timestamp - lastTrackingActivityPref > THRESHOLD_UPDATE_LAST_ACTIVITY) {
             lastTrackingActivityPref = timestamp
+            val editor = getSharedPref().edit()
             editor.putLong(KEY_TIMESTAMP_LAST_ACTIVITY, timestamp)
             editor.apply()
         }
     }
 
-    private fun setInitialVisit(initialVisit: Long) {
-        this.initialVisit = initialVisit
-        timestampOfDayChanged = generateNextDayGMT7(initialVisit)
-        editor.putLong(KEY_INITIAL_VISIT, initialVisit)
+    private fun setInitialVisit(initialVisitParam: Long) {
+        initialVisit = initialVisitParam
+        timestampOfDayChanged = generateNextDayGMT7(initialVisitParam)
+        val editor = getSharedPref().edit()
+        editor.putLong(KEY_INITIAL_VISIT, initialVisitParam)
         editor.apply()
     }
 }
