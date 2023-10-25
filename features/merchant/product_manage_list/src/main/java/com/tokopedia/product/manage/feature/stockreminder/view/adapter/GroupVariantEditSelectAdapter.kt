@@ -69,16 +69,15 @@ class GroupVariantEditSelectAdapter(val onSelectionListener: OnSelectionListener
                 dataList.forEachIndexed { position, listItemUnify ->
                     listItemUnify.listRightCheckbox?.setOnCheckedChangeListener { compoundButton, isCheck ->
                         if (isCheck) {
-                            checkProductSelection(groupVariant.variants[position],REMINDER_ACTIVE)
+                            checkProductSelection(groupVariant.variants[position], REMINDER_ACTIVE)
                         } else {
-                            checkProductSelection(groupVariant.variants[position],REMINDER_INACTIVE)
+                            checkProductSelection(groupVariant.variants[position], REMINDER_INACTIVE)
                         }
                         onSelectionListener.onSelection(productSelection)
                     }
                     listItemUnify.listRightCheckbox?.isChecked = isCheckAll
                 }
             }
-
         }
 
         private fun checkProductSelection(
@@ -95,7 +94,6 @@ class GroupVariantEditSelectAdapter(val onSelectionListener: OnSelectionListener
                         it.copy(stockAlertStatus = status)
                     }
                 }
-
             } else {
                 productSelection.add(
                     ProductStockReminderUiModel(
@@ -130,17 +128,15 @@ class GroupVariantEditSelectAdapter(val onSelectionListener: OnSelectionListener
         private fun mapToItemListUnify(
             data: List<ProductStockReminderUiModel>
         ) =
-            ArrayList(data.mapIndexed { index, _ ->
-                val variantSecond = data[index].variantSecond.ifEmpty {
-                    data[index].variantFirst
+            ArrayList(
+                data.mapIndexed { index, _ ->
+                    val variantSecond = data[index].productName
+                    val listItem = ListItemUnify(variantSecond, "")
+                    listItem.setVariant(null, ListItemUnify.CHECKBOX, data[index].variantFirst)
+                    listItem.isBold = false
+                    return@mapIndexed listItem
                 }
-                val listItem = ListItemUnify(variantSecond, "")
-                listItem.setVariant(null, ListItemUnify.CHECKBOX, data[index].variantFirst)
-                listItem.isBold = false
-                return@mapIndexed listItem
-            })
-
-
+            )
     }
 
     interface OnSelectionListener {
