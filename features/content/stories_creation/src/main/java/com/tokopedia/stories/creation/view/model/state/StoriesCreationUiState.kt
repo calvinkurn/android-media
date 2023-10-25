@@ -52,7 +52,7 @@ data class StoriesCreationUiState(
 
 data class StoriesManualConfiguration(
     val maxProductTag: Int,
-    val showDuration: String,
+    val storyDuration: String,
     val maxStories: MaxStories,
 ) {
 
@@ -81,7 +81,7 @@ data class StoriesManualConfiguration(
         val Empty: StoriesManualConfiguration
             get() = StoriesManualConfiguration(
                 maxProductTag = 0,
-                showDuration = "24 Jam", /** TODO JOE: for mocking purpose */
+                storyDuration = "24 Jam", /** TODO JOE: for mocking purpose */
                 maxStories = MaxStories.Empty,
             )
     }

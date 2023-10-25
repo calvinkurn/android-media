@@ -139,7 +139,7 @@ fun StoriesCreationScreen(
         )
 
         StoriesCreationShowDurationSection(
-            showDuration = uiState.config.showDuration,
+            storyDuration = uiState.config.storyDuration,
             modifier = Modifier.constrainAs(showDurationSection) {
                 top.linkTo(addProductSection.bottom, 20.dp)
                 start.linkTo(parent.start)
@@ -317,7 +317,7 @@ private fun StoriesCreationAddProductSection(
 
 @Composable
 private fun StoriesCreationShowDurationSection(
-    showDuration: String,
+    storyDuration: String,
     modifier: Modifier = Modifier,
 ) {
     ConstraintLayout(
@@ -354,7 +354,7 @@ private fun StoriesCreationShowDurationSection(
         )
 
         NestTypography(
-            text = showDuration,
+            text = storyDuration,
             textStyle = NestTheme.typography.display3.copy(
                 color = colorResource(id = unifycomponentsR.color.Unify_NN600)
             ),
