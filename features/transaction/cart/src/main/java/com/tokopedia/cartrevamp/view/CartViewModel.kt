@@ -113,7 +113,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.C
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -2870,40 +2869,8 @@ class CartViewModel @Inject constructor(
     }
 
     fun getEntryPointInfoNoItemSelected() {
-        val lastApply: LastApplyUiModel = when {
-            cartModel.isLastApplyResponseStillValid -> {
-                val lastApplyPromoData = cartModel.cartListData?.promo?.lastApplyPromo?.lastApplyPromoData
-                if (lastApplyPromoData != null) {
-                    CartUiModelMapper.mapLastApplySimplified(lastApplyPromoData)
-                } else {
-                    LastApplyUiModel()
-                }
-            }
-
-            cartModel.lastValidateUseRequest != null -> {
-                val promoUiModel = cartModel.lastValidateUseResponse?.promoUiModel
-                if (promoUiModel != null) {
-                    LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel)
-                } else {
-                    LastApplyUiModel()
-                }
-            }
-
-            cartModel.lastUpdateCartAndGetLastApplyResponse != null -> {
-                val promoUiModel = cartModel.lastUpdateCartAndGetLastApplyResponse?.promoUiModel
-                if (promoUiModel != null) {
-                    LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel)
-                } else {
-                    LastApplyUiModel()
-                }
-            }
-
-            else -> {
-                LastApplyUiModel()
-            }
-        }
         _entryPointInfoEvent.postValue(
-            cartPromoEntryPointProcessor.getEntryPointInfoNoItemSelected(lastApply)
+            cartPromoEntryPointProcessor.getEntryPointInfoNoItemSelected(LastApplyUiModel())
         )
     }
 
