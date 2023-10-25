@@ -71,6 +71,7 @@ import com.tokopedia.cartrevamp.view.bottomsheet.CartBundlingBottomSheetListener
 import com.tokopedia.cartrevamp.view.bottomsheet.CartNoteBottomSheet
 import com.tokopedia.cartrevamp.view.bottomsheet.showGlobalErrorBottomsheet
 import com.tokopedia.cartrevamp.view.compoundview.CartToolbarListener
+import com.tokopedia.cartrevamp.view.customview.ViewBinderHelper
 import com.tokopedia.cartrevamp.view.decorator.CartItemDecoration
 import com.tokopedia.cartrevamp.view.di.DaggerCartRevampComponent
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
@@ -303,24 +304,32 @@ class CartRevampFragment :
     private var wishlistIcon: IconUnify? = null
     private var animatedWishlistImage: ImageView? = null
 
-    private var editBundleActivityResult: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        onResultFromEditBundle(result.resultCode, result.data)
-    }
-    private var shipmentActivityResult: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        onResultFromShipmentPage(result.resultCode, result.data)
-    }
-    private var pdpActivityResult: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        onResultFromPdp()
-    }
-    private var promoActivityResult: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        onResultFromPromoPage(result.resultCode, result.data)
-    }
-    private var activityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        refreshCartWithSwipeToRefresh()
-    }
-    private var addonResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        onResultFromAddOnBottomSheet(result.resultCode, result.data)
-    }
+    private val binderHelper = ViewBinderHelper()
+
+    private var editBundleActivityResult: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            onResultFromEditBundle(result.resultCode, result.data)
+        }
+    private var shipmentActivityResult: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            onResultFromShipmentPage(result.resultCode, result.data)
+        }
+    private var pdpActivityResult: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            onResultFromPdp()
+        }
+    private var promoActivityResult: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            onResultFromPromoPage(result.resultCode, result.data)
+        }
+    private var activityResultLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            refreshCartWithSwipeToRefresh()
+        }
+    private var addonResultLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            onResultFromAddOnBottomSheet(result.resultCode, result.data)
+        }
 
     companion object {
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
@@ -382,7 +391,13 @@ class CartRevampFragment :
                 .baseAppComponent(baseMainApplication.baseAppComponent)
                 .build().inject(this)
         }
-        cartAdapter = CartAdapter(this, this, this, userSession)
+        cartAdapter = CartAdapter(
+            this,
+            this,
+            this,
+            userSession,
+            binderHelper
+        )
     }
 
     override fun getFragmentLayout(): Int {
@@ -516,7 +531,12 @@ class CartRevampFragment :
         routeToHome()
     }
 
-    override fun onCartGroupNameClicked(appLink: String, shopId: String, shopName: String, isOWOC: Boolean) {
+    override fun onCartGroupNameClicked(
+        appLink: String,
+        shopId: String,
+        shopName: String,
+        isOWOC: Boolean
+    ) {
         sendCartImpressionAnalytic()
         if (!isOWOC && shopId.isNotEmpty()) {
             cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
@@ -650,13 +670,22 @@ class CartRevampFragment :
             }
             if (listOfferId.isNotEmpty()) {
                 listOfferId.forEach { offerId ->
-                    val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByOfferId(viewModel.cartDataList.value, offerId)
+                    val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByOfferId(
+                        viewModel.cartDataList.value,
+                        offerId
+                    )
                     if (index > RecyclerView.NO_POSITION) {
                         for (cartItem in cartItems) {
-                            cartItem.cartBmGmTickerData.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
+                            cartItem.cartBmGmTickerData.stateTickerBmGm =
+                                CART_BMGM_STATE_TICKER_LOADING
                         }
                         cartAdapter?.notifyItemChanged(index)
-                        getGroupProductTicker(CartDataHelper.getListProductByOfferId(viewModel.cartDataList.value, offerId))
+                        getGroupProductTicker(
+                            CartDataHelper.getListProductByOfferId(
+                                viewModel.cartDataList.value,
+                                offerId
+                            )
+                        )
                     }
                 }
             }
@@ -681,7 +710,7 @@ class CartRevampFragment :
             if (isClickable) {
                 binding?.vDisabledGoToCourierPageButton?.setOnClickListener {
                     if (CartDataHelper.getAllAvailableCartItemData(viewModel.cartDataList.value)
-                        .isNotEmpty()
+                            .isNotEmpty()
                     ) {
                         showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
                     }
@@ -1088,7 +1117,8 @@ class CartRevampFragment :
         cartPageAnalytics.eventClickGlobalDelete()
         val deletedCartItems = CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
         val dialog = getMultipleItemsDialogDeleteConfirmation(deletedCartItems.size)
-        val listOfferIdNeedUpdated = CartDataHelper.checkSelectedCartItemDataWithOfferBmGm(viewModel.cartDataList.value)
+        val listOfferIdNeedUpdated =
+            CartDataHelper.checkSelectedCartItemDataWithOfferBmGm(viewModel.cartDataList.value)
         dialog?.setPrimaryCTAClickListener {
             viewModel.processDeleteCartItem(
                 removedCartItems = deletedCartItems,
@@ -1202,7 +1232,11 @@ class CartRevampFragment :
         updateStateAfterCheckChanged(selected)
     }
 
-    override fun onCartItemCheckboxClickChanged(position: Int, cartItemHolderData: CartItemHolderData, isChecked: Boolean) {
+    override fun onCartItemCheckboxClickChanged(
+        position: Int,
+        cartItemHolderData: CartItemHolderData,
+        isChecked: Boolean
+    ) {
         if (cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM) {
             val selected = !cartItemHolderData.isSelected
             viewModel.setItemSelected(position, cartItemHolderData, selected)
@@ -1368,14 +1402,20 @@ class CartRevampFragment :
         }
 
         if (cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM && cartAdapter != null) {
-            val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByOfferId(viewModel.cartDataList.value, cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId)
+            val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByOfferId(
+                viewModel.cartDataList.value,
+                cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
+            )
             if (index > RecyclerView.NO_POSITION) {
                 for (cartItem in cartItems) {
                     cartItem.cartBmGmTickerData.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
                 }
 
                 cartAdapter?.notifyItemChanged(index)
-                val cartGroupHolderData = CartDataHelper.getCartGroupHolderDataByCartItemHolderData(viewModel.cartDataList.value, cartItemHolderData)
+                val cartGroupHolderData = CartDataHelper.getCartGroupHolderDataByCartItemHolderData(
+                    viewModel.cartDataList.value,
+                    cartItemHolderData
+                )
                 if (cartGroupHolderData != null) {
                     getGroupProductTicker(cartItemHolderData)
                 }
@@ -1490,8 +1530,10 @@ class CartRevampFragment :
                 AddOnConstant.QUERY_PARAM_CATEGORY_ID to cartItemData.categoryId,
                 AddOnConstant.QUERY_PARAM_SHOP_ID to cartItemData.shopHolderData.shopId,
                 AddOnConstant.QUERY_PARAM_QUANTITY to cartItemData.quantity,
-                AddOnConstant.QUERY_PARAM_PRICE to price.toBigDecimal().toPlainString().removeSingleDecimalSuffix(),
-                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toBigDecimal().toPlainString()
+                AddOnConstant.QUERY_PARAM_PRICE to price.toBigDecimal().toPlainString()
+                    .removeSingleDecimalSuffix(),
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toBigDecimal()
+                    .toPlainString()
                     .removeSingleDecimalSuffix()
             )
         )
@@ -1604,7 +1646,8 @@ class CartRevampFragment :
     }
 
     override fun sendRemoveCartFromSubtractButtonAnalytic(cartItemHolderData: CartItemHolderData) {
-        val analyticItems = CartPageAnalyticsUtil.generateRemoveCartFromSubtractButtonAnalytics(cartItemHolderData)
+        val analyticItems =
+            CartPageAnalyticsUtil.generateRemoveCartFromSubtractButtonAnalytics(cartItemHolderData)
         cartPageAnalytics.sendRemoveCartFromSubtractButtonEvent(analyticItems, userSession.userId)
     }
 
@@ -1647,6 +1690,8 @@ class CartRevampFragment :
                 if (dy != 0) {
                     bulkActionCoachMark?.dismissCoachMark()
                 }
+
+                binderHelper.closeAll()
 
                 handleSelectedAmountVisibilityOnScroll(dy)
                 handlePromoButtonVisibilityOnScroll(dy)
@@ -2220,7 +2265,8 @@ class CartRevampFragment :
                 val promoHeight = binding?.llPromoCheckout?.height.toZeroIfNull()
                 Toaster.toasterCustomBottomHeight = bottomLayoutHeight + promoHeight
             } else {
-                Toaster.toasterCustomBottomHeight = requireContext().resources.getDimensionPixelSize(R.dimen.dp_210)
+                Toaster.toasterCustomBottomHeight =
+                    requireContext().resources.getDimensionPixelSize(R.dimen.dp_210)
             }
         }
     }
@@ -2281,6 +2327,9 @@ class CartRevampFragment :
             setSpanSize(gridLayoutManager)
             addRecyclerViewScrollListener(this)
             addEndlessRecyclerViewScrollListener(this, gridLayoutManager)
+//            val swipeController = CartItemTouchHelper(context)
+//            val itemTouchHelper = ItemTouchHelper(swipeController)
+//            itemTouchHelper.attachToRecyclerView(this)
         }
     }
 
@@ -2367,14 +2416,23 @@ class CartRevampFragment :
                 val listOfferId = CartDataHelper.getListOfferId(viewModel.cartDataList.value)
                 if (listOfferId.isNotEmpty()) {
                     listOfferId.forEach { offerId ->
-                        val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByOfferId(viewModel.cartDataList.value, offerId)
+                        val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByOfferId(
+                            viewModel.cartDataList.value,
+                            offerId
+                        )
                         if (index > RecyclerView.NO_POSITION) {
                             for (cartItem in cartItems) {
-                                cartItem.cartBmGmTickerData.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
+                                cartItem.cartBmGmTickerData.stateTickerBmGm =
+                                    CART_BMGM_STATE_TICKER_LOADING
                             }
 
                             cartAdapter?.notifyItemChanged(index)
-                            getGroupProductTicker(CartDataHelper.getListProductByOfferId(viewModel.cartDataList.value, offerId))
+                            getGroupProductTicker(
+                                CartDataHelper.getListProductByOfferId(
+                                    viewModel.cartDataList.value,
+                                    offerId
+                                )
+                            )
                         }
                     }
                 }
@@ -3137,19 +3195,26 @@ class CartRevampFragment :
         viewModel.bmGmGroupProductTickerState.observe(viewLifecycleOwner) { data ->
             when (data) {
                 is GetBmGmGroupProductTickerState.Success -> {
-                    val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByOfferId(viewModel.cartDataList.value, data.pairOfferIdBmGmTickerResponse.first)
+                    val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByOfferId(
+                        viewModel.cartDataList.value,
+                        data.pairOfferIdBmGmTickerResponse.first
+                    )
                     if (index > RecyclerView.NO_POSITION) {
                         for (cartItem in cartItems) {
                             if (data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.action == BMGM_TICKER_RELOAD_ACTION) {
-                                cartItem.cartBmGmTickerData.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
+                                cartItem.cartBmGmTickerData.stateTickerBmGm =
+                                    CART_BMGM_STATE_TICKER_INACTIVE
                             } else if (data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.action.isEmpty()) {
-                                cartItem.cartBmGmTickerData.stateTickerBmGm = CART_BMGM_STATE_TICKER_ACTIVE
+                                cartItem.cartBmGmTickerData.stateTickerBmGm =
+                                    CART_BMGM_STATE_TICKER_ACTIVE
                                 val listOfferMessage = arrayListOf<String>()
                                 data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.listMessage.forEachIndexed { i, s ->
                                     listOfferMessage.add(s.text)
                                 }
-                                cartItem.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerMessage = listOfferMessage
-                                cartItem.cartBmGmTickerData.bmGmCartInfoData.bmGmData.totalDiscount = data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.discountAmount
+                                cartItem.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerMessage =
+                                    listOfferMessage
+                                cartItem.cartBmGmTickerData.bmGmCartInfoData.bmGmData.totalDiscount =
+                                    data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.discountAmount
                             }
                         }
 
@@ -3159,11 +3224,15 @@ class CartRevampFragment :
                 }
 
                 is GetBmGmGroupProductTickerState.Failed -> {
-                    val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByOfferId(viewModel.cartDataList.value, data.pairOfferIdThrowable.first)
+                    val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByOfferId(
+                        viewModel.cartDataList.value,
+                        data.pairOfferIdThrowable.first
+                    )
 
                     if (index > RecyclerView.NO_POSITION) {
                         for (cartItem in cartItems) {
-                            cartItem.cartBmGmTickerData.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
+                            cartItem.cartBmGmTickerData.stateTickerBmGm =
+                                CART_BMGM_STATE_TICKER_INACTIVE
                         }
                         cartAdapter?.notifyItemChanged(index)
                     }
@@ -3311,7 +3380,12 @@ class CartRevampFragment :
 
         if (listOfferId.isNotEmpty()) {
             listOfferId.forEach {
-                getGroupProductTicker(CartDataHelper.getListProductByOfferId(viewModel.cartDataList.value, it))
+                getGroupProductTicker(
+                    CartDataHelper.getListProductByOfferId(
+                        viewModel.cartDataList.value,
+                        it
+                    )
+                )
             }
         }
     }
@@ -3409,10 +3483,10 @@ class CartRevampFragment :
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
                     newAddOnTitle = addOnProductDataResult.aggregatedData.title
                     newAddOnPrice = "(${
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        addOnProductDataResult.aggregatedData.price,
-                        false
-                    ).removeDecimalSuffix()
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            addOnProductDataResult.aggregatedData.price,
+                            false
+                        ).removeDecimalSuffix()
                     })"
                 }
 
@@ -3926,7 +4000,10 @@ class CartRevampFragment :
         viewModel.updatePromoSummaryData(lastApplyData)
     }
 
-    private fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>, isError: Boolean = false) {
+    private fun renderPromoCheckoutButtonActiveDefault(
+        listPromoApplied: List<String>,
+        isError: Boolean = false
+    ) {
         viewModel.getEntryPointInfoDefault(listPromoApplied, isError)
         if (isError) {
             viewModel.updatePromoSummaryData(
@@ -4072,18 +4149,19 @@ class CartRevampFragment :
         }
 
         binding?.tvTotalPrices?.text = totalPriceString
-        binding?.goToCourierPageButton?.text = if (viewModel.selectedAmountState.value.second <= 0) {
-            String.format(getString(R.string.cart_text_buy))
-        } else {
-            val quantityNumber = qty.toIntOrZero()
-            val reachMaximumLimit = quantityNumber > QUANTITY_MAX_LIMIT
-            val stringResourceId =
-                if (reachMaximumLimit) R.string.cart_item_button_checkout_count_format_reach_maximum_limit else R.string.cart_item_button_checkout_count_format
-            String.format(
-                getString(stringResourceId),
-                quantityNumber.coerceAtMost(QUANTITY_MAX_LIMIT)
-            )
-        }
+        binding?.goToCourierPageButton?.text =
+            if (viewModel.selectedAmountState.value.second <= 0) {
+                String.format(getString(R.string.cart_text_buy))
+            } else {
+                val quantityNumber = qty.toIntOrZero()
+                val reachMaximumLimit = quantityNumber > QUANTITY_MAX_LIMIT
+                val stringResourceId =
+                    if (reachMaximumLimit) R.string.cart_item_button_checkout_count_format_reach_maximum_limit else R.string.cart_item_button_checkout_count_format
+                String.format(
+                    getString(stringResourceId),
+                    quantityNumber.coerceAtMost(QUANTITY_MAX_LIMIT)
+                )
+            }
         if (totalPriceString == "-") {
             onCartDataDisableToCheckout()
         } else {
@@ -4513,9 +4591,9 @@ class CartRevampFragment :
             override fun getSpanSize(position: Int): Int {
                 return if (position != RecyclerView.NO_POSITION) {
                     if (position < (
-                        cartAdapter?.itemCount
-                            ?: 0
-                        ) && cartAdapter?.getItemViewType(position) == CartRecommendationViewHolder.LAYOUT
+                            cartAdapter?.itemCount
+                                ?: 0
+                            ) && cartAdapter?.getItemViewType(position) == CartRecommendationViewHolder.LAYOUT
                     ) {
                         SPAN_SIZE_ONE
                     } else {
@@ -4569,9 +4647,9 @@ class CartRevampFragment :
             plusCoachMark?.dismissCoachMark()
             mainFlowCoachMark?.dismissCoachMark()
             if ((
-                viewModel.cartModel.cartListData?.onboardingData?.size
-                    ?: 0
-                ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
+                    viewModel.cartModel.cartListData?.onboardingData?.size
+                        ?: 0
+                    ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
             ) {
                 return
             }
@@ -4614,7 +4692,8 @@ class CartRevampFragment :
                 hasShowBulkActionCoachMark = false
             }
 
-            val layoutManager: GridLayoutManager = binding?.rvCart?.layoutManager as GridLayoutManager
+            val layoutManager: GridLayoutManager =
+                binding?.rvCart?.layoutManager as GridLayoutManager
             val position = layoutManager.findFirstCompletelyVisibleItemPosition()
 
             generateBulkActionCoachMark(position)
@@ -5320,8 +5399,18 @@ class CartRevampFragment :
         }
     }
 
-    override fun onBmGmChevronRightClicked(offerLandingPageLink: String, offerId: Long, widgetCaption: String, shopId: String) {
-        cartPageAnalytics.eventClickBmGmTickerOffer(offerId, widgetCaption, shopId, userSession.userId)
+    override fun onBmGmChevronRightClicked(
+        offerLandingPageLink: String,
+        offerId: Long,
+        widgetCaption: String,
+        shopId: String
+    ) {
+        cartPageAnalytics.eventClickBmGmTickerOffer(
+            offerId,
+            widgetCaption,
+            shopId,
+            userSession.userId
+        )
         RouteManager.route(context, offerLandingPageLink)
     }
 
@@ -5330,6 +5419,11 @@ class CartRevampFragment :
     }
 
     override fun onCartViewBmGmTicker(offerId: Long, widgetCaption: String, shopId: String) {
-        cartPageAnalytics.eventViewBmGmTickerOffer(offerId, widgetCaption, shopId, userSession.userId)
+        cartPageAnalytics.eventViewBmGmTickerOffer(
+            offerId,
+            widgetCaption,
+            shopId,
+            userSession.userId
+        )
     }
 }

@@ -22,6 +22,7 @@ import com.tokopedia.cartrevamp.view.ActionListener
 import com.tokopedia.cartrevamp.view.adapter.diffutil.CartDiffUtilCallback
 import com.tokopedia.cartrevamp.view.adapter.recentview.CartRecentViewAdapter
 import com.tokopedia.cartrevamp.view.adapter.wishlist.CartWishlistAdapter
+import com.tokopedia.cartrevamp.view.customview.ViewBinderHelper
 import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
@@ -62,11 +63,13 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerA
 import com.tokopedia.user.session.UserSessionInterface
 import rx.subscriptions.CompositeSubscription
 
+
 class CartAdapter constructor(
     private val actionListener: ActionListener,
     private val cartItemActionListener: CartItemAdapter.ActionListener,
     private val sellerCashbackListener: SellerCashbackListener,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val binderHelper: ViewBinderHelper
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), CartItemViewHolder.ViewHolderListener {
 
     private val cartDataList = ArrayList<Any>()
@@ -77,6 +80,10 @@ class CartAdapter constructor(
 
     private var plusCoachMark: CoachMark2? = null
     private var mainCoachMark: CartMainCoachMarkUiModel = CartMainCoachMarkUiModel()
+
+    init {
+        binderHelper.setOpenOnlyOne(true)
+    }
 
     companion object {
         const val SELLER_CASHBACK_ACTION_INSERT = 1
@@ -294,7 +301,7 @@ class CartAdapter constructor(
 
             CartItemViewHolder.TYPE_VIEW_ITEM_CART -> {
                 val data = cartDataList[position] as CartItemHolderData
-                (holder as CartItemViewHolder).bindData(data, this, 1)
+                (holder as CartItemViewHolder).bindData(data, this, 1, binderHelper)
             }
 
             CartShopBottomViewHolder.LAYOUT -> {
