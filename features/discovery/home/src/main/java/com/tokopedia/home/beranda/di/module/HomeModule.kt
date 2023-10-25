@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.di.module
 
 import android.content.Context
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
@@ -96,8 +95,4 @@ class HomeModule {
     @HomeScope
     @Provides
     fun provideHomeThematicUtil(): HomeThematicUtil = HomeThematicUtil()
-
-    @HomeScope
-    @Provides
-    fun provideGson(): Gson = Gson()
 }
