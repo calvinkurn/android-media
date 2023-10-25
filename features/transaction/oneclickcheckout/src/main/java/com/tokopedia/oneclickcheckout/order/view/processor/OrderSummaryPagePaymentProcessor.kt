@@ -283,9 +283,9 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                                     shippingInfo = CartShippingInfoData(
                                         spId = orderShipment.getRealShipperProductId().toString(),
                                         originalShippingPrice = orderShipment.getRealOriginalPrice().toDouble(),
-                                        serviceName = orderShipment.serviceName ?: "",
-                                        shipperName = orderShipment.shipperName ?: "",
-                                        eta = orderShipment.serviceEta ?: "",
+                                        serviceName = orderShipment.getRealServiceName(),
+                                        shipperName = orderShipment.getRealShipperName(),
+                                        eta = orderShipment.getRealServiceEta(),
                                         insurancePrice = orderShipment.getRealInsurancePrice().toDouble()
                                     ),
                                     shopOrders = listOf(
@@ -299,12 +299,12 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                                                     name = orderProduct.productName,
                                                     price = orderProduct.finalPrice,
                                                     quantity = orderProduct.orderQuantity.toLong(),
-                                                    totalPrice = orderProduct.finalPrice,
+                                                    totalPrice = orderProduct.finalPrice * orderProduct.orderQuantity,
                                                     bundleGroupId = 0,
                                                     addonItems = emptyList(),
                                                     category = CartProductCategoryData(
                                                         id = orderProduct.categoryId,
-                                                        name = orderProduct.category,
+                                                        name = orderProduct.lastLevelCategory,
                                                         identifier = orderProduct.categoryIdentifier
                                                     )
                                                 )
@@ -341,7 +341,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                         shippingId = voucher.shippingId.toLong(),
                         spId = voucher.spId.toLong(),
                         type = voucher.type,
-                        success = false,
+                        success = voucher.success,
                         cartStringGroup = voucher.cartStringGroup
                     )
                 },

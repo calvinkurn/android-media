@@ -95,6 +95,30 @@ data class OrderShipment(
             0
         }
     }
+
+    fun getRealServiceName(): String {
+        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
+            logisticPromoViewModel.title
+        } else {
+            serviceName ?: ""
+        }
+    }
+
+    fun getRealShipperName(): String {
+        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
+            logisticPromoViewModel.shipperName
+        } else {
+            shipperName ?: ""
+        }
+    }
+
+    fun getRealServiceEta(): String {
+        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
+            logisticPromoViewModel.etaData.textEta
+        } else {
+            shippingEta ?: ""
+        }
+    }
 }
 
 data class OrderInsurance(
