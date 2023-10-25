@@ -15,6 +15,7 @@ import com.tokopedia.sellerorder.common.presenter.activities.SomPrintAwbActivity
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment
+import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.activity.PofActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.webview.KEY_TITLE
@@ -29,6 +30,7 @@ object SomNavigator {
     const val REQUEST_RESCHEDULE_PICKUP = 994
     const val REQUEST_RETURN_TO_SHIPPER = 993
     const val REQUEST_FIND_NEW_DRIVER = 992
+    const val REQUEST_POF = 991
 
     fun goToSomOrderDetail(fragment: SomListFragment, orderId: String) {
         fragment.run {
@@ -153,5 +155,15 @@ object SomNavigator {
     fun openWebView(context: Context?, url: String) {
         val intent: Intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
         context?.startActivity(intent)
+    }
+
+    fun goToPofPage(fragment: Fragment, orderId: String, pofStatus: Int) {
+        fragment.run {
+            val intent = Intent(fragment.context, PofActivity::class.java).apply {
+                putExtra(PofActivity.PARAMS_ORDER_ID, orderId)
+                putExtra(PofActivity.PARAMS_POF_STATUS, pofStatus)
+            }
+            startActivityForResult(intent, REQUEST_POF)
+        }
     }
 }

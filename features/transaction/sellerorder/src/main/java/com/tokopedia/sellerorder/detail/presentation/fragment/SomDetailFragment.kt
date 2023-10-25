@@ -78,6 +78,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING_AUTO
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING_DROP_OFF
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ORDER_EXTENSION_REQUEST
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_POF
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_PRINT_AWB
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
@@ -862,7 +863,11 @@ open class SomDetailFragment :
                     )
                     when {
                         key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackShipmentPage(it)
-                        key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
+                        key.equals(KEY_REJECT_ORDER, true) -> SomNavigator.goToPofPage(
+                            this,
+                            orderId,
+                            detailResponse?.pofData?.pofStatus.orZero()
+                        )
                         key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
                         key.equals(KEY_UBAH_NO_RESI, true) -> bottomSheetManager?.showSomOrderEditAwbBottomSheet(this)
                         key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(it)
@@ -888,6 +893,11 @@ open class SomDetailFragment :
                             this,
                             orderId,
                             detailResponse?.invoice
+                        )
+                        key.equals(KEY_POF, true) -> SomNavigator.goToPofPage(
+                            this,
+                            orderId,
+                            detailResponse?.pofData?.pofStatus.orZero()
                         )
                     }
                 }
@@ -1139,6 +1149,8 @@ open class SomDetailFragment :
             handleReturnToShipperResult(resultCode, data)
         } else if (requestCode == SomNavigator.REQUEST_FIND_NEW_DRIVER) {
             handleFindNewDriverResult(resultCode, data)
+        } else if (requestCode == SomNavigator.REQUEST_POF) {
+            handlePof(resultCode, data)
         }
     }
 
@@ -1319,6 +1331,12 @@ open class SomDetailFragment :
     }
 
     protected open fun handleFindNewDriverResult(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            loadDetail()
+        }
+    }
+
+    protected open fun handlePof(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             loadDetail()
         }

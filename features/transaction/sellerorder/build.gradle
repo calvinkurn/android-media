@@ -22,6 +22,15 @@ buildscript {
 android {
     namespace 'com.tokopedia.sellerorder'
     testNamespace 'com.tokopedia.sellerorder.test'
+    def pathSources = "src/main/res/"
+    sourceSets {
+        main {
+            res.srcDirs = [
+                    pathSources,
+                    pathSources + 'partial_order_fulfillment'
+            ]
+        }
+    }
     buildFeatures {
         viewBinding true
         buildConfig true
@@ -97,6 +106,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.liveDataKtx
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.miscDependencies.flexBoxLayout
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.miscDependencies.viewModelKtx
 
     implementation(rootProject.ext.firebase.crashlytics) {
         transitive = true

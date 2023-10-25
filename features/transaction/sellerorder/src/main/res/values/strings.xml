@@ -347,5 +347,25 @@
     <string name="som_dropoff_template_text_no_manual_input_resi">Tidak perlu masukin resi manual karena akan otomatis update di sistem. </string>
     <string name="som_dropoff_template_text_auto_confirm">Konfirmasi pengiriman otomatis maks. 3 jam setelah paket diserahkan ke kurir. </string>
 
-
+    <!-- SOM POF -->
+    <string name="som_pof_title_request">Kirim Pesanan Sebagian</string>
+    <string name="som_pof_title_result">Detail Pesanan Sebagian</string>
+    <string name="som_pof_summary_title">Rincian Harga</string>
+    <string name="som_pof_product_list_header_left_label">DETAIL PRODUK</string>
+    <string name="som_pof_product_list_header_right_label">BARANG TERSEDIA</string>
+    <string name="som_pof_product_list_header_fully_fulfilled_label">%1$d produk lainnya dikirim sesuai pesanan</string>
+    <string name="som_pof_description_initial">Untuk menghindari komplain dan penalti, kirim pesanan sesuai stok yang tersedia, ya. &lt;a href=\"#\"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+    <string name="som_pof_description_waiting_response">Pesanan ini dikirim sebagian. Untuk lanjut memproses pesanan, kamu butuh persetujuan pembeli. &lt;a href=\"#\"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+    <string name="som_pof_footer_title_no_counter">Total Harga Baru (-)</string>
+    <string name="som_pof_footer_price_no_value">-</string>
+    <string name="som_pof_footer_title_with_counter">Total Harga Baru (%1$d/%2$d)</string>
+    <string name="som_pof_footer_price_with_value">%1$s</string>
+    <string name="som_pof_footer_price_reload">Muat ulang</string>
+    <string name="som_pof_footer_button_text_confirm_no_counter">Konfirmasi</string>
+    <string name="som_pof_footer_button_text_confirm_with_counter">Konfirmasi (%1$d)</string>
+    <string name="som_pof_toaster_error_cannot_empty_all_products">Jumlah barang tersedia tidak boleh 0. Kamu bisa ajukan pembatalan.</string>
+    <string name="som_pof_toaster_error_cannot_exceed_checkout_quantity">Jumlah tidak boleh melebihi total barang dipesan.</string>
+    <string name="som_pof_toaster_error_send_pof">Ada gangguan yang perlu kami bereskan. Coba lagi nanti, ya.</string>
+    <string name="som_pof_toaster_error_re_fetch_pof_estimate">Gagal menampilkan rincian harga. Coba lagi, ya.</string>
+    <string name="som_pof_summary_description">Total harga barang yang tidak tersedia. Belum termasuk biaya ongkir, cashback, dan pengembalian dana dari Pusat Resolusi.</string>
 </resources>
