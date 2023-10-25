@@ -74,7 +74,7 @@ object ApplinkConstInternalContent {
     const val UF_EXTRA_FEED_TAB_NAME = "ARGS_FEED_TAB_NAME"
     const val UF_EXTRA_FEED_IS_JUST_LOGGED_IN = "FEED_IS_JUST_LOGGED_IN"
     const val UF_EXTRA_FEED_ENTRY_POINT = "ARGS_FEED_ENTRY_POINT"
-    const val UF_EXTRA_FEED_CATEGORY_ID = "ARGS_FEED_CATEGORY_ID"
+    const val UF_EXTRA_FEED_WIDGET_ID = "ARGS_FEED_WIDGET_ID"
 
     const val NAV_BUTTON_ENTRY_POINT = "Nav button"
 

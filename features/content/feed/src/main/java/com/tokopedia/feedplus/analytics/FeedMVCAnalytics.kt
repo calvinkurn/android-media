@@ -67,7 +67,7 @@ class FeedMVCAnalytics : DefaultMvcTrackerImpl() {
                         }
                     }),
                 )
-                putString(Key.pageSource, "${trackerData?.entrySource?.entryPoint.ifNull { "0" }}.0.0.${trackerData?.entrySource?.categoryId.ifNull { "0" }}")
+                putString(Key.pageSource, "${trackerData?.entrySource?.entryPoint.ifNull { "0" }}.0.0.${trackerData?.entrySource?.widgetId.ifNull { "0" }}")
             }
         )
     }

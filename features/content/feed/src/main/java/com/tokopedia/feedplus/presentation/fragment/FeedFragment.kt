@@ -28,7 +28,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_CATEGORY_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_WIDGET_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME
@@ -63,7 +63,6 @@ import com.tokopedia.feedplus.analytics.FeedMVCAnalytics
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
-import com.tokopedia.feedplus.detail.FeedDetailActivity
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
@@ -224,9 +223,9 @@ class FeedFragment :
     private val feedMvcAnalytics = FeedMVCAnalytics()
 
     private val feedEntrySource : MapperFeedModelToTrackerDataModel.FeedEntrySource by lazyThreadSafetyNone {
-        val categoryId = arguments?.getString(UF_EXTRA_FEED_CATEGORY_ID).ifNullOrBlank { "" }
+        val widgetId = arguments?.getString(UF_EXTRA_FEED_WIDGET_ID).ifNullOrBlank { "" }
         val entryPoint = arguments?.getString(UF_EXTRA_FEED_ENTRY_POINT).ifNullOrBlank { ENTRY_POINT_DEFAULT }
-        MapperFeedModelToTrackerDataModel.FeedEntrySource(categoryId = categoryId, entryPoint = entryPoint)
+        MapperFeedModelToTrackerDataModel.FeedEntrySource(widgetId = widgetId, entryPoint = entryPoint)
     }
 
     private val tabType : String get() {
@@ -346,7 +345,7 @@ class FeedFragment :
                 feedAnalytics.eventSwipeUpDownContent(
                     trackerModelMapper.tabType,
                     trackerModelMapper.entrySource.entryPoint,
-                    trackerModelMapper.entrySource.categoryId,
+                    trackerModelMapper.entrySource.widgetId,
                 )
 
                 val position = getCurrentPosition()

@@ -16,7 +16,7 @@ class MapperFeedModelToTrackerDataModel(
 ) {
 
     data class FeedEntrySource(
-        val categoryId: String,
+        val widgetId: String,
         val entryPoint: String,
     )
 

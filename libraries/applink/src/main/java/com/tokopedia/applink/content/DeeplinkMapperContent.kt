@@ -11,7 +11,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFIL
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_CREATION_PRODUCT_SEARCH
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_CREATION_SHOP_SEARCH
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_PRODUCT_PICKER_FROM_SHOP
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_CATEGORY_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_WIDGET_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME
@@ -25,7 +25,7 @@ import com.tokopedia.config.GlobalConfig
 object DeeplinkMapperContent {
 
     private const val EXTRA_SOURCE_NAME = "source"
-    private const val EXTRA_CATEGORY_ID = "category_id"
+    private const val EXTRA_WIDGET_ID = "widget_id"
     private const val EXTRA_ENTRY_POINT = "entrypoint"
 
     /**
@@ -103,8 +103,8 @@ object DeeplinkMapperContent {
                     put(UF_EXTRA_FEED_TAB_NAME, tabName)
                 }
 
-                val categoryId = uri.getQueryParameter(EXTRA_CATEGORY_ID)
-                if (categoryId != null) put(UF_EXTRA_FEED_CATEGORY_ID, categoryId)
+                val widgetId = uri.getQueryParameter(EXTRA_WIDGET_ID)
+                if (widgetId != null) put(UF_EXTRA_FEED_WIDGET_ID, widgetId)
 
                 val entryPoint = uri.getQueryParameter(EXTRA_ENTRY_POINT)
                 if (entryPoint != null) put(UF_EXTRA_FEED_ENTRY_POINT, entryPoint)
@@ -149,8 +149,8 @@ object DeeplinkMapperContent {
                 val sourceName = uri.getQueryParameter(EXTRA_SOURCE_NAME)
                 if (sourceName != null) put(UF_EXTRA_FEED_SOURCE_NAME, sourceName)
 
-                val categoryId = uri.getQueryParameter(EXTRA_CATEGORY_ID)
-                if (categoryId != null) put(UF_EXTRA_FEED_CATEGORY_ID, categoryId)
+                val widgetId = uri.getQueryParameter(EXTRA_WIDGET_ID)
+                if (widgetId != null) put(UF_EXTRA_FEED_WIDGET_ID, widgetId)
 
                 val entryPoint = uri.getQueryParameter(EXTRA_ENTRY_POINT)
                 if (entryPoint != null) put(UF_EXTRA_FEED_ENTRY_POINT, entryPoint)
