@@ -17,6 +17,7 @@ import com.tokopedia.applink.entertaiment.DeeplinkMapperEntertainment
 import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
 import com.tokopedia.applink.feed.DeepLinkMapperFeed
 import com.tokopedia.applink.find.DeepLinkMapperFind
+import com.tokopedia.applink.find.DeepLinkMapperFind.navigateToAppNotifSettings
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech
 import com.tokopedia.applink.gamification.DeeplinkMapperGamification
 import com.tokopedia.applink.home.DeeplinkMapperHome
@@ -168,6 +169,9 @@ object DeeplinkMainApp {
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(c, d)
             }
         ),
+        "buymoresavemore" to mutableListOf(
+            DLP.goTo(DeeplinkMapperMerchant::getRegisteredNavigationForOfferLandingPage)
+        ),
         "cart" to mutableListOf(
             DLP.goTo { deeplink: String ->
                 DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace(deeplink)
@@ -244,6 +248,9 @@ object DeeplinkMainApp {
                 DeeplinkMapperDeals.getRegisteredNavigationDeals(context, deeplink)
             }
         ),
+        "device-notification-settings" to mutableListOf(
+            DLP.startsWith(ApplinkConst.AppNotifSetting.DEVICE_APP_NOTIF_SETTINGS_PAGE) { ctx, uri, _, _ -> navigateToAppNotifSettings(ctx) }
+        ),
         "digital" to mutableListOf(
             DLP.startsWith("order") { context: Context, deeplink: String ->
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
@@ -281,6 +288,9 @@ object DeeplinkMainApp {
             }
         ),
         "feed" to mutableListOf(
+            DLP.matchPattern("browse") { _: Context, deeplink: String ->
+                DeeplinkMapperContent.getRegisteredNavigation(deeplink)
+            },
             DLP.goTo { deeplink: String ->
                 DeeplinkMapperContent.getNavContentFromAppLink(deeplink)
             }
@@ -460,8 +470,8 @@ object DeeplinkMainApp {
             DLP.startsWith("qr") { _: String ->
                 ApplinkConstInternalUserPlatform.QR_LOGIN
             },
-            DLP.matchPattern("") { _: String ->
-                ApplinkConstInternalUserPlatform.LOGIN
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "marketplace" to mutableListOf(
@@ -822,13 +832,13 @@ object DeeplinkMainApp {
             }
         ),
         "register-init" to mutableListOf(
-            DLP.goTo { _: String ->
-                ApplinkConstInternalUserPlatform.INIT_REGISTER
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "registration" to mutableListOf(
-            DLP.matchPattern("") { _: String ->
-                ApplinkConstInternalUserPlatform.INIT_REGISTER
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "rekomendasi" to mutableListOf(
@@ -1204,6 +1214,12 @@ object DeeplinkMainApp {
                 DeeplinkMapperOrder.getSnapshotOrderInternalAppLink(deeplink)
             }
         ),
+        "stories" to mutableListOf(
+            DLP.matchPattern(
+                "shop/{shop_id}",
+                DeeplinkMapperContent::getRegisteredNavigation
+            )
+        ),
         "talk" to mutableListOf(
             DLP.goTo { deeplink: String ->
                 DeeplinkMapper.getRegisteredNavigationTalk(deeplink)
@@ -1256,6 +1272,11 @@ object DeeplinkMainApp {
                 DeeplinkMapperDigital.getRegisteredNavigationDigital(context, deeplink)
             }
         ),
+        "universal-editor" to mutableListOf(
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalMedia.INTERNAL_UNIVERSAL_MEDIA_EDITOR
+            }
+        ),
         "universal-page" to mutableListOf(
             DLP.matchPattern("") { deeplink: String ->
                 DeeplinkMapperSearch.getRegisteredNavigationSearch(deeplink)
@@ -1268,6 +1289,11 @@ object DeeplinkMainApp {
         ),
         "webview" to mutableListOf(
             DLP.goToLink { ApplinkConstInternalGlobal.WEBVIEW_BASE }
+        ),
+        "webview-kyc" to mutableListOf(
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
+            }
         ),
         "webviewbackhome" to mutableListOf(
             DLP.goToLink { ApplinkConstInternalGlobal.WEBVIEW_BACK_HOME }

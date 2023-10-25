@@ -2,7 +2,6 @@ package com.tokopedia.privacycenter.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.privacycenter.ui.accountlinking.LinkAccountWebviewFragment
 import com.tokopedia.privacycenter.ui.consentwithdrawal.ConsentWithdrawalFragment
 import com.tokopedia.privacycenter.ui.dsar.DsarFragment
 import com.tokopedia.privacycenter.ui.dsar.addemail.DsarAddEmailFragment
@@ -23,7 +22,6 @@ import dagger.Component
     dependencies = [BaseAppComponent::class]
 )
 interface PrivacyCenterComponent {
-    fun inject(fragment: LinkAccountWebviewFragment)
     fun inject(fragment: PrivacyCenterFragment)
     fun inject(fragment: ConsentWithdrawalFragment)
     fun inject(fragment: DsarFragment)

@@ -53,7 +53,7 @@ internal class SearchProductAdsInLowOrganicTest: ProductListPresenterTestFixture
         `Then verify empty state data view`()
         `Then verify ads in low organic supply title`(keyword)
         `Then verify product item data view ads`(
-            searchProductModel,
+            searchProductModel.searchProduct.header.meta.productListType,
             searchProductModel.topAdsModel,
             1
         )
@@ -72,7 +72,7 @@ internal class SearchProductAdsInLowOrganicTest: ProductListPresenterTestFixture
         `Then verify empty state data view`()
         `Then verify ads in low organic supply title`(keyword)
         `Then verify product item data view ads`(
-            searchProductModel,
+            searchProductModel.searchProduct.header.meta.productListType,
             searchProductModel.topAdsModel,
             1
         )
@@ -126,7 +126,7 @@ internal class SearchProductAdsInLowOrganicTest: ProductListPresenterTestFixture
             ?: throw AssertionError("Ads Low Organic Title Data View not found")
 
     private fun `Then verify product item data view ads`(
-        searchProductModel: SearchProductModel,
+        productListType: String,
         topAdsModel: TopAdsModel,
         firstTopAdsPosition: Int,
     ) {
@@ -138,8 +138,7 @@ internal class SearchProductAdsInLowOrganicTest: ProductListPresenterTestFixture
             productAdsList[index].assertTopAdsProduct(
                 data,
                 expectedPosition,
-                searchProductModel.getProductListType(),
-                searchProductModel.isShowButtonAtc,
+                productListType,
             )
         }
     }
@@ -164,7 +163,7 @@ internal class SearchProductAdsInLowOrganicTest: ProductListPresenterTestFixture
         `When load more data`()
 
         `Then verify product item data view ads`(
-            searchProductModel,
+            searchProductModel.searchProduct.header.meta.productListType,
             topAdsModelNextPage,
             searchProductModel.topAdsModel.data.size + 1
         )
@@ -227,7 +226,7 @@ internal class SearchProductAdsInLowOrganicTest: ProductListPresenterTestFixture
 
         `Then verify ads in low organic supply title`(keyword)
         `Then verify product item data view ads`(
-            searchProductModel,
+            searchProductModel.searchProduct.header.meta.productListType,
             searchProductModel.topAdsModel,
             1
         )
@@ -265,7 +264,7 @@ internal class SearchProductAdsInLowOrganicTest: ProductListPresenterTestFixture
         `When load more data`()
 
         `Then verify product item data view ads`(
-            searchProductModel,
+            searchProductModel.searchProduct.header.meta.productListType,
             topAdsModelNextPage,
             searchProductModel.topAdsModel.data.size + 1
         )

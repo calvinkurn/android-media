@@ -1,100 +1,123 @@
 package com.tokopedia.discovery2.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 
 data class Properties(
-        @SerializedName("columns")
-        val columns: String? = null,
+    @SerializedName("columns")
+    val columns: String? = null,
 
-        @SerializedName("registered_message")
-        val registeredMessage: String? = null,
+    @SerializedName("registered_message")
+    val registeredMessage: String? = null,
 
-        @SerializedName("unregistered_message")
-        val unregisteredMessage: String? = null,
+    @SerializedName("unregistered_message")
+    val unregisteredMessage: String? = null,
 
-        @SerializedName("background")
-        val background: String? = null,
+    @SerializedName("background")
+    val background: String? = null,
 
-        @SerializedName("dynamic")
-        var dynamic: Boolean = false,
+    @SerializedName("dynamic")
+    var dynamic: Boolean = false,
 
-        @SerializedName("sticky")
-        val sticky: Boolean = false,
+    @SerializedName("sticky")
+    val sticky: Boolean = false,
 
-        @SerializedName("banner_title")
-        val bannerTitle: String? = null,
+    @SerializedName("banner_title")
+    val bannerTitle: String? = null,
 
-        @SerializedName("cta_app")
-        val ctaApp: String? = null,
+    @SerializedName("cta_app")
+    val ctaApp: String? = null,
 
-        @SerializedName("design")
-        val design: String? = null,
+    @SerializedName("design")
+    val design: String? = null,
 
-        @SerializedName("type")
-        val type: String? = null,
+    @SerializedName("type")
+    val type: String? = null,
 
-        @SerializedName("comp_type")
-        val compType: String? = null,
+    @SerializedName("rows")
+    val rows: String? = null,
 
-        @SerializedName("limit_number")
-        val limitNumber: String = "20",
+    @SerializedName("is_disabled_auto_slide")
+    val isDisabledAutoSlide: Boolean? = null,
 
-        @SerializedName("limit_product")
-        val limitProduct: Boolean = false,
+    @SerializedName("comp_type")
+    val compType: String? = null,
 
-        @SerializedName("target_id")
-        var targetId: String? = null,
+    @SerializedName("limit_number")
+    val limitNumber: String = "20",
 
-        @SerializedName("template")
-        var template: String = GRID,
+    @SerializedName("limit_product")
+    val limitProduct: Boolean = false,
 
-        @SerializedName("timer_style")
-        val timerStyle: String? = null,
+    @SerializedName("target_id")
+    var targetId: String? = null,
 
-        @SerializedName("category_detail")
-        val categoryDetail: Boolean = false,
+    @SerializedName("template")
+    var template: String = GRID,
 
-        @SerializedName("filter")
-        val filter:Boolean = true,
+    @SerializedName("timer_style")
+    val timerStyle: String? = null,
 
-        @SerializedName("sort")
-        val sort:Boolean = true,
+    @SerializedName("category_detail")
+    val categoryDetail: Boolean = false,
 
-        @SerializedName("tokonow_add_to_cart_active")
-        val tokonowATCActive : Boolean = false,
+    @SerializedName("filter")
+    val filter: Boolean = true,
 
-        @SerializedName("calendar_layout")
-        val calendarLayout: String = "",
+    @SerializedName("sort")
+    val sort: Boolean = true,
 
-        @SerializedName("calendar_type")
-        val calendarType: String = "",
+    @SerializedName("tokonow_add_to_cart_active")
+    val tokonowATCActive: Boolean = false,
 
-        @SerializedName("background_image_url")
-        val backgroundImageUrl: String? = null,
+    @SerializedName("calendar_layout")
+    val calendarLayout: String = "",
 
-        @SerializedName("background_color")
-        val backgroundColor: String? = null,
+    @SerializedName("calendar_type")
+    val calendarType: String = "",
 
-        @SerializedName("shop_info")
-        val shopInfo: String? = null,
+    @SerializedName("background_image_url")
+    val backgroundImageUrl: String? = null,
 
-        @SerializedName("mix_left")
-        val mixLeft: MixLeft? = null,
+    @SerializedName("background_color")
+    val backgroundColor: String? = null,
 
-        @SerializedName("index")
-        val index: Int = 0,
+    @SerializedName("shop_info")
+    val shopInfo: String? = null,
 
-        @SerializedName("targeted_component_id")
-        val targetedComponentId: String = "",
+    @SerializedName("mix_left")
+    val mixLeft: MixLeft? = null,
 
-        @SerializedName("catalog_slug")
-        val catalogSlug: String? = "",
+    @SerializedName("index")
+    val index: Int = 0,
 
-        @SerializedName("category_slug")
-        val categorySlug: String? = "",
+    @SerializedName("targeted_component_id")
+    val targetedComponentId: String = "",
 
-        @SerializedName("supergraphic_image_url")
-        val supergraphicImageUrl: String? = "",
+    @SerializedName("catalog_slug")
+    val catalogSlug: String? = "",
 
-)
+    @SerializedName("category_slug")
+    val categorySlug: String? = "",
+
+    @SerializedName("chip_size")
+    val chipSize: String? = "",
+
+    @SerializedName("full_filter_type")
+    var fullFilterType: String? = "",
+
+    @SerializedName("supergraphic_image_url")
+    val supergraphicImageUrl: String? = "",
+
+    @SerializedName("style")
+    val style: String? = "",
+
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("price_box")
+    val priceBox: PriceBox? = null,
+
+    @SerializedName("ribbon")
+    val ribbon: Ribbon? = null,
+
+    )

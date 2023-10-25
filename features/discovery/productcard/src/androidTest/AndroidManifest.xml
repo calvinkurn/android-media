@@ -27,5 +27,13 @@
             android:name="com.tokopedia.productcard.test.generator.ProductCardIDGeneratorActivityTest"
             android:theme="@style/Theme.White"/>
 
+        <activity
+            android:name="com.tokopedia.productcard.test.reimagine.ProductCardGridCarouselActivityTest"
+            android:theme="@style/Theme.White"/>
+
+        <activity
+            android:name="com.tokopedia.productcard.test.reimagine.ProductCardGridActivityTest"
+            android:theme="@style/Theme.White"/>
+
     </application>
 </manifest>

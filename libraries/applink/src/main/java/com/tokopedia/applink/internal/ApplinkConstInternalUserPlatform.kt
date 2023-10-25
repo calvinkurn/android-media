@@ -5,7 +5,8 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 
 object ApplinkConstInternalUserPlatform {
 
-    private const val HOST_USER = "user"
+    const val HOST_USER = "user"
+    const val HOST_PEOPLE = "people"
 
 //    private const val INTERNAL_USER = "${DeeplinkConstant.SCHEME_INTERNAL}://${ApplinkConstInternalGlobal.HOST_GLOBAL}"
 
@@ -20,6 +21,10 @@ object ApplinkConstInternalUserPlatform {
     const val PAGE_EDIT_INFO_PROFILE_USERNAME = "username"
     const val PAGE_EDIT_INFO_PARAM = "page"
 
+    const val LOGIN_SDK_CREDENTIAL = "ssoCredential"
+
+    const val PHONE_NUMBER = "phonenumber"
+    const val PARAM_IS_AUTO_REGISTER = "isAutoRegister"
     const val PARAM_IS_RETURN_HOME = "return_to_home"
     const val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
     const val PARAM_IS_FROM_STICKY_LOGIN = "from_sticky_login"
@@ -120,9 +125,9 @@ object ApplinkConstInternalUserPlatform {
 
     /**
      * OclChooseAccountActivity
-     * @Applink : tokopedia-android-internal://user/choose-account-fingerprint
+     * @Applink : tokopedia-android-internal://user/choose-account-ocl
      **/
-    const val CHOOSE_ACCOUNT_OCL = "${NEW_INTERNAL_USER}/choose-account-ocl"
+    const val CHOOSE_ACCOUNT_OCL = "$NEW_INTERNAL_USER/choose-account-ocl"
 
     /**
      * VerificationActivity
@@ -211,21 +216,6 @@ object ApplinkConstInternalUserPlatform {
     const val FUNDS_AND_INVESTMENT = "$NEW_INTERNAL_USER/funds-and-investment"
 
     /**
-     * LinkAccountWebViewActivity
-     * @Applink : tokopedia-android-internal://user/link-account-webview
-     * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_LD]
-     **/
-    @Deprecated("Remove this class after integrating SCP Login to Tokopedia")
-    const val LINK_ACCOUNT_WEBVIEW = "$NEW_INTERNAL_USER/link-account-webview"
-
-    /**
-     * LinkAccountActivity
-     * @Applink : tokopedia-android-internal://user/link-account
-     **/
-    @Deprecated("Remove this class after integrating SCP Login to Tokopedia")
-    const val LINK_ACCOUNT = "$NEW_INTERNAL_USER/link-account"
-
-    /**
      * AddNameRegisterPhoneActivity
      * @Applink : tokopedia-android-internal://user/add-name-register
      **/
@@ -305,6 +295,12 @@ object ApplinkConstInternalUserPlatform {
     const val PROFILE_COMPLETION = "$NEW_INTERNAL_USER/profile-completion"
 
     /**
+     * ScpAuthActivity
+     * @Applink : tokopedia-android-internal://user/scp-login
+     **/
+    const val SCP_LOGIN = "$NEW_INTERNAL_USER/scp-login"
+
+    /**
      * AddNameActivity
      * @Applink : tokopedia-android-internal://user/manage-name
      **/
@@ -346,12 +342,11 @@ object ApplinkConstInternalUserPlatform {
 
     /**
      * ConsentWithdrawalActivity
-     * @Applink : tokopedia-android-internal://user/consent/withdrawal?groupId={groupId}
+     * @Applink : tokopedia-android-internal://user/consent/withdrawal/new?groupId={groupId}
      * @param : [GROUP_ID] data type Int
      * */
     const val GROUP_ID = "groupId"
     const val CONSENT_WITHDRAWAL = "$NEW_INTERNAL_USER/consent/withdrawal?$GROUP_ID={groupId}"
-    const val CONSENT_WITHDRAWAL_NEW = "$NEW_INTERNAL_USER/consent/withdrawal/new?$GROUP_ID={groupId}"
 
     /**
      * com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivity
@@ -398,8 +393,8 @@ object ApplinkConstInternalUserPlatform {
      * ## GoTo KYC
      * ### Open GoTo KYC
      *
-     * @class       : GotoKycTransparentActivity
-     * @Applink     : tokopedia-android-internal://user/goto-kyc?projectId={projectId}&source={source}
+     * @class : GotoKycTransparentActivity
+     * @Applink : tokopedia-android-internal://user/goto-kyc?projectId={projectId}&source={source}
      * @param
      *  - projectId    : required | String | ref: [PARAM_PROJECT_ID]
      *  - source       : required only for BU | String | ref: [PARAM_SOURCE]
@@ -409,6 +404,18 @@ object ApplinkConstInternalUserPlatform {
         "$PARAM_PROJECT_ID={$PARAM_PROJECT_ID}&" +
         "$PARAM_SOURCE={$PARAM_SOURCE}&" +
         "$PARAM_CALL_BACK={$PARAM_CALL_BACK}"
+
+    /**
+     * ## Webview GoTo KYC
+     * ### Open Webview with JS that can launch Goto KYC
+     *
+     * @class : WebviewWithGotoKycActivity
+     * @Applink : "tokopedia-android-internal://user/webview-kyc"
+     * @param
+     *  - projectId    : required | String | ref: [PARAM_PROJECT_ID]
+     *  - source       : required only for BU | String | ref: [PARAM_SOURCE]
+     **/
+    const val GOTO_KYC_WEBVIEW = "$NEW_INTERNAL_USER/webview-kyc"
 
     /**
      * ## KYC Param | type
@@ -504,7 +511,7 @@ object ApplinkConstInternalUserPlatform {
      * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_LD]
      **/
     @Deprecated("Remove this class after integrating SCP Login to Tokopedia")
-    const val ACCOUNT_LINKING_WEBVIEW = "$NEW_INTERNAL_USER/account-linking-webview"
+    const val LINK_ACCOUNT_WEBVIEW = "$NEW_INTERNAL_USER/account-linking-webview"
 
     /**
      * com.tokopedia.privacycenter.dsar.ui.DsarActivity
@@ -541,6 +548,6 @@ object ApplinkConstInternalUserPlatform {
     const val SHARING_WISHLIST = "$NEW_INTERNAL_USER/sharing-wishlist?tab={$PARAM_TAB}"
 
     fun getGotoKYCApplink(projectId: String, source: String, callback: String = ""): String {
-       return  UriUtil.buildUri(GOTO_KYC, projectId, source, callback)
+        return UriUtil.buildUri(GOTO_KYC, projectId, source, callback)
     }
 }

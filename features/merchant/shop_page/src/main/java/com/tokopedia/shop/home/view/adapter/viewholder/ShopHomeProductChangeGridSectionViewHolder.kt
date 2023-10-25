@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
+import android.graphics.PorterDuff
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -10,10 +11,13 @@ import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeProductChangeGridSectionViewBinding
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeProductChangeGridSectionUiModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by normansyahputa on 2/22/18.
@@ -21,7 +25,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeProductChangeGridSectionViewHolder(
     itemView: View,
-    private val listener: ShopProductChangeGridSectionListener
+    private val listener: ShopProductChangeGridSectionListener,
+    private val shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeProductChangeGridSectionUiModel>(itemView) {
 
     companion object {
@@ -55,6 +60,33 @@ class ShopHomeProductChangeGridSectionViewHolder(
             listener.onChangeProductGridClicked(model.gridType, switchGridLayout(model.gridType))
         }
         labelTampilan?.show()
+        configColorTheme()
+    }
+
+    private fun configColorTheme() {
+        if (shopHomeListener.isOverrideTheme()) {
+            configReimaginedColor()
+        } else {
+            configDefaultColor()
+        }
+    }
+
+    private fun configReimaginedColor() {
+        val totalProductColor = shopHomeListener.getShopPageColorSchema().getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+        val labelPreviewColor = shopHomeListener.getShopPageColorSchema().getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        val iconColor = shopHomeListener.getShopPageColorSchema().getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        labelTotalProduct?.setTextColor(totalProductColor)
+        labelTampilan?.setTextColor(labelPreviewColor)
+        ivGridIcon?.setColorFilter(iconColor, PorterDuff.Mode.SRC_ATOP)
+    }
+
+    private fun configDefaultColor() {
+        val totalProductColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950_32)
+        val labelPreviewColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950_96)
+        val iconColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950)
+        labelTotalProduct?.setTextColor(totalProductColor)
+        labelTampilan?.setTextColor(labelPreviewColor)
+        ivGridIcon?.setColorFilter(iconColor, PorterDuff.Mode.SRC_ATOP)
     }
 
     private fun switchGridLayout(gridType: ShopProductViewGridType): ShopProductViewGridType {

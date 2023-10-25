@@ -23,6 +23,7 @@ object ProductRecommendationMapper {
         hasBlockedAddToCart: Boolean
     ): ProductCardCompactUiModel = ProductCardCompactUiModel(
         productId = item.productId.toString(),
+        warehouseId = item.warehouseId.toString(),
         imageUrl = item.imageUrl,
         minOrder = item.minOrder,
         maxOrder = item.maxOrder,
@@ -73,6 +74,7 @@ object ProductRecommendationMapper {
             appLink = recommendationWidget.seeMoreAppLink
         )
         val headerModel = TokoNowDynamicHeaderUiModel(
+            channelId = recommendationWidget.channelId,
             title = recommendationWidget.title,
             subTitle = recommendationWidget.subtitle,
             ctaTextLink = recommendationWidget.seeMoreAppLink

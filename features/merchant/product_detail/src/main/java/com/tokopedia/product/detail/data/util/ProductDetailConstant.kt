@@ -23,6 +23,7 @@ object ProductDetailConstant {
     const val PDP_RESULT_PLT_NETWORK_METRICS = "pdp_result_plt_network_metrics"
     const val PDP_RESULT_PLT_RENDER_METRICS = "pdp_result_plt_render_metrics"
     const val PDP_RESULT_TRACE = "pdp_result_trace"
+    const val PDP_RESULT_TRACE_P2_DATA = "pdp_result_trace_p2_data"
 
     // PAYLOADS
     const val PAYLOAD_WISHLIST = 1
@@ -106,7 +107,9 @@ object ProductDetailConstant {
     const val CONTENT_WIDGET = "content_widget"
     const val PLAY_CAROUSEL = "play_carousel"
     const val FINTECH_WIDGET_TYPE = "chips_carousel"
+    const val FINTECH_WIDGET_V2_TYPE = "cicil_one_liner"
     const val FINTECH_WIDGET_NAME = "paylater_cicilan"
+    const val FINTECH_WIDGET_V2_NAME = "paylater_cicilan_v2"
     const val DILAYANI_TOKOPEDIA = "dt_info"
     const val AR_BUTTON = "button_ar"
     const val RECOM_VERTICAL = "pdp_vertical"
@@ -117,6 +120,8 @@ object ProductDetailConstant {
 
     // custom info title as component name
     const val OTHER_OFFERS = "other_offers"
+    const val BMGM_TYPE = "bmgm"
+    const val BMGM_SNEAK_PEEK_NAME = "bmgm_sneak_peek"
 
     // Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
@@ -178,7 +183,6 @@ object ProductDetailConstant {
     const val ERROR_TYPE_KEY = "error_type"
     const val EXTRAS_KEY = "extras"
     const val PDP_LOG_TAG = "BUYER_FLOW_PDP"
-
     const val DEFAULT_ATC_MAX_ORDER = 100
     const val DEFAULT_MIN_QTY = 1
 

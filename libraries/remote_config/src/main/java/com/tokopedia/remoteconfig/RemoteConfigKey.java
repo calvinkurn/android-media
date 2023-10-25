@@ -52,6 +52,8 @@ public class RemoteConfigKey {
     public static final String IRIS_GTM_CONFIG_TOGGLE = "android_customer_iris_config";
     public static final String IRIS_PERF_CONFIG = "android_customer_iris_perf_config";
     public static final String IRIS_PERFORMANCE_TOGGLE = "android_customer_iris_performance_config";
+
+    public static final String PERFORMANCE_CONFIG_WHITELIST = "android_pps_monitoring_nr_whitelist";
     public static final String IRIS_WORK_MANAGER_ENABLE = "android_iris_work_manager_enabled";
 
 
@@ -145,13 +147,13 @@ public class RemoteConfigKey {
 
     public static final String KYC_USING_SELFIE = "android_main_app_enabled_kyc_selfie";
     public static final String GOTO_ONE_KYC_CLICKSTREAM = "android_one_kyc_clickstream";
+    public static final String GOTO_ONE_KYC_CONFIG = "android_one_kyc_exp_unified_kyc_configs";
+    public static final String GOTO_ONE_KYC_AURORA = "android_one_kyc_release_kyc_aurora_configs";
 
     public static final String HOME_ENABLE_PAGINATION = "android_customer_home_enable_pagination";
     public static final String HOME_REMOVE_PAGINATION = "android_customer_home_remove_pagination";
 
     public static final String HOME_ENABLE_SHARED_PREF_CACHE = "android_customer_home_enable_shared_pref_cache";
-    public static final String HOME_ENABLE_AUTO_REFRESH_WISHLIST = "android_customer_home_auto_refresh_wishlist";
-    public static final String HOME_ENABLE_AUTO_REFRESH_UOH = "android_customer_home_auto_refresh_uoh";
     public static final String HOME_ENABLE_SCROLL_EMBRACE_BREADCRUMB = "android_customer_home_enable_scroll_breadcrumb";
 
     public static final String RECOM_PAGE_DISABLE_VIEWPORT_DS_TOPADS = "android_customer_recom_disable_viewport_ds_topads";
@@ -201,6 +203,8 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_SHOP_HOME_NPL_WIDGET = "android_enable_shop_home_npl_widget";
 
+    public static final String ENABLE_SHOP_PAGE_REIMAGINED = "android_enable_shop_page_re_imagined";
+
     public static final String ENABLE_OLD_SELLER_MVC_ROUTING_TO_NEW_SELLER_MVC = "android_enable_old_seller_mvc_routing_to_new_seller_mvc";
 
     public static final String ENABLE_CURSOR_EMBRACE_LOGGING = "android_newrelic_cursor_out_of_bound";
@@ -248,6 +252,8 @@ public class RemoteConfigKey {
 
     public static final String IS_SHOP_PENALTY_NEW_PAGE = "android_shop_penalty_new";
 
+    public static final String SELLER_FEEDBACK_KMP = "android_seller_feedback_kmp";
+
     public static final String SCP_REWARDS_MEDALI_TOUCH_POINT = "android_scp_rewards_medali_touch_point";
 
     public static final String ANDROID_FINTECH_ENABLE_RISK_BASED_PRICING = "android_fintech_enable_risk_based_pricing";
@@ -261,4 +267,28 @@ public class RemoteConfigKey {
     public static final String ENABLE_BANNER_ENVIRONMENT = "android_enable_banner_environment";
 
     public static final String FINTECH_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER = "android_fintech_enable_additional_device_info";
+
+    public static final String ANDROID_ENABLE_NEW_FINGERPRINT_HEADER_DATA = "android_enable_new_fingerprint_header_data";
+
+    public static final String PAYMENT_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER = "android_payment_enable_additional_device_info";
+
+    public static final String CONTENT_EXOPLAYER_CUSTOM_LOAD_CONTROL = "android_content_exoplayer_custom_load_control";
+
+    public static final String HOME_ATF_REFACTORING = "android_home_atf_refactoring";
+
+    public static final String HOME_HPB_CACHE_EXPIRY = "android_home_hpb_cache_expiry";
+
+    public static final String MAINAPP_DISABLED_STORIES_ENTRY_POINTS = "android_main_app_disabled_stories_entry_points";
+
+    public static final String SELLERAPP_DISABLED_STORIES_ENTRY_POINTS = "android_seller_app_disabled_stories_entry_points";
+
+    public static final String ANDROID_SET_VISIBLE_PRODUCT_COUNTER_OLP = "android_set_visible_product_counter_olp";
+
+    public static final String ANDROID_ENABLE_GENERATE_WIDEVINE_ID = "android_enable_generate_widevine_id";
+    public static final String ANDROID_ENABLE_GENERATE_WIDEVINE_ID_SUSPEND = "android_enable_generate_widevine_id_suspend";
+    public static final String ANDROID_WHITELIST_DISABLE_GENERATE_WIDEVINE_ID = "android_whitelist_disable_generate_widevine_id_hansel";
+
+    public static final String ENABLE_PDP_P1_CACHEABLE = "android_pdp_p1_should_cacheable";
+
+    public static final String ENABLE_PDP_P1_CACHE_AGE = "android_pdp_p1_cache_age";
 }

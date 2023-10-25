@@ -5,7 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.topads.common.data.model.TopadsInsightProductsResponse
+import com.tokopedia.topads.common.domain.usecase.TopAdsInsightProductsUseCase
 import com.tokopedia.topads.dashboard.data.model.beranda.RecommendationStatistics
 import com.tokopedia.topads.dashboard.domain.interactor.TopadsRecommendationStatisticsUseCase
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_KEY
@@ -24,6 +27,7 @@ import javax.inject.Inject
 
 class RecommendationViewModel @Inject constructor(
     private val recommendationStatisticsUseCase: TopadsRecommendationStatisticsUseCase,
+    private val topAdsInsightProductsUseCase: TopAdsInsightProductsUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val topAdsGetShopInfoUseCase: TopAdsGetShopInfoUseCase,
     private val topAdsGetTotalAdGroupsWithInsightUseCase: TopAdsGetTotalAdGroupsWithInsightUseCase
@@ -48,6 +52,10 @@ class RecommendationViewModel @Inject constructor(
     val recommendationStatsLiveData: LiveData<Result<RecommendationStatistics.Statistics.Data>>
         get() = _recommendationStatsLiveData
 
+    private val _productInsightLiveData = MutableLiveData<Result<TopadsInsightProductsResponse>>()
+    val productInsightLiveData: LiveData<Result<TopadsInsightProductsResponse>>
+        get() = _productInsightLiveData
+
     private fun getShopInfo() {
         launchCatchError(dispatcher.main, block = {
             _shopInfo.value = topAdsGetShopInfoUseCase(source = SOURCE_INSIGHT_CENTER_LANDING_PAGE)
@@ -66,7 +74,20 @@ class RecommendationViewModel @Inject constructor(
                     Fail(Throwable())
                 }
         }, onError = {
-            _recommendationStatsLiveData.value = Fail(it)
+                _recommendationStatsLiveData.value = Fail(it)
+            })
+    }
+
+    fun getOutOfStockProducts() {
+        launchCatchError(block = {
+            val data = topAdsInsightProductsUseCase(String.EMPTY)
+            _productInsightLiveData.value =
+                if (data.topadsInsightProducts?.errors.isNullOrEmpty())
+                    Success(data)
+                else
+                    Fail(Throwable())
+        }, onError = {
+            _productInsightLiveData.value = Fail(it)
         })
     }
 

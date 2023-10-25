@@ -32,6 +32,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecomme
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.MAXIMUM_DAILY_BUDGET_DEFAULT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.MINIMUM_DAILY_BUDGET_DEFAULT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopadsProductListState
+import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTracker
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
 import com.tokopedia.unifycomponents.Toaster
@@ -50,6 +51,7 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
     private var minDailyBudget: Int = MINIMUM_DAILY_BUDGET_DEFAULT_VALUE
     private var maxDailyBudget: Int = MAXIMUM_DAILY_BUDGET_DEFAULT_VALUE
     private var topadsDeposits: Int = DEFAULT_TOPADS_DEPOSITS
+    private val tipsBottomSheet = CreateGroupBudgetHelpSheet()
 
     @JvmField
     @Inject
@@ -252,7 +254,7 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
                     checkAllFieldsValidations()
                 } else if (number > maxDailyBudget) {
                     binding?.dailyBudget?.isInputError = true
-                    binding?.dailyBudget?.setMessage(String.format(getString(R.string.topads_insight_max_budget_rp),minDailyBudget))
+                    binding?.dailyBudget?.setMessage(String.format(getString(R.string.topads_insight_max_budget_rp),maxDailyBudget))
                     validBudget = false
                     checkAllFieldsValidations()
                 } else {
@@ -266,6 +268,7 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
 
         binding?.btnSubmit?.setOnClickListener {
             if (binding?.btnSubmit?.isLoading != null && !(binding?.btnSubmit?.isLoading!!)) {
+                RecommendationTracker.clickSubmitProductRecommendationNewGroup()
                 binding?.btnSubmit?.isLoading = true
                 viewModel?.topAdsCreateGroup(
                     getSelectedProductIds(),
@@ -277,10 +280,12 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
     }
 
     private fun showDailyBudgetTipsBottomsheet() {
-        CreateGroupBudgetHelpSheet().show(
-            childFragmentManager,
-            javaClass.name
-        )
+        if(!tipsBottomSheet.isVisible){
+            tipsBottomSheet.show(
+                childFragmentManager,
+                javaClass.name
+            )
+        }
     }
 
     private fun getSelectedProductIds(): List<String> {

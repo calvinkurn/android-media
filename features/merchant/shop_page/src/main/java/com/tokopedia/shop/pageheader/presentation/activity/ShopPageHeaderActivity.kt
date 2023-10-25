@@ -2,7 +2,9 @@ package com.tokopedia.shop.pageheader.presentation.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -24,16 +26,26 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstan
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_MIDDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_RENDER
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_V4
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_ACTIVITY_PREPARE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_MIDDLE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_PREPARE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HEADER_TRACE_V3
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HEADER_TRACE_V4
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_TAB_TRACE_V3
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_TAB_TRACE_V4
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE_V3
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE_V4
 import com.tokopedia.shop.common.di.component.ShopComponent
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
+import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity
-import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageReimagineHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 
 class ShopPageHeaderActivity :
@@ -76,15 +88,27 @@ class ShopPageHeaderActivity :
         initPerformanceMonitoring()
         checkIfAppLinkToShopInfo()
         checkIfApplinkRedirectedForMigration()
+        if (ShopUtil.isEnableShopPageReImagined(this)) {
+            configStatusBarAndSetFullScreen()
+        }
         super.onCreate(savedInstanceState)
         window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+    }
+
+    private fun configStatusBarAndSetFullScreen() {
+        window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        window?.statusBarColor = Color.TRANSPARENT
     }
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_new_shop_page
     }
 
-    override fun getNewFragment(): Fragment = ShopPageHeaderFragment.createInstance()
+    override fun getNewFragment(): Fragment = if (ShopUtil.isEnableShopPageReImagined(this)) {
+        ShopPageReimagineHeaderFragment.createInstance()
+    } else {
+        ShopPageHeaderFragment.createInstance()
+    }
 
     override fun getComponent(): ShopComponent = ShopComponentHelper().getComponent(application, this)
 
@@ -110,25 +134,44 @@ class ShopPageHeaderActivity :
     }
 
     private fun initPerformanceMonitoring() {
-        performanceMonitoringShop = PageLoadTimePerformanceCallback(
-            SHOP_TRACE_PREPARE,
-            SHOP_TRACE_MIDDLE,
-            SHOP_TRACE_RENDER
-        )
-        performanceMonitoringShop?.startMonitoring(SHOP_TRACE)
-        performanceMonitoringShop?.startPreparePagePerformanceMonitoring()
-        performanceMonitoringShop?.startCustomMetric(SHOP_TRACE_ACTIVITY_PREPARE)
+        if (ShopUtil.isEnableShopPageReImagined(this)) {
+            performanceMonitoringShop = PageLoadTimePerformanceCallback(
+                SHOP_V4_TRACE_PREPARE,
+                SHOP_V4_TRACE_MIDDLE,
+                SHOP_V4_TRACE_RENDER
+            )
+            performanceMonitoringShop?.startMonitoring(SHOP_TRACE_V4)
+            performanceMonitoringShop?.startPreparePagePerformanceMonitoring()
+            performanceMonitoringShop?.startCustomMetric(SHOP_V4_TRACE_ACTIVITY_PREPARE)
 
-        performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_HEADER_TRACE_V3)
-        performanceMonitoringShopProductTab = PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE_V3)
-        performanceMonitoringShopHomeTab = PerformanceMonitoring.start(SHOP_HOME_TAB_TRACE_V3)
+            performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_HEADER_TRACE_V4)
+            performanceMonitoringShopHomeTab = PerformanceMonitoring.start(SHOP_HOME_TAB_TRACE_V4)
+            performanceMonitoringShopProductTab = PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE_V4)
+        } else {
+            performanceMonitoringShop = PageLoadTimePerformanceCallback(
+                SHOP_TRACE_PREPARE,
+                SHOP_TRACE_MIDDLE,
+                SHOP_TRACE_RENDER
+            )
+            performanceMonitoringShop?.startMonitoring(SHOP_TRACE)
+            performanceMonitoringShop?.startPreparePagePerformanceMonitoring()
+            performanceMonitoringShop?.startCustomMetric(SHOP_TRACE_ACTIVITY_PREPARE)
+
+            performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_HEADER_TRACE_V3)
+            performanceMonitoringShopHomeTab = PerformanceMonitoring.start(SHOP_HOME_TAB_TRACE_V3)
+            performanceMonitoringShopProductTab = PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE_V3)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             MvcView.REQUEST_CODE -> {
                 if (resultCode == MvcView.RESULT_CODE_OK) {
-                    (fragment as? ShopPageHeaderFragment)?.refreshData()
+                    if (ShopUtil.isEnableShopPageReImagined(this)) {
+                        (fragment as? ShopPageReimagineHeaderFragment)?.refreshData()
+                    } else {
+                        (fragment as? ShopPageHeaderFragment)?.refreshData()
+                    }
                 }
             }
             else -> {
@@ -202,7 +245,13 @@ class ShopPageHeaderActivity :
     }
 
     override fun createPdpAffiliateLink(basePdpAppLink: String): String {
-        return (fragment as? ShopPageHeaderFragment)?.createPdpAffiliateLink(basePdpAppLink).orEmpty()
+        return if (ShopUtil.isEnableShopPageReImagined(this)) {
+            (fragment as? ShopPageReimagineHeaderFragment)?.createPdpAffiliateLink(basePdpAppLink)
+                .orEmpty()
+        } else {
+            (fragment as? ShopPageHeaderFragment)?.createPdpAffiliateLink(basePdpAppLink)
+                .orEmpty()
+        }
     }
 
     override fun createAffiliateCookieAtcProduct(
@@ -210,10 +259,18 @@ class ShopPageHeaderActivity :
         isVariant: Boolean,
         stockQty: Int
     ) {
-        (fragment as? ShopPageHeaderFragment)?.createAffiliateCookieAtcProduct(
-            productId,
-            isVariant,
-            stockQty
-        )
+        if (ShopUtil.isEnableShopPageReImagined(this)) {
+            (fragment as? ShopPageReimagineHeaderFragment)?.createAffiliateCookieAtcProduct(
+                productId,
+                isVariant,
+                stockQty
+            )
+        } else {
+            (fragment as? ShopPageHeaderFragment)?.createAffiliateCookieAtcProduct(
+                productId,
+                isVariant,
+                stockQty
+            )
+        }
     }
 }

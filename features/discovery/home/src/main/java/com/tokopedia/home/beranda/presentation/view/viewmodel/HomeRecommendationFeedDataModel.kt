@@ -12,7 +12,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
 
 data class HomeRecommendationFeedDataModel(
         var homeChooseAddressData: HomeChooseAddressData? = null,
-        var recommendationTabDataModel: List<RecommendationTabDataModel>? = null
+        var recommendationTabDataModel: List<RecommendationTabDataModel>? = null,
+        var hasSwitchTab: Boolean = false
 ) : HomeVisitable {
     var isNewData = true
 

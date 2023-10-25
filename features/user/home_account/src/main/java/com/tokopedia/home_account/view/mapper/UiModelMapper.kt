@@ -27,7 +27,8 @@ object UiModelMapper {
             applink = walletappGetAccountBalance.applink,
             isActive = walletappGetAccountBalance.isActive,
             hideTitle = walletappGetAccountBalance.hideTitle,
-            type = walletappGetAccountBalance.type
+            type = walletappGetAccountBalance.type,
+            statusName = walletappGetAccountBalance.statusName
         )
     }
 
@@ -92,7 +93,8 @@ object UiModelMapper {
             subtitle = subTitleWallet,
             urlImage = walletappGetAccountBalance.icon,
             applink = walletappGetAccountBalance.applink,
-            isActive = walletappGetAccountBalance.isActive
+            isActive = walletappGetAccountBalance.isActive,
+            statusName = walletappGetAccountBalance.statusName
         )
     }
 

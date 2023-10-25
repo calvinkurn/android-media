@@ -36,8 +36,6 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import org.json.JSONArray
-import org.json.JSONObject
 import java.util.*
 
 object DynamicProductDetailTracking {
@@ -1486,104 +1484,6 @@ object DynamicProductDetailTracking {
         }
     }
 
-    object Moengage {
-
-        fun sendMoEngageClickReview(productInfo: DynamicProductInfoP1) {
-            sendMoEngage(productInfo, "Clicked_Ulasan_Pdp")
-        }
-
-        fun sendMoEngageOpenProduct(productInfo: DynamicProductInfoP1) {
-            sendMoEngage(productInfo, "Product_Page_Opened")
-        }
-
-        fun sendMoEngageClickDiskusi(productInfo: DynamicProductInfoP1) {
-            sendMoEngage(productInfo, "Clicked_Diskusi_Pdp")
-        }
-
-        fun eventPDPWishlistAppsFyler(productInfo: DynamicProductInfoP1) {
-            eventAppsFyler(productInfo, "af_add_to_wishlist")
-        }
-
-        fun eventAppsFylerOpenProduct(productInfo: DynamicProductInfoP1) {
-            eventAppsFyler(productInfo, "af_content_view")
-        }
-
-        fun sendMoEngagePDPReferralCodeShareEvent() {
-            TrackApp.getInstance().moEngage.sendEvent(
-                "Share_Event",
-                mutableMapOf<String, Any>(
-                    "channel" to "lainnya",
-                    "source" to "pdp_share"
-                )
-            )
-        }
-
-        private fun sendMoEngage(
-            productInfo: DynamicProductInfoP1,
-            eventName: String
-        ) {
-            productInfo.run {
-                basic.category.breadcrumbUrl
-
-                TrackApp.getInstance().moEngage.sendEvent(
-                    eventName,
-                    mutableMapOf<String, Any>().apply {
-                        if (basic.category.detail.isNotEmpty()) {
-                            put("category", basic.category.detail[0].name)
-                            put("category_id", basic.category.detail[0].id)
-                        }
-                        if (basic.category.detail.size > 1) {
-                            put("subcategory", basic.category.detail[1].name)
-                            put("subcategory_id", basic.category.detail[1].id)
-                        }
-                        put("product_name", getProductName)
-                        put("product_id", basic.productID)
-                        put("product_url", basic.url)
-                        put("product_price", data.price.value)
-                        put("product_price_fmt", TrackingUtil.getFormattedPrice(data.price.value))
-                        put("is_official_store", data.isOS)
-                        put("shop_id", productInfo.basic.shopID)
-                        put("shop_name", productInfo.basic.shopName)
-                        put("product_image_url", data.getFirstProductImage().toString())
-                    }
-                )
-            }
-        }
-
-        private fun eventAppsFyler(productInfo: DynamicProductInfoP1, eventName: String) {
-            TrackApp.getInstance().appsFlyer.run {
-                productInfo.let {
-                    val mutableMap = mutableMapOf(
-                        "af_description" to "productView",
-                        "af_content_id" to it.basic.productID,
-                        "af_content_type" to "product",
-                        "af_price" to it.data.price.value,
-                        "af_currency" to "IDR",
-                        "af_quantity" to 1.toString()
-                    ).apply {
-                        if (it.basic.category.detail.isNotEmpty()) {
-                            val size = it.basic.category.detail.size
-                            for (i in 1..size) {
-                                put("level" + i + "_name", it.basic.category.detail[size - i].name)
-                                put("level" + i + "_id", it.basic.category.detail[size - i].id)
-                            }
-                        }
-                        if ("af_content_view" == eventName) {
-                            val jsonArray = JSONArray()
-                            val jsonObject = JSONObject()
-                            jsonObject.put("id", it.basic.productID)
-                            jsonObject.put("quantity", 1)
-                            jsonArray.put(jsonObject)
-                            this["af_content"] = jsonArray.toString()
-                        }
-                    }
-
-                    sendEvent(eventName, mutableMap as Map<String, Any>?)
-                }
-            }
-        }
-    }
-
     object Impression {
         fun eventViewErrorWhenAddToCart(errorMessage: String, productId: String, userId: String) {
             val mapEvent = TrackAppUtils.gtmData(
@@ -1777,7 +1677,7 @@ object DynamicProductDetailTracking {
             isStockAvailable: String, boType: Int,
             affiliateUniqueId: String, uuid: String,
             ratesEstimateData: P2RatesEstimateData?,
-            buyerDistrictId: String, sellerDistrictId: String ->
+            buyerDistrictId: String, sellerDistrictId: String, offerId: String ->
 
             val dimension10 = productInfo?.data?.isCod ?: false
             val dimension12 = ratesEstimateData?.cheapestShippingPrice?.toLong()?.toString() ?: ""
@@ -1817,6 +1717,7 @@ object DynamicProductDetailTracking {
                     dimension90 = if (affiliateUniqueId.isNotBlank()) "affiliate" else null,
                     dimension113 = dimension113,
                     dimension120 = dimension120,
+                    dimension137 = offerId,
                     index = 1
                 )
             )
@@ -1834,7 +1735,8 @@ object DynamicProductDetailTracking {
             sellerDistrictId: String,
             lcaWarehouseId: String,
             campaignId: String,
-            variantId: String ->
+            variantId: String,
+            offerId: String ->
 
             val categoryIdLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.id ?: ""
             val categoryNameLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.name ?: ""
@@ -1855,7 +1757,7 @@ object DynamicProductDetailTracking {
                 irisSessionId, trackerListName, productInfo,
                 trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl,
                 isStockAvailable, boType, affiliateUniqueId, uuid, ratesEstimateData, buyerDistrictId,
-                sellerDistrictId
+                sellerDistrictId, offerId
             )
 
             ProductDetailViewsBundler
@@ -1929,7 +1831,8 @@ object DynamicProductDetailTracking {
             sellerDistrictId: String,
             lcaWarehouseId: String,
             campaignId: String,
-            variantId: String
+            variantId: String,
+            offerId: String
         ) {
             productInfo?.let {
                 if (shopInfo?.isShopInfoNotEmpty() == true) {
@@ -1937,7 +1840,8 @@ object DynamicProductDetailTracking {
                         irisSessionId, trackerListName, it, shopInfo,
                         trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl,
                         isStockAvailable, boType, affiliateUniqueId, uuid, ratesEstimateData,
-                        buyerDistrictId, sellerDistrictId, lcaWarehouseId, campaignId, variantId
+                        buyerDistrictId, sellerDistrictId, lcaWarehouseId, campaignId, variantId,
+                        offerId
                     )
                     sendTrackingBundle(
                         ProductDetailViewsBundler.KEY,

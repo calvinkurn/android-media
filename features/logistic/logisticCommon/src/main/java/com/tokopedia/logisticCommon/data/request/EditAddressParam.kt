@@ -2,6 +2,7 @@ package com.tokopedia.logisticCommon.data.request
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.graphql.data.GqlParam
 
 data class EditAddressParam(
     @SuppressLint("Invalid Data Type")
@@ -35,4 +36,9 @@ data class EditAddressParam(
     val source: String,
     @SerializedName("is_tokonow_request")
     val isTokonowRequest: Boolean
-)
+) : GqlParam
+
+data class KeroAgentEditAddressInput(
+    @SerializedName("input")
+    val param: EditAddressParam
+) : GqlParam

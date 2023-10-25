@@ -21,6 +21,8 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.postDelayed
@@ -72,6 +74,7 @@ import com.tokopedia.discovery2.analytics.VIEW_UNIFY_SHARE
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.NavToolbarConfig
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.ParamsForOpenScreen
 import com.tokopedia.discovery2.data.ScrollData
@@ -121,7 +124,9 @@ import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -233,6 +238,7 @@ open class DiscoveryFragment :
     private lateinit var coordinatorLayout: CoordinatorLayout
     private lateinit var parentLayout: FrameLayout
     private lateinit var appBarLayout: AppBarLayout
+    private var parentConstraintLayout: ConstraintLayout? = null
     private var pageInfoHolder: PageInfo? = null
     private var miniCartWidget: MiniCartWidget? = null
     private var miniCartData: MiniCartSimplifiedData? = null
@@ -255,12 +261,11 @@ open class DiscoveryFragment :
     val trackingQueue: TrackingQueue by lazy {
         provideTrackingQueue()
     }
-
+    var mSwipeRefreshLayout: SwipeRefreshLayout? = null
     open fun provideTrackingQueue(): TrackingQueue {
         return (context as DiscoveryActivity).trackingQueue
     }
 
-    private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mProgressBar: LoaderUnify
     var pageEndPoint = ""
     private var componentPosition: Int? = null
@@ -281,10 +286,14 @@ open class DiscoveryFragment :
 
     private var isManualScroll = true
     private var stickyHeaderShowing = false
-    private var hasColouredHeader: Boolean = false
+    private var hasColouredStatusBar: Boolean = false
     private var isLightThemeStatusBar: Boolean? = null
 
     companion object {
+        private const val FIRST_POSITION = 0
+        private const val START_SWIPE_PROGRESS_POSITION = 120
+        private const val END_SWIPE_PROGRESS_POSITION = 200
+
         fun getInstance(
             endPoint: String?,
             queryParameterMap: Map<String, String?>?
@@ -414,6 +423,7 @@ open class DiscoveryFragment :
         }
     }
 
+    @SuppressLint("RestrictedApi")
     private fun initView(view: View) {
         mAnchorHeaderView = view.findViewById(R.id.header_comp_holder)
         globalError = view.findViewById(R.id.global_error)
@@ -425,9 +435,10 @@ open class DiscoveryFragment :
         parentLayout = view.findViewById(R.id.parent_frame)
         appBarLayout = view.findViewById(R.id.appbarLayout)
         miniCartWidget = view.findViewById(R.id.miniCartWidget)
+        parentConstraintLayout = view.findViewById(R.id.parent_constraint_container)
 
         mProgressBar.show()
-        mSwipeRefreshLayout.setOnRefreshListener(this)
+        mSwipeRefreshLayout?.setOnRefreshListener(this)
         ivToTop.setOnClickListener(this)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             var dy = 0
@@ -464,6 +475,7 @@ open class DiscoveryFragment :
                         }
                     }
                 }
+                enableRefreshWhenFirstItemCompletelyVisible()
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -529,24 +541,23 @@ open class DiscoveryFragment :
                 }
 
                 override fun onSwitchToDarkToolbar() {
-                    if (hasColouredHeader) {
+                    if (hasColouredStatusBar) {
                         if (isLightThemeStatusBar != true) {
                             requestStatusBarLight()
-                            navToolbar.hideShadow()
-                            if (discoveryViewModel.getAddressVisibilityValue()) {
+                            if (discoveryViewModel.getAddressVisibilityValue() && thematicHeaderColor.isNotEmpty()) {
                                 setupHexBackgroundColor(thematicHeaderColor)
                             }
                         }
+                        hideNavToolbarShadow()
                     }
                 }
 
                 override fun onSwitchToLightToolbar() {
-                    if (hasColouredHeader) {
+                    if (hasColouredStatusBar) {
                         if (isLightThemeStatusBar != false) {
                             requestStatusBarDark()
-                            // Don't uncomment - It will show a black line between toolbar and choose address in dark mode
-                            //           navToolbar.setShowShadowEnabled(true)
-                            //           navToolbar.showShadow(true)
+                            navToolbar.setShowShadowEnabled(true)
+                            navToolbar.showShadow(true)
                         }
                     }
                 }
@@ -559,6 +570,13 @@ open class DiscoveryFragment :
             activity?.let {
                 navToolbar.setupToolbarWithStatusBar(it)
             }
+        }
+    }
+
+    private fun enableRefreshWhenFirstItemCompletelyVisible() {
+        if (mSwipeRefreshLayout?.isRefreshing == false) {
+            val firstPosition: Int = staggeredGridLayoutManager?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(FIRST_POSITION).orZero()
+            mSwipeRefreshLayout?.isEnabled = firstPosition == FIRST_POSITION
         }
     }
 
@@ -756,7 +774,7 @@ open class DiscoveryFragment :
             when (it) {
                 is Success -> {
                     it.data.let { listComponent ->
-                        if (mSwipeRefreshLayout.isRefreshing) setAdapter()
+                        if (mSwipeRefreshLayout?.isRefreshing == true) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
                         if (listComponent.isEmpty()) {
                             discoveryAdapter.addDataList(ArrayList())
@@ -780,7 +798,8 @@ open class DiscoveryFragment :
                     setPageErrorState(it)
                 }
             }
-            mSwipeRefreshLayout.isRefreshing = false
+            mSwipeRefreshLayout?.isEnabled = true
+            mSwipeRefreshLayout?.isRefreshing = false
         }
 
         discoveryViewModel.getDiscoveryFabLiveData().observe(viewLifecycleOwner) {
@@ -803,7 +822,6 @@ open class DiscoveryFragment :
                 is Success -> {
                     pageInfoHolder = it.data
                     setToolBarPageInfoOnSuccess(it.data)
-                    setupBackgroundForHeader(it.data)
                     addMiniCartToPageFirstTime()
                     setupAffiliate()
                 }
@@ -847,7 +865,11 @@ open class DiscoveryFragment :
                     if (widgetVisibilityStatus) {
                         if (shouldShowChooseAddressWidget) {
                             chooseAddressWidget?.show()
-                            chooseAddressWidgetDivider?.show()
+                            if (isLightThemeStatusBar != true) {
+                                chooseAddressWidgetDivider?.show()
+                            } else {
+                                chooseAddressWidgetDivider?.hide()
+                            }
                         }
                         if (ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true) {
                             ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
@@ -960,6 +982,17 @@ open class DiscoveryFragment :
                 }
             }
         }
+
+        discoveryViewModel.getDiscoveryNavToolbarConfigLiveData().observe(viewLifecycleOwner) { config ->
+            if (config.color.isNotEmpty() || config.isExtendedLayout) {
+                hasColouredStatusBar = true
+                requestStatusBarLight()
+                setupNavToolbarWithStatusBar()
+                setupExtendedLayout(config)
+                setupBackgroundColorForHeader(config)
+                setupNavScrollListener()
+            }
+        }
     }
 
     private fun addMarginInRuntime(data: List<ComponentsItem>) {
@@ -992,26 +1025,63 @@ open class DiscoveryFragment :
         }
     }
 
-    private fun setupBackgroundForHeader(data: PageInfo?) {
-        if (!data?.thematicHeader?.color.isNullOrEmpty()) {
-            hasColouredHeader = true
-            activity?.let { navToolbar.setupToolbarWithStatusBar(it) }
-            context?.let {
-                navToolbar.setIconCustomColor(getDarkIconColor(it), getLightIconColor(it))
-            }
-            if (isLightThemeStatusBar == true) {
-                navToolbar.hideShadow()
-            } else {
-                // Don't uncomment - It will show a black line between toolbar and choose address in dark mode
-                //         navToolbar.setShowShadowEnabled(true)
-                //          navToolbar.showShadow(true)
-                navToolbar.hideShadow()
-            }
-            appBarLayout.elevation = 0f
-            setupHexBackgroundColor(data?.thematicHeader?.color ?: "")
-            setupNavScrollListener()
+    private fun setupNavToolbarWithStatusBar() {
+        activity?.let {
+            navToolbar.setupToolbarWithStatusBar(it)
+        }
+        context?.let {
+            navToolbar.setIconCustomColor(getDarkIconColor(it), getLightIconColor(it))
+        }
+        setupNavToolbarShadow()
+    }
+
+    private fun setupNavToolbarShadow() {
+        if (isLightThemeStatusBar == true) {
+            hideNavToolbarShadow()
         } else {
-            hasColouredHeader = false
+            navToolbar.setShowShadowEnabled(true)
+            navToolbar.showShadow(true)
+        }
+    }
+
+    private fun setupBackgroundColorForHeader(config: NavToolbarConfig) {
+        if (config.color.isNotEmpty()) {
+            setupHexBackgroundColor(config.color)
+        }
+    }
+
+    private fun setupExtendedLayout(config: NavToolbarConfig) {
+        if (config.isExtendedLayout) {
+            // adjust swipe refresh layout, put the placement below the appbar
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(parentConstraintLayout)
+            constraintSet.connect(
+                R.id.swiperefresh,
+                ConstraintSet.TOP,
+                R.id.parent,
+                ConstraintSet.TOP,
+                Int.ZERO
+            )
+            constraintSet.applyTo(parentConstraintLayout)
+
+            // set appbar background to transparent
+            appBarLayout.setBackgroundColor(Color.TRANSPARENT)
+            appBarLayout.stateListAnimator = null
+
+            // update color widget and hide divider
+            if (discoveryViewModel.getAddressVisibilityValue() && isLightThemeStatusBar != false) {
+                chooseAddressWidget?.updateWidget()
+                chooseAddressWidgetDivider?.hide()
+            }
+
+            // adjust progress view position for refresh layout
+            activity?.let {
+                mSwipeRefreshLayout?.setProgressViewOffset(
+                    false,
+                    START_SWIPE_PROGRESS_POSITION,
+                    END_SWIPE_PROGRESS_POSITION
+                )
+            }
         }
     }
 
@@ -1028,6 +1098,11 @@ open class DiscoveryFragment :
         } catch (e: Exception) {
             e
         }
+    }
+
+    private fun hideNavToolbarShadow() {
+        appBarLayout.elevation = 0f
+        navToolbar.hideShadow(true)
     }
 
     private fun setupNavScrollListener() {
@@ -1139,7 +1214,7 @@ open class DiscoveryFragment :
         setCartAndNavIcon()
         setSearchBar(null)
         mProgressBar.hide()
-        mSwipeRefreshLayout.isRefreshing = false
+        mSwipeRefreshLayout?.isRefreshing = false
     }
 
     private fun settingUpNavBar(data: PageInfo?) {
@@ -2100,7 +2175,7 @@ open class DiscoveryFragment :
     }
 
     override fun onChangeTextColor(): Int {
-        return if (hasColouredHeader && isLightThemeStatusBar != false) {
+        return if (hasColouredStatusBar && isLightThemeStatusBar != false) {
             com.tokopedia.unifyprinciples.R.color.Unify_Static_White
         } else {
             com.tokopedia.unifyprinciples.R.color.Unify_NN950_96

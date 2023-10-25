@@ -75,6 +75,7 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener,
     SomListLoadTimeMonitoringActivity, HasComponent<HomeDashboardComponent> {
@@ -313,7 +314,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     private fun setupBackground() {
         window.decorView.setBackgroundColor(
-            getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            getResColor(unifyprinciplesR.color.Unify_Background)
         )
     }
 
@@ -543,13 +544,13 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     private fun showChatNotificationCounter(unreadSeller: Int) {
-        val badgeVisibility = if (unreadSeller <= Int.ZERO) View.INVISIBLE else View.VISIBLE
+        val badgeVisibility = if (unreadSeller <= Int.ZERO) View.GONE else View.VISIBLE
         binding?.sahBottomNav?.setBadge(unreadSeller, FragmentType.CHAT, badgeVisibility)
     }
 
     private fun showOrderNotificationCounter(orderStatus: NotificationSellerOrderStatusUiModel) {
         val notificationCount = orderStatus.newOrder.plus(orderStatus.readyToShip)
-        val badgeVisibility = if (notificationCount <= Int.ZERO) View.INVISIBLE else View.VISIBLE
+        val badgeVisibility = if (notificationCount <= Int.ZERO) View.GONE else View.VISIBLE
         binding?.sahBottomNav?.setBadge(notificationCount, FragmentType.ORDER, badgeVisibility)
     }
 
@@ -583,7 +584,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 R.raw.anim_bottom_nav_home_to_enabled,
                 R.drawable.ic_sah_bottom_nav_home_active,
                 R.drawable.ic_sah_bottom_nav_home_inactive,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN600,
+                unifyprinciplesR.color.Unify_GN600,
                 false,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,
                 BOTTOM_NAV_ENTER_ANIM_DURATION
@@ -597,7 +598,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 R.raw.anim_bottom_nav_product_to_enabled,
                 R.drawable.ic_sah_bottom_nav_product_active,
                 R.drawable.ic_sah_bottom_nav_product_inactive,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN600,
+                unifyprinciplesR.color.Unify_GN600,
                 false,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,
                 BOTTOM_NAV_ENTER_ANIM_DURATION
@@ -611,7 +612,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 R.raw.anim_bottom_nav_chat_to_enabled,
                 R.drawable.ic_sah_bottom_nav_chat_active,
                 R.drawable.ic_sah_bottom_nav_chat_inactive,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN600,
+                unifyprinciplesR.color.Unify_GN600,
                 true,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,
                 BOTTOM_NAV_ENTER_ANIM_DURATION
@@ -625,7 +626,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 R.raw.anim_bottom_nav_order_to_enabled,
                 R.drawable.ic_sah_bottom_nav_order_active,
                 R.drawable.ic_sah_bottom_nav_order_inactive,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN600,
+                unifyprinciplesR.color.Unify_GN600,
                 true,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,
                 BOTTOM_NAV_ENTER_ANIM_DURATION
@@ -639,7 +640,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 R.raw.anim_bottom_nav_other_to_enabled,
                 R.drawable.ic_sah_bottom_nav_other_active,
                 R.drawable.ic_sah_bottom_nav_other_inactive,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN600,
+                unifyprinciplesR.color.Unify_GN600,
                 false,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,
                 BOTTOM_NAV_ENTER_ANIM_DURATION

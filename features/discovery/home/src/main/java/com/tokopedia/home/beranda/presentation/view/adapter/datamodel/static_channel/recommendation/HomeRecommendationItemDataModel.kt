@@ -10,6 +10,7 @@ import com.tokopedia.smart_recycler_helper.SmartVisitable
 data class HomeRecommendationItemDataModel(
         val product: Product,
         val pageName: String = "",
+        val layoutName: String = "",
         val position: Int = -1,
         val tabName: String = ""
 ) : HomeRecommendationVisitable, ImpressHolder()
@@ -44,6 +45,4 @@ data class HomeRecommendationItemDataModel(
     override fun hashCode(): Int {
         return product.hashCode()
     }
-
-
 }
