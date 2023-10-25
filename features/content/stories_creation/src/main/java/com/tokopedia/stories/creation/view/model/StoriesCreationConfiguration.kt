@@ -6,7 +6,7 @@ package com.tokopedia.stories.creation.view.model
 data class StoriesCreationConfiguration(
     val storiesId: String,
     val maxProductTag: Int,
-    val showDuration: String,
+    val storyDuration: String,
     val minVideoDuration: Int,
     val maxVideoDuration: Int,
     val imageSourceId: String,
@@ -40,7 +40,7 @@ data class StoriesCreationConfiguration(
             get() = StoriesCreationConfiguration(
                 storiesId = "",
                 maxProductTag = 0,
-                showDuration = "",
+                storyDuration = "",
                 minVideoDuration = 0,
                 maxVideoDuration = 0,
                 imageSourceId = "",

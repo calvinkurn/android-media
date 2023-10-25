@@ -156,7 +156,7 @@ fun StoriesCreationScreen(
             }
         )
 
-        StoriesCreationShowDurationSection(
+        StoriesCreationStoryDurationSection(
             storyDuration = uiState.config.storyDuration,
             modifier = Modifier.constrainAs(showDurationSection) {
                 top.linkTo(addProductSection.bottom, 20.dp)
@@ -348,7 +348,7 @@ private fun StoriesCreationAddProductSection(
 }
 
 @Composable
-private fun StoriesCreationShowDurationSection(
+private fun StoriesCreationStoryDurationSection(
     storyDuration: String,
     modifier: Modifier = Modifier,
 ) {

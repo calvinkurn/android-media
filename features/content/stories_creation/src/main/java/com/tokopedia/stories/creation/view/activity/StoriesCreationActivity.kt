@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
@@ -84,11 +85,12 @@ class StoriesCreationActivity : BaseActivity() {
             when (fragment) {
                 is StoriesCreationErrorBottomSheet -> {
                     fragment.listener = object : StoriesCreationErrorBottomSheet.Listener {
-                        override fun onRetry(throwable: Throwable) {
+
+                        override fun onRetry(errorType: Int) {
                             fragment.dismiss()
 
-                            when (throwable) {
-                                is AccountNotEligibleException -> {
+                            when (errorType) {
+                                GlobalError.PAGE_NOT_FOUND -> {
                                     finish()
                                 }
                                 else -> {
