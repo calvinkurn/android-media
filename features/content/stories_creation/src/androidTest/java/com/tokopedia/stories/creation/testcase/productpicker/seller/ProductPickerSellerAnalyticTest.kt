@@ -1,4 +1,4 @@
-package com.tokopedia.stories.creation.testcase
+package com.tokopedia.stories.creation.testcase.productpicker.seller
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
@@ -6,6 +6,7 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.stories.creation.builder.ProductPickerModelBuilder
 import com.tokopedia.stories.creation.provider.ProductPickerTestActivityProvider
+import com.tokopedia.test.application.annotations.CassavaTest
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Before
@@ -16,6 +17,7 @@ import org.junit.runner.RunWith
 /**
  * Created By : Jonathan Darwin on October 19, 2023
  */
+@CassavaTest
 @RunWith(AndroidJUnit4ClassRunner::class)
 class ProductPickerSellerAnalyticTest {
 

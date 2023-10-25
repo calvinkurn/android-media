@@ -1,4 +1,4 @@
-package com.tokopedia.stories.creation.testcase
+package com.tokopedia.stories.creation.testcase.productpicker.seller
 
 import android.content.Context
 import androidx.test.espresso.Espresso
@@ -19,7 +19,7 @@ class ProductPickerSellerRobot(
     cassavaTestRule: CassavaTestRule
 ) {
 
-    private val cassavaValidator = StoriesCreationCassavaValidator.buildForProductPickerSeller(cassavaTestRule)
+    private val cassavaValidator = StoriesCreationCassavaValidator.buildForStoriesCreation(cassavaTestRule)
 
     private val launcher = ProductPickerLauncher(context)
 

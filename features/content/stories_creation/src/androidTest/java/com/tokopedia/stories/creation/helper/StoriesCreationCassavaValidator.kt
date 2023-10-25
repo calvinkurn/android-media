@@ -28,7 +28,7 @@ class StoriesCreationCassavaValidator private constructor(
     }
 
     companion object {
-        fun buildForProductPickerSeller(cassavaTestRule: CassavaTestRule) = StoriesCreationCassavaValidator(
+        fun buildForStoriesCreation(cassavaTestRule: CassavaTestRule) = StoriesCreationCassavaValidator(
             cassavaTestRule = cassavaTestRule,
             analyticFile = "tracker/content/stories/stories_creation.json"
         )
