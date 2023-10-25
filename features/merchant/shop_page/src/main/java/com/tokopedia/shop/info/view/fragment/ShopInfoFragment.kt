@@ -357,14 +357,14 @@ class ShopInfoFragment :
             setupShopNotesList()
             setStatisticsVisibility()
 
-            val widgetUserAddressLocalData = ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
-            getNearestEpharmWarehouseData(shopId, widgetUserAddressLocalData.district_id.toIntOrZero())
-
             if (shopInfo == null) {
                 getShopInfo(shopId)
             } else {
                 showShopInfo()
             }
+
+            val widgetUserAddressLocalData = ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+            getNearestEpharmWarehouseData(shopId, widgetUserAddressLocalData.district_id.toIntOrZero())
 
             getShopNotes(shopId)
             setReportStoreView()
