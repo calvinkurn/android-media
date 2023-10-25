@@ -22,7 +22,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.mockkObject
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -88,8 +87,7 @@ class StoriesCreationPreparationAnalyticTest {
 
         robot
             .performDelay()
-            /** Will revisit this later */
-//            .verifyOpenScreen("/play broadcast story - ${mockAccount.id} - seller - review page post creation - ${mockStoriesInfo.storiesId}")
+            .verifyOpenScreen("/play broadcast story - ${mockAccount.id} - seller - review page post creation - ${mockStoriesInfo.storiesId}")
 
             .clickAddProduct()
             .performDelay()
