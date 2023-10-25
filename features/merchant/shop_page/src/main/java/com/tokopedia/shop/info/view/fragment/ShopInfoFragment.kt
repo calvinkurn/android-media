@@ -306,6 +306,12 @@ class ShopInfoFragment :
                 when (result) {
                     is Success -> {
                         renderShopInfo(result.data)
+                        shopViewModel?.let {
+                            if (it.isShouldShowLicenseForDrugSeller(isGoApotik = result.data.isGoApotik, fsType = result.data.fsType)) {
+                                val widgetUserAddressLocalData = ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+                                getNearestEpharmWarehouseData(shopId, widgetUserAddressLocalData.district_id.toIntOrZero())
+                            }
+                        }
                     }
                     is Fail -> showError(result.throwable)
                 }
@@ -321,8 +327,7 @@ class ShopInfoFragment :
                         shopViewModel?.let { _viewModel ->
                             shopInfo?.let { _shopInfo ->
                                 if (_viewModel.isShouldShowLicenseForDrugSeller(isGoApotik = _shopInfo.isGoApotik, fsType = _shopInfo.fsType)) {
-                                    displayShopEpharmDetailsData(epharmData = it.data, shopInfoData = _shopInfo)
-                                } else {
+                                    displayShopEpharmDetailsData(epharmData = it.data)
                                 }
                             }
                         }
@@ -487,7 +492,7 @@ class ShopInfoFragment :
         }
     }
 
-    private fun displayShopEpharmDetailsData(epharmData: ShopEpharmacyDetailData, shopInfoData: ShopInfoData) {
+    private fun displayShopEpharmDetailsData(epharmData: ShopEpharmacyDetailData) {
         if (!isErrorGetEpharmData(epharmData)) {
             fragmentShopInfoBinding?.let { binding ->
                 binding.layoutPartialShopInfoDescription.shopGoApotikContainer.visibility = View.VISIBLE
@@ -498,7 +503,7 @@ class ShopInfoFragment :
                 binding.layoutPartialShopInfoDescription.tvSiaDescription.text = if (epharmData.siaNumber.isNotEmpty()) epharmData.siaNumber else emptyChar
                 binding.layoutPartialShopInfoDescription.tvSipaDescription.text = if (epharmData.sipaNumber.isNotEmpty()) epharmData.sipaNumber else emptyChar
                 binding.layoutPartialShopInfoDescription.tvApjDescription.text = if (epharmData.apj.isNotEmpty()) epharmData.apj else emptyChar
-                binding.layoutPartialShopInfoDescription.btnLihatLokasi.visibility = if (epharmData.address.isNotEmpty()) View.VISIBLE else View.GONE
+                binding.layoutPartialShopInfoDescription.btnLihatLokasi.visibility = if (epharmData.gMapsUrl.isNotEmpty()) View.VISIBLE else View.GONE
                 binding.layoutPartialShopInfoDescription.btnLihatLokasi.setOnClickListener {
                     RouteManager.route(context, "$weblinkPrefix${epharmData.gMapsUrl}")
                 }
