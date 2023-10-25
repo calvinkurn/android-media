@@ -84,7 +84,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private static final String COORD_X = "x";
     private static final String COORD_Y = "y";
     private static final String PID = "pid";
-    private static final String VISIBLE_COUNT = "vis";
     private static final String TIME_DAY = "timeDay";
     private static final String TIME_MINUTE = "timeMinute";
     private static final String ISRIGHT = "isright";
@@ -95,7 +94,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     public static final float SCALE_NORMAL = 1f;
     public static final int SHORT_ANIMATION_DURATION = 300;
     public static final int LONG_ANIMATION_DURATION = 600;
-    public static final int MAX_VISIBLE = 3;
     public static final long LONG_THIRTY_MINUTE = 1800000;
 
     private View vgRoot;
@@ -227,9 +225,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
     void applyAttrs(Context context, AttributeSet attrs, Bundle savedInstanceState) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FloatingEggButtonFragment);
+
         isDraggable = a.getBoolean(R.styleable.FloatingEggButtonFragment_draggable, false);
-        int defaultInitMarginRight = getContext().getResources().getDimensionPixelOffset(R.dimen.gami_core_floating_egg_init_margin_right) / 2 * -1;
-        initialEggMarginRight = a.getDimensionPixelOffset(R.styleable.FloatingEggButtonFragment_margin_right, defaultInitMarginRight);
+        initialEggMarginRight = a.getDimensionPixelOffset(R.styleable.FloatingEggButtonFragment_margin_right, 0);
         initialEggMarginBottom = a.getDimensionPixelOffset(R.styleable.FloatingEggButtonFragment_margin_bottom, 0);
         a.recycle();
     }
@@ -434,12 +432,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         editor.apply();
     }
 
-    private void saveVisiblePreference(int visibleCount) {
-        SharedPreferences.Editor editor = getSharedPrefVisibility().edit();
-        editor.putInt(VISIBLE_COUNT, visibleCount);
-        editor.apply();
-    }
-
     private SharedPreferences getSharedPref() {
         return getContext().getSharedPreferences(
                 getActivity().getClass().getSimpleName() + COORD_EGG_PREF
@@ -506,31 +498,19 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         isPermanent = tokenData.getPermanent();
 
-        if(!isSameDay()) {
-            saveVisiblePreference(0);
-        }
-        int visibleCount = getSharedPrefVisibility().getInt(VISIBLE_COUNT, 0);
-
-        if(visibleCount >= MAX_VISIBLE){
+        if (needHideFloatingToken) {
             hideFLoatingEgg();
         } else {
-            if (needHideFloatingToken) {
-                hideFLoatingEgg();
-            } else {
-                showFloatingEgg();
-                floatingEggTracker.trackingEggImpression(tokenData.getId(), tokenData.getName());
-            }
-            visibleCount += 1;
-            saveVisiblePreference(visibleCount);
+            showFloatingEgg();
+            floatingEggTracker.trackingEggImpression(tokenData.getId(), tokenData.getName());
         }
-
 
         vgFloatingEgg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if(!tokenData.getPermanent()) {
-                    floatingEggPresenter.get().clickCloseButton(tokenData.getId());
+                    floatingEggPresenter.get().clickCloseButton(tokenData.getId(), false);
                 }
 
                 ApplinkUtil.navigateToAssociatedPage(getActivity(), appLink, pageUrl, null);
@@ -621,7 +601,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             }
         }
         ivClose.setOnClickListener(view -> {
-            floatingEggPresenter.get().clickCloseButton(tokenData.getId());
+            floatingEggPresenter.get().clickCloseButton(tokenData.getId(), true);
             floatingEggTracker.trackingEggClickCLose(tokenId, tokenName);
         });
 
@@ -658,7 +638,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private void onFloatingEggLoaded(String sumTokenString, boolean isShowTime, long timeRemainingSeconds) {
         int[] coord = getCoordPreference();
         if (coord[0] == -1) {
-            setMinimizeBehaviourHyperParameters(true, true, 0, newAngleOfMinimizeBtn);
+            setMinimizeBehaviourHyperParameters(false, true, 0, oldAngleOfMinimizeBtn);
         } else {
             if (vgFloatingEgg.getX() < 0) {
                 setMinimizeBehaviourHyperParameters(true, false, vgFloatingEgg.getWidth() - minimizeButtonLeft.getWidth(), oldAngleOfMinimizeBtn);
