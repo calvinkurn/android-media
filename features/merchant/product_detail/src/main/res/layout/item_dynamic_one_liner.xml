@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dynamic_one_liner_content_parent"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="0dp"
+    android:orientation="vertical"
+    tools:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dynamic_one_liner_separator_top"

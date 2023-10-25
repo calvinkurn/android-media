@@ -22,14 +22,13 @@ class DynamicOneLinerViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_one_liner
-
+        private const val STATUS_HIDE = "hide"
         private const val STATUS_SHOW = "show"
         private const val CHEVRON_POS_FOLLOW = "follow_text"
         private const val CHEVRON_POS_END = "end"
     }
 
     val binding = ItemDynamicOneLinerBinding.bind(view)
-    private var hasViewLoaded: Boolean = false
 
     override fun bind(element: DynamicOneLinerDataModel) = with(element.data) {
         when (status) {
@@ -37,14 +36,10 @@ class DynamicOneLinerViewHolder(
                 itemView.setLayoutHeight(LayoutParams.WRAP_CONTENT)
                 renderContent(this, getComponentTrackData(element))
                 impressComponent(element)
-                hasViewLoaded = true
             }
 
-            else -> {
-                // first initial view set height to 0
-                if (!hasViewLoaded) {
-                    itemView.setLayoutHeight(0)
-                }
+            STATUS_HIDE -> {
+                itemView.setLayoutHeight(0)
             }
         }
     }
