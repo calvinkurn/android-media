@@ -149,7 +149,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final int ACCOUNT_MENU = 4;
     public static final int RECOMENDATION_LIST = 5;
     public static final int REQUEST_CODE_LOGIN = 12137;
-    public static final String FEED_PAGE = "FeedIntermediaryFragment";
+    public static final String FEED_PAGE = "FeedBaseFragment";
     public static final int UOH_MENU = 4;
     public static final int WISHLIST_MENU = 3;
     public static final String DEFAULT_NO_SHOP = "0";
