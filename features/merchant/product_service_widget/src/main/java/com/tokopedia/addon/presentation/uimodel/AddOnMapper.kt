@@ -118,6 +118,10 @@ object AddOnMapper {
         }
     }
 
+    fun getSelectedUniqueId(addOnGroupUIModels: List<AddOnGroupUIModel>): List<String> {
+        return getSelectedAddons(addOnGroupUIModels).map { it.uniqueId }
+    }
+
     fun mapToSaveAddOnStateRequest(
         cartId: Long,
         source: String,
