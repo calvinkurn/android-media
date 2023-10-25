@@ -2,9 +2,12 @@ package com.tokopedia.universal_sharing.view.customview
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyResourceIdRef
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.universal_sharing.databinding.UniversalShareWidgetBinding
 import com.tokopedia.universal_sharing.R as universal_sharingR
 
 class UniversalShareWidget(context: Context, attrs: AttributeSet) : AppCompatImageView(context, attrs) {
@@ -13,6 +16,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : AppCompatIma
     private var iconUnifyId: Int = IconUnify.WARNING
 
     init {
+        val binding = UniversalShareWidgetBinding.inflate(LayoutInflater.from(context))
         context.theme.obtainStyledAttributes(
             attrs,
             universal_sharingR.styleable.UniversalShareWidget,
@@ -24,6 +28,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : AppCompatIma
                     iconUnifyId = getIconUnifyId()
                     if (iconUnifyId != IconUnify.WARNING) {
                         val icon = getIconUnifyResourceIdRef(channelShareIconId)
+                        binding.shareChannel.setImage(icon)
                         setOnClickChannel()
                     }
                 } else {
@@ -38,7 +43,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : AppCompatIma
     private fun setOnClickChannel() {
         when (channelShareIconId) {
             CHANNEL_WHATSAPP -> {
-
+                LinkerManager.
             }
 
             else -> {
