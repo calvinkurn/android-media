@@ -39,6 +39,7 @@ includeIfEnabled("features:content:content_test")
 includeIfEnabled("features:content:stories")
 includeIfEnabled("features:content:stories_widget")
 includeIfEnabled("features:content:stories_internal")
+includeIfEnabled("features:content:product_picker")
 
 includeIfEnabled("features:category:basemvvm")
 includeIfEnabled("features:category:tradein")
@@ -142,6 +143,7 @@ includeIfEnabled("features:media:medialoader")
 includeIfEnabled("features:media:mediaeditor")
 includeIfEnabled("features:media:mediapicker")
 includeIfEnabled("features:media:mediapicker-common")
+includeIfEnabled("features:media:universal-editor")
 includeIfEnabled("features:media:live-broadcaster")
 
 includeIfEnabled("features:merchant:gold_merchant_common")
@@ -293,6 +295,7 @@ includeIfEnabled("features:tokofood")
 
 includeIfEnabled("tkpddesign")
 includeIfEnabled("tkpdabstraction")
+includeIfEnabled("features:scp:auth")
 
 includeIfEnabled("testapp-features:user:logintestapp")
 includeIfEnabled("customerapp")

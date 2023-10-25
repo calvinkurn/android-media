@@ -8,4 +8,15 @@
     <color name="home_dms_header_background_top">#1BB56D</color>
     <color name="home_dms_header_background_bottom">#089855</color>
     <color name="home_dms_color_transparent">#00000000</color>
+
+    <color name="home_dms_Unify_NN950_force_light">#212121</color>
+    <color name="home_dms_Unify_NN950_force_dark">#F5F6FF</color>
+    <color name="home_dms_Unify_NN600_force_light">#6D7588</color>
+    <color name="home_dms_Unify_NN600_force_dark">#AEB2BF</color>
+    <color name="home_dms_Unify_GN500_force_light">#00AA5B</color>
+    <color name="home_dms_Unify_GN500_force_dark">#00A958</color>
+    <color name="home_dms_Unify_NN100_force_light">#E4EBF5</color>
+    <color name="home_dms_Unify_NN100_force_dark">#2E2F36</color>
+    <color name="home_dms_Unify_NN50_force_light">#F0F3F7</color>
+    <color name="home_dms_Unify_NN50_force_dark">#222329</color>
 </resources>

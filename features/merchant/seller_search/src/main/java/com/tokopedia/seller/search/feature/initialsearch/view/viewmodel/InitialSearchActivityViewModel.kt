@@ -6,17 +6,21 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.seller.search.common.domain.GetSellerSearchPlaceholderUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+@OptIn(FlowPreview::class)
 class InitialSearchActivityViewModel @Inject constructor(
     private val getPlaceholderUseCase: GetSellerSearchPlaceholderUseCase,
     private val dispatchers: CoroutineDispatchers
@@ -31,10 +35,17 @@ class InitialSearchActivityViewModel @Inject constructor(
     val searchKeyword: LiveData<String>
         get() = _searchKeyword
 
-    val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
+    val queryChannel = MutableStateFlow(String.EMPTY)
 
     init {
-        getSearchKeyword()
+        viewModelScope.launch {
+            queryChannel
+                .debounce(DEBOUNCE_DELAY_MILLIS)
+                .distinctUntilChanged()
+                .collectLatest {
+                    _searchKeyword.value = it
+                }
+        }
     }
 
     fun getSearchPlaceholder() {
@@ -51,18 +62,7 @@ class InitialSearchActivityViewModel @Inject constructor(
     }
 
     fun getTypingSearch(keyword: String) {
-        queryChannel.trySend(keyword)
-    }
-
-    private fun getSearchKeyword() {
-        viewModelScope.launch {
-            queryChannel.asFlow()
-                .debounce(DEBOUNCE_DELAY_MILLIS)
-                .distinctUntilChanged()
-                .collectLatest {
-                    _searchKeyword.value = it
-                }
-        }
+        queryChannel.tryEmit(keyword)
     }
 
     companion object {

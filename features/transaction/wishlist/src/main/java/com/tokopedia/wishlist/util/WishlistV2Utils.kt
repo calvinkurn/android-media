@@ -7,8 +7,8 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.data.model.*
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
-import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItemsResponse
+import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
 
 object WishlistV2Utils {
     private var recommPosition = 4
@@ -272,7 +272,7 @@ object WishlistV2Utils {
                 listGroupLabel.add(labelGroup)
             }
 
-            val isButtonAtc = item.buttons.primaryButton.action == WishlistV2Fragment.ATC_WISHLIST
+            val isButtonAtc = item.buttons.primaryButton.action == WishlistCollectionDetailFragment.ATC_WISHLIST
 
             val listBadge = arrayListOf<ProductCardModel.ShopBadge>()
             item.badges.forEach { badgesItem ->

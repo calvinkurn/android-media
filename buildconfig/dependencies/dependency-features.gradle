@@ -57,6 +57,8 @@ ext {
             playWidget                      : ":features:content:play_widget",
 			storiesWidget					: ":features:content:stories_widget",
 			storiesInternal					: ":features:content:stories_internal",
+			contentProductPicker            : ":features:content:product_picker",
+
             commonTopupBills                : ":features:recharge:common_topup_bills",
             commonDigital                   : ":features:recharge:common_digital",
             digitalRecommendation           : ":features:recharge:digital_recommendation",
@@ -143,6 +145,7 @@ ext {
             mediaeditor                     : ":features:media:mediaeditor",
             mediapicker                     : ":features:media:mediapicker",
             mediapickerCommon               : ":features:media:mediapicker-common",
+			universalEditor		        	: ":features:media:universal-editor",
 
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
             powerMerchantSubscribe          : ":features:merchant:power_merchant_subscribe",
@@ -313,5 +316,6 @@ ext {
             watch                           : ":features:watch",
             tokofood                        : ":features:tokofood",
             samples                         : ":features:samples",
+			scpAuth                         : ":features:scp:auth"
     ]
 }

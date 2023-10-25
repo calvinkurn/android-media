@@ -18,6 +18,7 @@ import org.junit.Test
 class UpdateAndReloadCartTest : BaseCartViewModelTest() {
 
     private lateinit var observer: Observer<CartGlobalEvent>
+    private lateinit var progressLoadingObserver: Observer<Boolean>
 
     override fun setUp() {
         super.setUp()
@@ -27,7 +28,9 @@ class UpdateAndReloadCartTest : BaseCartViewModelTest() {
         every { CartDataHelper.getAllAvailableCartItemData(any()) } returns arrayListOf(cartItemData)
 
         observer = mockk { every { onChanged(any()) } just Runs }
+        progressLoadingObserver = mockk { every { onChanged(any()) } just Runs }
         cartViewModel.globalEvent.observeForever(observer)
+        cartViewModel.cartProgressLoading.observeForever(progressLoadingObserver)
     }
 
     @Test
@@ -42,7 +45,7 @@ class UpdateAndReloadCartTest : BaseCartViewModelTest() {
 
         // THEN
         verify {
-            observer.onChanged(CartGlobalEvent.ProgressLoading(false))
+            progressLoadingObserver.onChanged(false)
         }
         verify(inverse = true) {
             observer.onChanged(CartGlobalEvent.UpdateAndReloadCartFailed(Throwable()))
@@ -62,7 +65,7 @@ class UpdateAndReloadCartTest : BaseCartViewModelTest() {
 
         // THEN
         verify {
-            observer.onChanged(CartGlobalEvent.ProgressLoading(false))
+            progressLoadingObserver.onChanged(false)
         }
         verify(inverse = true) {
             observer.onChanged(CartGlobalEvent.UpdateAndReloadCartFailed(Throwable()))

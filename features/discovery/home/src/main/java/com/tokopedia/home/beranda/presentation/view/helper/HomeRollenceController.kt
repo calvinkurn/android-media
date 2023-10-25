@@ -14,9 +14,12 @@ object HomeRollenceController {
 
     var rollenceLoadTime: String = ""
 
+    var rollenceLoadAtfCache: String = RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL
+
     fun fetchHomeRollenceValue(context: Context) {
         fetchAtfRollenceValue(context)
         fetchLoadTimeRollenceValue()
+        fetchAtfCacheRollenceValue()
     }
 
     private fun fetchAtfRollenceValue(context: Context) {
@@ -43,11 +46,32 @@ object HomeRollenceController {
         }
     }
 
+    private fun fetchAtfCacheRollenceValue() {
+        // set the default value to exp variant so that users that are not included
+        // in the experiment still get the new caching mechanism
+        rollenceLoadAtfCache = try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_KEY,
+                RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_EXP
+            )
+        } catch (_: Exception) {
+            RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_EXP
+        }
+    }
+
+    fun isLoadAtfFromCache(): Boolean {
+        return rollenceLoadAtfCache == RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_EXP
+    }
+
     private fun getAtfRollenceValue(): String {
         return rollenceAtfValue
     }
 
     fun isUsingAtf2Variant(): Boolean {
         return getAtfRollenceValue() == RollenceKey.HOME_COMPONENT_ATF_2
+    }
+
+    fun isOldHome(): Boolean {
+        return getAtfRollenceValue() != RollenceKey.HOME_COMPONENT_ATF_2
     }
 }

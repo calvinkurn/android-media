@@ -8,4 +8,6 @@ internal abstract class DelegateAdapter<M, in VH : RecyclerView.ViewHolder>(val 
     abstract fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder
 
     abstract fun bindViewHolder(item: M, viewHolder: VH)
+
+    abstract fun bindViewHolder(item: M, viewHolder: VH, payloads: MutableList<Any>)
 }

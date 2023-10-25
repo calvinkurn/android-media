@@ -36,6 +36,14 @@ allprojects {
             allowInsecureProtocol = true
         }
         maven {
+            url "${gcp_artifactory_url}" + "/libs-shared";
+            credentials {
+                username = "${gcp_artifactory_username}"
+                password = "${gcp_artifactory_password}"
+            }
+            allowInsecureProtocol = true
+        }
+        maven {
             name = "courier-client"
             url = uri("https://maven.pkg.github.com/Tokopedia-GoTo/android-courier-connection")
 
@@ -133,6 +141,7 @@ subprojects {
                 substitute module('com.google.android.gms:play-services-base') with module("com.google.android.gms:play-services-base:${playServiceBaseVersion}")
                 substitute module('com.google.android.gms:play-services-measurement-base') with module("com.google.android.gms:play-services-measurement-base:${playServiceMeasurementBase}")
                 substitute module('com.google.android.gms:play-services-base') with module("com.google.android.gms:play-services-base:${playServiceBase}")
+                substitute module('com.google.firebase:firebase-config') with module("com.google.firebase:firebase-config:${firebaseRemoteConfigVersion}")
                 substitute module('com.google.firebase:firebase-config-ktx') with module("com.google.firebase:firebase-config-ktx:${firebaseRemoteConfigVersion}")
                 substitute module('com.google.firebase:firebase-perf-ktx') with module("com.google.firebase:firebase-perf-ktx:${firebasePerfVersion}")
 

@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.withCache
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -22,6 +23,7 @@ import com.tokopedia.stories.analytics.StoriesEEModel
 import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
 import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
 import com.tokopedia.stories.view.animation.StoriesPageAnimation
+import com.tokopedia.stories.view.custom.StoriesErrorView
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.utils.KEY_ARGS
@@ -159,16 +161,10 @@ class StoriesGroupFragment @Inject constructor(
                     is StoriesUiEvent.SelectGroup -> selectGroupPosition(event.position, event.showAnimation)
                     is StoriesUiEvent.ErrorGroupPage -> {
                         showPageLoading(false)
-                        if (event.throwable.isNetworkError) {
-                            setNoInternet(true)
-                            binding.layoutStoriesNoInet.btnStoriesNoInetRetry.setOnClickListener { run { event.onClick() } }
-                        } else {
-                            setFailed(true)
-                            binding.layoutStoriesFailed.btnStoriesFailedLoad.setOnClickListener { run { event.onClick() } }
-                        }
+                        setErrorType(if (event.throwable.isNetworkError) StoriesErrorView.Type.NoInternet else StoriesErrorView.Type.FailedLoad) { event.onClick()}
                     }
                     StoriesUiEvent.EmptyGroupPage -> {
-                        setEmptyPage(true)
+                        setErrorType(StoriesErrorView.Type.EmptyStories)
                         showPageLoading(false)
                     }
                     StoriesUiEvent.FinishedAllStories -> activity?.finish()
@@ -187,8 +183,7 @@ class StoriesGroupFragment @Inject constructor(
             state.selectedGroupPosition < 0
         ) return
 
-        setNoInternet(false)
-        setFailed(false)
+        hideError()
 
         binding.storiesGroupViewPager.adapter = pagerAdapter
         pagerAdapter.setStoriesGroup(state)
@@ -208,28 +203,14 @@ class StoriesGroupFragment @Inject constructor(
         storiesGroupViewPager.showWithCondition(!isShowLoading)
     }
 
-    private fun setNoInternet(isShow: Boolean) = with(binding.layoutStoriesNoInet) {
-        root.showWithCondition(isShow)
-        icCloseLoading.setOnClickListener {
-            activity?.finish()
-        }
+    private fun setErrorType(errorType: StoriesErrorView.Type, onClick: () -> Unit = {}) = with(binding.vStoriesError) {
+        show()
+        type = errorType
+        setAction { onClick() }
+        setCloseAction { activity?.finish() }
     }
 
-    private fun setFailed(isShow: Boolean) = with(binding.layoutStoriesFailed) {
-        root.showWithCondition(isShow)
-        icCloseLoading.setOnClickListener {
-            activity?.finish()
-        }
-    }
-
-    private fun setEmptyPage(isShow: Boolean) = with(binding.layoutNoContent) {
-        root.translationZ = 1f
-        root.showWithCondition(isShow)
-        icCloseLoading.show()
-        icCloseLoading.setOnClickListener {
-            activity?.finish()
-        }
-    }
+    private fun hideError() = binding.vStoriesError.gone()
 
     private fun trackImpressionGroup() {
         analytic.sendViewStoryCircleEvent(
@@ -257,8 +238,7 @@ class StoriesGroupFragment @Inject constructor(
     private fun trackExitRoom() {
         analytic.sendClickExitStoryRoomEvent(
             storiesId = viewModel.mDetail.id,
-            creatorType = "asgc",
-            contentType = viewModel.mDetail.content.type.value,
+            contentType = viewModel.mDetail.content.type,
             currentCircle = viewModel.mGroup.groupName,
         )
     }
