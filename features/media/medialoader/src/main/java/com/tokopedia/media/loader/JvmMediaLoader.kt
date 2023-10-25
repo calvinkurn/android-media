@@ -1,7 +1,11 @@
 package com.tokopedia.media.loader
 
+import android.graphics.Bitmap
 import android.widget.ImageView
+import com.tokopedia.media.loader.data.MediaException
 import com.tokopedia.media.loader.data.Properties
+import com.tokopedia.media.loader.listener.MediaListener
+import com.tokopedia.media.loader.wrapper.MediaDataSource
 
 /**
  * A static function to loading any images and video thumbnail for java-based.
@@ -28,5 +32,16 @@ object JvmMediaLoader {
 
     @JvmStatic fun loadImage(imageView: ImageView, url: String, properties: Properties.() -> Unit) {
         imageView.loadImage(url, properties)
+    }
+
+    @JvmStatic
+    fun loadImage(
+        imageView: ImageView,
+        url: String,
+        listener: MediaListener
+    ) {
+        imageView.loadImage(url) {
+            this.loaderListener = listener
+        }
     }
 }

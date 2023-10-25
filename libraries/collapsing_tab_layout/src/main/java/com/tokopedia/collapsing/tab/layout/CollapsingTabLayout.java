@@ -7,6 +7,7 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -15,14 +16,23 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.load.engine.GlideException;
 import com.google.android.material.tabs.TabLayout;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.media.loader.JvmMediaLoader;
+import com.tokopedia.media.loader.data.Properties;
+import com.tokopedia.media.loader.listener.MediaListener;
+import com.tokopedia.media.loader.wrapper.MediaDataSource;
 import com.tokopedia.unifycomponents.CardUnify2;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+import kotlin.jvm.functions.Function2;
 
 public class CollapsingTabLayout extends TabLayout {
 
@@ -358,14 +368,15 @@ public class CollapsingTabLayout extends TabLayout {
         ImageView imageView = (ImageView) rootView.findViewById(R.id.tabBackgroundImage);
         View shimmeringView = (View) rootView.findViewById(R.id.tabShimmeringView);
         shimmeringView.setVisibility(View.VISIBLE);
-        ImageHandler.loadImageWithoutPlaceholder(imageView, tabItemDataList.get(position).getImageUrl(), new ImageHandler.ImageLoaderStateListener() {
+
+        JvmMediaLoader.loadImage(imageView, tabItemDataList.get(position).getImageUrl(), new MediaListener() {
             @Override
-            public void successLoad() {
+            public void onLoaded(@Nullable Bitmap resource, @Nullable MediaDataSource dataSource) {
                 shimmeringView.setVisibility(View.GONE);
             }
 
             @Override
-            public void failedLoad() {
+            public void onFailed(@Nullable GlideException error) {
                 shimmeringView.setVisibility(View.VISIBLE);
             }
         });
