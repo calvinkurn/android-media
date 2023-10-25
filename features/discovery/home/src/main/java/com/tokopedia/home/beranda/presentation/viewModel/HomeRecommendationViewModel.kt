@@ -124,18 +124,23 @@ class HomeRecommendationViewModel @Inject constructor(
                     sourceType,
                     locationParam
                 )
+
                 existingRecommendationData.remove(loadMoreModel)
 
                 existingRecommendationData.addAll(result.homeRecommendations)
+
+                val newHomeRecommendationDataModel = HomeRecommendationDataModel(
+                    homeRecommendations = existingRecommendationData.toList(),
+                    isHasNextPage = result.isHasNextPage
+                )
+
                 _homeRecommendationCardState.emit(
-                    HomeRecommendationCardState.SuccessLoadMore(
-                        result.copy(homeRecommendations = existingRecommendationData.toList())
-                    )
+                    HomeRecommendationCardState.SuccessNextPage(newHomeRecommendationDataModel)
                 )
             }, onError = {
                     existingRecommendationData.remove(loadMoreModel)
                     _homeRecommendationCardState.emit(
-                        HomeRecommendationCardState.FailLoadMore(
+                        HomeRecommendationCardState.FailNextPage(
                             existingList = existingRecommendationData.toList(),
                             throwable = it
                         )

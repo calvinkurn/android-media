@@ -8,6 +8,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVi
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -44,18 +45,20 @@ class HomeRecommendationCardMapper @Inject constructor(
 
                 TYPE_BANNER_ADS -> {
                     // todo mapping topadsImageViewModel
-                    val adsBannerItemResponse = convertDataJsonToAdsBannerItem(card.dataStringJson)
+                    if (getHomeRecommendationCard.layoutName != HomeRecommendationUtil.LAYOUT_NAME_LIST) {
+                        val adsBannerItemResponse =
+                            convertDataJsonToAdsBannerItem(card.dataStringJson)
 
-                    adsBannerItemResponse?.let { bannerItemResponse ->
-                        homeRecommendationVisitableList.add(
-                            HomeRecommendationBannerTopAdsDataModel(
-                                position = index,
-                                topAdsImageViewModel = mapToTopAdsImageViewModel(
-                                    bannerItemResponse
-                                ),
-                                bannerType = TYPE_BANNER_ADS // todo need to follow again
+                        adsBannerItemResponse?.let { bannerItemResponse ->
+                            homeRecommendationVisitableList.add(
+                                HomeRecommendationBannerTopAdsDataModel(
+                                    position = index,
+                                    topAdsImageViewModel = mapToTopAdsImageViewModel(
+                                        bannerItemResponse
+                                    )
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }

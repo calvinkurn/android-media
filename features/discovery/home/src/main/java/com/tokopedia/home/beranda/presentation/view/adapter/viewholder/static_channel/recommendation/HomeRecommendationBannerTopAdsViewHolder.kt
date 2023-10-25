@@ -1,16 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation
 
-import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper.Companion.TYPE_VERTICAL_BANNER_ADS
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.home.databinding.ItemHomeBannerTopadsLayoutBinding
@@ -22,7 +14,6 @@ import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.topads.sdk.widget.BANNER_TYPE_HORIZONTAL
 import com.tokopedia.topads.sdk.widget.BANNER_TYPE_VERTICAL
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -52,13 +43,8 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) :
                 it.imageWidth = recommendationBannerTopAdsDataModel.topAdsImageViewModel.imageWidth
                 it.imageHeight =
                     recommendationBannerTopAdsDataModel.topAdsImageViewModel.imageHeight
-                if (recommendationBannerTopAdsDataModel.bannerType == TYPE_VERTICAL_BANNER_ADS) {
-                    it.bannerType = BANNER_TYPE_VERTICAL
-                    loadVerticalBanner(recommendationBannerTopAdsDataModel, it)
-                } else {
-                    it.bannerType = BANNER_TYPE_HORIZONTAL
-                    loadHorizontalBanner(recommendationBannerTopAdsDataModel, it)
-                }
+                it.bannerType = BANNER_TYPE_VERTICAL
+                loadVerticalBanner(recommendationBannerTopAdsDataModel, it)
             }
         }
     }
@@ -110,6 +96,7 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) :
         appCompatImageView: AppCompatImageView
     ) {
         recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel?.imageUrl?.let {
+            // todo check image rounded, 8.toDpFloat()
             appCompatImageView.loadImageRounded(it, 16f) {
                 fitCenter()
                 listener(onSuccess = { _, _ ->
@@ -121,40 +108,5 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) :
                     })
             }
         }
-    }
-
-    private fun loadHorizontalBanner(
-        item: HomeRecommendationBannerTopAdsDataModel,
-        appCompatImageView: AppCompatImageView
-    ) {
-        Glide.with(itemView.context)
-            .load(item.topAdsImageViewModel?.imageUrl)
-            .transform(RoundedCorners(8))
-            .fitCenter()
-            .addListener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    appCompatImageView.hide()
-                    binding?.homeRecomTopadsLoaderImage?.hide()
-                    return false
-                }
-
-                override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    appCompatImageView.show()
-                    binding?.homeRecomTopadsLoaderImage?.hide()
-                    return false
-                }
-            })
-            .into(appCompatImageView)
     }
 }

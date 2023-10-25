@@ -14,7 +14,7 @@ sealed class HomeRecommendationCardState {
         HomeRecommendationCardState()
 
     data class Success(val data: HomeRecommendationDataModel) : HomeRecommendationCardState()
-    data class SuccessLoadMore(val data: HomeRecommendationDataModel) :
+    data class SuccessNextPage(val data: HomeRecommendationDataModel) :
         HomeRecommendationCardState()
 
     data class Fail(
@@ -22,7 +22,7 @@ sealed class HomeRecommendationCardState {
         val throwable: Throwable
     ) : HomeRecommendationCardState()
 
-    data class FailLoadMore(
+    data class FailNextPage(
         val existingList: List<HomeRecommendationVisitable>,
         val throwable: Throwable
     ) : HomeRecommendationCardState()
