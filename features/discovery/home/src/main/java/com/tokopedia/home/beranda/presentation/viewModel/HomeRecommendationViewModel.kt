@@ -61,10 +61,11 @@ class HomeRecommendationViewModel @Inject constructor(
     private val _homeRecommendationNetworkLiveData: MutableLiveData<Result<HomeRecommendationDataModel>> =
         MutableLiveData()
 
-    private val _homeRecommendationCardState = MutableStateFlow<HomeRecommendationCardState>(
-        HomeRecommendationCardState.Loading(listOf(loadingModel))
-    )
-    val homeRecommendationCardState: StateFlow<HomeRecommendationCardState>
+    private val _homeRecommendationCardState =
+        MutableStateFlow<HomeRecommendationCardState<HomeRecommendationDataModel>>(
+            HomeRecommendationCardState.Loading(HomeRecommendationDataModel(listOf(loadingModel)))
+        )
+    val homeRecommendationCardState: StateFlow<HomeRecommendationCardState<HomeRecommendationDataModel>>
         get() = _homeRecommendationCardState.asStateFlow()
 
     var topAdsBannerNextPage = TOPADS_PAGE_DEFAULT
@@ -82,8 +83,8 @@ class HomeRecommendationViewModel @Inject constructor(
             if (result.homeRecommendations.isEmpty()) {
                 _homeRecommendationCardState.emit(
                     HomeRecommendationCardState.EmptyData(
-                        listOf(
-                            emptyModel
+                        HomeRecommendationDataModel(
+                            listOf(emptyModel)
                         )
                     )
                 )
@@ -93,7 +94,7 @@ class HomeRecommendationViewModel @Inject constructor(
         }, onError = {
                 _homeRecommendationCardState.emit(
                     HomeRecommendationCardState.Fail(
-                        errorList = listOf(errorModel),
+                        HomeRecommendationDataModel(listOf(errorModel)),
                         throwable = it
                     )
                 )
@@ -112,9 +113,11 @@ class HomeRecommendationViewModel @Inject constructor(
 
             _homeRecommendationCardState.tryEmit(
                 HomeRecommendationCardState.LoadingMore(
-                    existingRecommendationData.apply {
-                        add(loadMoreModel)
-                    }.toList()
+                    HomeRecommendationDataModel(
+                        existingRecommendationData.apply {
+                            add(loadMoreModel)
+                        }.toList()
+                    )
                 )
             )
 
@@ -141,7 +144,7 @@ class HomeRecommendationViewModel @Inject constructor(
                     existingRecommendationData.remove(loadMoreModel)
                     _homeRecommendationCardState.emit(
                         HomeRecommendationCardState.FailNextPage(
-                            existingList = existingRecommendationData.toList(),
+                            HomeRecommendationDataModel(existingRecommendationData.toList()),
                             throwable = it
                         )
                     )

@@ -241,27 +241,25 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
                             updateScrollEndlessListener(it.data.isHasNextPage)
                         }
                         is HomeRecommendationCardState.Loading -> {
-                            adapter.submitList(it.loadingList)
+                            adapter.submitList(it.data.homeRecommendations)
                         }
-
                         is HomeRecommendationCardState.EmptyData -> {
-                            adapter.submitList(it.emptyList)
+                            adapter.submitList(it.data.homeRecommendations)
                         }
                         is HomeRecommendationCardState.Fail -> {
-                            adapter.submitList(it.errorList)
+                            adapter.submitList(it.data.homeRecommendations)
                             showToasterError()
                         }
                         is HomeRecommendationCardState.SuccessNextPage -> {
                             adapter.submitList(it.data.homeRecommendations)
                             updateScrollEndlessListener(it.data.isHasNextPage)
                         }
-
                         is HomeRecommendationCardState.FailNextPage -> {
-                            adapter.submitList(it.existingList)
+                            adapter.submitList(it.data.homeRecommendations)
                             showToasterError()
                         }
                         is HomeRecommendationCardState.LoadingMore -> {
-                            adapter.submitList(it.loadingMoreList)
+                            adapter.submitList(it.data.homeRecommendations)
                         }
                     }
                 }

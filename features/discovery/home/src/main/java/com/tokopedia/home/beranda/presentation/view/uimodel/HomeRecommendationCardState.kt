@@ -1,29 +1,20 @@
 package com.tokopedia.home.beranda.presentation.view.uimodel
 
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
+sealed class HomeRecommendationCardState<out T> {
+    data class Loading<T>(val data: T) : HomeRecommendationCardState<T>()
+    data class LoadingMore<T>(val data: T) : HomeRecommendationCardState<T>()
+    data class EmptyData<T>(val data: T) : HomeRecommendationCardState<T>()
 
-sealed class HomeRecommendationCardState {
-    data class Loading(val loadingList: List<HomeRecommendationVisitable>) :
-        HomeRecommendationCardState()
+    data class Success<T>(val data: T) : HomeRecommendationCardState<T>()
+    data class SuccessNextPage<T>(val data: T) : HomeRecommendationCardState<T>()
 
-    data class LoadingMore(val loadingMoreList: List<HomeRecommendationVisitable>) :
-        HomeRecommendationCardState()
-
-    data class EmptyData(val emptyList: List<HomeRecommendationVisitable>) :
-        HomeRecommendationCardState()
-
-    data class Success(val data: HomeRecommendationDataModel) : HomeRecommendationCardState()
-    data class SuccessNextPage(val data: HomeRecommendationDataModel) :
-        HomeRecommendationCardState()
-
-    data class Fail(
-        val errorList: List<HomeRecommendationVisitable>,
+    data class Fail<T>(
+        val data: T,
         val throwable: Throwable
-    ) : HomeRecommendationCardState()
+    ) : HomeRecommendationCardState<T>()
 
-    data class FailNextPage(
-        val existingList: List<HomeRecommendationVisitable>,
+    data class FailNextPage<T>(
+        val data: T,
         val throwable: Throwable
-    ) : HomeRecommendationCardState()
+    ) : HomeRecommendationCardState<T>()
 }
