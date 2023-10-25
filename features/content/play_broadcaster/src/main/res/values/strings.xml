@@ -191,6 +191,7 @@
     <string name="play_bro_cover_empty_error">Kamu perlu upload cover dulu, ya.</string>
     <string name="play_bro_cover_setup_upload_image">Upload Gambar</string>
     <string name="play_bro_cover_setup_choose_template">Pilih Template</string>
+    <string name="play_bro_cover_setup_product_empty">Tag produk dulu sebelum Live, ya!</string>
 
     <string name="play_bro_default_error_message">Terjadi kesalahan</string>
 
