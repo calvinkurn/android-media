@@ -12,6 +12,8 @@
         android:textColor="@color/Unify_NN950"
         app:typographyType="display_1"
         app:typographyWeight="bold"
+        android:ellipsize="end"
+        android:singleLine="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

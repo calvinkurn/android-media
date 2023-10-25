@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.strikethrough
@@ -41,6 +42,14 @@ class AddOnChildViewHolder(
         }
     }
 
+    private fun adjustTfNameMaxWidth(itemAddonChildBinding: ItemAddonChildBinding) {
+        itemAddonChildBinding.apply {
+            tfNameWidthGuide.addOneTimeGlobalLayoutListener {
+                tfName.maxWidth = tfNameWidthGuide.measuredWidth
+            }
+        }
+    }
+
     fun bind(item: AddOnUIModel, showDescription: Boolean) {
         binding?.apply {
             tfName.text = item.name
@@ -53,6 +62,7 @@ class AddOnChildViewHolder(
             root.isEnabled = !item.isMandatory
             tfDescription.text = item.description
             tfDescription.isVisible = showDescription
+            adjustTfNameMaxWidth(this)
         }
         itemView.addOnImpressionListener(item.impressHolder) {
             onItemImpression(bindingAdapterPosition, item)

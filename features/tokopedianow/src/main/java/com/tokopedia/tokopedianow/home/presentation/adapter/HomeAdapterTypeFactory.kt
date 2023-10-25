@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.home.presentation.adapter
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -124,7 +125,8 @@ class HomeAdapterTypeFactory(
     private val productCarouselChipListener: HomeProductCarouselChipsViewListener? = null,
     private val productBundleWidgetListener: ProductBundleWidgetListener? = null,
     private val tokoNowBundleWidgetListener: TokoNowBundleWidgetListener? = null,
-    private val homeHeaderListener: HomeHeaderListener? = null
+    private val homeHeaderListener: HomeHeaderListener? = null,
+    private val recycledViewPool: RecycledViewPool? = null
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -189,7 +191,13 @@ class HomeAdapterTypeFactory(
             // endregion
 
             // region TokoNow Home Component
-            HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(view, homeProductRecomListener, rtrListener, rtrAnalytics)
+            HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(
+                itemView = view,
+                listener = homeProductRecomListener,
+                rtrListener = rtrListener,
+                rtrAnalytics = rtrAnalytics,
+                recycledViewPool = recycledViewPool
+            )
             HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokoNowView)
             HomeLoadingStateViewHolder.LAYOUT -> HomeLoadingStateViewHolder(view)
             HomeSharingWidgetViewHolder.LAYOUT -> HomeSharingWidgetViewHolder(view, homeSharingEducationListener)
@@ -200,7 +208,12 @@ class HomeAdapterTypeFactory(
             HomeQuestTitleViewHolder.LAYOUT -> HomeQuestTitleViewHolder(view, homeQuestSequenceWidgetListener)
             HomeQuestAllClaimedWidgetViewHolder.LAYOUT -> HomeQuestAllClaimedWidgetViewHolder(view, homeQuestSequenceWidgetListener)
             HomeSwitcherViewHolder.LAYOUT -> HomeSwitcherViewHolder(view, homeSwitcherListener)
-            HomeLeftCarouselAtcViewHolder.LAYOUT -> HomeLeftCarouselAtcViewHolder(view, homeLeftCarouselAtcListener, rtrListener, rtrAnalytics)
+            HomeLeftCarouselAtcViewHolder.LAYOUT -> HomeLeftCarouselAtcViewHolder(
+                itemView = view,
+                homeLeftCarouselAtcCallback = homeLeftCarouselAtcListener,
+                rtrListener = rtrListener,
+                rtrAnalytics = rtrAnalytics
+            )
             HomePlayWidgetViewHolder.LAYOUT -> HomePlayWidgetViewHolder(createPlayWidgetViewHolder(view))
             HomeClaimCouponWidgetItemViewHolder.LAYOUT -> HomeClaimCouponWidgetItemViewHolder(view, claimCouponWidgetItemListener, claimCouponWidgetItemTracker)
             HomeClaimCouponWidgetViewHolder.LAYOUT -> HomeClaimCouponWidgetViewHolder(view, claimCouponWidgetItemListener, claimCouponWidgetItemTracker, claimCouponWidgetListener)

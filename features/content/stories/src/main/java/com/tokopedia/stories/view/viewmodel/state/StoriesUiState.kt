@@ -54,7 +54,7 @@ data class TimerStatusInfo(val event: StoriesDetailItem.StoriesDetailItemUiEvent
     companion object {
         data class StoryTimer(val id: String, val itemCount: Int, val resetValue: Int, val duration: Int, val position: Int) {
             companion object {
-                val Empty get() = StoryTimer(id = "", itemCount = 0, resetValue = -1, duration = 0, position = -1)
+                val Empty get() = StoryTimer(id = "", itemCount = 0, resetValue = 0, duration = 0, position = 0)
             }
         }
         val Empty get() = TimerStatusInfo(StoriesDetailItem.StoriesDetailItemUiEvent.PAUSE, StoryTimer.Empty)

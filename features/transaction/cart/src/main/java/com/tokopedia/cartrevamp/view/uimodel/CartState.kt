@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
 import com.tokopedia.cartcommon.data.response.common.OutOfService
+import com.tokopedia.cartrevamp.domain.model.bmgm.response.BmGmGetGroupProductTickerResponse
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
-import com.tokopedia.cartrevamp.domain.model.bmgm.response.BmGmGetGroupProductTickerResponse
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -23,7 +23,6 @@ sealed class CartState<out T : Any> {
 
 sealed class CartGlobalEvent {
     data class ItemLoading(val isLoading: Boolean) : CartGlobalEvent()
-    data class ProgressLoading(val isLoading: Boolean) : CartGlobalEvent()
     object LoadGetCartData : CartGlobalEvent()
     data class CartCounterUpdated(val counter: Int) : CartGlobalEvent()
     object SuccessClearRedPromosThenGoToPromo : CartGlobalEvent()
@@ -91,7 +90,7 @@ sealed interface DeleteCartEvent {
         val addWishList: Boolean,
         val isFromGlobalCheckbox: Boolean,
         val isFromEditBundle: Boolean,
-        val listOfferId: ArrayList<Long>
+        val listCartStringOrderAndOfferId: ArrayList<String>
     ) : DeleteCartEvent
 
     data class Failed(
@@ -212,7 +211,7 @@ sealed class EntryPointInfoEvent {
     data class InactiveNew(
         val lastApply: LastApplyUiModel,
         val isNoItemSelected: Boolean = false,
-        val entryPointInfo: PromoEntryPointInfo? = null,
+        val entryPointInfo: PromoEntryPointInfo = PromoEntryPointInfo(),
         val recommendedPromoCodes: List<String>
     ) : EntryPointInfoEvent()
 
@@ -254,6 +253,9 @@ class CartMutableLiveData<T>(initialValue: T) : LiveData<T>(initialValue) {
 }
 
 sealed interface GetBmGmGroupProductTickerState {
-    data class Success(val pairOfferIdBmGmTickerResponse: Pair<Long, BmGmGetGroupProductTickerResponse>) : GetBmGmGroupProductTickerState
-    data class Failed(val pairOfferIdThrowable: Pair<Long, Throwable>) : GetBmGmGroupProductTickerState
+    data class Success(val pairOfferIdBmGmTickerResponse: Pair<CartItemHolderData, BmGmGetGroupProductTickerResponse>) :
+        GetBmGmGroupProductTickerState
+
+    data class Failed(val pairOfferIdThrowable: Pair<CartItemHolderData, Throwable>) :
+        GetBmGmGroupProductTickerState
 }

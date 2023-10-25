@@ -201,10 +201,18 @@ class CartPromoEntryPointProcessor @Inject constructor(
         }
     }
 
-    fun getEntryPointInfoNoItemSelected(): EntryPointInfoEvent {
-        return EntryPointInfoEvent.Inactive(
-            isNoItemSelected = true
-        )
+    fun getEntryPointInfoNoItemSelected(lastApply: LastApplyUiModel): EntryPointInfoEvent {
+        return if (isPromoRevamp == true) {
+            EntryPointInfoEvent.InactiveNew(
+                lastApply = lastApply,
+                isNoItemSelected = true,
+                recommendedPromoCodes = emptyList()
+            )
+        } else {
+            EntryPointInfoEvent.Inactive(
+                isNoItemSelected = true
+            )
+        }
     }
 
     fun getEntryPointInfoActiveDefault(codes: List<String>): EntryPointInfoEvent {

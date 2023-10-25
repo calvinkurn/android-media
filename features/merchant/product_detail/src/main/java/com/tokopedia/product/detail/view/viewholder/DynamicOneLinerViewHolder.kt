@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
@@ -10,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicOneLinerBinding
@@ -38,13 +38,13 @@ class DynamicOneLinerViewHolder(
         when (status) {
             STATUS_PLACEHOLDER -> {
                 itemView.show()
-                binding.dynamicOneLinerContent.hide()
+                binding.dynamicOneLinerContentParent.hide()
                 binding.dynamicOneLinerShimmering.show()
             }
 
             STATUS_SHOW -> {
                 itemView.show()
-                binding.dynamicOneLinerContent.show()
+                binding.dynamicOneLinerContentParent.show()
                 binding.dynamicOneLinerShimmering.hide()
                 renderContent(this, getComponentTrackData(element))
                 impressComponent(element)
@@ -60,6 +60,9 @@ class DynamicOneLinerViewHolder(
         data: DynamicOneLinerDataModel.Data,
         componentTrackDataModel: ComponentTrackDataModel
     ) = with(binding) {
+
+        configPadding(binding, data)
+
         val title = data.text
         dynamicOneLinerTitle.showIfWithBlock(title.isNotEmpty()) {
             val context = context
@@ -101,8 +104,20 @@ class DynamicOneLinerViewHolder(
         dynamicOneLinerSeparatorBottom.showWithCondition(data.shouldShowSeparatorBottom)
     }
 
+    private fun configPadding(
+        binding: ItemDynamicOneLinerBinding,
+        data: DynamicOneLinerDataModel.Data
+    ) = with(binding.dynamicOneLinerContent) {
+        setPadding(paddingLeft, data.paddingTopPx, paddingRight, data.paddingBottomPx)
+    }
+
     private fun impressComponent(element: DynamicOneLinerDataModel) {
-        itemView.addOnImpressionListener(element.impressHolder) {
+        itemView.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.name,
+            useHolders = listener.isRemoteCacheableActive()
+        ) {
             listener.onImpressComponent(getComponentTrackData(element))
         }
     }
