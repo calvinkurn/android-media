@@ -9,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -30,6 +31,7 @@ import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationInfoBottom
 import com.tokopedia.stories.creation.view.model.StoriesMediaType
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -161,20 +163,22 @@ class StoriesCreationActivity : BaseActivity() {
     }
 
     private fun observeUiEvent() {
-        lifecycleScope.launchWhenStarted {
-            viewModel.uiEvent.collect { event ->
-                when (event) {
-                    is StoriesCreationUiEvent.ErrorPreparePage -> {
-                        StoriesCreationErrorBottomSheet
-                            .getFragment(supportFragmentManager, classLoader)
-                            .show(supportFragmentManager, event.throwable)
+        lifecycleScope.launch {
+            viewModel.uiEvent
+                .flowWithLifecycle(lifecycle)
+                .collect { event ->
+                    when (event) {
+                        is StoriesCreationUiEvent.ErrorPreparePage -> {
+                            StoriesCreationErrorBottomSheet
+                                .getFragment(supportFragmentManager, classLoader)
+                                .show(supportFragmentManager, event.throwable)
+                        }
+                        is StoriesCreationUiEvent.ShowTooManyStoriesReminder -> {
+                            StoriesCreationInfoBottomSheet
+                                .getFragment(supportFragmentManager, classLoader)
+                                .show(supportFragmentManager)
+                        }
                     }
-                    is StoriesCreationUiEvent.ShowTooManyStoriesReminder -> {
-                        StoriesCreationInfoBottomSheet
-                            .getFragment(supportFragmentManager, classLoader)
-                            .show(supportFragmentManager)
-                    }
-                }
             }
         }
     }
