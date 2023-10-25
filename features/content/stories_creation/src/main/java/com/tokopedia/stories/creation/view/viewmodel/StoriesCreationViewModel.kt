@@ -30,7 +30,7 @@ class StoriesCreationViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(StoriesCreationUiState.Empty)
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEvent = MutableSharedFlow<StoriesCreationUiEvent>()
+    private val _uiEvent = MutableSharedFlow<StoriesCreationUiEvent>(replay = 1)
     val uiEvent: Flow<StoriesCreationUiEvent> = _uiEvent
 
     val maxStoriesConfig: StoriesCreationConfiguration.MaxStoriesConfig
