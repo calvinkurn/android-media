@@ -424,7 +424,8 @@ class CatalogDetailUiMapper @Inject constructor(
                         comparisonSpecs.add(
                             ComparisonUiModel.ComparisonSpec(
                                 isSpecCategoryTitle = true,
-                                specCategoryTitle = if (isFirstData) spec.name else ""
+                                specCategoryTitle = if (isFirstData) spec.name else "",
+                                isDarkMode = isDarkMode
                             )
                         )
                         spec.row.forEach { rowItem ->
@@ -432,7 +433,8 @@ class CatalogDetailUiMapper @Inject constructor(
                                 isSpecCategoryTitle = false,
                                 specTitle = if (isFirstData) rowItem.key else "",
                                 specValue = rowItem.value.ifEmpty { "-" },
-                                specTextTitleColor = getTextColor(isDarkMode, lightModeColor = unifycomponentsR.color.Unify_NN600, darkModeColor = catalogcommonR.color.dms_static_Unify_NN600_light)
+                                specTextTitleColor = getTextColor(isDarkMode, lightModeColor = unifycomponentsR.color.Unify_NN600, darkModeColor = catalogcommonR.color.dms_static_Unify_NN600_light),
+                                isDarkMode = isDarkMode
                             )
                             comparisonSpecs.add(insertedItem)
                         }

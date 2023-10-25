@@ -21,10 +21,11 @@
         app:typographyType="display_2"
         app:typographyWeight="bold" />
 
-    <com.tokopedia.unifycomponents.DividerUnify
+    <View
         android:id="@+id/divSpecCategory"
+        android:background="@color/dms_static_divider"
         android:layout_width="match_parent"
-        android:layout_height="2dp"/>
+        android:layout_height="1dp"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tfSpecTitle"
@@ -48,9 +49,10 @@
         tools:text="2021"
         app:typographyType="small"/>
 
-    <com.tokopedia.unifycomponents.DividerUnify
+    <View
         android:id="@+id/divSpecValue"
+        android:background="@color/dms_static_divider"
         android:layout_width="match_parent"
-        android:layout_height="2dp"/>
+        android:layout_height="1dp"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>
