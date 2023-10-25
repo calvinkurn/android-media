@@ -14,5 +14,7 @@ data class Texts(
     @SerializedName("promo_message")
     val promoMessage: String = "",
     @SerializedName("title_promo_message")
-    val titlePromoMessage: String = ""
+    val titlePromoMessage: String = "",
+    @SerializedName("order_message")
+    val orderMessage: String = ""
 )

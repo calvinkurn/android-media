@@ -533,22 +533,24 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             labelNow2H = labelSingleShippingPromo
         }
 
-        binding?.shippingNowWidget?.bind(
-            titleNow2H = getSingleShippingTitleForScheduleWidget(
-                shippingWidgetUiModel
-            ),
-            labelNow2H = labelNow2H,
-            scheduleDeliveryUiModel = shippingWidgetUiModel.scheduleDeliveryUiModel?.copy(),
-            listener = object : ShippingScheduleRevampWidget.ShippingScheduleWidgetListener {
-                override fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel) {
-                    mListener?.onChangeScheduleDelivery(scheduleDeliveryUiModel)
-                }
+        binding?.shippingNowWidget
+            ?.bind(
+                titleNow2H = getSingleShippingTitleForScheduleWidget(
+                    shippingWidgetUiModel
+                ),
+                descriptionNow2H = getOrderMessageOFOC(shippingWidgetUiModel),
+                labelNow2H = labelNow2H,
+                scheduleDeliveryUiModel = shippingWidgetUiModel.scheduleDeliveryUiModel?.copy(),
+                listener = object : ShippingScheduleRevampWidget.ShippingScheduleWidgetListener {
+                    override fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel) {
+                        mListener?.onChangeScheduleDelivery(scheduleDeliveryUiModel)
+                    }
 
-                override fun getFragmentManager(): FragmentManager? {
-                    return mListener?.getHostFragmentManager()
+                    override fun getFragmentManager(): FragmentManager? {
+                        return mListener?.getHostFragmentManager()
+                    }
                 }
-            }
-        )
+            )
         showInsuranceInfo(shippingWidgetUiModel)
     }
 
@@ -748,6 +750,17 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                 courierName = shippingWidgetUiModel.courierName,
                 shipperPrice = shippingWidgetUiModel.courierShipperPrice
             )
+        }
+    }
+
+    private fun getOrderMessageOFOC(
+        shippingWidgetUiModel: ShippingWidgetUiModel
+    ): String {
+        return if (shippingWidgetUiModel.voucherLogisticExists) {
+            // Change duration to promo title after promo is applied
+            shippingWidgetUiModel.orderMessage
+        } else {
+            return shippingWidgetUiModel.courierOrderMessage
         }
     }
 

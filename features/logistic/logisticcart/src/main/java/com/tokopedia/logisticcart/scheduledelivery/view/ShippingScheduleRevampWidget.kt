@@ -62,6 +62,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
 
     fun bind(
         titleNow2H: CharSequence?,
+        descriptionNow2H: String?,
         labelNow2H: CharSequence?,
         scheduleDeliveryUiModel: ScheduleDeliveryUiModel?,
         listener: ShippingScheduleWidgetListener
@@ -70,6 +71,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
         val scheduleUiModel = createWidget(
             titleNow2H = titleNow2H,
             labelNow2H = labelNow2H,
+            descriptionNow2H = descriptionNow2H,
             scheduleDeliveryUiModel = scheduleDeliveryUiModel
         )
         removeScheduleWidgetViews()
@@ -107,6 +109,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
     private fun createWidget(
         titleNow2H: CharSequence?,
         labelNow2H: CharSequence?,
+        descriptionNow2H: String?,
         scheduleDeliveryUiModel: ScheduleDeliveryUiModel?
     ): List<ShippingScheduleWidgetModel> {
         val shippingScheduleWidgets: ArrayList<ShippingScheduleWidgetModel> = arrayListOf()
@@ -120,6 +123,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
                 create2HWidget(
                     titleNow2H = titleNow2H,
                     labelNow2H = labelNow2H,
+                    descriptionNow2H = descriptionNow2H,
                     scheduleDeliveryUiModel = scheduleDeliveryUiModel
                 )
             )
@@ -131,6 +135,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
     private fun create2HWidget(
         titleNow2H: CharSequence?,
         labelNow2H: CharSequence?,
+        descriptionNow2H: String?,
         scheduleDeliveryUiModel: ScheduleDeliveryUiModel?
     ): ShippingScheduleWidgetModel {
         val onClick = {
@@ -144,6 +149,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
             isEnable = true,
             title = titleNow2H,
             label = labelNow2H,
+            description = descriptionNow2H,
             isSelected = scheduleDeliveryUiModel?.isSelected != true,
             onSelectedWidgetListener = { onClick() },
             onClickIconListener = { onClick() }

@@ -558,6 +558,7 @@ class CheckoutLogisticProcessor @Inject constructor(
             courierItemData.benefitClass = it.benefitClass
             courierItemData.shippingSubsidy = it.shippingSubsidy
             courierItemData.boCampaignId = it.boCampaignId
+            courierItemData.boOrderMessage = it.orderMessage
         }
         return courierItemData
     }
@@ -935,6 +936,7 @@ class CheckoutLogisticProcessor @Inject constructor(
             courierItemData.benefitClass = it.benefitClass
             courierItemData.shippingSubsidy = it.shippingSubsidy
             courierItemData.boCampaignId = it.boCampaignId
+            courierItemData.boOrderMessage = it.orderMessage
         }
         return courierItemData
     }
@@ -1091,6 +1093,7 @@ class CheckoutLogisticProcessor @Inject constructor(
             benefitClass = logisticPromoUiModel.benefitClass
             shippingSubsidy = logisticPromoUiModel.shippingSubsidy
             boCampaignId = logisticPromoUiModel.boCampaignId
+            boOrderMessage = logisticPromoUiModel.orderMessage
         }
         return courierItemData
     }
