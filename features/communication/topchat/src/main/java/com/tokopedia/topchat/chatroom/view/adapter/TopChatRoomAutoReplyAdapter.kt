@@ -3,14 +3,14 @@ package com.tokopedia.topchat.chatroom.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.autoreply.TopChatRoomAutoReplyItemViewHolder
-import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatRoomAutoReplyItemUiModel
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatChatRoomAutoReplyDiffUtil
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.autoreply.TopChatRoomAutoReplyItemViewHolder
+import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatRoomAutoReplyItemUiModel
 
-class TopChatRoomAutoReplyAdapter (
+class TopChatRoomAutoReplyAdapter(
     private val isMessageBubble: Boolean = true
-): ListAdapter<TopChatRoomAutoReplyItemUiModel, TopChatRoomAutoReplyItemViewHolder>(
+) : ListAdapter<TopChatRoomAutoReplyItemUiModel, TopChatRoomAutoReplyItemViewHolder>(
     TopChatChatRoomAutoReplyDiffUtil()
 ) {
 
@@ -19,7 +19,9 @@ class TopChatRoomAutoReplyAdapter (
         viewType: Int
     ): TopChatRoomAutoReplyItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.topchat_chatroom_auto_reply_item, parent, false
+            R.layout.topchat_chatroom_auto_reply_item,
+            parent,
+            false
         )
         return TopChatRoomAutoReplyItemViewHolder(view, isMessageBubble)
     }

@@ -8,7 +8,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -135,57 +134,42 @@ open class ChatSearchFragment :
     }
 
     private fun observeLoadInitialData() {
-        viewModel.loadInitialData.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (!it) return@Observer
-                clearAllData()
-                showLoading()
-            }
-        )
+        viewModel.loadInitialData.observe(viewLifecycleOwner) {
+            if (!it) return@observe
+            clearAllData()
+            showLoading()
+        }
     }
 
     private fun observeEmptyQuery() {
-        viewModel.emptyQuery.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (!it) return@Observer
-                clearAllData()
-                showRecentSearch()
-            }
-        )
+        viewModel.emptyQuery.observe(viewLifecycleOwner) {
+            if (!it) return@observe
+            clearAllData()
+            showRecentSearch()
+        }
     }
 
     private fun observeErrorSearch() {
-        viewModel.errorMessage.observe(
-            viewLifecycleOwner,
-            Observer { error ->
-                if (error == null) return@Observer
-                if (viewModel.isFirstPage()) {
-                    clearAllData()
-                }
-                showGetListError(error)
+        viewModel.errorMessage.observe(viewLifecycleOwner) { error ->
+            if (error == null) return@observe
+            if (viewModel.isFirstPage()) {
+                clearAllData()
             }
-        )
+            showGetListError(error)
+        }
     }
 
     private fun observeSearchTriggered() {
-        viewModel.triggerSearch.observe(
-            viewLifecycleOwner,
-            Observer {
-                analytic.eventQueryTriggered()
-            }
-        )
+        viewModel.triggerSearch.observe(viewLifecycleOwner) {
+            analytic.eventQueryTriggered()
+        }
     }
 
     private fun observeSearchResult() {
-        viewModel.searchResults.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (it == null) return@Observer
-                renderList(it, viewModel.hasNext)
-            }
-        )
+        viewModel.searchResults.observe(viewLifecycleOwner) {
+            if (it == null) return@observe
+            renderList(it, viewModel.hasNext)
+        }
     }
 
     override fun onSearchQueryChanged(query: String) {

@@ -13,16 +13,12 @@ import com.tokopedia.topchat.databinding.TopchatChatroomBottomsheetAutoReplyBind
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class TopChatRoomAutoReplyDetailBottomSheet: BottomSheetUnify() {
+class TopChatRoomAutoReplyDetailBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<TopchatChatroomBottomsheetAutoReplyBinding>()
     private val adapter = TopChatRoomAutoReplyAdapter(isMessageBubble = false)
     private var mainMessage = TopChatRoomAutoReplyItemUiModel("", "", "")
     private var list: List<TopChatRoomAutoReplyItemUiModel> = listOf()
-
-    init {
-        clearContentPadding = true
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +32,7 @@ class TopChatRoomAutoReplyDetailBottomSheet: BottomSheetUnify() {
         )
         binding = TopchatChatroomBottomsheetAutoReplyBinding.bind(view)
         setChild(view)
+        this.clearContentPadding = true
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 

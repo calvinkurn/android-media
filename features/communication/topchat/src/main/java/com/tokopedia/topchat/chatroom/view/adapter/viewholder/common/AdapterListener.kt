@@ -5,6 +5,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 
+const val OPPOSITE_MARGIN = 4
+
 interface AdapterListener {
     fun isOpposite(adapterPosition: Int, isSender: Boolean): Boolean
     fun getCarouselViewPool(): RecyclerView.RecycledViewPool
@@ -12,5 +14,5 @@ interface AdapterListener {
 }
 
 fun getOppositeMargin(context: Context): Int {
-    return 4.dpToPx(context.resources.displayMetrics) ?: 0
+    return OPPOSITE_MARGIN.dpToPx(context.resources.displayMetrics)
 }

@@ -30,9 +30,9 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBu
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCarouselViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.BroadcastCampaignLabelView
-import com.tokopedia.topchat.chatroom.view.custom.messagebubble.regular.TopChatRoomFlexBoxLayout
 import com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.regular.TopChatRoomFlexBoxLayout
 import com.tokopedia.topchat.chatroom.view.custom.product_bundling.ProductBundlingCardAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.custom.product_bundling.ProductBundlingRecyclerView
 import com.tokopedia.topchat.chatroom.view.customview.TopchatMerchantVoucherView
@@ -218,9 +218,9 @@ class BroadcastViewHolder constructor(
     private fun bindBannerMargin(element: BroadCastUiModel) {
         (bannerView?.layoutParams as? LinearLayout.LayoutParams)?.apply {
             val productMarginBottom = when {
-                element.hasCampaignLabel() -> 0
-                element.hasVoucher() -> 4.dpToPx(itemView.resources.displayMetrics)
-                else -> 8.dpToPx(itemView.resources.displayMetrics)
+                element.hasCampaignLabel() -> PRODUCT_MARGIN_BOTTOM_CAMPAIGN_LABEL
+                element.hasVoucher() -> PRODUCT_MARGIN_BOTTOM_VOUCHER.dpToPx(itemView.resources.displayMetrics)
+                else -> PRODUCT_MARGIN_BOTTOM_DEFAULT.dpToPx(itemView.resources.displayMetrics)
             }
             bottomMargin = productMarginBottom
         }
@@ -414,5 +414,8 @@ class BroadcastViewHolder constructor(
         private val paddingWithBanner = 1f.toPx()
         private val paddingWithoutBanner = 6f.toPx()
         private const val paddingWithBroadcastLabelOnly = 0f
+        private const val PRODUCT_MARGIN_BOTTOM_CAMPAIGN_LABEL = 0
+        private const val PRODUCT_MARGIN_BOTTOM_VOUCHER = 4
+        private const val PRODUCT_MARGIN_BOTTOM_DEFAULT = 8
     }
 }

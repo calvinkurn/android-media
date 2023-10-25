@@ -327,71 +327,62 @@ abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        if (message == null || status == null || info == null) {
+        if (areViewsNull()) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
             return
         }
 
         val widthSpecSize = MeasureSpec.getSize(widthMeasureSpec)
         val maxAvailableWidth = widthSpecSize - paddingLeft - paddingRight
+
+        measureDirectChildren(widthMeasureSpec, heightMeasureSpec)
+
+        val dimensions = calculateChildDimensions(maxAvailableWidth, heightMeasureSpec)
+        setMeasuredDimension(
+            resolveSize(dimensions.width, widthMeasureSpec),
+            resolveSize(dimensions.height, heightMeasureSpec)
+        )
+    }
+
+    protected open fun areViewsNull(): Boolean {
+        return message == null ||
+            status == null ||
+            info == null
+    }
+
+    protected open fun getDirectChildrenViewList(): List<View?> {
+        return listOf(message, info, status, header, icon)
+    }
+
+    private fun measureDirectChildren(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val views = getDirectChildrenViewList()
+        views.forEach {
+            measureChildWithMargins(
+                it,
+                widthMeasureSpec,
+                0,
+                heightMeasureSpec,
+                0
+            )
+        }
+    }
+
+    protected open fun calculateChildDimensions(
+        maxAvailableWidth: Int,
+        heightMeasureSpec: Int
+    ): Dimensions {
         var totalWidth = 0
         var totalHeight = 0
 
-        /**
-         * get measurement and layout params of direct child
-         */
-        measureChildWithMargins(
-            message,
-            widthMeasureSpec,
-            0,
-            heightMeasureSpec,
-            0
-        )
-        measureChildWithMargins(
-            info,
-            widthMeasureSpec,
-            0,
-            heightMeasureSpec,
-            0
-        )
-        measureChildWithMargins(
-            status,
-            widthMeasureSpec,
-            0,
-            heightMeasureSpec,
-            0
-        )
-        measureChildWithMargins(
-            header,
-            widthMeasureSpec,
-            0,
-            heightMeasureSpec,
-            0
-        )
-        measureChildWithMargins(
-            icon,
-            widthMeasureSpec,
-            0,
-            heightMeasureSpec,
-            0
-        )
-
-        /**
-         * calculate each direct child width & height
-         */
-        // Message
+        // Calculate each direct child width & height
         val messageWidth = getTotalVisibleWidth(message)
         var messageHeight = getTotalVisibleHeight(message)
-        // Info
         val infoWidth = getTotalVisibleWidth(info)
         var infoHeight = getTotalVisibleHeight(info)
-        // Status
         val statusWidth = getTotalVisibleWidth(status)
         val statusHeight = getTotalVisibleHeight(status)
-        // Header
         val headerWidth = getTotalVisibleWidth(header)
         val headerHeight = getTotalVisibleHeight(header)
-        // msg icon
         val iconWidth = getTotalVisibleWidth(icon)
         val iconHeight = getTotalVisibleHeight(icon)
 
@@ -404,14 +395,22 @@ abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
         /**
          * Measure second row dimension
          */
-        val secondRowWidth = iconWidth + messageWidth + statusWidth
+        val secondRowWidth = maxOf(
+            iconWidth + messageWidth + statusWidth,
+            statusWidth
+        )
         val secondRowWidthDiff = totalWidth - secondRowWidth
         if (secondRowWidthDiff < 0) {
             totalWidth += abs(secondRowWidthDiff)
         }
-        val secondRowHeight = maxOf(messageHeight, statusHeight, iconHeight)
+        val secondRowHeight = maxOf(
+            messageHeight,
+            statusHeight,
+            iconHeight
+        )
         totalHeight += secondRowHeight
-        // check if icon and message is overlap
+
+        // Check if icon and message overlap
         val messageMaxWidth = maxAvailableWidth - iconWidth
         if (messageWidth > messageMaxWidth) {
             totalHeight -= messageHeight
@@ -423,6 +422,7 @@ abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
             messageHeight = getTotalVisibleHeight(message)
             totalHeight += messageHeight
         }
+
         // Measure msg last line dimension
         var isOverlapped = false
         val msgLineCount = message?.lineCount ?: 0
@@ -451,6 +451,7 @@ abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
             infoHeight
         }
         totalHeight += thirdRowHeight
+
         // Set info width if overlap with [status] layout
         val infoMaxWidth = maxAvailableWidth - statusWidth
         if (infoWidth > infoMaxWidth) {
@@ -467,10 +468,7 @@ abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
         totalWidth += (paddingLeft + paddingRight)
         totalHeight += (paddingTop + paddingBottom)
 
-        setMeasuredDimension(
-            resolveSize(totalWidth, widthMeasureSpec),
-            resolveSize(totalHeight, heightMeasureSpec)
-        )
+        return Dimensions(totalWidth, totalHeight)
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
@@ -613,6 +611,11 @@ abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
         constructor(source: MarginLayoutParams?) : super(source)
         constructor(source: ViewGroup.LayoutParams?) : super(source)
     }
+
+    data class Dimensions(
+        val width: Int,
+        val height: Int
+    )
 
     companion object {
         private const val DEFAULT_USE_MAX_WIDTH = false
