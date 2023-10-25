@@ -127,8 +127,8 @@ object ShopPageHomeMapper {
                 it.isVariant = hasVariant
                 it.parentId = parentId
                 it.averageRating = stats.averageRating
-                it.warehouseId = shopProduct.warehouseId
                 it.isFulfillment = ShopUtil.isFulfillmentByGroupLabel(shopProduct.labelGroupList)
+                it.warehouseId = shopProduct.warehouseId
             }
         }
 
@@ -827,6 +827,8 @@ object ShopPageHomeMapper {
                 hideGimmick = it.hideGimmick
                 labelGroupList =
                     it.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
+                isFulfillment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups)
+                warehouseId = it.warehouseId
             }
         }
     }
@@ -851,6 +853,8 @@ object ShopPageHomeMapper {
                 hideGimmick = it.hideGimmick
                 labelGroupList =
                     it.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
+                isFulfillment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups)
+                warehouseId = it.warehouseId
             }
         }
     }
@@ -891,6 +895,8 @@ object ShopPageHomeMapper {
                 this.isVariant = it.listChildId.isNotEmpty()
                 this.listChildId = it.listChildId
                 this.parentId = it.parentId
+                isFulfillment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups)
+                warehouseId = it.warehouseId
             }
         }
     }
@@ -1125,6 +1131,8 @@ object ShopPageHomeMapper {
                 this.isVariant = !it.parentId.toLongOrZero().isZero()
                 this.listChildId = it.listChildId
                 this.parentId = it.parentId
+                isFulfillment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups)
+                warehouseId = it.warehouseID
             }
         }
     }
@@ -1196,8 +1204,8 @@ object ShopPageHomeMapper {
             this.isVariant = response.listChildId.isNotEmpty()
             this.listChildId = response.listChildId
             this.parentId = response.parentId
-            this.isFulfillment = ShopUtil.isFulfillmentByGroupLabel(response.labelGroups)
-            this.warehouseId = response.warehouseID
+            isFulfillment = ShopUtil.isFulfillmentByGroupLabel(response.labelGroups)
+            warehouseId = response.warehouseID
         }
 
     fun mapToGetCampaignNotifyMeUiModel(model: GetCampaignNotifyMeModel): GetCampaignNotifyMeUiModel {
