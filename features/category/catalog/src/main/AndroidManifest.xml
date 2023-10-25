@@ -4,6 +4,9 @@
 
     <application>
         <activity
+            android:name=".ui.activity.CatalogComparisonDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.CatalogProductListActivity"
             android:exported="false"
             android:screenOrientation="portrait"

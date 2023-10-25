@@ -6,18 +6,15 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder
 import com.tokopedia.search.result.presentation.view.fragment.RecyclerViewUpdater
 import com.tokopedia.search.result.product.inspirationwidget.card.SmallGridInspirationCardViewHolder
+import com.tokopedia.search.result.product.productitem.GridProductItemViewHolder
+import com.tokopedia.search.utils.isFullSpan
 import javax.inject.Inject
 
 class SearchProductGridSpanSizeLookup @Inject constructor(
     private val recyclerViewUpdater: RecyclerViewUpdater,
     private val gridLayoutManager: GridLayoutManager,
 ) : SpanSizeLookup() {
-    private fun isGridFullSpan(viewType: Int): Boolean {
-        return viewType != SmallGridProductItemViewHolder.LAYOUT
-            && viewType != SmallGridProductItemViewHolder.LAYOUT_WITH_VIEW_STUB
-            && viewType != RecommendationItemViewHolder.LAYOUT
-            && viewType != SmallGridInspirationCardViewHolder.LAYOUT
-    }
+    private fun isGridFullSpan(viewType: Int): Boolean = isFullSpan(viewType)
 
     override fun getSpanSize(position: Int): Int {
         val recyclerView = recyclerViewUpdater.recyclerView ?: return 1

@@ -37,6 +37,7 @@ private const val searchProductLocalSearchFirstPageJSON = "searchproduct/localse
 private const val searchProductLocalSearchSecondPageJSON = "searchproduct/localsearch/second-page.json"
 private const val searchProductLocalSearchEmptyResponseCode1JSON = "searchproduct/localsearch/empty-search-response-code-1.json"
 private const val searchProductLocalSearchEmptyResponseCode11JSON = "searchproduct/localsearch/empty-search-response-code-11.json"
+private const val searchProductLocalSearchEmptyResponseCode11ReimagineJSON = "searchproduct/localsearch/empty-search-response-code-11-reimagine.json"
 private const val searchProductLocalSearchFirstPageEndOfPageJSON = "searchproduct/localsearch/first-page-end-of-page.json"
 private const val searchProductLocalSearchFirstPage12ProductsJSON = "searchproduct/localsearch/first-page-12-products.json"
 private const val searchProductLocalSearchSecondPageEndOfPageJSON = "searchproduct/localsearch/second-page-end-of-page.json"
@@ -143,7 +144,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
                 productItem,
                 index + 1,
                 "",
-                searchProductModel.getProductListType()
+                searchProductModel.productListType()
             )
         }
     }
@@ -258,6 +259,43 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
     private fun `Then verify local search recommendation use case is called`() {
         verify {
             getLocalSearchRecommendationUseCase.execute(any(), any())
+        }
+    }
+
+    @Test
+    fun `Empty search by keyword with response code 11 during local search - reimagine`() {
+        val searchProductModel = searchProductLocalSearchEmptyResponseCode11ReimagineJSON
+            .jsonToObject<SearchProductModel>()
+
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given getQueryKey will return keyword`()
+
+        `When Load Data`(searchParameter)
+
+        `Then verify empty search view model during local search`()
+        `Then verify view added broad match reimagine`(searchProductModel)
+    }
+
+    private fun `Then verify view added broad match reimagine`(searchProductModel: SearchProductModel) {
+        val visitableList = visitableListSlot.captured
+        visitableList[1].shouldBeInstanceOf<SuggestionDataView>()
+
+        val otherRelated = searchProductModel.searchProductV5.data.related.otherRelatedList
+        visitableList.filterIsInstance<BroadMatchDataView>().size shouldBe otherRelated.size
+
+        var index = visitableList.indexOfFirst { it is BroadMatchDataView }
+        index shouldBe 2
+
+        repeat(otherRelated.size) {
+            val visitable = visitableList[index]
+            visitable.shouldBeInstanceOf<BroadMatchDataView>()
+
+            val broadMatchViewModel = visitable as BroadMatchDataView
+            broadMatchViewModel.isAppendTitleInTokopedia shouldBe true
+            broadMatchViewModel.dimension90 shouldBe expectedDimension90
+
+            index++
         }
     }
 
