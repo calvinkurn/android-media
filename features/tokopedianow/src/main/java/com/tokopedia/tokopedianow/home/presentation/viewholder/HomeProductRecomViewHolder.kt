@@ -40,9 +40,9 @@ class HomeProductRecomViewHolder(
     private var realtimeRecommendationView: RealTimeRecommendationCarouselView? = null
 
     override fun bind(element: HomeProductRecomUiModel) {
+        setupListener()
         renderProductItems(element)
         renderRealTimeRecom(element)
-        setupListener()
     }
 
     override fun bind(element: HomeProductRecomUiModel?, payloads: MutableList<Any>) {
