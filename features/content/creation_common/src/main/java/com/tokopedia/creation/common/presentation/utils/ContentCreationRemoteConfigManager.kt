@@ -1,19 +1,16 @@
 package com.tokopedia.creation.common.presentation.utils
 
-import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.creation.common.presentation.model.ContentCreationRemoteConfigModel
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_CONTENT_CREATION_STORIES_CONFIG
+import javax.inject.Inject
 
 /**
  * Created By : Muhammad Furqan on 24/10/23
  */
-class ContentCreationRemoteConfigManager(context: Context) {
-
-    private val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context)
+class ContentCreationRemoteConfigManager @Inject constructor(private val remoteConfig: RemoteConfig) {
 
     fun isShowingShopEntryPoint(): Boolean = if (GlobalConfig.isSellerApp())
         getSellerAppConfigData().shopEntryPointItem
