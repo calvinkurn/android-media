@@ -338,11 +338,12 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
                 isChecked = isSelected
                 skipAnimation()
                 setOnCheckedChangeListener { _, isChecked ->
-                    delayChangeRadioButton?.cancel()
-                    delayChangeRadioButton = GlobalScope.launch(Dispatchers.Main) {
-                        delay(DEBOUNCE_TIME_SCHEDULE_RADIO_BUTTON)
-                        if (isChecked) {
-                            onSelectedWidgetListener?.invoke()
+                    if (delayChangeRadioButton?.isCompleted != false) {
+                        delayChangeRadioButton = GlobalScope.launch(Dispatchers.Main) {
+                            if (isChecked) {
+                                onSelectedWidgetListener?.invoke()
+                            }
+                            delay(DEBOUNCE_TIME_SCHEDULE_RADIO_BUTTON)
                         }
                     }
                 }
