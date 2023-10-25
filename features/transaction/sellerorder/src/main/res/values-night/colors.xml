@@ -3,4 +3,6 @@
     <color name="_dms_secondary_button_icon_color">#FFFFFF</color>
     <color name="_dms_secondary_button_stroke_color">#DBDEE2</color>
     <color name="_dms_som_detail_product_bundling_product_divider">#DBDEE2</color>
+
+    <color name="_dms_som_operational_less_than_24_hour_color">#D4263F</color>
 </resources>
