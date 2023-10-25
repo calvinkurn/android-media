@@ -81,6 +81,7 @@ import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PreviousDetai
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ResumeStories
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
+import com.tokopedia.stories.view.viewmodel.state.StoryReportStatusInfo
 import com.tokopedia.stories.view.viewmodel.state.TimerStatusInfo
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -167,6 +168,10 @@ class StoriesDetailFragment @Inject constructor(
     private val videoPlayer: StoriesExoPlayer
         get() = _videoPlayer!!
 
+    private var _dialog: DialogUnify? = null
+    private val dialog: DialogUnify
+        get() = _dialog!!
+
     private var currentPlayingVideoUrl: String = ""
 
     override fun getScreenName(): String {
@@ -235,8 +240,7 @@ class StoriesDetailFragment @Inject constructor(
             setData(item)
         }.show(childFragmentManager, ContentSubmitReportBottomSheet.TAG)
 
-        viewModel.submitAction(StoriesUiAction.OpenBottomSheet(BottomSheetType.SubmitReport))
-        viewModel.selectReportReason(item)
+        viewModel.submitAction(StoriesUiAction.SelectReportReason(item))
     }
 
     override fun onFooterClicked() {
@@ -267,13 +271,13 @@ class StoriesDetailFragment @Inject constructor(
     private fun setupObserver() {
         setupUiStateObserver()
         setupUiEventObserver()
-        setupReportObserver()
     }
 
     private fun setupUiStateObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.storiesState.withCache().collectLatest { (prevState, currState) ->
                 renderStoriesGroupHeader(prevState?.storiesMainData, currState.storiesMainData)
+                handleReportState(prevState?.reportState, currState.reportState)
 
                 if (prevState?.storiesMainData != null && prevState.storiesMainData != StoriesUiModel()) {
                     val prev = prevState.storiesMainData.groupItems
@@ -303,7 +307,7 @@ class StoriesDetailFragment @Inject constructor(
                     }
 
                     is StoriesUiEvent.ErrorDetailPage -> {
-                        setErrorType(if (event.throwable.isNetworkError) StoriesErrorView.Type.NoInternet else StoriesErrorView.Type.FailedLoad) { event.onClick()}
+                        setErrorType(if (event.throwable.isNetworkError) StoriesErrorView.Type.NoInternet else StoriesErrorView.Type.FailedLoad) { event.onClick() }
                     }
 
                     StoriesUiEvent.OpenKebab -> {
@@ -372,19 +376,20 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun setupReportObserver() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.isReported.collectLatest { isReported ->
-                if (isReported == null) return@collectLatest
+    private fun handleReportState(prevState: StoryReportStatusInfo?, state: StoryReportStatusInfo) {
+        if (prevState?.state == state.state) return
+        if (state.state != StoryReportStatusInfo.ReportState.Submitted) return
+        if (state.report.submitStatus == null) return
 
-                when (isReported) {
-                    is Success -> requireView().showToaster(message = getString(storiesR.string.story_reported_successfully_message))
-                    is Fail -> requireView().showToaster(
-                        message = ErrorHandler.getErrorMessage(context, isReported.throwable),
-                        type = Toaster.TYPE_ERROR,
-                    )
-                }
-            }
+        when (state.report.submitStatus) {
+            is Success -> requireView().showToaster(message = getString(storiesR.string.story_reported_successfully_message))
+            is Fail -> requireView().showToaster(
+                message = ErrorHandler.getErrorMessage(
+                    context,
+                    state.report.submitStatus.throwable
+                ),
+                type = Toaster.TYPE_ERROR,
+            )
         }
     }
 
@@ -722,14 +727,19 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun setErrorType(errorType: StoriesErrorView.Type, isTimerAvailable: Boolean = true, onClick: () -> Unit = {}) = with(binding.vStoriesError) {
+    private fun setErrorType(
+        errorType: StoriesErrorView.Type,
+        isTimerAvailable: Boolean = true,
+        onClick: () -> Unit = {}
+    ) = with(binding.vStoriesError) {
         show()
         type = errorType
         setAction { onClick() }
         setCloseAction { activity?.finish() }
-        translationZ = if (errorType == StoriesErrorView.Type.NoContent || errorType == StoriesErrorView.Type.EmptyCategory) 0f else 1f
+        translationZ =
+            if (errorType == StoriesErrorView.Type.NoContent || errorType == StoriesErrorView.Type.EmptyCategory) 0f else 1f
 
-        if(errorType != StoriesErrorView.Type.EmptyCategory && isTimerAvailable) return@with
+        if (errorType != StoriesErrorView.Type.EmptyCategory && isTimerAvailable) return@with
         renderTimer(null, TimerStatusInfo.Empty)
     }
 
@@ -738,6 +748,9 @@ class StoriesDetailFragment @Inject constructor(
     override fun onDestroyView() {
         _videoPlayer?.destroy()
         _videoPlayer = null
+
+        _dialog?.dismiss()
+        _dialog = null
 
         _binding = null
         super.onDestroyView()
@@ -912,7 +925,7 @@ class StoriesDetailFragment @Inject constructor(
             updateList(viewModel.userReportReasonList)
         }.show(childFragmentManager, ContentReportBottomSheet.TAG)
 
-        viewModel.submitAction(StoriesUiAction.OpenBottomSheet(BottomSheetType.Report))
+        viewModel.submitAction(StoriesUiAction.OpenReport)
     }
 
     private fun showDialog(
@@ -924,8 +937,12 @@ class StoriesDetailFragment @Inject constructor(
         secondaryAction: () -> Unit = {}
     ) {
         activity?.let {
-            val dialog =
-                DialogUnify(context = it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            if (_dialog == null) {
+                _dialog =
+                    DialogUnify(context = it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            }
+            if (dialog.isShowing) return
+
             dialog.apply {
                 setTitle(title)
                 setDescription(description)

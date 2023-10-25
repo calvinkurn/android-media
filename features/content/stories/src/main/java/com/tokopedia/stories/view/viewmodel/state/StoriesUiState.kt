@@ -1,15 +1,18 @@
 package com.tokopedia.stories.view.viewmodel.state
 
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.view.model.StoriesCampaignUiModel
 import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesUiModel
+import com.tokopedia.usecase.coroutines.Result
 
 data class StoriesUiState(
     val storiesMainData: StoriesUiModel,
     val productSheet: ProductBottomSheetUiState,
     val timerStatus: TimerStatusInfo,
+    val reportState: StoryReportStatusInfo
 ) {
     companion object {
         val Empty
@@ -17,6 +20,7 @@ data class StoriesUiState(
                 storiesMainData = StoriesUiModel(),
                 productSheet = ProductBottomSheetUiState.Empty,
                 timerStatus = TimerStatusInfo.Empty,
+                reportState = StoryReportStatusInfo.Empty
             )
     }
 }
@@ -81,5 +85,36 @@ data class TimerStatusInfo(
                 StoriesDetailItem.StoriesDetailItemUiEvent.RESUME,
                 StoryTimer.Empty
             )
+    }
+}
+
+data class StoryReportStatusInfo(
+    val state: ReportState,
+    val report: StoryReport
+) {
+
+    data class StoryReport(
+        val reasonList: List<PlayUserReportReasoningUiModel.Reasoning>,
+        val selectedReason: PlayUserReportReasoningUiModel.Reasoning?,
+        val submitStatus: Result<Unit>?
+    ) {
+        companion object {
+            val Empty = StoryReport(
+                reasonList = emptyList(),
+                selectedReason = null,
+                submitStatus = null
+            )
+        }
+    }
+
+    enum class ReportState {
+        None, OnSelectReason, OnSubmit, Submitted
+    }
+
+    companion object {
+        val Empty = StoryReportStatusInfo(
+            state = ReportState.None,
+            report = StoryReport.Empty
+        )
     }
 }

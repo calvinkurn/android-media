@@ -3,7 +3,11 @@ package com.tokopedia.stories.data.repository
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.report_content.model.UserReportOptions
 import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.content.common.usecase.GetUserReportListUseCase
+import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.stories.data.mapper.StoriesMapperImpl
 import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
@@ -37,6 +41,8 @@ class StoriesRepositoryImpl @Inject constructor(
     private val mapper: StoriesMapperImpl,
     private val seenStorage: StoriesSeenStorage,
     private val storiesPrefUtil: StoriesPreferenceUtil,
+    private val getReportUseCase: GetUserReportListUseCase,
+    private val postReportUseCase: PostUserReportUseCase,
 ) : StoriesRepository {
 
     override suspend fun getStoriesInitialData(data: StoriesRequestModel): StoriesUiModel =
@@ -60,7 +66,7 @@ class StoriesRepositoryImpl @Inject constructor(
             return@withContext trackActivityRequest.data.isSuccess
         }
 
-    override suspend fun deleteStory(storyId: String) : Boolean = withContext(dispatchers.io) {
+    override suspend fun deleteStory(storyId: String): Boolean = withContext(dispatchers.io) {
         val param = UpdateStoryUseCase.Param(storyId, StoryActionType.Delete)
         val response = updateStoryUseCase(param)
         response.storyId.storyId == storyId
@@ -128,4 +134,44 @@ class StoriesRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getReportReasonList(): List<PlayUserReportReasoningUiModel.Reasoning> =
+        withContext(dispatchers.io) {
+            val response = getReportUseCase.executeOnBackground()
+            response.data.map { reasoning ->
+                PlayUserReportReasoningUiModel.Reasoning(
+                    reasoningId = reasoning.id,
+                    title = reasoning.value,
+                    detail = reasoning.detail,
+                    submissionData = if (reasoning.additionalField.isNotEmpty()) reasoning.additionalField.first() else UserReportOptions.OptionAdditionalField()
+                )
+            }
+        }
+
+    override suspend fun submitReport(
+        channelId: Long,
+        mediaUrl: String,
+        reasonId: Int,
+        timestamp: Long,
+        reportDesc: String,
+        partnerId: Long,
+        partnerType: PostUserReportUseCase.PartnerType,
+        reporterId: Long
+    ): Boolean =
+        withContext(dispatchers.io) {
+            val request = postReportUseCase.createParam(
+                channelId = channelId,
+                mediaUrl = mediaUrl,
+                reasonId = reasonId,
+                timestamp = timestamp,
+                reportDesc = reportDesc,
+                partnerId = partnerId,
+                partnerType = partnerType,
+                reporterId = reporterId
+            )
+
+            postReportUseCase.setRequestParams(request.parameters)
+            val response = postReportUseCase.executeOnBackground()
+
+            response.submissionReport.status.equals("success", true)
+        }
 }

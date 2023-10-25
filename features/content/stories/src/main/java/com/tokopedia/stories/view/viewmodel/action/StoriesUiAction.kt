@@ -1,5 +1,6 @@
 package com.tokopedia.stories.view.viewmodel.action
 
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
@@ -15,10 +16,9 @@ sealed interface StoriesUiAction {
         val action: StoriesProductAction,
         val product: ContentTaggedProductUiModel
     ) : StoriesUiAction
-
     data class UpdateStoryDuration(val duration: Int) : StoriesUiAction
-
     data class OpenBottomSheet(val type: BottomSheetType) : StoriesUiAction
+    data class SelectReportReason(val reason: PlayUserReportReasoningUiModel.Reasoning): StoriesUiAction
 
     object VideoBuffering : StoriesUiAction
     object PageIsSelected : StoriesUiAction
@@ -34,6 +34,8 @@ sealed interface StoriesUiAction {
     object DeleteStory : StoriesUiAction
     object ContentIsLoaded : StoriesUiAction
     object SetInitialData : StoriesUiAction
+    object OpenReport: StoriesUiAction
+    object ResetReportState: StoriesUiAction
 }
 
 enum class StoriesProductAction {

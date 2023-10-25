@@ -6,9 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
-import com.tokopedia.content.common.report_content.model.UserReportOptions
 import com.tokopedia.content.common.types.ResultState
-import com.tokopedia.content.common.usecase.GetUserReportListUseCase
 import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -39,6 +37,7 @@ import com.tokopedia.stories.view.viewmodel.state.BottomSheetStatusDefault
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
 import com.tokopedia.stories.view.viewmodel.state.ProductBottomSheetUiState
 import com.tokopedia.stories.view.viewmodel.state.StoriesUiState
+import com.tokopedia.stories.view.viewmodel.state.StoryReportStatusInfo
 import com.tokopedia.stories.view.viewmodel.state.TimerStatusInfo
 import com.tokopedia.stories.view.viewmodel.state.isAnyShown
 import com.tokopedia.usecase.coroutines.Fail
@@ -52,19 +51,14 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class StoriesViewModel @AssistedInject constructor(
     @Assisted private val args: StoriesArgsModel,
     private val repository: StoriesRepository,
     val userSession: UserSessionInterface,
-    private val getReportUseCase: GetUserReportListUseCase,
-    private val postReportUseCase: PostUserReportUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -76,6 +70,7 @@ class StoriesViewModel @AssistedInject constructor(
     private val _storiesMainDataState = MutableStateFlow(StoriesUiModel())
     private val _bottomSheetStatusState = MutableStateFlow(BottomSheetStatusDefault)
     private val _productsState = MutableStateFlow(ProductBottomSheetUiState.Empty)
+    private val _reportState = MutableStateFlow(StoryReportStatusInfo.Empty)
 
     private val _storiesEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
     val storiesEvent: Flow<StoriesUiEvent>
@@ -158,16 +153,18 @@ class StoriesViewModel @AssistedInject constructor(
         get() = combine(
             _storiesMainDataState,
             _productsState,
-            timerState,
-        ) { storiesMainData, product, timerState ->
+            _timerState,
+            _reportState
+        ) { storiesMainData, product, timerState, reportState ->
             StoriesUiState(
                 storiesMainData = storiesMainData,
                 productSheet = product,
                 timerStatus = timerState,
+                reportState = reportState
             )
         }
 
-    private val timerState: Flow<TimerStatusInfo>
+    private val _timerState: Flow<TimerStatusInfo>
         get() = combine(
             _bottomSheetStatusState,
             _storiesMainDataState,
@@ -197,15 +194,6 @@ class StoriesViewModel @AssistedInject constructor(
     val userReportReasonList: Result<List<PlayUserReportReasoningUiModel>>
         get() = _userReportReasonList.value ?: Success(emptyList())
 
-    private val _selectedReportReason =
-        MutableStateFlow<PlayUserReportReasoningUiModel.Reasoning?>(null)
-    val selectedReportReason: StateFlow<PlayUserReportReasoningUiModel.Reasoning?>
-        get() = _selectedReportReason.asStateFlow()
-
-    private val _isReported = MutableStateFlow<Result<Unit>?>(null)
-    val isReported: StateFlow<Result<Unit>?>
-        get() = _isReported.asStateFlow()
-
     fun submitAction(action: StoriesUiAction) {
         when (action) {
             is StoriesUiAction.SetMainData -> handleMainData(action.selectedGroup)
@@ -221,6 +209,7 @@ class StoriesViewModel @AssistedInject constructor(
             is StoriesUiAction.ShowVariantSheet -> handleVariantSheet(action.product)
             is StoriesUiAction.UpdateStoryDuration -> handleUpdateDuration(action.duration)
             is StoriesUiAction.OpenBottomSheet -> handleOpenBottomSheet(action.type)
+            is StoriesUiAction.SelectReportReason -> handleSelectReportReason(action.reason)
             StoriesUiAction.SetInitialData -> handleSetInitialData()
             StoriesUiAction.NextDetail -> handleNext()
             StoriesUiAction.PreviousDetail -> handlePrevious()
@@ -235,7 +224,8 @@ class StoriesViewModel @AssistedInject constructor(
             StoriesUiAction.ContentIsLoaded -> handleContentIsLoaded()
             StoriesUiAction.PageIsSelected -> handlePageIsSelected()
             StoriesUiAction.VideoBuffering -> handleVideoBuffering()
-            else -> {}
+            StoriesUiAction.OpenReport -> handleOpenReport()
+            StoriesUiAction.ResetReportState -> handleReportState(StoryReportStatusInfo.ReportState.None) {}
         }
     }
 
@@ -243,48 +233,45 @@ class StoriesViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             if (userReportReasonList is Success && (userReportReasonList as Success).data.isNotEmpty()) return@launchCatchError
 
-            val response = withContext(dispatchers.io) {
-                getReportUseCase.executeOnBackground()
-            }
-            val mapped = response.data.map { reasoning ->
-                PlayUserReportReasoningUiModel.Reasoning(
-                    reasoningId = reasoning.id,
-                    title = reasoning.value,
-                    detail = reasoning.detail,
-                    submissionData = if (reasoning.additionalField.isNotEmpty()) reasoning.additionalField.first() else UserReportOptions.OptionAdditionalField()
-                )
-            }
-            _userReportReasonList.value = Success(mapped)
+            val reasonList = repository.getReportReasonList()
+            _userReportReasonList.value = Success(reasonList)
         }) {
             _userReportReasonList.value = Fail(it)
         }
     }
 
-    fun selectReportReason(item: PlayUserReportReasoningUiModel.Reasoning) {
-        _selectedReportReason.value = item
-    }
-
     fun submitReport(description: String, timestamp: Long) {
         viewModelScope.launchCatchError(block = {
-            val response = withContext(dispatchers.io) {
-                val request = postReportUseCase.createParam(
-                    channelId = storyId.toLongOrZero(),
-                    mediaUrl = mDetail.content.data,
-                    reasonId = selectedReportReason.value?.reasoningId.orZero(),
-                    timestamp = timestamp,
-                    reportDesc = description,
-                    partnerId = mDetail.author.id.toLongOrZero(),
-                    partnerType = PostUserReportUseCase.PartnerType.getTypeFromStory(mDetail.author.type.value),
-                    reporterId = userSession.userId.toLongOrZero()
-                )
+            val submitReportResult = repository.submitReport(
+                channelId = storyId.toLongOrZero(),
+                mediaUrl = mDetail.content.data,
+                reasonId = _reportState.value.report.selectedReason?.reasoningId.orZero(),
+                timestamp = timestamp,
+                reportDesc = description,
+                partnerId = mDetail.author.id.toLongOrZero(),
+                partnerType = PostUserReportUseCase.PartnerType.getTypeValue(mDetail.author.type.value),
+                reporterId = userSession.userId.toLongOrZero()
+            )
 
-                postReportUseCase.setRequestParams(request.parameters)
-                postReportUseCase.executeOnBackground()
+            _reportState.update { statusInfo ->
+                statusInfo.copy(
+                    state = StoryReportStatusInfo.ReportState.Submitted,
+                    report = statusInfo.report.copy(
+                        submitStatus = if (submitReportResult) Success(Unit) else Fail(
+                            MessageErrorException()
+                        )
+                    )
+                )
             }
-            val isSuccess = response.submissionReport.status.equals("success", true)
-            _isReported.update { if (isSuccess) Success(Unit) else Fail(MessageErrorException()) }
         }) {
-            _isReported.value = Fail(it)
+            _reportState.update { statusInfo ->
+                statusInfo.copy(
+                    state = StoryReportStatusInfo.ReportState.Submitted,
+                    report = statusInfo.report.copy(
+                        submitStatus = Fail(it)
+                    )
+                )
+            }
         }
     }
 
@@ -379,6 +366,37 @@ class StoriesViewModel @AssistedInject constructor(
         viewModelScope.launch {
             repository.setHasSeenAllStories(args.authorId, args.authorType)
         }
+    }
+
+    private fun handleOpenReport() {
+        handleReportState(StoryReportStatusInfo.ReportState.OnSelectReason) {
+            handleOpenBottomSheet(BottomSheetType.Report)
+        }
+    }
+
+    private fun handleReportState(
+        newState: StoryReportStatusInfo.ReportState,
+        nextAction: () -> Unit
+    ) {
+        _reportState.update { statusInfo ->
+            statusInfo.copy(
+                state = newState
+            )
+        }
+        nextAction()
+    }
+
+    private fun handleSelectReportReason(item: PlayUserReportReasoningUiModel.Reasoning) {
+        _reportState.update { statusInfo ->
+            statusInfo.copy(
+                state = StoryReportStatusInfo.ReportState.OnSubmit,
+                report = statusInfo.report.copy(
+                    selectedReason = item
+                )
+            )
+        }
+
+        handleOpenBottomSheet(BottomSheetType.SubmitReport)
     }
 
     private suspend fun setInitialData() {
