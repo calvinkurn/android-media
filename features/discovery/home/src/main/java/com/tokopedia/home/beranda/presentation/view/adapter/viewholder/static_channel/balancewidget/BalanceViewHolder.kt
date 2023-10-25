@@ -50,6 +50,8 @@ class BalanceViewHolder(
     private val successContainerLayoutParams by lazy { binding?.homeContainerBalance?.homeContainerBalance?.layoutParams }
     private val titleLayoutParams by lazy { binding?.homeContainerBalance?.homeTvTitle?.layoutParams as? ConstraintLayout.LayoutParams }
     private val subtitleLayoutParams by lazy { binding?.homeContainerBalance?.homeTvSubtitle?.layoutParams as? ConstraintLayout.LayoutParams }
+    private val imageLayoutParams by lazy { binding?.homeContainerBalance?.homeIvLogoBalance?.layoutParams }
+    private val loaderImageLayoutParams by lazy { binding?.shimmerItemBalanceWidget?.loaderBalanceImage?.layoutParams }
     private val isAtf3 by lazy { HomeRollenceController.isUsingAtf3Variant() }
 
     override fun bind(
@@ -85,11 +87,13 @@ class BalanceViewHolder(
         } else {
             setDynamicWidth()
         }
-        setupPadding()
+        configureBalanceStyle()
         binding?.containerBalance?.layoutParams = containerLayoutParams
         binding?.homeContainerBalance?.homeContainerBalance?.layoutParams = successContainerLayoutParams
         binding?.homeContainerBalance?.homeTvTitle?.layoutParams = titleLayoutParams
         binding?.homeContainerBalance?.homeTvSubtitle?.layoutParams = subtitleLayoutParams
+        binding?.homeContainerBalance?.homeIvLogoBalance?.layoutParams = imageLayoutParams
+        binding?.shimmerItemBalanceWidget?.loaderBalanceImage?.layoutParams = loaderImageLayoutParams
     }
 
     private fun setFillWidth() {
@@ -107,15 +111,48 @@ class BalanceViewHolder(
         subtitleLayoutParams?.matchConstraintMaxWidth = textMaxWidth
     }
 
-    private fun setupPadding() {
-        val leftPadding = itemView.context.resources.getDimensionPixelSize(homeR.dimen.balance_inner_left_padding)
-        val rightPadding = if(isAtf3) {
-            itemView.context.resources.getDimensionPixelSize(homeR.dimen.balance_atf2_inner_right_padding)
+    private fun configureBalanceStyle() {
+        if(isAtf3) {
+            setupAtf3Balance()
         } else {
-            itemView.context.resources.getDimensionPixelSize(homeR.dimen.balance_atf3_inner_right_padding)
+            setupAtf2Balance()
         }
-        binding?.shimmerItemBalanceWidget?.homeContainerBalanceShimmer?.setPadding(leftPadding, Int.ZERO, rightPadding, Int.ZERO)
-        binding?.homeContainerBalance?.homeContainerBalance?.setPadding(leftPadding, Int.ZERO, rightPadding, Int.ZERO)
+    }
+
+    private fun setupAtf2Balance() {
+        // container padding
+        val leftPadding = itemView.context.resources.getDimensionPixelSize(homeR.dimen.balance_inner_left_padding)
+        val rightPadding = itemView.context.resources.getDimensionPixelSize(homeR.dimen.balance_atf2_inner_right_padding)
+        val verticalPadding = itemView.context.resources.getDimensionPixelSize(homeR.dimen.balance_vertical_padding)
+        binding?.shimmerItemBalanceWidget?.homeContainerBalanceShimmer?.setPadding(leftPadding, verticalPadding, rightPadding, verticalPadding)
+        binding?.homeContainerBalance?.homeContainerBalance?.setPadding(leftPadding, verticalPadding, rightPadding, verticalPadding)
+
+        // image size
+        val imageSize = itemView.context.resources.getDimensionPixelSize(homeR.dimen.balance_atf2_image_size)
+        imageLayoutParams?.width = imageSize
+        imageLayoutParams?.height = imageSize
+
+        // title font type
+        val fontType = Typography.DISPLAY_2
+        binding?.homeContainerBalance?.homeTvTitle?.setType(fontType)
+    }
+
+    private fun setupAtf3Balance() {
+        // container padding
+        val leftPadding = itemView.context.resources.getDimensionPixelSize(homeR.dimen.balance_inner_left_padding)
+        val rightPadding = itemView.context.resources.getDimensionPixelSize(homeR.dimen.balance_atf3_inner_right_padding)
+        val verticalPadding = itemView.context.resources.getDimensionPixelSize(homeR.dimen.balance_vertical_padding)
+        binding?.shimmerItemBalanceWidget?.homeContainerBalanceShimmer?.setPadding(leftPadding, verticalPadding, rightPadding, verticalPadding)
+        binding?.homeContainerBalance?.homeContainerBalance?.setPadding(leftPadding, verticalPadding, rightPadding, verticalPadding)
+
+        // image size
+        val imageSize = itemView.context.resources.getDimensionPixelSize(homeR.dimen.balance_atf3_image_size)
+        imageLayoutParams?.width = imageSize
+        imageLayoutParams?.height = imageSize
+
+        // title font type
+        val fontType = Typography.DISPLAY_3
+        binding?.homeContainerBalance?.homeTvTitle?.setType(fontType)
     }
 
     private fun renderDrawerItem(element: BalanceDrawerItemModel?) {
@@ -181,26 +218,22 @@ class BalanceViewHolder(
 
     private fun renderItemSuccess(element: BalanceDrawerItemModel) {
         showImageSuccess(element)
-
         renderTitle(element)
-
-        // load subtitle
-        val subtitle = element.balanceSubTitleTextAttribute?.text ?: ""
-        binding?.homeContainerBalance?.homeTvSubtitle?.text = subtitle
-
+        renderSubtitle(element)
         renderTextColor(element)
-        handleClickSuccess(element, subtitle)
+        handleClickSuccess(element)
         binding?.shimmerItemBalanceWidget?.root?.gone()
         binding?.homeContainerBalance?.homeContainerBalance?.show()
     }
 
     private fun renderTitle(element: BalanceDrawerItemModel) {
         val balanceText = element.balanceTitleTextAttribute?.text ?: ""
-        binding?.homeContainerBalance?.homeTvTitle?.apply {
-            val type = if(isAtf3) Typography.DISPLAY_3 else Typography.DISPLAY_2
-            setType(type)
-            text = balanceText
-        }
+        binding?.homeContainerBalance?.homeTvTitle?.text = balanceText
+    }
+
+    private fun renderSubtitle(element: BalanceDrawerItemModel) {
+        val subtitle = element.balanceSubTitleTextAttribute?.text ?: ""
+        binding?.homeContainerBalance?.homeTvSubtitle?.text = subtitle
     }
 
     private fun renderTextColor(element: BalanceDrawerItemModel) {
@@ -302,7 +335,8 @@ class BalanceViewHolder(
         }
     }
 
-    private fun handleClickSuccess(element: BalanceDrawerItemModel, reserveBalance: String) {
+    private fun handleClickSuccess(element: BalanceDrawerItemModel) {
+        val reserveBalance = element.balanceSubTitleTextAttribute?.text ?: ""
         binding?.cardContainerBalance?.handleItemClickType(
             element = element,
             rewardsAction = {
