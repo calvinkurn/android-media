@@ -28,6 +28,7 @@ import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.play_common.model.ui.ArchivedUiModel
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -48,6 +49,7 @@ class PlayParentViewModel @AssistedInject constructor(
     private val queryParamStorage: PlayQueryParamStorage,
     private val preference: PlayPreference,
     private val analytic: PlayAnalytic,
+    private val remoteConfig: RemoteConfig,
     pageMonitoring: PlayPltPerformanceCallback
 ) : ViewModel() {
 
@@ -99,6 +101,11 @@ class PlayParentViewModel @AssistedInject constructor(
         channelId = startingChannelId ?: error("Channel ID must be provided"),
         source = source
     )
+
+    private val isCoachMarkAllowed: Boolean
+        get() {
+            return remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_ONBOARDING, true)
+        }
 
     init {
         queryParamStorage.pageSourceName = pageSourceName.ifEmpty { source.type }
@@ -214,7 +221,7 @@ class PlayParentViewModel @AssistedInject constructor(
     }
 
     fun setupOnBoarding(isFirstPage: Boolean) {
-        if (!isFirstPage) return
+        if (!isFirstPage || !isCoachMarkAllowed) return
 
         val hasBeenShown = preference.isOnBoardingHasBeenShown()
 
@@ -250,5 +257,7 @@ class PlayParentViewModel @AssistedInject constructor(
         private const val KEY_SHOULD_TRACK = "should_track"
 
         private const val ON_BOARDING_DELAY = 1000L
+
+        private const val FIREBASE_REMOTE_CONFIG_KEY_ONBOARDING = "android_main_app_enable_play_onboarding"
     }
 }
