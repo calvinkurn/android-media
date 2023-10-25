@@ -41,7 +41,6 @@ class RecommendationWidgetView : LinearLayout {
     private val recommendationWidgetViewModel by recommendationWidgetViewModel()
     private val typeFactory = RecommendationTypeFactoryImpl()
     private var job: MutableList<Job>? = mutableListOf()
-    private var id: String? = null
 
     private fun init() { }
 
@@ -63,8 +62,6 @@ class RecommendationWidgetView : LinearLayout {
         parentRootView: View?,
         callback: Callback?,
     ) {
-        if(model.id == this.id) return
-        id = model.id
         job?.forEach { it.cancel() }
         job?.clear()
 
