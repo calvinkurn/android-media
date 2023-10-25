@@ -178,8 +178,8 @@ class MvcMultiShopView @JvmOverloads constructor(
         if (productParentTwo?.isVisible == true) {
             val secondProduct = products?.get(1)
 
-            renderProductImage(ivCouponOne, secondProduct?.imageURL)
-            renderBenefitLabel(tvDealsCouponOne, secondProduct?.benefitLabel)
+            renderProductImage(ivCouponTwo, secondProduct?.imageURL)
+            renderBenefitLabel(tvDealsCouponTwo, secondProduct?.benefitLabel)
         }
     }
 
