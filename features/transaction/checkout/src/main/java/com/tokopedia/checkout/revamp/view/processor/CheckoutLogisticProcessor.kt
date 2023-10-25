@@ -242,7 +242,7 @@ class CheckoutLogisticProcessor @Inject constructor(
             preOrderDuration = shipmentDetailData.shipmentCartData!!.preOrderDuration,
             isFulfillment = shipmentDetailData.shipmentCartData!!.isFulfillment,
             boMetadata = shipmentDetailData.shipmentCartData!!.boMetadata,
-            groupingState = shipmentDetailData.shipmentCartData!!.groupingState ?: 0
+            groupingState = shipmentDetailData.shipmentCartData!!.groupingState
         )
         if (isTradeInDropOff && recipientAddressModel.locationDataModel != null) {
             shippingParam.destinationDistrictId = recipientAddressModel.locationDataModel.district
