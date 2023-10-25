@@ -72,9 +72,11 @@ class StoriesCreationActivity : BaseActivity() {
     }
 
     private fun inject() {
-        DaggerStoriesCreationComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .build()
+        DaggerStoriesCreationComponent.factory()
+            .create(
+                baseAppComponent = (application as BaseMainApplication).baseAppComponent,
+                context = this,
+            )
             .inject(this)
     }
 
