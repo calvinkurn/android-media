@@ -25,9 +25,10 @@ public class FeedTabMapper implements Func1<GraphqlResponse, List<Recommendation
                     recommendationTab.getId(),
                     recommendationTab.getName(),
                     recommendationTab.getImageUrl(),
-                    (position+1),
-                    recommendationTab.getSourceType()
-                    ));
+                    (position + 1),
+                    recommendationTab.getSourceType(),
+                    recommendationTab.isJumperTab()
+            ));
         }
         return recommendationTabDataModelList;
     }

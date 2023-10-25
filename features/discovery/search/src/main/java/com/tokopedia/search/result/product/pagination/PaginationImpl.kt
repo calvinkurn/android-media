@@ -9,7 +9,7 @@ import javax.inject.Inject
 class PaginationImpl @Inject constructor(): Pagination {
     override var startFrom: Int = 0
 
-    override var totalData: Int = 0
+    override var totalData: Long = 0L
 
     override fun clearData() {
         startFrom = 0
