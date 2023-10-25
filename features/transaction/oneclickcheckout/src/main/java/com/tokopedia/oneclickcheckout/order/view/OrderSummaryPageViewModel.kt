@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view
 
+import android.util.Log
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -1081,65 +1082,74 @@ class OrderSummaryPageViewModel @Inject constructor(
     }
 
     fun finalUpdate(onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
-        if (orderTotal.value.buttonState == OccButtonState.NORMAL && orderPromo.value.state == OccButtonState.NORMAL && !orderShipment.value.isLoading) {
-            if (uploadPrescriptionUiModel.value.showImageUpload && uploadPrescriptionUiModel.value.uploadedImageCount < 1 && uploadPrescriptionUiModel.value.frontEndValidation) {
-                uploadPrescriptionUiModel.value =
-                    uploadPrescriptionUiModel.value.copy(isError = true)
-                return
-            }
-            globalEvent.value = OccGlobalEvent.Loading
-            val shop = orderShop.value
-            if (orderProfile.value.isValidProfile && orderShipment.value.getRealShipperProductId() > 0) {
-                val param = cartProcessor.generateUpdateCartParam(orderCart, orderProfile.value, orderShipment.value, orderPayment.value)
-                if (param != null) {
-                    if (validateSelectedTerm()) {
-                        finalUpdateJob?.cancel()
-                        finalUpdateJob = launch(executorDispatchers.immediate) {
-                            // if there is at least one addon should follow logic to save all addons
-                            val isAddOnProductAvailable = orderProducts.value.any { it.addOnsProductData.data.isNotEmpty() }
-                            if (isAddOnProductAvailable) {
-                                // before save all addons of all products making sure all jobs canceled
-                                saveAddOnProductStateJobs.values.forEach { it.cancel() }
-                                saveAddOnProductStateJobs.clear()
-
-                                // save all addons of all products
-                                val saveAddOnState = cartProcessor.saveAllAddOnsAllProductsState(
-                                    products = orderProducts.value
-                                )
-
-                                // if save all addons of all products is not successful, execution will not continue and error toaster will be shown
-                                if (!saveAddOnState.isSuccess) {
-                                    globalEvent.value = OccGlobalEvent.Error(
-                                        errorMessage = saveAddOnState.message,
-                                        throwable = saveAddOnState.throwable,
-                                        ctaText = ERROR_WHEN_SAVE_ADD_ONS_CTA_TEXT
-                                    )
-                                    return@launch
-                                }
-                            }
-
-                            // if save all addons of all products is successful then do final validation
-                            val (isSuccess, errorGlobalEvent) = cartProcessor.finalUpdateCart(param)
-                            if (isSuccess) {
-                                finalValidateUse(
-                                    products = orderCart.products,
-                                    shop = shop,
-                                    profile = orderProfile.value,
-                                    onSuccessCheckout = onSuccessCheckout,
-                                    skipCheckIneligiblePromo = skipCheckIneligiblePromo
-                                )
-                                return@launch
-                            }
-
-                            // if final update to cart is failed then show global error
-                            globalEvent.value = errorGlobalEvent
-                        }
-                    }
-                    return
-                }
-            }
-            globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
-        }
+        val paymentRequest = paymentProcessor.get().generatePaymentRequest(
+            orderCart,
+            orderShipment.value,
+            orderPayment.value,
+            orderTotal.value.orderCost,
+            orderProfile.value,
+            orderPromo.value
+        )
+        Log.i("qwertyuiop", "$paymentRequest")
+//        if (orderTotal.value.buttonState == OccButtonState.NORMAL && orderPromo.value.state == OccButtonState.NORMAL && !orderShipment.value.isLoading) {
+//            if (uploadPrescriptionUiModel.value.showImageUpload && uploadPrescriptionUiModel.value.uploadedImageCount < 1 && uploadPrescriptionUiModel.value.frontEndValidation) {
+//                uploadPrescriptionUiModel.value =
+//                    uploadPrescriptionUiModel.value.copy(isError = true)
+//                return
+//            }
+//            globalEvent.value = OccGlobalEvent.Loading
+//            val shop = orderShop.value
+//            if (orderProfile.value.isValidProfile && orderShipment.value.getRealShipperProductId() > 0) {
+//                val param = cartProcessor.generateUpdateCartParam(orderCart, orderProfile.value, orderShipment.value, orderPayment.value)
+//                if (param != null) {
+//                    if (validateSelectedTerm()) {
+//                        finalUpdateJob?.cancel()
+//                        finalUpdateJob = launch(executorDispatchers.immediate) {
+//                            // if there is at least one addon should follow logic to save all addons
+//                            val isAddOnProductAvailable = orderProducts.value.any { it.addOnsProductData.data.isNotEmpty() }
+//                            if (isAddOnProductAvailable) {
+//                                // before save all addons of all products making sure all jobs canceled
+//                                saveAddOnProductStateJobs.values.forEach { it.cancel() }
+//                                saveAddOnProductStateJobs.clear()
+//
+//                                // save all addons of all products
+//                                val saveAddOnState = cartProcessor.saveAllAddOnsAllProductsState(
+//                                    products = orderProducts.value
+//                                )
+//
+//                                // if save all addons of all products is not successful, execution will not continue and error toaster will be shown
+//                                if (!saveAddOnState.isSuccess) {
+//                                    globalEvent.value = OccGlobalEvent.Error(
+//                                        errorMessage = saveAddOnState.message,
+//                                        throwable = saveAddOnState.throwable,
+//                                        ctaText = ERROR_WHEN_SAVE_ADD_ONS_CTA_TEXT
+//                                    )
+//                                    return@launch
+//                                }
+//                            }
+//
+//                            // if save all addons of all products is successful then do final validation
+//                            val (isSuccess, errorGlobalEvent) = cartProcessor.finalUpdateCart(param)
+//                            if (isSuccess) {
+//                                finalValidateUse(
+//                                    products = orderCart.products,
+//                                    shop = shop,
+//                                    profile = orderProfile.value,
+//                                    onSuccessCheckout = onSuccessCheckout,
+//                                    skipCheckIneligiblePromo = skipCheckIneligiblePromo
+//                                )
+//                                return@launch
+//                            }
+//
+//                            // if final update to cart is failed then show global error
+//                            globalEvent.value = errorGlobalEvent
+//                        }
+//                    }
+//                    return
+//                }
+//            }
+//            globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+//        }
     }
 
     private fun finalValidateUse(products: List<OrderProduct>, shop: OrderShop, profile: OrderProfile, onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {

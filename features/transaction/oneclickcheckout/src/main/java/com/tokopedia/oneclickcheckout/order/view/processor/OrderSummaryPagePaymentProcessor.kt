@@ -1,13 +1,34 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
+import android.annotation.SuppressLint
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.oneclickcheckout.common.PAYMENT_CC_TYPE_TENOR_FULL
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CartDetailsItem
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOption
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
+import com.tokopedia.oneclickcheckout.order.data.payment.AdditionalInfoData
+import com.tokopedia.oneclickcheckout.order.data.payment.BenefitSummaryInfoData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartAddressData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartDetail
+import com.tokopedia.oneclickcheckout.order.data.payment.CartDetailData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartGroupData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartProductCategoryData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartProductData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartShippingInfoData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartShopOrderData
+import com.tokopedia.oneclickcheckout.order.data.payment.DetailsItemData
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentData
 import com.tokopedia.oneclickcheckout.order.data.payment.PaymentFeeRequest
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
+import com.tokopedia.oneclickcheckout.order.data.payment.PromoDetail
+import com.tokopedia.oneclickcheckout.order.data.payment.SummariesItemData
+import com.tokopedia.oneclickcheckout.order.data.payment.UsageSummariesData
+import com.tokopedia.oneclickcheckout.order.data.payment.VoucherOrderItemData
 import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
 import com.tokopedia.oneclickcheckout.order.domain.DynamicPaymentFeeUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GoCicilInstallmentOptionUseCase
@@ -19,6 +40,8 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -90,7 +113,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
 
     private fun mapAfpbToInstallmentTerm(tenor: TenorListData): OrderPaymentInstallmentTerm {
         var intTerm = 0
-        if (tenor.type != PAYMENT_CC_TYPE_TENOR_FULL) intTerm = tenor.type.toInt()
+        if (tenor.type != PAYMENT_CC_TYPE_TENOR_FULL) intTerm = tenor.type.toIntOrZero()
         return OrderPaymentInstallmentTerm(
             term = intTerm,
             isEnable = !tenor.disable,
@@ -225,6 +248,115 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
         }
         OccIdlingResource.decrement()
         return result
+    }
+
+    @SuppressLint("PII Data Exposure")
+    fun generatePaymentRequest(
+        orderCart: OrderCart,
+        orderShipment: OrderShipment,
+        orderPayment: OrderPayment,
+        orderCost: OrderCost,
+        orderProfile: OrderProfile,
+        orderPromo: OrderPromo
+    ): PaymentRequest {
+        return PaymentRequest(
+            payment = PaymentData(
+                gatewayCode = orderPayment.gatewayCode,
+                profileCode = orderPayment.creditCard.additionalData.profileCode,
+                paymentAmount = orderCost.totalPriceWithoutPaymentFees
+            ),
+            CartDetail(
+                cart = CartData(
+                    data = listOf(
+                        CartDetailData(
+                            address = CartAddressData(
+                                id = orderProfile.address.addressId,
+                                address = orderProfile.address.addressStreet,
+                                state = orderProfile.address.provinceName,
+                                city = orderProfile.address.cityName,
+                                country = orderProfile.address.country,
+                                postalCode = orderProfile.address.postalCode
+                            ),
+                            listOf(
+                                CartGroupData(
+                                    cartStringGroup = orderCart.cartString,
+                                    shippingInfo = CartShippingInfoData(
+                                        spId = orderShipment.getRealShipperProductId().toString(),
+                                        originalShippingPrice = orderShipment.getRealOriginalPrice().toDouble(),
+                                        serviceName = orderShipment.serviceName ?: "",
+                                        shipperName = orderShipment.shipperName ?: "",
+                                        eta = orderShipment.serviceEta ?: "",
+                                        insurancePrice = orderShipment.getRealInsurancePrice().toDouble()
+                                    ),
+                                    shopOrders = listOf(
+                                        CartShopOrderData(
+                                            shopId = orderCart.shop.shopId,
+                                            warehouseId = orderCart.shop.warehouseId.toLongOrZero(),
+                                            shopTier = orderCart.shop.shopTier.toLong(),
+                                            products = orderCart.products.map { orderProduct ->
+                                                CartProductData(
+                                                    productId = orderProduct.productId,
+                                                    name = orderProduct.productName,
+                                                    price = orderProduct.finalPrice,
+                                                    quantity = orderProduct.orderQuantity.toLong(),
+                                                    totalPrice = orderProduct.finalPrice,
+                                                    bundleGroupId = 0,
+                                                    addonItems = emptyList(),
+                                                    category = CartProductCategoryData(
+                                                        id = orderProduct.categoryId,
+                                                        name = orderProduct.category,
+                                                        identifier = orderProduct.categoryIdentifier
+                                                    )
+                                                )
+                                            },
+                                            bundle = emptyList(),
+                                            addonItems = emptyList(),
+                                            cartStringOrder = orderCart.cartString
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            ),
+            PromoDetail(
+                benefitSummaryInfo = BenefitSummaryInfoData(
+                    orderPromo.lastApply.benefitSummaryInfo.summaries.map { summary ->
+                        SummariesItemData(
+                            type = summary.type,
+                            details = summary.details.map { detail ->
+                                DetailsItemData(
+                                    amount = detail.amount,
+                                    type = detail.type
+                                )
+                            }
+                        )
+                    }
+                ),
+                voucherOrders = orderPromo.lastApply.voucherOrders.map { voucher ->
+                    VoucherOrderItemData(
+                        code = voucher.code,
+                        uniqueId = voucher.uniqueId,
+                        shippingId = voucher.shippingId.toLong(),
+                        spId = voucher.spId.toLong(),
+                        type = voucher.type,
+                        success = false,
+                        cartStringGroup = voucher.cartStringGroup
+                    )
+                },
+                additionalInfo = AdditionalInfoData(
+                    usageSummaries = orderPromo.lastApply.additionalInfo.usageSummaries.map { usage ->
+                        UsageSummariesData(
+                            type = usage.type,
+                            amountString = usage.amountStr,
+                            amount = usage.amount
+                        )
+                    }
+                )
+            ),
+            ""
+        )
     }
 }
 
