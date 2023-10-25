@@ -2797,13 +2797,12 @@ class CartRevampFragment :
                     val message = if (data.isNoItemSelected) {
                         getString(R.string.promo_desc_no_selected_item)
                     } else {
-                        data.entryPointInfo?.messages?.firstOrNull()
+                        data.entryPointInfo.messages.firstOrNull()
                             .ifNull { getString(purchase_platformcommonR.string.promo_funnel_label) }
                     }
-                    val isClickable = data.entryPointInfo?.isClickable ?: false
                     if (message.isNotBlank()) {
                         val iconUrl = when {
-                            data.entryPointInfo != null -> {
+                            data.entryPointInfo.iconUrl.isNotBlank() -> {
                                 data.entryPointInfo.iconUrl
                             }
 
@@ -2821,7 +2820,7 @@ class CartRevampFragment :
                             onClickListener = {
                                 if (data.isNoItemSelected) {
                                     showToastMessageGreen(getString(R.string.promo_choose_item_cart))
-                                } else if (isClickable) {
+                                } else if (data.entryPointInfo.isClickable) {
                                     checkGoToPromo()
                                     promoEntryPointAnalytics.sendClickPromoEntryPointEvent(
                                         userId = userSession.userId,
