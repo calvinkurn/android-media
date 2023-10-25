@@ -80,7 +80,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_REVIEW_EXPERT.type -> it.mapToExpertReview(isDarkMode)
                 WidgetTypes.CATALOG_FEATURE_SUPPORT.type -> it.mapToSupportFeature(remoteModel)
                 WidgetTypes.CATALOG_ACCORDION.type -> it.mapToAccordion(isDarkMode)
-                WidgetTypes.CATALOG_COMPARISON.type -> it.mapToComparison()
+                WidgetTypes.CATALOG_COMPARISON.type -> it.mapToComparison(isDarkMode)
                 else -> {
                     BlankUiModel()
                 }
@@ -407,7 +407,9 @@ class CatalogDetailUiMapper @Inject constructor(
         )
     }
 
-    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToComparison(): BaseCatalogUiModel {
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToComparison(
+        isDarkMode: Boolean
+    ): BaseCatalogUiModel {
         var isFirstData = true
         val displayedComparisons = data?.comparison.orEmpty()
             .filter { it.id != INVALID_CATALOG_ID }
@@ -415,36 +417,41 @@ class CatalogDetailUiMapper @Inject constructor(
         return if (displayedComparisons.isEmpty()) {
             BlankUiModel()
         } else {
-            ComparisonUiModel(content = displayedComparisons.map {
-                val comparisonSpecs = mutableListOf<ComparisonUiModel.ComparisonSpec>()
-                it.fullSpec.forEach { spec ->
-                    comparisonSpecs.add(ComparisonUiModel.ComparisonSpec(
-                        isSpecCategoryTitle = true,
-                        specCategoryTitle = if (isFirstData) spec.name else ""
-                    ))
-                    spec.row.forEach { rowItem ->
-                        val insertedItem = ComparisonUiModel.ComparisonSpec(
-                            isSpecCategoryTitle = false,
-                            specTitle = if (isFirstData) rowItem.key else "",
-                            specValue = rowItem.value.ifEmpty { "-" },
+            ComparisonUiModel(
+                content = displayedComparisons.map {
+                    val comparisonSpecs = mutableListOf<ComparisonUiModel.ComparisonSpec>()
+                    it.fullSpec.forEach { spec ->
+                        comparisonSpecs.add(
+                            ComparisonUiModel.ComparisonSpec(
+                                isSpecCategoryTitle = true,
+                                specCategoryTitle = if (isFirstData) spec.name else ""
+                            )
                         )
-                        comparisonSpecs.add(insertedItem)
+                        spec.row.forEach { rowItem ->
+                            val insertedItem = ComparisonUiModel.ComparisonSpec(
+                                isSpecCategoryTitle = false,
+                                specTitle = if (isFirstData) rowItem.key else "",
+                                specValue = rowItem.value.ifEmpty { "-" },
+                                specTextTitleColor = getTextColor(isDarkMode, lightModeColor = unifycomponentsR.color.Unify_NN600, darkModeColor = catalogcommonR.color.dms_static_Unify_NN600_light)
+                            )
+                            comparisonSpecs.add(insertedItem)
+                        }
                     }
-                }
-                isFirstData = false
-                ComparisonUiModel.ComparisonContent(
-                    id =  it.id,
-                    imageUrl = it.catalogImage.firstOrNull{ image -> image.isPrimary }?.imageUrl.orEmpty(),
-                    productTitle = it.name,
-                    price = it.marketPrice.firstOrNull()?.let { marketPrice ->
-                        marketPrice.minFmt + " - " + marketPrice.maxFmt
-                    }.orEmpty() ,
-                    comparisonSpecs = comparisonSpecs,
-                    topComparisonSpecs = comparisonSpecs
-                        .filter { comparisonSpec -> !comparisonSpec.isSpecCategoryTitle }
-                        .take(TOP_COMPARISON_SPEC_COUNT)
-                )
-            }.toMutableList())
+                    isFirstData = false
+                    ComparisonUiModel.ComparisonContent(
+                        id = it.id,
+                        imageUrl = it.catalogImage.firstOrNull { image -> image.isPrimary }?.imageUrl.orEmpty(),
+                        productTitle = it.name,
+                        price = it.marketPrice.firstOrNull()?.let { marketPrice ->
+                            marketPrice.minFmt + " - " + marketPrice.maxFmt
+                        }.orEmpty(),
+                        comparisonSpecs = comparisonSpecs,
+                        topComparisonSpecs = comparisonSpecs
+                            .filter { comparisonSpec -> !comparisonSpec.isSpecCategoryTitle }
+                            .take(TOP_COMPARISON_SPEC_COUNT)
+                    )
+                }.toMutableList()
+            )
         }
     }
 
@@ -453,6 +460,15 @@ class CatalogDetailUiMapper @Inject constructor(
             unifycomponentsR.color.Unify_Static_White
         } else {
             unifycomponentsR.color.Unify_Static_Black
+        }
+        return MethodChecker.getColor(context, textColorRes)
+    }
+
+    private fun getTextColor(darkMode: Boolean, darkModeColor: Int, lightModeColor: Int): Int {
+        val textColorRes = if (darkMode) {
+            darkModeColor
+        } else {
+            lightModeColor
         }
         return MethodChecker.getColor(context, textColorRes)
     }

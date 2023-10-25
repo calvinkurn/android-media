@@ -52,6 +52,7 @@ class ComparisonSpecItemViewHolder(
                 tfSpecValue.isVisible = !item.isSpecCategoryTitle
                 divSpecValue.isVisible = !item.isSpecCategoryTitle
 
+                tfSpecTitle.setTextColor(item.specTextTitleColor ?: return@apply)
                 tfSpecValue.setTextColor(item.specTextColor ?: return@apply)
             }
         }

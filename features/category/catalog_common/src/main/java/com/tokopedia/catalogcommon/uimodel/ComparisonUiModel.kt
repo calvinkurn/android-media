@@ -11,7 +11,11 @@ data class ComparisonUiModel(
     override var darkMode: Boolean = false,
     val content: MutableList<ComparisonContent> = mutableListOf()
 ) : BaseCatalogUiModel(
-    idWidget, widgetType, widgetName, widgetBackgroundColor, widgetTextColor,
+    idWidget,
+    widgetType,
+    widgetName,
+    widgetBackgroundColor,
+    widgetTextColor,
     darkMode
 ) {
 
@@ -32,7 +36,9 @@ data class ComparisonUiModel(
         val specTitle: String = "",
         val specValue: String = "",
         var specHeight: Int = -1,
-        var specTextColor: Int? = null
+        var specTextColor: Int? = null,
+        var specTextTitleColor: Int? = null
+
     )
 
     override fun type(typeFactory: CatalogAdapterFactory): Int {
