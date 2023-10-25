@@ -68,7 +68,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.ShimmeringChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.ShimmeringIconViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CarouselPlayWidgetCallback
@@ -424,7 +423,7 @@ class HomeAdapterFactory(
 
     override fun type(bannerRevampDataModel: BannerRevampDataModel): Int {
         return if(bannerRevampDataModel.isBleeding) BannerRevampViewHolder.LAYOUT_BLEEDING
-        else BannerRevampViewHolder.LAYOUT_PADDING
+        else BannerRevampViewHolder.LAYOUT
     }
 
     override fun type(todoWidgetListDataModel: TodoWidgetListDataModel): Int {
@@ -611,7 +610,7 @@ class HomeAdapterFactory(
                         view,
                         todoWidgetComponentListener
                     )
-            BannerRevampViewHolder.LAYOUT_PADDING, BannerRevampViewHolder.LAYOUT_BLEEDING ->
+            BannerRevampViewHolder.LAYOUT, BannerRevampViewHolder.LAYOUT_BLEEDING ->
                 viewHolder =
                     BannerRevampViewHolder(view, bannerComponentListener, cardInteraction = true)
             DealsWidgetViewHolder.LAYOUT ->

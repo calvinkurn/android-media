@@ -1,7 +1,6 @@
 package com.tokopedia.home_component.viewholders
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -73,9 +72,7 @@ class BannerRevampViewHolder(
             isBleeding = element.isBleeding
             renderBanner()
             setContainerPadding(element)
-        } catch (e: Exception) {
-            Log.e("atf3", "bind: ", e)
-        }
+        } catch (_: Exception) { }
     }
 
     private fun renderBanner() {
@@ -245,7 +242,7 @@ class BannerRevampViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT_PADDING = home_componentR.layout.home_component_banner_padding
+        val LAYOUT = home_componentR.layout.home_component_banner_padding
         @LayoutRes
         val LAYOUT_BLEEDING = home_componentR.layout.home_component_banner_bleeding
         private const val DIVIDE_HALF_BANNER_SIZE_INT_SIZE = 2
