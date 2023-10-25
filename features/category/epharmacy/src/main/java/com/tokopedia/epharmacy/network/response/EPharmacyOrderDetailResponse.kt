@@ -13,7 +13,7 @@ data class EPharmacyOrderDetailResponse(
     data class OrderButtonData(
         val cta: List<GetConsultationOrderDetail.EPharmacyOrderButtonModel?>?,
         val triDots: List<GetConsultationOrderDetail.EPharmacyOrderButtonModel?>?
-    ){
+    ) {
         companion object {
             private const val STRING_BUTTON_TYPE_ALTERNATE = "alternate"
             private const val STRING_BUTTON_TYPE_MAIN = "main"
@@ -52,11 +52,11 @@ data class EPharmacyOrderDetailResponse(
         val ePharmacyOrderData: EPharmacyOrderData?,
         @SerializedName("tri_dots")
         @Expose
-        val triDots: List<EPharmacyOrderButtonModel?>?,
+        val triDots: List<EPharmacyOrderButtonModel?>?
     ) {
 
         val orderButtonData: OrderButtonData
-            get() = OrderButtonData(cta,triDots)
+            get() = OrderButtonData(cta, triDots)
 
         data class EPharmacyOrderButtonModel(
             @SerializedName("action_type")
@@ -104,6 +104,12 @@ data class EPharmacyOrderDetailResponse(
             @SerializedName("payment_amount_str")
             @Expose
             val paymentAmountStr: String?,
+            @SerializedName("item_price")
+            @Expose
+            val itemPrice: Double?,
+            @SerializedName("item_price_str")
+            @Expose
+            val itemPriceStr: String?,
             @SerializedName("payment_method")
             @Expose
             val paymentMethod: String?,

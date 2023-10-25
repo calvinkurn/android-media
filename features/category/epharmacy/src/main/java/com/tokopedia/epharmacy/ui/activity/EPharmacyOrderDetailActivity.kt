@@ -11,6 +11,9 @@ import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyOrderDetailFragment
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_VERTICAL_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_WAITING_INVOICE
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -19,6 +22,8 @@ import com.tokopedia.epharmacy.R as epharmacyR
 class EPharmacyOrderDetailActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent> {
 
     private var tConsultationId = String.EMPTY
+    private var waitingInvoice = false
+    private var verticalId = String.EMPTY
 
     private val ePharmacyComponent: EPharmacyComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
 
@@ -38,6 +43,11 @@ class EPharmacyOrderDetailActivity : BaseSimpleActivity(), HasComponent<EPharmac
     private fun extractParameters() {
         val pathSegments = Uri.parse(intent.data?.path.orEmpty()).pathSegments
         tConsultationId = if (pathSegments.size > 1) pathSegments[1].orEmpty() else String.EMPTY
+
+        intent?.data?.let {
+            waitingInvoice = it.getBooleanQueryParameter("waiting_invoice", false).orFalse()
+            verticalId = it.getQueryParameter("vertical_id").orEmpty()
+        }
     }
 
     override fun getLayoutRes() = R.layout.epharmacy_activity
@@ -49,6 +59,8 @@ class EPharmacyOrderDetailActivity : BaseSimpleActivity(), HasComponent<EPharmac
         return EPharmacyOrderDetailFragment.newInstance(
             Bundle().apply {
                 putString(EPHARMACY_TOKO_CONSULTATION_ID, tConsultationId)
+                putBoolean(EPHARMACY_WAITING_INVOICE, waitingInvoice)
+                putString(EPHARMACY_VERTICAL_ID, verticalId)
             }
         )
     }

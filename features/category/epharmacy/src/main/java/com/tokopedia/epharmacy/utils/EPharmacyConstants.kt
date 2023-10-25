@@ -24,6 +24,8 @@ const val EPHARMACY_NOTE = "epharmacy_note"
 const val EPHARMACY_IS_ONLY_CONSULT = "epharmacy_is_only_consult"
 const val EPHARMACY_IS_OUTSIDE_WORKING_HOURS = "epharmacy_is_outside_working_hours"
 const val EPHARMACY_ORDER_ID = "epharmacy_order_id"
+const val EPHARMACY_VERTICAL_ID = "epharmacy_vertical_id"
+const val EPHARMACY_WAITING_INVOICE = "epharmacy_waiting_invoice"
 
 const val STATIC_INFO_COMPONENT = "static info component"
 const val PRESCRIPTION_COMPONENT = "prescription component"
@@ -37,7 +39,6 @@ const val SHIMMER_COMPONENT_2 = "shimmer 2"
 const val ORDER_HEADER_COMPONENT = "order header component"
 const val ORDER_INFO_COMPONENT = "order info component"
 const val ORDER_PAYMENT_COMPONENT = "order payment component"
-
 
 const val EPHARMACY_SCREEN_NAME = "epharmacy page"
 

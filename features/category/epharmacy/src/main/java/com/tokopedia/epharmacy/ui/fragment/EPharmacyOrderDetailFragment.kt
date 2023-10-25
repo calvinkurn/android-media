@@ -23,9 +23,12 @@ import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.response.EPharmacyOrderDetailResponse
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.EPHARMACY_ORDER_DETAIL_PAGE
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_VERTICAL_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_WAITING_INVOICE
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
 import com.tokopedia.epharmacy.viewmodel.EPharmacyOrderDetailViewModel
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -48,9 +51,11 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
     private var ePharmacySecondaryButton: CardUnify? = null
     private var ePharmacyGlobalError: GlobalError? = null
 
-    //TODO get from backend
+    // TODO get from backend
     private var orderUUId = "9e7c7910-6cc9-4397-901e-55a21c7d7e98"
     private var tConsultationId = String.EMPTY
+    private var waitingInvoice = false
+    private var verticalId = String.EMPTY
 
     private var binding by autoClearedNullable<EpharmacyOrderDetailFragmentBinding>()
 
@@ -101,6 +106,8 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
 
     private fun initArguments() {
         tConsultationId = arguments?.getString(EPHARMACY_TOKO_CONSULTATION_ID, String.EMPTY).orEmpty()
+        waitingInvoice = arguments?.getBoolean(EPHARMACY_WAITING_INVOICE).orFalse()
+        verticalId = arguments?.getString(EPHARMACY_VERTICAL_ID, String.EMPTY).orEmpty()
     }
 
     private fun setUpObservers() {
@@ -121,7 +128,11 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
 
     private fun getData() {
         addShimmer()
-        ePharmacyOrderDetailViewModel?.getEPharmacyOrderDetail(tConsultationId, orderUUId)
+        ePharmacyOrderDetailViewModel?.getEPharmacyOrderDetail(
+            tConsultationId,
+            if (waitingInvoice) verticalId else orderUUId,
+            waitingInvoice
+        )
     }
 
     private fun addShimmer() {
@@ -190,11 +201,14 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
     }
 
     private fun onSecondaryButtonClick(secondaryButtonData: List<EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?>) {
-        showSecondaryActionButtonBottomSheet(secondaryButtonData, object : EPharmacySecondaryActionButtonBottomSheet.ActionButtonClickListener {
-            override fun onActionButtonClicked(isFromPrimaryButton: Boolean, button: EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?) {
-                RouteManager.route(context, button?.appUrl)
+        showSecondaryActionButtonBottomSheet(
+            secondaryButtonData,
+            object : EPharmacySecondaryActionButtonBottomSheet.ActionButtonClickListener {
+                override fun onActionButtonClicked(isFromPrimaryButton: Boolean, button: EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?) {
+                    RouteManager.route(context, button?.appUrl)
+                }
             }
-        })
+        )
     }
 
     private fun showSecondaryActionButtonBottomSheet(secondaryActionButtons: List<EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?>, actionButtonClickListener: EPharmacySecondaryActionButtonBottomSheet.ActionButtonClickListener?) {
@@ -255,7 +269,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
         }
     }
 
-    fun sendViewChatDokterOrderDetailPageEvent (eventLabel: String) {
+    fun sendViewChatDokterOrderDetailPageEvent(eventLabel: String) {
         Tracker.Builder()
             .setEvent("viewGroceriesIris")
             .setEventAction("view chat dokter order detail page")
@@ -268,7 +282,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
             .send()
     }
 
-    fun sendClickMainCtaEvent (eventLabel: String) {
+    fun sendClickMainCtaEvent(eventLabel: String) {
         Tracker.Builder()
             .setEvent("clickGroceries")
             .setEventAction("click main CTA")
@@ -281,7 +295,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
             .send()
     }
 
-    fun sendViewPrescriptionImageWebviewEvent (eventLabel: String) {
+    fun sendViewPrescriptionImageWebviewEvent(eventLabel: String) {
         Tracker.Builder()
             .setEvent("viewGroceriesIris")
             .setEventAction("view prescription image webview")
@@ -294,7 +308,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
             .send()
     }
 
-    fun sendClickPusatBantuanEvent (eventLabel: String) {
+    fun sendClickPusatBantuanEvent(eventLabel: String) {
         Tracker.Builder()
             .setEvent("clickGroceries")
             .setEventAction("click pusat bantuan")
@@ -307,7 +321,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
             .send()
     }
 
-    fun sendClickBantuanOnLainnyaEvent (eventLabel: String) {
+    fun sendClickBantuanOnLainnyaEvent(eventLabel: String) {
         Tracker.Builder()
             .setEvent("clickGroceries")
             .setEventAction("click bantuan on lainnya")
@@ -320,7 +334,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
             .send()
     }
 
-    fun sendClickBatalkanEvent (eventLabel: String) {
+    fun sendClickBatalkanEvent(eventLabel: String) {
         Tracker.Builder()
             .setEvent("clickGroceries")
             .setEventAction("click batalkan")
