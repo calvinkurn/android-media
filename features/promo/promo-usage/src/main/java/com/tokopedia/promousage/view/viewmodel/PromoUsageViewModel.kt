@@ -2156,18 +2156,6 @@ class PromoUsageViewModel @Inject constructor(
         }
         return false
     }
-
-    fun getCurrentItems(): List<DelegateAdapterItem> {
-        return when (val currentState = _promoPageUiState.value) {
-            is PromoPageUiState.Success -> {
-                currentState.items
-            }
-
-            else -> {
-                emptyList()
-            }
-        }
-    }
 }
 
 internal fun LiveData<PromoPageUiState>.ifSuccess(invoke: (PromoPageUiState.Success) -> Unit) {
