@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.shop.info.di.scope.ShopInfoScope
+import com.tokopedia.shop.info.view.viewmodel.ShopInfoReimagineViewModel
 import com.tokopedia.shop.info.view.viewmodel.ShopInfoViewModel
 import dagger.Binds
 import dagger.Module
@@ -21,4 +22,9 @@ abstract class ShopInfoViewModelModule {
     @IntoMap
     @ViewModelKey(ShopInfoViewModel::class)
     internal abstract fun shopInfoViewModel(viewModel: ShopInfoViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ShopInfoReimagineViewModel::class)
+    internal abstract fun shopInfoReimagineViewModel(viewModel: ShopInfoReimagineViewModel): ViewModel
 }

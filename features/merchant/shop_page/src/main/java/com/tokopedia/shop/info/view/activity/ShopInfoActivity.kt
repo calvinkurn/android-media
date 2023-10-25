@@ -3,7 +3,9 @@ package com.tokopedia.shop.info.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.fragment.app.Fragment
+import com.google.accompanist.pager.HorizontalPager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -12,6 +14,7 @@ import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
+import com.tokopedia.shop.info.view.fragment.ShopInfoReimagineFragment
 
 /**
  * Navigate to ShopInfoActivity
@@ -45,7 +48,7 @@ class ShopInfoActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
 
     override fun getComponent(): ShopComponent = ShopComponentHelper().getComponent(application, this)
 
-    override fun getNewFragment(): Fragment? = createShopInfoFragment()
+    override fun getNewFragment(): Fragment? = createShopInfoReimagineFragment()
 
     override fun onBackPressed() {
         super.onBackPressed()
@@ -57,6 +60,11 @@ class ShopInfoActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
         val shopData = intent.getParcelableExtra<ShopInfoData?>(EXTRA_SHOP_INFO)
 
         return ShopInfoFragment.createInstance(shopId, shopData)
+    }
+    
+    private fun createShopInfoReimagineFragment(): ShopInfoReimagineFragment {
+        val shopId = intent.getStringExtra(SHOP_ID) ?: intent.data?.lastPathSegment.orEmpty()
+        return ShopInfoReimagineFragment.newInstance(shopId)
     }
 
     override fun getParentViewResourceID(): Int {
