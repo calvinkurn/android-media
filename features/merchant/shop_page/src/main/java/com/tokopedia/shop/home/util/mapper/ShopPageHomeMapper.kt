@@ -1150,6 +1150,8 @@ object ShopPageHomeMapper {
                 name = it.showcaseName
                 viewType = widgetName
                 isShowEtalaseName = widgetHeader.isShowEtalaseName == IS_SHOW_ETALASE_NAME
+                isFulfilment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups)
+                warehouseId = it.warehouseID
             }
         }
         return if (widgetName == SHOWCASE_SLIDER_TWO_ROWS) {
