@@ -80,18 +80,24 @@ class PostUserReportUseCase @Inject constructor(
         Unknown;
 
         companion object {
+            private const val VALUE_PLAY_BUYER = "buyer"
+
+            private const val VALUE_STORY_SHOP = 2
+            private const val VALUE_STORY_USER = 3
+
+
             fun getTypeFromFeed(value: Int): PartnerType {
                 return if (value == 3) User else Shop
             }
 
             fun getTypeFromPlay(value: String): PartnerType {
-                return if (value == "buyer") User else Shop
+                return if (value == VALUE_PLAY_BUYER) User else Shop
             }
 
             fun getTypeFromStory(value: Int): PartnerType =
                 when (value) {
-                    2 -> Shop
-                    3 -> User
+                    VALUE_STORY_SHOP -> Shop
+                    VALUE_STORY_USER -> User
                     else -> Unknown
                 }
         }
