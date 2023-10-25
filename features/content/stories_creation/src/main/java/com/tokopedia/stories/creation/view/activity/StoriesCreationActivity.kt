@@ -176,8 +176,8 @@ class StoriesCreationActivity : BaseActivity() {
                     when (event) {
                         is StoriesCreationUiEvent.ErrorPreparePage -> {
                             StoriesCreationErrorBottomSheet
-                                .getFragment(supportFragmentManager, classLoader)
-                                .show(supportFragmentManager, event.throwable)
+                                .getFragment(supportFragmentManager, classLoader, event.throwable)
+                                .show(supportFragmentManager)
                         }
                         is StoriesCreationUiEvent.ShowTooManyStoriesReminder -> {
                             StoriesCreationInfoBottomSheet
