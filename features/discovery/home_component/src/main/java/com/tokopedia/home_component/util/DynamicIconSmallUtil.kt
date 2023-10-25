@@ -2,6 +2,7 @@ package com.tokopedia.home_component.util
 
 import android.content.Context
 import android.widget.LinearLayout
+import com.tokopedia.home_component.R
 import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home_component.model.DynamicIconComponent
 import com.tokopedia.unifyprinciples.Typography
@@ -15,12 +16,14 @@ class DynamicIconSmallUtil: DynamicIconUtil() {
         private const val DEFAULT_LAYOUT_SPEC = 0
     }
 
+
+
     override fun findMaxHeight(
         icons: List<DynamicIconComponent.DynamicIcon>,
         context: Context
     ): Int {
         var maxHeight = 0
-        val titleWidth = context.resources.getDimensionPixelSize(home_componentR.dimen.home_dynamic_icon_small_title_width)
+        val titleWidth = context.resources.getDimensionPixelSize(R.dimen.home_dynamic_icon_big_title_width)
 
         for (icon in icons) {
             val heightText = measureTitleHeight(
@@ -28,11 +31,12 @@ class DynamicIconSmallUtil: DynamicIconUtil() {
                 titleWidth,
                 context
             )
-            maxHeight += heightText
+            if (heightText > maxHeight) maxHeight = heightText
         }
-        maxHeight += context.resources.getDimensionPixelSize(home_componentR.dimen.home_dynamic_icon_small_image_size)
-        maxHeight += context.resources.getDimensionPixelSize(home_componentR.dimen.home_dynamic_icon_small_padding_top)
-        maxHeight += context.resources.getDimensionPixelSize(home_componentR.dimen.home_dynamic_icon_small_margin_top_title)
+        maxHeight += context.resources.getDimensionPixelSize(R.dimen.home_dynamic_icon_big_image_size)
+        maxHeight += context.resources.getDimensionPixelSize(R.dimen.home_dynamic_icon_big_padding_top)
+        maxHeight += context.resources.getDimensionPixelSize(R.dimen.home_dynamic_icon_big_padding_bottom_title)
+        maxHeight += context.resources.getDimensionPixelSize(R.dimen.home_dynamic_icon_big_margin_top_title)
         return maxHeight
     }
 
@@ -46,18 +50,70 @@ class DynamicIconSmallUtil: DynamicIconUtil() {
         val paramsTextView =
             LinearLayout.LayoutParams(textWidth, LinearLayout.LayoutParams.WRAP_CONTENT)
         val typography = Typography(context)
-        typography.setType(Typography.SMALL)
+        typography.setType(Typography.DISPLAY_3)
         typography.setWeight(Typography.REGULAR)
         typography.layoutParams = paramsTextView
         typography.text = text
         typography.maxLines = MAX_LINES_TITLE_HEIGHT
-        typography.measure(DEFAULT_LAYOUT_SPEC, DEFAULT_LAYOUT_SPEC)
+        typography.measure(
+            DEFAULT_LAYOUT_SPEC,
+            DEFAULT_LAYOUT_SPEC
+        )
         val linearLayout = LinearLayout(context)
         linearLayout.layoutParams = params
         linearLayout.addView(typography)
-        linearLayout.measure(DEFAULT_LAYOUT_SPEC, DEFAULT_LAYOUT_SPEC)
+        linearLayout.measure(
+            DEFAULT_LAYOUT_SPEC,
+            DEFAULT_LAYOUT_SPEC
+        )
         typography.post {}.run {
             return typography.measuredHeight
         }
     }
+
+//    override fun findMaxHeight(
+//        icons: List<DynamicIconComponent.DynamicIcon>,
+//        context: Context
+//    ): Int {
+//        var maxHeight = 0
+//        val titleWidth = context.resources.getDimensionPixelSize(home_componentR.dimen.home_dynamic_icon_small_title_width)
+//
+//        for (icon in icons) {
+//            val heightText = measureTitleHeight(
+//                icon.name,
+//                titleWidth,
+//                context
+//            )
+//            if (heightText > maxHeight) maxHeight = heightText
+//        }
+//        maxHeight += context.resources.getDimensionPixelSize(home_componentR.dimen.home_dynamic_icon_small_image_size)
+//        maxHeight += context.resources.getDimensionPixelSize(home_componentR.dimen.home_dynamic_icon_small_padding_top)
+//        maxHeight += context.resources.getDimensionPixelSize(home_componentR.dimen.home_dynamic_icon_small_margin_top_title)
+//        return maxHeight
+//    }
+//
+//    override fun measureTitleHeight(
+//        text: CharSequence?,
+//        textWidth: Int,
+//        context: Context
+//    ): Int {
+//        val params =
+//            LinearLayout.LayoutParams(textWidth, LinearLayout.LayoutParams.WRAP_CONTENT)
+//        val paramsTextView =
+//            LinearLayout.LayoutParams(textWidth, LinearLayout.LayoutParams.WRAP_CONTENT)
+//        val typography = Typography(context)
+//        typography.setType(Typography.SMALL)
+//        typography.setWeight(Typography.REGULAR)
+//        typography.layoutParams = paramsTextView
+//        typography.text = text
+//        typography.maxLines = MAX_LINES_TITLE_HEIGHT
+//        typography.measure(DEFAULT_LAYOUT_SPEC, DEFAULT_LAYOUT_SPEC)
+//        val linearLayout = LinearLayout(context)
+//        linearLayout.layoutParams = params
+//        linearLayout.addView(typography)
+//        linearLayout.measure(DEFAULT_LAYOUT_SPEC, DEFAULT_LAYOUT_SPEC)
+//        typography.post {}.run {
+//            return typography.measuredHeight
+//        }
+//    }
 }

@@ -15,11 +15,17 @@ class DynamicIconAdapter(private val listener: DynamicIconComponentListener) : R
     private var position: Int = 0
     private var isCache: Boolean = false
     private var isScrollable = false
+    private var type: DynamicIconComponentDataModel.Type = DynamicIconComponentDataModel.Type.BIG
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicIconBigItemViewHolder {
+        val layout = if(this.type == DynamicIconComponentDataModel.Type.SMALL) {
+            DynamicIconSmallItemViewHolder.LAYOUT
+        } else {
+            DynamicIconBigItemViewHolder.LAYOUT
+        }
         return DynamicIconBigItemViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                DynamicIconBigItemViewHolder.LAYOUT,
+                layout,
                 parent,
                 false
             ),
@@ -44,6 +50,7 @@ class DynamicIconAdapter(private val listener: DynamicIconComponentListener) : R
     fun submitList(list: DynamicIconComponentDataModel) {
         this.isCache = list.isCache
         this.isScrollable = list.dynamicIconComponent.dynamicIcon.size > list.scrollableItemThreshold
+        this.type = list.type
         iconList.clear()
         iconList.addAll(list.dynamicIconComponent.dynamicIcon)
     }

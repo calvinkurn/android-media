@@ -1,6 +1,7 @@
 package com.tokopedia.home_component.viewholders
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -57,7 +58,11 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
             adapter.updatePosition(absoluteAdapterPosition)
             setRecyclerView(element)
             launch {
-                val maxHeight = element.dynamicIconUtil.findMaxHeight(icons, itemView.context)
+                val maxHeight = if(element.type.isSmallIcons()) {
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                } else {
+                    element.dynamicIconUtil.findMaxHeight(icons, itemView.context)
+                }
                 val layoutParams = iconRecyclerView?.layoutParams as ConstraintLayout.LayoutParams
                 layoutParams.height = maxHeight
                 iconRecyclerView?.layoutParams = layoutParams

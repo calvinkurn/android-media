@@ -19,7 +19,7 @@ data class DynamicIconComponentDataModel(
     val isCache: Boolean,
     val dynamicIconComponent: DynamicIconComponent,
     val currentFetch: Long = Calendar.getInstance().timeInMillis,
-    val numOfRows: Int,
+    val numOfRows: Int = 1,
     val type: Type = Type.BIG,
 ) : HomeComponentVisitable, ImpressHolder(), LoadableComponent by BlocksLoadableComponent(
     { dynamicIconComponent.dynamicIcon.size > 3 },
