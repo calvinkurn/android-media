@@ -8,6 +8,7 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -34,7 +35,6 @@ import com.tokopedia.stories.creation.view.model.StoriesMediaType
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
 import kotlinx.coroutines.launch
-import com.tokopedia.stories.creation.view.model.exception.AccountNotEligibleException
 import javax.inject.Inject
 
 /**

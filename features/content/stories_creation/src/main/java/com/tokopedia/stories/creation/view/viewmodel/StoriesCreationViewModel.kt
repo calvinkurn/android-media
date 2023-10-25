@@ -3,13 +3,14 @@ package com.tokopedia.stories.creation.view.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.creation.common.presentation.utils.ContentCreationRemoteConfigManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepository
 import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
 import com.tokopedia.stories.creation.view.model.StoriesMediaType
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
-import com.tokopedia.stories.creation.view.model.exception.AccountNotEligibleException
+import com.tokopedia.stories.creation.view.model.exception.NotEligibleException
 import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,6 +24,7 @@ import javax.inject.Inject
  */
 class StoriesCreationViewModel @Inject constructor(
     private val repo: StoriesCreationRepository,
+    private val contentCreationRemoteConfig: ContentCreationRemoteConfigManager,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(StoriesCreationUiState.Empty)
@@ -60,14 +62,15 @@ class StoriesCreationViewModel @Inject constructor(
 
     private fun handlePrepare() {
         viewModelScope.launchCatchError(block = {
-            val accountList = repo.getCreationAccountList()
+            if (!contentCreationRemoteConfig.isShowingCreation()) throw NotEligibleException()
 
             /**
              * Stories is only available for shop
              * need FE development to support UGC account
              * */
+            val accountList = repo.getCreationAccountList()
             val selectedAccount = accountList.firstOrNull { it.isShop && it.enable }
-                ?: throw AccountNotEligibleException()
+                ?: throw NotEligibleException()
 
             val config = repo.getStoryPreparationInfo(selectedAccount)
             val storyId = config.storiesId.ifEmpty { repo.createStory(selectedAccount) }
@@ -88,6 +91,7 @@ class StoriesCreationViewModel @Inject constructor(
                 _uiEvent.emit(StoriesCreationUiEvent.OpenMediaPicker)
             }
         }) { throwable ->
+            println("JOE LOG error $throwable")
             _uiEvent.emit(
                 StoriesCreationUiEvent.ErrorPreparePage(throwable)
             )
