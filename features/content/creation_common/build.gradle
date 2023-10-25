@@ -96,6 +96,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.fragmentKtx
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
     api rootProject.ext.dbDependencies.dbRoomRuntime
     implementation rootProject.ext.dbDependencies.dbRoomKtx
     kapt rootProject.ext.dbDependencies.dbRoomCompiler

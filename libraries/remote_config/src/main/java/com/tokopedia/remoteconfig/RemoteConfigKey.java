@@ -279,8 +279,8 @@ public class RemoteConfigKey {
     public static final String HOME_HPB_CACHE_EXPIRY = "android_home_hpb_cache_expiry";
 
     public static final String MAINAPP_DISABLED_STORIES_ENTRY_POINTS = "android_main_app_disabled_stories_entry_points";
-
     public static final String SELLERAPP_DISABLED_STORIES_ENTRY_POINTS = "android_seller_app_disabled_stories_entry_points";
+    public static final String APP_CONTENT_CREATION_STORIES_CONFIG = "android_app_content_creation_stories_config";
 
     public static final String ANDROID_SET_VISIBLE_PRODUCT_COUNTER_OLP = "android_set_visible_product_counter_olp";
 
