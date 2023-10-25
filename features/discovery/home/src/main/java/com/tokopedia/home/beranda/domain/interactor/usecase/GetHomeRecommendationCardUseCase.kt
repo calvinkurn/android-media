@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 const val GET_HOME_RECOMMENDATION_CARD_QUERY = """
     query GetHomeRecommendationCard(${'$'}productPage: Int!, ${'$'}layouts: String!, ${'$'}param: String!, ${'$'}location: String!) {
-        getHomeRecommendationCard(productPage: ${'$'}, layouts: ${'$'}layouts, param: ${'$'}param, location: ${'$'}location) {
+        getHomeRecommendationCard(productPage: ${'$'}productPage, layouts: ${'$'}layouts, param: ${'$'}param, location: ${'$'}location) {
             pageName
             layoutName
             hasNextPage
