@@ -1,5 +1,6 @@
 package com.tokopedia.shop.info.view.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -15,11 +16,16 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Compani
 import com.tokopedia.shop.common.graphql.data.shopinfo.ChatExistingChat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
+import com.tokopedia.shop.info.data.response.ProductRevGetShopRatingAndTopicsResponse
+import com.tokopedia.shop.info.domain.entity.ShopRatingAndReviews
+import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopRatingAndTopicsUseCase
+import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopReviewReadingListUseCase
 import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import java.net.UnknownHostException
@@ -31,7 +37,9 @@ class ShopInfoViewModel @Inject constructor(
     private val getShopInfoUseCase: GQLGetShopInfoUseCase,
     private val getShopReputationUseCase: GetShopReputationUseCase,
     private val getMessageIdChatUseCase: GetMessageIdChatUseCase,
-    private val coroutineDispatcherProvider: CoroutineDispatchers
+    private val coroutineDispatcherProvider: CoroutineDispatchers,
+    private val getShopRating: ProductRevGetShopRatingAndTopicsUseCase,
+    private val getShopReview: ProductRevGetShopReviewReadingListUseCase
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
@@ -42,6 +50,11 @@ class ShopInfoViewModel @Inject constructor(
     val shopInfo = MutableLiveData<Result<ShopInfoData>>()
     val shopBadgeReputation = MutableLiveData<Result<ShopBadge>>()
     val messageIdOnChatExist = MutableLiveData<Result<String>>()
+
+    private val _shopRatingAndReview = MutableLiveData<Result<ShopRatingAndReviews>>()
+    val shopRatingAndReview : LiveData<Result<ShopRatingAndReviews>>
+        get() = _shopRatingAndReview
+    
 
     fun getShopInfo(shopId: String) {
         launchCatchError(block = {
@@ -120,5 +133,35 @@ class ShopInfoViewModel @Inject constructor(
     private suspend fun getMessageId(shopId: String): ChatExistingChat {
         getMessageIdChatUseCase.params = GetMessageIdChatUseCase.createParams(shopId)
         return getMessageIdChatUseCase.executeOnBackground()
+    }
+    
+    fun getShopRating(shopId: String) {
+        launchCatchError(
+            context = coroutineDispatcherProvider.io,
+            block = {
+
+                val shopRatingParam = ProductRevGetShopRatingAndTopicsUseCase.Param(shopId)
+                val shopReviewParam = ProductRevGetShopReviewReadingListUseCase.Param(
+                    shopID = shopId,
+                    limit = 5,
+                    page = 1,
+                    filterBy = "",
+                    sortBy = ""
+                )
+                val shopRatingDeferred = async { getShopRating.execute(shopRatingParam) }
+                val shopReviewDeferred = async { getShopReview.execute(shopReviewParam) }
+                
+                val shopRating = shopRatingDeferred.await()
+                val shopReview = shopReviewDeferred.await()
+                
+                println(shopRating)
+                println(shopReview)
+
+                _shopRatingAndReview.postValue(Success(ShopRatingAndReviews(shopRating, shopReview)))
+            },
+            onError = {error ->
+                _shopRatingAndReview.postValue(Fail(error))
+            }
+        ) 
     }
 }

@@ -45,6 +45,7 @@ import com.tokopedia.shop.databinding.FragmentShopInfoBinding
 import com.tokopedia.shop.extension.transformToVisitable
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
+import com.tokopedia.shop.info.domain.entity.ShopRatingAndReviews
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity.Companion.EXTRA_SHOP_INFO
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapter
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapterTypeFactory
@@ -141,6 +142,8 @@ class ShopInfoFragment :
         initViewModel()
         initObservers()
         initView()
+        
+        shopViewModel?.getShopRating(getShopId().orEmpty())
     }
 
     override fun onDestroyView() {
@@ -205,6 +208,20 @@ class ShopInfoFragment :
         observeShopInfo()
         observeShopBadgeReputation()
         observerMessageIdOnChatExist()
+        observeShopRatingAndReview()
+    }
+
+    private fun observeShopRatingAndReview() {
+        shopViewModel?.shopRatingAndReview?.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> showShopRatingAndReview(result.data)
+                is Fail -> showToasterError(result.throwable)
+            }
+        }
+    }
+
+    private fun showShopRatingAndReview(data: ShopRatingAndReviews) {
+
     }
 
     private fun observeShopBadgeReputation() {
