@@ -296,6 +296,8 @@ class ShipmentMapper @Inject constructor() {
                     )
                     scheduleDelivery = mapScheduleDelivery(it.scheduledDelivery)
                     ratesValidationFlow = it.ratesValidationFlow
+                    shippingComponents = it.shippingComponents
+                    groupingState = it.groupingState
                     listSubtotalAddOn = mapSubtotalAddOn(it.listSubtotalAddOns)
                 }
             )

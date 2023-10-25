@@ -44,6 +44,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerErrorModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
+import com.tokopedia.checkout.revamp.view.uimodel.ShippingComponents
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
@@ -971,10 +972,125 @@ class CheckoutViewModel @Inject constructor(
     }
 
     private suspend fun loadShippingSuspend(order: CheckoutOrderModel, cartPosition: Int) {
-        if (order.ratesValidationFlow) {
-            loadShippingWithSelly(cartPosition, order)
-        } else {
-            loadShippingNormal(cartPosition, order)
+        when (order.shippingComponents) {
+            ShippingComponents.SCHELLY_WITH_RATES -> {
+                loadShippingWithSelly(order = order, cartPosition = cartPosition)
+            }
+            ShippingComponents.SCHELLY -> {
+                loadSelly(cartPosition = cartPosition, order = order)
+            }
+            ShippingComponents.RATES -> {
+                loadShippingNormal(cartPosition = cartPosition, order = order)
+            }
+        }
+    }
+
+    private suspend fun loadSelly(
+        cartPosition: Int,
+        order: CheckoutOrderModel
+    ) {
+        val checkoutItems = listData.value.toMutableList()
+        val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
+        checkoutItems[cartPosition] = checkoutOrderModel.copy(
+            shipment = checkoutOrderModel.shipment.copy(isLoading = true),
+            isStateHasLoadCourierState = true
+        )
+        listData.value = checkoutItems
+
+        val result = logisticProcessor.getScheduleDelivery(
+            logisticProcessor.getRatesParam(
+                order,
+                helper.getOrderProducts(checkoutItems, order.cartStringGroup),
+                listData.value.address()!!.recipientAddressModel,
+                isTradeIn,
+                isTradeInByDropOff,
+                codData,
+                cartDataForRates,
+                "",
+                false,
+                listData.value.promo()!!
+            ),
+            fullfilmentId = order.fulfillmentId.toString(),
+            orderModel = order,
+            isOneClickShipment = isOneClickShipment
+        )
+        val list = listData.value.toMutableList()
+        val orderModel = list[cartPosition] as? CheckoutOrderModel
+        if (orderModel != null) {
+            if (result?.courier != null) {
+                val courierItemData = result.courier
+                orderModel.validationMetadata = order.validationMetadata
+                val shouldValidatePromo =
+                    courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
+                if (shouldValidatePromo) {
+                    val validateUsePromoRequest = generateValidateUsePromoRequest()
+                    for (ordersItem in validateUsePromoRequest.orders) {
+                        if (ordersItem.cartStringGroup == orderModel.cartStringGroup) {
+                            if (!ordersItem.codes.contains(
+                                    courierItemData.selectedShipper.logPromoCode
+                                )
+                            ) {
+                                ordersItem.codes.add(
+                                    courierItemData.selectedShipper.logPromoCode!!
+                                )
+                                ordersItem.boCode =
+                                    courierItemData.selectedShipper.logPromoCode!!
+                            }
+                            ordersItem.shippingId =
+                                courierItemData.selectedShipper.shipperId
+                            ordersItem.spId =
+                                courierItemData.selectedShipper.shipperProductId
+                            ordersItem.freeShippingMetadata =
+                                courierItemData.selectedShipper.freeShippingMetadata
+                            ordersItem.boCampaignId =
+                                courierItemData.selectedShipper.boCampaignId
+                            ordersItem.shippingSubsidy =
+                                courierItemData.selectedShipper.shippingSubsidy
+                            ordersItem.benefitClass =
+                                courierItemData.selectedShipper.benefitClass
+                            ordersItem.shippingPrice =
+                                courierItemData.selectedShipper.shippingRate.toDouble()
+                            ordersItem.etaText =
+                                courierItemData.selectedShipper.etaText!!
+                            ordersItem.validationMetadata =
+                                orderModel.validationMetadata
+                        }
+                    }
+                    removeInvalidBoCodeFromPromoRequest(
+                        orderModel,
+                        list,
+                        validateUsePromoRequest
+                    )
+                    doValidateUseLogisticPromo(
+                        cartPosition,
+                        orderModel.cartStringGroup,
+                        validateUsePromoRequest,
+                        courierItemData.selectedShipper.logPromoCode!!,
+                        true,
+                        courierItemData
+                    )
+                    return
+                }
+            }
+            if (result != null && result.akamaiError.isNotEmpty()) {
+                pageState.value = CheckoutPageState.AkamaiRatesError(result.akamaiError)
+            }
+            val newOrderModel = orderModel.copy(
+                shipment = orderModel.shipment.copy(
+                    isLoading = false,
+                    courierItemData = result?.courier,
+                    shippingCourierUiModels = result?.couriers ?: emptyList(),
+                    insurance = result?.insurance ?: CheckoutOrderInsurance()
+                )
+            )
+            list[cartPosition] = newOrderModel
+            listData.value = list
+            cartProcessor.processSaveShipmentState(
+                newOrderModel,
+                listData.value.address()!!.recipientAddressModel
+            )
+            calculateTotal()
+            sendEEStep3()
         }
     }
 

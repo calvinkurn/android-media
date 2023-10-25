@@ -12,6 +12,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.revamp.view.uimodel.CoachmarkPlusData
+import com.tokopedia.checkout.revamp.view.uimodel.ShippingComponents
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -251,6 +252,9 @@ class CheckoutDataConverter @Inject constructor() {
                 scheduleDate = groupShop.scheduleDelivery.scheduleDate,
                 validationMetadata = groupShop.scheduleDelivery.validationMetadata,
                 ratesValidationFlow = groupShop.ratesValidationFlow,
+                shippingComponents = ShippingComponents.fromInt(groupShop.shippingComponents),
+                isRecommend = groupShop.scheduleDelivery.isRecommend,
+                startDate = groupShop.scheduleDelivery.startDate,
                 addOnDefaultTo = receiverName,
                 isProductFcancelPartial = fobject.isFcancelPartial == 1,
                 products = products,

@@ -94,6 +94,8 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                       description
                       description_badge_url
                   }
+                  #shipping_components
+                  #grouping_state
                   add_ons {
                     status
                     add_on_data {

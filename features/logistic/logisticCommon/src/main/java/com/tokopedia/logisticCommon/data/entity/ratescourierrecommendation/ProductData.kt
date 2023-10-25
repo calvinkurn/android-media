@@ -74,5 +74,9 @@ data class ProductData(
     val features: ProductFeatures = ProductFeatures(),
 
     @SerializedName("eta")
-    val estimatedTimeArrival: EstimatedTimeArrival = EstimatedTimeArrival()
+    val estimatedTimeArrival: EstimatedTimeArrival = EstimatedTimeArrival(),
+
+    // new OFOC
+    @SerializedName("order_message")
+    val orderMessage: String = ""
 ) : Parcelable

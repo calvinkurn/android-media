@@ -156,6 +156,7 @@ internal object RatesParamHelper {
                 shipmentDetailData.shipmentCartData!!.destinationLongitude
         }
         shippingParam.groupType = shipmentDetailData.shipmentCartData!!.groupType
+        shippingParam.groupingState = shipmentDetailData.shipmentCartData!!.groupingState
         return shippingParam
     }
 }
