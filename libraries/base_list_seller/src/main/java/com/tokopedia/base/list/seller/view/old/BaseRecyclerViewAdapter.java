@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.base.list.seller.R;
+import com.tokopedia.media.loader.JvmMediaLoader;
 
 import java.util.List;
 
@@ -131,7 +131,7 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                 bindRetryHolder((ViewHolderRetry) viewHolder);
                 break;
             case TkpdState.RecyclerView.VIEW_EMPTY:
-                ImageHandler.loadImageWithId(((ViewHolderEmpty) viewHolder).emptyImage, com.tokopedia.abstraction.R.drawable.status_no_result);
+                JvmMediaLoader.loadImage(((ViewHolderEmpty) viewHolder).emptyImage, com.tokopedia.abstraction.R.drawable.status_no_result);
                 break;
         }
     }

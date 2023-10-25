@@ -18,6 +18,10 @@ object JvmMediaLoader {
         imageView.loadImage(url)
     }
 
+    @JvmStatic fun loadImage(imageView: ImageView, resource: Int) {
+        imageView.loadImage(resource)
+    }
+
     @JvmStatic fun loadImageFitCenter(imageView: ImageView, url: String) {
         imageView.loadImageFitCenter(url)
     }

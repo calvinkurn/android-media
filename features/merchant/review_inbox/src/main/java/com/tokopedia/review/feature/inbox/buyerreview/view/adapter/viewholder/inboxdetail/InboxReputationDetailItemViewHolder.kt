@@ -20,6 +20,7 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.util.TimeConverter
@@ -102,16 +103,10 @@ class InboxReputationDetailItemViewHolder(
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable) {
                 if (TextUtils.isEmpty(sellerAddReplyEditText.text.toString())) {
-                    ImageHandler.loadImageWithIdWithoutPlaceholder(
-                        sendReplyButton,
-                        R.drawable.ic_send_grey_transparent
-                    )
+                    sendReplyButton.loadImage(R.drawable.ic_send_grey_transparent)
                     sendReplyButton.isEnabled = false
                 } else {
-                    ImageHandler.loadImageWithIdWithoutPlaceholder(
-                        sendReplyButton,
-                        R.drawable.ic_send_green
-                    )
+                    sendReplyButton.loadImage(R.drawable.ic_send_green)
                     sendReplyButton.isEnabled = true
                 }
             }

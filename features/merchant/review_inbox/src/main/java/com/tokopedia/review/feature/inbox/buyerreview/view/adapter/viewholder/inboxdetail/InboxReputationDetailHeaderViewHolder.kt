@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.ReputationAdapter
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.ReputationAdapter.ReputationListener
 import com.tokopedia.review.feature.inbox.buyerreview.view.customview.ShopReputationView
@@ -144,28 +145,13 @@ class InboxReputationDetailHeaderViewHolder(
         if ((!element.reputationDataUiModel.isShowRevieweeScore
                     && element.reputationDataUiModel.revieweeScore != NO_REPUTATION)
         ) {
-            ImageHandler.loadImageWithIdWithoutPlaceholder(
-                opponentSmiley,
-                R.drawable.reputation_ic_done_24dp
-            )
+            opponentSmiley?.loadImage(R.drawable.reputation_ic_done_24dp)
         } else {
             when (element.reputationDataUiModel.revieweeScore) {
-                NO_REPUTATION -> ImageHandler.loadImageWithIdWithoutPlaceholder(
-                    opponentSmiley,
-                    R.drawable.review_ic_smiley_empty
-                )
-                SMILEY_BAD -> ImageHandler.loadImageWithIdWithoutPlaceholder(
-                    opponentSmiley,
-                    R.drawable.review_ic_smiley_bad
-                )
-                SMILEY_NEUTRAL -> ImageHandler.loadImageWithIdWithoutPlaceholder(
-                    opponentSmiley,
-                    R.drawable.review_ic_smiley_neutral
-                )
-                SMILEY_GOOD -> ImageHandler.loadImageWithIdWithoutPlaceholder(
-                    opponentSmiley,
-                    R.drawable.review_ic_smiley_good
-                )
+                NO_REPUTATION -> opponentSmiley?.loadImage(R.drawable.review_ic_smiley_empty)
+                SMILEY_BAD -> opponentSmiley?.loadImage(R.drawable.review_ic_smiley_bad)
+                SMILEY_NEUTRAL -> opponentSmiley?.loadImage(R.drawable.review_ic_smiley_neutral)
+                SMILEY_GOOD -> opponentSmiley?.loadImage(R.drawable.review_ic_smiley_good)
             }
         }
     }

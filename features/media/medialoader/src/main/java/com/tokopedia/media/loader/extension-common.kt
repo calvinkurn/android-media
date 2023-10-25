@@ -143,6 +143,14 @@ inline fun ImageView.loadImageWithoutPlaceholderAndError(
     .setPlaceHolder(-1)
     .setErrorDrawable(-1))
 
+inline fun ImageView.loadImageWithError(
+    url: String?,
+    error: Int,
+    crossinline properties: Properties.() -> Unit = {}
+) = call(url, Properties()
+    .apply(properties)
+    .setErrorDrawable(error))
+
 inline fun ImageView.loadImageCircle(
     url: String?,
     crossinline properties: Properties.() -> Unit = {}

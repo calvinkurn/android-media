@@ -16,6 +16,7 @@ import com.tokopedia.flight.databinding.ItemFlightDetailFacilityInfoBinding
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoModel
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel
 import com.tokopedia.flight.search.data.cloud.single.Amenity
+import com.tokopedia.media.loader.loadImageWithError
 import java.util.*
 
 /**
@@ -43,9 +44,7 @@ class FlightDetailFacilityViewHolder(val binding: ItemFlightDetailFacilityBindin
         setDefaultAmenities(route)
         binding.headerDetailFlight.airlineName.text = route.airlineName
         binding.headerDetailFlight.airlineCode.text = String.format("%s-%s", route.airlineCode, route.flightNumber)
-        ImageHandler.loadImageWithoutPlaceholder(binding.headerDetailFlight.airlineIcon, route.airlineLogo,
-                ContextCompat.getDrawable(itemView.context, R.drawable.flight_ic_airline_default)
-        )
+        binding.headerDetailFlight.airlineIcon.loadImageWithError(route.airlineLogo, R.drawable.flight_ic_airline_default)
     }
 
     private fun setDefaultAmenities(flightDetailRouteViewModel: FlightDetailRouteModel) {

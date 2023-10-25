@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.media.loader.JvmMediaLoader;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.loyalty.R;
@@ -71,7 +71,7 @@ public class LoyaltyNotifFragmentDialog extends DialogFragment {
 
         tvDesc.setMovementMethod(LinkMovementMethod.getInstance());
         tvDesc.setText(Html.fromHtml(popUpNotifData.getText()));
-        ImageHandler.loadImageThumbs(getActivity(), ivPic, popUpNotifData.getImageUrl());
+        JvmMediaLoader.loadImage(ivPic, popUpNotifData.getImageUrl());
         tvAction.setText(popUpNotifData.getButtonText());
         tvAction.setOnClickListener(new View.OnClickListener() {
             @Override

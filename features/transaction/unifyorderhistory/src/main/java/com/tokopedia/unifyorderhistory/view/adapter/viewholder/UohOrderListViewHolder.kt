@@ -3,7 +3,7 @@ package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.kotlin.extensions.view.gone
@@ -40,12 +40,7 @@ class UohOrderListViewHolder(
     fun bind(item: UohTypeData, position: Int) {
         if (item.dataObject is UohListOrder.UohOrders.Order) {
             binding.clDataProduct.visible()
-            ImageHandler.loadImage(
-                itemView.context,
-                binding.icUohVertical,
-                item.dataObject.metadata.verticalLogo,
-                null
-            )
+            binding.icUohVertical.loadImage(item.dataObject.metadata.verticalLogo)
             binding.tvUohCategories.text = item.dataObject.metadata.verticalLabel
             binding.tvUohDate.text = item.dataObject.metadata.paymentDateStr
 

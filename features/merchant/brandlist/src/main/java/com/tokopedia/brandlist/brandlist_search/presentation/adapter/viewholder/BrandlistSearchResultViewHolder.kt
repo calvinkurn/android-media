@@ -7,12 +7,12 @@ import android.text.TextUtils
 import android.text.style.TextAppearanceSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultUiModel
 import com.tokopedia.brandlist.common.listener.BrandlistSearchTrackingListener
 import com.tokopedia.brandlist.databinding.ItemSearchResultBinding
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 
@@ -36,9 +36,9 @@ class BrandlistSearchResultViewHolder(view: View): AbstractViewHolder<BrandlistS
     }
 
     private fun bindData(brandLogoUrl: String, brandImageUrl: String) {
-        ImageHandler.loadImage(context, imgBrandLogo, brandLogoUrl, null)
+        imgBrandLogo?.loadImage(brandLogoUrl)
         if(brandImageUrl.isNotBlank()) {
-            ImageHandler.loadImage(context, imgBrandImage, brandImageUrl, null)
+            imgBrandImage?.loadImage(brandImageUrl)
         } else {
             imgBrandImage?.visibility = View.GONE
         }
