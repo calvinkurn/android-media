@@ -13,7 +13,6 @@ import dagger.Component
         StoriesCreationModule::class,
         StoriesCreationBindModule::class,
         StoriesCreationViewModelModule::class,
-        StoriesCreationFragmentModule::class,
         ContentFragmentFactoryModule::class,
     ],
     dependencies = [BaseAppComponent::class]
