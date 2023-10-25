@@ -18,6 +18,19 @@ data class SocialProofUiModel(
     val impressHolder: ImpressHolder = ImpressHolder()
 ) {
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+
+        val new = (other as? SocialProofUiModel) ?: return false
+        return type == new.type &&
+            identifier == new.identifier &&
+            title == new.title &&
+            subtitle == new.subtitle &&
+            icon == new.icon &&
+            appLink == new.appLink
+    }
+
     companion object {
 
         fun getType(type: String): Type = when (type) {
