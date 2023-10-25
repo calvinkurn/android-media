@@ -54,7 +54,6 @@ data class ScheduleDeliveryParam(
     val insurance: Long = 0,
     @SerializedName("product_insurance")
     val productInsurance: Long = 0,
-    // todo
     @SerializedName("start_date")
     val startDate: String = "",
     @Transient
