@@ -119,6 +119,10 @@ class PlayWidgetTools @Inject constructor(
         )
     }
 
+    /**
+     * merge into one if source/entry-point == HOME -> reconstruct appLink
+     */
+
     fun isAppLinkSourceFromHome(appLink: String): Boolean {
         val uri = Uri.parse(appLink)
 
