@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseI
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier
 import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseCoreAndAssetsQualifier
@@ -50,6 +51,7 @@ interface ShopComponent {
     val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase
     fun provideCoroutineDispatchers(): CoroutineDispatchers
     fun provideShopPageSharedPref(): SharedPreferences
+    fun provideRemoteConfig(): RemoteConfig
 
     @get:Named(GQLQueryNamedConstant.GQL_GET_SHOP_OPERATIONAL_HOUR_STATUS)
     val gqlQueryShopOperationalHourStatus: String

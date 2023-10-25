@@ -8,6 +8,8 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.shop.common.di.ShopPageContext
@@ -59,4 +61,7 @@ class ShopModule(val context: Context) {
             Context.MODE_PRIVATE
         )
     }
+
+    @Provides
+    fun provideFirebaseRemoteConfig(): RemoteConfig = FirebaseRemoteConfigImpl(activityContext)
 }
