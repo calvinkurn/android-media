@@ -757,7 +757,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         shippingWidgetUiModel: ShippingWidgetUiModel
     ): String {
         return if (shippingWidgetUiModel.voucherLogisticExists) {
-            shippingWidgetUiModel.orderMessage
+            shippingWidgetUiModel.boOrderMessage
         } else {
             return shippingWidgetUiModel.courierOrderMessage
         }

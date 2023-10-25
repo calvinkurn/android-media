@@ -28,7 +28,7 @@ data class ShippingWidgetUiModel(
     val voucherLogisticExists: Boolean = false,
     var isHasShownCourierError: Boolean = false,
     // new OFOC
-    val orderMessage: String = "",
+    val boOrderMessage: String = "",
 
     // showNormalShippingCourier
     val currentAddress: RecipientAddressModel,
