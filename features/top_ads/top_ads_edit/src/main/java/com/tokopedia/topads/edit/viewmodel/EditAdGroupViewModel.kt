@@ -30,6 +30,7 @@ import com.tokopedia.topads.common.domain.usecase.TopAdsImpressionPredictionSear
 import com.tokopedia.topads.edit.usecase.GetAdsUseCase
 import com.tokopedia.topads.edit.usecase.GroupInfoUseCase
 import com.tokopedia.topads.edit.utils.Constants
+import com.tokopedia.topads.edit.utils.Constants.SOURCE_EDIT_GROUP
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -173,10 +174,10 @@ class EditAdGroupViewModel @Inject constructor(
         val list: MutableList<Pair<Int, Int>> = mutableListOf()
         launchCatchError(block = {
             val searchDef = async {
-                bids.firstOrNull()?.let { topAdsImpressionPredictionSearchUseCase.invoke("test", productIds, it, it, dailyBudget) }
+                bids.firstOrNull()?.let { topAdsImpressionPredictionSearchUseCase.invoke(SOURCE_EDIT_GROUP, productIds, it, it, dailyBudget) }
             }
             val browseDef = async {
-                bids.getOrNull(CONST_1)?.let { topAdsImpressionPredictionBrowseUseCase.invoke("test", productIds, it, it, dailyBudget) }
+                bids.getOrNull(CONST_1)?.let { topAdsImpressionPredictionBrowseUseCase.invoke(SOURCE_EDIT_GROUP, productIds, it, it, dailyBudget) }
             }
 
             val searchData = searchDef.await()

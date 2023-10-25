@@ -17,6 +17,7 @@ import com.tokopedia.topads.common.data.response.ImpressionPredictionResponse
 import com.tokopedia.topads.data.TopAdsGetBidSuggestionResponse
 import com.tokopedia.topads.domain.usecase.TopAdsGetBidSuggestionByProductIDsUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsImpressionPredictionSearchUseCase
+import com.tokopedia.topads.constants.ConstantTopAdsCreate.SOURCE_CREATE_GROUP
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.launch
@@ -89,7 +90,7 @@ class BudgetingAdsViewModel @Inject constructor(
 
     fun getProductBid(productIds: List<String>) {
         launchCatchError(dispatcher.main, block = {
-            val data = topAdsGetBidSuggestionByProductIDsUseCase.invoke("adbidinsight.test", productIds)
+            val data = topAdsGetBidSuggestionByProductIDsUseCase.invoke(SOURCE_CREATE_GROUP, productIds)
             _bidProductData.value = data
         }, {
             _bidProductData.value = Fail(it)
@@ -101,7 +102,7 @@ class BudgetingAdsViewModel @Inject constructor(
                            initialBid: Float,
                            dailyBudget: Float) {
         launchCatchError(dispatcher.main, {
-            val data = topAdsImpressionPredictionUseCase.invoke("test", productIds, finalBid, initialBid, dailyBudget)
+            val data = topAdsImpressionPredictionUseCase.invoke(SOURCE_CREATE_GROUP, productIds, finalBid, initialBid, dailyBudget)
             _performanceData.value = data
         }, {
             _performanceData.value = Fail(it)

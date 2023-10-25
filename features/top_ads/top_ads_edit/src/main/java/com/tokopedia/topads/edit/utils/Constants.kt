@@ -85,4 +85,6 @@ object Constants {
     const val MAX_BUDGET_AUTOMATIC = 16000
     const val MAX_BUDGET_MANUAL = 10000000
 
+    const val SOURCE_EDIT_GROUP = "android.product_group_edit_flow"
+
 }

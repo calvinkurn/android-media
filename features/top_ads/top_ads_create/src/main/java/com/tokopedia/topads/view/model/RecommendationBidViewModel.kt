@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.common.data.response.ImpressionPredictionResponse
 import com.tokopedia.topads.common.domain.usecase.TopAdsImpressionPredictionBrowseUseCase
+import com.tokopedia.topads.constants.ConstantTopAdsCreate.SOURCE_CREATE_GROUP
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import javax.inject.Inject
@@ -27,7 +28,7 @@ class RecommendationBidViewModel @Inject constructor(
                            initialBid: Float,
                            dailyBudget: Float) {
         launchCatchError(block = {
-            val data = topAdsImpressionPredictionUseCase.invoke("test", productIds, finalBid, initialBid, dailyBudget)
+            val data = topAdsImpressionPredictionUseCase.invoke(SOURCE_CREATE_GROUP, productIds, finalBid, initialBid, dailyBudget)
             _performanceData.value = data
         }, onError = {
             _performanceData.value = Fail(it)

@@ -25,6 +25,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topads.common.domain.usecase.TopAdsImpressionPredictionSearchUseCase
+import com.tokopedia.topads.edit.utils.Constants.SOURCE_EDIT_GROUP
 import com.tokopedia.usecase.coroutines.Result
 import java.util.*
 import javax.inject.Inject
@@ -220,7 +221,7 @@ class EditFormDefaultViewModel @Inject constructor(
                            initialBid: Float,
                            dailyBudget: Float) {
         launchCatchError(dispatcher.main, {
-            val data = topAdsImpressionPredictionUseCase.invoke("test", productIds, finalBid, initialBid, dailyBudget)
+            val data = topAdsImpressionPredictionUseCase.invoke(SOURCE_EDIT_GROUP, productIds, finalBid, initialBid, dailyBudget)
             _performanceData.value = data
         }, {
             _performanceData.value = Fail(it)

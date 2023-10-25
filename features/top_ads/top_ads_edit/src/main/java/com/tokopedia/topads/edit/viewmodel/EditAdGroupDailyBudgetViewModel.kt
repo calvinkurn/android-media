@@ -9,6 +9,7 @@ import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemAdsPotentialWidgetUiModel
 import com.tokopedia.topads.common.domain.usecase.TopAdsImpressionPredictionBrowseUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsImpressionPredictionSearchUseCase
+import com.tokopedia.topads.edit.utils.Constants.SOURCE_EDIT_GROUP
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.async
@@ -31,10 +32,10 @@ class EditAdGroupDailyBudgetViewModel @Inject constructor(
         val list: MutableList<Pair<Int, Int>> = mutableListOf()
         launchCatchError(block = {
             val searchDef = async {
-                bids.firstOrNull()?.let { topAdsImpressionPredictionSearchUseCase.invoke("test", productIds, it, it, dailyBudget) }
+                bids.firstOrNull()?.let { topAdsImpressionPredictionSearchUseCase.invoke(SOURCE_EDIT_GROUP, productIds, it, it, dailyBudget) }
             }
             val browseDef = async {
-                bids.getOrNull(TopAdsCommonConstant.CONST_1)?.let { topAdsImpressionPredictionBrowseUseCase.invoke("test", productIds, it, it, dailyBudget) }
+                bids.getOrNull(TopAdsCommonConstant.CONST_1)?.let { topAdsImpressionPredictionBrowseUseCase.invoke(SOURCE_EDIT_GROUP, productIds, it, it, dailyBudget) }
             }
 
             val searchData = searchDef.await()
