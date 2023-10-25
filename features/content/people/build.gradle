@@ -133,6 +133,8 @@ dependencies {
     }
     androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
     androidTestImplementation rootProject.ext.miscDependencies.dagger
+    androidTestImplementation rootProject.ext.composeDependencies.composeUiTest
+    debugImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 }
 
