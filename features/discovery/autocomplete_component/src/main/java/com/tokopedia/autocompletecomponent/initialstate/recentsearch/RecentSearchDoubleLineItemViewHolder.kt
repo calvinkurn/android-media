@@ -2,7 +2,7 @@ package com.tokopedia.autocompletecomponent.initialstate.recentsearch
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteDoubleLineItemBinding
@@ -52,7 +52,7 @@ class RecentSearchDoubleLineItemViewHolder(
 
     private fun bindIconSubtitle(item: BaseItemInitialStateSearch) {
         binding?.iconSubtitle?.shouldShowOrHideWithAction(item.iconSubtitle.isNotEmpty()) {
-            ImageHandler.loadImageWithoutPlaceholderAndError(it, item.iconSubtitle)
+            it.loadImage(item.iconSubtitle)
         }
     }
 

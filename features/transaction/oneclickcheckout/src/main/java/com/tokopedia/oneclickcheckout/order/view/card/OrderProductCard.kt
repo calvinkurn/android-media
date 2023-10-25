@@ -10,7 +10,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
@@ -211,10 +211,7 @@ class OrderProductCard(
         propertyLayoutWithIcon.orientation = LinearLayout.HORIZONTAL
         val itemProductInfoBinding = ItemProductInfoAddOnBinding.inflate(LayoutInflater.from(itemView.context), propertyLayoutWithIcon, false)
         if (!TextUtils.isEmpty(ethicalDrugDataModel.iconUrl)) {
-            ImageHandler.loadImageWithoutPlaceholderAndError(
-                itemProductInfoBinding.ppIvProductInfoAddOn,
-                ethicalDrugDataModel.iconUrl
-            )
+            itemProductInfoBinding.ppIvProductInfoAddOn.loadImage(ethicalDrugDataModel.iconUrl)
         }
         if (!TextUtils.isEmpty(ethicalDrugDataModel.text)) {
             itemProductInfoBinding.ppLabelProductInfoAddOn.text = ethicalDrugDataModel.text

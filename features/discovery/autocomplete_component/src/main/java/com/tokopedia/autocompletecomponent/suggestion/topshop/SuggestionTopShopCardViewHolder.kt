@@ -2,10 +2,12 @@ package com.tokopedia.autocompletecomponent.suggestion.topshop
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.SuggestionTopShopCardLayoutBinding
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -32,13 +34,13 @@ class SuggestionTopShopCardViewHolder(
 
     private fun bindImage(element: SuggestionTopShopCardDataView) {
         binding?.suggestionTopShopCardImage?.let {
-            ImageHandler.loadImageCircle2(itemView.context, it, element.imageUrl)
+            it.loadImageCircle(element.imageUrl)
         }
     }
 
     private fun bindIconTitle(item: SuggestionTopShopCardDataView) {
         binding?.suggestionTopShopCardIconTitle?.shouldShowWithAction(item.iconTitle.isNotEmpty()) {
-            ImageHandler.loadImageWithoutPlaceholderAndError(binding?.suggestionTopShopCardIconTitle, item.iconTitle)
+            binding?.suggestionTopShopCardIconTitle?.loadImage(item.iconTitle)
         }
     }
 
@@ -64,19 +66,19 @@ class SuggestionTopShopCardViewHolder(
 
     private fun bindProductImage1(imageUrl: String) {
         binding?.suggestionTopShopCardProduct1?.let {
-            ImageHandler.loadImageRounded(itemView.context, it, imageUrl, 6.toDp().toFloat())
+            it.loadImageRounded(imageUrl, 6.toDp().toFloat())
         }
     }
 
     private fun bindProductImage2(imageUrl: String) {
         binding?.suggestionTopShopCardProduct2?.let {
-            ImageHandler.loadImageRounded(itemView.context, it, imageUrl, 6.toDp().toFloat())
+            it.loadImageRounded(imageUrl, 6.toDp().toFloat())
         }
     }
 
     private fun bindProductImage3(imageUrl: String) {
         binding?.suggestionTopShopCardProduct3?.let {
-            ImageHandler.loadImageRounded(itemView.context, it, imageUrl, 6.toDp().toFloat())
+            it.loadImageRounded(imageUrl, 6.toDp().toFloat())
         }
     }
 
