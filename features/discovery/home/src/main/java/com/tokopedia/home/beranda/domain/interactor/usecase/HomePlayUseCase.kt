@@ -72,8 +72,6 @@ class HomePlayUseCase @Inject constructor(
     fun reconstructAppLink(appLink: String, playWidgetId: String): String {
         return if (playWidgetTools.isAppLinkSourceFromHome(appLink)) {
             playWidgetTools.reconstructAppLink(appLink, mapOf(KEY_WIDGET_ID to playWidgetId))
-        } else if (playWidgetTools.isCdp(appLink)){
-            playWidgetTools.reconstructAppLink(appLink, mapOf(KEY_CATEGORY_ID to playWidgetId))
         }
         else {
             appLink
@@ -82,6 +80,5 @@ class HomePlayUseCase @Inject constructor(
 
     companion object {
         private const val KEY_WIDGET_ID = "widget_id"
-        private const val KEY_CATEGORY_ID = "category_id"
     }
 }

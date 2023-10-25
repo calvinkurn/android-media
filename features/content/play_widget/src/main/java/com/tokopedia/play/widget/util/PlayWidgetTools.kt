@@ -119,20 +119,9 @@ class PlayWidgetTools @Inject constructor(
         )
     }
 
-    /**
-     * merge into one if source/entry-point == HOME -> reconstruct appLink
-     */
-
     fun isAppLinkSourceFromHome(appLink: String): Boolean {
         val uri = Uri.parse(appLink)
-
-        return uri.host == ApplinkConstInternalContent.HOST_PLAY &&
-            uri.getQueryParameter(SOURCE_TYPE) == SOURCE_TYPE_HOME
-    }
-
-    fun isCdp(appLink: String) : Boolean {
-        val uri = Uri.parse(appLink)
-        return  appLink.startsWith(ApplinkConstInternalContent.INTERNAL_FEED_DETAIL) && uri.getQueryParameter(ENTRY_POINT) == "home"
+        return uri.getQueryParameter(SOURCE_TYPE) == SOURCE_TYPE_HOME || uri.getQueryParameter(ENTRY_POINT) == SOURCE_TYPE_HOME.lowercase()
     }
 
     fun reconstructAppLink(appLink: String, queryMap: Map<String, String>): String {
