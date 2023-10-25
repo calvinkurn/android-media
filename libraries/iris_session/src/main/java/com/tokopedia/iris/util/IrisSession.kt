@@ -62,6 +62,11 @@ class IrisSession(context: Context) : Session {
             // only if the session is empty
             // we want to synchronized generatedSessionId, so no multiple session will be created in different thread.
             synchronized(LOCK) {
+                // check if sessionId already not null this time (might be initialized in different thread)
+                val sessionIdNow = sessionId
+                if (!sessionIdNow.isNullOrEmpty()) {
+                    return sessionIdNow
+                }
                 val sessionIdFromPref = getSharedPref().getString(KEY_SESSION_ID, "")
                 if (sessionIdFromPref.isNullOrEmpty()) {
                     // The session is created when there is no existing session
