@@ -28,6 +28,7 @@ import com.tokopedia.nest.components.CoachMarkPosition.TOP
 import com.tokopedia.nest.components.NestCoachMark
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import javax.inject.Inject
 
 class CentralizedPromoComposeActivity : AppCompatActivity() {
@@ -55,7 +56,7 @@ class CentralizedPromoComposeActivity : AppCompatActivity() {
 
         setContent {
             NestTheme {
-                val uiState = viewModel.layoutList.collectAsState().value
+                val uiState = viewModel.layoutList.collectAsStateWithLifecycle().value
                 val coachMarkAnchor = remember {
                     mutableStateOf(CoachMarkAnchorWithKey())
                 }
