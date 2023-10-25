@@ -65,7 +65,7 @@ class HomeRecommendationCardMapper @Inject constructor(
         }
 
         return HomeRecommendationDataModel(
-            homeRecommendationVisitableList,
+            homeRecommendationVisitableList.toList(),
             getHomeRecommendationCard.hasNextPage
         )
     }
