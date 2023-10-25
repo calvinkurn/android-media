@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unit.test.ext.verifyValueEquals
@@ -144,6 +145,23 @@ class CouponDetailViewModelTest {
             parameters[0] = viewModel.data
             method.invoke(viewModel, *parameters)
             verify { observer.onChanged(any<ErrorMessage<CouponSwipeUpdate>>()) }
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `given isNeedSwipe false when call onSwipeComplete should not update onCouponSwipe live data`() {
+        runTest {
+            val isNeedSwipe = false
+
+            viewModel.data = CouponValueEntity(
+                swipe = CouponSwipeDetail(isNeedSwipe = isNeedSwipe)
+            )
+
+            viewModel.onSwipeComplete()
+
+            viewModel.onCouponSwipe
+                .verifyValueEquals(null)
         }
     }
 
@@ -310,6 +328,17 @@ class CouponDetailViewModelTest {
     }
 
     @Test
+    fun `given reFetchRealCode throws exception when reFetchRealCode should set onReFetch live data with ErrorMessage`() {
+        runTest {
+            coEvery { repository.reFetchRealCode(any()) } throws Throwable()
+
+            viewModel.reFetchRealCode()
+
+            assertEquals(ErrorMessage<String>(""), viewModel.onReFetch.value)
+        }
+    }
+
+    @Test
     fun redeemCoupon() {
 
         runTest {
@@ -386,7 +415,35 @@ class CouponDetailViewModelTest {
 
         viewModel = CouponDetailViewModel(bundle, repository)
         assertEquals("12345", viewModel.couponCode)
+    }
 
+    @Test
+    fun `given couponCode empty when init viewmodel should update detailLiveData with Loading`() {
+        val couponCode = ""
+
+        val bundle = mockk<Bundle>()
+        coEvery { bundle.getString("coupon_code") } returns couponCode
+
+        viewModel = CouponDetailViewModel(bundle, repository)
+
+        assert(viewModel.detailLiveData.value is Loading)
+        assert(viewModel.finish.value is Unit)
+    }
+
+    @Test
+    fun `given getCouponDetail throws exception when init viewmodel should update detailLiveData with ErrorMessage`() {
+        val exception = MessageErrorException(null)
+
+        val couponCode = "5125"
+        val bundle = mockk<Bundle>()
+
+        coEvery { repository.getCouponDetail(couponCode) } throws exception
+        coEvery { bundle.getString("coupon_code") } returns couponCode
+
+        viewModel = CouponDetailViewModel(bundle, repository)
+
+        viewModel.detailLiveData
+            .verifyValueEquals(ErrorMessage<CouponValueEntity>(""))
     }
 
     @After
