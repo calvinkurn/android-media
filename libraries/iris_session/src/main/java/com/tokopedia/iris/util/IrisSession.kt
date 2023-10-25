@@ -58,20 +58,17 @@ class IrisSession(context: Context) : Session {
      * The session will be renew if the day changed (GMT +7)
      */
     override fun getSessionId(): String {
-        // we want to synchronized getSessionId, so no multiple session will be created in diff thread.
-        synchronized(LOCK) {
-            return getSessionidNonLock()
-        }
-    }
-
-    private fun getSessionidNonLock(): String {
         if (sessionId.isNullOrEmpty()) {
-            val sessionIdFromPref = getSharedPref().getString(KEY_SESSION_ID, "")
-            if (sessionIdFromPref.isNullOrEmpty()) {
-                // The session is created when there is no existing session
-                return generateSessionId(System.currentTimeMillis())
-            } else {
-                sessionId = sessionIdFromPref
+            // only if the session is empty
+            // we want to synchronized generatedSessionId, so no multiple session will be created in different thread.
+            synchronized(LOCK) {
+                val sessionIdFromPref = getSharedPref().getString(KEY_SESSION_ID, "")
+                if (sessionIdFromPref.isNullOrEmpty()) {
+                    // The session is created when there is no existing session
+                    return generateSessionId(System.currentTimeMillis())
+                } else {
+                    sessionId = sessionIdFromPref
+                }
             }
         }
 
