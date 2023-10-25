@@ -7,7 +7,8 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 data class InspirationKeywordCardView(
     val title: String = "",
     val optionsItems: List<InspirationKeywordDataView>,
-    val isOneOrMoreIsEmptyImage: Boolean = false
+    val isOneOrMoreIsEmptyImage: Boolean = false,
+    val isInspirationKeywordGridCard: Boolean = false
 ) : Visitable<ProductListTypeFactory> {
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this).orZero()
@@ -17,12 +18,14 @@ data class InspirationKeywordCardView(
         fun create(
             title: String,
             optionsItems: List<InspirationKeywordDataView>,
-            isOneOrMoreIsEmptyImage: Boolean
+            isOneOrMoreIsEmptyImage: Boolean,
+            isInspirationKeywordGridCard: Boolean = false
         ): InspirationKeywordCardView {
             return InspirationKeywordCardView(
                 title = title,
                 optionsItems = optionsItems,
-                isOneOrMoreIsEmptyImage = isOneOrMoreIsEmptyImage
+                isOneOrMoreIsEmptyImage = isOneOrMoreIsEmptyImage,
+                isInspirationKeywordGridCard = isInspirationKeywordGridCard
             )
         }
     }

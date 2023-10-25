@@ -5,6 +5,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.product.inspirationwidget.card.SmallGridInspirationCardViewHolder
 import com.tokopedia.search.result.product.productitem.GridProductItemViewHolder
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordViewHolder
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.reimagine.InspirationKeywordReimagineViewHolder
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.viewholder.GridInspirationProductItemViewHolder
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.viewholder.InspirationProductItemReimagineViewHolder
 
@@ -18,6 +19,7 @@ private val notFullSpanLayout = listOf(
     GridInspirationProductItemViewHolder.LAYOUT_WITH_VIEW_STUB,
     GridProductItemViewHolder.LAYOUT,
     InspirationProductItemReimagineViewHolder.LAYOUT,
+    InspirationKeywordReimagineViewHolder.LAYOUT,
 )
 
 fun isFullSpan(viewType: Int): Boolean = viewType !in notFullSpanLayout

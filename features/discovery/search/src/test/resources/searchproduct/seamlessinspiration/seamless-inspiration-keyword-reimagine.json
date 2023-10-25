@@ -1,0 +1,1687 @@
+{
+  "searchProductV5": {
+    "header": {
+      "totalData": 8610106,
+      "responseCode": 0,
+      "keywordProcess": "6",
+      "keywordIntention": 1,
+      "componentID": "",
+      "meta": {
+        "productListType": "",
+        "hasPostProcessing": false,
+        "hasButtonATC": false
+      },
+      "isQuerySafe": true,
+      "additionalParams": "",
+      "autocompleteApplink": "tokopedia://search-autocomplete?q=sepatu",
+      "backendFilters": "",
+      "backendFiltersToggle": ""
+    },
+    "data": {
+      "redirection": {
+        "applink": ""
+      },
+      "ticker": {
+        "id": 0,
+        "text": "",
+        "query": "",
+        "componentID": "",
+        "trackingOption": 0
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "trackingOption": 0,
+        "otherRelated": []
+      },
+      "suggestion": {
+        "suggestion": "",
+        "query": "",
+        "text": "",
+        "componentID": "",
+        "trackingOption": 0
+      },
+      "banner": {
+        "position": 0,
+        "text": "",
+        "applink": "",
+        "imageURL": "",
+        "componentID": "",
+        "trackingOption": 0
+      },
+      "violation": {
+        "headerText": "",
+        "descriptionText": "",
+        "imageURL": "",
+        "ctaURL": "",
+        "ctaApplink": "",
+        "buttonText": "",
+        "buttonType": ""
+      },
+      "products": [
+        {
+          "id": 8782144429,
+          "name": "Servodio 36-44 Navy Sepatu Sneakers Casual Pria Wanita SV02",
+          "url": "https://www.tokopedia.com/servodioofficialstore/servodio-36-44-navy-sepatu-sneakers-casual-pria-wanita-sv02-navy-44",
+          "applink": "tokopedia://product/8782144429?extParam=ivf%3Dfalse%26src%3Dsearch",
+          "mediaURL": {
+            "image": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/3/27/1cd1a647-1a20-4540-9385-b366df226e0b.jpg",
+            "image300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/3/27/1cd1a647-1a20-4540-9385-b366df226e0b.jpg",
+            "image700": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/3/27/1cd1a647-1a20-4540-9385-b366df226e0b.jpg",
+            "videoCustom": ""
+          },
+          "shop": {
+            "id": 8261136,
+            "name": "Servodio Official Store",
+            "url": "https://www.tokopedia.com/servodioofficialstore",
+            "city": "",
+            "tier": 2
+          },
+          "badge": {
+            "id": 4,
+            "title": "Servodio Official Store",
+            "url": "https://images.tokopedia.net/img/official_store_badge.png"
+          },
+          "price": {
+            "text": "Rp89.550",
+            "number": 89550,
+            "range": "",
+            "original": "",
+            "discountPercentage": 0
+          },
+          "freeShipping": {
+            "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+          },
+          "labelGroups": [
+            {
+              "id": 2001,
+              "position": "ri_product_benefit",
+              "title": "Cashback 9%",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "id": 3001,
+              "position": "ri_product_credibility",
+              "title": "250+ terjual",
+              "type": "",
+              "url": ""
+            },
+            {
+              "id": 5001,
+              "position": "ri_ribbon",
+              "title": "55%",
+              "type": "red",
+              "url": ""
+            }
+          ],
+          "labelGroupsVariant": [
+            {
+              "title": "39",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "40",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "41",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "42",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "43",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "3",
+              "type": "lightGrey",
+              "typeVariant": "custom",
+              "hexColor": ""
+            }
+          ],
+          "category": {
+            "id": 1759,
+            "name": "Fashion Pria",
+            "breadcrumb": "fashion-pria/sepatu-pria/sneakers-pria"
+          },
+          "rating": "4.7",
+          "wishlist": false,
+          "ads": {
+            "id": "",
+            "productClickURL": "",
+            "productViewURL": "",
+            "productWishlistURL": "",
+            "tag": 0
+          },
+          "meta": {
+            "parentID": 8782144405,
+            "warehouseID": 8448480,
+            "isPortrait": false
+          }
+        },
+        {
+          "id": 5246993020,
+          "name": "SEPATU KASUAL PRIA UKURAN JUMBO BIG SIZE 45 46 47 48 PUTIH NAVY",
+          "url": "https://www.tokopedia.com/findsh/sepatu-kasual-pria-ukuran-jumbo-big-size-45-46-47-48-putih-navy-48",
+          "applink": "tokopedia://product/5246993020?extParam=ivf%3Dfalse%26src%3Dsearch",
+          "mediaURL": {
+            "image": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/8/6/edf7447d-ac63-407e-937b-9a501b32acf2.jpg",
+            "image300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/8/6/edf7447d-ac63-407e-937b-9a501b32acf2.jpg",
+            "image700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/8/6/edf7447d-ac63-407e-937b-9a501b32acf2.jpg",
+            "videoCustom": ""
+          },
+          "shop": {
+            "id": 4031105,
+            "name": "findingshoesjakarta",
+            "url": "https://www.tokopedia.com/findsh",
+            "city": "Bekasi",
+            "tier": 3
+          },
+          "badge": {
+            "id": 3,
+            "title": "Bekasi",
+            "url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png"
+          },
+          "price": {
+            "text": "Rp109.000",
+            "number": 109000,
+            "range": "",
+            "original": "",
+            "discountPercentage": 0
+          },
+          "freeShipping": {
+            "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+          },
+          "labelGroups": [
+            {
+              "id": 2001,
+              "position": "ri_product_benefit",
+              "title": "Cashback 1%",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "id": 3001,
+              "position": "ri_product_credibility",
+              "title": "250+ terjual",
+              "type": "",
+              "url": ""
+            }
+          ],
+          "labelGroupsVariant": [
+            {
+              "title": "39",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "40",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "41",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "42",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "43",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "3",
+              "type": "lightGrey",
+              "typeVariant": "custom",
+              "hexColor": ""
+            }
+          ],
+          "category": {
+            "id": 1759,
+            "name": "Fashion Pria",
+            "breadcrumb": "fashion-pria/sepatu-pria/sneakers-pria"
+          },
+          "rating": "4.9",
+          "wishlist": false,
+          "ads": {
+            "id": "",
+            "productClickURL": "",
+            "productViewURL": "",
+            "productWishlistURL": "",
+            "tag": 0
+          },
+          "meta": {
+            "parentID": 5246992922,
+            "warehouseID": 3011987,
+            "isPortrait": false
+          }
+        },
+        {
+          "id": 9592292602,
+          "name": "SEPATU ANDO HITAM POLOS UNTUK SEKOLAH / SEPATU FULL BLACK ORIGINAL",
+          "url": "https://www.tokopedia.com/tokoabadishoes/sepatu-ando-hitam-polos-untuk-sekolah-sepatu-full-black-original-hitam-putih-34-57605",
+          "applink": "tokopedia://product/9592292602?extParam=ivf%3Dfalse%26src%3Dsearch",
+          "mediaURL": {
+            "image": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/5/19/9252cbbc-cddb-47db-9cbf-6e5045993a37.jpg",
+            "image300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/5/19/9252cbbc-cddb-47db-9cbf-6e5045993a37.jpg",
+            "image700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2023/5/19/9252cbbc-cddb-47db-9cbf-6e5045993a37.jpg",
+            "videoCustom": ""
+          },
+          "shop": {
+            "id": 9666478,
+            "name": "Toko Abadi Shoes",
+            "url": "https://www.tokopedia.com/tokoabadishoes",
+            "city": "Tangerang",
+            "tier": 3
+          },
+          "badge": {
+            "id": 3,
+            "title": "Tangerang",
+            "url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png"
+          },
+          "price": {
+            "text": "Rp109.800",
+            "number": 109800,
+            "range": "",
+            "original": "",
+            "discountPercentage": 0
+          },
+          "freeShipping": {
+            "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+          },
+          "labelGroups": [
+            {
+              "id": 2001,
+              "position": "ri_product_benefit",
+              "title": "Cashback 2%",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "id": 3001,
+              "position": "ri_product_credibility",
+              "title": "100+ terjual",
+              "type": "",
+              "url": ""
+            }
+          ],
+          "labelGroupsVariant": [
+            {
+              "title": "35",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "37",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "38",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "40",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "41",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "2",
+              "type": "lightGrey",
+              "typeVariant": "custom",
+              "hexColor": ""
+            }
+          ],
+          "category": {
+            "id": 1759,
+            "name": "Fashion Pria",
+            "breadcrumb": "fashion-pria/sepatu-pria/sneakers-pria"
+          },
+          "rating": "4.9",
+          "wishlist": false,
+          "ads": {
+            "id": "",
+            "productClickURL": "",
+            "productViewURL": "",
+            "productWishlistURL": "",
+            "tag": 0
+          },
+          "meta": {
+            "parentID": 9592292574,
+            "warehouseID": 9774066,
+            "isPortrait": false
+          }
+        },
+        {
+          "id": 1588906681,
+          "name": "Aerostreet 37-44 Massive Low Hitam Natural - Sepatu Sneakers Casual",
+          "url": "https://www.tokopedia.com/aerostreet/aerostreet-37-44-massive-low-hitam-natural-sepatu-sneakers-casual-37",
+          "applink": "tokopedia://product/1588906681?extParam=ivf%3Dtrue%26src%3Dsearch",
+          "mediaURL": {
+            "image": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/24/ec21ea0b-62af-45e0-a4c5-820e9e0c018b.jpg",
+            "image300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/7/24/ec21ea0b-62af-45e0-a4c5-820e9e0c018b.jpg",
+            "image700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2023/7/24/ec21ea0b-62af-45e0-a4c5-820e9e0c018b.jpg",
+            "videoCustom": "https://vod.tokopedia.com/view/adaptive.m3u8?id=0e1f76102a0571ee821787c6371c0102"
+          },
+          "shop": {
+            "id": 6673471,
+            "name": "Aerostreet",
+            "url": "https://www.tokopedia.com/aerostreet",
+            "city": "",
+            "tier": 2
+          },
+          "badge": {
+            "id": 4,
+            "title": "Aerostreet",
+            "url": "https://images.tokopedia.net/img/official_store_badge.png"
+          },
+          "price": {
+            "text": "Rp139.900",
+            "number": 139900,
+            "range": "",
+            "original": "",
+            "discountPercentage": 0
+          },
+          "freeShipping": {
+            "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+          },
+          "labelGroups": [
+            {
+              "id": 2001,
+              "position": "ri_product_benefit",
+              "title": "Cashback 3%",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "id": 3001,
+              "position": "ri_product_credibility",
+              "title": "10rb+ terjual",
+              "type": "",
+              "url": ""
+            },
+            {
+              "id": 5001,
+              "position": "ri_ribbon",
+              "title": "50%",
+              "type": "red",
+              "url": ""
+            }
+          ],
+          "labelGroupsVariant": [
+            {
+              "title": "36",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "37",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "38",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "39",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "40",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "5",
+              "type": "lightGrey",
+              "typeVariant": "custom",
+              "hexColor": ""
+            }
+          ],
+          "category": {
+            "id": 1759,
+            "name": "Fashion Pria",
+            "breadcrumb": "fashion-pria/sepatu-pria/sneakers-pria"
+          },
+          "rating": "4.9",
+          "wishlist": false,
+          "ads": {
+            "id": "",
+            "productClickURL": "",
+            "productViewURL": "",
+            "productWishlistURL": "",
+            "tag": 0
+          },
+          "meta": {
+            "parentID": 1588906679,
+            "warehouseID": 6882256,
+            "isPortrait": false
+          }
+        },
+        {
+          "id": 6540824175,
+          "name": "Aerostreet 37-44 Massive Low All Black - Sepatu Sneakers Casual",
+          "url": "https://www.tokopedia.com/aerostreet/aerostreet-37-44-massive-low-all-black-sepatu-sneakers-casual-42",
+          "applink": "tokopedia://product/6540824175?extParam=ivf%3Dtrue%26src%3Dsearch",
+          "mediaURL": {
+            "image": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/18/0d33f909-a4b9-4e54-bd5c-641283f7d6be.jpg",
+            "image300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/7/18/0d33f909-a4b9-4e54-bd5c-641283f7d6be.jpg",
+            "image700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2023/7/18/0d33f909-a4b9-4e54-bd5c-641283f7d6be.jpg",
+            "videoCustom": "https://vod.tokopedia.com/view/adaptive.m3u8?id=fb190fe0252771eebfe186c6360c0102"
+          },
+          "shop": {
+            "id": 6673471,
+            "name": "Aerostreet",
+            "url": "https://www.tokopedia.com/aerostreet",
+            "city": "",
+            "tier": 2
+          },
+          "badge": {
+            "id": 4,
+            "title": "Aerostreet",
+            "url": "https://images.tokopedia.net/img/official_store_badge.png"
+          },
+          "price": {
+            "text": "Rp139.900",
+            "number": 139900,
+            "range": "",
+            "original": "",
+            "discountPercentage": 0
+          },
+          "freeShipping": {
+            "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+          },
+          "labelGroups": [
+            {
+              "id": 2001,
+              "position": "ri_product_benefit",
+              "title": "Cashback 3%",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "id": 3001,
+              "position": "ri_product_credibility",
+              "title": "3rb+ terjual",
+              "type": "",
+              "url": ""
+            },
+            {
+              "id": 5001,
+              "position": "ri_ribbon",
+              "title": "50%",
+              "type": "red",
+              "url": ""
+            }
+          ],
+          "labelGroupsVariant": [
+            {
+              "title": "39",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "40",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "41",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "42",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "43",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "1",
+              "type": "lightGrey",
+              "typeVariant": "custom",
+              "hexColor": ""
+            }
+          ],
+          "category": {
+            "id": 1759,
+            "name": "Fashion Pria",
+            "breadcrumb": "fashion-pria/sepatu-pria/sneakers-pria"
+          },
+          "rating": "4.9",
+          "wishlist": false,
+          "ads": {
+            "id": "",
+            "productClickURL": "",
+            "productViewURL": "",
+            "productWishlistURL": "",
+            "tag": 0
+          },
+          "meta": {
+            "parentID": 6540824121,
+            "warehouseID": 6882256,
+            "isPortrait": false
+          }
+        },
+        {
+          "id": 1806989594,
+          "name": "SPOTEC Sepatu Running Ryder Abu-Abu - Abu-Abu Muda",
+          "url": "https://www.tokopedia.com/spotec/spotec-sepatu-running-ryder-abu-abu-abu-abu-muda-40",
+          "applink": "tokopedia://product/1806989594?extParam=ivf%3Dfalse%26src%3Dsearch",
+          "mediaURL": {
+            "image": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/7/28/943bcb30-54ac-48ab-8061-4cdb16a09707.png",
+            "image300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/7/28/943bcb30-54ac-48ab-8061-4cdb16a09707.png",
+            "image700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/7/28/943bcb30-54ac-48ab-8061-4cdb16a09707.png",
+            "videoCustom": ""
+          },
+          "shop": {
+            "id": 11162592,
+            "name": "Spotec Official Store",
+            "url": "https://www.tokopedia.com/spotec",
+            "city": "",
+            "tier": 2
+          },
+          "badge": {
+            "id": 4,
+            "title": "Spotec Official Store",
+            "url": "https://images.tokopedia.net/img/official_store_badge.png"
+          },
+          "price": {
+            "text": "Rp99.000",
+            "number": 99000,
+            "range": "",
+            "original": "",
+            "discountPercentage": 0
+          },
+          "freeShipping": {
+            "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+          },
+          "labelGroups": [
+            {
+              "id": 2001,
+              "position": "ri_product_benefit",
+              "title": "Cashback 7%",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "id": 3001,
+              "position": "ri_product_credibility",
+              "title": "500+ terjual",
+              "type": "",
+              "url": ""
+            },
+            {
+              "id": 5001,
+              "position": "ri_ribbon",
+              "title": "72%",
+              "type": "red",
+              "url": ""
+            }
+          ],
+          "labelGroupsVariant": [
+            {
+              "title": "38",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "39",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "40",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "41",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            }
+          ],
+          "category": {
+            "id": 1759,
+            "name": "Fashion Pria",
+            "breadcrumb": "fashion-pria/sepatu-pria/sneakers-pria"
+          },
+          "rating": "4.8",
+          "wishlist": false,
+          "ads": {
+            "id": "",
+            "productClickURL": "",
+            "productViewURL": "",
+            "productWishlistURL": "",
+            "tag": 0
+          },
+          "meta": {
+            "parentID": 1806989584,
+            "warehouseID": 11162175,
+            "isPortrait": false
+          }
+        },
+        {
+          "id": 10914314537,
+          "name": "Sepatu Bikers AP BOOTS AP ALLBIKE Sepeda Fashion Anti Slip Lokal",
+          "url": "https://www.tokopedia.com/redshroom/sepatu-bikers-ap-boots-ap-allbike-sepeda-fashion-anti-slip-lokal-merah-38-954f5",
+          "applink": "tokopedia://product/10914314537?extParam=ivf%3Dfalse%26src%3Dsearch",
+          "mediaURL": {
+            "image": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/28/71dafe70-f95e-41a4-9476-729dc3e6b112.jpg",
+            "image300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/7/28/71dafe70-f95e-41a4-9476-729dc3e6b112.jpg",
+            "image700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2023/7/28/71dafe70-f95e-41a4-9476-729dc3e6b112.jpg",
+            "videoCustom": ""
+          },
+          "shop": {
+            "id": 533833,
+            "name": "redshroom",
+            "url": "https://www.tokopedia.com/redshroom",
+            "city": "Jakarta Barat",
+            "tier": 3
+          },
+          "badge": {
+            "id": 3,
+            "title": "Jakarta Barat",
+            "url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png"
+          },
+          "price": {
+            "text": "Rp50.888",
+            "number": 50888,
+            "range": "",
+            "original": "",
+            "discountPercentage": 0
+          },
+          "freeShipping": {
+            "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+          },
+          "labelGroups": [
+            {
+              "id": 2001,
+              "position": "ri_product_benefit",
+              "title": "Cashback 2%",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "id": 3001,
+              "position": "ri_product_credibility",
+              "title": "50+ terjual",
+              "type": "",
+              "url": ""
+            }
+          ],
+          "labelGroupsVariant": [
+            {
+              "title": "Merah",
+              "type": "lightGrey",
+              "typeVariant": "colour",
+              "hexColor": "#ff0016"
+            },
+            {
+              "title": "Orange",
+              "type": "lightGrey",
+              "typeVariant": "colour",
+              "hexColor": "#ffa500"
+            },
+            {
+              "title": "Abu-abu",
+              "type": "lightGrey",
+              "typeVariant": "colour",
+              "hexColor": "#5d5d5d"
+            },
+            {
+              "title": "Hijau",
+              "type": "lightGrey",
+              "typeVariant": "colour",
+              "hexColor": "#006400"
+            }
+          ],
+          "category": {
+            "id": 1759,
+            "name": "Fashion Pria",
+            "breadcrumb": "fashion-pria/sepatu-pria/slip-on-pria"
+          },
+          "rating": "5.0",
+          "wishlist": false,
+          "ads": {
+            "id": "",
+            "productClickURL": "",
+            "productViewURL": "",
+            "productWishlistURL": "",
+            "tag": 0
+          },
+          "meta": {
+            "parentID": 10914314472,
+            "warehouseID": 4760,
+            "isPortrait": false
+          }
+        },
+        {
+          "id": 917889898,
+          "name": "Kodachi 8112 Hitam / Sepatu Capung Hitam / Sepatu Kodachi Hitam",
+          "url": "https://www.tokopedia.com/saudarashop88/kodachi-8112-hitam-sepatu-capung-hitam-sepatu-kodachi-hitam-38",
+          "applink": "tokopedia://product/917889898?extParam=ivf%3Dfalse%26src%3Dsearch",
+          "mediaURL": {
+            "image": "https://images.tokopedia.net/img/cache/200-square/product-1/2018/12/11/3162683/3162683_53969290-4e40-4144-b400-5c7299302fb5_800_800.jpg",
+            "image300": "https://images.tokopedia.net/img/cache/300-square/product-1/2018/12/11/3162683/3162683_53969290-4e40-4144-b400-5c7299302fb5_800_800.jpg",
+            "image700": "https://images.tokopedia.net/img/cache/700/product-1/2018/12/11/3162683/3162683_53969290-4e40-4144-b400-5c7299302fb5_800_800.jpg",
+            "videoCustom": ""
+          },
+          "shop": {
+            "id": 410698,
+            "name": "Saudara Shop",
+            "url": "https://www.tokopedia.com/saudarashop88",
+            "city": "Jakarta Barat",
+            "tier": 3
+          },
+          "badge": {
+            "id": 3,
+            "title": "Jakarta Barat",
+            "url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png"
+          },
+          "price": {
+            "text": "Rp97.500",
+            "number": 97500,
+            "range": "",
+            "original": "",
+            "discountPercentage": 0
+          },
+          "freeShipping": {
+            "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+          },
+          "labelGroups": [
+            {
+              "id": 2001,
+              "position": "ri_product_benefit",
+              "title": "Cashback 4%",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "id": 3001,
+              "position": "ri_product_credibility",
+              "title": "250+ terjual",
+              "type": "",
+              "url": ""
+            }
+          ],
+          "labelGroupsVariant": [
+            {
+              "title": "37",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "38",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            },
+            {
+              "title": "40",
+              "type": "lightGrey",
+              "typeVariant": "size",
+              "hexColor": ""
+            }
+          ],
+          "category": {
+            "id": 1759,
+            "name": "Fashion Pria",
+            "breadcrumb": "fashion-pria/sepatu-pria/sneakers-pria"
+          },
+          "rating": "4.9",
+          "wishlist": false,
+          "ads": {
+            "id": "",
+            "productClickURL": "",
+            "productViewURL": "",
+            "productWishlistURL": "",
+            "tag": 0
+          },
+          "meta": {
+            "parentID": 374561039,
+            "warehouseID": 58955,
+            "isPortrait": false
+          }
+        }
+      ],
+      "totalDataText": "8.6jt+"
+    }
+  },
+  "searchInspirationCarouselV2": {
+    "data": [
+      {
+        "title": "Coba cari \"HP Samsung\" di rekomendasi lain",
+        "type": "seamless_funneling",
+        "position": 8,
+        "layout": "carousel_keyword_inspiration",
+        "tracking_option": "3",
+        "options": [
+          {
+            "title": "\"Samsung A50s\"",
+            "subtitle": "",
+            "icon_subtitle": "",
+            "url": "https://www.tokopedia.com/search?q=samsung+a52&source=related_keyword&st=product&srp_component_id=03.71.01.00",
+            "applink": "tokopedia://search?q=samsung%20a52&source=related_keyword&st=product&srp_component_id=03.71.01.00",
+            "banner_image_url": "",
+            "banner_link_url": "",
+            "banner_applink_url": "",
+            "identifier": "",
+            "meta": "",
+            "component_id": "03.71.01.00",
+            "product": [
+              {
+                "id": 2137716272,
+                "name": "Samsung A52 8/128gb Mulus Fullset Original.Garansi Resmi Samsung Sein",
+                "price": 2725000,
+                "price_str": "Rp2.725.000",
+                "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/9/4/503f5e55-2194-4ac5-97b0-a15dfa75e042.jpg",
+                "rating": 5,
+                "count_review": 8,
+                "url": "https://www.tokopedia.com/topsellonline/samsung-a52-8-128gb-mulus-fullset-original-garansi-resmi-samsung-sein",
+                "applink": "tokopedia://product/2137716272",
+                "description": [],
+                "rating_average": "5.0",
+                "component_id": "03.71.01.01",
+                "label_groups": [
+                  {
+                    "title": "Cashback 2%",
+                    "type": "lightGreen",
+                    "position": "price",
+                    "url": ""
+                  },
+                  {
+                    "title": "13 terjual",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  }
+                ],
+                "original_price": "",
+                "discount_percentage": 0,
+                "label": "",
+                "discount": "",
+                "badges": [
+                  {
+                    "title": "Power Merchant Pro Badge",
+                    "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "id": 1429894,
+                  "name": "TOPSELL ONLINE",
+                  "city": "Jakarta Utara"
+                },
+                "freeOngkir": {
+                  "isActive": true,
+                  "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                },
+                "customvideo_url": "",
+                "bundle_id": 0,
+                "parent_id": 0,
+                "min_order": 1,
+                "stockbar": {
+                  "stock": 0,
+                  "original_stock": 0,
+                  "percentage_value": 0,
+                  "value": "",
+                  "color": ""
+                },
+                "warehouse_id_default": 62258
+              },
+              {
+                "id": 6378214275,
+                "name": "SAMSUNG GALAXY A52 SECOND FULLSET",
+                "price": 2850000,
+                "price_str": "Rp2.850.000",
+                "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/9/23/5ea6fccd-8130-4445-bece-0ef01c3e5971.jpg",
+                "rating": 5,
+                "count_review": 4,
+                "url": "https://www.tokopedia.com/gudanggagdet/samsung-galaxy-a52-second-fullset-8-128",
+                "applink": "tokopedia://product/6378214275",
+                "description": [],
+                "rating_average": "5.0",
+                "component_id": "03.71.01.02",
+                "label_groups": [
+                  {
+                    "title": "Cashback 1%",
+                    "type": "lightGreen",
+                    "position": "price",
+                    "url": ""
+                  },
+                  {
+                    "title": "14 terjual",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  }
+                ],
+                "original_price": "",
+                "discount_percentage": 0,
+                "label": "",
+                "discount": "",
+                "badges": [
+                  {
+                    "title": "Power Merchant Pro Badge",
+                    "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "id": 14259810,
+                  "name": "SINAR MUTIARA INDAH_",
+                  "city": "Jakarta Timur"
+                },
+                "freeOngkir": {
+                  "isActive": false,
+                  "image_url": ""
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                },
+                "customvideo_url": "",
+                "bundle_id": 0,
+                "parent_id": 6378214196,
+                "min_order": 0,
+                "stockbar": {
+                  "stock": 0,
+                  "original_stock": 0,
+                  "percentage_value": 0,
+                  "value": "",
+                  "color": ""
+                },
+                "warehouse_id_default": 14135970
+              },
+              {
+                "id": 2108401877,
+                "name": "SAMSUNG A52 Ram 8/128 GB Second Lengkap Fullset Resmi Samsung Sein",
+                "price": 2725000,
+                "price_str": "Rp2.725.000",
+                "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/8/26/1c67bba5-7776-4e40-9fdb-dfad9b8ae0c3.jpg",
+                "rating": 5,
+                "count_review": 7,
+                "url": "https://www.tokopedia.com/topgadget2000/samsung-a52-ram-8-128-gb-second-lengkap-fullset-resmi-samsung-sein",
+                "applink": "tokopedia://product/2108401877",
+                "description": [],
+                "rating_average": "4.9",
+                "component_id": "03.71.01.03",
+                "label_groups": [
+                  {
+                    "title": "Cashback 2%",
+                    "type": "lightGreen",
+                    "position": "price",
+                    "url": ""
+                  },
+                  {
+                    "title": "17 terjual",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  }
+                ],
+                "original_price": "",
+                "discount_percentage": 0,
+                "label": "",
+                "discount": "",
+                "badges": [
+                  {
+                    "title": "Power Merchant Pro Badge",
+                    "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "id": 2318489,
+                  "name": "Topgadget2000",
+                  "city": "Jakarta Utara"
+                },
+                "freeOngkir": {
+                  "isActive": true,
+                  "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                },
+                "customvideo_url": "",
+                "bundle_id": 0,
+                "parent_id": 0,
+                "min_order": 1,
+                "stockbar": {
+                  "stock": 0,
+                  "original_stock": 0,
+                  "percentage_value": 0,
+                  "value": "",
+                  "color": ""
+                },
+                "warehouse_id_default": 62277
+              }
+            ],
+            "card_button": {
+              "title": "",
+              "applink": ""
+            },
+            "bundle": {
+              "shop": {
+                "name": "",
+                "url": ""
+              },
+              "count_sold": "",
+              "price": 0,
+              "original_price": "",
+              "discount": "",
+              "discount_percentage": 0
+            }
+          },
+          {
+            "title": "\"Samsung A23s\"",
+            "subtitle": "",
+            "icon_subtitle": "",
+            "url": "https://www.tokopedia.com/search?q=samsung+a32&source=related_keyword&st=product&srp_component_id=03.71.02.00",
+            "applink": "tokopedia://search?q=samsung%20a32&source=related_keyword&st=product&srp_component_id=03.71.02.00",
+            "banner_image_url": "",
+            "banner_link_url": "",
+            "banner_applink_url": "",
+            "identifier": "",
+            "meta": "",
+            "component_id": "03.71.02.00",
+            "product": [
+              {
+                "id": 3829864246,
+                "name": "Samsung galaxy A23 6GB/128GB A 23 6/128 6/128gb Resmi New 4G NO A32",
+                "price": 2649000,
+                "price_str": "Rp2.649.000",
+                "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/5/16/d0369bad-6e32-42e1-8ab8-7afd0a7e74f1.jpg",
+                "rating": 5,
+                "count_review": 128,
+                "url": "https://www.tokopedia.com/miworldhome/samsung-galaxy-a23-6gb-128gb-a-23-6-128-6-128gb-resmi-new-4g-no-a32-orange-4g",
+                "applink": "tokopedia://product/3829864246",
+                "description": [],
+                "rating_average": "5.0",
+                "component_id": "03.71.02.01",
+                "label_groups": [
+                  {
+                    "title": "Cashback 1%",
+                    "type": "lightGreen",
+                    "position": "price",
+                    "url": ""
+                  },
+                  {
+                    "title": "100+ terjual",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  },
+                  {
+                    "title": "Super Gadget Day",
+                    "type": "",
+                    "position": "campaign",
+                    "url": "https://images.tokopedia.net/img/phOWBv/2023/9/27/404123ac-176c-4ffe-85c4-f0d3da7d75ab.png"
+                  }
+                ],
+                "original_price": "",
+                "discount_percentage": 0,
+                "label": "",
+                "discount": "",
+                "badges": [
+                  {
+                    "title": "Power Merchant Pro Badge",
+                    "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "id": 3252295,
+                  "name": "MI WORLD",
+                  "city": "Jakarta Selatan"
+                },
+                "freeOngkir": {
+                  "isActive": true,
+                  "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                },
+                "customvideo_url": "",
+                "bundle_id": 0,
+                "parent_id": 2954098266,
+                "min_order": 0,
+                "stockbar": {
+                  "stock": 0,
+                  "original_stock": 0,
+                  "percentage_value": 0,
+                  "value": "",
+                  "color": ""
+                },
+                "warehouse_id_default": 2574178
+              },
+              {
+                "id": 10686092941,
+                "name": "Samsung Galaxy A32 8/128 Garansi Resmi Indonesia RAM 8GB 128GB SEIN",
+                "price": 2599000,
+                "price_str": "Rp2.599.000",
+                "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/4/14/5ee01a9a-51f0-4618-bf1f-da71a6e1fec3.jpg",
+                "rating": 5,
+                "count_review": 263,
+                "url": "https://www.tokopedia.com/laku8pedia/samsung-galaxy-a32-8-128-garansi-resmi-indonesia-ram-8gb-128gb-sein-hitam-ex-display",
+                "applink": "tokopedia://product/10686092941",
+                "description": [],
+                "rating_average": "5.0",
+                "component_id": "03.71.02.02",
+                "label_groups": [
+                  {
+                    "title": "Sisa 3",
+                    "type": "textDarkRed",
+                    "position": "gimmick",
+                    "url": ""
+                  },
+                  {
+                    "title": "Cashback 1%",
+                    "type": "lightGreen",
+                    "position": "price",
+                    "url": ""
+                  },
+                  {
+                    "title": "250+ terjual",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  },
+                  {
+                    "title": "Super Gadget Day",
+                    "type": "",
+                    "position": "campaign",
+                    "url": "https://images.tokopedia.net/img/phOWBv/2023/9/27/404123ac-176c-4ffe-85c4-f0d3da7d75ab.png"
+                  }
+                ],
+                "original_price": "",
+                "discount_percentage": 0,
+                "label": "",
+                "discount": "",
+                "badges": [
+                  {
+                    "title": "Power Merchant Pro Badge",
+                    "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "id": 1374800,
+                  "name": "Laku8pedia",
+                  "city": "Jakarta Pusat"
+                },
+                "freeOngkir": {
+                  "isActive": true,
+                  "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+                },
+                "ads": {
+                  "id": "103050448",
+                  "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_npHA1FoAedbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHpKDUSz2Q31i6sJf6_yN6_Udop1DUMoFyaUEoA1Fbm-xgVYpyfYagZUEHsjfbsJNH_y76_1OHAefopKDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BN_Bo-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2ZMW6z7N2_jz6q7NNH3xvuOg0_VzZq1NJe9zvzcDh39jFHu21Z9B6zcxD_32mQ1daz3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z9BvuVBO_uz08JNk1_u6uVuR_jzgH7YAZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBke3BM1_7YUiFiP9oBrBY2gmUEUsUFHAyp6AJpHZUDUSoBrRo2QfNwq3ei6i-MQOUa_3jW_uzaHBBOQMNq1OghqM-96jVee_jhyjumzcFhH12xuMzSQIVprRBz_IVdZ14agJthP7x9_Aozqj-SHjWsrIBcrSHfZSeR9fOc1jPBZ_Pg8VP7oRuvoO2kbux0upuRyuCuHOu-yugJQ3Vg8ABoo7dFPfPx3SxHQMzUyjWAQ7UW_cKOg7xermOD8JYSoMdpe_VHe12kHRx0q_1R_RCOUiFiy3hSUstirfh5PIz2QMPwrfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_rDUMNOQ3-BrBYxgIowrMuhUst7HaFiyfV79fBjraUE3pyObAU7bAHFo_zPbm-X9foxQMz2gcV7guYxgIHi6sJfbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstirfh5PIz2QMPwrfuxrMotUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpJFHpnDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP31DUSCaq3oB9f-2gmUEoA1Fbm-SQfVD9fBjUstawe?management_type=1&dv=android&page=2&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Flaku8pedia%2Fsamsung-galaxy-a32-8-128-garansi-resmi-indonesia-ram-8gb-128gb-sein-hitam-ex-display%3Fsrc%3Dtopads&sid=foR2Mi-MTr2YunnZSVqjbW%3AAPA91bEBDl11JaVdglqssyQLqxIO2dJ1wHWL3QjBg2KcpyFrs6Jt7_mFRGeI7YxWt7uO7Zj-XkW5waPU3UIaVDmaYx9M7N0wgaZxLndHbKCoB-Lh5gHPp-lxOg6n3A1LAJj3xki57Opu&src=search_carousel",
+                  "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_npHA1FoAedbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHpKDUSz2Q31i6sJf6_yN6_Udop1DUMoFyaUEoA1Fbm-xgVYpyfYagZUEHsjfbsJNH_y76_1OHAefopKDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BN_Bo-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2ZMW6z7N2_jz6q7NNH3xvuOg0_VzZq1NJe9zvzcDh39jFHu21Z9B6zcxD_32mQ1daz3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z9BvuVBO_uz08JNk1_u6uVuR_jzgH7YAZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBke3BM1_7YUiFiP9oBrBY2gmUEUsUFHAyp6AJpHZUDUSoBrRo2QfNwq3ei6i-MQOUa_3jW_uzaHBBOQMNq1OghqM-96jVee_jhyjumzcFhH12xuMzSQIVprRBz_IVdZ14agJthP7x9_Aozqj-SHjWsrIBcrSHfZSeR9fOc1jPBZ_Pg8VP7oRuvoO2kbux0upuRyuCuHOu-yugJQ3Vg8ABoo7dFPfPx3SxHQMzUyjWAQ7UW_cKOg7xermOD8JYSoMdpe_VHe12kHRx0q_1R_RCOUiFiy3hSUstirfh5PIz2QMPwrfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_rDUMNOQ3-BrBYxgIowrMuhUst7HaFiyfV79fBjraUE3pyObAU7bAHFo_zPbm-X9foxQMz2gcV7guYxgIHi6sJfbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstirfh5PIz2QMPwrfuxrMotUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpJFHpnDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP31DUSCaq3oB9f-2gmUEoA1Fbm-SQfVD9fBjUstawe?dv=android&uid=200638131&page=2&t=android&sid=foR2Mi-MTr2YunnZSVqjbW%3AAPA91bEBDl11JaVdglqssyQLqxIO2dJ1wHWL3QjBg2KcpyFrs6Jt7_mFRGeI7YxWt7uO7Zj-XkW5waPU3UIaVDmaYx9M7N0wgaZxLndHbKCoB-Lh5gHPp-lxOg6n3A1LAJj3xki57Opu&product_id=10686092941&r=https%3A%2F%2Fwww.tokopedia.com%2Flaku8pedia%2Fsamsung-galaxy-a32-8-128-garansi-resmi-indonesia-ram-8gb-128gb-sein-hitam-ex-display%3Fsrc%3Dtopads&management_type=1&src=search_carousel",
+                  "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJFHpnOHAe76mFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6sHdbm-7q3OBUsthosjf6_ja6ArObm-Fy9ztUstiq3OxgfupbSz5qfYFg3z2yZNXg9e5q3OSbfoxyfxBbpUFHmOpr9uxrM15uSViyfOobpUFHsJ5om4hom4Og31FH3JNyZ7OH3yFb_efH_KWyMyhgiOjy_rhy_gBH3gBypHXqSCSUiFiy3zwrfo5rM1i6sUNoidh6_JfoAjOo_n7osrdbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-81N_Z9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq120_jP6q1NJ_MW68_Vt_OP3q7h11MB6zJV7_7z0HuBNHAVquJBN_jztQJOkeMO6Hju2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BN_OzgP1O1qRx6qBJO_BzuP7NJ3_ove7BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjV2gBJYvZUDUSupg9-wq3ei6iUaHAnfHpKhHpJibm-pg9opq3YX9fBjUstigMYZHjO2b1O1rs-gP3NX3Bo3r32iup2C1JJNH3-VejzDH_VGyugjgfhhrRoN11hh8JBvHMzGH9PUu7Fp132mgp-byRCNzS-poj27oOYWzB-Ig1jR39x9PAPO_pPqqiOyqOrOPfVeu_ouZ3V3zcOx39KN__P6HIPSyu2d_cNjZc-befYmb1hto3PU1InWQIxvgpgXH7Jh_JVGqsodqfjOo7YFPZUDUMVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6sJRbm-XP3Oig9-wy3zp9R-BrZUEoAHDUMNwyfVXgcBjy9zB9fVjraUEH_yDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDirfh5PIz2QMPwrfuxrMotUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHhHAHFbm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBbm-FrMBsguYiq3ei6seOHmFigfYxQVY2gmUEHS7?sid=foR2Mi-MTr2YunnZSVqjbW%3AAPA91bEBDl11JaVdglqssyQLqxIO2dJ1wHWL3QjBg2KcpyFrs6Jt7_mFRGeI7YxWt7uO7Zj-XkW5waPU3UIaVDmaYx9M7N0wgaZxLndHbKCoB-Lh5gHPp-lxOg6n3A1LAJj3xki57Opu&page=2&management_type=1&dv=android&t=android&src=search_carousel"
+                },
+                "customvideo_url": "",
+                "bundle_id": 0,
+                "parent_id": 1764600236,
+                "min_order": 0,
+                "stockbar": {
+                  "stock": 0,
+                  "original_stock": 0,
+                  "percentage_value": 0,
+                  "value": "",
+                  "color": ""
+                },
+                "warehouse_id_default": 656834
+              },
+              {
+                "id": 5215962866,
+                "name": "Samsung Galaxy A32[8/128] dan A03[3/32][4/64]",
+                "price": 2500000,
+                "price_str": "Rp2.500.000",
+                "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/8/4/14e067a1-14a2-40b8-8825-7df8450f1e17.jpg",
+                "rating": 5,
+                "count_review": 4,
+                "url": "https://www.tokopedia.com/tokoratuanggrek/samsung-galaxy-a32-8-128-dan-a03-3-32-4-64",
+                "applink": "tokopedia://product/5215962866",
+                "description": [],
+                "rating_average": "5.0",
+                "component_id": "03.71.02.03",
+                "label_groups": [
+                  {
+                    "title": "Cashback 1%",
+                    "type": "lightGreen",
+                    "position": "price",
+                    "url": ""
+                  },
+                  {
+                    "title": "13 terjual",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  }
+                ],
+                "original_price": "",
+                "discount_percentage": 0,
+                "label": "",
+                "discount": "",
+                "badges": [
+                  {
+                    "title": "Power Merchant Pro Badge",
+                    "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "id": 624637,
+                  "name": "Toko Ratu Anggrek",
+                  "city": "Kab. Bogor"
+                },
+                "freeOngkir": {
+                  "isActive": false,
+                  "image_url": ""
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                },
+                "customvideo_url": "",
+                "bundle_id": 0,
+                "parent_id": 0,
+                "min_order": 1,
+                "stockbar": {
+                  "stock": 0,
+                  "original_stock": 0,
+                  "percentage_value": 0,
+                  "value": "",
+                  "color": ""
+                },
+                "warehouse_id_default": 4842702
+              }
+            ],
+            "card_button": {
+              "title": "",
+              "applink": ""
+            },
+            "bundle": {
+              "shop": {
+                "name": "",
+                "url": ""
+              },
+              "count_sold": "",
+              "price": 0,
+              "original_price": "",
+              "discount": "",
+              "discount_percentage": 0
+            }
+          },
+          {
+            "title": "\"Samsung A23 Fans Edition\"",
+            "subtitle": "",
+            "icon_subtitle": "",
+            "url": "https://www.tokopedia.com/search?q=samsung+a52s&source=related_keyword&st=product&srp_component_id=03.71.03.00",
+            "applink": "tokopedia://search?q=samsung%20a52s&source=related_keyword&st=product&srp_component_id=03.71.03.00",
+            "banner_image_url": "",
+            "banner_link_url": "",
+            "banner_applink_url": "",
+            "identifier": "",
+            "meta": "",
+            "component_id": "03.71.03.00",
+            "product": [
+              {
+                "id": 5962852785,
+                "name": "Samsung Galaxy A52s 5g 8/256 Second Original Ex Garansi Resmi Sein",
+                "price": 3569000,
+                "price_str": "Rp3.569.000",
+                "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/9/7/2bbe46f6-1560-4b73-9663-f4f5c88427a3.jpg",
+                "rating": 5,
+                "count_review": 16,
+                "url": "https://www.tokopedia.com/mdrstore99/samsung-galaxy-a52s-5g-8-256-second-original-ex-garansi-resmi-sein",
+                "applink": "tokopedia://product/5962852785",
+                "description": [],
+                "rating_average": "4.9",
+                "component_id": "03.71.03.01",
+                "label_groups": [
+                  {
+                    "title": "Diskon 10 rb",
+                    "type": "lightGreen",
+                    "position": "price",
+                    "url": ""
+                  },
+                  {
+                    "title": "23 terjual",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  }
+                ],
+                "original_price": "",
+                "discount_percentage": 0,
+                "label": "",
+                "discount": "",
+                "badges": [
+                  {
+                    "title": "Power Merchant Pro Badge",
+                    "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "id": 14317280,
+                  "name": "MDR_store99",
+                  "city": "Depok"
+                },
+                "freeOngkir": {
+                  "isActive": false,
+                  "image_url": ""
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                },
+                "customvideo_url": "",
+                "bundle_id": 0,
+                "parent_id": 0,
+                "min_order": 1,
+                "stockbar": {
+                  "stock": 0,
+                  "original_stock": 0,
+                  "percentage_value": 0,
+                  "value": "",
+                  "color": ""
+                },
+                "warehouse_id_default": 14191595
+              },
+              {
+                "id": 4163553864,
+                "name": "Samsung A52s 5G Ram.8/256 Gb Second Lengkap Garansi Sein Resmi Indo",
+                "price": 3750000,
+                "price_str": "Rp3.750.000",
+                "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/6/17/b011332b-57aa-48bb-aa8a-6da32866748d.jpg",
+                "rating": 5,
+                "count_review": 11,
+                "url": "https://www.tokopedia.com/topsellonline/samsung-a52s-5g-ram-8-256-gb-second-lengkap-garansi-sein-resmi-indo",
+                "applink": "tokopedia://product/4163553864",
+                "description": [],
+                "rating_average": "5.0",
+                "component_id": "03.71.03.02",
+                "label_groups": [
+                  {
+                    "title": "Cashback 2%",
+                    "type": "lightGreen",
+                    "position": "price",
+                    "url": ""
+                  },
+                  {
+                    "title": "17 terjual",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  }
+                ],
+                "original_price": "",
+                "discount_percentage": 0,
+                "label": "",
+                "discount": "",
+                "badges": [
+                  {
+                    "title": "Power Merchant Pro Badge",
+                    "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "id": 1429894,
+                  "name": "TOPSELL ONLINE",
+                  "city": "Jakarta Utara"
+                },
+                "freeOngkir": {
+                  "isActive": true,
+                  "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                },
+                "customvideo_url": "",
+                "bundle_id": 0,
+                "parent_id": 0,
+                "min_order": 1,
+                "stockbar": {
+                  "stock": 0,
+                  "original_stock": 0,
+                  "percentage_value": 0,
+                  "value": "",
+                  "color": ""
+                },
+                "warehouse_id_default": 62258
+              },
+              {
+                "id": 2788690989,
+                "name": "samsung galaxy a52s 5g 8/256",
+                "price": 3999000,
+                "price_str": "Rp3.999.000",
+                "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/4/27/ac0e73ce-9cbb-4922-822f-5b1f0a48565f.jpg",
+                "rating": 5,
+                "count_review": 16,
+                "url": "https://www.tokopedia.com/nextinstoreid/samsung-galaxy-a52s-5g-8-256",
+                "applink": "tokopedia://product/2788690989",
+                "description": [],
+                "rating_average": "4.8",
+                "component_id": "03.71.03.03",
+                "label_groups": [
+                  {
+                    "title": "Sisa 3",
+                    "type": "textDarkRed",
+                    "position": "gimmick",
+                    "url": ""
+                  },
+                  {
+                    "title": "Cashback 1%",
+                    "type": "lightGreen",
+                    "position": "price",
+                    "url": ""
+                  },
+                  {
+                    "title": "30+ terjual",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  }
+                ],
+                "original_price": "",
+                "discount_percentage": 0,
+                "label": "",
+                "discount": "",
+                "badges": [
+                  {
+                    "title": "Power Merchant Pro Badge",
+                    "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "id": 8464726,
+                  "name": "NextIN Store ID",
+                  "city": "Jakarta Barat"
+                },
+                "freeOngkir": {
+                  "isActive": false,
+                  "image_url": ""
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                },
+                "customvideo_url": "",
+                "bundle_id": 0,
+                "parent_id": 0,
+                "min_order": 1,
+                "stockbar": {
+                  "stock": 0,
+                  "original_stock": 0,
+                  "percentage_value": 0,
+                  "value": "",
+                  "color": ""
+                },
+                "warehouse_id_default": 8639514
+              }
+            ],
+            "card_button": {
+              "title": "",
+              "applink": ""
+            },
+            "bundle": {
+              "shop": {
+                "name": "",
+                "url": ""
+              },
+              "count_sold": "",
+              "price": 0,
+              "original_price": "",
+              "discount": "",
+              "discount_percentage": 0
+            }
+          },
+          {
+            "title": "\"Samsung Note S20 Fans Edition\"",
+            "subtitle": "",
+            "icon_subtitle": "",
+            "url": "https://www.tokopedia.com/search?q=samsung+s21&source=related_keyword&st=product&srp_component_id=03.71.04.00",
+            "applink": "tokopedia://search?q=samsung%20s21&source=related_keyword&st=product&srp_component_id=03.71.04.00",
+            "banner_image_url": "",
+            "banner_link_url": "",
+            "banner_applink_url": "",
+            "identifier": "",
+            "meta": "",
+            "component_id": "03.71.04.00",
+            "product": [],
+            "card_button": {
+              "title": "",
+              "applink": ""
+            },
+            "bundle": {
+              "shop": {
+                "name": "",
+                "url": ""
+              },
+              "count_sold": "",
+              "price": 0,
+              "original_price": "",
+              "discount": "",
+              "discount_percentage": 0
+            }
+          },
+          {
+            "title": "\"Samsung Tablet S9 Fans Edition\"",
+            "subtitle": "",
+            "icon_subtitle": "",
+            "url": "https://www.tokopedia.com/search?q=samsung+s21&source=related_keyword&st=product&srp_component_id=03.71.04.00",
+            "applink": "tokopedia://search?q=samsung%20s21&source=related_keyword&st=product&srp_component_id=03.71.04.00",
+            "banner_image_url": "",
+            "banner_link_url": "",
+            "banner_applink_url": "",
+            "identifier": "",
+            "meta": "",
+            "component_id": "03.71.04.00",
+            "product": [],
+            "card_button": {
+              "title": "",
+              "applink": ""
+            },
+            "bundle": {
+              "shop": {
+                "name": "",
+                "url": ""
+              },
+              "count_sold": "",
+              "price": 0,
+              "original_price": "",
+              "discount": "",
+              "discount_percentage": 0
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

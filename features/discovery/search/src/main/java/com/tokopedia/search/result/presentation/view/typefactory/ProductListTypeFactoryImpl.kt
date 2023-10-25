@@ -78,6 +78,7 @@ import com.tokopedia.search.result.product.samesessionrecommendation.SameSession
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordCardView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordListener
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordViewHolder
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.reimagine.InspirationKeywordReimagineViewHolder
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductItemDataView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductListener
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.viewholder.GridInspirationProductItemViewHolder
@@ -258,8 +259,12 @@ class ProductListTypeFactoryImpl(
     override fun type(adsLowOrganicTitleDataView: AdsLowOrganicTitleDataView): Int =
         AdsLowOrganicTitleViewHolder.LAYOUT
 
-    override fun type(inspirationKeywordCardView: InspirationKeywordCardView): Int =
-        InspirationKeywordViewHolder.LAYOUT
+    override fun type(inspirationKeywordCardView: InspirationKeywordCardView): Int {
+        return if(inspirationKeywordCardView.isInspirationKeywordGridCard)
+            InspirationKeywordReimagineViewHolder.LAYOUT
+        else
+            InspirationKeywordViewHolder.LAYOUT
+    }
 
     override fun type(inspirationProductCardView: InspirationProductItemDataView): Int {
         return if (reimagineSearch3ProductCard.isReimagineProductCard()) {
@@ -363,6 +368,8 @@ class ProductListTypeFactoryImpl(
                 AdsLowOrganicTitleViewHolder(view)
             InspirationKeywordViewHolder.LAYOUT ->
                 InspirationKeywordViewHolder(view, inspirationKeywordListener, changeViewListener)
+            InspirationKeywordReimagineViewHolder.LAYOUT ->
+                InspirationKeywordReimagineViewHolder(view, inspirationKeywordListener)
             GridInspirationProductItemViewHolder.LAYOUT, GridInspirationProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->
                 GridInspirationProductItemViewHolder(view, inspirationProductListener, productListener)
             ListInspirationProductItemViewHolder.LAYOUT, ListInspirationProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->

@@ -31,7 +31,10 @@ private const val inspirationProductWithOneKeywordNoImage =
     "searchproduct/seamlessinspiration/seamless-inspiration-product_one_item_no_image.json"
 private const val inspirationProductWithAllKeywordNoImage =
     "searchproduct/seamlessinspiration/seamless-inspiration-product_no_image_all.json"
+private const val inspirationKeywordGrid =
+    "searchproduct/seamlessinspiration/seamless-inspiration-keyword-reimagine.json"
 private const val LAYOUT_INSPIRATION_KEYWORD_SEAMLESS = "carousel_seamless"
+const val LAYOUT_INSPIRATION_KEYWORD_GRID = "carousel_keyword_inspiration"
 private const val TARGET_CLICK = 0
 
 internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFixtures() {
@@ -50,7 +53,7 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         `load Data Product Search With Data`(searchProductModel)
 
         `Then verify view set product list`()
-        `Then verify visitable list has correct inspiration seamless keyword product and product sequence`(
+        `Then verify visitable list has correct inspiration keyword product and product sequence`(
             searchProductModel
         )
     }
@@ -62,7 +65,7 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         `load Data Product Search With Data`(searchProductModel)
 
         `Then verify view set product list`()
-        `Then verify visitable list has correct inspiration seamless keyword product and product sequence`(
+        `Then verify visitable list has correct inspiration keyword product and product sequence`(
             searchProductModel
         )
     }
@@ -74,7 +77,7 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         `load Data Product Search With Data`(searchProductModel)
 
         `Then verify view set product list`()
-        `Then verify visitable list has correct inspiration seamless keyword product and product sequence`(
+        `Then verify visitable list has correct inspiration keyword product and product sequence`(
             searchProductModel
         )
     }
@@ -118,6 +121,19 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         `Then verify view interaction for click inspiration product`(targetProduct)
     }
 
+    @Test
+    fun `Show inspiration keyword grid`() {
+        val searchProductModel: SearchProductModel =
+            inspirationKeywordGrid.jsonToObject()
+        `Given search reimagine rollence product card will return non control variant`()
+        `load Data Product Search With Data`(searchProductModel)
+
+        `Then verify view set product list`()
+        `Then verify visitable list has correct inspiration keyword product and product sequence`(
+            searchProductModel, isTargetingInspirationKeywordGridCard = true
+        )
+    }
+
     private fun `load Data Product Search With Data`(searchModel: SearchProductModel) {
         `Given Search Product API will return SearchProductModel with Inspiration Carousel`(
             searchModel
@@ -156,8 +172,9 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
         }
     }
 
-    private fun `Then verify visitable list has correct inspiration seamless keyword product and product sequence`(
-        searchProductModel: SearchProductModel
+    private fun `Then verify visitable list has correct inspiration keyword product and product sequence`(
+        searchProductModel: SearchProductModel,
+        isTargetingInspirationKeywordGridCard : Boolean = false
     ) {
         val visitableList = visitableListSlot.captured
         visitableList.size shouldBe 19
@@ -183,7 +200,8 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
                     )
                     (visitable as InspirationKeywordCardView)
                         .assertInspirationKeywordDataView(
-                            inspirationSeamlessCardData[inspirationCarouselIndex]
+                            inspirationSeamlessCardData[inspirationCarouselIndex],
+                            isTargetingInspirationKeywordGridCard
                         )
                     inspirationCarouselIndex += 1
                     keywordIndex = index
@@ -227,7 +245,7 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
 
     private fun SearchInspirationCarousel.getDataInspirationSeamless(): List<InspirationCarouselData> {
         return this.data.filter {
-            it.layout == LAYOUT_INSPIRATION_KEYWORD_SEAMLESS
+            it.layout == LAYOUT_INSPIRATION_KEYWORD_SEAMLESS || it.layout == LAYOUT_INSPIRATION_KEYWORD_GRID
         }
     }
 
@@ -274,10 +292,12 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
 
     private fun InspirationKeywordCardView.assertInspirationKeywordDataView(
         inspirationCarouselData: InspirationCarouselData,
+        isTargetingInspirationKeywordGridCard : Boolean = false
     ) {
         val isNoImage = !inspirationCarouselData.inspirationCarouselOptions.none { it.bannerImageUrl.isEmpty() }
         this.title shouldBe inspirationCarouselData.title
         this.isOneOrMoreIsEmptyImage shouldBe isNoImage
+        this.isInspirationKeywordGridCard shouldBe isTargetingInspirationKeywordGridCard
         this.optionsItems.forEachIndexed { index, seamlessInspirationKeyword ->
             seamlessInspirationKeyword.keyword shouldBe inspirationCarouselData.inspirationCarouselOptions[index].title
         }

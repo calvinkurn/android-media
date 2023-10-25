@@ -120,8 +120,8 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         data.isListAtcLayout() ->
             inspirationListAtcPresenterDelegate.convertInspirationCarouselToInspirationListAtc(data)
 
-        data.isSeamlessLayout() ->
-            convertInspirationCarouselToSeamlessInspiration(data, externalReference)
+        data.isSeamlessLayout() || data.isInspirationKeywordGridCard() ->
+            convertInspirationCarouselToSeamlessInspiration(data, externalReference, data.isInspirationKeywordGridCard())
 
         else ->
             listOf(data)
@@ -141,6 +141,9 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
 
     private fun InspirationCarouselDataView.isSeamlessLayout() =
         layout == LAYOUT_INSPIRATION_KEYWORD_SEAMLESS
+
+    private fun InspirationCarouselDataView.isInspirationKeywordGridCard() =
+        layout == LAYOUT_INSPIRATION_KEYWORD_GRID
 
     private fun convertInspirationCarouselToInspirationProductBundle(
         data: InspirationCarouselDataView,
@@ -178,13 +181,14 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
 
     private fun convertInspirationCarouselToSeamlessInspiration(
         data: InspirationCarouselDataView,
-        externalReference: String
+        externalReference: String,
+        isInspirationKeywordGridCard : Boolean = false
     ): List<Visitable<*>> {
         val inspirationKeywordVisitableList = mutableListOf<Visitable<*>>()
         val (inspirationKeyboard, inspirationProduct, isOneOrMoreItemIsEmptyImage) =
             InspirationSeamlessMapper.convertToInspirationList(data.options, externalReference)
         inspirationKeywordVisitableList.add(
-            InspirationKeywordCardView.create(data.title, inspirationKeyboard, isOneOrMoreItemIsEmptyImage)
+            InspirationKeywordCardView.create(data.title, inspirationKeyboard, isOneOrMoreItemIsEmptyImage, isInspirationKeywordGridCard)
         )
         inspirationKeywordVisitableList.addAll(inspirationProduct)
         return inspirationKeywordVisitableList
@@ -200,7 +204,8 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
             LAYOUT_INSPIRATION_CAROUSEL_BUNDLE,
             LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
             LAYOUT_INSPIRATION_CAROUSEL_VIDEO,
-            LAYOUT_INSPIRATION_KEYWORD_SEAMLESS
+            LAYOUT_INSPIRATION_KEYWORD_SEAMLESS,
+            LAYOUT_INSPIRATION_KEYWORD_GRID
         )
     }
 
