@@ -1,7 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.view.viewcomponent
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -55,10 +54,9 @@ class PMProTargetView : ConstraintLayout {
                 context,
                 com.tokopedia.unifyprinciples.R.color.Unify_RN500
             )
-            val defaultIconColor = SpannableUtil.getColorHexString(
-                context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN500
-            )
+
+            val eligibleIconRes = R.drawable.ic_pm_checked
+            val neutralIconRes = R.drawable.ic_pm_not_checked
 
             val isEligibleOrder = completedOrder >= Constant.PM_PRO_MIN_ORDER
             val completedOrderColor = if (isEligibleOrder) {
@@ -69,11 +67,11 @@ class PMProTargetView : ConstraintLayout {
             lblPmTargetCompletedOrder.text = root.context.getString(
                 R.string.pm_completed_order, completedOrderColor, completedOrder.toString()
             ).parseAsHtml()
-            icPmTargetCompletedOrder.setImage(
-                newLightEnable = if (isEligibleOrder) {
-                    Color.parseColor(completedOrderColor)
+            icPmTargetCompletedOrder.setImageResource(
+                if (isEligibleOrder) {
+                    eligibleIconRes
                 } else {
-                    Color.parseColor(defaultIconColor)
+                    neutralIconRes
                 }
             )
 
@@ -88,11 +86,11 @@ class PMProTargetView : ConstraintLayout {
                 netIncomeColor,
                 CurrencyFormatHelper.convertToRupiah(netIncome.toString())
             ).parseAsHtml()
-            icPmTargetNetIncome.setImage(
-                newLightEnable = if (isEligibleIncome) {
-                    Color.parseColor(netIncomeColor)
+            icPmTargetNetIncome.setImageResource(
+                if (isEligibleIncome) {
+                    eligibleIconRes
                 } else {
-                    Color.parseColor(defaultIconColor)
+                    neutralIconRes
                 }
             )
 
