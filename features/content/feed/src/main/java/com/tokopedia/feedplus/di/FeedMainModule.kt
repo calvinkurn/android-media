@@ -6,8 +6,6 @@ import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferences
 import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferencesImpl
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -46,6 +44,4 @@ class FeedMainModule(private val activityContext: Context) {
     fun provideTrackingQueue(@ApplicationContext context: Context) =
         TrackingQueue(context)
 
-    @Provides
-    fun provideFirebaseRemoteConfig(): RemoteConfig = FirebaseRemoteConfigImpl(activityContext)
 }
