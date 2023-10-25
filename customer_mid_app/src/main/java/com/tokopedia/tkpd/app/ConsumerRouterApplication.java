@@ -15,14 +15,12 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
-import com.tokopedia.tokochat.config.util.TokoChatConnection;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
 import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
-import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -70,12 +68,12 @@ import com.tokopedia.remoteconfig.GraphqlHelper;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.sessioncommon.worker.RefreshProfileWorker;
 import com.tokopedia.tkpd.ConsumerSplashScreen;
-import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.AppNotificationReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.GQLPing;
+import com.tokopedia.tokochat.config.util.TokoChatConnection;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker;
 import com.tokopedia.weaver.WeaveInterface;
@@ -397,11 +395,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public boolean isSupportApplink(String appLink) {
         return false;
-    }
-
-    @Override
-    public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
-        return new ApplinkUnsupportedImpl(activity);
     }
 
     @Override
