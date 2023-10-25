@@ -20,14 +20,15 @@ import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.play_common.util.VideoSnapshotHelper
+import com.tokopedia.play_common.view.getBitmapFromUrl
 import com.tokopedia.stories.creation.di.DaggerStoriesCreationComponent
-import com.tokopedia.stories.creation.di.StoriesCreationModule
 import com.tokopedia.stories.creation.view.screen.StoriesCreationScreen
 import com.tokopedia.stories.creation.view.viewmodel.StoriesCreationViewModel
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import com.tokopedia.stories.creation.R
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationErrorBottomSheet
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationInfoBottomSheet
+import com.tokopedia.stories.creation.view.model.StoriesMediaCover
 import com.tokopedia.stories.creation.view.model.StoriesMediaType
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
@@ -142,7 +143,12 @@ class StoriesCreationActivity : BaseActivity() {
                     StoriesCreationScreen(
                         uiState = uiState,
                         onLoadMediaPreview = { mediaFilePath ->
-                            videoSnapshotHelper.snapVideoBitmap(context, mediaFilePath)
+                            val bitmap = getBitmapFromUrl(mediaFilePath)
+
+                            if (bitmap != null)
+                                StoriesMediaCover.Success(bitmap)
+                            else
+                                StoriesMediaCover.Error
                         },
                         onBackPressed = {
 
