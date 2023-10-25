@@ -68,31 +68,25 @@ class StoriesCreationViewModel @Inject constructor(
              * need FE development to support UGC account
              * */
             val selectedAccount = accountList.firstOrNull { it.isShop && it.enable }
+                ?: throw AccountNotEligibleException()
 
-            if (selectedAccount != null) {
-                val config = repo.getStoryPreparationInfo(selectedAccount)
-                val storyId = config.storiesId.ifEmpty { repo.createStory(selectedAccount) }
+            val config = repo.getStoryPreparationInfo(selectedAccount)
+            val storyId = config.storiesId.ifEmpty { repo.createStory(selectedAccount) }
 
-                _uiState.update {
-                    it.copy(
-                        config = config.copy(
-                            storiesId = storyId
-                        ),
-                        accountList = accountList,
-                        selectedAccount = selectedAccount,
-                    )
-                }
-
-                if (config.maxStoriesConfig.isLimitReached) {
-                    _uiEvent.emit(StoriesCreationUiEvent.ShowTooManyStoriesReminder)
-                } else {
-                    _uiEvent.emit(StoriesCreationUiEvent.OpenMediaPicker)
-                }
-            }
-            else {
-                _uiEvent.emit(
-                    StoriesCreationUiEvent.ErrorPreparePage(AccountNotEligibleException())
+            _uiState.update {
+                it.copy(
+                    config = config.copy(
+                        storiesId = storyId
+                    ),
+                    accountList = accountList,
+                    selectedAccount = selectedAccount,
                 )
+            }
+
+            if (config.maxStoriesConfig.isLimitReached) {
+                _uiEvent.emit(StoriesCreationUiEvent.ShowTooManyStoriesReminder)
+            } else {
+                _uiEvent.emit(StoriesCreationUiEvent.OpenMediaPicker)
             }
         }) { throwable ->
             _uiEvent.emit(
