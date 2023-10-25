@@ -32,6 +32,7 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -116,6 +117,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.service.UploadImageBroadcastListener
 import com.tokopedia.topchat.chatroom.service.UploadImageBroadcastReceiver
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
+import com.tokopedia.topchat.chatroom.util.TopChatRoomRedirectionUtil
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.IS_FROM_ANOTHER_CALL
 import com.tokopedia.topchat.chatroom.view.activity.TopchatReportWebViewActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
@@ -203,6 +205,7 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
@@ -264,6 +267,12 @@ open class TopChatRoomFragment :
     @Inject
     lateinit var abTestPlatform: AbTestPlatform
 
+    @Inject
+    lateinit var redirectionUtil: TopChatRoomRedirectionUtil
+
+    @Inject
+    lateinit var dispatcher: CoroutineDispatchers
+
     val webSocketViewModel: TopChatRoomWebSocketViewModel by activityViewModels()
 
     private lateinit var fpm: PerformanceMonitoring
@@ -304,6 +313,7 @@ open class TopChatRoomFragment :
     protected var topchatViewState: TopChatViewStateImpl? = null
     private var uploadImageBroadcastReceiver: BroadcastReceiver? = null
     private var smoothScroller: CenterSmoothScroller? = null
+    private var generalLoading: View? = null
 
     /**
      * Ticker Reminder flag, only 1 ticker can exist in 1 session
@@ -1058,12 +1068,71 @@ open class TopChatRoomFragment :
     }
 
     override fun onProductClicked(element: ProductAttachmentUiModel) {
-        super.onProductClicked(element)
+        trackProductClicked(element)
+        handleProductApplink(element)
+    }
+
+    private fun trackProductClicked(element: ProductAttachmentUiModel) {
         context?.let {
             analytics.eventClickProductThumbnailEE(it, element, session)
         }
-
         analytics.trackProductAttachmentClicked()
+    }
+
+    private fun handleProductApplink(element: ProductAttachmentUiModel) {
+        if (!GlobalConfig.isSellerApp() || opponentRole != "shop") {
+            context?.let {
+                if (element.androidUrl.isNotBlank()) {
+                    redirectionUtil.getRedirectionUrl(
+                        originalApplink = element.androidUrl,
+                        onStart = {
+                            addFullPageGeneralLoading()
+                        },
+                        onCompleted = { applink ->
+                            removeFullPageGeneralLoading()
+                            val intent = RouteManager.getIntent(it, applink)
+                            startActivity(intent)
+                        }
+                    )
+                }
+            }
+        } else {
+            // Necessary to do it this way to prevent PDP opened in seller app
+            // otherwise someone other than the owner can access PDP with topads promote page
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(element.productUrl))
+            startActivity(browserIntent)
+        }
+    }
+
+    private fun addFullPageGeneralLoading() {
+        try {
+            if (generalLoading == null) {
+                val rootView = view as ViewGroup
+                val inflater = LayoutInflater.from(context)
+                generalLoading = inflater.inflate(
+                    R.layout.topchat_room_general_loading,
+                    rootView,
+                    false
+                )
+                rootView.addView(generalLoading)
+            }
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+        }
+    }
+
+    private fun removeFullPageGeneralLoading() {
+        lifecycleScope.launch(dispatcher.main) {
+            try {
+                if (generalLoading != null) {
+                    val rootView = view as ViewGroup
+                    rootView.removeView(generalLoading)
+                    generalLoading = null
+                }
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+            }
+        }
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
