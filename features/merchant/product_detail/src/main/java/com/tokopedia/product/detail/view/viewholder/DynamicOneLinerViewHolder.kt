@@ -29,6 +29,7 @@ class DynamicOneLinerViewHolder(
     }
 
     val binding = ItemDynamicOneLinerBinding.bind(view)
+    private var hasViewLoaded: Boolean = false
 
     override fun bind(element: DynamicOneLinerDataModel) = with(element.data) {
         when (status) {
@@ -36,10 +37,14 @@ class DynamicOneLinerViewHolder(
                 itemView.setLayoutHeight(LayoutParams.WRAP_CONTENT)
                 renderContent(this, getComponentTrackData(element))
                 impressComponent(element)
+                hasViewLoaded = true
             }
 
             else -> {
-                itemView.setLayoutHeight(0)
+                // first initial view set height to 0
+                if (!hasViewLoaded) {
+                    itemView.setLayoutHeight(0)
+                }
             }
         }
     }
@@ -48,7 +53,6 @@ class DynamicOneLinerViewHolder(
         data: DynamicOneLinerDataModel.Data,
         componentTrackDataModel: ComponentTrackDataModel
     ) = with(binding) {
-
         configPadding(binding, data)
 
         val title = data.text
