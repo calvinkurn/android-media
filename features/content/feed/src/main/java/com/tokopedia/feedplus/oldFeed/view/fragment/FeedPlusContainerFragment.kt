@@ -28,7 +28,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.navigation.broadcaster.PlayBroadcasterArgument
 import com.tokopedia.content.common.types.BundleData
@@ -42,7 +41,7 @@ import com.tokopedia.explore.view.fragment.ContentExploreFragment
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 import com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
-import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.databinding.FragmentFeedPlusContainerBinding
 import com.tokopedia.feedplus.oldFeed.data.pojo.FeedTabs
 import com.tokopedia.feedplus.oldFeed.domain.model.feed.WhitelistDomain
 import com.tokopedia.feedplus.oldFeed.view.adapter.FeedPlusTabAdapter
@@ -59,6 +58,7 @@ import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.AllNotificationListener
@@ -80,11 +80,14 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoTabComponent.view.VideoTabFragment
-import kotlinx.android.synthetic.main.fragment_feed_plus_container.*
-import kotlinx.android.synthetic.main.partial_feed_error.*
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.trySendBlocking
+import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 import javax.inject.Inject
-import com.tokopedia.content.common.R as contentCommonR
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.feedplus.R as feedplusR
 
 /**
  * @author by milhamj on 25/07/18.
@@ -97,6 +100,10 @@ class FeedPlusContainerFragment :
     PostProgressUpdateView.PostUpdateSwipe,
     FeedPlusContainerListener,
     FeedOnboardingCoachmark.Listener {
+
+    private var _binding: FragmentFeedPlusContainerBinding? = null
+    private val binding: FragmentFeedPlusContainerBinding
+        get() = _binding!!
 
     private var showOldToolbar: Boolean = false
     private var shouldHitFeedTracker: Boolean = false
@@ -205,8 +212,6 @@ class FeedPlusContainerFragment :
     private var isLightThemeStatusBar = false
     private var isSeller = false
 
-    private lateinit var coachMarkItem: CoachMarkItem
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainParentStatusBarListener = context as MainParentStatusBarListener
@@ -230,16 +235,17 @@ class FeedPlusContainerFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_feed_plus_container, container, false)
+    ): View {
+        _binding = FragmentFeedPlusContainerBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         isSeller = userSession.hasShop() || userSession.isAffiliate
         activity?.let {
-            status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
-            status_bar_bg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
+            binding.statusBarBg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
+            binding.statusBarBg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
         }
         setupView(view)
         initNavRevampAbTest()
@@ -284,9 +290,9 @@ class FeedPlusContainerFragment :
     }
 
     private fun setupView(view: View) {
-        fabFeed = view.findViewById(R.id.fab_feed)
-        feedFloatingButton = view.findViewById(R.id.feed_floating_button)
-        ivFeedUser = view.findViewById(R.id.iv_feed_user)
+        fabFeed = view.findViewById(feedplusR.id.fab_feed)
+        feedFloatingButton = view.findViewById(feedplusR.id.feed_floating_button)
+        ivFeedUser = view.findViewById(feedplusR.id.iv_feed_user)
     }
 
     private fun initNavRevampAbTest() {
@@ -298,14 +304,14 @@ class FeedPlusContainerFragment :
     }
 
     private fun initToolbar() {
-        status_bar_bg.visibility = when {
+        binding.statusBarBg.visibility = when {
             Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> View.VISIBLE
             else -> View.INVISIBLE
         }
-        status_bar_bg2.visibility = View.INVISIBLE
-        toolbarParent.removeAllViews()
+        binding.statusBarBg2.invisible()
+        binding.toolbarParent.removeAllViews()
         initNewToolBar()
-        toolbarParent.addView(feedToolbar)
+        binding.toolbarParent.addView(feedToolbar)
     }
 
     private fun initNewToolBar() {
@@ -388,6 +394,11 @@ class FeedPlusContainerFragment :
         } else {
             updateVisibility(false)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onDestroy() {
@@ -485,15 +496,15 @@ class FeedPlusContainerFragment :
 
     private fun goToVideo() {
         if (canGoToVideo()) {
-            view_pager.currentItem = pagerAdapter.getVideoTabIndex()
+            binding.viewPager.currentItem = pagerAdapter.getVideoTabIndex()
         }
     }
 
     private fun initView() {
-        postProgressUpdateView = view?.findViewById(R.id.postUpdateView)
-        viewPager = view?.findViewById(R.id.view_pager)
-        tabLayout = view?.findViewById(R.id.tab_layout)
-        coachMarkOverlay = view?.findViewById(R.id.transparent_overlay_coachmark)
+        postProgressUpdateView = view?.findViewById(feedplusR.id.postUpdateView)
+        viewPager = view?.findViewById(feedplusR.id.view_pager)
+        tabLayout = view?.findViewById(feedplusR.id.tab_layout)
+        coachMarkOverlay = view?.findViewById(feedplusR.id.transparent_overlay_coachmark)
         postProgressUpdateView?.setCreatePostData(CreatePostViewModel())
         postProgressUpdateView?.setPostUpdateListener(this)
         hideAllFab()
@@ -557,15 +568,12 @@ class FeedPlusContainerFragment :
     }
 
     private fun setupObserver() {
-        viewModel.whitelistResp.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> handleWhitelistData(it.data)
-                    is Fail -> onErrorGetWhitelist(it.throwable)
-                }
+        viewModel.whitelistResp.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> handleWhitelistData(it.data)
+                is Fail -> onErrorGetWhitelist(it.throwable)
             }
-        )
+        }
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             creationUploader.observe().collect { uploadResult ->
@@ -574,10 +582,10 @@ class FeedPlusContainerFragment :
                         postProgressUpdateView?.hide()
                         Toaster.build(
                             view = requireView(),
-                            text = getString(R.string.feed_upload_content_success),
+                            text = getString(feedplusR.string.feed_upload_content_success),
                             duration = Toaster.LENGTH_LONG,
                             type = Toaster.TYPE_NORMAL,
-                            actionText = getString(R.string.feed_upload_shorts_see_video),
+                            actionText = getString(feedplusR.string.feed_upload_shorts_see_video),
                             clickListener = View.OnClickListener {
                                 playShortsUploadAnalytic.clickRedirectToChannelRoom(
                                     uploadResult.data.authorId,
@@ -622,10 +630,10 @@ class FeedPlusContainerFragment :
 
             Toaster.build(
                 view = requireView(),
-                text = getString(R.string.feed_transcoding_livestream_to_vod_message),
+                text = getString(feedplusR.string.feed_transcoding_livestream_to_vod_message),
                 duration = Toaster.LENGTH_LONG,
                 type = Toaster.TYPE_NORMAL,
-                actionText = getString(R.string.feed_transcoding_livestream_to_vod_action),
+                actionText = getString(feedplusR.string.feed_transcoding_livestream_to_vod_action),
                 clickListener = {
                     RouteManager.route(requireContext(), appLinkSeeTranscodingChannel)
                 }
@@ -636,7 +644,7 @@ class FeedPlusContainerFragment :
     private fun initFab() {
         fabFeed.type = FloatingButtonUnify.BASIC
         fabFeed.color = FloatingButtonUnify.COLOR_GREEN
-        fabFeed.circleMainMenu.visibility = View.INVISIBLE
+        fabFeed.circleMainMenu.invisible()
 
         feedFloatingButton.setOnClickListener {
             coachMarkManager?.hasBeenShown(feedFloatingButton)
@@ -717,38 +725,38 @@ class FeedPlusContainerFragment :
     }
 
     private fun showLoading() {
-        feed_loading.visibility = View.VISIBLE
-        feed_error.visibility = View.GONE
-        tab_layout.visibility = View.INVISIBLE
-        viewPager?.visibility = View.INVISIBLE
+        binding.feedLoading.root.visible()
+        binding.feedError.root.gone()
+        binding.tabLayout.invisible()
+        viewPager?.invisible()
     }
 
     private fun onErrorGetTab(throwable: Throwable) {
-        message_retry.text = ErrorHandler.getErrorMessage(context, throwable)
-        button_retry.setOnClickListener { requestFeedTab() }
+        binding.feedError.messageRetry.text = ErrorHandler.getErrorMessage(context, throwable)
+        binding.feedError.buttonRetry.setOnClickListener { requestFeedTab() }
 
-        feed_loading.visibility = View.GONE
-        feed_error.visibility = View.VISIBLE
-        tab_layout.visibility = View.INVISIBLE
-        viewPager?.visibility = View.INVISIBLE
+        binding.feedLoading.root.gone()
+        binding.feedError.root.visible()
+        binding.tabLayout.invisible()
+        viewPager?.invisible()
     }
 
     private fun onSuccessGetTab(data: FeedTabs) {
         val feedData =
             data.feedData.filter { it.type == FeedTabs.TYPE_FEEDS || it.type == FeedTabs.TYPE_EXPLORE || it.type == FeedTabs.TYPE_CUSTOM || it.type == FeedTabs.TYPE_VIDEO }
-        tab_layout?.getUnifyTabLayout()?.removeAllTabs()
+        binding.tabLayout.getUnifyTabLayout().removeAllTabs()
         feedData.forEach {
-            tab_layout?.addNewTab(it.title)
+            binding.tabLayout.addNewTab(it.title)
         }
 
         pagerAdapter.setItemList(feedData)
         viewPager?.currentItem =
             if (data.meta.selectedIndex < feedData.size) data.meta.selectedIndex else 0
         viewPager?.offscreenPageLimit = pagerAdapter.count
-        feed_loading.visibility = View.GONE
-        feed_error.visibility = View.GONE
-        tab_layout.visibility = View.VISIBLE
-        viewPager?.visibility = View.VISIBLE
+        binding.feedLoading.root.gone()
+        binding.feedError.root.gone()
+        binding.tabLayout.visible()
+        viewPager?.visible()
 
         setActiveTab()
 
@@ -822,7 +830,7 @@ class FeedPlusContainerFragment :
     private fun createLiveFab(): FloatingButtonItem {
         return FloatingButtonItem(
             iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
-            title = getString(R.string.feed_fab_create_live),
+            title = getString(feedplusR.string.feed_fab_create_live),
             listener = {
                 fabFeed.menuOpen = false
                 entryPointAnalytic.clickCreateLiveEntryPoint()
@@ -835,7 +843,7 @@ class FeedPlusContainerFragment :
     private fun createPostFab(): FloatingButtonItem {
         return FloatingButtonItem(
             iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
-            title = getString(R.string.feed_fab_create_post),
+            title = getString(feedplusR.string.feed_fab_create_post),
             listener = {
                 fabFeed.menuOpen = false
                 entryPointAnalytic.clickCreatePostEntryPoint()
@@ -851,7 +859,7 @@ class FeedPlusContainerFragment :
                 )
                 intent.putExtra(
                     BundleData.TITLE,
-                    getString(contentCommonR.string.feed_post_sebagai)
+                    getString(contentcommonR.string.feed_post_sebagai)
                 )
                 intent.putExtra(
                     BundleData.APPLINK_FOR_GALLERY_PROCEED,
@@ -866,7 +874,7 @@ class FeedPlusContainerFragment :
     private fun createShortsFab(): FloatingButtonItem {
         return FloatingButtonItem(
             iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.SHORT_VIDEO),
-            title = getString(R.string.feed_fab_create_shorts_video),
+            title = getString(feedplusR.string.feed_fab_create_shorts_video),
             listener = {
                 fabFeed.menuOpen = false
                 playShortsInFeedAnalytic.clickCreateShortsEntryPoint()
@@ -895,7 +903,7 @@ class FeedPlusContainerFragment :
                         ivFeedUser.setImageDrawable(
                             MethodChecker.getDrawable(
                                 requireContext(),
-                                R.drawable.ic_user_profile_default
+                                feedplusR.drawable.ic_user_profile_default
                             )
                         )
                     }
@@ -923,10 +931,8 @@ class FeedPlusContainerFragment :
                 text = ErrorHandler.getErrorMessage(context, throwable),
                 duration = Toaster.LENGTH_LONG,
                 type = Toaster.TYPE_ERROR,
-                actionText = getString(com.tokopedia.abstraction.R.string.title_try_again),
-                clickListener = View.OnClickListener {
-                    viewModel.getWhitelist()
-                }
+                actionText = getString(abstractionR.string.title_try_again),
+                clickListener = { viewModel.getWhitelist() }
             ).show()
         }
 
@@ -935,7 +941,7 @@ class FeedPlusContainerFragment :
 
     private fun setAdapter() {
         viewPager?.adapter = pagerAdapter
-        viewPager?.let { tab_layout.setupWithViewPager(it) }
+        viewPager?.let { binding.tabLayout.setupWithViewPager(it) }
     }
 
     private fun canGoToExplore(): Boolean {
@@ -1020,7 +1026,7 @@ class FeedPlusContainerFragment :
     override fun swipeOnPostUpdate() {
         Toaster.build(
             requireView(),
-            getString(R.string.feed_post_successful_toaster),
+            getString(feedplusR.string.feed_post_successful_toaster),
             Toaster.LENGTH_LONG,
             Toaster.TYPE_NORMAL
         ).show()
