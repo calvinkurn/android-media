@@ -272,7 +272,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
     @Test
     fun `GIVEN failed prepare epharmacy data WHEN fetch epharmacy data THEN should do nothing`() {
         // Given
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
             (secondArg() as (Throwable) -> Unit).invoke(Throwable())
         }
 
@@ -287,7 +287,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
     fun `GIVEN null epharmacy data WHEN fetch epharmacy data THEN should do nothing`() {
         // Given
         viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(null)
             )
@@ -325,7 +325,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
     fun `GIVEN null view WHEN fetch epharmacy data THEN should do nothing`() {
         // Given
         viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
@@ -348,7 +348,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
     fun `GIVEN null epharmacy group data WHEN fetch epharmacy data THEN should do nothing`() {
         // Given
         viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
@@ -370,7 +370,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
     fun `GIVEN null epharmacy groups WHEN fetch epharmacy data THEN should do nothing`() {
         // Given
         viewModel.setUploadPrescriptionData(UploadPrescriptionUiModel())
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
@@ -430,7 +430,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
             )
         )
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
@@ -499,7 +499,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
             )
         )
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
@@ -511,6 +511,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                     null,
                                     null,
                                     "1",
+                                    null,
                                     null,
                                     null,
                                     null,
@@ -579,7 +580,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
             )
         )
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
@@ -595,6 +596,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                     null,
                                     null,
                                     listOf(null),
+                                    null,
                                     null
                                 )
                             ),
@@ -660,7 +662,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
             )
         )
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
@@ -675,7 +677,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                     null,
                                     null,
                                     null,
-                                    listOf(ProductsInfo(null, arrayListOf(ProductsInfo.Product(null, null, null, null, null, null, null)), "6554231", null, null, null, null)),
+                                    listOf(ProductsInfo(null, arrayListOf(ProductsInfo.Product(null, null, null, null, null, null, null, null, null, null)), "6554231", null, null, null, null)),
+                                    null,
                                     null
                                 )
                             ),
@@ -738,7 +741,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
             )
         )
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
@@ -754,6 +757,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                     null,
                                     null,
                                     listOf(ProductsInfo(null, null, "6554231", null, null, null, null)),
+                                    null,
                                     null
                                 )
                             ),
@@ -816,7 +820,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
             )
         )
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
@@ -832,6 +836,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                     null,
                                     null,
                                     listOf(ProductsInfo(null, null, "asdf", null, null, null, null)),
+                                    null,
                                     null
                                 )
                             ),
@@ -864,7 +869,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
         val errorWording = "error wording"
         every { view.getStringResourceWithArgs(any(), any()) } returns errorWording
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     detailData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
@@ -883,7 +888,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1"
+                                                    quantity = "1",
+                                                    qtyComparison = null,
+                                                    price = 3.0,
+                                                    cartId = ""
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -902,7 +910,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1"
+                                                    quantity = "1",
+                                                    qtyComparison = null,
+                                                    price = 3.0,
+                                                    cartId = ""
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -927,7 +938,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                     ),
                                     consultationSource = null,
                                     prescriptionSource = null,
-                                    prescriptionCTA = null
+                                    prescriptionCTA = null,
+                                    ticker = null
                                 )
                             ),
                             attachmentPageTickerText = null,
@@ -1024,7 +1036,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
     fun `GIVEN cannot get position WHEN fetch epharmacy data THEN should do nothing`() {
         // Given
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns -1
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     detailData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
@@ -1043,7 +1055,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1"
+                                                    quantity = "1",
+                                                    qtyComparison = null,
+                                                    price = 3.0,
+                                                    cartId = ""
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -1068,7 +1083,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                     ),
                                     consultationSource = null,
                                     prescriptionSource = null,
-                                    prescriptionCTA = null
+                                    prescriptionCTA = null,
+                                    ticker = null
                                 )
                             ),
                             attachmentPageTickerText = null,
@@ -1124,7 +1140,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
     fun `GIVEN approved consultation WHEN fetch epharmacy data THEN should set consultation data`() {
         // Given
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     detailData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
@@ -1143,7 +1159,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1"
+                                                    quantity = "1",
+                                                    qtyComparison = null,
+                                                    price = 3.0,
+                                                    cartId = ""
                                                 ),
                                                 ProductsInfo.Product(
                                                     productId = 2150389389,
@@ -1152,7 +1171,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1"
+                                                    quantity = "1",
+                                                    qtyComparison = null,
+                                                    price = 3.0,
+                                                    cartId = ""
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -1177,7 +1199,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                     ),
                                     consultationSource = null,
                                     prescriptionSource = null,
-                                    prescriptionCTA = null
+                                    prescriptionCTA = null,
+                                    ticker = null
                                 )
                             ),
                             attachmentPageTickerText = null,
@@ -1312,7 +1335,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
     fun `GIVEN mixed epharmacy data WHEN fetch epharmacy data THEN should set epharmacy data correctly`() {
         // Given
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
-        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     detailData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
@@ -1331,7 +1354,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1"
+                                                    quantity = "1",
+                                                    qtyComparison = null,
+                                                    price = 3.0,
+                                                    cartId = ""
                                                 ),
                                                 ProductsInfo.Product(
                                                     productId = 2150389388,
@@ -1340,7 +1366,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1"
+                                                    quantity = "1",
+                                                    qtyComparison = null,
+                                                    price = 3.0,
+                                                    cartId = ""
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -1359,7 +1388,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1"
+                                                    quantity = "1",
+                                                    qtyComparison = null,
+                                                    price = 3.0,
+                                                    cartId = ""
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -1384,7 +1416,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                     ),
                                     consultationSource = null,
                                     prescriptionSource = null,
-                                    prescriptionCTA = null
+                                    prescriptionCTA = null,
+                                    ticker = null
                                 ),
                                 GroupData.EpharmacyGroup(
                                     epharmacyGroupId = "124",
@@ -1399,7 +1432,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1"
+                                                    quantity = "1",
+                                                    qtyComparison = null,
+                                                    price = 3.0,
+                                                    cartId = ""
                                                 ),
                                                 ProductsInfo.Product(
                                                     productId = 2150389386,
@@ -1408,7 +1444,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1"
+                                                    quantity = "1",
+                                                    qtyComparison = null,
+                                                    price = 3.0,
+                                                    cartId = ""
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -1446,7 +1485,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                     ),
                                     consultationSource = null,
                                     prescriptionSource = null,
-                                    prescriptionCTA = null
+                                    prescriptionCTA = null,
+                                    ticker = null
                                 ),
                                 GroupData.EpharmacyGroup(
                                     epharmacyGroupId = "125",
@@ -1461,7 +1501,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1"
+                                                    quantity = "1",
+                                                    qtyComparison = null,
+                                                    price = 3.0,
+                                                    cartId = ""
                                                 ),
                                                 ProductsInfo.Product(
                                                     productId = 2150389385,
@@ -1470,7 +1513,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                                     name = "",
                                                     productImage = "",
                                                     productTotalWeightFmt = "",
-                                                    quantity = "1"
+                                                    quantity = "1",
+                                                    qtyComparison = null,
+                                                    price = 3.0,
+                                                    cartId = ""
                                                 )
                                             ),
                                             partnerLogoUrl = "",
@@ -1495,7 +1541,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                     ),
                                     consultationSource = null,
                                     prescriptionSource = null,
-                                    prescriptionCTA = null
+                                    prescriptionCTA = null,
+                                    ticker = null
                                 )
                             ),
                             attachmentPageTickerText = null,
@@ -1734,7 +1781,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 2150389388,
                                 "",
                                 "",
-                                "1"
+                                "",
+                                "1",
+                                null,
+                                3.0
                             )
                         ),
                         "6554231",
@@ -1750,9 +1800,11 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                     GroupData.EpharmacyGroup.ConsultationData.Prescription(
                         "",
                         "",
+                        "",
                         ""
                     ),
                     GroupData.EpharmacyGroup.ConsultationData.Prescription(
+                        "",
                         "",
                         "",
                         ""
@@ -1796,7 +1848,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 2150389388,
                                 "",
                                 "",
-                                "1"
+                                "",
+                                "1",
+                                null,
+                                3.0
                             )
                         ),
                         "6554231",
@@ -1812,9 +1867,11 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                     GroupData.EpharmacyGroup.ConsultationData.Prescription(
                         "",
                         "",
+                        "",
                         ""
                     ),
                     GroupData.EpharmacyGroup.ConsultationData.Prescription(
+                        "",
                         "",
                         "",
                         ""
@@ -2032,7 +2089,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 2150389388,
                                 "",
                                 "",
-                                "1"
+                                "",
+                                "1",
+                                null,
+                                3.0
                             )
                         ),
                         null,
@@ -2304,7 +2364,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 2150389388,
                                 "",
                                 "",
-                                "1"
+                                "",
+                                "1",
+                                null,
+                                3.0
                             )
                         ),
                         "asdf",
@@ -2445,7 +2508,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 2150389388,
                                 "",
                                 "",
-                                "1"
+                                "",
+                                "1",
+                                null,
+                                3.0
                             )
                         ),
                         "6554231",
@@ -2638,7 +2704,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1"
+                                quantity = "1",
+                                qtyComparison = null,
+                                price = 3.0,
+                                cartId = ""
                             )
                         ),
                         partnerLogoUrl = "",
@@ -2657,7 +2726,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1"
+                                quantity = "1",
+                                qtyComparison = null,
+                                price = 3.0,
+                                cartId = ""
                             )
                         ),
                         partnerLogoUrl = "",
@@ -2790,7 +2862,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1"
+                                quantity = "1",
+                                qtyComparison = null,
+                                price = 3.0,
+                                cartId = ""
                             ),
                             ProductsInfo.Product(
                                 productId = 2150389388,
@@ -2799,7 +2874,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1"
+                                quantity = "1",
+                                qtyComparison = null,
+                                price = 3.0,
+                                cartId = ""
                             )
                         ),
                         partnerLogoUrl = "",
@@ -2818,7 +2896,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1"
+                                quantity = "1",
+                                qtyComparison = null,
+                                price = 3.0,
+                                cartId = ""
                             )
                         ),
                         partnerLogoUrl = "",
@@ -2848,7 +2929,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1"
+                                quantity = "1",
+                                qtyComparison = null,
+                                price = 3.0,
+                                cartId = ""
                             ),
                             ProductsInfo.Product(
                                 productId = 2150389386,
@@ -2857,7 +2941,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1"
+                                quantity = "1",
+                                qtyComparison = null,
+                                price = 3.0,
+                                cartId = ""
                             )
                         ),
                         partnerLogoUrl = "",
@@ -2900,7 +2987,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1"
+                                quantity = "1",
+                                qtyComparison = null,
+                                price = 3.0,
+                                cartId = ""
                             ),
                             ProductsInfo.Product(
                                 productId = 2150389385,
@@ -2909,7 +2999,10 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                                 name = "",
                                 productImage = "",
                                 productTotalWeightFmt = "",
-                                quantity = "1"
+                                quantity = "1",
+                                qtyComparison = null,
+                                price = 3.0,
+                                cartId = ""
                             )
                         ),
                         partnerLogoUrl = "",

@@ -42,7 +42,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
 
     private val ePharmacyProduct = mockk<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product>(relaxed = true)
     private val ePharmacyProductsInfo = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo("", arrayListOf(ePharmacyProduct), "23", "", "", "", "")
-    private val ePharmacyGroup = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(null, EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource("abc", 1, mockk(), "", "", "", "",""), "1", null, null, null, arrayListOf(ePharmacyProductsInfo), null, null)
+    private val ePharmacyGroup = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(null, EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource("abc", 1, mockk(), "", "", "", "", "", ""), "1", null, null, null, arrayListOf(ePharmacyProductsInfo), null, null)
     private val responseGroup = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData("Hi ", "test", arrayListOf(ePharmacyGroup), EPharmacyPrepareProductsGroupResponse.EPharmacyToaster("PRESCRIPTION_ATTACH_SUCCESS", "sfa", "1"), null)
     private val responseData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(responseGroup)
 
@@ -60,11 +60,11 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
     fun getGroupsSuccessTest() {
         val response = EPharmacyPrepareProductsGroupResponse(responseData)
         coEvery {
-            ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any())
+            ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any())
         } coAnswers {
             firstArg<(EPharmacyPrepareProductsGroupResponse) -> Unit>().invoke(response)
         }
-        viewModel.getPrepareProductGroup()
+        viewModel.getPrepareProductGroup("", mutableMapOf())
         assert(viewModel.productGroupLiveDataResponse.value is Success)
         assert(viewModel.ePharmacyPrepareProductsGroupResponseData != null)
     }
@@ -73,11 +73,11 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
     fun `getGroupsSuccessTest button data`() {
         val response = EPharmacyPrepareProductsGroupResponse(responseData)
         coEvery {
-            ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any())
+            ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any())
         } coAnswers {
             firstArg<(EPharmacyPrepareProductsGroupResponse) -> Unit>().invoke(response)
         }
-        viewModel.getPrepareProductGroup()
+        viewModel.getPrepareProductGroup("", mutableMapOf())
         assert(viewModel.productGroupLiveDataResponse.value is Success)
         assert(viewModel.buttonLiveData.value == response.detailData?.groupsData?.papPrimaryCTA)
         assert(viewModel.uploadError.value is EPharmacyMiniConsultationToaster)
@@ -87,11 +87,11 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
     fun `getGroupsSuccessTest Data check`() {
         val response = EPharmacyPrepareProductsGroupResponse(responseData)
         coEvery {
-            ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any())
+            ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any())
         } coAnswers {
             firstArg<(EPharmacyPrepareProductsGroupResponse) -> Unit>().invoke(response)
         }
-        viewModel.getPrepareProductGroup()
+        viewModel.getPrepareProductGroup("", mutableMapOf())
         assert(viewModel.productGroupLiveDataResponse.value is Success)
         assert(viewModel.ePharmacyPrepareProductsGroupResponseData != null)
         assert(viewModel.getEnablers().isNotEmpty())
@@ -105,11 +105,11 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
     fun `getGroupsSuccessTest Data to checkout`() {
         val response = EPharmacyPrepareProductsGroupResponse(responseData)
         coEvery {
-            ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any())
+            ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any())
         } coAnswers {
             firstArg<(EPharmacyPrepareProductsGroupResponse) -> Unit>().invoke(response)
         }
-        viewModel.getPrepareProductGroup()
+        viewModel.getPrepareProductGroup("", mutableMapOf())
         assert(viewModel.productGroupLiveDataResponse.value is Success)
         assert(viewModel.ePharmacyPrepareProductsGroupResponseData != null)
         assert(viewModel.getResultForCheckout().isNotEmpty())
@@ -120,11 +120,11 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         val response = EPharmacyPrepareProductsGroupResponse(responseData)
         responseData.groupsData?.toaster?.type = "PRESCRIPTION_ATTACH_FAIL"
         coEvery {
-            ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any())
+            ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any())
         } coAnswers {
             firstArg<(EPharmacyPrepareProductsGroupResponse) -> Unit>().invoke(response)
         }
-        viewModel.getPrepareProductGroup()
+        viewModel.getPrepareProductGroup("", mutableMapOf())
         assert(viewModel.productGroupLiveDataResponse.value is Success)
     }
 
@@ -133,11 +133,11 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         val responseGroup = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData("Hi", "test", null, null, null)
         val response = EPharmacyPrepareProductsGroupResponse(EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(responseGroup))
         coEvery {
-            ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any())
+            ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any())
         } coAnswers {
             firstArg<(EPharmacyPrepareProductsGroupResponse) -> Unit>().invoke(response)
         }
-        viewModel.getPrepareProductGroup()
+        viewModel.getPrepareProductGroup("", mutableMapOf())
         Assert.assertEquals(
             (viewModel.productGroupLiveDataResponse.value as Fail).throwable.localizedMessage,
             "Data Invalid"
@@ -147,11 +147,11 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
     @Test
     fun `get Groups fetch failed throws exception`() {
         coEvery {
-            ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any())
+            ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any(), any(), any())
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.getPrepareProductGroup()
+        viewModel.getPrepareProductGroup("", mutableMapOf())
         Assert.assertEquals(
             (viewModel.productGroupLiveDataResponse.value as Fail).throwable,
             mockThrowable

@@ -21,6 +21,8 @@ object EPharmacyGetConsultationOrderDetailsQuery : GqlQueryInterface {
                   payment_method
                   payment_amount
                   payment_amount_str
+                  item_price
+                  item_price_str
                   order_status
                   order_status_desc
                   ticker {
