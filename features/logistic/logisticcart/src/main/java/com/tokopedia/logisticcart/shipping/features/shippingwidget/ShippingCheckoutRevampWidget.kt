@@ -757,7 +757,6 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         shippingWidgetUiModel: ShippingWidgetUiModel
     ): String {
         return if (shippingWidgetUiModel.voucherLogisticExists) {
-            // Change duration to promo title after promo is applied
             shippingWidgetUiModel.orderMessage
         } else {
             return shippingWidgetUiModel.courierOrderMessage

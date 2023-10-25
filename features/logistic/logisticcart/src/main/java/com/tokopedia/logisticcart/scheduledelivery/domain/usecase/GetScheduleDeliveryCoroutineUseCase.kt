@@ -20,9 +20,14 @@ class GetScheduleDeliveryCoroutineUseCase @Inject constructor(
     }
 
     override suspend fun execute(params: ScheduleDeliveryParam): ScheduleDeliveryRatesResponse {
-        return graphqlRepository.request(
+        return graphqlRepository.request<OngkirGetScheduledDeliveryRatesInput, ScheduleDeliveryRatesResponse>(
             graphqlQuery(),
             OngkirGetScheduledDeliveryRatesInput(params)
-        )
+        ).overwriteRecommendFromSAF(params.isRecommend)
+    }
+
+    fun ScheduleDeliveryRatesResponse.overwriteRecommendFromSAF(recommend: Boolean): ScheduleDeliveryRatesResponse {
+        this.ongkirGetScheduledDeliveryRates.scheduleDeliveryData.recommend = recommend
+        return this
     }
 }

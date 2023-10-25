@@ -10,8 +10,8 @@ class ScheduleDeliveryMapper @Inject constructor() {
     fun map(
         ratesParam: RatesParam,
         warehouseId: String,
-        startDate: String? = null,
-        isRecommend: Boolean? = null
+        startDate: String = "",
+        isRecommend: Boolean = true
     ): ScheduleDeliveryParam {
         return ScheduleDeliveryParam(
             origin = ratesParam.origin,
