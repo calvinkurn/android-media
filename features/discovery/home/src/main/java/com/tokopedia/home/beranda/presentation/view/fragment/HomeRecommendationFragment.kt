@@ -251,12 +251,12 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
                             adapter.submitList(it.errorList)
                             showToasterError()
                         }
-                        is HomeRecommendationCardState.SuccessLoadMore -> {
+                        is HomeRecommendationCardState.SuccessNextPage -> {
                             adapter.submitList(it.data.homeRecommendations)
                             updateScrollEndlessListener(it.data.isHasNextPage)
                         }
 
-                        is HomeRecommendationCardState.FailLoadMore -> {
+                        is HomeRecommendationCardState.FailNextPage -> {
                             adapter.submitList(it.existingList)
                             showToasterError()
                         }
