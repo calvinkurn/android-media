@@ -63,15 +63,14 @@ class StoriesCreationActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
-        super.onCreate(savedInstanceState)
         setupAttachFragmentListener()
+        super.onCreate(savedInstanceState)
         setupContentView()
     }
 
     private fun inject() {
         DaggerStoriesCreationComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .storiesCreationModule(StoriesCreationModule(this))
             .build()
             .inject(this)
     }
