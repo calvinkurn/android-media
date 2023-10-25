@@ -4,7 +4,13 @@ import com.google.gson.annotations.SerializedName
 
 data class PaymentRequest(
     @SerializedName("payment")
-    val payment: PaymentData
+    val payment: PaymentData,
+    @SerializedName("cart_details")
+    val cartDetail: CartDetail,
+    @SerializedName("promo_details")
+    val promoDetail: PromoDetail,
+    @SerializedName("additional_data")
+    val additionalData: String
 )
 
 data class PaymentData(
@@ -98,7 +104,7 @@ data class CartShopOrderData(
     @SerializedName("shop_tier")
     val shopTier: Long,
     @SerializedName("products")
-    val products: String,
+    val products: List<CartProductData>,
     @SerializedName("bundle_data")
     val bundle: List<CartBundleData>,
     @SerializedName("addon_items")
@@ -174,4 +180,63 @@ data class TradeInData(
     val tradeInAmount: Long = 0,
     @SerializedName("is_trade_in")
     val isTradeIn: Boolean = false
+)
+
+data class PromoDetail(
+    @SerializedName("benefit_summary_info")
+    val benefitSummaryInfo: BenefitSummaryInfoData,
+    @SerializedName("voucher_orders")
+    val voucherOrders: List<VoucherOrderItemData>,
+    @SerializedName("additional_info")
+    val additionalInfo: AdditionalInfoData
+)
+
+data class VoucherOrderItemData(
+    @SerializedName("code")
+    val code: String = "",
+    @SerializedName("unique_id")
+    val uniqueId: String = "",
+    @SerializedName("shipping_id")
+    val shippingId: Long = 0,
+    @SerializedName("sp_id")
+    val spId: Long = 0,
+    @SerializedName("type")
+    val type: String = "",
+    @SerializedName("success")
+    val success: Boolean = false,
+    @SerializedName("cart_string_group")
+    val cartStringGroup: String = ""
+)
+
+data class BenefitSummaryInfoData(
+    @SerializedName("summaries")
+    val summaries: List<SummariesItemData> = emptyList()
+)
+
+data class SummariesItemData(
+    @SerializedName("details")
+    val details: List<DetailsItemData> = emptyList(),
+    @SerializedName("type")
+    val type: String = ""
+)
+
+data class DetailsItemData(
+    @SerializedName("amount")
+    val amount: Int = 0,
+    @SerializedName("type")
+    val type: String = ""
+)
+
+data class AdditionalInfoData(
+    @SerializedName("usage_summaries")
+    val usageSummaries: List<UsageSummariesData> = emptyList()
+)
+
+data class UsageSummariesData(
+    @SerializedName("type")
+    val type: String = "",
+    @SerializedName("amount_str")
+    val amountString: String = "",
+    @SerializedName("amount")
+    val amount: Int = -1
 )
