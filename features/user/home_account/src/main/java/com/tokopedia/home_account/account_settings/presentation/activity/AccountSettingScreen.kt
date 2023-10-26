@@ -43,18 +43,21 @@ fun AccountSettingScreen(
                     )
                 }
             }
-            else -> {
+
+            is AccountSettingUiModel.Display -> {
                 NestTypography(
                     modifier = Modifier.padding(16.dp, 24.dp, 16.dp, 8.dp),
                     text = stringResource(R.string.header_privacy_account_setting),
                     textStyle = NestTheme.typography.heading4.copy(fontWeight = FontWeight.Bold)
                 )
-                ItemSetting(
-                    stringResource(R.string.title_password_setting),
-                    SettingConstant.SETTING_ACCOUNT_PASS_ID,
-                    onClick = onItemClicked
-                )
-                ItemDivider()
+                if (state.config.isPasswordEnabled) {
+                    ItemSetting(
+                        stringResource(R.string.title_password_setting),
+                        SettingConstant.SETTING_ACCOUNT_PASS_ID,
+                        onClick = onItemClicked
+                    )
+                    ItemDivider()
+                }
                 ItemSetting(
                     stringResource(R.string.title_setting_pin),
                     SettingConstant.SETTING_PIN,
@@ -68,12 +71,14 @@ fun AccountSettingScreen(
                     onClick = onItemClicked
                 )
                 ItemDivider()
-                ItemSetting(
-                    stringResource(R.string.title_kyc_setting),
-                    SettingConstant.SETTING_ACCOUNT_KYC_ID,
-                    onClick = onItemClicked
-                )
-                ItemDivider()
+                if (state.config.isIdentityEnabled) {
+                    ItemSetting(
+                        stringResource(R.string.title_kyc_setting),
+                        SettingConstant.SETTING_ACCOUNT_KYC_ID,
+                        onClick = onItemClicked
+                    )
+                    ItemDivider()
+                }
                 ItemSetting(
                     stringResource(R.string.title_signin_with_notification),
                     SettingConstant.SETTING_PUSH_NOTIF,
@@ -129,6 +134,6 @@ private fun ItemDivider() {
 @Preview
 fun AccountSettingPreview() {
     NestTheme {
-        AccountSettingScreen(AccountSettingUiModel.Not)
+        AccountSettingScreen(AccountSettingUiModel.Display())
     }
 }

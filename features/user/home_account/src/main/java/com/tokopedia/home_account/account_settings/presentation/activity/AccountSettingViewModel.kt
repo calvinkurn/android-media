@@ -4,11 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.home_account.account_settings.data.model.AccountSettingConfig
+import com.tokopedia.home_account.account_settings.data.model.AccountSettingConfigResponse
+import com.tokopedia.home_account.account_settings.domain.GetAccountSettingConfigUseCase
 import kotlinx.coroutines.launch
+import rx.Subscriber
 import javax.inject.Inject
 
-class AccountSettingViewModel @Inject constructor() : ViewModel() {
+class AccountSettingViewModel @Inject constructor(
+    private val getAccountSettingConfig: GetAccountSettingConfigUseCase
+) : ViewModel() {
 
     private val _state: MutableLiveData<AccountSettingUiModel> = MutableLiveData()
     val state: LiveData<AccountSettingUiModel>
@@ -17,13 +23,31 @@ class AccountSettingViewModel @Inject constructor() : ViewModel() {
     init {
         _state.value = AccountSettingUiModel.Loading
         viewModelScope.launch {
-            delay(3000)
-            _state.value = AccountSettingUiModel.Not
+            getAccountSettingConfig.execute(
+                GetAccountSettingConfigUseCase.getRequestParam(),
+                object : Subscriber<GraphqlResponse>() {
+                    override fun onCompleted() {
+                        // no op
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        _state.value = AccountSettingUiModel.Display()
+                    }
+
+                    override fun onNext(response: GraphqlResponse?) {
+                        val result =
+                            response?.getData<AccountSettingConfig>(AccountSettingConfig::class.java)?.accountSettingConfig
+                        _state.value =
+                            AccountSettingUiModel.Display(result ?: AccountSettingConfigResponse())
+                    }
+                }
+            )
         }
     }
 }
 
 interface AccountSettingUiModel {
     object Loading : AccountSettingUiModel
-    object Not : AccountSettingUiModel
+    data class Display(val config: AccountSettingConfigResponse = AccountSettingConfigResponse()) :
+        AccountSettingUiModel
 }

@@ -19,15 +19,23 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.home_account.R
+import com.tokopedia.home_account.account_settings.analytics.AccountAnalytics
 import com.tokopedia.home_account.di.ActivityComponentFactory
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class AccountSettingActivity : BaseSimpleActivity() {
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var analytics: AccountAnalytics
 
     private val viewModel: AccountSettingViewModel by viewModels { factory }
 
