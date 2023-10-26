@@ -30,7 +30,7 @@ object ChannelStyleUtil {
             value?.let {
                 return if (it > 0) it else DEFAULT_DIVIDER_SIZE
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return DEFAULT_DIVIDER_SIZE
         }
         return DEFAULT_DIVIDER_SIZE
@@ -43,7 +43,7 @@ object ChannelStyleUtil {
             value?.let {
                 return it.ifBlank { BORDER_STYLE_BLEEDING }
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return BORDER_STYLE_BLEEDING
         }
         return BORDER_STYLE_BLEEDING
@@ -56,7 +56,7 @@ object ChannelStyleUtil {
             value?.let {
                 return it.ifBlank { IMAGE_STYLE_DEFAULT }
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return IMAGE_STYLE_DEFAULT
         }
         return IMAGE_STYLE_DEFAULT
@@ -66,7 +66,7 @@ object ChannelStyleUtil {
         return try {
             val map = this.parseStyleParamAsMap()
             map[KEY_WITH_SUBTITLE].toBoolean()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             false
         }
     }
