@@ -20,6 +20,9 @@ class ComparisonSpecItemViewHolder(
 ) : RecyclerView.ViewHolder(itemView) {
     companion object {
         private const val DIVIDER_MARGIN = 8
+        private const val DIVIDER_DARK_ALPHA = 0.4F
+        private const val DIVIDER_LIGHT_ALPHA = 0.2F
+
         fun createRootView(parent: ViewGroup): View = LayoutInflater.from(parent.context)
             .inflate(R.layout.widget_item_comparison_content_spec, parent, false)
     }
@@ -52,6 +55,9 @@ class ComparisonSpecItemViewHolder(
                 tfSpecValue.isVisible = !item.isSpecCategoryTitle
                 divSpecValue.isVisible = !item.isSpecCategoryTitle
 
+                divSpecValue.alpha = if (item.isDarkMode) DIVIDER_DARK_ALPHA else DIVIDER_LIGHT_ALPHA
+                divSpecCategory.alpha = if (item.isDarkMode) DIVIDER_DARK_ALPHA else DIVIDER_LIGHT_ALPHA
+                tfSpecTitle.setTextColor(item.specTextTitleColor ?: return@apply)
                 tfSpecValue.setTextColor(item.specTextColor ?: return@apply)
             }
         }
