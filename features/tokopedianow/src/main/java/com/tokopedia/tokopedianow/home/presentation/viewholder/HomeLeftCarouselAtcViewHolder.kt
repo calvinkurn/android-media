@@ -10,17 +10,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.decoration.ProductCardCarouselDecoration
 import com.tokopedia.productcard.compact.productcardcarousel.helper.ProductCardCompactCarouselLinearLayoutManager
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
+import com.tokopedia.tokopedianow.common.util.ViewUtil.inflateView
+import com.tokopedia.tokopedianow.common.view.RealTimeRecommendationCarouselView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselAtcBinding
 import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardDiffer
 import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardTypeFactoryImplCompact
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel.RealTimeRecomWidgetState
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
@@ -48,6 +53,7 @@ class HomeLeftCarouselAtcViewHolder(
     }
 
     private val binding: ItemTokopedianowHomeLeftCarouselAtcBinding? by viewBinding()
+    private var realtimeRecommendationView: RealTimeRecommendationCarouselView? = null
 
     private val adapter by lazy {
         HomeLeftCarouselAtcProductCardAdapter(
@@ -171,10 +177,22 @@ class HomeLeftCarouselAtcViewHolder(
     private fun ItemTokopedianowHomeLeftCarouselAtcBinding.setupRealTimeRecommendation(
         element: HomeLeftCarouselAtcUiModel
     ) {
-        realTimeRecommendationCarousel.apply {
-            listener = rtrListener
-            analytics = rtrAnalytics
-            bind(element.realTimeRecom)
+        if(element.realTimeRecom.widgetState != RealTimeRecomWidgetState.IDLE) {
+            if(realtimeRecommendationView == null) {
+                val view = realTimeRecommendationViewStub
+                    .inflateView(R.layout.layout_tokopedianow_rtr_carousel_view)
+                realtimeRecommendationView = view as? RealTimeRecommendationCarouselView
+            }
+
+            realtimeRecommendationView?.apply {
+                listener = rtrListener
+                analytics = rtrAnalytics
+                bind(element.realTimeRecom)
+            }
+
+            realtimeRecommendationView?.show()
+        } else {
+            realtimeRecommendationView?.hide()
         }
     }
 
@@ -215,14 +233,15 @@ class HomeLeftCarouselAtcViewHolder(
         object : TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
             override fun onSeeAllClicked(
                 context: Context,
+                channelId: String,
                 headerName: String,
                 appLink: String,
                 widgetId: String
             ) {
                 homeLeftCarouselAtcCallback?.onSeeMoreClicked(
                     appLink = appLink,
-                    channelId = element.id,
-                    headerName = element.header.title
+                    channelId = channelId,
+                    headerName = headerName
                 )
             }
 

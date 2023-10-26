@@ -13,4 +13,11 @@ data class LastApplyUsageSummariesUiModel(
     var amountStr: String = "",
     var amount: Int = -1,
     var currencyDetailsStr: String = ""
-) : Parcelable
+) : Parcelable  {
+
+    companion object {
+        private const val TYPE_TOTAL_PRODUCT_PRICE = "total_product_price"
+    }
+
+    fun isDiscount(): Boolean = type == TYPE_TOTAL_PRODUCT_PRICE
+}

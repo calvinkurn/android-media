@@ -36,7 +36,6 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.VALUE_X
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getHeadlineAdsParam
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getRoleUser
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getShopIdTracker
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.shouldRefreshProductRecommendation
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxAdapter
@@ -60,7 +59,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.widget.global.recommendationWidgetViewModel
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -103,8 +101,6 @@ class UniversalInboxFragment @Inject constructor(
     private var endlessRecyclerViewScrollListener: UniversalInboxEndlessScrollListener? = null
 
     private var binding: UniversalInboxFragmentBinding? by autoClearedNullable()
-
-    private val recommendationWidgetViewModel by recommendationWidgetViewModel()
 
     private val adapter by lazy {
         UniversalInboxAdapter(
@@ -317,7 +313,7 @@ class UniversalInboxFragment @Inject constructor(
             // Scroll to top when it is loading & empty product list
             // It means refresh / re-shuffle products
             if (it.isLoading && it.productRecommendation.isEmpty()) {
-                adapter.getProductRecommendationFirstPosition()?.let { position ->
+                adapter.getMenuSeparatorPosition()?.let { position ->
                     binding?.inboxRv?.scrollToPosition(position)
                 }
             }
@@ -467,7 +463,6 @@ class UniversalInboxFragment @Inject constructor(
                     return@getTopAdsHeadlineData
                 }
                 setHeadlineIndexList(data)
-                endlessRecyclerViewScrollListener
                 viewModel.processAction(UniversalInboxAction.RefreshRecommendation)
             },
             {
@@ -815,7 +810,6 @@ class UniversalInboxFragment @Inject constructor(
         ActivityResultContracts.StartActivityForResult()
     ) {
         viewModel.processAction(UniversalInboxAction.RefreshCounter)
-        refreshRecommendations()
     }
 
     private fun showSuccessAddWishlistV2(
@@ -886,20 +880,6 @@ class UniversalInboxFragment @Inject constructor(
             }
             AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, view)
         }
-    }
-
-    private fun refreshRecommendations() {
-        // Refresh controlled by rollence
-        if (shouldRefreshProductRecommendation(abTestPlatform)) {
-            endlessRecyclerViewScrollListener?.resetState()
-            refreshRecommendationWidget()
-            loadTopAdsAndRecommendation()
-        }
-    }
-
-    private fun refreshRecommendationWidget() {
-        recommendationWidgetViewModel?.refresh()
-        adapter.refreshRecommendationWidget()
     }
 
     companion object {

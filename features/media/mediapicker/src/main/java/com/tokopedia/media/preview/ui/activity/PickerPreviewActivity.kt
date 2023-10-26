@@ -79,18 +79,18 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
         PermissionManager.init(
             this,
             object : PermissionRequestCallback {
-            override fun onDenied(permissions: List<String>) {}
+                override fun onDenied(permissions: List<String>) {}
 
-            override fun onPermissionPermanentlyDenied(permissions: List<String>) {
-                if (permissions.isNotEmpty()) {
-                    startActivity(goToSettings())
+                override fun onPermissionPermanentlyDenied(permissions: List<String>) {
+                    if (permissions.isNotEmpty()) {
+                        startActivity(goToSettings())
+                    }
                 }
-            }
 
-            override fun onGranted(permissions: List<String>) {
-                viewModel.files(uiModel)
-            }
-        })
+                override fun onGranted(permissions: List<String>) {
+                    viewModel.files(uiModel)
+                }
+            })
     }
 
     private val viewModel by lazy {
@@ -165,9 +165,11 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
                     }
                 }
             }
+
             is DrawerActionType.Add -> {
                 setUiModelData(action.data)
             }
+
             is DrawerActionType.Reorder -> {
                 setUiModelData(action.data)
             }
@@ -208,7 +210,8 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
                 .distinctUntilChanged()
                 .filter { it.originalPaths.isNotEmpty() }
                 .collectLatest {
-                    val withEditor = param.get().isEditorEnabled()
+                    val withEditor =
+                        param.get().isEditorEnabled() || param.get().isImmersiveEditorEnabled()
 
                     val buttonState = if (withEditor) {
                         PREVIEW_PAGE_LANJUT
@@ -293,14 +296,16 @@ open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
         onToolbarThemeChanged(ToolbarTheme.Solid)
 
         param.get().apply {
-            if (!isEditorEnabled()) {
-                navToolbar.setContinueTitle(
-                    if (previewActionText().isNotEmpty()) {
-                        previewActionText()
-                    } else {
-                        getString(R.string.picker_button_upload)
-                    }
-                )
+            val ctaText = if (previewActionText().isNotEmpty()) {
+                previewActionText()
+            } else if (!isEditorEnabled() && !isImmersiveEditorEnabled()) {
+                // no editor is used
+                getString(R.string.picker_button_upload)
+            } else null
+
+            // default text on header is "Lanjut"
+            ctaText?.let {
+                navToolbar.setContinueTitle(it)
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.domain.usecase.getlocalsearchrecommendation
 
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.search.di.scope.SearchScope
@@ -19,8 +20,13 @@ class GetLocalSearchRecommendationUseCaseModule {
     @Provides
     @Named(SearchConstant.SearchProduct.GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE)
     fun provideGetLocalSearchRecommendationUseCase(
-            searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>
+        searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
+        reimagineRollence: ReimagineRollence,
     ): UseCase<SearchProductModel> {
-        return GetLocalSearchRecommendationUseCase(GraphqlUseCase(), searchProductModelMapper)
+        return GetLocalSearchRecommendationUseCase(
+            GraphqlUseCase(),
+            searchProductModelMapper,
+            reimagineRollence,
+        )
     }
 }

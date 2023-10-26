@@ -8,7 +8,6 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparat
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationTitleUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationWidgetUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopadsHeadlineUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
@@ -16,7 +15,7 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaU
 class UniversalInboxDiffUtilCallBack(
     private val oldList: List<Visitable<in UniversalInboxTypeFactory>>,
     private val newList: List<Visitable<in UniversalInboxTypeFactory>>
-): DiffUtil.Callback() {
+) : DiffUtil.Callback() {
 
     override fun getOldListSize(): Int {
         return oldList.size
@@ -40,24 +39,17 @@ class UniversalInboxDiffUtilCallBack(
                     oldItem is UniversalInboxMenuSeparatorUiModel
                 ) -> true
 
-            // TopAds banner won't change without refresh
+            // TopAds banner ads could be changed
             (
                 newItem is UniversalInboxTopAdsBannerUiModel &&
                     oldItem is UniversalInboxTopAdsBannerUiModel
-                ) -> true
+                ) -> newItem.requested == oldItem.requested && newItem.ads == oldItem.ads
 
             // TopAds headline won't change without refresh
             (
                 newItem is UniversalInboxTopadsHeadlineUiModel &&
                     oldItem is UniversalInboxTopadsHeadlineUiModel
                 ) -> true
-
-            // Only one recommendation widget should exist
-            (
-                newItem is UniversalInboxRecommendationWidgetUiModel &&
-                    oldItem is UniversalInboxRecommendationWidgetUiModel
-                ) -> true
-
             (
                 newItem is UniversalInboxWidgetMetaUiModel &&
                     oldItem is UniversalInboxWidgetMetaUiModel
@@ -105,6 +97,12 @@ class UniversalInboxDiffUtilCallBack(
                 newItem is UniversalInboxRecommendationUiModel &&
                     oldItem is UniversalInboxRecommendationUiModel
                 ) -> newItem.recommendationItem == oldItem.recommendationItem
+
+            // TopAds contents mark as different to trigger render
+            (
+                newItem is UniversalInboxTopAdsBannerUiModel &&
+                    oldItem is UniversalInboxTopAdsBannerUiModel
+                ) -> false
 
             // Put the contents check above, else default true to skip it
             else -> true

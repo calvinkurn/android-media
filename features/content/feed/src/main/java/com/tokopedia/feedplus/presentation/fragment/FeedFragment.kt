@@ -652,10 +652,16 @@ class FeedFragment :
             }
 
             ContentMenuIdentifier.Mute -> {
+                binding.ivFeedMuteUnmute.setImageDrawable(muteAnimatedVector)
+                muteAnimatedVector?.start()
+
                 feedMainViewModel.muteSound()
             }
 
             ContentMenuIdentifier.Unmute -> {
+                binding.ivFeedMuteUnmute.setImageDrawable(unmuteAnimatedVector)
+                unmuteAnimatedVector?.start()
+
                 feedMainViewModel.unmuteSound()
             }
         }
@@ -1447,15 +1453,6 @@ class FeedFragment :
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 FeedContentManager.muteState.collectLatest { isMuted ->
                     if (isMuted == null) return@collectLatest
-
-                    if (isMuted) {
-                        binding.ivFeedMuteUnmute.setImageDrawable(muteAnimatedVector)
-                        muteAnimatedVector?.start()
-                    } else {
-                        binding.ivFeedMuteUnmute.setImageDrawable(unmuteAnimatedVector)
-                        unmuteAnimatedVector?.start()
-                    }
-
                     updateCurrentVideoVolume(isMuted)
                 }
             }
@@ -2082,12 +2079,15 @@ class FeedFragment :
             is FeedCardImageContentModel -> {
                 trackerModelMapper.transformImageContentToTrackerModel(currentItem.data)
             }
+
             is FeedCardVideoContentModel -> {
                 trackerModelMapper.transformVideoContentToTrackerModel(currentItem.data)
             }
+
             is FeedCardLivePreviewContentModel -> {
                 trackerModelMapper.transformLiveContentToTrackerModel(currentItem.data)
             }
+
             else -> {
                 null
             }
