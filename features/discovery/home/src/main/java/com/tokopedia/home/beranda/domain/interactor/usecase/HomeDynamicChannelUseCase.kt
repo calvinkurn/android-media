@@ -340,6 +340,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 homeChooseAddressRepository.getRemoteData()
                                     ?.convertToLocationParams()
                             )
+                            putString(
+                                GetMissionWidget.PARAM,
+                                it.widgetParam
+                            )
                         }
                     },
                     handleOnFailed = { visitableFound ->

@@ -788,7 +788,8 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 status = MissionWidgetListDataModel.STATUS_LOADING,
                 showShimmering = channel.isShimmer,
                 source = MissionWidgetListDataModel.SOURCE_DC,
-                type = getMissionWidgetType(layout)
+                type = getMissionWidgetType(layout),
+                widgetParam = channel.widgetParam,
             )
         )
     }

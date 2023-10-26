@@ -20,6 +20,7 @@ data class MissionWidgetListDataModel(
     val name: String = "",
     val header: ChannelHeader = ChannelHeader(),
     val config: ChannelConfig = ChannelConfig(),
+    val widgetParam: String = "",
     val missionWidgetList: List<MissionWidgetDataModel> = listOf(),
     val verticalPosition: Int = 0,
     val status: Int = STATUS_LOADING,

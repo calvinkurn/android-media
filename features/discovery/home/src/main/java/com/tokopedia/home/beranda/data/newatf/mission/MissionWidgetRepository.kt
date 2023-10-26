@@ -31,6 +31,10 @@ class MissionWidgetRepository @Inject constructor(
                 homeChooseAddressRepository.getRemoteData()
                     ?.convertToLocationParams()
             )
+            putString(
+                GetMissionWidget.PARAM,
+                atfMetadata.param
+            )
         }
         val (data, status) = try {
             missionWidgetRepository.getRemoteData(missionParam).getHomeMissionWidget to AtfKey.STATUS_SUCCESS

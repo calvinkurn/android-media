@@ -355,6 +355,7 @@ class HomeVisitableFactoryImpl(
                                                 status = MissionWidgetListDataModel.STATUS_LOADING,
                                                 showShimmering = data.isShimmer,
                                                 source = MissionWidgetListDataModel.SOURCE_ATF,
+                                                widgetParam = data.param,
                                             )
                                         )
                                     },
@@ -491,7 +492,8 @@ class HomeVisitableFactoryImpl(
                 status = MissionWidgetListDataModel.STATUS_SUCCESS,
                 showShimmering = atfData.isShimmer,
                 source = MissionWidgetListDataModel.SOURCE_ATF,
-                type = MissionWidgetMapper.getMissionWidgetType(atfData.component)
+                type = MissionWidgetMapper.getMissionWidgetType(atfData.component),
+                widgetParam = atfData.param
             )
             visitableList.add(mission)
         }
