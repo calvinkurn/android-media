@@ -56,6 +56,10 @@ class TopChatRoomFlexBoxAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
             autoReplyConstraintLayout == null
     }
 
+    override fun getDirectChildrenViewList(): List<View?> {
+        return listOf(message, info, status, header, icon, autoReplyConstraintLayout)
+    }
+
     override fun calculateChildDimensions(
         maxAvailableWidth: Int,
         heightMeasureSpec: Int
