@@ -1,6 +1,6 @@
 package com.tokopedia.shop.info.domain.entity
 
-data class EpharmacyInfo(
+data class ShopEpharmacyInfo(
     val nearestPickupAddress: String,
     val nearPickupAddressAppLink: String,
     val pharmacistOperationalHour: String,

@@ -37,12 +37,11 @@ import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.shop.R
-import com.tokopedia.shop.info.domain.entity.EpharmacyInfo
-import com.tokopedia.shop.info.domain.entity.Review
+import com.tokopedia.shop.info.domain.entity.ShopEpharmacyInfo
+import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopPerformanceMetric
-import com.tokopedia.shop.info.domain.entity.ShopRatingAndReviews
-import com.tokopedia.shop.info.domain.entity.ShopRatingAndTopics
+import com.tokopedia.shop.info.domain.entity.ShopRating
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
 import com.tokopedia.shop.info.view.model.ShopInfoPreviewParameterProvider
 import com.tokopedia.shop.info.view.model.ShopInfoUiState
@@ -101,7 +100,7 @@ fun Content(modifier: Modifier = Modifier, uiState: ShopInfoUiState) {
         }
         
         Spacer(modifier = Modifier.height(8.dp))
-        ShopRatingAndReview(uiState.ratingAndReview)
+        ShopRatingAndReviews(uiState.rating, uiState.review)
         
         if (uiState.shopPerformanceMetrics.isNotEmpty()) {
             Spacer(modifier = Modifier.height(16.dp))
@@ -264,7 +263,7 @@ fun ShopJoinDate(shopJoinDate: String) {
 }
 
 @Composable
-fun ShopEpharmacyInfo(epharmacy: EpharmacyInfo) {
+fun ShopEpharmacyInfo(epharmacy: ShopEpharmacyInfo) {
     Column(modifier = Modifier.fillMaxWidth()) {
         ShopEpharmacyNearestPickup(epharmacy.nearestPickupAddress)
         
@@ -384,7 +383,7 @@ fun ShopEpharmacySiaNumber(siaNumber: String) {
 }
 
 @Composable
-fun ShopRatingAndReview(ratingAndReview: ShopRatingAndReviews) {
+fun ShopRatingAndReviews(rating: ShopRating, review: ShopReview) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Spacer(modifier = Modifier.height(8.dp))
         NestTypography(
@@ -396,15 +395,17 @@ fun ShopRatingAndReview(ratingAndReview: ShopRatingAndReviews) {
             )
         )
         Spacer(modifier = Modifier.height(8.dp))
-        ShopRatingAndReviewRecap(ratingAndReview)
+        ShopRatingAndReviewRecap(rating, review)
+        
         Spacer(modifier = Modifier.height(16.dp))
-        ShopRating(ratingAndReview.rating)
-        ShopReview(ratingAndReview.reviews)
+        ShopRating(rating)
+        
+        ShopReview(review)
     }
 }
 
 @Composable
-fun ShopRatingAndReviewRecap(ratingAndReview: ShopRatingAndReviews) {
+fun ShopRatingAndReviewRecap(rating: ShopRating, review: ShopReview) {
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         NestIcon(
             modifier = Modifier.size(16.dp),
@@ -414,7 +415,7 @@ fun ShopRatingAndReviewRecap(ratingAndReview: ShopRatingAndReviews) {
         )
         Spacer(modifier = Modifier.width(4.dp))
         NestTypography(
-            text = ratingAndReview.rating.rating.ratingScore,
+            text = rating.ratingScore,
             textStyle = NestTheme.typography.display2.copy(
                 fontWeight = FontWeight.Bold,
                 color = NestTheme.colors.NN._950
@@ -422,7 +423,7 @@ fun ShopRatingAndReviewRecap(ratingAndReview: ShopRatingAndReviews) {
         )
         Spacer(modifier = Modifier.width(4.dp))
         NestTypography(
-            text = "(${ratingAndReview.rating.rating.totalRatingFmt} rating \u2022 1627 ulasan)",
+            text = "(${rating.totalRatingFmt} rating \u2022 ${review.totalReviews} ulasan)",
             textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600)
         )
     }
@@ -430,7 +431,7 @@ fun ShopRatingAndReviewRecap(ratingAndReview: ShopRatingAndReviews) {
 
 
 @Composable
-fun ShopRating(rating: ShopRatingAndTopics) {
+fun ShopRating(rating: ShopRating) {
     val cornerShapeRadiusDp = 12.dp
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Column(
@@ -443,7 +444,7 @@ fun ShopRating(rating: ShopRatingAndTopics) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             NestTypography(
-                text = "${rating.rating.positivePercentageFmt.digitsOnly()}%",
+                text = "${rating.positivePercentageFmt.digitsOnly()}%",
                 textStyle = NestTheme.typography.heading1.copy(color = NestTheme.colors.NN._950)
             )
 
@@ -454,14 +455,14 @@ fun ShopRating(rating: ShopRatingAndTopics) {
         }
         Spacer(modifier = Modifier.width(16.dp))
         Column(modifier = Modifier.weight(1f)) {
-            rating.rating.detail.forEach { rating ->
+            rating.detail.forEach { rating ->
                 ShopRatingBarItem(rating = rating)
             }
         }
     }
 }
 @Composable
-fun ShopReview(reviews: List<Review>) {
+fun ShopReview(review: ShopReview) {
     
 }
 
@@ -624,7 +625,7 @@ fun ShopShipmentItem(shipment: ShopSupportedShipment) {
 }
 
 @Composable
-fun ShopRatingBarItem(rating: ShopRatingAndTopics.Rating.Detail) {
+fun ShopRatingBarItem(rating: ShopRating.Detail) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically

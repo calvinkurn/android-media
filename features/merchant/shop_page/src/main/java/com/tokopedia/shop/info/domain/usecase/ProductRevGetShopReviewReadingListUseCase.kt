@@ -9,7 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shop.info.data.mapper.ProductRevGetShopReviewReadingListMapper
 import com.tokopedia.shop.info.data.response.ProductRevGetShopReviewReadingListResponse
-import com.tokopedia.shop.info.domain.entity.Review
+import com.tokopedia.shop.info.domain.entity.ShopReview
 import javax.inject.Inject
 
 /**
@@ -31,39 +31,18 @@ class ProductRevGetShopReviewReadingListUseCase @Inject constructor(
             """query productrevGetShopReviewReadingList(${'$'}shopID: String!, ${'$'}limit: Int!, ${'$'}page: Int!, ${'$'}filterBy: String, ${'$'}sortBy: String) {
   productrevGetShopReviewReadingList(shopID: ${'$'}shopID, limit: ${'$'}limit, page: ${'$'}page, filterBy: ${'$'}filterBy, sortBy: ${'$'}sortBy) {
     list {
-      product {
-        productImageURL
-        productID
-        productVariant {
-          variantID
-          variantName
-        }
-        productName
-        isDeletedProduct
-      }
-      reviewerID
-      attachments {
-        fullsizeURL
-        attachmentID
-        thumbnailURL
-      }
+      reviewID
       rating
       likeDislike {
         totalLike
         likeStatus
       }
-      replyText
-      replyTime
       reviewerName
-      state {
-        isAnonymous
-        isAutoReply
-        isReportable
-      }
-      reviewID
-      badRatingReasonFmt
+      reviewerLabel
+      reviewerID
       reviewTime
       reviewText
+      avatar
     }
   }
 }
@@ -75,7 +54,7 @@ class ProductRevGetShopReviewReadingListUseCase @Inject constructor(
     }
 
 
-    suspend fun execute(param: Param): List<Review> {
+    suspend fun execute(param: Param): ShopReview {
         val request = buildRequest(param)
         val response = repository.response(listOf(request))
         return mapper.map(response.getSuccessData())
