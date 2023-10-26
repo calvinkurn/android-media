@@ -10,7 +10,6 @@ import com.tokopedia.cart.data.model.response.promo.PromoEmptyCartInfo
 import com.tokopedia.cart.data.model.response.promo.PromoErrorDetail
 import com.tokopedia.cart.data.model.response.promo.PromoMessageInfo
 import com.tokopedia.cart.data.model.response.promo.VoucherOrders
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.AddOn
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.AvailableGroup
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
@@ -135,8 +134,8 @@ object CartUiModelMapper {
                     cartDetail.products.forEachIndexed { productIndex, product ->
                         shouldShowBmGmBottomDivider =
                             productIndex == availableShop.cartDetails.size - 1 &&
-                                cartDetailIndex + 1 < availableShop.cartDetails.size &&
-                                cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM
+                            cartDetailIndex + 1 < availableShop.cartDetails.size &&
+                            cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM
                         val productUiModel = mapProductUiModel(
                             cartData = cartData,
                             cartDetail = cartDetail,
@@ -348,7 +347,7 @@ object CartUiModelMapper {
                     isFinalItem = true
                     showErrorBottomDivider =
                         sectionIndex != cartData.unavailableSections.lastIndex ||
-                            (sectionIndex == cartData.unavailableSections.lastIndex && groupIndex != unavailableSection.unavailableGroups.lastIndex)
+                        (sectionIndex == cartData.unavailableSections.lastIndex && groupIndex != unavailableSection.unavailableGroups.lastIndex)
                     shouldDivideHalfErrorBottomDivider =
                         showErrorBottomDivider && groupIndex != unavailableSection.unavailableGroups.lastIndex
                 }
@@ -421,15 +420,12 @@ object CartUiModelMapper {
     }
 
     private fun mapDisabledReasonUiModel(unavailabeSection: UnavailableSection): DisabledReasonHolderData {
-        val outOfCoverageAction =
-            unavailabeSection.actions.find { it.id == Action.ACTION_CHANGEADRESS }
         return DisabledReasonHolderData().apply {
             title = unavailabeSection.title
             subTitle = unavailabeSection.unavailableDescription
             productsCount = unavailabeSection.productsCount
-            showOutOfCoverageTitle = outOfCoverageAction?.message ?: ""
-            isShowOutOfCoverageAction =
-                outOfCoverageAction != null && unavailabeSection.selectedUnavailableActionId == Action.ACTION_CHANGEADRESS
+            showOutOfCoverageTitle = unavailabeSection.unavailableSectionCta.text
+            isShowOutOfCoverageAction = unavailabeSection.unavailableSectionCta.id != 0L
         }
     }
 
