@@ -13,14 +13,16 @@ import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_DETAIL_STAGI
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestCardBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestCardItemUiModel
+import com.tokopedia.unifycomponents.utils.setImageVectorDrawable
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.utils.resources.isDarkMode
 
 class HomeQuestCardItemViewHolder(
     private val binding: ItemTokopedianowQuestCardBinding
 ): RecyclerView.ViewHolder(binding.root) {
     companion object {
-        const val QUEST_CARD_DISPLAYED_PERCENTAGE = 0.95f
+        private const val QUEST_CARD_DISPLAYED_PERCENTAGE = 0.95f
     }
 
     init {
@@ -50,22 +52,23 @@ class HomeQuestCardItemViewHolder(
         constraintSet.applyTo(layoutQuestCard)
     }
 
+    private fun goToQuestDetailPage(id: String) {
+        val appLink = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) QUEST_DETAIL_STAGING_APPLINK + id else QUEST_DETAIL_PRODUCTION_APPLINK + id
+        RouteManager.route(itemView.context, appLink)
+    }
+
     fun bind(element: HomeQuestCardItemUiModel) {
         binding.apply {
             tpTitle.text = element.title
             tpDescription.text = element.description
             aivIcon.showIfWithBlock(element.isLockedShown) {
                 setBackgroundResource(R.drawable.tokopedianow_bg_quest_locked)
+                setImageVectorDrawable(if (context.isDarkMode()) R.drawable.tokopedianow_ic_quest_locked_dark else R.drawable.tokopedianow_ic_quest_locked_light)
                 adjustTitleStartPadding()
             }
             root.setOnClickListener {
                 goToQuestDetailPage(element.id)
             }
         }
-    }
-
-    private fun goToQuestDetailPage(id: String) {
-        val appLink = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) QUEST_DETAIL_STAGING_APPLINK + id else QUEST_DETAIL_PRODUCTION_APPLINK + id
-        RouteManager.route(itemView.context, appLink)
     }
 }
