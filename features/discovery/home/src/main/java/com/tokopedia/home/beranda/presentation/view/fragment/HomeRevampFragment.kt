@@ -96,6 +96,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
+import com.tokopedia.home.beranda.presentation.view.helper.AccurateOffsetLinearLayoutManager
 import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
@@ -389,7 +390,7 @@ HomeRevampFragment :
     private var homeSnackbar: Snackbar? = null
     private var component: BerandaComponent? = null
     private var adapter: HomeRecycleAdapter? = null
-    private var layoutManager: LinearLayoutManager? = null
+    private var layoutManager: AccurateOffsetLinearLayoutManager? = null
     private var messageSnackbar: SnackbarRetry? = null
     private var activityStateListener: ActivityStateListener? = null
     private var mainParentStatusBarListener: MainParentStatusBarListener? = null
@@ -845,8 +846,8 @@ HomeRevampFragment :
         homeRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                scrollPositionY += dy
-                handleThematicBackgroundScrollListener(recyclerView, scrollPositionY)
+                scrollPositionY = recyclerView.computeVerticalScrollOffset()
+                updateThematicVerticalPosition()
                 evaluateHomeComponentOnScroll(recyclerView)
                 setHomeBottomNavBasedOnScrolling()
             }
@@ -904,19 +905,13 @@ HomeRevampFragment :
         })
     }
 
-    private fun handleThematicBackgroundScrollListener(recyclerView: RecyclerView, dy: Int) {
-        val scrollThematic = scrollThematic@{ it: View ->
-            if ((
-                layoutManager?.findFirstCompletelyVisibleItemPosition()
-                    ?: 0
-                ) <= 0 && dy < 0
-            ) {
-                return@scrollThematic
-            }
-            it.translationY = -(dy.toFloat())
-        }
-        thematicBackground?.let { scrollThematic.invoke(it) }
-        thematicForeground?.let { scrollThematic.invoke(it) }
+    private val thematicScrollListener = scrollThematic@{ view: View ->
+        view.translationY = -(scrollPositionY.toFloat())
+    }
+
+    private fun updateThematicVerticalPosition() {
+        thematicBackground?.let { thematicScrollListener.invoke(it) }
+        thematicForeground?.let { thematicScrollListener.invoke(it) }
     }
 
     private fun trackEmbraceBreadcrumbPosition() {
@@ -1521,8 +1516,7 @@ HomeRevampFragment :
 
             performanceTrace?.setBlock(data.take(takeLimit))
 
-            adapter?.submitList(data) {
-            }
+            adapter?.submitList(data)
         }
     }
 
@@ -1636,7 +1630,7 @@ HomeRevampFragment :
         if (!this::homePrefController.isInitialized) {
             initInjectorHome()
         }
-        layoutManager = LinearLayoutManager(context)
+        layoutManager = AccurateOffsetLinearLayoutManager(context, adapter)
         homeRecyclerView?.layoutManager = layoutManager
         setupPlayWidgetCoordinator()
         bannerCarouselCallback = BannerComponentCallback(context, this)
@@ -2515,12 +2509,18 @@ HomeRevampFragment :
 
     override fun onScrollToHomeHeader() {
         homeRecyclerView?.scrollToPosition(Int.ZERO)
+        homeRecyclerView?.post {
+            updateThematicVerticalPosition()
+        }
     }
 
     override fun onScrollToRecommendationForYou() {
         val recommendationForYouIndex = getRecommendationForYouIndex()
         recommendationForYouIndex?.let {
             homeRecyclerView?.scrollToPosition(it)
+            homeRecyclerView?.post {
+                updateThematicVerticalPosition()
+            }
             goToJumperForYouTab(it)
         }
     }
