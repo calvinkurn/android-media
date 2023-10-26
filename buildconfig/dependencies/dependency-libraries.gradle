@@ -128,5 +128,6 @@ ext {
             telemetry               : ":libraries:telemetry",
             sse                     : ":libraries:sse",
             macrobenchmarkUtil      : ":libraries:macrobenchmark_util",
+            gqlKspProcessor         : ":libraries:gqlquery_ksp_processor"
     ]
 }

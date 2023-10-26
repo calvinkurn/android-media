@@ -15,6 +15,7 @@ import com.tokopedia.notifications.model.WebHookParams.Companion.webHookToJson
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import kotlinx.android.parcel.Parcelize
+import java.util.ArrayList
 
 /**
  *

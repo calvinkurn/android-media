@@ -23,6 +23,9 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
         test.java.srcDirs += 'src/test/kotlin'
+        main.kotlin.srcDirs += "build/generated/ksp/main/kotlin"
+        test.kotlin.srcDirs += "build/generated/ksp/test/kotlin"
+
         androidTest.java.srcDirs += 'src/androidTest/kotlin'
     }
 

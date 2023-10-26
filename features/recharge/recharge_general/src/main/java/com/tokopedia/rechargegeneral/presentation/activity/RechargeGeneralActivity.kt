@@ -35,10 +35,8 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
         val menuId = bundle?.getString(PARAM_MENU_ID)?.toIntSafely().toZeroIfNull()
         val operatorId = bundle?.getString(PARAM_OPERATOR_ID)?.toIntSafely().toZeroIfNull()
         val productId = bundle?.getString(PARAM_PRODUCT_ID)?.toIntSafely().toZeroIfNull()
-        val isAddSBM = bundle?.getString(PARAM_ADD_BILLS)?.toBoolean() ?: false
-        val isFromSBM = bundle?.getBoolean(EXTRA_ADD_BILLS_IS_FROM_SBM) ?: false
         val rechargeProductFromSlice = bundle?.getString(RECHARGE_PRODUCT_EXTRA, "") ?: ""
-        return RechargeGeneralFragment.newInstance(categoryId, menuId, operatorId, productId, rechargeProductFromSlice, isAddSBM, isFromSBM)
+        return RechargeGeneralFragment.newInstance(categoryId, menuId, operatorId, productId, rechargeProductFromSlice)
     }
 
     override fun getComponent(): RechargeGeneralComponent {

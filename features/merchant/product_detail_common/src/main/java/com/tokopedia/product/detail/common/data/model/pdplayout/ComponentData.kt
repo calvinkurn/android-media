@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
 import android.annotation.SuppressLint
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.product.Cashback
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
@@ -175,7 +176,13 @@ data class ComponentData(
     @SerializedName("queryParam")
     val queryParam: String = "",
     @SerializedName("thematicID")
-    val thematicId: String = ""
+    val thematicId: String = "",
+    // endregion
+
+    // region socialProof
+    @SerializedName("socialProofContent")
+    @Expose
+    val socialProof: List<SocialProofData> = emptyList()
     // endregion
 ) {
     companion object {

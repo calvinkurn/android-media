@@ -33,7 +33,7 @@ dependencies {
         transitive = true
     }
 
-    kapt rootProject.ext.networkDependencies.glideProcessor
+    ksp rootProject.ext.networkDependencies.glideKsp
     implementation rootProject.ext.networkDependencies.glide
 
 }

@@ -45,7 +45,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataM
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
@@ -99,10 +98,6 @@ import com.tokopedia.common_tradein.R as common_tradeinR
  * If you changes one of this variable , data inside ViewHolder also updated (don't forget to notify)
  */
 class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
-
-    private val miniSocialProofMap: ProductMiniSocialProofDataModel?
-        get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF] as? ProductMiniSocialProofDataModel
-
     private val miniSocialProofStockMap: ProductMiniSocialProofStockDataModel?
         get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK] as? ProductMiniSocialProofStockDataModel
 
@@ -504,10 +499,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateData(ProductDetailConstant.MINI_SOCIAL_PROOF) {
-                updateMiniSocialProof(it)
-            }
-
             updateData(ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK) {
                 miniSocialProofStockMap?.run {
                     wishlistCount = it.wishlistCount.toIntOrZero()
@@ -605,22 +596,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateDynamicOneLiner(it)
 
             updateBMGMSneakPeak(productId = productId, bmgm = it.bmgm)
-        }
-    }
-
-    private fun updateMiniSocialProof(p2Data: ProductInfoP2UiData) {
-        if (p2Data.socialProof.isEmpty()) {
-            removeComponent(ProductDetailConstant.MINI_SOCIAL_PROOF)
-        } else {
-            miniSocialProofMap?.shouldRender = true
-            val previousData = miniSocialProofMap?.items.orEmpty()
-            miniSocialProofMap?.items = p2Data.socialProof.map { uiModel ->
-                uiModel.copy( // retain impress-holder
-                    impressHolder = previousData.find {
-                        it.identifier == uiModel.identifier
-                    }?.impressHolder ?: ImpressHolder()
-                )
-            }
         }
     }
 

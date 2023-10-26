@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
@@ -39,7 +40,7 @@ class PartialContentView(
         productName.text = MethodChecker.fromHtml(data.productName)
 
         imgFreeOngkir.shouldShowWithAction(freeOngkirImgUrl.isNotEmpty()) {
-            imgFreeOngkir.setImageUrl(freeOngkirImgUrl)
+            imgFreeOngkir.loadImage(freeOngkirImgUrl)
         }
 
         textCashbackGreen.shouldShowWithAction(data.cashbackPercentage > 0) {
@@ -91,7 +92,7 @@ class PartialContentView(
 
     fun renderFreeOngkir(freeOngkirUrl: String) = with(binding) {
         imgFreeOngkir.shouldShowWithAction(freeOngkirUrl.isNotEmpty()) {
-            imgFreeOngkir.setImageUrl(freeOngkirUrl)
+            imgFreeOngkir.loadImage(freeOngkirUrl)
         }
     }
 
