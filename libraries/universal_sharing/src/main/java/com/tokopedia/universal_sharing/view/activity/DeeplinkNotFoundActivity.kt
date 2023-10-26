@@ -15,11 +15,15 @@ class DeeplinkNotFoundActivity : BaseActivity() {
     private var binding: ActivityDeeplinkIsNotFoundBinding? by viewBinding()
 
     private var type = ""
+    private var source = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         intent.extras?.let { ex ->
             if (ex.containsKey(KEY_TYPE)) {
                 type = intent.getStringExtra(KEY_TYPE) ?: ""
+            }
+            if (ex.containsKey(KEY_SOURCE)) {
+                source = intent.getStringExtra(KEY_SOURCE) ?: ""
             }
         }
         super.onCreate(savedInstanceState)
@@ -30,17 +34,31 @@ class DeeplinkNotFoundActivity : BaseActivity() {
 
     private fun initView() {
         val globalError = binding?.globalError
+        val isUpdateType = type == TYPE_UPDATE || isAppUnderMinVersion()
         globalError?.let { ge ->
-            if (type == TYPE_UPDATE || isAppUnderMinVersion()) {
+            if (isUpdateType) {
                 ge.errorTitle.text = getString(R.string.title_update_app)
                 ge.errorDescription.text =
                     getString(R.string.description_error_not_found)
                 ge.errorAction.text = getString(R.string.cta_update_app)
                 ge.setActionClickListener {
                     try {
-                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(APPLINK_PLAYSTORE + packageName)))
+                        startActivity(
+                            Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse(APPLINK_PLAYSTORE + packageName)
+                            )
+                        )
                     } catch (anfe: ActivityNotFoundException) {
-                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(URL_PLAYSTORE + packageName)))
+                        startActivity(
+                            Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse(URL_PLAYSTORE + packageName)
+                            )
+                        )
+                    }
+                    if (source == TYPE_SHARE) {
+                        TrackUtil.sendClickUpdateAppEvent(intent?.data?.toString())
                     }
                 }
             } else {
@@ -53,6 +71,9 @@ class DeeplinkNotFoundActivity : BaseActivity() {
                 }
             }
         }
+        if (source == TYPE_SHARE) {
+            TrackUtil.sendImpressionPageEvent(intent?.data?.toString(), isUpdateType)
+        }
     }
 
     private fun isAppUnderMinVersion(): Boolean {
@@ -63,7 +84,9 @@ class DeeplinkNotFoundActivity : BaseActivity() {
         const val APPLINK_PLAYSTORE = "market://details?id="
         const val URL_PLAYSTORE = "https://play.google.com/store/apps/details?id="
         const val KEY_TYPE = "type"
+        const val KEY_SOURCE = "source"
         const val TYPE_UPDATE = "update"
+        const val TYPE_SHARE = "share"
     }
 
 
