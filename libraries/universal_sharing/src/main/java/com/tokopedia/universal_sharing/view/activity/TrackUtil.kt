@@ -54,9 +54,7 @@ object TrackUtil {
         if (path.startsWith("/")) {
             path = path.replaceFirst("/", "")
         }
-        if (path.contains("/")) {
-            path = path.substringBefore("/")
-        }
+        path = path.substringBefore("/")
         return (uriString to path)
     }
 
