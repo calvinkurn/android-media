@@ -39,7 +39,6 @@ object DeeplinkMapperDigital {
     const val PLATFORM_ID_PARAM = "platform_id"
     const val IS_FROM_WIDGET_PARAM = "is_from_widget"
     const val REMOTE_CONFIG_MAINAPP_ENABLE_ELECTRONICMONEY_PDP = "android_customer_enable_digital_emoney_pdp"
-    const val IS_ADD_SBM = "is_add_sbm"
     const val PARAM_PRODUCT_ID = "product_id"
     const val PARAM_CLIENT_NUMBER = "client_number"
 
@@ -64,9 +63,7 @@ object DeeplinkMapperDigital {
         val uri = Uri.parse(deeplink)
         return when {
             deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) -> {
-                if (!uri.getQueryParameter(IS_ADD_SBM).isNullOrEmpty() && uri.getQueryParameter(IS_ADD_SBM) == "true" && !uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) {
-                    getAddBillsTelco(deeplink)
-                } else if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty() &&
+                if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty() &&
                     !uri.getQueryParameter(MENU_ID_PARAM).isNullOrEmpty()
                 ) {
                     getDigitalTemplateNavigation(context, deeplink)
@@ -164,25 +161,6 @@ object DeeplinkMapperDigital {
                 it == TEMPLATE_TAGIHAN_LISTRIK_DIGITAL_PDP -> {
                     ApplinkConsInternalDigital.DIGITAL_TAGIHAN_LISTRIK
                 }
-                else -> deeplink
-            }
-        } ?: deeplink
-    }
-
-    private fun getAddBillsTelco(deeplink: String): String {
-        val uri = Uri.parse(deeplink)
-        return uri.getQueryParameter(TEMPLATE_PARAM)?.let {
-            when (it) {
-                TEMPLATE_OLD_PREPAID_TELCO -> {
-                    UriUtil.buildUri(ApplinkConsInternalDigital.ADD_TELCO, TEMPLATE_OLD_PREPAID_TELCO)
-                }
-                TEMPLATE_POSTPAID_TELCO -> {
-                    UriUtil.buildUri(ApplinkConsInternalDigital.ADD_TELCO, TEMPLATE_POSTPAID_TELCO)
-                }
-                TEMPLATE_ID_GENERAL -> {
-                    ApplinkConsInternalDigital.GENERAL_TEMPLATE
-                }
-
                 else -> deeplink
             }
         } ?: deeplink

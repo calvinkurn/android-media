@@ -1,7 +1,6 @@
 package com.tokopedia.applink
 
 import android.content.Context
-import com.tokopedia.applink.DFWebviewFallbackUrl.DIGITAL_SMART_BILLS
 import com.tokopedia.applink.DFWebviewFallbackUrl.ENTERTAINMENT_DEALS
 import com.tokopedia.applink.DFWebviewFallbackUrl.ENTERTAINMENT_EVENT
 import com.tokopedia.applink.DFWebviewFallbackUrl.FINTECH_SALDO
@@ -20,7 +19,6 @@ import com.tokopedia.applink.DeeplinkDFMapper.DF_CAMPAIGN_LIST
 import com.tokopedia.applink.DeeplinkDFMapper.DF_CATEGORY_AFFILIATE
 import com.tokopedia.applink.DeeplinkDFMapper.DF_CATEGORY_TRADE_IN
 import com.tokopedia.applink.DeeplinkDFMapper.DF_CONTENT_PLAY_BROADCASTER
-import com.tokopedia.applink.DeeplinkDFMapper.DF_DIGITAL
 import com.tokopedia.applink.DeeplinkDFMapper.DF_DILAYANI_TOKOPEDIA
 import com.tokopedia.applink.DeeplinkDFMapper.DF_ENTERTAINMENT
 import com.tokopedia.applink.DeeplinkDFMapper.DF_FEED_CONTENT_CREATION
@@ -160,7 +158,6 @@ object DeeplinkDFApp {
         DF_CATEGORY_TRADE_IN to getDfCategoryTradeIn(),
         DF_TOKOCHAT to getDfCommTokochat(),
         DF_CONTENT_PLAY_BROADCASTER to getDfContentPlayBroadcaster(),
-        DF_DIGITAL to getDfDigital(),
         DF_DILAYANI_TOKOPEDIA to getDfDilayaniTokopedia(),
         DF_ENTERTAINMENT to getDfEntertainment(),
         DF_FEED_CONTENT_CREATION to getDfFeedContentCreation(),
@@ -253,12 +250,6 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-preview"),
         // live-broadcaster
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/chucker")
-    )
-
-    private fun getDfDigital() = mutableListOf(
-        // smart_bills
-        DFP(INTERNAL, HOST_RECHARGE, PathType.PATTERN, "/bayarsekaligus", DIGITAL_SMART_BILLS),
-        DFP(INTERNAL, HOST_RECHARGE, PathType.PATTERN, "/add_telco")
     )
 
     private fun getDfDilayaniTokopedia() = mutableListOf(

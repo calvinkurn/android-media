@@ -29,7 +29,6 @@ class RechargeGeneralMockResponseConfig(
             RechargeGeneralProduct.LISTRIK -> createMockProductListrik(context)
             RechargeGeneralProduct.AIR_PDAM -> createMockProductAirPdam(context)
             RechargeGeneralProduct.ANGSURAN_KREDIT -> createMockProductAngsuranKredit(context)
-            RechargeGeneralProduct.ADD_BILLS_ERROR -> createMockProductAddBillsError(context)
         }
     }
 
@@ -138,10 +137,6 @@ class RechargeGeneralMockResponseConfig(
                 KEY_QUERY_CATALOG_PLUGIN,
                 InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_plugin),
                 FIND_BY_CONTAINS)
-        return this
-    }
-
-    private fun createMockProductAddBillsError(context: Context): MockModelConfig {
         return this
     }
 }

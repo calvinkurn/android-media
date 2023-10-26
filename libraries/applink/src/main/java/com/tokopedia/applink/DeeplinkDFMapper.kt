@@ -70,7 +70,6 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_FEED_CONTENT_CREATION = "df_feed_content_creation"
     const val DF_PEOPLE = "df_people"
     const val DF_ALPHA_TESTING = "df_alpha_testing"
-    const val DF_DIGITAL = "df_digital"
     const val DF_TOKOCHAT = "df_comm_tokochat"
     const val DF_SELLER_FRONT_FUNNEL = "df_seller_front_funnel"
     const val DF_DILAYANI_TOKOPEDIA = "df_dilayanitokopedia"
