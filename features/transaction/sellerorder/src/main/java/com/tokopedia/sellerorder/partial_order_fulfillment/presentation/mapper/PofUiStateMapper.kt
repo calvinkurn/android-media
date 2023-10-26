@@ -44,6 +44,27 @@ class PofUiStateMapper @Inject constructor() {
         } else null
     }
 
+    fun mapInitialQuantityEditorData(
+        pofInfoData: GetPofRequestInfoResponse.Data
+    ): List<PofProductEditableUiModel.QuantityEditorData> {
+        val pofStatus = pofInfoData.infoRequestPartialOrderFulfillment?.pofStatus.orZero()
+        val details = if (pofStatus == STATUS_INITIAL) {
+            pofInfoData.infoRequestPartialOrderFulfillment?.detailsOriginal
+        } else {
+            pofInfoData.infoRequestPartialOrderFulfillment?.detailsFulfilled
+        }
+        return details?.map { detail ->
+            PofProductEditableUiModel.QuantityEditorData(
+                orderDetailId = detail?.orderDetailId.orZero(),
+                productId = detail?.productId.orZero(),
+                quantity = detail?.quantityRequest.orZero(),
+                maxQuantity = detail?.quantityCheckout.orZero(),
+                updateTimestamp = Long.ZERO,
+                enabled = true
+            )
+        }.orEmpty()
+    }
+
     fun mapLoadingState(initialPofStatus: Int): UiState {
         return UiState(
             title = mapTitle(initialPofStatus),

@@ -6,10 +6,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.extension.combine
-import com.tokopedia.sellerorder.orderextension.presentation.model.StringRes
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofEstimateRequestParams
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofInfoRequestParams
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofRequestEstimateResponse
@@ -24,12 +21,12 @@ import com.tokopedia.sellerorder.partial_order_fulfillment.domain.usecase.GetPof
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.usecase.SendPofUseCase
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.adapter.model.PofProductEditableUiModel
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.adapter.model.PofTickerUiModel
+import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.mapper.PofToasterMapper
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.mapper.PofUiStateMapper
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.ToasterQueue
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.UiEffect
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.UiEvent
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.UiState
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -50,7 +47,8 @@ class PofViewModel @Inject constructor(
     private val getPofInfoUseCase: GetPofInfoUseCase,
     private val getPofEstimateUseCase: GetPofEstimateUseCase,
     private val sendPofUseCase: SendPofUseCase,
-    private val pofUiStateMapper: PofUiStateMapper
+    private val pofUiStateMapper: PofUiStateMapper,
+    private val pofToasterMapper: PofToasterMapper
 ) : ViewModel() {
 
     companion object {
@@ -266,28 +264,9 @@ class PofViewModel @Inject constructor(
         viewModelScope.launch {
             getPofInfoRequestState.collectLatest { pofRequestInfoRequestState ->
                 if (pofRequestInfoRequestState is RequestState.Success && quantityEditorDataList.value.isEmpty()) {
-                    val pofStatus = pofRequestInfoRequestState.data.infoRequestPartialOrderFulfillment?.pofStatus.orZero()
-                    val details = if (pofStatus == STATUS_INITIAL) {
-                        pofRequestInfoRequestState
-                            .data
-                            .infoRequestPartialOrderFulfillment
-                            ?.detailsOriginal
-                    } else {
-                        pofRequestInfoRequestState
-                            .data
-                            .infoRequestPartialOrderFulfillment
-                            ?.detailsFulfilled
-                    }
-                    quantityEditorDataList.value = details?.map { detail ->
-                        PofProductEditableUiModel.QuantityEditorData(
-                            orderDetailId = detail?.orderDetailId.orZero(),
-                            productId = detail?.productId.orZero(),
-                            quantity = detail?.quantityRequest.orZero(),
-                            maxQuantity = detail?.quantityCheckout.orZero(),
-                            updateTimestamp = Long.ZERO,
-                            enabled = true
-                        )
-                    }.orEmpty()
+                    quantityEditorDataList.value = pofUiStateMapper.mapInitialQuantityEditorData(
+                        pofRequestInfoRequestState.data
+                    )
                     delayFetchPofEstimate.emit(DELAY_FETCH_INITIAL_POF_ESTIMATE)
                 }
             }
@@ -401,28 +380,18 @@ class PofViewModel @Inject constructor(
     }
 
     private suspend fun showToasterCannotEmptyAllProduct() {
-        _toasterQueue.emit(ToasterQueue(text = StringRes(R.string.som_pof_toaster_error_cannot_empty_all_products)))
+        _toasterQueue.emit(pofToasterMapper.mapToasterCannotEmptyAllProduct())
     }
 
     private suspend fun showToasterCannotExceedCheckoutQuantity() {
-        _toasterQueue.emit(ToasterQueue(text = StringRes(R.string.som_pof_toaster_error_cannot_exceed_checkout_quantity)))
+        _toasterQueue.emit(pofToasterMapper.mapToasterCannotExceedCheckoutQuantity())
     }
 
     private suspend fun showToasterErrorSendPof() {
-        _toasterQueue.emit(
-            ToasterQueue(
-                text = StringRes(R.string.som_pof_toaster_error_send_pof),
-                type = Toaster.TYPE_ERROR
-            )
-        )
+        _toasterQueue.emit(pofToasterMapper.mapToasterErrorSendPof())
     }
 
     private suspend fun showToasterErrorReFetchPofEstimate() {
-        _toasterQueue.emit(
-            ToasterQueue(
-                text = StringRes(R.string.som_pof_toaster_error_re_fetch_pof_estimate),
-                type = Toaster.TYPE_ERROR
-            )
-        )
+        _toasterQueue.emit(pofToasterMapper.mapToasterErrorReFetchPofEstimate())
     }
 }
