@@ -60,6 +60,14 @@ class GqlQueryModule {
                 com.tokopedia.saldodetails.R.raw.query_saldo_hold_info)
     }
 
+    @SaldoDetailsScope
+    @Provides
+    @Named(QUERY_AUTO_WD_INIT)
+    fun provideSaldoAutoWDInit(@SaldoDetailsScope context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources,
+            com.tokopedia.saldodetails.R.raw.query_auto_wd_init)
+    }
+
     companion object {
         const val SALDO_WITHDRAWAL_TICKER_QUERY = "saldo_withdrawal_query"
         const val MERCHANT_SALDO_BALANCE_QUERY = "merchant_saldo_balance_query"
@@ -68,5 +76,6 @@ class GqlQueryModule {
         const val MERCHANT_CREDIT_LATE_COUNT_QUERY = "merchant credit late count query"
         const val UPDATE_MERCHANT_SALDO_STATUS = "update merchant saldo status"
         const val QUERY_SALDO_HOLD_INFO = "query_saldo_hold_info"
+        const val QUERY_AUTO_WD_INIT = "query_saldo_auto_init"
     }
 }

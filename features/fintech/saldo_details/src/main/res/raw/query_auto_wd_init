@@ -1,0 +1,12 @@
+query RichieAutoWDInit {
+  RichieAutoWDInit {
+    code
+    message
+    data{
+      is_eligible
+      status
+      schedule_wording
+      redirect_link
+    }
+  }
+}
