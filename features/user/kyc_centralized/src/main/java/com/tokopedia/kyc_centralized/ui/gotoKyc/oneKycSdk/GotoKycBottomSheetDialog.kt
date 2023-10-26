@@ -12,6 +12,7 @@ class GotoKycBottomSheetDialog : BottomSheetUnify() {
         arguments?.let {
             showCloseIcon = it.getBoolean(SHOW_CLOSE_ICON).orFalse()
         }
+        showHeader = showCloseIcon
         overlayClickDismiss = showCloseIcon
         clearContentPadding = true
     }
