@@ -6,22 +6,21 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.core.content.ContextCompat
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.databinding.DiscoveryStockBarLayoutBinding
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.utils.resources.isDarkMode
-import com.tokopedia.discovery2.R
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.utils.resources.isDarkMode
 
 class DiscoveryStockBar : FrameLayout {
 
-    private var binding : DiscoveryStockBarLayoutBinding? = null
+    private var binding: DiscoveryStockBarLayoutBinding? = null
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
-        binding = DiscoveryStockBarLayoutBinding.inflate(LayoutInflater.from(context), this, true )
+        binding = DiscoveryStockBarLayoutBinding.inflate(LayoutInflater.from(context), this, true)
 
         setIcon()
         setProgressBarColor()
@@ -47,7 +46,7 @@ class DiscoveryStockBar : FrameLayout {
             R.drawable.ic_stock_light_mode
         }
 
-        binding?.stockIcon?.loadImage(ContextCompat.getDrawable(context, iconResId))
+        binding?.stockIcon?.setImageResource(iconResId)
     }
 
     private fun setProgressBarColor() {
