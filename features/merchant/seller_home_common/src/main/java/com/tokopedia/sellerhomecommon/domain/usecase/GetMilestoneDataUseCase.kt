@@ -97,6 +97,22 @@ class GetMilestoneDataUseCase(
                       buttonStatus
                     }
                   }
+                  reward {
+                    rewardID
+                    hasReward
+                    rewardStatus
+                    rewardImg
+                    rewardTitle
+                    rewardSubtitle
+                    button {
+                      buttonStatus
+                      buttonStyleType
+                      title
+                      url
+                      urlType
+                      applink
+                    }
+                  }
                   cta {
                     text
                     applink

@@ -20,7 +20,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.MilestoneMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneProgressbarUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MissionButtonUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MissionProgressUiModel
-import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
 class MilestoneMapper @Inject constructor(
@@ -61,20 +60,6 @@ class MilestoneMapper @Inject constructor(
             val rewardCard = mapGetMilestoneReward(it.reward)
             allMissions.add(Int.ZERO, rewardCard)
         }
-
-        // TODO: Remove this dummy
-        allMissions.add(
-            0,
-            MilestoneItemRewardUiModel(
-                "Selessaikan misi & dapatkan hadiah",
-                "Untuk 99 orang tercepat",
-                "Detail Hadiah",
-                UnifyButton.Variant.FILLED,
-                MilestoneItemRewardUiModel.ButtonStatus.DISABLED,
-                "",
-                TokopediaImageUrl.SELLER_HOME_REWARD_ENDING_LOTTIE
-            )
-        )
 
         return MilestoneDataUiModel(
             dataKey = it.dataKey.orEmpty(),

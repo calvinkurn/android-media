@@ -74,7 +74,7 @@ data class MilestoneData(
     )
 
     data class Reward(
-        @SerializedName("isHaveReward")
+        @SerializedName("hasReward")
         val isHaveReward: Boolean = false,
         @SerializedName("rewardTitle")
         val rewardTitle: String = "",
