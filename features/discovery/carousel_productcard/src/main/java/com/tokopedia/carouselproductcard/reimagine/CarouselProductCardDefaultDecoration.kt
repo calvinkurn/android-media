@@ -3,6 +3,7 @@ package com.tokopedia.carouselproductcard.reimagine
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.productcard.reimagine.ProductCardGridCarouselView
 import com.tokopedia.unifycomponents.toPx
 
 internal class CarouselProductCardDefaultDecoration: RecyclerView.ItemDecoration() {
@@ -22,7 +23,14 @@ internal class CarouselProductCardDefaultDecoration: RecyclerView.ItemDecoration
         val isFirstPosition = parent.getChildAdapterPosition(view) == 0
         val isLastPosition = itemCount > 0 && itemPosition == itemCount - 1
 
-        outRect.left = if (isFirstPosition) 16.toPx() else 6.toPx()
-        outRect.right = if (isLastPosition) 16.toPx() else 6.toPx()
+        outRect.left = getMargin(isFirstPosition) - getAdditionalMarginStart(view)
+        outRect.right = getMargin(isLastPosition)
     }
+
+    private fun getMargin(isEdgeItem: Boolean): Int =
+        (if (isEdgeItem) 16 else 6).toPx()
+
+    private fun getAdditionalMarginStart(view: View) =
+        if (view is ProductCardGridCarouselView) view.additionalMarginStart
+        else 0
 }

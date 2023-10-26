@@ -156,7 +156,7 @@ internal class ProductCardRenderer(
     private fun renderCredibilitySection(productCardModel: ProductCardModel) {
         val hasRating = productCardModel.rating.isNotEmpty()
         val labelCredibility = productCardModel.labelCredibility()
-        val hasLabelCredibility = labelCredibility?.hasTitle() == true
+        val hasLabelCredibility = labelCredibility != null
         val hasCredibilitySection = hasRating || hasLabelCredibility
         credibilitySection?.shouldShowWithAction(hasCredibilitySection) {
             view.findViewById<IconUnify?>(R.id.productCardRatingIcon)?.showWithCondition(hasRating)
