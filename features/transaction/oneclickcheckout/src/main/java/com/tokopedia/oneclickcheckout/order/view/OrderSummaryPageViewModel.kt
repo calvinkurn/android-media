@@ -1084,10 +1084,12 @@ class OrderSummaryPageViewModel @Inject constructor(
     fun finalUpdate(onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
         val paymentRequest = paymentProcessor.get().generatePaymentRequest(
             orderCart,
+            orderProducts.value,
+            orderShop.value,
+            orderProfile.value,
             orderShipment.value,
             orderPayment.value,
-            orderTotal.value.orderCost,
-            orderProfile.value,
+            orderTotal.value,
             orderPromo.value
         )
         Log.i("qwertyuiop", "$paymentRequest")

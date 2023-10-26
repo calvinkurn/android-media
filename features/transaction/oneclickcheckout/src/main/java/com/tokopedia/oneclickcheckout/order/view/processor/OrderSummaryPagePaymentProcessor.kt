@@ -12,6 +12,7 @@ import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOptio
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
 import com.tokopedia.oneclickcheckout.order.data.payment.AdditionalInfoData
 import com.tokopedia.oneclickcheckout.order.data.payment.BenefitSummaryInfoData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartAddOnData
 import com.tokopedia.oneclickcheckout.order.data.payment.CartAddressData
 import com.tokopedia.oneclickcheckout.order.data.payment.CartData
 import com.tokopedia.oneclickcheckout.order.data.payment.CartDetail
@@ -39,10 +40,14 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -253,17 +258,19 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
     @SuppressLint("PII Data Exposure")
     fun generatePaymentRequest(
         orderCart: OrderCart,
+        orderProducts: List<OrderProduct>,
+        orderShop: OrderShop,
+        orderProfile: OrderProfile,
         orderShipment: OrderShipment,
         orderPayment: OrderPayment,
-        orderCost: OrderCost,
-        orderProfile: OrderProfile,
+        orderTotal: OrderTotal,
         orderPromo: OrderPromo
     ): PaymentRequest {
         return PaymentRequest(
             payment = PaymentData(
                 gatewayCode = orderPayment.gatewayCode,
                 profileCode = orderPayment.creditCard.additionalData.profileCode,
-                paymentAmount = orderCost.totalPriceWithoutPaymentFees
+                paymentAmount = orderTotal.orderCost.totalPriceWithoutPaymentFees
             ),
             CartDetail(
                 cart = CartData(
@@ -293,24 +300,30 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                                             shopId = orderCart.shop.shopId,
                                             warehouseId = orderCart.shop.warehouseId.toLongOrZero(),
                                             shopTier = orderCart.shop.shopTier.toLong(),
-                                            products = orderCart.products.map { orderProduct ->
-                                                CartProductData(
-                                                    productId = orderProduct.productId,
-                                                    name = orderProduct.productName,
-                                                    price = orderProduct.finalPrice,
-                                                    quantity = orderProduct.orderQuantity.toLong(),
-                                                    totalPrice = orderProduct.finalPrice * orderProduct.orderQuantity,
-                                                    bundleGroupId = 0,
-                                                    addonItems = emptyList(),
-                                                    category = CartProductCategoryData(
-                                                        id = orderProduct.categoryId,
-                                                        name = orderProduct.lastLevelCategory,
-                                                        identifier = orderProduct.categoryIdentifier
+                                            products = orderProducts.mapNotNull { orderProduct ->
+                                                if (!orderProduct.isError) {
+                                                    CartProductData(
+                                                        productId = orderProduct.productId,
+                                                        name = orderProduct.productName,
+                                                        price = orderProduct.finalPrice,
+                                                        quantity = orderProduct.orderQuantity.toLong(),
+                                                        totalPrice = orderProduct.finalPrice * orderProduct.orderQuantity,
+                                                        bundleGroupId = 0,
+                                                        addonItems = generateAddonProductLevel(
+                                                            orderProduct
+                                                        ),
+                                                        category = CartProductCategoryData(
+                                                            id = orderProduct.categoryId,
+                                                            name = orderProduct.lastLevelCategory,
+                                                            identifier = orderProduct.categoryIdentifier
+                                                        )
                                                     )
-                                                )
+                                                } else {
+                                                    null
+                                                }
                                             },
                                             bundle = emptyList(),
-                                            addonItems = emptyList(),
+                                            addonItems = generateAddonShopLevel(orderShop),
                                             cartStringOrder = orderCart.cartString
                                         )
                                     )
@@ -357,6 +370,51 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
             ),
             ""
         )
+    }
+
+    private fun generateAddonShopLevel(orderShop: OrderShop): List<CartAddOnData> {
+        val addOnItemModel = orderShop.addOn.addOnsDataItemModelList.firstOrNull()
+        if (orderShop.addOn.status == 1 && addOnItemModel != null) {
+            return listOf(
+                CartAddOnData(
+                    name = orderShop.addOn.addOnsButtonModel.title,
+                    price = addOnItemModel.addOnPrice / addOnItemModel.addOnQty,
+                    quantity = addOnItemModel.addOnQty,
+                    totalPrice = addOnItemModel.addOnPrice
+                )
+            )
+        }
+        return emptyList()
+    }
+
+    private fun generateAddonProductLevel(orderProduct: OrderProduct): List<CartAddOnData> {
+        val addOnProductLevelItems = mutableListOf<CartAddOnData>()
+        val addOnItemModel = orderProduct.addOn.addOnsDataItemModelList.firstOrNull()
+        if (orderProduct.addOn.status == 1 && addOnItemModel != null) {
+            addOnProductLevelItems.add(
+                CartAddOnData(
+                    name = orderProduct.addOn.addOnsButtonModel.title,
+                    price = addOnItemModel.addOnPrice / addOnItemModel.addOnQty,
+                    quantity = addOnItemModel.addOnQty,
+                    totalPrice = addOnItemModel.addOnPrice
+                )
+            )
+        }
+
+        orderProduct.addOnsProductData.data.forEach { addOnsProduct ->
+            if (addOnsProduct.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK || addOnsProduct.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY) {
+                val addOnQty: Long = if (addOnsProduct.fixedQuantity) 1 else orderProduct.orderQuantity.toLong()
+                addOnProductLevelItems.add(
+                    CartAddOnData(
+                        name = addOnsProduct.name,
+                        price = addOnsProduct.price.toDouble(),
+                        quantity = addOnQty,
+                        totalPrice = (addOnsProduct.price * addOnQty).toDouble()
+                    )
+                )
+            }
+        }
+        return addOnProductLevelItems
     }
 }
 
