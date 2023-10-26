@@ -84,6 +84,7 @@ class PofUiStateMapper @Inject constructor() {
     private fun mapTitle(pofStatus: Int): StringRes {
         return when(pofStatus) {
             STATUS_INITIAL -> StringRes(R.string.som_pof_title_request)
+            STATUS_WAITING_RESPONSE -> StringRes(R.string.som_pof_title_result)
             else -> StringRes(Int.ZERO)
         }
     }
