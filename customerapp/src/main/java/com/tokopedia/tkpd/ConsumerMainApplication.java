@@ -100,7 +100,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     @Override
     public void onCreate() {
         CheckAndTraceAppStartIfEnabled();
-//        Embrace.getInstance().start(this);
+        Embrace.getInstance().start(this);
         super.onCreate();
         setupAppScreenMode();
         setupAlphaObserver();
