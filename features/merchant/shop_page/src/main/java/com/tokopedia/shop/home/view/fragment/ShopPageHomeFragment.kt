@@ -2553,7 +2553,10 @@ open class ShopPageHomeFragment :
             shopHomeShowcaseListSliderUiModel.widgetId,
             ShopUtil.getActualPositionFromIndex(parentPosition),
             shopHomeShowcaseListSliderUiModel.widgetMasterId,
-            shopHomeShowcaseListSliderUiModel.isFestivity
+            shopHomeShowcaseListSliderUiModel.isFestivity,
+            isFulfillment = showcaseItem.isFulfilment,
+            warehouseId = showcaseItem.warehouseId
+
         )
         shopPageHomeTracking.clickShowcaseListWidgetItem(
             showcaseItem,
