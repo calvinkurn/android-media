@@ -99,7 +99,7 @@ class PlayVideoWidgetVideoManager(
             .toSet()
         val otherVideoWidgets = widgets - playableVideoWidgets
 
-        playableVideoWidgets.forEach { it.resumeVideo() }
+        playableVideoWidgets.forEach { it.startVideo() }
         otherVideoWidgets.forEach { it.pauseVideo() }
     }
 

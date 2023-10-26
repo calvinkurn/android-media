@@ -137,7 +137,7 @@ class PlayVideoWidgetView : CardUnify2 {
         player.pause()
     }
 
-    fun resumeVideo() {
+    fun startVideo() {
         player.start(mModel.createVideoPlayerConfig(true))
     }
 
