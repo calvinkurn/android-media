@@ -46,6 +46,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.swipeRefresh
     implementation project(path: ':libraries:base_list')
+    testImplementation project(path: ':libraries:unit_test')
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
