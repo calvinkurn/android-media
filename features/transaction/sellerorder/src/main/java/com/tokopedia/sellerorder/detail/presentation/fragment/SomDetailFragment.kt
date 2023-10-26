@@ -1339,6 +1339,7 @@ open class SomDetailFragment :
     protected open fun handlePof(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             loadDetail()
+            showCommonToaster(getString(R.string.som_pof_toaster_success_send_pof))
         }
     }
 

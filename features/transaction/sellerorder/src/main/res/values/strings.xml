@@ -367,5 +367,6 @@
     <string name="som_pof_toaster_error_cannot_exceed_checkout_quantity">Jumlah tidak boleh melebihi total barang dipesan.</string>
     <string name="som_pof_toaster_error_send_pof">Ada gangguan yang perlu kami bereskan. Coba lagi nanti, ya.</string>
     <string name="som_pof_toaster_error_re_fetch_pof_estimate">Gagal menampilkan rincian harga. Coba lagi, ya.</string>
+    <string name="som_pof_toaster_success_send_pof">Kamu sudah meminta pesanan ini dikirim sebagian. Tunggu konfirmasi pembeli, ya.</string>
     <string name="som_pof_summary_description">Total harga barang yang tidak tersedia. Belum termasuk biaya ongkir, cashback, dan pengembalian dana dari Pusat Resolusi.</string>
 </resources>
