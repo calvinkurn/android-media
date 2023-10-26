@@ -36,7 +36,7 @@ class StoriesCreationUiMapper @Inject constructor(
         return StoriesCreationConfiguration(
             storiesId = config.draftStoryId,
             maxProductTag = config.maxProductTag,
-            showDuration = config.showDuration,
+            storyDuration = config.storyDuration,
             minVideoDuration = config.minVideoDuration,
             maxVideoDuration = config.maxVideoDuration,
             imageSourceId = config.imageSourceId,
