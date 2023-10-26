@@ -59,9 +59,9 @@ class GotoKycUnifiedConfigs : UnifiedKycConfigs {
         * to make it easier to organize logic and content the article, the url set to production only
         * */
         val url = if (kycSdkPartner == KycSdkPartner.FINDAYA_MAB_CICIL)
-            "https://www.tokopedia.com/help/article/a-4126"
+            getArticleUrl("a-4126")
         else
-            "https://www.tokopedia.com/help/article/a-4048"
+            getArticleUrl("a-4048")
         return "${ApplinkConst.WEBVIEW}?url=$url"
     }
 
@@ -73,9 +73,9 @@ class GotoKycUnifiedConfigs : UnifiedKycConfigs {
         * to make it easier to organize logic and content the article, the url set to production only
         * */
         val url = if (kycSdkPartner == KycSdkPartner.FINDAYA_MAB_CICIL)
-            "https://www.tokopedia.com/help/article/a-4123"
+            getArticleUrl("a-4123")
         else
-            "https://www.tokopedia.com/help/article/a-4046"
+            getArticleUrl("a-4046")
         return "${ApplinkConst.WEBVIEW}?url=$url"
     }
 
@@ -87,14 +87,18 @@ class GotoKycUnifiedConfigs : UnifiedKycConfigs {
         * to make it easier to organize logic and content the article, the url set to production only
         * */
         val url = if (kycSdkPartner == KycSdkPartner.FINDAYA_MAB_CICIL)
-            "https://www.tokopedia.com/help/article/a-4127"
+            getArticleUrl("a-4127")
         else
-            "https://www.tokopedia.com/help/article/a-4047"
+            getArticleUrl("a-4047")
         return "${ApplinkConst.WEBVIEW}?url=$url"
     }
 
     // Use the given implementation
     override fun isPartnerAuroraEnabled(kycSdkPartner: KycSdkPartner): Boolean {
         return kycSdkPartner != KycSdkPartner.TOKOPEDIA_CORE
+    }
+
+    private fun getArticleUrl(endpoint: String): String {
+        return "https://www.tokopedia.com/help/article/$endpoint"
     }
 }
