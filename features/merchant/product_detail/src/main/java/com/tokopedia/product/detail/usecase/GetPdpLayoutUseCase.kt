@@ -502,7 +502,8 @@ open class GetPdpLayoutUseCase @Inject constructor(
             ProductDetailConstant.FINTECH_WIDGET_TYPE,
             ProductDetailConstant.FINTECH_WIDGET_V2_TYPE,
             ProductDetailConstant.CONTENT_WIDGET,
-            ProductDetailConstant.GLOBAL_BUNDLING
+            ProductDetailConstant.GLOBAL_BUNDLING,
+            ProductDetailConstant.NOTIFY_ME
         )
     }
 
