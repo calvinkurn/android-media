@@ -11,6 +11,7 @@ sealed class LinterConstants {
     object GradleConstructs : LinterConstants() {
         const val DEPENDENCIES = "dependencies"
         const val IMPLEMENTATION = "implementation"
+        const val TEST_IMPLEMENTATION = "testImplementation"
         const val BUILD_SCRIPT = "buildscript"
         const val REPOSITORIES = "implementation"
     }

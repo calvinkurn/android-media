@@ -40,9 +40,11 @@ interface HighlightSuggestionSearchListener {
 }
 
 interface HistoryViewUpdateListener {
-    fun setUserIdFromFragment(userId: String)
     fun showHistoryView()
-    fun dropKeyboardHistory()
+    fun setKeywordSearchBarView(keyword: String)
+}
+
+interface HistoryViewUpdateComposeListener {
     fun setKeywordSearchBarView(keyword: String)
 }
 

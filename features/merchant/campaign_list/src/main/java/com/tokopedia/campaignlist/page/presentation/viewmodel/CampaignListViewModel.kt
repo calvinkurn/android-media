@@ -1,6 +1,7 @@
 package com.tokopedia.campaignlist.page.presentation.viewmodel
 
 import android.text.TextUtils
+import androidx.compose.ui.text.TextRange
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -58,9 +59,10 @@ class CampaignListViewModel @Inject constructor(
     }
 
     private var campaignName = ""
+    private var campaignSelection = TextRange(campaignName.length)
     private var campaignTypeId = NPL_CAMPAIGN_TYPE
     private var campaignStatusId = GetCampaignListUseCase.statusId
-    private var selectedActiveCampaign : ActiveCampaign? = null
+    private var selectedActiveCampaign: ActiveCampaign? = null
     private var selectedCampaignTypeSelection: CampaignTypeSelection? = null
     private var merchantBannerData: GetMerchantCampaignBannerGeneratorData? = null
 
@@ -73,14 +75,13 @@ class CampaignListViewModel @Inject constructor(
     private val getSellerMetaDataResultLiveData = MutableLiveData<Result<GetSellerCampaignSellerAppMetaResponse>>()
     val getSellerMetaDataResult: LiveData<Result<GetSellerCampaignSellerAppMetaResponse>> get() = getSellerMetaDataResultLiveData
 
-
     sealed class UiEvent {
-        data class TapShareButton(val campaignId: Int): UiEvent()
+        data class TapShareButton(val campaignId: Int) : UiEvent()
         data class CampaignStatusFilterApplied(val selectedCampaignStatus: CampaignStatusSelection) : UiEvent()
         data class CampaignTypeFilterApplied(val selectedCampaignType: CampaignTypeSelection) : UiEvent()
         object ClearFilter : UiEvent()
         object NoCampaignStatusFilterApplied : UiEvent()
-        object DismissTicker: UiEvent()
+        object DismissTicker : UiEvent()
     }
 
     sealed class UiEffect {
@@ -94,7 +95,7 @@ class CampaignListViewModel @Inject constructor(
         val selectedCampaignStatus: CampaignStatusSelection? = null,
         val selectedCampaignType: CampaignTypeSelection? = null,
         val isTickerDismissed: Boolean = false,
-        val showClearFilterIcon : Boolean = true
+        val showClearFilterIcon: Boolean = true
     )
 
     private val _uiState = MutableStateFlow(UiState())
@@ -103,15 +104,23 @@ class CampaignListViewModel @Inject constructor(
     private val _uiEffect = MutableSharedFlow<UiEffect>(replay = 1)
     val uiEffect = _uiEffect.asSharedFlow()
 
-    fun setCampaignName(campaignName : String) {
+    fun setCampaignName(campaignName: String) {
         this.campaignName = campaignName
+    }
+
+    fun setCampaignSelection(campaignSelection: TextRange) {
+        this.campaignSelection = campaignSelection
+    }
+
+    fun getCampaignSelection(): TextRange {
+        return campaignSelection
     }
 
     fun getCampaignName(): String {
         return campaignName
     }
 
-    fun setCampaignTypeId(campaignTypeId : Int) {
+    fun setCampaignTypeId(campaignTypeId: Int) {
         this.campaignTypeId = campaignTypeId
     }
 
@@ -119,7 +128,7 @@ class CampaignListViewModel @Inject constructor(
         return campaignTypeId
     }
 
-    fun setCampaignStatusId(campaignStatusId : List<Int>) {
+    fun setCampaignStatusId(campaignStatusId: List<Int>) {
         this.campaignStatusId = campaignStatusId
     }
 
@@ -178,8 +187,8 @@ class CampaignListViewModel @Inject constructor(
                 it.copy(campaigns = mapCampaignListDataToActiveCampaignList(result.getCampaignListV2.campaignList))
             }
         }, onError = {
-            getCampaignListResultLiveData.value = Fail(it)
-        })
+                getCampaignListResultLiveData.value = Fail(it)
+            })
     }
 
     fun getSellerBanner(campaignId: Int) {
@@ -193,8 +202,8 @@ class CampaignListViewModel @Inject constructor(
 
             _uiEffect.emit(UiEffect.ShowShareBottomSheet(result.getMerchantCampaignBannerGeneratorData))
         }, onError = {
-            getMerchantBannerResultLiveData.value = Fail(it)
-        })
+                getMerchantBannerResultLiveData.value = Fail(it)
+            })
     }
 
     fun getSellerMetaData() {
@@ -217,8 +226,8 @@ class CampaignListViewModel @Inject constructor(
                 )
             }
         }, onError = {
-            getSellerMetaDataResultLiveData.value = Fail(it)
-        })
+                getSellerMetaDataResultLiveData.value = Fail(it)
+            })
     }
 
     fun mapCampaignListDataToActiveCampaignList(data: List<CampaignListV2>): List<ActiveCampaign> {
@@ -248,10 +257,10 @@ class CampaignListViewModel @Inject constructor(
         return campaignTypeDataList.map { campaignTypeData ->
             val isSelected = campaignTypeData.campaignTypeId == NPL_CAMPAIGN_TYPE.toString()
             CampaignTypeSelection(
-                    campaignTypeId = campaignTypeData.campaignTypeId,
-                    campaignTypeName = campaignTypeData.campaignTypeName,
-                    statusText = campaignTypeData.statusText,
-                    isSelected = isSelected
+                campaignTypeId = campaignTypeData.campaignTypeId,
+                campaignTypeName = campaignTypeData.campaignTypeName,
+                statusText = campaignTypeData.statusText,
+                isSelected = isSelected
             )
         }
     }
@@ -259,9 +268,9 @@ class CampaignListViewModel @Inject constructor(
     fun mapCampaignStatusToCampaignStatusSelections(campaignStatusList: List<CampaignStatus>): List<CampaignStatusSelection> {
         return campaignStatusList.map { campaignStatus ->
             CampaignStatusSelection(
-                    statusId = campaignStatus.status,
-                    statusText = campaignStatus.statusText,
-                    isSelected = false
+                statusId = campaignStatus.status,
+                statusText = campaignStatus.statusText,
+                isSelected = false
             )
         }
     }
@@ -271,11 +280,11 @@ class CampaignListViewModel @Inject constructor(
     }
 
     fun getShareDescriptionWording(
-            shopData: ShopData,
-            campaignData: Campaign,
-            merchantBannerData: GetMerchantCampaignBannerGeneratorData,
-            shareUri: String?,
-            campaignStatusId: String
+        shopData: ShopData,
+        campaignData: Campaign,
+        merchantBannerData: GetMerchantCampaignBannerGeneratorData,
+        shareUri: String?,
+        campaignStatusId: String
     ): String {
         return when (campaignStatusId) {
             ONGOING_STATUS_ID -> {
@@ -294,10 +303,10 @@ class CampaignListViewModel @Inject constructor(
     }
 
     fun generateLinkerShareData(
-            shopData: ShopData,
-            campaignData: Campaign,
-            shareModel: ShareModel,
-            campaignStatusId: String
+        shopData: ShopData,
+        campaignData: Campaign,
+        shareModel: ShareModel,
+        campaignStatusId: String
     ): LinkerShareData {
         val linkerData = LinkerData()
         linkerData.apply {
@@ -356,7 +365,7 @@ class CampaignListViewModel @Inject constructor(
     }
 
     fun onEvent(event: UiEvent) {
-        when(event) {
+        when (event) {
             is UiEvent.CampaignStatusFilterApplied -> {
                 _uiState.update { it.copy(selectedCampaignStatus = event.selectedCampaignStatus, showClearFilterIcon = true) }
             }
@@ -372,7 +381,7 @@ class CampaignListViewModel @Inject constructor(
             }
             is UiEvent.TapShareButton -> { getSellerBanner(event.campaignId) }
             UiEvent.ClearFilter -> {
-                _uiState.update { it.copy(showClearFilterIcon = false, selectedCampaignType = selectedCampaignTypeSelection, selectedCampaignStatus = null ) }
+                _uiState.update { it.copy(showClearFilterIcon = false, selectedCampaignType = selectedCampaignTypeSelection, selectedCampaignStatus = null) }
                 getCampaignList()
             }
         }
