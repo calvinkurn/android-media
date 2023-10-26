@@ -45,7 +45,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataM
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
@@ -92,16 +91,13 @@ import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWi
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlin.math.roundToLong
+import com.tokopedia.common_tradein.R as common_tradeinR
 
 /**
  * This class hold all of the ViewHolder data. They have same instance.
  * If you changes one of this variable , data inside ViewHolder also updated (don't forget to notify)
  */
 class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
-
-    private val miniSocialProofMap: ProductMiniSocialProofDataModel?
-        get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF] as? ProductMiniSocialProofDataModel
-
     private val miniSocialProofStockMap: ProductMiniSocialProofStockDataModel?
         get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK] as? ProductMiniSocialProofStockDataModel
 
@@ -361,14 +357,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             productTradeinMap?.run {
                 subtitle = if (tradeinResponse.usedPrice.toIntOrZero() > 0) {
                     context?.getString(
-                        com.tokopedia.common_tradein.R.string.text_price_holder,
+                        common_tradeinR.string.text_price_holder,
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(
                             tradeinResponse.usedPrice.toIntOrZero(),
                             true
                         )
                     ).orEmpty()
                     context?.getString(
-                        com.tokopedia.common_tradein.R.string.text_price_holder,
+                        common_tradeinR.string.text_price_holder,
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(
                             tradeinResponse.usedPrice.toIntOrZero(),
                             true
@@ -377,7 +373,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 } else if (tradeinResponse.widgetString.isNotBlank()) {
                     tradeinResponse.widgetString
                 } else {
-                    context?.getString(com.tokopedia.common_tradein.R.string.trade_in_exchange)
+                    context?.getString(common_tradeinR.string.trade_in_exchange)
                         .orEmpty()
                 }
             }
@@ -401,7 +397,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     productIdToPriceURLMap[variantData.children[i].productId] =
                         FintechPriceURLDataModel(
                             variantData.children[i].price.toString(),
-                            variantData.children[i].url.orEmpty(),
+                            variantData.children[i].url.orEmpty()
                         )
                 }
             }
@@ -501,10 +497,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateData(ProductDetailConstant.MINI_SOCIAL_PROOF) {
-                updateMiniSocialProof(it)
-            }
-
             updateData(ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK) {
                 miniSocialProofStockMap?.run {
                     wishlistCount = it.wishlistCount.toIntOrZero()
@@ -602,22 +594,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateDynamicOneLiner(it)
 
             updateBMGMSneakPeak(productId = productId, bmgm = it.bmgm)
-        }
-    }
-
-    private fun updateMiniSocialProof(p2Data: ProductInfoP2UiData) {
-        if (p2Data.socialProof.isEmpty()) {
-            removeComponent(ProductDetailConstant.MINI_SOCIAL_PROOF)
-        } else {
-            miniSocialProofMap?.shouldRender = true
-            val previousData = miniSocialProofMap?.items.orEmpty()
-            miniSocialProofMap?.items = p2Data.socialProof.map { uiModel ->
-                uiModel.copy( // retain impress-holder
-                    impressHolder = previousData.find {
-                        it.identifier == uiModel.identifier
-                    }?.impressHolder ?: ImpressHolder()
-                )
-            }
         }
     }
 

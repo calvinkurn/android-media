@@ -1,8 +1,7 @@
-package com.tokopedia.product.detail.data.model.social_proof
+package com.tokopedia.product.detail.common.data.model.pdplayout
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.detail.common.data.model.pdplayout.EduLinkData
 
 /**
  * Created by yovi.putra on 15/02/23"
@@ -47,14 +46,3 @@ data class SocialProofData(
         const val NEW_PRODUCT_ID = "new_product"
     }
 }
-
-fun SocialProofData.asUiModel() = SocialProofUiModel(
-    type = SocialProofUiModel.getType(socialProofType),
-    identifier = SocialProofUiModel.getID(socialProofId),
-    title = title,
-    subtitle = subtitle,
-    icon = icon,
-    appLink = appLink.appLink
-)
-
-fun List<SocialProofData>.asUiModel() = map { it.asUiModel() }

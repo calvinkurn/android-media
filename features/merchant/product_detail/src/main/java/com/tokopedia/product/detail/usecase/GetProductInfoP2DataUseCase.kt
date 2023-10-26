@@ -577,16 +577,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                status
                componentName
             }
-            socialProofComponent {
-                socialProofType
-                socialProofID
-                title
-                subtitle
-                icon
-                applink {
-                    appLink
-                }
-            }
             reviewList {
                 title
                 applink
