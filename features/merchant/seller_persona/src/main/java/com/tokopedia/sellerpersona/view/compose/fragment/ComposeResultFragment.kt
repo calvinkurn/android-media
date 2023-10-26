@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
@@ -60,6 +62,14 @@ class ComposeResultFragment : BaseComposeFragment() {
     private val args: ComposeResultFragmentArgs by navArgs()
     private var isPersonaActive = false
     private var isAnyChanges = false
+    private var isErrorToasterVisible = false
+    private val toasterCallback by lazy {
+        object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                isErrorToasterVisible = false
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,9 +111,7 @@ class ComposeResultFragment : BaseComposeFragment() {
                         is PersonaResultState.State.Success -> {
                             updateActiveStatusFlag(state.value.data.personaStatus.isActive())
                             updateAnyChangesFlag(state.value.data.isSwitchChecked)
-                            ResultSuccessState(
-                                state = state.value, onEvent = viewModel::onEvent
-                            )
+                            ResultSuccessState(state = state.value, onEvent = viewModel::onEvent)
                         }
                     }
                 }
@@ -208,18 +216,23 @@ class ComposeResultFragment : BaseComposeFragment() {
     }
 
     private fun showToggleErrorMessage() {
+        if (isErrorToasterVisible) return
+        isErrorToasterVisible = true
         view?.run {
             val dp64 = context.resources.getDimensionPixelSize(
                 unifyprinciplesR.dimen.layout_lvl7
             )
             Toaster.toasterCustomBottomHeight = dp64
-            Toaster.build(
+            val toaster = Toaster.build(
                 rootView,
                 context.getString(R.string.sp_toaster_error_message),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
                 context.getString(R.string.sp_oke)
-            ).show()
+            )
+            toaster.removeCallback(toasterCallback)
+            toaster.addCallback(toasterCallback)
+            toaster.show()
         }
     }
 
