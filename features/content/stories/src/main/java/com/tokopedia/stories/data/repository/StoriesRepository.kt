@@ -1,10 +1,10 @@
 package com.tokopedia.stories.data.repository
 
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
-import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
 import com.tokopedia.stories.view.model.StoriesDetail
+import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.viewmodel.state.ProductBottomSheetUiState
 
@@ -38,13 +38,9 @@ interface StoriesRepository {
     suspend fun getReportReasonList(): List<PlayUserReportReasoningUiModel.Reasoning>
 
     suspend fun submitReport(
-        channelId: Long,
-        mediaUrl: String,
+        storyDetail: StoriesDetailItem,
         reasonId: Int,
         timestamp: Long,
         reportDesc: String,
-        partnerId: Long,
-        partnerType: PostUserReportUseCase.PartnerType,
-        reporterId: Long
     ): Boolean
 }

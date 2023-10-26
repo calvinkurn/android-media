@@ -7,11 +7,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.types.ResultState
-import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.stories.R
 import com.tokopedia.stories.data.repository.StoriesRepository
@@ -243,14 +241,10 @@ class StoriesViewModel @AssistedInject constructor(
     fun submitReport(description: String, timestamp: Long) {
         viewModelScope.launchCatchError(block = {
             val submitReportResult = repository.submitReport(
-                channelId = storyId.toLongOrZero(),
-                mediaUrl = mDetail.content.data,
+                storyDetail = mDetail,
                 reasonId = _reportState.value.report.selectedReason?.reasoningId.orZero(),
                 timestamp = timestamp,
                 reportDesc = description,
-                partnerId = mDetail.author.id.toLongOrZero(),
-                partnerType = PostUserReportUseCase.PartnerType.getTypeValue(mDetail.author.type.value),
-                reporterId = userSession.userId.toLongOrZero()
             )
 
             _reportState.update { statusInfo ->

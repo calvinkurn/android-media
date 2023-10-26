@@ -8,6 +8,7 @@ import com.tokopedia.content.common.report_content.model.UserReportOptions
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.GetUserReportListUseCase
 import com.tokopedia.content.common.usecase.PostUserReportUseCase
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.stories.data.mapper.StoriesMapperImpl
 import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
@@ -21,6 +22,7 @@ import com.tokopedia.stories.usecase.ProductMapper
 import com.tokopedia.stories.usecase.StoriesProductUseCase
 import com.tokopedia.stories.usecase.UpdateStoryUseCase
 import com.tokopedia.stories.view.model.StoriesDetail
+import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.viewmodel.state.ProductBottomSheetUiState
 import com.tokopedia.user.session.UserSessionInterface
@@ -148,25 +150,21 @@ class StoriesRepositoryImpl @Inject constructor(
         }
 
     override suspend fun submitReport(
-        channelId: Long,
-        mediaUrl: String,
+        storyDetail: StoriesDetailItem,
         reasonId: Int,
         timestamp: Long,
-        reportDesc: String,
-        partnerId: Long,
-        partnerType: PostUserReportUseCase.PartnerType,
-        reporterId: Long
+        reportDesc: String
     ): Boolean =
         withContext(dispatchers.io) {
             val request = postReportUseCase.createParam(
-                channelId = channelId,
-                mediaUrl = mediaUrl,
+                channelId = storyDetail.id.toLongOrZero(),
+                mediaUrl = storyDetail.content.data,
                 reasonId = reasonId,
                 timestamp = timestamp,
                 reportDesc = reportDesc,
-                partnerId = partnerId,
-                partnerType = partnerType,
-                reporterId = reporterId
+                partnerId = storyDetail.author.id.toLongOrZero(),
+                partnerType = PostUserReportUseCase.PartnerType.getTypeValue(storyDetail.author.type.value),
+                reporterId = userSession.userId.toLongOrZero()
             )
 
             postReportUseCase.setRequestParams(request.parameters)
