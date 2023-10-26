@@ -7,8 +7,7 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 data class InspirationKeywordCardView(
     val title: String = "",
     val optionsItems: List<InspirationKeywordDataView>,
-    val isOneOrMoreIsEmptyImage: Boolean = false,
-    val isInspirationKeywordGridCard: Boolean = false
+    val isOneOrMoreIsEmptyImage: Boolean = false, val isInspirationKeywordGridCard: Boolean = false,
 ) : Visitable<ProductListTypeFactory> {
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this).orZero()

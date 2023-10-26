@@ -292,12 +292,12 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
 
     private fun InspirationKeywordCardView.assertInspirationKeywordDataView(
         inspirationCarouselData: InspirationCarouselData,
-        isTargetingInspirationKeywordGridCard : Boolean = false
+        isInspirationKeywordGridCard : Boolean = false
     ) {
         val isNoImage = !inspirationCarouselData.inspirationCarouselOptions.none { it.bannerImageUrl.isEmpty() }
         this.title shouldBe inspirationCarouselData.title
         this.isOneOrMoreIsEmptyImage shouldBe isNoImage
-        this.isInspirationKeywordGridCard shouldBe isTargetingInspirationKeywordGridCard
+        this.isInspirationKeywordGridCard shouldBe isInspirationKeywordGridCard
         this.optionsItems.forEachIndexed { index, seamlessInspirationKeyword ->
             seamlessInspirationKeyword.keyword shouldBe inspirationCarouselData.inspirationCarouselOptions[index].title
         }
