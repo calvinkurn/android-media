@@ -1,9 +1,11 @@
 package com.tokopedia.logisticaddaddress.domain.mapper
 
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticaddaddress.domain.model.Address
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.features.addeditaddress.uimodel.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.features.pinpoint.uimodel.PinpointUiModel
 
 object SaveAddressMapper {
 
@@ -33,6 +35,22 @@ object SaveAddressMapper {
         return saveAddressDataModel
     }
 
+    fun PinpointUiModel.map(
+        autoFillModel: Data
+    ): PinpointUiModel {
+        this.title = autoFillModel.title
+        this.districtId = autoFillModel.districtId
+        this.provinceId = autoFillModel.provinceId
+        this.cityId = autoFillModel.cityId
+        this.districtName = autoFillModel.districtName
+        this.provinceName = autoFillModel.provinceName
+        this.cityName = autoFillModel.cityName
+        this.postalCode = autoFillModel.postalCode
+        this.lat = autoFillModel.latitude.toDoubleOrZero()
+        this.long = autoFillModel.longitude.toDoubleOrZero()
+        return this
+    }
+
     fun map(
         getDistrictDataUiModel: GetDistrictDataUiModel,
         zipCodes: MutableList<String>?,
@@ -56,6 +74,22 @@ object SaveAddressMapper {
             saveAddressDataModel.zipCodes = zipCodes
         }
         return saveAddressDataModel
+    }
+
+    fun PinpointUiModel.map(
+        getDistrictDataUiModel: GetDistrictDataUiModel
+    ): PinpointUiModel {
+        this.title = getDistrictDataUiModel.title
+        this.districtId = getDistrictDataUiModel.districtId
+        this.provinceId = getDistrictDataUiModel.provinceId
+        this.cityId = getDistrictDataUiModel.cityId
+        this.districtName = getDistrictDataUiModel.districtName
+        this.provinceName = getDistrictDataUiModel.provinceName
+        this.cityName = getDistrictDataUiModel.cityName
+        this.postalCode = getDistrictDataUiModel.postalCode
+        this.lat = getDistrictDataUiModel.latitude.toDoubleOrZero()
+        this.long = getDistrictDataUiModel.longitude.toDoubleOrZero()
+        return this
     }
 
     fun mapAddressModeltoSaveAddressDataModel(
