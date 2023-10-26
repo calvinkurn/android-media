@@ -58,7 +58,7 @@ private fun StoriesTimerAnimationEnabled(
         when (timerInfo.event) {
             StoriesDetailItemUiEvent.PAUSE -> anim.stop()
             StoriesDetailItemUiEvent.RESUME -> {
-                delay(DELAY_MILLS)
+                delay(DELAY_MILLIS)
                 anim.animateTo(
                     targetValue = TARGET_ANIMATION,
                     animationSpec = tween(
@@ -99,8 +99,8 @@ private fun StoriesTimerAnimationDisabled(
             StoriesDetailItemUiEvent.RESUME -> {
                 isTimerRunning.value = true
                 if (currentTime.value < timerInfo.story.duration && isTimerRunning.value) {
-                    delay(DELAY_MILLS)
-                    currentTime.value += DELAY_MILLS
+                    delay(DELAY_MILLIS)
+                    currentTime.value += DELAY_MILLIS
                     timer.value = currentTime.value / timerInfo.story.duration.toFloat()
                 }
             }
@@ -166,6 +166,6 @@ internal fun StoriesDetailTimerPreview() {
     ) { }
 }
 
-private const val DELAY_MILLS = 100L
+private const val DELAY_MILLIS = 100L
 private const val TARGET_ANIMATION = 1F
 private const val INITIAL_ANIMATION = 0F
