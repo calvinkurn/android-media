@@ -29,6 +29,7 @@ public abstract class CarouselChildSelectionListener {
         mRecyclerView = recyclerView;
         mCarouselLayoutManager = carouselLayoutManager;
 
+        mRecyclerView.clearOnChildAttachStateChangeListeners();
         mRecyclerView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
             @Override
             public void onChildViewAttachedToWindow(@NonNull final View view) {
