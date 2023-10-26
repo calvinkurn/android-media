@@ -144,11 +144,13 @@ fun LaunchScrollToPosition(listState: LazyListState, selectedIndex: Int) {
 @Composable
 private fun PersonaTypeItemCard(persona: PersonaUiModel, onClicked: () -> Unit) {
     Row(
-        modifier = Modifier.clickable(
-            indication = null,
-            interactionSource = MutableInteractionSource(),
-            onClick = onClicked
-        ).tag(ComposeTag.SelectType.CONTAINER)
+        modifier = Modifier
+            .clickable(
+                indication = null,
+                interactionSource = MutableInteractionSource(),
+                onClick = onClicked
+            )
+            .tag(ComposeTag.SelectType.CONTAINER)
     ) {
         ConstraintLayout(
             modifier = Modifier
@@ -172,10 +174,12 @@ private fun PersonaTypeItemCard(persona: PersonaUiModel, onClicked: () -> Unit) 
             val endGuideline = createGuidelineFromEnd(16.dp)
 
             RadioButtonComponent(
-                modifier = Modifier.constrainAs(radio) {
-                    end.linkTo(parent.end)
-                    top.linkTo(parent.top)
-                }.tag(ComposeTag.SelectType.RAD_PERSONA),
+                modifier = Modifier
+                    .constrainAs(radio) {
+                        end.linkTo(parent.end)
+                        top.linkTo(parent.top)
+                    }
+                    .tag(ComposeTag.SelectType.RAD_PERSONA),
                 isChecked = persona.isSelected,
                 onClicked = onClicked
             )
@@ -204,10 +208,12 @@ private fun PersonaTypeItemCard(persona: PersonaUiModel, onClicked: () -> Unit) 
                 )
             )
             NestTypography(
-                modifier = Modifier.constrainAs(tvPersonaType) {
-                    top.linkTo(tvSellerTypeLbl.bottom, margin = 2.dp)
-                    start.linkTo(anchor = startGuideline)
-                }.tag(ComposeTag.SelectType.PERSONA_TYPE),
+                modifier = Modifier
+                    .constrainAs(tvPersonaType) {
+                        top.linkTo(tvSellerTypeLbl.bottom, margin = 2.dp)
+                        start.linkTo(anchor = startGuideline)
+                    }
+                    .tag(ComposeTag.SelectType.PERSONA_TYPE),
                 text = persona.headerTitle,
                 textStyle = NestTheme.typography.heading1.copy(
                     color = rememberPersonaTypeTextColor(persona.isSelected)
@@ -249,32 +255,41 @@ private fun PersonaTypeItemCard(persona: PersonaUiModel, onClicked: () -> Unit) 
                 )
             )
 
-            LazyColumn(modifier = Modifier.constrainAs(columnSelectTypeInfo) {
-                top.linkTo(anchor = tvSellerTypeLblInfo.bottom, margin = 16.dp)
-                start.linkTo(startGuideline)
-                end.linkTo(endGuideline)
-                width = Dimension.fillToConstraints
-            }) {
-                items(items = persona.itemList) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        NestIcon(
-                            iconId = IconUnify.CHECK,
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp),
-                            colorLightEnable = NestTheme.colors.GN._500
-                        )
-                        NestTypography(
-                            modifier = Modifier.padding(
-                                top = 6.dp, bottom = 6.dp, start = 8.dp
-                            ), textStyle = NestTheme.typography.display2.copy(
-                                color = sectionTextColor
-                            ), text = it
-                        )
-                    }
+            PersonaInfoList(
+                itemList = persona.itemList,
+                sectionTextColor = sectionTextColor,
+                modifier = Modifier.constrainAs(columnSelectTypeInfo) {
+                    top.linkTo(anchor = tvSellerTypeLblInfo.bottom, margin = 16.dp)
+                    start.linkTo(startGuideline)
+                    end.linkTo(endGuideline)
+                    width = Dimension.fillToConstraints
                 }
+            )
+        }
+    }
+}
+
+@Composable
+fun PersonaInfoList(itemList: List<String>, sectionTextColor: Color, modifier: Modifier) {
+    LazyColumn(modifier = modifier) {
+        items(items = itemList) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                NestIcon(
+                    iconId = IconUnify.CHECK,
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                    colorLightEnable = NestTheme.colors.GN._500
+                )
+                NestTypography(
+                    modifier = Modifier.padding(
+                        top = 6.dp, bottom = 6.dp, start = 8.dp
+                    ), textStyle = NestTheme.typography.display2.copy(
+                        color = sectionTextColor
+                    ), text = it
+                )
             }
         }
     }

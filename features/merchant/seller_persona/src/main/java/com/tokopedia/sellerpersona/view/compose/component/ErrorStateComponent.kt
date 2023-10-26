@@ -48,12 +48,12 @@ internal fun ErrorStateComponent(
             source = globalerrorR.drawable.unify_globalerrors_connection
         )
         NestImage(
-            source = source,
-            contentDescription = null,
-            contentScale = ContentScale.Fit,
             modifier = Modifier
                 .width(184.dp)
-                .height(144.dp)
+                .height(144.dp),
+            source = source,
+            contentDescription = null,
+            contentScale = ContentScale.Fit
         )
         Spacer(
             modifier = Modifier
