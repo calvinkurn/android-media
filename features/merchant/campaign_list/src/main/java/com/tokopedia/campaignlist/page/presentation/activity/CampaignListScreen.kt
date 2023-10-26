@@ -18,12 +18,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -61,7 +65,10 @@ fun CampaignListScreen(
     onTapCampaignStatusFilter: (List<CampaignStatusSelection>) -> Unit,
     onTapCampaignTypeFilter: (List<CampaignTypeSelection>) -> Unit,
     onClearFilter: () -> Unit,
-    onSearchBarKeywordSubmit: (String) -> Unit,
+    textRangeKeyword: TextRange,
+    searchBarKeyword: String,
+    onSearchBarKeywordChanged: (String, TextRange) -> Unit,
+    onSearchBarKeywordSubmit: () -> Unit,
     onSearchbarCleared: () -> Unit,
     onTickerDismissed: () -> Unit,
     onTapShareCampaignButton: (ActiveCampaign) -> Unit,
@@ -81,6 +88,9 @@ fun CampaignListScreen(
 
             SearchBar(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                searchBarKeyword = searchBarKeyword,
+                textRangeKeyword = textRangeKeyword,
+                onSearchBarKeywordChanged = onSearchBarKeywordChanged,
                 onSearchBarKeywordSubmit = onSearchBarKeywordSubmit,
                 onSearchbarCleared = onSearchbarCleared
             )
@@ -131,13 +141,30 @@ fun List(
 @Composable
 private fun SearchBar(
     modifier: Modifier = Modifier,
-    onSearchBarKeywordSubmit: (String) -> Unit,
+    textRangeKeyword: TextRange,
+    searchBarKeyword: String,
+    onSearchBarKeywordChanged: (String, TextRange) -> Unit,
+    onSearchBarKeywordSubmit: () -> Unit,
     onSearchbarCleared: () -> Unit
 ) {
+    var selection by remember(textRangeKeyword) {
+        mutableStateOf(textRangeKeyword)
+    }
+
+    var textFieldValue by remember(searchBarKeyword) {
+        mutableStateOf(TextFieldValue(searchBarKeyword, selection = selection))
+    }
+
     NestSearchBar(
+        value = textFieldValue,
         placeholderText = stringResource(id = R.string.cl_search_active_campaign),
         modifier = modifier.fillMaxWidth(),
         onSearchBarCleared = onSearchbarCleared,
+        onTextChanged = {
+            selection = it.selection
+            textFieldValue = it
+            onSearchBarKeywordChanged(it.text, it.selection)
+        },
         onKeyboardSearchAction = onSearchBarKeywordSubmit
     )
 }
@@ -449,7 +476,10 @@ private fun CampaignListPreview() {
             onTickerDismissed = {},
             onTapShareCampaignButton = {},
             onToolbarBackIconPressed = {},
-            onCampaignScrolled = {}
+            onCampaignScrolled = {},
+            searchBarKeyword = "",
+            textRangeKeyword = TextRange.Zero,
+            onSearchBarKeywordChanged = { _, _ -> }
         )
     }
 }
@@ -489,7 +519,10 @@ private fun CampaignListFilterSelectedPreview() {
             onTickerDismissed = {},
             onTapShareCampaignButton = {},
             onToolbarBackIconPressed = {},
-            onCampaignScrolled = {}
+            onCampaignScrolled = {},
+            onSearchBarKeywordChanged = { _, _ -> },
+            textRangeKeyword = TextRange.Zero,
+            searchBarKeyword = ""
         )
     }
 }

@@ -7,11 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
-import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.databinding.ItemDynamicSocialProofBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
@@ -41,26 +40,31 @@ class ProductMiniSocialProofViewHolder(
         SocialProofAdapter(factory = SocialProofAdapterFactory(listener = listener))
     }
 
+    private var previousElement: ProductMiniSocialProofDataModel? = null
+
     init {
         initRecyclerView()
     }
 
     override fun bind(element: ProductMiniSocialProofDataModel) {
-        if (!element.shouldRender) {
-            showLoading()
-        } else {
-            renderUI(element = element)
-        }
+        if (previousElement.hasSameSession(newElement = element) == true) return
+
+        renderUI(element = element)
     }
 
-    private fun showLoading() {
-        adapter.submitList(listOf(SocialProofUiModel.createLoader()))
-    }
+    private fun ProductMiniSocialProofDataModel?.hasSameSession(
+        newElement: ProductMiniSocialProofDataModel
+    ) = this?.equalsWith(newElement)
 
     private fun renderUI(element: ProductMiniSocialProofDataModel) {
         adapter.submitList(element.items, getComponentTrackData(element = element))
 
-        binding.root.addOnImpressionListener(element.impressHolder) {
+        binding.root.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.name,
+            useHolders = listener.isRemoteCacheableActive()
+        ) {
             listener.onImpressComponent(getComponentTrackData(element))
         }
     }

@@ -18,7 +18,9 @@ object RollenceKey {
     const val HOME_COMPONENT_ATF_2 = "home_atf2"
     const val HOME_LOAD_TIME_KEY = "load_time"
     const val HOME_LOAD_TIME_CONTROL = "control_variant"
-    const val HOME_LOAD_TIME_EXP = "exp_variant"
+    const val HOME_LOAD_ATF_CACHE_ROLLENCE_KEY = "loadtime_homepage_an"
+    const val HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL = "control_variant"
+    const val HOME_LOAD_ATF_CACHE_ROLLENCE_EXP = "experiment_variant"
     // end of home rollence section
 
     // home component rollence section
@@ -39,6 +41,11 @@ object RollenceKey {
     const val RECOM_PAGE_CPM_OLD = "ShopAdsIMControl"
     const val RECOM_PAGE_CPM_VARIANT = "ShopAdsIMVariant"
     // end of Recommendation page section
+
+    // Icon Jumper For You
+    const val ICON_JUMPER_DEFAULT = "control_variant"
+    const val ICON_JUMPER_EXP = "VariantA"
+    const val ICON_JUMPER = "IconJumper"
 
     // Auto Complete
     const val SEARCH_BROAD_MATCH_TRACKER_UNIFICATION = "keyword_track_broad"
@@ -85,9 +92,11 @@ object RollenceKey {
 
     // Payment
     const val THANKYOU_PAGE_WIDGET_ORDERING = "android_thankyou_v0"
+    const val THANKYOU_PAGE_WIDGET_VARIANT = "TYP_Exp_PG_DG"
 
     // TokopediaNOW
     const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
+    const val TOKOPEDIA_NOW_PAGINATION = "now_pagination"
 
     // FS Toko OOS Gradual Rollout
     const val FLASH_SALE_OUT_OF_STOCK_GRADUAL_ROLLOUT = "fst_oosimprovement"
@@ -101,9 +110,6 @@ object RollenceKey {
     // Wishlist
     const val WISHLIST_AFFILIATE_TICKER = "aff_ticker_col"
 
-    // New Universal Share BottomSheet in Shop
-    const val NEW_UNIVERSAL_SHARE_BOTTOM_SHEET = "shop_sharing"
-
     // Search Reimagine
     const val SEARCH_1_INST_AUTO = "search_1_inst_auto"
     const val SEARCH_1_INST_AUTO_CONTROL = "control_variant"
@@ -115,8 +121,10 @@ object RollenceKey {
     const val SEARCH_2_COMPONENT_CONTROL = "control_variant"
     const val SEARCH_2_COMPONENT_CAROUSEL_VAR = "ads_crsl_var"
     const val SEARCH_2_COMPONENT_QF_VAR = "ads_crsl_qf_var"
-    const val SEARCH_3_PRODUCT_CARD = "search_3_prdcard"
-    const val SEARCH_3_PRODUCT_CARD_CONTROL = "control"
-    const val SEARCH_3_PRODUCT_CARD_PC_VAR = "pc_var"
-    const val SEARCH_3_PRODUCT_CARD_PC_NEWLABEL_VAR = "pc_newlabel_var"
+    const val SEARCH_3_PRODUCT_CARD = "search_3_pc"
+    const val SEARCH_3_PRODUCT_CARD_CONTROL = "control_variant"
+    const val SEARCH_3_PRODUCT_CARD_VAR_1A = "var_1a"
+    const val SEARCH_3_PRODUCT_CARD_VAR_1B = "var_1b"
+    const val SEARCH_3_PRODUCT_CARD_VAR_2A = "var_2a"
+    const val SEARCH_3_PRODUCT_CARD_VAR_2B = "var_2b"
 }

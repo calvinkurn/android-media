@@ -263,8 +263,8 @@ class RepurchaseAnalytics @Inject constructor(@Transient private val userSession
         getTracker().sendEnhanceEcommerceEvent(EVENT_ADD_TO_CART, dataLayer)
     }
 
-    fun onClickProduct(userId: String, model: RepurchaseProductUiModel, position: Int) {
-        val item = ecommerceDataLayerProductClicked(model, position)
+    fun onClickProduct(userId: String, model: RepurchaseProductUiModel) {
+        val item = ecommerceDataLayerProductClicked(model, model.position)
 
         val dataLayer = getEcommerceDataLayer(
             event = EVENT_SELECT_CONTENT,

@@ -7,6 +7,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
+import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
@@ -21,10 +23,12 @@ import com.tokopedia.search.result.product.performancemonitoring.stopPerformance
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @SearchScope
 class RecyclerViewUpdater @Inject constructor(
     private val searchNavigationListener: SearchNavigationListener?,
+    private val reimagineRollence: ReimagineRollence,
     performanceMonitoringProvider: PerformanceMonitoringProvider,
     @SearchContext
     context: Context,
@@ -39,6 +43,12 @@ class RecyclerViewUpdater @Inject constructor(
 
     private val performanceMonitoring = performanceMonitoringProvider.get()
 
+    private val isReimagineSearchComponent: Boolean
+        get() = reimagineRollence.search2Component() != Search2Component.CONTROL
+
+    private val isReimagineProductCard: Boolean
+        get() = reimagineRollence.search3ProductCard().isReimagineProductCard()
+
     override val itemCount: Int
         get() = productListAdapter?.itemCount ?: 0
 
@@ -51,12 +61,11 @@ class RecyclerViewUpdater @Inject constructor(
         onScrollListenerList: List<RecyclerView.OnScrollListener?>,
         productListTypeFactory: ProductListTypeFactory,
         viewLifecycleOwner: LifecycleOwner,
-        isReimagine : Boolean = false
     ) {
         this.recyclerView = recyclerView
         this.productListAdapter = ProductListAdapter(productListTypeFactory)
 
-        setupRecyclerView(rvLayoutManager, onScrollListenerList, isReimagine)
+        setupRecyclerView(rvLayoutManager, onScrollListenerList)
 
         registerLifecycleObserver(viewLifecycleOwner)
     }
@@ -76,15 +85,14 @@ class RecyclerViewUpdater @Inject constructor(
     private fun setupRecyclerView(
         rvLayoutManager: RecyclerView.LayoutManager?,
         onScrollListenerList: List<RecyclerView.OnScrollListener?>,
-        isReimagine : Boolean
     ) {
         rvLayoutManager ?: return
 
         this.recyclerView?.run {
             layoutManager = rvLayoutManager
             adapter = productListAdapter
-            addItemDecoration(ProductItemDecoration(getSpacing(), productListAdapter))
-            if(!isReimagine)
+            addItemDecoration(ProductItemDecoration(getSpacing(), productListAdapter, isReimagineProductCard))
+            if(!isReimagineSearchComponent && !isReimagineProductCard)
                 addItemDecoration(SeparatorItemDecoration(context, productListAdapter))
             addItemDecoration(ProductListViewItemDecoration(context, productListAdapter))
             onScrollListenerList.filterNotNull().forEach(::addOnScrollListener)
@@ -94,7 +102,7 @@ class RecyclerViewUpdater @Inject constructor(
     private fun getSpacing(): Int =
         context
             ?.resources
-            ?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+            ?.getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_16)
             ?: 0
 
     override fun getItemAtIndex(index: Int): Visitable<*>? {

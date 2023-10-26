@@ -3,12 +3,12 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import android.view.ViewGroup.LayoutParams
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.OneLinersContent
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel.Companion.SEPARATOR_BOTH
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel.Companion.SEPARATOR_BOTTOM
@@ -72,7 +72,12 @@ class OneLinersViewHolder(
     private fun ItemOneLinersContentBinding.impressComponent(element: OneLinersDataModel) {
         val content = element.oneLinersContent
 
-        root.addOnImpressionListener(element.impressHolder) {
+        root.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.name,
+            useHolders = listener.isRemoteCacheableActive()
+        ) {
             renderCoachMark(content?.eduLink?.appLink?.isNotBlank() == true)
 
             if (element.name == STOCK_ASSURANCE) {

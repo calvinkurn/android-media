@@ -3,7 +3,6 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.productbundlewidget.listener.ProductBundleWidgetListener
 import com.tokopedia.productbundlewidget.model.*
@@ -75,10 +74,10 @@ class ShopHomeProductBundleParentWidgetViewHolder(
             .setWidgetType(WidgetType.TYPE_1)
             .setPageSource(ShopPageConstant.SOURCE)
             .build()
-        productBundleWidgetView?.setIsOverrideWidgetTheme(isOverrideWidgetTheme = isOverrideWidgetTheme)
         productBundleWidgetView?.setListener(this)
         productBundleWidgetView?.setTitleText(bundleWidgetTitle)
         productBundleWidgetView?.getBundleData(param)
+        productBundleWidgetView?.setIsOverrideWidgetTheme(isOverrideWidgetTheme)
         productBundleWidgetView?.setBundlingCarouselTopMargin(BUNDLE_RV_MARGIN_TOP.dpToPx().toInt())
 
         checkFestivity(isFestivity = isFestivity)
@@ -111,12 +110,12 @@ class ShopHomeProductBundleParentWidgetViewHolder(
 
     private fun configFestivity() {
         val festivityTextColorRes = com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-        productBundleWidgetView?.setTitleTextColor(festivityTextColorRes)
+        productBundleWidgetView?.setTitleTextColor(color = festivityTextColorRes)
     }
 
     private fun configNonFestivity() {
         val defaultTitleColorRes = com.tokopedia.unifyprinciples.R.color.Unify_NN950
-        productBundleWidgetView?.setTitleTextColor(defaultTitleColorRes)
+        productBundleWidgetView?.setTitleTextColor(color = defaultTitleColorRes)
     }
 
     private fun configReimaginedColor(colorSchema: ShopPageColorSchema) {

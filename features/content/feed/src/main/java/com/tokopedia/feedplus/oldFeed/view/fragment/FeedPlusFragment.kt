@@ -12,7 +12,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.annotation.RestrictTo
 import androidx.fragment.app.FragmentActivity
@@ -29,7 +28,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -98,6 +96,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.databinding.FragmentFeedPlusBinding
 import com.tokopedia.feedplus.oldFeed.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.oldFeed.view.adapter.FeedPlusAdapter
 import com.tokopedia.feedplus.oldFeed.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl
@@ -113,7 +112,6 @@ import com.tokopedia.feedplus.oldFeed.view.di.FeedPlusComponent
 import com.tokopedia.feedplus.oldFeed.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.oldFeed.view.util.NpaLinearLayoutManager
 import com.tokopedia.feedplus.oldFeed.view.viewmodel.FeedPromotedShopModel
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kotlin.extensions.view.*
@@ -141,7 +139,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
-import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.net.ConnectException
@@ -149,7 +146,11 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
-import com.tokopedia.wishlist_common.R as Rwishlist
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.kolcommon.R as kolcommonR
+import com.tokopedia.resources.common.R as resourcescommonR
+import com.tokopedia.wishlist_common.R as wishlist_commonR
 
 /**
  * @author by nisie on 5/15/17.
@@ -179,15 +180,10 @@ class FeedPlusFragment :
     ShopRecomWidgetCallback,
     FeedPlusTabParentFragment {
 
-    @Suppress("LateinitUsage")
-    private lateinit var feedGlobalError: GlobalError
+    private var _binding: FragmentFeedPlusBinding? = null
+    private val binding: FragmentFeedPlusBinding
+        get() = _binding!!
 
-    @Suppress("LateinitUsage")
-    private lateinit var feedContainer: RelativeLayout
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var swipeToRefresh: SwipeToRefresh
-    private lateinit var mainContent: View
-    private lateinit var newFeed: View
     private lateinit var newFeedReceiver: BroadcastReceiver
     private lateinit var dynamicPostReceiver: BroadcastReceiver
     private lateinit var adapter: FeedPlusAdapter
@@ -261,7 +257,7 @@ class FeedPlusFragment :
                 override fun onErrorCreatingUrl(linkerError: LinkerError?) {
                     showToast(
                         message = linkerError?.errorMessage
-                            ?: getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
+                            ?: getString(abstractionR.string.default_request_error_unknown),
                         type = Toaster.TYPE_ERROR
                     )
                 }
@@ -447,7 +443,7 @@ class FeedPlusFragment :
                                     stringBuilder.append(getString(R.string.shop_success_follow))
                                 }
                             } else {
-                                stringBuilder.append(getString(com.tokopedia.abstraction.R.string.msg_network_error))
+                                stringBuilder.append(getString(abstractionR.string.msg_network_error))
                             }
                             data.resultString = stringBuilder.toString()
                             onSuccessFavoriteUnfavoriteShop(data)
@@ -467,9 +463,9 @@ class FeedPlusFragment :
                                 if (data.isFollowedFromFollowRestrictionBottomSheet && data.isFollow) {
                                     if (::productTagBS.isInitialized) {
                                         productTagBS.showToasterOnBottomSheetOnSuccessFollow(
-                                            getString(com.tokopedia.content.common.R.string.feed_follow_bottom_sheet_success_toaster_text),
+                                            getString(contentcommonR.string.feed_follow_bottom_sheet_success_toaster_text),
                                             Toaster.TYPE_NORMAL,
-                                            getString(com.tokopedia.content.common.R.string.feed_ok)
+                                            getString(contentcommonR.string.feed_ok)
                                         )
                                         if (feedFollowersOnlyBottomSheet?.isAdded == true && feedFollowersOnlyBottomSheet?.isVisible == true) {
                                             feedFollowersOnlyBottomSheet?.dismiss()
@@ -477,7 +473,7 @@ class FeedPlusFragment :
                                     }
                                 } else {
                                     val messageRes =
-                                        if (data.isFollow) com.tokopedia.content.common.R.string.feed_component_follow_success_toast else com.tokopedia.content.common.R.string.feed_component_unfollow_success_toast
+                                        if (data.isFollow) contentcommonR.string.feed_component_follow_success_toast else contentcommonR.string.feed_component_unfollow_success_toast
                                     showToast(
                                         getString(messageRes),
                                         Toaster.TYPE_NORMAL
@@ -487,10 +483,10 @@ class FeedPlusFragment :
                             } else {
                                 if (data.isFollow) {
                                     data.errorMessage =
-                                        getString(com.tokopedia.content.common.R.string.feed_component_unfollow_fail_toast)
+                                        getString(contentcommonR.string.feed_component_unfollow_fail_toast)
                                 } else {
                                     data.errorMessage =
-                                        getString(com.tokopedia.content.common.R.string.feed_component_follow_fail_toast)
+                                        getString(contentcommonR.string.feed_component_follow_fail_toast)
                                 }
                                 onErrorFollowUnfollowKol(data)
                             }
@@ -605,9 +601,9 @@ class FeedPlusFragment :
                                 if (data.isFollowedFromFollowRestrictionBottomSheet) {
                                     if (::productTagBS.isInitialized) {
                                         productTagBS.showToasterOnBottomSheetOnSuccessFollow(
-                                            getString(com.tokopedia.content.common.R.string.feed_follow_bottom_sheet_success_toaster_text),
+                                            getString(contentcommonR.string.feed_follow_bottom_sheet_success_toaster_text),
                                             Toaster.TYPE_NORMAL,
-                                            getString(com.tokopedia.content.common.R.string.feed_ok)
+                                            getString(contentcommonR.string.feed_ok)
                                         )
                                         if (feedFollowersOnlyBottomSheet?.isAdded == true && feedFollowersOnlyBottomSheet?.isVisible == true) {
                                             feedFollowersOnlyBottomSheet?.dismiss()
@@ -820,7 +816,7 @@ class FeedPlusFragment :
                             isFeedPageShown = true
                         }
                         if (isHaveNewFeed) {
-                            newFeed.visible()
+                            binding.layoutNewFeed.visible()
                             triggerNewFeedNotification()
                         }
                     } else if (intent.action == BROADCAST_VISIBLITY) {
@@ -851,11 +847,11 @@ class FeedPlusFragment :
             try {
                 // loop all current child in recyclerview and change all dynamic video
                 // correspond to broadcast action. This is behaves the same way as notifyItemChange
-                val childCount = recyclerView.childCount
+                val childCount = binding.recyclerView.childCount
                 var i = 0
                 while (i < childCount) {
                     val holder: RecyclerView.ViewHolder =
-                        recyclerView.getChildViewHolder(recyclerView.getChildAt(i))
+                        binding.recyclerView.getChildViewHolder(binding.recyclerView.getChildAt(i))
                     if (holder is DynamicPostNewViewHolder) {
                         holder.setPostDynamicView(action)
                     }
@@ -886,17 +882,10 @@ class FeedPlusFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        retainInstance = true
-        val parentView = inflater.inflate(R.layout.fragment_feed_plus, container, false)
-        feedGlobalError = parentView.findViewById(R.id.feed_plus_global_error)
-        feedContainer = parentView.findViewById(R.id.feed_plus_container)
-        recyclerView = parentView.findViewById(R.id.recycler_view)
-        swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout)
-        mainContent = parentView.findViewById(R.id.main)
-        newFeed = parentView.findViewById(R.id.layout_new_feed)
+    ): View {
+        _binding = FragmentFeedPlusBinding.inflate(layoutInflater)
         prepareView()
-        return parentView
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -904,8 +893,8 @@ class FeedPlusFragment :
 
         onRefresh()
 
-        recyclerView.addOnScrollListener(feedFloatingButtonManager.scrollListener)
-        feedFloatingButtonManager.setDelayForExpandFab(recyclerView)
+        binding.recyclerView.addOnScrollListener(feedFloatingButtonManager.scrollListener)
+        feedFloatingButtonManager.setDelayForExpandFab(binding.recyclerView)
     }
 
     private fun prepareView() {
@@ -917,19 +906,19 @@ class FeedPlusFragment :
                 false
             )
 
-        recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = adapter
-        swipeToRefresh.setOnRefreshListener(this)
+        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.adapter = adapter
+        binding.swipeRefreshLayout.setOnRefreshListener(this)
         context?.let {
             infoBottomSheet = TopAdsInfoBottomSheet.newInstance(it)
         }
-        newFeed.setOnClickListener {
+        binding.layoutNewFeed.setOnClickListener {
             scrollToTop()
             sendNewFeedClickEvent()
             showRefresh()
             onRefresh()
         }
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
@@ -956,7 +945,7 @@ class FeedPlusFragment :
     }
 
     override fun onRefresh() {
-        newFeed.visibility = View.GONE
+        binding.layoutNewFeed.visibility = View.GONE
         hideAdapterLoading()
         fetchFirstPage()
         afterRefresh = true
@@ -985,7 +974,8 @@ class FeedPlusFragment :
         TopAdsHeadlineActivityCounter.page = 1
         Toaster.onCTAClick = View.OnClickListener { }
         feedFloatingButtonManager.cancel()
-        recyclerView.clearOnScrollListeners()
+        binding.recyclerView.clearOnScrollListeners()
+        _binding = null
     }
 
     override fun onInfoClicked() {
@@ -1156,9 +1146,7 @@ class FeedPlusFragment :
     }
 
     fun scrollToTop() {
-        if (::recyclerView.isInitialized) {
-            recyclerView.scrollToPosition(0)
-        }
+        binding.recyclerView.scrollToPosition(0)
     }
 
     private fun triggerNewFeedNotification() {
@@ -1223,7 +1211,7 @@ class FeedPlusFragment :
     }
 
     private fun resetImagePostWhenFragmentNotVisible() {
-        val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+        val layoutManager = binding.recyclerView.layoutManager as? LinearLayoutManager
         val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
         val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
         for (i in firstPosition..lastPosition) {
@@ -1244,14 +1232,14 @@ class FeedPlusFragment :
     }
 
     private fun resetVODWhenFeedTabChanged() {
-        val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+        val layoutManager = binding.recyclerView.layoutManager as? LinearLayoutManager
         val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
         val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
         for (i in firstPosition..lastPosition) {
             val item = getCardViewModel(adapter.getList(), i)
             if (isVOD(adapter.getList(), i)) {
                 if (item != null) {
-                    val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)
+                    val viewHolder = binding.recyclerView.findViewHolderForAdapterPosition(i)
                     if (viewHolder is DynamicPostNewViewHolder) {
                         (viewHolder as DynamicPostNewViewHolder).setPostDynamicView(if (!isFeedPageShown) BROADCAST_VISIBLITY else "")
                     }
@@ -1502,7 +1490,7 @@ class FeedPlusFragment :
             DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.feed_delete_post))
         dialog.setDescription(getString(R.string.feed_after_delete_cant))
-        dialog.setPrimaryCTAText(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
+        dialog.setPrimaryCTAText(getString(resourcescommonR.string.general_label_cancel))
         dialog.setSecondaryCTAText(getString(R.string.feed_delete))
         dialog.setPrimaryCTAClickListener {
             dialog.dismiss()
@@ -2718,10 +2706,10 @@ class FeedPlusFragment :
     ) {
         Toaster.build(
             requireView(),
-            getString(Rwishlist.string.on_success_add_to_wishlist_msg),
+            getString(wishlist_commonR.string.on_success_add_to_wishlist_msg),
             Toaster.LENGTH_LONG,
             Toaster.TYPE_NORMAL,
-            getString(Rwishlist.string.cta_success_add_to_wishlist),
+            getString(wishlist_commonR.string.cta_success_add_to_wishlist),
             View.OnClickListener {
                 getFeedTrackerDataModelFromPosition(positionInFeed)?.let { feedTrackerData ->
                     feedAnalytics.eventOnTagSheetItemBuyClicked(
@@ -2878,7 +2866,7 @@ class FeedPlusFragment :
     }
 
     private fun fetchFirstPage() {
-        feedContainer.show()
+        binding.feedPlusContainer.show()
         showRefresh()
         adapter.showShimmer()
         feedViewModel.getFeedFirstPage()
@@ -2934,7 +2922,7 @@ class FeedPlusFragment :
         if (model.postList.isNotEmpty()) {
             setLastCursorOnFirstPage(model.cursor)
             setFirstPageCursor(model.firstPageCursor)
-            swipe_refresh_layout.isEnabled = true
+            binding.swipeRefreshLayout.isEnabled = true
             trackFeedImpression(model.postList)
             adapter.clearData()
             adapter.updateList(model.postList)
@@ -3016,19 +3004,18 @@ class FeedPlusFragment :
             data.errorMessage,
             Toaster.LENGTH_LONG,
             Toaster.TYPE_ERROR,
-            getString(com.tokopedia.abstraction.R.string.title_try_again),
-            View.OnClickListener {
-                if (data.status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW) {
-                    feedViewModel.doUnfollowKol(data.id, data.rowNumber)
-                } else {
-                    feedViewModel.doFollowKol(data.id, data.rowNumber)
-                }
+            getString(abstractionR.string.title_try_again)
+        ) {
+            if (data.status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW) {
+                feedViewModel.doUnfollowKol(data.id, data.rowNumber)
+            } else {
+                feedViewModel.doFollowKol(data.id, data.rowNumber)
             }
-        )
+        }
     }
 
     private fun showGlobalError() {
-        feedGlobalError.apply {
+        binding.feedPlusGlobalError.apply {
             visible()
             errorSecondaryAction.hide()
             setActionClickListener {
@@ -3036,7 +3023,7 @@ class FeedPlusFragment :
                 hide()
             }
         }
-        feedContainer.hide()
+        binding.feedPlusContainer.hide()
     }
 
     private fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
@@ -3120,18 +3107,18 @@ class FeedPlusFragment :
     private fun showToastOnSuccessReminderSetForFSTorRS(card: FeedXCard) {
         when {
             card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.campaign.isFlashSaleToko -> showToast(
-                context?.getString(com.tokopedia.content.common.R.string.feed_asgc_reminder_activate_fst_message)
+                context?.getString(contentcommonR.string.feed_asgc_reminder_activate_fst_message)
                     ?: "",
                 Toaster.TYPE_NORMAL
             )
             card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.campaign.isRilisanSpl -> showToast(
-                context?.getString(com.tokopedia.content.common.R.string.feed_asgc_reminder_activate_rs_message)
+                context?.getString(contentcommonR.string.feed_asgc_reminder_activate_rs_message)
                     ?: "",
                 Toaster.TYPE_NORMAL
             )
             card.campaign.reminder is FeedASGCUpcomingReminderStatus.Off -> showToast(
                 context?.getString(
-                    com.tokopedia.content.common.R.string.feed_asgc_reminder_deactivate_message
+                    contentcommonR.string.feed_asgc_reminder_deactivate_message
                 ) ?: "",
                 Toaster.TYPE_NORMAL
             )
@@ -3152,7 +3139,7 @@ class FeedPlusFragment :
                     getString(R.string.feed_post_deleted),
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_NORMAL,
-                    getString(com.tokopedia.kolcommon.R.string.content_action_ok)
+                    getString(kolcommonR.string.content_action_ok)
                 ).show()
             }
         }
@@ -3168,11 +3155,10 @@ class FeedPlusFragment :
             data.errorMessage,
             Toaster.LENGTH_LONG,
             Toaster.TYPE_ERROR,
-            getString(com.tokopedia.abstraction.R.string.title_try_again),
-            View.OnClickListener {
-                feedViewModel.doDeletePost(data.id, data.rowNumber)
-            }
-        )
+            getString(abstractionR.string.title_try_again)
+        ) {
+            feedViewModel.doDeletePost(data.id, data.rowNumber)
+        }
     }
 
     private fun onAddToCartSuccess() {
@@ -3193,12 +3179,12 @@ class FeedPlusFragment :
                 feedXCardData.followers.isFollowed = !feedXCardData.followers.isFollowed
                 if (!feedXCardData.followers.isFollowed) {
                     showToast(
-                        getString(com.tokopedia.content.common.R.string.feed_component_unfollow_success_toast),
+                        getString(contentcommonR.string.feed_component_unfollow_success_toast),
                         Toaster.TYPE_NORMAL
                     )
                 } else if (feedXCardData.followers.isFollowed) {
                     showToast(
-                        getString(com.tokopedia.content.common.R.string.feed_component_follow_success_toast),
+                        getString(contentcommonR.string.feed_component_follow_success_toast),
                         Toaster.TYPE_NORMAL
                     )
                 }
@@ -3263,12 +3249,12 @@ class FeedPlusFragment :
                 }
                 if (!isFollowed) {
                     showToast(
-                        getString(com.tokopedia.content.common.R.string.feed_component_unfollow_success_toast),
+                        getString(contentcommonR.string.feed_component_unfollow_success_toast),
                         Toaster.TYPE_NORMAL
                     )
                 } else {
                     showToast(
-                        getString(com.tokopedia.content.common.R.string.feed_component_follow_success_toast),
+                        getString(contentcommonR.string.feed_component_follow_success_toast),
                         Toaster.TYPE_NORMAL
                     )
                 }
@@ -3288,15 +3274,14 @@ class FeedPlusFragment :
             data.errorMessage,
             Toaster.LENGTH_LONG,
             Toaster.TYPE_ERROR,
-            getString(com.tokopedia.abstraction.R.string.title_try_again),
-            View.OnClickListener {
-                feedViewModel.doToggleFavoriteShop(
-                    data.rowNumber,
-                    data.adapterPosition,
-                    data.shopId
-                )
-            }
-        )
+            getString(abstractionR.string.title_try_again)
+        ) {
+            feedViewModel.doToggleFavoriteShop(
+                data.rowNumber,
+                data.adapterPosition,
+                data.shopId
+            )
+        }
     }
 
     private fun sendMoEngageOpenFeedEvent() {
@@ -3386,8 +3371,8 @@ class FeedPlusFragment :
     }
 
     private fun showRefresh() {
-        if (!swipeToRefresh.isRefreshing) {
-            swipeToRefresh.isRefreshing = true
+        if (!binding.swipeRefreshLayout.isRefreshing) {
+            binding.swipeRefreshLayout.isRefreshing = true
         }
     }
 
@@ -3404,7 +3389,7 @@ class FeedPlusFragment :
     }
 
     private fun finishLoading() {
-        swipeToRefresh.isRefreshing = false
+        binding.swipeRefreshLayout.isRefreshing = false
     }
 
     private fun hideAdapterLoading() {
@@ -3759,18 +3744,18 @@ class FeedPlusFragment :
     }
 
     override fun hideTopadsView(position: Int) {
-        recyclerView.isComputingLayout.let {
+        binding.recyclerView.isComputingLayout.let {
             if (isAllowedNotify(it, position)) {
                 if (adapter.getlist().size > position && adapter.getlist()[position] is TopadsHeadLineV2Model) {
                     adapter.getlist().removeAt(position)
-                    recyclerView.post {
+                    binding.recyclerView.post {
                         adapter.notifyItemRemoved(position)
                     }
                 }
 
                 if (adapter.getlist().size > position && adapter.getlist()[position] is TopadsHeadlineUiModel) {
                     adapter.getlist().removeAt(position)
-                    recyclerView.post {
+                    binding.recyclerView.post {
                         adapter.notifyItemRemoved(position)
                     }
                 }
@@ -4096,17 +4081,6 @@ class FeedPlusFragment :
         val newList = feedViewModel.processFollowStatusUpdate(adapter.getList(), data)
 
         if (newList.isNotEmpty()) {
-//            val scrollPosition = getCurrentPosition()
-//            clearData()
-//            adapter.addList(newList)
-//
-//            recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
-//                ViewTreeObserver.OnGlobalLayoutListener {
-//                override fun onGlobalLayout() {
-//                    recyclerView.scrollToPosition(scrollPosition)
-//                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//                }
-//            })
             adapter.updateList(newList)
         }
 

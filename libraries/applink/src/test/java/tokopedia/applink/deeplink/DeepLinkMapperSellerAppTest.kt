@@ -26,7 +26,7 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
         const val SIZE_HOST = 31
-        const val SIZE_PATH = 71
+        const val SIZE_PATH = 72
     }
 
     @Throws(RuntimeException::class)
@@ -153,6 +153,12 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check top ads product recommendation applink then should return tokopedia internal top ads product recommendation in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://topads/product-recommendation"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.TOPADS_PRODUCT_RECOMMENDATION, expectedDeepLink)
+    }
+
+    @Test
     fun `check gold merchant appLink then should return empty in sellerapp`() {
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.GOLD_MERCHANT, "")
     }
@@ -225,7 +231,8 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check seller search appLink then should return tokopedia internal seller search in sellerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-search"
+        setRemoteConfig(true)
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-search-compose"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.SELLER_SEARCH, expectedDeepLink)
     }
 

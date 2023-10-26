@@ -1,10 +1,8 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.databinding.ItemDynamicProductContentBinding
@@ -18,7 +16,7 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 class ProductContentViewHolder(
     private val view: View,
     private val listener: DynamicProductDetailListener
-) : AbstractViewHolder<ProductContentDataModel>(view) {
+) : ProductDetailPageViewHolder<ProductContentDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_product_content
@@ -31,7 +29,12 @@ class ProductContentViewHolder(
         initializeClickListener(element)
 
         element.data?.let {
-            view.addOnImpressionListener(element.impressHolder) {
+            view.addOnImpressionListener(
+                holder = element.impressHolder,
+                holders = listener.getImpressionHolders(),
+                name = element.name,
+                useHolders = listener.isRemoteCacheableActive()
+            ) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
             header.renderData(it, element.isNpl(), element.freeOngkirImgUrl, element.shouldShowCampaign)
@@ -57,28 +60,28 @@ class ProductContentViewHolder(
                 header.renderFreeOngkir(element.freeOngkirImgUrl)
             }
         }
-        view.addOnImpressionListener(element.impressHolder) {
+        view.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.name,
+            useHolders = listener.isRemoteCacheableActive()
+        ) {
             listener.onImpressComponent(getComponentTrackData(element))
         }
     }
 
     private fun initializeClickListener(element: ProductContentDataModel?) = with(binding) {
         val itemProductContent = ItemProductContentBinding.bind(binding.root)
+        val content = element ?: return@with
+
         itemProductContent.tradeinHeaderContainer.setOnClickListener {
-            listener.txtTradeinClicked(getComponentTrackData(element))
+            listener.txtTradeinClicked(getComponentTrackData(content))
         }
 
         itemProductContent.fabDetailPdp.apply {
             setOnClickListener {
-                listener.onFabWishlistClicked(activeState, getComponentTrackData(element))
+                listener.onFabWishlistClicked(activeState, getComponentTrackData(content))
             }
         }
     }
-
-    private fun getComponentTrackData(element: ProductContentDataModel?) = ComponentTrackDataModel(
-        element?.type
-            ?: "",
-        element?.name ?: "",
-        adapterPosition + 1
-    )
 }
