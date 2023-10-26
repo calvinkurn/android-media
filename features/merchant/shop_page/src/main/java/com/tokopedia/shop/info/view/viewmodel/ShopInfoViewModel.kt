@@ -101,40 +101,36 @@ class ShopInfoViewModel @Inject constructor(
 
     fun getNearestEpharmWarehouseLocation(shopId: Long, districtId: Int) {
         launchCatchError(block = {
-            coroutineScope {
-                val nearestEpharmWarehouseData = withContext(coroutineDispatcherProvider.io) {
-                    getNearestEpharmacyWarehouseLocationUseCase.params = GetNearestEpharmacyWarehouseLocationUseCase.createParams(shopId = shopId, districtId = districtId.toLong())
-                    getNearestEpharmacyWarehouseLocationUseCase.executeOnBackground()
-                }
-                val dataLocation = nearestEpharmWarehouseData.getNearestEpharmacyWarehouseLocation.data
-                getShopGoApotikData(shopId = shopId, dataLocation = dataLocation)
+            val nearestEpharmWarehouseData = withContext(coroutineDispatcherProvider.io) {
+                getNearestEpharmacyWarehouseLocationUseCase.params = GetNearestEpharmacyWarehouseLocationUseCase.createParams(shopId = shopId, districtId = districtId.toLong())
+                getNearestEpharmacyWarehouseLocationUseCase.executeOnBackground()
             }
+            val dataLocation = nearestEpharmWarehouseData.getNearestEpharmacyWarehouseLocation.data
+            getShopGoApotikData(shopId = shopId, dataLocation = dataLocation)
         }, onError = { })
     }
 
     private fun getShopGoApotikData(shopId: Long, dataLocation: GetNearestEpharmacyWarehouseLocationResponse.NearestEpharmacyData.GetNearestEpharmacyWarehouseLocationDetailData) {
         launchCatchError(block = {
-            coroutineScope {
-                val shopEpharmData = withContext(coroutineDispatcherProvider.io) {
-                    getEpharmacyShopInfoUseCase.params = GetEpharmacyShopInfoUseCase.createParams(shopId, dataLocation.warehouseID)
-                    getEpharmacyShopInfoUseCase.executeOnBackground()
-                }
-                val shopEpharmDetailData = shopEpharmData.getEpharmacyShopInfo
-                _epharmDetailData.postValue(
-                    Success(
-                        ShopEpharmacyDetailData(
-                            gMapsUrl = dataLocation.gMapsURL,
-                            address = dataLocation.address,
-                            errorCode = shopEpharmDetailData.header.errorCode,
-                            errMessages = shopEpharmDetailData.header.errorMessage,
-                            apj = shopEpharmDetailData.dataEpharm.apj,
-                            siaNumber = shopEpharmDetailData.dataEpharm.siaNumber,
-                            sipaNumber = shopEpharmDetailData.dataEpharm.sipaNumber,
-                            epharmacyWorkingHoursFmt = shopEpharmDetailData.dataEpharm.epharmacyWorkingHoursFmt
-                        )
+            val shopEpharmData = withContext(coroutineDispatcherProvider.io) {
+                getEpharmacyShopInfoUseCase.params = GetEpharmacyShopInfoUseCase.createParams(shopId, dataLocation.warehouseID)
+                getEpharmacyShopInfoUseCase.executeOnBackground()
+            }
+            val shopEpharmDetailData = shopEpharmData.getEpharmacyShopInfo
+            _epharmDetailData.postValue(
+                Success(
+                    ShopEpharmacyDetailData(
+                        gMapsUrl = dataLocation.gMapsURL,
+                        address = dataLocation.address,
+                        errorCode = shopEpharmDetailData.header.errorCode,
+                        errMessages = shopEpharmDetailData.header.errorMessage,
+                        apj = shopEpharmDetailData.dataEpharm.apj,
+                        siaNumber = shopEpharmDetailData.dataEpharm.siaNumber,
+                        sipaNumber = shopEpharmDetailData.dataEpharm.sipaNumber,
+                        epharmacyWorkingHoursFmt = shopEpharmDetailData.dataEpharm.epharmacyWorkingHoursFmt
                     )
                 )
-            }
+            )
         }, onError = { error ->
                 _epharmDetailData.postValue(Fail(error))
             })

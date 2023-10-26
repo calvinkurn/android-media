@@ -512,9 +512,11 @@ class ShopInfoFragment :
                 binding.layoutPartialShopInfoDescription.tvOpenHoursDescription.text = if (workingHoursText.isNotEmpty()) workingHoursText else emptyChar
             }
         } else {
-            val errMessage: String = epharmData.errMessages[0]
-            view?.let {
-                Toaster.build(it, errMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+            if (epharmData.errMessages.isNotEmpty()) {
+                val errMessage: String = epharmData.errMessages[0]
+                view?.let {
+                    Toaster.build(it, errMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                }
             }
         }
     }
