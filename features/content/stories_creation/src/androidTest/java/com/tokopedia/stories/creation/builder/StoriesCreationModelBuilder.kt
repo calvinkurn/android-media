@@ -28,7 +28,7 @@ class StoriesCreationModelBuilder {
     ) = StoriesCreationConfiguration(
         storiesId = storiesId,
         maxProductTag = 30,
-        showDuration = "24 Jam",
+        storyDuration = "24 Jam",
         minVideoDuration = 1,
         maxVideoDuration = 2,
         imageSourceId = "asdf",

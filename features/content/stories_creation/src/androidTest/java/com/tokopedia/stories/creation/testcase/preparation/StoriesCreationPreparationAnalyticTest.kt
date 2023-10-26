@@ -6,6 +6,7 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.creation.common.presentation.utils.ContentCreationRemoteConfigManager
 import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.play_common.util.VideoSnapshotHelper
@@ -52,6 +53,7 @@ class StoriesCreationPreparationAnalyticTest {
     private val mockRepository: StoriesCreationRepository = mockk(relaxed = true)
     private val mockCreationUploader: CreationUploader = mockk(relaxed = true)
     private val mockVideoSnapshotHelper: VideoSnapshotHelper = mockk(relaxed = true)
+    private val mockContentCreationRemoteConfig: ContentCreationRemoteConfigManager = mockk(relaxed = true)
 
     /** Mock Data */
     private val mockAccountList = storiesCreationModelBuilder.buildAccountList()
@@ -64,6 +66,7 @@ class StoriesCreationPreparationAnalyticTest {
         coEvery { mockRepository.getCreationAccountList() } returns mockAccountList
         coEvery { mockRepository.getStoryPreparationInfo(any()) } returns mockStoriesInfo
         coEvery { mockVideoSnapshotHelper.snapVideoBitmap(any(), any()) } returns Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565)
+        coEvery { mockContentCreationRemoteConfig.isShowingCreation() } returns true
 
         StoriesCreationInjector.set(
             DaggerStoriesCreationTestComponent
@@ -75,6 +78,7 @@ class StoriesCreationPreparationAnalyticTest {
                         mockUserSession = mockUserSession,
                         mockRepository = mockRepository,
                         mockCreationUploader = mockCreationUploader,
+                        mockContentCreationRemoteConfig = mockContentCreationRemoteConfig,
                         mockVideoSnapshotHelper = mockVideoSnapshotHelper,
                     )
                 )

@@ -5,6 +5,7 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
 import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
+import com.tokopedia.creation.common.presentation.utils.ContentCreationRemoteConfigManager
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.play_common.util.VideoSnapshotHelper
 import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepository
@@ -22,6 +23,7 @@ class StoriesCreationTestModule(
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true),
     private val mockRepository: StoriesCreationRepository = mockk(relaxed = true),
     private val mockCreationUploader: CreationUploader = mockk(relaxed = true),
+    private val mockContentCreationRemoteConfig: ContentCreationRemoteConfigManager = mockk(relaxed = true),
     private val mockRouter: Router = mockk(relaxed = true),
     private val mockVideoSnapshotHelper: VideoSnapshotHelper = mockk(relaxed = true),
 ) {
@@ -41,6 +43,10 @@ class StoriesCreationTestModule(
     @Provides
     @StoriesCreationTestScope
     fun provideCreationUploader() = mockCreationUploader
+
+    @Provides
+    @StoriesCreationTestScope
+    fun provideContentCreationRemoteConfigManager() = mockContentCreationRemoteConfig
 
     @Provides
     @StoriesCreationTestScope
