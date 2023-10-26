@@ -26,6 +26,7 @@ internal val carouselProductCardTestData = mutableListOf<List<ProductCardModel>>
     it.add(createCarouselShortProductCardWithStockBar())
     it.add(createCarouselMPS())
     it.add(createCarouselRibbonTopStockBarProductCard())
+    it.add(createCarouselProductCardLabelCampaign())
 }
 
 private fun createSmallProductCard(): ProductCardModel {
@@ -717,6 +718,32 @@ private fun createCarouselRibbonTopStockBarProductCard(): List<ProductCardModel>
             stockBarPercentage = 75,
             stockBarLabelColor = "#6D7588",
             labelGroupList = listOf(labelRibbon),
+            freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://images.tokopedia.net/img/ic_bebas_ongkir.png"),
+        ),
+    )
+}
+
+private fun createCarouselProductCardLabelCampaign(): List<ProductCardModel> {
+    return listOf(
+        ProductCardModel(
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            productName = "Product namedfjafjasldfj ;aklsjfklasdf",
+            labelGroupList = listOf(
+                LabelGroup(
+                    position = "campaign",
+                    imageUrl = "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png",
+                    title = "WIB",
+                ),
+                LabelGroup(position = "price", title = "Grosir", type = "lightGreen"),
+                LabelGroup(
+                    position = "fulfillment",
+                    title = "Dilayani Tokopedia",
+                    type = "darkGrey",
+                    imageUrl = "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/TokoCabang_Icon.png",
+                ),
+                LabelGroup(position = "integrity", title = "Terjual 122", type = "#ae31353b"),
+                LabelGroup(position = "eta", title = "Tiba besok", type = "#7031353b"),
+            ),
             freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://images.tokopedia.net/img/ic_bebas_ongkir.png"),
         ),
     )
