@@ -9,7 +9,7 @@ import android.graphics.drawable.Drawable
 import androidx.core.app.NotificationCompat
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.MESSAGE_NOTIF_PRODUCT_UPLOAD
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.MESSAGE_NOTIF_PRODUCT_UPLOAD_ERROR
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.MESSAGE_NOTIF_PRODUCT_UPLOAD_SUCCESS
@@ -101,20 +101,9 @@ abstract class AddEditProductNotificationManager(
     protected abstract fun getFailedIntent(errorMessage: String): PendingIntent
 
     private fun updateLargeIcon(primaryImagePathOrUrl: String) {
-        val target = object : CustomTarget<Bitmap>() {
-            override fun onLoadCleared(placeholder: Drawable?) {
-                //no-op
-            }
-
-            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                val notification = notificationBuilder.setLargeIcon(resource).build()
-                notificationManager.notify(TAG, id, notification)
-            }
+        primaryImagePathOrUrl.getBitmapImageUrl(context) {
+            val notification = notificationBuilder.setLargeIcon(it).build()
+            notificationManager.notify(TAG, id, notification)
         }
-        ImageHandler.loadImageWithTarget(
-                context,
-                primaryImagePathOrUrl,
-                target
-        )
     }
 }
