@@ -11,6 +11,8 @@ import com.tokopedia.autocompletecomponent.initialstate.InitialStateLayoutStrate
 import com.tokopedia.autocompletecomponent.initialstate.InitialStateLayoutStrategy
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.media.loader.loadImageWithError
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecentSearchDoubleLineItemViewHolder(
@@ -40,7 +42,7 @@ class RecentSearchDoubleLineItemViewHolder(
 
     private fun bindIconImage(item: BaseItemInitialStateSearch) {
         binding?.iconImage?.showWithAction(item.imageUrl.isNotEmpty()) {
-            ImageHandler.loadImageCircle2(itemView.context, it, item.imageUrl)
+            it.loadImageCircle(item.imageUrl)
         }
     }
 
@@ -81,11 +83,7 @@ class RecentSearchDoubleLineItemViewHolder(
 
     private fun bindRemoveButton(item: BaseItemInitialStateSearch) {
         binding?.actionShortcutButton?.shouldShowWithAction(item.shortcutImage.isNotEmpty()) {
-            ImageHandler.loadImage2(
-                binding?.actionShortcutButton,
-                item.shortcutImage,
-                R.drawable.autocomplete_ic_remove
-            )
+            binding?.actionShortcutButton?.loadImageWithError(item.shortcutImage, R.drawable.autocomplete_ic_remove)
         }
     }
 
