@@ -171,7 +171,6 @@ class StoriesCreationActivity : BaseActivity() {
                         },
                         onClickAddProduct = {
                             /** TODO JOE: handle this later */
-                            viewModel.submitAction(StoriesCreationAction.ClickAddProduct(emptyList()))
                         },
                         onClickUpload = {
                             viewModel.submitAction(StoriesCreationAction.ClickUpload)

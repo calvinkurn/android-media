@@ -14,9 +14,5 @@ sealed interface StoriesCreationAction {
         val mediaType: StoriesMediaType,
     ) : StoriesCreationAction
 
-    data class ClickAddProduct(
-        val productTags: List<String>,
-    ) : StoriesCreationAction
-
     object ClickUpload : StoriesCreationAction
 }
