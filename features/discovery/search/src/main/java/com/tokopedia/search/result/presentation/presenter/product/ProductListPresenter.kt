@@ -1039,13 +1039,15 @@ class ProductListPresenter @Inject constructor(
 
     private fun sortFilterItem(filter: Filter): SortFilterItem {
         val (isChipSelected, title, hasChevron) = quickFilterData(filter)
-        val item = SortFilterItem(title)
+        val item = SortFilterItem(title, iconUrl = filter.getIconImage())
 
         setSortFilterItemListener(item, filter, hasChevron)
         setSortFilterItemState(item, isChipSelected)
 
         return item
     }
+
+    private fun Filter.getIconImage() = this.options.firstOrNull()?.iconUrl.orEmpty()
 
     private fun setSortFilterItemState(item: SortFilterItem, isChipSelected: Boolean) {
         if (isChipSelected) {
