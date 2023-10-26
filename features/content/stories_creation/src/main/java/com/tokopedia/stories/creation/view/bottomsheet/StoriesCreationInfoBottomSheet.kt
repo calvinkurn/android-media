@@ -67,11 +67,11 @@ class StoriesCreationInfoBottomSheet : BottomSheetUnify() {
     }
 
     data class Info(
-        var imageUrl: String = "",
-        var title: String = "",
-        var subtitle: String = "",
-        var primaryText: String = "",
-        var secondaryText: String = "",
+        val imageUrl: String = "",
+        val title: String = "",
+        val subtitle: String = "",
+        val primaryText: String = "",
+        val secondaryText: String = "",
     )
 
     interface Listener {

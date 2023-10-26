@@ -25,7 +25,7 @@ data class StoriesCreationConfigResponse(
     val maxProductTag: Int = 0,
 
     @SerializedName("show_duration")
-    val showDuration: String = "",
+    val storyDuration: String = "",
 
     @SerializedName("image_source_id")
     val imageSourceId: String = "",
