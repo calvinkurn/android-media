@@ -101,6 +101,10 @@ class GetTrackingUseCase @Inject constructor(
                   url_text
                 }
                 help_page_url
+                ticker_unification_targets {
+                  type
+                  values
+                }
               }
               last_driver {
                 photo

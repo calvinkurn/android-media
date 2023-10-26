@@ -27,11 +27,11 @@ import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.databinding.BottomSheetAddressListBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
-import com.tokopedia.targetedticker.domain.GetTargetedTickerParam
 import com.tokopedia.targetedticker.domain.GetTargetedTickerUseCase
 import com.tokopedia.targetedticker.domain.TargetedTickerHelper.renderTargetedTickerView
 import com.tokopedia.targetedticker.domain.TargetedTickerMapper.convertTargetedTickerToUiModel
 import com.tokopedia.targetedticker.domain.TargetedTickerPage
+import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
 import com.tokopedia.targetedticker.domain.TickerModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.CoroutineScope
@@ -144,7 +144,7 @@ class AddressListBottomSheet(
     private fun initAddressTicker(context: Context) {
         launch {
             try {
-                val response = getTargetedTickerUseCase(TargetedTickerPage.ADDRESS_LIST_OCC)
+                val response = getTargetedTickerUseCase(TargetedTickerParamModel(page = TargetedTickerPage.ADDRESS_LIST_OCC))
                 val model = convertTargetedTickerToUiModel(
                     targetedTickerData = response.getTargetedTickerData
                 )

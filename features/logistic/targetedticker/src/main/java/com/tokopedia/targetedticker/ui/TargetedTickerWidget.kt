@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.targetedticker.databinding.WidgetTargetedTickerBinding
 import com.tokopedia.targetedticker.di.DaggerTargetedTickerComponent
 import com.tokopedia.targetedticker.domain.TargetedTickerHelper.renderTargetedTickerView
+import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
 import com.tokopedia.targetedticker.domain.TickerModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
@@ -32,7 +33,6 @@ class TargetedTickerWidget : FrameLayout {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var lifecycleOwner: LifecycleOwner? = null
-
 
     private var onSubmitSuccessListener: (TickerModel) -> TickerModel = { item -> item }
     private var onSubmitErrorListener: (Throwable) -> TickerModel? = { item -> null }
@@ -120,10 +120,23 @@ class TargetedTickerWidget : FrameLayout {
 
     /*
     Call this to load and show targeted ticker data
+    adjust the param to set param when hit gql
+
      */
+    fun loadAndShow(params: TargetedTickerParamModel) {
+        observeTickerState()
+        viewModel?.getTargetedTicker(params)
+    }
+
+    // without target, page only
+
     fun loadAndShow(page: String) {
         observeTickerState()
-        viewModel?.getTargetedTicker(page)
+        viewModel?.getTargetedTicker(
+            TargetedTickerParamModel(
+                page = page
+            )
+        )
     }
 
     /*
@@ -131,7 +144,7 @@ class TargetedTickerWidget : FrameLayout {
      */
     fun setResultListener(
         onSuccess: ((TickerModel) -> TickerModel)? = null,
-        onError: ((Throwable) -> TickerModel?)? = null,
+        onError: ((Throwable) -> TickerModel?)? = null
     ) {
         if (onSuccess != null) {
             onSubmitSuccessListener = onSuccess
@@ -140,13 +153,11 @@ class TargetedTickerWidget : FrameLayout {
         if (onError != null) {
             onSubmitErrorListener = onError
         }
-
     }
 
     fun setTickerShape(tickerShape: Int) {
         ticker?.tickerShape = tickerShape
     }
-
 
     fun onDestroy() {
         lifecycleOwner = null

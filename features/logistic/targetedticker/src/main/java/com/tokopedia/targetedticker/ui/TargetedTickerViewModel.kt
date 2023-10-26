@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.targetedticker.domain.GetTargetedTickerParam
 import com.tokopedia.targetedticker.domain.GetTargetedTickerUseCase
 import com.tokopedia.targetedticker.domain.TargetedTickerMapper
+import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
 import com.tokopedia.targetedticker.domain.TickerModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -24,13 +24,13 @@ class TargetedTickerViewModel @Inject constructor(
     val tickerState: LiveData<Result<TickerModel>>
         get() = _tickerState
 
-    fun getTargetedTicker(page: String) {
+    fun getTargetedTicker(targetedTickerParam: TargetedTickerParamModel) {
         viewModelScope.launchCatchError(
             block = {
-                val response = getTargetedTickerUseCase(page)
+                val response = getTargetedTickerUseCase(targetedTickerParam)
                 _tickerState.value = Success(
                     TargetedTickerMapper.convertTargetedTickerToUiModel(
-                        targetedTickerData = response.getTargetedTickerData,
+                        targetedTickerData = response.getTargetedTickerData
                     )
                 )
             },

@@ -11,22 +11,24 @@ import javax.inject.Inject
 class GetTargetedTickerUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<String, GetTargetedTickerResponse>(dispatcher.io) {
+) : CoroutineUseCase<TargetedTickerParamModel, GetTargetedTickerResponse>(dispatcher.io) {
 
     @GqlQuery(
         QUERY_GET_TARGETED_TICKER_NAME,
         QUERY_GET_TARGETED_TICKER
     )
 
-    override suspend fun execute(params: String): GetTargetedTickerResponse {
+    override suspend fun execute(params: TargetedTickerParamModel): GetTargetedTickerResponse {
         return repository.request(graphqlQuery(), createParams(params))
     }
 
-    private fun createParams(page: String, target:List<GetTargetedTickerParam.GetTargetedTickerRequestTarget> = listOf() ): GetTargetedTickerRequest {
+    private fun createParams(param: TargetedTickerParamModel): GetTargetedTickerRequest {
         return GetTargetedTickerRequest(
             GetTargetedTickerParam(
-                page = page,
-                target = target
+                page = param.page,
+                target = param.targets.map {
+                    GetTargetedTickerParam.GetTargetedTickerRequestTarget(it.type, it.value)
+                }
             )
         )
     }

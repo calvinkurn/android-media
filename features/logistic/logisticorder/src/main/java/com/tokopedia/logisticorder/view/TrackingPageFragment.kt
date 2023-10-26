@@ -35,7 +35,6 @@ import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
 import com.tokopedia.logisticorder.uimodel.EtaModel
 import com.tokopedia.logisticorder.uimodel.LastDriverModel
-import com.tokopedia.logisticorder.uimodel.PageModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.utils.TippingConstant.OPEN
@@ -50,13 +49,10 @@ import com.tokopedia.logisticorder.view.bottomsheet.DriverTippingBottomSheet
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.targetedticker.domain.TargetedTickerPage
+import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifycomponents.ticker.TickerData
-import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -234,7 +230,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         setHistoryView(model)
         setEmptyHistoryView(model)
         setLiveTrackingButton(model)
-        setTicketInfoCourier(trackingDataModel.trackOrder)
+        setTicketInfoCourier(trackingDataModel)
         initClickToCopy(model.shippingRefNum.toHyphenIfEmptyOrNull())
         setHeader(trackingDataModel)
     }
@@ -553,21 +549,18 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         }
     }
 
-    private fun setTicketInfoCourier(trackOrder: TrackOrderModel) {
-
-        binding?.tickerInfoCourier?.let { targetedTicker ->
-
-            targetedTicker.setTickerShape(Ticker.SHAPE_LOOSE)
-
-            if (trackOrder.detail.isBuyer) {
-                targetedTicker.loadAndShow(TargetedTickerPage.TRACKING_PAGE_BUYER)
-            } else {
-                targetedTicker.loadAndShow(TargetedTickerPage.TRACKING_PAGE_SELLER)
-
-            }
+    private fun setTicketInfoCourier(trackOrder: TrackingDataModel) {
+        binding?.tickerInfoCourier?.apply { ->
+            setTickerShape(Ticker.SHAPE_LOOSE)
+            val param = TargetedTickerParamModel(
+                page = TargetedTickerPage.TRACKING_PAGE,
+                targets = trackOrder.page.tickerUnificationTargets.map {
+                    TargetedTickerParamModel.Target(it.type, it.values)
+                }
+            )
+            loadAndShow(param)
         }
     }
-
 
     private fun setEmptyHistoryView(model: TrackOrderModel) {
         if (model.invalid) {
@@ -606,7 +599,6 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         val intent = context?.let { LiveTrackingActivity.createIntent(it, trackingUrl) }
         startActivityForResult(intent, LIVE_TRACKING_VIEW_REQ)
     }
-
 
     // POD: navigate to pod activity
     private fun navigateToPodActivity(imageId: String, orderId: Long, description: String) {
