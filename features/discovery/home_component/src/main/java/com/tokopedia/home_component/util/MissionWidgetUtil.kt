@@ -10,11 +10,6 @@ import com.tokopedia.unifyprinciples.Typography
  */
 abstract class MissionWidgetUtil {
 
-    abstract fun findMaxTitleHeight(
-        data: MissionWidgetListDataModel,
-        context: Context
-    ): Int
-
     abstract fun findMaxSubtitleHeight(
         data: MissionWidgetListDataModel,
         context: Context
@@ -26,8 +21,10 @@ abstract class MissionWidgetUtil {
         textWidth: Int,
         typographyType: Int,
         typographyWeight: Int,
-        maxLines: Int
+        maxLines: Int,
+        hideWhenEmpty: Boolean = false,
     ): Int {
+        if(hideWhenEmpty && text.isNullOrEmpty()) return 0
         val params =
             LinearLayout.LayoutParams(textWidth, LinearLayout.LayoutParams.WRAP_CONTENT)
         val paramsTextView =

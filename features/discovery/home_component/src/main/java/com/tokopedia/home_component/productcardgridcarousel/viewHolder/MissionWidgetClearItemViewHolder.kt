@@ -67,7 +67,6 @@ class MissionWidgetClearItemViewHolder(
             } else {
                 Typography.REGULAR
             }
-            height = element.titleHeight
             text = element.data.title
             setWeight(fontWeight)
             show()
@@ -78,7 +77,6 @@ class MissionWidgetClearItemViewHolder(
         if(element.data.subTitle.isEmpty()) {
             hide()
         } else {
-            height = element.subtitleHeight
             text = element.data.subTitle
             show()
         }

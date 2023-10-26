@@ -16,7 +16,6 @@ data class CarouselMissionWidgetDataModel(
     val channelName: String,
     val headerName: String,
     val withSubtitle: Boolean,
-    val titleHeight: Int,
     val subtitleHeight: Int,
     val verticalPosition: Int,
     val cardPosition: Int,

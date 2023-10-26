@@ -10,27 +10,6 @@ import com.tokopedia.unifyprinciples.Typography
  */
 class MissionWidgetCardUtil: MissionWidgetUtil() {
 
-    override fun findMaxTitleHeight(
-        data: MissionWidgetListDataModel,
-        context: Context
-    ): Int {
-        if(data.missionWidgetList.isEmpty()) return 0
-        else {
-            var titleWidth = context.resources.getDimensionPixelSize(R.dimen.home_mission_widget_card_image_size)
-            titleWidth -= context.resources.getDimensionPixelSize(R.dimen.home_mission_widget_card_margin_horizontal_subtitle)
-            titleWidth -= context.resources.getDimensionPixelSize(R.dimen.home_mission_widget_card_margin_horizontal_subtitle)
-
-            return measureTextHeight(
-                context = context,
-                text = data.missionWidgetList[0].subTitle,
-                textWidth = titleWidth,
-                typographyType = Typography.SMALL,
-                typographyWeight = Typography.REGULAR,
-                maxLines = MAX_LINES_TITLE
-            )
-        }
-    }
-
     override fun findMaxSubtitleHeight(
         data: MissionWidgetListDataModel,
         context: Context
@@ -56,7 +35,6 @@ class MissionWidgetCardUtil: MissionWidgetUtil() {
     }
 
     companion object {
-        private const val MAX_LINES_TITLE = 1
         private const val MAX_LINES_SUBTITLE = 2
     }
 }
