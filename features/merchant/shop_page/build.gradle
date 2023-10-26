@@ -28,8 +28,13 @@ android {
     buildFeatures {
         viewBinding true
         buildConfig true
+        compose true
     }
-
+    
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
+    }
+    
     sourceSets {
         main {
             res {
@@ -172,6 +177,13 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
 
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
+
+    //Compose
+    implementation rootProject.ext.composeDependencies.composeConstraint
+    implementation rootProject.ext.composeDependencies.composeActivity
+    implementation rootProject.ext.unifyDependencies.nestComponents
+
+    implementation rootProject.ext.unifyDependencies.header
 }
 
 project.ext {

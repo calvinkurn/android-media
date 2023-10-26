@@ -14,9 +14,7 @@ class ProductRevGetShopRatingAndTopicsMapper @Inject constructor() {
                 rating.positivePercentageFmt,
                 rating.ratingScore,
                 rating.totalRating,
-                rating.totalRatingFmt,
-                rating.totalRatingTextAndImage,
-                rating.totalRatingTextAndImageFmt
+                rating.totalRatingFmt
             )
         )
     }

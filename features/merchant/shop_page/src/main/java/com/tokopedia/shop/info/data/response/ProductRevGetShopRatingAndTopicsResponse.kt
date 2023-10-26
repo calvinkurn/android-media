@@ -21,11 +21,7 @@ data class ProductRevGetShopRatingAndTopicsResponse(
             @SerializedName("totalRating")
             val totalRating: Int,
             @SerializedName("totalRatingFmt")
-            val totalRatingFmt: String,
-            @SerializedName("totalRatingTextAndImage")
-            val totalRatingTextAndImage: Int,
-            @SerializedName("totalRatingTextAndImageFmt")
-            val totalRatingTextAndImageFmt: String
+            val totalRatingFmt: String
         ) {
             data class Detail(
                 @SerializedName("formattedTotalReviews")

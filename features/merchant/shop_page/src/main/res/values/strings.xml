@@ -45,6 +45,9 @@
     <string name="shop_info_label_logistic">Dukungan Pengiriman</string>
 
     <string name="shop_info_label_open_since_v3">Buka Sejak %1$s</string>
+    
+    <!--Shop Info Reimagine-->
+    <string name="shop_info_shop_profile">Profil Toko</string>
 
     <string name="shop_note_empty_note_title_buyer">Toko ini belum memiliki catatan toko.</string>
     <string name="shop_note_empty_note_title_seller">Toko Anda belum memiliki catatan toko.</string>
@@ -253,5 +256,7 @@
     <string name="shop_home_showcase_navigation_top_main_banner_content_description">imgBackgroundGradient</string>
 
     <string name="shop_content_description_gradient_black">Background Etalase Utama</string>
+    
+    
     
 </resources>

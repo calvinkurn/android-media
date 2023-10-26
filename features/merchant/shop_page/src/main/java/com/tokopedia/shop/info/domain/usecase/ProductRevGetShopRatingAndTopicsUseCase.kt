@@ -31,10 +31,8 @@ class ProductRevGetShopRatingAndTopicsUseCase @Inject constructor(
   productrevGetShopRatingAndTopics(shopID: ${'$'}shopID) {
     rating {
       totalRatingFmt
-      totalRatingTextAndImage
       positivePercentageFmt
       totalRating
-      totalRatingTextAndImageFmt
       detail {
         totalReviews
         percentageFloat
