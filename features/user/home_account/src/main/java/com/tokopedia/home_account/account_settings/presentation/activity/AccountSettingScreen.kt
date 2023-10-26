@@ -1,9 +1,11 @@
 package com.tokopedia.home_account.account_settings.presentation.activity
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -20,47 +22,65 @@ import com.tokopedia.nest.components.NestDivider
 import com.tokopedia.nest.components.NestDividerSize
 import com.tokopedia.nest.components.NestLabel
 import com.tokopedia.nest.components.NestLabelType
+import com.tokopedia.nest.components.loader.NestLoader
+import com.tokopedia.nest.components.loader.NestLoaderSize
+import com.tokopedia.nest.components.loader.NestLoaderType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 
 @Composable
-fun AccountSettingScreen(modifier: Modifier = Modifier, onItemClicked: (Int) -> Unit = {}) {
-    Column(modifier = modifier.fillMaxWidth()) {
-        NestTypography(
-            modifier = Modifier.padding(16.dp, 24.dp, 16.dp, 8.dp),
-            text = stringResource(R.string.header_privacy_account_setting),
-            textStyle = NestTheme.typography.heading4.copy(fontWeight = FontWeight.Bold)
-        )
-        ItemSetting(
-            stringResource(R.string.title_password_setting),
-            SettingConstant.SETTING_ACCOUNT_PASS_ID,
-            onClick = onItemClicked
-        )
-        ItemDivider()
-        ItemSetting(
-            stringResource(R.string.title_setting_pin),
-            SettingConstant.SETTING_PIN,
-            true,
-            onItemClicked
-        )
-        ItemDivider()
-        ItemSetting(
-            stringResource(R.string.title_fingerprint),
-            SettingConstant.SETTING_BIOMETRIC,
-            onClick = onItemClicked
-        )
-        ItemDivider()
-        ItemSetting(
-            stringResource(R.string.title_kyc_setting),
-            SettingConstant.SETTING_ACCOUNT_KYC_ID,
-            onClick = onItemClicked
-        )
-        ItemDivider()
-        ItemSetting(
-            stringResource(R.string.title_signin_with_notification),
-            SettingConstant.SETTING_PUSH_NOTIF,
-            onClick = onItemClicked
-        )
+fun AccountSettingScreen(
+    state: AccountSettingUiModel?,
+    modifier: Modifier = Modifier,
+    onItemClicked: (Int) -> Unit = {}
+) {
+    Column(modifier = modifier.fillMaxSize()) {
+        when (state) {
+            AccountSettingUiModel.Loading -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    NestLoader(
+                        variant = NestLoaderType.Circular(NestLoaderSize.Small)
+                    )
+                }
+            }
+            else -> {
+                NestTypography(
+                    modifier = Modifier.padding(16.dp, 24.dp, 16.dp, 8.dp),
+                    text = stringResource(R.string.header_privacy_account_setting),
+                    textStyle = NestTheme.typography.heading4.copy(fontWeight = FontWeight.Bold)
+                )
+                ItemSetting(
+                    stringResource(R.string.title_password_setting),
+                    SettingConstant.SETTING_ACCOUNT_PASS_ID,
+                    onClick = onItemClicked
+                )
+                ItemDivider()
+                ItemSetting(
+                    stringResource(R.string.title_setting_pin),
+                    SettingConstant.SETTING_PIN,
+                    true,
+                    onItemClicked
+                )
+                ItemDivider()
+                ItemSetting(
+                    stringResource(R.string.title_fingerprint),
+                    SettingConstant.SETTING_BIOMETRIC,
+                    onClick = onItemClicked
+                )
+                ItemDivider()
+                ItemSetting(
+                    stringResource(R.string.title_kyc_setting),
+                    SettingConstant.SETTING_ACCOUNT_KYC_ID,
+                    onClick = onItemClicked
+                )
+                ItemDivider()
+                ItemSetting(
+                    stringResource(R.string.title_signin_with_notification),
+                    SettingConstant.SETTING_PUSH_NOTIF,
+                    onClick = onItemClicked
+                )
+            }
+        }
     }
 }
 
@@ -105,11 +125,10 @@ private fun ItemDivider() {
     )
 }
 
-
 @Composable
 @Preview
 fun AccountSettingPreview() {
     NestTheme {
-        AccountSettingScreen()
+        AccountSettingScreen(AccountSettingUiModel.Not)
     }
 }

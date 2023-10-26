@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.home_account.account_settings.presentation.activity.AccountSettingViewModel
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
 import dagger.Binds
 import dagger.Module
@@ -16,7 +17,7 @@ import dagger.multibindings.IntoMap
  */
 
 @Module
-abstract class HomeAccountUserViewModelModules{
+abstract class HomeAccountUserViewModelModules {
 
     @Binds
     @ActivityScope
@@ -26,4 +27,9 @@ abstract class HomeAccountUserViewModelModules{
     @IntoMap
     @ViewModelKey(HomeAccountUserViewModel::class)
     internal abstract fun provideHomeAccountUserViewModel(viewModel: HomeAccountUserViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AccountSettingViewModel::class)
+    internal abstract fun provideAccountSettingViewModel(viewModel: AccountSettingViewModel): ViewModel
 }
