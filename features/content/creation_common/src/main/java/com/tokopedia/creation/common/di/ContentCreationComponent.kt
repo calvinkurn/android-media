@@ -2,6 +2,7 @@ package com.tokopedia.creation.common.di
 
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.creation.common.presentation.utils.ContentCreationRemoteConfigManager
 import dagger.Component
 
 /**
@@ -11,4 +12,6 @@ import dagger.Component
 @Component(modules = [ContentCreationModule::class], dependencies = [BaseAppComponent::class])
 interface ContentCreationComponent {
     fun contentCreationFactory(): ViewModelProvider.Factory
+
+    fun contentConfigManager(): ContentCreationRemoteConfigManager
 }

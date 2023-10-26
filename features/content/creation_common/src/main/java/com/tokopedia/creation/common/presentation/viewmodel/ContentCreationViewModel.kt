@@ -5,7 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.creation.common.domain.ContentCreationConfigUseCase
 import com.tokopedia.creation.common.presentation.model.ContentCreationConfigModel
+import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
+import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
+import com.tokopedia.creation.common.presentation.utils.ContentCreationRemoteConfigManager
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -18,7 +21,8 @@ import javax.inject.Inject
  * Created By : Muhammad Furqan on 07/09/23
  */
 class ContentCreationViewModel @Inject constructor(
-    private val contentCreationConfigUseCase: ContentCreationConfigUseCase
+    private val contentCreationConfigUseCase: ContentCreationConfigUseCase,
+    private val contentCreationConfigManager: ContentCreationRemoteConfigManager
 ) : ViewModel() {
 
     private val _selectedCreationType = MutableStateFlow<ContentCreationItemModel?>(null)
@@ -27,6 +31,8 @@ class ContentCreationViewModel @Inject constructor(
     private val _creationConfig = MutableStateFlow<Result<ContentCreationConfigModel>?>(null)
     val creationConfig = _creationConfig.asStateFlow()
 
+    var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Feed
+
     fun selectCreationItem(item: ContentCreationItemModel) {
         _selectedCreationType.value = item
     }
@@ -34,13 +40,14 @@ class ContentCreationViewModel @Inject constructor(
     fun fetchConfig(creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty) {
         viewModelScope.launch {
             try {
-                if (creationConfig.isActive) {
-                    _creationConfig.value = Success(creationConfig)
-                    return@launch
+                val formattedCreationConfig = if (creationConfig.isActive) {
+                    formatCreationConfig(creationConfig)
+                } else {
+                    val response = contentCreationConfigUseCase(Unit)
+                    formatCreationConfig(response)
                 }
 
-                val response = contentCreationConfigUseCase(Unit)
-                _creationConfig.value = Success(response)
+                _creationConfig.value = Success(formattedCreationConfig)
             } catch (t: Throwable) {
                 _creationConfig.value = Fail(t)
             }
@@ -53,4 +60,18 @@ class ContentCreationViewModel @Inject constructor(
         } else {
             ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
         }
+
+    private fun formatCreationConfig(creationConfig: ContentCreationConfigModel): ContentCreationConfigModel =
+        creationConfig.copy(
+            creationItems = creationConfig.creationItems.mapNotNull { item ->
+                if (!isStoryEnabled() && item.type == ContentCreationTypeEnum.STORY) null
+                else item
+            }
+        )
+
+    private fun isStoryEnabled(): Boolean = when (widgetSource) {
+        ContentCreationEntryPointSource.Shop -> contentCreationConfigManager.isShowingShopEntryPoint()
+        ContentCreationEntryPointSource.Feed -> contentCreationConfigManager.isShowingFeedEntryPoint()
+        else -> true
+    }
 }

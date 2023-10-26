@@ -30,6 +30,7 @@ import com.tokopedia.creation.common.di.ContentCreationComponent
 import com.tokopedia.creation.common.di.ContentCreationModule
 import com.tokopedia.creation.common.di.DaggerContentCreationComponent
 import com.tokopedia.creation.common.presentation.bottomsheet.ContentCreationBottomSheet
+import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.creation.common.presentation.viewmodel.ContentCreationViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
@@ -68,10 +69,12 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
             owner = findViewTreeViewModelStoreOwner()!!,
             factory = factory
         )[ContentCreationViewModel::class.java]
+        viewModel?.widgetSource = ContentCreationEntryPointSource.Shop
 
         getFragmentManager()?.addFragmentOnAttachListener { _, childFragment ->
             when (childFragment) {
                 is ContentCreationBottomSheet -> {
+                    childFragment.creationSource = ContentCreationEntryPointSource.Shop
                     childFragment.shouldShowPerformanceAction = true
                     creationBottomSheetListener?.let {
                         childFragment.listener = it
@@ -99,7 +102,7 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
                         .getFragment(fm, context.classLoader)
                         .show(
                             fm,
-                            creationConfig = creationConfig.data
+                            creationConfig = creationConfig.data,
                         )
                 }
             }
