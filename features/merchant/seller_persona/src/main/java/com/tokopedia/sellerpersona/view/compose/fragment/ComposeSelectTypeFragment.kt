@@ -11,11 +11,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.fragment.app.Fragment
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -23,19 +20,17 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
+import com.tokopedia.sellerpersona.view.compose.component.ErrorStateComponent
 import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
 import com.tokopedia.sellerpersona.view.compose.model.state.SelectTypeState
 import com.tokopedia.sellerpersona.view.compose.model.uieffect.SelectTypeUiEffect
 import com.tokopedia.sellerpersona.view.compose.model.uievent.SelectTypeUiEvent
 import com.tokopedia.sellerpersona.view.compose.screen.selecttype.PersonSuccessState
-import com.tokopedia.sellerpersona.view.compose.screen.selecttype.SelectTypeErrorState
 import com.tokopedia.sellerpersona.view.compose.screen.selecttype.SelectTypeLoadingState
 import com.tokopedia.sellerpersona.view.compose.viewmodel.ComposePersonaSelectTypeViewModel
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by @ilhamsuaib on 26/01/23.
@@ -85,7 +80,15 @@ class ComposeSelectTypeFragment : BaseComposeFragment() {
 
                         when (data.state) {
                             is SelectTypeState.State.Loading -> SelectTypeLoadingState()
-                            is SelectTypeState.State.Error -> SelectTypeErrorState(viewModel::onEvent)
+                            is SelectTypeState.State.Error -> {
+                                ErrorStateComponent(
+                                    actionText = stringResource(id = R.string.sp_reload),
+                                    title = stringResource(id = R.string.sp_common_global_error_title),
+                                    onActionClicked = {
+                                        viewModel.onEvent(SelectTypeUiEvent.Reload)
+                                    }
+                                )
+                            }
                             is SelectTypeState.State.Success -> PersonSuccessState(
                                 data = data.data,
                                 onEvent = viewModel::onEvent
@@ -105,28 +108,12 @@ class ComposeSelectTypeFragment : BaseComposeFragment() {
             )
             findNavController().navigate(action)
         } else {
-            onChangePersonaFailed()
+            showGeneralErrorToaster()
         }
     }
 
     private fun closeThePage() {
         findNavController().navigateUp()
-    }
-
-    private fun onChangePersonaFailed() {
-        view?.run {
-            val dp64 = context.resources.getDimensionPixelSize(
-                unifyprinciplesR.dimen.layout_lvl7
-            )
-            Toaster.toasterCustomBottomHeight = dp64
-            Toaster.build(
-                rootView,
-                context.getString(R.string.sp_toaster_error_message),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_ERROR,
-                context.getString(R.string.sp_oke)
-            ).show()
-        }
     }
 
     private fun getSelectTypeArguments(): PersonaArgsUiModel {

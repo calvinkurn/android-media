@@ -8,15 +8,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -186,7 +183,9 @@ fun QuestionnairePager(
             .padding(all = 24.dp)
     ) {
         NestTypography(
-            modifier = Modifier.fillMaxWidth().tag("tvSpQuestionTitle"),
+            modifier = Modifier
+                .fillMaxWidth()
+                .tag("tvSpQuestionTitle"),
             text = questionnaire.questionTitle,
             textStyle = NestTheme.typography.display1.copy(
                 fontWeight = FontWeight.Bold
@@ -194,7 +193,9 @@ fun QuestionnairePager(
         )
         Spacer(modifier = Modifier.height(8.dp))
         NestTypography(
-            modifier = Modifier.fillMaxWidth().tag("tvSpQuestionSubtitle"),
+            modifier = Modifier
+                .fillMaxWidth()
+                .tag("tvSpQuestionSubtitle"),
             text = questionnaire.questionSubtitle,
             textStyle = NestTheme.typography.display3.copy(
                 color = NestTheme.colors.NN._600
@@ -230,19 +231,16 @@ fun QuestionnaireItemMultipleAnswer(
     option: BaseOptionUiModel.QuestionOptionMultipleUiModel,
     event: (QuestionnaireUserEvent) -> Unit
 ) {
-    Row(modifier = Modifier.fillMaxWidth()) {
-        NestTypography(text = "", modifier = Modifier.width(0.dp).tag("tvSpMultipleOption"))
-        NestCheckbox(
-            text = option.title,
-            isChecked = option.isSelected,
-            modifier = Modifier
-                .fillMaxWidth()
-                .tag("cbSpMultipleOption"),
-            onCheckedChange = {
-                event(QuestionnaireUserEvent.OnOptionItemSelected(pagePosition, option, it))
-            }
-        )
-    }
+    NestCheckbox(
+        text = option.title,
+        isChecked = option.isSelected,
+        modifier = Modifier
+            .fillMaxWidth()
+            .tag("cbSpMultipleOption"),
+        onCheckedChange = {
+            event(QuestionnaireUserEvent.OnOptionItemSelected(pagePosition, option, it))
+        }
+    )
 }
 
 @Composable
@@ -281,9 +279,11 @@ fun QuestionnaireItemSingleAnswer(
     ) {
         val optionText = remember { option.getFormattedText() }
         //for UI automation purpose
-        NestTypography(text = "", modifier = Modifier
-            .requiredSize(0.dp)
-            .tag("tvSpOptionValue"))
+        NestTypography(
+            text = "", modifier = Modifier
+                .requiredSize(0.dp)
+                .tag("tvSpOptionValue")
+        )
         NestTypography(
             text = optionText, modifier = Modifier
                 .fillMaxWidth()

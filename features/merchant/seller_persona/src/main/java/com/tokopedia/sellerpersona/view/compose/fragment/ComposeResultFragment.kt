@@ -9,11 +9,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.snackbar.BaseTransientBottomBar
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
@@ -24,21 +23,19 @@ import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.analytics.SellerPersonaTracking
 import com.tokopedia.sellerpersona.data.local.PersonaSharedPrefInterface
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
+import com.tokopedia.sellerpersona.view.compose.component.ErrorStateComponent
 import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
 import com.tokopedia.sellerpersona.view.compose.model.state.PersonaResultState
 import com.tokopedia.sellerpersona.view.compose.model.uievent.ResultUiEffect
 import com.tokopedia.sellerpersona.view.compose.model.uievent.ResultUiEvent
-import com.tokopedia.sellerpersona.view.compose.screen.personaresult.ResultErrorState
 import com.tokopedia.sellerpersona.view.compose.screen.personaresult.ResultLoadingState
 import com.tokopedia.sellerpersona.view.compose.screen.personaresult.ResultSuccessState
 import com.tokopedia.sellerpersona.view.compose.viewmodel.ComposePersonaResultViewModel
 import com.tokopedia.sellerpersona.view.model.isActive
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by @ilhamsuaib on 17/01/23.
@@ -62,14 +59,6 @@ class ComposeResultFragment : BaseComposeFragment() {
     private val args: ComposeResultFragmentArgs by navArgs()
     private var isPersonaActive = false
     private var isAnyChanges = false
-    private var isErrorToasterVisible = false
-    private val toasterCallback by lazy {
-        object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
-            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                isErrorToasterVisible = false
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,11 +96,24 @@ class ComposeResultFragment : BaseComposeFragment() {
 
                     when (state.value.state) {
                         is PersonaResultState.State.Loading -> ResultLoadingState()
-                        is PersonaResultState.State.Error -> ResultErrorState(viewModel::onEvent)
+                        is PersonaResultState.State.Error -> {
+                            ErrorStateComponent(
+                                actionText = stringResource(id = R.string.sp_reload),
+                                title = stringResource(id = R.string.sp_common_global_error_title),
+                                onActionClicked = {
+                                    viewModel.onEvent(ResultUiEvent.Reload)
+                                }
+                            )
+                        }
+
                         is PersonaResultState.State.Success -> {
                             updateActiveStatusFlag(state.value.data.personaStatus.isActive())
                             updateAnyChangesFlag(state.value.data.isSwitchChecked)
-                            ResultSuccessState(state = state.value, onEvent = viewModel::onEvent)
+                            ResultSuccessState(
+                                data = state.value.data,
+                                hasImpressed = state.value.hasImpressed,
+                                onEvent = viewModel::onEvent
+                            )
                         }
                     }
                 }
@@ -160,7 +162,7 @@ class ComposeResultFragment : BaseComposeFragment() {
         if (data.isSuccess()) {
             goToSellerHome()
         } else {
-            showToggleErrorMessage()
+            showGeneralErrorToaster()
         }
     }
 
@@ -212,27 +214,6 @@ class ComposeResultFragment : BaseComposeFragment() {
                 UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME, param)
             RouteManager.route(it, appLink)
             it.finish()
-        }
-    }
-
-    private fun showToggleErrorMessage() {
-        if (isErrorToasterVisible) return
-        isErrorToasterVisible = true
-        view?.run {
-            val dp64 = context.resources.getDimensionPixelSize(
-                unifyprinciplesR.dimen.layout_lvl7
-            )
-            Toaster.toasterCustomBottomHeight = dp64
-            val toaster = Toaster.build(
-                rootView,
-                context.getString(R.string.sp_toaster_error_message),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_ERROR,
-                context.getString(R.string.sp_oke)
-            )
-            toaster.removeCallback(toasterCallback)
-            toaster.addCallback(toasterCallback)
-            toaster.show()
         }
     }
 
