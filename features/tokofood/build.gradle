@@ -142,7 +142,7 @@ dependencies {
     }
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
 

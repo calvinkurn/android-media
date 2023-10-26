@@ -47,6 +47,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
     implementation rootProject.ext.unifyDependencies.datepicker
 }

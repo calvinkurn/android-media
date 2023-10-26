@@ -1,0 +1,23 @@
+plugins {
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
+}
+
+dependencies {
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    implementation rootProject.ext.miscDependencies.ksp
+
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+project.ext {
+    artifactId = 'gqlKspProcessor'
+    groupId = 'com.tokopedia.gqlquery_ksp_processor'
+    versionName = "0.0.1"
+    artifactName = "gqlKspProcessor"
+}
+apply from: '../../publish_local.gradle'

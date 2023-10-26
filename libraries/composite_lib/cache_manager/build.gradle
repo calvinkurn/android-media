@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-
 buildscript {
     repositories {
         google()
@@ -32,7 +31,7 @@ dependencies {
 
     //room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
-    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    ksp rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 }
 
