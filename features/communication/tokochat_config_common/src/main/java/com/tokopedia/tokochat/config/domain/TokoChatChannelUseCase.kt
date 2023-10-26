@@ -15,6 +15,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
@@ -34,7 +35,7 @@ open class TokoChatChannelUseCase@Inject constructor(
     val groupBookingResultFlow = _groupBookingResultFlow.asSharedFlow()
 
     private val _unreadCounterFlow = MutableStateFlow<TokoChatResult<Int>>(TokoChatResult.Loading)
-    val unreadCounterFlow = _unreadCounterFlow.asSharedFlow()
+    val unreadCounterFlow = _unreadCounterFlow.asStateFlow()
 
     private val supervisorJob = SupervisorJob()
     private val scope = CoroutineScope(dispatchers.main + supervisorJob)

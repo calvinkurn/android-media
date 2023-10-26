@@ -305,7 +305,7 @@ open class BaseTokoFoodOrderTrackingFragment :
         }
     }
 
-    private fun updateUnreadChatCounter(unReadCounter: Int?) {
+    private fun updateUnreadChatCounter(unReadCounter: Int) {
         val newDriverSection = orderTrackingAdapter
             .list
             .filterIsInstance<DriverSectionUiModel>()

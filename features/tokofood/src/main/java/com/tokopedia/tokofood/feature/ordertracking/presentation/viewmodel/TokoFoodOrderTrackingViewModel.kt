@@ -34,6 +34,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -181,7 +182,7 @@ open class TokoFoodOrderTrackingViewModel @Inject constructor(
         }
     }
 
-    fun getUnReadChatCountFlow(): Flow<TokoChatResult<Int>> {
+    fun getUnReadChatCountFlow(): StateFlow<TokoChatResult<Int>> {
         return getTokoChatChannelUseCase.get().unreadCounterFlow
     }
 
