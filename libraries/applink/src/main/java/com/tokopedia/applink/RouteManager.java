@@ -351,7 +351,9 @@ public class RouteManager {
         logErrorOpenDeeplink(context, uriString);
 
         intent = getDeeplinkNotFoundIntent(context);
-        context.startActivity(intent);
+        if (intent != null && intent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(intent);
+        }
 
         ApplinkLogger.getInstance(context).appendTrace("Error: No destination activity found");
         ApplinkLogger.getInstance(context).save();
