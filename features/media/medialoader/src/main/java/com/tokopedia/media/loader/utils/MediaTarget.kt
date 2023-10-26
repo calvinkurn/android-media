@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.CustomViewTarget
+import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
 
 class MediaTarget<T : View>(
@@ -31,9 +32,10 @@ class MediaTarget<T : View>(
 class MediaBitmapEmptyTarget<T : Any>(
     private val onCleared: (placeholder: Drawable?) -> Unit = {},
     private val onReady: (resource: Bitmap) -> Unit = {},
-    private val onFailed: (errorDrawable: Drawable?) -> Unit = {}
-) : CustomTarget<T>() {
-
+    private val onFailed: (errorDrawable: Drawable?) -> Unit = {},
+    width: Int = SIZE_ORIGINAL,
+    height: Int = SIZE_ORIGINAL
+) : CustomTarget<T>(width, height) {
     override fun onLoadCleared(placeholder: Drawable?) {
         onCleared(placeholder)
     }
