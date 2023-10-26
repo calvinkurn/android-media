@@ -2,7 +2,9 @@ package com.tokopedia.shop.score.penalty.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltyDetailMergeResponse
 import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltySummaryTypeWrapper
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailResponse
@@ -12,10 +14,24 @@ import java.io.IOException
 import javax.inject.Inject
 
 open class GetShopPenaltyDetailMergeUseCase @Inject constructor(
-    private val graphqlRepository: GraphqlRepository
+    private val graphqlRepository: GraphqlRepository,
+    private val getOngoingPenaltyDateUseCase: GetOngoingPenaltyDateUseCase
 ) : UseCase<Pair<ShopPenaltySummaryTypeWrapper, ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail>>() {
 
     override suspend fun executeOnBackground(): Pair<ShopPenaltySummaryTypeWrapper, ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail> {
+        val status = params.getInt(STATUS_KEY, ShopScoreConstant.STATUS_ONGOING)
+
+        val (actualStartDate, actualEndDate) = getOngoingPenaltyDateUseCase.execute(
+            startDate,
+            endDate,
+            status
+        )
+
+        params.run {
+            putString(START_DATE_KEY, actualStartDate)
+            putString(END_DATE_KEY, actualEndDate)
+        }
+
         val shopScorePenaltyDetailRequest = GraphqlRequest(
             SHOP_SCORE_PENALTY_DETAIL_MERGE_QUERY,
             ShopPenaltyDetailMergeResponse::class.java,
@@ -43,6 +59,8 @@ open class GetShopPenaltyDetailMergeUseCase @Inject constructor(
     }
 
     private var params = RequestParams.create()
+    private var startDate = String.EMPTY
+    private var endDate = String.EMPTY
 
     fun setParams(
         startDate: String,
@@ -51,9 +69,9 @@ open class GetShopPenaltyDetailMergeUseCase @Inject constructor(
         sort: Int,
         status: Int
     ) {
+        this@GetShopPenaltyDetailMergeUseCase.startDate = startDate
+        this@GetShopPenaltyDetailMergeUseCase.endDate = endDate
         params = RequestParams.create().apply {
-            putString(START_DATE_KEY, startDate)
-            putString(END_DATE_KEY, endDate)
             putObject(TYPE_IDS_KEY, typeIds)
             putInt(SORT_KEY, sort)
             putInt(STATUS_KEY, status)
@@ -159,5 +177,4 @@ open class GetShopPenaltyDetailMergeUseCase @Inject constructor(
             }
         """.trimIndent()
     }
-
 }

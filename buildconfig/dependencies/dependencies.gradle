@@ -160,7 +160,7 @@ ext {
     unifyImageGalleryVersion = '1.0.8'
     unifyViewAllCardVersion = '1.0.12'
     nestPrinciplesVersion = '1.0.3'
-    nestComponentsVersion = '1.0.4'
+    nestComponentsVersion = '1.0.8'
 
     gradlePlugin = [
             crashlytics                     : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
@@ -467,6 +467,7 @@ ext {
     composeConstraint = "1.0.1"
     composeCoil = "2.2.2"
     accompanistPagerVersion = "0.23.1"
+    accompanistFlowLayout = "0.28.0"
 
     composeDependencies = [
             composeCompiler     : "androidx.compose.compiler:compiler:$composeVersion",
@@ -481,7 +482,10 @@ ext {
             composeLiveData     : "androidx.compose.runtime:runtime-livedata:$composeVersion",
             composeCoil         : "io.coil-kt:coil-compose:$composeCoil",
             composeVideoCoil    : "io.coil-kt:coil-video:$composeCoil",
-            accompanistPager    : "com.google.accompanist:accompanist-pager:$accompanistPagerVersion"
+            composeUiTest       : "androidx.compose.ui:ui-test-junit4:$composeVersion",
+            composeAndroidUiTest: "androidx.compose.ui:ui-test-manifest:$composeVersion",
+            accompanistPager    : "com.google.accompanist:accompanist-pager:$accompanistPagerVersion",
+            accompanistFlowLayout : "com.google.accompanist:accompanist-flowlayout:$accompanistFlowLayout",
     ]
 
     kotlinParcelizeRuntimeDependencies = [

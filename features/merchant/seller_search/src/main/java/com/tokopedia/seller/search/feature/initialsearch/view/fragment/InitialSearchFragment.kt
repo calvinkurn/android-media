@@ -246,7 +246,6 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
 
     fun setHistoryViewUpdateListener(historyViewUpdateListener: HistoryViewUpdateListener) {
         this.historyViewUpdateListener = historyViewUpdateListener
-        this.historyViewUpdateListener?.setUserIdFromFragment(userId)
     }
 
     fun historySearch(keyword: String) {

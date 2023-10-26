@@ -289,4 +289,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_PDP_P1_CACHEABLE = "android_pdp_p1_should_cacheable";
 
     public static final String ENABLE_PDP_P1_CACHE_AGE = "android_pdp_p1_cache_age";
+
+    public static final String SELLER_SEARCH_COMPOSE = "android_seller_search_compose";
 }

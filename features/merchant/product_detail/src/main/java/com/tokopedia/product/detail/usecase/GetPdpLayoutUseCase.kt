@@ -446,6 +446,18 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       queryParam
                       thematicID
                     }
+                    ... on pdpDataComponentSocialProofV2 {
+                        socialProofContent {
+                            socialProofType
+                            socialProofID
+                            title
+                            subtitle
+                            icon
+                            applink {
+                                appLink
+                            }
+                        }
+                    }
                   }
                 }
               }

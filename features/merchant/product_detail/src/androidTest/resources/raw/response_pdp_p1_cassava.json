@@ -183,7 +183,62 @@
             "type": "product_content"
           },
           {
-            "data": [],
+            "data": [
+              {
+                "socialProofContent": [
+                  {
+                    "socialProofType": "text",
+                    "socialProofID": "",
+                    "title": "Dilihat 99+",
+                    "subtitle": "",
+                    "icon": "",
+                    "applink": {
+                      "appLink": "tokopedia://shop/5537315/review"
+                    }
+                  },
+                  {
+                    "socialProofType": "orange_chip",
+                    "socialProofID": "new_product",
+                    "title": "Produk Terbaru",
+                    "subtitle": "",
+                    "icon": "",
+                    "applink": {
+                      "appLink": "tokopedia://product-edu/3"
+                    }
+                  },
+                  {
+                    "socialProofType": "chip",
+                    "socialProofID": "media",
+                    "title": "Foto Pembeli",
+                    "subtitle": "(99)",
+                    "icon": "https://images.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
+                    "applink": {
+                      "appLink": "tokopedia://product/1589853923/review/gallery"
+                    }
+                  },
+                  {
+                    "socialProofType": "chip",
+                    "socialProofID": "talk",
+                    "title": "Diskusi",
+                    "subtitle": "(9)",
+                    "icon": "https://images.tokopedia.net/img/pdp/info/icon/v2/cod.png",
+                    "applink": {
+                      "appLink": "tokopedia://product/1589853923/talk?shop_id=5537315&is_variant_selected=true&available variants=true"
+                    }
+                  },
+                  {
+                    "socialProofType": "chip",
+                    "socialProofID": "rating",
+                    "title": "Ulasan",
+                    "subtitle": "(9)",
+                    "icon": "https://images.tokopedia.net/img/pdp/info/icon/v2/cod.png",
+                    "applink": {
+                      "appLink": "tokopedia://product/1589853923/review"
+                    }
+                  }
+                ]
+              }
+            ],
             "name": "social_proof_mini",
             "type": "social_proof_mini"
           },
