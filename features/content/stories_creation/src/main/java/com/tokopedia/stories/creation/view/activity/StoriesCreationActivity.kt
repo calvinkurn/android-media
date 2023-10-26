@@ -85,12 +85,21 @@ class StoriesCreationActivity : BaseActivity() {
         setupContentView()
     }
 
-    override fun onAttachFragment(fragment: Fragment) {
-        super.onAttachFragment(fragment)
+    private fun inject() {
+        StoriesCreationInjector
+            .get(this)
+            .inject(this)
+    }
 
-        when (fragment) {
-            is ProductSetupFragment -> {
-                fragment.setDataSource(object : ProductSetupFragment.DataSource {
+    private fun setupFragmentFactory() {
+        supportFragmentManager.fragmentFactory = fragmentFactory
+    }
+
+    private fun setupAttachFragmentListener() {
+        supportFragmentManager.addFragmentOnAttachListener { fragmentManager, fragment ->
+            when (fragment) {
+                is ProductSetupFragment -> {
+                    fragment.setDataSource(object : ProductSetupFragment.DataSource {
                         override fun getProductSectionList(): List<ProductTagSectionUiModel> {
                             return viewModel.productTag
                         }
@@ -113,29 +122,13 @@ class StoriesCreationActivity : BaseActivity() {
 
                         override fun fetchCommissionProduct(): Boolean = false
                     }
-                )
-                fragment.setListener(object : ProductSetupFragment.Listener {
-                    override fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>) {
-                        viewModel.submitAction(StoriesCreationAction.SetProduct(productTagSectionList))
-                    }
-                })
-            }
-        }
-    }
-
-    private fun inject() {
-        StoriesCreationInjector
-            .get(this)
-            .inject(this)
-    }
-
-    private fun setupFragmentFactory() {
-        supportFragmentManager.fragmentFactory = fragmentFactory
-    }
-
-    private fun setupAttachFragmentListener() {
-        supportFragmentManager.addFragmentOnAttachListener { fragmentManager, fragment ->
-            when (fragment) {
+                    )
+                    fragment.setListener(object : ProductSetupFragment.Listener {
+                        override fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>) {
+                            viewModel.submitAction(StoriesCreationAction.SetProduct(productTagSectionList))
+                        }
+                    })
+                }
                 is StoriesCreationErrorBottomSheet -> {
                     fragment.listener = object : StoriesCreationErrorBottomSheet.Listener {
 
