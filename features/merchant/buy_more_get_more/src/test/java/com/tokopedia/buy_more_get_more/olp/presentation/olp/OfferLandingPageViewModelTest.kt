@@ -1,4 +1,4 @@
-package com.tokopedia.buy_more_get_more.olp.presentation
+package com.tokopedia.buy_more_get_more.olp.presentation.olp
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -18,6 +18,7 @@ import com.tokopedia.buy_more_get_more.olp.domain.entity.enum.Status
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferInfoForBuyerUseCase
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferProductListUseCase
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetSharingDataByOfferIDUseCase
+import com.tokopedia.buy_more_get_more.olp.presentation.OfferLandingPageViewModel
 import com.tokopedia.buy_more_get_more.olp.utils.BmgmUtil
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
@@ -463,7 +464,7 @@ class OfferLandingPageViewModelTest {
     }
 
     @Test
-    fun `when setEndDate is called, should set end data to uiState accordingly`() {
+    fun `when setEndDate is called, should set end date data to uiState accordingly`() {
         runBlockingTest {
             // Given
             val endDateInString = "25/09/2023"
@@ -480,6 +481,52 @@ class OfferLandingPageViewModelTest {
             val uiState = emittedValue.last()
             val actual = uiState.endDate
             assertEquals(endDateInString, actual)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when setOfferTypeId is called, should set offer type id to uiState accordingly`() {
+        runBlockingTest {
+            // Given
+            val offerTypeId = 0L
+
+            val emittedValue = arrayListOf<OlpUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValue)
+            }
+
+            // When
+            viewModel.processEvent(OlpEvent.SetOfferTypeId(offerTypeId))
+
+            // Then
+            val uiState = emittedValue.last()
+            val actual = uiState.offerTypeId
+            assertEquals(offerTypeId, actual)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when setSharingData is called, should set sharing data to uiState accordingly`() {
+        runBlockingTest {
+            // Given
+            val sharingData = SharingDataByOfferIdUiModel()
+
+            val emittedValue = arrayListOf<OlpUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValue)
+            }
+
+            // When
+            viewModel.processEvent(OlpEvent.SetSharingData(sharingData))
+
+            // Then
+            val uiState = emittedValue.last()
+            val actual = uiState.sharingData
+            assertEquals(sharingData, actual)
 
             job.cancel()
         }

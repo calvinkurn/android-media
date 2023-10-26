@@ -43,4 +43,5 @@ class FeedMainModule(private val activityContext: Context) {
     @Provides
     fun provideTrackingQueue(@ApplicationContext context: Context) =
         TrackingQueue(context)
+
 }
