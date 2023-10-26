@@ -206,7 +206,7 @@ class StoriesCreationActivity : BaseActivity() {
                             )
                         },
                         onLoadMediaPreview = { mediaFilePath ->
-                            val bitmap = getBitmapFromUrl(mediaFilePath)
+                            val bitmap = videoSnapshotHelper.snapVideoBitmap(this, mediaFilePath)
 
                             if (bitmap != null)
                                 StoriesMediaCover.Success(bitmap)
