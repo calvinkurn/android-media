@@ -23,7 +23,6 @@ import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.play_common.util.VideoSnapshotHelper
 import com.tokopedia.play_common.view.getBitmapFromUrl
-import com.tokopedia.stories.creation.di.DaggerStoriesCreationComponent
 import com.tokopedia.stories.creation.view.screen.StoriesCreationScreen
 import com.tokopedia.stories.creation.view.viewmodel.StoriesCreationViewModel
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle

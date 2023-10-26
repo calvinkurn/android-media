@@ -33,6 +33,7 @@ interface StoriesCreationComponent {
     interface Factory {
         fun create(
             baseAppComponent: BaseAppComponent,
+            creationUploaderComponent: CreationUploaderComponent,
             @BindsInstance context: Context
         ): StoriesCreationComponent
     }
