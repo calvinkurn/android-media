@@ -16,6 +16,8 @@ import com.tokopedia.play.util.throwsException
 import com.tokopedia.play.view.storage.PagingChannel
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play_common.util.PlayPreference
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -175,30 +177,38 @@ class PlayParentViewModelTest {
     }
 
     private val preference: PlayPreference = mockk(relaxed = true)
+    private val remoteConfig: RemoteConfig = mockk(relaxed = true)
+    private val dispatchers = CoroutineTestDispatchers
 
     @Test
-    fun `when it's first page and has not shown onboarding before, should show onboarding`() {
+    fun `when it's first page and user allowed to see onboarding and hasnt shown onboarding before, should show onboarding`() {
         val isFirstPage = true
 
+        coEvery { remoteConfig.getBoolean(any(), any()) } returns true
         coEvery { preference.isOnBoardingHasBeenShown() } returns false
 
         givenParentViewModelRobot(
-            preference = preference
+            dispatchers = dispatchers,
+            preference = preference,
+            remoteConfig = remoteConfig
         ) andWhen {
             viewModel.setupOnBoarding(isFirstPage)
         } andThen {
+            dispatchers.coroutineDispatcher.advanceTimeBy(2000)
             viewModel.observableOnBoarding.getOrAwaitValue().peekContent().assertEqualTo(Unit)
         }
     }
 
     @Test
-    fun `when it's first page and has shown onboarding before, should not show onboarding`() {
+    fun `when it's first page and user allowed to see onboarding and has shown onboarding before, should not show onboarding`() {
         val isFirstPage = true
 
+        coEvery { remoteConfig.getBoolean(any(), any()) } returns true
         coEvery { preference.isOnBoardingHasBeenShown() } returns true
 
         givenParentViewModelRobot(
-            preference = preference
+            preference = preference,
+            remoteConfig = remoteConfig
         ) andWhen {
             viewModel.setupOnBoarding(isFirstPage)
         } andThen {
@@ -209,10 +219,50 @@ class PlayParentViewModelTest {
     }
 
     @Test
-    fun `when it isn't first page then should not show onboarding`() {
+    fun `when it's first page and user not allowed to see onboarding, should not show onboarding`() {
+        val isFirstPage = true
+
+        coEvery { preference.isOnBoardingHasBeenShown() } returns true
+        coEvery { remoteConfig.getBoolean(any(), any()) } returns false
+
+        givenParentViewModelRobot(
+            preference = preference,
+            remoteConfig = remoteConfig
+        ) andWhen {
+            viewModel.setupOnBoarding(isFirstPage)
+        } andThen {
+            throwsException<NoValueException> {
+                viewModel.observableOnBoarding.getOrAwaitValue()
+            }
+        }
+    }
+
+    @Test
+    fun `when it isn't first page and user allowed to see onboarding then should not show onboarding`() {
         val isFirstPage = false
 
-        givenParentViewModelRobot() andWhen {
+        coEvery { remoteConfig.getBoolean(any(), any()) } returns true
+
+        givenParentViewModelRobot(
+            remoteConfig = remoteConfig
+        ) andWhen {
+            viewModel.setupOnBoarding(isFirstPage)
+        } andThen {
+            throwsException<NoValueException> {
+                viewModel.observableOnBoarding.getOrAwaitValue()
+            }
+        }
+    }
+
+    @Test
+    fun `when it isn't first page and user not allowed to see onboarding then should not show onboarding`() {
+        val isFirstPage = false
+
+        coEvery { remoteConfig.getBoolean(any(), any()) } returns false
+
+        givenParentViewModelRobot(
+            remoteConfig = remoteConfig
+        ) andWhen {
             viewModel.setupOnBoarding(isFirstPage)
         } andThen {
             throwsException<NoValueException> {

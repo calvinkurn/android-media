@@ -10,6 +10,7 @@ import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.storage.PlayQueryParamStorage
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play_common.util.PlayPreference
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
@@ -27,7 +28,8 @@ class PlayParentViewModelRobot(
     pageMonitoring: PlayPltPerformanceCallback,
     queryParamStorage: PlayQueryParamStorage,
     preference: PlayPreference,
-    analytic: PlayAnalytic
+    analytic: PlayAnalytic,
+    remoteConfig: RemoteConfig
 ) {
 
     val viewModel: PlayParentViewModel
@@ -45,7 +47,8 @@ class PlayParentViewModelRobot(
             pageMonitoring = pageMonitoring,
             queryParamStorage = queryParamStorage,
             preference = preference,
-            analytic = analytic
+            analytic = analytic,
+            remoteConfig = remoteConfig
         )
     }
 
@@ -62,6 +65,7 @@ fun givenParentViewModelRobot(
     queryParamStorage: PlayQueryParamStorage = mockk(relaxed = true),
     preference: PlayPreference = mockk(relaxed = true),
     analytic: PlayAnalytic = mockk(relaxed = true),
+    remoteConfig: RemoteConfig = mockk(relaxed = true),
     fn: PlayParentViewModelRobot.() -> Unit = {}
 ): PlayParentViewModelRobot {
     return PlayParentViewModelRobot(
@@ -73,7 +77,8 @@ fun givenParentViewModelRobot(
         pageMonitoring = pageMonitoring,
         queryParamStorage = queryParamStorage,
         preference = preference,
-        analytic = analytic
+        analytic = analytic,
+        remoteConfig = remoteConfig
     ).apply(fn)
 }
 
