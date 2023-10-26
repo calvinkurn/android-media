@@ -197,7 +197,7 @@ class FeedAnalytics @Inject constructor(
     fun eventSwipeUpDownContent(
         tabType: String,
         entryPoint: String,
-        categoryId: String,
+        widgetId: String,
     ) {
         sendEventTracker(
             generateGeneralTrackerData(
@@ -206,7 +206,7 @@ class FeedAnalytics @Inject constructor(
                 Action.SWIPE_UP_DOWN_CONTENT,
                 "${getPrefix(tabType)} - $entryPoint",
                 "41571",
-                pageSource = generatePageSource(categoryId, entryPoint)
+                pageSource = generatePageSource(widgetId, entryPoint)
             )
         )
     }
