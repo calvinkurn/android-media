@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.common.di.qualifier.SubmitPostCoroutineScope
 import com.tokopedia.creation.common.upload.di.common.CreationUploadDataModule
+import com.tokopedia.creation.common.upload.util.logger.CreationUploadLogger
+import com.tokopedia.creation.common.upload.util.logger.CreationUploadLoggerImpl
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -33,7 +35,7 @@ import kotlinx.coroutines.CoroutineScope
         VideoUploaderModule::class
     ]
 )
-class CreationUploadWorkerModule {
+object CreationUploadWorkerModule {
 
     @Provides
     fun provideGraphQLRepository(): GraphqlRepository {
@@ -80,5 +82,10 @@ class CreationUploadWorkerModule {
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
+    }
+
+    @Provides
+    fun provideCreationUploadLogger(): CreationUploadLogger {
+        return CreationUploadLoggerImpl()
     }
 }

@@ -23,9 +23,12 @@ class PostUploadManager @Inject constructor(
     override suspend fun execute(
         uploadData: CreationUploadData,
         notificationId: Int,
-    ): Boolean {
+    ): CreationUploadExecutionResult {
 
-        if (uploadData !is CreationUploadData.Post) return false
+        if (uploadData !is CreationUploadData.Post) return CreationUploadExecutionResult.Error(
+            uploadData,
+            Exception("PostUploadManager is not receiving CreationUploadData.Post data")
+        )
 
         return try {
             broadcastInit(uploadData, notificationId)
@@ -34,7 +37,7 @@ class PostUploadManager @Inject constructor(
             val viewModel: CreatePostViewModel = cacheManager.get(
                 CreatePostViewModel.TAG,
                 CreatePostViewModel::class.java
-            ) ?: return false
+            ) ?: throw Exception("Cache manager with id ${uploadData.draftId} is empty")
 
             var uploadedMedia = 0
 
@@ -63,10 +66,14 @@ class PostUploadManager @Inject constructor(
 
             broadcastComplete(uploadData)
 
-            true
-        } catch (e: Throwable) {
+            CreationUploadExecutionResult.Success
+        } catch (throwable: Throwable) {
             broadcastFail(uploadData)
-            false
+
+            CreationUploadExecutionResult.Error(
+                uploadData,
+                throwable
+            )
         }
     }
 

@@ -65,8 +65,11 @@ class StoriesUploadManager @Inject constructor(
     override suspend fun execute(
         uploadData: CreationUploadData,
         notificationId: Int,
-    ): Boolean {
-        if (uploadData !is CreationUploadData.Stories) return false
+    ): CreationUploadExecutionResult {
+        if (uploadData !is CreationUploadData.Stories) return CreationUploadExecutionResult.Error(
+            uploadData,
+            Exception("StoriesUploadManager is not receiving CreationUploadData.Stories data")
+        )
 
         this.uploadData = uploadData
 
@@ -97,8 +100,8 @@ class StoriesUploadManager @Inject constructor(
 
                 broadcastComplete(uploadData)
 
-                true
-            } catch (e: Exception) {
+                CreationUploadExecutionResult.Success
+            } catch (throwable: Throwable) {
                 /**
                  * update story status to TranscodingFailed may error
                  * if no network connection
@@ -111,7 +114,10 @@ class StoriesUploadManager @Inject constructor(
 
                 broadcastFail(uploadData)
 
-                false
+                CreationUploadExecutionResult.Error(
+                    uploadData,
+                    throwable
+                )
             }
         }
     }
