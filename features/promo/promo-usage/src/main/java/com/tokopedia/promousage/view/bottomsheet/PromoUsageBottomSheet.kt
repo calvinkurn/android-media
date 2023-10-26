@@ -120,7 +120,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         private const val BOTTOM_SHEET_SAVING_INFO_HEIGHT_IN_DP = 56
         private const val BOTTOM_SHEET_TOTAL_AMOUNT_HEIGHT_IN_DP = 56
 
-        private const val AUTO_SCROLL_DELAY = 300L
+        private const val AUTO_SCROLL_DELAY = 500L
 
         @JvmStatic
         fun newInstance(
@@ -1031,6 +1031,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                             val isIdle =
                                 binding?.rvPromo?.scrollState == RecyclerView.SCROLL_STATE_IDLE
                             if (!isVisibleInCurrentScreen && itemPosition != RecyclerView.NO_POSITION && isIdle) {
+                                // Delay scroll until layout is finish updating
                                 Handler(Looper.getMainLooper()).postDelayed({
                                     binding?.rvPromo?.smoothSnapToPosition(
                                         position = itemPosition,

@@ -7,6 +7,7 @@ import android.view.View
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellerfeedback.DeeplinkMapperSellerFeedback
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.seller.active.common.R
 import com.tokopedia.unifycomponents.Toaster
@@ -69,7 +70,7 @@ object SuccessToasterHelper {
     private fun openFeedbackForm(context: Context) {
         val intent = RouteManager.getIntent(
             context,
-            ApplinkConstInternalSellerapp.SELLER_FEEDBACK
+            DeeplinkMapperSellerFeedback.getSellerFeedbackInternalAppLink(context)
         )
         intent.putExtra(SHOW_SETTING_BOTTOM_SHEET, true)
         context.startActivity(intent)

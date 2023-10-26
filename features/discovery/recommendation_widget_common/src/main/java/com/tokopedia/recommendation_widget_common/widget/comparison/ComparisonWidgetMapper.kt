@@ -16,11 +16,12 @@ object ComparisonWidgetMapper {
         recommendationWidget: RecommendationWidget,
         context: Context,
         isAnchorClickable: Boolean,
+        comparisonColorConfig: ComparisonColorConfig,
     ): ComparisonListModel {
         val recommendationItems = recommendationWidget.recommendationItemList
         val specsConfig = buildSpecsConfig(recommendationItems, context)
         val listOfProductCardModel = recommendationItems.map {
-            it.toProductCardModel()
+            it.toProductCardModel(forceLightMode = comparisonColorConfig.productCardForceLightMode)
         }
         val productCardHeight = listOfProductCardModel.getMaxHeightForGridView(
             context,
@@ -35,7 +36,13 @@ object ComparisonWidgetMapper {
 
                 ComparisonModel(
                     specsModel = SpecsMapper.mapToSpecsListModel(
-                        it.value.specs, isEdgeStart, specsConfig, it.index, recommendationItems.size),
+                        it.value.specs,
+                        isEdgeStart,
+                        specsConfig,
+                        it.index,
+                        recommendationItems.size,
+                        comparisonColorConfig
+                    ),
                     productCardModel = it.value.toProductCardModel(),
                     recommendationItem = it.value,
                     isClickable = isClickable(it.index, isAnchorClickable),
@@ -43,8 +50,9 @@ object ComparisonWidgetMapper {
             },
             comparisonWidgetConfig = ComparisonWidgetConfig(
                 productCardHeight = productCardHeight,
-                collapsedHeight = collapsedHeight
-            )
+                collapsedHeight = collapsedHeight,
+            ),
+            comparisonColorConfig = comparisonColorConfig,
         )
     }
 

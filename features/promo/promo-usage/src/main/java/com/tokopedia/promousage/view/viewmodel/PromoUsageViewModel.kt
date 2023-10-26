@@ -727,11 +727,14 @@ class PromoUsageViewModel @Inject constructor(
         } else {
             selectedItem.code
         }
+        // Check for primary promo code
         val primaryClashingInfo = resultItem.clashingInfos
             .firstOrNull { it.code == selectedPromoCode }
         if (primaryClashingInfo != null &&
             !resultItem.currentClashingPromoCodes.contains(selectedPromoCode)
         ) {
+            // Promo is clashing with current selected code
+            // add selected promo code to current primary clashing list
             val clashingPrimaryCodes = resultItem.currentClashingPromoCodes
                 .plus(selectedPromoCode)
             resultItem = resultItem.copy(
@@ -743,23 +746,38 @@ class PromoUsageViewModel @Inject constructor(
             )
             isCausingClash = true
         }
+        // Check for secondary promo code
         if (resultItem.hasSecondaryPromo) {
             val secondaryClashingInfo = resultItem.secondaryPromo.clashingInfos
                 .firstOrNull { it.code == selectedPromoCode }
             if (secondaryClashingInfo != null &&
                 !resultItem.currentClashingSecondaryPromoCodes.contains(selectedPromoCode)
             ) {
+                // Promo is clashing with current selected code
+                // add selected promo code to current secondary clashing list
                 val clashingSecondaryCodes = resultItem.currentClashingSecondaryPromoCodes
                     .plus(selectedPromoCode)
-                val state = if (resultItem.state is PromoItemState.Disabled) {
-                    PromoItemState.Disabled(
-                        useSecondaryPromo = true,
-                        message = secondaryClashingInfo.message
-                    )
-                } else if (resultItem.state is PromoItemState.Selected) {
-                    PromoItemState.Selected(useSecondaryPromo = false)
-                } else {
-                    PromoItemState.Normal(useSecondaryPromo = false)
+                val state = when (resultItem.state) {
+                    // Promo is already clashing (with primary code OR other secondary code)
+                    // update current clashing info with latest secondary clashing info
+                    is PromoItemState.Disabled -> {
+                        PromoItemState.Disabled(
+                            useSecondaryPromo = true,
+                            message = secondaryClashingInfo.message
+                        )
+                    }
+
+                    // Promo is clashing with secondary while in selected state
+                    // adjust selected to show primary promo
+                    is PromoItemState.Selected -> {
+                        PromoItemState.Selected(useSecondaryPromo = false)
+                    }
+
+                    // Promo is clashing with secondary while in normal state
+                    // adjust selected to show primary promo
+                    else -> {
+                        PromoItemState.Normal(useSecondaryPromo = false)
+                    }
                 }
                 resultItem = resultItem.copy(
                     state = state,
@@ -767,28 +785,25 @@ class PromoUsageViewModel @Inject constructor(
                 )
                 isCausingClash = true
             } else {
-                val state = if (resultItem.state is PromoItemState.Disabled) {
-                    val isClashingWithCurrentPromoOnly = resultItem.currentClashingPromoCodes.isNotEmpty() &&
-                        resultItem.currentClashingPromoCodes.none { it != selectedItem.code }
-                    if (isClashingWithCurrentPromoOnly) {
-                        PromoItemState.Normal(useSecondaryPromo = true)
-                    } else {
-                        resultItem.state
+                // Revert item state back to normal with secondary promo
+                // if primary is clashing and secondary is empty
+                if (resultItem.state is PromoItemState.Disabled) {
+                    if (resultItem.currentClashingPromoCodes.contains(selectedPromoCode) &&
+                        resultItem.currentClashingSecondaryPromoCodes.isEmpty()
+                    ) {
+                        resultItem = resultItem.copy(
+                            state = PromoItemState.Normal(useSecondaryPromo = true)
+                        )
                     }
-                } else {
-                    resultItem.state
                 }
-                resultItem = resultItem.copy(
-                    currentClashingSecondaryPromoCodes = emptyList(),
-                    state = state
-                )
                 isCausingClash = false
             }
         }
+        // If item is still in loading state after processing change item back to previous normal state
         if (resultItem.state is PromoItemState.Loading) {
-            resultItem = if (resultItem.currentClashingPromoCodes.isEmpty() &&
+            val notClashingWithAnyPromo = resultItem.currentClashingPromoCodes.isEmpty() &&
                 resultItem.currentClashingSecondaryPromoCodes.isEmpty()
-            ) {
+            resultItem = if (notClashingWithAnyPromo) {
                 resultItem.copy(
                     state = PromoItemState.Normal(useSecondaryPromo = false)
                 )
@@ -2111,26 +2126,15 @@ class PromoUsageViewModel @Inject constructor(
     }
 
     private fun isChangedFromInitialState(): Boolean {
-        // Check if
-        // Case 1: has any promo item unchecked, but exist as pre applied promo item
-        // Case 2: has any promo item checked but have not been applied
-        initialSelectedPromoCodes?.let { selectedCodes ->
-            _promoPageUiState.asSuccessOrNull()
-                ?.items?.filterIsInstance<PromoItem>()?.forEach { item ->
-                    val code = if (item.useSecondaryPromo) {
-                        item.secondaryPromo.code
-                    } else {
-                        item.code
-                    }
-                    // Case 1
-                    if (selectedCodes.contains(code) && item.state !is PromoItemState.Selected) {
-                        return true
-                    }
-                    // Case 2
-                    if (!selectedCodes.contains(code) && item.state is PromoItemState.Selected) {
-                        return true
-                    }
-                }
+        val latestSelectedCodes = _promoPageUiState.asSuccessOrNull()
+            ?.items?.getSelectedPromoCodes() ?: emptyList()
+        val initialSelectedCodes = initialSelectedPromoCodes ?: emptyList()
+
+        if (initialSelectedCodes.count() != latestSelectedCodes.count()) {
+            return true
+        }
+        if (!initialSelectedCodes.containsAll(latestSelectedCodes)) {
+            return true
         }
         return false
     }
