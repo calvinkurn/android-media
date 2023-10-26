@@ -24,7 +24,7 @@ class EmptyAttachVoucherViewHolder(itemView: View?) : AbstractViewHolder<EmptyMo
     }
 
     private fun bindEmptyImage() {
-        binding?.ivEmpty.loadImageWithCacheData(emptyIconUrl)
+        binding?.ivEmpty?.loadImageWithCacheData(emptyIconUrl)
     }
 
     private fun bindButtonClick() {
