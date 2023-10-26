@@ -29,13 +29,33 @@ class MediaTarget<T : View>(
 
 }
 
-class MediaBitmapEmptyTarget<T : Any>(
-    private val onCleared: (placeholder: Drawable?) -> Unit = {},
-    private val onReady: (resource: Bitmap) -> Unit = {},
-    private val onFailed: (errorDrawable: Drawable?) -> Unit = {},
-    width: Int = SIZE_ORIGINAL,
-    height: Int = SIZE_ORIGINAL
-) : CustomTarget<T>(width, height) {
+class MediaBitmapEmptyTarget<T : Any> : CustomTarget<T> {
+    private var onCleared: (placeholder: Drawable?) -> Unit = {}
+    private var onReady: (resource: Bitmap) -> Unit = {}
+    private var onFailed: (errorDrawable: Drawable?) -> Unit = {}
+
+    constructor(
+        onCleared: (placeholder: Drawable?) -> Unit = {},
+        onReady: (resource: Bitmap) -> Unit = {},
+        onFailed: (errorDrawable: Drawable?) -> Unit = {}
+    ) : super() {
+        this.onCleared = onCleared
+        this.onReady = onReady
+        this.onFailed = onFailed
+    }
+
+    constructor(
+        onCleared: (placeholder: Drawable?) -> Unit = {},
+        onReady: (resource: Bitmap) -> Unit = {},
+        onFailed: (errorDrawable: Drawable?) -> Unit = {},
+        width: Int,
+        height: Int
+    ) : super(width, height) {
+        this.onCleared = onCleared
+        this.onReady = onReady
+        this.onFailed = onFailed
+    }
+
     override fun onLoadCleared(placeholder: Drawable?) {
         onCleared(placeholder)
     }
