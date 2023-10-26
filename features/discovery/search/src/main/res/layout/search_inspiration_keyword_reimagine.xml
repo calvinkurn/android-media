@@ -1,51 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify2
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/searchInspirationKeywordReimagine"
+    android:id="@+id/searchInspirationKeywordReimagineContainer"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/Unify_NN0"
-    app:card_type= "clear"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    tools:cardUseCompatPadding="false">
+    android:layout_height="wrap_content">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/searchInspirationKeywordReimagineContainer"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/searchInspirationKeywordReimagineTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="@string/search_inspiration_keyword_match_title" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/searchInspirationKeywordReimagineList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/searchInspirationKeywordReimagineTitle"
+        app:layout_constraintTop_toBottomOf="@+id/searchInspirationKeywordReimagineTitle"
+        tools:itemCount="5"
+        tools:listitem="@layout/search_inspiration_keyword_reimagine_item"
+        tools:visibility="visible" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/searchInspirationKeywordReimagineTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:maxLines="2"
-            android:textColor="@color/Unify_NN950"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="display_2"
-            app:typographyWeight="bold"
-            tools:text="@string/search_inspiration_keyword_match_title"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/searchInspirationKeywordReimagineList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/searchInspirationKeywordReimagineTitle"
-            app:layout_constraintTop_toBottomOf="@+id/searchInspirationKeywordReimagineTitle"
-            tools:listitem="@layout/search_inspiration_keyword_reimagine_item"
-            tools:itemCount="5"
-            tools:visibility="visible" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</com.tokopedia.unifycomponents.CardUnify2>
+</androidx.constraintlayout.widget.ConstraintLayout>

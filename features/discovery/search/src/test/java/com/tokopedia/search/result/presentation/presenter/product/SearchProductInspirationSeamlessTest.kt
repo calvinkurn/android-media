@@ -130,7 +130,7 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
 
         `Then verify view set product list`()
         `Then verify visitable list has correct inspiration keyword product and product sequence`(
-            searchProductModel, isTargetingInspirationKeywordGridCard = true
+            searchProductModel, isInspirationKeywordGridCard = true
         )
     }
 
@@ -174,7 +174,7 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
 
     private fun `Then verify visitable list has correct inspiration keyword product and product sequence`(
         searchProductModel: SearchProductModel,
-        isTargetingInspirationKeywordGridCard : Boolean = false
+        isInspirationKeywordGridCard : Boolean = false
     ) {
         val visitableList = visitableListSlot.captured
         visitableList.size shouldBe 19
@@ -201,7 +201,7 @@ internal class SearchProductInspirationSeamlessTest : ProductListPresenterTestFi
                     (visitable as InspirationKeywordCardView)
                         .assertInspirationKeywordDataView(
                             inspirationSeamlessCardData[inspirationCarouselIndex],
-                            isTargetingInspirationKeywordGridCard
+                            isInspirationKeywordGridCard
                         )
                     inspirationCarouselIndex += 1
                     keywordIndex = index

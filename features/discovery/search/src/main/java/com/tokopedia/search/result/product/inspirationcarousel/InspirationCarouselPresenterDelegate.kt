@@ -188,7 +188,11 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         val (inspirationKeyboard, inspirationProduct, isOneOrMoreItemIsEmptyImage) =
             InspirationSeamlessMapper.convertToInspirationList(data.options, externalReference)
         inspirationKeywordVisitableList.add(
-            InspirationKeywordCardView.create(data.title, inspirationKeyboard, isOneOrMoreItemIsEmptyImage, isInspirationKeywordGridCard)
+            InspirationKeywordCardView.create(
+                data.title,
+                inspirationKeyboard,
+                isOneOrMoreItemIsEmptyImage,
+                isInspirationKeywordGridCard)
         )
         inspirationKeywordVisitableList.addAll(inspirationProduct)
         return inspirationKeywordVisitableList

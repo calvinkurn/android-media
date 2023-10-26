@@ -12,7 +12,6 @@ import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywo
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordDataView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordListener
 import com.tokopedia.search.result.product.seamlessinspirationcard.utils.INDEX_IMPRESSION_KEYWORD_TO_BE_TRACK
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 class InspirationKeywordReimagineViewHolder(
@@ -31,15 +30,9 @@ class InspirationKeywordReimagineViewHolder(
     override fun bind(element: InspirationKeywordCardView?) {
         if (binding == null || element == null) return
 
-        initCardView()
         binding?.searchInspirationKeywordReimagineTitle?.text = element.title
-        element.optionsItems.getItemOptionsOn(INDEX_IMPRESSION_KEYWORD_TO_BE_TRACK).doImpressedTracker()
+        element.optionsItems.getItemOptionsOn(INDEX_IMPRESSION_KEYWORD_TO_BE_TRACK)?.doImpressedTracker()
         initRecyclerView(element)
-    }
-
-    private fun initCardView() {
-        val cardView = binding?.searchInspirationKeywordReimagine
-        cardView?.cardType = CardUnify2.TYPE_CLEAR
     }
 
     private fun InspirationKeywordDataView.doImpressedTracker() {
@@ -58,5 +51,5 @@ class InspirationKeywordReimagineViewHolder(
     }
 
     private fun List<InspirationKeywordDataView>.getItemOptionsOn(position: Int) =
-        this[position]
+        this.getOrNull(position)
 }

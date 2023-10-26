@@ -24,8 +24,7 @@ data class InspirationKeywordCardView(
             return InspirationKeywordCardView(
                 title = title,
                 optionsItems = optionsItems,
-                isOneOrMoreIsEmptyImage = isOneOrMoreIsEmptyImage,
-                isInspirationKeywordGridCard = isInspirationKeywordGridCard
+                isOneOrMoreIsEmptyImage = isOneOrMoreIsEmptyImage, isInspirationKeywordGridCard = isInspirationKeywordGridCard
             )
         }
     }
