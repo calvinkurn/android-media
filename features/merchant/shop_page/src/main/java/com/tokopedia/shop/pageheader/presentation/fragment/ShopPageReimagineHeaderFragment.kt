@@ -685,11 +685,11 @@ class ShopPageReimagineHeaderFragment :
         }
 
         shopHeaderViewModel?.followShopData?.observe(owner) {
+            setFragmentTabContentWrapperFollowButtonLoading(false)
             when (it) {
                 is Success -> {
                     it.data.followShop?.let { followShop ->
                         onSuccessUpdateFollowStatus(followShop)
-                        setFragmentTabContentWrapperFollowButtonLoading(false)
                     }
                 }
 
