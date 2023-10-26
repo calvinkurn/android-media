@@ -8,10 +8,12 @@ import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
+import com.tokopedia.media.loader.JvmMediaLoader;
+
+import kotlin.Unit;
 
 /**
  * @author anggaprasetiyo on 08/01/18.
@@ -54,11 +56,11 @@ public class MenuPromoTab extends BaseCustomView {
 
     public void renderNormalState() {
         tvTitle.setTextColor(getContext().getResources().getColor(com.tokopedia.design.R.color.grey_600));
-        ImageHandler.loadImageAndCache(ivIcon, promoMenuData.getIconNormal());
+        JvmMediaLoader.loadImageWithCacheData(ivIcon, promoMenuData.getIconNormal());
     }
 
     public void renderActiveState() {
         tvTitle.setTextColor(getContext().getResources().getColor(com.tokopedia.abstraction.R.color.tkpd_main_green));
-        ImageHandler.loadImageAndCache(ivIcon, promoMenuData.getIconActive());
+        JvmMediaLoader.loadImageWithCacheData(ivIcon, promoMenuData.getIconActive());
     }
 }

@@ -26,6 +26,10 @@ object JvmMediaLoader {
         imageView.loadImage(resource)
     }
 
+    @JvmStatic fun loadImageWithCacheData(imageView: ImageView, url: String) {
+        imageView.loadImageWithCacheData(url)
+    }
+
     @JvmStatic fun loadImageFitCenter(imageView: ImageView, url: String) {
         imageView.loadImageFitCenter(url)
     }

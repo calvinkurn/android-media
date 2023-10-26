@@ -11,6 +11,7 @@ import com.tokopedia.media.loader.data.DEFAULT_ICON_SIZE
 import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 
 fun ImageView.loadAsGif(
     url: String
@@ -199,6 +200,16 @@ inline fun ImageView.loadImageRounded(
     call(url, Properties()
         .apply(properties)
         .setRoundedRadius(rounded)
+    )
+}
+
+inline fun ImageView.loadImageWithCacheData(
+    url: String?,
+    crossinline properties: Properties.() -> Unit = {}
+) {
+    call(url, Properties()
+        .apply(properties)
+        .setCacheStrategy(MediaCacheStrategy.DATA)
     )
 }
 
