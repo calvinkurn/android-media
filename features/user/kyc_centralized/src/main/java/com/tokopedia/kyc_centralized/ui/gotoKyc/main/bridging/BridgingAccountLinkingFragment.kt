@@ -120,6 +120,12 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                     activity?.setResult(KYCConstant.ActivityResult.LAUNCH_TOKO_KYC)
                     activity?.finish()
                 }
+                is AccountLinkingStatusResult.Blocked -> {
+                    val intent = Intent()
+                    intent.putExtra(KYCConstant.PARAM_BLOCKED_IS_MULTIPLE_ACCOUNT, it.isMultipleAccount)
+                    activity?.setResult(KYCConstant.ActivityResult.BLOCKED_KYC, intent)
+                    activity?.finish()
+                }
                 is AccountLinkingStatusResult.Linked -> {
                     viewModel.checkEligibility()
                 }

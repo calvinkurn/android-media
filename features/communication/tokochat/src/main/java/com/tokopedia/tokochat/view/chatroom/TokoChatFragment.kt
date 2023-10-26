@@ -1139,8 +1139,7 @@ open class TokoChatFragment @Inject constructor(
                 role = TokoChatAnalyticsConstants.BUYER
             )
             showBubblesAwarenessBottomSheet()
-        }
-        if (linkUrl.isNotEmpty()) {
+        } else if (linkUrl.isNotBlank()) {
             context?.let {
                 RouteManager.route(it, linkUrl)
             }

@@ -21,6 +21,10 @@ object ApplinkConstInternalUserPlatform {
     const val PAGE_EDIT_INFO_PROFILE_USERNAME = "username"
     const val PAGE_EDIT_INFO_PARAM = "page"
 
+    const val LOGIN_SDK_CREDENTIAL = "ssoCredential"
+
+    const val PHONE_NUMBER = "phonenumber"
+    const val PARAM_IS_AUTO_REGISTER = "isAutoRegister"
     const val PARAM_IS_RETURN_HOME = "return_to_home"
     const val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
     const val PARAM_IS_FROM_STICKY_LOGIN = "from_sticky_login"
@@ -121,9 +125,9 @@ object ApplinkConstInternalUserPlatform {
 
     /**
      * OclChooseAccountActivity
-     * @Applink : tokopedia-android-internal://user/choose-account-fingerprint
+     * @Applink : tokopedia-android-internal://user/choose-account-ocl
      **/
-    const val CHOOSE_ACCOUNT_OCL = "${NEW_INTERNAL_USER}/choose-account-ocl"
+    const val CHOOSE_ACCOUNT_OCL = "$NEW_INTERNAL_USER/choose-account-ocl"
 
     /**
      * VerificationActivity
@@ -291,6 +295,12 @@ object ApplinkConstInternalUserPlatform {
     const val PROFILE_COMPLETION = "$NEW_INTERNAL_USER/profile-completion"
 
     /**
+     * ScpAuthActivity
+     * @Applink : tokopedia-android-internal://user/scp-login
+     **/
+    const val SCP_LOGIN = "$NEW_INTERNAL_USER/scp-login"
+
+    /**
      * AddNameActivity
      * @Applink : tokopedia-android-internal://user/manage-name
      **/
@@ -383,8 +393,8 @@ object ApplinkConstInternalUserPlatform {
      * ## GoTo KYC
      * ### Open GoTo KYC
      *
-     * @class       : GotoKycTransparentActivity
-     * @Applink     : tokopedia-android-internal://user/goto-kyc?projectId={projectId}&source={source}
+     * @class : GotoKycTransparentActivity
+     * @Applink : tokopedia-android-internal://user/goto-kyc?projectId={projectId}&source={source}
      * @param
      *  - projectId    : required | String | ref: [PARAM_PROJECT_ID]
      *  - source       : required only for BU | String | ref: [PARAM_SOURCE]
@@ -399,8 +409,8 @@ object ApplinkConstInternalUserPlatform {
      * ## Webview GoTo KYC
      * ### Open Webview with JS that can launch Goto KYC
      *
-     * @class       : WebviewWithGotoKycActivity
-     * @Applink     : "tokopedia-android-internal://user/webview-kyc"
+     * @class : WebviewWithGotoKycActivity
+     * @Applink : "tokopedia-android-internal://user/webview-kyc"
      * @param
      *  - projectId    : required | String | ref: [PARAM_PROJECT_ID]
      *  - source       : required only for BU | String | ref: [PARAM_SOURCE]
@@ -538,6 +548,6 @@ object ApplinkConstInternalUserPlatform {
     const val SHARING_WISHLIST = "$NEW_INTERNAL_USER/sharing-wishlist?tab={$PARAM_TAB}"
 
     fun getGotoKYCApplink(projectId: String, source: String, callback: String = ""): String {
-       return  UriUtil.buildUri(GOTO_KYC, projectId, source, callback)
+        return UriUtil.buildUri(GOTO_KYC, projectId, source, callback)
     }
 }

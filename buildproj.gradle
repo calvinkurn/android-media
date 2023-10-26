@@ -36,6 +36,14 @@ allprojects {
             allowInsecureProtocol = true
         }
         maven {
+            url "${gcp_artifactory_url}" + "/libs-shared";
+            credentials {
+                username = "${gcp_artifactory_username}"
+                password = "${gcp_artifactory_password}"
+            }
+            allowInsecureProtocol = true
+        }
+        maven {
             name = "courier-client"
             url = uri("https://maven.pkg.github.com/Tokopedia-GoTo/android-courier-connection")
 

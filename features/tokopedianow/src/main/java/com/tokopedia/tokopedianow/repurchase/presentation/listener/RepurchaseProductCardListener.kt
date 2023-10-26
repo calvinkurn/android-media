@@ -22,8 +22,8 @@ class RepurchaseProductCardListener(
     private val startActivityForResult: (Intent, Int) -> Unit,
     private val showToaster: (String, Int, String, () -> Unit) -> Unit
 ) : RepurchaseProductCardListener {
-    override fun onClickProduct(item: RepurchaseProductUiModel, position: Int) {
-        analytics.onClickProduct(userSession.userId, item, position)
+    override fun onClickProduct(item: RepurchaseProductUiModel) {
+        analytics.onClickProduct(userSession.userId, item)
     }
 
     override fun onAddToCartVariant(item: RepurchaseProductUiModel) {

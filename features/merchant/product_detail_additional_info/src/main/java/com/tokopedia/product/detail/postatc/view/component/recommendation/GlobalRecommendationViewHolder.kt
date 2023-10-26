@@ -65,4 +65,9 @@ class GlobalRecommendationViewHolder(
                 callback.removeComponent(element.id)
             }
         }
+
+    override fun onViewRecycled() {
+        super.onViewRecycled()
+        binding.postAtcGlobalRecom.recycle()
+    }
 }

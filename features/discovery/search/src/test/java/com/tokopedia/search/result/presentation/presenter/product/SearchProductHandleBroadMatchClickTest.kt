@@ -22,7 +22,7 @@ private const val broadMatchResponseCode0Page1Position1 = "searchproduct/broadma
 private const val dynamicProductCarousel = "searchproduct/inspirationcarousel/dynamic-product.json"
 private const val dealsCarouselWithCardButton = "searchproduct/inspirationcarousel/deals-with-card-button.json"
 
-internal class SearchProductHandleBroadMatchClick: ProductListPresenterTestFixtures() {
+internal class SearchProductHandleBroadMatchClickTest: ProductListPresenterTestFixtures() {
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
 

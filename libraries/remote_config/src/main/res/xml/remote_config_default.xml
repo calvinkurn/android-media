@@ -638,4 +638,12 @@
         <key>android_enable_m3u8_thumbnail_loader</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>android_pdp_p1_should_cacheable</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_pdp_p1_cache_age</key>
+        <value>30</value>
+    </entry>
 </defaultsMap>

@@ -34,18 +34,18 @@ class BarChartConfig : BaseChartConfig() {
 
     internal fun build(): BarChartConfigModel {
         return BarChartConfigModel(
-                isTooltipEnabled = isTooltipEnabled,
-                isScaleXEnabled = isScaleXEnabled,
-                isPitchZoomEnabled = isPitchZoomEnabled,
-                isShowValueEnabled = isShowValueEnabled,
-                xAnimationDuration = xAnimationDuration,
-                yAnimationDuration = yAnimationDuration,
-                xAxisConfig = xAxis,
-                yAxisConfig = yAxis,
-                tooltip = tooltip,
-                isRoundedBarEnabled = isRoundedBarEnabled,
-                barBorderRadius = barBorderRadius,
-                highLightAlpha = highLightAlpha
+            isTooltipEnabled = isTooltipEnabled,
+            isScaleXEnabled = isScaleXEnabled,
+            isPitchZoomEnabled = isPitchZoomEnabled,
+            isShowValueEnabled = isShowValueEnabled,
+            xAnimationDuration = xAnimationDuration,
+            yAnimationDuration = yAnimationDuration,
+            xAxisConfig = xAxis,
+            yAxisConfig = yAxis,
+            tooltip = tooltip,
+            isRoundedBarEnabled = isRoundedBarEnabled,
+            barBorderRadius = barBorderRadius,
+            highLightAlpha = highLightAlpha
         )
     }
 }
