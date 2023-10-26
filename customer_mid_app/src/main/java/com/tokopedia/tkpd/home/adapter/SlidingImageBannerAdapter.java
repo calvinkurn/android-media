@@ -10,9 +10,9 @@ import android.widget.ImageView;
 
 import androidx.viewpager.widget.PagerAdapter;
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.customer_mid_app.R;
+import com.tokopedia.media.loader.JvmMediaLoader;
 import com.tokopedia.tkpd.home.analytics.HomeGATracking;
 import com.tokopedia.tkpd.home.model.VideoPushBannerModel;
 
@@ -55,7 +55,7 @@ public class SlidingImageBannerAdapter extends PagerAdapter {
         final ImageView imageView = imageLayout
                 .findViewById(R.id.banner_item);
 
-        ImageHandler.loadImageCover2(imageView, bannerModelList.get(position).getBannerImg());
+        JvmMediaLoader.loadImage(imageView, bannerModelList.get(position).getBannerImg());
         view.addView(imageLayout, 0);
         imageLayout.setOnClickListener(view1 -> {
             if (!TextUtils.isEmpty(bannerModelList.get(position).getLink())) {
