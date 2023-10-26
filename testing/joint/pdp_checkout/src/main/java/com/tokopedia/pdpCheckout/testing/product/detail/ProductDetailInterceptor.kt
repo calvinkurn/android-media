@@ -1,6 +1,5 @@
 package com.tokopedia.pdpCheckout.testing.product.detail
 
-import android.util.Log
 import com.tokopedia.test.application.util.ResourcePathUtil.getJsonFromResource
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -20,10 +19,8 @@ class ProductDetailInterceptor : BasePdpInterceptor() {
         val requestString = readRequestString(copy)
 
         if (requestString.contains(GET_PDP_P1) && customP1ResponsePath != null) {
-            Log.i("qwertyuiop", "mock p1")
             return mockResponse(copy, getJsonFromResource(customP1ResponsePath!!))
         } else if (requestString.contains(GET_PDP_P2_DATA)) {
-            Log.i("qwertyuiop", "mock p2")
             return mockResponse(copy, getJsonFromResource(customP2DataResponsePath!!))
         } else if (requestString.contains(GET_RECOM_AFTER_ATC) && customRecomWidgetRecomAtcResponsePath != null) {
             return mockResponse(copy, getJsonFromResource(customRecomWidgetRecomAtcResponsePath!!))

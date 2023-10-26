@@ -2,7 +2,6 @@ package com.tokopedia.pdpCheckout.testing
 
 import android.app.Activity
 import android.app.Instrumentation
-import android.util.Log
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.intent.Intents
@@ -73,18 +72,15 @@ class PdpOccJourneyTest {
     fun openPdpAndGoToOcc_PassedAnalyticsTest() {
         activityRule.launchActivity(ProductDetailActivity.createIntent(context, 123))
 
-        Log.i("qwertyuiop", "done launch")
         ProductDetailRobot().apply {
-            Thread.sleep(5_000)
-            Log.i("qwertyuiop", "want to click beli langsung")
+            Thread.sleep(3_000)
             clickBeliLangsungOcc()
         }
 
         orderSummaryPage {
-            Thread.sleep(5_000)
+            Thread.sleep(3_000)
             Intents.intending(IntentMatchers.anyIntent())
                 .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-            Log.i("qwertyuiop", "want to click pay")
             pay()
         }
 
