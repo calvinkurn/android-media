@@ -63,7 +63,6 @@ import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.di.DaggerFeedMainComponent
-import com.tokopedia.feedplus.di.FeedMainModule
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
@@ -538,11 +537,11 @@ class FeedFragment :
     }
 
     override fun initInjector() {
-        DaggerFeedMainComponent.builder()
-            .baseAppComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
-            .feedMainModule(FeedMainModule(requireContext()))
-            .build()
-            .inject(this)
+        DaggerFeedMainComponent.factory()
+            .build(
+                activityContext = requireContext(),
+                appComponent = (requireActivity().application as BaseMainApplication).baseAppComponent
+            ).inject(this)
     }
 
     override fun getScreenName(): String = "Feed Fragment"

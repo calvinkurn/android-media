@@ -16,11 +16,7 @@ import dagger.Provides
  * Created By : Muhammad Furqan on 09/02/23
  */
 @Module
-class FeedMainModule(private val activityContext: Context) {
-
-    @Provides
-    @FeedMainScope
-    fun provideActivityContext(): Context = activityContext
+class FeedMainModule {
 
     @FeedMainScope
     @Provides
