@@ -15,6 +15,7 @@ import com.tokopedia.applink.model.DLP
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.promo.DeeplinkMapperPromo
+import com.tokopedia.applink.sellersearch.SellerSearchDeeplinkMapper
 import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
 import com.tokopedia.applink.shopscore.ShopScoreDeepLinkMapper
 import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
@@ -120,7 +121,9 @@ object DeeplinkSellerApp {
             DLP.goToLink { ApplinkConstInternalSellerapp.SELLER_PERSONA }
         ),
         "seller-search" to mutableListOf(
-            DLP.goToLink { ApplinkConstInternalSellerapp.SELLER_SEARCH }
+            DLP.goTo { context, _, _, _ ->
+                SellerSearchDeeplinkMapper.getInternalApplinkSellerSearch(context)
+            }
         ),
         "setting" to mutableListOf(
             DLP.matchPattern("shipping-editor") { _: String ->
