@@ -145,7 +145,6 @@ class BannerRevampViewHolder(
                 }
             }
         })
-        recyclerView.computeHorizontalScrollOffset()
     }
 
     override fun bind(element: BannerRevampDataModel, payloads: MutableList<Any>) {
@@ -182,8 +181,9 @@ class BannerRevampViewHolder(
 
         recyclerView.layoutManager = this.layoutManager
         val halfIntegerSize = Integer.MAX_VALUE / DIVIDE_HALF_BANNER_SIZE_INT_SIZE
-        adapter.submitList(list)
-        recyclerView.layoutManager?.scrollToPosition(halfIntegerSize - halfIntegerSize % totalBanner)
+        adapter.submitList(list) {
+            recyclerView.layoutManager?.scrollToPosition(halfIntegerSize - halfIntegerSize % totalBanner)
+        }
         recyclerView.adapter = adapter
         if(!isBleeding) {
             bannerCardContainer.animateOnPress = if (cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
@@ -221,7 +221,11 @@ class BannerRevampViewHolder(
     }
 
     override fun onTouchEvent(motionEvent: MotionEvent) {
-        bannerCardContainer?.onTouchEvent(motionEvent)
+        if(isBleeding) {
+            bannerContainer.onTouchEvent(motionEvent)
+        } else {
+            bannerCardContainer.onTouchEvent(motionEvent)
+        }
     }
 
     private fun ChannelModel.convertToBannerItemModel(): List<BannerVisitable> {

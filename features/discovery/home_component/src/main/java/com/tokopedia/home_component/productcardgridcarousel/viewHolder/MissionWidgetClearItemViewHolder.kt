@@ -53,17 +53,34 @@ class MissionWidgetClearItemViewHolder(
 
     private fun renderText(element: CarouselMissionWidgetDataModel) {
         binding?.run {
-            if(element.withSubtitle) {
-                titleMissionWidget.setWeight(Typography.BOLD)
-                subtitleMissionWidget.height = element.subtitleHeight
-                subtitleMissionWidget.text = element.data.subTitle
-                subtitleMissionWidget.show()
+            titleMissionWidget.renderTitle(element)
+            subtitleMissionWidget.renderSubtitle(element)
+        }
+    }
+
+    private fun Typography.renderTitle(element: CarouselMissionWidgetDataModel) {
+        if(element.data.title.isEmpty()) {
+            hide()
+        } else {
+            val fontWeight = if(element.withSubtitle) {
+                Typography.BOLD
             } else {
-                titleMissionWidget.setWeight(Typography.REGULAR)
-                subtitleMissionWidget.hide()
+                Typography.REGULAR
             }
-            titleMissionWidget.height = element.titleHeight
-            titleMissionWidget.text = element.data.title
+            height = element.titleHeight
+            text = element.data.title
+            setWeight(fontWeight)
+            show()
+        }
+    }
+
+    private fun Typography.renderSubtitle(element: CarouselMissionWidgetDataModel) {
+        if(element.data.subTitle.isEmpty()) {
+            hide()
+        } else {
+            height = element.subtitleHeight
+            text = element.data.subTitle
+            show()
         }
     }
 }
