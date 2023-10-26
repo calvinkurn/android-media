@@ -39,12 +39,12 @@ class GotoKycWebWrapperFragment : BaseSessionWebViewFragment() {
             preferenceKey = preferenceKey
         )
 
-        val directory1 = getKycSdkDocumentDirectoryPath(requireContext())
-        val directory2 = getKycSdkFrameDirectoryPath(requireContext())
-        val directory3 = getKycSdkLogDirectoryPath(requireContext())
-        removeGotoKycImage(directory1)
-        removeGotoKycImage(directory2)
-        removeGotoKycImage(directory3)
+        val documentDirectory = getKycSdkDocumentDirectoryPath(requireContext())
+        val frameDirectory = getKycSdkFrameDirectoryPath(requireContext())
+        val logDirectory = getKycSdkLogDirectoryPath(requireContext())
+        removeGotoKycImage(documentDirectory)
+        removeGotoKycImage(frameDirectory)
+        removeGotoKycImage(logDirectory)
     }
 
     override fun initInjector() {
