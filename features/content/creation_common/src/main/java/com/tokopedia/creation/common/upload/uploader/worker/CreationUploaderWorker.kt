@@ -18,7 +18,9 @@ import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadStatus
 import com.tokopedia.creation.common.upload.model.exception.NoUploadManagerException
 import com.tokopedia.creation.common.upload.model.exception.UnknownUploadTypeException
+import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadExecutionResult
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerListener
+import com.tokopedia.creation.common.upload.util.logger.CreationUploadLogger
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -43,6 +45,9 @@ class CreationUploaderWorker(
 
     @Inject
     lateinit var gson: Gson
+
+    @Inject
+    lateinit var logger: CreationUploadLogger
 
     init {
         inject()
@@ -90,15 +95,20 @@ class CreationUploaderWorker(
                         }
                     )
 
-                    val uploadResult = uploadManager.execute(data, notificationId)
+                    when (val result = uploadManager.execute(data, notificationId)) {
+                        is CreationUploadExecutionResult.Success -> {
+                            queueRepository.delete(data.queueId)
+                        }
+                        is CreationUploadExecutionResult.Error -> {
+                            logger.sendLog(result.uploadData, result.throwable)
 
-                    if (uploadResult) {
-                        queueRepository.delete(data.queueId)
-                    } else {
-                        emitProgress(CreationUploadConst.PROGRESS_FAILED, data, CreationUploadStatus.Failed)
-                        break
+                            emitProgress(CreationUploadConst.PROGRESS_FAILED, data, CreationUploadStatus.Failed)
+                            break
+                        }
                     }
                 } catch (throwable: Throwable) {
+                    logger.sendLog(throwable)
+
                     when (throwable) {
                         is JsonSyntaxException,
                         is UnknownUploadTypeException,

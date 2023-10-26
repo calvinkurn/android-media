@@ -12,12 +12,12 @@ import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepositor
 import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
-import com.tokopedia.stories.creation.view.model.exception.AccountNotEligibleException
+import com.tokopedia.stories.creation.view.model.exception.NotEligibleException
 import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,7 +31,7 @@ class StoriesCreationViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(StoriesCreationUiState.Empty)
-    val uiState: StateFlow<StoriesCreationUiState> = _uiState
+    val uiState = _uiState.asStateFlow()
 
     private val _uiEvent = MutableSharedFlow<StoriesCreationUiEvent>()
     val uiEvent: Flow<StoriesCreationUiEvent> = _uiEvent
@@ -68,38 +68,31 @@ class StoriesCreationViewModel @Inject constructor(
 
     private fun handlePrepare() {
         viewModelScope.launchCatchError(block = {
-            val accountList = repo.getCreationAccountList()
-
             /**
              * Stories is only available for shop
              * need FE development to support UGC account
              * */
+            val accountList = repo.getCreationAccountList()
             val selectedAccount = accountList.firstOrNull { it.isShop && it.enable }
+                ?: throw NotEligibleException()
 
-            if (selectedAccount != null) {
-                val config = repo.getStoryPreparationInfo(selectedAccount)
-                val storyId = config.storiesId.ifEmpty { repo.createStory(selectedAccount) }
+            val config = repo.getStoryPreparationInfo(selectedAccount)
+            val storyId = config.storiesId.ifEmpty { repo.createStory(selectedAccount) }
 
-                _uiState.update {
-                    it.copy(
-                        config = config.copy(
-                            storiesId = storyId
-                        ),
-                        accountList = accountList,
-                        selectedAccount = selectedAccount,
-                    )
-                }
-
-                if (config.maxStoriesConfig.isLimitReached) {
-                    _uiEvent.emit(StoriesCreationUiEvent.ShowTooManyStoriesReminder)
-                } else {
-                    _uiEvent.emit(StoriesCreationUiEvent.OpenMediaPicker)
-                }
-            }
-            else {
-                _uiEvent.emit(
-                    StoriesCreationUiEvent.ErrorPreparePage(AccountNotEligibleException())
+            _uiState.update {
+                it.copy(
+                    config = config.copy(
+                        storiesId = storyId
+                    ),
+                    accountList = accountList,
+                    selectedAccount = selectedAccount,
                 )
+            }
+
+            if (config.maxStoriesConfig.isLimitReached) {
+                _uiEvent.emit(StoriesCreationUiEvent.ShowTooManyStoriesReminder)
+            } else {
+                _uiEvent.emit(StoriesCreationUiEvent.OpenMediaPicker)
             }
         }) { throwable ->
             _uiEvent.emit(

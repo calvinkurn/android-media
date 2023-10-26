@@ -23,7 +23,7 @@ abstract class CreationUploadManager(
     abstract suspend fun execute(
         uploadData: CreationUploadData,
         notificationId: Int
-    ): Boolean
+    ): CreationUploadExecutionResult
 
     protected fun updateProgress(
         uploadData: CreationUploadData,
@@ -78,4 +78,13 @@ interface CreationUploadManagerListener {
         progress: Int,
         uploadStatus: CreationUploadStatus,
     )
+}
+
+sealed interface CreationUploadExecutionResult {
+    object Success : CreationUploadExecutionResult
+
+    data class Error(
+        val uploadData: CreationUploadData,
+        val throwable: Throwable,
+    ) : CreationUploadExecutionResult
 }

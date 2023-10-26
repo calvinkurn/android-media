@@ -35,7 +35,7 @@ class VideoSnapshotHelper @Inject constructor(
         }
     }
 
-    suspend fun snapVideoBitmap(
+    private suspend fun snapVideoBitmap(
         context: Context,
         filePath: String,
     ): Bitmap {
