@@ -44,7 +44,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_REQUEST_CODE
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
@@ -391,7 +390,7 @@ HomeRevampFragment :
     private var homeSnackbar: Snackbar? = null
     private var component: BerandaComponent? = null
     private var adapter: HomeRecycleAdapter? = null
-    private var layoutManager: LinearLayoutManager? = null
+    private var layoutManager: AccurateOffsetLinearLayoutManager? = null
     private var messageSnackbar: SnackbarRetry? = null
     private var activityStateListener: ActivityStateListener? = null
     private var mainParentStatusBarListener: MainParentStatusBarListener? = null
@@ -1517,8 +1516,7 @@ HomeRevampFragment :
 
             performanceTrace?.setBlock(data.take(takeLimit))
 
-            adapter?.submitList(data) {
-            }
+            adapter?.submitList(data)
         }
     }
 
@@ -1632,7 +1630,7 @@ HomeRevampFragment :
         if (!this::homePrefController.isInitialized) {
             initInjectorHome()
         }
-        layoutManager = AccurateOffsetLinearLayoutManager(context)
+        layoutManager = AccurateOffsetLinearLayoutManager(context, adapter)
         homeRecyclerView?.layoutManager = layoutManager
         setupPlayWidgetCoordinator()
         bannerCarouselCallback = BannerComponentCallback(context, this)
