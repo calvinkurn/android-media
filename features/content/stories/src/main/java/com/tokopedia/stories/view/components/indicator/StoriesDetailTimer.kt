@@ -68,7 +68,7 @@ private fun StoriesTimerAnimationEnabled(
                 )
             }
         }
-        if ((anim.value == anim.targetValue) && (anim.targetValue != 0F)) timerFinished.invoke()
+        if ((anim.value == anim.targetValue) && (anim.targetValue != INITIAL_ANIMATION)) timerFinished.invoke()
     }
 
     StoriesDetailTimerContent(
