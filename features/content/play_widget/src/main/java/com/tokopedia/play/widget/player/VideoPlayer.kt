@@ -7,6 +7,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Player.EventListener
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.ClippingMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.MediaSourceFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -18,6 +19,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.util.Util
+import kotlin.time.Duration
 
 /**
  * Created by kenny.hadisaputra on 20/10/23
@@ -29,10 +31,13 @@ class VideoPlayer(private val context: Context) {
 
     val player: Player = exoPlayer
 
+    private val timer by lazy {
+        VideoPlayerTimer(player) { pause() }
+    }
+
     init {
         exoPlayer.addListener(object : EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-
             }
         })
     }
@@ -45,11 +50,13 @@ class VideoPlayer(private val context: Context) {
         exoPlayer.removeListener(listener)
     }
 
-    fun loadUri(uri: Uri) {
-        exoPlayer.prepare(getMediaSource(uri), true, true)
+    fun loadUri(uri: Uri, config: Config = Config()) {
+        exoPlayer.prepare(getMediaSource(uri, config), true, true)
+        setupTimer(config)
     }
 
-    fun start() {
+    fun start(config: Config = Config()) {
+        setupTimer(config)
         exoPlayer.playWhenReady = true
     }
 
@@ -77,10 +84,21 @@ class VideoPlayer(private val context: Context) {
         }
     }
 
-    private fun getMediaSource(uri: Uri): MediaSource {
+    private fun setupTimer(config: Config) {
+        if (config.isLive && config.resetState && config.duration.isValid) {
+            timer.setup(config.duration)
+        }
+    }
+
+    private fun getMediaSource(uri: Uri, config: Config): MediaSource {
         val dataSourceFactory = DefaultDataSourceFactory(context, getUserAgent())
         val mediaSourceFactory = getMediaSourceFactory(uri, dataSourceFactory)
-        return mediaSourceFactory.createMediaSource(uri)
+        val mediaSource = mediaSourceFactory.createMediaSource(uri)
+        return if (config.duration.isValid && !config.isLive) {
+            ClippingMediaSource(mediaSource, config.duration.inWholeMicroseconds)
+        } else {
+            mediaSource
+        }
     }
 
     private fun getUserAgent(): String {
@@ -89,7 +107,7 @@ class VideoPlayer(private val context: Context) {
 
     private fun getMediaSourceFactory(
         uri: Uri,
-        dataSourceFactory: DataSource.Factory,
+        dataSourceFactory: DataSource.Factory
     ): MediaSourceFactory {
         val errorHandlingPolicy = getDefaultLoadErrorHandlingPolicy()
         return when (val type = Util.inferContentType(uri)) {
@@ -108,4 +126,13 @@ class VideoPlayer(private val context: Context) {
     private fun getDefaultLoadErrorHandlingPolicy(): LoadErrorHandlingPolicy {
         return DefaultLoadErrorHandlingPolicy()
     }
+
+    private val Duration.isValid: Boolean
+        get() = this != Duration.INFINITE && this != Duration.ZERO
+
+    data class Config(
+        val duration: Duration = Duration.INFINITE,
+        val isLive: Boolean = false,
+        val resetState: Boolean = true
+    )
 }

@@ -14,6 +14,7 @@ import com.tokopedia.play.widget.databinding.ItemPlayVideoWidgetSampleBinding
 import com.tokopedia.play.widget.player.PlayVideoWidgetVideoManager
 import com.tokopedia.play.widget.ui.model.PlayVideoWidgetUiModel
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Created by kenny.hadisaputra on 19/10/23
@@ -24,11 +25,13 @@ class PlayVideoWidgetSampleFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val videoWidgetManager by viewLifecycleBound(
-        creator = { PlayVideoWidgetVideoManager(
-            binding.root,
-            viewLifecycleOwner,
-            config = PlayVideoWidgetVideoManager.Config(autoPlayAmount = 3)
-        ) }
+        creator = {
+            PlayVideoWidgetVideoManager(
+                binding.root,
+                viewLifecycleOwner,
+                config = PlayVideoWidgetVideoManager.Config(autoPlayAmount = 3)
+            )
+        }
     )
 
     private val adapter by viewLifecycleBound(
@@ -69,6 +72,7 @@ class PlayVideoWidgetSampleFragment : Fragment() {
                     videoUrl = "https://vod-stream.tokopedia.net/view/adaptive.m3u8?id=0e6a19506f8271eebfd736a5e8aa0102",
                     badgeUrl = "",
                     isLive = it % 2 == 0,
+                    duration = 3.seconds
                 )
             }
         )
@@ -96,9 +100,9 @@ class PlayVideoWidgetSampleFragment : Fragment() {
                 ItemPlayVideoWidgetSampleBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
-                    false,
+                    false
                 ),
-                manager,
+                manager
             )
         }
 
@@ -109,7 +113,7 @@ class PlayVideoWidgetSampleFragment : Fragment() {
 
     class ViewHolder(
         private val binding: ItemPlayVideoWidgetSampleBinding,
-        manager: PlayVideoWidgetVideoManager,
+        manager: PlayVideoWidgetVideoManager
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {

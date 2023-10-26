@@ -3,7 +3,6 @@ package com.tokopedia.play.widget.ui
 import android.content.Context
 import android.net.Uri
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import com.google.android.exoplayer2.ExoPlaybackException
@@ -16,7 +15,6 @@ import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.databinding.ViewPlayVideoWidgetBinding
 import com.tokopedia.play.widget.player.VideoPlayer
 import com.tokopedia.play.widget.ui.model.PlayVideoWidgetUiModel
-import com.tokopedia.play.widget.util.PlayWidgetLottieLoadHelper
 import com.tokopedia.unifycomponents.CardUnify2
 
 /**
@@ -49,9 +47,10 @@ class PlayVideoWidgetView : CardUnify2 {
             if (error.type != ExoPlaybackException.TYPE_SOURCE) return
             if (error.sourceException !is BehindLiveWindowException) return
 
-            bindPlayer(mModel.videoUrl)
+            bindPlayer(mModel, resetState = false)
         }
     }
+
     private val player by lazyThreadSafetyNone {
         VideoPlayer(context).apply {
             addPlayerListener(playerListener)
@@ -63,7 +62,6 @@ class PlayVideoWidgetView : CardUnify2 {
 
         addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(v: View) {
-
             }
 
             override fun onViewDetachedFromWindow(v: View) {
@@ -75,7 +73,7 @@ class PlayVideoWidgetView : CardUnify2 {
     private fun initAttrs(attrs: AttributeSet) {
         val attributeArray = context.obtainStyledAttributes(
             attrs,
-            R.styleable.PlayVideoWidgetView,
+            R.styleable.PlayVideoWidgetView
         )
 
         mSizeMode = SizeMode.of(
@@ -93,19 +91,19 @@ class PlayVideoWidgetView : CardUnify2 {
             SizeMode.FollowWidth -> {
                 MeasureSpec.makeMeasureSpec(
                     widthSize,
-                    MeasureSpec.EXACTLY,
+                    MeasureSpec.EXACTLY
                 ) to MeasureSpec.makeMeasureSpec(
                     (widthSize / 9f * 16f).toInt(),
-                    MeasureSpec.EXACTLY,
+                    MeasureSpec.EXACTLY
                 )
             }
             SizeMode.FollowHeight -> {
                 MeasureSpec.makeMeasureSpec(
                     (heightSize / 16f * 9f).toInt(),
-                    MeasureSpec.EXACTLY,
+                    MeasureSpec.EXACTLY
                 ) to MeasureSpec.makeMeasureSpec(
                     heightSize,
-                    MeasureSpec.EXACTLY,
+                    MeasureSpec.EXACTLY
                 )
             }
             SizeMode.Custom -> {
@@ -128,30 +126,47 @@ class PlayVideoWidgetView : CardUnify2 {
         binding.tvPartnerName.text = model.partnerName
         binding.tvLiveBadge.root.showWithCondition(model.isLive)
 
-        bindPlayer(model.videoUrl)
+        bindPlayer(model)
+    }
+
+    fun stopVideo() {
+        player.stop()
     }
 
     fun pauseVideo() {
-        Log.d("PlayVideoWidget", "Pause")
         player.pause()
     }
 
     fun resumeVideo() {
-        Log.d("PlayVideoWidget", "Resume")
-        player.start()
+        player.start(mModel.createVideoPlayerConfig(true))
     }
 
     fun releaseVideo() {
-        Log.d("PlayVideoWidget", "Release")
         player.release()
     }
 
-    private fun bindPlayer(videoUrl: String) {
+    private fun bindPlayer(
+        model: PlayVideoWidgetUiModel,
+        resetState: Boolean = true
+    ) {
         binding.playerView.player = player.player
         player.repeat(true)
         player.mute(true)
         player.stop()
-        player.loadUri(Uri.parse(videoUrl))
+        player.loadUri(
+            Uri.parse(model.videoUrl),
+            config = model.createVideoPlayerConfig(resetState)
+        )
+    }
+
+    private fun PlayVideoWidgetUiModel.createVideoPlayerConfig(
+        resetState: Boolean
+    ): VideoPlayer.Config {
+        return VideoPlayer.Config(
+            isLive = isLive,
+            resetState = resetState,
+            duration = duration
+        )
     }
 
     enum class SizeMode(internal val value: Int) {

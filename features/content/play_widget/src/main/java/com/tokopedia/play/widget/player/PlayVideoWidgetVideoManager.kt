@@ -15,7 +15,7 @@ import com.tokopedia.play_common.util.extension.getVisiblePortion
 class PlayVideoWidgetVideoManager(
     private val recyclerView: RecyclerView,
     private val lifecycleOwner: LifecycleOwner,
-    private val config: Config = Config(),
+    private val config: Config = Config()
 ) {
 
     private val widgets = mutableSetOf<PlayVideoWidgetView>()
@@ -25,10 +25,6 @@ class PlayVideoWidgetVideoManager(
             val layoutManager = recyclerView.layoutManager
             setupVideoAutoplay(newState, layoutManager)
         }
-    }
-
-    private val layoutChangeListener = View.OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-        setupVideoAutoplay(recyclerView.scrollState, recyclerView.layoutManager)
     }
 
     init {
@@ -44,16 +40,13 @@ class PlayVideoWidgetVideoManager(
         })
 
         recyclerView.addOnScrollListener(scrollListener)
-        recyclerView.addOnLayoutChangeListener(layoutChangeListener)
 
         recyclerView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(v: View) {
-
             }
 
             override fun onViewDetachedFromWindow(v: View) {
                 recyclerView.removeOnScrollListener(scrollListener)
-                recyclerView.removeOnLayoutChangeListener(layoutChangeListener)
             }
         })
     }
@@ -76,7 +69,7 @@ class PlayVideoWidgetVideoManager(
 
     private fun setupVideoAutoplay(
         state: Int,
-        layoutManager: RecyclerView.LayoutManager?,
+        layoutManager: RecyclerView.LayoutManager?
     ) {
         when (layoutManager) {
             null -> error("LayoutManager has not been set")
@@ -87,7 +80,7 @@ class PlayVideoWidgetVideoManager(
 
     private fun setupVideoAutoplay(
         state: Int,
-        layoutManager: LinearLayoutManager,
+        layoutManager: LinearLayoutManager
     ) {
         if (!lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) return
         if (state != RecyclerView.SCROLL_STATE_IDLE) return
@@ -95,8 +88,11 @@ class PlayVideoWidgetVideoManager(
         val lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
         val visibleVideoWidgets = (firstVisiblePosition..lastVisiblePosition).mapNotNull {
             val view = layoutManager.findViewByPosition(it)
-            if (view !is PlayVideoWidgetView) null
-            else view
+            if (view !is PlayVideoWidgetView) {
+                null
+            } else {
+                view
+            }
         }
         val playableVideoWidgets = visibleVideoWidgets.filter(::isVideoWidgetConsideredVisible)
             .take(config.autoPlayAmount)
@@ -117,6 +113,6 @@ class PlayVideoWidgetVideoManager(
 
     data class Config(
         val autoPlayAmount: Int = 2,
-        val visiblePercentageBeforeAutoplay: Float = 0.7f,
+        val visiblePercentageBeforeAutoplay: Float = 0.7f
     )
 }
