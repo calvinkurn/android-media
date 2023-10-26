@@ -73,7 +73,7 @@ import java.util.*
 import javax.inject.Inject
 
 class TokoChatViewModel @Inject constructor(
-    private val chatChannelUseCase: TokoChatRoomUseCase,
+    private val chatRoomUseCase: TokoChatRoomUseCase,
     private val getChatHistoryUseCase: TokoChatGetChatHistoryUseCase,
     private val markAsReadUseCase: TokoChatMarkAsReadUseCase,
     private val registrationChannelUseCase: TokoChatRegistrationChannelUseCase,
@@ -171,7 +171,7 @@ class TokoChatViewModel @Inject constructor(
 
     override fun onCreate(owner: LifecycleOwner) {
         super.onCreate(owner)
-        chatChannelUseCase.registerExtensionProvider(imageAttachmentExtensionProvider)
+        chatRoomUseCase.registerExtensionProvider(imageAttachmentExtensionProvider)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -193,7 +193,7 @@ class TokoChatViewModel @Inject constructor(
 
     override fun onDestroy(owner: LifecycleOwner) {
         super.onDestroy(owner)
-        chatChannelUseCase.unRegisterExtensionProvider(imageAttachmentExtensionProvider)
+        chatRoomUseCase.unRegisterExtensionProvider(imageAttachmentExtensionProvider)
     }
 
     fun sendMessage(channelId: String, text: String) {
@@ -211,7 +211,7 @@ class TokoChatViewModel @Inject constructor(
 
     fun initGroupBooking() {
         try {
-            chatChannelUseCase.initGroupBookingChat(
+            chatRoomUseCase.initGroupBookingChat(
                 orderId = gojekOrderId,
                 serviceType = getServiceType()
             )
@@ -221,7 +221,7 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun getGroupBookingFlow(): SharedFlow<TokoChatResult<String>> {
-        return chatChannelUseCase.getGroupBookingFlow()
+        return chatRoomUseCase.getGroupBookingFlow()
     }
 
     private fun getServiceType(): TokoChatServiceType {
@@ -234,7 +234,7 @@ class TokoChatViewModel @Inject constructor(
 
     fun getGroupBookingChannel(channelId: String) {
         try {
-            chatChannelUseCase.getRemoteGroupBookingChannel(channelId, onSuccess = {
+            chatRoomUseCase.getRemoteGroupBookingChannel(channelId, onSuccess = {
                 _channelDetail.postValue(Success(it))
             }, onError = {
                     _channelDetail.postValue(Fail(it))
@@ -316,14 +316,14 @@ class TokoChatViewModel @Inject constructor(
         connectionCheckJob = viewModelScope.launch {
             try {
                 // Check if the chat is connected
-                var isConnected = chatChannelUseCase.isChatConnected()
+                var isConnected = chatRoomUseCase.isChatConnected()
                 _isChatConnected.value = isConnected
 
                 // While chat is connected, do nothing
                 // When the connection breaks, break loop and post false
                 while (isConnected) {
                     delay(DELAY_UPDATE_ORDER_STATE)
-                    isConnected = chatChannelUseCase.isChatConnected()
+                    isConnected = chatRoomUseCase.isChatConnected()
                 }
                 _isChatConnected.value = false
             } catch (throwable: Throwable) {
@@ -369,7 +369,7 @@ class TokoChatViewModel @Inject constructor(
 
     fun getMemberLeft(): MutableLiveData<String>? {
         return try {
-            chatChannelUseCase.getMemberLeftLiveData()
+            chatRoomUseCase.getMemberLeftLiveData()
         } catch (throwable: Throwable) {
             _error.value = Pair(throwable, ::getMemberLeft.name)
             MutableLiveData()
@@ -377,7 +377,7 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun resetMemberLeft() {
-        chatChannelUseCase.resetMemberLeftLiveData()
+        chatRoomUseCase.resetMemberLeftLiveData()
     }
 
     /*
@@ -412,7 +412,7 @@ class TokoChatViewModel @Inject constructor(
 
     fun getLiveChannel(channelId: String): LiveData<ConversationsChannel?>? {
         return try {
-            chatChannelUseCase.getLiveChannel(channelId)
+            chatRoomUseCase.getLiveChannel(channelId)
         } catch (throwable: Throwable) {
             _error.value = Pair(throwable, ::getLiveChannel.name)
             MutableLiveData()

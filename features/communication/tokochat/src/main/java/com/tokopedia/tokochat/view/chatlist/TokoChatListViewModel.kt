@@ -21,7 +21,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TokoChatListViewModel @Inject constructor(
-    private val chatChannelUseCase: TokoChatRoomUseCase,
+    private val chatRoomUseCase: TokoChatRoomUseCase,
     private val mapper: TokoChatListUiMapper,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
@@ -43,7 +43,7 @@ class TokoChatListViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 setPaginationTimeStamp(0L) // reset
-                val cachedChannels = chatChannelUseCase.getAllCachedChannels(listOf(ChannelType.GroupBooking))
+                val cachedChannels = chatRoomUseCase.getAllCachedChannels(listOf(ChannelType.GroupBooking))
                 _chatList.addSource(cachedChannels!!) { // expected to use !!
                     _chatList.value = Success(filterExpiredChannelAndMap(it))
                 }
@@ -62,7 +62,7 @@ class TokoChatListViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 withContext(dispatcher.io) {
-                    chatChannelUseCase.getAllChannel(
+                    chatRoomUseCase.getAllChannel(
                         channelTypes = listOf(ChannelType.GroupBooking),
                         batchSize = getBatchSize(localSize),
                         onSuccess = {
@@ -96,7 +96,7 @@ class TokoChatListViewModel @Inject constructor(
     }
 
     private fun setPaginationTimeStamp(newTimeStamp: Long) {
-        chatChannelUseCase.setLastTimeStamp(newTimeStamp)
+        chatRoomUseCase.setLastTimeStamp(newTimeStamp)
     }
 
     private fun emitChatListPairData(channelList: List<ConversationsChannel>) {
