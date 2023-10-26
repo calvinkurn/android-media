@@ -26,7 +26,9 @@ import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.mapper.ScheduleDeliveryMapper
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleDeliveryCoroutineUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetScheduleDeliveryCoroutineUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiCoroutineUseCase
@@ -75,6 +77,11 @@ open class BaseCheckoutViewModelTest {
 
     @MockK
     lateinit var ratesWithScheduleUseCase: GetRatesWithScheduleDeliveryCoroutineUseCase
+
+    @MockK
+    lateinit var scheduleDeliveryUseCase: GetScheduleDeliveryCoroutineUseCase
+
+    private val scheduleDeliveryMapper: ScheduleDeliveryMapper = ScheduleDeliveryMapper()
 
     private val ratesResponseStateConverter: RatesResponseStateConverter =
         RatesResponseStateConverter()
@@ -167,6 +174,8 @@ open class BaseCheckoutViewModelTest {
                 ratesWithScheduleUseCase,
                 ratesResponseStateConverter,
                 shippingCourierConverter,
+                scheduleDeliveryUseCase,
+                scheduleDeliveryMapper,
                 dispatchers
             ),
             CheckoutPromoProcessor(
