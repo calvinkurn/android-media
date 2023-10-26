@@ -1,5 +1,7 @@
 package com.tokopedia.stories.view.utils
 
+import android.content.Context
+import android.provider.Settings
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
@@ -76,6 +78,14 @@ internal fun Int.getRandomNumber(): Int {
     val oldValue = this
     val newValue = (1 until 100).random()
     return if (oldValue == newValue) newValue.plus(1) else newValue
+}
+
+internal fun Context.isDeviceAnimationsEnabled(): Boolean {
+    return (
+        Settings.Global.getFloat(contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE) > 0f
+            && Settings.Global.getFloat(contentResolver, Settings.Global.TRANSITION_ANIMATION_SCALE) > 0f
+            && Settings.Global.getFloat(contentResolver, Settings.Global.WINDOW_ANIMATION_SCALE) > 0f
+        )
 }
 
 internal const val KEY_CONFIG_ENABLE_STORIES_ROOM = "android_enable_content_stories_room"
