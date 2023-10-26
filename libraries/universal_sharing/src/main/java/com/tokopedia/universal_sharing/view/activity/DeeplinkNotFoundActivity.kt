@@ -58,7 +58,7 @@ class DeeplinkNotFoundActivity : BaseActivity() {
                         )
                     }
                     if (source == TYPE_SHARE) {
-                        TrackUtil.sendClickUpdateAppEvent(intent?.data?.toString())
+                        TrackUtil.sendClickUpdateAppEvent(intent?.data)
                     }
                 }
             } else {
@@ -72,7 +72,7 @@ class DeeplinkNotFoundActivity : BaseActivity() {
             }
         }
         if (source == TYPE_SHARE) {
-            TrackUtil.sendImpressionPageEvent(intent?.data?.toString(), "")
+            TrackUtil.sendImpressionPageEvent(intent?.data)
         }
     }
 

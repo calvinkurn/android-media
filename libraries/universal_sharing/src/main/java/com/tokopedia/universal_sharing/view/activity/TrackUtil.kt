@@ -1,13 +1,16 @@
 package com.tokopedia.universal_sharing.view.activity
 
+import android.net.Uri
 import com.tokopedia.track.builder.Tracker
 
 object TrackUtil {
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4293
     // Tracker ID: 47771
-    fun sendImpressionPageEvent(uriString: String?, pageType: String) {
-        if (uriString.isNullOrEmpty()) return
+    fun sendImpressionPageEvent(uri: Uri?) {
+        val res = getUriStringAndPath(uri) ?: return
+        val uriString = res.first
+        val pageType = res.second
         Tracker.Builder()
             .setEvent("viewCommunicationIris")
             .setEventAction("impression - 404 Page")
@@ -15,7 +18,7 @@ object TrackUtil {
             .setEventLabel("$pageType - $uriString")
             .setCustomProperty("trackerId", "47771")
             .setBusinessUnit("sharingexperience")
-            .setCurrentSite("tokopediamarketplace")s
+            .setCurrentSite("tokopediamarketplace")
             .setCustomProperty("pagePath", uriString)
             .setCustomProperty("pageType", pageType)
             .build()
@@ -24,20 +27,37 @@ object TrackUtil {
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4293
     // Tracker ID: 47772
-    fun sendClickUpdateAppEvent(uriString: String?) {
-        if (uriString.isNullOrEmpty()) return
+    fun sendClickUpdateAppEvent(uri: Uri?) {
+        val res = getUriStringAndPath(uri) ?: return
+        val uriString = res.first
+        val path = res.second
         Tracker.Builder()
             .setEvent("clickCommunication")
             .setEventAction("click - update app")
             .setEventCategory("404 Page")
-            .setEventLabel(" - $uriString")
+            .setEventLabel("$path - $uriString")
             .setCustomProperty("trackerId", "47772")
             .setBusinessUnit("sharingexperience")
             .setCurrentSite("tokopediamarketplace")
             .setCustomProperty("pagePath", uriString)
-            .setCustomProperty("pageType", "")
+            .setCustomProperty("pageType", path)
             .build()
             .send()
+    }
+
+    fun getUriStringAndPath(uri: Uri?): Pair<String, String>? {
+        if (uri == null) return null
+        val uriString = uri.toString()
+        if (uriString.isEmpty()) return null
+        var path = uri.path ?: ""
+        // getting first path only
+        if (path.startsWith("/")) {
+            path = path.replaceFirst("/", "")
+        }
+        if (path.contains("/")) {
+            path = path.substringBefore("/")
+        }
+        return (uriString to path)
     }
 
 }
