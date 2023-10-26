@@ -45,7 +45,7 @@ object TrackUtil {
             .send()
     }
 
-    fun getUriStringAndPath(uri: Uri?): Pair<String, String>? {
+    private fun getUriStringAndPath(uri: Uri?): Pair<String, String>? {
         if (uri == null) return null
         val uriString = uri.toString()
         if (uriString.isEmpty()) return null
