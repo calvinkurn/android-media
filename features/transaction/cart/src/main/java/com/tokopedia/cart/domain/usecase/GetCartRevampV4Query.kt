@@ -485,7 +485,7 @@ const val CART_REVAMP_V4_QUERY =
                 products_count
                 cta {
                    id
-                   text
+                   message
                 }
                 action {
                   id
