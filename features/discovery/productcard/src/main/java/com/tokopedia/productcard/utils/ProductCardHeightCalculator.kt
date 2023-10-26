@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.annotation.DimenRes
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -37,6 +38,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
 
             val contentMarginTop =
                 productCardModel.layoutStrategy.getGridViewContentMarginTop(context, productCardModel)
+            val contentMarginBottom = 4.toDp()
             val contentHeight = productCardModel.getContentHeightGrid(context)
             val buttonSimilarProductHeight = productCardModel.getButtonSimilarProductHeight(context)
             val buttonPrimaryWishlistHeight = productCardModel.getButtonPrimaryWishlistHeight(context)
@@ -52,7 +54,8 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
                 contentHeight +
                 buttonSimilarProductHeight +
                 buttonPrimaryWishlistHeight +
-                commonFooterHeight
+                commonFooterHeight +
+                contentMarginBottom
             )
         }
 
@@ -248,7 +251,7 @@ private fun ProductCardModel.getPriceSectionHeight(context: Context): Int {
 
 private fun ProductCardModel.getPromoSectionHeight(context: Context): Int {
     val (labelDiscountMarginTop, labelDiscountHeight) =
-        if (discountPercentage.isEmpty())
+        if (discountPercentage.isEmpty() && slashedPrice.isEmpty())
             0 to 0
         else if (showDiscountAsText())
             context.getPixel(R.dimen.product_card_text_view_slashed_price_height) to
