@@ -49,46 +49,7 @@ import java.util.Map;
  * <p>
  * fetch some data from server in order to worked around.
  */
-public class SplashScreen extends AppCompatActivity {
-
-    protected RemoteConfig remoteConfig;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        WeaveInterface remoteConfigWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Object execute() {
-                return fetchRemoteConfig();
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineNow(remoteConfigWeave);
-    }
-
-    @NotNull
-    private boolean fetchRemoteConfig() {
-        remoteConfig = new FirebaseRemoteConfigImpl(this);
-        remoteConfig.fetch(getRemoteConfigListener());
-        return true;
-    }
-
-    private RemoteConfig.Listener getRemoteConfigListener() {
-        return new RemoteConfig.Listener() {
-            @Override
-            public void onComplete(RemoteConfig remoteConfig) {
-                LogManager logManager = LogManager.instance;
-                if (logManager != null) {
-                    logManager.refreshConfig();
-                }
-            }
-
-            @Override
-            public void onError(Exception e) {
-
-            }
-        };
-    }
+abstract public class SplashScreen extends AppCompatActivity {
 
     @Override
     protected void onResume() {
@@ -131,11 +92,7 @@ public class SplashScreen extends AppCompatActivity {
         gcm.actionRegisterOrUpdateDevice(getGCMHandlerListener(), isPlayServiceAvailable);
     }
 
-    public void finishSplashScreen() {
-        Intent intent = RouteManager.getIntent(this, ApplinkConst.HOME);
-        startActivity(intent);
-        finish();
-    }
+    public abstract void finishSplashScreen();
 
     @NotNull
     public boolean getBranchDefferedDeeplink() {
