@@ -104,7 +104,7 @@ import java.lang.reflect.Type
 import javax.inject.Inject
 import javax.inject.Provider
 
-//TODO need to cleanup atc flow on this viewmodel
+// TODO need to cleanup atc flow on this viewmodel
 class ShopHomeViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val getShopProductUseCase: GqlGetShopProductUseCase,
@@ -129,7 +129,7 @@ class ShopHomeViewModel @Inject constructor(
     private val getShopPageHomeLayoutV2UseCase: Provider<GetShopPageHomeLayoutV2UseCase>,
     private val getShopDynamicTabUseCase: Provider<GqlShopPageGetDynamicTabUseCase>,
     private val getComparisonProductUseCase: Provider<GetRecommendationUseCase>
-    ) : BaseViewModel(dispatcherProvider.main) {
+) : BaseViewModel(dispatcherProvider.main) {
 
     val productListData: LiveData<Result<GetShopHomeProductUiModel>>
         get() = _productListData
@@ -246,7 +246,7 @@ class ShopHomeViewModel @Inject constructor(
         get() = _bannerTimerRemindMeStatusData
     private val _bannerTimerRemindMeStatusData = MutableLiveData<Result<GetCampaignNotifyMeUiModel>>()
 
-    //TODO need to check if we can combine other CheckCampaignNotifyMeUiModel live data since it is the same
+    // TODO need to check if we can combine other CheckCampaignNotifyMeUiModel live data since it is the same
     val checkBannerTimerRemindMeStatusData: LiveData<Result<CheckCampaignNotifyMeUiModel>>
         get() = _checkBannerTimerRemindMeStatusData
     private val _checkBannerTimerRemindMeStatusData = MutableLiveData<Result<CheckCampaignNotifyMeUiModel>>()
@@ -979,9 +979,7 @@ class ShopHomeViewModel @Inject constructor(
                 block = {
                     getSortListData()
                 },
-                onError = {
-                    null
-                }
+                onError = { null }
             )
             sortResponse.await()?.let {
                 if (initialProductListData == null) {
@@ -1117,7 +1115,7 @@ class ShopHomeViewModel @Inject constructor(
         atcType: ShopPageAtcTracker.AtcType,
         id: String,
         isVariant: Boolean,
-        stock: Int,
+        stock: Int
     ) {
         when (atcType) {
             ShopPageAtcTracker.AtcType.ADD, ShopPageAtcTracker.AtcType.UPDATE_ADD -> {
@@ -1355,7 +1353,7 @@ class ShopHomeViewModel @Inject constructor(
         val anyFestivityWidget = listShopHomeWidgetData.any {
             it.isFestivity
         }
-        if(anyFestivityWidget && showConfetti) {
+        if (anyFestivityWidget && showConfetti) {
             _isShowHomeTabConfettiLiveData.postValue(true)
         } else {
             _isShowHomeTabConfettiLiveData.postValue(false)
@@ -1381,7 +1379,7 @@ class ShopHomeViewModel @Inject constructor(
         return getComparisonProductUseCase.get().getData(
             GetRecommendationRequestParam(
                 pageName = PAGE_NAME_SHOP_COMPARISON_WIDGET,
-                shopIds = listOf(shopId),
+                shopIds = listOf(shopId)
             )
         )
     }
@@ -1409,10 +1407,11 @@ class ShopHomeViewModel @Inject constructor(
                     bannerTimerUiModel.data?.let {
                         it.isRemindMe = isRemindMe
                         if (isClickRemindMe) {
-                            if (isRemindMe)
+                            if (isRemindMe) {
                                 ++it.totalNotify
-                            else
+                            } else {
                                 --it.totalNotify
+                            }
                         }
                         it.showRemindMeLoading = false
                         bannerTimerUiModel.isNewData = true
@@ -1430,20 +1429,23 @@ class ShopHomeViewModel @Inject constructor(
         newBannerTimerUiModel: ShopWidgetDisplayBannerTimerUiModel
     ) {
         launchCatchError(dispatcherProvider.io, block = {
-            val position = newList.indexOfFirst{ it is ShopWidgetDisplayBannerTimerUiModel }
+            val position = newList.indexOfFirst { it is ShopWidgetDisplayBannerTimerUiModel }
             val currentBannerTimerUiModel = (newList.getOrNull(position) as? ShopWidgetDisplayBannerTimerUiModel) ?: ShopWidgetDisplayBannerTimerUiModel()
-            if(position != -1){
-                newList.setElement(position, currentBannerTimerUiModel.copy(
-                    data = currentBannerTimerUiModel.data?.copy(
-                        totalNotify = newBannerTimerUiModel.data?.totalNotify.orZero(),
-                        totalNotifyWording = newBannerTimerUiModel.data?.totalNotifyWording.orEmpty(),
-                        isRemindMe = newBannerTimerUiModel.data?.isRemindMe.orFalse(),
-                        showRemindMeLoading = newBannerTimerUiModel.data?.showRemindMeLoading.orFalse(),
-                        isHideRemindMeTextAfterXSeconds = newBannerTimerUiModel.data?.isHideRemindMeTextAfterXSeconds.orFalse()
-                    )
-                ).apply {
-                    isNewData = true
-                })
+            if (position != -1) {
+                newList.setElement(
+                    position,
+                    currentBannerTimerUiModel.copy(
+                        data = currentBannerTimerUiModel.data?.copy(
+                            totalNotify = newBannerTimerUiModel.data?.totalNotify.orZero(),
+                            totalNotifyWording = newBannerTimerUiModel.data?.totalNotifyWording.orEmpty(),
+                            isRemindMe = newBannerTimerUiModel.data?.isRemindMe.orFalse(),
+                            showRemindMeLoading = newBannerTimerUiModel.data?.showRemindMeLoading.orFalse(),
+                            isHideRemindMeTextAfterXSeconds = newBannerTimerUiModel.data?.isHideRemindMeTextAfterXSeconds.orFalse()
+                        )
+                    ).apply {
+                        isNewData = true
+                    }
+                )
             }
             _homeWidgetListVisitable.postValue(Success(newList))
         }) { throwable ->
@@ -1496,12 +1498,12 @@ class ShopHomeViewModel @Inject constructor(
         selectedEtalaseIndex: Int,
         errorMessage: String = ""
     ) {
-        val position = visitable.indexOfFirst{ it is ShopDirectPurchaseByEtalaseUiModel }.orZero()
+        val position = visitable.indexOfFirst { it is ShopDirectPurchaseByEtalaseUiModel }.orZero()
         val curModel = visitable.getOrNull(position) as? ShopDirectPurchaseByEtalaseUiModel
         curModel?.widgetData?.titleList?.forEachIndexed { index, title ->
-            if(index == selectedSwitcherIndex){
+            if (index == selectedSwitcherIndex) {
                 title.etalaseList.forEachIndexed { index2, etalase ->
-                    if(index2 == selectedEtalaseIndex){
+                    if (index2 == selectedEtalaseIndex) {
                         etalase.productList = listProductData.map {
                             ProductCardDirectPurchaseDataModel(
                                 productId = it.id,
@@ -1572,7 +1574,7 @@ class ShopHomeViewModel @Inject constructor(
         val etalaseId = uiModel.widgetData.titleList.getOrNull(selectedSwitcherIndex)?.etalaseList?.getOrNull(selectedEtalaseIndex)?.etalaseId.orEmpty()
         val cartId = addToCartDataModel.data.cartId
         val etalaseGroupName = uiModel.widgetData.titleList.getOrNull(selectedSwitcherIndex)?.title.orEmpty()
-        
+
         _shopPageProductDirectPurchaseWidgetAtcTracker.postValue(
             ShopPageProductDirectPurchaseWidgetAtcTracker(
                 totalEtalaseGroup,
