@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.BATCH_LIMIT
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
-import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatRoomUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -21,7 +21,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TokoChatListViewModel @Inject constructor(
-    private val chatChannelUseCase: TokoChatChannelUseCase,
+    private val chatChannelUseCase: TokoChatRoomUseCase,
     private val mapper: TokoChatListUiMapper,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {

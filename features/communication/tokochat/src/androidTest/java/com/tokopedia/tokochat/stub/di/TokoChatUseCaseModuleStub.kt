@@ -2,7 +2,7 @@ package com.tokopedia.tokochat.stub.di
 
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
-import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatRoomUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
 import com.tokopedia.tokochat.stub.domain.usecase.TokoChatChannelUseCaseStub
 import com.tokopedia.tokochat.stub.domain.usecase.TokoChatSendMessageUseCaseStub
@@ -25,7 +25,7 @@ object TokoChatUseCaseModuleStub {
     @Provides
     fun provideTokoChatChannelUseCase(
         @ActivityScope tokoChatChannelUseCaseStub: TokoChatChannelUseCaseStub
-    ): TokoChatChannelUseCase {
+    ): TokoChatRoomUseCase {
         return tokoChatChannelUseCaseStub
     }
 

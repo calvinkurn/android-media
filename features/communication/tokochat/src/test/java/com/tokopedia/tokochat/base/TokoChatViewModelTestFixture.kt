@@ -30,7 +30,7 @@ abstract class TokoChatViewModelTestFixture {
     val coroutineTestRule = CoroutineTestRule()
 
     @RelaxedMockK
-    protected lateinit var getChannelUseCase: TokoChatChannelUseCase
+    protected lateinit var getChannelUseCase: TokoChatRoomUseCase
 
     @RelaxedMockK
     protected lateinit var getChatHistoryUseCase: TokoChatGetChatHistoryUseCase

@@ -17,7 +17,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.gojek.conversations.database.chats.ConversationsMessage
-import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.gojek.conversations.network.ConversationsNetworkError
 import com.google.android.material.snackbar.Snackbar
@@ -79,6 +78,7 @@ import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatMessageBubble
 import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatOrderProgressUiModel
 import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatReminderTickerUiModel
 import com.tokopedia.tokochat.config.util.TokoChatErrorLogger
+import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.tokochat.databinding.TokochatChatroomFragmentBinding
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.util.TokoChatMediaCleanupStorageWorker
@@ -103,6 +103,7 @@ import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 import com.tokopedia.tokochat_common.R as tokochat_commonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 open class TokoChatFragment @Inject constructor(
     private var viewModel: TokoChatViewModel,
@@ -112,7 +113,6 @@ open class TokoChatFragment @Inject constructor(
     private var networkUtil: TokoChatNetworkUtil
 ) :
     TokoChatBaseFragment<TokochatChatroomFragmentBinding>(),
-    ConversationsGroupBookingListener,
     TokoChatTypingListener,
     TokoChatReplyTextListener,
     TokochatReminderTickerListener,
@@ -192,6 +192,7 @@ open class TokoChatFragment @Inject constructor(
         askTokoChatConsent()
         setupLifeCycleObserver()
         setupListeners()
+        observeGroupBooking()
     }
 
     override fun onResume() {
@@ -229,7 +230,7 @@ open class TokoChatFragment @Inject constructor(
                 // Hide reply component
                 setupReplySection(
                     false,
-                    getString(com.tokopedia.tokochat_common.R.string.tokochat_message_closed_chat)
+                    getString(tokochat_commonR.string.tokochat_message_closed_chat)
                 )
             } else {
                 // Show reply component
@@ -458,12 +459,12 @@ open class TokoChatFragment @Inject constructor(
             context?.let {
                 ContextCompat.getDrawable(
                     it,
-                    com.tokopedia.tokochat_common.R.drawable.bg_tokochat_send_btn_disabled
+                    tokochat_commonR.drawable.bg_tokochat_send_btn_disabled
                 )
             }
         chatSendButton?.setOnClickListener {
             if (!isExceedLimit) {
-                showSnackbarError(getString(com.tokopedia.tokochat_common.R.string.tokochat_desc_empty_text_box))
+                showSnackbarError(getString(tokochat_commonR.string.tokochat_desc_empty_text_box))
             }
         }
     }
@@ -473,14 +474,14 @@ open class TokoChatFragment @Inject constructor(
         chatSendButton?.background = context?.let {
             ContextCompat.getDrawable(
                 it,
-                com.tokopedia.tokochat_common.R.drawable.bg_tokochat_send_btn
+                tokochat_commonR.drawable.bg_tokochat_send_btn
             )
         }
         chatSendButton?.setOnClickListener {
             if (isChannelReadOnly()) {
                 setupReplySection(
                     false,
-                    getString(com.tokopedia.tokochat_common.R.string.tokochat_message_closed_chat)
+                    getString(tokochat_commonR.string.tokochat_message_closed_chat)
                 )
                 clearReplyBoxMessage()
             } else {
@@ -495,7 +496,7 @@ open class TokoChatFragment @Inject constructor(
     }
 
     private fun getChatSendButton(): IconUnify? {
-        return baseBinding?.tokochatReplyBox?.findViewById(com.tokopedia.tokochat_common.R.id.tokochat_ic_send_btn)
+        return baseBinding?.tokochatReplyBox?.findViewById(tokochat_commonR.id.tokochat_ic_send_btn)
     }
 
     private fun onSendButtonClicked() {
@@ -813,7 +814,7 @@ open class TokoChatFragment @Inject constructor(
                         // Hide reply component
                         setupReplySection(
                             false,
-                            getString(com.tokopedia.tokochat_common.R.string.tokochat_message_closed_chat)
+                            getString(tokochat_commonR.string.tokochat_message_closed_chat)
                         )
                     } else {
                         // Show reply component
@@ -863,13 +864,13 @@ open class TokoChatFragment @Inject constructor(
     private fun setupToolbarData(headerUiModel: TokoChatHeaderUiModel) {
         getTokoChatHeader()?.run {
             val userTitle =
-                findViewById<Typography>(com.tokopedia.tokochat_common.R.id.tokochat_text_user_title)
+                findViewById<Typography>(tokochat_commonR.id.tokochat_text_user_title)
             val subTitle =
-                findViewById<Typography>(com.tokopedia.tokochat_common.R.id.tokochat_text_user_subtitle)
+                findViewById<Typography>(tokochat_commonR.id.tokochat_text_user_subtitle)
             val imageUrl =
-                findViewById<ImageUnify>(com.tokopedia.tokochat_common.R.id.tokochat_user_avatar)
+                findViewById<ImageUnify>(tokochat_commonR.id.tokochat_user_avatar)
             val callMenu =
-                findViewById<IconUnify>(com.tokopedia.tokochat_common.R.id.tokochat_icon_header_menu)
+                findViewById<IconUnify>(tokochat_commonR.id.tokochat_icon_header_menu)
 
             userTitle.text = headerUiModel.title
             subTitle.text = TokoChatViewUtil.censorPlatNumber(
@@ -883,7 +884,7 @@ open class TokoChatFragment @Inject constructor(
 
             if (sourceLogoUrl.isNotBlank()) {
                 val sourceLogo =
-                    findViewById<ImageUnify>(com.tokopedia.tokochat_common.R.id.tokochat_iv_source_logo)
+                    findViewById<ImageUnify>(tokochat_commonR.id.tokochat_iv_source_logo)
                 sourceLogo.setImageUrl(sourceLogoUrl)
             }
 
@@ -895,7 +896,7 @@ open class TokoChatFragment @Inject constructor(
                 if (isCallIconDisabled) {
                     isEnabled = false
                     isClickable = false
-                    setImage(IconUnify.CALL, com.tokopedia.unifyprinciples.R.color.Unify_NN300)
+                    setImage(IconUnify.CALL, unifyprinciplesR.color.Unify_NN300)
                 } else {
                     isEnabled = true
                     isClickable = true
@@ -926,12 +927,12 @@ open class TokoChatFragment @Inject constructor(
 
             getTokoChatHeader()?.run {
                 val callMenu =
-                    findViewById<IconUnify>(com.tokopedia.tokochat_common.R.id.tokochat_icon_header_menu)
+                    findViewById<IconUnify>(tokochat_commonR.id.tokochat_icon_header_menu)
 
                 callMenu.run {
                     isEnabled = false
                     isClickable = false
-                    setImage(IconUnify.CALL, com.tokopedia.unifyprinciples.R.color.Unify_NN300)
+                    setImage(IconUnify.CALL, unifyprinciplesR.color.Unify_NN300)
                 }
             }
         }
@@ -976,25 +977,46 @@ open class TokoChatFragment @Inject constructor(
 
     private fun initGroupBooking() {
         viewModel.resetTypingStatus()
-        viewModel.initGroupBooking(
-            orderId = viewModel.gojekOrderId,
-            groupBookingListener = this
-        )
+        viewModel.initGroupBooking()
     }
 
-    override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
-        hideShimmeringHeader()
-        removeShimmering()
-        handleOnErrorCreateGroupBooking(error)
+    private fun observeGroupBooking() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.getGroupBookingFlow().collectLatest {
+                    when (it) {
+                        is TokoChatResult.Success -> {
+                            resetRecyclerViewScrollState()
+                            this@TokoChatFragment.viewModel.channelId = it.data
+                            viewModel.registerActiveChannel(it.data)
+                            viewModel.getGroupBookingChannel(viewModel.channelId)
+                            removeShimmering()
+                            observeChatHistory()
+                            observeLiveChannel()
+                            viewModel.doCheckChatConnection()
+                            trackFromPushNotif()
+                        }
+                        is TokoChatResult.Error -> {
+                            hideShimmeringHeader()
+                            removeShimmering()
+                            handleOnErrorCreateGroupBooking(it.throwable)
+                        }
+                        TokoChatResult.Loading -> Unit // no-op
+                    }
+                }
+            }
+        }
     }
 
-    private fun handleOnErrorCreateGroupBooking(error: ConversationsNetworkError) {
+    private fun handleOnErrorCreateGroupBooking(error: Throwable) {
         try {
-            val errorCode = error.errorList.firstOrNull()?.code ?: ""
-            if (errorCode.contains(CHAT_CLOSED_CODE, ignoreCase = true)) {
-                showUnavailableBottomSheet()
-            } else {
-                showGlobalErrorWithRefreshAction()
+            if (error is ConversationsNetworkError) {
+                val errorCode = error.errorList.firstOrNull()?.code ?: ""
+                if (errorCode.contains(CHAT_CLOSED_CODE, ignoreCase = true)) {
+                    showUnavailableBottomSheet()
+                } else {
+                    showGlobalErrorWithRefreshAction()
+                }
             }
             logExceptionTokoChat(error, TokoChatErrorLogger.ErrorType.ERROR_PAGE, ::initGroupBooking.name)
         } catch (throwable: Throwable) {
@@ -1005,22 +1027,6 @@ open class TokoChatFragment @Inject constructor(
                 ::handleOnErrorCreateGroupBooking.name
             )
         }
-    }
-
-    override fun onGroupBookingChannelCreationStarted() {
-        // No op
-    }
-
-    override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
-        resetRecyclerViewScrollState()
-        this@TokoChatFragment.viewModel.channelId = channelUrl
-        viewModel.registerActiveChannel(channelUrl)
-        viewModel.getGroupBookingChannel(viewModel.channelId)
-        removeShimmering()
-        observeChatHistory()
-        observeLiveChannel()
-        viewModel.doCheckChatConnection()
-        trackFromPushNotif()
     }
 
     private fun trackFromPushNotif() {
@@ -1250,10 +1256,10 @@ open class TokoChatFragment @Inject constructor(
             imageFile?.let { file ->
                 imageView.loadImage(file.absolutePath, properties = {
                     this.setPlaceHolder(
-                        com.tokopedia.tokochat_common.R.drawable.tokochat_bg_image_bubble_gradient
+                        tokochat_commonR.drawable.tokochat_bg_image_bubble_gradient
                     )
                     this.setErrorDrawable(
-                        com.tokopedia.tokochat_common.R.drawable.tokochat_bg_image_bubble_gradient
+                        tokochat_commonR.drawable.tokochat_bg_image_bubble_gradient
                     )
                     this.listener(onSuccess = { _, _ ->
                         impressOnImageAttachment(element, imageView)

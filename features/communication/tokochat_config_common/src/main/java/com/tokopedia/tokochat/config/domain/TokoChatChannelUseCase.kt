@@ -6,7 +6,7 @@ import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.network.ConversationsNetworkError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokochat.config.repository.TokoChatRepository
-import com.tokopedia.tokochat.config.util.CoroutineDispatchers
+import com.tokopedia.tokochat.config.util.TokoChatCoroutineDispatchers
 import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.tokochat.config.util.TokoChatServiceType
 import kotlinx.coroutines.CoroutineScope
@@ -28,7 +28,7 @@ import javax.inject.Inject
  */
 open class TokoChatChannelUseCase@Inject constructor(
     private val repository: TokoChatRepository,
-    dispatchers: CoroutineDispatchers
+    dispatchers: TokoChatCoroutineDispatchers
 ) {
 
     private val _groupBookingResultFlow = MutableSharedFlow<TokoChatResult<String>>()

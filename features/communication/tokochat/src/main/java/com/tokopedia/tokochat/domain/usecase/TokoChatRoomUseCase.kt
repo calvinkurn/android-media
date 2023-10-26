@@ -3,34 +3,37 @@ package com.tokopedia.tokochat.domain.usecase
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.gojek.conversations.babble.channel.data.ChannelType
-import com.gojek.conversations.babble.network.data.OrderChatType
 import com.gojek.conversations.channel.ConversationsChannel
 import com.gojek.conversations.channel.GetChannelRequest
 import com.gojek.conversations.extensions.ConversationsExtensionProvider
-import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.gojek.conversations.network.ConversationsNetworkError
+import com.tokopedia.tokochat.config.domain.TokoChatChannelUseCase
 import com.tokopedia.tokochat.config.repository.TokoChatRepository
+import com.tokopedia.tokochat.config.util.TokoChatResult
+import com.tokopedia.tokochat.config.util.TokoChatServiceType
+import kotlinx.coroutines.flow.SharedFlow
 import javax.inject.Inject
 
-open class TokoChatChannelUseCase @Inject constructor(
-    private val repository: TokoChatRepository
+open class TokoChatRoomUseCase @Inject constructor(
+    private val repository: TokoChatRepository,
+    private val tokoChatChannelUseCase: TokoChatChannelUseCase
 ) {
 
     private var lastTimeStamp: Long = 0
 
     fun initGroupBookingChat(
         orderId: String,
-        serviceType: Int,
-        groupBookingListener: ConversationsGroupBookingListener,
-        orderChatType: OrderChatType
+        serviceType: TokoChatServiceType
     ) {
-        repository.getConversationRepository()?.initGroupBookingChat(
-            orderId,
-            serviceType,
-            groupBookingListener,
-            orderChatType
+        tokoChatChannelUseCase.initGroupBookingChat(
+            orderId = orderId,
+            serviceType = serviceType
         )
+    }
+
+    fun getGroupBookingFlow(): SharedFlow<TokoChatResult<String>> {
+        return tokoChatChannelUseCase.groupBookingResultFlow
     }
 
     open fun isChatConnected(): Boolean {

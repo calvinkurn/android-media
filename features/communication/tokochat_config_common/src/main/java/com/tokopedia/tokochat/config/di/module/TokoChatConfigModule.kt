@@ -7,7 +7,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
 import com.tokopedia.tokochat.config.domain.TokoChatChannelUseCase
 import com.tokopedia.tokochat.config.repository.TokoChatRepository
-import com.tokopedia.tokochat.config.util.CoroutineDispatchers
+import com.tokopedia.tokochat.config.util.TokoChatCoroutineDispatchers
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -46,8 +46,8 @@ object TokoChatConfigModule {
 
     @Provides
     @TokoChatQualifier
-    fun provideCoroutineDispatchers(): CoroutineDispatchers {
-        return object : CoroutineDispatchers {
+    fun provideCoroutineDispatchers(): TokoChatCoroutineDispatchers {
+        return object : TokoChatCoroutineDispatchers {
             override val main: CoroutineDispatcher
                 get() = Dispatchers.Main
             override val io: CoroutineDispatcher
@@ -59,7 +59,7 @@ object TokoChatConfigModule {
     @TokoChatQualifier
     fun provideTokoChatChannelUseCase(
         @TokoChatQualifier repository: TokoChatRepository,
-        @TokoChatQualifier dispatchers: CoroutineDispatchers
+        @TokoChatQualifier dispatchers: TokoChatCoroutineDispatchers
     ): TokoChatChannelUseCase {
         return TokoChatChannelUseCase(repository, dispatchers)
     }

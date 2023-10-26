@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatRoomUseCase
 import com.tokopedia.tokochat.view.chatlist.TokoChatListUiMapper
 import com.tokopedia.tokochat.view.chatlist.TokoChatListViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -27,7 +27,7 @@ abstract class TokoChatListViewModelTestFixture {
     val coroutineTestRule = UnconfinedTestRule()
 
     @RelaxedMockK
-    protected lateinit var chatChannelUseCase: TokoChatChannelUseCase
+    protected lateinit var chatChannelUseCase: TokoChatRoomUseCase
 
     @RelaxedMockK
     protected lateinit var mapper: TokoChatListUiMapper

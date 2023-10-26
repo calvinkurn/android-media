@@ -9,11 +9,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.gojek.conversations.babble.message.data.SendMessageMetaData
-import com.gojek.conversations.babble.network.data.OrderChatType
 import com.gojek.conversations.channel.ConversationsChannel
 import com.gojek.conversations.database.chats.ConversationsMessage
 import com.gojek.conversations.extensions.ExtensionMessage
-import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -24,7 +22,8 @@ import com.tokopedia.tokochat.common.util.TokoChatCacheManager
 import com.tokopedia.tokochat.common.util.TokoChatCacheManagerImpl.Companion.TOKOCHAT_IMAGE_ATTACHMENT_MAP
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.TOKOFOOD_SERVICE_TYPE
+import com.tokopedia.tokochat.config.util.TokoChatResult
+import com.tokopedia.tokochat.config.util.TokoChatServiceType
 import com.tokopedia.tokochat.domain.cache.TokoChatBubblesCache
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionPayload
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
@@ -32,7 +31,6 @@ import com.tokopedia.tokochat.domain.response.orderprogress.param.TokoChatOrderP
 import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatBackgroundUseCase
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatRoomTickerUseCase
-import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetChatHistoryUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetImageUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetTokopediaOrderIdUseCase
@@ -40,6 +38,7 @@ import com.tokopedia.tokochat.domain.usecase.TokoChatGetTypingUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatMarkAsReadUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatOrderProgressUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatRegistrationChannelUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatRoomUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatUploadImageUseCase
 import com.tokopedia.tokochat.util.TokoChatValueUtil.BUBBLES_PREF
@@ -74,7 +73,7 @@ import java.util.*
 import javax.inject.Inject
 
 class TokoChatViewModel @Inject constructor(
-    private val chatChannelUseCase: TokoChatChannelUseCase,
+    private val chatChannelUseCase: TokoChatRoomUseCase,
     private val getChatHistoryUseCase: TokoChatGetChatHistoryUseCase,
     private val markAsReadUseCase: TokoChatMarkAsReadUseCase,
     private val registrationChannelUseCase: TokoChatRegistrationChannelUseCase,
@@ -210,21 +209,26 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
-    fun initGroupBooking(
-        orderId: String,
-        serviceType: Int = TOKOFOOD_SERVICE_TYPE,
-        groupBookingListener: ConversationsGroupBookingListener,
-        orderChatType: OrderChatType = OrderChatType.Unknown
-    ) {
+    fun initGroupBooking() {
         try {
             chatChannelUseCase.initGroupBookingChat(
-                orderId = orderId,
-                serviceType = serviceType,
-                groupBookingListener = groupBookingListener,
-                orderChatType = orderChatType
+                orderId = gojekOrderId,
+                serviceType = getServiceType()
             )
         } catch (throwable: Throwable) {
             _error.value = Pair(throwable, ::initGroupBooking.name)
+        }
+    }
+
+    fun getGroupBookingFlow(): SharedFlow<TokoChatResult<String>> {
+        return chatChannelUseCase.getGroupBookingFlow()
+    }
+
+    private fun getServiceType(): TokoChatServiceType {
+        return when (source) {
+            SOURCE_GOSEND_INSTANT -> TokoChatServiceType.GOSEND_INSTANT
+            SOURCE_GOSEND_SAMEDAY -> TokoChatServiceType.GOSEND_SAMEDAY
+            else -> TokoChatServiceType.TOKOFOOD // default tokofood
         }
     }
 
@@ -309,17 +313,22 @@ class TokoChatViewModel @Inject constructor(
 
     fun doCheckChatConnection() {
         cancelCheckConnection()
-        connectionCheckJob = launch {
-            withContext(dispatcher.io) {
-                try {
-                    while (true) {
-                        delay(DELAY_UPDATE_ORDER_STATE)
-                        _isChatConnected.postValue(chatChannelUseCase.isChatConnected())
-                    }
-                } catch (throwable: Throwable) {
-                    Timber.d(throwable)
-                    _isChatConnected.postValue(false)
+        connectionCheckJob = viewModelScope.launch {
+            try {
+                // Check if the chat is connected
+                var isConnected = chatChannelUseCase.isChatConnected()
+                _isChatConnected.value = isConnected
+
+                // While chat is connected, do nothing
+                // When the connection breaks, break loop and post false
+                while (isConnected) {
+                    delay(DELAY_UPDATE_ORDER_STATE)
+                    isConnected = chatChannelUseCase.isChatConnected()
                 }
+                _isChatConnected.value = false
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+                _isChatConnected.value = true // When fail, do not intervene with chatroom
             }
         }
     }
@@ -663,5 +672,8 @@ class TokoChatViewModel @Inject constructor(
         private const val DELAY_FETCH_IMAGE = 500L
         private const val ERROR_COMPRESSED_IMAGE_NULL = "Compressed image null"
         private const val ERROR_RENAMED_IMAGE_NULL = "Renamed image null"
+
+        private const val SOURCE_GOSEND_INSTANT = "gosend_instant"
+        private const val SOURCE_GOSEND_SAMEDAY = "gosend_sameday"
     }
 }
