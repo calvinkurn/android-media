@@ -2,11 +2,12 @@
 <androidx.cardview.widget.CardView
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="4dp"
-    android:layout_marginEnd="4dp"
-    app:cardCornerRadius="12dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    app:cardCornerRadius="16dp"
     app:cardElevation="0dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
@@ -19,18 +20,8 @@
         android:id="@+id/layout_quest_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_NN0"
+        android:background="@drawable/tokopedianow_bg_quest"
         android:orientation="vertical">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/aiv_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:scaleType="center"
-            app:srcCompat="@drawable/tokopedianow_ic_quest_locked"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tp_title"
@@ -39,14 +30,13 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:textColor="@color/Unify_NN600"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.675"
-            app:layout_constraintStart_toEndOf="@+id/aiv_icon"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintEnd_toStartOf="@+id/siv_circle_see_all"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="display_3"
-            app:typographyWeight="reguler"
-            tools:text="Belanja min. Rp80rb untuk dapat" />
+            app:typographyWeight="bold"
+            tools:text="🎉 Hebat, semua misi berhasil selesai!" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tp_description"
@@ -54,14 +44,27 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="16dp"
+            android:textColor="@color/Unify_Static_White"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/tp_title"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/tp_title"
             app:layout_constraintTop_toBottomOf="@+id/tp_title"
-            app:typographyType="display_2"
-            app:typographyWeight="bold"
-            tools:text="Kupon Cashback 10rb" />
+            app:typographyType="display_3"
+            app:typographyWeight="reguler"
+            tools:text="Kamu sudah dapat kupon total 120rb" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/siv_circle_see_all"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_marginEnd="14dp"
+            android:padding="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/circleImageDisplay"
+            app:srcCompat="@drawable/iconunify_chevron_right"
+            app:strokeColor="@color/Unify_Static_White"
+            app:strokeWidth="0.75dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

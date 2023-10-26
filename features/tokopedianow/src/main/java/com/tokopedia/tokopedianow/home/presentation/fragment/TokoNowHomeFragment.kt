@@ -160,6 +160,7 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeHeaderViewHol
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
+import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestReloadWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
@@ -278,7 +279,8 @@ class TokoNowHomeFragment :
                 productCarouselChipListener = createProductCarouselChipListener(),
                 productBundleWidgetListener = bundleWidgetCallback,
                 tokoNowBundleWidgetListener = bundleWidgetCallback,
-                homeHeaderListener = createHomeHeaderListener()
+                homeHeaderListener = createHomeHeaderListener(),
+                questReloadWidgetListener = createQuestReloadWidgetCallback()
             ),
             differ = HomeListDiffer()
         )
@@ -2048,14 +2050,10 @@ class TokoNowHomeFragment :
         )
     }
 
-    private fun createProductCardListener(): TokoNowProductCardListener {
-        return TokoNowProductCardListener(
-            context = context,
-            userSession = userSession,
-            viewModel = viewModelTokoNow,
-            analytics = analytics,
-            startActivityForResult = this::startActivityForResult
-        )
+    private fun createQuestReloadWidgetCallback() = object : HomeQuestReloadWidgetViewHolder.HomeQuestReloadWidgetListener {
+        override fun onReloadListener() {
+            viewModelTokoNow.refreshQuestWidget()
+        }
     }
 
     private fun showDialogReceiverReferral(data: HomeReceiverReferralDialogUiModel) {

@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="8dp"
         app:srcCompat="@color/Unify_Background"
-        app:shapeAppearanceOverlay="@style/roundedTopCategoryNavigation"
+        app:shapeAppearanceOverlay="@style/roundedTopImage"
         app:layout_constraintBottom_toTopOf="@+id/include"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

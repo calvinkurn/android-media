@@ -3,13 +3,18 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder.quest
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_DETAIL_PRODUCTION_APPLINK
+import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_DETAIL_STAGING_APPLINK
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestCardBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestCardItemUiModel
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 
 class HomeQuestCardItemViewHolder(
     private val binding: ItemTokopedianowQuestCardBinding
@@ -53,6 +58,14 @@ class HomeQuestCardItemViewHolder(
                 setBackgroundResource(R.drawable.tokopedianow_bg_quest_locked)
                 adjustTitleStartPadding()
             }
+            root.setOnClickListener {
+                goToQuestDetailPage(element.id)
+            }
         }
+    }
+
+    private fun goToQuestDetailPage(id: String) {
+        val appLink = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) QUEST_DETAIL_STAGING_APPLINK + id else QUEST_DETAIL_PRODUCTION_APPLINK + id
+        RouteManager.route(itemView.context, appLink)
     }
 }

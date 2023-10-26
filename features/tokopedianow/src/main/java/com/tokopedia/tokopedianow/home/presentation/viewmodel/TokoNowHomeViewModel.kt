@@ -71,6 +71,8 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapPlayWid
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductBundleRecomData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductPurchaseData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestData
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestFinishedWidget
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestReloadWidget
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestWidget
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapSharingEducationData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapSharingReferralData
@@ -128,6 +130,8 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeReceiverReferral
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestReloadWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestShimmeringWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_CLAIMED
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
 import com.tokopedia.usecase.coroutines.Fail
@@ -613,6 +617,28 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
+    fun refreshQuestWidget() {
+        homeLayoutItemList.getItem(HomeQuestReloadWidgetUiModel::class.java)?.let { uiModel ->
+            launchCatchError(block = {
+                getQuestListData(
+                    id = uiModel.id,
+                    mainTitle = uiModel.mainTitle,
+                    finishedWidgetTitle = uiModel.finishedWidgetTitle,
+                    finishedWidgetContentDescription = uiModel.finishedWidgetContentDescription
+                )
+
+                val data = HomeLayoutListUiModel(
+                    items = getHomeVisitableList(),
+                    state = TokoNowLayoutState.UPDATE
+                )
+
+                _homeLayoutList.postValue(Success(data))
+            }) {
+                removeWidget(uiModel.id)
+            }
+        }
+    }
+
     fun autoRefreshPlayWidget(item: HomePlayWidgetUiModel) {
         launchCatchError(block = {
             val playWidgetUiModel = getPlayWidget(item, isAutoRefresh = true)
@@ -797,7 +823,7 @@ class TokoNowHomeViewModel @Inject constructor(
         when (item) {
             is HomeSharingEducationWidgetUiModel -> getSharingEducationAsync(item, localCacheModel).await()
             is HomeSharingReferralWidgetUiModel -> getSharingReferralAsync(item).await()
-            is com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel -> getQuestListAsync(item).await()
+            is HomeQuestShimmeringWidgetUiModel -> getQuestListAsync(item).await()
             is HomeQuestSequenceWidgetUiModel -> getQuestListAsync(item).await()
             is HomePlayWidgetUiModel -> getPlayWidgetAsync(item).await()
             is HomeClaimCouponWidgetUiModel -> getCatalogCouponListAsync(item).await()
@@ -914,11 +940,16 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getQuestListAsync(item: com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel): Deferred<Unit?> {
+    private suspend fun getQuestListAsync(item: HomeQuestShimmeringWidgetUiModel): Deferred<Unit?> {
         return asyncCatchError(block = {
-            getQuestListData(item)
+            getQuestListData(
+                id = item.id,
+                mainTitle = item.mainTitle,
+                finishedWidgetTitle = item.finishedWidgetTitle,
+                finishedWidgetContentDescription = item.finishedWidgetContentDescription
+            )
         }) {
-            homeLayoutItemList.removeItem(item.id)
+            homeLayoutItemList.removeItem(item.visitableId)
         }
     }
 
@@ -942,15 +973,39 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getQuestListData(item: com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel) {
+    private suspend fun getQuestListData(
+        id: String,
+        mainTitle: String,
+        finishedWidgetTitle: String,
+        finishedWidgetContentDescription: String
+    ) {
         val questListResponse = getQuestWidgetListUseCase.execute().questWidgetList
-        val questData = QuestMapper.mapQuestCardData(questListResponse.questWidgetList)
-        if (questData.isNotEmpty()) {
-            homeLayoutItemList.mapQuestWidget(
-                item = item,
-                questList = questData,
-                state = HomeLayoutItemState.LOADED
+        if (questListResponse.questWidgetList.isEmpty() && questListResponse.resultStatus.code == SUCCESS_CODE) {
+            homeLayoutItemList.removeItem(id)
+        }  else if (questListResponse.resultStatus.code != SUCCESS_CODE) {
+            homeLayoutItemList.mapQuestReloadWidget(
+                id = id,
+                mainTitle = mainTitle,
+                finishedWidgetTitle = finishedWidgetTitle,
+                finishedWidgetContentDescription = finishedWidgetContentDescription
             )
+        } else {
+            val questList = QuestMapper.mapQuestCardData(questListResponse.questWidgetList)
+            val currentQuestFinished = questList.filter { it.currentProgress == it.totalProgress }.size
+            val totalQuestTarget = questList.size
+            if (currentQuestFinished == totalQuestTarget) {
+                homeLayoutItemList.mapQuestFinishedWidget(
+                    id = id,
+                    title = finishedWidgetTitle,
+                    contentDescription = finishedWidgetContentDescription
+                )
+            } else {
+                homeLayoutItemList.mapQuestWidget(
+                    id = id,
+                    title = mainTitle,
+                    questList = questList
+                )
+            }
         }
     }
 

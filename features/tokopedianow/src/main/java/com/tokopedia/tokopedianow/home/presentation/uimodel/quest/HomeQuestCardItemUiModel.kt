@@ -4,5 +4,7 @@ class HomeQuestCardItemUiModel(
     val id: String,
     val title: String,
     val description: String,
-    val isLockedShown: Boolean
+    val isLockedShown: Boolean,
+    val currentProgress: Float,
+    val totalProgress: Float
 )

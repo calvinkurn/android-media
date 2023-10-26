@@ -9,6 +9,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestCardItemUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestShimmeringWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestWidgetViewHolder.Companion.STATUS_IDLE
 
 object QuestMapper {
@@ -17,7 +18,10 @@ object QuestMapper {
     private const val BANNER_DESCRIPTION = "banner_description"
     private const val ICON_URL = "banner_icon_url"
 
-    fun mapQuestUiModel(response: HomeLayoutResponse, state: HomeLayoutItemState): HomeLayoutItemUiModel {
+    fun mapQuestUiModel(
+        response: HomeLayoutResponse,
+        state: HomeLayoutItemState
+    ): HomeLayoutItemUiModel {
         val uiModel = HomeQuestSequenceWidgetUiModel(
             id = response.id,
             state = HomeLayoutItemState.LOADING
@@ -25,11 +29,15 @@ object QuestMapper {
         return HomeLayoutItemUiModel(uiModel, state)
     }
 
-    fun mapQuestWidgetUiModel(response: HomeLayoutResponse, state: HomeLayoutItemState): HomeLayoutItemUiModel {
-        val uiModel = com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel(
+    fun mapQuestWidgetUiModel(
+        response: HomeLayoutResponse,
+        state: HomeLayoutItemState
+    ): HomeLayoutItemUiModel {
+        val uiModel = HomeQuestShimmeringWidgetUiModel(
             id = response.id,
-            state = HomeLayoutItemState.LOADING,
-            questList = listOf()
+            mainTitle = response.header.name,
+            finishedWidgetTitle = response.header.subtitle,
+            finishedWidgetContentDescription = response.widgetParam
         )
         return HomeLayoutItemUiModel(uiModel, state)
     }
@@ -56,7 +64,9 @@ object QuestMapper {
             id = it.id,
             title = it.title,
             description = it.description,
-            isLockedShown = it.questUser.status == STATUS_IDLE
+            isLockedShown = it.questUser.status == STATUS_IDLE,
+            currentProgress = it.task.firstOrNull()?.progress?.current.orZero(),
+            totalProgress = it.task.firstOrNull()?.progress?.target.orZero()
         )
     }
 

@@ -104,6 +104,8 @@ import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.HOM
 import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.mapQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestCardItemUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestFinishedWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestReloadWidgetUiModel
 import com.tokopedia.unifycomponents.ticker.TickerData
 
 object HomeLayoutMapper {
@@ -385,15 +387,47 @@ object HomeLayoutMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel?>.mapQuestWidget(
-        item: com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel,
-        questList: List<HomeQuestCardItemUiModel>,
-        state: HomeLayoutItemState
+        id: String,
+        title: String,
+        questList: List<HomeQuestCardItemUiModel>
     ) {
-        updateItemById(item.visitableId) {
+        updateItemById(id) {
             val quest = com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel(
-                id = MAIN_QUEST,
-                state = state,
+                id = id,
+                title = title,
                 questList = questList
+            )
+            HomeLayoutItemUiModel(quest, HomeLayoutItemState.LOADED)
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel?>.mapQuestFinishedWidget(
+        id: String,
+        title: String,
+        contentDescription: String
+    ) {
+        updateItemById(id) {
+            val quest = HomeQuestFinishedWidgetUiModel(
+                id = id,
+                title = title,
+                contentDescription = contentDescription
+            )
+            HomeLayoutItemUiModel(quest, HomeLayoutItemState.LOADED)
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel?>.mapQuestReloadWidget(
+        id: String,
+        mainTitle: String,
+        finishedWidgetTitle: String,
+        finishedWidgetContentDescription: String
+    ) {
+        updateItemById(id) {
+            val quest = HomeQuestReloadWidgetUiModel(
+                id = id,
+                mainTitle = mainTitle,
+                finishedWidgetTitle = finishedWidgetTitle,
+                finishedWidgetContentDescription = finishedWidgetContentDescription
             )
             HomeLayoutItemUiModel(quest, HomeLayoutItemState.LOADED)
         }

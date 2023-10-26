@@ -7,13 +7,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_CHANNEL_PRODUCTION_APPLINK
+import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_CHANNEL_STAGING_APPLINK
 import com.tokopedia.tokopedianow.common.listener.SnapPositionChangeListener
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestBinding
 import com.tokopedia.tokopedianow.common.util.SnapHelperUtil.attachSnapHelperWithListener
 import com.tokopedia.tokopedianow.home.presentation.decoration.QuestCardItemDecoration
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.adapter.HomeQuestCardAdapter
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeQuestWidgetViewHolder(
@@ -54,6 +59,17 @@ class HomeQuestWidgetViewHolder(
 
     override fun bind(element: HomeQuestWidgetUiModel) {
         mAdapter.submitList(element.questList + element.questList)
+        binding?.apply {
+            tpTitle.text = element.title
+            sivCircleSeeAll.setOnClickListener {
+                openQuestChannelPage()
+            }
+        }
+    }
+
+    private fun openQuestChannelPage() {
+        val appLink = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) QUEST_CHANNEL_STAGING_APPLINK else QUEST_CHANNEL_PRODUCTION_APPLINK
+        RouteManager.route(itemView.context, appLink)
     }
 
     override fun onSnapPositionChange(position: Int) {

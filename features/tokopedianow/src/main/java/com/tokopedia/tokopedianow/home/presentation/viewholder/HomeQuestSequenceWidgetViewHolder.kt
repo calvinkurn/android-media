@@ -11,8 +11,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_DETAIL_PRODUCTION_URL
-import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_DETAIL_STAGING_URL
+import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_CHANNEL_PRODUCTION_APPLINK
+import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_CHANNEL_STAGING_APPLINK
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestSequenceWidgetBinding
 import com.tokopedia.tokopedianow.databinding.PartialTokopedianowViewStubDcTitleBinding
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
@@ -78,9 +78,9 @@ class HomeQuestSequenceWidgetViewHolder(
             setSeeAll(getString(R.string.tokopedianow_quest_sequence_widget_see_all))
         } else {
             val url = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-                QUEST_DETAIL_STAGING_URL
+                QUEST_CHANNEL_STAGING_APPLINK
             } else {
-                QUEST_DETAIL_PRODUCTION_URL
+                QUEST_CHANNEL_PRODUCTION_APPLINK
             }
             setSeeAll(getString(R.string.tokopedianow_quest_sequence_widget_see_all), url)
         }

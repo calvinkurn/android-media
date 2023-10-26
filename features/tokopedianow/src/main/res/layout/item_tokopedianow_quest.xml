@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<androidx.cardview.widget.CardView android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginTop="16dp"
     android:layout_marginStart="16dp"
     android:layout_marginEnd="16dp"
     app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
@@ -24,13 +26,13 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:textColor="@color/Unify_Static_White"
-            android:text="Misi seru NOW! Raih kupon s.d 120rb!"
             app:typographyType="display_3"
             app:typographyWeight="bold"
             app:layout_constraintBottom_toBottomOf="@+id/siv_circle_see_all"
             app:layout_constraintEnd_toStartOf="@+id/siv_circle_see_all"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/siv_circle_see_all" />
+            app:layout_constraintTop_toTopOf="@+id/siv_circle_see_all"
+            tools:text="Misi seru NOW! Raih kupon s.d 120rb!"/>
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/siv_circle_see_all"
