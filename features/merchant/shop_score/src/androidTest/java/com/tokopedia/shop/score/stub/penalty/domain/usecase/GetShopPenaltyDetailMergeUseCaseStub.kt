@@ -3,12 +3,14 @@ package com.tokopedia.shop.score.stub.penalty.domain.usecase
 import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltyDetailMergeResponse
 import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltySummaryTypeWrapper
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailResponse
+import com.tokopedia.shop.score.penalty.domain.usecase.GetOngoingPenaltyDateUseCase
 import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailMergeUseCase
 import com.tokopedia.shop.score.stub.common.graphql.repository.GraphqlRepositoryStub
 
 class GetShopPenaltyDetailMergeUseCaseStub(
-    private val graphqlRepositoryStub: GraphqlRepositoryStub
-) : GetShopPenaltyDetailMergeUseCase(graphqlRepositoryStub) {
+    private val graphqlRepositoryStub: GraphqlRepositoryStub,
+    getOngoingPenaltyDateUseCase: GetOngoingPenaltyDateUseCase
+) : GetShopPenaltyDetailMergeUseCase(graphqlRepositoryStub, getOngoingPenaltyDateUseCase) {
 
     var responseStub = ShopPenaltyDetailMergeResponse()
         set(value) {

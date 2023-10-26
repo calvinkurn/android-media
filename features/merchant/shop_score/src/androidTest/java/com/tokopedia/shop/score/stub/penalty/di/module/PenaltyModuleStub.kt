@@ -7,6 +7,7 @@ import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
 import com.tokopedia.shop.score.penalty.di.scope.PenaltyScope
 import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
 import com.tokopedia.shop.score.penalty.domain.usecase.GetNotYetDeductedPenaltyUseCase
+import com.tokopedia.shop.score.penalty.domain.usecase.GetOngoingPenaltyDateUseCase
 import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailMergeUseCase
 import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailUseCase
 import com.tokopedia.shop.score.penalty.domain.usecase.ShopPenaltyTickerUseCase
@@ -15,6 +16,7 @@ import com.tokopedia.shop.score.stub.common.graphql.repository.GraphqlRepository
 import com.tokopedia.shop.score.stub.common.util.ShopScorePrefManagerStub
 import com.tokopedia.shop.score.stub.penalty.domain.mapper.PenaltyMapperStub
 import com.tokopedia.shop.score.stub.penalty.domain.usecase.GetNotYetDeductedPenaltyUseCaseStub
+import com.tokopedia.shop.score.stub.penalty.domain.usecase.GetOngoingPenaltyDateUseCaseStub
 import com.tokopedia.shop.score.stub.penalty.domain.usecase.GetShopPenaltyDetailMergeUseCaseStub
 import com.tokopedia.shop.score.stub.penalty.domain.usecase.GetShopPenaltyDetailUseCaseStub
 import com.tokopedia.shop.score.stub.penalty.domain.usecase.ShopPenaltyTickerUseCaseStub
@@ -28,9 +30,10 @@ class PenaltyModuleStub {
     @PenaltyScope
     @Provides
     fun provideGetShopPenaltyDetailMergeUseCaseStub(
-        graphqlRepositoryStub: GraphqlRepositoryStub
+        graphqlRepositoryStub: GraphqlRepositoryStub,
+        getOngoingPenaltyDateUseCase: GetOngoingPenaltyDateUseCase
     ): GetShopPenaltyDetailMergeUseCase {
-        return GetShopPenaltyDetailMergeUseCaseStub(graphqlRepositoryStub)
+        return GetShopPenaltyDetailMergeUseCaseStub(graphqlRepositoryStub, getOngoingPenaltyDateUseCase)
     }
 
     @PenaltyScope
@@ -49,6 +52,12 @@ class PenaltyModuleStub {
     @Provides
     fun provideShopPenaltyTickerUseCaseStub(graphqlRepositoryStub: GraphqlRepositoryStub): ShopPenaltyTickerUseCase {
         return ShopPenaltyTickerUseCaseStub(graphqlRepositoryStub)
+    }
+
+    @PenaltyScope
+    @Provides
+    fun provideGetOngoingPenaltyDateUseCaseStub(graphqlRepositoryStub: GraphqlRepositoryStub): GetOngoingPenaltyDateUseCase {
+        return GetOngoingPenaltyDateUseCaseStub(graphqlRepositoryStub)
     }
 
     @PenaltyScope

@@ -17,7 +17,7 @@ private const val QUERY = """
 """
 
 @GqlQuery("OngoingPenaltyDateQuery", QUERY)
-class GetOngoingPenaltyDateUseCase @Inject constructor(
+open class GetOngoingPenaltyDateUseCase @Inject constructor(
     gqlRepository: GraphqlRepository
 ) : GraphqlUseCase<ShopScorePenaltyDetailResponse>(gqlRepository) {
 
