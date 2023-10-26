@@ -907,23 +907,10 @@ class MvcListFragment :
     }
 
     private fun deleteVoucher(voucher: Voucher) {
-        if (voucher.isFromVps() ||
-            voucher.isGetSubsidy() ||
-            !voucher.isEditable
-        ) {
-            if (voucher.subsidyDetail.programDetail.promotionStatus == PromotionStatus.APPROVED ||
-                voucher.subsidyDetail.programDetail.promotionStatus == PromotionStatus.REGISTERED
-            ) {
-                if (voucher.subsidyDetail.programDetail.programStatus == ProgramStatus.FINISHED) {
-                    showConfirmationStopVoucherDialog(voucher)
-                } else {
-                    showCallTokopediaCareDialog(voucher.status)
-                }
-            } else {
-                showConfirmationStopVoucherDialog(voucher)
-            }
-        } else {
+        if (voucher.isStoppable) {
             showConfirmationStopVoucherDialog(voucher)
+        } else {
+            showCallTokopediaCareDialog(voucher.status)
         }
     }
 

@@ -1180,24 +1180,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     }
 
     private fun deleteOrStopVoucher(data: VoucherDetailData) {
-        if (data.isFromVps() ||
-            data.isGetSubsidy() ||
-            !data.isEditable ||
-            !data.isStoppable
-        ) {
-            if (data.subsidyDetail.programDetail.promotionStatus == PromotionStatus.APPROVED ||
-                data.subsidyDetail.programDetail.promotionStatus == PromotionStatus.REGISTERED
-            ) {
-                if (data.subsidyDetail.programDetail.programStatus == ProgramStatus.FINISHED) {
-                    showConfirmationStopVoucherDialog(data)
-                } else {
-                    showCallTokopediaCareDialog(data.voucherStatus)
-                }
-            } else {
-                showConfirmationStopVoucherDialog(data)
-            }
-        } else {
+        if (data.isStoppable) {
             showConfirmationStopVoucherDialog(data)
+        } else {
+            showCallTokopediaCareDialog(data.voucherStatus)
         }
     }
 
