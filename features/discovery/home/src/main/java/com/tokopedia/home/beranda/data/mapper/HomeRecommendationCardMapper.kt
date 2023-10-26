@@ -44,7 +44,6 @@ class HomeRecommendationCardMapper @Inject constructor(
                 }
 
                 TYPE_BANNER_ADS -> {
-                    // todo mapping topadsImageViewModel
                     if (getHomeRecommendationCard.layoutName != HomeRecommendationUtil.LAYOUT_NAME_LIST) {
                         val adsBannerItemResponse =
                             convertDataJsonToAdsBannerItem(card.dataStringJson)

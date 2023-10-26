@@ -18,6 +18,7 @@ const val GET_HOME_RECOMMENDATION_CARD_QUERY = """
               id
               layout
               dataStringJson
+              gradientColor
               url
               name
               subtitle
@@ -41,6 +42,12 @@ const val GET_HOME_RECOMMENDATION_CARD_QUERY = """
               discountPercentage
               recommendationType
               categoryBreadcrumbs
+              label {
+                imageUrl
+                title
+                textColor
+                backColor
+              }
               shop {
                 id
                 url

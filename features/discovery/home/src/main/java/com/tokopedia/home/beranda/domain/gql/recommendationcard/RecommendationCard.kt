@@ -7,7 +7,7 @@ data class RecommendationCard(
     @SerializedName("applink")
     val applink: String = "",
     @SerializedName("badges")
-    val badges: List<Badge> = listOf(),
+    val badges: List<Badge> = emptyList(),
     @SerializedName("categoryBreadcrumbs")
     val categoryBreadcrumbs: String = "",
     @SerializedName("clickUrl")
@@ -32,11 +32,15 @@ data class RecommendationCard(
     @SerializedName("isWishlist")
     val isWishlist: Boolean = false,
     @SerializedName("labelGroup")
-    val labelGroup: List<LabelGroup> = listOf(),
+    val labelGroup: List<LabelGroup> = emptyList(),
     @SerializedName("layout")
     val layout: String = "",
     @SerializedName("dataStringJson")
     val dataStringJson: String = "",
+    @SerializedName("gradientColor")
+    val gradientColor: List<String> = emptyList(),
+    @SerializedName("label")
+    val label: RecommendationLabelData = RecommendationLabelData(),
     @SerializedName("name")
     val name: String = "",
     @SerializedName("price")
@@ -67,6 +71,17 @@ data class RecommendationCard(
     @SerializedName("wishlistUrl")
     val wishlistUrl: String = ""
 ) {
+
+    data class RecommendationLabelData(
+        @SerializedName("imageUrl")
+        val imageUrl: String = "",
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("textColor")
+        val textColor: String = "",
+        @SerializedName("backColor")
+        val backColor: String = ""
+    )
     data class Badge(
         @SerializedName("imageUrl")
         val imageUrl: String = "",
