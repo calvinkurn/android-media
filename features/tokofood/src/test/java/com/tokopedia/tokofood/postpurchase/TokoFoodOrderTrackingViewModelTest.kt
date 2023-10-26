@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderDetailResponse
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderStatusResponse
-import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.TokoChatConfigGroupBookingUseCase
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.tokofood.utils.JsonResourcesUtil

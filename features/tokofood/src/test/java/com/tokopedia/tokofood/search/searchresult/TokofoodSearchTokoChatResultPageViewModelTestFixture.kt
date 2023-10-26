@@ -34,7 +34,7 @@ import org.junit.Before
 import org.junit.Rule
 
 @ExperimentalCoroutinesApi
-open class TokofoodSearchResultPageViewModelTestFixture {
+open class TokofoodSearchTokoChatResultPageViewModelTestFixture {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()

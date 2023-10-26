@@ -2,16 +2,16 @@ package com.tokopedia.tokofood.feature.ordertracking.di.module
 
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
-import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
+import com.tokopedia.tokochat.config.domain.TokoChatChannelUseCase
 import com.tokopedia.tokofood.feature.ordertracking.di.scope.TokoFoodOrderTrackingScope
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.ITokoFoodOrderCompletedMapper
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.ITokoFoodOrderLiveTrackingMapper
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.TokoFoodOrderCompletedMapperSection
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.TokoFoodOrderLiveTrackingMapperSection
-import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.TokoChatConfigGroupBookingUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -47,9 +47,9 @@ class TokoFoodOrderTrackingModule {
 
     @TokoFoodOrderTrackingScope
     @Provides
-    fun provideTokoChatConfigMutationProfileUseCase(
-        repository: TokoChatRepository
-    ): TokoChatConfigGroupBookingUseCase {
-        return TokoChatConfigGroupBookingUseCase(repository)
+    fun provideTokoChatChannelUseCase(
+        @TokoChatQualifier tokoChatChannelUseCase: TokoChatChannelUseCase
+    ): TokoChatChannelUseCase {
+        return tokoChatChannelUseCase
     }
 }

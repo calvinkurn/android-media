@@ -1,20 +1,24 @@
 package com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel
 
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
-import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil
+import com.tokopedia.tokochat.config.domain.TokoChatChannelUseCase
+import com.tokopedia.tokochat.config.util.TokoChatResult
+import com.tokopedia.tokochat.config.util.TokoChatServiceType
 import com.tokopedia.tokofood.feature.ordertracking.domain.constants.OrderStatusType
-import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.*
+import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetDriverPhoneNumberUseCase
+import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderDetailUseCase
+import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderStatusUseCase
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.FoodItemUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.MerchantDataUiModel
@@ -39,6 +43,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -50,9 +55,8 @@ open class TokoFoodOrderTrackingViewModel @Inject constructor(
     private val getTokoFoodOrderDetailUseCase: Lazy<GetTokoFoodOrderDetailUseCase>,
     private val getTokoFoodOrderStatusUseCase: Lazy<GetTokoFoodOrderStatusUseCase>,
     private val getDriverPhoneNumberUseCase: Lazy<GetDriverPhoneNumberUseCase>,
-    private val getUnReadChatCountUseCase: Lazy<GetUnreadChatCountUseCase>,
-    private val tokoChatConfigGroupBookingUseCase: Lazy<TokoChatConfigGroupBookingUseCase>
-) : BaseViewModel(coroutineDispatchers.main) {
+    private val getTokoChatChannelUseCase: Lazy<TokoChatChannelUseCase>
+) : BaseViewModel(coroutineDispatchers.main), DefaultLifecycleObserver {
 
     private val _orderDetailResult = MutableLiveData<Result<OrderDetailResultUiModel>>()
     val orderDetailResult: LiveData<Result<OrderDetailResultUiModel>>
@@ -167,35 +171,33 @@ open class TokoFoodOrderTrackingViewModel @Inject constructor(
             })
     }
 
-    fun getUnReadChatCount(channelId: String): LiveData<Result<Int>> {
-        return try {
-            Transformations.map(
-                getUnReadChatCountUseCase.get().unReadCount(channelId)
-                    ?: MutableLiveData(Int.ZERO) // Zero if unRead LiveData is null
-            ) {
-                if (it != null) {
-                    Success(it)
-                } else {
-                    Success(Int.ZERO)
-                }
+    fun fetchUnReadChatCount() {
+        viewModelScope.launch {
+            try {
+                getTokoChatChannelUseCase.get().fetchUnreadCount(channelId)
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
             }
-        } catch (t: Throwable) {
-            MutableLiveData(Fail(t))
         }
     }
 
-    fun initGroupBooking(
-        orderId: String,
-        conversationsGroupBookingListener: ConversationsGroupBookingListener
-    ) {
+    fun getUnReadChatCountFlow(): Flow<TokoChatResult<Int>> {
+        return getTokoChatChannelUseCase.get().unreadCounterFlow
+    }
+
+    fun initGroupBooking(orderId: String) {
         try {
-            tokoChatConfigGroupBookingUseCase.get().initGroupBooking(
+            getTokoChatChannelUseCase.get().initGroupBookingChat(
                 orderId = orderId,
-                conversationsGroupBookingListener = conversationsGroupBookingListener
+                serviceType = TokoChatServiceType.TOKOFOOD
             )
         } catch (t: Throwable) {
             _mutationProfile.value = Fail(t)
         }
+    }
+
+    fun getGroupBookingFlow(): SharedFlow<TokoChatResult<String>> {
+        return getTokoChatChannelUseCase.get().groupBookingResultFlow
     }
 
     private fun fetchOrderCompletedLiveTracking(orderId: String) {
@@ -221,6 +223,11 @@ open class TokoFoodOrderTrackingViewModel @Inject constructor(
             this@TokoFoodOrderTrackingViewModel.orderStatusKey = result.orderStatusKey
             emit(Success(result))
         }
+    }
+
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
+        getTokoChatChannelUseCase.get().cancel()
     }
 
     companion object {

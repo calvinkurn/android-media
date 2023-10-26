@@ -4,13 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
-import com.gojek.conversations.network.ConversationsNetworkError
-import com.tokopedia.tokochat.config.util.TokoChatConnection
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -28,6 +27,8 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil
+import com.tokopedia.tokochat.config.util.TokoChatConnection
+import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
@@ -45,7 +46,16 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.bottomsheet.Dri
 import com.tokopedia.tokofood.feature.ordertracking.presentation.fragment.TokoFoodOrderLiveTrackingFragment
 import com.tokopedia.tokofood.feature.ordertracking.presentation.navigator.OrderTrackingNavigator
 import com.tokopedia.tokofood.feature.ordertracking.presentation.toolbar.OrderTrackingToolbarHandler
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.*
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.InvoiceOrderNumberUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.MerchantDataUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailResultUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailToggleCtaUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TemporaryFinishOrderUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ToolbarLiveTrackingUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.TrackingWrapperUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -54,6 +64,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import javax.inject.Inject
@@ -61,8 +72,7 @@ import javax.inject.Inject
 open class BaseTokoFoodOrderTrackingFragment :
     BaseDaggerFragment(),
     RecyclerViewPollerListener,
-    OrderTrackingListener,
-    ConversationsGroupBookingListener {
+    OrderTrackingListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -129,6 +139,7 @@ open class BaseTokoFoodOrderTrackingFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeViewModelLifecycle()
         setupToolbar()
         setupRvOrderTracking()
         fetchOrderDetail()
@@ -136,7 +147,13 @@ open class BaseTokoFoodOrderTrackingFragment :
         observeOrderCompletedLiveTracking()
         observeDriverPhoneNumber()
         observeTokoChatMutationProfile()
+        observeGroupBooking()
+        observeUnreadChatCount()
         setDataArguments()
+    }
+
+    private fun observeViewModelLifecycle() {
+        lifecycle.addObserver(viewModel)
     }
 
     override fun onDestroy() {
@@ -151,6 +168,7 @@ open class BaseTokoFoodOrderTrackingFragment :
         delayAutoRefreshFinishOrderTempJob = null
         orderLiveTrackingFragment = null
         toolbarHandler = null
+        lifecycle.removeObserver(viewModel)
         super.onDestroy()
     }
 
@@ -233,44 +251,55 @@ open class BaseTokoFoodOrderTrackingFragment :
     override val parentPool: RecyclerView.RecycledViewPool
         get() = binding?.rvOrderTracking?.recycledViewPool ?: RecyclerView.RecycledViewPool()
 
-    override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
-        // No op
-        updateUnreadChatCounter(Int.ZERO)
-    }
-
-    override fun onGroupBookingChannelCreationStarted() {
-        // No op
-    }
-
-    override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
-        viewModel.channelId = channelUrl
-        observeUnreadChatCount(viewModel.channelId)
-    }
-
-    /*
+    /**
      * initializeUnreadCounter -> when get goFoodOrderNumber
-     * check channelId is Blank or not, if yes, initGroupBooking to get channelId and observeUnreadChatCount else observeUnreadChatCount
-     * initGroupBooking -> channelId -> observeUnreadChatCount
+     * check channelId is Blank or not, if yes, initGroupBooking to get channelId and fetchUnreadCount
+     *      else directly fetchUnreadCount
+     * initGroupBooking -> channelId -> fetchUnreadCount
      */
     private fun initializeUnreadCounter(goFoodOrderNumber: String) {
         if (!TokoChatConnection.isTokoChatActive()) return
         this.viewModel.goFoodOrderNumber = goFoodOrderNumber
         if (viewModel.channelId.isBlank()) {
-            viewModel.initGroupBooking(viewModel.goFoodOrderNumber, this)
+            viewModel.initGroupBooking(viewModel.goFoodOrderNumber)
         } else {
-            observeUnreadChatCount(viewModel.channelId)
+            viewModel.fetchUnReadChatCount()
         }
     }
 
-    private fun observeUnreadChatCount(channelId: String) {
-        observe(viewModel.getUnReadChatCount(channelId)) {
-            when (it) {
-                is Success -> {
-                    updateUnreadChatCounter(it.data)
+    private fun observeGroupBooking() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.getGroupBookingFlow().collectLatest {
+                    when (it) {
+                        is TokoChatResult.Success -> {
+                            viewModel.channelId = it.data
+                            viewModel.fetchUnReadChatCount()
+                        }
+                        is TokoChatResult.Error -> {
+                            updateUnreadChatCounter(Int.ZERO)
+                        }
+                        TokoChatResult.Loading -> Unit // no-op
+                    }
                 }
-                is Fail -> {
-                    logExceptionReadCounterToServerLogger(it.throwable)
-                    updateUnreadChatCounter(Int.ZERO)
+            }
+        }
+    }
+
+    private fun observeUnreadChatCount() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.getUnReadChatCountFlow().collectLatest {
+                    when (it) {
+                        is TokoChatResult.Success -> {
+                            updateUnreadChatCounter(it.data)
+                        }
+                        is TokoChatResult.Error -> {
+                            logExceptionReadCounterToServerLogger(it.throwable)
+                            updateUnreadChatCounter(Int.ZERO)
+                        }
+                        TokoChatResult.Loading -> Unit // no-op
+                    }
                 }
             }
         }

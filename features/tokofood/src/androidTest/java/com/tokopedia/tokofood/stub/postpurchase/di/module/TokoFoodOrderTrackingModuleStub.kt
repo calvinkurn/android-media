@@ -3,10 +3,10 @@ package com.tokopedia.tokofood.stub.postpurchase.di.module
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import com.gojek.conversations.courier.BabbleCourierClient
-import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import com.tokopedia.tokofood.feature.ordertracking.di.scope.TokoFoodOrderTrackingScope
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.DriverPhoneNumberMapper
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.ITokoFoodOrderCompletedMapper
@@ -21,8 +21,6 @@ import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderSt
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetDriverPhoneNumberUseCase
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderDetailUseCase
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderStatusUseCase
-import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetUnreadChatCountUseCase
-import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.TokoChatConfigGroupBookingUseCase
 import com.tokopedia.tokofood.stub.common.graphql.interactor.GraphqlUseCaseStub
 import com.tokopedia.tokofood.stub.common.graphql.repository.GraphqlRepositoryStub
 import com.tokopedia.tokofood.stub.common.util.UserSessionStub
