@@ -9,7 +9,6 @@ import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_RESULT_EXTRA
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
-import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationResponse
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyQuantityChangeFragment
@@ -32,11 +31,11 @@ internal object EPharmacyNavigator {
             EPHARMACY_CHOOSER_APPLINK,
             mapOf(
                 ENABLER_IMAGE_URL to enablerImage?.encode(),
-                EPHARMACY_GROUP_ID to ePharmacyGroupId,
+                EPHARMACY_GROUP_ID to ePharmacyGroupId?.encode(),
                 EPHARMACY_ENABLER_NAME to enablerName,
                 EPHARMACY_CONS_PRICE to price.orEmpty(),
                 EPHARMACY_CONS_DURATION to duration.orEmpty(),
-                EPHARMACY_NOTE to note.orEmpty(),
+                EPHARMACY_NOTE to note?.encode().orEmpty(),
                 EPHARMACY_IS_OUTSIDE_WORKING_HOURS to isOutsideWorkingHours?.orFalse().toString(),
                 EPHARMACY_IS_ONLY_CONSULT to isOnlyConsult.toString()
             )
@@ -78,7 +77,9 @@ internal object EPharmacyNavigator {
     }
 
     fun navigateToQuantityBottomSheet(childFragmentManager: FragmentManager) {
-        childFragmentManager.beginTransaction().replace(R.id.ep_frame_content,
-            EPharmacyQuantityChangeFragment.newInstance()).commit()
+        childFragmentManager.beginTransaction().replace(
+            R.id.ep_frame_content,
+            EPharmacyQuantityChangeFragment.newInstance()
+        ).commit()
     }
 }
