@@ -23,6 +23,7 @@ import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
@@ -61,7 +62,8 @@ import com.tokopedia.feedplus.analytics.FeedMVCAnalytics
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
-import com.tokopedia.feedplus.di.FeedMainInjector
+import com.tokopedia.feedplus.di.DaggerFeedMainComponent
+import com.tokopedia.feedplus.di.FeedMainModule
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
@@ -536,7 +538,11 @@ class FeedFragment :
     }
 
     override fun initInjector() {
-        FeedMainInjector.get(requireContext()).inject(this)
+        DaggerFeedMainComponent.builder()
+            .baseAppComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
+            .feedMainModule(FeedMainModule(requireContext()))
+            .build()
+            .inject(this)
     }
 
     override fun getScreenName(): String = "Feed Fragment"

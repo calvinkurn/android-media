@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -30,7 +31,8 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.analytics.FeedAnalytics
 import com.tokopedia.feedplus.analytics.FeedNavigationAnalytics
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
-import com.tokopedia.feedplus.di.FeedMainInjector
+import com.tokopedia.feedplus.di.DaggerFeedMainComponent
+import com.tokopedia.feedplus.di.FeedMainModule
 import com.tokopedia.feedplus.presentation.activityresultcontract.OpenCreateShortsContract
 import com.tokopedia.feedplus.presentation.activityresultcontract.RouteContract
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
@@ -249,7 +251,11 @@ class FeedBaseFragment :
     }
 
     override fun initInjector() {
-        FeedMainInjector.get(requireContext()).inject(this)
+        DaggerFeedMainComponent.builder()
+            .baseAppComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
+            .feedMainModule(FeedMainModule(requireContext()))
+            .build()
+            .inject(this)
     }
 
     override fun getScreenName(): String = "Feed Fragment"
