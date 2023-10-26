@@ -8,13 +8,13 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.creation.common.presentation.utils.ContentCreationRemoteConfigManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.picker.common.MediaPicker
@@ -34,6 +34,7 @@ import com.tokopedia.stories.creation.view.model.StoriesMediaCover
 import com.tokopedia.stories.creation.view.model.StoriesMediaType
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
+import com.tokopedia.stories.creation.view.model.exception.NotEligibleException
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -50,6 +51,9 @@ class StoriesCreationActivity : BaseActivity() {
 
     @Inject
     lateinit var router: Router
+
+    @Inject
+    lateinit var contentCreationRemoteConfig: ContentCreationRemoteConfigManager
 
     private val viewModel by viewModels<StoriesCreationViewModel> { viewModelFactory }
 
@@ -177,6 +181,11 @@ class StoriesCreationActivity : BaseActivity() {
             }
         }
 
+        if (!contentCreationRemoteConfig.isShowingCreation()) {
+            showErrorBottomSheet(NotEligibleException())
+            return
+        }
+
         viewModel.submitAction(StoriesCreationAction.Prepare)
     }
 
@@ -190,18 +199,26 @@ class StoriesCreationActivity : BaseActivity() {
                             openMediaPicker()
                         }
                         is StoriesCreationUiEvent.ErrorPreparePage -> {
-                            StoriesCreationErrorBottomSheet
-                                .getFragment(supportFragmentManager, classLoader, event.throwable)
-                                .show(supportFragmentManager)
+                            showErrorBottomSheet(event.throwable)
                         }
                         is StoriesCreationUiEvent.ShowTooManyStoriesReminder -> {
-                            StoriesCreationInfoBottomSheet
-                                .getFragment(supportFragmentManager, classLoader)
-                                .show(supportFragmentManager)
+                            showInfoBottomSheet()
                         }
                     }
             }
         }
+    }
+
+    private fun showErrorBottomSheet(throwable: Throwable) {
+        StoriesCreationErrorBottomSheet
+            .getFragment(supportFragmentManager, classLoader, throwable)
+            .show(supportFragmentManager)
+    }
+
+    private fun showInfoBottomSheet() {
+        StoriesCreationInfoBottomSheet
+            .getFragment(supportFragmentManager, classLoader)
+            .show(supportFragmentManager)
     }
 
     private fun openMediaPicker() {

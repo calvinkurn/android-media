@@ -3,7 +3,6 @@ package com.tokopedia.stories.creation.view.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.creation.common.presentation.utils.ContentCreationRemoteConfigManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepository
 import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
@@ -24,13 +23,12 @@ import javax.inject.Inject
  */
 class StoriesCreationViewModel @Inject constructor(
     private val repo: StoriesCreationRepository,
-    private val contentCreationRemoteConfig: ContentCreationRemoteConfigManager,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(StoriesCreationUiState.Empty)
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEvent = MutableSharedFlow<StoriesCreationUiEvent>(replay = 1)
+    private val _uiEvent = MutableSharedFlow<StoriesCreationUiEvent>()
     val uiEvent: Flow<StoriesCreationUiEvent> = _uiEvent
 
     val maxStoriesConfig: StoriesCreationConfiguration.MaxStoriesConfig
@@ -62,8 +60,6 @@ class StoriesCreationViewModel @Inject constructor(
 
     private fun handlePrepare() {
         viewModelScope.launchCatchError(block = {
-            if (!contentCreationRemoteConfig.isShowingCreation()) throw NotEligibleException()
-
             /**
              * Stories is only available for shop
              * need FE development to support UGC account
@@ -91,7 +87,6 @@ class StoriesCreationViewModel @Inject constructor(
                 _uiEvent.emit(StoriesCreationUiEvent.OpenMediaPicker)
             }
         }) { throwable ->
-            println("JOE LOG error $throwable")
             _uiEvent.emit(
                 StoriesCreationUiEvent.ErrorPreparePage(throwable)
             )
