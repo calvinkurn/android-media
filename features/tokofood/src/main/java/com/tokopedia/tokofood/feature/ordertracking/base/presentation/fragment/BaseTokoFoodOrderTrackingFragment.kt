@@ -68,6 +68,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import javax.inject.Inject
+import com.tokopedia.tokofood.R as tokofoodR
 
 open class BaseTokoFoodOrderTrackingFragment :
     BaseDaggerFragment(),
@@ -391,7 +392,7 @@ open class BaseTokoFoodOrderTrackingFragment :
                     )
                     view?.showErrorToaster(
                         context?.getString(
-                            com.tokopedia.tokofood.R.string.error_message_hit_driver_phone_number
+                            tokofoodR.string.error_message_hit_driver_phone_number
                         ).orEmpty()
                     )
                 }
