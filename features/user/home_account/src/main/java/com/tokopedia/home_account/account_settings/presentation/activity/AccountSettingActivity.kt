@@ -1,48 +1,89 @@
-package com.tokopedia.home_account.account_settings.presentation.activity;
+package com.tokopedia.home_account.account_settings.presentation.activity
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Scaffold
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.header.compose.NestHeader
+import com.tokopedia.header.compose.NestHeaderType
+import com.tokopedia.home_account.R
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.nest.principles.ui.NestTheme
 
-import androidx.fragment.app.Fragment;
+class AccountSettingActivity : BaseSimpleActivity() {
 
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.home_account.R;
-import com.tokopedia.home_account.account_settings.presentation.fragment.setting.AccountSettingFragment;
-
-public class AccountSettingActivity extends BaseSimpleActivity {
-
-    private static final int REQUEST_CHANGE_PASSWORD = 123;
-
-    public static Intent createIntent(Context context) {
-        return new Intent(context, AccountSettingActivity.class);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case 0:
-                    NetworkErrorHelper.showSnackbar(this, getString(R.string.message_success_change_profile));
-                    setResult(resultCode, new Intent());
-                    break;
-                case REQUEST_CHANGE_PASSWORD:
-                    NetworkErrorHelper.showGreenCloseSnackbar(this, getString(R.string.message_success_change_password));
-                    break;
-                default:
-                    break;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        toolbar.hide()
+        setContent {
+            NestTheme {
+                Scaffold(topBar = {
+                    NestHeader(type = NestHeaderType.SingleLine(
+                        title = stringResource(id = R.string.menu_account_title_security),
+                        onBackClicked = { onBackClicked() }
+                    ))
+                }, content = { padding ->
+                    AccountSettingScreen(
+                        modifier = Modifier.padding(padding),
+                        onItemClicked = ::onItemClicked
+                    )
+                })
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    protected Fragment getNewFragment() {
-        Bundle bundle = new Bundle();
-        if(getIntent().getExtras()!= null){
-            bundle.putAll(getIntent().getExtras());
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == RESULT_OK) {
+            when (requestCode) {
+                0 -> {
+                    NetworkErrorHelper.showSnackbar(
+                        this,
+                        getString(R.string.message_success_change_profile)
+                    )
+                    setResult(resultCode, Intent())
+                }
+
+                REQUEST_CHANGE_PASSWORD -> NetworkErrorHelper.showGreenCloseSnackbar(
+                    this, getString(
+                        R.string.message_success_change_password
+                    )
+                )
+
+                else -> {}
+            }
         }
-        return AccountSettingFragment.createInstance(bundle);
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun onBackClicked() {
+
+    }
+
+    private fun onItemClicked(id: Int) {
+        Toast.makeText(this, id.toString(), Toast.LENGTH_SHORT).show()
+    }
+
+    override fun getNewFragment(): Fragment? {
+//        val bundle = Bundle()
+//        if (intent.extras != null) {
+//            bundle.putAll(intent.extras)
+//        }
+//        return AccountSettingFragment.createInstance(bundle)
+        return null
+    }
+
+    companion object {
+        private const val REQUEST_CHANGE_PASSWORD = 123
+        fun createIntent(context: Context?): Intent {
+            return Intent(context, AccountSettingActivity::class.java)
+        }
     }
 }
