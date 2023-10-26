@@ -5,6 +5,6 @@ import com.google.gson.annotations.SerializedName
 data class UnavailableSectionCta(
     @SerializedName("id")
     val id: Long = 0,
-    @SerializedName("text")
-    val text: String = ""
+    @SerializedName("message")
+    val message: String = ""
 )

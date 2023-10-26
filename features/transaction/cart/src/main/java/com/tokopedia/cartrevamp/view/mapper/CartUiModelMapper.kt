@@ -424,7 +424,7 @@ object CartUiModelMapper {
             title = unavailabeSection.title
             subTitle = unavailabeSection.unavailableDescription
             productsCount = unavailabeSection.productsCount
-            showOutOfCoverageTitle = unavailabeSection.unavailableSectionCta.text
+            showOutOfCoverageTitle = unavailabeSection.unavailableSectionCta.message
             isShowOutOfCoverageAction = unavailabeSection.unavailableSectionCta.id != 0L
         }
     }
