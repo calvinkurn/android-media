@@ -15,10 +15,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.percentFormatted
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
@@ -26,6 +22,7 @@ import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantR
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
 import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
+import com.tokopedia.product.detail.common.data.model.pdplayout.Price
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
@@ -371,21 +368,15 @@ object AtcCommonMapper {
         } else {
             selectedChild?.campaign?.isActive.orFalse()
         }
-        val priceFmt = selectedChild?.priceFmt.ifNullOrBlank {
-            selectedChild?.finalMainPrice?.getCurrencyFormatted().orEmpty()
-        }
-        val slashPriceFmt = selectedChild?.slashPriceFmt.ifNullOrBlank {
-            selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted().orEmpty()
-        }
-        val discPercentageFmt = selectedChild?.discPercentage.ifNullOrBlank {
-            selectedChild?.campaign?.discountedPercentage.orZero().percentFormatted()
+        val price = with(Price()) {
+            updatePrice(variantChild = selectedChild)
         }
 
         val headerData = ProductHeaderData(
-            productMainPrice = priceFmt,
-            productDiscountedPercentage = discPercentageFmt,
+            productMainPrice = price.priceFmt,
+            productDiscountedPercentage = price.discPercentage,
             isCampaignActive = isCampaignActive,
-            productSlashPrice = slashPriceFmt,
+            productSlashPrice = price.slashPriceFmt,
             productStockFmt = selectedChild?.stock?.stockFmt ?: "",
             hideGimmick = selectedChild?.campaign?.hideGimmick.orFalse()
         )

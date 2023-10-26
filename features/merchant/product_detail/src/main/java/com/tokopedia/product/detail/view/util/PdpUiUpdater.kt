@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
-import com.tokopedia.kotlin.extensions.view.percentFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -217,29 +216,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         productName = it.data.name,
                         isProductActive = it.basic.isActive()
                     ).apply {
-                        price = price.copy(
-                            priceFmt = price.priceFmt.ifNullOrBlank {
-                                price.value.getCurrencyFormatted()
-                            }
-                        )
-                        campaign.discPercentageFmt = price.discPercentage.ifNullOrBlank {
-                            campaign.percentageAmount.percentFormatted()
-                        }
-                        campaign.slashPriceFmt = price.slashPriceFmt.ifNullOrBlank {
-                            campaign.discountedPrice.getCurrencyFormatted()
-                        }
-                        campaign.priceFmt = price.priceFmt.ifNullOrBlank {
-                            campaign.originalPrice.getCurrencyFormatted()
-                        }
-
-                        /**
-                         * refer to [AtcCommonMapper]
-                         */
-                        if (campaign.hideGimmick) {
-                            campaign.priceFmt = price.slashPriceFmt.ifNullOrBlank {
-                                campaign.discountedPrice.getCurrencyFormatted()
-                            }
-                        }
+                        price = price.updatePriceFmt()
+                        campaign.processMaskingPrice(price = price)
                     }
 
                     shouldShowCampaign = ongoingCampaignData == null

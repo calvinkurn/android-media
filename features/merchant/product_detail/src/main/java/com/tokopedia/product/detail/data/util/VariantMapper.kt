@@ -42,6 +42,7 @@ object VariantMapper {
             url = newData?.url ?: ""
         )
 
+        val newPrice = oldData.data.price.updatePrice(variantChild = newData)
         val newCampaign = oldData.data.campaign.copy(
             campaignID = newData?.campaign?.campaignID ?: "",
             campaignType = newData?.campaign?.campaignType.toString(),
@@ -62,17 +63,15 @@ object VariantMapper {
             hideGimmick = newData?.campaign?.hideGimmick ?: false,
             background = newData?.campaign?.background ?: "",
             campaignIdentifier = newData?.campaign?.campaignIdentifier ?: 0
-        )
+        ).apply {
+            processMaskingPrice(price = newPrice)
+        }
 
         val newThematicCampaign = ThematicCampaign(
             campaignName = newData?.thematicCampaign?.campaignName ?: "",
             icon = newData?.thematicCampaign?.icon ?: "",
             background = newData?.thematicCampaign?.background ?: "",
             additionalInfo = newData?.thematicCampaign?.additionalInfo ?: ""
-        )
-
-        val newPrice = oldData.data.price.copy(
-            value = newData?.price ?: 0.0
         )
 
         val newStock = oldData.data.stock.copy(
