@@ -60,8 +60,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
+class ShopPenaltyPageFragment :
+    BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
     PenaltyDateFilterBottomSheet.CalenderListener,
     PenaltyFilterBottomSheet.PenaltyFilterFinishListener,
     ItemDetailPenaltyListener,
@@ -178,7 +180,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
             activity?.window?.decorView?.setBackgroundColor(
                 androidx.core.content.ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                    unifyprinciplesR.color.Unify_Background
                 )
             )
         }
@@ -360,13 +362,13 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     override fun startRenderPerformanceMonitoring() {
         shopPenaltyPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
         binding?.rvPenaltyPage?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                shopPenaltyPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
-                shopPenaltyPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                binding?.rvPenaltyPage?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-            }
-        })
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    shopPenaltyPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                    shopPenaltyPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                    binding?.rvPenaltyPage?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                }
+            })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): ShopPenaltyPerformanceMonitoringListener? {
@@ -392,7 +394,6 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
         endlessRecyclerViewScrollListener.resetState()
         viewModelShopPenalty.setTypeFilterData(typeIds)
     }
-
 
     private fun observeUpdateSortFilter() {
         observe(viewModelShopPenalty.updateSortSelectedPeriod) {
@@ -517,7 +518,5 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
                 arguments = bundle
             }
         }
-
     }
-
 }

@@ -43,9 +43,12 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class CentralizedPromoFragment : BaseDaggerFragment(),
-    PartialCentralizedPromoOnGoingPromoView.RefreshButtonClickListener, CoachMarkListener,
+class CentralizedPromoFragment :
+    BaseDaggerFragment(),
+    PartialCentralizedPromoOnGoingPromoView.RefreshButtonClickListener,
+    CoachMarkListener,
     PartialCentralizedPromoCreationView.RefreshPromotionClickListener {
 
     companion object {
@@ -127,7 +130,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
             activity?.window?.decorView?.setBackgroundColor(
                 androidx.core.content.ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                    unifyprinciplesR.color.Unify_Background
                 )
             )
         }
@@ -217,7 +220,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
         partialViews.forEach { it.value?.renderLoading() }
         getLayoutData(
             LayoutType.ON_GOING_PROMO,
-            LayoutType.PROMO_CREATION,
+            LayoutType.PROMO_CREATION
         )
     }
 
@@ -226,18 +229,21 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
     }
 
     private fun observeGetLayoutDataResult() {
-        centralizedPromoViewModel.getLayoutResultLiveData.observe(viewLifecycleOwner, Observer {
-            it.forEach { entry ->
-                when (val value = entry.value) {
-                    is Success -> value.onSuccessGetLayoutData<BaseUiModel, BasePartialView<BaseUiModel>>(
-                        entry.key
-                    )
-                    is Fail -> value.onFailedGetLayoutData(entry.key)
+        centralizedPromoViewModel.getLayoutResultLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                it.forEach { entry ->
+                    when (val value = entry.value) {
+                        is Success -> value.onSuccessGetLayoutData<BaseUiModel, BasePartialView<BaseUiModel>>(
+                            entry.key
+                        )
+                        is Fail -> value.onFailedGetLayoutData(entry.key)
+                    }
                 }
-            }
 
-            binding?.swipeRefreshLayout?.isRefreshing = false
-        })
+                binding?.swipeRefreshLayout?.isRefreshing = false
+            }
+        )
     }
 
     private inline fun <reified D : BaseUiModel, reified V : BasePartialView<D>> Success<BaseUiModel>.onSuccessGetLayoutData(
@@ -330,8 +336,11 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
         isErrorToastShown = true
 
         Toaster.build(
-            this, context.getString(R.string.centralized_promo_failed_to_get_information),
-            TOAST_DURATION.toInt(), Toaster.TYPE_ERROR, context.getString(R.string.centralized_promo_reload)
+            this,
+            context.getString(R.string.centralized_promo_failed_to_get_information),
+            TOAST_DURATION.toInt(),
+            Toaster.TYPE_ERROR,
+            context.getString(R.string.centralized_promo_reload)
         ) {
             refreshLayout()
         }.show()
@@ -342,10 +351,9 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
     }
 
     private fun onClickPromo(promoCreationUiModel: PromoCreationUiModel) {
-
         if (promoCreationUiModel.isEligible()) {
-            if (sharedPref.getBoolean(promoCreationUiModel.title, false)){
-                RouteManager.route(requireContext(),promoCreationUiModel.ctaLink)
+            if (sharedPref.getBoolean(promoCreationUiModel.title, false)) {
+                RouteManager.route(requireContext(), promoCreationUiModel.ctaLink)
             } else {
                 val detailPromoBottomSheet =
                     DetailPromoBottomSheet.createInstance(promoCreationUiModel)
@@ -375,7 +383,6 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
                     )
                 }
 
-
                 detailPromoBottomSheet.onImpressionPaywallTracking {
                     CentralizedPromoTracking.sendImpressionBottomSheetPaywall(
                         currentFilterTab.name,
@@ -395,7 +402,6 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
                     promoCreationUiModel.title
                 )
             }
-
         } else {
             RouteManager.route(requireContext(), ApplinkConstInternalSellerapp.ADMIN_RESTRICTION)
         }
@@ -425,7 +431,6 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
             PLAY_PERFORMANCE_URL
         )
     }
-
 }
 
 interface CoachMarkListener {
