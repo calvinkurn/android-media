@@ -18,13 +18,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
@@ -44,6 +44,7 @@ import com.tokopedia.shop.info.domain.entity.ShopPerformanceMetric
 import com.tokopedia.shop.info.domain.entity.ShopRatingAndReviews
 import com.tokopedia.shop.info.domain.entity.ShopRatingAndTopics
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
+import com.tokopedia.shop.info.view.model.ShopInfoPreviewParameterProvider
 import com.tokopedia.shop.info.view.model.ShopInfoUiState
 
 @Composable
@@ -73,17 +74,19 @@ fun Content(modifier: Modifier = Modifier, uiState: ShopInfoUiState) {
         .padding(horizontal = 16.dp)
         .verticalScroll(scrollState)
     ) {
+        Spacer(modifier = Modifier.height(16.dp))
         ShopCoreInfo(
             shopImageUrl = uiState.shopImageUrl,
             shopBadgeUrl = uiState.shopImageUrl,
             shopName = uiState.shopName
         )
+        
         Spacer(modifier = Modifier.height(16.dp))
         ShopInfo(
-            uiState.mainLocation,
-            uiState.otherLocation,
-            uiState.operationalHours,
-            uiState.shopJoinDate
+            mainLocation = uiState.mainLocation,
+            otherLocation = uiState.otherLocation,
+            operationalHours = uiState.operationalHours,
+            shopJoinDate = uiState.shopJoinDate
         )
         
         if (uiState.showEpharmacyInfo) {
@@ -114,7 +117,8 @@ fun Content(modifier: Modifier = Modifier, uiState: ShopInfoUiState) {
             Spacer(modifier = Modifier.height(16.dp))
             ShopDescription(uiState.shopDescription)
         }
-        if (uiState.shopDescription.isNotEmpty()) {
+        
+        if (uiState.shipments.isNotEmpty()) {
             Spacer(modifier = Modifier.height(16.dp))
             ShopSupportedShipment(uiState.shipments)
         }
@@ -652,102 +656,12 @@ fun ShopRatingBarItem(rating: ShopRatingAndTopics.Rating.Detail) {
     }
 }
 
-@Preview(name = "Light Mode", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Light Mode", device = "spec:width=411dp,height=891dp", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun ShopInfoScreenPreview() {
+fun ShopInfoScreenPreview(
+    @PreviewParameter(ShopInfoPreviewParameterProvider::class) uiState: ShopInfoUiState
+) {
     NestTheme {
-        ShopInfoScreen(
-            ShopInfoUiState(
-                shopImageUrl = "https://images.tokopedia.net/img/official_store/badge_os.png",
-                shopBadgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png",
-                shopName = "Kimia Farma",
-                shopDescription = "Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups",
-                mainLocation = "Jakarta Selatan",
-                otherLocation = "+10 lainnya",
-                operationalHours = "07:00 - 18:00",
-                shopJoinDate = "9 Mar 2017",
-                shopPerformanceMetrics = listOf(
-                    ShopPerformanceMetric(metricName = "Produk terjual", metricValue = "51rb"),
-                    ShopPerformanceMetric(metricName = "Performa chat", metricValue = ">1 jam"),
-                    ShopPerformanceMetric(metricName = "Pesanan diproses", metricValue = "1 menit")
-                ),
-                shopNotes = listOf(
-                    ShopNote("1", "Kebijakan pengembalian produk"),
-                    ShopNote("2", "Syarat dan ketentuan"),
-                    ShopNote("3", "Masa berlaku garansi")
-                ),
-                shipments = listOf(
-                    ShopSupportedShipment("JNE", ""),
-                    ShopSupportedShipment("J&T", ""),
-                    ShopSupportedShipment("Gojek", ""),
-                    ShopSupportedShipment("Grab", "")
-                ),
-                ratingAndReview = ShopRatingAndReviews(
-                    rating = ShopRatingAndTopics(
-                        rating = ShopRatingAndTopics.Rating(
-                            positivePercentageFmt = "99% pembeli merasa puas",
-                            ratingScore = "4.7",
-                            totalRating = 217750,
-                            totalRatingFmt = "217,7rb",
-                            detail = listOf(
-                                ShopRatingAndTopics.Rating.Detail(
-                                    formattedTotalReviews = "210,1rb",
-                                    percentageFloat = 96.53,
-                                    rate = 5,
-                                    totalReviews = 210193
-                                ),
-                                ShopRatingAndTopics.Rating.Detail(
-                                    formattedTotalReviews = "6.292",
-                                    percentageFloat = 2.89,
-                                    rate = 4,
-                                    totalReviews = 6292
-                                ),
-                                ShopRatingAndTopics.Rating.Detail(
-                                    formattedTotalReviews = "722",
-                                    percentageFloat = 0.33,
-                                    rate = 3,
-                                    totalReviews = 722
-                                ),
-                                ShopRatingAndTopics.Rating.Detail(
-                                    formattedTotalReviews = "118",
-                                    percentageFloat = 0.05,
-                                    rate = 2,
-                                    totalReviews = 118
-                                ),
-                                ShopRatingAndTopics.Rating.Detail(
-                                    formattedTotalReviews = "425",
-                                    percentageFloat = 0.2,
-                                    rate = 1,
-                                    totalReviews = 425
-                                )
-                            )
-                        )
-                    ),
-                    reviews = listOf(
-                        Review(
-                            rating = 4,
-                            reviewTime = "Kemarin",
-                            reviewText = "Paket diterima dengan baik dan aman, handphone original, sellernya amanah dikirim sesuai waktu yang disepakati. Res...",
-                            reviewerName = "Karina"
-                        ),
-                        Review(
-                            rating = 5,
-                            reviewTime = "Minggu lalu",
-                            reviewText = "Packaging aman",
-                            reviewerName = "Ajay"
-                        )
-                    )
-                ),
-                showEpharmacyInfo = true,
-                epharmacy = EpharmacyInfo(
-                    nearestPickupAddress = "Epicentrum Walk, Jl. H. R. Rasuna said, Karet Kuningan, Setiabudi, Jakarta Selatan, Setiabudi 12940",
-                    nearPickupAddressAppLink = "tokopedia://logistic/epharmacy",
-                    pharmacistOperationalHour = "09:00 - 18:00",
-                    pharmacistName = "apt. Epin Ambarwati, S.Farm",
-                    siaNumber = "201221003602300001"
-                )
-            )
-        )
+        ShopInfoScreen(uiState)
     }
 }
