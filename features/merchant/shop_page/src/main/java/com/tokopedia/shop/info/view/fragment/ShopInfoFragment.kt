@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -45,7 +44,6 @@ import com.tokopedia.shop.databinding.FragmentShopInfoBinding
 import com.tokopedia.shop.extension.transformToVisitable
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
-import com.tokopedia.shop.info.domain.entity.ShopRatingAndReviews
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity.Companion.EXTRA_SHOP_INFO
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapter
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapterTypeFactory
@@ -208,20 +206,6 @@ class ShopInfoFragment :
         observeShopInfo()
         observeShopBadgeReputation()
         observerMessageIdOnChatExist()
-        observeShopRatingAndReview()
-    }
-
-    private fun observeShopRatingAndReview() {
-        shopViewModel?.shopRatingAndReview?.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> showShopRatingAndReview(result.data)
-                is Fail -> showToasterError(result.throwable)
-            }
-        }
-    }
-
-    private fun showShopRatingAndReview(data: ShopRatingAndReviews) {
-
     }
 
     private fun observeShopBadgeReputation() {

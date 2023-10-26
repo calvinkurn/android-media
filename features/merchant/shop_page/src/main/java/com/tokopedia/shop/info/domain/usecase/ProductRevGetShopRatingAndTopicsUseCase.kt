@@ -9,7 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shop.info.data.mapper.ProductRevGetShopRatingAndTopicsMapper
 import com.tokopedia.shop.info.data.response.ProductRevGetShopRatingAndTopicsResponse
-import com.tokopedia.shop.info.domain.entity.ShopRatingAndTopics
+import com.tokopedia.shop.info.domain.entity.ShopRating
 import javax.inject.Inject
 
 /**
@@ -51,7 +51,7 @@ class ProductRevGetShopRatingAndTopicsUseCase @Inject constructor(
     }
 
 
-    suspend fun execute(param: Param): ShopRatingAndTopics {
+    suspend fun execute(param: Param): ShopRating {
         val request = buildRequest(param)
         val response = repository.response(listOf(request))
         return mapper.map(response.getSuccessData())

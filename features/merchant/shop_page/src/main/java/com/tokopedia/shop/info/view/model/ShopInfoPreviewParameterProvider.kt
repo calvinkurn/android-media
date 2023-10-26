@@ -11,11 +11,7 @@ import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
 class ShopInfoPreviewParameterProvider : PreviewParameterProvider<ShopInfoUiState> {
     override val values: Sequence<ShopInfoUiState>
         get() = sequenceOf(
-            shopInfoAllData,
-            noEpharmachyScenario,
-            noShopNotesScenario,
-            noMultilocationScenario,
-            noSupportedShipmentScenario
+            shopInfoAllData
         )
 
     private val shopInfoAllData = ShopInfoUiState(

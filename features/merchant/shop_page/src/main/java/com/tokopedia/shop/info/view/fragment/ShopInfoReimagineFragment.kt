@@ -5,16 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.databinding.FragmentShopInfoReimagineBinding
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
-import com.tokopedia.shop.info.domain.entity.ShopRatingAndReviews
+import com.tokopedia.shop.info.view.model.ShopInfoUiState
 import com.tokopedia.shop.info.view.viewmodel.ShopInfoReimagineViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -55,7 +54,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeShopRatingAndReview()
+        observeUiState()
         viewModel.getShopRating(shopId)
     }
 
@@ -69,20 +68,16 @@ class ShopInfoReimagineFragment : BaseDaggerFragment() {
             .inject(this)
     }
     
-    
 
-    private fun observeShopRatingAndReview() {
-        viewModel.shopRatingAndReview.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> showShopRatingAndReview(result.data)
-                is Fail -> {}
-            }
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.uiState.collect { state -> handleUiState(state) }
         }
     }
 
-    private fun showShopRatingAndReview(data: ShopRatingAndReviews) {
-        binding?.tpgReview?.text = data.rating.rating.positivePercentageFmt
+    private fun handleUiState(state: ShopInfoUiState) {
+        println(state)
     }
-    
+
 
 }
