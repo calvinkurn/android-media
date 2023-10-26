@@ -12,7 +12,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageWithError
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -58,7 +58,7 @@ class ReferralPhoneNumberVerificationFragment : BaseDaggerFragment() {
         tvPhoneNumber?.setText(transform(userSession.phoneNumber))
         btnActivation = view.findViewById<View>(R.id.btn_activation) as TextView
         ivTokocash = view.findViewById<View>(R.id.img_app_share) as ImageView
-        ImageHandler.loadImage2(ivTokocash, URL_TOKOCASH_SHARE, com.tokopedia.design.R.drawable.loading_page)
+        ivTokocash?.loadImageWithError(URL_TOKOCASH_SHARE, com.tokopedia.design.R.drawable.loading_page)
         setViewListener()
     }
 

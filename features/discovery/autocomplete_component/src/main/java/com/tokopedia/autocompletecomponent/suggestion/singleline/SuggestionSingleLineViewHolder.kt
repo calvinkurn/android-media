@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.media.loader.loadImageRounded
+import com.tokopedia.media.loader.loadImageWithError
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
@@ -93,11 +94,7 @@ class SuggestionSingleLineViewHolder(
 
     private fun bindShortcutButton(item: BaseSuggestionDataView){
         binding?.actionShortcutButton?.shouldShowWithAction(item.shortcutImage.isNotEmpty()) {
-            ImageHandler.loadImage2(
-                binding?.actionShortcutButton,
-                item.shortcutImage,
-                R.drawable.autocomplete_ic_copy_to_search_bar
-            )
+            binding?.actionShortcutButton?.loadImageWithError(item.shortcutImage, R.drawable.autocomplete_ic_copy_to_search_bar)
         }
     }
 

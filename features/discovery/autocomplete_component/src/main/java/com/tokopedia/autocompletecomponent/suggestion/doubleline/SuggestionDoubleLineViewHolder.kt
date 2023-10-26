@@ -161,7 +161,7 @@ class SuggestionDoubleLineViewHolder(
 
     private fun bindShortcutButton(item: BaseSuggestionDataView) {
         binding?.actionShortcutButton?.shouldShowOrHideWithAction(item.shortcutImage.isNotEmpty()) {
-            ImageHandler.loadImage2(it, item.shortcutImage, R.drawable.autocomplete_ic_copy_to_search_bar)
+            it.loadImageWithError(item.shortcutImage,R.drawable.autocomplete_ic_copy_to_search_bar)
         }
     }
 
