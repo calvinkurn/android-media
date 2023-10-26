@@ -27,6 +27,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.nest.principles.utils.tag
 import com.tokopedia.sellerpersona.R
+import com.tokopedia.sellerpersona.common.ComposeTag
 
 /**
  * Created by @ilhamsuaib on 12/07/23.
@@ -53,14 +54,14 @@ fun PersonaOpeningScreen(
                 modifier = Modifier
                     .requiredWidth(280.dp)
                     .requiredHeight(210.dp)
-                    .tag("imgSpOpening")
+                    .tag(ComposeTag.Opening.ILLUSTRATION)
             )
             NestTypography(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(alignment = Alignment.CenterHorizontally)
                     .padding(start = 16.dp, end = 16.dp, top = 20.dp)
-                    .tag("tvSpOpeningTitle"),
+                    .tag(ComposeTag.Opening.TITLE),
                 text = stringResource(id = R.string.sp_opening_title),
                 textStyle = NestTheme.typography.heading2.copy(
                     color = NestTheme.colors.NN._950,
@@ -72,7 +73,7 @@ fun PersonaOpeningScreen(
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, top = 8.dp)
                     .align(alignment = Alignment.CenterHorizontally)
-                    .tag("tvSpOpeningSubTitle"),
+                    .tag(ComposeTag.Opening.SUB_TITLE),
                 text = stringResource(id = R.string.sp_opening_sub_title),
                 textStyle = NestTheme.typography.display3.copy(
                     color = NestTheme.colors.NN._600,
@@ -84,7 +85,7 @@ fun PersonaOpeningScreen(
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, top = 16.dp)
                     .align(alignment = Alignment.CenterHorizontally)
-                    .tag("tvSpOpeningFooter"),
+                    .tag(ComposeTag.Opening.INFO),
                 text = stringResource(id = R.string.sp_opening_footer),
                 textStyle = NestTheme.typography.small.copy(
                     color = NestTheme.colors.NN._600,
@@ -95,7 +96,7 @@ fun PersonaOpeningScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, top = 24.dp)
-                    .tag("btnOpeningStartQuiz"),
+                    .tag(ComposeTag.Opening.BTN_START),
                 text = stringResource(id = R.string.sp_start_quiz),
                 variant = ButtonVariant.FILLED,
                 onClick = onNext
@@ -104,7 +105,7 @@ fun PersonaOpeningScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, top = 8.dp)
-                    .tag("btnOpeningTryLater"),
+                    .tag(ComposeTag.Opening.BTN_LATER),
                 text = stringResource(id = R.string.sp_try_later),
                 variant = ButtonVariant.TEXT_ONLY,
                 onClick = onBack

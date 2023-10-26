@@ -43,6 +43,7 @@ import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.tag
+import com.tokopedia.sellerpersona.common.ComposeTag
 import com.tokopedia.sellerpersona.view.compose.component.disabledHorizontalPointerInputScroll
 import com.tokopedia.sellerpersona.view.compose.model.uievent.QuestionnaireUserEvent
 import com.tokopedia.sellerpersona.view.model.BaseOptionUiModel
@@ -92,7 +93,7 @@ fun QuestionnaireSuccessState(
                         width = Dimension.fillToConstraints
                     }
                     .height(2.dp)
-                    .tag("progressBarPersonaQuestionnaire")
+                    .tag(ComposeTag.Questionnaire.PROGRESS)
             )
 
             HorizontalPager(
@@ -124,7 +125,7 @@ fun QuestionnaireSuccessState(
                             start.linkTo(parent.start, margin = 16.dp)
                             bottom.linkTo(parent.bottom, margin = 16.dp)
                         }
-                        .tag("btnSpPrev"),
+                        .tag(ComposeTag.Questionnaire.BTN_PREV),
                     variant = ButtonVariant.TEXT_ONLY,
                     onClick = {
                         onEvent(QuestionnaireUserEvent.ClickPrevious)
@@ -145,7 +146,7 @@ fun QuestionnaireSuccessState(
                         bottom.linkTo(parent.bottom, margin = 16.dp)
                         width = Dimension.preferredWrapContent.atLeast(120.dp)
                     }
-                    .tag("btnSpNext"),
+                    .tag(ComposeTag.Questionnaire.BTN_NEXT),
                 isEnabled = isNextButtonEnabled,
                 isLoading = data.isNextButtonLoading,
                 onClick = {
@@ -185,7 +186,7 @@ fun QuestionnairePager(
         NestTypography(
             modifier = Modifier
                 .fillMaxWidth()
-                .tag("tvSpQuestionTitle"),
+                .tag(ComposeTag.Questionnaire.QUESTION_TITLE),
             text = questionnaire.questionTitle,
             textStyle = NestTheme.typography.display1.copy(
                 fontWeight = FontWeight.Bold
@@ -195,7 +196,7 @@ fun QuestionnairePager(
         NestTypography(
             modifier = Modifier
                 .fillMaxWidth()
-                .tag("tvSpQuestionSubtitle"),
+                .tag(ComposeTag.Questionnaire.QUESTION_SUB_TITLE),
             text = questionnaire.questionSubtitle,
             textStyle = NestTheme.typography.display3.copy(
                 color = NestTheme.colors.NN._600
@@ -236,7 +237,7 @@ fun QuestionnaireItemMultipleAnswer(
         isChecked = option.isSelected,
         modifier = Modifier
             .fillMaxWidth()
-            .tag("cbSpMultipleOption"),
+            .tag(ComposeTag.Questionnaire.CB_OPTION),
         onCheckedChange = {
             event(QuestionnaireUserEvent.OnOptionItemSelected(pagePosition, option, it))
         }
@@ -278,17 +279,11 @@ fun QuestionnaireItemSingleAnswer(
             }
     ) {
         val optionText = remember { option.getFormattedText() }
-        //for UI automation purpose
-        NestTypography(
-            text = "", modifier = Modifier
-                .requiredSize(0.dp)
-                .tag("tvSpOptionValue")
-        )
         NestTypography(
             text = optionText, modifier = Modifier
                 .fillMaxWidth()
                 .padding(all = 12.dp)
-                .tag("tvSpOptionTitle")
+                .tag(ComposeTag.Questionnaire.OPTION_TITLE)
         )
     }
 }

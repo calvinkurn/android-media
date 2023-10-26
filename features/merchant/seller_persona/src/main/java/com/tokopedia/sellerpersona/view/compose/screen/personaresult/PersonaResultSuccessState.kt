@@ -40,6 +40,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.nest.principles.utils.tag
 import com.tokopedia.sellerpersona.R
+import com.tokopedia.sellerpersona.common.ComposeTag
 import com.tokopedia.sellerpersona.view.compose.model.uievent.ResultUiEvent
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
@@ -67,7 +68,7 @@ internal fun ResultSuccessState(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .tag("rvSpResultInfoList")
+            .tag(ComposeTag.Result.RESULT_INFO_LIST)
     ) {
         item {
             ResultHeaderSectionUi(
@@ -120,7 +121,7 @@ private fun ResultFooterSectionUi(data: PersonaDataUiModel, onEvent: (ResultUiEv
                     ),
                     modifier = Modifier
                         .wrapContentWidth()
-                        .tag("tvSpLblActivatePersonaStatus")
+                        .tag(ComposeTag.Result.LBL_STATUS)
                 )
             }
             NestSwitch(defaultIsChecked = data.isSwitchChecked) {
@@ -141,7 +142,7 @@ private fun ResultFooterSectionUi(data: PersonaDataUiModel, onEvent: (ResultUiEv
                     onEvent(ResultUiEvent.ApplyChanges(data.persona, data.isSwitchChecked))
                 }, modifier = Modifier
                     .fillMaxWidth()
-                    .tag("btnSpApplyPersona")
+                    .tag(ComposeTag.Result.BTN_APPLY)
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
@@ -152,7 +153,7 @@ private fun ResultFooterSectionUi(data: PersonaDataUiModel, onEvent: (ResultUiEv
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .tag("btnSpRetryQuestionnaire"),
+                .tag(ComposeTag.Result.BTN_QUIZ),
             variant = ButtonVariant.GHOST_ALTERNATE
         )
 
@@ -183,7 +184,7 @@ private fun ManualSelectPersonaComponent(persona: String, onEvent: (ResultUiEven
         modifier = Modifier
             .padding(top = 26.dp, bottom = 18.dp)
             .fillMaxWidth()
-            .tag("tvSpSelectManualType"),
+            .tag(ComposeTag.Result.BTN_SELECT_TYPE),
         onClickText = { spannedRange ->
             when (spannedRange.item) {
                 clickable -> onEvent(ResultUiEvent.SelectPersona(persona))
@@ -209,7 +210,7 @@ private fun ResultHeaderSectionUi(
             type = NestImageType.Rect(rounded = 0.dp),
             modifier = Modifier
                 .fillMaxSize()
-                .tag("imgSpResultBackdrop")
+                .tag(ComposeTag.Result.IMG_BACKDROP)
         )
         Column(
             verticalArrangement = Arrangement.Center,
@@ -223,13 +224,13 @@ private fun ResultHeaderSectionUi(
                 type = NestImageType.Circle,
                 modifier = Modifier
                     .size(120.dp)
-                    .tag("imgSpResultAvatar")
+                    .tag(ComposeTag.Result.IMG_AVATAR)
             )
             Spacer(modifier = Modifier.height(16.dp))
             NestTypography(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .tag("tvSpLblSellerType"),
+                    .tag(ComposeTag.Result.LABEL_TYPE),
                 text = stringResource(R.string.sp_result_seller_type),
                 textStyle = NestTheme.typography.display3.copy(
                     color = NestNN.light._0, textAlign = TextAlign.Center
@@ -239,7 +240,7 @@ private fun ResultHeaderSectionUi(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 2.dp)
-                    .tag("tvSpSellerType"),
+                    .tag(ComposeTag.Result.SELLER_TYPE),
                 text = String.format(PERSONA_TITLE, headerTitle),
                 textStyle = NestTheme.typography.heading2.copy(
                     color = NestNN.light._0, textAlign = TextAlign.Center
@@ -249,7 +250,7 @@ private fun ResultHeaderSectionUi(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 2.dp)
-                    .tag("tvSpSellerTypeNote"),
+                    .tag(ComposeTag.Result.TYPE_NOTE),
                 text = stringResource(
                     R.string.sp_result_account_type, headerSubTitle
                 ),
@@ -309,7 +310,7 @@ private fun LazyListScope.renderResultContentSectionUi(
                     .padding(
                         top = 6.dp, bottom = 6.dp, start = 8.dp
                     )
-                    .tag("tvSpResultInfoItem"), textStyle = NestTheme.typography.display2.copy(
+                    .tag(ComposeTag.Result.INFO_ITEM), textStyle = NestTheme.typography.display2.copy(
                     color = NestTheme.colors.NN._950
                 ), text = it
             )
@@ -341,7 +342,7 @@ private fun LazyListScope.corporateOwnerInfo(persona: String, isShopOwner: Boole
                 NestTypography(
                     modifier = Modifier
                         .padding(start = 8.dp)
-                        .tag("tvSpLblOwnerInfo"),
+                        .tag(ComposeTag.Result.OWNER_INFO),
                     text = stringResource(R.string.sp_result_create_admin_account),
                     textStyle = NestTheme.typography.display3.copy(
                         color = NestTheme.colors.NN._600
