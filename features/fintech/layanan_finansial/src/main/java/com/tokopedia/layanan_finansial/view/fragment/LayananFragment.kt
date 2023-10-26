@@ -2,7 +2,6 @@ package com.tokopedia.layanan_finansial.view.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -55,28 +54,25 @@ class LayananFragment : BaseListFragment<Visitable<*>, LayananViewHolderFactory>
         }
     }
 
-    private fun addObserver() = viewModel.liveData.observe(
-        this,
-        Observer {
-            it?.let {
-                when (it) {
-                    is Success -> {
-                        performanceInterface.stopNetworkRequestPerformanceMonitoring()
-                        performanceInterface.startRenderPerformanceMonitoring()
-                        render(it.data)
-                        performanceInterface.stopRenderPerformanceMonitoring()
-                    }
-                    is Fail -> {
-                        performanceInterface.stopNetworkRequestPerformanceMonitoring()
-                        performanceInterface.startRenderPerformanceMonitoring()
-                        showGetListError(it.throwable)
-                        performanceInterface.stopRenderPerformanceMonitoring()
-                    }
+    private fun addObserver() = viewModel.liveData.observe(viewLifecycleOwner) {
+        it?.let {
+            when (it) {
+                is Success -> {
+                    performanceInterface.stopNetworkRequestPerformanceMonitoring()
+                    performanceInterface.startRenderPerformanceMonitoring()
+                    render(it.data)
+                    performanceInterface.stopRenderPerformanceMonitoring()
                 }
-                performanceInterface.stopMonitoring()
+                is Fail -> {
+                    performanceInterface.stopNetworkRequestPerformanceMonitoring()
+                    performanceInterface.startRenderPerformanceMonitoring()
+                    showGetListError(it.throwable)
+                    performanceInterface.stopRenderPerformanceMonitoring()
+                }
             }
+            performanceInterface.stopMonitoring()
         }
-    )
+    }
 
     /**
      * Added a empty list of DataType TopAdsImageModel to notify recycler view of the BaseListFragment about addition of a new view type for ads
