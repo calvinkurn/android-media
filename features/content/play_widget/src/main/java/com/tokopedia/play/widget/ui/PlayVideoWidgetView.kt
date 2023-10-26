@@ -5,6 +5,7 @@ import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.BehindLiveWindowException
@@ -118,7 +119,11 @@ class PlayVideoWidgetView : CardUnify2 {
         mModel = model
 
         binding.totalWatchView.setTotalWatch(model.totalView)
-        binding.imgCover.loadImage(model.coverUrl)
+        binding.imgCover.loadImage(model.coverUrl) {
+            listener(
+                onSuccess = { _, _ -> binding.imgCover.scaleType = ImageView.ScaleType.CENTER_CROP }
+            )
+        }
         binding.tvTitle.text = model.title
         binding.imgAvatar.loadImage(model.avatarUrl)
         binding.imgBadge.showWithCondition(model.badgeUrl.isNotBlank())
