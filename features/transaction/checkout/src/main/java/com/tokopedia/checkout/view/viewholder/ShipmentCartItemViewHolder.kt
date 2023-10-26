@@ -9,7 +9,6 @@ import android.widget.CompoundButton
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.media.loader
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemShipmentProductBinding
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
