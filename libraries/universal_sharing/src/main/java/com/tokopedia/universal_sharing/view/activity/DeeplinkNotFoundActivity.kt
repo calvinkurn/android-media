@@ -72,7 +72,7 @@ class DeeplinkNotFoundActivity : BaseActivity() {
             }
         }
         if (source == TYPE_SHARE) {
-            TrackUtil.sendImpressionPageEvent(intent?.data?.toString(), isUpdateType)
+            TrackUtil.sendImpressionPageEvent(intent?.data?.toString(), "")
         }
     }
 
