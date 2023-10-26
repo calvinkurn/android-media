@@ -135,6 +135,7 @@ class CatalogDetailPageFragment :
         private const val LOGIN_REQUEST_CODE = 1001
         private const val POSITION_THREE_IN_WIDGET_LIST = 3
         private const val POSITION_TWO_IN_WIDGET_LIST = 2
+        private const val NAVIGATION_SCROLL_DURATION = 800L
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
 
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
@@ -263,19 +264,23 @@ class CatalogDetailPageFragment :
         val layoutManager = binding?.rvContent?.layoutManager as? LinearLayoutManager
         widgetAdapter.changeNavigationTabActive(tabPosition)
         if (anchorToPosition >= Int.ZERO) {
-            if (tabPosition == Int.ZERO) {
-                smoothScroller.targetPosition = anchorToPosition - POSITION_THREE_IN_WIDGET_LIST
-                layoutManager?.startSmoothScroll(smoothScroller)
-            } else if (tabPosition == (widgetAdapter.findNavigationCount() - 1)) {
-                smoothScroller.targetPosition = anchorToPosition
-                layoutManager?.startSmoothScroll(smoothScroller)
-            } else {
-                smoothScroller.targetPosition = anchorToPosition - POSITION_TWO_IN_WIDGET_LIST
-                layoutManager?.startSmoothScroll(smoothScroller)
+            when (tabPosition) {
+                Int.ZERO -> {
+                    smoothScroller.targetPosition = anchorToPosition - POSITION_THREE_IN_WIDGET_LIST
+                    layoutManager?.startSmoothScroll(smoothScroller)
+                }
+                (widgetAdapter.findNavigationCount().dec()) -> {
+                    smoothScroller.targetPosition = anchorToPosition
+                    layoutManager?.startSmoothScroll(smoothScroller)
+                }
+                else -> {
+                    smoothScroller.targetPosition = anchorToPosition - POSITION_TWO_IN_WIDGET_LIST
+                    layoutManager?.startSmoothScroll(smoothScroller)
+                }
             }
             Handler(Looper.getMainLooper()).postDelayed({
                 selectNavigationFromScroll = true
-            }, 800)
+            }, NAVIGATION_SCROLL_DURATION)
         }
 
         CatalogReimagineDetailAnalytics.sendEvent(
