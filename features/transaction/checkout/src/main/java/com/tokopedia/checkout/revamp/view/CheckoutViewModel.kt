@@ -2561,9 +2561,9 @@ class CheckoutViewModel @Inject constructor(
     companion object {
         const val PLATFORM_FEE_CODE = "platform_fee"
 
-        private const val EGOLD_ID = 1L
-        private const val DG_ID = 2L
-        private const val DONATION_ID = 3L
+        const val EGOLD_ID = 1L
+        const val DG_ID = 2L
+        const val DONATION_ID = 3L
     }
 }
 

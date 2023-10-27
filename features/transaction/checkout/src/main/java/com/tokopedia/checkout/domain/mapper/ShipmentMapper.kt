@@ -46,6 +46,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentSummaryAddOn
 import com.tokopedia.checkout.domain.model.cartshipmentform.Shop
 import com.tokopedia.checkout.domain.model.cartshipmentform.TradeInInfoData
 import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
+import com.tokopedia.checkout.revamp.view.CheckoutViewModel
 import com.tokopedia.checkout.view.uimodel.CrossSellBottomSheetModel
 import com.tokopedia.checkout.view.uimodel.CrossSellInfoModel
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
@@ -1371,10 +1372,10 @@ class ShipmentMapper @Inject constructor() {
         const val BMGM_ITEM_DEFAULT = 0
         const val BMGM_ITEM_HEADER = 1
 
-        private const val EGOLD_ID = 1L
-        private const val DG_ID = 2L
-        private const val DONATION_ID = 3L
-
-        val DEFAULT_PAYMENT_LEVEL_ADD_ONS_POSITION = listOf(DG_ID, EGOLD_ID, DONATION_ID)
+        val DEFAULT_PAYMENT_LEVEL_ADD_ONS_POSITION = listOf(
+            CheckoutViewModel.DG_ID,
+            CheckoutViewModel.EGOLD_ID,
+            CheckoutViewModel.DONATION_ID
+        )
     }
 }
