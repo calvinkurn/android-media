@@ -3,6 +3,7 @@ package com.tokopedia.home_account.account_settings.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
@@ -35,6 +37,9 @@ import com.tokopedia.home_account.account_settings.constant.SettingConstant
 import com.tokopedia.home_account.di.ActivityComponentFactory
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -60,6 +65,9 @@ class AccountSettingActivity : BaseSimpleActivity() {
             .createHomeAccountComponent(this, application)
             .inject(this)
         toolbar.hide()
+        viewModel.errorToast.observe(this) {
+            showErrorToast(it)
+        }
         setContent {
             val state by viewModel.state.observeAsState()
 
@@ -80,6 +88,17 @@ class AccountSettingActivity : BaseSimpleActivity() {
                     })
             }
         }
+    }
+
+    private fun showErrorToast(it: Throwable?) {
+        val err = ErrorHandler.getErrorMessage(this, it)
+        Toaster.build(
+            findViewById(android.R.id.content)!!,
+            err,
+            Snackbar.LENGTH_LONG,
+            TYPE_ERROR,
+            getString(R.string.new_home_account_finance_try_again)
+        ) { view: View? -> viewModel.fetch() }.show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

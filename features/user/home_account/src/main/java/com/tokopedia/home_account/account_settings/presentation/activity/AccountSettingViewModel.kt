@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home_account.account_settings.data.model.AccountSettingConfig
 import com.tokopedia.home_account.account_settings.data.model.AccountSettingConfigResponse
 import com.tokopedia.home_account.account_settings.domain.GetAccountSettingConfigUseCase
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.launch
 import rx.Subscriber
 import javax.inject.Inject
@@ -20,7 +21,15 @@ class AccountSettingViewModel @Inject constructor(
     val state: LiveData<AccountSettingUiModel>
         get() = _state
 
+    private val _errorToast: SingleLiveEvent<Throwable> = SingleLiveEvent()
+    val errorToast: LiveData<Throwable>
+        get() = _errorToast
+
     init {
+        fetch()
+    }
+
+    fun fetch() {
         _state.value = AccountSettingUiModel.Loading
         viewModelScope.launch {
             getAccountSettingConfig.execute(
@@ -32,6 +41,7 @@ class AccountSettingViewModel @Inject constructor(
 
                     override fun onError(e: Throwable?) {
                         _state.value = AccountSettingUiModel.Display()
+                        _errorToast.value = e ?: Throwable()
                     }
 
                     override fun onNext(response: GraphqlResponse?) {
