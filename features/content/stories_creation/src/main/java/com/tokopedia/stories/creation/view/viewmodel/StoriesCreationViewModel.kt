@@ -57,7 +57,6 @@ class StoriesCreationViewModel @Inject constructor(
         when (action) {
             is StoriesCreationAction.Prepare -> handlePrepare()
             is StoriesCreationAction.SetMedia -> handleSetMedia(action.mediaFilePath, action.mediaType)
-            is StoriesCreationAction.ClickAddProduct -> handleClickAddProduct(action.productTags)
             is StoriesCreationAction.ClickUpload -> handleClickUpload()
         }
     }
@@ -106,25 +105,6 @@ class StoriesCreationViewModel @Inject constructor(
                 mediaFilePath = mediaFilePath,
                 mediaType = mediaType,
             )
-        }
-    }
-
-    private fun handleClickAddProduct(
-        productTags: List<String>,
-    ) {
-        viewModelScope.launchCatchError(block = {
-            repo.setActiveProductTag(
-                storyId = storyId,
-                productIds = productTags.map { it }
-            )
-
-            _uiState.update {
-                it.copy(
-                    productTags = productTags
-                )
-            }
-        }) {
-            /** TODO JOE: handle this */
         }
     }
 

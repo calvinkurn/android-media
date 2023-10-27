@@ -77,6 +77,11 @@ class StoriesCreationActivity : BaseActivity() {
         setupContentView()
     }
 
+    override fun onPause() {
+        super.onPause()
+        videoSnapshotHelper.deleteLocalFile()
+    }
+
     private fun inject() {
         DaggerStoriesCreationComponent.factory()
             .create(
@@ -156,10 +161,10 @@ class StoriesCreationActivity : BaseActivity() {
                     StoriesCreationScreen(
                         uiState = uiState,
                         onLoadMediaPreview = { mediaFilePath ->
-                            val bitmap = videoSnapshotHelper.snapVideoBitmap(this, mediaFilePath)
+                            val file = videoSnapshotHelper.snapVideo(this, mediaFilePath)
 
-                            if (bitmap != null)
-                                StoriesMediaCover.Success(bitmap)
+                            if (file != null)
+                                StoriesMediaCover.Success(file.absolutePath)
                             else
                                 StoriesMediaCover.Error
                         },
@@ -171,7 +176,6 @@ class StoriesCreationActivity : BaseActivity() {
                         },
                         onClickAddProduct = {
                             /** TODO JOE: handle this later */
-                            viewModel.submitAction(StoriesCreationAction.ClickAddProduct(emptyList()))
                         },
                         onClickUpload = {
                             viewModel.submitAction(StoriesCreationAction.ClickUpload)
