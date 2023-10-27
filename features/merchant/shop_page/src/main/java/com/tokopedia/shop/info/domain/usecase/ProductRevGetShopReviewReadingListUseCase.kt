@@ -44,6 +44,7 @@ class ProductRevGetShopReviewReadingListUseCase @Inject constructor(
       reviewText
       avatar
     }
+    totalReviews
   }
 }
 """
