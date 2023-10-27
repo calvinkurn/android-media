@@ -21,15 +21,15 @@ import com.tokopedia.home_account.account_settings.presentation.uimodel.MediaQua
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 
-
 @Composable
-fun MediaQualitySettingScreen(qualities: List<MediaQualityUIModel>) {
-
+fun MediaQualitySettingScreen(qualities: List<MediaQualityUIModel>, modifier: Modifier = Modifier) {
     var selectedIndex by remember { mutableStateOf(0) }
 
-    Column(modifier = Modifier
-        .padding(16.dp)
-        .fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxSize()
+    ) {
         NestTypography(
             stringResource(R.string.image_quality_setting_title),
             textStyle = NestTheme.typography.heading4
@@ -56,10 +56,8 @@ fun MediaQualitySettingScreen(qualities: List<MediaQualityUIModel>) {
             }
             Spacer(modifier = Modifier.height(16.dp))
         }
-
     }
 }
-
 
 @Composable
 @Preview
