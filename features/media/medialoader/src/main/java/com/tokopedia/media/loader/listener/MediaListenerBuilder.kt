@@ -11,7 +11,6 @@ import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.internal.NetworkResponseManager
 import com.tokopedia.media.loader.tracker.IsIcon
 import com.tokopedia.media.loader.tracker.MediaLoaderTracker
-import com.tokopedia.media.loader.utils.FeatureToggle
 import com.tokopedia.media.loader.utils.adaptiveSizeImageRequest
 import com.tokopedia.media.loader.wrapper.MediaDataSource.Companion.mapTo as dataSource
 
@@ -70,6 +69,9 @@ internal object MediaListenerBuilder {
 
         // tracker
         if (properties.data is String) {
+            val shouldAbleToExposeResponseHeader = properties.featureToggle
+                ?.shouldAbleToExposeResponseHeader(context)
+
             MediaLoaderTracker.succeed(
                 context = context.applicationContext,
                 bitmap = resource,
@@ -78,7 +80,7 @@ internal object MediaListenerBuilder {
                 loadTime = loadTime
             )
 
-            if (properties.shouldTrackNetwork && FeatureToggle.shouldAbleToExposeResponseHeader(context)) {
+            if (properties.shouldTrackNetwork && shouldAbleToExposeResponseHeader == true) {
                 val result = NetworkResponseManager.getInstance()
                 val headers = result.header(properties.data.toString())
 

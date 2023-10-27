@@ -1,5 +1,6 @@
 package com.tokopedia.media.loader.utils
 
+import android.webkit.MimeTypeMap
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.tokopedia.config.GlobalConfig
@@ -68,15 +69,17 @@ private fun String.generateSecureUrl(
 }
 
 internal fun Properties.generateUrl(): Any {
-    val isWebpEnabled = FeatureToggle.isWebpFormatEnabled()
     val data = data.toString()
+
+    val isWebpEnabled = featureToggle?.isWebpFormatEnabled() == true
+    val isNotWebpImageUrl = MimeTypeMap.getFileExtensionFromUrl(data) != "webp"
 
     // secure image loader
     if (isSecure) return data.generateSecureUrl(userId, accessToken)
 
     // indicates that the url from our internal CDN, which contains a custom behavior,
     // such as adaptive delivery, webp support, custom header, etc.
-    if (data.isFromInternalCdnImageUrl() && isWebpEnabled) {
+    if (data.isFromInternalCdnImageUrl() && isNotWebpImageUrl && isWebpEnabled) {
         return data.generateWebpUrl()
     }
 

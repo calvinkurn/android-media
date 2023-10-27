@@ -8,6 +8,7 @@ import com.tokopedia.media.loader.data.DEBUG_TIMBER_TAG
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
 import com.tokopedia.media.loader.module.GlideApp
+import com.tokopedia.media.loader.utils.FeatureToggleManager
 import timber.log.Timber
 
 @PublishedApi
@@ -16,7 +17,9 @@ internal fun ImageView.call(source: Any?, properties: Properties) {
         try {
             MediaLoaderApi.loadImage(
                 imageView = this,
-                properties = properties.setSource(source)
+                properties = properties.setSource(source).also {
+                    it.featureToggle = FeatureToggleManager.instance()
+                }
             )
 
             if (GlobalConfig.isAllowDebuggingTools()) {

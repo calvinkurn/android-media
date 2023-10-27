@@ -16,7 +16,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.media.loader.module.interceptor.NetworkLogInterceptor
 import com.tokopedia.media.loader.module.model.AdaptiveImageSizeLoader
 import com.tokopedia.media.loader.module.model.M3U8ModelLoaderFactory
-import com.tokopedia.media.loader.utils.FeatureToggle
+import com.tokopedia.media.loader.utils.FeatureToggleManager
 import okhttp3.OkHttpClient
 import java.io.InputStream
 
@@ -42,7 +42,7 @@ class LoaderGlideModule : AppGlideModule() {
         if (hasNetworkClientOverridden()) {
             val client = OkHttpClient.Builder()
 
-            if (FeatureToggle.shouldAbleToExposeResponseHeader(context)) {
+            if (FeatureToggleManager.instance().shouldAbleToExposeResponseHeader(context)) {
                 client.addInterceptor(NetworkLogInterceptor(context))
             }
 
@@ -67,7 +67,7 @@ class LoaderGlideModule : AppGlideModule() {
         )
 
         // m3u8 video preview
-        if (FeatureToggle.glideM3U8ThumbnailLoaderEnabled(context)) {
+        if (FeatureToggleManager.instance().glideM3U8ThumbnailLoaderEnabled(context)) {
             registry.prepend(String::class.java, Bitmap::class.java, M3U8ModelLoaderFactory())
         }
     }
