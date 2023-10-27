@@ -56,8 +56,10 @@ import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCa
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
+import com.tokopedia.imagepicker.common.RemoteConfigInstance
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -204,7 +206,7 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
         viewModel.homeRecommendationLiveData.observe(
             viewLifecycleOwner
         ) { data ->
-            adapter.submitList(data.homeRecommendations)
+            adapter.submitList(listOf<HomeRecommendationTypeFactoryImpl>()))
         }
 
         viewModel.homeRecommendationNetworkLiveData.observe(
@@ -265,6 +267,13 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
                 }
             }
         }
+    }
+
+    private fun isNewForYouQueryEnabled(): Boolean {
+        return context?.let {
+            RemoteConfigInstance.getRemoteConfig(it).getString(
+                RollenceKey.FOR_YOU_QUERY, RollenceKey.FOR_YOU_QUERY_DEFAULT)
+        } == RollenceKey.FOR_YOU_QUERY_EXP
     }
 
     private fun showToasterError() {
