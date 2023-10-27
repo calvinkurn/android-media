@@ -12,6 +12,8 @@ enum class StoriesMediaType(val value: String) {
 
     companion object {
         fun parse(path: String): StoriesMediaType {
+            if (path.isEmpty()) return Unknown
+
             val fileNameMap = URLConnection.getFileNameMap()
             val type = fileNameMap.getContentTypeFor(path)
 
