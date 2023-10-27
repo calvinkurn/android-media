@@ -8,6 +8,7 @@ import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionUni
 import com.tokopedia.autocompletecomponent.util.UrlParamHelper
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PARAMS
 import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -31,7 +32,7 @@ open class SuggestionUseCase(
         getShopAdsSuggestionUseCase?.execute(
             ::onSuccessGetShopAds,
             ::onErrorGetShopAds,
-            useCaseRequestParams,
+            useCaseRequestParams
         )
     }
 
@@ -55,14 +56,14 @@ open class SuggestionUseCase(
         suggestionGraphqlUseCase.prepare(
             getGraphqlQuery(),
             SuggestionResponse::class.java,
-            createGraphqlRequestParams(useCaseRequestParams),
+            createGraphqlRequestParams(useCaseRequestParams)
         )
 
         return suggestionGraphqlUseCase.executeOnBackground()
     }
 
     @GqlQuery("SuggestionUseCaseQuery", SUGGESTION_QUERY)
-    protected open fun getGraphqlQuery() = SuggestionUseCaseQuery.GQL_QUERY
+    protected open fun getGraphqlQuery(): GqlQueryInterface = SuggestionUseCaseQuery()
 
     protected open fun createGraphqlRequestParams(requestParams: RequestParams): Map<String, String> {
         val params = UrlParamHelper.generateUrlParamString(requestParams.parameters)

@@ -177,7 +177,6 @@ object TokopediaImageUrl {
     const val NOT_FOUND_STATE_IMG_URL = "https://images.tokopedia.net/img/common_topup_ic_illustration_not_found.png"
     const val CONTACT_PERMISSION_IMG_URL = "https://images.tokopedia.net/img/common_topup_ic_contact_permission.png"
     const val EMPTY_IMAGE_GLOBAL_ERROR = "https://images.tokopedia.net/img/add_bils_sbm_empty_nominal_4x.png"
-    const val SmartBillsToolTipBottomSheet_IMAGE_URL = "https://images.tokopedia.net/img/tooltips_image_sbm.png"
     const val CC_IMG_VERIFIED = "https://images.tokopedia.net/img/cc_ic_logo_verified.png"
     const val URL_TOKOCASH_SHARE = "https://images.tokopedia.net/img/android/others/ic_referral_tokocash.png"
     const val IC_TOKOFOOD_SOURCE = "https://images.tokopedia.net/img/android/tokochat/ic_tokofood_source.png"

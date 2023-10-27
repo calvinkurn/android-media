@@ -20,4 +20,6 @@ object GlobalSearchSellerConstant {
     const val IC_NO_HISTORY_URL = TokopediaImageUrl.IC_NO_HISTORY_URL
 
     internal const val KEYWORD = "keyword"
+
+    const val MIN_KEYWORD_SEARCH = 3
 }
