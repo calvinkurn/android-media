@@ -140,8 +140,6 @@ class ShopInfoFragment :
         initViewModel()
         initObservers()
         initView()
-        
-        shopViewModel?.getShopRating(getShopId().orEmpty())
     }
 
     override fun onDestroyView() {

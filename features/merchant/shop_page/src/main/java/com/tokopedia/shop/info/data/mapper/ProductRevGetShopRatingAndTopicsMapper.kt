@@ -1,27 +1,25 @@
 package com.tokopedia.shop.info.data.mapper
 
 import com.tokopedia.shop.info.data.response.ProductRevGetShopRatingAndTopicsResponse
-import com.tokopedia.shop.info.domain.entity.ShopRatingAndTopics
+import com.tokopedia.shop.info.domain.entity.ShopRating
 import javax.inject.Inject
 
 class ProductRevGetShopRatingAndTopicsMapper @Inject constructor() {
-    fun map(response: ProductRevGetShopRatingAndTopicsResponse): ShopRatingAndTopics {
+    fun map(response: ProductRevGetShopRatingAndTopicsResponse): ShopRating {
         val rating = response.productrevGetShopRatingAndTopics.rating
 
-        return ShopRatingAndTopics(
-            ShopRatingAndTopics.Rating(
-                rating.toDetail(),
-                rating.positivePercentageFmt,
-                rating.ratingScore,
-                rating.totalRating,
-                rating.totalRatingFmt
-            )
+        return ShopRating(
+            detail = rating.toDetail(),
+            positivePercentageFmt = rating.positivePercentageFmt,
+            ratingScore = rating.ratingScore,
+            totalRating = rating.totalRating,
+            totalRatingFmt = rating.totalRatingFmt
         )
     }
 
-    private fun ProductRevGetShopRatingAndTopicsResponse.ProductrevGetShopRatingAndTopics.Rating.toDetail(): List<ShopRatingAndTopics.Rating.Detail> {
+    private fun ProductRevGetShopRatingAndTopicsResponse.ProductrevGetShopRatingAndTopics.Rating.toDetail(): List<ShopRating.Detail> {
         return detail.map {
-            ShopRatingAndTopics.Rating.Detail(
+            ShopRating.Detail(
                 it.formattedTotalReviews,
                 it.percentageFloat,
                 it.rate,
