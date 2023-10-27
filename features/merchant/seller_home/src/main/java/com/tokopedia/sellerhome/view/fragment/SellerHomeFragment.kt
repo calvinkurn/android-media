@@ -615,7 +615,6 @@ class SellerHomeFragment :
     }
 
     override fun onMilestoneMissionActionClickedListener(
-        element: MilestoneWidgetUiModel,
         mission: BaseMilestoneMissionUiModel,
         missionPosition: Int
     ) {
@@ -2047,7 +2046,8 @@ class SellerHomeFragment :
                         subTitleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                     }
                     return@map it.copy(
-                        titleTextColorId = titleTextColor, subTitleTextColorId = subTitleTextColor
+                        titleTextColorId = titleTextColor,
+                        subTitleTextColorId = subTitleTextColor
                     )
                 }
                 return@map it
