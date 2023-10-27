@@ -24,6 +24,8 @@ enum class ContentMediaType(
             return values().find { it.code == code } ?: Unknown
         }
         fun parse(path: String): ContentMediaType {
+            if (path.isEmpty()) return Unknown
+
             val fileNameMap = URLConnection.getFileNameMap()
             val type = fileNameMap.getContentTypeFor(path)
 
