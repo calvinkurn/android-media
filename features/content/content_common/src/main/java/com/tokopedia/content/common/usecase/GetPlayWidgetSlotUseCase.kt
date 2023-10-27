@@ -10,7 +10,6 @@ import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
 
-@GqlQuery(GetPlayWidgetSlotUseCase.QUERY_NAME, GetPlayWidgetSlotUseCase.QUERY)
 class GetPlayWidgetSlotUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
@@ -18,6 +17,7 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
 
     private val queryObject = GetPlayWidgetSlotUseCaseQuery()
 
+    @GqlQuery(QUERY_NAME, QUERY)
     override fun graphqlQuery(): String {
         return queryObject.getQuery()
     }
