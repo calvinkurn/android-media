@@ -28,7 +28,6 @@ class WishlistCollectionDetailRobot {
     }
 
     fun clickRecommendationRecyclerViewItem(index: Int) {
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         Espresso.onView(ViewMatchers.withId(carouselproductcardR.id.carouselProductCardRecyclerView))
             .perform(
                 RecyclerViewActions
