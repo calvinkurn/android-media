@@ -94,7 +94,7 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
             when (it) {
                 is Success -> {
                     stepperModel?.recomPrediction = it.data.umpGetImpressionPrediction.impressionPredictionData.impression.finalImpression
-                    binding?.impressionPerformanceValue?.text = String.format("%sx", it.data.umpGetImpressionPrediction.impressionPredictionData.impression.finalImpression)
+                    binding?.impressionPerformanceValue?.text = String.format(getString(topadscommonR.string.top_ads_performce_count_prefix), it.data.umpGetImpressionPrediction.impressionPredictionData.impression.finalImpression)
                 }
 
                 else -> {}

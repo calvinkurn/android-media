@@ -328,6 +328,8 @@ Semakin tinggi biaya iklanmu, maka semakin tinggi peluang iklanmu ditampilkan.</
     <string name="topads_ads_performance_sheet_title">Potensi tampil</string>
     <string name="topads_ads_create_product_group_button">Iklankan Sekarang</string>
     <string name="topads_ads_load_performance_data">Muat Ulang</string>
+    <string name="topads_ads_currency_prefix">Rp. %s</string>
+    <string name="topads_ads_currency_prefix_without_dot">Rp %s</string>
     <string name="topads_ads_performance_sheet_footer">Perkiraan seberapa sering iklanmu tampil berdasarkan produk yang dipilih, biaya grup iklan, dan anggaran harian.</string>
 
 

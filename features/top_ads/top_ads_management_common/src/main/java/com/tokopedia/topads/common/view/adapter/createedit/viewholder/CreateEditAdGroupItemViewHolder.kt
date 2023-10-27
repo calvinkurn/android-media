@@ -37,7 +37,7 @@ class CreateEditAdGroupItemViewHolder(private val viewBinding: TopadsCreateEditI
             if (element.subtitle.toDoubleOrZero() <= Int.ZERO) {
                 viewBinding.editAdItemSubtitle.text = getString(R.string.topads_ads_unlimited_daily_budget)
             } else {
-                viewBinding.editAdItemSubtitle.text = String.format("Rp. %s", CurrencyFormatHelper.convertToRupiah(element.subtitle.toFloatOrZero().toInt().toString()))
+                viewBinding.editAdItemSubtitle.text = String.format(getString(R.string.topads_ads_currency_prefix), CurrencyFormatHelper.convertToRupiah(element.subtitle.toFloatOrZero().toInt().toString()))
             }
         } else if (element.tag == CreateEditAdGroupItemTag.ADS_RECOMMENDATION) {
             viewBinding.editAdItemSubtitle.text = String.format(getString(R.string.topads_ads_browse_bid_item_prefix), CurrencyFormatHelper.convertToRupiah(element.subtitle.removeCommaRawString().toIntOrZero().toString()))

@@ -18,7 +18,7 @@ class CreateEditAdGroupNameBottomSheet() : BottomSheetUnify() {
     private var binding: TopadsEditSheetEditAdGroupNameBinding? = null
     private var groupName: String = ""
     private var groupId: String = ""
-    lateinit var clickListener: (groupName: String) -> Unit
+    var clickListener: ((groupName: String) -> Unit)? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
@@ -63,7 +63,7 @@ class CreateEditAdGroupNameBottomSheet() : BottomSheetUnify() {
         })
 
         binding?.editAdGroupNameCta?.setOnClickListener {
-            clickListener.invoke(binding?.textField?.editText?.text.toString())
+            clickListener?.invoke(binding?.textField?.editText?.text.toString())
             dismiss()
         }
     }

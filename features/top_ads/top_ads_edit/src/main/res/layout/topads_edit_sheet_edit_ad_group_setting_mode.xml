@@ -156,14 +156,12 @@
         android:id="@+id/space"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        android:layout_below="@id/card_automatic"
         tools:layout_editor_absoluteX="16dp" />
 
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/card_manual"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/space">
+        android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

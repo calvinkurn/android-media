@@ -25,10 +25,10 @@ class CreateAdGroupDailyBudgetItemViewHolder(private val viewBinding: TopadsCrea
         if (element.isDailyBudgetEnabled) {
             viewBinding.dailyBudgetSwitch.isChecked = true
             viewBinding.recommendationBudget.show()
-            viewBinding.recommendationBudget.editText.setText(String.format("Rp %s", dailyBudget))
+            viewBinding.recommendationBudget.editText.setText(String.format(getString(R.string.topads_ads_currency_prefix_without_dot), dailyBudget))
         } else {
             viewBinding.dailyBudgetSwitch.isChecked = false
-            viewBinding.recommendationBudget.editText.setText(String.format("Rp %s", dailyBudget))
+            viewBinding.recommendationBudget.editText.setText(String.format(getString(R.string.topads_ads_currency_prefix_without_dot), dailyBudget))
             viewBinding.recommendationBudget.hide()
         }
         setClicksOnViews(element)
@@ -46,16 +46,16 @@ class CreateAdGroupDailyBudgetItemViewHolder(private val viewBinding: TopadsCrea
                 if (number < minBudget.toDoubleOrZero()) {
                     viewBinding.recommendationBudget.isInputError = true
                     viewBinding.recommendationBudget.setMessage(String.format(getString(R.string.topads_ads_minimum_budget), CurrencyFormatHelper.convertToRupiah(minBudget)))
-                    element.onDailyBudgetChange(false)
+                    element.onDailyBudgetChange(false, CurrencyFormatHelper.convertRupiahToDouble(element.dailyBudget))
                 } else if (number > MAXIMUM_DAILY_BUDGET.toDoubleOrZero()) {
                     viewBinding.recommendationBudget.isInputError = true
                     viewBinding.recommendationBudget.setMessage(String.format(getString(R.string.topads_ads_maximum_budget), CurrencyFormatHelper.convertToRupiah(maxBudget)))
-                    element.onDailyBudgetChange(false)
+                    element.onDailyBudgetChange(false, CurrencyFormatHelper.convertRupiahToDouble(element.dailyBudget))
                 } else {
                     element.dailyBudget = number.toString()
                     viewBinding.recommendationBudget.isInputError = false
                     viewBinding.recommendationBudget.setMessage(String.EMPTY)
-                    element.onDailyBudgetChange(true)
+                    element.onDailyBudgetChange(true, number)
                 }
             }
         })

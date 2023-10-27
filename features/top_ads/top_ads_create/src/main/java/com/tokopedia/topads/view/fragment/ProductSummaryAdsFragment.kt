@@ -67,9 +67,10 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
     private var isDailyBudgetOn: Boolean = false
 
 
+    @JvmField
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var viewModel: SummaryViewModel
+    var viewModelFactory: ViewModelProvider.Factory? = null
+    private var viewModel: SummaryViewModel? = null
 
 
     companion object {
@@ -174,7 +175,7 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
         stepperModel?.groupName?.let {
             CreateEditAdGroupNameBottomSheet.newInstance(it, "")
                 .show(childFragmentManager) { name ->
-                    viewModel.validateGroup(name, ::onValidateNameSuccess, ::onFailure)
+                    viewModel?.validateGroup(name, ::onValidateNameSuccess, ::onFailure)
                 }
         }
     }
@@ -183,14 +184,15 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
         isDailyBudgetOn = isChecked
     }
 
-    private fun onDailyBudgetChange(isEnable: Boolean) {
+    private fun onDailyBudgetChange(isEnable: Boolean, dailyBudget:Double) {
         binding?.createProductAdButton?.isEnabled = isEnable
+        stepperModel?.dailyBudget = dailyBudget.toInt()
     }
 
     private fun createProductAdGroup() {
         binding?.createLoading?.show()
         binding?.createProductAdButton?.isEnabled = false
-        viewModel.topAdsCreated(getProductData(),
+        viewModel?.topAdsCreated(getProductData(),
             getKeywordData(), getGroupData(),
             this::onSuccessActivation, this::onErrorActivation)
     }
@@ -281,7 +283,7 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(SummaryViewModel::class.java)
+        viewModel = viewModelFactory?.let { ViewModelProvider(this, it)[SummaryViewModel::class.java] }
     }
 
     override fun onCreateView(
@@ -414,7 +416,7 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
             getString(topadscommonR.string.topads_common_group) + " " + DateUtil.getCurrentDate()
                 .formatTo(TopAdsProductRecommendationConstants.BASIC_DATE_FORMAT) + (if (counter == Int.ZERO) String.EMPTY else " ($counter)")
         counter++
-        viewModel.validateGroup(groupName, ::onValidateNameSuccess, ::onFailure)
+        viewModel?.validateGroup(groupName, ::onValidateNameSuccess, ::onFailure)
     }
 
     private fun onValidateNameSuccess(topAdsGroupValidateNameV2: ResponseGroupValidateName.TopAdsGroupValidateNameV2) {
@@ -458,7 +460,7 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
 
     private fun onSuccessActivation() {
         binding?.createLoading?.hide()
-        viewModel.getTopAdsDeposit(this::onSuccess, this::errorResponse)
+        viewModel?.getTopAdsDeposit(this::onSuccess, this::errorResponse)
     }
 
     private fun onSuccess(data: DepositAmount) {

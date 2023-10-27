@@ -41,6 +41,7 @@ import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
+import com.tokopedia.topads.common.R as topadscommonR
 
 /**
  * Author errysuprayogi on 29,October,2019
@@ -325,9 +326,8 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             }
         }
         val count = stepperModel?.selectedProductIds?.size ?: 0
-//        selectProductInfo?.text = String.format(getString(com.tokopedia.topads.common.R.string.format_selected_produk), count)
         selectProductInfo?.text = MethodChecker.fromHtml(String.format(
-            getString(com.tokopedia.topads.common.R.string.format_selected_produk),
+            getString(topadscommonR.string.format_selected_produk),
             count
         ))
         btnNext?.isEnabled = count > 0
@@ -339,12 +339,12 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         productListAdapter.items = mutableListOf(ProductEmptyViewModel())
         productListAdapter.notifyDataSetChanged()
         selectProductInfo?.text = MethodChecker.fromHtml(String.format(
-            getString(com.tokopedia.topads.common.R.string.format_selected_produk),
+            getString(topadscommonR.string.format_selected_produk),
             Int.ZERO
         ))
-        promoted?.chip_text?.text = String.format("Sudah Diiklankan (%d)", productData[1]?.size)
+        promoted?.chip_text?.text = String.format(getString(R.string.topads_ads_chip_title_one), productData[1]?.size)
 
-        notPromoted?.chip_text?.text = String.format("Belum Diiklankan (%d)", productData[2]?.size)
+        notPromoted?.chip_text?.text = String.format(getString(R.string.topads_ads_chip_title_two), productData[2]?.size)
     }
 
     private fun onError(t: Throwable) {
@@ -371,7 +371,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         }
         val count = stepperModel?.selectedProductIds?.size ?: 0
         selectProductInfo?.text = MethodChecker.fromHtml(String.format(
-            getString(com.tokopedia.topads.common.R.string.format_selected_produk),
+            getString(topadscommonR.string.format_selected_produk),
             count
         ))
         btnNext?.isEnabled = count > 0
