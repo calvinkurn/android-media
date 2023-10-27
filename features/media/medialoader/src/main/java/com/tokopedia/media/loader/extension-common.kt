@@ -167,6 +167,21 @@ inline fun ImageView.loadImageCircle(
     .setPlaceHolder(-1)
 )
 
+inline fun ImageView.loadImageCircle(
+    resource: Int,
+    crossinline properties: Properties.() -> Unit = {}
+) = call(resource, Properties()
+    .apply(properties)
+    .isCircular(true)
+
+    /*
+     * loadImageCircle() extension must be haven't placeholder,
+     * the loader effect should be handled by team by
+     * using own shimmering.
+     * */
+    .setPlaceHolder(-1)
+)
+
 fun ImageView.loadImageRounded(
     resource: Int,
     rounded: Float
