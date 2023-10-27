@@ -64,6 +64,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopAdminCommon)
     implementation projectOrAar(rootProject.ext.features.orderManagementCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.tokochat_common)
     
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
