@@ -648,7 +648,9 @@ class SellerHomeFragment :
     }
 
     override fun sendMilestoneRewardActionClickedListener(reward: MilestoneItemRewardUiModel) {
-//        TODO("Not yet implemented")
+        context?.let {
+            RouteManager.route(it, reward.buttonApplink)
+        }
     }
 
     override fun sendPostListImpressionEvent(element: PostListWidgetUiModel) {
