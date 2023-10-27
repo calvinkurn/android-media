@@ -163,6 +163,7 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
                             stepperModel?.selectedProductIds?.let {
                                 viewModel?.getPerformanceData(it, result.toFloat(), -1f, -1f)
                             }
+
                             binding?.btnNext?.isEnabled = true
                         }
                     }

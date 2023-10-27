@@ -249,7 +249,7 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
             bidTypeData?.add(TopAdsBidSettingsModel(ParamObject.PRODUCT_SEARCH,
                 stepperModel?.finalSearchBidPerClick?.toFloat()))
             bidTypeData?.add(TopAdsBidSettingsModel(ParamObject.PRODUCT_BROWSE,
-                stepperModel?.finalSearchBidPerClick?.toFloat()))
+                stepperModel?.finalRecommendationBidPerClick?.toFloat()))
             dataMap[ParamObject.BID_TYPE] = bidTypeData
         }
 
