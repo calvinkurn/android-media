@@ -5,12 +5,15 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GqlGetShopOperationalHoursListUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopShipment
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
+import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.shop.info.domain.entity.ShopEpharmacyInfo
 import com.tokopedia.shop.info.domain.entity.ShopNote
+import com.tokopedia.shop.info.domain.entity.ShopOperationalHour
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
 import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopRatingAndTopicsUseCase
 import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopReviewReadingListUseCase
@@ -28,7 +31,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
     private val getShopInfoUseCase: GQLGetShopInfoUseCase,
     private val getShopNoteUseCase: GetShopNoteUseCase,
     private val getShopRatingUseCase: ProductRevGetShopRatingAndTopicsUseCase,
-    private val getShopReviewUseCase: ProductRevGetShopReviewReadingListUseCase
+    private val getShopReviewUseCase: ProductRevGetShopReviewReadingListUseCase,
+    private val getShopGqlGetShopOperationalHoursListUseCase: GqlGetShopOperationalHoursListUseCase
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
     private val _uiState = MutableStateFlow(ShopInfoUiState())
@@ -53,11 +57,13 @@ class ShopInfoReimagineViewModel @Inject constructor(
                 val shopReviewDeferred = async { getShopReviewUseCase.execute(shopReviewParam) }
                 val shopInfoDeferred = async { getShopInfo(shopId.toIntOrZero()) }
                 val shopNotesDeferred = async { getShopNotes(shopId) }
+                val shopOperationalHoursDeferred = async { getShopOperationalHours(shopId) }
                 
                 val shopRating = shopRatingDeferred.await()
                 val shopReview = shopReviewDeferred.await()
                 val shopInfo = shopInfoDeferred.await()
                 val shopNotes = shopNotesDeferred.await()
+                val shopOperationalHours = shopOperationalHoursDeferred.await()
                 
                 _uiState.update {
                     it.copy(
@@ -68,7 +74,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
                         shopDescription = shopInfo.shopCore.description,
                         mainLocation = shopInfo.location,
                         otherLocation = "",
-                        operationalHours = "",
+                        operationalHours = shopOperationalHours.toFormattedOperationalHours(),
                         shopJoinDate = shopInfo.createdInfo.openSince,
                         rating = shopRating,
                         review = shopReview,
@@ -98,7 +104,12 @@ class ShopInfoReimagineViewModel @Inject constructor(
         getShopInfoUseCase.isFromCacheFirst = false
         getShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(
             shopIds = listOf(shopId),
-            source = GQLGetShopInfoUseCase.SHOP_PAGE_SOURCE
+            source = GQLGetShopInfoUseCase.SHOP_PAGE_SOURCE,
+            fields = GQLGetShopInfoUseCase.getDefaultShopFields() + listOf(
+                GQLGetShopInfoUseCase.FIELD_OS,
+                GQLGetShopInfoUseCase.FIELD_GOLD_OS,
+                GQLGetShopInfoUseCase.FIELD_GOLD
+            )
         )
         return getShopInfoUseCase.executeOnBackground()
     }
@@ -107,6 +118,12 @@ class ShopInfoReimagineViewModel @Inject constructor(
         getShopNoteUseCase.params = GetShopNoteUseCase.createParams(shopId)
         getShopNoteUseCase.isFromCacheFirst = false
         return getShopNoteUseCase.executeOnBackground()
+    }
+
+    private suspend fun getShopOperationalHours(shopId: String): ShopOperationalHoursListResponse {
+        getShopGqlGetShopOperationalHoursListUseCase.params = GqlGetShopOperationalHoursListUseCase.createRequestParams(shopId)
+        getShopNoteUseCase.isFromCacheFirst = false
+        return getShopGqlGetShopOperationalHoursListUseCase.executeOnBackground()
     }
     
     private fun List<ShopNoteModel>.toShopNotes(): List<ShopNote> {
@@ -119,5 +136,11 @@ class ShopInfoReimagineViewModel @Inject constructor(
         return map { shipment ->
             ShopSupportedShipment(title = shipment.name, imageUrl = shipment.image)
         }
+    }
+
+    private fun ShopOperationalHoursListResponse.toFormattedOperationalHours(): List<ShopOperationalHour> {
+        return getShopOperationalHoursList?.data?.map { 
+            ShopOperationalHour(it.day, it.startTime, it.endTime, it.status)
+        }.orEmpty()
     }
 }

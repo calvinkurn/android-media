@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.databinding.FragmentReviewViewpagerItemBinding
@@ -68,7 +67,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
             binding?.tpgReviewLikeCount?.text = review.likeDislike.likeStatus.toString() + " terbantu"
             binding?.tpgReviewtime?.text = review.reviewTime
             
-            renderRatingBar(2)
+            renderRatingBar(review.rating)
         }
     }
 

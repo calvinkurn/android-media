@@ -3,10 +3,12 @@ package com.tokopedia.shop.info.view.fragment
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,12 +36,16 @@ import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.kotlin.extensions.view.digitsOnly
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.NestImageType
+import com.tokopedia.nest.components.loader.NestLoader
+import com.tokopedia.nest.components.loader.NestLoaderSize
+import com.tokopedia.nest.components.loader.NestLoaderType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.shop.R
 import com.tokopedia.shop.info.domain.entity.ShopEpharmacyInfo
 import com.tokopedia.shop.info.domain.entity.ShopNote
+import com.tokopedia.shop.info.domain.entity.ShopOperationalHour
 import com.tokopedia.shop.info.domain.entity.ShopPerformanceMetric
 import com.tokopedia.shop.info.domain.entity.ShopRating
 import com.tokopedia.shop.info.domain.entity.ShopReview
@@ -60,9 +66,24 @@ fun ShopInfoScreen(uiState: ShopInfoUiState) {
             )
         )
     }) { paddingValues ->
-        Content(modifier = Modifier.padding(paddingValues), uiState)
+        if (uiState.isLoading) {
+            LoadingContent()
+        } else {
+            Content(modifier = Modifier.padding(paddingValues), uiState)    
+        }
+        
     }
 
+}
+
+@Composable
+fun LoadingContent() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        NestLoader(
+            modifier = Modifier.align(Alignment.Center),
+            variant = NestLoaderType.Circular(size = NestLoaderSize.Small)
+        )
+    }
 }
 
 
@@ -78,17 +99,24 @@ fun Content(modifier: Modifier = Modifier, uiState: ShopInfoUiState) {
         Spacer(modifier = Modifier.height(16.dp))
         ShopCoreInfo(
             shopImageUrl = uiState.shopImageUrl,
-            shopBadgeUrl = uiState.shopImageUrl,
+            shopBadgeUrl = uiState.shopBadgeUrl,
             shopName = uiState.shopName
         )
+
+        val hasMainLocation = uiState.mainLocation.isNotEmpty()
+        val hasOperationalHour = uiState.operationalHours.isNotEmpty()
+        val hasJoinDate = uiState.shopJoinDate.isNotEmpty()
+        val showShopInfo = hasMainLocation || hasOperationalHour || hasJoinDate
         
-        Spacer(modifier = Modifier.height(16.dp))
-        ShopInfo(
-            mainLocation = uiState.mainLocation,
-            otherLocation = uiState.otherLocation,
-            operationalHours = uiState.operationalHours,
-            shopJoinDate = uiState.shopJoinDate
-        )
+        if (showShopInfo) {
+            Spacer(modifier = Modifier.height(16.dp))
+            ShopInfo(
+                mainLocation = uiState.mainLocation,
+                otherLocation = uiState.otherLocation,
+                operationalHours = uiState.operationalHours,
+                shopJoinDate = uiState.shopJoinDate
+            )
+        }
         
         if (uiState.showEpharmacyInfo) {
             Spacer(modifier = Modifier.height(16.dp))
@@ -161,7 +189,7 @@ fun ShopCoreInfo(shopImageUrl: String, shopBadgeUrl: String, shopName: String) {
 fun ShopInfo(
     mainLocation: String,
     otherLocation: String,
-    operationalHours: String,
+    operationalHours: List<ShopOperationalHour>,
     shopJoinDate: String
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -175,14 +203,20 @@ fun ShopInfo(
             )
         )
         
-        Spacer(modifier = Modifier.height(12.dp))
-        ShopLocation(mainLocation, otherLocation)
+        if (mainLocation.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(12.dp))
+            ShopLocation(mainLocation, otherLocation)
+        }
         
-        Spacer(modifier = Modifier.height(12.dp))
-        ShopOperationalHour(operationalHours)
+        if (operationalHours.isNotEmpty()){
+            Spacer(modifier = Modifier.height(12.dp))
+            ShopOperationalHour(operationalHours)
+        }
         
-        Spacer(modifier = Modifier.height(12.dp))
-        ShopJoinDate(shopJoinDate)
+        if (shopJoinDate.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(12.dp))
+            ShopJoinDate(shopJoinDate)
+        }
     }
 }
 
@@ -224,7 +258,7 @@ fun ShopLocation(mainLocation: String, otherLocation: String) {
     }
 }
 @Composable
-fun ShopOperationalHour(operationalHours: String) {
+fun ShopOperationalHour(operationalHours: List<ShopOperationalHour>) {
     NestTypography(
         modifier = Modifier.fillMaxWidth(),
         text = "Jam Operasional",
@@ -235,7 +269,7 @@ fun ShopOperationalHour(operationalHours: String) {
     Spacer(modifier = Modifier.height(4.dp))
     NestTypography(
         modifier = Modifier.fillMaxWidth(),
-        text = operationalHours,
+        text = operationalHours.firstOrNull()?.startTime.orEmpty(),
         textStyle = NestTheme.typography.display2.copy(
             fontWeight = FontWeight.Bold,
             color = NestTheme.colors.NN._950

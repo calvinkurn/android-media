@@ -21,7 +21,7 @@ class ShopInfoPreviewParameterProvider : PreviewParameterProvider<ShopInfoUiStat
         shopDescription = "Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups",
         mainLocation = "Jakarta Selatan",
         otherLocation = "+10 lainnya",
-        operationalHours = "07:00 - 18:00",
+        operationalHours = listOf(),
         shopJoinDate = "9 Mar 2017",
         shopPerformanceMetrics = listOf(
             ShopPerformanceMetric(metricName = "Produk terjual", metricValue = "51rb"),
