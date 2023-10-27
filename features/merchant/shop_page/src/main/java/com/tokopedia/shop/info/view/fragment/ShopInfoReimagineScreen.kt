@@ -467,7 +467,7 @@ fun ShopRating(rating: ShopRating) {
 @Composable
 fun ShopReview(review: ShopReview) {
     AndroidView(
-        modifier = Modifier,
+        modifier = Modifier.fillMaxWidth(),
         factory = { context ->
             ShopReviewView(context)
         },

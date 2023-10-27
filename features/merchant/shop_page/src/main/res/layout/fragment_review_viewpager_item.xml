@@ -48,6 +48,8 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgBullet"
+        tools:visibility="visible"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
@@ -108,16 +110,13 @@
         android:id="@+id/ratingBarSlot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="4dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/tpgCompletedReview"
         app:layout_constraintTop_toBottomOf="@id/tpgCompletedReview"
         tools:layout_height="16dp"
-        tools:layout_width="80dp">
-
-    </LinearLayout>
-
+        tools:layout_width="80dp"/>
+   
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgReviewtime"
         android:layout_width="wrap_content"
