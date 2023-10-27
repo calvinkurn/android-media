@@ -61,7 +61,8 @@ class StoriesCreationActivity : BaseActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             val data = it.data
             if (data != null) {
-                val mediaFilePath = MediaPicker.result(data).originalPaths.getOrNull(0).orEmpty()
+                val mediaData = MediaPicker.result(data)
+                val mediaFilePath = mediaData.editedPaths.firstOrNull() ?: mediaData.originalPaths.firstOrNull().orEmpty()
                 val mediaType = ContentMediaType.parse(mediaFilePath)
 
                 viewModel.submitAction(StoriesCreationAction.SetMedia(mediaFilePath, mediaType))
