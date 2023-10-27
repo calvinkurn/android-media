@@ -11,11 +11,17 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.carousellayoutmanager.CarouselHorizontalFlingSwipeEffect
 import com.tokopedia.carousellayoutmanager.CarouselLayoutManager
 import com.tokopedia.carousellayoutmanager.CarouselZoomPostLayoutListener
 import com.tokopedia.carousellayoutmanager.CenterScrollListener
 import com.tokopedia.carousellayoutmanager.DefaultChildSelectionListener
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopAdvanceCarouselBannerViewholderLayoutBinding
@@ -52,7 +58,8 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
         null
     private var uiModel: ShopHomeDisplayWidgetUiModel = ShopHomeDisplayWidgetUiModel()
     private var timer = Timer()
-
+    private var currentSelectedItemPositionWhenUserTouchItem = 0
+    private var carouselLayoutManager: CarouselLayoutManager? = null
     private val itemSelectionListener: CarouselLayoutManager.OnCenterItemSelectionListener =
         CarouselLayoutManager.OnCenterItemSelectionListener { position ->
             bannerIndicator?.setCurrentIndicator(position)
@@ -71,6 +78,7 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 when (e.action) {
                     MotionEvent.ACTION_DOWN -> {
+                        currentSelectedItemPositionWhenUserTouchItem = carouselLayoutManager?.centerItemPosition.orZero()
                         setAutoScrollOff()
                     }
 
@@ -176,27 +184,43 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
 
     private fun initRecyclerView(uiModel: ShopHomeDisplayWidgetUiModel) {
         val ratio = uiModel.header.ratio.takeIf { it.isNotEmpty() } ?: DEFAULT_RATIO
-        val layoutManager = CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, true, false)
-        layoutManager.setPostLayoutListener(CarouselZoomPostLayoutListener())
-        layoutManager.maxVisibleItems = Int.ONE
-        layoutManager.removeOnItemSelectionListener(itemSelectionListener)
-        layoutManager.addOnItemSelectionListener(itemSelectionListener)
+        carouselLayoutManager = CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, true, false)
+        carouselLayoutManager?.setPostLayoutListener(CarouselZoomPostLayoutListener())
+        carouselLayoutManager?.maxVisibleItems = Int.ONE
+        carouselLayoutManager?.removeOnItemSelectionListener(itemSelectionListener)
+        carouselLayoutManager?.addOnItemSelectionListener(itemSelectionListener)
         recyclerView?.apply {
             isNestedScrollingEnabled = false
             (this@apply.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = ratio
-            this.layoutManager = layoutManager
+            this.layoutManager = carouselLayoutManager
             this.setHasFixedSize(true)
             this.addOnScrollListener(CenterScrollListener())
-            DefaultChildSelectionListener.initCenterItemListener(
-                itemClickListener,
-                recyclerView,
-                layoutManager
-            )
             this.adapter = adapterShopWidgetAdvanceCarouselBanner
             this.removeOnItemTouchListener(itemTouchListener)
             this.addOnItemTouchListener(itemTouchListener)
+            carouselLayoutManager?.let {
+                DefaultChildSelectionListener.initCenterItemListener(
+                    itemClickListener,
+                    recyclerView,
+                    it
+                )
+                setupFlingListener(this, it)
+            }
         }
         updateRecyclerViewHeightBasedOnFirstChild()
+    }
+
+    private fun setupFlingListener(
+        recyclerView: RecyclerView,
+        carouselLayoutManager: CarouselLayoutManager
+    ) {
+        if (recyclerView.onFlingListener == null) {
+            recyclerView.onFlingListener = CarouselHorizontalFlingSwipeEffect(
+                recyclerView,
+                carouselLayoutManager,
+                uiModel.data?.size.orZero()
+            ) { currentSelectedItemPositionWhenUserTouchItem }
+        }
     }
 
 
