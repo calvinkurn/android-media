@@ -7,9 +7,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentDynamicIconBinding
+import com.tokopedia.home_component.decoration.DynamicIconBigItemDecoration
+import com.tokopedia.home_component.decoration.DynamicIconSmallItemDecoration
 import com.tokopedia.home_component.listener.DynamicIconComponentListener
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -33,10 +37,6 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_dynamic_icon
-        private const val MARGIN_TOP = 8
-        private const val MARGIN_BOTTOM_BIG = 16
-        private const val MARGIN_BOTTOM_SMALL = 12
-        private const val PADDING_HORIZONTAL = 8
     }
 
     private val adapter = DynamicIconAdapter(listener)
@@ -53,42 +53,27 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
     private fun setupDynamicIcon(element: DynamicIconComponentDataModel) {
         val icons = element.dynamicIconComponent.dynamicIcon
         iconRecyclerView = itemView.findViewById(R.id.dynamic_icon_recycler_view)
-        iconRecyclerView?.setPadding(PADDING_HORIZONTAL.toPx(), Int.ZERO, PADDING_HORIZONTAL.toPx(), Int.ZERO)
         if (icons.isNotEmpty()) {
             adapter.updatePosition(absoluteAdapterPosition)
             setRecyclerView(element)
             launch {
-                val maxHeight = if(element.type.isSmallIcons()) {
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                } else {
-                    element.dynamicIconUtil.findMaxHeight(icons, itemView.context)
-                }
                 val layoutParams = iconRecyclerView?.layoutParams as ConstraintLayout.LayoutParams
-                layoutParams.height = maxHeight
+                layoutParams.height = element.dynamicIconUtil.findMaxHeight(icons, itemView.context)
                 iconRecyclerView?.layoutParams = layoutParams
             }
             adapter.submitList(element)
-            val layoutParams = iconRecyclerView?.layoutParams as ConstraintLayout.LayoutParams
-            val marginBottom = if(element.type.isSmallIcons()) MARGIN_BOTTOM_SMALL else MARGIN_BOTTOM_BIG
-            layoutParams.setMargins(
-                Int.ZERO,
-                MARGIN_TOP.toPx(),
-                Int.ZERO,
-                marginBottom.toPx()
-            )
-            iconRecyclerView?.layoutParams = layoutParams
             iconRecyclerView?.adapter = adapter
         }
     }
 
     private fun setRecyclerView(element: DynamicIconComponentDataModel) {
-        val icons = element.dynamicIconComponent.dynamicIcon
-        val isScrollItem = icons.size > element.scrollableItemThreshold
-        setupLayoutManager(
-            isScrollItem = isScrollItem,
-            spanCount = icons.size,
-            element
-        )
+        setupLayoutManager(element)
+        if(iconRecyclerView?.itemDecorationCount == 0) {
+            val itemDecoration = if(element.type.isSmallIcons())
+                DynamicIconSmallItemDecoration()
+            else DynamicIconBigItemDecoration()
+            iconRecyclerView?.addItemDecoration(itemDecoration)
+        }
         iconRecyclerView?.clearOnScrollListeners()
         iconRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -104,15 +89,26 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         }
     }
 
-    private fun setupLayoutManager(isScrollItem: Boolean, spanCount: Int, element: DynamicIconComponentDataModel) {
-        binding?.dynamicIconRecyclerView?.layoutManager = if (isScrollItem) {
-            if(element.type.isSmallIcons()) {
-                GridLayoutManager(itemView.context, element.numOfRows, GridLayoutManager.HORIZONTAL, false)
-            } else {
-                LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-            }
+    private fun setupLayoutManager(element: DynamicIconComponentDataModel) {
+        binding?.dynamicIconRecyclerView?.layoutManager = if(element.type.isSmallIcons())
+            getSmallIconsLayoutManager(element)
+        else getBigIconsLayoutManager(element)
+    }
+
+    private fun getSmallIconsLayoutManager(element: DynamicIconComponentDataModel): LayoutManager {
+        return if(DeviceScreenInfo.isTablet(itemView.context)) {
+            LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         } else {
-            GridLayoutManager(itemView.context, spanCount, GridLayoutManager.VERTICAL, false)
+            GridLayoutManager(itemView.context, element.numOfRows, GridLayoutManager.HORIZONTAL, false)
+        }
+    }
+
+    private fun getBigIconsLayoutManager(element: DynamicIconComponentDataModel): LayoutManager {
+        val isScrollItem = element.dynamicIconComponent.dynamicIcon.size > element.type.scrollableItemThreshold
+        return if (isScrollItem) {
+            LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        } else {
+            GridLayoutManager(itemView.context, element.dynamicIconComponent.dynamicIcon.size, GridLayoutManager.VERTICAL, false)
         }
     }
 }

@@ -49,7 +49,7 @@ class DynamicIconAdapter(private val listener: DynamicIconComponentListener) : R
 
     fun submitList(list: DynamicIconComponentDataModel) {
         this.isCache = list.isCache
-        this.isScrollable = list.dynamicIconComponent.dynamicIcon.size > list.scrollableItemThreshold
+        this.isScrollable = list.dynamicIconComponent.dynamicIcon.size > list.type.scrollableItemThreshold
         this.type = list.type
         iconList.clear()
         iconList.addAll(list.dynamicIconComponent.dynamicIcon)

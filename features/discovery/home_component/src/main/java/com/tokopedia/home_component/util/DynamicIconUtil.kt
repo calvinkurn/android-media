@@ -11,10 +11,4 @@ abstract class DynamicIconUtil {
         icons: List<DynamicIconComponent.DynamicIcon>,
         context: Context
     ): Int
-
-    abstract fun measureTitleHeight(
-        text: CharSequence?,
-        textWidth: Int,
-        context: Context
-    ): Int
 }

@@ -27,13 +27,12 @@ data class DynamicIconComponentDataModel(
 ) {
     enum class Type(val scrollableItemThreshold: Int) {
         BIG(3),
-        SMALL(6);
+        SMALL(0);
 
         fun isBigIcons() = this == BIG
         fun isSmallIcons() = this == SMALL
     }
 
-    val scrollableItemThreshold: Int = if(numOfRows == 1) type.scrollableItemThreshold else 0
     val dynamicIconUtil: DynamicIconUtil = when(type) {
         Type.SMALL -> DynamicIconSmallUtil()
         else -> DynamicIconBigUtil()

@@ -37,7 +37,7 @@ class DynamicIconBigUtil: DynamicIconUtil() {
         return maxHeight
     }
 
-    override fun measureTitleHeight(
+    private fun measureTitleHeight(
         text: CharSequence?,
         textWidth: Int,
         context: Context
