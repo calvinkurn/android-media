@@ -1746,6 +1746,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                     PaymentListingActivity.EXTRA_PROMO_PARAM,
                     goCicilInstallmentRequest.promoParam
                 )
+                putExtra(
+                    PaymentListingActivity.EXTRA_CALLBACK_URL,
+                    payment.creditCard.additionalData.callbackUrl
+                )
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
         }
