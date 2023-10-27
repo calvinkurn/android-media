@@ -6,6 +6,8 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.model.AtfData
+import com.tokopedia.home.beranda.data.newatf.banner.HomepageBannerMapper
+import com.tokopedia.home.beranda.data.newatf.icon.DynamicIconMapper
 import com.tokopedia.home.beranda.data.newatf.mission.MissionWidgetMapper
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.helper.LazyLoadDataMapper
@@ -170,7 +172,7 @@ class HomeVisitableFactoryImpl(
 
     private fun addDynamicIconData(id: String = "", defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf(), isCache: Boolean = false, componentName: String) {
         if (isCache && homePrefController.isUsingDifferentAtfRollenceVariant()) return
-        val iconType = if(componentName == TYPE_ICON_V2) DynamicIconComponentDataModel.Type.SMALL else DynamicIconComponentDataModel.Type.BIG
+        val iconType = DynamicIconMapper.getDynamicIconType(componentName, context)
         val numOfRows = if(componentName == TYPE_ICON_V2) 2 else 1
         val viewModelDynamicIcon = DynamicIconComponentDataModel(
             id = id,
@@ -308,7 +310,7 @@ class HomeVisitableFactoryImpl(
                                         this.addHomePageBannerData(
                                             data.getAtfContent<com.tokopedia.home.beranda.domain.model.banner.BannerDataModel>(),
                                             index,
-                                            data.component == TYPE_BANNER_V2
+                                            HomepageBannerMapper.isBleeding(data.component, context)
                                         )
                                     }
                                 )
@@ -492,7 +494,7 @@ class HomeVisitableFactoryImpl(
                 status = MissionWidgetListDataModel.STATUS_SUCCESS,
                 showShimmering = atfData.isShimmer,
                 source = MissionWidgetListDataModel.SOURCE_ATF,
-                type = MissionWidgetMapper.getMissionWidgetType(atfData.component),
+                type = MissionWidgetMapper.getMissionWidgetType(atfData.component, context),
                 widgetParam = atfData.param
             )
             visitableList.add(mission)

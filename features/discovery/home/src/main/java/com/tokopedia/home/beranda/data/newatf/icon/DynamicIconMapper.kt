@@ -26,9 +26,8 @@ class DynamicIconMapper @Inject constructor(
         return if(atfData.atfStatus == AtfKey.STATUS_ERROR) {
             ErrorStateIconModel()
         } else {
-            val componentName = atfData.atfMetadata.component
-            val iconType = if(componentName == AtfKey.TYPE_ICON_V2) DynamicIconComponentDataModel.Type.SMALL else DynamicIconComponentDataModel.Type.BIG
-            val numOfRows = if(componentName == AtfKey.TYPE_ICON_V2) 2 else 1
+            val iconType = getDynamicIconType(atfData.atfMetadata.component, context)
+            val numOfRows = if(iconType == DynamicIconComponentDataModel.Type.SMALL) 2 else 1
             DynamicIconComponentDataModel(
                 id = atfData.atfMetadata.id.toString(),
                 dynamicIconComponent = DynamicIconComponent(getDynamicIconList(data)),
@@ -66,6 +65,15 @@ class DynamicIconMapper @Inject constructor(
                 withBackground = it.withBackground,
                 position = idx,
             )
+        }
+    }
+
+    companion object {
+        fun getDynamicIconType(component: String, context: Context?): DynamicIconComponentDataModel.Type {
+            context?.let { if(DeviceScreenInfo.isTablet(it)) return DynamicIconComponentDataModel.Type.SMALL }
+            return if(component == AtfKey.TYPE_ICON_V2)
+                DynamicIconComponentDataModel.Type.SMALL
+            else DynamicIconComponentDataModel.Type.BIG
         }
     }
 }

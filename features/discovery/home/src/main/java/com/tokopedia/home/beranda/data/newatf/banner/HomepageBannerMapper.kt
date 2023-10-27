@@ -1,6 +1,9 @@
 package com.tokopedia.home.beranda.data.newatf.banner
 
+import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home.beranda.data.newatf.AtfData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ErrorStateChannelOneModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
@@ -19,10 +22,16 @@ import javax.inject.Inject
  */
 class HomepageBannerMapper @Inject constructor(
     homeRemoteConfigController: HomeRemoteConfigController,
+    @ApplicationContext private val context: Context,
 ) {
     companion object {
         private const val PROMO_NAME_BANNER_CAROUSEL = "/ - p%s - slider banner - banner - %s"
         private const val VALUE_BANNER_DEFAULT = ""
+
+        fun isBleeding(component: String, context: Context?): Boolean {
+            return context?.let { DeviceScreenInfo.isTablet(it) }
+                ?: (component == AtfKey.TYPE_BANNER_V2)
+        }
     }
     private val BANNER_EXPIRY_IN_MILLIS = TimeUnit.DAYS.toMillis(homeRemoteConfigController.getBannerExpiryDays())
 
@@ -35,7 +44,7 @@ class HomepageBannerMapper @Inject constructor(
         return if (atfData.atfStatus == AtfKey.STATUS_ERROR) {
             ErrorStateChannelOneModel()
         } else {
-            mapToBanner(data, index, atfData.isCache, isExpired, atfData.atfMetadata.component == AtfKey.TYPE_BANNER_V2)
+            mapToBanner(data, index, atfData.isCache, isExpired, isBleeding(atfData.atfMetadata.component, context))
         }
     }
 

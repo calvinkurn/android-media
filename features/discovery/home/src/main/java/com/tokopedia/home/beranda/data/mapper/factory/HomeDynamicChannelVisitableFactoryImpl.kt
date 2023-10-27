@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.data.mapper.factory
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
@@ -795,6 +796,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
     }
 
     private fun getMissionWidgetType(layout: String): MissionWidgetListDataModel.Type {
+        context?.let { if(DeviceScreenInfo.isTablet(it)) return MissionWidgetListDataModel.Type.CLEAR }
         return if(layout == DynamicHomeChannel.Channels.LAYOUT_MISSION_WIDGET_V2)
             MissionWidgetListDataModel.Type.CLEAR
         else
