@@ -14,6 +14,7 @@ import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.model.UserData;
+import com.tokopedia.logger.LogManager;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -38,6 +39,14 @@ public abstract class MainApplication extends CoreNetworkApplication {
 
     protected void initRemoteConfig() {
         remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
+        WeaveInterface remoteConfigWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return fetchRemoteConfig();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(remoteConfigWeave);
     }
 
     public UserSession getUserSession() {
@@ -92,6 +101,30 @@ public abstract class MainApplication extends CoreNetworkApplication {
         new LocationUtils(MainApplication.this).initLocationBackground();
         upgradeSecurityProvider();
         return true;
+    }
+
+    @NotNull
+    private boolean fetchRemoteConfig() {
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
+        remoteConfig.fetch(getRemoteConfigListener());
+        return true;
+    }
+
+    private RemoteConfig.Listener getRemoteConfigListener() {
+        return new RemoteConfig.Listener() {
+            @Override
+            public void onComplete(RemoteConfig remoteConfig) {
+                LogManager logManager = LogManager.instance;
+                if (logManager != null) {
+                    logManager.refreshConfig();
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        };
     }
 
     private void upgradeSecurityProvider() {
