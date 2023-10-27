@@ -10,18 +10,22 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.constant.ConstantUrl
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestFinishedBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestFinishedWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.getTypeface
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeQuestFinishedWidgetViewHolder(
-    itemView: View
+    itemView: View,
+    private val listener: HomeQuestFinishedWidgetListener? = null
 ): AbstractViewHolder<HomeQuestFinishedWidgetUiModel>(itemView) {
     companion object {
-        private const val APPLINK_COUPON = "tokopedia://rewards/kupon-saya"
         private const val ASSET_PATH_NEW_FONT = "OpenSauceOneExtraBold.ttf"
         private const val ASSET_PATH_OLD_FONT = "RobotoBold.ttf"
 
@@ -36,9 +40,18 @@ class HomeQuestFinishedWidgetViewHolder(
             tpTitle.text = element.title
             tpDescription.setDescription(element.contentDescription)
             sivCircleSeeAll.setOnClickListener {
-                RouteManager.route(itemView.context, APPLINK_COUPON)
+                listener?.onClickSeeDetailsQuestWidget()
+                openQuestChannelPage()
+            }
+            root.addOnImpressionListener(element) {
+                listener?.onImpressFinishCard()
             }
         }
+    }
+
+    private fun openQuestChannelPage() {
+        val appLink = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) ConstantUrl.QUEST_CHANNEL_STAGING_APPLINK else ConstantUrl.QUEST_CHANNEL_PRODUCTION_APPLINK
+        RouteManager.route(itemView.context, appLink)
     }
 
     private fun Typography.setDescription(contentDescription: String) {
@@ -64,5 +77,10 @@ class HomeQuestFinishedWidgetViewHolder(
         }
 
         text = spannableText
+    }
+
+    interface HomeQuestFinishedWidgetListener {
+        fun onClickSeeDetailsQuestWidget()
+        fun onImpressFinishCard()
     }
 }

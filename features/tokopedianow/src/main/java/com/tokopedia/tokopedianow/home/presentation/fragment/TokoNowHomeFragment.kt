@@ -116,6 +116,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOK
 import com.tokopedia.tokopedianow.home.analytic.HomePageLoadTimeMonitoring
 import com.tokopedia.tokopedianow.home.analytic.HomePlayWidgetAnalyticModel
 import com.tokopedia.tokopedianow.home.analytic.HomeProductCarouselChipsAnalytics
+import com.tokopedia.tokopedianow.home.analytic.HomeQuestWidgetAnalytics
 import com.tokopedia.tokopedianow.home.analytic.HomeRealTimeRecomAnalytics
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
@@ -160,7 +161,9 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeHeaderViewHol
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
+import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestFinishedWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestReloadWidgetViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
@@ -242,6 +245,9 @@ class TokoNowHomeFragment :
     lateinit var analytics: HomeAnalytics
 
     @Inject
+    lateinit var analyticsQuestWidget: HomeQuestWidgetAnalytics
+
+    @Inject
     lateinit var homeSharedPref: TokoNowSharedPreference
 
     @Inject
@@ -264,7 +270,7 @@ class TokoNowHomeFragment :
                 homeEducationalInformationListener = this,
                 serverErrorListener = this,
                 tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
-                homeQuestSequenceWidgetListener = createQuestWidgetCallback(),
+                homeQuestSequenceWidgetListener = createQuestCallback(),
                 dynamicLegoBannerCallback = createLegoBannerCallback(),
                 homeSwitcherListener = createHomeSwitcherListener(),
                 homeLeftCarouselAtcListener = createLeftCarouselAtcCallback(),
@@ -280,7 +286,9 @@ class TokoNowHomeFragment :
                 productBundleWidgetListener = bundleWidgetCallback,
                 tokoNowBundleWidgetListener = bundleWidgetCallback,
                 homeHeaderListener = createHomeHeaderListener(),
-                questReloadWidgetListener = createQuestReloadWidgetCallback()
+                questReloadWidgetListener = createQuestReloadWidgetCallback(),
+                questWidgetListener = createQuestWidgetCallback(),
+                questFinishedListener = createQuestFinishedWidgetCallback()
             ),
             differ = HomeListDiffer()
         )
@@ -1924,7 +1932,7 @@ class TokoNowHomeFragment :
         }
     }
 
-    private fun createQuestWidgetCallback(): HomeQuestSequenceWidgetListener {
+    private fun createQuestCallback(): HomeQuestSequenceWidgetListener {
         return QuestWidgetCallback(this, viewModelTokoNow, analytics)
     }
 
@@ -2053,6 +2061,38 @@ class TokoNowHomeFragment :
     private fun createQuestReloadWidgetCallback() = object : HomeQuestReloadWidgetViewHolder.HomeQuestReloadWidgetListener {
         override fun onReloadListener() {
             viewModelTokoNow.refreshQuestWidget()
+        }
+    }
+
+    private fun createQuestWidgetCallback() = object : HomeQuestWidgetViewHolder.HomeQuestWidgetListener {
+        override fun onImpressQuestWidget() {
+            analyticsQuestWidget.trackImpressionQuestWidget()
+        }
+
+        override fun onClickSeeDetailsQuestWidget() {
+            analyticsQuestWidget.trackClickSeeDetailsQuestWidget()
+        }
+
+        override fun onClickQuestCard() {
+            analyticsQuestWidget.trackClickCardQuestWidget()
+        }
+
+        override fun onClickProgressiveBar() {
+            analyticsQuestWidget.trackClickProgressiveBarQuestWidget()
+        }
+
+        override fun onImpressQuestCardSwiped() {
+            analyticsQuestWidget.trackImpressionSwipeQuestCardQuestWidget()
+        }
+    }
+
+    private fun createQuestFinishedWidgetCallback() = object : HomeQuestFinishedWidgetViewHolder.HomeQuestFinishedWidgetListener {
+        override fun onClickSeeDetailsQuestWidget() {
+            analyticsQuestWidget.trackClickSeeDetailsQuestWidget()
+        }
+
+        override fun onImpressFinishCard() {
+            analyticsQuestWidget.trackImpressionFinishedQuestWidget()
         }
     }
 

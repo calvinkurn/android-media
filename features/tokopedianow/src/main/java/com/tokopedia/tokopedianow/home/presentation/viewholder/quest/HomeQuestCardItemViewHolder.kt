@@ -8,8 +8,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_DETAIL_PRODUCTION_APPLINK
-import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_DETAIL_STAGING_APPLINK
+import com.tokopedia.tokopedianow.common.constant.ConstantUrl
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestCardBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestCardItemUiModel
@@ -19,7 +18,8 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.resources.isDarkMode
 
 class HomeQuestCardItemViewHolder(
-    private val binding: ItemTokopedianowQuestCardBinding
+    private val binding: ItemTokopedianowQuestCardBinding,
+    private val listener: HomeQuestCardItemListener? = null
 ): RecyclerView.ViewHolder(binding.root) {
     companion object {
         private const val QUEST_CARD_DISPLAYED_PERCENTAGE = 0.95f
@@ -52,8 +52,8 @@ class HomeQuestCardItemViewHolder(
         constraintSet.applyTo(layoutQuestCard)
     }
 
-    private fun goToQuestDetailPage(id: String) {
-        val appLink = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) QUEST_DETAIL_STAGING_APPLINK + id else QUEST_DETAIL_PRODUCTION_APPLINK + id
+    private fun openQuestChannelPage() {
+        val appLink = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) ConstantUrl.QUEST_CHANNEL_STAGING_APPLINK else ConstantUrl.QUEST_CHANNEL_PRODUCTION_APPLINK
         RouteManager.route(itemView.context, appLink)
     }
 
@@ -67,8 +67,13 @@ class HomeQuestCardItemViewHolder(
                 adjustTitleStartPadding()
             }
             root.setOnClickListener {
-                goToQuestDetailPage(element.id)
+                openQuestChannelPage()
+                listener?.onClickQuestCard()
             }
         }
+    }
+
+    interface HomeQuestCardItemListener {
+        fun onClickQuestCard()
     }
 }

@@ -100,7 +100,10 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeC
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetViewHolder.HomeClaimCouponWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestFinishedWidgetViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestFinishedWidgetViewHolder.HomeQuestFinishedWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestReloadWidgetViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestReloadWidgetViewHolder.HomeQuestReloadWidgetListener
+import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestWidgetViewHolder.HomeQuestWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestShimmeringWidgetViewHolder
 
 class HomeAdapterTypeFactory(
@@ -131,7 +134,9 @@ class HomeAdapterTypeFactory(
     private val productBundleWidgetListener: ProductBundleWidgetListener? = null,
     private val tokoNowBundleWidgetListener: TokoNowBundleWidgetListener? = null,
     private val homeHeaderListener: HomeHeaderListener? = null,
-    private val questReloadWidgetListener: HomeQuestReloadWidgetViewHolder.HomeQuestReloadWidgetListener? = null
+    private val questReloadWidgetListener: HomeQuestReloadWidgetListener? = null,
+    private val questWidgetListener: HomeQuestWidgetListener? = null,
+    private val questFinishedListener: HomeQuestFinishedWidgetListener? = null
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -218,8 +223,8 @@ class HomeAdapterTypeFactory(
             HomeClaimCouponWidgetItemShimmeringViewHolder.LAYOUT -> HomeClaimCouponWidgetItemShimmeringViewHolder(view)
             HomeProductCarouselChipsViewHolder.LAYOUT -> HomeProductCarouselChipsViewHolder(view, productCarouselChipListener)
             HomeHeaderViewHolder.LAYOUT -> HomeHeaderViewHolder(view, homeHeaderListener, tokoNowChooseAddressWidgetListener, tokoNowView)
-            com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestWidgetViewHolder.LAYOUT -> com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestWidgetViewHolder(view)
-            HomeQuestFinishedWidgetViewHolder.LAYOUT -> HomeQuestFinishedWidgetViewHolder(view)
+            com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestWidgetViewHolder.LAYOUT -> com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestWidgetViewHolder(view, questWidgetListener)
+            HomeQuestFinishedWidgetViewHolder.LAYOUT -> HomeQuestFinishedWidgetViewHolder(view, questFinishedListener)
             HomeQuestShimmeringWidgetViewHolder.LAYOUT -> HomeQuestShimmeringWidgetViewHolder(view)
             HomeQuestReloadWidgetViewHolder.LAYOUT -> HomeQuestReloadWidgetViewHolder(view, questReloadWidgetListener)
             // endregion
