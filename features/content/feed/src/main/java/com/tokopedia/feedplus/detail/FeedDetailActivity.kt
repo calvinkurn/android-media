@@ -25,7 +25,6 @@ import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.type.FeedContentType
 import com.tokopedia.feedplus.presentation.model.type.isPlayContent
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play_common.util.extension.commit
 import com.tokopedia.play_common.util.extension.marginLp

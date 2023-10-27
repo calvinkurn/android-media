@@ -223,8 +223,10 @@ class FeedFragment :
     private val feedMvcAnalytics = FeedMVCAnalytics()
 
     private val feedEntrySource : MapperFeedModelToTrackerDataModel.FeedEntrySource by lazyThreadSafetyNone {
-        val widgetId = arguments?.getString(UF_EXTRA_FEED_WIDGET_ID).ifNullOrBlank { "" }
-        val entryPoint = arguments?.getString(UF_EXTRA_FEED_ENTRY_POINT).ifNullOrBlank { ENTRY_POINT_DEFAULT }
+        val widgetId = arguments?.getString(UF_EXTRA_FEED_WIDGET_ID).ifNullOrBlank { ENTRY_POINT_DEFAULT }
+        val source = arguments?.getString(ARGUMENT_ENTRY_POINT).ifNullOrBlank { ENTRY_POINT_DEFAULT }
+        val entryPoint = arguments?.getString(UF_EXTRA_FEED_ENTRY_POINT).ifNullOrBlank { source }
+
         MapperFeedModelToTrackerDataModel.FeedEntrySource(widgetId = widgetId, entryPoint = entryPoint)
     }
 
@@ -2141,7 +2143,7 @@ class FeedFragment :
         const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
 
         const val ENTRY_POINT_APPLINK = "applink"
-        private const val ENTRY_POINT_DEFAULT = ""
+        private const val ENTRY_POINT_DEFAULT = "0"
 
         fun createFeedFragment(
             data: FeedDataModel,
