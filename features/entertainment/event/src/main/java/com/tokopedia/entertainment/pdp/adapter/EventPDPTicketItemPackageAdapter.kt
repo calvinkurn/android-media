@@ -62,9 +62,9 @@ class EventPDPTicketItemPackageAdapter(
                         if (isRecommendationPackage) {
                             renderForRecommendationPackage(items)
                         } else if (isAvailableOnSelectedDate) {
-                            txtPilihTicket.show()
+                            renderGeneralPackage(items)
                         } else {
-                            txtisRecommeded.show()
+                            renderGeneralRecommendationPackage(items)
                         }
                         txtPriceTicket.show()
                         adjustContainerBottomMargin(true)
@@ -240,7 +240,12 @@ class EventPDPTicketItemPackageAdapter(
                     quantityEditor.editText.addTextChangedListener(textWatcher)
                     isListenerRegistered = true
                 }
+            }
+        }
 
+        private fun renderGeneralPackage(items: PackageItem) {
+            binding.run {
+                txtPilihTicket.show()
                 txtPilihTicket.setOnClickListener {
                     txtPilihTicket.visibility = View.GONE
                     greenDivider.visibility = View.VISIBLE
@@ -253,29 +258,23 @@ class EventPDPTicketItemPackageAdapter(
                     quantityEditor.subtractButton.visibility = View.VISIBLE
                     eventPDPTracking.onClickPackage(items, quantityEditor.getValue())
                 }
+            }
+        }
 
+        private fun renderForRecommendationPackage(items: PackageItem) {
+            with(binding) {
+                txtisRecommeded.show()
+                txtisRecommeded.text = root.context.resources.getString(R.string.ent_pdp_ticket_change_date)
                 txtisRecommeded.setOnClickListener {
                     onBindItemTicketListener.clickRecommendation(items.dates)
                 }
             }
         }
 
-        private fun renderForRecommendationPackage(items: PackageItem) {
+        private fun renderGeneralRecommendationPackage(items: PackageItem) {
             with(binding) {
-                root.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                    if (!hasFocus) {
-                        val imm = root.context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.hideSoftInputFromWindow(root.rootView.windowToken, Int.ZERO)
-                    }
-                }
-
-                txtTitleTicket.text = items.name
-                txtSubtitleTicket.text = items.description
-                txtSubtitleTicket.visibility = if (items.description.isNotEmpty()) View.VISIBLE else View.GONE
-                txtPriceTicket.text = getRupiahFormat(items.salesPrice.toIntSafely())
-
                 txtisRecommeded.show()
-                txtisRecommeded.text = root.context.resources.getString(R.string.ent_pdp_ticket_change_date)
+                txtisRecommeded.text = root.context.resources.getString(R.string.ent_pdp_ticket_recommended)
                 txtisRecommeded.setOnClickListener {
                     onBindItemTicketListener.clickRecommendation(items.dates)
                 }
