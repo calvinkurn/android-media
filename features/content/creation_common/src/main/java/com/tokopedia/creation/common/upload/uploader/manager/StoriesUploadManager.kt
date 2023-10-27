@@ -86,12 +86,16 @@ class StoriesUploadManager @Inject constructor(
                 /** TODO JOE: add logic here */
                 updateStoryStatus(uploadData, StoriesStatus.Transcoding)
 
-                val mediaUploadResult = uploadMedia(uploadData.firstMediaUri, uploadData.firstMediaType, uploadData.sourceId)
-                val coverUrl = uploadCover(uploadData).fileUrl
+                val mediaUploadResult = uploadMedia(uploadData.firstMediaUri, uploadData.sourceId)
 
-                addMedia(uploadData, mediaUploadResult, coverUrl)
+                val coverUploadId = when (uploadData.firstMediaType) {
+                    ContentMediaType.Video -> uploadCover(uploadData).uploadId
+                    else -> ""
+                }
 
-                updateStoryStatus(uploadData, StoriesStatus.Active)
+                val activeMediaId = addMedia(uploadData, mediaUploadResult, coverUploadId)
+
+                updateStoryStatus(uploadData, StoriesStatus.Active, activeMediaId)
 
                 broadcastComplete()
 
@@ -117,7 +121,7 @@ class StoriesUploadManager @Inject constructor(
     private suspend fun updateStoryStatus(
         uploadData: CreationUploadData.Stories,
         status: StoriesStatus,
-        activeMediaId: String = ""
+        activeMediaId: String = "0"
     ) {
         updateStoryUseCase(
             StoriesUpdateStoryRequest(
@@ -134,7 +138,6 @@ class StoriesUploadManager @Inject constructor(
 
     private suspend fun uploadMedia(
         mediaUri: String,
-        mediaType: ContentMediaType,
         sourceId: String,
     ): UploadResult.Success {
         val param = uploaderUseCase.createParams(
@@ -152,6 +155,9 @@ class StoriesUploadManager @Inject constructor(
                 result
             }
             is UploadResult.Error -> {
+                /** TODO JOE: add requestId here */
+                sendErrorRequestId(uploadData, "")
+
                 throw Exception(result.message)
             }
         }
@@ -169,29 +175,50 @@ class StoriesUploadManager @Inject constructor(
             uploadData.firstMediaUri
         }
 
-        return uploadMedia(coverFilePath, ContentMediaType.Image, "")
+        return uploadMedia(coverFilePath, "")
     }
 
     private suspend fun addMedia(
         uploadData: CreationUploadData.Stories,
         mediaUploadResult: UploadResult.Success,
-        coverUrl: String,
+        coverUploadId: String,
+    ): String {
+        val response = addMediaUseCase(
+            StoriesAddMediaRequest(
+                storyId = uploadData.creationId,
+                type = uploadData.firstMediaType.code,
+                mediaUrl = if (uploadData.firstMediaType == ContentMediaType.Image) {
+                    mediaUploadResult.uploadId
+                } else {
+                    mediaUploadResult.videoUrl
+                },
+                coverUrl = coverUploadId,
+                uploadId = "",
+                status = StoriesAddMediaRequest.Status.Active,
+                orientation = StoriesAddMediaRequest.Orientation.Potrait,
+            )
+        )
+
+        updateProgress()
+
+        return response.data.mediaId
+    }
+
+    private suspend fun sendErrorRequestId(
+        uploadData: CreationUploadData.Stories,
+        requestId: String,
     ) {
         addMediaUseCase(
             StoriesAddMediaRequest(
                 storyId = uploadData.creationId,
                 type = uploadData.firstMediaType.code,
-                mediaUrl = if (uploadData.firstMediaType == ContentMediaType.Image) {
-                    mediaUploadResult.fileUrl
-                } else {
-                    mediaUploadResult.videoUrl
-                },
-                coverUrl = coverUrl,
-                uploadId = mediaUploadResult.uploadId,
+                mediaUrl = "",
+                coverUrl = "",
+                uploadId = requestId,
+                status = StoriesAddMediaRequest.Status.Hidden,
+                orientation = StoriesAddMediaRequest.Orientation.Potrait,
             )
         )
-
-        updateProgress()
     }
 
     private suspend fun updateProgress(progress: Int = progressPerStep) {

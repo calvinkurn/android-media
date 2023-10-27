@@ -9,9 +9,19 @@ data class StoriesAddMediaRequest(
     val mediaUrl: String,
     val coverUrl: String,
     val uploadId: String,
-    val status: Int = 1,
-    val orientation: Int = 0,
+    val status: Status,
+    val orientation: Orientation,
 ) {
+
+    enum class Status(val value: Int) {
+        Hidden(0),
+        Active(1)
+    }
+
+    enum class Orientation(val value: Int) {
+        Potrait(0),
+        Landscape(1),
+    }
 
     fun buildRequestParam(): Map<String, Any> {
         return mapOf(
@@ -21,8 +31,8 @@ data class StoriesAddMediaRequest(
                 "mediaURL" to mediaUrl,
                 "coverURL" to coverUrl,
                 "uploadID" to uploadId,
-                "status" to status,
-                "orientation" to orientation,
+                "status" to status.value,
+                "orientation" to orientation.value,
             )
         )
     }
