@@ -15,6 +15,7 @@ import com.tokopedia.chatbot.chatbot2.view.util.view.ViewUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.unifycomponents.Label
 
 /**
@@ -103,7 +104,7 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<com.tok
 
     override fun onViewRecycled() {
         if (thumbnail != null) {
-            ImageHandler.clearImage(thumbnail)
+            thumbnail.clearImage()
         }
     }
 
