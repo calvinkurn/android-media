@@ -22,6 +22,7 @@ import com.tokopedia.tokochat.common.util.TokoChatCacheManager
 import com.tokopedia.tokochat.common.util.TokoChatCacheManagerImpl.Companion.TOKOCHAT_IMAGE_ATTACHMENT_MAP
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.SOURCE_TOKOFOOD
 import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.tokochat.domain.cache.TokoChatBubblesCache
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionPayload
@@ -345,7 +346,7 @@ class TokoChatViewModel @Inject constructor(
         launch {
             withContext(dispatcher.io) {
                 try {
-                    val result = getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
+                    val result = getTokoChatRoomTickerUseCase(SOURCE_TOKOFOOD)
                     _chatRoomTicker.postValue(Success(result))
                 } catch (throwable: Throwable) {
                     _chatRoomTicker.postValue(Fail(throwable))

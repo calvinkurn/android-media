@@ -46,12 +46,11 @@ import com.tokopedia.tokochat.analytics.TokoChatAnalytics
 import com.tokopedia.tokochat.analytics.TokoChatAnalyticsConstants
 import com.tokopedia.tokochat.common.util.OrderStatusType
 import com.tokopedia.tokochat.common.util.TokoChatNetworkUtil
-import com.tokopedia.tokochat.common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.CUSTOMER
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.DEFAULT_CENSOR_PERCENTAGE
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.DRIVER
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IS_FROM_BUBBLE_KEY
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.TOKOFOOD
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSourceIcon
 import com.tokopedia.tokochat.common.util.TokoChatViewUtil
 import com.tokopedia.tokochat.common.util.TokoChatViewUtil.EIGHT_DP
 import com.tokopedia.tokochat.common.view.chatroom.TokoChatBaseFragment
@@ -880,7 +879,7 @@ open class TokoChatFragment @Inject constructor(
             imageUrl.setImageUrl(headerUiModel.imageUrl)
             imageUrl.show()
 
-            val sourceLogoUrl = getSourceLogoUrl()
+            val sourceLogoUrl = getSourceIcon(viewModel.source)
 
             if (sourceLogoUrl.isNotBlank()) {
                 val sourceLogo =
@@ -965,13 +964,6 @@ open class TokoChatFragment @Inject constructor(
                 viewModel.source
             )
             baseBinding?.tokochatExpiredInfo?.setExpiredInfoDesc(expiredMessage)
-        }
-    }
-
-    private fun getSourceLogoUrl(): String {
-        return when (viewModel.source) {
-            TOKOFOOD -> IC_TOKOFOOD_SOURCE
-            else -> ""
         }
     }
 

@@ -1,5 +1,7 @@
 package com.tokopedia.tokochat.common.util
 
+import com.tokopedia.tokochat.common.util.TokoChatUrlUtil.IC_SHOPPING_LOGISTIC_SOURCE
+import com.tokopedia.tokochat.common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
@@ -14,15 +16,42 @@ object TokoChatValueUtil {
     /**
      * SOURCE
      */
-    const val TOKOFOOD = "tokofood"
+    const val SOURCE_TOKOFOOD = "tokofood"
+    const val SOURCE_GOSEND_INSTANT = "gosend_instant"
+    const val SOURCE_GOSEND_SAMEDAY = "gosend_sameday"
+
     const val TOKOFOOD_SERVICE_TYPE = 5
+    const val GOSEND_INSTANT_SERVICE_TYPE = 14
+    const val GOSEND_SAMEDAY_SERVICE_TYPE = 23
     fun getSource(serviceType: Int): String {
         return when (serviceType) {
-            TOKOFOOD_SERVICE_TYPE -> TOKOFOOD
+            TOKOFOOD_SERVICE_TYPE -> SOURCE_TOKOFOOD
+            GOSEND_INSTANT_SERVICE_TYPE -> SOURCE_GOSEND_INSTANT
+            GOSEND_SAMEDAY_SERVICE_TYPE -> SOURCE_GOSEND_SAMEDAY
             else -> ""
         }
     }
+
+    fun getSourceIcon(serviceType: Int): String {
+        return when (serviceType) {
+            TOKOFOOD_SERVICE_TYPE -> IC_TOKOFOOD_SOURCE
+            GOSEND_INSTANT_SERVICE_TYPE -> IC_SHOPPING_LOGISTIC_SOURCE
+            GOSEND_SAMEDAY_SERVICE_TYPE -> IC_SHOPPING_LOGISTIC_SOURCE
+            else -> ""
+        }
+    }
+
+    fun getSourceIcon(source: String): String {
+        return when (source) {
+            SOURCE_TOKOFOOD -> IC_TOKOFOOD_SOURCE
+            SOURCE_GOSEND_INSTANT -> IC_SHOPPING_LOGISTIC_SOURCE
+            SOURCE_GOSEND_SAMEDAY -> IC_SHOPPING_LOGISTIC_SOURCE
+            else -> ""
+        }
+    }
+
     const val GOFOOD = "GoFood"
+    const val SHOPPING_LOGISTIC = "Belanja"
 
     /**
      * Message status
@@ -82,4 +111,11 @@ object TokoChatValueUtil {
      * TokoChat List
      */
     const val BATCH_LIMIT = 10
+
+    /**
+     * Driver Name
+     */
+    fun getFirstNameDriver(driverName: String): String {
+        return driverName.split(" ").firstOrNull() ?: ""
+    }
 }
