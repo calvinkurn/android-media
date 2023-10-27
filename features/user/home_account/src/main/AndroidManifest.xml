@@ -44,6 +44,12 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".account_settings.presentation.activity.MediaQualitySettingComposeActivity"
+            android:exported="false"
+            android:label="@string/image_quality_setting_screen"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+
         <activity android:name=".account_settings.presentation.activity.MediaQualitySettingActivity"
             android:exported="false"
             android:label="@string/image_quality_setting_screen"
