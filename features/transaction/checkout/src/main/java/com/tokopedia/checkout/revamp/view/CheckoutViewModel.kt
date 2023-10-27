@@ -1079,7 +1079,7 @@ class CheckoutViewModel @Inject constructor(
                 shipment = orderModel.shipment.copy(
                     isLoading = false,
                     courierItemData = result?.courier,
-                    shippingCourierUiModels = result?.couriers ?: emptyList(),
+                    shippingCourierUiModels = emptyList(),
                     insurance = result?.insurance ?: CheckoutOrderInsurance()
                 )
             )
