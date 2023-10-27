@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
 import com.tokopedia.play_common.util.extension.getVisiblePortion
+import com.tokopedia.play_common.util.extension.globalVisibleRect
 
 /**
  * Created by kenny.hadisaputra on 23/10/23
@@ -23,7 +24,7 @@ class PlayVideoWidgetVideoManager(
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             val layoutManager = recyclerView.layoutManager
-            setupVideoAutoplay(newState, layoutManager)
+            setupVideoAutoplay(recyclerView, newState, layoutManager)
         }
     }
 
@@ -60,7 +61,7 @@ class PlayVideoWidgetVideoManager(
     }
 
     fun resume() {
-        setupVideoAutoplay(recyclerView.scrollState, recyclerView.layoutManager)
+        setupVideoAutoplay(recyclerView, recyclerView.scrollState, recyclerView.layoutManager)
     }
 
     fun release() {
@@ -68,17 +69,19 @@ class PlayVideoWidgetVideoManager(
     }
 
     private fun setupVideoAutoplay(
+        parent: RecyclerView,
         state: Int,
         layoutManager: RecyclerView.LayoutManager?
     ) {
         when (layoutManager) {
             null -> error("LayoutManager has not been set")
-            is LinearLayoutManager -> setupVideoAutoplay(state, layoutManager)
+            is LinearLayoutManager -> setupVideoAutoplay(parent, state, layoutManager)
             else -> error("Only LinearLayoutManager and its descendant(s) are supported")
         }
     }
 
     private fun setupVideoAutoplay(
+        parent: RecyclerView,
         state: Int,
         layoutManager: LinearLayoutManager
     ) {
@@ -94,7 +97,7 @@ class PlayVideoWidgetVideoManager(
                 view
             }
         }
-        val playableVideoWidgets = visibleVideoWidgets.filter(::isVideoWidgetConsideredVisible)
+        val playableVideoWidgets = visibleVideoWidgets.filter { isVideoWidgetConsideredVisible(parent, it) }
             .take(config.autoPlayAmount)
             .toSet()
         val otherVideoWidgets = widgets - playableVideoWidgets
@@ -103,8 +106,8 @@ class PlayVideoWidgetVideoManager(
         otherVideoWidgets.forEach { it.pauseVideo() }
     }
 
-    private fun isVideoWidgetConsideredVisible(videoWidgetView: PlayVideoWidgetView): Boolean {
-        val visiblePercentage = videoWidgetView.getVisiblePortion()
+    private fun isVideoWidgetConsideredVisible(parent: RecyclerView, videoWidgetView: PlayVideoWidgetView): Boolean {
+        val visiblePercentage = videoWidgetView.getVisiblePortion(parent.globalVisibleRect)
         val videoWidgetArea = videoWidgetView.width * videoWidgetView.height
         val visibleArea = visiblePercentage[0] * videoWidgetView.width * visiblePercentage[1] * videoWidgetView.height
 
