@@ -2,6 +2,9 @@ package com.tokopedia.topads.auto.view.fragment
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -11,6 +14,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.SeekBar
 import android.widget.TextView
+import androidx.compose.ui.graphics.Color
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -41,6 +46,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+
 
 /**
  * Author errysuprayogi on 07,May,2019
@@ -223,6 +230,15 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
         setUpView(view)
         setListener()
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val layerDrawable = seekBar.progressDrawable as LayerDrawable
+        val backgroundLayer = layerDrawable.findDrawableByLayerId(android.R.id.background)
+        val newColor: Int = ContextCompat.getColor(seekBar.context, unifyprinciplesR.color.Unify_NN1000)
+        backgroundLayer.colorFilter = PorterDuffColorFilter(newColor, PorterDuff.Mode.SRC_IN)
+        seekBar.invalidate()
     }
 
     open fun setListener() {

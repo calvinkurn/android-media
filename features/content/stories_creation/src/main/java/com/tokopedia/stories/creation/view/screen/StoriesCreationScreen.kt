@@ -406,7 +406,7 @@ private fun StoriesCreationScreenPreview() {
     NestTheme {
         Surface {
             val uiState = StoriesCreationUiState.Empty.copy(
-                mediaFilePath = "asfk"
+                mediaFilePath = "media_file_path"
             )
 
             StoriesCreationScreen(
