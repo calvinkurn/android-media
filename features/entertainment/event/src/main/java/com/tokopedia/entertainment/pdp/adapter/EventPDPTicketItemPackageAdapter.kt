@@ -49,38 +49,41 @@ class EventPDPTicketItemPackageAdapter(
         private var isListenerRegistered = false
         private var textWatcher: TextWatcher? = null
         fun bind(items: PackageItem) {
-            if (isRecommendationPackage) {
-                renderForRecommendationPackage(items)
-            } else {
-                renderForMainPackage(items)
-            }
+            renderPackage(items)
         }
 
         private fun renderTicketStatus(
-            availabilityStatus: AvailabilityStatus
+            items: PackageItem
         ) {
             binding.run {
-                when (availabilityStatus.code) {
+                when (items.availabilityStatus.code) {
                     EventConst.EVENT_TICKET_STATUS_AVAILABLE -> {
-                        hideTicketStatus()
-                        adjustContainerBottomMargin(true)
-                        txtPilihTicket.show()
+                        val isAvailableOnSelectedDate = checkDate(items.dates, onBindItemTicketListener.getSelectedDate())
+                        if (isRecommendationPackage) {
+                            renderForRecommendationPackage(items)
+                        } else if (isAvailableOnSelectedDate) {
+                            txtPilihTicket.show()
+                        } else {
+                            txtisRecommeded.show()
+                        }
                         txtPriceTicket.show()
+                        adjustContainerBottomMargin(true)
+                        hideTicketStatus()
                     }
                     EventConst.EVENT_TICKET_STATUS_FULL -> {
-                        showTicketStatus(availabilityStatus)
+                        showTicketStatus(items.availabilityStatus)
                         showTicketStatusRedBackground()
                         showSoldOut()
                         adjustContainerBottomMargin(false)
                     }
                     EventConst.EVENT_TICKET_STATUS_NOT_STARTED -> {
-                        showTicketStatus(availabilityStatus)
+                        showTicketStatus(items.availabilityStatus)
                         showTicketStatusRedBackground()
                         showSoldOut()
                         adjustContainerBottomMargin(false)
                     }
                     else -> {
-                        showTicketStatus(availabilityStatus)
+                        showTicketStatus(items.availabilityStatus)
                         showTicketStatusSoldOutBackground()
                         showSoldOut()
                         adjustContainerBottomMargin(false)
@@ -119,7 +122,6 @@ class EventPDPTicketItemPackageAdapter(
             return MethodChecker.getColor(itemView.context, unifyResId)
         }
 
-
         private fun hideTicketStatus() {
             binding.run {
                 txtStatusTicket.hide()
@@ -149,7 +151,7 @@ class EventPDPTicketItemPackageAdapter(
             (binding.containerWrapperTicket.layoutParams as? MarginLayoutParams)?.bottomMargin = marginValue
         }
 
-        private fun renderForMainPackage(items: PackageItem) {
+        private fun renderPackage(items: PackageItem) {
             with(binding) {
                 root.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                     if (!hasFocus) {
@@ -166,15 +168,7 @@ class EventPDPTicketItemPackageAdapter(
                 } else {
                     root.context.resources.getString(R.string.ent_free_price)
                 }
-
-                val isRecomended = checkDate(items.dates, onBindItemTicketListener.getSelectedDate())
-                if (isRecomended) {
-                    renderTicketStatus(items.availabilityStatus)
-                } else {
-                    txtisRecommeded.show()
-                    hideTicketStatus()
-                }
-
+                renderTicketStatus(items)
                 if (!isListenerRegistered) {
                     quantityEditor.setValue(items.minQty.toIntSafely())
                     quantityEditor.minValue = items.minQty.toIntSafely() - Int.ONE
@@ -285,7 +279,6 @@ class EventPDPTicketItemPackageAdapter(
                 txtisRecommeded.setOnClickListener {
                     onBindItemTicketListener.clickRecommendation(items.dates)
                 }
-                hideTicketStatus()
             }
         }
 
