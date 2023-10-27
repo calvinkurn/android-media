@@ -23,7 +23,6 @@ import com.tokopedia.tokochat.common.util.TokoChatCacheManagerImpl.Companion.TOK
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG
 import com.tokopedia.tokochat.config.util.TokoChatResult
-import com.tokopedia.tokochat.config.util.TokoChatServiceType
 import com.tokopedia.tokochat.domain.cache.TokoChatBubblesCache
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionPayload
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
@@ -213,7 +212,7 @@ class TokoChatViewModel @Inject constructor(
         try {
             chatRoomUseCase.initGroupBookingChat(
                 orderId = gojekOrderId,
-                serviceType = getServiceType()
+                source = source
             )
         } catch (throwable: Throwable) {
             _error.value = Pair(throwable, ::initGroupBooking.name)
@@ -222,14 +221,6 @@ class TokoChatViewModel @Inject constructor(
 
     fun getGroupBookingFlow(): SharedFlow<TokoChatResult<String>> {
         return chatRoomUseCase.getGroupBookingFlow()
-    }
-
-    private fun getServiceType(): TokoChatServiceType {
-        return when (source) {
-            SOURCE_GOSEND_INSTANT -> TokoChatServiceType.GOSEND_INSTANT
-            SOURCE_GOSEND_SAMEDAY -> TokoChatServiceType.GOSEND_SAMEDAY
-            else -> TokoChatServiceType.TOKOFOOD // default tokofood
-        }
     }
 
     fun getGroupBookingChannel(channelId: String) {
@@ -672,8 +663,5 @@ class TokoChatViewModel @Inject constructor(
         private const val DELAY_FETCH_IMAGE = 500L
         private const val ERROR_COMPRESSED_IMAGE_NULL = "Compressed image null"
         private const val ERROR_RENAMED_IMAGE_NULL = "Renamed image null"
-
-        private const val SOURCE_GOSEND_INSTANT = "gosend_instant"
-        private const val SOURCE_GOSEND_SAMEDAY = "gosend_sameday"
     }
 }

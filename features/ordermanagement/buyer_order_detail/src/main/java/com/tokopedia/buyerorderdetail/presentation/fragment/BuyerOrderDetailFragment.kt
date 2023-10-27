@@ -9,8 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -40,6 +43,7 @@ import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.ChatCounterListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
@@ -100,6 +104,7 @@ import com.tokopedia.scp_rewards_touchpoints.touchpoints.analytics.ScpRewardsCel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.AnalyticsData
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpToasterModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedalTouchPointViewModel
+import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -117,6 +122,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -137,7 +144,8 @@ open class BuyerOrderDetailFragment :
     PartialProductItemViewHolder.ShareProductBottomSheetListener,
     ScpRewardsMedalTouchPointWidgetViewHolder.ScpRewardsMedalTouchPointWidgetListener,
     OwocInfoViewHolder.Listener,
-    BmgmSectionViewHolder.Listener {
+    BmgmSectionViewHolder.Listener,
+    ChatCounterListener {
 
     companion object {
         @JvmStatic
@@ -201,7 +209,8 @@ open class BuyerOrderDetailFragment :
             navigator,
             this,
             this,
-            recyclerViewSharedPool
+            recyclerViewSharedPool,
+            this
         )
     }
     protected open val adapter: BuyerOrderDetailAdapter by lazy {
@@ -305,6 +314,8 @@ open class BuyerOrderDetailFragment :
         observeAddSingleToCart()
         observeAddMultipleToCart()
         observeMedalTouchPoint()
+        observeGroupBooking()
+        observeChatUnreadCounter()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -1092,6 +1103,45 @@ open class BuyerOrderDetailFragment :
     private fun showToaster(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+        }
+    }
+
+    override fun initGroupBooking(orderIdGojek: String, source: String) {
+        viewModel.initGroupBooking(orderIdGojek, source)
+    }
+    fun observeGroupBooking() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.getGroupBookingFlow().collectLatest {
+                    when (it) {
+                        is TokoChatResult.Success -> {
+                            viewModel.fetchUnreadCounter(it.data)
+                        }
+                        is TokoChatResult.Error -> {
+                            adapter.updateCourierCounter(0)
+                        }
+                        TokoChatResult.Loading -> Unit // No-op
+                    }
+                }
+            }
+        }
+    }
+
+    fun observeChatUnreadCounter() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.getUnreadCounterFlow().collectLatest {
+                    when (it) {
+                        is TokoChatResult.Success -> {
+                            adapter.updateCourierCounter(it.data)
+                        }
+                        is TokoChatResult.Error -> {
+                            adapter.updateCourierCounter(0)
+                        }
+                        TokoChatResult.Loading -> Unit // No-op
+                    }
+                }
+            }
         }
     }
 }

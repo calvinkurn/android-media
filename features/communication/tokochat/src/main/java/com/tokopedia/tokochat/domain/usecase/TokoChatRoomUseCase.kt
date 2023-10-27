@@ -24,11 +24,11 @@ open class TokoChatRoomUseCase @Inject constructor(
 
     fun initGroupBookingChat(
         orderId: String,
-        serviceType: TokoChatServiceType
+        source: String
     ) {
         tokoChatChannelUseCase.initGroupBookingChat(
             orderId = orderId,
-            serviceType = serviceType
+            serviceType = tokoChatChannelUseCase.getServiceType(source)
         )
     }
 

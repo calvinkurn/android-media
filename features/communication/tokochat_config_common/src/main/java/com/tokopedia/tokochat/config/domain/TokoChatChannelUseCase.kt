@@ -94,11 +94,22 @@ open class TokoChatChannelUseCase@Inject constructor(
             }
     }
 
+    fun getServiceType(source: String): TokoChatServiceType {
+        return when (source) {
+            SOURCE_GOSEND_INSTANT -> TokoChatServiceType.GOSEND_INSTANT
+            SOURCE_GOSEND_SAMEDAY -> TokoChatServiceType.GOSEND_SAMEDAY
+            else -> TokoChatServiceType.TOKOFOOD // default tokofood
+        }
+    }
+
     fun cancel() {
         scope.cancel()
     }
 
     companion object {
         private const val CONVERSATION_NULL = "Conversation Repository is null"
+
+        const val SOURCE_GOSEND_INSTANT = "gosend_instant"
+        const val SOURCE_GOSEND_SAMEDAY = "gosend_sameday"
     }
 }

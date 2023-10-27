@@ -47,8 +47,10 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder
+import com.tokopedia.tokochat.config.domain.TokoChatChannelUseCase
+import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -58,6 +60,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -68,6 +71,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -78,6 +82,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private val getBuyerOrderDetailDataUseCase: Lazy<GetBuyerOrderDetailDataUseCase>,
     private val finishOrderUseCase: Lazy<FinishOrderUseCase>,
     private val atcUseCase: Lazy<AddToCartMultiUseCase>,
+    private val tokoChatChannelUseCase: Lazy<TokoChatChannelUseCase>,
     private val resourceProvider: Lazy<ResourceProvider>
 ) : ViewModel() {
 
@@ -158,6 +163,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
         scpRewardsMedalTouchPointWidgetUiState,
         ::mapBuyerOrderDetailUiState
     ).toStateFlow(BuyerOrderDetailUiState.FullscreenLoading)
+
+    private val chatChannelId: String = ""
 
     fun getBuyerOrderDetailData(
         orderId: String,
@@ -499,4 +506,35 @@ class BuyerOrderDetailViewModel @Inject constructor(
             is Fail -> MultiATCState.Fail(throwable = result.throwable)
         }
     }
+
+    fun initGroupBooking(
+        orderIdGojek: String,
+        source: String
+    ) {
+        if (chatChannelId.isBlank()) {
+            tokoChatChannelUseCase.get().initGroupBookingChat(
+                orderId = orderIdGojek,
+                serviceType = tokoChatChannelUseCase.get().getServiceType(source)
+            )
+        }
+    }
+
+    fun getGroupBookingFlow(): SharedFlow<TokoChatResult<String>> {
+        return tokoChatChannelUseCase.get().groupBookingResultFlow
+    }
+
+    fun fetchUnreadCounter(channelId: String) {
+        viewModelScope.launch {
+            try {
+                tokoChatChannelUseCase.get().fetchUnreadCount(channelId)
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+            }
+        }
+    }
+
+    fun getUnreadCounterFlow(): StateFlow<TokoChatResult<Int>> {
+        return tokoChatChannelUseCase.get().unreadCounterFlow
+    }
+
 }
