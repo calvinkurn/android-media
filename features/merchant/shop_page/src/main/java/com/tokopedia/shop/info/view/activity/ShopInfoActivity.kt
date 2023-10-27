@@ -4,77 +4,45 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.collectAsState
 import androidx.fragment.app.Fragment
-import com.google.accompanist.pager.HorizontalPager
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.di.component.ShopComponent
+import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
+import com.tokopedia.shop.info.di.module.ShopInfoModule
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
-import com.tokopedia.shop.info.view.fragment.ShopInfoReimagineFragment
+import com.tokopedia.shop.info.view.fragment.ShopInfoScreen
+import com.tokopedia.shop.info.view.viewmodel.ShopInfoReimagineViewModel
+import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Navigate to ShopInfoActivity
  * use [com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_INFO]
  */
-class ShopInfoActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setupLayout(savedInstanceState)
-        window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
-        setupToolbar()
-        inflateFragment()
-    }
-
-    private fun setupToolbar() {
-        setSupportActionBar(toolbar)
-        toolbar?.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        this.intent = intent
-        inflateFragment()
-    }
-
-    override fun getScreenName() = null
-
-    override fun getLayoutRes() = R.layout.activity_shop_info
-
-    override fun getComponent(): ShopComponent = ShopComponentHelper().getComponent(application, this)
-
-    override fun getNewFragment(): Fragment? = createShopInfoReimagineFragment()
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        (fragment as? ShopInfoFragment)?.onBackPressed()
-    }
-
-    private fun createShopInfoFragment(): ShopInfoFragment {
-        val shopId = intent.getStringExtra(SHOP_ID) ?: intent.data?.lastPathSegment.orEmpty()
-        val shopData = intent.getParcelableExtra<ShopInfoData?>(EXTRA_SHOP_INFO)
-
-        return ShopInfoFragment.createInstance(shopId, shopData)
-    }
+class ShopInfoActivity : BaseActivity(), HasComponent<ShopComponent>{
     
-    private fun createShopInfoReimagineFragment(): ShopInfoReimagineFragment {
-        val shopId = intent.getStringExtra(SHOP_ID) ?: intent.data?.lastPathSegment.orEmpty()
-        return ShopInfoReimagineFragment.newInstance(shopId)
-    }
+    private var fragment : Fragment? = null
+    
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    override fun getParentViewResourceID(): Int {
-        return R.id.parent_view
+    private val viewModel by lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProvider(this, viewModelFactory)[ShopInfoReimagineViewModel::class.java]
     }
-
-    override fun getToolbarResourceID(): Int {
-        return R.id.toolbar
+    private val shopId by lazy {
+        intent.getStringExtra(SHOP_ID) ?: intent.data?.lastPathSegment.orEmpty()
     }
-
+    private val shopData by lazy {
+        intent.getParcelableExtra<ShopInfoData?>(EXTRA_SHOP_INFO)
+    }
     companion object {
         fun createIntent(
             context: Context,
@@ -90,4 +58,86 @@ class ShopInfoActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
         const val EXTRA_SHOP_INFO = "extra_shop_info"
         const val SHOP_ID = "EXTRA_SHOP_ID"
     }
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setupDependencyInjection()
+        super.onCreate(savedInstanceState)
+
+        val useCompose = true
+        
+        if (useCompose) {
+            renderWithCompose()
+        } else {
+            render()
+        }
+    }
+    private fun setupDependencyInjection() {
+        DaggerShopInfoComponent.builder().shopInfoModule(ShopInfoModule())
+            .shopComponent(getComponent())
+            .build()
+            .inject(this)
+    }
+    
+    private fun render() {
+        setContentView(R.layout.activity_shop_info)
+        setupBackgroundColor()
+        showFragment()
+    }
+    
+    
+    private fun setupBackgroundColor() {
+        window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, unifyprinciplesR.color.Unify_Background))
+    }
+    
+    private fun renderWithCompose() {
+        viewModel.getShopRating(shopId)
+        
+        setContent {
+          /*  // Observe for any effect / one-time event
+            LaunchedEffect(Unit) {
+                viewModel.uiEffect.collectLatest { effect ->
+                    when (effect) {
+                        is CampaignListViewModel.UiEffect.ShowShareBottomSheet -> {
+                            val banner = effect.banner
+                            viewModel.setMerchantBannerData(banner)
+                            showShareBottomSheet(banner)
+                        }
+                    }
+                }
+            }*/
+            
+            val uiState = viewModel.uiState.collectAsState()
+            
+            NestTheme {
+                ShopInfoScreen(uiState = uiState.value)
+            }
+       
+        }
+    }
+    
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        this.intent = intent
+        showFragment()
+    }
+
+    override fun getScreenName() : String = ShopInfoActivity::class.java.simpleName
+   
+    override fun onBackPressed() {
+        super.onBackPressed()
+        (fragment as? ShopInfoFragment)?.onBackPressed()
+    }
+    
+
+    private fun showFragment() {
+        val shopInfoFragment = ShopInfoFragment.createInstance(shopId, shopData)
+        
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.frameLayout, shopInfoFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    override fun getComponent(): ShopComponent = ShopComponentHelper().getComponent(application, this)
 }
