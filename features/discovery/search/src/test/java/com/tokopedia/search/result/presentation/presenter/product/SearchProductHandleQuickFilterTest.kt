@@ -278,6 +278,29 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
             selectedFilterIndex,
             selectedFilterOption.name,
         )
+        `Then Assert Quick Filter That Has Active Option Will Have Icon`(selectedFilterIndex)
+    }
+
+    @Test
+    fun `Quick Filter Item Type Is Selected When There Is Active Filter And Has Icon`() {
+        val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
+        val selectedFilterIndex = searchProductModel.quickFilterModel.filter.indexOfFirst { it.options.all { it.iconUrl.isNotEmpty() } }
+        val selectedFilter = searchProductModel.quickFilterModel.filter[selectedFilterIndex]
+        val selectedFilterOption = selectedFilter.options[0]
+        val expectedChipName = selectedFilterOption.name
+        val expectedChipIconUrl = selectedFilterOption.iconUrl
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given Set Quick Filter Called`()
+        `Given Selected Option will return true`(selectedFilterOption)
+
+        `When Load Data`()
+
+        `Then Assert Quick Filter That Has Active Option Will Have Selected Type`(
+            selectedFilterIndex,
+            expectedChipName,
+        )
+        `Then Assert Quick Filter That Has Active Option Will Have Icon`(selectedFilterIndex, expectedChipIconUrl)
     }
 
     @Test
@@ -300,6 +323,29 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
             selectedFilterIndex,
             expectedChipName,
         )
+        `Then Assert Quick Filter That Has Active Option Will Have Icon`(selectedFilterIndex)
+    }
+
+    @Test
+    fun `Quick Filter Item Type Is Selected When There Is One Active Option In A Single Filter with Multiple Options`() {
+        val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
+        val selectedFilterIndex = 0
+        val selectedFilter = searchProductModel.quickFilterModel.filter[selectedFilterIndex]
+        val firstSelectedFilterOption = selectedFilter.options[0]
+        val expectedChipName = firstSelectedFilterOption.name
+        val expectedChipIconUrl = firstSelectedFilterOption.iconUrl
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given Set Quick Filter Called`()
+        `Given Selected Option will return true`(firstSelectedFilterOption)
+
+        `When Load Data`()
+
+        `Then Assert Quick Filter That Has Active Option Will Have Selected Type`(
+            selectedFilterIndex,
+            expectedChipName,
+        )
+        `Then Assert Quick Filter That Has Active Option Will Have Icon`(selectedFilterIndex, expectedChipIconUrl)
     }
 
     private fun `Then Assert Quick Filter That Has Active Option Will Have Selected Type`(
@@ -310,6 +356,14 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
         assert(sortFilterItemList[selectedFilterIndex].type == ChipsUnify.TYPE_SELECTED)
         assert(sortFilterItemList[selectedFilterIndex].title == expectedChipName)
+    }
+
+    private fun `Then Assert Quick Filter That Has Active Option Will Have Icon`(
+        selectedFilterIndex: Int,
+        iconUrl: String = "",
+    ) {
+        val sortFilterItemList = listItemSlot.captured
+        assert(sortFilterItemList[selectedFilterIndex].initIconUrl == iconUrl)
     }
 
     private fun `Given Selected Option will return true`(selectedOption: Option) {
