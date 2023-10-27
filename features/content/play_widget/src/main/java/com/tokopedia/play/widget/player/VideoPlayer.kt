@@ -32,7 +32,7 @@ class VideoPlayer(private val context: Context) {
     val player: Player = exoPlayer
 
     private val timer by lazy {
-        VideoPlayerTimer(player) { pause() }
+        VideoPlayerTimer(player) { stop() }
     }
 
     init {

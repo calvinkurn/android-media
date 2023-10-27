@@ -3,6 +3,7 @@ package com.tokopedia.play.widget.ui
 import android.content.Context
 import android.net.Uri
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -37,14 +38,27 @@ class PlayVideoWidgetView : CardUnify2 {
 
     private var mModel = PlayVideoWidgetUiModel.Empty
 
+    private var mIsIdleOrEnded = true
+
     private val playerListener = object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             binding.playerView.showWithCondition(
                 playWhenReady && playbackState == Player.STATE_READY
             )
+
+            val isIdleOrEnded = playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED
+            if (mIsIdleOrEnded == isIdleOrEnded) return
+            mIsIdleOrEnded = isIdleOrEnded
+
+            if (isIdleOrEnded) {
+                Log.d("VideoPlayer", "Id: ${mModel.id}")
+                mListener?.onVideoFinishedPlaying(this@PlayVideoWidgetView)
+            }
         }
 
         override fun onPlayerError(error: ExoPlaybackException) {
+            mListener?.onVideoError(this@PlayVideoWidgetView, error)
+
             if (error.type != ExoPlaybackException.TYPE_SOURCE) return
             if (error.sourceException !is BehindLiveWindowException) return
 
@@ -57,6 +71,8 @@ class PlayVideoWidgetView : CardUnify2 {
             addPlayerListener(playerListener)
         }
     }
+
+    private var mListener: Listener? = null
 
     init {
         animateOnPress = ANIMATE_BOUNCE
@@ -134,6 +150,10 @@ class PlayVideoWidgetView : CardUnify2 {
         bindPlayer(model)
     }
 
+    fun setListener(listener: Listener?) {
+        mListener = listener
+    }
+
     fun stopVideo() {
         player.stop()
     }
@@ -143,6 +163,8 @@ class PlayVideoWidgetView : CardUnify2 {
     }
 
     fun startVideo() {
+        val playbackState = player.player.playbackState
+        bindPlayer(mModel, playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED)
         player.start(mModel.createVideoPlayerConfig(true))
     }
 
@@ -155,9 +177,7 @@ class PlayVideoWidgetView : CardUnify2 {
         resetState: Boolean = true
     ) {
         binding.playerView.player = player.player
-        player.repeat(true)
         player.mute(true)
-        player.stop()
         player.loadUri(
             Uri.parse(model.videoUrl),
             config = model.createVideoPlayerConfig(resetState)
@@ -189,5 +209,11 @@ class PlayVideoWidgetView : CardUnify2 {
                 return FollowWidth
             }
         }
+    }
+
+    interface Listener {
+        fun onVideoFinishedPlaying(view: PlayVideoWidgetView)
+
+        fun onVideoError(view: PlayVideoWidgetView, error: ExoPlaybackException)
     }
 }

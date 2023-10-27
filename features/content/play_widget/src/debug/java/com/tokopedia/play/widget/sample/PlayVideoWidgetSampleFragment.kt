@@ -1,6 +1,7 @@
 package com.tokopedia.play.widget.sample
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +10,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.tokopedia.play.widget.databinding.FragmentPlayVideoWidgetSampleBinding
 import com.tokopedia.play.widget.databinding.ItemPlayVideoWidgetSampleBinding
 import com.tokopedia.play.widget.player.PlayVideoWidgetVideoManager
+import com.tokopedia.play.widget.ui.PlayVideoWidgetView
 import com.tokopedia.play.widget.ui.model.PlayVideoWidgetUiModel
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import kotlin.time.Duration.Companion.seconds
@@ -29,7 +32,7 @@ class PlayVideoWidgetSampleFragment : Fragment() {
             PlayVideoWidgetVideoManager(
                 binding.root,
                 viewLifecycleOwner,
-                config = PlayVideoWidgetVideoManager.Config(autoPlayAmount = 3)
+                config = PlayVideoWidgetVideoManager.Config(autoPlayAmount = 2)
             )
         }
     )
@@ -117,6 +120,17 @@ class PlayVideoWidgetSampleFragment : Fragment() {
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
+            binding.root.setListener(object : PlayVideoWidgetView.Listener {
+                override fun onVideoFinishedPlaying(view: PlayVideoWidgetView) {
+//                    Toast.makeText(view.context, "Video finished playing: ", Toast.LENGTH_SHORT).show()
+                    Log.d("VideoPlayer", "Video finished playing")
+                }
+
+                override fun onVideoError(view: PlayVideoWidgetView, error: ExoPlaybackException) {
+//                    Toast.makeText(view.context, "Video error: ", Toast.LENGTH_SHORT).show()
+                    Log.d("VideoPlayer", "Video error: $error")
+                }
+            })
             manager.bind(binding.root)
         }
 
