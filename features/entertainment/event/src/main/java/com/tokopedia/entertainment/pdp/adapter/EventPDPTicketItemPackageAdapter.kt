@@ -133,7 +133,11 @@ class EventPDPTicketItemPackageAdapter(
             binding.run {
                 if (availabilityStatus.name.isNotEmpty()) {
                     txtStatusTicket.text = availabilityStatus.name
-                    txtStatusDescTicket.text = " · ${availabilityStatus.desc}"
+                    if (availabilityStatus.desc.isNotEmpty()) {
+                        txtStatusDescTicket.text = " · ${availabilityStatus.desc}"
+                    } else {
+                        txtStatusDescTicket.text = ""
+                    }
                     txtStatusTicket.show()
                     txtStatusDescTicket.show()
                 } else {
