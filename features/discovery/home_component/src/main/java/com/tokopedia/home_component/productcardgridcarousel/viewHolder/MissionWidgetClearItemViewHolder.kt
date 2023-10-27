@@ -9,7 +9,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.animation.Interpolator
-import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home_component.databinding.HomeComponentItemMissionWidgetClearBinding
@@ -52,7 +51,6 @@ class MissionWidgetClearItemViewHolder(
     private var binding: HomeComponentItemMissionWidgetClearBinding? by viewBinding()
 
     companion object {
-        @LayoutRes
         val LAYOUT = home_componentR.layout.home_component_item_mission_widget_clear
         private const val SCALE_MAX_IMAGE = 1f
         private const val SCALE_MIN_IMAGE = 0.9375f

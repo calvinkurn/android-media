@@ -1,9 +1,6 @@
 package com.tokopedia.home.beranda.data.newatf.mission
 
-import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home.beranda.data.newatf.AtfData
 import com.tokopedia.home.beranda.helper.LazyLoadDataMapper
 import com.tokopedia.home.constant.AtfKey
@@ -16,9 +13,7 @@ import javax.inject.Inject
 /**
  * Created by Frenzel
  */
-class MissionWidgetMapper @Inject constructor(
-    @ApplicationContext private val context: Context
-) {
+class MissionWidgetMapper @Inject constructor() {
 
     fun asVisitable(
         data: HomeMissionWidgetData.GetHomeMissionWidget,
@@ -46,15 +41,14 @@ class MissionWidgetMapper @Inject constructor(
                 status = MissionWidgetListDataModel.STATUS_SUCCESS,
                 showShimmering = atfData.atfMetadata.isShimmer,
                 source = MissionWidgetListDataModel.SOURCE_ATF,
-                type = getMissionWidgetType(atfData.atfMetadata.component, context),
+                type = getMissionWidgetType(atfData.atfMetadata.component),
                 widgetParam = atfData.atfMetadata.param,
             )
         }
     }
 
     companion object {
-        fun getMissionWidgetType(component: String, context: Context?): MissionWidgetListDataModel.Type {
-            context?.let { if(DeviceScreenInfo.isTablet(it)) return MissionWidgetListDataModel.Type.CLEAR }
+        fun getMissionWidgetType(component: String): MissionWidgetListDataModel.Type {
             return if(component == AtfKey.TYPE_MISSION_V2)
                 MissionWidgetListDataModel.Type.CLEAR
             else
