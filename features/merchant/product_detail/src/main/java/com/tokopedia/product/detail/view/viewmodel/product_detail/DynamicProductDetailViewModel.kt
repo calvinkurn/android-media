@@ -31,6 +31,7 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.ProductDetailPrefetch
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -511,9 +512,14 @@ class DynamicProductDetailViewModel @Inject constructor(
         layoutId: String = "",
         userLocationLocal: LocalCacheModel,
         urlQuery: String = "",
-        extParam: String = ""
+        extParam: String = "",
+        prefetchData: ProductDetailPrefetch.Data? = null
     ) = launch(context = coroutineContext) {
         runCatching {
+            if (prefetchData != null && !refreshPage) {
+                val mock = PDPMock.toProductDetailDataModel(prefetchData)
+                processPdpLayout(mock)
+            }
             resetVariables(
                 shopDomain = productParams.shopDomain.orEmpty(),
                 forceRefresh = refreshPage,
