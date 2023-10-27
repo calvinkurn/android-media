@@ -160,7 +160,7 @@ class MultiComponentViewHolder(
     private fun setTabBackground() {
         with(binding.tabsShcMultiComponent.tabLayout) {
             val backgroundColor = if (context.isDarkMode()) {
-                unifycomponentsR.color.cardunify_background
+                R.color.card_background_dms
             } else {
                 unifycomponentsR.drawable.unify_tabs_border_bottom
             }

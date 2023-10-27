@@ -40,7 +40,6 @@ import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * Created By @ilhamsuaib on 09/07/20
@@ -382,7 +381,7 @@ class BarChartViewHolder(
             val cardBg = if (context.isDarkMode()) {
                 unifyprinciplesR.color.Unify_NN100
             } else {
-                unifycomponentsR.color.cardunify_background
+                R.color.card_background_dms
             }
             setCardBackgroundColor(context.getResColor(cardBg))
         }

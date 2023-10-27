@@ -22,7 +22,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.viewhelper.URLSpanNoUnderline
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.stringToUnifyColor
-import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * Created By @ilhamsuaib on 19/05/20
@@ -289,7 +288,7 @@ class CardViewHolder(
                 )
                 containerCard.setBackgroundResource(selectableItemBg.resourceId)
             } else {
-                val color = unifycomponentsR.color.cardunify_background
+                val color = R.color.card_background_dms
                 containerCard.setBackgroundColor(root.context.getResColor(color))
             }
         }

@@ -13,7 +13,6 @@ import com.tokopedia.sellerhomecommon.databinding.ShcItemMultiLineMetricBinding
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineMetricUiModel
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * Created By @ilhamsuaib on 27/10/20
@@ -108,7 +107,7 @@ class MultiLineMetricsAdapter(
                         unifyprinciplesR.color.Unify_NN100
                     }
 
-                    else -> unifycomponentsR.color.cardunify_background
+                    else -> R.color.card_background_dms
                 }
                 setCardBackgroundColor(context.getResColor(cardBg))
             }

@@ -35,7 +35,6 @@ import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
@@ -287,7 +286,7 @@ class LineGraphViewHolder(
             val cardBg = if (context.isDarkMode()) {
                 unifyprinciplesR.color.Unify_NN100
             } else {
-                unifycomponentsR.color.cardunify_background
+                R.color.card_background_dms
             }
             setCardBackgroundColor(context.getResColor(cardBg))
         }
