@@ -76,6 +76,11 @@ object RollenceKey {
     const val PRODUCT_CARD_SLASHED_PRICE_CASHBACK_SRP = "sp_cb_srp"
     const val PRODUCT_CARD_SLASHED_PRICE_CASHBACK_ALL = "sp_cb_all"
 
+    // For You Experiment
+    const val FOR_YOU_QUERY_DEFAULT = "control_variant"
+    const val FOR_YOU_QUERY_EXP = "VariantA"
+    const val FOR_YOU_QUERY = "ForYou"
+
     // PDP
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
     const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"
