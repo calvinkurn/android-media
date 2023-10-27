@@ -461,7 +461,9 @@ class BCABalanceViewModel @Inject constructor(
                     val topUp2 = bcaLibrary.BCATopUp_2(bcaFlazzData.attributes.cardData)
                     val updatedBalance = checkLatestBalance()
                     if (updatedBalance.isSuccess == SUCCESS_JNI) {
-                        if (topUp2.isSuccess == SUCCESS_JNI && getBCAPrefixSuccess(topUp2.strLogRsp)) {
+                        if (topUp2.isSuccess == SUCCESS_JNI
+                            && getBCAPrefixSuccess(topUp2.strLogRsp)
+                            && updatedBalance.balance > bcaFlazzData.attributes.lastBalance) {
                             getACKProcess(
                                 cardNumber,
                                 rawPublicKeyString,
