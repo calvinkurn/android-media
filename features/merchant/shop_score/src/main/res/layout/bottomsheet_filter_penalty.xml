@@ -18,8 +18,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/separatorDividerPenalty"
         android:layout_above="@id/btnShowPenalty"
-        tools:itemCount="1"
-        tools:listitem="@layout/item_penalty_filter_list_old"/>
+        tools:itemCount="1"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnShowPenalty"
