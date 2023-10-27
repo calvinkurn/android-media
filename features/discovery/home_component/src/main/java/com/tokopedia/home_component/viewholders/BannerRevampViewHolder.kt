@@ -101,7 +101,8 @@ class BannerRevampViewHolder(
     private fun setContainerPadding(element: BannerRevampDataModel) {
         if(element.isBleeding) {
             val topPadding = itemView.context.resources.getDimensionPixelSize(home_componentR.dimen.home_hpb_bleeding_padding_top)
-            bannerContainer.setPadding(Int.ZERO, topPadding, Int.ZERO, Int.ZERO)
+            val bottomPadding = itemView.context.resources.getDimensionPixelSize(home_componentR.dimen.home_hpb_bleeding_padding_bottom)
+            bannerContainer.setPadding(Int.ZERO, topPadding, Int.ZERO, bottomPadding)
         } else {
             bannerContainer.setPadding(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
         }
