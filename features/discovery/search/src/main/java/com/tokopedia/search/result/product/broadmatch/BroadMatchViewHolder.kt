@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.reimagine.ProductCardModel.StockInfo
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductBroadMatchLayoutBinding
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
@@ -143,6 +144,11 @@ class BroadMatchViewHolder(
                         imageUrl = item.freeOngkirDataView.imageUrl,
                     ),
                     hasMultilineName = reimagineSearch2Component.hasMultilineProductName(),
+                    stockInfo = StockInfo(
+                        percentage = item.stockBarDataView.percentageValue,
+                        label = item.stockBarDataView.value,
+                        labelColor = item.stockBarDataView.color,
+                    ),
                 ),
                 impressHolder = { item },
                 onImpressed = { broadMatchListener.onBroadMatchItemImpressed(item) },

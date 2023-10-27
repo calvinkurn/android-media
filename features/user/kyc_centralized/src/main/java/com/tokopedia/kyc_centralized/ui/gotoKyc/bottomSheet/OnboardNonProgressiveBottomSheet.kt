@@ -50,10 +50,13 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
     private var isReload = false
     private var isLaunchCallback = false
     private var isLaunchTokoKyc = false
+    private var isLaunchBlockedKyc = false
+    private var isBlockedMultipleAccount = false
 
     private var dismissDialogWithDataListener: (Boolean) -> Unit = {}
     private var dismissDialogLaunchCallBackListener: (Unit) -> Unit = {}
     private var dismissDialogLaunchTokoKycListener: (Unit) -> Unit = {}
+    private var dismissDialogLaunchBlockedKycListener: (Boolean) -> Unit = {}
 
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         when (result.resultCode) {
@@ -73,6 +76,15 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
             }
             KYCConstant.ActivityResult.LAUNCH_TOKO_KYC -> {
                 isLaunchTokoKyc = true
+                dismiss()
+            }
+            KYCConstant.ActivityResult.BLOCKED_KYC -> {
+                isLaunchBlockedKyc = true
+                isBlockedMultipleAccount =
+                    result.data?.getBooleanExtra(
+                        KYCConstant.PARAM_BLOCKED_IS_MULTIPLE_ACCOUNT,
+                        false
+                    ) == true
                 dismiss()
             }
         }
@@ -276,6 +288,9 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
             isLaunchCallback -> {
                 dismissDialogLaunchCallBackListener(Unit)
             }
+            isLaunchBlockedKyc -> {
+                dismissDialogLaunchBlockedKycListener(isBlockedMultipleAccount)
+            }
             else -> {
                 dismissDialogWithDataListener(isReload)
             }
@@ -285,6 +300,10 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
             projectId = projectId,
             kycFlowType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE
         )
+    }
+
+    fun setOnLaunchBlockedKycListener(isLaunchBlockedKyc: (Boolean) -> Unit) {
+        dismissDialogLaunchBlockedKycListener = isLaunchBlockedKyc
     }
 
     fun setOnLaunchTokoKycListener(isLaunchTokoKyc: (Unit) -> Unit) {

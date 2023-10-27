@@ -435,6 +435,8 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   header
                   footer
                }
+               note
+               income_detail_label
             }
         }
         """.trimIndent()

@@ -24,12 +24,14 @@ data class PickerParam(
     @SerializedName("minStorageThreshold") private var minStorageThreshold: Long = 150_000_000, // 150 mb
     @SerializedName("isIncludeAnimation") private var isIncludeAnimation: Boolean = false,
     @SerializedName("withEditor") private var withEditor: Boolean = false,
+    @SerializedName("withImmersiveEditor") private var withImmersiveEditor: Boolean = false,
     @SerializedName("pageSource") private var pageSource: PageSource = PageSource.Unknown,
     @SerializedName("subPageSource") private var subPageSource: PageSource = PageSource.Unknown,
     @SerializedName("includeMedias") private var includeMedias: List<String> = emptyList(),
     @SerializedName("excludedMedias") private var excludedMedias: List<File> = emptyList(),
     @SerializedName("previewActionText") private var previewActionText: String = "",
-    @SerializedName("editorParam") private var editorParam: EditorParam? = null
+    @SerializedName("editorParam") private var editorParam: EditorParam? = null,
+    @SerializedName("immersiveTrackerData") private var immersiveTrackerData: Map<String, String> = mapOf()
 ) : Parcelable {
 
     // getter
@@ -60,6 +62,7 @@ data class PickerParam(
     fun maxImageFileSize() = maxImageFileSize
     fun minStorageThreshold() = minStorageThreshold
     fun isEditorEnabled() = withEditor
+    fun isImmersiveEditorEnabled() = withImmersiveEditor
     fun getEditorParam() = editorParam
     fun previewActionText(): String {
         return if (previewActionText.length > CUSTOM_ACTION_TEXT_LIMIT) {
@@ -73,6 +76,8 @@ data class PickerParam(
             previewActionText
         }
     }
+
+    fun immersiveTrackerData() = immersiveTrackerData
 
     // setter
     fun pageSource(value: PageSource) = apply { pageSource = value }
@@ -92,6 +97,11 @@ data class PickerParam(
         editorParam = EditorParam().apply(param)
     }
 
+    fun withImmersiveEditor() = apply {
+        withImmersiveEditor = true
+        previewActionText("Lanjut")
+    }
+
     fun withoutEditor() = apply { withEditor = false }
     fun includeAnimationGif(value: Boolean) = apply { isIncludeAnimation = value }
     fun includeMedias(value: List<String>) = apply { includeMedias = value }
@@ -101,6 +111,7 @@ data class PickerParam(
     fun multipleSelectionMode() = apply { isMultipleSelection = true }
     fun singleSelectionMode() = apply { isMultipleSelection = false }
     fun previewActionText(value: String) = apply { previewActionText = value }
+    fun immersiveTrackerData(value: Map<String, String>) = apply { immersiveTrackerData = value }
 
     companion object {
         private const val CUSTOM_ACTION_TEXT_LIMIT = 10

@@ -23,4 +23,7 @@
     <string name="content_desc_comparison_bpc_spec_bullet">Spec bullet icon</string>
 
     <string name="recom_vertical_see_more">Lihat Semua</string>
+    
+    <string name="best_seller_empty_title">Yaah, masih kosong nih</string>
+    <string name="best_seller_empty_subtitle">Belum ada produk yang sesuai pilihanmu. Coba pilih yang lain, yuk!</string>
 </resources>

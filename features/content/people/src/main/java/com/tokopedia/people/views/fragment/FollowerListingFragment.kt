@@ -177,6 +177,8 @@ class FollowerListingFragment @Inject constructor(
                     // Hide shimmer
                 }
 
+                mAdapter.onError()
+
                 it?.let {
                     when (it) {
                         is UnknownHostException, is SocketTimeoutException -> {

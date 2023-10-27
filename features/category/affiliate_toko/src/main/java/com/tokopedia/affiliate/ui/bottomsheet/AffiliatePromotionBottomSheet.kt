@@ -6,7 +6,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,6 +52,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -123,6 +123,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
         private const val KEY_PARAMS = "KEY_PARAMS"
 
         private const val SHOP_ID_PARAM = "{shop_id}"
+        private const val PRODUCT_ID_PARAM = "{product_id}"
 
         const val ORIGIN_PROMOSIKAN = 1
         const val ORIGIN_HOME = 2
@@ -229,15 +230,13 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     productImage.show()
                     productImage.loadImage(params?.itemImage ?: bundle.getString(KEY_PRODUCT_IMAGE))
                 }
-
+                ssaMessage?.apply {
+                    show()
+                    text = params?.ssaInfo?.message?.parseAsHtml()
+                }
                 if (params?.ssaInfo?.ssaStatus == true) {
                     ssaGroup.isVisible = true
-                    ssaMessage.text =
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            Html.fromHtml(params.ssaInfo.message, Html.FROM_HTML_MODE_LEGACY)
-                        } else {
-                            Html.fromHtml(params.ssaInfo.message)
-                        }
+
                     ssaLabel.apply {
                         isVisible = params.ssaInfo.label.labelText.isNotBlank()
                         text = params.ssaInfo.label.labelText
@@ -255,28 +254,40 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 commission = params?.commission ?: bundle.getString(KEY_COMMISON_PRICE, "")
                 status = params?.status ?: bundle.getString(KEY_STATUS, "")
 
-                when (originScreen) {
-                    ORIGIN_SSA_SHOP -> iconSsaMessage.setOnClickListener {
-                        RouteManager.route(
-                            context,
-                            ApplinkConst.SHOP.replace(
-                                SHOP_ID_PARAM,
-                                productId
-                            )
-                        )
-                    }
-
-                    ORIGIN_PROMO_TOKO_NOW -> {
-                        iconSsaMessage.setOnClickListener {
+                when (type) {
+                    PAGE_TYPE_PDP -> {
+                        redirectionGroup.setOnClickListener {
                             RouteManager.route(
                                 context,
-                                ApplinkConst.TokopediaNow.HOME
+                                ApplinkConst.PRODUCT_INFO.replace(
+                                    PRODUCT_ID_PARAM,
+                                    productId
+                                )
                             )
                         }
                     }
 
-                    ORIGIN_PROMO_DISCO_BANNER, ORIGIN_PROMO_DISCO_BANNER_LIST -> {
-                        iconSsaMessage.setOnClickListener {
+                    PAGE_TYPE_SHOP -> redirectionGroup.setOnClickListener {
+                        if (originScreen == ORIGIN_PROMO_TOKO_NOW) {
+                            redirectionGroup.setOnClickListener {
+                                RouteManager.route(
+                                    context,
+                                    ApplinkConst.TokopediaNow.HOME
+                                )
+                            }
+                        } else {
+                            RouteManager.route(
+                                context,
+                                ApplinkConst.SHOP.replace(
+                                    SHOP_ID_PARAM,
+                                    productId
+                                )
+                            )
+                        }
+                    }
+
+                    PAGE_TYPE_CAMPAIGN -> {
+                        redirectionGroup.setOnClickListener {
                             RouteManager.route(
                                 context,
                                 appUrl

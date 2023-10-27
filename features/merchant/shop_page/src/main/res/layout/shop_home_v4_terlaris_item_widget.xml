@@ -107,12 +107,14 @@
 
         <View
             android:id="@+id/terlaris_divider_view_1"
-            android:layout_width="175dp"
+            android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"
             android:background="@color/dms_clr_AAB4C8_25"
             app:layout_constraintBottom_toBottomOf="@+id/terlaris_item_product_detail_1"
-            app:layout_constraintLeft_toRightOf="@+id/terlaris_item_img_product_1" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/terlaris_item_img_product_1"
+            app:layout_constraintStart_toEndOf="@+id/terlaris_item_img_product_1" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/terlaris_item_product_rank_number_1"
@@ -229,12 +231,13 @@
 
             <View
                 android:id="@+id/terlaris_divider_view_2"
-                app:layout_constraintLeft_toRightOf="@+id/terlaris_item_img_product_2"
-                app:layout_constraintBottom_toBottomOf="@+id/terlaris_item_product_detail_2"
+                android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_width="175dp"
-                android:layout_marginLeft="12dp"
-                android:background="@color/dms_clr_AAB4C8_25"/>
+                android:layout_marginStart="12dp"
+                android:background="@color/dms_clr_AAB4C8_25"
+                app:layout_constraintBottom_toBottomOf="@+id/terlaris_item_product_detail_2"
+                app:layout_constraintEnd_toEndOf="@+id/terlaris_item_product_rank_number_2"
+                app:layout_constraintStart_toEndOf="@+id/terlaris_item_img_product_2" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="44dp"
@@ -351,12 +354,13 @@
 
             <View
                 android:id="@+id/terlaris_divider_view_3"
-                app:layout_constraintLeft_toRightOf="@+id/terlaris_item_img_product_3"
-                app:layout_constraintBottom_toBottomOf="@+id/terlaris_item_product_detail_3"
+                android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_width="175dp"
-                android:layout_marginLeft="12dp"
-                android:background="@color/dms_clr_AAB4C8_25"/>
+                android:layout_marginStart="12dp"
+                android:background="@color/dms_clr_AAB4C8_25"
+                app:layout_constraintBottom_toBottomOf="@+id/terlaris_item_product_detail_3"
+                app:layout_constraintEnd_toEndOf="@+id/terlaris_item_product_rank_number_3"
+                app:layout_constraintStart_toEndOf="@+id/terlaris_item_img_product_3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="44dp"
