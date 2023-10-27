@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +15,7 @@ class SomethingWrongBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<LayoutGotoKycSomethingWrongBinding>()
 
-    private var onClickButton: () -> Unit = {}
+    private var onClickButton: (() -> Unit)? = null
 
     private var type = ""
     private var title = ""
@@ -87,12 +88,17 @@ class SomethingWrongBottomSheet : BottomSheetUnify() {
 
     private fun initListener() {
         binding?.btnAction?.setOnClickListener {
-            onClickButton()
+            onClickButton?.invoke()
         }
     }
 
     fun setOnClickRetryListener(listener: () -> Unit) {
         onClickButton = listener
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onClickButton = null
     }
 
     companion object {
