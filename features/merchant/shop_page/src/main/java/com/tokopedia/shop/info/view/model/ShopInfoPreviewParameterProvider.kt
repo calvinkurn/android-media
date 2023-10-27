@@ -106,7 +106,8 @@ class ShopInfoPreviewParameterProvider : PreviewParameterProvider<ShopInfoUiStat
             nearPickupAddressAppLink = "tokopedia://logistic/epharmacy",
             pharmacistOperationalHour = "09:00 - 18:00",
             pharmacistName = "apt. Epin Ambarwati, S.Farm",
-            siaNumber = "201221003602300001"
+            siaNumber = "201221003602300001",
+            sipaNumber = "201221003602300001"
         )
     )
 

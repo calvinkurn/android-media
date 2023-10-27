@@ -37,7 +37,8 @@ data class ShopInfoUiState(
         nearestPickupAddress = "",
         pharmacistName = "",
         pharmacistOperationalHour = "",
-        siaNumber = ""
+        siaNumber = "",
+        sipaNumber = ""
     ),
     val error: Throwable? = null
 )

@@ -5,5 +5,6 @@ data class ShopEpharmacyInfo(
     val nearPickupAddressAppLink: String,
     val pharmacistOperationalHour: String,
     val pharmacistName: String, 
-    val siaNumber: String
+    val siaNumber: String,
+    val sipaNumber: String
 )
