@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
@@ -145,6 +146,8 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         // special behavior to handle finish if the url is paylater AN-34892
         if (f is BaseSessionWebViewFragment) {
             val currentUrl = f.webView?.url
+            val query = UriUtil.uriQueryParamsToMap(currentUrl ?: "")
+
             if (currentUrl != null &&
                 (
                     currentUrl.contains("/paylater/acquisition/status") ||
@@ -152,6 +155,11 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                     )
             ) {
                 this.finish()
+                return
+            }
+
+            if (query["overrideNativeBackpress"] == "true") {
+                WebViewHelper.executeJs("openConfirmationDialog()", f.webView) {}
                 return
             }
         }
