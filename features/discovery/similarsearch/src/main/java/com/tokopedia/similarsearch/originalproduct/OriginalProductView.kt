@@ -9,10 +9,10 @@ import android.widget.LinearLayout
 import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
 import androidx.cardview.widget.CardView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.similarsearch.R
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
 import com.tokopedia.unifycomponents.ImageUnify
@@ -113,12 +113,7 @@ internal class OriginalProductView @JvmOverloads constructor(
     }
 
     private fun initImageProduct(similarSearchOriginalProduct: Product) {
-        ImageHandler.loadImageRounded2(
-            context,
-            imageProduct,
-            similarSearchOriginalProduct.imageUrl,
-            6f.toPx()
-        )
+        imageProduct?.loadImageRounded(similarSearchOriginalProduct.imageUrl, 6f.toPx())
     }
 
     private fun Float.toPx(): Float {

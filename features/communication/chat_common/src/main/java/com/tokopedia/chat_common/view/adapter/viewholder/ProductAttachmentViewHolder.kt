@@ -16,13 +16,14 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
@@ -246,11 +247,7 @@ open class ProductAttachmentViewHolder(
     private fun setupFreeShipping(product: ProductAttachmentUiModel) {
         if (product.hasFreeShipping()) {
             freeShipping?.visibility = View.VISIBLE
-            ImageHandler.loadImageRounded2(
-                itemView.context,
-                freeShipping,
-                product.getFreeShippingImageUrl()
-            )
+            freeShipping?.loadImageRounded(product.getFreeShippingImageUrl())
         }
     }
 
@@ -364,12 +361,7 @@ open class ProductAttachmentViewHolder(
         } else if (destination is TextView) {
             destination.text = value
         } else if (destination is ImageView) {
-            ImageHandler.loadImageRounded2(
-                destination.getContext(),
-                destination,
-                value,
-                toPx(8f)
-            )
+            destination.loadImageRounded(value, toPx(8f))
             thumbnailsImage = destination
         }
     }
@@ -389,7 +381,7 @@ open class ProductAttachmentViewHolder(
     override fun onViewRecycled() {
         super.onViewRecycled()
         if (thumbnailsImage != null && thumbnailsImage?.context != null) {
-            ImageHandler.clearImage(thumbnailsImage)
+            thumbnailsImage?.clearImage()
         }
     }
 

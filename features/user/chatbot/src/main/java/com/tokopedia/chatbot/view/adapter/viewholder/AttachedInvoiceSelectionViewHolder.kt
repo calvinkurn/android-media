@@ -9,7 +9,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.chatbot.ChatbotConstant.RENDER_TO_UI_BASED_ON_STATUS
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
@@ -117,7 +117,7 @@ class AttachedInvoiceSelectionViewHolder(
         fun bind(element: AttachInvoiceSingleUiModel) {
             if (!TextUtils.isEmpty(element.imageUrl)) {
                 productImage.show()
-                ImageHandler.loadImageRounded2(productImage.context, productImage, element.imageUrl)
+                productImage?.loadImageRounded(element.imageUrl)
             } else {
                 productImage.hide()
             }

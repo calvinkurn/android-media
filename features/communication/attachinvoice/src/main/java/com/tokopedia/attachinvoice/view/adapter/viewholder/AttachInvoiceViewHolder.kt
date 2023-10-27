@@ -3,12 +3,12 @@ package com.tokopedia.attachinvoice.view.adapter.viewholder
 import android.graphics.Color
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.attachinvoice.R
 import com.tokopedia.attachinvoice.data.Invoice
 import com.tokopedia.attachinvoice.data.OrderStatusCode
 import com.tokopedia.attachinvoice.databinding.ItemAttachinvoiceBinding
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.toPx
 
@@ -51,12 +51,7 @@ class AttachInvoiceViewHolder(private val binding: ItemAttachinvoiceBinding, val
 
     private fun bindThumbnail(element: Invoice) {
         val radius = 6.toPx().toFloat()
-        ImageHandler.loadImageRounded2(
-                itemView.context,
-                binding.ivThumbnail,
-                element.thumbnailUrl,
-                radius
-        )
+        binding.ivThumbnail.loadImageRounded(element.thumbnailUrl, radius)
     }
 
     private fun bindLabelInvoiceStatus(element: Invoice) {

@@ -7,7 +7,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.util.helper.InvoiceStatusLabelHelper
@@ -56,7 +56,7 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<com.tok
     }
 
     private fun bindViewWithModel(invoice: com.tokopedia.chatbot.chatbot2.attachinvoice.data.uimodel.AttachInvoiceSentUiModel) {
-        ImageHandler.loadImageRounded2(itemView.context, thumbnail, invoice.imageUrl, radiusInvoice)
+        thumbnail?.loadImageRounded(invoice.imageUrl, radiusInvoice)
         setStatus(invoice)
         invoiceName?.text = invoice.message
         invoiceDesc?.text = invoice.description
