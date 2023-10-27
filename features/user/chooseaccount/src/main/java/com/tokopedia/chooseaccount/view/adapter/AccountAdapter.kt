@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chooseaccount.data.UserDetailDataModel
 import com.tokopedia.chooseaccount.databinding.ChooseLoginPhoneAccountItemBinding
@@ -31,7 +31,7 @@ class AccountAdapter private constructor(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val userDetail = list[position]
-        ImageHandler.loadImageCircle2(holder.binding.avatar.context, holder.binding.avatar, userDetail.image)
+        holder.binding.avatar.loadImageCircle(userDetail.image)
         holder.binding.name.text = MethodChecker.fromHtml(userDetail.fullname)
         holder.binding.email.text = userDetail.email
         val shopDetail = userDetail.shopDetailDataModel

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.ReputationAdapter
@@ -69,7 +69,7 @@ class InboxReputationDetailHeaderViewHolder(
     }
 
     override fun bind(element: InboxReputationDetailHeaderUiModel) {
-        ImageHandler.loadImageCircle2(userAvatar?.context, userAvatar, element.avatarImage)
+        userAvatar?.loadImageCircle(element.avatarImage)
         userAvatar?.setOnClickListener { goToInfoPage(element) }
         name?.text = MethodChecker.fromHtml(element.name)
         name?.setOnClickListener { goToInfoPage(element) }

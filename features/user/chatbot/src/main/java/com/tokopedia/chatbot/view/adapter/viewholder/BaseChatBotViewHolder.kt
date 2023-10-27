@@ -6,7 +6,7 @@ import android.view.View
 import androidx.cardview.widget.CardView
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
@@ -81,7 +81,7 @@ open class BaseChatBotViewHolder<T : Visitable<*>>(itemView: View,
     protected fun bindSenderInfo(senderInfoData: SenderInfoData) {
         senderAvatar?.show()
         senderName?.show()
-        ImageHandler.loadImageCircle2(itemView.context, senderAvatar, senderInfoData.iconUrl)
+        senderAvatar.loadImageCircle(senderInfoData.iconUrl)
         senderName?.text = senderInfoData.name
     }
 

@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chat_common.BaseChatToolbarActivity
@@ -19,6 +19,8 @@ import com.tokopedia.chatbot.view.fragment.ChatbotFragment
 import com.tokopedia.chatbot.view.util.isInDarkMode
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.pushnotif.PushNotification
 import com.tokopedia.pushnotif.data.constant.Constant
 
@@ -105,14 +107,18 @@ class ChatbotActivity : BaseChatToolbarActivity() {
     }
 
     fun upadateToolbar(profileName: String?, profileImage: String?, badgeImage: ToolbarAttributes.BadgeImage?) {
-        profileImage?.let { ImageHandler.loadImageCircle2(this, findViewById(R.id.user_avatar), it) }
+        profileImage?.let { findViewById<ImageView>(R.id.user_avatar).loadImageCircle(it) }
         (findViewById<TextView>(R.id.title)).text = profileName
         val badge = findViewById<ImageView>(R.id.chatbotHeaderBadge)
         if (badgeImage?.light.isNullOrEmpty()) {
             badge.hide()
         } else {
             badge.show()
-            ImageHandler.loadImageFitCenter(this, badge, badgeImage?.light)
+            badge.loadImageFitCenter(badgeImage?.light) {
+                setCacheStrategy(MediaCacheStrategy.RESOURCE)
+                isAnimate(false)
+                fitCenter()
+            }
         }
     }
 
