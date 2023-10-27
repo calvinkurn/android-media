@@ -37,6 +37,9 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_dynamic_icon
+        private const val MARGIN_TOP = 8
+        private const val MARGIN_BOTTOM_BIG = 16
+        private const val MARGIN_BOTTOM_SMALL = 0
     }
 
     private val adapter = DynamicIconAdapter(listener)
@@ -62,6 +65,15 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
                 iconRecyclerView?.layoutParams = layoutParams
             }
             adapter.submitList(element)
+            val layoutParams = iconRecyclerView?.layoutParams as ConstraintLayout.LayoutParams
+            val marginBottom = if(element.type.isSmallIcons()) MARGIN_BOTTOM_SMALL else MARGIN_BOTTOM_BIG
+            layoutParams.setMargins(
+                Int.ZERO,
+                MARGIN_TOP.toPx(),
+                Int.ZERO,
+                marginBottom.toPx()
+            )
+            iconRecyclerView?.layoutParams = layoutParams
             iconRecyclerView?.adapter = adapter
         }
     }

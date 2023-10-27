@@ -4,7 +4,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingBottom="8dp">
 
     <View
         android:id="@+id/container_ripple_mission"
@@ -54,7 +55,7 @@
         android:ellipsize="end"
         app:typographyType="small"
         android:textColor="@color/Unify_NN600"
-        android:layout_marginBottom="12dp"
+
         android:gravity="top|left"
         app:layout_constraintStart_toStartOf="@id/title_mission_widget"
         app:layout_constraintEnd_toEndOf="@id/title_mission_widget"

@@ -10,11 +10,10 @@ import com.tokopedia.home_component.util.toDpInt
  */
 class DynamicIconSmallItemDecoration : RecyclerView.ItemDecoration() {
     companion object {
-        private const val FIRST_POSITION = 0
+        private const val FIRST_POSITION_TOP = 0
+        private const val FIRST_POSITION_BOTTOM = 1
         private val OUTSIDE_MARGIN = 16f.toDpInt()
         private val INNER_MARGIN = 2f.toDpInt()
-        private val MARGIN_TOP = 8f.toDpInt()
-        private val MARGIN_BOTTOM = 16f.toDpInt()
     }
 
     override fun getItemOffsets(
@@ -23,15 +22,13 @@ class DynamicIconSmallItemDecoration : RecyclerView.ItemDecoration() {
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        outRect.top = MARGIN_TOP
-        outRect.bottom = MARGIN_BOTTOM
         when (parent.getChildAdapterPosition(view)) {
-            FIRST_POSITION -> {
+            FIRST_POSITION_TOP, FIRST_POSITION_BOTTOM -> {
                 outRect.left = OUTSIDE_MARGIN
                 outRect.right = INNER_MARGIN
             }
             //last position of card
-            state.itemCount - 1 -> {
+            state.itemCount - 1, state.itemCount - 2 -> {
                 outRect.right = OUTSIDE_MARGIN
                 outRect.left = INNER_MARGIN
             }

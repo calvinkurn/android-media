@@ -13,8 +13,6 @@ class DynamicIconBigItemDecoration : RecyclerView.ItemDecoration() {
         private const val FIRST_POSITION = 0
         private val OUTSIDE_MARGIN = 8f.toDpInt()
         private val INNER_MARGIN = 0f.toDpInt()
-        private val MARGIN_TOP = 8f.toDpInt()
-        private val MARGIN_BOTTOM = 16f.toDpInt()
     }
 
     override fun getItemOffsets(
@@ -23,8 +21,6 @@ class DynamicIconBigItemDecoration : RecyclerView.ItemDecoration() {
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        outRect.top = MARGIN_TOP
-        outRect.bottom = MARGIN_BOTTOM
         when (parent.getChildAdapterPosition(view)) {
             FIRST_POSITION -> {
                 outRect.left = OUTSIDE_MARGIN

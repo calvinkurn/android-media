@@ -10,13 +10,13 @@ import javax.inject.Inject
 class DeviceScreenHelper @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    fun isTabletOrFoldable(): Boolean {
+    fun isFoldableOrTablet(): Boolean {
         val isTablet = DeviceScreenInfo.isTablet(context)
         val isFoldable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             context.packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_HINGE_ANGLE)
         } else {
             false
         }
-        return isTablet
+        return isFoldable || isTablet
     }
 }

@@ -105,7 +105,7 @@ class MissionWidgetClearItemViewHolder(
     }
 
     private fun Typography.renderSubtitle(element: CarouselMissionWidgetDataModel) {
-        if(element.data.subTitle.isEmpty()) {
+        if(element.data.subTitle.isEmpty() || !element.withSubtitle) {
             hide()
         } else {
             text = element.data.subTitle

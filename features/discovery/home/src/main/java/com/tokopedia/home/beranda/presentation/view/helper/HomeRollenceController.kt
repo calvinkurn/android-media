@@ -1,7 +1,5 @@
 package com.tokopedia.home.beranda.presentation.view.helper
 
-import android.content.Context
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 
@@ -68,5 +66,11 @@ object HomeRollenceController {
 
     fun isUsingAtf3Variant(): Boolean {
         return rollenceAtfValue == RollenceKey.HOME_COMPONENT_ATF_3
+    }
+
+    fun getAtfRollence(forceAtf3: Boolean): String {
+        return if(forceAtf3)
+            RollenceKey.HOME_COMPONENT_ATF_3
+        else rollenceAtfValue
     }
 }

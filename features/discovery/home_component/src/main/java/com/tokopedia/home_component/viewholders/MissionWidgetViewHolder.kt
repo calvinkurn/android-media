@@ -19,8 +19,10 @@ import com.tokopedia.home_component.widget.common.carousel.CarouselListAdapter
 import com.tokopedia.home_component.widget.common.carousel.CommonCarouselDiffUtilCallback
 import com.tokopedia.home_component.widget.mission.MissionWidgetTypeFactory
 import com.tokopedia.home_component.widget.mission.MissionWidgetTypeFactoryImpl
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -34,6 +36,8 @@ class MissionWidgetViewHolder(
 
     companion object {
         val LAYOUT = R.layout.global_component_mission_widget
+        private const val PADDING_BOTTOM_CARD = 13
+        private const val PADDING_BOTTOM_CLEAR = 4
     }
 
     private var binding: GlobalComponentMissionWidgetBinding? by viewBinding()
@@ -68,6 +72,18 @@ class MissionWidgetViewHolder(
             false
         )
         binding?.homeComponentMissionWidgetRcv?.adapter = adapter
+    }
+
+    private fun setupPadding(element: MissionWidgetListDataModel) {
+        val paddingBottom = if(element.type == MissionWidgetListDataModel.Type.CLEAR)
+            PADDING_BOTTOM_CLEAR
+        else PADDING_BOTTOM_CARD
+        binding?.containerMissionWidgetItem?.setPadding(
+            Int.ZERO,
+            Int.ZERO,
+            Int.ZERO,
+            paddingBottom.toPx()
+        )
     }
 
     private fun valuateRecyclerViewDecoration(type: MissionWidgetListDataModel.Type) {
@@ -116,6 +132,7 @@ class MissionWidgetViewHolder(
             }
             setHeaderComponent(element = element)
             setChannelDivider(element)
+            setupPadding(element)
             when (element.status) {
                 MissionWidgetListDataModel.STATUS_LOADING -> {
                     binding?.homeComponentHeaderView?.gone()
