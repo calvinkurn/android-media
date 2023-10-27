@@ -126,7 +126,8 @@ class BCABalanceViewModel @Inject constructor(
                     BCAFlazzResponseMapper.bcaMapper(
                         cardNumber,
                         lastBalance, result.attributes.imageIssuer, getIsBCAGenOne(cardType),
-                        result.attributes.amount, result.status, result.attributes.message
+                        result.attributes.amount, result.status, result.attributes.message,
+                        result.attributes.hasMorePendingBalance
                     )
                 )
             }
@@ -183,7 +184,8 @@ class BCABalanceViewModel @Inject constructor(
                         getIsBCAGenOne(cardType),
                         result.attributes.amount,
                         result.status,
-                        result.attributes.message
+                        result.attributes.message,
+                        result.attributes.hasMorePendingBalance
                     )
                 )
             }
@@ -273,7 +275,8 @@ class BCABalanceViewModel @Inject constructor(
                         getIsBCAGenOne(cardType),
                         result.attributes.amount,
                         result.status,
-                        result.attributes.message
+                        result.attributes.message,
+                        result.attributes.hasMorePendingBalance
                     )
                 )
             }
@@ -425,7 +428,8 @@ class BCABalanceViewModel @Inject constructor(
                     BCAFlazzResponseMapper.bcaMapper(
                         cardNumber,
                         lastBalance, result.attributes.imageIssuer, getIsBCAGenOne(cardType),
-                        result.attributes.amount, result.status, result.attributes.message
+                        result.attributes.amount, result.status, result.attributes.message,
+                        result.attributes.hasMorePendingBalance
                     )
                 )
             }
@@ -541,6 +545,7 @@ class BCABalanceViewModel @Inject constructor(
                     result.attributes.amount,
                     result.status,
                     result.attributes.message,
+                    result.attributes.hasMorePendingBalance,
                     ackStatusOverride = true
                 )
             )
@@ -618,7 +623,8 @@ class BCABalanceViewModel @Inject constructor(
                 BCAFlazzResponseMapper.bcaMapper(
                     cardNumber,
                     lastBalance, result.attributes.imageIssuer, getIsBCAGenOne(cardType),
-                    result.attributes.amount, result.status, result.attributes.message
+                    result.attributes.amount, result.status, result.attributes.message,
+                    result.attributes.hasMorePendingBalance
                 )
             )
         }) {

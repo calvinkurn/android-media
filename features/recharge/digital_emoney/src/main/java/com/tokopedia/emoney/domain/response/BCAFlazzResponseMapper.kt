@@ -9,7 +9,7 @@ import com.tokopedia.emoney.domain.request.BCAFlazzStatus
 object BCAFlazzResponseMapper {
     private const val ISSUER_ID_BCA = 5
     fun bcaMapper(cardNo: String, balance: Int, imageUrl: String, isBCAGenOne: Boolean, pendingBalance: Int,
-                  status: Int, message: String, ackStatusOverride: Boolean = false): EmoneyInquiry {
+                  status: Int, message: String, hasMorePendingBalance: Boolean, ackStatusOverride: Boolean = false): EmoneyInquiry {
         return EmoneyInquiry(
             attributesEmoneyInquiry = AttributesEmoneyInquiry(
                 buttonText = "Top Up Sekarang",
@@ -21,7 +21,7 @@ object BCAFlazzResponseMapper {
                 formattedCardNumber = NFCUtils.formatCardUID(cardNo),
                 issuer_id = ISSUER_ID_BCA,
                 pendingBalance = pendingBalance,
-                extraPendingBalance = pendingBalance > 0,
+                extraPendingBalance = hasMorePendingBalance,
                 showAdditionalBalance = false,
             ),
             isBCAGenOne = isBCAGenOne,
