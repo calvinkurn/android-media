@@ -255,7 +255,7 @@ private fun StoriesCreationMediaCover(
         }
         is StoriesMediaCover.Success -> {
             NestImage(
-                source = ImageSource.ImageBitmap(mediaCover.bitmap.asImageBitmap()),
+                source = ImageSource.Remote(mediaCover.localFilePath),
                 modifier = storiesMediaPreviewModifier,
                 contentScale = ContentScale.Crop
             )
