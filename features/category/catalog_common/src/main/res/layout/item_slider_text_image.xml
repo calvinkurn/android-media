@@ -21,9 +21,7 @@
         tools:text="Highlight has a max. 1 line"
         android:textColor="@color/Unify_NN600"
         android:layout_marginTop="8dp"
-        android:maxLines="1"
         android:ellipsize="end"
-        android:maxLength="35"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -33,10 +31,9 @@
         app:typographyType="paragraph_2"
         tools:text="The title has a max. of 2 lines, make sure to make it as concise as possible"
         android:textColor="@color/Unify_NN950"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         app:typographyWeight="bold"
         android:ellipsize="end"
-        android:maxLines="2"
         />
 
     <com.tokopedia.unifyprinciples.Typography

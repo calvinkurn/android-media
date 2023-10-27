@@ -7,9 +7,9 @@ import com.scp.login.core.domain.contracts.configs.LSdkAuthConfig
 import com.scp.login.core.domain.contracts.configs.LSdkConfig
 import com.scp.login.core.domain.contracts.configs.LSdkEnvironment
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
+import com.tokopedia.keys.Keys
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.keys.R as keysR
 
 class LoginSdkConfigs(val context: Context) : LSdkConfig {
     override fun getAppConfigs(): LSdkAppConfig {
@@ -25,11 +25,11 @@ class LoginSdkConfigs(val context: Context) : LSdkConfig {
     }
 
     private fun getClientSecret(): String {
-        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) ScpConstants.DEBUG_CLIENT_SECRET else context.getString(keysR.string.lsdk_client_secret)
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) ScpConstants.DEBUG_CLIENT_SECRET else Keys.LSDK_KEY_MA
     }
 
     private fun getGotoPinSecret(): String {
-        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) ScpConstants.GOTO_PIN_DEBUG_SECRET else context.getString(keysR.string.goto_pin_client_id)
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) ScpConstants.GOTO_PIN_DEBUG_SECRET else Keys.GTP_KEY_MA
     }
 
     override fun getAuthConfigs(): LSdkAuthConfig {
@@ -40,7 +40,7 @@ class LoginSdkConfigs(val context: Context) : LSdkConfig {
         return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
             LSdkEnvironment.INTEGRATION
         } else {
-            LSdkEnvironment.ALPHA
+            LSdkEnvironment.PROD
         }
     }
 }

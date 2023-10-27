@@ -25,7 +25,6 @@ object ProductSocialProofTracking {
             shopName = productInfo.basic.shopName,
             componentTrackDataModel = trackDataModel ?: ComponentTrackDataModel()
         )
-        DynamicProductDetailTracking.Moengage.sendMoEngageClickDiskusi(productInfo = productInfo)
     }
 
     fun onMediaClicked(
@@ -49,7 +48,6 @@ object ProductSocialProofTracking {
             deeplinkUrl = deepLink,
             shopName = productInfo.basic.shopName
         )
-        DynamicProductDetailTracking.Moengage.sendMoEngageClickReview(productInfo)
     }
 
     fun onNewProductClicked(

@@ -5,6 +5,8 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.R
 import com.tokopedia.carouselproductcard.databinding.CarouselProductCardReimagineViewAllCardBinding
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class CarouselProductCardViewAllCardViewHolder(
@@ -22,6 +24,8 @@ internal class CarouselProductCardViewAllCardViewHolder(
             setCta(element.ctaText) {
                 element.onClick()
             }
+            cardView.cardType = CardUnify.TYPE_BORDER
+            cardView.setMargin(0, 0, 0, 0)
         }
     }
 

@@ -92,6 +92,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
     implementation rootProject.ext.tkpdInternalLibDependencies.larixBroadcaster
 
     implementation rootProject.ext.playServicesDependencies.core
@@ -138,8 +139,6 @@ dependencies {
     implementation rootProject.ext.testDependencies.espressoIdlingResource
 
     implementation rootProject.ext.debugToolsDependencies.chuck
-
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     androidTestImplementation rootProject.ext.testDependencies.fragmentTest
 

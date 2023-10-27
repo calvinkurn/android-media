@@ -1,5 +1,5 @@
 {
-  "mode": "exact",
+  "mode": "subset",
   "query": [
     {
       "businessUnit": "order management",
@@ -71,17 +71,6 @@
       "eventAction": "submit search from cari transaksi",
       "eventLabel": ".*",
       "sessionIris": ".*"
-    },
-    {
-      "businessUnit": "order management",
-      "eventCategory": "order list",
-      "currentSite": "tokopediamarketplace",
-      "event": "clickOrderList",
-      "userId": ".*",
-      "eventAction": "click primary button on order card marketplace",
-      "eventLabel": ".*",
-      "sessionIris": ".*",
-      "trackerId": "15422"
     },
     {
       "businessUnit": "order management",

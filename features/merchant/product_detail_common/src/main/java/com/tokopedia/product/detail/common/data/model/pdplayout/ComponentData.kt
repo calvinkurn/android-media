@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
 import android.annotation.SuppressLint
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.product.Cashback
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
@@ -159,6 +160,8 @@ data class ComponentData(
     val text: String = "",
     @SerializedName("chevronPos")
     val chevronPos: String = "",
+    @SerializedName("padding")
+    val padding: Padding = Padding(),
 
     // region a plus content data
     @SerializedName("contentMedia")
@@ -173,7 +176,13 @@ data class ComponentData(
     @SerializedName("queryParam")
     val queryParam: String = "",
     @SerializedName("thematicID")
-    val thematicId: String = ""
+    val thematicId: String = "",
+    // endregion
+
+    // region socialProof
+    @SerializedName("socialProofContent")
+    @Expose
+    val socialProof: List<SocialProofData> = emptyList()
     // endregion
 ) {
     companion object {
@@ -262,3 +271,10 @@ data class ContentMedia(
 ) {
     fun valid() = url.isNotBlank() && ratio.validDimensionRatio()
 }
+
+data class Padding(
+    @SerializedName("t")
+    val top: Int = 0,
+    @SerializedName("b")
+    val bottom: Int = 0
+)
