@@ -29,9 +29,6 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import com.tokopedia.unifyorderhistory.test.R as unifyorderhistorytestR
 
-/**
- * Created by fwidjaja on 06/11/20.
- */
 @CassavaTest
 class UohListTrackingTest {
 

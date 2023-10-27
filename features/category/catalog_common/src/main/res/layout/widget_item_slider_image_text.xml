@@ -9,6 +9,6 @@
     <com.tokopedia.catalogcommon.util.WrapContentViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_marginHorizontal="8dp"
+        android:layout_marginStart="8dp"
         android:layout_height="wrap_content"/>
 </LinearLayout>

@@ -36,13 +36,16 @@ For all templates, we will still use the same `ProductCardModel`. These are the 
 
 | Template       | Release Status    | Class                       |
 |----------------|-------------------|-----------------------------|
-| Grid (regular) | Not Released      | -                           |
+| Grid (regular) | Released MA-3.240 | ProductCardGridView         |
 | Grid Carousel  | Released MA-3.238 | ProductCardGridCarouselView |
 | Grid Small     | Not Released      | -                           |
 | Grid (regular) | Not Released      | -                           |
 | Grid Carousel  | Not Released      | -                           |
 | Grid Small     | Not Released      | -                           |
 
+
+#### Product Card Grid
+![](../res/reimagine_grid.png)
 
 #### Product Card Grid Carousel
 ![](../res/reimagine_grid_carousel.png)
@@ -51,7 +54,7 @@ For all templates, we will still use the same `ProductCardModel`. These are the 
 #### Image
 Image is rendered from field `imageUrl`.
 
-#### Ads
+#### IsAds
 Ads marker on the bottom right of the image is rendered from field `isAds`. 
 
 #### Name
@@ -69,8 +72,8 @@ Discount Percentage is rendered from field `discountPercentage`.
 #### Rating
 Rating is rendered as text beside a star is rendered from field `rating`.
 
-#### Shop Info
-Shop info is rendered from field `title` and `imageUrl`. `title` is usually filled with shop location (for non-OS) or shop name (for OS), and it is mandatory field to render the shop info. `imageUrl` is an image for the shop badge, and it is not necessary to render the shop info. 
+#### Shop Badge
+Shop Badge is rendered from field `title` and `imageUrl`. `title` is usually filled with shop location (for non-OS) or shop name (for OS), and it is mandatory field to render the shop info. `imageUrl` is an image for the shop badge, and it is not necessary to render the shop info. 
 
 #### Free Shipping
 Free Shipping or Bebas Ongkir logo is rendered from field `freeShipping.imageUrl`.
@@ -78,11 +81,23 @@ Free Shipping or Bebas Ongkir logo is rendered from field `freeShipping.imageUrl
 #### Add to Cart
 Add to Cart button is shown if `hasAddToCart` is set to true. It is also required to implement `setAddToCartOnClickListener` and call Add to Cart GQL from the implementer.
 
+#### Video URL
+Video Identifier will be shown if the `videoUrl` is not empty, and Video Sneakpeek of the product will be played with the `videoUrl`.
+
+#### Three Dots
+Three dots will be shown if `hasThreeDots` is set to true. It is also required to implement `setThreeDotsClickListener` and call `ProductCardOptionsManager.showProductCardOptions` to open the product card options bottomsheet.
+
+#### Stock Info
+Stock Info progress bar is rendered from field `label`, `percentage`, and `labelColor`. Progress bar color will change depending on the `label`, and it can also show fire icon if the `label` is `"Segera Habis"`.
+
 #### Label Group - Benefit
 Label Benefit is rendered if `labelGroupList` contains a label group with `position` = `ri_product_benefit`. The text will be rendered from the label group's `title`, and the label background will be rendered based on the label group's type. This is usually `lightGreen` for this label.
 
 #### Label Group - Credibility
 Label Credibility is rendered beside rating if `labelGroupList` contains a label group with `position` = `ri_product_credibility`. The text will be rendered from the label group's `title`. This is usually said `xx+ terjual` (sold count).
+
+#### Label Group - Ribbon
+Label Ribbon is rendered on the top left corner of the product card if `labelGroupList` contains a label group with `position` = `ri_ribbon`. The text will be rendered from label group's `title`. This is usually filled with Discount percentage.
 
 ## How to
 To implement Product Card Reimagine, choose a template that you needed, and implement the class mentioned above in your XML. After that, create an instance of `ProductCardModel` and call `setProductModel`.

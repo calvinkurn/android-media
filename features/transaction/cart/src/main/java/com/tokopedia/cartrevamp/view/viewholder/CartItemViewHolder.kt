@@ -330,6 +330,10 @@ class CartItemViewHolder constructor(
                 if (!data.isError) {
                     if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                         actionListener?.onCartItemCheckboxClickChanged(bindingAdapterPosition, data, isChecked)
+                        viewHolderListener?.onNeedToRefreshSingleShop(
+                            data,
+                            bindingAdapterPosition
+                        )
                     }
                 }
             }
@@ -1395,8 +1399,8 @@ class CartItemViewHolder constructor(
             if (cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM &&
                 !cartItemHolderData.cartBmGmTickerData.isShowBmGmDivider
             ) {
-                 binding.bmgmHelperView1.visible()
-                 binding.bmgmHelperView2.visible()
+                binding.bmgmHelperView1.visible()
+                binding.bmgmHelperView2.visible()
 
                 if (cartItemHolderData.cartBmGmTickerData.isShowBmGmHorizontalDivider) {
                     binding.bottomDivider.visible()
