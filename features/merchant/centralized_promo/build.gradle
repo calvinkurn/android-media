@@ -17,6 +17,11 @@ android {
     buildFeatures {
         viewBinding true
         buildConfig true
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
     }
 }
 
@@ -108,6 +113,17 @@ dependencies {
     }
 
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+
+    /**
+     * COMPOSE
+     */
+    implementation rootProject.ext.composeDependencies.composeActivity
+    implementation rootProject.ext.composeDependencies.composeConstraint
+    implementation rootProject.ext.composeDependencies.composeLiveData
+    implementation rootProject.ext.unifyDependencies.nestComponents
+    implementation rootProject.ext.unifyDependencies.nestPrinciples
+    implementation rootProject.ext.unifyDependencies.header
+
 }
 
 project.ext {
