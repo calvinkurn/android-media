@@ -11,7 +11,7 @@
         android:id="@+id/container_ripple_dynamic_icons"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/bg_macro_container_dynamic_icon"
+        android:background="@drawable/bg_ripple_container"
         android:visibility="visible"
         android:alpha="0"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,9 +21,9 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/dynamic_icon_image_view"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="@dimen/home_dynamic_icon_small_image_size"
+        android:layout_height="@dimen/home_dynamic_icon_small_image_size"
+        android:layout_marginTop="@dimen/home_dynamic_icon_small_padding_top"
         android:scaleType="centerInside"
         app:unify_image_corner_radius="8"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,10 +33,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/dynamic_icon_typography"
-        android:layout_width="58dp"
+        android:layout_width="@dimen/home_dynamic_icon_small_title_width"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:layout_marginHorizontal="4dp"
+        android:layout_marginTop="@dimen/home_dynamic_icon_small_margin_top_title"
         android:ellipsize="end"
         android:lines="2"
         android:gravity="top|center_horizontal"

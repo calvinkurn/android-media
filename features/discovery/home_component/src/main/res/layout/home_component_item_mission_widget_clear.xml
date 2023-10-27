@@ -6,10 +6,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <View
+        android:id="@+id/container_ripple_mission"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_ripple_container"
+        android:visibility="visible"
+        android:alpha="0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_mission_widget"
         android:layout_width="@dimen/home_mission_widget_clear_image_size"
         android:layout_height="@dimen/home_mission_widget_clear_image_size"
+        android:layout_marginHorizontal="4dp"
         android:contentDescription="@string/content_desc_mission_widget"
         app:unify_image_corner_radius="8"
         app:layout_constraintTop_toTopOf="parent"
