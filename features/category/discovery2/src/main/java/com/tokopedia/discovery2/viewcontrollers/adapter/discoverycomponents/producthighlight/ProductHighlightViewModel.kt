@@ -11,6 +11,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.producthighlight.DiscoveryOCSDataModel
 import com.tokopedia.discovery2.discoveryext.checkForNullAndSize
 import com.tokopedia.discovery2.usecase.producthighlightusecase.ProductHighlightUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -39,8 +40,8 @@ class ProductHighlightViewModel(
     private val _hideShimmer = SingleLiveEvent<Boolean>()
     private val _showErrorState = SingleLiveEvent<Boolean>()
 
-    private val _ocsLiveData = MutableLiveData<AddToCartDataModel>()
-    val redirectToOCS: LiveData<AddToCartDataModel>
+    private val _ocsLiveData = MutableLiveData<DiscoveryOCSDataModel>()
+    val redirectToOCS: LiveData<DiscoveryOCSDataModel>
         get() = _ocsLiveData
 
     private val _ocsErrorState = MutableLiveData<String>()
@@ -112,16 +113,17 @@ class ProductHighlightViewModel(
         }
     }
 
-    fun onOCSClicked(data: DataItem, context: Context) {
-        val atcRequestParam = AddToCartOcsRequestParams().apply {
-            productId = data.productId.toZeroStringIfNull()
-            shopId = data.shopId.toZeroStringIfNull()
-            quantity = data.minQuantity
-            customerId = userId
-            productName = data.productName.orEmpty()
-            category = data.category.orEmpty()
-            price = data.price.orEmpty()
-        }
+    fun onOCSClicked(context: Context, dataItem: DataItem) {
+        val atcRequestParam = AddToCartOcsRequestParams()
+            .apply {
+                productId = dataItem.productId.toZeroStringIfNull()
+                shopId = dataItem.shopId.toZeroStringIfNull()
+                quantity = dataItem.minQuantity
+                customerId = userId
+                productName = dataItem.productName.orEmpty()
+                category = dataItem.category.orEmpty()
+                price = dataItem.price.orEmpty()
+            }
 
         launchCatchError(block = {
             val requestParams = RequestParams.create()
@@ -137,7 +139,7 @@ class ProductHighlightViewModel(
             }
 
             result?.let {
-                handleAvailableResult(it, result)
+                handleAvailableResult(it, dataItem)
                 return@launchCatchError
             }
 
@@ -162,16 +164,16 @@ class ProductHighlightViewModel(
     }
 
     private fun handleAvailableResult(
-        it: AddToCartDataModel,
-        result: AddToCartDataModel
+        result: AddToCartDataModel,
+        dataItem: DataItem
     ) {
-        if (it.isDataError()) {
+        if (result.isDataError()) {
             val message = result.getAtcErrorMessage()
             message?.run { _ocsErrorState.postValue(this) }
 
             Timber.e(message)
         } else {
-            _ocsLiveData.postValue(it)
+            _ocsLiveData.postValue(DiscoveryOCSDataModel(dataItem, result))
         }
     }
 
