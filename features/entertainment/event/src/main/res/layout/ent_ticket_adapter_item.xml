@@ -157,6 +157,7 @@
             android:layout_marginRight="@dimen/spacing_lvl4"
             android:focusableInTouchMode="true"
             android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@id/txtPrice_ticket"
             app:layout_constraintBottom_toBottomOf="@id/txtPrice_ticket"
             app:layout_constraintEnd_toEndOf="parent"
             tools:visibility="visible" />
