@@ -23,6 +23,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
@@ -35,6 +36,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.notification.model.popupnotif.PopupNotif
 import com.tokopedia.tokopoints.view.customview.*
@@ -375,7 +377,11 @@ class TopSectionVH(
             (savingDesc as TextView).text = spannable
         }
         if (!userSavingInfo.backgroundImageURL.isNullOrEmpty()) {
-            ImageHandler.loadBackgroundImage(cardContainer, userSavingInfo.backgroundImageURL)
+            cardContainer?.let {
+                userSavingInfo.backgroundImageURL.getBitmapImageUrl(it.context) { bitmapResult ->
+                    it.background = bitmapResult.toDrawable(it.context.resources)
+                }
+            }
         }
         cardContainer?.setOnClickListener {
             RouteManager.route(itemView.context, CommonConstant.WebLink.USERSAVING)
