@@ -2,11 +2,14 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationLoading
 import com.tokopedia.home.databinding.HomeFeedItemListBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.recommendation_widget_common.widget.entrypointcard.viewholder.BaseRecommendationForYouViewHolder
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
 
@@ -14,7 +17,13 @@ import com.tokopedia.smart_recycler_helper.SmartListener
  * Created by Lukas on 2019-07-15
  */
 
-class HomeRecommendationItemListViewHolder(itemView: View) : SmartAbstractViewHolder<HomeRecommendationItemDataModel>(itemView) {
+class HomeRecommendationItemListViewHolder(
+    itemView: View,
+    private val homeRecommendationListener: HomeRecommendationListener
+) : BaseRecommendationForYouViewHolder<HomeRecommendationItemDataModel>(
+    itemView,
+    HomeRecommendationItemDataModel::class.java
+) {
 
     companion object {
         @LayoutRes
@@ -25,17 +34,21 @@ class HomeRecommendationItemListViewHolder(itemView: View) : SmartAbstractViewHo
         HomeFeedItemListBinding.bind(itemView)
     }
 
-    override fun bind(element: HomeRecommendationItemDataModel, listener: SmartListener) {
-        setLayout(element, listener as HomeRecommendationListener)
+    override fun bind(element: HomeRecommendationItemDataModel) {
+        setLayout(element)
+        setItemThreeDotsClickListener(element)
     }
 
-    override fun bind(element: HomeRecommendationItemDataModel, listener: SmartListener, payloads: List<Any>) {
-        binding.productCardView.setThreeDotsOnClickListener {
-            (listener as HomeRecommendationListener).onProductThreeDotsClick(element, bindingAdapterPosition)
+    override fun bindPayload(newItem: HomeRecommendationItemDataModel?) {
+        newItem?.let {
+            setLayout(it)
+            setItemThreeDotsClickListener(it)
         }
     }
 
-    private fun setLayout(element: HomeRecommendationItemDataModel, listener: HomeRecommendationListener) {
+    private fun setLayout(
+        element: HomeRecommendationItemDataModel,
+    ) {
         binding.productCardView.run {
             setProductModel(element.productCardModel)
 
@@ -43,15 +56,34 @@ class HomeRecommendationItemListViewHolder(itemView: View) : SmartAbstractViewHo
                 element,
                 object : ViewHintListener {
                     override fun onViewHint() {
-                        listener.onProductImpression(element, bindingAdapterPosition)
+                        homeRecommendationListener.onProductImpression(
+                            element,
+                            bindingAdapterPosition
+                        )
                     }
                 }
             )
-            setOnClickListener { listener.onProductClick(element, bindingAdapterPosition) }
+            setOnClickListener {
+                homeRecommendationListener.onProductClick(
+                    element,
+                    bindingAdapterPosition
+                )
+            }
 
             setThreeDotsOnClickListener {
-                listener.onProductThreeDotsClick(element, bindingAdapterPosition)
+                homeRecommendationListener.onProductThreeDotsClick(element, bindingAdapterPosition)
             }
+        }
+    }
+
+    private fun setItemThreeDotsClickListener(
+        element: HomeRecommendationItemDataModel
+    ) {
+        binding.productCardView.setThreeDotsOnClickListener {
+            homeRecommendationListener.onProductThreeDotsClick(
+                element,
+                bindingAdapterPosition
+            )
         }
     }
 }

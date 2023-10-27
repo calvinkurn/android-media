@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation
 
 import android.os.Bundle
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -23,11 +24,7 @@ data class BannerRecommendationDataModel(
         val tabName: String
 ): ImpressHolder(), HomeRecommendationVisitable {
 
-    override fun getChangePayloadFrom(b: Any?): Bundle? {
-        return Bundle()
-    }
-
-    override fun equalsDataModel(dataModel: SmartVisitable<*>): Boolean {
+    override fun equalsDataModel(dataModel: Visitable<HomeRecommendationTypeFactory>): Boolean {
         return dataModel == this
     }
 

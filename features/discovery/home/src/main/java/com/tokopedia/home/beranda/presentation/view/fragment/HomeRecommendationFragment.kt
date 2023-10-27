@@ -92,8 +92,8 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
     private val viewModel: HomeRecommendationViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[HomeRecommendationViewModel::class.java]
     }
-    private val adapterFactory by lazy(LazyThreadSafetyMode.NONE) { HomeRecommendationTypeFactoryImpl(this) }
-    private val adapter by lazy { HomeRecommendationAdapter(appExecutors, adapterFactory, this) }
+    private val adapterFactory by lazy(LazyThreadSafetyMode.NONE) { HomeRecommendationTypeFactoryImpl(this, this) }
+    private val adapter by lazy { HomeRecommendationAdapter(appExecutors, adapterFactory) }
     private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.home_feed_fragment_recycler_view) }
 
     private val staggeredGridLayoutManager by lazy {

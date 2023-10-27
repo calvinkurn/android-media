@@ -1,13 +1,12 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation
 
-import android.os.Bundle
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.domain.gql.feed.Product
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.RecommendationCard
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.smart_recycler_helper.SmartVisitable
 
 data class HomeRecommendationItemDataModel(
     val product: Product? = null,
@@ -21,16 +20,12 @@ data class HomeRecommendationItemDataModel(
         return typeFactory.type(this)
     }
 
-    override fun equalsDataModel(dataModel: SmartVisitable<*>): Boolean {
+    override fun equalsDataModel(dataModel: Visitable<HomeRecommendationTypeFactory>): Boolean {
         return dataModel == this
     }
 
     override fun getUniqueIdentity(): Any {
         return recommendationCard?.id.orEmpty()
-    }
-
-    override fun getChangePayloadFrom(b: Any?): Bundle? {
-        return Bundle()
     }
 
     override fun equals(other: Any?): Boolean {
