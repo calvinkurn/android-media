@@ -13,7 +13,6 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestShimm
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestWidgetViewHolder.Companion.STATUS_IDLE
 
 object QuestMapper {
-
     private const val BANNER_TITLE = "banner_title"
     private const val BANNER_DESCRIPTION = "banner_description"
     private const val ICON_URL = "banner_icon_url"
@@ -60,10 +59,11 @@ object QuestMapper {
     }
 
     fun mapQuestCardData(questListResponse: List<QuestList>): List<HomeQuestCardItemUiModel> = questListResponse.map {
+        val mapConfig = convertJsonStringToMap(it.config)
         HomeQuestCardItemUiModel(
             id = it.id,
-            title = it.title,
-            description = it.description,
+            title = getValueFromConfig(mapConfig, BANNER_TITLE),
+            description = getValueFromConfig(mapConfig, BANNER_DESCRIPTION),
             isLockedShown = it.questUser.status == STATUS_IDLE,
             currentProgress = it.task.firstOrNull()?.progress?.current.orZero(),
             totalProgress = it.task.firstOrNull()?.progress?.target.orZero()
