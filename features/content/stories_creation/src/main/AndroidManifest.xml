@@ -4,7 +4,6 @@
 
     <application>
         <activity android:name=".view.activity.StoriesCreationActivity"
-            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
             android:exported="false">
             <intent-filter>
