@@ -1,9 +1,11 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.viewmodel
 
-import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert
 import org.junit.Test
 
 class InitialSearchActivityViewModelTest : InitialSearchActivityViewModelTestFixture() {
@@ -36,9 +38,17 @@ class InitialSearchActivityViewModelTest : InitialSearchActivityViewModelTestFix
 
     @Test
     fun `when get typing search success should set live data success`() {
+        val expectedKeyword = "baju baru"
+        val expectedKeywordList = listOf("ba", "baju", "baju ba", "baju baru")
+        var actualKeyword = ""
+
         runTest {
-            val resultKeyword = "baju baru"
-            val expectedKeywordList = listOf("ba", "baju", "baju ba", "baju baru")
+            val scope = CoroutineScope(coroutineTestRule.dispatchers.coroutineDispatcher)
+            val collectorJob = scope.launch {
+                viewModel.queryChannel.collectLatest {
+                    actualKeyword = it
+                }
+            }
 
             for (keyword in expectedKeywordList) {
                 viewModel.getTypingSearch(keyword)
@@ -46,9 +56,10 @@ class InitialSearchActivityViewModelTest : InitialSearchActivityViewModelTestFix
 
             advanceUntilIdle()
 
-            verifyGetTypingSearchSuccess(resultKeyword)
-            viewModel.queryChannel.cancel()
+            collectorJob.cancel()
         }
-    }
 
+        verifyGetTypingSearchSuccess(expectedKeyword)
+        Assert.assertEquals(expectedKeyword, actualKeyword)
+    }
 }

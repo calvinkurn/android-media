@@ -10,10 +10,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.asUiModel
-import com.tokopedia.product.detail.data.model.bottom_sheet_edu.asUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
-import com.tokopedia.product.detail.data.model.shop_review.asUiModel
-import com.tokopedia.product.detail.data.model.social_proof.asUiModel
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.usecase.GetPdpLayoutUseCaseTest
