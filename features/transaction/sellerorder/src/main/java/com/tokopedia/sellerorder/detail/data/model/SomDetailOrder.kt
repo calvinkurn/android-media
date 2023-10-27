@@ -135,7 +135,7 @@ data class SomDetailOrder(
         @Expose
         val hasResoStatus: Boolean? = false,
 
-        @SerializedName("pofData")
+        @SerializedName("pof_data")
         @Expose
         val pofData: PofData? = null
     ) {
@@ -660,7 +660,7 @@ data class SomDetailOrder(
         )
 
         data class PofData(
-            @SerializedName("pofStatus")
+            @SerializedName("pof_status")
             @Expose
             val pofStatus: Int
         )

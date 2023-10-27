@@ -405,6 +405,9 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   label
                   icon_url
                 }
+                pof_data {
+                  pof_status
+                }
               }
             }
         """.trimIndent()

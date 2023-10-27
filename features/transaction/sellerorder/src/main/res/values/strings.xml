@@ -369,4 +369,8 @@
     <string name="som_pof_toaster_error_re_fetch_pof_estimate">Gagal menampilkan rincian harga. Coba lagi, ya.</string>
     <string name="som_pof_toaster_success_send_pof">Kamu sudah meminta pesanan ini dikirim sebagian. Tunggu konfirmasi pembeli, ya.</string>
     <string name="som_pof_summary_description">Total harga barang yang tidak tersedia. Belum termasuk biaya ongkir, cashback, dan pengembalian dana dari Pusat Resolusi.</string>
+    <string name="som_pof_dialog_title_order_has_ongoing_pof">Yakin terima pesanan ini?</string>
+    <string name="som_pof_dialog_subtitle_order_has_ongoing_pof">Pembeli belum konfirmasi. Pastikan kamu bisa mengirim sesuai jumlah barang yang dipesan pembeli, ya.</string>
+    <string name="som_pof_dialog_button_negative_order_has_ongoing_pof">Kembali</string>
+    <string name="som_pof_dialog_button_positive_order_has_ongoing_pof">Ya, Terima</string>
 </resources>
