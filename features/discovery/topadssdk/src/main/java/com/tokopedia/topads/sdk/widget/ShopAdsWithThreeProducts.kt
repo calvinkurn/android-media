@@ -9,7 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
@@ -413,7 +413,7 @@ class ShopAdsWithThreeProducts : BaseCustomView {
     }
 
     private fun setShopImage(shopImageUrl: String) {
-        ImageHandler.loadImageRounded(context, shopImage, shopImageUrl, 100f)
+        shopImage?.loadImageRounded(shopImageUrl, 100f)
     }
 
     private fun setShopName(shopName: String, textColor: Int) {

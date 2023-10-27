@@ -9,7 +9,7 @@ import android.text.style.StyleSpan
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteProductListItemBinding
@@ -76,7 +76,7 @@ class SuggestionProductLineViewHolder(
     private fun bindImage(item: BaseSuggestionDataView) {
         val context = itemView.context
         binding?.autocompleteProductImage?.let {
-            ImageHandler.loadImageRounded(context, it, item.imageUrl, context.resources.getDimension(R.dimen.autocomplete_product_suggestion_image_radius))
+            it?.loadImageRounded(item.imageUrl, context.resources.getDimension(R.dimen.autocomplete_product_suggestion_image_radius))
         }
     }
 

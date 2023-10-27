@@ -34,6 +34,10 @@ object JvmMediaLoader {
         imageView.loadImageFitCenter(url)
     }
 
+    @JvmStatic fun loadImageRounded(imageView: ImageView, url: String, radius: Float) {
+        imageView.loadImageRounded(url, radius)
+    }
+
     @JvmStatic fun loadImage(imageView: ImageView, url: String, properties: Properties.() -> Unit) {
         imageView.loadImage(url, properties)
     }
