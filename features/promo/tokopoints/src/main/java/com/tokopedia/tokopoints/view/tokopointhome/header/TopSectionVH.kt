@@ -211,7 +211,7 @@ class TopSectionVH(
             mTextMembershipValue?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
         }
 
-        mImgEgg.loadImageCircle(data?.tier?.imageURL)
+        mImgEgg?.loadImageCircle(data?.tier?.imageURL)
         data?.backgroundImageURLMobileV2?.let { mImgBackground?.loadImage(it) }
         if (data?.tier != null) {
             mTextMembershipValue?.text = data.tier.nameDesc
