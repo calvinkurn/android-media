@@ -1,6 +1,5 @@
 package com.tokopedia.targetedticker.domain
 
-
 import com.tokopedia.unifycomponents.ticker.Ticker
 
 object TargetedTickerMapper {
@@ -15,7 +14,6 @@ object TargetedTickerMapper {
         targetedTickerData: GetTargetedTickerResponse.GetTargetedTickerData? = null
     ): TickerModel {
         val tickerItems = arrayListOf<TickerModel.TickerItem>()
-
 
         targetedTickerData?.list?.sortedBy { it.priority }?.apply {
             tickerItems.addAll(
@@ -40,9 +38,9 @@ object TargetedTickerMapper {
     private fun GetTargetedTickerResponse.GetTargetedTickerData.ListItem.toTickerType(): Int {
         return when (this.type.lowercase()) {
             TICKER_INFO_TYPE -> Ticker.TYPE_ANNOUNCEMENT
-            TICKER_WARNING_TYPE -> Ticker.TYPE_WARNING
+            TICKER_WARNING_TYPE -> Ticker.TYPE_ANNOUNCEMENT
             TICKER_ERROR_TYPE -> Ticker.TYPE_ERROR
-            else -> Ticker.TYPE_INFORMATION
+            else -> Ticker.TYPE_ANNOUNCEMENT
         }
     }
 
