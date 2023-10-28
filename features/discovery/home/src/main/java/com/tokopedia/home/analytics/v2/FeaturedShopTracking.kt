@@ -11,7 +11,7 @@ import com.tokopedia.track.builder.util.BaseTrackerConst
 object FeaturedShopTracking : BaseTracking() {
     private const val CLICK_BACKGROUND_ON_FEATURED_SHOP = "click on background dynamic channel shop"
     private const val CLICK_VIEW_ALL_ON_FEATURED_SHOP = "click view all on dynamic channel shop"
-    private const val CLICK_VIEW_ALL_CARD_ON_FEATURED_SHOP = "click view all recommendationCard on dynamic channel shop"
+    private const val CLICK_VIEW_ALL_CARD_ON_FEATURED_SHOP = "click view all card on dynamic channel shop"
 
     private const val DYNAMIC_CHANNEL_SHOP = "dynamic channel shop"
     private const val BANNER_DYNAMIC_CHANNEL_SHOP = "banner dynamic channel shop"

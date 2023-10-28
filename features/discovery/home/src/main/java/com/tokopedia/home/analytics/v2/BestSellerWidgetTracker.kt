@@ -31,7 +31,7 @@ object BestSellerWidgetTracker : BaseTracking() {
     private const val IMPRESSION_FILTER_BEST_SELLER = "impression chips filter on dynamic channel best seller"
     private const val CLICK_FILTER_BEST_SELLER = "click chips filter on dynamic channel best seller"
     private const val CLICK_SEE_ALL_BEST_SELLER = "click view all on dynamic channel best seller"
-    private const val CLICK_SEE_ALL_CARD_BEST_SELLER = "click view all recommendationCard on dynamic channel best seller"
+    private const val CLICK_SEE_ALL_CARD_BEST_SELLER = "click view all card on dynamic channel best seller"
 
     private const val TRACKER_ID_CHIPS_FILTER_IMPRESSION = "43523"
 

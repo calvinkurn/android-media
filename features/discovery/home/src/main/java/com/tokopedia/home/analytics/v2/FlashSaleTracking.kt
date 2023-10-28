@@ -10,7 +10,7 @@ import com.tokopedia.track.builder.util.BaseTrackerConst
 object FlashSaleTracking : BaseTrackerConst() {
     private const val FLASH_SALE = "product dynamic channel flash sale"
     private const val EVENT_ACTION_CLICK_CHEVRON_CTA = "click chevron button on dynamic channel flash sale"
-    private const val EVENT_ACTION_CLICK_VIEW_ALL_CARD = "click view all recommendationCard on dynamic channel flash sale"
+    private const val EVENT_ACTION_CLICK_VIEW_ALL_CARD = "click view all card on dynamic channel flash sale"
     private const val TRACKER_ID_IMPRESSION = "43653"
     private const val TRACKER_ID_CLICK = "43654"
     private const val TRACKER_ID_CLICK_CHEVRON_CTA = "43655"

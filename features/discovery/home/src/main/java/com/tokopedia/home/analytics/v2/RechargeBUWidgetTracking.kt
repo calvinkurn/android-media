@@ -16,8 +16,8 @@ object RechargeBUWidgetTracking : BaseTracking() {
     private const val RECHARGE_BU_WIDGET_BUSINESS_UNIT = "home \u0026 browse"
     private const val RECHARGE_BU_WIDGET_CURRENT_SITE = "tokopediamarketplace"
     private const val RECHARGE_BU_WIDGET_BANNER = "banner"
-    private const val RECHARGE_BU_WIDGET_BANNER_CARD = "banner recommendationCard"
-    private const val RECHARGE_BU_WIDGET_PRODUCT_CARD = "product recommendationCard"
+    private const val RECHARGE_BU_WIDGET_BANNER_CARD = "banner card"
+    private const val RECHARGE_BU_WIDGET_PRODUCT_CARD = "product card"
     private const val KEY_PRODUCT_NAME = "name"
     private const val KEY_PRODUCT_ID = "id"
     private const val KEY_PRODUCT_PRICE = "price"
@@ -191,7 +191,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
         val map = mapOf<String, Any>(
             Event.KEY to RECHARGE_BU_WIDGET_CLICK_EVENT,
             Category.KEY to RECHARGE_BU_WIDGET_EVENT_CATEGORY,
-            Action.KEY to "click view all recommendationCard on $RECHARGE_BU_WIDGET_NAME",
+            Action.KEY to "click view all card on $RECHARGE_BU_WIDGET_NAME",
             Label.KEY to "${data.channel.id} - ${getHeaderName(data.channel)}",
             BusinessUnit.KEY to RECHARGE_BU_WIDGET_BUSINESS_UNIT,
             CurrentSite.KEY to RECHARGE_BU_WIDGET_CURRENT_SITE,

@@ -14,7 +14,7 @@ object ShopFlashSaleTracking : BaseTrackerConst() {
     private const val EVENT_ACTION_CLICK_SHOP_TAB = "click on shop chips dynamic channel flash sale toko home"
     private const val EVENT_ACTION_CLICK_VIEW_ALL = "click view all on dynamic channel flash sale toko home"
     private const val EVENT_ACTION_CLICK_SHOP_NAME = "click on shop name dynamic channel flash sale toko home"
-    private const val EVENT_ACTION_CLICK_VIEW_ALL_CARD = "click view all recommendationCard on dynamic channel flash sale toko home"
+    private const val EVENT_ACTION_CLICK_VIEW_ALL_CARD = "click view all card on dynamic channel flash sale toko home"
 
     private const val EVENT_LABEL_FORMAT = "%s - %s"
 

@@ -18,7 +18,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
             const val CLICK_SHOP = "click shop"
             const val SHOP_DETAIL = "shop detail"
             const val CLICK_PRODUCT_DETAIL = "click product detail"
-            const val CLICK_VIEW_ALL_CARD = "click view all recommendationCard"
+            const val CLICK_VIEW_ALL_CARD = "click view all card"
             const val CLICK_VIEW_ALL = "click view all"
             const val CREATIVE_NAME_FORMAT = "%s - %s"
             const val ITEM_ID_FORMAT = "%s_%s"
