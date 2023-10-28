@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.data.mapper
 import com.tokopedia.home.beranda.domain.gql.feed.Banner
 import com.tokopedia.home.beranda.domain.gql.feed.GetHomeRecommendationContent
 import com.tokopedia.home.beranda.domain.gql.feed.Product
-import com.tokopedia.home.beranda.domain.gql.recommendationcard.RecommendationCard
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
@@ -53,8 +52,6 @@ class HomeRecommendationMapper {
                 TYPE_VERTICAL_BANNER_ADS -> {
                     visitables.add(HomeRecommendationBannerTopAdsDataModel(position = index, bannerType = TYPE_VERTICAL_BANNER_ADS))
                 }
-
-
             }
         }
         return HomeRecommendationDataModel(visitables, recommendationProduct.hasNextPage)
@@ -95,12 +92,12 @@ class HomeRecommendationMapper {
             val productCard = mapToProductCardModel(product)
             homeFeedViewModels.add(
                 HomeRecommendationItemDataModel(
-                    product = product,
-                    recommendationCard = RecommendationCard(),
                     productCardModel = productCard,
+                    recommendationProductItem = product.mapToHomeRecommendationProductItem(),
                     pageName,
                     layoutName,
-                    (((pageNumber - 1) * products.size) + position + 1)
+                    (((pageNumber - 1) * products.size) + position + 1),
+                    tabName
                 )
             )
         }

@@ -27,6 +27,7 @@ class HomeRecommendationCardMapper @Inject constructor(
 
     fun mapToRecommendationCardDataModel(
         getHomeRecommendationCard: GetHomeRecommendationCardResponse.GetHomeRecommendationCard,
+        tabName: String,
         pageNumber: Int
     ): HomeRecommendationDataModel {
         val homeRecommendationTypeFactoryImplList =
@@ -42,7 +43,8 @@ class HomeRecommendationCardMapper @Inject constructor(
                             getHomeRecommendationCard.layoutName,
                             pageNumber,
                             index,
-                            getHomeRecommendationCard.recommendationCards.size
+                            getHomeRecommendationCard.recommendationCards.size,
+                            tabName
                         )
                     )
                 }
@@ -145,17 +147,18 @@ class HomeRecommendationCardMapper @Inject constructor(
         layoutName: String,
         pageNumber: Int,
         index: Int,
-        cardTotal: Int
+        cardTotal: Int,
+        tabName: String
     ): HomeRecommendationItemDataModel {
         val productCard = mapToProductCardModel(recommendationCard)
 
         return HomeRecommendationItemDataModel(
-            null,
-            recommendationCard,
             productCard,
+            recommendationCard.mapToHomeRecommendationProductItem(),
             pageName,
             layoutName,
-            (((pageNumber - Int.ONE) * cardTotal) + index + Int.ONE)
+            (((pageNumber - Int.ONE) * cardTotal) + index + Int.ONE),
+            tabName
         )
     }
 

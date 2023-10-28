@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.domain.gql.recommendationcard
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 
 data class RecommendationCard(
     @SerializedName("applink")
@@ -71,6 +72,32 @@ data class RecommendationCard(
     @SerializedName("wishlistUrl")
     val wishlistUrl: String = ""
 ) {
+
+    fun mapToHomeRecommendationProductItem(): HomeRecommendationItemDataModel.HomeRecommendationProductItem {
+        return HomeRecommendationItemDataModel.HomeRecommendationProductItem(
+            id = id,
+            name = name,
+            imageUrl = imageUrl,
+            recommendationType = recommendationType,
+            priceInt = priceInt,
+            freeOngkirIsActive = freeOngkir.isActive,
+            labelGroup = labelGroup.map {
+                HomeRecommendationItemDataModel.HomeRecommendationProductItem.LabelGroup(
+                    position = it.position,
+                    title = it.title,
+                    type = it.type,
+                    url = it.url
+                )
+            },
+            categoryBreadcrumbs = categoryBreadcrumbs,
+            clusterID = clusterID,
+            isTopAds = isTopads,
+            trackerImageUrl = trackerImageUrl,
+            clickUrl = clickUrl,
+            isWishlist = isWishlist,
+            wishListUrl = wishlistUrl
+        )
+    }
 
     data class RecommendationLabelData(
         @SerializedName("imageUrl")

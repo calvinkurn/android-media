@@ -342,6 +342,7 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
 //                        sourceType
 //                    )
                     viewModel.fetchNextHomeRecommendationCard(
+                        tabName,
                         page,
                         getLocationParamString(),
                         sourceType
@@ -355,13 +356,13 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
         position: Int
     ) {
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
-        if (homeRecommendationItemDataModel.recommendationCard.isTopads) {
+        if (homeRecommendationItemDataModel.recommendationProductItem.isTopAds) {
             TopAdsUrlHitter(className).hitImpressionUrl(
                 context,
-                homeRecommendationItemDataModel.recommendationCard.trackerImageUrl,
-                homeRecommendationItemDataModel.recommendationCard.id,
-                homeRecommendationItemDataModel.recommendationCard.name,
-                homeRecommendationItemDataModel.recommendationCard.imageUrl,
+                homeRecommendationItemDataModel.recommendationProductItem.trackerImageUrl,
+                homeRecommendationItemDataModel.recommendationProductItem.id,
+                homeRecommendationItemDataModel.recommendationProductItem.name,
+                homeRecommendationItemDataModel.recommendationProductItem.imageUrl,
                 HOME_RECOMMENDATION_FRAGMENT
             )
             if (userSessionInterface.isLoggedIn) {
@@ -403,13 +404,13 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
         position: Int
     ) {
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
-        if (homeRecommendationItemDataModel.recommendationCard.isTopads) {
+        if (homeRecommendationItemDataModel.recommendationProductItem.isTopAds) {
             TopAdsUrlHitter(className).hitClickUrl(
                 context,
-                homeRecommendationItemDataModel.recommendationCard.clickUrl,
-                homeRecommendationItemDataModel.recommendationCard.id,
-                homeRecommendationItemDataModel.recommendationCard.name,
-                homeRecommendationItemDataModel.recommendationCard.imageUrl,
+                homeRecommendationItemDataModel.recommendationProductItem.clickUrl,
+                homeRecommendationItemDataModel.recommendationProductItem.id,
+                homeRecommendationItemDataModel.recommendationProductItem.name,
+                homeRecommendationItemDataModel.recommendationProductItem.imageUrl,
                 HOME_RECOMMENDATION_FRAGMENT
             )
             if (userSessionInterface.isLoggedIn) {
@@ -444,7 +445,7 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
                 )
             }
         }
-        goToProductDetail(homeRecommendationItemDataModel.recommendationCard.id, position)
+        goToProductDetail(homeRecommendationItemDataModel.recommendationProductItem.id, position)
     }
 
     override fun onProductThreeDotsClick(
@@ -513,7 +514,7 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
 //            getLocationParamString(),
 //            sourceType = sourceType
 //        )
-        viewModel.fetchHomeRecommendationCard(getLocationParamString(), sourceType)
+        viewModel.fetchHomeRecommendationCard(tabName, getLocationParamString(), sourceType)
     }
 
     private fun initListeners() {
@@ -582,7 +583,7 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
 //                tabIndex,
 //                sourceType = sourceType
 //            )
-            viewModel.fetchHomeRecommendationCard(getLocationParamString(), sourceType)
+            viewModel.fetchHomeRecommendationCard(tabName, getLocationParamString(), sourceType)
         }
     }
 
@@ -613,14 +614,14 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
     ): ProductCardOptionsModel {
         return ProductCardOptionsModel().apply {
             hasWishlist = true
-            isWishlisted = homeRecommendationItemDataModel.recommendationCard.isWishlist
-            productId = homeRecommendationItemDataModel.recommendationCard.id
-            isTopAds = homeRecommendationItemDataModel.recommendationCard.isTopads
+            isWishlisted = homeRecommendationItemDataModel.recommendationProductItem.isWishlist
+            productId = homeRecommendationItemDataModel.recommendationProductItem.id
+            isTopAds = homeRecommendationItemDataModel.recommendationProductItem.isTopAds
             topAdsWishlistUrl =
-                homeRecommendationItemDataModel.recommendationCard.wishlistUrl
-            topAdsClickUrl = homeRecommendationItemDataModel.recommendationCard.clickUrl
-            productName = homeRecommendationItemDataModel.recommendationCard.name
-            productImageUrl = homeRecommendationItemDataModel.recommendationCard.imageUrl
+                homeRecommendationItemDataModel.recommendationProductItem.wishListUrl
+            topAdsClickUrl = homeRecommendationItemDataModel.recommendationProductItem.clickUrl
+            productName = homeRecommendationItemDataModel.recommendationProductItem.name
+            productImageUrl = homeRecommendationItemDataModel.recommendationProductItem.imageUrl
             productPosition = position
         }
     }

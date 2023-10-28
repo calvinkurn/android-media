@@ -90,12 +90,14 @@ class GetHomeRecommendationCardUseCase @Inject constructor(
 
     suspend fun execute(
         productPage: Int,
+        tabName: String,
         paramSource: String,
         location: String
     ): HomeRecommendationDataModel {
         graphqlUseCase.setRequestParams(createRequestParams(productPage, paramSource, location))
         return homeRecommendationCardMapper.mapToRecommendationCardDataModel(
             graphqlUseCase.executeOnBackground().getHomeRecommendationCard,
+            tabName,
             productPage
         )
     }

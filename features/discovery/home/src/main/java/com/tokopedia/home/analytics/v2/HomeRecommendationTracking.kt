@@ -46,7 +46,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(tabName, homeRecommendationItemDataModel.recommendationCard.recommendationType, homeRecommendationItemDataModel.pageName),
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(tabName, homeRecommendationItemDataModel.recommendationProductItem.recommendationType, homeRecommendationItemDataModel.pageName),
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
         ).build()
 
@@ -56,7 +56,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(tabName, homeRecommendationItemDataModel.recommendationCard.recommendationType, homeRecommendationItemDataModel.pageName),
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(tabName, homeRecommendationItemDataModel.recommendationProductItem.recommendationType, homeRecommendationItemDataModel.pageName),
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
         ).build()
 
@@ -66,7 +66,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.recommendationCard.recommendationType, homeRecommendationItemDataModel.pageName),
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.recommendationProductItem.recommendationType, homeRecommendationItemDataModel.pageName),
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
         ).build()
 
@@ -76,7 +76,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.recommendationCard.recommendationType, homeRecommendationItemDataModel.pageName),
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.recommendationProductItem.recommendationType, homeRecommendationItemDataModel.pageName),
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
         ).build()
 
@@ -86,7 +86,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(tabName, homeRecommendationItemDataModel.recommendationCard.recommendationType, homeRecommendationItemDataModel.pageName),
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(tabName, homeRecommendationItemDataModel.recommendationProductItem.recommendationType, homeRecommendationItemDataModel.pageName),
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
         ).build()
 
@@ -96,7 +96,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.recommendationCard.recommendationType, homeRecommendationItemDataModel.pageName),
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.recommendationProductItem.recommendationType, homeRecommendationItemDataModel.pageName),
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
         ).build()
 
@@ -106,7 +106,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(tabName, homeRecommendationItemDataModel.recommendationCard.recommendationType, homeRecommendationItemDataModel.pageName),
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(tabName, homeRecommendationItemDataModel.recommendationProductItem.recommendationType, homeRecommendationItemDataModel.pageName),
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
         ).build()
 
@@ -116,7 +116,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.recommendationCard.recommendationType, homeRecommendationItemDataModel.pageName),
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.recommendationProductItem.recommendationType, homeRecommendationItemDataModel.pageName),
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
         ).build()
 
@@ -197,16 +197,16 @@ object HomeRecommendationTracking : BaseTrackerConst() {
     ).build()
 
     private fun mapToProductTracking(homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = Product(
-        id = homeRecommendationItemDataModel.recommendationCard.id,
-        name = homeRecommendationItemDataModel.recommendationCard.name,
+        id = homeRecommendationItemDataModel.recommendationProductItem.id,
+        name = homeRecommendationItemDataModel.recommendationProductItem.name,
         variant = "",
-        productPrice = homeRecommendationItemDataModel.recommendationCard.priceInt.toString(),
-        productPosition = homeRecommendationItemDataModel.recommendationCard.toString(),
-        isFreeOngkir = homeRecommendationItemDataModel.recommendationCard.freeOngkir.isActive && !homeRecommendationItemDataModel.recommendationCard.labelGroup.any { it.position == LABEL_FULFILLMENT },
-        isFreeOngkirExtra = homeRecommendationItemDataModel.recommendationCard.freeOngkir.isActive && homeRecommendationItemDataModel.recommendationCard.labelGroup.any { it.position == LABEL_FULFILLMENT },
-        category = homeRecommendationItemDataModel.recommendationCard.categoryBreadcrumbs,
+        productPrice = homeRecommendationItemDataModel.recommendationProductItem.priceInt.toString(),
+        productPosition = homeRecommendationItemDataModel.position.toString(),
+        isFreeOngkir = homeRecommendationItemDataModel.recommendationProductItem.freeOngkirIsActive && !homeRecommendationItemDataModel.recommendationProductItem.labelGroup.any { it.position == LABEL_FULFILLMENT },
+        isFreeOngkirExtra = homeRecommendationItemDataModel.recommendationProductItem.freeOngkirIsActive && homeRecommendationItemDataModel.recommendationProductItem.labelGroup.any { it.position == LABEL_FULFILLMENT },
+        category = homeRecommendationItemDataModel.recommendationProductItem.categoryBreadcrumbs,
         brand = "",
-        clusterId = homeRecommendationItemDataModel.recommendationCard.clusterID,
+        clusterId = homeRecommendationItemDataModel.recommendationProductItem.clusterID,
         isTopAds = null
     )
 
