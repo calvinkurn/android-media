@@ -4,8 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationLoadMore
-import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
-import com.tokopedia.smart_recycler_helper.SmartListener
 
 class HomeRecommendationLoadingMoreViewHolder(view: View) :
     AbstractViewHolder<HomeRecommendationLoadMore>(view) {
@@ -14,6 +12,5 @@ class HomeRecommendationLoadingMoreViewHolder(view: View) :
     }
 
     override fun bind(element: HomeRecommendationLoadMore) {
-
     }
 }

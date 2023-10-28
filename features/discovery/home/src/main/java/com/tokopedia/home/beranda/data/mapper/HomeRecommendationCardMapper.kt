@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.data.mapper
 
 import com.google.gson.Gson
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.model.AdsBannerItemResponse
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.GetHomeRecommendationCardResponse
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.RecommendationCard
@@ -9,10 +10,12 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.widget.entrypointcard.model.RecomEntryPointCardUiModel
 import com.tokopedia.topads.sdk.domain.model.ImageShop
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import dagger.Lazy
@@ -26,12 +29,13 @@ class HomeRecommendationCardMapper @Inject constructor(
         getHomeRecommendationCard: GetHomeRecommendationCardResponse.GetHomeRecommendationCard,
         pageNumber: Int
     ): HomeRecommendationDataModel {
-        val homeRecommendationVisitableList = mutableListOf<HomeRecommendationVisitable>()
+        val homeRecommendationTypeFactoryImplList =
+            mutableListOf<Visitable<HomeRecommendationTypeFactoryImpl>>()
 
         getHomeRecommendationCard.recommendationCards.forEachIndexed { index, card ->
             when (card.layout) {
                 TYPE_PRODUCT -> {
-                    homeRecommendationVisitableList.add(
+                    homeRecommendationTypeFactoryImplList.add(
                         mapToHomeProductFeedModel(
                             card,
                             getHomeRecommendationCard.pageName,
@@ -43,13 +47,21 @@ class HomeRecommendationCardMapper @Inject constructor(
                     )
                 }
 
+                TYPE_RECOM_CARD -> {
+                    (mapToEntryPointRecommendationCard(card) as? Visitable<HomeRecommendationTypeFactoryImpl>)?.let {
+                        homeRecommendationTypeFactoryImplList.add(
+                            it
+                        )
+                    }
+                }
+
                 TYPE_BANNER_ADS -> {
                     if (getHomeRecommendationCard.layoutName != HomeRecommendationUtil.LAYOUT_NAME_LIST) {
                         val adsBannerItemResponse =
                             convertDataJsonToAdsBannerItem(card.dataStringJson)
 
                         adsBannerItemResponse?.let { bannerItemResponse ->
-                            homeRecommendationVisitableList.add(
+                            homeRecommendationTypeFactoryImplList.add(
                                 HomeRecommendationBannerTopAdsDataModel(
                                     position = index,
                                     topAdsImageViewModel = mapToTopAdsImageViewModel(
@@ -63,9 +75,31 @@ class HomeRecommendationCardMapper @Inject constructor(
             }
         }
 
+        val homeRecommendationVisitableList = convertToHomeRecommendationVisitable(homeRecommendationTypeFactoryImplList)
+
         return HomeRecommendationDataModel(
-            homeRecommendationVisitableList.toList(),
+            homeRecommendationVisitableList,
             getHomeRecommendationCard.hasNextPage
+        )
+    }
+
+    private fun convertToHomeRecommendationVisitable(
+        recommendationTypeFactoryList: List<Visitable<HomeRecommendationTypeFactoryImpl>>
+    ): List<HomeRecommendationVisitable> {
+        return (recommendationTypeFactoryList as? List<HomeRecommendationVisitable>)?.toList().orEmpty()
+    }
+
+    private fun mapToEntryPointRecommendationCard(recommendationCard: RecommendationCard): RecomEntryPointCardUiModel {
+        return RecomEntryPointCardUiModel(
+            title = recommendationCard.name,
+            subTitle = recommendationCard.subtitle,
+            imageUrl = recommendationCard.imageUrl,
+            backgroundColor = recommendationCard.gradientColor,
+            labelState = RecomEntryPointCardUiModel.LabelState(
+                iconUrl = recommendationCard.label.imageUrl,
+                title = recommendationCard.label.title,
+                textColor = recommendationCard.label.textColor
+            )
         )
     }
 
@@ -169,5 +203,6 @@ class HomeRecommendationCardMapper @Inject constructor(
         private const val TYPE_PRODUCT = "product"
         private const val TYPE_BANNER = "banner"
         private const val TYPE_BANNER_ADS = "banner_ads"
+        private const val TYPE_RECOM_CARD = "recom_card"
     }
 }

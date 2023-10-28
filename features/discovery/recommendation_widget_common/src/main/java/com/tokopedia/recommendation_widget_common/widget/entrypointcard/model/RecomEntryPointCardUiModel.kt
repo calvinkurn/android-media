@@ -5,12 +5,12 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.recommendation_widget_common.widget.entrypointcard.typefactory.RecomEntryPointCardTypeFactory
 
 data class RecomEntryPointCardUiModel(
-    val productTitle: String,
-    val productSubTitle: String,
-    val productImageUrl: String,
-    val backgroundColor: String,
+    val title: String,
+    val subTitle: String,
+    val imageUrl: String,
+    val backgroundColor: List<String>,
     val labelState: LabelState
-): Visitable<RecomEntryPointCardTypeFactory>, ImpressHolder() {
+) : Visitable<RecomEntryPointCardTypeFactory>, ImpressHolder() {
     data class LabelState(
         val iconUrl: String,
         val title: String,

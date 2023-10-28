@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
@@ -10,13 +9,14 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil.getLayout
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.*
 import com.tokopedia.recommendation_widget_common.widget.entrypointcard.model.RecomEntryPointCardUiModel
+import com.tokopedia.recommendation_widget_common.widget.entrypointcard.typefactory.RecomEntryPointCardTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.entrypointcard.viewholder.RecomEntryPointCardViewHolder
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 
 class HomeRecommendationTypeFactoryImpl(
     private val topAdsBannerClickListener: TopAdsBannerClickListener,
     private val homeRecommendationListener: HomeRecommendationListener
-) : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory {
+) : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory, RecomEntryPointCardTypeFactory {
     override fun type(dataModel: HomeRecommendationItemDataModel): Int {
         return dataModel.getLayout()
     }
@@ -56,33 +56,48 @@ class HomeRecommendationTypeFactoryImpl(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             HomeRecommendationItemGridViewHolder.LAYOUT -> HomeRecommendationItemGridViewHolder(
-                parent, homeRecommendationListener
+                parent,
+                homeRecommendationListener
             )
 
-            RecomEntryPointCardViewHolder.LAYOUT -> RecomEntryPointCardViewHolder(parent, homeRecommendationListener)
+            RecomEntryPointCardViewHolder.LAYOUT -> RecomEntryPointCardViewHolder(
+                parent,
+                homeRecommendationListener
+            )
 
             HomeRecommendationItemListViewHolder.LAYOUT -> HomeRecommendationItemListViewHolder(
-                parent, homeRecommendationListener
+                parent,
+                homeRecommendationListener
             )
 
             HomeRecommendationLoadingViewHolder.LAYOUT -> HomeRecommendationLoadingViewHolder(parent)
-            HomeBannerFeedViewHolder.LAYOUT -> HomeBannerFeedViewHolder(parent, homeRecommendationListener)
-            HomeRecommendationErrorViewHolder.LAYOUT -> HomeRecommendationErrorViewHolder(parent, homeRecommendationListener)
+            HomeBannerFeedViewHolder.LAYOUT -> HomeBannerFeedViewHolder(
+                parent,
+                homeRecommendationListener
+            )
+
+            HomeRecommendationErrorViewHolder.LAYOUT -> HomeRecommendationErrorViewHolder(
+                parent,
+                homeRecommendationListener
+            )
 
             EmptyViewHolder.LAYOUT -> HomeRecommendationEmptyViewHolder(parent)
 
-            HomeRecommendationLoadingMoreViewHolder.LAYOUT -> HomeRecommendationLoadingMoreViewHolder(parent)
+            HomeRecommendationLoadingMoreViewHolder.LAYOUT -> HomeRecommendationLoadingMoreViewHolder(
+                parent
+            )
 
             HomeRecommendationBannerTopAdsViewHolder.LAYOUT -> HomeRecommendationBannerTopAdsViewHolder(
-                parent, homeRecommendationListener
+                parent,
+                homeRecommendationListener
             )
 
             HomeRecommendationHeadlineTopAdsViewHolder.LAYOUT -> HomeRecommendationHeadlineTopAdsViewHolder(
                 parent,
                 topAdsBannerClickListener
             )
+
             else -> return super.createViewHolder(parent, type)
         }
     }
-
 }

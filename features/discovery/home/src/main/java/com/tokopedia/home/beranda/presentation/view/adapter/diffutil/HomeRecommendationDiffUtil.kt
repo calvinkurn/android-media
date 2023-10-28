@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.diffutil
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 
-object HomeRecommendationDiffUtil: DiffUtil.ItemCallback<HomeRecommendationVisitable>() {
+class HomeRecommendationDiffUtil : DiffUtil.ItemCallback<HomeRecommendationVisitable>() {
 
     override fun getChangePayload(
         oldItem: HomeRecommendationVisitable,

@@ -59,6 +59,7 @@ import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.imagepicker.common.RemoteConfigInstance
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.recommendation_widget_common.widget.entrypointcard.model.RecomEntryPointCardUiModel
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -202,7 +203,7 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
         viewModel.homeRecommendationLiveData.observe(
             viewLifecycleOwner
         ) { data ->
-            adapter.submitList(listOf<HomeRecommendationTypeFactoryImpl>()))
+            adapter.submitList(data.homeRecommendations)
         }
 
         viewModel.homeRecommendationNetworkLiveData.observe(
@@ -268,7 +269,9 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
     private fun isNewForYouQueryEnabled(): Boolean {
         return context?.let {
             RemoteConfigInstance.getRemoteConfig(it).getString(
-                RollenceKey.FOR_YOU_QUERY, RollenceKey.FOR_YOU_QUERY_DEFAULT)
+                RollenceKey.FOR_YOU_QUERY,
+                RollenceKey.FOR_YOU_QUERY_DEFAULT
+            )
         } == RollenceKey.FOR_YOU_QUERY_EXP
     }
 
@@ -329,6 +332,7 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
         endlessRecyclerViewScrollListener =
             object : HomeFeedEndlessScrollListener(recyclerView?.layoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                    // todo will update if rollence is ready
 //                    viewModel.loadNextData(
 //                        tabName,
 //                        recomId,
@@ -491,7 +495,17 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
         )
     }
 
+    override fun onEntryPointCardImpressionListener(
+        item: RecomEntryPointCardUiModel,
+        position: Int
+    ) {
+    }
+
+    override fun onEntryPointCardClickListener(item: RecomEntryPointCardUiModel, position: Int) {
+    }
+
     override fun onRetryGetProductRecommendationData() {
+        // todo will update if rollence is ready
 //        viewModel.loadInitialPage(
 //            tabName,
 //            recomId,
@@ -559,6 +573,7 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
     private fun loadFirstPageData() {
         if (userVisibleHint && isAdded && activity != null && !hasLoadData) {
             hasLoadData = true
+            // todo will update if rollence is ready
 //            viewModel.loadInitialPage(
 //                tabName,
 //                recomId,

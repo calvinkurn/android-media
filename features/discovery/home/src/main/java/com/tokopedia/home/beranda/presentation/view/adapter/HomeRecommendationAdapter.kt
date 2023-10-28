@@ -12,12 +12,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.diffutil.HomeRecommendationDiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.recommendation_widget_common.widget.entrypointcard.viewholder.RecomEntryPointCardViewHolder
-import com.tokopedia.smart_recycler_helper.*
 
 class HomeRecommendationAdapter(
     private val adapterTypeFactory: HomeRecommendationTypeFactoryImpl
 ) : ListAdapter<HomeRecommendationVisitable, AbstractViewHolder<Visitable<*>>>(
-    AsyncDifferConfig.Builder(HomeRecommendationDiffUtil).build()
+    AsyncDifferConfig.Builder(HomeRecommendationDiffUtil()).build()
 ) {
 
     override fun onCreateViewHolder(

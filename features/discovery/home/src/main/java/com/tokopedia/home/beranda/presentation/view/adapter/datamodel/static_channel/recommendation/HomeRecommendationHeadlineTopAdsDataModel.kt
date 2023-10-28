@@ -2,7 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_ch
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
-import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactory
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 
@@ -11,15 +11,15 @@ data class HomeRecommendationHeadlineTopAdsDataModel(
     val position: Int = -1
 ) : HomeRecommendationVisitable, ImpressHolder() {
 
-    override fun equalsDataModel(dataModel: Visitable<HomeRecommendationTypeFactory>): Boolean {
+    override fun equalsDataModel(dataModel: Visitable<HomeRecommendationTypeFactoryImpl>): Boolean {
         return dataModel == this
+    }
+
+    override fun type(typeFactory: HomeRecommendationTypeFactoryImpl): Int {
+        return typeFactory.type(this)
     }
 
     override fun getUniqueIdentity(): Any {
         return headlineAds.data.firstOrNull()?.id ?: ""
-    }
-
-    override fun type(typeFactory: HomeRecommendationTypeFactory): Int {
-        return typeFactory.type(this)
     }
 }

@@ -2,16 +2,12 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationLoading
 import com.tokopedia.home.databinding.HomeFeedItemListBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.recommendation_widget_common.widget.entrypointcard.viewholder.BaseRecommendationForYouViewHolder
-import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
-import com.tokopedia.smart_recycler_helper.SmartListener
 
 /**
  * Created by Lukas on 2019-07-15
@@ -47,7 +43,7 @@ class HomeRecommendationItemListViewHolder(
     }
 
     private fun setLayout(
-        element: HomeRecommendationItemDataModel,
+        element: HomeRecommendationItemDataModel
     ) {
         binding.productCardView.run {
             setProductModel(element.productCardModel)

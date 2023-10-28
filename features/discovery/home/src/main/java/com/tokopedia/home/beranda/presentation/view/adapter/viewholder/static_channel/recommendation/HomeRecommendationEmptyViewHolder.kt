@@ -7,8 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationEmpty
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
-import com.tokopedia.smart_recycler_helper.SmartListener
 
 class HomeRecommendationEmptyViewHolder(view: View) :
     AbstractViewHolder<HomeRecommendationEmpty>(view) {
