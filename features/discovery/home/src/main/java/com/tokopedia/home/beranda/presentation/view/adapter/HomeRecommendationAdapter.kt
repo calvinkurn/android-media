@@ -15,7 +15,6 @@ import com.tokopedia.recommendation_widget_common.widget.entrypointcard.viewhold
 import com.tokopedia.smart_recycler_helper.*
 
 class HomeRecommendationAdapter(
-    smartExecutors: SmartExecutors,
     private val adapterTypeFactory: HomeRecommendationTypeFactoryImpl
 ) : ListAdapter<HomeRecommendationVisitable, AbstractViewHolder<Visitable<*>>>(
     AsyncDifferConfig.Builder(HomeRecommendationDiffUtil).build()
@@ -39,8 +38,9 @@ class HomeRecommendationAdapter(
             is HomeRecommendationEmpty,
             is HomeRecommendationLoadMore -> layout.isFullSpan = true
 
-            is HomeRecommendationBannerTopAdsDataModel -> layout.isFullSpan =
-                item.bannerType != TYPE_VERTICAL_BANNER_ADS
+            is HomeRecommendationBannerTopAdsDataModel ->
+                layout.isFullSpan =
+                    item.bannerType != TYPE_VERTICAL_BANNER_ADS
 
             is HomeRecommendationHeadlineTopAdsDataModel -> layout.isFullSpan = true
             is HomeRecommendationItemDataModel -> layout.isFullSpan = item.isFullSpan()
@@ -65,7 +65,7 @@ class HomeRecommendationAdapter(
     }
 }
 
-interface HomeRecommendationListener: RecomEntryPointCardViewHolder.Listener {
+interface HomeRecommendationListener : RecomEntryPointCardViewHolder.Listener {
     fun onProductImpression(
         homeRecommendationItemDataModel: HomeRecommendationItemDataModel,
         position: Int

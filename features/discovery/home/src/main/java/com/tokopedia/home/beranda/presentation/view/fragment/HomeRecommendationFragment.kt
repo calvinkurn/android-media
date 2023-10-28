@@ -60,7 +60,6 @@ import com.tokopedia.imagepicker.common.RemoteConfigInstance
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
@@ -81,9 +80,6 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var appExecutors: SmartExecutors
-
-    @Inject
     lateinit var trackingQueue: TrackingQueue
 
     @Inject
@@ -93,7 +89,7 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
         ViewModelProvider(this, viewModelFactory)[HomeRecommendationViewModel::class.java]
     }
     private val adapterFactory by lazy(LazyThreadSafetyMode.NONE) { HomeRecommendationTypeFactoryImpl(this, this) }
-    private val adapter by lazy { HomeRecommendationAdapter(appExecutors, adapterFactory) }
+    private val adapter by lazy { HomeRecommendationAdapter(adapterFactory) }
     private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.home_feed_fragment_recycler_view) }
 
     private val staggeredGridLayoutManager by lazy {
