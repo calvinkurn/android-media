@@ -2,10 +2,10 @@ package com.tokopedia.product.detail.view.viewholder.social_proof.adapter.view_h
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.setOnClickDebounceListener
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.databinding.SocialProofOrangeChipItemBinding
@@ -52,7 +52,12 @@ class SocialProofOrangeChipViewHolder(
     }
 
     private fun SocialProofOrangeChipItemBinding.setImpression(uiModel: SocialProofUiModel) {
-        root.addOnImpressionListener(uiModel.impressHolder) {
+        root.addOnImpressionListener(
+            holder = uiModel.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = uiModel.hashCode().toString(),
+            useHolders = listener.isRemoteCacheableActive()
+        ) {
             listener.onSocialProofItemImpression(socialProof = uiModel)
         }
     }

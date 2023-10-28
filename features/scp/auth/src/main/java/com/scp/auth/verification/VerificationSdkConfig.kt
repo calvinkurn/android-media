@@ -8,9 +8,9 @@ import com.scp.verification.core.domain.common.entities.config.VerificationEnvir
 import com.scp.verification.core.domain.common.listener.VerificationSDKConfigs
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
+import com.tokopedia.keys.Keys
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.keys.R as keysR
 
 class VerificationSdkConfig(val context: Context) : VerificationSDKConfigs {
     override fun getAppConfigs(): VerificationAppConfig {
@@ -25,7 +25,7 @@ class VerificationSdkConfig(val context: Context) : VerificationSDKConfigs {
     }
 
     private fun getClientSecret(): String {
-        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) ScpConstants.DEBUG_CLIENT_SECRET else context.getString(keysR.string.cvsdk_client_secret)
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) ScpConstants.DEBUG_CLIENT_SECRET else Keys.LSDK_KEY_MA
     }
 
     override fun getAuthConfigs(): VerificationAuthConfig {
@@ -44,5 +44,4 @@ class VerificationSdkConfig(val context: Context) : VerificationSDKConfigs {
     }
 
     private fun isLogEnabled(): Boolean = GlobalConfig.isAllowDebuggingTools()
-
 }

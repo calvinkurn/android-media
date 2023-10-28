@@ -1276,5 +1276,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         startActivityForResult(intent, REQUEST_CODE_PARTNER_KYC);
     }
 
-
+    @Override
+    public void onDestroy() {
+        if (webView!= null) {
+            webView.setWebChromeClient(null);
+            webView = null;
+        }
+        super.onDestroy();
+    }
 }

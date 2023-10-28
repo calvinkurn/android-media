@@ -72,9 +72,6 @@ object RollenceKey {
     const val PRODUCT_CARD_EXPERIMENT_GIMMICK = "gimmick"
     const val PRODUCT_CARD_EXPERIMENT_PORTRAIT = "portrait"
     const val PRODUCT_CARD_EXPERIMENT_ETA = "eta"
-    const val PRODUCT_CARD_SLASHED_PRICE_CASHBACK_EXPERIMENT = "seg_sp_cb"
-    const val PRODUCT_CARD_SLASHED_PRICE_CASHBACK_SRP = "sp_cb_srp"
-    const val PRODUCT_CARD_SLASHED_PRICE_CASHBACK_ALL = "sp_cb_all"
 
     // For You Experiment
     const val FOR_YOU_QUERY_DEFAULT = "control_variant"

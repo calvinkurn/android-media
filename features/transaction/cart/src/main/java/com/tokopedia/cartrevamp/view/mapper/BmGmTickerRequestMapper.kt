@@ -67,11 +67,12 @@ object BmGmTickerRequestMapper {
         val listCart = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart>()
         val cartDetailsBmGm = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails>()
         val listProductBmGm = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product>()
-        CartDataHelper.getListProductByOfferId(
+
+        CartDataHelper.getListProductByOfferIdAndCartStringOrder(
             cartDataList,
-            cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
+            cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId,
+            cartItemHolderData.cartStringOrder
         ).forEach { product ->
-            CartCalculator.calculatePriceWholesaleProduct(product, product.quantity)
             listProductBmGm.add(
                 BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product(
                     cartId = product.cartId,
