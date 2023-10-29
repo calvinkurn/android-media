@@ -81,6 +81,7 @@ class ComposeQuestionnaireFragment : BaseComposeFragment() {
                                 }
                             )
                         }
+
                         is QuestionnaireState.Success -> QuestionnaireSuccessState(
                             data = current.data,
                             onEvent = viewModel::onEvent
@@ -92,39 +93,37 @@ class ComposeQuestionnaireFragment : BaseComposeFragment() {
     }
 
     override fun setOnBackPressed() {
-        context?.let {
-            if (!viewModel.isAnyChanges()) {
-                findNavController().navigateUp()
-                return
-            }
+        val context = this.context ?: return
 
-            val dialog = DialogUnify(
-                it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE
-            )
-            with(dialog) {
-                setTitle(it.getString(R.string.sp_poup_exit_title))
-                setDescription(it.getString(R.string.sp_popup_exit_description))
-                setPrimaryCTAText(it.getString(R.string.sp_popup_exit_primary_cta))
-                setPrimaryCTAClickListener {
-                    dismiss()
-                }
-                setSecondaryCTAText(it.getString(R.string.sp_popup_exit_secondary_cta))
-                setSecondaryCTAClickListener {
-                    findNavController().navigateUp()
-                    dismiss()
-                }
-                show()
+        if (!viewModel.isAnyChanges()) {
+            findNavController().navigateUp()
+            return
+        }
+        val dialog = DialogUnify(
+            context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE
+        )
+        with(dialog) {
+            setTitle(context.getString(R.string.sp_poup_exit_title))
+            setDescription(context.getString(R.string.sp_popup_exit_description))
+            setPrimaryCTAText(context.getString(R.string.sp_popup_exit_primary_cta))
+            setPrimaryCTAClickListener {
+                dismiss()
             }
+            setSecondaryCTAText(context.getString(R.string.sp_popup_exit_secondary_cta))
+            setSecondaryCTAClickListener {
+                findNavController().navigateUp()
+                dismiss()
+            }
+            show()
         }
     }
 
     private fun navigateToResultPage(personaName: String) {
-        view?.let {
-            val action = ComposeQuestionnaireFragmentDirections.actionQuestionnaireToResult(
-                paramPersona = personaName
-            )
-            Navigation.findNavController(it).navigate(action)
-        }
+        val view = view ?: return
+        val action = ComposeQuestionnaireFragmentDirections.actionQuestionnaireToResult(
+            paramPersona = personaName
+        )
+        Navigation.findNavController(view).navigate(action)
     }
 
     private fun inject() {

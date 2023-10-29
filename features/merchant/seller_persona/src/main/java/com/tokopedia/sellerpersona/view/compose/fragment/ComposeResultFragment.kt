@@ -122,33 +122,32 @@ class ComposeResultFragment : BaseComposeFragment() {
     }
 
     override fun setOnBackPressed() {
-        context?.let {
-            val paramPersona = args.paramPersona
-            if (paramPersona.isNotBlank() || (paramPersona.isBlank() && isAnyChanges)) {
-                val dialog = DialogUnify(
-                    it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE
-                )
-                with(dialog) {
-                    setTitle(it.getString(R.string.sp_poup_exit_title))
-                    setDescription(it.getString(R.string.sp_popup_exit_result_description))
-                    setPrimaryCTAText(it.getString(R.string.sp_popup_exit_result_primary_cta))
-                    setPrimaryCTAClickListener {
-                        dismiss()
-                    }
-                    setSecondaryCTAText(it.getString(R.string.sp_popup_exit_secondary_cta))
-                    setSecondaryCTAClickListener {
-                        dismiss()
-                        if (sharedPref.isFirstVisit()) {
-                            val appLink = ApplinkConstInternalSellerapp.SELLER_HOME
-                            RouteManager.route(it, appLink)
-                        }
-                        activity?.finish()
-                    }
-                    show()
+        val context = context ?: return
+        val paramPersona = args.paramPersona
+        if (paramPersona.isNotBlank() || (paramPersona.isBlank() && isAnyChanges)) {
+            val dialog = DialogUnify(
+                context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE
+            )
+            with(dialog) {
+                setTitle(context.getString(R.string.sp_poup_exit_title))
+                setDescription(context.getString(R.string.sp_popup_exit_result_description))
+                setPrimaryCTAText(context.getString(R.string.sp_popup_exit_result_primary_cta))
+                setPrimaryCTAClickListener {
+                    dismiss()
                 }
-            } else {
-                activity?.finish()
+                setSecondaryCTAText(context.getString(R.string.sp_popup_exit_secondary_cta))
+                setSecondaryCTAClickListener {
+                    dismiss()
+                    if (sharedPref.isFirstVisit()) {
+                        val appLink = ApplinkConstInternalSellerapp.SELLER_HOME
+                        RouteManager.route(context, appLink)
+                    }
+                    activity?.finish()
+                }
+                show()
             }
+        } else {
+            activity?.finish()
         }
     }
 
@@ -181,40 +180,35 @@ class ComposeResultFragment : BaseComposeFragment() {
     }
 
     private fun navigateToSelectPersona(data: ResultUiEffect.NavigateToSelectPersona) {
-        view?.let {
-            val action =
-                ComposeResultFragmentDirections.actionToSelectTypeScreen(data.currentPersona)
-            Navigation.findNavController(it).navigate(action)
-            SellerPersonaTracking.sendClickSellerPersonaResultSelectPersonaEvent()
-        }
+        val view = view ?: return
+        val action = ComposeResultFragmentDirections.actionToSelectTypeScreen(data.currentPersona)
+        Navigation.findNavController(view).navigate(action)
+        SellerPersonaTracking.sendClickSellerPersonaResultSelectPersonaEvent()
     }
 
     private fun navigateToQuestionnaire() {
-        view?.let {
-            val action =
-                ComposeResultFragmentDirections.actionResultFragmentToQuestionnaireFragment()
-            Navigation.findNavController(it).navigate(action)
-            SellerPersonaTracking.sendClickSellerPersonaResultRetakeQuizEvent()
-        }
+        val view = view ?: return
+        val action = ComposeResultFragmentDirections.actionResultFragmentToQuestionnaireFragment()
+        Navigation.findNavController(view).navigate(action)
+        SellerPersonaTracking.sendClickSellerPersonaResultRetakeQuizEvent()
     }
 
     private fun goToSellerHome() {
-        activity?.let {
-            val toasterMessage = if (isPersonaActive) {
-                it.getString(R.string.sp_persona_toggle_to_active_toaster_message)
-            } else {
-                it.getString(R.string.sp_persona_toggle_to_inactive_toaster_message)
-            }
-            val param = mapOf(
-                SellerHomeApplinkConst.TOASTER_MESSAGE to toasterMessage,
-                SellerHomeApplinkConst.TOASTER_CTA to it.getString(R.string.sp_oke),
-                SellerHomeApplinkConst.IS_PERSONA to true.toString()
-            )
-            val appLink =
-                UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME, param)
-            RouteManager.route(it, appLink)
-            it.finish()
+        val activity = activity ?: return
+        val toasterMessage = if (isPersonaActive) {
+            activity.getString(R.string.sp_persona_toggle_to_active_toaster_message)
+        } else {
+            activity.getString(R.string.sp_persona_toggle_to_inactive_toaster_message)
         }
+        val param = mapOf(
+            SellerHomeApplinkConst.TOASTER_MESSAGE to toasterMessage,
+            SellerHomeApplinkConst.TOASTER_CTA to activity.getString(R.string.sp_oke),
+            SellerHomeApplinkConst.IS_PERSONA to true.toString()
+        )
+        val appLink =
+            UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME, param)
+        RouteManager.route(activity.applicationContext, appLink)
+        activity.finish()
     }
 
     private fun inject() {

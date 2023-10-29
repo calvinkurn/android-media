@@ -56,23 +56,24 @@ abstract class BaseComposeFragment : Fragment() {
 
     protected open fun showGeneralErrorToaster() {
         if (isErrorToasterVisible) return
+
+        val rootView = view?.rootView ?: return
         isErrorToasterVisible = true
-        view?.run {
-            val dp64 = context.resources.getDimensionPixelSize(
-                unifyprinciplesR.dimen.layout_lvl7
-            )
-            Toaster.toasterCustomBottomHeight = dp64
-            val toaster = Toaster.build(
-                rootView,
-                context.getString(R.string.sp_toaster_error_message),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_ERROR,
-                context.getString(R.string.sp_oke)
-            )
-            toaster.removeCallback(toasterCallback)
-            toaster.addCallback(toasterCallback)
-            toaster.show()
-        }
+
+        val dp64 = rootView.context.resources.getDimensionPixelSize(
+            unifyprinciplesR.dimen.layout_lvl7
+        )
+        Toaster.toasterCustomBottomHeight = dp64
+        val toaster = Toaster.build(
+            rootView,
+            rootView.context.getString(R.string.sp_toaster_error_message),
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_ERROR,
+            rootView.context.getString(R.string.sp_oke)
+        )
+        toaster.removeCallback(toasterCallback)
+        toaster.addCallback(toasterCallback)
+        toaster.show()
     }
 
     private fun setupOnBackPressed() {
