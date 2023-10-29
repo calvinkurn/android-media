@@ -15,6 +15,7 @@ class ShopInfoPreviewParameterProvider : PreviewParameterProvider<ShopInfoUiStat
         )
 
     private val shopInfoAllData = ShopInfoUiState(
+        isLoading = false,
         shopImageUrl = "https://images.tokopedia.net/img/official_store/badge_os.png",
         shopBadgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png",
         shopName = "Kimia Farma",
@@ -108,7 +109,8 @@ class ShopInfoPreviewParameterProvider : PreviewParameterProvider<ShopInfoUiStat
             pharmacistName = "apt. Epin Ambarwati, S.Farm",
             siaNumber = "201221003602300001",
             sipaNumber = "201221003602300001"
-        )
+        ),
+        error = null
     )
 
     private val noEpharmachyScenario = shopInfoAllData.copy(showEpharmacyInfo = false)
