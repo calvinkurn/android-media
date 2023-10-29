@@ -10,9 +10,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.base.BaseSellerMenuActivity
 import com.tokopedia.seller.menu.presentation.component.SellerMenuContent
-import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuComposeItem
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuUIEvent
-import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuUIState
 import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -21,6 +19,9 @@ class SellerMenuActivity: BaseSellerMenuActivity() {
 
     @Inject
     lateinit var viewModel: SellerMenuViewModel
+
+    private var shopAge: Long = 0L
+    private var isNewSeller: Boolean = false
 
     override fun getNewFragment(): Fragment? {
         return null
@@ -35,10 +36,12 @@ class SellerMenuActivity: BaseSellerMenuActivity() {
         setContent {
             NestTheme {
                 LaunchedEffect(key1 = false, block = {
-                    viewModel.uiState.collectLatest { state ->
+                    viewModel.uiEvent.collectLatest { state ->
                         when (state) {
-                            is SellerMenuUIState.OnSuccessGetMenuList -> {
-                                loadMenuList(state.visitableList)
+                            is SellerMenuUIEvent.OnSuccessGetShopInfoUse -> {
+                                shopAge = state.shopAge
+                                isNewSeller = state.isNewSeller
+                                viewModel.getAllSettingShopInfo(false)
                             }
                             else -> {
 
@@ -49,7 +52,10 @@ class SellerMenuActivity: BaseSellerMenuActivity() {
 
                 val state = viewModel.uiState.collectAsState()
 
-                SellerMenuContent(uiState = state.value)
+                SellerMenuContent(
+                    uiState = state.value,
+                    onSuccessLoadInitialState = ::onSuccessLoadInitialState
+                )
             }
         }
     }
@@ -61,8 +67,8 @@ class SellerMenuActivity: BaseSellerMenuActivity() {
             .inject(this)
     }
 
-    private fun loadMenuList(menuList: List<SellerMenuComposeItem>) {
-
+    private fun onSuccessLoadInitialState() {
+        viewModel.getShopAccountInfo()
     }
 
 }

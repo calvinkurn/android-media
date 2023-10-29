@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -36,11 +37,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.gm.common.constant.PMProURL
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.nest.components.NestDivider
 import com.tokopedia.nest.components.NestDividerSize
 import com.tokopedia.nest.components.NestImage
+import com.tokopedia.nest.components.NestImageType
+import com.tokopedia.nest.components.NestLocalLoad
 import com.tokopedia.nest.components.NestNotification
 import com.tokopedia.nest.components.loader.NestLoader
 import com.tokopedia.nest.components.loader.NestLoaderType
@@ -50,28 +57,40 @@ import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.seller.menu.R
+import com.tokopedia.seller.menu.common.constant.Constant
+import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
+import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
+import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
+import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
+import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuComposeItem
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuDividerUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuInfoLoadingUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuInfoUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuItemUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuOrderUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuProductUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuSectionTitleUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuSettingTitleUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuUIState
+import java.util.*
 import com.tokopedia.gm.common.R as gmcommonR
+import com.tokopedia.seller.menu.R as sellermenuR
 import com.tokopedia.seller.menu.common.R as sellermenucommonR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 // TODO: Add alpha to text
 @Composable
 fun SellerMenuContent(
-    uiState: SellerMenuUIState
+    uiState: SellerMenuUIState,
+    onSuccessLoadInitialState: () -> Unit
 ) {
     when (uiState) {
-        is SellerMenuUIState.OnSuccessGetMenuList ->
+        is SellerMenuUIState.OnSuccessGetMenuList -> {
+            onSuccessLoadInitialState()
             SellerMenuSuccessState(uiState.visitableList)
+        }
         else -> SellerMenuSuccessState(listOf())
     }
 }
@@ -179,6 +198,18 @@ fun SellerMenuSuccessState(
                     is SellerMenuInfoLoadingUiModel -> {
                         SellerMenuInfoLoading()
                     }
+                    is SellerMenuInfoUiModel -> {
+                        SellerMenuShopInfo(
+                            imageUrl = it.shopAvatarUrl,
+                            shopNameString = it.shopName,
+                            badgeUrl = it.shopBadgeUrl.orEmpty(),
+                            shopScoreString = it.shopScore.toString(),
+                            followersCount = it.shopFollowers.toString(),
+                            partialResponseStatus = it.partialResponseStatus,
+                            totalBalance = it.balanceValue,
+                            userShopInfoWrapper = it.userShopInfoWrapper
+                        )
+                    }
                 }
             }
         )
@@ -202,43 +233,152 @@ fun SellerMenuInfoLoading() {
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            val (avatarImage, shopNameLoaderRef, badgeFollowersLoaderRef) = createRefs()
+            val (
+                avatarImage,
+                shopNameLoaderRef,
+                badgeFollowersLoaderRef,
+                shopStatusLoaderRef,
+                balanceTitleLoaderRef,
+                balanceValueLoaderRef,
+                shopStatusDivider
+            ) = createRefs()
 
-            NestLoader(
-                variant = NestLoaderType.Shimmer(
-                    NestShimmerType.Line
-                ),
+            Box(
                 modifier = Modifier
                     .height(20.dp)
+                    .fillMaxWidth(0.5f)
+                    .padding(
+                        start = 16.dp
+                    )
                     .constrainAs(shopNameLoaderRef) {
-                        top.linkTo(parent.top)
-                        start.linkTo(badgeFollowersLoaderRef.end)
+                        top.linkTo(avatarImage.top)
+                        bottom.linkTo(badgeFollowersLoaderRef.top)
+                        start.linkTo(avatarImage.end)
                     }
-            )
+            ) {
+                NestLoader(
+                    variant = NestLoaderType.Shimmer(
+                        NestShimmerType.Line
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+            }
 
-            NestLoader(
-                variant = NestLoaderType.Shimmer(
-                    NestShimmerType.Line
-                ),
+            Box(
                 modifier = Modifier
                     .height(16.dp)
                     .width(96.dp)
-                    .padding(start = 16.dp)
+                    .padding(
+                        start = 16.dp
+                    )
                     .constrainAs(badgeFollowersLoaderRef) {
-                        top.linkTo(parent.top)
-                        start.linkTo(avatarImage.end)
+                        top.linkTo(shopNameLoaderRef.bottom)
+                        bottom.linkTo(avatarImage.bottom)
+                        start.linkTo(shopNameLoaderRef.start)
                     }
-            )
+            ) {
+                NestLoader(
+                    variant = NestLoaderType.Shimmer(
+                        NestShimmerType.Line
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+            }
 
             SellerMenuShopImage(
                 imageUrl = "",
                 modifier = Modifier
-                    .padding(start = 16.dp)
+                    .padding(
+                        start = 16.dp
+                    )
                     .constrainAs(avatarImage) {
                         top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
                     }
             )
+
+            Box(
+                modifier = Modifier
+                    .height(82.dp)
+                    .fillMaxWidth()
+                    .padding(
+                        start = 16.dp,
+                        end = 16.dp,
+                        top = 20.dp,
+                        bottom = 17.dp
+                    )
+                    .constrainAs(shopStatusLoaderRef) {
+                        top.linkTo(avatarImage.bottom)
+                        start.linkTo(parent.start)
+                    }
+            ) {
+                NestLoader(
+                    variant = NestLoaderType.Shimmer(
+                        NestShimmerType.Line
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                )
+            }
+
+            NestDivider(
+                size = NestDividerSize.Small,
+                modifier = Modifier
+                    .height(1.dp)
+                    .constrainAs(shopStatusDivider) {
+                        top.linkTo(shopStatusLoaderRef.bottom)
+                    }
+            )
+
+            Box(
+                modifier = Modifier
+                    .height(40.dp)
+                    .width(96.dp)
+                    .padding(
+                        top = 13.dp,
+                        bottom = 13.dp,
+                        start = 16.dp
+                    )
+                    .constrainAs(balanceTitleLoaderRef) {
+                        start.linkTo(parent.start)
+                        top.linkTo(shopStatusDivider.bottom)
+                    }
+            ) {
+                NestLoader(
+                    variant = NestLoaderType.Shimmer(
+                        NestShimmerType.Line
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .height(40.dp)
+                    .width(128.dp)
+                    .padding(
+                        top = 13.dp,
+                        bottom = 13.dp,
+                        end = 16.dp
+                    )
+                    .constrainAs(balanceValueLoaderRef) {
+                        end.linkTo(parent.end)
+                        top.linkTo(shopStatusDivider.bottom)
+                    }
+            ) {
+                NestLoader(
+                    variant = NestLoaderType.Shimmer(
+                        NestShimmerType.Line
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                )
+            }
         }
     }
 }
@@ -247,12 +387,27 @@ fun SellerMenuInfoLoading() {
 fun SellerMenuShopInfo(
     imageUrl: String,
     shopNameString: String,
-    @DrawableRes badgeRes: Int,
+    badgeUrl: String,
     shopScoreString: String,
-    followersCount: String
+    followersCount: String,
+    partialResponseStatus: Pair<Boolean, Boolean>,
+    totalBalance: String,
+    userShopInfoWrapper: UserShopInfoWrapper
 ) {
     ConstraintLayout {
-        val (startSpace, avatarImage, shopName, shopBadge, avatarSpace, dot, shopFollowers, shopScore, shopScoreSpace) = createRefs()
+        val (
+            startSpace,
+            avatarImage,
+            shopName,
+            shopBadge,
+            avatarSpace,
+            dot,
+            shopFollowers,
+            shopScore,
+            shopScoreSpace,
+            shopStatus,
+            balance
+        ) = createRefs()
 
         Spacer(
             modifier = Modifier
@@ -295,8 +450,8 @@ fun SellerMenuShopInfo(
                 }
         )
 
-        Image(
-            painterResource(id = badgeRes),
+        NestImage(
+            source = ImageSource.Remote(badgeUrl),
             contentDescription = null,
             modifier = Modifier
                 .height(16.dp)
@@ -366,6 +521,205 @@ fun SellerMenuShopInfo(
                     align = Alignment.CenterVertically
                 )
         )
+
+        var hasLocalLoadShown = false
+
+        if (partialResponseStatus.first) {
+            SellerMenuShopStatusInfo(
+                userShopInfoWrapper = userShopInfoWrapper,
+                modifier = Modifier
+                    .constrainAs(shopStatus) {
+                        top.linkTo(shopScore.bottom)
+                        start.linkTo(avatarImage.start)
+                        end.linkTo(parent.end)
+                    }
+            )
+        } else {
+            hasLocalLoadShown = true
+            NestLocalLoad(
+                title = stringResource(id = sellermenuR.string.setting_error_message),
+                description = stringResource(id = sellermenuR.string.setting_error_description),
+                isLoading = false
+            ) {
+
+            }
+        }
+
+        if (partialResponseStatus.second) {
+            SellerMenuBalanceSection(
+                balance = totalBalance,
+                modifier = Modifier
+                    .constrainAs(balance) {
+                        top.linkTo(shopStatus.bottom)
+                        start.linkTo(avatarImage.start)
+                        end.linkTo(parent.end)
+                    }
+            )
+        } else if (!hasLocalLoadShown) {
+            NestLocalLoad(
+                title = stringResource(id = sellermenuR.string.setting_error_message),
+                description = stringResource(id = sellermenuR.string.setting_error_description),
+                isLoading = false
+            ) {
+
+            }
+        }
+
+    }
+}
+
+@Composable
+fun SellerMenuShopStatusInfo(
+    userShopInfoWrapper: UserShopInfoWrapper,
+    modifier: Modifier
+) {
+    when(val shopType = userShopInfoWrapper.shopType) {
+        is RegularMerchant -> {
+            val totalTransaction =
+                userShopInfoWrapper.userShopInfoUiModel?.totalTransaction.orZero()
+            userShopInfoWrapper.userShopInfoUiModel?.let { uiModel ->
+                val shouldShowTransactionSection =
+                    totalTransaction < Constant.ShopStatus.THRESHOLD_TRANSACTION &&
+                        uiModel.periodTypePmPro == Constant.D_DAY_PERIOD_TYPE_PM_PRO
+
+                if (shouldShowTransactionSection) {
+                    val statsRmText: String
+                    val totalStatsRmText: String?
+                    if (totalTransaction > Constant.ShopStatus.MAX_TRANSACTION) {
+                        statsRmText = MethodChecker.fromHtml(
+                            stringResource(id = sellermenuR.string.transaction_passed)
+                        ).toString()
+                        totalStatsRmText = null
+                    } else {
+                        statsRmText = stringResource(id = getRmStatsTextRes(uiModel))
+                        totalStatsRmText = stringResource(
+                            id = sellermenuR.string.total_transaction,
+                            totalTransaction.toString()
+                        )
+                    }.toString()
+
+                    val ctaColor =
+                        when (shopType) {
+                            is RegularMerchant.Verified, is RegularMerchant.NeedUpgrade -> {
+                                NestTheme.colors.GN._500
+                            }
+                            is RegularMerchant.Pending -> {
+                                NestTheme.colors.NN._950.copy(
+                                    alpha = 0.68f
+                                )
+                            }
+                            else -> {
+                                null
+                            }
+                        }
+
+                    SellerMenuStatusRegular(
+                        rmStatsText = statsRmText,
+                        rmTotalStatsText = totalStatsRmText,
+                        pmEligibleIcon = getPmEligibleIcon(userShopInfoWrapper),
+                        ctaTextRes = getRmVerificationTextRes(shopType),
+                        ctaColor = ctaColor,
+                        modifier = modifier
+                    )
+                }
+            }
+
+        }
+        is PowerMerchantStatus -> {
+            (userShopInfoWrapper.shopType as? PowerMerchantStatus)?.let { pm ->
+                val periodType = userShopInfoWrapper.userShopInfoUiModel?.periodTypePmPro
+                val isNewSeller = userShopInfoWrapper.userShopInfoUiModel?.isNewSeller
+                val canUpgrade =
+                    when {
+                        periodType == Constant.D_DAY_PERIOD_TYPE_PM_PRO && isNewSeller == false -> true
+                        periodType == Constant.COMMUNICATION_PERIOD_PM_PRO -> false
+                        shopType is PowerMerchantStatus.NotActive -> false
+                        else -> true
+                    }
+                SellerMenuStatusPm(
+                    isActive = pm is PowerMerchantStatus.Active,
+                    canUpgrade = canUpgrade,
+                    modifier = modifier
+                )
+            }
+        }
+        is PowerMerchantProStatus -> {
+            val gradeName = userShopInfoWrapper.userShopInfoUiModel?.pmProGradeName?.replaceFirstChar {
+                if (it.isLowerCase()) {
+                    it.titlecase(Locale.getDefault())
+                } else {
+                    it.toString()
+                }
+            }
+
+            val backgroundImageUrl: String
+            val statusTextColor: Color
+
+            when (shopType) {
+                PowerMerchantProStatus.Advanced -> {
+                    backgroundImageUrl = PMProURL.BG_ADVANCE
+                    statusTextColor = NestTheme.colors.NN._950.copy(
+                        alpha = 0.68f
+                    )
+                }
+                PowerMerchantProStatus.Expert -> {
+                    backgroundImageUrl = PMProURL.BG_EXPERT
+                    statusTextColor = NestTheme.colors.TN._500
+                }
+                PowerMerchantProStatus.Ultimate -> {
+                    backgroundImageUrl = PMProURL.BG_ULTIMATE
+                    statusTextColor = NestTheme.colors.YN._400
+                }
+            }
+
+            val pmProBadgeUrl =
+                userShopInfoWrapper.userShopInfoUiModel?.badge ?: PMProURL.ICON_URL
+
+            SellerMenuStatusPmPro(
+                pmProGradeName = gradeName,
+                backgroundImageUrl = backgroundImageUrl,
+                pmProBadgeUrl = pmProBadgeUrl,
+                statusTextColor = statusTextColor,
+                modifier = modifier
+            )
+
+        }
+        else -> {
+            SellerMenuStatusOS(modifier)
+        }
+    }
+}
+
+private fun getRmStatsTextRes(userShopInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel): Int {
+    return if (userShopInfoUiModel.dateCreated.isBlank() || userShopInfoUiModel.isBeforeOnDate) {
+        sellermenuR.string.transaction_on_date
+    } else {
+        sellermenuR.string.transaction_since_joining
+    }
+}
+
+private fun getPmEligibleIcon(userShopInfoWrapper: UserShopInfoWrapper): Int? {
+    return if (userShopInfoWrapper.shopType == RegularMerchant.Verified) {
+        userShopInfoWrapper.userShopInfoUiModel?.getPowerMerchantProEligibleIcon() ?:
+        userShopInfoWrapper.userShopInfoUiModel?.getPowerMerchantEligibleIcon()
+    } else {
+        null
+    }
+}
+
+private fun getRmVerificationTextRes(shopType: ShopType?): Int? {
+    return when (shopType as? RegularMerchant) {
+        is RegularMerchant.Verified -> {
+            sellermenucommonR.string.setting_verifikasi
+        }
+        is RegularMerchant.Pending -> {
+            sellermenucommonR.string.setting_verified
+        }
+        is RegularMerchant.NeedUpgrade -> {
+            sellermenuR.string.setting_upgrade
+        } else -> {
+            null
+        }
     }
 }
 
@@ -432,6 +786,53 @@ fun SellerMenuShopInfoScore(
             painter = painterResource(id = unifycomponentsR.drawable.iconunify_chevron_right),
             contentDescription = "CHEVRON_RIGHT"
         )
+    }
+}
+
+@Composable
+fun SellerMenuBalanceSection(
+    balance: String,
+    modifier: Modifier
+) {
+    ConstraintLayout(
+        modifier = modifier
+            .height(40.dp)
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth()
+    ) {
+        val (balanceTitle, balanceValue) = createRefs()
+
+        NestTypography(
+            text = stringResource(id = sellermenucommonR.string.setting_balance),
+            textStyle = NestTheme.typography.body2.copy(
+                color = NestTheme.colors.NN._950.copy(
+                    alpha = 0.96f
+                )
+            ),
+            modifier = Modifier
+                .constrainAs(balanceTitle) {
+                    start.linkTo(parent.start)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                }
+        )
+
+        NestTypography(
+            text = balance,
+            textStyle = NestTheme.typography.body2.copy(
+                color = NestTheme.colors.NN._950.copy(
+                    alpha = 0.96f
+                ),
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier
+                .constrainAs(balanceValue) {
+                    end.linkTo(parent.end)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                }
+        )
+
     }
 }
 
@@ -768,8 +1169,12 @@ fun SellerMenuOrderSectionItem(
 
 @Composable
 fun SellerMenuStatusRegular(
-    rmStatsText: String,
-    rmTotalStatsText: String
+    rmStatsText: String?,
+    rmTotalStatsText: String?,
+    pmEligibleIcon: Int?,
+    @StringRes ctaTextRes: Int?,
+    ctaColor: Color?,
+    modifier: Modifier = Modifier
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -782,12 +1187,16 @@ fun SellerMenuStatusRegular(
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 12.dp)
+                .padding(
+                    top = 12.dp,
+                    bottom = 12.dp
+                )
         ) {
             val (
                 shopStatusTitle,
                 iconEligiblePm,
                 regularMerchantStatus,
+                dividerSpacer,
                 dividerStatsRm,
                 textStatsRm,
                 textTotalStatsRm
@@ -807,122 +1216,147 @@ fun SellerMenuStatusRegular(
                     .constrainAs(shopStatusTitle) {
                         start.linkTo(leftGuideline)
                         top.linkTo(parent.top)
-                        bottom.linkTo(dividerStatsRm.top)
+                        bottom.linkTo(dividerSpacer.top)
                     }
             )
 
-            Image(
-                painter = painterResource(id = unifycomponentsR.drawable.iconunify_badge_pm_filled),
-                contentDescription = "BADGE_PM_FILLED",
-                modifier = Modifier
-                    .width(20.dp)
-                    .height(20.dp)
-                    .padding(end = 4.dp)
-                    .constrainAs(iconEligiblePm) {
-                        top.linkTo(shopStatusTitle.top)
-                        bottom.linkTo(shopStatusTitle.bottom)
-                        end.linkTo(regularMerchantStatus.start)
-                    }
-            )
+            if (pmEligibleIcon != null) {
+                NestIcon(
+                    iconId = pmEligibleIcon,
+                    modifier = Modifier
+                        .width(20.dp)
+                        .height(20.dp)
+                        .padding(end = 4.dp)
+                        .constrainAs(iconEligiblePm) {
+                            top.linkTo(shopStatusTitle.top)
+                            bottom.linkTo(shopStatusTitle.bottom)
+                            end.linkTo(regularMerchantStatus.start)
+                        }
+                )
+            }
 
-            NestTypography(
-                text = stringResource(id = R.string.setting_upgrade),
-                textStyle = NestTheme.typography.body2.copy(
-                    color = NestTheme.colors.GN._500,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier
-                    .padding(end = 16.dp)
-                    .constrainAs(regularMerchantStatus) {
-                        top.linkTo(shopStatusTitle.top)
-                        bottom.linkTo(shopStatusTitle.bottom)
-                        end.linkTo(parent.end)
-                    }
-            )
-
-            Image(
-                painter = painterResource(id = R.drawable.ic_divider_stats_rm),
-                contentDescription = null,
-                modifier = Modifier
-                    .width(0.dp)
-                    .height(1.dp)
-                    .constrainAs(dividerStatsRm) {
-                        start.linkTo(shopStatusTitle.start)
-                        end.linkTo(regularMerchantStatus.end)
-                        top.linkTo(shopStatusTitle.bottom)
-                        bottom.linkTo(textStatsRm.top)
-                    }
-            )
-
-            NestTypography(
-                text = rmStatsText,
-                textStyle = NestTheme.typography.body2.copy(
-                    color = NestTheme.colors.NN._950.copy(
-                        alpha = 0.68f
-                    )
-                ),
-                modifier = Modifier
-                    .constrainAs(textStatsRm) {
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(leftGuideline)
-                        top.linkTo(dividerStatsRm.bottom)
-                    }
-                    .padding(
-                        top = 12.dp,
-                        bottom = 12.dp,
-                        end = 16.dp
-                    )
-            )
-
-            NestTypography(
-                text = rmTotalStatsText,
-                textStyle = NestTheme.typography.body2.copy(
-                    color = NestTheme.colors.NN._950.copy(
-                        alpha = 0.96f
+            if (ctaTextRes != null && ctaColor != null) {
+                NestTypography(
+                    text = stringResource(id = ctaTextRes),
+                    textStyle = NestTheme.typography.body2.copy(
+                        color = ctaColor,
+                        fontWeight = FontWeight.Bold
                     ),
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier
-                    .padding(
-                        top = 12.dp,
-                        bottom = 12.dp,
-                        end = 16.dp
-                    )
-                    .constrainAs(textTotalStatsRm) {
-                        top.linkTo(dividerStatsRm.bottom)
-                        bottom.linkTo(parent.bottom)
-                        end.linkTo(parent.end)
-                    }
-            )
+                    modifier = Modifier
+                        .padding(end = 16.dp)
+                        .constrainAs(regularMerchantStatus) {
+                            top.linkTo(shopStatusTitle.top)
+                            bottom.linkTo(shopStatusTitle.bottom)
+                            end.linkTo(parent.end)
+                        }
+                )
+            }
+
+            if (rmStatsText != null) {
+
+                Spacer(
+                    modifier = Modifier
+                        .height(12.dp)
+                        .constrainAs(dividerSpacer) {
+                            top.linkTo(shopStatusTitle.bottom)
+                        }
+                )
+
+                Image(
+                    painter = painterResource(id = R.drawable.ic_divider_stats_rm),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .constrainAs(dividerStatsRm) {
+                            start.linkTo(shopStatusTitle.start)
+                            end.linkTo(regularMerchantStatus.end)
+                            top.linkTo(dividerSpacer.bottom)
+                            bottom.linkTo(textStatsRm.top)
+                        }
+                )
+
+                NestTypography(
+                    text = rmStatsText,
+                    textStyle = NestTheme.typography.body2.copy(
+                        color = NestTheme.colors.NN._950.copy(
+                            alpha = 0.68f
+                        )
+                    ),
+                    modifier = Modifier
+                        .constrainAs(textStatsRm) {
+                            bottom.linkTo(parent.bottom)
+                            start.linkTo(leftGuideline)
+                            top.linkTo(dividerStatsRm.bottom)
+                        }
+                        .padding(
+                            top = 12.dp,
+                            end = 16.dp
+                        )
+                )
+            }
+
+            if (rmTotalStatsText != null) {
+                NestTypography(
+                    text = rmTotalStatsText,
+                    textStyle = NestTheme.typography.body2.copy(
+                        color = NestTheme.colors.NN._950.copy(
+                            alpha = 0.96f
+                        ),
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier
+                        .padding(
+                            top = 12.dp,
+                            end = 16.dp
+                        )
+                        .constrainAs(textTotalStatsRm) {
+                            top.linkTo(dividerStatsRm.bottom)
+                            bottom.linkTo(parent.bottom)
+                            end.linkTo(parent.end)
+                        }
+                )
+            }
         }
     }
 }
 
 @Composable
-fun SellerMenuStatusPm() {
+fun SellerMenuStatusPm(
+    isActive: Boolean,
+    canUpgrade: Boolean,
+    modifier: Modifier
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(45.dp)
             .clip(RoundedCornerShape(8.dp))
             .border(1.dp, NestTheme.colors.NN._50, RoundedCornerShape(8.dp))
             .background(Color.Transparent)
     ) {
-        ConstraintLayout {
+        ConstraintLayout(
+            modifier = Modifier.fillMaxWidth()
+        ) {
             val (
                 powerMerchantText,
                 powerMerchantStatusText,
-                badgeBorder,
                 pmIcon,
                 upgradePMText
             ) = createRefs()
 
-            val leftGuideline = createGuidelineFromStart(14.dp)
             val middleGuideline = createGuidelineFromStart(40.dp)
 
+            val pmText =
+                if (isActive) {
+                    stringResource(id = sellermenucommonR.string.power_merchant_upgrade)
+                } else {
+                    stringResource(id = sellermenucommonR.string.power_merchant_status)
+                }
+
             NestTypography(
-                text = stringResource(id = sellermenucommonR.string.power_merchant_status),
+                text = pmText,
                 textStyle = NestTheme.typography.heading5.copy(
                     color = NestTheme.colors.NN._950,
                     fontWeight = FontWeight.Bold
@@ -936,44 +1370,163 @@ fun SellerMenuStatusPm() {
                     }
             )
 
-            NestTypography(
-                text = stringResource(id = sellermenucommonR.string.setting_not_active),
-                textStyle = NestTheme.typography.body2.copy(
-                    color = NestTheme.colors.RN._500,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier
-                    .widthIn(min = 0.dp)
-                    .constrainAs(powerMerchantStatusText) {
-                        start.linkTo(powerMerchantText.end)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                    }
-            )
+            if (!isActive) {
+                NestTypography(
+                    text = stringResource(id = sellermenucommonR.string.setting_not_active),
+                    textStyle = NestTheme.typography.body2.copy(
+                        color = NestTheme.colors.RN._500,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier
+                        .widthIn(min = 0.dp)
+                        .constrainAs(powerMerchantStatusText) {
+                            start.linkTo(powerMerchantText.end)
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                        }
+                )
+            }
 
-            Box(
+            if (canUpgrade) {
+                NestTypography(
+                    text = stringResource(id = sellermenuR.string.setting_upgrade),
+                    textStyle = NestTheme.typography.body2.copy(
+                        color = NestTheme.colors.GN._500,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier
+                        .constrainAs(upgradePMText) {
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                            end.linkTo(parent.end)
+                        }
+                        .padding(end = 16.dp)
+                )
+            }
+
+            NestIcon(
+                iconId = IconUnify.BADGE_PM_FILLED,
                 modifier = Modifier
                     .width(24.dp)
                     .height(24.dp)
                     .clip(CircleShape)
-                    .border(1.dp, NestTheme.colors.NN._0, CircleShape)
+                    .border(1.5.dp, NestTheme.colors.NN._0, CircleShape)
                     .background(Color.Transparent)
-                    .constrainAs(badgeBorder) {
+                    .constrainAs(pmIcon) {
                         start.linkTo(parent.start)
                         end.linkTo(middleGuideline)
                         top.linkTo(parent.top)
                         bottom.linkTo(parent.bottom)
                     }
             )
+
         }
     }
 }
 
 @Composable
-fun SellerMenuStatusOS() {
+fun SellerMenuStatusPmPro(
+    pmProGradeName: String?,
+    backgroundImageUrl: String,
+    pmProBadgeUrl: String,
+    statusTextColor: Color,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(45.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .border(1.dp, NestTheme.colors.NN._50, RoundedCornerShape(8.dp))
+            .background(Color.Transparent)
+    ) {
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+        ) {
+
+            val (
+                pmProBackgroundRef,
+                pmProTextRef,
+                pmProStatusText,
+                pmProIconRef,
+                pmInfoSpacerRef
+            ) = createRefs()
+
+            NestImage(
+                source = ImageSource.Remote(backgroundImageUrl),
+                modifier = Modifier
+                    .constrainAs(pmProBackgroundRef) {
+                        start.linkTo(parent.start)
+                    }
+                    .fillMaxHeight()
+            )
+
+            Spacer(
+                modifier = Modifier
+                    .width(40.dp)
+                    .constrainAs(pmInfoSpacerRef) {
+                        start.linkTo(parent.start)
+                    }
+            )
+
+            NestImage(
+                source = ImageSource.Remote(pmProBadgeUrl),
+                type = NestImageType.Circle,
+                modifier = Modifier
+                    .size(24.dp)
+                    .clip(CircleShape)
+                    .border(1.dp, NestTheme.colors.NN._50, CircleShape)
+                    .constrainAs(pmProIconRef) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        end.linkTo(pmInfoSpacerRef.end)
+                    }
+            )
+
+            NestTypography(
+                text = stringResource(id = sellermenuR.string.power_merchant_pro_status),
+                textStyle = NestTheme.typography.body2.copy(
+                    color = NestTheme.colors.NN._950.copy(
+                        alpha = 0.96f
+                    ),
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier
+                    .padding(start = 3.dp)
+                    .constrainAs(pmProTextRef) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(pmInfoSpacerRef.end)
+                    }
+            )
+
+            NestTypography(
+                text = pmProGradeName.orEmpty(),
+                textStyle = NestTheme.typography.body2.copy(
+                    color = statusTextColor,
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier
+                    .constrainAs(pmProStatusText) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(pmProTextRef.end)
+                    }
+            )
+
+        }
+    }
+}
+
+@Composable
+fun SellerMenuStatusOS(
+    modifier: Modifier = Modifier
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(45.dp)
             .clip(RoundedCornerShape(8.dp))
@@ -1031,7 +1584,15 @@ fun SellerMenuStatusOS() {
 @Composable
 fun preview() {
     NestTheme {
-        SellerMenuInfoLoading()
+//        SellerMenuStatusPmPro(
+//            "Advanced",
+//            "",
+//            "",
+//            NestTheme.colors.NN._950.copy(
+//                alpha = 0.68f
+//            )
+//        )
+//        SellerMenuStatusPm(false, true)
 //        SellerMenuStatusRegular("Transaksi sejak berlangsung", "10/100")
 //        SellerMenuOrderSection(
 //            1,2
@@ -1041,10 +1602,23 @@ fun preview() {
 //        SellerMenuShopInfo(
 //            imageUrl = "",
 //            shopNameString = "Adeedast Naiki",
-//            badgeRes = R.drawable.ic_power_merchant,
+//            badgeRes = com.tokopedia.gm.common.R.drawable.ic_power_merchant,
 //            shopScoreString = "100",
-//            followersCount = "10 Followers"
+//            followersCount = "10 Followers",
+//            userShopInfoWrapper = UserShopInfoWrapper(
+//                shopType = PowerMerchantStatus.Active
+//            ),
+//            partialResponseStatus = true to true,
+//            totalBalance = "Rp 100"
 //        )
+    SellerMenuStatusRegular(
+        rmStatsText = "Pesanan",
+        rmTotalStatsText = "10/100",
+        pmEligibleIcon = IconUnify.BADGE_PM_FILLED,
+        ctaTextRes = sellermenucommonR.string.setting_verified,
+        ctaColor = NestTheme.colors.NN._950
+    )
+//    SellerMenuBalanceSection(balance = "Rp 200", modifier = Modifier)
 //
 //    }
 }

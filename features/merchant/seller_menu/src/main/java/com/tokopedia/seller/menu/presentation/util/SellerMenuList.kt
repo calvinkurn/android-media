@@ -5,6 +5,7 @@ import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
+import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuComposeItem
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuDividerUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuInfoLoadingUiModel
@@ -30,6 +31,7 @@ object SellerMenuList {
         val otherInfoMenu = createOtherInfoMenu()
 
         menuList.add(SellerMenuInfoLoadingUiModel)
+        menuList.add(SellerMenuDividerUiModel(DividerType.THICK))
         menuList.add(
             SellerMenuSettingTitleUiModel(
                 titleRes = R.string.seller_menu_order_section,
@@ -56,6 +58,17 @@ object SellerMenuList {
 
         return menuList.toList()
     }
+
+    fun createUpdatedItems(
+        currentItems: List<SellerMenuComposeItem>,
+        shopInfoUiModel: ShopInfoUiModel
+    ) {
+        val updatedItems = currentItems.toMutableList()
+        updatedItems.indexOfFirst { it is SellerMenuInfoLoadingUiModel }.let { loadingIndex ->
+            updatedItems.removeAt(loadingIndex)
+        }
+    }
+
 
     private fun createBuyerInfoMenu(): List<SellerMenuComposeItem> {
         return listOf(
