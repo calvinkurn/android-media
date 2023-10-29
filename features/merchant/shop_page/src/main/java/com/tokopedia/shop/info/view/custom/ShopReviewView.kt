@@ -4,14 +4,19 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.google.android.material.tabs.TabLayoutMediator
+import androidx.viewpager2.widget.ViewPager2
+import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ShopInfoTopReviewViewpagerBinding
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.view.fragment.ReviewViewPagerItemFragment
+import com.tokopedia.unifycomponents.toPx
 
 class ShopReviewView @JvmOverloads constructor(
     context: Context,
@@ -20,7 +25,8 @@ class ShopReviewView @JvmOverloads constructor(
 ) : LinearLayout(context, attrs, defStyleAttr) {
     
     private var binding: ShopInfoTopReviewViewpagerBinding? = null
-
+    private var isSwipeFromUserInteraction : Boolean = false 
+    
     init {
         binding = ShopInfoTopReviewViewpagerBinding.inflate(
             LayoutInflater.from(context),
@@ -30,24 +36,65 @@ class ShopReviewView @JvmOverloads constructor(
     }
 
     fun render(review: ShopReview) {
-        val viewpager = binding?.viewpager  ?: return
-        val tabLayout = binding?.tabLayout ?: return
-        
         val fragments = createFragments(review.reviews)
         val fragmentActivity = context.findActivity() ?: return
         
-        val pagerAdapter = PagerAdapter(
-            fragmentActivity,
-            fragments
-        )
-
+        val viewpager = binding?.viewpager  ?: return
+        val pagerAdapter = ReviewViewPagerAdapter(fragmentActivity, fragments)
         viewpager.adapter = pagerAdapter
-        TabLayoutMediator(tabLayout, viewpager) { tab, position ->
 
-        }.attach()
+        val linearLayout = binding?.tabIndicator ?: return
+
+        for (currentIndex in 0 until review.reviews.size) {
+            if (currentIndex == 0) {
+                linearLayout.addView(createSelectedTabIndicator())
+            } else {
+                linearLayout.addView(createUnselectedTabIndicator())
+            }
+        }
+        
+        viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                
+                if (isSwipeFromUserInteraction) {
+                    linearLayout.removeAllViews()    
+                }
+                
+                for (currentIndex in 0 until review.reviews.size) {
+                    if (currentIndex == position) {
+                        linearLayout.addView(createSelectedTabIndicator())
+                    } else {
+                        linearLayout.addView(createUnselectedTabIndicator())
+                    }
+                }
+                
+                isSwipeFromUserInteraction = true
+            }
+        })
+        
+    }
+
+    private fun createSelectedTabIndicator(): ImageView {
+        val imageView = ImageView(context)
+        val params = ViewGroup.LayoutParams(28.toPx() , 5.toPx())
+        imageView.layoutParams = params
+        
+        imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.shop_info_review_dot_indicator_selected))
+        
+        return imageView
+    }
+
+    private fun createUnselectedTabIndicator(): ImageView {
+        val imageView = ImageView(context)
+        val params = ViewGroup.LayoutParams(5.toPx() , 5.toPx())
+        imageView.layoutParams = params
+
+        imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.shop_info_review_dot_indicator_unselected))
+
+        return imageView
     }
     
-
     private fun createFragments(reviews: List<ShopReview.Review>): List<Fragment> {
         return reviews.map { review ->
             ReviewViewPagerItemFragment.newInstance(review)
@@ -55,7 +102,7 @@ class ShopReviewView @JvmOverloads constructor(
     }
 
 
-    private class PagerAdapter(
+    private class ReviewViewPagerAdapter(
         fragmentActivity: FragmentActivity,
         private val fragments: List<Fragment>
     ) : FragmentStateAdapter(fragmentActivity) {
