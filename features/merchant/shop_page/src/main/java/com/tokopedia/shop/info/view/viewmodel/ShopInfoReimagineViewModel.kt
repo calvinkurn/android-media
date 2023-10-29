@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlGetShopOperationalHoursListUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -28,6 +29,7 @@ import javax.inject.Inject
 class ShopInfoReimagineViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     private val coroutineDispatcherProvider: CoroutineDispatchers,
+    @GqlGetShopInfoForHeaderUseCaseQualifier
     private val getShopInfoUseCase: GQLGetShopInfoUseCase,
     private val getShopNoteUseCase: GetShopNoteUseCase,
     private val getShopRatingUseCase: ProductRevGetShopRatingAndTopicsUseCase,
@@ -69,7 +71,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
                     it.copy(
                         isLoading = false,
                         shopImageUrl = shopInfo.shopAssets.avatar,
-                        shopBadgeUrl = shopInfo.gold.badge,
+                        shopBadgeUrl = shopInfo.goldOS.badge,
                         shopName = shopInfo.shopCore.name,
                         shopDescription = shopInfo.shopCore.description,
                         mainLocation = shopInfo.location,
@@ -140,7 +142,17 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     private fun ShopOperationalHoursListResponse.toFormattedOperationalHours(): List<ShopOperationalHour> {
         return getShopOperationalHoursList?.data?.map { 
-            ShopOperationalHour(it.day, it.startTime, it.endTime, it.status)
+            ShopOperationalHour(days[it.day].orEmpty(), it.startTime, it.endTime, it.status)
         }.orEmpty()
     }
+    
+    private val days = mapOf<Int, String>(
+        1 to "Senin",
+        2 to "Selasa",
+        3 to "Rabu",
+        4 to "Kamis",
+        5 to "Jumat",
+        6 to "Sabtu",
+        7 to "Minggu"
+    )
 }
