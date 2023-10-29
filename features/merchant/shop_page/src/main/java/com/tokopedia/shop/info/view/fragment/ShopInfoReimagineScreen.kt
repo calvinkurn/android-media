@@ -268,14 +268,17 @@ fun ShopOperationalHour(operationalHours: List<ShopOperationalHour>) {
         )
     )
     Spacer(modifier = Modifier.height(4.dp))
-    NestTypography(
-        modifier = Modifier.fillMaxWidth(),
-        text = operationalHours.firstOrNull()?.startTime.orEmpty(),
-        textStyle = NestTheme.typography.display2.copy(
-            fontWeight = FontWeight.Bold,
-            color = NestTheme.colors.NN._950
+    operationalHours.forEach { operationalHour ->
+        NestTypography(
+            modifier = Modifier.fillMaxWidth(),
+            text = "${operationalHour.day}: ${operationalHour.startTime}-${operationalHour.endTime}",
+            textStyle = NestTheme.typography.display2.copy(
+                fontWeight = FontWeight.Bold,
+                color = NestTheme.colors.NN._950
+            )
         )
-    )
+    }
+    
 
 }
 

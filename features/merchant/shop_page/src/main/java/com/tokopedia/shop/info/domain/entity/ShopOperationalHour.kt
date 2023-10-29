@@ -1,8 +1,8 @@
 package com.tokopedia.shop.info.domain.entity
 
 data class ShopOperationalHour(
-    val day: Int,
+    val day: String,
     val startTime: String,
     val endTime: String,
-    var status: Int
+    val status: Int
 )
