@@ -4,7 +4,7 @@ import com.tokopedia.shop.info.domain.entity.ShopEpharmacyInfo
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopOperationalHour
-import com.tokopedia.shop.info.domain.entity.ShopPerformanceMetric
+import com.tokopedia.shop.info.domain.entity.ShopPerformance
 import com.tokopedia.shop.info.domain.entity.ShopRating
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
 
@@ -29,7 +29,11 @@ data class ShopInfoUiState(
         totalReviews = 0,
         reviews = emptyList()
     ),
-    val shopPerformanceMetrics: List<ShopPerformanceMetric> = emptyList(),
+    val shopPerformance: ShopPerformance = ShopPerformance(
+        totalProductSoldCount = "",
+        chatPerformance = "",
+        orderProcessTime = ""
+    ),
     val shopNotes: List<ShopNote> = emptyList(),
     val shipments: List<ShopSupportedShipment> = emptyList(),
     val showEpharmacyInfo: Boolean = false,

@@ -49,7 +49,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.info.domain.entity.ShopEpharmacyInfo
 import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopOperationalHour
-import com.tokopedia.shop.info.domain.entity.ShopPerformanceMetric
+import com.tokopedia.shop.info.domain.entity.ShopPerformance
 import com.tokopedia.shop.info.domain.entity.ShopRating
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
@@ -139,11 +139,9 @@ fun Content(modifier: Modifier = Modifier, uiState: ShopInfoUiState) {
             Spacer(modifier = Modifier.height(8.dp))
             ShopRatingAndReviews(uiState.rating, uiState.review)
         }
-       
-        if (uiState.shopPerformanceMetrics.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(16.dp))
-            ShopPerformance(uiState.shopPerformanceMetrics)
-        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        ShopPerformance(uiState.shopPerformance)
        
         if (uiState.shopNotes.isNotEmpty()) {
             Spacer(modifier = Modifier.height(32.dp))
@@ -548,7 +546,7 @@ fun ShopReview(review: ShopReview) {
 }
 
 @Composable
-fun ShopPerformance(shopPerformanceMetrics: List<ShopPerformanceMetric>) {
+fun ShopPerformance(shopPerformance: ShopPerformance) {
     Column(modifier = Modifier.fillMaxWidth()) {
         NestTypography(
             modifier = Modifier.fillMaxWidth(),
@@ -558,14 +556,29 @@ fun ShopPerformance(shopPerformanceMetrics: List<ShopPerformanceMetric>) {
                 color = NestTheme.colors.NN._950
             )
         )
+        
         Spacer(modifier = Modifier.height(16.dp))
+        
         Column(modifier = Modifier.fillMaxWidth()){
             Row(modifier = Modifier.fillMaxWidth()) {
-                ShopPerformanceMetricItem(modifier = Modifier.weight(1f), metricName = "Produk terjual", metricValue = "51rb")
-                ShopPerformanceMetricItem(modifier = Modifier.weight(1f), metricName = "Performa chat", metricValue = ">1 jam")
+                ShopPerformanceMetricItem(
+                    modifier = Modifier.weight(1f),
+                    metricName = "Produk terjual",
+                    metricValue = shopPerformance.totalProductSoldCount.ifEmpty { "-" }
+                )
+                ShopPerformanceMetricItem(
+                    modifier = Modifier.weight(1f),
+                    metricName = "Performa chat",
+                    metricValue = shopPerformance.chatPerformance.ifEmpty { "-" }
+                )
             }
+
             Spacer(modifier = Modifier.height(16.dp))
-            ShopPerformanceMetricItem(metricName = "Pesanan diproses", metricValue = "1 menit")
+            
+            ShopPerformanceMetricItem(
+                metricName = "Pesanan diproses",
+                metricValue = shopPerformance.orderProcessTime.ifEmpty { "-" }
+            )
         }
     }
 }
@@ -721,12 +734,17 @@ fun ShopRatingBarItem(rating: ShopRating.Detail) {
             textStyle = NestTheme.typography.display2.copy(color = NestTheme.colors.NN._950)
         )
         Spacer(modifier = Modifier.width(4.dp))
+        
+        val progressBarBackgroundColor = NestTheme.colors.NN._50
         LinearProgressIndicator(
             progress = (rating.percentageFloat.toFloat() / 100),
-            modifier = Modifier.size(width = 126.dp, height = 4.dp),
+            modifier = Modifier
+                .size(width = 126.dp, height = 4.dp)
+                .background(progressBarBackgroundColor, RoundedCornerShape(8.dp)),
             color = NestTheme.colors.YN._300,
-            backgroundColor = NestTheme.colors.NN._50
+            backgroundColor = progressBarBackgroundColor
         )
+        
         Spacer(modifier = Modifier.width(4.dp))
         NestTypography(
             text = rating.formattedTotalReviews,

@@ -4,7 +4,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.tokopedia.shop.info.domain.entity.ShopEpharmacyInfo
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.domain.entity.ShopNote
-import com.tokopedia.shop.info.domain.entity.ShopPerformanceMetric
+import com.tokopedia.shop.info.domain.entity.ShopPerformance
 import com.tokopedia.shop.info.domain.entity.ShopRating
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
 
@@ -24,10 +24,10 @@ class ShopInfoPreviewParameterProvider : PreviewParameterProvider<ShopInfoUiStat
         otherLocation = "+10 lainnya",
         operationalHours = listOf(),
         shopJoinDate = "9 Mar 2017",
-        shopPerformanceMetrics = listOf(
-            ShopPerformanceMetric(metricName = "Produk terjual", metricValue = "51rb"),
-            ShopPerformanceMetric(metricName = "Performa chat", metricValue = ">1 jam"),
-            ShopPerformanceMetric(metricName = "Pesanan diproses", metricValue = "1 menit")
+        shopPerformance = ShopPerformance(
+            totalProductSoldCount = "51 rb",
+            chatPerformance = ">1 jam",
+            orderProcessTime = "1 menit"
         ),
         shopNotes = listOf(
             ShopNote("1", "Kebijakan pengembalian produk"),

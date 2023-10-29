@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlGetShopOperationalHoursListUseCase
@@ -15,10 +16,13 @@ import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOpera
 import com.tokopedia.shop.info.domain.entity.ShopEpharmacyInfo
 import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopOperationalHour
+import com.tokopedia.shop.info.domain.entity.ShopPerformance
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
 import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopRatingAndTopicsUseCase
 import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopReviewReadingListUseCase
 import com.tokopedia.shop.info.view.model.ShopInfoUiState
+import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
+import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageHeaderLayoutUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,20 +38,24 @@ class ShopInfoReimagineViewModel @Inject constructor(
     private val getShopNoteUseCase: GetShopNoteUseCase,
     private val getShopRatingUseCase: ProductRevGetShopRatingAndTopicsUseCase,
     private val getShopReviewUseCase: ProductRevGetShopReviewReadingListUseCase,
-    private val getShopGqlGetShopOperationalHoursListUseCase: GqlGetShopOperationalHoursListUseCase
+    private val getShopGqlGetShopOperationalHoursListUseCase: GqlGetShopOperationalHoursListUseCase,
+    private val getShopPageHeaderLayoutUseCase: GetShopPageHeaderLayoutUseCase
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
     private val _uiState = MutableStateFlow(ShopInfoUiState())
     val uiState = _uiState.asStateFlow()
     
     
-    fun getShopRating(shopId: String) {
+    fun getShopRating(shopId: String, localCacheModel: LocalCacheModel) {
         launchCatchError(
             context = coroutineDispatcherProvider.io,
             block = {
                 _uiState.update { it.copy(isLoading = true) }
-                
+
+                val shopHeaderLayoutDeferred = async { getShopPageHeaderLayout(shopId, localCacheModel) }
                 val shopRatingParam = ProductRevGetShopRatingAndTopicsUseCase.Param(shopId)
+                val shopRatingDeferred = async { getShopRatingUseCase.execute(shopRatingParam) }
+
                 val shopReviewParam = ProductRevGetShopReviewReadingListUseCase.Param(
                     shopID = shopId,
                     limit = 5,
@@ -55,17 +63,20 @@ class ShopInfoReimagineViewModel @Inject constructor(
                     filterBy = "",
                     sortBy = ""
                 )
-                val shopRatingDeferred = async { getShopRatingUseCase.execute(shopRatingParam) }
                 val shopReviewDeferred = async { getShopReviewUseCase.execute(shopReviewParam) }
+                
                 val shopInfoDeferred = async { getShopInfo(shopId.toIntOrZero()) }
                 val shopNotesDeferred = async { getShopNotes(shopId) }
                 val shopOperationalHoursDeferred = async { getShopOperationalHours(shopId) }
-                
+
+                val shopHeaderLayout = shopHeaderLayoutDeferred.await()
                 val shopRating = shopRatingDeferred.await()
                 val shopReview = shopReviewDeferred.await()
                 val shopInfo = shopInfoDeferred.await()
                 val shopNotes = shopNotesDeferred.await()
                 val shopOperationalHours = shopOperationalHoursDeferred.await()
+                
+                val orderProcessTime = shopHeaderLayout.shopPageGetHeaderLayout.toOrderProcessTime()
                 
                 _uiState.update {
                     it.copy(
@@ -80,7 +91,11 @@ class ShopInfoReimagineViewModel @Inject constructor(
                         shopJoinDate = shopInfo.createdInfo.openSince,
                         rating = shopRating,
                         review = shopReview,
-                        shopPerformanceMetrics = listOf(),
+                        shopPerformance = ShopPerformance(
+                            totalProductSoldCount = "",
+                            chatPerformance = "",
+                            orderProcessTime = orderProcessTime
+                        ),
                         shopNotes = shopNotes.toShopNotes(),
                         shipments = shopInfo.shipments.toShipments(),
                         showEpharmacyInfo = shopInfo.isGoApotik,
@@ -127,6 +142,29 @@ class ShopInfoReimagineViewModel @Inject constructor(
         getShopNoteUseCase.isFromCacheFirst = false
         return getShopGqlGetShopOperationalHoursListUseCase.executeOnBackground()
     }
+
+    private suspend fun getShopPageHeaderLayout(
+        shopId: String,
+        widgetUserAddressLocalData: LocalCacheModel
+    ): ShopPageHeaderLayoutResponse {
+        val districtId: String
+        val cityId: String
+        if (!isMyShop(shopId)) {
+            districtId = widgetUserAddressLocalData.district_id
+            cityId = widgetUserAddressLocalData.city_id
+        } else {
+            districtId = ""
+            cityId = ""
+        }
+        
+        getShopPageHeaderLayoutUseCase.params = GetShopPageHeaderLayoutUseCase.createParams(shopId, districtId, cityId)
+        getShopPageHeaderLayoutUseCase.isFromCloud = true
+        return getShopPageHeaderLayoutUseCase.executeOnBackground()
+    }
+    
+    private fun isMyShop(shopId: String) : Boolean {
+        return shopId == userSessionInterface.shopId
+    }
     
     private fun List<ShopNoteModel>.toShopNotes(): List<ShopNote> {
         return map {shopNote -> 
@@ -144,6 +182,19 @@ class ShopInfoReimagineViewModel @Inject constructor(
         return getShopOperationalHoursList?.data?.map { 
             ShopOperationalHour(days[it.day].orEmpty(), it.startTime, it.endTime, it.status)
         }.orEmpty()
+    }
+    
+    private fun ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.toOrderProcessTime(): String {
+        val shopPerformance= this.widgets.firstOrNull { it.name == "shop_performance" }
+        if (shopPerformance == null) return ""
+        
+        val shopPerformanceListComponent = shopPerformance.listComponent
+        val shopHandling = shopPerformanceListComponent.firstOrNull { it.name == "shop_handling" }
+        if (shopHandling == null) return ""
+        
+        val listText = shopHandling.data.listText
+        val textHtmls = listText.map { it.textHtml }
+        return textHtmls.firstOrNull().orEmpty()
     }
     
     private val days = mapOf<Int, String>(

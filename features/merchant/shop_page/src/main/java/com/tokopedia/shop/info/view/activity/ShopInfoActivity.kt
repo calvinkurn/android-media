@@ -15,6 +15,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.di.component.ShopComponent
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
@@ -90,7 +91,8 @@ class ShopInfoActivity : BaseActivity(), HasComponent<ShopComponent>{
     }
     
     private fun renderWithCompose() {
-        viewModel.getShopRating(shopId)
+        val localCacheModel = ShopUtil.getShopPageWidgetUserAddressLocalData(this) ?: return
+        viewModel.getShopRating(shopId, localCacheModel)
         
         setContent {
           /*  // Observe for any effect / one-time event
