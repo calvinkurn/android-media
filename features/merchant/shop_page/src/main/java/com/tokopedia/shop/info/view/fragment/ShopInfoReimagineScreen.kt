@@ -35,6 +35,8 @@ import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.kotlin.extensions.view.digitsOnly
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.components.loader.NestLoader
@@ -130,9 +132,14 @@ fun Content(modifier: Modifier = Modifier, uiState: ShopInfoUiState) {
             ShopEpharmacyInfo(epharmacy = uiState.epharmacy)
         }
         
-        Spacer(modifier = Modifier.height(8.dp))
-        ShopRatingAndReviews(uiState.rating, uiState.review)
+        val hasRating = uiState.rating.detail.isNotEmpty()
+        val hasReview = uiState.review.reviews.isNotEmpty()
         
+        if (hasRating || hasReview) {
+            Spacer(modifier = Modifier.height(8.dp))
+            ShopRatingAndReviews(uiState.rating, uiState.review)
+        }
+       
         if (uiState.shopPerformanceMetrics.isNotEmpty()) {
             Spacer(modifier = Modifier.height(16.dp))
             ShopPerformance(uiState.shopPerformanceMetrics)
@@ -437,34 +444,56 @@ fun ShopRatingAndReviews(rating: ShopRating, review: ShopReview) {
         Spacer(modifier = Modifier.height(8.dp))
         ShopRatingAndReviewRecap(rating, review)
         
-        Spacer(modifier = Modifier.height(16.dp))
-        ShopRating(rating)
+        if (rating.detail.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(16.dp))
+            ShopRating(rating)
+        }
+     
 
-        Spacer(modifier = Modifier.height(16.dp))
-        ShopReview(review)
+        if (review.reviews.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(16.dp))
+            ShopReview(review)
+        }
     }
 }
 
 @Composable
 fun ShopRatingAndReviewRecap(rating: ShopRating, review: ShopReview) {
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        NestIcon(
-            modifier = Modifier.size(16.dp),
-            iconId = IconUnify.STAR_FILLED,
-            colorLightEnable = NestTheme.colors.YN._300,
-            colorNightEnable = NestTheme.colors.YN._600
-        )
-        Spacer(modifier = Modifier.width(4.dp))
-        NestTypography(
-            text = rating.ratingScore,
-            textStyle = NestTheme.typography.display2.copy(
-                fontWeight = FontWeight.Bold,
-                color = NestTheme.colors.NN._950
+        if (rating.ratingScore.isNotEmpty()) {
+            NestIcon(
+                modifier = Modifier.size(16.dp),
+                iconId = IconUnify.STAR_FILLED,
+                colorLightEnable = NestTheme.colors.YN._300,
+                colorNightEnable = NestTheme.colors.YN._600
             )
-        )
-        Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(4.dp))
+            NestTypography(
+                text = rating.ratingScore,
+                textStyle = NestTheme.typography.display2.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = NestTheme.colors.NN._950
+                )
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+        }
+        
+        val ratingAndReviewText = when {
+            rating.totalRating.isMoreThanZero() && review.totalReviews.isMoreThanZero() -> {
+                "${rating.totalRatingFmt} rating • ${review.totalReviews.splitByThousand()} ulasan"
+            }
+            rating.totalRating.isMoreThanZero() -> {
+                "${rating.totalRatingFmt} rating"
+            }
+            review.totalReviews.isMoreThanZero() -> {
+                "${review.totalReviews} ulasan"
+            }
+            else -> ""
+        }
+        
+        val formattedRatingAndReviewText = "($ratingAndReviewText)"
         NestTypography(
-            text = "(${rating.totalRatingFmt} rating \u2022 ${review.totalReviews} ulasan)",
+            text = formattedRatingAndReviewText,
             textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600)
         )
     }
@@ -552,9 +581,7 @@ fun ShopNotes(shopNotes: List<ShopNote>) {
                 color = NestTheme.colors.NN._950
             )
         )
-        shopNotes.forEach { shopNote ->
-            ShopNoteItem(shopNote = shopNote)
-        }
+        shopNotes.forEach { shopNote -> ShopNoteItem(shopNote = shopNote) }
     }
 }
 @Composable

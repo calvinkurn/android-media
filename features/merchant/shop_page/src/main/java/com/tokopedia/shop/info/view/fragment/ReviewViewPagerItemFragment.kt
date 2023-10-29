@@ -53,7 +53,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
 
     private fun render(review: ShopReview.Review?) {
         review?.let {
-            binding?.tpgReviewText?.text = review.reviewText
+            binding?.tpgReviewText?.text = MethodChecker.fromHtml(review.reviewText)
             binding?.imgAvatar?.loadImage(review.avatar)
             binding?.tpgReviewerName?.text = review.reviewerName
             
