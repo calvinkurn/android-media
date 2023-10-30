@@ -66,11 +66,10 @@ class CheckoutRevampCrossSellTest {
             expandShoppingSummary(activityRule)
             assertEgoldShoppingSummary(activityRule, false, "")
             clickEgold(activityRule)
-            assertEgoldShoppingSummary(activityRule, false, "Rp7.000")
-            clickChoosePaymentButton(activityRule)
-        } validateAnalytics {
             waitForData()
-            assertGoToPayment()
+            assertEgoldShoppingSummary(activityRule, true, "Rp7.000")
+            waitForData()
+            clickChoosePaymentButton(activityRule)
         }
     }
 

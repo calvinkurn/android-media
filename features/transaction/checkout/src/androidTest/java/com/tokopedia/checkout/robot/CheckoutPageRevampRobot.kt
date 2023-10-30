@@ -741,7 +741,7 @@ class CheckoutPageRevampRobot {
                                     view.findViewById<LinearLayout>(R.id.ll_checkout_cost_others)
                                 if (llOthers.visibility == View.VISIBLE && llOthers.childCount > 0) {
                                     for (child in llOthers.children) {
-                                        if (child.findViewById<Typography>(R.id.tv_checkout_cost_item_title).text.contains("emas")) {
+                                        if (child.findViewById<Typography>(R.id.tv_checkout_cost_item_title).text.toString().contains("emas", ignoreCase = true)) {
                                             assertEquals(egoldPrice, child.findViewById<Typography>(R.id.tv_checkout_cost_item_value).text.toString())
                                             assertEquals(true, hasEgold)
                                             return
@@ -755,7 +755,7 @@ class CheckoutPageRevampRobot {
                                     view.findViewById<LinearLayout>(R.id.ll_checkout_cost_others_expanded)
                                 if (llOtherExpanded.visibility == View.VISIBLE) {
                                     for (child in llOtherExpanded.children) {
-                                        if (child.findViewById<Typography>(R.id.tv_checkout_cost_item_title).text.contains("emas")) {
+                                        if (child.findViewById<Typography>(R.id.tv_checkout_cost_item_title).text.toString().contains("emas", ignoreCase = true)) {
                                             assertEquals(egoldPrice, child.findViewById<Typography>(R.id.tv_checkout_cost_item_value).text.toString())
                                             assertEquals(true, hasEgold)
                                             return

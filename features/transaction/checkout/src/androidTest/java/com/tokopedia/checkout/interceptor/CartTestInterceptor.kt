@@ -25,6 +25,9 @@ class CartTestInterceptor : BaseCheckoutInterceptor() {
         if (requestString.contains(SAVE_SHIPMENT_KEY)) {
             return mockResponse(copy, getJsonFromResource(SAVE_SHIPMENT_DEFAULT_RESPONSE_PATH))
         }
+        if (requestString.contains(SAVE_ADD_ONS_KEY)) {
+            return mockResponse(copy, getJsonFromResource(SAVE_ADD_ONS_DEFAULT_RESPONSE_PATH))
+        }
         return chain.proceed(chain.request())
     }
 
@@ -36,6 +39,7 @@ class CartTestInterceptor : BaseCheckoutInterceptor() {
 
 const val SHIPMENT_ADDRESS_FORM_KEY = "shipmentAddressFormV4"
 const val SAVE_SHIPMENT_KEY = "save_shipment"
+const val SAVE_ADD_ONS_KEY = "SaveAddOns"
 
 const val SAF_TOKONOW_DEFAULT_RESPONSE_PATH = "cart/saf_bundle_tokonow_default_response.json"
 const val SAF_TOKONOW_WITH_FAILED_DEFAULT_DURATION_RESPONSE_PATH = "cart/saf_bundle_tokonow_with_failed_default_duration_response.json"
@@ -44,3 +48,5 @@ const val SAF_OWOC_DEFAULT_RESPONSE_PATH = "cart/saf_owoc_default_response.json"
 const val SAF_EGOLD_DONASI_RESPONSE_PATH = "cart/saf_egold_donasi_response.json"
 
 const val SAVE_SHIPMENT_DEFAULT_RESPONSE_PATH = "cart/save_shipment_default_response.json"
+
+const val SAVE_ADD_ONS_DEFAULT_RESPONSE_PATH = "cart/save_add_ons_default_response.json"
