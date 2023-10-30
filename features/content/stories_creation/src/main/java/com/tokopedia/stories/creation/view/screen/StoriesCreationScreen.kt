@@ -21,7 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -34,6 +34,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
+import com.tokopedia.creation.common.util.RATIO_9_16
+import com.tokopedia.creation.common.util.isMediaRatioSame
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.components.NestButton
@@ -50,6 +52,7 @@ import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
 import com.tokopedia.stories.creation.R
 import com.tokopedia.stories.creation.view.model.StoriesMediaCover
+import com.tokopedia.stories.creation.view.model.StoriesMediaType
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.nest.components.R as nestcomponentsR
 
@@ -126,6 +129,7 @@ fun StoriesCreationScreen(
 
         StoriesCreationMediaCover(
             mediaFilePath = uiState.mediaFilePath,
+            mediaType = uiState.mediaType,
             onLoadMediaPreview = onLoadMediaPreview,
             modifier = Modifier.constrainAs(mediaCover) {
                 top.linkTo(headerDivider.bottom, 16.dp)
@@ -230,6 +234,7 @@ private fun StoriesCreationHeader(
 @Composable
 private fun StoriesCreationMediaCover(
     mediaFilePath: String,
+    mediaType: StoriesMediaType,
     onLoadMediaPreview: suspend (filePath: String) -> StoriesMediaCover,
     modifier: Modifier = Modifier,
 ) {
@@ -237,6 +242,7 @@ private fun StoriesCreationMediaCover(
         .clip(RoundedCornerShape(8.dp))
         .width(108.dp)
         .height(192.dp)
+        .background(Color.Black)
 
     var storiesMediaCover: StoriesMediaCover by remember {
         mutableStateOf(StoriesMediaCover.Loading)
@@ -257,7 +263,11 @@ private fun StoriesCreationMediaCover(
             NestImage(
                 source = ImageSource.Remote(mediaCover.localFilePath),
                 modifier = storiesMediaPreviewModifier,
-                contentScale = ContentScale.Crop
+                contentScale = if (mediaType.isImage && !isMediaRatioSame(mediaCover.localFilePath, RATIO_9_16)) {
+                    ContentScale.Fit
+                } else {
+                    ContentScale.Crop
+                }
             )
         }
         is StoriesMediaCover.Error -> {

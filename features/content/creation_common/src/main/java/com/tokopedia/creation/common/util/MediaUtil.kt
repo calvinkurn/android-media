@@ -1,4 +1,4 @@
-package com.tokopedia.content.common.util
+package com.tokopedia.creation.common.util
 
 import android.graphics.BitmapFactory
 import java.io.File
@@ -29,3 +29,5 @@ fun isMediaRatioSame(filePath: String, ratio: Float): Boolean {
     val (width, height) = getMediaSize(filePath)
     return ratio == (width / height.toFloat())
 }
+
+const val RATIO_9_16 = 9 / 16.toFloat()
