@@ -115,4 +115,12 @@ object DeeplinkMapperCommunication {
             ApplinkConstInternalUserPlatform.LOGIN
         }
     }
+
+    /**
+     * General mapper
+     */
+    fun getRegisteredNavigation(deeplink: String): String {
+        return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH,
+            ApplinkConstInternalCommunication.INTERNAL_COMMUNICATION+"/")
+    }
 }

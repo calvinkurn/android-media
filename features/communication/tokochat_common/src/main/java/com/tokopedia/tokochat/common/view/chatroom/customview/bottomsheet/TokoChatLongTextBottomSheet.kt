@@ -9,13 +9,13 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.tokochat_common.databinding.TokochatLongMessageBottomsheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.tokochat_common.R as tokochat_commonR
 
-class TokoChatLongTextBottomSheet(
-    private val longMessage: String,
-    private val senderName: String
-): BottomSheetUnify() {
+class TokoChatLongTextBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<TokochatLongMessageBottomsheetBinding>()
+    private var longMessage: String = ""
+    private var senderName: String = ""
 
     init {
         this.overlayClickDismiss = true
@@ -30,7 +30,7 @@ class TokoChatLongTextBottomSheet(
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            com.tokopedia.tokochat_common.R.layout.tokochat_long_message_bottomsheet, container, false)
+            tokochat_commonR.layout.tokochat_long_message_bottomsheet, container, false)
         binding = TokochatLongMessageBottomsheetBinding.bind(view)
         setChild(view)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -46,6 +46,14 @@ class TokoChatLongTextBottomSheet(
         setBottomSheetTitle()
         setLongMessageText()
         bottomSheetBehaviorKnob(view, true)
+    }
+
+    fun setMessage(
+        longMessage: String,
+        senderName: String
+    ) {
+        this.longMessage = longMessage
+        this.senderName = senderName
     }
 
     private fun setPeakHeight() {

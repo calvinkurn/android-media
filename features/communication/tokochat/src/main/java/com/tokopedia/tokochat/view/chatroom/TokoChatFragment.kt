@@ -23,6 +23,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
@@ -60,7 +62,6 @@ import com.tokopedia.tokochat.common.view.chatroom.customview.TokoChatTransactio
 import com.tokopedia.tokochat.common.view.chatroom.customview.attachment.TokoChatMenuLayout
 import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.TokoChatConsentBottomSheet
-import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.TokoChatGuideChatBottomSheet
 import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.TokoChatLongTextBottomSheet
 import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.bubbleawareness.TokoChatBubblesAwarenessBottomSheet
 import com.tokopedia.tokochat.common.view.chatroom.listener.TokoChatAttachmentMenuListener
@@ -1410,10 +1411,8 @@ open class TokoChatFragment @Inject constructor(
         } else {
             headerUiModel?.title
         }
-        val bottomSheet = TokoChatLongTextBottomSheet(
-            element.messageText,
-            senderName ?: ""
-        )
+        val bottomSheet = TokoChatLongTextBottomSheet()
+        bottomSheet.setMessage(element.messageText, senderName ?: "")
         bottomSheet.show(childFragmentManager, TAG)
     }
 
@@ -1431,7 +1430,14 @@ open class TokoChatFragment @Inject constructor(
 
     override fun onClickCheckGuide() {
         view?.hideKeyboard()
-        TokoChatGuideChatBottomSheet().show(childFragmentManager)
+        val applink = UriUtil.buildUri(
+            ApplinkConst.TOKO_CHAT_BOTTOMSHEET,
+            ApplinkConstInternalCommunication.GUIDE_CHAT
+        )
+        context?.let {
+            val intent = RouteManager.getIntent(it, applink)
+            startActivity(intent)
+        }
     }
 
     override fun onClickImageAttachment() {

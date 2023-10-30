@@ -16,6 +16,7 @@ object TokoChatValueUtil {
     /**
      * SOURCE
      */
+    const val SOURCE_LOGISTIC = "logistic"
     const val SOURCE_TOKOFOOD = "tokofood"
     const val SOURCE_GOSEND_INSTANT = "gosend_instant"
     const val SOURCE_GOSEND_SAMEDAY = "gosend_sameday"
@@ -23,6 +24,7 @@ object TokoChatValueUtil {
     const val TOKOFOOD_SERVICE_TYPE = 5
     const val GOSEND_INSTANT_SERVICE_TYPE = 14
     const val GOSEND_SAMEDAY_SERVICE_TYPE = 23
+
     fun getSource(serviceType: Int): String {
         return when (serviceType) {
             TOKOFOOD_SERVICE_TYPE -> SOURCE_TOKOFOOD
@@ -46,6 +48,15 @@ object TokoChatValueUtil {
             SOURCE_TOKOFOOD -> IC_TOKOFOOD_SOURCE
             SOURCE_GOSEND_INSTANT -> IC_SHOPPING_LOGISTIC_SOURCE
             SOURCE_GOSEND_SAMEDAY -> IC_SHOPPING_LOGISTIC_SOURCE
+            else -> ""
+        }
+    }
+
+    fun getSourceCategory(source: String): String {
+        return when (source) {
+            SOURCE_TOKOFOOD -> SOURCE_TOKOFOOD
+            SOURCE_GOSEND_INSTANT -> SOURCE_LOGISTIC
+            SOURCE_GOSEND_SAMEDAY -> SOURCE_LOGISTIC
             else -> ""
         }
     }
