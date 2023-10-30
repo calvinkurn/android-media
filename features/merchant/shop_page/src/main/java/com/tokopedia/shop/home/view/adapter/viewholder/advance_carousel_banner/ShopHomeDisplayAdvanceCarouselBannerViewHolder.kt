@@ -23,6 +23,7 @@ import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.view.adapter.ShopWidgetAdvanceCarouselBannerAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.PageControl
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
@@ -195,6 +196,11 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
             this.adapter = adapterShopWidgetAdvanceCarouselBanner
             this.removeOnItemTouchListener(itemTouchListener)
             this.addOnItemTouchListener(itemTouchListener)
+            if (uiModel.data?.size.orZero() > Int.ONE) {
+                setPadding(16.toPx(), 0, 16.toPx(), 0)
+            } else {
+                setPadding(0, 0, 0, 0)
+            }
         }
         updateRecyclerViewHeightBasedOnFirstChild()
     }
