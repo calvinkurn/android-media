@@ -30,8 +30,8 @@ class CatalogProductListStartupBenchmark(startupMode: StartupMode) : BaseStartup
 
     override fun waitUntil() {
         MacroInteration.waitForRecyclerViewContent(
-            MacroIntent.TKPD_PACKAGE_NAME,
-            MacroIntent.Catalog.RV_RESOURCE_ID_CATALOG_PRODUCT_LIST,
+            MacroIntent.Catalog.PACKAGE_NAME,
+            MacroIntent.Catalog.RV_RESOURCE_ID_CATALOG_PRODUCT_LIST
         )
         Thread.sleep(10000)
     }
