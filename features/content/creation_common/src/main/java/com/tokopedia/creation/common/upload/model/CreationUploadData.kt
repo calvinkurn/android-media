@@ -6,8 +6,6 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.creation.common.upload.data.local.entity.CreationUploadQueueEntity
 import com.tokopedia.creation.common.upload.model.exception.UnknownUploadTypeException
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import java.util.UUID
 
 /**
  * Created By : Jonathan Darwin on September 15, 2023
@@ -250,6 +248,8 @@ sealed interface CreationUploadData {
         private const val KEY_MEDIA_TYPE_LIST = "mediaTypeList"
         private const val KEY_COVER_URI = "coverUri"
         private const val KEY_SOURCE_ID = "sourceId"
+        private const val KEY_IMAGE_SOURCE_ID = "image_source_id"
+        private const val KEY_VIDEO_SOURCE_ID = "video_source_id"
         private const val KEY_DRAFT_ID = "draftId"
         private const val KEY_IMAGE_SOURCE_ID = "imageSourceId"
         private const val KEY_VIDEO_SOURCE_ID = "videoSourceId"
@@ -304,10 +304,10 @@ sealed interface CreationUploadData {
                         uploadStatus = uploadStatus,
                         timestamp = entity.timestamp,
                         coverUri = entity.coverUri,
-                        sourceId = shortsEntity.sourceId,
                         authorId = entity.authorId,
                         authorType = entity.authorType,
                         mediaUriList = shortsEntity.mediaUriList,
+                        sourceId = shortsEntity.sourceId,
                     )
                 }
                 CreationUploadType.Stories ->  {
@@ -389,7 +389,7 @@ sealed interface CreationUploadData {
             authorId: String,
             authorType: String,
             imageSourceId: String,
-            videoSourceId: String
+            videoSourceId: String,
         ): CreationUploadData {
             return Stories(
                 queueId = 0,

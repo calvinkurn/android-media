@@ -69,7 +69,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     // unit test
     testImplementation rootProject.ext.testDependencies.mockk
