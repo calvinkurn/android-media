@@ -38,8 +38,8 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
         @LayoutRes
         val LAYOUT_RES = R.layout.shop_advance_carousel_banner_viewholder_layout
         private const val DEFAULT_RATIO = "1:1"
-        private const val MAX_VISIBLE_ITEM_CAROUSEL = 3
         private const val AUTO_SCROLL_DURATION = 5000L
+        private const val RV_HORIZONTAL_PADDING_FOR_MORE_THAT_ONE_DATA = 16
     }
 
     private val viewBinding: ShopAdvanceCarouselBannerViewholderLayoutBinding? by viewBinding()
@@ -197,9 +197,14 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
             this.removeOnItemTouchListener(itemTouchListener)
             this.addOnItemTouchListener(itemTouchListener)
             if (uiModel.data?.size.orZero() > Int.ONE) {
-                setPadding(16.toPx(), 0, 16.toPx(), 0)
+                setPadding(
+                    RV_HORIZONTAL_PADDING_FOR_MORE_THAT_ONE_DATA.toPx(),
+                    Int.ZERO,
+                    RV_HORIZONTAL_PADDING_FOR_MORE_THAT_ONE_DATA.toPx(),
+                    Int.ZERO
+                )
             } else {
-                setPadding(0, 0, 0, 0)
+                setPadding(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
             }
         }
         updateRecyclerViewHeightBasedOnFirstChild()
