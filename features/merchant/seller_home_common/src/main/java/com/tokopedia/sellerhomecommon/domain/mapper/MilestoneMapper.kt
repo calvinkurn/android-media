@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.GetMilestoneDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.GetRewardDetailByIdResponse
 import com.tokopedia.sellerhomecommon.domain.model.MilestoneData
 import com.tokopedia.sellerhomecommon.domain.model.MissionProgressBar
 import com.tokopedia.sellerhomecommon.domain.usecase.GetMilestoneDataUseCase
@@ -21,6 +22,8 @@ import com.tokopedia.sellerhomecommon.presentation.model.MilestoneMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneProgressbarUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MissionButtonUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MissionProgressUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RewardDetailBenefit
+import com.tokopedia.sellerhomecommon.presentation.model.RewardDetailUiModel
 import javax.inject.Inject
 
 class MilestoneMapper @Inject constructor(
@@ -53,14 +56,20 @@ class MilestoneMapper @Inject constructor(
     ): List<MilestoneDataUiModel> {
         val (extraKey, extraObject) = extra
         return if (extraKey == GetMilestoneDataUseCase.REWARD_KEY) {
-            // TODO: Map reward detail
-            super.mapRemoteDataToUiData(response, isFromCache, extra)
+            val data = response.fetchMilestoneWidgetData?.data.orEmpty()
+            data.map {
+                mapToUiModel(it, isFromCache, extraObject as? GetRewardDetailByIdResponse)
+            }
         } else {
             super.mapRemoteDataToUiData(response, isFromCache, extra)
         }
     }
 
-    fun mapToUiModel(it: MilestoneData, isFromCache: Boolean): MilestoneDataUiModel {
+    fun mapToUiModel(
+        it: MilestoneData,
+        isFromCache: Boolean,
+        rewardDetailResponse: GetRewardDetailByIdResponse? = null
+    ): MilestoneDataUiModel {
         val missions: List<Visitable<MilestoneAdapterTypeFactory>> = mapGetMilestoneMission(it.showNumber.orFalse(), it.mission.orEmpty())
         val finishCard: List<Visitable<MilestoneAdapterTypeFactory>> = mapGetMilestoneFinish(it.showNumber.orFalse(), it.finishMission)
         val areAllMissionsCompleted =
@@ -72,7 +81,7 @@ class MilestoneMapper @Inject constructor(
         }.toMutableList()
 
         if (finishCard.isEmpty() && it.reward.isHaveReward) {
-            val rewardCard = mapGetMilestoneReward(it)
+            val rewardCard = mapGetMilestoneReward(it, mapGetRewardDetail(rewardDetailResponse))
             allMissions.add(Int.ZERO, rewardCard)
         }
 
@@ -159,7 +168,8 @@ class MilestoneMapper @Inject constructor(
     }
 
     private fun mapGetMilestoneReward(
-        data: MilestoneData
+        data: MilestoneData,
+        rewardDetailUiModel: RewardDetailUiModel?
     ): MilestoneItemRewardUiModel {
         val rewardData = data.reward
         return MilestoneItemRewardUiModel(
@@ -169,7 +179,8 @@ class MilestoneMapper @Inject constructor(
             buttonStatus = rewardData.button.buttonStatus,
             buttonVariant = rewardData.button.buttonStyleType,
             buttonApplink = rewardData.button.applink,
-            lottieUrl = getRewardLottieUrl(data.questStatus)
+            lottieUrl = getRewardLottieUrl(data.questStatus),
+            rewardDetailUiModel = rewardDetailUiModel
         )
     }
 
@@ -204,6 +215,20 @@ class MilestoneMapper @Inject constructor(
             taskCompleted = progressbarData.taskCompleted.orZero(),
             totalTask = progressbarData.totalTask.orZero()
         )
+    }
+
+    private fun mapGetRewardDetail(rewardDetailResponse: GetRewardDetailByIdResponse?): RewardDetailUiModel? {
+        return rewardDetailResponse?.data?.result?.let {
+            RewardDetailUiModel(
+                rewardId = it.rewardId,
+                rewardTitle = it.rewardTitle,
+                rewardSubtitle = it.rewardSubtitle,
+                benefitList = it.benefitList.map { benefit ->
+                    RewardDetailBenefit(benefit.benefitName, benefit.benefitValue)
+                },
+                rewardImage = it.rewardImage
+            )
+        }
     }
 
     private fun getRewardLottieUrl(questStatus: Int): String {

@@ -3,6 +3,8 @@ package com.tokopedia.sellerhomecommon.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.model.GetRewardDetailByIdResponse
 
@@ -43,6 +45,7 @@ class GetRewardDetailByIdUseCase(
     init {
         setTypeClass(GetRewardDetailByIdResponse::class.java)
         setGraphqlQuery(GetRewardDetailById())
+        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
     }
 
     suspend fun execute(rewardId: Long): GetRewardDetailByIdResponse {
