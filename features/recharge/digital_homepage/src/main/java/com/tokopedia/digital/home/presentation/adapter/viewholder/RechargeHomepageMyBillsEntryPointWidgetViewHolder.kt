@@ -50,7 +50,7 @@ class RechargeHomepageMyBillsEntryPointWidgetViewHolder(
         } else {
             binding.containerContent.gone()
             binding.containerShimmer.visible()
-            listener.loadRechargeSectionData(element.visitableId())
+            listener.loadRechargeSectionData(element.visitableId(), element.section.template)
         }
     }
 }

@@ -26,7 +26,7 @@ class RechargeHomepageThreeIconsViewHolder(
     private val rvPool = RecyclerView.RecycledViewPool()
 
     override fun bind(element: RechargeHomepageThreeIconsModel) {
-        listener.loadRechargeSectionData(element.visitableId())
+        listener.loadRechargeSectionData(element.visitableId(), element.section.template)
 
         val bind = ViewRechargeHomeThreeIconsBinding.bind(itemView)
         val itemThreeIcons = element.section.items

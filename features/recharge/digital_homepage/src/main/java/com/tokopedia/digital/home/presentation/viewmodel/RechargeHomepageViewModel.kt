@@ -152,11 +152,12 @@ class RechargeHomepageViewModel @Inject constructor(
         )
     }
 
-    fun createRechargeHomepageSectionsParams(platformId: Int, sectionIDs: List<Int>, enablePersonalize: Boolean = false): Map<String, Any> {
+    fun createRechargeHomepageSectionsParams(platformId: Int, sectionIDs: List<Int>, enablePersonalize: Boolean = false, sectionNames: String): Map<String, Any> {
         return mapOf(
             PARAM_RECHARGE_HOMEPAGE_SECTIONS_PLATFORM_ID to platformId,
             PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS to sectionIDs,
-            PARAM_RECHARGE_HOMEPAGE_SECTIONS_PERSONALIZE to enablePersonalize
+            PARAM_RECHARGE_HOMEPAGE_SECTIONS_PERSONALIZE to enablePersonalize,
+            PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_NAME to sectionNames
         )
     }
 
@@ -224,6 +225,7 @@ class RechargeHomepageViewModel @Inject constructor(
         const val PARAM_RECHARGE_HOMEPAGE_SECTIONS_PLATFORM_ID = "platformID"
         const val PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS = "sectionIDs"
         const val PARAM_RECHARGE_HOMEPAGE_SECTIONS_PERSONALIZE = "enablePersonalize"
+        const val PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_NAME = "sectionNames"
         const val PARAM_RECHARGE_HOMEPAGE_SECTION_CATEGORY_ID = "categoryIDs"
         const val PARAM_RECHARGE_HOMEPAGE_SECTION_DEVICE_ID = "deviceID"
 

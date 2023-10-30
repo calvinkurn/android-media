@@ -42,7 +42,7 @@ class RechargeHomepageVideoHighlightViewHolder(
             container.show()
         } else {
             // TODO: Show shimmering
-            listener.loadRechargeSectionData(element.visitableId())
+            listener.loadRechargeSectionData(element.visitableId(), element.section.template)
         }
     }
 

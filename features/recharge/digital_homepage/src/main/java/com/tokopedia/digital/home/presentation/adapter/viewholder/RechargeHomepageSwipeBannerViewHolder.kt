@@ -38,7 +38,7 @@ class RechargeHomepageSwipeBannerViewHolder(
                     listener.onRechargeSectionItemImpression(element.section)
                 }
             } else {
-                listener.loadRechargeSectionData(element.visitableId())
+                listener.loadRechargeSectionData(element.visitableId(), element.section.template)
             }
         } catch (exception: Exception) {
             exception.printStackTrace()

@@ -35,8 +35,8 @@ internal object RechargeHomepageSkeletonQuery{
 internal object RechargeHomepageSectionQuery{
     const val SECTION_QUERY_NAME = "QueryRechargeHomepageSection"
     const val SECTION_QUERY = """
-        query rechargeGetDynamicPage(${"$"}platformID: Int!, ${"$"}sectionIDs: [Int], ${"$"}enablePersonalize: Boolean) {
-            rechargeGetDynamicPage(platformID: ${"$"}platformID, sectionIDs: ${"$"}sectionIDs, enablePersonalize: ${"$"}enablePersonalize){
+        query rechargeGetDynamicPage(${"$"}platformID: Int!, ${"$"}sectionIDs: [Int], ${"$"}enablePersonalize: Boolean, ${"$"}sectionNames: [String]) {
+            rechargeGetDynamicPage(platformID: ${"$"}platformID, sectionIDs: ${"$"}sectionIDs, enablePersonalize: ${"$"}enablePersonalize,  sectionNames: ${"$"}sectionNames){
                 sections {
                   id
                   object_id
@@ -53,6 +53,30 @@ internal object RechargeHomepageSectionQuery{
                     data
                   }
                   items {
+                    widgets{
+                      title
+                      subtitle
+                      label
+                      icon_url
+                      price
+                      price_plain
+                      reason
+                      app_link
+                      web_link
+                      option_buttons{
+                        button
+                        web_link
+                        app_link
+                      }
+                      button
+                      button_app_link
+                      button_web_link
+                      type
+                      tracking{
+                        action
+                        data
+                      }
+                    }
                     id
                     object_id
                     title

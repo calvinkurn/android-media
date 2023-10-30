@@ -43,7 +43,7 @@ class RechargeHomepageOfferingWidgetViewHolder(
                 listener.onRechargeSectionItemImpression(element.section)
             }
         } else {
-            listener.loadRechargeSectionData(element.visitableId())
+            listener.loadRechargeSectionData(element.visitableId(), element.section.template)
         }
     }
 

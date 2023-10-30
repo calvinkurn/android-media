@@ -305,22 +305,23 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun loadRechargeSectionData(sectionID: String) {
-        loadSectionData(sectionID)
+    override fun loadRechargeSectionData(sectionID: String, sectionNames: String) {
+        loadSectionData(sectionID, sectionNames)
     }
 
-    override fun loadRechargeSectionDataWithLoadedParam(sectionID: String, isLoaded: Boolean) {
+    override fun loadRechargeSectionDataWithLoadedParam(sectionID: String, isLoaded: Boolean, sectionNames: String) {
         isTripleEntryPointLoaded = isLoaded
-        loadSectionData(sectionID)
+        loadSectionData(sectionID, sectionNames)
     }
 
-    private fun loadSectionData(sectionID: String) {
+    private fun loadSectionData(sectionID: String, sectionNames: String) {
         if (sectionID.isNotEmpty()) {
             viewModel.getRechargeHomepageSections(
                 viewModel.createRechargeHomepageSectionsParams(
                     platformId,
                     listOf(sectionID.toIntSafely()),
-                    enablePersonalize
+                    enablePersonalize,
+                    sectionNames
                 )
             )
         }
