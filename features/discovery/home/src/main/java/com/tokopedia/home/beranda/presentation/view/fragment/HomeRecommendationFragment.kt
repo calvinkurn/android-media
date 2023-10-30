@@ -75,7 +75,10 @@ import java.util.*
 import javax.inject.Inject
 import com.tokopedia.abstraction.R as abstractionR
 
-class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAdsBannerClickListener {
+class HomeRecommendationFragment :
+    Fragment(),
+    HomeRecommendationListener,
+    TopAdsBannerClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -89,7 +92,12 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
     private val viewModel: HomeRecommendationViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[HomeRecommendationViewModel::class.java]
     }
-    private val adapterFactory by lazy(LazyThreadSafetyMode.NONE) { HomeRecommendationTypeFactoryImpl(this, this) }
+    private val adapterFactory by lazy(LazyThreadSafetyMode.NONE) {
+        HomeRecommendationTypeFactoryImpl(
+            this,
+            this
+        )
+    }
     private val adapter by lazy { HomeRecommendationAdapter(adapterFactory) }
     private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.home_feed_fragment_recycler_view) }
 
@@ -200,65 +208,75 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
     }
 
     private fun observeLiveData() {
-        viewModel.homeRecommendationLiveData.observe(
-            viewLifecycleOwner
-        ) { data ->
-            adapter.submitList(data.homeRecommendations)
-        }
+        if (!isNewForYouQueryEnabled()) {
+            viewModel.homeRecommendationLiveData.observe(
+                viewLifecycleOwner
+            ) { data ->
+                adapter.submitList(data.homeRecommendations)
+            }
 
-        viewModel.homeRecommendationNetworkLiveData.observe(
-            viewLifecycleOwner
-        ) { result ->
-            if (result.isFailure) {
-                view?.let {
-                    if (adapter.itemCount > 1) {
-                        Toaster.build(
-                            it,
-                            getString(R.string.home_error_connection),
-                            Snackbar.LENGTH_LONG,
-                            Toaster.TYPE_ERROR,
-                            getString(abstractionR.string.title_try_again),
-                            View.OnClickListener {
-                                endlessRecyclerViewScrollListener?.loadMoreNextPage()
-                            }
-                        ).show()
+            viewModel.homeRecommendationNetworkLiveData.observe(
+                viewLifecycleOwner
+            ) { result ->
+                if (result.isFailure) {
+                    view?.let {
+                        if (adapter.itemCount > 1) {
+                            Toaster.build(
+                                it,
+                                getString(R.string.home_error_connection),
+                                Snackbar.LENGTH_LONG,
+                                Toaster.TYPE_ERROR,
+                                getString(abstractionR.string.title_try_again),
+                                View.OnClickListener {
+                                    endlessRecyclerViewScrollListener?.loadMoreNextPage()
+                                }
+                            ).show()
+                        }
                     }
+                } else {
+                    updateScrollEndlessListener(result.getOrNull()?.isHasNextPage ?: false)
                 }
-            } else {
-                updateScrollEndlessListener(result.getOrNull()?.isHasNextPage ?: false)
             }
         }
     }
 
     private fun observeStateFlow() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.homeRecommendationCardState.collect {
-                    when (it) {
-                        is HomeRecommendationCardState.Success -> {
-                            adapter.submitList(it.data.homeRecommendations)
-                            updateScrollEndlessListener(it.data.isHasNextPage)
-                        }
-                        is HomeRecommendationCardState.Loading -> {
-                            adapter.submitList(it.data.homeRecommendations)
-                        }
-                        is HomeRecommendationCardState.EmptyData -> {
-                            adapter.submitList(it.data.homeRecommendations)
-                        }
-                        is HomeRecommendationCardState.Fail -> {
-                            adapter.submitList(it.data.homeRecommendations)
-                            showToasterError()
-                        }
-                        is HomeRecommendationCardState.SuccessNextPage -> {
-                            adapter.submitList(it.data.homeRecommendations)
-                            updateScrollEndlessListener(it.data.isHasNextPage)
-                        }
-                        is HomeRecommendationCardState.FailNextPage -> {
-                            adapter.submitList(it.data.homeRecommendations)
-                            showToasterError()
-                        }
-                        is HomeRecommendationCardState.LoadingMore -> {
-                            adapter.submitList(it.data.homeRecommendations)
+        if (isNewForYouQueryEnabled()) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.homeRecommendationCardState.collect {
+                        when (it) {
+                            is HomeRecommendationCardState.Success -> {
+                                adapter.submitList(it.data.homeRecommendations)
+                                updateScrollEndlessListener(it.data.isHasNextPage)
+                            }
+
+                            is HomeRecommendationCardState.Loading -> {
+                                adapter.submitList(it.data.homeRecommendations)
+                            }
+
+                            is HomeRecommendationCardState.EmptyData -> {
+                                adapter.submitList(it.data.homeRecommendations)
+                            }
+
+                            is HomeRecommendationCardState.Fail -> {
+                                adapter.submitList(it.data.homeRecommendations)
+                                showToasterError()
+                            }
+
+                            is HomeRecommendationCardState.SuccessNextPage -> {
+                                adapter.submitList(it.data.homeRecommendations)
+                                updateScrollEndlessListener(it.data.isHasNextPage)
+                            }
+
+                            is HomeRecommendationCardState.FailNextPage -> {
+                                adapter.submitList(it.data.homeRecommendations)
+                                showToasterError()
+                            }
+
+                            is HomeRecommendationCardState.LoadingMore -> {
+                                adapter.submitList(it.data.homeRecommendations)
+                            }
                         }
                     }
                 }
@@ -269,10 +287,10 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
     private fun isNewForYouQueryEnabled(): Boolean {
         return context?.let {
             RemoteConfigInstance.getRemoteConfig(it).getString(
-                RollenceKey.FOR_YOU_QUERY,
-                RollenceKey.FOR_YOU_QUERY_DEFAULT
+                RollenceKey.FOR_YOU_FEATURE_FLAG,
+                ""
             )
-        } == RollenceKey.FOR_YOU_QUERY_EXP
+        } == RollenceKey.FOR_YOU_FEATURE_FLAG
     }
 
     private fun showToasterError() {
@@ -332,21 +350,23 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
         endlessRecyclerViewScrollListener =
             object : HomeFeedEndlessScrollListener(recyclerView?.layoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                    // todo will update if rollence is ready
-//                    viewModel.loadNextData(
-//                        tabName,
-//                        recomId,
-//                        DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
-//                        page,
-//                        getLocationParamString(),
-//                        sourceType
-//                    )
-                    viewModel.fetchNextHomeRecommendationCard(
-                        tabName,
-                        page,
-                        getLocationParamString(),
-                        sourceType
-                    )
+                    if (isNewForYouQueryEnabled()) {
+                        viewModel.fetchNextHomeRecommendationCard(
+                            tabName,
+                            page,
+                            getLocationParamString(),
+                            sourceType
+                        )
+                    } else {
+                        viewModel.loadNextData(
+                            tabName,
+                            recomId,
+                            DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
+                            page,
+                            getLocationParamString(),
+                            sourceType
+                        )
+                    }
                 }
             }
     }
@@ -506,15 +526,17 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
     }
 
     override fun onRetryGetProductRecommendationData() {
-        // todo will update if rollence is ready
-//        viewModel.loadInitialPage(
-//            tabName,
-//            recomId,
-//            DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
-//            getLocationParamString(),
-//            sourceType = sourceType
-//        )
-        viewModel.fetchHomeRecommendationCard(tabName, getLocationParamString(), sourceType)
+        if (isNewForYouQueryEnabled()) {
+            viewModel.fetchHomeRecommendationCard(tabName, getLocationParamString(), sourceType)
+        } else {
+            viewModel.loadInitialPage(
+                tabName,
+                recomId,
+                DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
+                getLocationParamString(),
+                sourceType = sourceType
+            )
+        }
     }
 
     private fun initListeners() {
@@ -574,16 +596,19 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
     private fun loadFirstPageData() {
         if (userVisibleHint && isAdded && activity != null && !hasLoadData) {
             hasLoadData = true
-            // todo will update if rollence is ready
-//            viewModel.loadInitialPage(
-//                tabName,
-//                recomId,
-//                DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
-//                getLocationParamString(),
-//                tabIndex,
-//                sourceType = sourceType
-//            )
-            viewModel.fetchHomeRecommendationCard(tabName, getLocationParamString(), sourceType)
+
+            if (isNewForYouQueryEnabled()) {
+                viewModel.fetchHomeRecommendationCard(tabName, getLocationParamString(), sourceType)
+            } else {
+                viewModel.loadInitialPage(
+                    tabName,
+                    recomId,
+                    DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
+                    getLocationParamString(),
+                    tabIndex,
+                    sourceType = sourceType
+                )
+            }
         }
     }
 
@@ -717,7 +742,15 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
 
         if (wishlistResult.ctaTextV2.isNotEmpty() && wishlistResult.ctaActionV2.isNotEmpty()) {
             activity?.let { activity ->
-                view?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(msgError, wishlistResult.ctaTextV2, wishlistResult.ctaActionV2, it, activity) }
+                view?.let {
+                    AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(
+                        msgError,
+                        wishlistResult.ctaTextV2,
+                        wishlistResult.ctaActionV2,
+                        it,
+                        activity
+                    )
+                }
             }
         } else {
             view?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(msgError, it) }
@@ -743,7 +776,12 @@ class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, TopAd
         private const val MAX_RECYCLED_VIEWS = 20
         private const val BASE_POSITION = 10
 
-        fun newInstance(tabIndex: Int, recomId: Int, tabName: String, sourceType: String): HomeRecommendationFragment {
+        fun newInstance(
+            tabIndex: Int,
+            recomId: Int,
+            tabName: String,
+            sourceType: String
+        ): HomeRecommendationFragment {
             val homeFeedFragment = HomeRecommendationFragment()
             val bundle = Bundle()
             bundle.putInt(ARG_TAB_INDEX, tabIndex)
