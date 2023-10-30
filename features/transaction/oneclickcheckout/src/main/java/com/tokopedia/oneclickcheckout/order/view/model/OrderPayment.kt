@@ -25,7 +25,8 @@ data class OrderPayment(
     val specificGatewayCampaignOnlyType: Int = 0,
     val walletData: OrderPaymentWalletAdditionalData = OrderPaymentWalletAdditionalData(),
     val originalPaymentFees: List<OrderPaymentFee> = emptyList(),
-    val dynamicPaymentFees: List<OrderPaymentFee>? = emptyList()
+    val dynamicPaymentFees: List<OrderPaymentFee>? = emptyList(),
+    val additionalData: String = ""
 ) {
     val isOvo: Boolean
         get() = gatewayCode.contains("OVO")

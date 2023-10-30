@@ -7,7 +7,6 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.test.ProductCardModelMatcher
 import com.tokopedia.productcard.test.R
-import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.test.getProductCardModelMatcherData
 import com.tokopedia.productcard.test.utils.campaignLabelUrl
 import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
@@ -16,16 +15,7 @@ import com.tokopedia.productcard.test.utils.isNotDisplayed
 import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
 import com.tokopedia.productcard.test.utils.withDrawable
-import com.tokopedia.productcard.utils.GOLD
-import com.tokopedia.productcard.utils.LABEL_GIMMICK
-import com.tokopedia.productcard.utils.LABEL_INTEGRITY
-import com.tokopedia.productcard.utils.LABEL_OVERLAY
-import com.tokopedia.productcard.utils.LABEL_PRICE
-import com.tokopedia.productcard.utils.LABEL_PRODUCT_STATUS
-import com.tokopedia.productcard.utils.LABEL_RIBBON
-import com.tokopedia.productcard.utils.LIGHT_GREEN
-import com.tokopedia.productcard.utils.LIGHT_ORANGE
-import com.tokopedia.productcard.utils.TRANSPARENT_BLACK
+import com.tokopedia.productcard.utils.*
 import org.hamcrest.Matcher
 
 internal val productCardListTestData = getProductCardModelMatcherData(false) + mutableListOf<ProductCardModelMatcher>().also {
@@ -167,7 +157,7 @@ private fun testBestSellerLayout(): ProductCardModelMatcher {
         R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
-        R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
+        R.id.textViewDiscount to isDisplayedWithText(productCardModel.discountPercentage),
         R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
         R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
@@ -208,7 +198,7 @@ private fun testListViewExperimentLayout(): ProductCardModelMatcher {
         R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
-        R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
+        R.id.textViewDiscount to isDisplayedWithText(productCardModel.discountPercentage),
         R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
         R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayed(),
@@ -252,7 +242,7 @@ private fun testListViewOverlayCampaignLayout(): ProductCardModelMatcher {
         R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
-        R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
+        R.id.textViewDiscount to isDisplayedWithText(productCardModel.discountPercentage),
         R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
         R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayed(),
@@ -296,7 +286,7 @@ private fun testListViewOverlayBestSellerLayout(): ProductCardModelMatcher {
         R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
-        R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
+        R.id.textViewDiscount to isDisplayedWithText(productCardModel.discountPercentage),
         R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
         R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayed(),

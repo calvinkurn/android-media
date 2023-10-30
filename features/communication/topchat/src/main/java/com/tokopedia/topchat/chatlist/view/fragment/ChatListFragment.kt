@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -42,6 +43,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.stories.widget.StoriesWidgetManager
@@ -433,6 +435,8 @@ class ChatListFragment :
                 }
             }
         }
+
+        updateShopActive()
     }
 
     private fun setChatListTickerBuyer(result: ChatListTickerResponse.ChatListTicker) {
@@ -1044,6 +1048,14 @@ class ChatListFragment :
         } catch (t: Throwable) {
             Timber.d(t)
             false
+        }
+    }
+
+    private fun updateShopActive() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            if (sightTag == PARAM_TAB_SELLER) {
+                context?.let { UpdateShopActiveWorker.execute(it) }
+            }
         }
     }
 
