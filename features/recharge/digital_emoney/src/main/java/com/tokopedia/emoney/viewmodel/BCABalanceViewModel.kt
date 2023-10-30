@@ -52,10 +52,15 @@ class BCABalanceViewModel @Inject constructor(
             run {
                 try {
                     val dataBalance = checkLatestBalance()
-                    getPendingBalanceProcess(
-                        isoDep, dataBalance.cardNo, dataBalance.balance,
-                        rawPublicKeyString, rawPrivateKeyString, GEN_TWO, strCurrDateTime, ATD
-                    )
+                    if (dataBalance.isSuccess == SUCCESS_JNI) {
+                        getPendingBalanceProcess(
+                            isoDep, dataBalance.cardNo, dataBalance.balance,
+                            rawPublicKeyString, rawPrivateKeyString, GEN_TWO, strCurrDateTime, ATD
+                        )
+                    } else {
+                        isoDep.close()
+                        errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                    }
                 } catch (e: IOException) {
                     isoDep.close()
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
@@ -175,6 +180,8 @@ class BCABalanceViewModel @Inject constructor(
                     ATD,
                     result.attributes.transactionID
                 )
+            } else if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.transactionID.isEmpty()){
+                errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
             } else {
                 bcaInquiryMutable.postValue(
                     BCAFlazzResponseMapper.bcaMapper(
@@ -212,7 +219,7 @@ class BCABalanceViewModel @Inject constructor(
                         strTransactionId, ATD,
                         strCurrDateTime
                     )
-                    if (bcaSession1.isSuccess == SUCCESS_JNI) {
+                    if (bcaSession1.isSuccess == SUCCESS_JNI && getBCAPrefixSuccess(bcaSession1.strLogRsp)) {
                         getSessionKeyProcess(
                             isoDep, cardNumber, lastBalance, rawPublicKeyString,
                             rawPrivateKeyString, cardType, strCurrDateTime, ATD, strTransactionId,
@@ -266,6 +273,8 @@ class BCABalanceViewModel @Inject constructor(
                     isoDep, cardNumber, lastBalance, rawPublicKeyString,
                     rawPrivateKeyString, cardType, strCurrDateTime, ATD, strTransactionId, result
                 )
+            } else if(result.status == BCAFlazzStatus.WRITE.status && result.attributes.cardData.isEmpty()) {
+                errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
             } else {
                 bcaInquiryMutable.postValue(
                     BCAFlazzResponseMapper.bcaMapper(
@@ -302,13 +311,14 @@ class BCABalanceViewModel @Inject constructor(
                 try {
                     val bcaSession2 =
                         bcaLibrary.C_BCAdataSession_2(bcaFlazzData.attributes.cardData)
-                    if (bcaSession2.isSuccess == SUCCESS_JNI) {
+                    if (bcaSession2.isSuccess == SUCCESS_JNI && getBCAPrefixSuccess(bcaSession2.strLogRsp)) {
                         processSDKBCATopUp1(
                             isoDep, cardNumber, lastBalance, rawPublicKeyString,
                             rawPrivateKeyString, cardType, strCurrDateTime, ATD, strTransactionId,
                             bcaFlazzData
                         )
                     } else {
+                        isoDep.close()
                         // set error if BCAdataSession_2 process error
                         errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     }
@@ -359,6 +369,7 @@ class BCABalanceViewModel @Inject constructor(
                             ATD
                         )
                     } else {
+                        isoDep.close()
                         // Bila respon dari BCATopUp_1 bukan SUCCESS
                         // (prefix SUCCESS : 0000), maka tidak perlu melakukan Reversal karena rekening sumber dana tidak terdebet
                         // src:Top Up Flazz di mch online-sosialisasi merchant 1222
@@ -408,6 +419,20 @@ class BCABalanceViewModel @Inject constructor(
                 processSDKBCATopUp2(
                     isoDep, cardNumber, rawPublicKeyString, rawPrivateKeyString,
                     cardType, strTransactionId, result
+                )
+            } else if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.cardData.isEmpty()) {
+                // Panggil function library BCAdataReversal dan kirimkan output library ke BCA
+                // melalui service API reversal
+                processSDKReversal(
+                    isoDep,
+                    strTransactionId,
+                    ATD,
+                    cardNumber,
+                    lastBalance,
+                    rawPublicKeyString,
+                    rawPrivateKeyString,
+                    cardType,
+                    bcaFlazzData
                 )
             } else if (result.status == BCAFlazzStatus.ERROR.status) {
                 // Panggil function library BCAdataReversal dan kirimkan output library ke BCA
@@ -569,7 +594,7 @@ class BCABalanceViewModel @Inject constructor(
             run {
                 try {
                     val reversal = bcaLibrary.BCAdataReversal(strTransactionId, ATD)
-                    if (reversal.isSuccess == SUCCESS_JNI) {
+                    if (reversal.isSuccess == SUCCESS_JNI && getBCAPrefixSuccess(reversal.strLogRsp)) {
                         getReversalProcess(
                             cardNumber,
                             lastBalance,
@@ -580,6 +605,8 @@ class BCABalanceViewModel @Inject constructor(
                             bcaFlazzData,
                             separateCardDataFromResponseCode(reversal.strLogRsp)
                         )
+                    } else {
+                        errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     }
                 } catch (e: IOException) {
                     isoDep.close()
@@ -619,16 +646,34 @@ class BCABalanceViewModel @Inject constructor(
             val result = decryptPayload(encResult.data, rawPrivateKeyString)
             Log.d("BCALOGWKReversal", result.toString())
 
-            bcaInquiryMutable.postValue(
-                BCAFlazzResponseMapper.bcaMapper(
-                    cardNumber,
-                    lastBalance, result.attributes.imageIssuer, getIsBCAGenOne(cardType),
-                    result.attributes.amount, result.status, result.attributes.message,
-                    result.attributes.hasMorePendingBalance
+            if (result.status != BCAFlazzStatus.DONE.status) {
+                bcaInquiryMutable.postValue(
+                    BCAFlazzResponseMapper.bcaMapper(
+                        cardNumber,
+                        lastBalance,
+                        result.attributes.imageIssuer,
+                        getIsBCAGenOne(cardType),
+                        result.attributes.amount,
+                        BCAFlazzStatus.ERROR.status,
+                        result.attributes.message,
+                        result.attributes.hasMorePendingBalance
+                    )
                 )
-            )
+            } else {
+                bcaInquiryMutable.postValue(
+                    BCAFlazzResponseMapper.bcaMapper(
+                        cardNumber,
+                        lastBalance,
+                        result.attributes.imageIssuer,
+                        getIsBCAGenOne(cardType),
+                        result.attributes.amount,
+                        result.status,
+                        result.attributes.message,
+                        result.attributes.hasMorePendingBalance
+                    )
+                )
+            }
         }) {
-            //TODO check reversal error
             errorCardMessageMutable.postValue(it)
         }
     }
