@@ -84,11 +84,12 @@ class WishlistCollectionDetailTopAdsVerificationTest {
                         .getRecommendationDataAtIndex(wishlistIndex)
                         .recommendationProductCardModelData
 
+                    // limit scroll & click because last item is always pending
                     for (recommendationIndex in recommendationItems.indices) {
                         if (recommendationIndex < 5) {
                             loading(1000)
                             scrollRecommendationRecyclerViewToIndex(recommendationIndex)
-                            if (recommendationItems[recommendationIndex].isTopAds) {
+                            if (recommendationItems[recommendationIndex].isTopAds && recommendationIndex < 4) {
                                 topAdsCount++
                                 clickRecommendationRecyclerViewItem(recommendationIndex)
                             }
