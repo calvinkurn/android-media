@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tkpd.macrobenchmark.test.R
 import com.tokopedia.macrobenchmark_util.env.mock.InstrumentationMockHelper.getRawString
+import com.tokopedia.macrobenchmark_util.env.mock.config.CatalogMockResponseConfig
 import com.tokopedia.macrobenchmark_util.env.mock.config.HomeMockResponseConfig
 import com.tokopedia.macrobenchmark_util.env.mock.config.ProductDetailMockResponseConfig
 import com.tokopedia.macrobenchmark_util.env.mock.config.SearchMockResponseConfig
@@ -39,6 +40,7 @@ object MacroIntent {
             const val Home = "home"
             const val Search = "search"
             const val ProductDetail = "product_detail"
+            const val CatalogProductList = "catalog_product_list"
         }
 
         fun getMockSetupIntent(configName: String): Intent {
@@ -73,6 +75,10 @@ object MacroIntent {
             putMockData(ProductDetailMockResponseConfig.KEY_PDP_DATA, R.raw.response_pdp_data)
             putMockData(ProductDetailMockResponseConfig.KEY_PDP_RECOMM, R.raw.response_pdp_recom)
             putMockData(ProductDetailMockResponseConfig.KEY_PDP_PLAY, R.raw.response_pdp_play)
+        }
+
+        fun getCatalogProductListMockIntent() = getMockSetupIntent(Mock.Config.CatalogProductList).apply {
+            putMockData(CatalogMockResponseConfig.KEY_CATALOG_PRODUCT_LIST, R.raw.search_common_response)
         }
     }
 
@@ -264,6 +270,20 @@ object MacroIntent {
         fun getIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
             intent.data = Uri.parse("tokopedia-android-internal://logistic/reschedulepickup?order_id=1111111")
+            return intent
+        }
+    }
+
+    object Catalog {
+        /**
+         * Target recyclerview
+         * Capture view by resource id
+         */
+        const val RV_RESOURCE_ID_CATALOG_PRODUCT_LIST = "catalog_product_list_parent_view"
+
+        fun getCatalogProductListIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://catalog/product_list/Samsung A54?catalog_id=41&product_sorting_status=1")
             return intent
         }
     }

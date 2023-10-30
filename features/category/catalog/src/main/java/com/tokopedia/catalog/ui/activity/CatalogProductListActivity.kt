@@ -8,13 +8,20 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.ui.fragment.CatalogProductListFragment
+import com.tokopedia.catalog.ui.fragment.CatalogProductListImprovementFragment
 import com.tokopedia.core.analytics.AppScreen
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_IMPROVMENT_CATALOG_PRODUCT_LIST
+import javax.inject.Inject
 
 class CatalogProductListActivity : BaseSimpleActivity() {
     private var catalogId: String = ""
     private var catalogTitle: String = ""
     private var productSortingStatus: String = ""
     private var catalogUrl: String = ""
+
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     companion object {
         private const val CATALOG_DETAIL_TAG = "CATALOG_DETAIL_TAG"
@@ -63,15 +70,25 @@ class CatalogProductListActivity : BaseSimpleActivity() {
 
     private fun prepareView(savedInstanceIsNull: Boolean) {
         if (savedInstanceIsNull) {
+            val fragment =if (remoteConfig.getBoolean(ENABLE_IMPROVMENT_CATALOG_PRODUCT_LIST)){
+                CatalogProductListImprovementFragment.newInstance(
+                    catalogId,
+                    catalogTitle,
+                    productSortingStatus,
+                    catalogUrl
+                )
+            }else{
+                CatalogProductListFragment.newInstance(
+                    catalogId,
+                    catalogTitle,
+                    productSortingStatus,
+                    catalogUrl
+                )
+            }
             supportFragmentManager.beginTransaction()
                 .replace(
                     R.id.catalog_product_list_parent_view,
-                    CatalogProductListFragment.newInstance(
-                        catalogId,
-                        catalogTitle,
-                        productSortingStatus,
-                        catalogUrl
-                    ),
+                    fragment,
                     CatalogProductListFragment.CATALOG_PRODUCT_LIST_PAGE_FRAGMENT_TAG
                 )
                 .commit()
