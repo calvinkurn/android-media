@@ -16,12 +16,12 @@ class WishlistCollectionRobot {
     fun clickWishlistRecyclerViewItem(index: Int) {
         try {
             Espresso.onView(ViewMatchers.withId(R.id.rv_wishlist_collection))
-                    .perform(
-                            RecyclerViewActions
-                                    .actionOnItemAtPosition<RecyclerView.ViewHolder>(index, ViewActions.click())
-                    )
-        } catch (e: PerformException) {
-            e.printStackTrace()
+                .perform(
+                    RecyclerViewActions
+                        .actionOnItemAtPosition<RecyclerView.ViewHolder>(index, ViewActions.click())
+                )
+        } catch (expected: PerformException) {
+            expected.printStackTrace()
         }
     }
 }
