@@ -194,13 +194,13 @@ class StoriesUploadManager @Inject constructor(
             StoriesAddMediaRequest(
                 storyId = uploadData.creationId,
                 type = uploadData.firstMediaType.code,
-                mediaUrl = if (uploadData.firstMediaType == ContentMediaType.Image) {
-                    mediaUploadResult.uploadId
-                } else {
+                videoURL = if (uploadData.firstMediaType.isVideo) {
                     mediaUploadResult.videoUrl
+                } else {
+                    ""
                 },
-                coverUrl = coverUploadId,
-                uploadId = "",
+                imageUploadID = coverUploadId,
+                requestID = "",
                 status = StoriesAddMediaRequest.Status.Active,
                 orientation = getMediaOrientation(uploadData.firstMediaUri),
             )
@@ -219,9 +219,9 @@ class StoriesUploadManager @Inject constructor(
             StoriesAddMediaRequest(
                 storyId = uploadData.creationId,
                 type = uploadData.firstMediaType.code,
-                mediaUrl = "",
-                coverUrl = "",
-                uploadId = requestId,
+                videoURL = "",
+                imageUploadID = "",
+                requestID = requestId,
                 status = StoriesAddMediaRequest.Status.Hidden,
                 orientation = getMediaOrientation(uploadData.firstMediaUri),
             )

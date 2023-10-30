@@ -6,9 +6,9 @@ package com.tokopedia.creation.common.upload.model.dto.stories
 data class StoriesAddMediaRequest(
     val storyId: String,
     val type: Int,
-    val mediaUrl: String,
-    val coverUrl: String,
-    val uploadId: String,
+    val videoURL: String,
+    val imageUploadID: String,
+    val requestID: String,
     val status: Status,
     val orientation: Orientation,
 ) {
@@ -28,9 +28,9 @@ data class StoriesAddMediaRequest(
             "req" to mapOf(
                 "storyID" to storyId,
                 "type" to type,
-                "mediaURL" to mediaUrl,
-                "coverURL" to coverUrl,
-                "uploadID" to uploadId,
+                "videoURL" to videoURL,
+                "imageUploadID" to imageUploadID,
+                "requestID" to requestID,
                 "status" to status.value,
                 "orientation" to orientation.value,
             )
