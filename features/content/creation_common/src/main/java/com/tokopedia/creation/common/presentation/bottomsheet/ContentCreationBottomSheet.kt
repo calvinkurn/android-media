@@ -62,6 +62,8 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                     viewModel?.selectedCreationType?.collectAsStateWithLifecycle()
                 val creationList = viewModel?.creationConfig?.collectAsStateWithLifecycle()
 
+                viewModel?.sendImpressionCreationBottomSheetAnalytic()
+
                 ContentCreationComponent(
                     creationConfig = creationList?.value,
                     selectedItem = selectedCreation?.value,
@@ -71,6 +73,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                     },
                     onNextClicked = {
                         selectedCreation?.value?.let {
+                            viewModel?.sendClickNextAnalytic()
                             listener?.onCreationNextClicked(it)
                             RouteManager.route(context, it.applink)
                         }
@@ -91,13 +94,18 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
         renderHeaderView()
     }
 
+    override fun onDestroyView() {
+        viewModel?.onDismissBottomSheet()
+        super.onDestroyView()
+    }
+
     private fun renderHeaderView() {
         context?.let {
             setTitle(it.getString(title))
 
             if (shouldShowPerformanceAction) {
                 setAction(it.getString(R.string.content_creation_bottom_sheet_performance_action)) { _ ->
-                    listener?.trackViewPerformanceClicked()
+                    viewModel?.sendClickPerformanceDashboardAnalytic()
                     RouteManager.route(
                         it,
                         viewModel?.getPerformanceDashboardApplink()
@@ -132,7 +140,6 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
     interface ContentCreationBottomSheetListener {
         fun onCreationItemSelected(data: ContentCreationItemModel)
         fun onCreationNextClicked(data: ContentCreationItemModel)
-        fun trackViewPerformanceClicked()
     }
 
     companion object {

@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -84,14 +86,22 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
     @Composable
     override fun Content() {
         val creationConfig = viewModel?.creationConfig?.collectAsStateWithLifecycle()?.value
+        val isFirstTime = remember { mutableStateOf(true) }
 
         if (creationConfig is Success && creationConfig.data.creationItems.isNotEmpty()) {
+
+            if (isFirstTime.value) {
+                viewModel?.sendImpressionContentCreationWidgetAnalytic()
+                isFirstTime.value = false
+            }
+
             ContentCreationEntryPointComponent(
                 iconId = IconUnify.VIDEO,
                 text = MethodChecker.fromHtml(stringResource(id = creationcommonR.string.content_creation_entry_point_desription))
                     .toAnnotatedString(),
                 buttonText = stringResource(id = creationcommonR.string.content_creation_entry_point_button_label)
             ) {
+                viewModel?.sendClickContentCreationWidgetAnalytic()
                 onClickListener()
 
                 getFragmentManager()?.let { fm ->

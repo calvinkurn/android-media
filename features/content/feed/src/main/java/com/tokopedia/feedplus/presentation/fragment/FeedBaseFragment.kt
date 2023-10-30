@@ -68,9 +68,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.tokopedia.content.common.R as contentcommonR
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 import com.tokopedia.creation.common.R as creationcommonR
 
 /**
@@ -315,10 +312,6 @@ class FeedBaseFragment :
 
     private fun showSwipeOnboarding() {
         binding.viewVerticalSwipeOnboarding.showAnimated()
-    }
-
-    override fun trackViewPerformanceClicked() {
-        /* TODO : Add Analytics, if any */
     }
 
     private fun setupView() {
