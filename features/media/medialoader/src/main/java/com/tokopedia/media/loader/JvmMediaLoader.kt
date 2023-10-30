@@ -1,6 +1,7 @@
 package com.tokopedia.media.loader
 
 import android.graphics.Bitmap
+import android.net.Uri
 import android.widget.ImageView
 import com.tokopedia.media.loader.data.MediaException
 import com.tokopedia.media.loader.data.Properties
@@ -40,6 +41,10 @@ object JvmMediaLoader {
 
     @JvmStatic fun loadImage(imageView: ImageView, url: String, properties: Properties.() -> Unit) {
         imageView.loadImage(url, properties)
+    }
+
+    @JvmStatic fun loadImage(imageView: ImageView, uri: Uri, properties: Properties.() -> Unit) {
+        imageView.loadImage(uri, properties)
     }
 
     @JvmStatic

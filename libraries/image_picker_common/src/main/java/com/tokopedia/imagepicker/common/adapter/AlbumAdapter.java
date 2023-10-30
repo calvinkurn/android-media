@@ -14,6 +14,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.common.GalleryType;
 import com.tokopedia.imagepicker.common.R;
 import com.tokopedia.imagepicker.common.model.AlbumItem;
+import com.tokopedia.media.loader.JvmMediaLoader;
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy;
 
 /**
  * Created by hangnadi on 5/29/17.
@@ -79,11 +81,12 @@ public class AlbumAdapter extends RecyclerViewCursorAdapter<AlbumAdapter.AlbumVi
         holder.tvAlbumCount.setText(context.getString(resourseString, albumItem.getCount()));
 
         // do not need to load animated Gif
-        ImageHandler.loadImageFromUriFitCenter(
-                context,
-                holder.ivAlbumCover,
-                albumItem.getCoverPath()
-        );
+        if (albumItem.getCoverPath() != null) {
+            JvmMediaLoader.loadImage(holder.ivAlbumCover, albumItem.getCoverPath(), properties -> {
+                properties.centerCrop();
+                return null;
+            });
+        }
     }
 
     @Override
