@@ -6,6 +6,7 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuActionClick
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuComposeItem
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuDividerUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuInfoLoadingUiModel
@@ -14,18 +15,12 @@ import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuOrderUiM
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuProductUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuSectionTitleUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuSettingTitleUiModel
-import com.tokopedia.shopadmin.common.util.AdminPermissionMapper
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.seller.menu.common.R as sellermenucommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 object SellerMenuList {
 
-    fun createInitialItems(
-        userSession: UserSessionInterface,
-        mapper: AdminPermissionMapper
-    ): List<SellerMenuComposeItem> {
-        val isShopOwner = userSession.isShopOwner
+    fun createInitialItems(): List<SellerMenuComposeItem> {
         val menuList = mutableListOf<SellerMenuComposeItem>()
         val buyerInfoMenu = createBuyerInfoMenu()
         val otherInfoMenu = createOtherInfoMenu()
@@ -36,7 +31,8 @@ object SellerMenuList {
             SellerMenuSettingTitleUiModel(
                 titleRes = R.string.seller_menu_order_section,
                 ctaRes = R.string.seller_menu_order_cta,
-                dimenRes = unifyprinciplesR.dimen.spacing_lvl4
+                dimenRes = unifyprinciplesR.dimen.spacing_lvl4,
+                actionClick = SellerMenuActionClick.ALL_ORDER
             )
         )
         menuList.add(SellerMenuOrderUiModel())
@@ -46,7 +42,8 @@ object SellerMenuList {
             SellerMenuSettingTitleUiModel(
                 titleRes = R.string.seller_menu_product_section,
                 ctaRes = R.string.seller_menu_product_cta,
-                dimenRes = unifyprinciplesR.dimen.spacing_lvl4
+                dimenRes = unifyprinciplesR.dimen.spacing_lvl4,
+                actionClick = SellerMenuActionClick.ADD_PRODUCT
             )
         )
         menuList.add(SellerMenuProductUiModel())
@@ -63,37 +60,41 @@ object SellerMenuList {
         currentItems: List<SellerMenuComposeItem>,
         shopInfoUiModel: ShopInfoUiModel
     ) {
+        // TODO: Use this method instead
         val updatedItems = currentItems.toMutableList()
         updatedItems.indexOfFirst { it is SellerMenuInfoLoadingUiModel }.let { loadingIndex ->
             updatedItems.removeAt(loadingIndex)
         }
     }
 
-
     private fun createBuyerInfoMenu(): List<SellerMenuComposeItem> {
         return listOf(
             SellerMenuSettingTitleUiModel(
                 titleRes = sellermenucommonR.string.setting_menu_buyer_info,
                 ctaRes = null,
-                dimenRes = unifyprinciplesR.dimen.spacing_lvl4
+                dimenRes = unifyprinciplesR.dimen.spacing_lvl4,
+                actionClick = SellerMenuActionClick.NONE
             ),
             SellerMenuItemUiModel(
                 titleRes = sellermenucommonR.string.setting_menu_review,
                 type = MenuItemType.REVIEW,
                 eventActionSuffix = SettingTrackingConstant.REVIEW,
-                iconUnifyType = IconUnify.STAR
+                iconUnifyType = IconUnify.STAR,
+                actionClick = SellerMenuActionClick.REVIEW
             ),
             SellerMenuItemUiModel(
                 titleRes = sellermenucommonR.string.setting_menu_discussion,
                 type = MenuItemType.DISCUSSION,
                 eventActionSuffix = SettingTrackingConstant.DISCUSSION,
-                iconUnifyType = IconUnify.DISCUSSION
+                iconUnifyType = IconUnify.DISCUSSION,
+                actionClick = SellerMenuActionClick.DISCUSSION
             ),
             SellerMenuItemUiModel(
                 titleRes = sellermenucommonR.string.setting_menu_complaint,
                 type = MenuItemType.COMPLAIN,
                 eventActionSuffix = SettingTrackingConstant.COMPLAINT,
-                iconUnifyType = IconUnify.PRODUCT_INFO
+                iconUnifyType = IconUnify.PRODUCT_INFO,
+                actionClick = SellerMenuActionClick.COMPLAINTS
             )
         )
     }
@@ -108,19 +109,22 @@ object SellerMenuList {
                 titleRes = sellermenucommonR.string.setting_menu_seller_education_center,
                 type = MenuItemType.SELLER_EDU,
                 eventActionSuffix = SettingTrackingConstant.SELLER_CENTER,
-                iconUnifyType = IconUnify.SHOP_INFO
+                iconUnifyType = IconUnify.SHOP_INFO,
+                actionClick = SellerMenuActionClick.SELLER_EDU
             ),
             SellerMenuItemUiModel(
                 titleRes = sellermenucommonR.string.setting_menu_tokopedia_care,
                 type = MenuItemType.TOKOPEDIA_CARE,
                 eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE,
-                iconUnifyType = IconUnify.CALL_CENTER
+                iconUnifyType = IconUnify.CALL_CENTER,
+                actionClick = SellerMenuActionClick.TOKOPEDIA_CARE
             ),
             SellerMenuItemUiModel(
                 titleRes = sellermenucommonR.string.setting_menu_shop_setting,
                 type = MenuItemType.SHOP_SETTINGS,
                 eventActionSuffix = SettingTrackingConstant.SETTINGS,
-                iconUnifyType = IconUnify.SETTING
+                iconUnifyType = IconUnify.SETTING,
+                actionClick = SellerMenuActionClick.SETTINGS
             )
         )
     }

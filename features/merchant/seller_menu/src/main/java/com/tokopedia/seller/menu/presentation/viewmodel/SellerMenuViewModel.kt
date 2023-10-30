@@ -58,12 +58,11 @@ class SellerMenuViewModel @Inject constructor(
 
     fun onEvent(event: SellerMenuUIEvent) {
         viewModelScope.launch {
-            when(event) {
+            when (event) {
                 is SellerMenuUIEvent.GetInitialMenu -> {
                     getInitialMenu()
                 }
                 else -> {
-
                 }
             }
         }
@@ -82,8 +81,8 @@ class SellerMenuViewModel @Inject constructor(
             _shopAge.value = data.shopAge
             _uiEvent.tryEmit(SellerMenuUIEvent.OnSuccessGetShopInfoUse(data.shopAge, data.isNewSeller))
         }, onError = {
-            _uiState.tryEmit(SellerMenuUIState.OnFailedGetMenuList(it))
-        })
+                _uiState.tryEmit(SellerMenuUIState.OnFailedGetMenuList(it))
+            })
     }
 
     fun getAllSettingShopInfo(isToasterRetry: Boolean = false) {
@@ -94,9 +93,9 @@ class SellerMenuViewModel @Inject constructor(
     }
 
     private fun getInitialMenu() {
-        val initialMenu = SellerMenuList.createInitialItems(userSession, mapper)
+        val initialMenu = SellerMenuList.createInitialItems()
         _currentMenuList.value = initialMenu
-        _uiState.tryEmit(SellerMenuUIState.OnSuccessGetMenuList(initialMenu))
+        _uiState.tryEmit(SellerMenuUIState.OnSuccessGetMenuList(initialMenu, true))
     }
 
     private fun getAllShopInfoData(shopAge: Long) {
@@ -127,8 +126,8 @@ class SellerMenuViewModel @Inject constructor(
 
             _uiState.tryEmit(SellerMenuUIState.OnSuccessGetMenuList(getSuccessMenuList(data)))
         }, onError = {
-            _uiState.tryEmit(SellerMenuUIState.OnFailedGetMenuList(it))
-        })
+                _uiState.tryEmit(SellerMenuUIState.OnFailedGetMenuList(it))
+            })
     }
 
     private fun getSuccessMenuList(uiModel: ShopInfoUiModel): List<SellerMenuComposeItem> {
@@ -174,5 +173,4 @@ class SellerMenuViewModel @Inject constructor(
         private const val DELAY_TIME = 5000L
         private const val ERROR_EXCEPTION_MESSAGE = "seller menu shop info and topads failed"
     }
-
 }

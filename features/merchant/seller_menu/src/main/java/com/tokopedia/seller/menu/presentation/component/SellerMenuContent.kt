@@ -6,6 +6,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -64,6 +65,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
+import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuActionClick
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuComposeItem
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuDividerUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuInfoLoadingUiModel
@@ -84,21 +86,24 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 @Composable
 fun SellerMenuContent(
     uiState: SellerMenuUIState,
-    onSuccessLoadInitialState: () -> Unit
+    onSuccessLoadInitialState: () -> Unit,
+    onActionClick: (SellerMenuActionClick) -> Unit
 ) {
     when (uiState) {
         is SellerMenuUIState.OnSuccessGetMenuList -> {
             onSuccessLoadInitialState()
-            SellerMenuSuccessState(uiState.visitableList)
+            SellerMenuSuccessState(uiState.visitableList, onActionClick)
         }
-        else -> SellerMenuSuccessState(listOf())
+        else -> SellerMenuSuccessState(listOf(), onActionClick)
     }
 }
 
 @Composable
 fun SellerMenuSuccessState(
-    items: List<SellerMenuComposeItem>
+    items: List<SellerMenuComposeItem>,
+    onActionClick: (SellerMenuActionClick) -> Unit
 ) {
+    // TODO: add toolbar
     LazyColumn {
         items(
             items,
@@ -114,6 +119,7 @@ fun SellerMenuSuccessState(
                                 stringResource(id = res)
                             },
                             onCtaClicked = {
+                                onActionClick(it.actionClick)
                             }
                         )
                     }
@@ -122,13 +128,17 @@ fun SellerMenuSuccessState(
                             iconType = it.iconUnifyType,
                             titleRes = it.titleRes,
                             tagRes = null,
-                            counter = null
+                            counter = null,
+                            onActionClick = {
+                                onActionClick(it.actionClick)
+                            }
                         )
                     }
                     is SellerMenuOrderUiModel -> {
                         SellerMenuOrderSection(
                             newOrderCount = it.newOrderCount,
-                            readyToShipCount = it.readyToShip
+                            readyToShipCount = it.readyToShip,
+                            onActionClick = onActionClick
                         )
                     }
                     is SellerMenuProductUiModel -> {
@@ -136,7 +146,10 @@ fun SellerMenuSuccessState(
                             productCount = stringResource(
                                 id = R.string.seller_menu_product_count,
                                 it.count
-                            )
+                            ),
+                            onClick = {
+                                onActionClick(SellerMenuActionClick.PRODUCT_LIST)
+                            }
                         )
                     }
                     is SellerMenuDividerUiModel -> {
@@ -207,7 +220,8 @@ fun SellerMenuSuccessState(
                             followersCount = it.shopFollowers.toString(),
                             partialResponseStatus = it.partialResponseStatus,
                             totalBalance = it.balanceValue,
-                            userShopInfoWrapper = it.userShopInfoWrapper
+                            userShopInfoWrapper = it.userShopInfoWrapper,
+                            onActionClick = onActionClick
                         )
                     }
                 }
@@ -392,7 +406,8 @@ fun SellerMenuShopInfo(
     followersCount: String,
     partialResponseStatus: Pair<Boolean, Boolean>,
     totalBalance: String,
-    userShopInfoWrapper: UserShopInfoWrapper
+    userShopInfoWrapper: UserShopInfoWrapper,
+    onActionClick: (SellerMenuActionClick) -> Unit
 ) {
     ConstraintLayout {
         val (
@@ -532,7 +547,8 @@ fun SellerMenuShopInfo(
                         top.linkTo(shopScore.bottom)
                         start.linkTo(avatarImage.start)
                         end.linkTo(parent.end)
-                    }
+                    },
+                onActionClick = onActionClick
             )
         } else {
             hasLocalLoadShown = true
@@ -541,7 +557,6 @@ fun SellerMenuShopInfo(
                 description = stringResource(id = sellermenuR.string.setting_error_description),
                 isLoading = false
             ) {
-
             }
         }
 
@@ -553,7 +568,10 @@ fun SellerMenuShopInfo(
                         top.linkTo(shopStatus.bottom)
                         start.linkTo(avatarImage.start)
                         end.linkTo(parent.end)
-                    }
+                    },
+                onClick = {
+                    onActionClick(SellerMenuActionClick.BALANCE)
+                }
             )
         } else if (!hasLocalLoadShown) {
             NestLocalLoad(
@@ -561,19 +579,18 @@ fun SellerMenuShopInfo(
                 description = stringResource(id = sellermenuR.string.setting_error_description),
                 isLoading = false
             ) {
-
             }
         }
-
     }
 }
 
 @Composable
 fun SellerMenuShopStatusInfo(
     userShopInfoWrapper: UserShopInfoWrapper,
-    modifier: Modifier
+    modifier: Modifier,
+    onActionClick: (SellerMenuActionClick) -> Unit
 ) {
-    when(val shopType = userShopInfoWrapper.shopType) {
+    when (val shopType = userShopInfoWrapper.shopType) {
         is RegularMerchant -> {
             val totalTransaction =
                 userShopInfoWrapper.userShopInfoUiModel?.totalTransaction.orZero()
@@ -620,10 +637,12 @@ fun SellerMenuShopStatusInfo(
                         ctaTextRes = getRmVerificationTextRes(shopType),
                         ctaColor = ctaColor,
                         modifier = modifier
+                            .clickable {
+                                onActionClick(SellerMenuActionClick.POWER_MERCHANT)
+                            }
                     )
                 }
             }
-
         }
         is PowerMerchantStatus -> {
             (userShopInfoWrapper.shopType as? PowerMerchantStatus)?.let { pm ->
@@ -639,7 +658,8 @@ fun SellerMenuShopStatusInfo(
                 SellerMenuStatusPm(
                     isActive = pm is PowerMerchantStatus.Active,
                     canUpgrade = canUpgrade,
-                    modifier = modifier
+                    modifier = modifier,
+                    onActionClick = onActionClick
                 )
             }
         }
@@ -682,7 +702,6 @@ fun SellerMenuShopStatusInfo(
                 statusTextColor = statusTextColor,
                 modifier = modifier
             )
-
         }
         else -> {
             SellerMenuStatusOS(modifier)
@@ -700,8 +719,8 @@ private fun getRmStatsTextRes(userShopInfoUiModel: UserShopInfoWrapper.UserShopI
 
 private fun getPmEligibleIcon(userShopInfoWrapper: UserShopInfoWrapper): Int? {
     return if (userShopInfoWrapper.shopType == RegularMerchant.Verified) {
-        userShopInfoWrapper.userShopInfoUiModel?.getPowerMerchantProEligibleIcon() ?:
-        userShopInfoWrapper.userShopInfoUiModel?.getPowerMerchantEligibleIcon()
+        userShopInfoWrapper.userShopInfoUiModel?.getPowerMerchantProEligibleIcon()
+            ?: userShopInfoWrapper.userShopInfoUiModel?.getPowerMerchantEligibleIcon()
     } else {
         null
     }
@@ -792,7 +811,8 @@ fun SellerMenuShopInfoScore(
 @Composable
 fun SellerMenuBalanceSection(
     balance: String,
-    modifier: Modifier
+    modifier: Modifier,
+    onClick: () -> Unit
 ) {
     ConstraintLayout(
         modifier = modifier
@@ -814,6 +834,8 @@ fun SellerMenuBalanceSection(
                     start.linkTo(parent.start)
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
+                }.clickable {
+                    onClick()
                 }
         )
 
@@ -830,9 +852,10 @@ fun SellerMenuBalanceSection(
                     end.linkTo(parent.end)
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
+                }.clickable {
+                    onClick()
                 }
         )
-
     }
 }
 
@@ -854,6 +877,9 @@ fun SellerMenuTitleSection(
                 end = 16.dp
             )
             .fillMaxWidth()
+            .clickable {
+                onCtaClicked()
+            }
     ) {
         val (titleRef, ctaRef) = createRefs()
 
@@ -920,11 +946,15 @@ fun SellerMenuItem(
     iconType: Int?,
     @StringRes titleRes: Int,
     @StringRes tagRes: Int?,
-    counter: Int?
+    counter: Int?,
+    onActionClick: () -> Unit
 ) {
     ConstraintLayout(
         modifier = Modifier
             .height(44.dp)
+            .clickable {
+                onActionClick()
+            }
     ) {
         val (menuIcon, menuIconSpacer, menuTitle, menuTag, counterIcon) = createRefs()
 
@@ -1005,7 +1035,8 @@ fun SellerMenuItem(
 
 @Composable
 fun SellerMenuProductSection(
-    productCount: String
+    productCount: String,
+    onClick: () -> Unit
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -1016,6 +1047,9 @@ fun SellerMenuProductSection(
                 top = 10.dp
             )
             .fillMaxWidth()
+            .clickable {
+                onClick()
+            }
     ) {
         val (labelProduct, textProductCount, imageChevronRight) = createRefs()
 
@@ -1067,7 +1101,8 @@ fun SellerMenuProductSection(
 @Composable
 fun SellerMenuOrderSection(
     newOrderCount: Int,
-    readyToShipCount: Int
+    readyToShipCount: Int,
+    onActionClick: (SellerMenuActionClick) -> Unit
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -1090,6 +1125,9 @@ fun SellerMenuOrderSection(
                     start.linkTo(parent.start)
                     top.linkTo(parent.top)
                 }
+                .clickable {
+                    onActionClick(SellerMenuActionClick.NEW_ORDER)
+                }
         )
 
         SellerMenuOrderSectionItem(
@@ -1102,6 +1140,9 @@ fun SellerMenuOrderSection(
                     top.linkTo(cardNewOrder.top)
                     bottom.linkTo(cardNewOrder.bottom)
                     end.linkTo(parent.end)
+                }
+                .clickable {
+                    onActionClick(SellerMenuActionClick.READY_TO_SHIP_ORDER)
                 }
         )
     }
@@ -1178,7 +1219,7 @@ fun SellerMenuStatusRegular(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
             .border(1.dp, NestTheme.colors.NN._50, RoundedCornerShape(8.dp))
@@ -1253,7 +1294,6 @@ fun SellerMenuStatusRegular(
             }
 
             if (rmStatsText != null) {
-
                 Spacer(
                     modifier = Modifier
                         .height(12.dp)
@@ -1325,7 +1365,8 @@ fun SellerMenuStatusRegular(
 fun SellerMenuStatusPm(
     isActive: Boolean,
     canUpgrade: Boolean,
-    modifier: Modifier
+    modifier: Modifier,
+    onActionClick: (SellerMenuActionClick) -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -1419,7 +1460,6 @@ fun SellerMenuStatusPm(
                         bottom.linkTo(parent.bottom)
                     }
             )
-
         }
     }
 }
@@ -1445,7 +1485,6 @@ fun SellerMenuStatusPmPro(
                 .fillMaxHeight()
                 .fillMaxWidth()
         ) {
-
             val (
                 pmProBackgroundRef,
                 pmProTextRef,
@@ -1515,7 +1554,6 @@ fun SellerMenuStatusPmPro(
                         start.linkTo(pmProTextRef.end)
                     }
             )
-
         }
     }
 }

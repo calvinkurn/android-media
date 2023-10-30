@@ -6,10 +6,10 @@ import androidx.annotation.StringRes
 data class SellerMenuSettingTitleUiModel(
     @StringRes val titleRes: Int,
     @StringRes val ctaRes: Int?,
-    @DimenRes val dimenRes: Int
-): SellerMenuComposeItem {
+    @DimenRes val dimenRes: Int,
+    val actionClick: SellerMenuActionClick
+) : SellerMenuComposeItem {
 
     override val itemType: String
         get() = this::class.java.name
-
 }
