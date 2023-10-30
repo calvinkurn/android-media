@@ -69,7 +69,7 @@ import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
-import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
@@ -1221,7 +1221,7 @@ class ShopHomeViewModel @Inject constructor(
             }
             WidgetType.PERSONALIZATION -> {
                 when (widgetModel.name) {
-                    WidgetName.RECENT_ACTIVITY, WidgetName.REMINDER -> {
+                    WidgetNameEnum.RECENT_ACTIVITY.value, WidgetNameEnum.REMINDER.value -> {
                         true
                     }
                     else -> {

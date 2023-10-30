@@ -148,12 +148,7 @@ import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleL
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
 import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.shop.databinding.FragmentShopPageHomeBinding
-import com.tokopedia.shop.home.WidgetName
-import com.tokopedia.shop.home.WidgetName.BMGM_BANNER
-import com.tokopedia.shop.home.WidgetName.PERSO_PRODUCT_COMPARISON
-import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
-import com.tokopedia.shop.home.WidgetName.VIDEO
-import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
+import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
 import com.tokopedia.shop.home.WidgetType.PERSONALIZATION
 import com.tokopedia.shop.home.WidgetType.PROMO
@@ -1798,7 +1793,7 @@ open class ShopPageHomeFragment :
         return if (!ShopPageRemoteConfigChecker.isEnableShopHomeNplWidget(context)) {
             dataWidgetLayoutUiModel.copy(
                 listWidgetLayout = dataWidgetLayoutUiModel.listWidgetLayout.filter {
-                    it.widgetName != WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
+                    it.widgetName != WidgetNameEnum.NEW_PRODUCT_LAUNCH_CAMPAIGN.value
                 }
             )
         } else {
@@ -2054,15 +2049,15 @@ open class ShopPageHomeFragment :
     }
 
     private fun isWidgetPersoComparison(data: ShopPageWidgetUiModel): Boolean {
-        return data.widgetType == PERSONALIZATION && data.widgetName == PERSO_PRODUCT_COMPARISON
+        return data.widgetType == PERSONALIZATION && data.widgetName == WidgetNameEnum.PERSO_PRODUCT_COMPARISON.value
     }
 
     private fun isWidgetMvc(data: ShopPageWidgetUiModel): Boolean {
-        return data.widgetType == PROMO && data.widgetName == VOUCHER_STATIC
+        return data.widgetType == PROMO && data.widgetName == WidgetNameEnum.VOUCHER_STATIC.value
     }
 
     protected fun isWidgetPlay(data: ShopPageWidgetUiModel): Boolean {
-        return data.widgetType == DYNAMIC && data.widgetName == PLAY_CAROUSEL_WIDGET
+        return data.widgetType == DYNAMIC && data.widgetName == WidgetNameEnum.PLAY_CAROUSEL_WIDGET.value
     }
 
     private fun getListWidgetLayoutToLoad(lastCompletelyVisibleItemPosition: Int): MutableList<ShopPageWidgetUiModel> {
@@ -2595,7 +2590,7 @@ open class ShopPageHomeFragment :
         val destinationLink: String
         val creativeUrl: String
         when (displayWidgetUiModel?.name ?: "") {
-            VIDEO -> {
+            WidgetNameEnum.VIDEO.value -> {
                 destinationLink = displayWidgetItem.videoUrl
                 creativeUrl = displayWidgetItem.videoUrl
             }
@@ -2605,7 +2600,7 @@ open class ShopPageHomeFragment :
             }
         }
         when (displayWidgetUiModel?.name ?: "") {
-            BMGM_BANNER -> {
+            WidgetNameEnum.BMGM_BANNER.value -> {
                 val applinkUri = Uri.parse(displayWidgetItem.appLink)
                 val offerId = applinkUri.path?.drop(Int.ONE).orEmpty()
                 shopPageHomeTracking.impressBmgmBanner(
@@ -2643,7 +2638,7 @@ open class ShopPageHomeFragment :
         val destinationLink: String
         val creativeUrl: String
         when (displayWidgetUiModel?.name ?: "") {
-            VIDEO -> {
+            WidgetNameEnum.VIDEO.value -> {
                 destinationLink = displayWidgetItem.videoUrl
                 creativeUrl = displayWidgetItem.videoUrl
             }
@@ -2653,7 +2648,7 @@ open class ShopPageHomeFragment :
             }
         }
         val segmentName = when (displayWidgetUiModel?.name.orEmpty()) {
-            VIDEO -> {
+            WidgetNameEnum.VIDEO.value -> {
                 ShopPageTrackingConstant.VALUE_SHOP_DECOR_VIDEO
             }
             else -> {
@@ -2661,7 +2656,7 @@ open class ShopPageHomeFragment :
             }
         }
         when (displayWidgetUiModel?.name ?: "") {
-            BMGM_BANNER -> {
+            WidgetNameEnum.BMGM_BANNER.value -> {
                 val applinkUri = Uri.parse(displayWidgetItem.appLink)
                 val offerId = applinkUri.path?.drop(Int.ONE).orEmpty()
                 shopPageHomeTracking.clickBmgmBanner(
@@ -2711,7 +2706,7 @@ open class ShopPageHomeFragment :
 
     override fun onDisplayWidgetImpression(model: ShopHomeDisplayWidgetUiModel, position: Int) {
         val segmentName = when (model.name) {
-            VIDEO -> {
+            WidgetNameEnum.VIDEO.value -> {
                 ShopPageTrackingConstant.VALUE_SHOP_DECOR_VIDEO
             }
             else -> {

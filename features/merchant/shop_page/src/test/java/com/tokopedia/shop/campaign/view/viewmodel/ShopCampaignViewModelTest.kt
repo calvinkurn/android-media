@@ -15,7 +15,6 @@ import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.data.model.WidgetIdList
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetDynamicTabUseCase
-import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetV2
@@ -139,7 +138,7 @@ class ShopCampaignViewModelTest {
                     ShopPageWidgetUiModel(
                         widgetId = "2",
                         widgetType = WidgetType.CAMPAIGN,
-                        widgetName = WidgetName.BIG_CAMPAIGN_THEMATIC
+                        widgetName = WidgetNameEnum.BIG_CAMPAIGN_THEMATIC.value
                     )
                 ),
                 mockShopId,

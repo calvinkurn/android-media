@@ -74,7 +74,6 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopsort.GqlGetShopSortU
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
-import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
@@ -1623,7 +1622,7 @@ class ShopHomeViewModelTest {
     @Test
     fun `when getWidgetContentData success should return expected thematic widget`() {
         runBlocking {
-            val widgetName = WidgetName.BIG_CAMPAIGN_THEMATIC
+            val widgetName = WidgetNameEnum.BIG_CAMPAIGN_THEMATIC.value
             val widgetType = WidgetType.CAMPAIGN
             val widgetId = "2"
             val layoutOrder = 0
@@ -1714,7 +1713,7 @@ class ShopHomeViewModelTest {
                     ShopPageWidgetUiModel(
                         widgetId = "2",
                         widgetType = WidgetType.CAMPAIGN,
-                        widgetName = WidgetName.BIG_CAMPAIGN_THEMATIC
+                        widgetName = WidgetNameEnum.BIG_CAMPAIGN_THEMATIC.value
                     )
                 ),
                 mockShopId,
@@ -1894,15 +1893,15 @@ class ShopHomeViewModelTest {
             ),
             ShopHomeCarousellProductUiModel(
                 type = WidgetType.PERSONALIZATION,
-                name = WidgetName.REMINDER
+                name = WidgetNameEnum.REMINDER.value
             ),
             ShopHomeCarousellProductUiModel(
                 type = WidgetType.PERSONALIZATION,
-                name = WidgetName.RECENT_ACTIVITY
+                name = WidgetNameEnum.RECENT_ACTIVITY.value
             ),
             ShopHomeCarousellProductUiModel(
                 type = WidgetType.PERSONALIZATION,
-                name = WidgetName.BUY_AGAIN
+                name = WidgetNameEnum.BUY_AGAIN.value
             ),
             ShopHomeCarousellProductUiModel(),
             ShopHomeFlashSaleUiModel(

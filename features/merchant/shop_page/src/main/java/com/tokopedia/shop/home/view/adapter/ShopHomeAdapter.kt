@@ -17,7 +17,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil.setElement
-import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.view.adapter.viewholder.*
 import com.tokopedia.shop.home.view.adapter.viewholder.advance_carousel_banner.ShopHomeDisplayAdvanceCarouselBannerViewHolder
 import com.tokopedia.shop.home.view.model.*
@@ -304,7 +304,7 @@ open class ShopHomeAdapter(
 
     fun pauseSliderBannerAutoScroll() {
         val listSliderBannerViewModel = visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>().filter {
-            it.name == WidgetName.SLIDER_BANNER || it.name == WidgetName.BMGM_BANNER
+            it.name == WidgetNameEnum.SLIDER_BANNER.value || it.name == WidgetNameEnum.BMGM_BANNER.value
         }
         listSliderBannerViewModel.forEach {
             (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.pauseTimer()
@@ -314,7 +314,7 @@ open class ShopHomeAdapter(
 
     fun resumeSliderBannerAutoScroll() {
         val listSliderBannerViewModel = visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>().filter {
-            it.name == WidgetName.SLIDER_BANNER || it.name == WidgetName.BMGM_BANNER
+            it.name == WidgetNameEnum.SLIDER_BANNER.value || it.name == WidgetNameEnum.BMGM_BANNER.value
         }
         listSliderBannerViewModel.forEach {
             (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.resumeTimer()

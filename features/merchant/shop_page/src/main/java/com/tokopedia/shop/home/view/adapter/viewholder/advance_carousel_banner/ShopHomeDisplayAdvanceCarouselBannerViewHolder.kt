@@ -19,7 +19,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopAdvanceCarouselBannerViewholderLayoutBinding
-import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.view.adapter.ShopWidgetAdvanceCarouselBannerAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.PageControl
@@ -134,7 +134,7 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
     }
 
     private fun isWidgetNameWithAutoScroll(): Boolean {
-        return uiModel.name == WidgetName.SLIDER_BANNER
+        return uiModel.name == WidgetNameEnum.SLIDER_BANNER.value
     }
 
     private fun setAutoScrollOn() {

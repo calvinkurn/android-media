@@ -2,7 +2,7 @@ package com.tokopedia.shop.home.view.model.banner_product_group
 
 import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
@@ -12,7 +12,7 @@ import kotlinx.parcelize.Parcelize
 data class BannerProductGroupUiModel(
     override val widgetId: String = "",
     override val layoutOrder: Int = -1,
-    override val name: String = WidgetName.BANNER_PRODUCT_GROUP,
+    override val name: String = WidgetNameEnum.BANNER_PRODUCT_GROUP.value,
     override val type: String = WidgetType.REIMAGINE_COMPONENT,
     override val header: Header = Header(),
     override val isFestivity: Boolean = false,
