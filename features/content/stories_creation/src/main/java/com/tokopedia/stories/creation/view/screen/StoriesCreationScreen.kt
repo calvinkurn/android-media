@@ -21,7 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -36,6 +36,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
 import com.tokopedia.creation.common.upload.model.ContentMediaType
+import com.tokopedia.creation.common.util.RATIO_9_16
+import com.tokopedia.creation.common.util.isMediaRatioSame
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.components.NestButton
@@ -133,7 +135,7 @@ fun StoriesCreationScreen(
         )
 
         StoriesCreationMediaCover(
-            mediaFilePath = uiState.media.filePath,
+            media = uiState.media,
             onLoadMediaPreview = onLoadMediaPreview,
             modifier = Modifier.constrainAs(mediaCover) {
                 top.linkTo(headerDivider.bottom, 16.dp)
@@ -155,7 +157,7 @@ fun StoriesCreationScreen(
         )
 
         StoriesCreationAddProductSection(
-            selectedProductSize = uiState.productTags.size,
+            selectedProductSize = uiState.productList.size,
             onClickAddProduct = onClickAddProduct,
             modifier = Modifier.constrainAs(addProductSection) {
                 top.linkTo(mediaCoverDivider.bottom, 16.dp)
@@ -239,7 +241,7 @@ private fun StoriesCreationHeader(
 
 @Composable
 private fun StoriesCreationMediaCover(
-    mediaFilePath: String,
+    media: StoriesMedia,
     onLoadMediaPreview: suspend (filePath: String) -> StoriesMediaCover,
     modifier: Modifier = Modifier,
 ) {
@@ -247,13 +249,14 @@ private fun StoriesCreationMediaCover(
         .clip(RoundedCornerShape(8.dp))
         .width(108.dp)
         .height(192.dp)
+        .background(Color.Black)
 
     var storiesMediaCover: StoriesMediaCover by remember {
         mutableStateOf(StoriesMediaCover.Loading)
     }
 
-    LaunchedEffect(mediaFilePath) {
-        storiesMediaCover = onLoadMediaPreview(mediaFilePath)
+    LaunchedEffect(media.filePath) {
+        storiesMediaCover = onLoadMediaPreview(media.filePath)
     }
 
     when (val mediaCover = storiesMediaCover) {
@@ -265,9 +268,13 @@ private fun StoriesCreationMediaCover(
         }
         is StoriesMediaCover.Success -> {
             NestImage(
-                source = ImageSource.ImageBitmap(mediaCover.bitmap.asImageBitmap()),
+                source = ImageSource.Remote(mediaCover.localFilePath),
                 modifier = storiesMediaPreviewModifier,
-                contentScale = ContentScale.Crop
+                contentScale = if (media.type.isImage && !isMediaRatioSame(mediaCover.localFilePath, RATIO_9_16)) {
+                    ContentScale.Fit
+                } else {
+                    ContentScale.Crop
+                }
             )
         }
         is StoriesMediaCover.Error -> {
@@ -418,7 +425,7 @@ private fun StoriesCreationScreenPreview() {
         Surface {
             val uiState = StoriesCreationUiState.Empty.copy(
                 media = StoriesMedia(
-                    filePath = "asdf",
+                    filePath = "media_file_path",
                     type = ContentMediaType.Video
                 )
             )

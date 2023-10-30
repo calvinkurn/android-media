@@ -12,6 +12,8 @@ import com.tokopedia.creation.common.upload.model.dto.stories.StoriesAddMediaReq
 import com.tokopedia.creation.common.upload.model.dto.stories.StoriesUpdateStoryRequest
 import com.tokopedia.creation.common.upload.model.stories.StoriesStatus
 import com.tokopedia.creation.common.upload.uploader.notification.StoriesUploadNotificationManager
+import com.tokopedia.creation.common.util.isMediaPotrait
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.UploadResult
@@ -71,7 +73,7 @@ class StoriesUploadManager @Inject constructor(
             Exception("StoriesUploadManager is not receiving CreationUploadData.Stories data")
         )
 
-        this.uploadData = uploadData
+        setupInitialData(uploadData)
 
         withContext(dispatchers.main) {
             uploaderUseCase.trackProgress { progress, progressType ->
@@ -92,11 +94,15 @@ class StoriesUploadManager @Inject constructor(
                 updateStoryStatus(uploadData, StoriesStatus.Transcoding)
 
                 val mediaUploadResult = uploadStoryMedia(uploadData.firstMediaUri, uploadData.firstMediaType)
-                val coverUrl = uploadCover(uploadData).fileUrl
 
-                addMedia(uploadData, mediaUploadResult, coverUrl)
+                val coverUploadId = when (uploadData.firstMediaType) {
+                    ContentMediaType.Video -> uploadCover(uploadData).uploadId
+                    else -> mediaUploadResult.uploadId
+                }
 
-                updateStoryStatus(uploadData, StoriesStatus.Active)
+                val activeMediaId = addMedia(uploadData, mediaUploadResult, coverUploadId)
+
+                updateStoryStatus(uploadData, StoriesStatus.Active, activeMediaId)
 
                 broadcastComplete(uploadData)
 
@@ -122,10 +128,15 @@ class StoriesUploadManager @Inject constructor(
         }
     }
 
+    private fun setupInitialData(uploadData: CreationUploadData.Stories) {
+        this.uploadData = uploadData
+        this.isUploadStoryMedia = false
+    }
+
     private suspend fun updateStoryStatus(
         uploadData: CreationUploadData.Stories,
         status: StoriesStatus,
-        activeMediaId: String = ""
+        activeMediaId: String = "0"
     ) {
         updateStoryUseCase(
             StoriesUpdateStoryRequest(
@@ -177,6 +188,11 @@ class StoriesUploadManager @Inject constructor(
                 result
             }
             is UploadResult.Error -> {
+                if (mediaType.isVideo) {
+                    /** TODO JOE: add requestId here */
+                    sendErrorRequestId(uploadData, "")
+                }
+
                 throw Exception(result.message)
             }
         }
@@ -185,21 +201,51 @@ class StoriesUploadManager @Inject constructor(
     private suspend fun addMedia(
         uploadData: CreationUploadData.Stories,
         mediaUploadResult: UploadResult.Success,
-        coverUrl: String,
+        coverUploadId: String,
+    ): String {
+        val response = addMediaUseCase(
+            StoriesAddMediaRequest(
+                storyId = uploadData.creationId,
+                type = uploadData.firstMediaType.code,
+                videoURL = if (uploadData.firstMediaType.isVideo) {
+                    mediaUploadResult.videoUrl
+                } else {
+                    ""
+                },
+                imageUploadID = coverUploadId,
+                requestID = "",
+                status = StoriesAddMediaRequest.Status.Active,
+                orientation = getMediaOrientation(uploadData.firstMediaUri),
+            )
+        )
+
+        return response.data.mediaId
+    }
+
+    private suspend fun sendErrorRequestId(
+        uploadData: CreationUploadData.Stories,
+        requestId: String,
     ) {
         addMediaUseCase(
             StoriesAddMediaRequest(
                 storyId = uploadData.creationId,
                 type = uploadData.firstMediaType.code,
-                mediaUrl = if (uploadData.firstMediaType == ContentMediaType.Image) {
-                    mediaUploadResult.fileUrl
-                } else {
-                    mediaUploadResult.videoUrl
-                },
-                coverUrl = coverUrl,
-                uploadId = mediaUploadResult.uploadId,
+                videoURL = "",
+                imageUploadID = "",
+                requestID = requestId,
+                status = StoriesAddMediaRequest.Status.Hidden,
+                orientation = getMediaOrientation(uploadData.firstMediaUri),
             )
         )
+    }
+
+
+    private fun getMediaOrientation(filePath: String): StoriesAddMediaRequest.Orientation {
+        return if (isMediaPotrait(filePath)) {
+            StoriesAddMediaRequest.Orientation.Potrait
+        } else {
+            StoriesAddMediaRequest.Orientation.Landscape
+        }
     }
 
     private fun getSourceId(contentMediaType: ContentMediaType): String {

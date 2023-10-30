@@ -2,9 +2,11 @@ package com.tokopedia.shop.score.penalty.presentation.adapter.diffutil
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.shop.score.penalty.presentation.model.ItemCardShopPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyInfoNotificationUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyPointCardUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltySubsectionUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyTickerUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
-import com.tokopedia.shop.score.penalty.presentation.model.ItemPeriodDetailPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenaltyUiModel
 
 class ShopPenaltyDiffUtilCallback(
@@ -20,9 +22,11 @@ class ShopPenaltyDiffUtilCallback(
         val oldItem = oldList.getOrNull(oldItemPosition)
         val newItem = newList.getOrNull(newItemPosition)
         return isTheSameItemPenaltyUiModel(oldItem, newItem) ||
-                isTheSameItemCardShopPenaltyUiModel(oldItem, newItem) ||
-                isTheSameItemPeriodDetailPenaltyUiModel(oldItem, newItem) ||
-                isTheSameItemSortFilterPenaltyUiModel(oldItem, newItem)
+            isTheSameItemSortFilterPenaltyUiModel(oldItem, newItem) ||
+            isTheSameItemPenaltyTickerUiModel(oldItem, newItem) ||
+            isTheSameItemPenaltyInfoNotificationUiModel(oldItem, newItem) ||
+            isTheSameItemPenaltySubsectionUiModel(oldItem, newItem) ||
+            isTheSameItemPenaltyPointCardUiModel(oldItem, newItem)
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
@@ -41,24 +45,6 @@ class ShopPenaltyDiffUtilCallback(
                 oldItem.descStatusPenalty == newItem.descStatusPenalty
     }
 
-    private fun isTheSameItemCardShopPenaltyUiModel(
-        oldItem: Visitable<*>?,
-        newItem: Visitable<*>?
-    ): Boolean {
-        return oldItem is ItemCardShopPenaltyUiModel && newItem is ItemCardShopPenaltyUiModel &&
-                oldItem.totalPenalty == newItem.totalPenalty &&
-                oldItem.hasPenalty == newItem.hasPenalty &&
-                oldItem.deductionPoints == newItem.deductionPoints
-    }
-
-    private fun isTheSameItemPeriodDetailPenaltyUiModel(
-        oldItem: Visitable<*>?,
-        newItem: Visitable<*>?
-    ): Boolean {
-        return oldItem is ItemPeriodDetailPenaltyUiModel && newItem is ItemPeriodDetailPenaltyUiModel &&
-                oldItem.periodDetail == newItem.periodDetail
-    }
-
     private fun isTheSameItemSortFilterPenaltyUiModel(
         oldItem: Visitable<*>?,
         newItem: Visitable<*>?
@@ -66,4 +52,42 @@ class ShopPenaltyDiffUtilCallback(
         return oldItem is ItemSortFilterPenaltyUiModel && newItem is ItemSortFilterPenaltyUiModel &&
                 oldItem.itemSortFilterWrapperList == newItem.itemSortFilterWrapperList
     }
+
+    private fun isTheSameItemPenaltyTickerUiModel(
+        oldItem: Visitable<*>?,
+        newItem: Visitable<*>?
+    ): Boolean {
+        return oldItem is ItemPenaltyTickerUiModel && newItem is ItemPenaltyTickerUiModel &&
+            oldItem.title == newItem.title &&
+            oldItem.tickerMessage == newItem.tickerMessage &&
+            oldItem.webUrl == newItem.webUrl &&
+            oldItem.actionText == newItem.actionText
+    }
+
+    private fun isTheSameItemPenaltyInfoNotificationUiModel(
+        oldItem: Visitable<*>?,
+        newItem: Visitable<*>?
+    ): Boolean {
+        return oldItem is ItemPenaltyInfoNotificationUiModel && newItem is ItemPenaltyInfoNotificationUiModel &&
+            oldItem.shouldShowDot == newItem.shouldShowDot &&
+            oldItem.latestOngoingId == newItem.latestOngoingId
+    }
+
+    private fun isTheSameItemPenaltySubsectionUiModel(
+        oldItem: Visitable<*>?,
+        newItem: Visitable<*>?
+    ): Boolean {
+        return oldItem is ItemPenaltySubsectionUiModel && newItem is ItemPenaltySubsectionUiModel &&
+            oldItem.date == newItem.date
+    }
+
+    private fun isTheSameItemPenaltyPointCardUiModel(
+        oldItem: Visitable<*>?,
+        newItem: Visitable<*>?
+    ): Boolean {
+        return oldItem is ItemPenaltyPointCardUiModel && newItem is ItemPenaltyPointCardUiModel &&
+            oldItem.date == newItem.date &&
+            oldItem.result.penaltyDynamic == newItem.result.penaltyDynamic
+    }
+
 }
