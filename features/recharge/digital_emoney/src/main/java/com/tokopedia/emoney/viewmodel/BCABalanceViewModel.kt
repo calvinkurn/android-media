@@ -180,7 +180,7 @@ class BCABalanceViewModel @Inject constructor(
                     ATD,
                     result.attributes.transactionID
                 )
-            } else if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.transactionID.isEmpty()){
+            } else if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.transactionID.isEmpty()) {
                 errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
             } else {
                 bcaInquiryMutable.postValue(
@@ -273,7 +273,7 @@ class BCABalanceViewModel @Inject constructor(
                     isoDep, cardNumber, lastBalance, rawPublicKeyString,
                     rawPrivateKeyString, cardType, strCurrDateTime, ATD, strTransactionId, result
                 )
-            } else if(result.status == BCAFlazzStatus.WRITE.status && result.attributes.cardData.isEmpty()) {
+            } else if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.cardData.isEmpty()) {
                 errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
             } else {
                 bcaInquiryMutable.postValue(
@@ -489,44 +489,43 @@ class BCABalanceViewModel @Inject constructor(
                 try {
                     val topUp2 = bcaLibrary.BCATopUp_2(bcaFlazzData.attributes.cardData)
                     val updatedBalance = checkLatestBalance()
-                    if (updatedBalance.isSuccess == SUCCESS_JNI) {
-                        if (topUp2.isSuccess == SUCCESS_JNI
-                            && getBCAPrefixSuccess(topUp2.strLogRsp)
-                            && updatedBalance.balance > bcaFlazzData.attributes.lastBalance) {
-                            getACKProcess(
-                                cardNumber,
-                                rawPublicKeyString,
-                                rawPrivateKeyString,
-                                cardType,
-                                strTransactionId,
-                                separateCardDataFromResponseCode(topUp2.strLogRsp),
-                                updatedBalance.balance
-                            )
-                        } else if (topUp2.strLogRsp.isNotEmpty()) {
-                            // Ada kemungkinan saldo Flazz sudah bertambah walaupun output BCATopUp2 bukan SUCCESS.
-                            // Cek saldo Flazz sebelum & setelah top up untuk memastikan apakah saldo bertambah atau tidak.
-                            // Tetap kirimkan output BCATopUp2 ke BCA melalui API /flazz/ack
-                            getACKProcess(
-                                cardNumber,
-                                rawPublicKeyString,
-                                rawPrivateKeyString,
-                                cardType,
-                                strTransactionId,
-                                separateCardDataFromResponseCode(topUp2.strLogRsp),
-                                updatedBalance.balance
-                            )
-                        } else if (topUp2.strLogRsp.isEmpty()) {
-                            // Output BCATopUp_2 tidak ada / hilang
-                            // Panggil function library BCAlastBCATopUp dan kirimkan output-nya ke BCA
-                            // melalui API ACK
-                            processSDKBCAlastBCATopUp(
-                                isoDep, strTransactionId, cardNumber, rawPublicKeyString,
-                                rawPrivateKeyString, cardType
-                            )
-                        }
-                    } else {
-                        errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                    if (topUp2.isSuccess == SUCCESS_JNI
+                        && getBCAPrefixSuccess(topUp2.strLogRsp)) {
+                        getACKProcess(
+                            cardNumber,
+                            rawPublicKeyString,
+                            rawPrivateKeyString,
+                            cardType,
+                            strTransactionId,
+                            separateCardDataFromResponseCode(topUp2.strLogRsp),
+                            if (updatedBalance.isSuccess == SUCCESS_JNI) updatedBalance.balance else bcaFlazzData.attributes.lastBalance
+                        )
+                    } else if (topUp2.strLogRsp.isNotEmpty()) {
+                        // Ada kemungkinan saldo Flazz sudah bertambah walaupun output BCATopUp2 bukan SUCCESS.
+                        // Tetap kirimkan output BCATopUp2 ke BCA melalui API /flazz/ack
+                        getACKProcess(
+                            cardNumber,
+                            rawPublicKeyString,
+                            rawPrivateKeyString,
+                            cardType,
+                            strTransactionId,
+                            separateCardDataFromResponseCode(topUp2.strLogRsp),
+                            if (updatedBalance.isSuccess == SUCCESS_JNI) updatedBalance.balance else bcaFlazzData.attributes.lastBalance
+                        )
+                    } else if (topUp2.strLogRsp.isEmpty()) {
+                        // Output BCATopUp_2 tidak ada / hilang
+                        // Panggil function library BCAlastBCATopUp dan kirimkan output-nya ke BCA
+                        // melalui API ACK
+                        processSDKBCAlastBCATopUp(
+                            isoDep,
+                            strTransactionId,
+                            cardNumber,
+                            rawPublicKeyString,
+                            rawPrivateKeyString,
+                            cardType
+                        )
                     }
+
                 } catch (e: IOException) {
                     isoDep.close()
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
