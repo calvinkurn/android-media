@@ -10,6 +10,12 @@ enum class StoriesMediaType(val value: String) {
     Video("video"),
     Unknown("");
 
+    val isImage: Boolean
+        get() = this == Image
+
+    val isVideo: Boolean
+        get() = this == Video
+
     companion object {
         fun parse(path: String): StoriesMediaType {
             if (path.isEmpty()) return Unknown
