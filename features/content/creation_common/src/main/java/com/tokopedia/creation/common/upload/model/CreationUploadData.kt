@@ -6,8 +6,6 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.creation.common.upload.data.local.entity.CreationUploadQueueEntity
 import com.tokopedia.creation.common.upload.model.exception.UnknownUploadTypeException
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import java.util.UUID
 
 /**
  * Created By : Jonathan Darwin on September 15, 2023
@@ -19,7 +17,6 @@ sealed interface CreationUploadData {
     val timestamp: Long
     val creationId: String
     val coverUri: String
-    val sourceId: String
     val authorId: String
     val authorType: String
 
@@ -64,9 +61,6 @@ sealed interface CreationUploadData {
 
         @SerializedName(KEY_COVER_URI)
         override val coverUri: String,
-
-        @SerializedName(KEY_SOURCE_ID)
-        override val sourceId: String,
 
         @SerializedName(KEY_AUTHOR_ID)
         override val authorId: String,
@@ -116,9 +110,6 @@ sealed interface CreationUploadData {
         @SerializedName(KEY_COVER_URI)
         override val coverUri: String,
 
-        @SerializedName(KEY_SOURCE_ID)
-        override val sourceId: String,
-
         @SerializedName(KEY_AUTHOR_ID)
         override val authorId: String,
 
@@ -127,6 +118,9 @@ sealed interface CreationUploadData {
 
         @SerializedName(KEY_MEDIA_URI_LIST)
         val mediaUriList: List<String>,
+
+        @SerializedName(KEY_SOURCE_ID)
+        val sourceId: String,
     ) : CreationUploadData {
 
         val firstMediaUri: String
@@ -143,12 +137,12 @@ sealed interface CreationUploadData {
                 queueStatus = queueStatus.value,
                 timestamp = timestamp,
                 coverUri = coverUri,
-                sourceId = sourceId,
                 authorId = authorId,
                 authorType = authorType,
                 data = gson.toJson(
                     CreationUploadQueueEntity.Shorts(
                         mediaUriList = mediaUriList,
+                        sourceId = sourceId,
                     )
                 )
             )
@@ -174,9 +168,6 @@ sealed interface CreationUploadData {
         @SerializedName(KEY_COVER_URI)
         override val coverUri: String,
 
-        @SerializedName(KEY_SOURCE_ID)
-        override val sourceId: String,
-
         @SerializedName(KEY_AUTHOR_ID)
         override val authorId: String,
 
@@ -188,6 +179,12 @@ sealed interface CreationUploadData {
 
         @SerializedName(KEY_MEDIA_TYPE_LIST)
         val mediaTypeList: List<Int>,
+
+        @SerializedName(KEY_IMAGE_SOURCE_ID)
+        val imageSourceId: String,
+
+        @SerializedName(KEY_VIDEO_SOURCE_ID)
+        val videoSourceId: String,
     ) : CreationUploadData {
 
         val firstMediaUri: String
@@ -207,13 +204,14 @@ sealed interface CreationUploadData {
                 queueStatus = queueStatus.value,
                 timestamp = timestamp,
                 coverUri = coverUri,
-                sourceId = sourceId,
                 authorId = authorId,
                 authorType = authorType,
                 data = gson.toJson(
                     CreationUploadQueueEntity.Stories(
                         mediaUriList = mediaUriList,
                         mediaTypeList = mediaTypeList,
+                        imageSourceId = imageSourceId,
+                        videoSourceId = videoSourceId,
                     )
                 )
             )
@@ -233,6 +231,8 @@ sealed interface CreationUploadData {
         private const val KEY_MEDIA_TYPE_LIST = "mediaTypeList"
         private const val KEY_COVER_URI = "coverUri"
         private const val KEY_SOURCE_ID = "sourceId"
+        private const val KEY_IMAGE_SOURCE_ID = "image_source_id"
+        private const val KEY_VIDEO_SOURCE_ID = "video_source_id"
         private const val KEY_DRAFT_ID = "draftId"
 
         fun parseFromJson(json: String, gson: Gson): CreationUploadData {
@@ -262,7 +262,6 @@ sealed interface CreationUploadData {
                         queueStatus = UploadQueueStatus.mapFromValue(entity.queueStatus),
                         timestamp = entity.timestamp,
                         coverUri = entity.coverUri,
-                        sourceId = entity.sourceId,
                         authorId = entity.authorId,
                         authorType = entity.authorType,
                         draftId = postEntity.draftId,
@@ -281,10 +280,10 @@ sealed interface CreationUploadData {
                         queueStatus = UploadQueueStatus.mapFromValue(entity.queueStatus),
                         timestamp = entity.timestamp,
                         coverUri = entity.coverUri,
-                        sourceId = entity.sourceId,
                         authorId = entity.authorId,
                         authorType = entity.authorType,
                         mediaUriList = shortsEntity.mediaUriList,
+                        sourceId = shortsEntity.sourceId,
                     )
                 }
                 CreationUploadType.Stories ->  {
@@ -300,11 +299,12 @@ sealed interface CreationUploadData {
                         queueStatus = UploadQueueStatus.mapFromValue(entity.queueStatus),
                         timestamp = entity.timestamp,
                         coverUri = entity.coverUri,
-                        sourceId = entity.sourceId,
                         authorId = entity.authorId,
                         authorType = entity.authorType,
                         mediaUriList = storiesEntity.mediaUriList,
                         mediaTypeList = storiesEntity.mediaTypeList,
+                        imageSourceId = storiesEntity.imageSourceId,
+                        videoSourceId = storiesEntity.videoSourceId,
                     )
                 }
                 else -> throw UnknownUploadTypeException()
@@ -314,7 +314,6 @@ sealed interface CreationUploadData {
         fun buildForPost(
             creationId: String,
             coverUri: String,
-            sourceId: String,
             authorId: String,
             authorType: String,
             draftId: String,
@@ -326,7 +325,6 @@ sealed interface CreationUploadData {
                 timestamp = System.currentTimeMillis(),
                 creationId = creationId,
                 coverUri = coverUri,
-                sourceId = sourceId,
                 authorId = authorId,
                 authorType = authorType,
                 draftId = draftId,
@@ -361,9 +359,10 @@ sealed interface CreationUploadData {
             mediaUriList: List<String>,
             mediaTypeList: List<Int>,
             coverUri: String,
-            sourceId: String,
             authorId: String,
             authorType: String,
+            imageSourceId: String,
+            videoSourceId: String,
         ): CreationUploadData {
             return Stories(
                 queueId = 0,
@@ -374,9 +373,10 @@ sealed interface CreationUploadData {
                 mediaUriList = mediaUriList,
                 mediaTypeList = mediaTypeList,
                 coverUri = coverUri,
-                sourceId = sourceId,
                 authorId = authorId,
                 authorType = authorType,
+                imageSourceId = imageSourceId,
+                videoSourceId = videoSourceId,
             )
         }
     }

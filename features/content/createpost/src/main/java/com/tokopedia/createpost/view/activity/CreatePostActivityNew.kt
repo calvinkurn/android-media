@@ -309,7 +309,6 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
                 val uploadData = CreationUploadData.buildForPost(
                     creationId = createPostViewModel.postId,
                     coverUri = createPostViewModel.completeImageList.first().path,
-                    sourceId = "",
                     authorId = if (isTypeAffiliate(createPostViewModel.authorType) || isTypeBuyer(createPostViewModel.authorType)) {
                         userSession.userId
                     } else {

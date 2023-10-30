@@ -81,14 +81,13 @@ class StoriesUploadManager @Inject constructor(
             try {
                 broadcastInit(uploadData)
 
-                /** TODO JOE: add logic here */
                 updateStoryStatus(uploadData, StoriesStatus.Transcoding)
 
-                val mediaUploadResult = uploadMedia(uploadData.firstMediaUri, uploadData.sourceId)
+                val mediaUploadResult = uploadMedia(uploadData.firstMediaUri, getSourceId(uploadData.firstMediaType))
 
                 val coverUploadId = when (uploadData.firstMediaType) {
                     ContentMediaType.Video -> uploadCover(uploadData).uploadId
-                    else -> ""
+                    else -> mediaUploadResult.uploadId
                 }
 
                 val activeMediaId = addMedia(uploadData, mediaUploadResult, coverUploadId)
@@ -183,7 +182,7 @@ class StoriesUploadManager @Inject constructor(
             uploadData.firstMediaUri
         }
 
-        return uploadMedia(coverFilePath, "")
+        return uploadMedia(coverFilePath, getSourceId(ContentMediaType.Image))
     }
 
     private suspend fun addMedia(
@@ -265,25 +264,15 @@ class StoriesUploadManager @Inject constructor(
         }
     }
 
-    private fun getSourceId(uploadType: UploadType): String {
-        return when (uploadType) {
-            UploadType.Image -> PlayUploadSourceIdConst.uploadImageSourceId
-            UploadType.Video -> uploadData.sourceId
+    private fun getSourceId(mediaType: ContentMediaType): String {
+        return when (mediaType) {
+            ContentMediaType.Image -> uploadData.imageSourceId
+            ContentMediaType.Video -> uploadData.videoSourceId
+            else -> ""
         }
     }
 
-    enum class UploadType(
-        val type: String,
-        val withTranscode: Boolean
-    ) {
-        Image(UPLOAD_TYPE_IMAGE, false),
-        Video(UPLOAD_TYPE_VIDEO, true)
-    }
-
     companion object {
-        private const val UPLOAD_TYPE_IMAGE = "UPLOAD_TYPE_IMAGE"
-        private const val UPLOAD_TYPE_VIDEO = "UPLOAD_TYPE_VIDEO"
-
         private const val PROGRESS_MAX = 100
         private const val STORIES_UPLOAD_STEP = 5
         private const val UPLOAD_FINISH_DELAY = 1000L
