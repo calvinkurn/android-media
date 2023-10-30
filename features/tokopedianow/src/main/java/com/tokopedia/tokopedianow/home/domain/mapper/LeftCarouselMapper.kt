@@ -83,6 +83,7 @@ object LeftCarouselMapper {
             id = channelModel.id,
             name = channelModel.name,
             header = TokoNowDynamicHeaderUiModel(
+                channelId = channelModel.id,
                 title = channelModel.channelHeader.name,
                 subTitle = channelModel.channelHeader.subtitle,
                 ctaText = "",

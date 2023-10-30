@@ -622,7 +622,9 @@ object DynamicProductDetailMapper {
             separator = componentData.separator,
             icon = componentData.icon,
             status = componentData.status,
-            chevronPos = componentData.chevronPos
+            chevronPos = componentData.chevronPos,
+            paddingTop = componentData.padding.top,
+            paddingBottom = componentData.padding.bottom
         )
     }
 

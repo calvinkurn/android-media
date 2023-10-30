@@ -1,5 +1,5 @@
 {
-  "mode": "exact",
+  "mode": "subset",
   "query": [
     {
       "businessUnit": "order management",

@@ -437,6 +437,7 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
     private fun createCategoryShowcaseHeaderCallback() = object : TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
         override fun onSeeAllClicked(
             context: Context,
+            channelId: String,
             headerName: String,
             appLink: String,
             widgetId: String

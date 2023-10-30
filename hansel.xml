@@ -9,6 +9,7 @@
         <name>com.tokopedia</name>
         <name>com.laku6.tradeinsdk</name>
         <name>com.gojek</name>
+        <name>com.scp</name>
     </includePackage>
 
     <exceptPackage name="exceptPackage">

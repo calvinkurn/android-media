@@ -103,6 +103,7 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
                 }
             }
         } else {
+            stubCtaButton?.hide()
             ctaButtonRevampContainer?.hide()
         }
     }

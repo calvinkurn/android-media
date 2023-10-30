@@ -2,6 +2,9 @@ package com.tokopedia.shop.home.view.adapter
 
 import android.os.Parcelable
 import android.view.ViewGroup
+import androidx.core.view.marginBottom
+import androidx.core.view.marginLeft
+import androidx.core.view.marginRight
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -11,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.shop.R
@@ -28,6 +32,7 @@ import com.tokopedia.shop.product.view.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
 import com.tokopedia.shop_widget.common.util.WidgetState
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 
 /**
@@ -42,6 +47,7 @@ open class ShopHomeAdapter(
     companion object {
         private const val INVALID_INDEX = -1
         private const val ALL_PRODUCT_STRING = "Semua Produk"
+        private const val DEFAULT_MARGIN_ON_FESTIVITY_BORDER = 12
     }
 
     override val stickyHeaderPosition: Int
@@ -88,7 +94,25 @@ open class ShopHomeAdapter(
                     getItemViewType(position) == LoadingMoreViewHolder.LAYOUT
                 )
         }
+        addTopMarginOnFirstWidgetAfterFestivity(holder, position)
         super.onBindViewHolder(holder, position)
+    }
+
+    /**
+     * Add top margin on first widget after festivity
+     */
+    private fun addTopMarginOnFirstWidgetAfterFestivity(
+        holder: AbstractViewHolder<*>,
+        position: Int
+    ) {
+        if(anyFestivityOnShopHomeWidget() && data[position] == firstNonFestivityUiModel()){
+            holder.itemView.setMargin(
+                holder.itemView.marginLeft,
+                DEFAULT_MARGIN_ON_FESTIVITY_BORDER.toPx(),
+                holder.itemView.marginRight,
+                holder.itemView.marginBottom
+            )
+        }
     }
 
     override fun clearAllElements() {
@@ -738,6 +762,16 @@ open class ShopHomeAdapter(
             when (it) {
                 is BaseShopHomeWidgetUiModel -> it.isFestivity
                 is ThematicWidgetUiModel -> it.isFestivity
+                else -> false
+            }
+        }
+    }
+
+    private fun firstNonFestivityUiModel(): Visitable<*>? {
+        return visitables.filterIsInstance<Visitable<*>>().firstOrNull {
+            when (it) {
+                is BaseShopHomeWidgetUiModel -> !it.isFestivity
+                is ThematicWidgetUiModel -> !it.isFestivity
                 else -> false
             }
         }

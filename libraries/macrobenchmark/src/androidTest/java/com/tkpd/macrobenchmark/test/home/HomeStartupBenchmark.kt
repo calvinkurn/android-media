@@ -36,5 +36,5 @@ class HomeStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchmark(star
         Thread.sleep(10000)
     }
 
-    override fun traceName() = "mp_home"
+    override fun traceName() = "home"
 }

@@ -42,10 +42,6 @@ class WishlistV2RecommendationCarouselViewHolder(
                     carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
                         override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                             val recommendationItem = element.dataObject.listRecommendationItem.getOrNull(carouselProductCardPosition) ?: return
-
-                            if (recommendationItem.isTopAds) {
-                                ImpresionTask(this::class.java.simpleName).execute(recommendationItem.trackerImageUrl)
-                            }
                             actionListener?.onRecommendationCarouselItemImpression(recommendationItem, adapterPosition)
                         }
 
