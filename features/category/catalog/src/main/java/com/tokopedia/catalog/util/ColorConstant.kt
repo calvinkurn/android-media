@@ -1,5 +1,8 @@
 package com.tokopedia.catalog.util
 
+import android.annotation.SuppressLint
+
+@SuppressLint("UnsupportedDarkModeColor") // Dark mode will not supported in this module
 object ColorConstant {
     const val DARK_COLOR = "#AAB4C8"
     const val LIGHT_COLOR = "#FFFFFF"
