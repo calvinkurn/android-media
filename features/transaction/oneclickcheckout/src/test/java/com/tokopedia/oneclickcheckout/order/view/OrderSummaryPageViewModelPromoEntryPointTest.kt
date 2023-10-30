@@ -49,7 +49,8 @@ class OrderSummaryPageViewModelPromoEntryPointTest : BaseOrderSummaryPageViewMod
         orderSummaryPageViewModel.orderPromo.value = orderPromo
         val resultPromoEntryPointInfo = PromoEntryPointInfo(
             isSuccess = true,
-            messages = listOf("message")
+            messages = listOf("message"),
+            color = "green"
         )
         every {
             chosenAddressRequestHelper.getChosenAddress()
@@ -63,7 +64,8 @@ class OrderSummaryPageViewModelPromoEntryPointTest : BaseOrderSummaryPageViewMod
                         success = true
                     ),
                     entryPointInfo = EntryPointInfo(
-                        messages = listOf("message")
+                        messages = listOf("message"),
+                        state = "green"
                     )
                 )
             )
@@ -120,7 +122,8 @@ class OrderSummaryPageViewModelPromoEntryPointTest : BaseOrderSummaryPageViewMod
         orderSummaryPageViewModel.orderPromo.value = orderPromo
         val resultPromoEntryPointInfo = PromoEntryPointInfo(
             isSuccess = true,
-            messages = listOf("message")
+            messages = listOf("message"),
+            color = "green"
         )
         every {
             chosenAddressRequestHelper.getChosenAddress()
@@ -134,7 +137,8 @@ class OrderSummaryPageViewModelPromoEntryPointTest : BaseOrderSummaryPageViewMod
                         success = true
                     ),
                     entryPointInfo = EntryPointInfo(
-                        messages = listOf("message")
+                        messages = listOf("message"),
+                        state = "green"
                     )
                 )
             )
@@ -182,7 +186,8 @@ class OrderSummaryPageViewModelPromoEntryPointTest : BaseOrderSummaryPageViewMod
         orderSummaryPageViewModel.orderPromo.value = orderPromo
         val resultPromoEntryPointInfo = PromoEntryPointInfo(
             isSuccess = true,
-            messages = listOf("message")
+            messages = listOf("message"),
+            color = "green"
         )
         every {
             chosenAddressRequestHelper.getChosenAddress()
@@ -196,7 +201,8 @@ class OrderSummaryPageViewModelPromoEntryPointTest : BaseOrderSummaryPageViewMod
                         success = true
                     ),
                     entryPointInfo = EntryPointInfo(
-                        messages = listOf("message")
+                        messages = listOf("message"),
+                        state = "green"
                     )
                 )
             )
@@ -253,7 +259,8 @@ class OrderSummaryPageViewModelPromoEntryPointTest : BaseOrderSummaryPageViewMod
         orderSummaryPageViewModel.orderPromo.value = orderPromo
         val resultPromoEntryPointInfo = PromoEntryPointInfo(
             isSuccess = false,
-            messages = listOf("message")
+            messages = listOf("message"),
+            color = "green"
         )
         every {
             chosenAddressRequestHelper.getChosenAddress()
@@ -267,7 +274,8 @@ class OrderSummaryPageViewModelPromoEntryPointTest : BaseOrderSummaryPageViewMod
                         success = false
                     ),
                     entryPointInfo = EntryPointInfo(
-                        messages = listOf("message")
+                        messages = listOf("message"),
+                        state = "green"
                     )
                 )
             )
