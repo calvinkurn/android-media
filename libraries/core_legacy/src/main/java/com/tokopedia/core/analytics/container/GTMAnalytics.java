@@ -891,24 +891,6 @@ public class GTMAnalytics extends ContextAnalytics {
                 .subscribe(getDefaultSubscriber());
     }
 
-    @Override
-    public void sendGTMGeneralEvent(String event, String category, String action, String label,
-                                    String shopId, String shopType, String userId,
-                                    @Nullable Map<String, Object> customDimension) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(KEY_EVENT, event);
-        map.put(KEY_CATEGORY, category);
-        map.put(KEY_ACTION, action);
-        map.put(KEY_LABEL, label);
-        map.put(USER_ID, userId);
-        map.put(SHOP_TYPE, shopType);
-        map.put(SHOP_ID, shopId);
-        if (customDimension != null) {
-            map.putAll(customDimension);
-        }
-        pushGeneral(map);
-    }
-
     private void logV5(Context context, String eventName, Bundle bundle) {
         log(context, eventName, bundleToMap(bundle), true);
     }
@@ -1168,7 +1150,6 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private boolean pushGeneralGtmV5InternalOrigin(Map<String, Object> params) {
-        pushGeneral(params);
 
         if (TextUtils.isEmpty((String) params.get(KEY_EVENT)))
             return false;
