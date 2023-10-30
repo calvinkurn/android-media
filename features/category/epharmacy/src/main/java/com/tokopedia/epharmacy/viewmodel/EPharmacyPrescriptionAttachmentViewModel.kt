@@ -10,11 +10,14 @@ import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCa
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.epharmacy.network.params.InitiateConsultationParam
+import com.tokopedia.epharmacy.network.request.EPharmacyUpdateCartParam
 import com.tokopedia.epharmacy.network.response.EPharmacyConsultationDetails
 import com.tokopedia.epharmacy.network.response.EPharmacyConsultationDetailsResponse
 import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationResponse
+import com.tokopedia.epharmacy.network.response.EPharmacyUpdateCartResponse
 import com.tokopedia.epharmacy.usecase.EPharmacyGetConsultationDetailsUseCase
 import com.tokopedia.epharmacy.usecase.EPharmacyInitiateConsultationUseCase
+import com.tokopedia.epharmacy.usecase.EPharmacyUpdateCartUseCase
 import com.tokopedia.epharmacy.utils.EPharmacyMiniConsultationToaster
 import com.tokopedia.epharmacy.utils.EPharmacyUploadError
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
@@ -29,6 +32,7 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
     private val ePharmacyPrepareProductsGroupUseCase: EPharmacyPrepareProductsGroupUseCase,
     private val ePharmacyInitiateConsultationUseCase: EPharmacyInitiateConsultationUseCase,
     private val ePharmacyGetConsultationDetailsUseCase: EPharmacyGetConsultationDetailsUseCase,
+    private val ePharmacyUpdateCartUseCase: EPharmacyUpdateCartUseCase,
     @CoroutineBackgroundDispatcher private val dispatcherBackground: CoroutineDispatcher
 ) : BaseViewModel(dispatcherBackground) {
 
@@ -46,6 +50,9 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
 
     private val _consultationDetails = MutableLiveData<Result<EPharmacyConsultationDetails>>()
     val consultationDetails: LiveData<Result<EPharmacyConsultationDetails>> = _consultationDetails
+
+    private val _updateEPharmacyCart = MutableLiveData<Result<EPharmacyUpdateCartResponse.UpdateEPharmacyCart>>()
+    val updateEPharmacyCart: LiveData<Result<EPharmacyUpdateCartResponse.UpdateEPharmacyCart>> = _updateEPharmacyCart
 
     var ePharmacyPrepareProductsGroupResponseData: EPharmacyPrepareProductsGroupResponse ? = null
 
@@ -74,6 +81,15 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
             ::onSuccessGetConsultationDetails,
             ::onFailGetConsultationDetails,
             consultationId
+        )
+    }
+
+    fun updateEPharmacyCart(params: EPharmacyUpdateCartParam) {
+        ePharmacyUpdateCartUseCase.cancelJobs()
+        ePharmacyUpdateCartUseCase.updateEPharmacyCart(
+            ::onSuccessUpdateEPharmacyCart,
+            ::onFailUpdateEPharmacyCart,
+            params
         )
     }
 
@@ -107,6 +123,14 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         }
     }
 
+    private fun onSuccessUpdateEPharmacyCart(response: EPharmacyUpdateCartResponse) {
+        response.updateEPharmacyCart?.let { data ->
+            _updateEPharmacyCart.value = Success(data)
+        } ?: kotlin.run {
+            onFailUpdateEPharmacyCart(Throwable("Data Invalid"))
+        }
+    }
+
     private fun showToastData(toaster: EPharmacyPrepareProductsGroupResponse.EPharmacyToaster?) {
         toaster?.message?.let { message ->
             if (PRESCRIPTION_ATTACH_SUCCESS == toaster.type) {
@@ -127,6 +151,10 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
 
     private fun onFailGetConsultationDetails(throwable: Throwable) {
         _consultationDetails.postValue(Fail(throwable))
+    }
+
+    private fun onFailUpdateEPharmacyCart(throwable: Throwable) {
+        _updateEPharmacyCart.postValue(Fail(throwable))
     }
 
     fun getResultForCheckout(): ArrayList<EPharmacyMiniConsultationResult> {

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_REQUEST_CODE
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
@@ -49,6 +50,7 @@ class EPharmacyAttachPrescriptionActivity : BaseSimpleActivity(), HasComponent<E
 
     private fun extractBundleForFragment(): Bundle {
         return Bundle().apply {
+            putInt(EPHARMACY_CONSULTATION_REQUEST_CODE, intent.getIntExtra(EPHARMACY_CONSULTATION_REQUEST_CODE, 0))
             intent?.data?.let { uri ->
                 putLong(EPHARMACY_TOKO_CONSULTATION_ID, uri.getQueryParameter(EPHARMACY_TOKO_CONSULTATION_ID).toLongOrZero())
             }

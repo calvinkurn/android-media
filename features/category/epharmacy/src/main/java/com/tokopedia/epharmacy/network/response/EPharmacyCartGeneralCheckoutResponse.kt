@@ -14,14 +14,10 @@ data class EPharmacyCartGeneralCheckoutResponse(
         const val ERROR = 0
     }
 
-    class EPharmacyCartGeneralCheckoutUiModel {
-
-    }
-
     data class CheckoutResponse(
         @SerializedName("data")
         @Expose
-        val checkoutData: CheckoutData?,
+        val checkoutData: CheckoutData?
     ) {
         data class CheckoutData(
             @SerializedName("data")
@@ -41,6 +37,9 @@ data class EPharmacyCartGeneralCheckoutResponse(
                 @SerializedName("callback_url")
                 @Expose
                 val callbackUrl: String?,
+                @SerializedName("callback_fail_url")
+                @Expose
+                val callbackFailUrl: String?,
                 @SerializedName("parameter")
                 @Expose
                 val parameter: Parameter?,

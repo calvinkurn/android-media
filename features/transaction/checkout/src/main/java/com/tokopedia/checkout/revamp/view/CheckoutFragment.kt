@@ -2004,10 +2004,6 @@ class CheckoutFragment :
                     ApplinkConstInternalPayment.PAYMENT_CHECKOUT
                 )
             intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
-            intent.putExtra(
-                PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT,
-                checkoutResult.hasClearPromoBeforeCheckout
-            )
             startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
         }
     }

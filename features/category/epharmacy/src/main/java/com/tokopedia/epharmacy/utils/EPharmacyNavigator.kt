@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.common_epharmacy.EPHARMACY_CHECKOUT_CONSULTATION_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_RESULT_EXTRA
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
@@ -53,8 +54,11 @@ internal object EPharmacyNavigator {
         )
     }
 
-    internal fun prescriptionAttachmentDoneRedirection(activity: Activity?, appLink: String?, result: ArrayList<EPharmacyMiniConsultationResult>) {
+    internal fun prescriptionAttachmentDoneRedirection(activity: Activity?, appLink: String?, requestCode: Int?, result: ArrayList<EPharmacyMiniConsultationResult>): Boolean {
         if (!appLink.isNullOrBlank() && appLink.contains(EPHARMACY_APP_CHECKOUT_APPLINK)) {
+            if (requestCode == EPHARMACY_CHECKOUT_CONSULTATION_REQUEST_CODE) {
+                return true
+            }
             activity?.setResult(
                 EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE,
                 Intent().apply {
@@ -74,6 +78,7 @@ internal object EPharmacyNavigator {
         } else {
             RouteManager.route(activity, appLink)
         }
+        return false
     }
 
     fun navigateToQuantityBottomSheet(childFragmentManager: FragmentManager) {
