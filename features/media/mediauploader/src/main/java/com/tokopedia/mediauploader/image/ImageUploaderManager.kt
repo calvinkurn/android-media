@@ -2,9 +2,15 @@ package com.tokopedia.mediauploader.image
 
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.UploaderManager
-import com.tokopedia.mediauploader.common.data.consts.*
-import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
+import com.tokopedia.mediauploader.common.data.consts.FILE_NOT_FOUND
+import com.tokopedia.mediauploader.common.data.consts.SOURCE_NOT_FOUND
+import com.tokopedia.mediauploader.common.data.consts.UNKNOWN_ERROR
+import com.tokopedia.mediauploader.common.data.consts.formatNotAllowedMessage
+import com.tokopedia.mediauploader.common.data.consts.maxFileSizeMessage
+import com.tokopedia.mediauploader.common.data.consts.maxResBitmapMessage
+import com.tokopedia.mediauploader.common.data.consts.minResBitmapMessage
+import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.common.di.UploaderQualifier
 import com.tokopedia.mediauploader.common.logger.DebugLog
 import com.tokopedia.mediauploader.common.logger.onShowDebugLogcat
@@ -14,17 +20,13 @@ import com.tokopedia.mediauploader.common.util.isMaxBitmapResolution
 import com.tokopedia.mediauploader.common.util.isMaxFileSize
 import com.tokopedia.mediauploader.common.util.isMinBitmapResolution
 import com.tokopedia.mediauploader.image.data.params.ImageUploadParam
-import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
-import com.tokopedia.mediauploader.image.domain.GetImageSecurePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
 import java.io.File
 import javax.inject.Inject
 
 class ImageUploaderManager @Inject constructor(
     @UploaderQualifier private val policyManager: SourcePolicyManager,
-    private val imagePolicyUseCase: GetImagePolicyUseCase,
     private val imageUploaderUseCase: GetImageUploaderUseCase,
-    private val imageSecurePolicyUseCase: GetImageSecurePolicyUseCase
 ) : UploaderManager {
 
     suspend operator fun invoke(
@@ -36,10 +38,7 @@ class ImageUploaderManager @Inject constructor(
         extraBody: Map<String, String>
     ): UploadResult {
         if (sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
-
-        // hit the uploader policy
-        val policy = if (isSecure) imageSecurePolicyUseCase(sourceId) else imagePolicyUseCase(sourceId)
-        policyManager.set(policy)
+        val policy = policyManager.get() ?: return UploadResult.Error(UNKNOWN_ERROR)
 
         return validateError(policy, file) ?: kotlin.run {
             setProgressUploader(loader)
@@ -105,18 +104,18 @@ class ImageUploaderManager @Inject constructor(
                 !file.exists() -> {
                     UploadResult.Error(FILE_NOT_FOUND)
                 }
-//                file.isMaxFileSize(maxFileSize) -> {
-//                    UploadResult.Error(maxFileSizeMessage(maxFileSize))
-//                }
-//                !allowedExt(filePath, imagePolicy.extension) -> {
-//                    UploadResult.Error(formatNotAllowedMessage(imagePolicy.extension))
-//                }
-//                filePath.isMaxBitmapResolution(maxRes.width, maxRes.height) -> {
-//                    UploadResult.Error(maxResBitmapMessage(maxRes.width, maxRes.height))
-//                }
-//                filePath.isMinBitmapResolution(minRes.width, minRes.height) -> {
-//                    UploadResult.Error(minResBitmapMessage(minRes.width, minRes.height))
-//                }
+                file.isMaxFileSize(maxFileSize) -> {
+                    UploadResult.Error(maxFileSizeMessage(maxFileSize))
+                }
+                !allowedExt(filePath, imagePolicy.extension) -> {
+                    UploadResult.Error(formatNotAllowedMessage(imagePolicy.extension))
+                }
+                filePath.isMaxBitmapResolution(maxRes.width, maxRes.height) -> {
+                    UploadResult.Error(maxResBitmapMessage(maxRes.width, maxRes.height))
+                }
+                filePath.isMinBitmapResolution(minRes.width, minRes.height) -> {
+                    UploadResult.Error(minResBitmapMessage(minRes.width, minRes.height))
+                }
                 else -> {
                     null
                 }

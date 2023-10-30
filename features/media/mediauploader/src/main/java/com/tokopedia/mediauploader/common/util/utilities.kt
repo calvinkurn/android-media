@@ -37,22 +37,6 @@ fun String.fileExtension(): String {
     }
 }
 
-fun isVideoFormat(path: String): Boolean {
-    val extension = path.fileExtension()
-    val prefix = "video"
-
-    val mimeType =
-        if (TextUtils.isEmpty(extension)) {
-            URLConnection.guessContentTypeFromName(path)
-        } else {
-            MimeTypeMap
-                .getSingleton()
-                .getMimeTypeFromExtension(extension)
-        }
-
-    return mimeType != null && mimeType.startsWith(prefix)
-}
-
 fun File.isMaxFileSize(maxFileSize: Int): Boolean {
     return this.length() > maxFileSize
 }
@@ -118,16 +102,10 @@ suspend fun request(
     } catch (e: StreamResetException) {
         uploaderManager.setError(TIMEOUT_ERROR, sourceId, file)
     } catch (e: Exception) {
-        if (e !is UnknownHostException &&
-            e !is SocketException &&
-            e !is InterruptedIOException &&
-            e !is ConnectionShutdownException &&
-            e !is CancellationException
-        ) {
-            @Suppress("UselessCallOnNotNull")
-            if (Log.getStackTraceString(e).orEmpty().isNotEmpty()) {
-                trackToTimber(sourceId, Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim())
-            }
+        val stackTrace = Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()
+
+        if (stackTrace.isNotEmpty()) {
+            trackToTimber(sourceId, stackTrace)
         }
 
         uploaderManager.setError(NETWORK_ERROR, sourceId, file)

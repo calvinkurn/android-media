@@ -13,14 +13,12 @@ import com.tokopedia.mediauploader.common.util.isMaxFileSize
 import com.tokopedia.mediauploader.common.util.mbToBytes
 import com.tokopedia.mediauploader.video.data.entity.VideoPolicy
 import com.tokopedia.mediauploader.video.data.params.VideoCompressionParam
-import com.tokopedia.mediauploader.video.domain.GetVideoPolicyUseCase
 import com.tokopedia.mediauploader.video.domain.SetVideoCompressionUseCase
 import java.io.File
 import javax.inject.Inject
 
 class VideoUploaderManager @Inject constructor(
     @UploaderQualifier private val policyManager: SourcePolicyManager,
-    private val policyUseCase: GetVideoPolicyUseCase,
     private val videoCompression: SetVideoCompressionUseCase,
     private val simpleUploaderManager: SimpleUploaderManager,
     private val largeUploaderManager: LargeUploaderManager,
@@ -39,9 +37,7 @@ class VideoUploaderManager @Inject constructor(
     ): UploadResult {
         if (sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
 
-        // hit uploader policy
-        val policy = policyUseCase(sourceId)
-        policyManager.set(policy)
+        val policy = policyManager.get() ?: return UploadResult.Error(UNKNOWN_ERROR)
 
         // init tracker
         val trackerCacheKey = analytics.key(sourceId, file.path)

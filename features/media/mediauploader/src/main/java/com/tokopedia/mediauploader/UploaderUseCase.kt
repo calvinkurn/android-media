@@ -6,10 +6,9 @@ import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.common.util.isVideoFormat
-import com.tokopedia.mediauploader.common.util.request
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.video.VideoUploaderManager
+import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.Dispatchers
 import java.io.File
@@ -17,7 +16,8 @@ import javax.inject.Inject
 
 class UploaderUseCase @Inject constructor(
     private val imageUploaderManager: ImageUploaderManager,
-    private val videoUploaderManager: VideoUploaderManager
+    private val videoUploaderManager: VideoUploaderManager,
+    private val sourcePolicyUseCase: GetSourcePolicyUseCase
 ) : CoroutineUseCase<RequestParams, UploadResult>(Dispatchers.IO) {
 
     private var progressUploader: ProgressUploader? = null
@@ -44,6 +44,15 @@ class UploaderUseCase @Inject constructor(
         isRetriable = params.getBoolean(PARAM_IS_RETRY, false)
         extraHeader = params.getObject(PARAM_EXTRA_HEADER) as Map<String, String>
         extraBody = params.getObject(PARAM_EXTRA_BODY) as Map<String, String>
+
+        val param = GetSourcePolicyUseCase.Param(
+            sourceId = sourceId,
+            file = file,
+            isSecure = isSecure
+        )
+
+        // get source policy based on file type and sourceId
+        sourcePolicyUseCase(param)
 
         return if (isVideoFormat(file.absolutePath)) {
             videoUploader()

@@ -2,6 +2,7 @@ package com.tokopedia.mediauploader.common.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.mediauploader.GetSourcePolicyUseCase
 import com.tokopedia.mediauploader.common.data.store.datastore.AnalyticsCacheDataStore
 import com.tokopedia.mediauploader.common.data.store.datastore.AnalyticsCacheDataStoreImpl
 import com.tokopedia.mediauploader.video.internal.VideoCompressor
@@ -37,6 +38,10 @@ import dagger.Provides
 abstract class MediaUploaderModule {
 
     // -- common --
+
+    @Binds
+    @UploaderQualifier
+    abstract fun provideGetSourcePolicyUseCase(impl: GetSourcePolicyUseCase): GetSourcePolicyUseCase
 
     @Binds
     @UploaderQualifier
