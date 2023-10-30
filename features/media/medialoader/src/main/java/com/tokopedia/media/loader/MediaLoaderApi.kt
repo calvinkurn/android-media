@@ -71,6 +71,18 @@ internal object MediaLoaderApi {
         }
     }
 
+    fun loadGifImage(imageView: ImageView, source: Int, properties: Properties) {
+        val context = imageView.context.applicationContext
+
+        if (context.isValid()) {
+            GlideApp
+                .with(context)
+                .asGif()
+                .load(source)
+                .delayInto(imageView, properties)
+        }
+    }
+
     fun setThumbnailUrl(context: Context, properties: Properties): RequestBuilder<Bitmap>? {
         if (properties.thumbnailUrl.isEmpty()) return null
 

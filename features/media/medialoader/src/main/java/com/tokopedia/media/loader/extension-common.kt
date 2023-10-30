@@ -22,6 +22,15 @@ fun ImageView.loadAsGif(
         .isGif(true)
 )
 
+fun ImageView.loadAsGif(
+    resource: Int
+) = loadGifImage(
+    this,
+    resource,
+    Properties()
+        .isGif(true)
+)
+
 /**
  * An ImageLoader for loading GIF images into an ImageView on Android. This class provides methods to
  * efficiently load and display GIF images in an ImageView with additional options for customization and control.
