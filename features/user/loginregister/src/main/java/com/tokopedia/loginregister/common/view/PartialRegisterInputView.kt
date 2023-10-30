@@ -131,6 +131,7 @@ class PartialRegisterInputView : BaseCustomView {
     }
 
     fun onErrorInputEmailPhoneValidate(message: String?) {
+        hideEmailExtension()
         setWrapperInputEmailPhoneError(viewBinding.inputEmailPhone, message)
     }
 

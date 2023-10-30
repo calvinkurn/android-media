@@ -6,8 +6,8 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.util.Log
 import android.os.Trace
+import android.util.Log
 import android.view.Choreographer
 import android.view.View
 import androidx.lifecycle.LifecycleCoroutineScope
@@ -234,14 +234,17 @@ class BlocksPerformanceTrace(
             ATTR_CONDITION,
             state.name
         )
+        val setOfLoadableComponent = listOfFinishedLoadableComponent.toMutableSet()
+        val attr = setOfLoadableComponent.map { it }.joinToString(
+            prefix = "[",
+            separator = ", ",
+            postfix = "]",
+            truncated = "..."
+        )
+
         targetPerfMonitoring?.putCustomAttribute(
             ATTR_BLOCKS,
-            listOfFinishedLoadableComponent.map { it }.joinToString(
-                prefix = "[",
-                separator = ", ",
-                postfix = "]",
-                truncated = "..."
-            )
+            attr
         )
         targetPerfMonitoring?.stopTrace()
 

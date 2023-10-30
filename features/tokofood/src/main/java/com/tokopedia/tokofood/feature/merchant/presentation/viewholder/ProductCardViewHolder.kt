@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.util.TokofoodExt
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
@@ -176,13 +177,23 @@ class ProductCardViewHolder(
             }
         }
         if (productUiModel.isCustomizable) {
-            binding.orderDetailLayout.hide()
+            binding.run {
+                orderDetailLayout.hide()
+                addCatatanButton.hide()
+                removeProductFromCartButton.hide()
+                qeuProductQtyEditor.hide()
+            }
             binding.atcButton.show()
         } else {
-            binding.orderDetailLayout.isVisible = productUiModel.isAtc
+            binding.run {
+                orderDetailLayout.showWithCondition(productUiModel.isAtc)
+                addCatatanButton.showWithCondition(productUiModel.isAtc)
+                removeProductFromCartButton.showWithCondition(productUiModel.isAtc)
+                qeuProductQtyEditor.showWithCondition(productUiModel.isAtc)
+            }
             binding.atcButton.isVisible = !productUiModel.isAtc
         }
-        if (binding.orderDetailLayout.isVisible) {
+        if (!productUiModel.isCustomizable && productUiModel.isAtc) {
             context?.run {
                 if (productUiModel.orderNote.isBlank()) {
                     val addNoteIcon = ContextCompat.getDrawable(this, com.tokopedia.tokofood.R.drawable.ic_add_note)
@@ -196,6 +207,7 @@ class ProductCardViewHolder(
             binding.qeuProductQtyEditor.setValue(productUiModel.orderQty)
             canUpdateQuantity = true
         }
+
         // atc button wording e.g. Pesan or 2 Pesanan
         val customOrderCount = productUiModel.customOrderDetails.size
         if (customOrderCount.isMoreThanZero() && productUiModel.isCustomizable) {
