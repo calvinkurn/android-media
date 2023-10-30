@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
-import com.tkpd.library.utils.ImageHandler
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -13,6 +12,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.favorite.R
 import com.tokopedia.favorite.utils.TrackingConst
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopUiModel
+import com.tokopedia.media.loader.loadImageCenterCrop
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.track.TrackApp
 import java.util.*
 
@@ -58,13 +59,13 @@ class FavoriteShopViewHolder(itemView: View) : AbstractViewHolder<FavoriteShopUi
             locationTextview!!.text = favoriteShop.shopLocation
         }
         if (favoriteShop.shopAvatarImageUrl != null) {
-            ImageHandler.loadImageFit2(
-                    itemView.context, avatarImageView, favoriteShop.shopAvatarImageUrl)
+            avatarImageView?.loadImageCenterCrop(favoriteShop.shopAvatarImageUrl)
         }
+
         val badgeUrl = favoriteShop.badgeUrl
         if (badgeUrl != null && !badgeUrl.isEmpty()) {
             badgeIcon!!.visibility = View.VISIBLE
-            ImageHandler.loadImageFit2(itemView.context, badgeIcon, favoriteShop.badgeUrl)
+            badgeIcon?.loadImageCenterCrop(favoriteShop.badgeUrl)
         } else {
             badgeIcon!!.visibility = View.GONE
         }

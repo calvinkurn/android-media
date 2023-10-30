@@ -129,6 +129,13 @@ inline fun ImageView.loadImageFitCenter(
     .apply(properties)
     .fitCenter())
 
+inline fun ImageView.loadImageCenterCrop(
+    url: String?,
+    crossinline properties: Properties.() -> Unit = {}
+) = call(url, Properties()
+    .apply(properties)
+    .centerCrop())
+
 inline fun ImageView.loadImageWithoutPlaceholder(
     url: String?,
     crossinline properties: Properties.() -> Unit = {}

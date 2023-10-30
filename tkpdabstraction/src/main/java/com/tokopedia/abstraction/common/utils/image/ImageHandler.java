@@ -411,7 +411,7 @@ public class ImageHandler {
     }
 
     public static void loadImageRounded2(Context context, final ImageView imageview, final String url) {
-        loadImageRounded2(context, imageview, url, 5.0f);
+//        loadImageRounded2(context, imageview, url, 5.0f);
     }
 
     public static void loadImageRounded2(Context context, final ImageView imageview, final int resourceDrawable, float radius) {
@@ -436,6 +436,7 @@ public class ImageHandler {
         }
     }
 
+    // done
     public static void loadImageRounded(Context context, final ImageView imageview, final String url, float radius) {
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
