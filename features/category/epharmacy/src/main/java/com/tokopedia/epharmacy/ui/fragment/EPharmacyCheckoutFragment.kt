@@ -9,6 +9,9 @@ import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.common.payment.PaymentConstant
+import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.databinding.EpharmacyCheckoutChatDokterFragmentBinding
 import com.tokopedia.epharmacy.di.EPharmacyComponent
@@ -24,7 +27,6 @@ import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.epharmacy.viewmodel.EPharmacyCheckoutViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -254,12 +256,27 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     private fun onSuccessCartCheckout(result: Success<EPharmacyCartGeneralCheckoutResponse>) {
         when (result.data.checkout?.checkoutData?.success) {
             EPharmacyCartGeneralCheckoutResponse.ERROR -> showToast(TYPE_ERROR, result.data.checkout?.checkoutData?.message.orEmpty())
-            EPharmacyCartGeneralCheckoutResponse.SUCCESS -> successCheckout(result.data.checkout?.checkoutData?.cartGeneralResponse?.redirectUrl)
+            EPharmacyCartGeneralCheckoutResponse.SUCCESS -> successCheckout(result.data.checkout?.checkoutData?.cartGeneralResponse)
         }
     }
 
-    private fun successCheckout(redirectUrl: String?) {
-        RouteManager.route(context, redirectUrl)
+    private fun successCheckout(checkoutData: EPharmacyCartGeneralCheckoutResponse.CheckoutResponse.CheckoutData.CartGeneralResponse?) {
+        val paymentPassData = PaymentPassData()
+        PaymentPassData().apply {
+            redirectUrl = checkoutData?.redirectUrl
+            transactionId = checkoutData?.parameter?.transactionId
+            paymentId = checkoutData?.parameter?.transactionId
+            callbackSuccessUrl = checkoutData?.callbackUrl
+            callbackFailedUrl = checkoutData?.callbackFailUrl
+            queryString = checkoutData?.queryString
+        }
+        val intent =
+            RouteManager.getIntent(
+                activity,
+                ApplinkConstInternalPayment.PAYMENT_CHECKOUT
+            )
+        intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+        startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
     }
 
     private fun onFailCartCheckout() {
@@ -279,7 +296,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun sendViewCheckoutPageEvent (eventLabel: String) {
+    private fun sendViewCheckoutPageEvent(eventLabel: String) {
         Tracker.Builder()
             .setEvent("viewGroceriesIris")
             .setEventAction("view checkout page")
@@ -292,7 +309,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
             .send()
     }
 
-    private fun sendClickPilihPembayaranEvent (eventLabel: String) {
+    private fun sendClickPilihPembayaranEvent(eventLabel: String) {
         Tracker.Builder()
             .setEvent("clickGroceries")
             .setEventAction("click pilih pembayaran")
@@ -305,7 +322,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
             .send()
     }
 
-    fun sendClickBackEvent (eventLabel: String) {
+    fun sendClickBackEvent(eventLabel: String) {
         Tracker.Builder()
             .setEvent("clickGroceries")
             .setEventAction("click back")

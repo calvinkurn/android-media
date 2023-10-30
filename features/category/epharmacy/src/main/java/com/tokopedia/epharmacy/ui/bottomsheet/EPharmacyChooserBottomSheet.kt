@@ -29,11 +29,9 @@ import com.tokopedia.epharmacy.utils.MINI_CONS_CHOOSER_IMAGE_URL_DISABLED
 import com.tokopedia.epharmacy.utils.UPLOAD_CHOOSER_IMAGE_URL
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.track.builder.Tracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -147,7 +145,6 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                 chooserMiniConsultation.lblPAPTittleOptionBottomsheet.text = res.getString(R.string.epharmacy_mini_consult_chooser_title)
                 chooserMiniConsultation.lblPAPDescriptionOptionBottomsheet.text = res.getString(R.string.eepharmacy_mini_consult_chooser_subtitle)
                 chooserMiniConsultation.stepIcon.loadImage(MINI_CONS_CHOOSER_IMAGE_URL)
-                chooserMiniConsultation.baruLabel.show()
                 if (enableImageURL.isNotBlank()) {
                     bottomImageLogo.show()
                     bottomImageLogo.loadImage(enableImageURL)
@@ -173,7 +170,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
 
     private fun renderDuration(durationText: String?) {
         binding?.chooserMiniConsultation?.apply {
-            if(durationText?.isNotBlank().orFalse()){
+            if (durationText?.isNotBlank().orFalse()) {
                 duration.show()
                 durationValue.show()
                 durationValue.text = durationText
@@ -183,7 +180,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
 
     private fun renderPrice(priceText: String?) {
         binding?.chooserMiniConsultation?.apply {
-            if(priceText?.isNotBlank().orFalse()){
+            if (priceText?.isNotBlank().orFalse()) {
                 fee.show()
                 feeValue.show()
                 feeValue.text = priceText

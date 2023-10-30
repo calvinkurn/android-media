@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_epharmacy.EPHARMACY_CEK_RESEP_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_CHOOSER_REQUEST_CODE
+import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_CHECKOUT
 import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_PAP
@@ -30,11 +31,14 @@ import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyShimmerDataModel
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.params.InitiateConsultationParam
+import com.tokopedia.epharmacy.network.request.EPharmacyUpdateCartParam
 import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationResponse
+import com.tokopedia.epharmacy.network.response.EPharmacyUpdateCartResponse
 import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyReminderScreenBottomSheet
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.ATTACH_PRESCRIPTION_PAGE
 import com.tokopedia.epharmacy.utils.EPHARMACY_ANDROID_SOURCE
 import com.tokopedia.epharmacy.utils.EPHARMACY_APPLINK
+import com.tokopedia.epharmacy.utils.EPHARMACY_APP_CHECKOUT_APPLINK
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_NAME
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
@@ -87,6 +91,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private var tConsultationId = 0L
     private var source = EPHARMACY_PPG_SOURCE_PAP
+    private var requestCode = 0
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -134,7 +139,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun initArguments() {
         tConsultationId = arguments?.getLong(EPHARMACY_TOKO_CONSULTATION_ID).orZero()
-
+        requestCode = arguments?.getInt(EPHARMACY_CONSULTATION_REQUEST_CODE).orZero()
         source = if (!tConsultationId.isZero()) {
             EPHARMACY_PPG_UOH
         } else {
@@ -148,6 +153,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         observerPrescriptionError()
         observerInitiateConsultation()
         observerConsultationDetails()
+        observerUpdateEPharmacyCart()
     }
 
     private fun initViews(view: View) {
@@ -264,6 +270,25 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             }
         }
     }
+
+    private fun observerUpdateEPharmacyCart() {
+        ePharmacyPrescriptionAttachmentViewModel.updateEPharmacyCart.observe(viewLifecycleOwner) { updateEPharmacyCart ->
+            when (updateEPharmacyCart) {
+                is Success -> {
+                    if (updateEPharmacyCart.data.status == EPharmacyUpdateCartResponse.UpdateEPharmacyCart.Status.SUCCESS) {
+                        onSuccessUpdateEPharmacyCart()
+                    } else if (updateEPharmacyCart.data.header?.errorMessage.orEmpty().isNotBlank()) {
+                        showToast(TYPE_ERROR, updateEPharmacyCart.data.header?.errorMessage.orEmpty())
+                    }
+                }
+                is Fail -> {
+                    showToasterError(updateEPharmacyCart.throwable)
+                }
+            }
+        }
+    }
+
+    private fun onSuccessUpdateEPharmacyCart() = RouteManager.route(context, EPHARMACY_APP_CHECKOUT_APPLINK)
 
     private fun onFailGetConsultationDetails(throwable: Throwable) {
         showToasterError(throwable)
@@ -437,7 +462,21 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             ePharmacyPrescriptionAttachmentViewModel.getGroupIds().toString(),
             EPharmacyUtils.getPrescriptionIds(ePharmacyPrescriptionAttachmentViewModel.ePharmacyPrepareProductsGroupResponseData).toString()
         )
-        EPharmacyNavigator.prescriptionAttachmentDoneRedirection(activity, appLink, ePharmacyPrescriptionAttachmentViewModel.getResultForCheckout())
+
+        EPharmacyNavigator.prescriptionAttachmentDoneRedirection(
+            activity,
+            appLink,
+            requestCode,
+            ePharmacyPrescriptionAttachmentViewModel.getResultForCheckout()
+        ).let { isUpdateCart ->
+            if (isUpdateCart) {
+                ePharmacyPrescriptionAttachmentViewModel.updateEPharmacyCart(getUpdateCartRequestParams())
+            }
+        }
+    }
+
+    private fun getUpdateCartRequestParams(): EPharmacyUpdateCartParam {
+        return ePharmacyAttachmentUiUpdater.getUpdateCartParams(tConsultationId)
     }
 
     private fun hasAnyError(): Boolean {

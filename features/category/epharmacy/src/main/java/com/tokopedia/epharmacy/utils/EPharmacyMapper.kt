@@ -30,7 +30,7 @@ object EPharmacyMapper {
             group.consultationSource?.priceStr,
             group.consultationSource?.operatingSchedule,
             group.consultationSource?.note,
-            getTickerData(group,shopIndex),
+            getTickerData(group, shopIndex),
             getQuantityChangedModel(info),
             group.consultationData?.prescription,
             group.consultationData?.partnerConsultationId,
@@ -47,7 +47,7 @@ object EPharmacyMapper {
         )
     }
 
-    private fun getSubProductsModel(shopInfo: EProductInfo?): List<BaseEPharmacyDataModel>? {
+    private fun getSubProductsModel(shopInfo: EProductInfo?): List<BaseEPharmacyDataModel> {
         return getProductVisitablesWithoutFirst(shopInfo)
     }
 
@@ -69,17 +69,19 @@ object EPharmacyMapper {
     }
 
     private fun getTickerData(group: EGroup, shopIndex: Int): EGroup.Ticker? {
-        return if(shopIndex == 0 && group.ticker?.message?.isNotBlank() == true){
+        return if (shopIndex == 0 && group.ticker?.message?.isNotBlank() == true) {
             group.ticker
-        } else null
+        } else {
+            null
+        }
     }
 
     private fun getQuantityChangedModel(info: EGroup.ProductsInfo?): EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product.QtyComparison? {
         return getQuantityChangedModelProduct(info?.products?.firstOrNull())
     }
 
-    private fun getQuantityChangedModelProduct(product: EGroup.ProductsInfo.Product?) : EGroup.ProductsInfo.Product.QtyComparison?{
-        return product?.qtyComparison.apply { product?.qtyComparison?.subTotal = product?.price.orZero() *  product?.qtyComparison?.initialQty?.toDouble().orZero()}
+    private fun getQuantityChangedModelProduct(product: EGroup.ProductsInfo.Product?): EGroup.ProductsInfo.Product.QtyComparison? {
+        return product?.qtyComparison.apply { product?.qtyComparison?.subTotal = product?.price.orZero() * product?.qtyComparison?.initialQty?.toDouble().orZero() }
     }
 
     private fun getUniqueModelName(ePharmacyGroupId: String?, index: Int): String {

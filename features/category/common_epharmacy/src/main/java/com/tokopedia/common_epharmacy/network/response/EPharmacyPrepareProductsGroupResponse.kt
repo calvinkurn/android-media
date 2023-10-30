@@ -208,7 +208,7 @@ data class EPharmacyPrepareProductsGroupResponse(
                         @SerializedName("product_id")
                         val productId: Long?,
                         @SerializedName("cart_id")
-                        val cartId: String?,
+                        val cartId: Long?,
                         @SerializedName("product_image")
                         val productImage: String?,
                         @SerializedName("product_total_weight_fmt")
