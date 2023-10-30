@@ -139,6 +139,7 @@ class ShortsUploadManager @Inject constructor(
         uploadData: CreationUploadData.Shorts,
     ) {
         this.uploadData = uploadData
+        this.isUploadShortsMedia = false
     }
 
     private suspend fun uploadMedia(

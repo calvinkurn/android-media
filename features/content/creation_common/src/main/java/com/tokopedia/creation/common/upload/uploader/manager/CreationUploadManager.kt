@@ -12,11 +12,12 @@ abstract class CreationUploadManager(
     private val notificationManager: CreationUploadNotificationManager?
 ) {
 
-    private var currentProgress = 0
+    private var mCurrentProgress = 0
 
-    protected var mListener: CreationUploadManagerListener? = null
+    private var mListener: CreationUploadManagerListener? = null
 
-    fun setListener(listener: CreationUploadManagerListener) {
+    fun setupManager(listener: CreationUploadManagerListener) {
+        mCurrentProgress = 0
         mListener = listener
     }
 
@@ -29,9 +30,9 @@ abstract class CreationUploadManager(
         uploadData: CreationUploadData,
         progress: Int,
     ) {
-        currentProgress = progress
-        broadcastProgress(uploadData, CreationUploadStatus.Upload, currentProgress)
-        notificationManager?.onProgress(currentProgress)
+        mCurrentProgress = progress
+        broadcastProgress(uploadData, CreationUploadStatus.Upload, mCurrentProgress)
+        notificationManager?.onProgress(mCurrentProgress)
     }
 
     protected suspend fun broadcastInit(
@@ -59,7 +60,7 @@ abstract class CreationUploadManager(
     protected fun broadcastProgress(
         uploadData: CreationUploadData,
         uploadStatus: CreationUploadStatus,
-        progress: Int = currentProgress,
+        progress: Int = mCurrentProgress,
     ) {
         mListener?.setProgress(uploadData, progress, uploadStatus)
     }

@@ -73,7 +73,7 @@ class StoriesUploadManager @Inject constructor(
             Exception("StoriesUploadManager is not receiving CreationUploadData.Stories data")
         )
 
-        this.uploadData = uploadData
+        setupInitialData(uploadData)
 
         withContext(dispatchers.main) {
             uploaderUseCase.trackProgress { progress, progressType ->
@@ -126,6 +126,11 @@ class StoriesUploadManager @Inject constructor(
                 )
             }
         }
+    }
+
+    private fun setupInitialData(uploadData: CreationUploadData.Stories) {
+        this.uploadData = uploadData
+        this.isUploadStoryMedia = false
     }
 
     private suspend fun updateStoryStatus(

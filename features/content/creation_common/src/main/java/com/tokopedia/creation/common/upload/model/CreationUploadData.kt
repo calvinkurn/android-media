@@ -251,8 +251,6 @@ sealed interface CreationUploadData {
         private const val KEY_IMAGE_SOURCE_ID = "image_source_id"
         private const val KEY_VIDEO_SOURCE_ID = "video_source_id"
         private const val KEY_DRAFT_ID = "draftId"
-        private const val KEY_IMAGE_SOURCE_ID = "imageSourceId"
-        private const val KEY_VIDEO_SOURCE_ID = "videoSourceId"
 
         fun parseFromJson(json: String, gson: Gson): CreationUploadData {
             val uploadDataEntity = gson.fromJson<CreationUploadQueueEntity>(
