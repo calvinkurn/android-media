@@ -47,9 +47,7 @@ class BalanceWidgetView : FrameLayout {
     }
 
     init {
-        val layout = if(HomeRollenceController.isUsingAtf2Variant())
-            R.layout.layout_item_widget_balance_widget_atf2
-        else R.layout.layout_item_widget_balance_widget
+        val layout = R.layout.layout_item_widget_balance_widget_atf2
         val view = LayoutInflater.from(context).inflate(layout, this)
         rvBalance = view.findViewById(R.id.rv_balance_widget)
         this.itemView = view
@@ -106,9 +104,8 @@ class BalanceWidgetView : FrameLayout {
     fun getSubscriptionView(): View? {
         val firstViewHolder = rvBalance?.findViewHolderForAdapterPosition(DEFAULT_POSITION_BALANCE_WIDGET)
         firstViewHolder?.let {
-            if (it is BalanceWidgetViewHolder) {
-                return it.getSubscriptionView(subscriptionPosition)
-            }
+            // temporary removed,
+            // will need to be readded to show PLUS coachmark
         }
         return null
     }

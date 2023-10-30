@@ -4,7 +4,8 @@ sealed class DelegatePayload {
 
     data class UpdatePromoRecommendation(
         val isReload: Boolean = true,
-        val isPromoStateUpdated: Boolean = true
+        val isPromoStateUpdated: Boolean = true,
+        val isPromoStartAnimating: Boolean = false
     ) : DelegatePayload()
 
     data class UpdatePromo(

@@ -23,7 +23,6 @@ import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRE
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_COMPLETE_INFO
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_GET_PM
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_HELP_CENTER
-import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_LEARN_MORE
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_LEARN_SHOP_PERFORMANCE
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_MERCHANT_TOOLS
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_SEE_ALL_BENEFIT
@@ -153,11 +152,6 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
     //shop performance - rm
     fun impressSeeAllBenefitPowerMerchant(isNewSeller: Boolean) {
         impressShopScoreItemEvent(if (isNewSeller) SHOP_SCORE_PAGE else TRANSITION_PERIOD_SHOP_SCORE, IMPRESSION_SEE_ALL_BENEFIT, isNewSeller)
-    }
-
-    //shop penalty
-    fun impressLearnMorePenaltyPage() {
-        impressShopScoreItemEvent(TRANSITION_PERIOD_PENALTY_PAGE, IMPRESSION_LEARN_MORE)
     }
 
     //shop penalty - detail

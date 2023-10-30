@@ -278,6 +278,7 @@ class CartViewModel @Inject constructor(
         private const val BO_AFFORDABILITY_WEIGHT_KILO = 1000
 
         const val GET_CART_STATE_DEFAULT = 0
+        const val GET_CART_STATE_AFTER_CHOOSE_ADDRESS = 1
 
         const val RECOMMENDATION_START_PAGE = 1
         const val ITEM_CHECKED_ALL_WITHOUT_CHANGES = 0
@@ -2883,5 +2884,20 @@ class CartViewModel @Inject constructor(
         return lastApplyUiModel.additionalInfo.usageSummaries
             .filter { it.isDiscount() }
             .sumOf { it.amount.toLong() }
+    }
+
+    fun clearAllBo(clearPromoOrderData: ClearPromoOrderData) {
+        viewModelScope.launch {
+            try {
+                clearCacheAutoApplyStackUseCase.setParams(
+                    ClearPromoRequest(
+                        ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                        orderData = clearPromoOrderData
+                    )
+                ).executeOnBackground()
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
+        }
     }
 }

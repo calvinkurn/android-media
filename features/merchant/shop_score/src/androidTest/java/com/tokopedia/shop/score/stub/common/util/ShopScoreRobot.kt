@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.SpannableString
 import android.text.style.ClickableSpan
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
@@ -29,20 +30,38 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 
 fun onIdView(id: Int): ViewInteraction = onView(allOf(withId(id)))
+
+fun onIndexedChild(id: Int, index: Int): ViewInteraction {
+    val parentMatcher = withId(id)
+    val matcher = object : TypeSafeMatcher<View>() {
+        override fun describeTo(description: Description?) {
+        }
+
+        override fun matchesSafely(item: View): Boolean {
+            return if (item.parent is ViewGroup) {
+                parentMatcher.matches(item.parent) &&
+                    (item.parent as? ViewGroup)?.getChildAt(index)?.equals(item) == true
+            } else {
+                parentMatcher.matches(item.parent)
+            }
+        }
+    }
+    return onView(matcher)
+}
 
 fun onContentDescPopup(string: String?): ViewInteraction =
     onView(withText(string))
         .inRoot(RootMatchers.isPlatformPopup())
 
-
 fun ViewInteraction.isViewDisplayed(): ViewInteraction = check(matches(isDisplayed()))
 fun ViewInteraction.isViewNotDisplayed(): ViewInteraction = check(matches(not(isDisplayed())))
 fun ViewInteraction.onClick(): ViewInteraction = perform(click())
 fun ViewInteraction.withTextStr(text: String?): ViewInteraction = check(matches(withText(text)))
-
 
 fun getTextHtml(context: Context, text: String): CharSequence? {
     val htmlString = HtmlLinkHelper(context, text)
@@ -75,7 +94,8 @@ fun smoothScrollToPenalty(positionItem: Int) {
     if (positionItem != RecyclerView.NO_POSITION) {
         onIdView(R.id.rvPenaltyPage).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                positionItem, scrollTo()
+                positionItem,
+                scrollTo()
             )
         )
     }
@@ -85,7 +105,8 @@ fun smoothScrollTo(positionItem: Int) {
     if (positionItem != RecyclerView.NO_POSITION) {
         onIdView(R.id.rvShopPerformance).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                positionItem, scrollTo()
+                positionItem,
+                scrollTo()
             )
         )
     }
@@ -95,7 +116,8 @@ fun smoothScrollToFaq(positionItem: Int) {
     if (positionItem != RecyclerView.NO_POSITION) {
         onIdView(R.id.rv_faq_shop_score).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                positionItem, scrollTo()
+                positionItem,
+                scrollTo()
             )
         )
     }
@@ -150,5 +172,5 @@ fun ShopPerformanceActivityStub.getShopPerformanceFragment(): ShopPerformanceFra
 }
 
 fun ShopPenaltyPageActivityStub.getShopPenaltyFragment(): ShopPenaltyPageFragmentStub {
-    return this.supportFragmentManager.findFragmentByTag("TAG_FRAGMENT") as ShopPenaltyPageFragmentStub
+    return this.supportFragmentManager.findFragmentByTag("f0") as ShopPenaltyPageFragmentStub
 }

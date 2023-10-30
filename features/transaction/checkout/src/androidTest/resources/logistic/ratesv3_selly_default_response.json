@@ -1,0 +1,273 @@
+[
+  {
+    "data": {
+      "ratesV3": {
+        "ratesv3": {
+          "id": ":2257:2257:1400",
+          "rates_id": "1697595837586131532",
+          "origin": {
+            "city_id": 174,
+            "city_name": "Kota Administrasi Jakarta Barat"
+          },
+          "destination": {
+            "city_id": 174,
+            "city_name": "Kota Administrasi Jakarta Barat"
+          },
+          "weight": "1.4 kg",
+          "type": "rates",
+          "error": {
+            "error_id": "",
+            "error_message": ""
+          },
+          "services": [
+            {
+              "service_name": "Instant 3 Jam",
+              "service_id": 1000,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "ui_rates_hidden": false,
+              "selected_shipper_product_id": 28,
+              "range_price": {
+                "min_price": 23000,
+                "max_price": 23000
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp23.000",
+                "text_etd": "Maks. 3 jam",
+                "text_notes": "",
+                "text_service_desc": "",
+                "text_eta_summarize": "Tiba dalam 2 jam",
+                "error_code": 0,
+                "text_service_ticker": ""
+              },
+              "features": {
+                "dynamic_price": {
+                  "text_label": ""
+                }
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "mvc": {
+                "is_mvc": 0,
+                "mvc_title": "",
+                "mvc_logo": "",
+                "mvc_error_message": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "2 Jam Tiba",
+                  "shipper_id": 10,
+                  "shipper_product_id": 28,
+                  "shipper_product_name": "",
+                  "shipper_product_desc": "Dengan kurir instan, kamu bisa pakai GoSend Car dan GoSend Bike (pengiriman maks. 3 jam \u0026 berat maks. 150kg). Setelah aktif, GoSend Car dan GoSend Bike otomatis masuk pilihan kurir, tidak ditampilkan di menu ini.",
+                  "is_show_map": 0,
+                  "shipper_weight": 1400,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "7QzpUYFzArXJyFMPVqE%2Fz00Xhyc%3D",
+                  "ut": "1697595837",
+                  "promo_code": "",
+                  "ui_rates_hidden": true,
+                  "price": {
+                    "price": 23000,
+                    "formatted_price": "Rp23.000"
+                  },
+                  "etd": {
+                    "min_etd": 10800,
+                    "max_etd": 10800
+                  },
+                  "texts": {
+                    "text_price": "Rp23.000",
+                    "text_etd": "Maks. 3 jam"
+                  },
+                  "insurance": {
+                    "insurance_price": 1000,
+                    "insurance_type": 2,
+                    "insurance_type_info": "Optional insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pesananmu dapat perlindungan dari asuransi senilai transaksi s/d Rp100.000.000 dengan proses klaim mudah, \u003cb\u003egratis layanan pengiriman retur melalui kurir yang bekerjasama dengan Tokopedia.\u003c/b\u003e Berlaku harga asuransi 0.6% dari harga invoice.",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": "",
+                      "url_text": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Tiba dalam 2 jam",
+                    "error_code": 0
+                  }
+                }
+              ]
+            }
+          ],
+          "promo_stacking": {
+            "is_promo": 1,
+            "promo_code": "TESBONOW",
+            "title": "Bebas Ongkir",
+            "shipper_id": 10,
+            "shipper_product_id": 28,
+            "shipper_name": "2 Jam Tiba",
+            "shipper_desc": "|1000",
+            "promo_detail": "",
+            "benefit_desc": "",
+            "point_change": 0,
+            "user_point": 0,
+            "promo_tnc_html": "Anda akan menggunakan promo \u003cb\u003eTesting BO TokoNOW production semoga lancar\u003c/b\u003e",
+            "shipper_disable_text": "Tidak dapat \u003cb\u003eubah kurir\u003c/b\u003e karena promo hanya berlaku untuk kurir yang ditentukan",
+            "service_id": 1000,
+            "is_applied": 0,
+            "image_url": "https://images.tokopedia.net/img/now/badge/now-badge.png",
+            "image_url_chosen": "https://images.tokopedia.net/img/now/badge/now-badge.png",
+            "quota_message": "Kuota: 1x",
+            "discounted_rate": 0,
+            "shipping_rate": 23000,
+            "benefit_amount": 30000,
+            "disabled": false,
+            "hide_shipper_name": true,
+            "cod": {
+              "is_cod_available": 0,
+              "cod_text": "",
+              "cod_price": 0,
+              "formatted_price": "",
+              "tnc_text": "",
+              "tnc_link": ""
+            },
+            "eta": {
+              "text_eta": "Tiba dalam 2 jam",
+              "error_code": 0
+            },
+            "is_bebas_ongkir_extra": false,
+            "texts": {
+              "bottom_sheet": "\u003cb\u003e2 Jam Tiba\u003c/b\u003e",
+              "chosen_courier": "\u003cb\u003e2 Jam Tiba\u003c/b\u003e \u003cb\u003e(\u003c/b\u003e\u003cs\u003eRp23.000\u003c/s\u003e \u003cb\u003eRp0)\u003c/b\u003e",
+              "ticker_courier": "",
+              "bottom_sheet_description": ""
+            },
+            "free_shipping_metadata": {
+              "sent_shipper_partner": false,
+              "benefit_class": "",
+              "shipping_subsidy": 30000,
+              "additional_data": "{\"bo_feature_type\":[],\"fulfillment\":{\"chargeable_flag\":0}}"
+            }
+          },
+          "promo_stackings": [
+            {
+              "is_promo": 1,
+              "promo_code": "TESBONOW",
+              "title": "Bebas Ongkir",
+              "shipper_id": 10,
+              "shipper_product_id": 28,
+              "shipper_name": "2 Jam Tiba",
+              "shipper_desc": "|1000",
+              "promo_detail": "",
+              "benefit_desc": "",
+              "point_change": 0,
+              "user_point": 0,
+              "promo_tnc_html": "Anda akan menggunakan promo \u003cb\u003eTesting BO TokoNOW production semoga lancar\u003c/b\u003e",
+              "shipper_disable_text": "Tidak dapat \u003cb\u003eubah kurir\u003c/b\u003e karena promo hanya berlaku untuk kurir yang ditentukan",
+              "service_id": 1000,
+              "is_applied": 0,
+              "image_url": "https://images.tokopedia.net/img/now/badge/now-badge.png",
+              "image_url_chosen": "https://images.tokopedia.net/img/now/badge/now-badge.png",
+              "quota_message": "Kuota: 1x",
+              "discounted_rate": 0,
+              "shipping_rate": 23000,
+              "benefit_amount": 30000,
+              "disabled": false,
+              "hide_shipper_name": true,
+              "cod": {
+                "is_cod_available": 0,
+                "cod_text": "",
+                "cod_price": 0,
+                "formatted_price": "",
+                "tnc_text": "",
+                "tnc_link": ""
+              },
+              "eta": {
+                "text_eta": "Tiba dalam 2 jam",
+                "error_code": 0
+              },
+              "is_bebas_ongkir_extra": false,
+              "texts": {
+                "bottom_sheet": "\u003cb\u003e2 Jam Tiba\u003c/b\u003e",
+                "chosen_courier": "\u003cb\u003e2 Jam Tiba\u003c/b\u003e \u003cb\u003e(\u003c/b\u003e\u003cs\u003eRp23.000\u003c/s\u003e \u003cb\u003eRp0)\u003c/b\u003e",
+                "ticker_courier": "",
+                "bottom_sheet_description": "",
+                "promo_message": "",
+                "title_promo_message": ""
+              },
+              "free_shipping_metadata": {
+                "sent_shipper_partner": false,
+                "benefit_class": "",
+                "shipping_subsidy": 30000,
+                "additional_data": "{\"bo_feature_type\":[],\"fulfillment\":{\"chargeable_flag\":0}}"
+              },
+              "bo_campaign_id": 35
+            }
+          ],
+          "pre_order": {
+            "header": "",
+            "label": "",
+            "display": false
+          },
+          "info": {
+            "blackbox_info": {
+              "text_info": ""
+            }
+          }
+        }
+      }
+    }
+  }
+]

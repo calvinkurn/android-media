@@ -131,7 +131,8 @@ private fun ProductCardModel.getContentHeightGrid(context: Context): Int {
     val productNameSectionHeight = getProductNameSectionHeight(context)
     val categoryCostPerUnitHeight = getCategoryCostPerUnitHeight(context)
     val priceSectionHeight = getPriceSectionHeight(context)
-    val promoSectionHeight = getPromoSectionHeight(context)
+    val discountSectionHeight = getDiscountSectionHeight(context)
+    val labelPriceHeight = getLabelPriceHeight(context)
     val shopInfoSectionHeight = getShopInfoSectionHeight(context)
     val credibilitySectionHeight = getCredibilitySectionHeight(context)
     val shopRatingSectionHeight = getShopRatingSectionHeight(context)
@@ -144,7 +145,8 @@ private fun ProductCardModel.getContentHeightGrid(context: Context): Int {
             productNameSectionHeight +
             categoryCostPerUnitHeight +
             priceSectionHeight +
-            promoSectionHeight +
+            discountSectionHeight +
+            labelPriceHeight +
             shopInfoSectionHeight +
             credibilitySectionHeight +
             shopRatingSectionHeight +
@@ -159,7 +161,8 @@ private fun ProductCardModel.getContentHeightList(context: Context): Int {
     val productNameSectionHeight = getProductNameSectionHeight(context)
     val categoryCostPerUnitHeight = getCategoryCostPerUnitHeight(context)
     val priceSectionHeight = getPriceSectionHeight(context)
-    val promoSectionHeight = getPromoSectionHeight(context)
+    val discountSectionHeight = getDiscountSectionHeight(context)
+    val labelPriceHeight = getLabelPriceHeight(context)
     val shopInfoSectionHeight = getShopInfoSectionHeight(context)
     val credibilitySectionHeight = getCredibilitySectionHeight(context)
     val shopRatingSectionHeight = getShopRatingSectionHeight(context)
@@ -171,7 +174,8 @@ private fun ProductCardModel.getContentHeightList(context: Context): Int {
             pdpViewCountHeight+
             productNameSectionHeight +
             categoryCostPerUnitHeight +
-            max(priceSectionHeight, promoSectionHeight) +
+            max(priceSectionHeight, discountSectionHeight) +
+            labelPriceHeight +
             shopInfoSectionHeight +
             credibilitySectionHeight +
             shopRatingSectionHeight +
@@ -246,26 +250,21 @@ private fun ProductCardModel.getPriceSectionHeight(context: Context): Int {
     else 0
 }
 
-private fun ProductCardModel.getPromoSectionHeight(context: Context): Int {
-    val (labelDiscountMarginTop, labelDiscountHeight) =
-        if (discountPercentage.isEmpty())
-            0 to 0
-        else if (showDiscountAsText())
-            context.getPixel(R.dimen.product_card_text_view_slashed_price_height) to
-                context.getPixel(R.dimen.product_card_text_view_slashed_price_margin_top)
-        else
-            context.getPixel(R.dimen.product_card_label_discount_margin_top) to
-                context.getPixel(R.dimen.product_card_label_discount_height)
+private fun ProductCardModel.getDiscountSectionHeight(context: Context): Int {
+    return if (slashedPrice.isNotEmpty() || discountPercentage.isNotEmpty()) {
+        val slashedPriceHeight = context.getPixel(R.dimen.product_card_text_view_slashed_price_height)
 
-    val labelPrice = getLabelPrice()
+        return slashedPriceHeight + 2.toPx()
+    } else 0
+}
 
-    val (labelPriceMarginTop, labelPriceHeight) =
-        if (labelPrice != null && labelPrice.title.isNotEmpty() && isShowLabelPrice())
-            context.getPixel(R.dimen.product_card_label_price_margin_top) to
-                context.getPixel(R.dimen.product_card_label_price_height)
-        else 0 to 0
+private fun ProductCardModel.getLabelPriceHeight(context: Context): Int {
+    return if (getLabelPrice()?.title?.isNotEmpty() == true) {
+        val labelPriceMarginTop = context.getPixel(R.dimen.product_card_label_price_margin_top)
+        val labelPriceHeight = context.getPixel(R.dimen.product_card_label_price_height)
 
-    return labelDiscountMarginTop + labelDiscountHeight + labelPriceMarginTop + labelPriceHeight
+        return labelPriceMarginTop + labelPriceHeight
+    } else 0
 }
 
 private fun ProductCardModel.getShopInfoSectionHeight(context: Context): Int {

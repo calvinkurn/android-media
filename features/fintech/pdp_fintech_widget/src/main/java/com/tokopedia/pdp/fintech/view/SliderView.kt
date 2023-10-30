@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.animation.Keyframe
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
-import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -78,7 +77,6 @@ class SliderView: ScrollView {
                 override fun onAnimationStart(animation: Animator) {}
 
                 override fun onAnimationEnd(animation: Animator) {
-                    binding = null
                     clearAnimation()
                 }
 
@@ -100,6 +98,5 @@ class SliderView: ScrollView {
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         clearAnimation()
-        binding = null
     }
 }
