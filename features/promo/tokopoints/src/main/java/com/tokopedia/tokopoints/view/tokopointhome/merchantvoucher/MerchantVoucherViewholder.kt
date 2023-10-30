@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageBackground
 import com.tokopedia.mvcwidget.MVC_ADINFO
 import com.tokopedia.mvcwidget.MVC_SOURCE_KEY
 import com.tokopedia.tokopoints.R
@@ -40,7 +40,7 @@ class MerchantVoucherViewholder(val view: View)
         if (content.sectionTitle == null || content.layoutCatalogAttr == null) {
             view.visibility = View.GONE
         }
-        ImageHandler.loadBackgroundImage(view, content.backgroundImgURLMobile)
+        view?.loadImageBackground(content.backgroundImgURLMobile)
 
         if (content.sectionSubTitle.isNullOrEmpty() && !content.cta.isEmpty) {
             CustomConstraintProvider.setCustomConstraint(view, R.id.parent_layout, R.id.text_see_all_merchant,

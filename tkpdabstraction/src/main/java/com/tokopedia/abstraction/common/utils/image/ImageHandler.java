@@ -688,6 +688,7 @@ public class ImageHandler {
         }
     }
 
+    // done
     public static void clearImage(ImageView imageView) {
         try {
             if (imageView != null) {

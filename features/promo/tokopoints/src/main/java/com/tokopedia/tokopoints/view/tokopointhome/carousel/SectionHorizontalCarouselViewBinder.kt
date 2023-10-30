@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageBackground
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.tokopoints.R
@@ -43,7 +43,7 @@ class SectionHorizontalCarouselVH(val view: View) : RecyclerView.ViewHolder(view
             view.visibility = View.GONE
             return
         }
-        ImageHandler.loadBackgroundImage(view, content.backgroundImgURLMobile)
+        view?.loadImageBackground(content.backgroundImgURLMobile)
         if (content.sectionSubTitle.isNullOrEmpty() && !content.cta.isEmpty) {
             CustomConstraintProvider.setCustomConstraint(view, R.id.parent_layout, R.id.text_see_all_carousel, R.id.text_title_carousel,ConstraintSet.BASELINE)
         }
