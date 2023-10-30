@@ -1576,6 +1576,7 @@ class DigitalPDPDataPlanFragment :
     }
 
     override fun onCloseCoachmark() {
+        binding?.rechargePdpPaketDataBuyWidget?.closeCoachmark()
         commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             loyaltyStatus
