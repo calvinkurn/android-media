@@ -17,6 +17,7 @@ import com.tokopedia.creation.common.di.ContentCreationComponent
 import com.tokopedia.creation.common.di.DaggerContentCreationComponent
 import com.tokopedia.creation.common.presentation.components.ContentCreationComponent
 import com.tokopedia.creation.common.presentation.model.ContentCreationConfigModel
+import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.viewmodel.ContentCreationViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -37,12 +38,15 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
     var listener: ContentCreationBottomSheetListener? = null
     private var creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty
 
+    var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Unknown
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         activity?.let {
             factory = createComponent().contentCreationFactory()
             viewModel = ViewModelProvider(it, factory!!)[ContentCreationViewModel::class.java]
+                viewModel?.widgetSource = widgetSource
         }
     }
 
@@ -113,7 +117,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
         fragmentManager: FragmentManager,
         @StringRes title: Int? = null,
         showPerformanceAction: Boolean = false,
-        creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty
+        creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty,
     ) {
         title?.let {
             this.title = it
