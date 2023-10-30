@@ -1456,12 +1456,6 @@ public class GTMAnalytics extends ContextAnalytics {
         }
     }
 
-    private void pushGeneral(Map<String, Object> values) {
-        Map<String, Object> data = new HashMap<>(values);
-        // push Iris already launch in coroutine in background. No need to wrap this with Observable.
-        pushIris("", data);
-    }
-
     private void pushGeneralEcommerce(Bundle values) {
         Observable.just(values)
                 .subscribeOn(Schedulers.io())
