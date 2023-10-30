@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.percentFormatted
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 
 data class Price(
@@ -31,7 +30,7 @@ data class Price(
             variantChild?.finalMainPrice?.getCurrencyFormatted().orEmpty()
         },
         discPercentage = variantChild?.discPercentage.ifNullOrBlank {
-            variantChild?.campaign?.discountedPercentage?.percentFormatted().orEmpty()
+            variantChild?.discountPercentage.orEmpty()
         }
     )
 
