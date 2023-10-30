@@ -122,6 +122,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeCarouselsWidgets()
+        observeVerticalProductCarousel()
         setupRecyclerView()
     }
 
@@ -202,6 +203,10 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
                 index
             )
         }
+        
+        bannerProductGroupAdapter.setOnProductCardDrawn { productCardHeight -> 
+            viewModel.refreshVerticalBannerHeight(productCardHeight)
+        }
 
         bannerProductGroupAdapter.setOnVerticalBannerClick { verticalBanner ->
             onVerticalBannerClick(verticalBanner)
@@ -241,6 +246,12 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
                     onProductSuccessfullyLoaded(false)
                 }
             }
+        }
+    }
+
+    private fun observeVerticalProductCarousel() {
+        viewModel.verticalProductCarousel.observe(viewLifecycleOwner) { verticalProductCarousels ->
+            showProducts(verticalProductCarousels)
         }
     }
 
