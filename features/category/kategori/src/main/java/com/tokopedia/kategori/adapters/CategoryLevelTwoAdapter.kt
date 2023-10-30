@@ -11,7 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageWithPlaceholder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kategori.analytics.CategoryAnalytics.Companion.categoryAnalytics
 import com.tokopedia.kategori.model.CategoryChildItem
@@ -102,7 +102,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
 
     private fun initProductViewHolderLayout(productViewHolder: ProductViewHolder, position: Int) {
         val item = list[position]
-        ImageHandler.loadImage(productViewHolder.itemView.context, productViewHolder.productImage, item.iconImageUrl, R.drawable.square_shimmer)
+        productViewHolder.productImage?.loadImageWithPlaceholder(item.iconImageUrl, R.drawable.square_shimmer)
         with(productViewHolder.productName) {setTextAndContentDescription(item.name, R.string.content_desc_category_product_name)}
         productViewHolder.productRootLayout.setOnClickListener {
             fireApplink(productViewHolder.itemView.context, item.applinks)
@@ -146,7 +146,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
 
     private fun initProductHeaderViewHolderLayout(productHeaderViewHolder: ProductHeaderViewHolder, position: Int) {
         val item = list[position]
-        ImageHandler.loadImage(productHeaderViewHolder.itemView.context, productHeaderViewHolder.productHeaderImage, item.iconImageUrl, R.drawable.category_ic_broken_image)
+        productHeaderViewHolder.productHeaderImage?.loadImageWithPlaceholder(item.iconImageUrl, R.drawable.category_ic_broken_image)
         with(productHeaderViewHolder.productHeaderName) {setTextAndContentDescription(item.name, R.string.content_desc_product_name)}
         item.hexColor?.let {
             if (it.isEmpty()) {
@@ -176,7 +176,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
             }
         }
         setDrawableRoundedImage(yangLagiHitsViewHolder.ylhRootLayout, item.hexColor)
-        ImageHandler.loadImage(yangLagiHitsViewHolder.itemView.context, yangLagiHitsViewHolder.ylhProductImage, item.iconImageUrl, R.drawable.square_shimmer)
+        yangLagiHitsViewHolder.ylhProductImage?.loadImageWithPlaceholder(item.iconImageUrl, R.drawable.square_shimmer)
         with(yangLagiHitsViewHolder.ylhProductName) {setTextAndContentDescription(item.name, R.string.content_desc_item_name)}
         yangLagiHitsViewHolder.ylhRootLayout.setOnClickListener {
             fireApplink(yangLagiHitsViewHolder.itemView.context, item.applinks)
