@@ -59,6 +59,7 @@ ext {
 			storiesInternal					: ":features:content:stories_internal",
 			contentProductPicker            : ":features:content:product_picker",
 			creationCommon					: ":features:content:creation_common",
+			storiesCreation					: ":features:content:stories_creation",
 
             commonTopupBills                : ":features:recharge:common_topup_bills",
             commonDigital                   : ":features:recharge:common_digital",
@@ -74,7 +75,6 @@ ext {
             rechargeCreditCard              : ":features:recharge:recharge_credit_card",
             rechargeComponent               : ":features:recharge:recharge_component",
             rechargePdpEmoney               : ":features:recharge:recharge_pdp_emoney",
-            smartBills                      : ":features:recharge:smart_bills",
             voucherGame                     : ":features:recharge:voucher_game",
             digitalProductDetail            : ":features:recharge:digital_product_detail",
 

@@ -1196,7 +1196,7 @@ object DeeplinkMainApp {
         ),
         "shop-penalty" to mutableListOf(
             DLP.matchPattern("") { context, _, _, _ ->
-                ShopScoreDeepLinkMapper.getInternalApplinkPenalty(context)
+                ApplinkConstInternalMarketplace.SHOP_PENALTY
             }
         ),
         "shop-penalty-detail" to mutableListOf(
@@ -1218,7 +1218,10 @@ object DeeplinkMainApp {
             DLP.matchPattern(
                 "shop/{shop_id}",
                 DeeplinkMapperContent::getRegisteredNavigation
-            )
+            ),
+            DLP.matchPattern("creation") { deeplink: String ->
+                DeeplinkMapperContent.getRegisteredNavigation(deeplink)
+            }
         ),
         "talk" to mutableListOf(
             DLP.goTo { deeplink: String ->
