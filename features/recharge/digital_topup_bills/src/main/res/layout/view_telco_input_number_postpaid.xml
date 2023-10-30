@@ -30,7 +30,7 @@
                 android:text="@string/digital_btn_check_bill"
                 android:visibility="gone"
                 tools:visibility="visible"
-                app:unifyButtonSize="large"
+                app:unifyButtonSize="medium"
                 app:unifyButtonVariant="ghost"
                 />
 
@@ -44,7 +44,7 @@
                 android:enabled="true"
                 android:text="@string/digital_btn_check_bill"
                 android:visibility="visible"
-                app:unifyButtonSize="large"
+                app:unifyButtonSize="medium"
                 app:unifyButtonVariant="filled" />
 
         </LinearLayout>
