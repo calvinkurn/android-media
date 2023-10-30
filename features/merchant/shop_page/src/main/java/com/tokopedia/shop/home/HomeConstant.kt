@@ -1,9 +1,5 @@
 package com.tokopedia.shop.home
 
-/**
- * TODO need to rework this class in the future by creating an enum for widget type and widget name
- * and also change widget mapping on [ShopHomeMapper] to enum
-*/
 object HomeConstant {
     const val YOUTUBE_BASE_URL = "https://www.youtube.com/watch?v="
     const val IS_SHOW_ETALASE_NAME = 1
