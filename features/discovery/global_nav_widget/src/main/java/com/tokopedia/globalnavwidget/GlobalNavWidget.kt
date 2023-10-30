@@ -4,10 +4,12 @@ import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.View
+import android.view.Window
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImageFitCenter
@@ -17,6 +19,7 @@ import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.GLOBAL_NAV_SPAN_COU
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.NAV_TEMPLATE_PILL
 import com.tokopedia.globalnavwidget.catalog.GlobalNavWidgetCatalogAdapter
 import com.tokopedia.globalnavwidget.catalog.GlobalNavWidgetCatalogItemDecoration
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.LazyThreadSafetyMode.NONE
@@ -119,7 +122,11 @@ class GlobalNavWidget: BaseCustomView {
 
     private fun setBackgroundFromModel(backgroundImgUrl: String) {
         globalNavContainerLayout?.let {
-            ImageHandler.loadBackgroundImage(it, backgroundImgUrl)
+            backgroundImgUrl.getBitmapImageUrl(it.context) { bitmapResult ->
+                try {
+                    it.background = bitmapResult.toDrawable(it.resources)
+                } catch (_: Exception) {}
+            }
         }
     }
 
