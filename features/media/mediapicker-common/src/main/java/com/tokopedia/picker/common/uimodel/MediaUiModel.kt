@@ -20,6 +20,10 @@ open class MediaUiModel(
     var sourcePath: String? = file?.absolutePath
 ) : Parcelable {
 
+    fun getSingleFilePath(): String {
+        return file?.path ?: ""
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         return other is MediaUiModel &&

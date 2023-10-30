@@ -15,6 +15,7 @@ import com.tokopedia.charts.model.BarChartData
 import com.tokopedia.charts.model.BarChartMetric
 import com.tokopedia.charts.model.BarChartMetricValue
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
@@ -119,7 +120,15 @@ class BarChartViewHolder(
         }
     }
 
+    private fun removeWidgetWithCondition(element: BarChartWidgetUiModel) {
+        val shouldRemove = !element.data?.showWidget.orFalse()
+        if (shouldRemove) {
+            listener.removeWidget(absoluteAdapterPosition, element)
+        }
+    }
+
     private fun setOnSuccess(element: BarChartWidgetUiModel) {
+        removeWidgetWithCondition(element)
         loadingStateBinding.shimmerWidgetCommon.gone()
         binding.shcBarChartErrorState.gone()
 

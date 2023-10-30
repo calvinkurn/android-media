@@ -153,6 +153,10 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         binding?.headerStcStatistic?.headerSubTitle = subTitle
     }
 
+    override fun isTabCoachMarkShowing(): Boolean {
+        return coachMark.isShowing
+    }
+
     private fun initInjector() {
         component.inject(this)
     }

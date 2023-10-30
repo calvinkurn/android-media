@@ -1063,7 +1063,8 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         //
         bundle.putString(KEY_EVENT, keyEvent);
-        pushEventV5(keyEvent, wrapWithSessionIris(bundle), context);
+
+        pushEventV5Legacy(keyEvent, wrapWithSessionIris(bundle), context);
     }
 
     @Override
@@ -1196,6 +1197,28 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         return bundle;
         // end of globally put sessionIris
+    }
+
+    @SuppressLint("MissingPermission")
+    public void pushEventV5Legacy(String eventName, Bundle bundle, Context context) {
+        try {
+            if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
+                bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
+            }
+            publishNewRelic(eventName, bundle);
+            FirebaseAnalytics fa = FirebaseAnalytics.getInstance(context);
+            fa.logEvent(eventName, bundle);
+
+            mappingToGA4(fa, eventName, bundle);
+            logV5(context, eventName, bundle);
+
+            addUtmHolder(bundle);
+            pushGeneralEcommerce(bundle);
+
+            trackEmbraceBreadcrumb(eventName, bundle);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -1526,10 +1549,17 @@ public class GTMAnalytics extends ContextAnalytics {
             if (!eventName.isEmpty()) {
                 values.put("event", eventName);
             }
-            if (values.get("event") != null && !String.valueOf(values.get("event")).equals("")) {
+            Object evtName = values.get("event");
+            if (evtName != null && !String.valueOf(evtName).equals("")) {
                 iris.saveEvent(values);
             }
         }
+    }
+
+    private void addUtmHolder(Bundle values) {
+        values.putString(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
+        values.putString(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
+        values.putString(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
     }
 
     private void pushIris(Bundle values) {

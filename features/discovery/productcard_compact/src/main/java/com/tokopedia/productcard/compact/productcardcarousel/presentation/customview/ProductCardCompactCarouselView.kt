@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.productcard.compact.databinding.LayoutProductCardCompactCarouselViewBinding
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.adapter.ProductCardCompactCarouselAdapter
@@ -52,6 +53,7 @@ class ProductCardCompactCarouselView @JvmOverloads constructor(
             root.addItemDecoration(ProductCardCompactCarouselDecoration(context))
             root.layoutManager = layoutManager
             root.adapter = adapter
+            root.itemAnimator = null
         }
     }
 
@@ -140,6 +142,12 @@ class ProductCardCompactCarouselView @JvmOverloads constructor(
         binding.root.post {
             layoutManager.scrollToPosition(position)
         }
+    }
+
+    fun setRecycledViewPool(
+        recycledViewPool: RecycledViewPool?
+    ) {
+        binding.root.setRecycledViewPool(recycledViewPool)
     }
 
     interface ProductCardCompactCarouselListener {

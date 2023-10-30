@@ -3,12 +3,44 @@ package com.tokopedia.statistic.presentation.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.ParamTableWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
-import com.tokopedia.sellerhomecommon.domain.usecase.*
-import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.domain.usecase.GetAnnouncementDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetBarChartDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCardDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCarouselDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetLayoutUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetLineGraphDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMultiComponentDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMultiComponentDetailDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMultiLineGraphUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetPieChartDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetPostDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetTickerUseCase
+import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentData
+import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentTab
+import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PieChartDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetEmptyStateUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetLayoutUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.utils.TestConst
 import com.tokopedia.statistic.view.viewmodel.StatisticViewModel
@@ -80,6 +112,12 @@ class StatisticViewModelTest {
     @RelaxedMockK
     lateinit var getAnnouncementDataUseCase: GetAnnouncementDataUseCase
 
+    @RelaxedMockK
+    lateinit var getMultiComponentDataUseCase: GetMultiComponentDataUseCase
+
+    @RelaxedMockK
+    lateinit var getMultiComponentDetailDataUseCase: GetMultiComponentDetailDataUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -105,6 +143,8 @@ class StatisticViewModelTest {
             { getPieChartDataUseCase },
             { getBarChartDataUseCase },
             { getAnnouncementDataUseCase },
+            { getMultiComponentDataUseCase },
+            { getMultiComponentDetailDataUseCase },
             CoroutineTestDispatchersProvider
         )
 
@@ -758,5 +798,246 @@ class StatisticViewModelTest {
         }
 
         assert(viewModel.announcementWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `should success when get multi component data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+
+        val multiComponentData = listOf(
+            MultiComponentDataUiModel(
+                dataKey = "1",
+                tabs = listOf(
+                    MultiComponentTab(
+                        id = "1",
+                        title = "title1",
+                        ticker = "ticker",
+                        components = listOf(
+                            MultiComponentData(
+                                componentType = "component type 1",
+                                dataKey = "pieChart1",
+                                data = null
+                            ),
+                            MultiComponentData(
+                                componentType = "component type 2",
+                                dataKey = "pieChart2",
+                                data = null
+                            )
+                        ),
+                        isLoaded = false,
+                        isError = false
+                    )
+                )
+            )
+        )
+
+        coEvery {
+            getMultiComponentDataUseCase.executeOnBackground()
+        } returns multiComponentData
+
+        viewModel.getMultiComponentWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getMultiComponentDataUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.multiComponentWidgetData.value is Success)
+        assert((viewModel.multiComponentWidgetData.value as Success).data.size == 1)
+        assert(
+            (viewModel.multiComponentWidgetData.value as Success)
+                .data.first().tabs.first().components.size == 2
+        )
+    }
+
+    @Test
+    fun `should fail when get multi component data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+
+        coEvery {
+            getMultiComponentDataUseCase.executeOnBackground()
+        } throws RuntimeException("error")
+
+        viewModel.getMultiComponentWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getMultiComponentDataUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.multiComponentWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `should success when get multi component detail`() = runBlocking {
+        val multiComponentTab = MultiComponentTab(
+            id = "1",
+            title = "title1",
+            ticker = "ticker",
+            components = listOf(),
+            isLoaded = false,
+            isError = false
+        )
+
+        val multiComponentData = listOf(
+            MultiComponentData(
+                componentType = "component type 1",
+                dataKey = "pieChart1",
+                data = PieChartWidgetUiModel(
+                    id = "pie",
+                    sectionId = "0",
+                    widgetType = WidgetType.PIE_CHART,
+                    title = "",
+                    subtitle = "",
+                    tooltip = TooltipUiModel("", "", true, listOf()),
+                    tag = "",
+                    appLink = "",
+                    dataKey = "pie",
+                    ctaText = "",
+                    gridSize = 4,
+                    isShowEmpty = true,
+                    data = PieChartDataUiModel(),
+                    isLoaded = false,
+                    isLoading = false,
+                    isFromCache = false,
+                    isNeedToBeRemoved = false,
+                    emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+                )
+            ),
+            MultiComponentData(
+                componentType = "component type 2",
+                dataKey = "pieChart2",
+                data = PieChartWidgetUiModel(
+                    id = "pie",
+                    sectionId = "0",
+                    widgetType = WidgetType.PIE_CHART,
+                    title = "",
+                    subtitle = "",
+                    tooltip = TooltipUiModel("", "", true, listOf()),
+                    tag = "",
+                    appLink = "",
+                    dataKey = "pie",
+                    ctaText = "",
+                    gridSize = 4,
+                    isShowEmpty = true,
+                    data = PieChartDataUiModel(),
+                    isLoaded = false,
+                    isLoading = false,
+                    isFromCache = false,
+                    isNeedToBeRemoved = false,
+                    emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+                )
+            )
+        )
+
+        coEvery {
+            getMultiComponentDetailDataUseCase.executeOnBackground(any(), any())
+        } returns multiComponentData
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        viewModel.getMultiComponentDetailTabWidgetData(multiComponentTab)
+
+        coVerify {
+            getMultiComponentDetailDataUseCase.executeOnBackground(any(), any())
+        }
+
+        val successData = viewModel.multiComponentTabsData.value
+        assert(successData?.components?.size == 2)
+        assert(successData?.isError == false)
+    }
+
+    @Test
+    fun `should Fail when get multi component detail`() = runBlocking {
+        val multiComponentTab = MultiComponentTab(
+            id = "1",
+            title = "title1",
+            ticker = "ticker",
+            components = listOf(
+            ),
+            isLoaded = false,
+            isError = false
+        )
+
+        coEvery {
+            getMultiComponentDetailDataUseCase.executeOnBackground(any(), any())
+        } throws RuntimeException("")
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+
+        viewModel.getMultiComponentDetailTabWidgetData(multiComponentTab)
+
+        coVerify {
+            getMultiComponentDetailDataUseCase.executeOnBackground(any(), any())
+        }
+
+        val successData = viewModel.multiComponentTabsData.value
+        assert(successData?.isError == true)
+    }
+
+    @Test
+    fun `should fail when one of multi component detail null`() = runBlocking {
+        val multiComponentTab = MultiComponentTab(
+            id = "1",
+            title = "title1",
+            ticker = "ticker",
+            components = listOf(),
+            isLoaded = false,
+            isError = false
+        )
+
+        /**
+         * Make one data nykk si ut errors all
+         */
+        val multiComponentData = listOf(
+            MultiComponentData(
+                componentType = "component type 1",
+                dataKey = "pieChart1",
+                data = PieChartWidgetUiModel(
+                    id = "pie",
+                    sectionId = "0",
+                    widgetType = WidgetType.PIE_CHART,
+                    title = "",
+                    subtitle = "",
+                    tooltip = TooltipUiModel("", "", true, listOf()),
+                    tag = "",
+                    appLink = "",
+                    dataKey = "pie",
+                    ctaText = "",
+                    gridSize = 4,
+                    isShowEmpty = true,
+                    data = PieChartDataUiModel(),
+                    isLoaded = false,
+                    isLoading = false,
+                    isFromCache = false,
+                    isNeedToBeRemoved = false,
+                    emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+                )
+            ),
+            MultiComponentData(
+                componentType = "component type 2",
+                dataKey = "pieChart2",
+                data = null
+            )
+        )
+
+        coEvery {
+            getMultiComponentDetailDataUseCase.executeOnBackground(any(), any())
+        } returns multiComponentData
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        viewModel.getMultiComponentDetailTabWidgetData(multiComponentTab)
+
+        coVerify {
+            getMultiComponentDetailDataUseCase.executeOnBackground(any(), any())
+        }
+
+        val successData = viewModel.multiComponentTabsData.value
+        assert(successData?.components?.size == 2)
+        assert(successData?.isError == true)
     }
 }
