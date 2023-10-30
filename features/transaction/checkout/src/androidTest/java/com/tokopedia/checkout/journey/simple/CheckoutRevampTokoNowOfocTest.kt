@@ -12,6 +12,7 @@ import com.tokopedia.checkout.interceptor.RATES_SELLY_DEFAULT_RESPONSE_PATH
 import com.tokopedia.checkout.interceptor.SAF_TOKONOW_OFOC_MERGE_RESPONSE_PATH
 import com.tokopedia.checkout.interceptor.SAF_TOKONOW_OFOC_SPLIT_RESPONSE_PATH
 import com.tokopedia.checkout.interceptor.SAF_TOKONOW_SELLY_RESPONSE_PATH
+import com.tokopedia.checkout.interceptor.SELLY_NO_PROMO_RESPONSE_PATH
 import com.tokopedia.checkout.interceptor.VALIDATE_USE_SELLY_2HR_RESPONSE
 import com.tokopedia.checkout.interceptor.VALIDATE_USE_SELLY_DEFAULT_RESPONSE
 import com.tokopedia.checkout.robot.checkoutPageRevamp
@@ -113,8 +114,11 @@ class CheckoutRevampTokoNowOfocTest {
             )
             waitForData()
             interceptor.cartInterceptor.customSafResponsePath = SAF_TOKONOW_OFOC_SPLIT_RESPONSE_PATH
+            interceptor.logisticInterceptor.customSellyResponsePath = SELLY_NO_PROMO_RESPONSE_PATH
             interceptor.promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_SELLY_2HR_RESPONSE
             click2hrOption(activityRule)
+            waitForData()
+            waitForData()
             waitForData()
             waitForData()
 //            assertHas2hrSelected(

@@ -10,6 +10,8 @@ class LogisticTestInterceptor : BaseCheckoutInterceptor() {
     var customRatesResponsePath: String? = null
     var customRatesThrowable: IOException? = null
 
+    var customRatesResponsePathByCartStringGroup: HashMap<String, String> = HashMap()
+
     var customSellyResponsePath: String? = null
     var customSellyThrowable: IOException? = null
 
@@ -20,8 +22,15 @@ class LogisticTestInterceptor : BaseCheckoutInterceptor() {
         if (requestString.contains(RATES_QUERY)) {
             if (customRatesThrowable != null) {
                 throw customRatesThrowable!!
-            } else if (customRatesResponsePath != null) {
-                return mockResponse(copy, getJsonFromResource(customRatesResponsePath!!))
+            } else {
+                for (entry in customRatesResponsePathByCartStringGroup) {
+                    if (requestString.contains(entry.key)) {
+                        return mockResponse(copy, getJsonFromResource(entry.value))
+                    }
+                }
+                if (customRatesResponsePath != null) {
+                    return mockResponse(copy, getJsonFromResource(customRatesResponsePath!!))
+                }
             }
             return mockResponse(copy, getJsonFromResource(RATES_DEFAULT_RESPONSE_PATH))
         }
@@ -55,3 +64,4 @@ const val RATES_TOKONOW_WITH_NORMAL_PRICE_RESPONSE_PATH = "logistic/ratesv3_toko
 const val RATES_DEFAULT_RESPONSE_PATH = "logistic/ratesv3_analytics_default_response.json"
 
 const val SELLY_DEFAULT_RESPONSE_PATH = "logistic/selly_default_response.json"
+const val SELLY_NO_PROMO_RESPONSE_PATH = "logistic/selly_no_promo_response.json"
