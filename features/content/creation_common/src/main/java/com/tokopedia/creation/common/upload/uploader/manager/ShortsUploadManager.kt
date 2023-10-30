@@ -16,7 +16,6 @@ import com.tokopedia.play_common.domain.usecase.broadcaster.BroadcasterAddMedias
 import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.VideoSnapshotHelper
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
@@ -74,7 +73,7 @@ class ShortsUploadManager @Inject constructor(
             Exception("ShortsUploadManager is not receiving CreationUploadData.Shorts data")
         )
 
-        this.uploadData = uploadData
+        setupInitialData(uploadData)
 
         withContext(dispatchers.main) {
             uploaderUseCase.trackProgress { progress, type ->
@@ -134,6 +133,13 @@ class ShortsUploadManager @Inject constructor(
         isUploadShortsMedia = false
 
         return mediaUrl
+    }
+
+    private fun setupInitialData(
+        uploadData: CreationUploadData.Shorts,
+    ) {
+        this.uploadData = uploadData
+        this.isUploadShortsMedia = false
     }
 
     private suspend fun uploadMedia(

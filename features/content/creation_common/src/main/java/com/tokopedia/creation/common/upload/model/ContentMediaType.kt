@@ -13,11 +13,19 @@ enum class ContentMediaType(
     Video("video", 2),
     Unknown("", 0);
 
+    val isImage: Boolean
+        get() = this == Image
+
+    val isVideo: Boolean
+        get() = this == Video
+
     companion object {
         fun parse(code: Int): ContentMediaType {
             return values().find { it.code == code } ?: Unknown
         }
         fun parse(path: String): ContentMediaType {
+            if (path.isEmpty()) return Unknown
+
             val fileNameMap = URLConnection.getFileNameMap()
             val type = fileNameMap.getContentTypeFor(path)
 
