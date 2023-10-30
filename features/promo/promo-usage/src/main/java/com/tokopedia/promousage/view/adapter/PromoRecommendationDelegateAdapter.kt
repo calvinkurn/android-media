@@ -315,9 +315,9 @@ internal class PromoRecommendationDelegateAdapter(
 
         private fun startButtonAnimation(onCompleted: (() -> Unit)? = null) {
             val shrinkLeftAnimation =
-                AnimationUtils.loadAnimation(binding.root.context, R.anim.anim_promo_recom_shrink_left)
+                AnimationUtils.loadAnimation(binding.root.context, R.anim.shrink_left)
             val zoomOutAnimation =
-                AnimationUtils.loadAnimation(binding.root.context, R.anim.anim_promo_recom_zoom_out)
+                AnimationUtils.loadAnimation(binding.root.context, R.anim.zoom_out)
             shrinkLeftAnimation.setAnimationListener(object : AnimationListener {
                 override fun onAnimationStart(animation: Animation?) {
                     binding.btnRecommendationUseVoucher.visible()
