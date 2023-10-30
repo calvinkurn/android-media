@@ -69,9 +69,6 @@ class WishlistCollectionDetailTopAdsVerificationTest {
     @Test
     fun testWishlistCollectionDetailTopAds() {
         runWishlistCollectionDetailBot {
-            Intents.intending(IntentMatchers.anyIntent()).respondWith(
-                    Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-            )
             Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
             val wishlistRecyclerView =
                 activityRule.activity.findViewById<RecyclerView>(R.id.rv_wishlist_collection_detail)
@@ -88,10 +85,13 @@ class WishlistCollectionDetailTopAdsVerificationTest {
                         .recommendationProductCardModelData
 
                     for (recommendationIndex in recommendationItems.indices) {
-                        scrollRecommendationRecyclerViewToIndex(recommendationIndex)
-                        if (recommendationItems[recommendationIndex].isTopAds) {
-                            topAdsCount++
-                            clickRecommendationRecyclerViewItem(recommendationIndex)
+                        if (recommendationIndex < 5) {
+                            loading(1000)
+                            scrollRecommendationRecyclerViewToIndex(recommendationIndex)
+                            if (recommendationItems[recommendationIndex].isTopAds) {
+                                topAdsCount++
+                                clickRecommendationRecyclerViewItem(recommendationIndex)
+                            }
                         }
                     }
                 }
