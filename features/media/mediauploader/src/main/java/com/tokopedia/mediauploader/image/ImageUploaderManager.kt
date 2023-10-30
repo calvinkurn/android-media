@@ -65,6 +65,7 @@ class ImageUploaderManager @Inject constructor(
             extraHeader = extraHeader
         ))
 
+        val requestId = upload.header.requestId ?: ""
         val error = if (upload.header.messages.isNotEmpty()) {
             upload.header.messages.first()
         } else {
@@ -85,7 +86,10 @@ class ImageUploaderManager @Inject constructor(
                 UploadResult.Success(fileUrl = it.fileUrl, uploadId = it.uploadId)
             }
         } else {
-            UploadResult.Error(error)
+            UploadResult.Error(
+                message = error,
+                requestId = requestId
+            )
         }
     }
 
@@ -101,18 +105,18 @@ class ImageUploaderManager @Inject constructor(
                 !file.exists() -> {
                     UploadResult.Error(FILE_NOT_FOUND)
                 }
-                file.isMaxFileSize(maxFileSize) -> {
-                    UploadResult.Error(maxFileSizeMessage(maxFileSize))
-                }
-                !allowedExt(filePath, imagePolicy.extension) -> {
-                    UploadResult.Error(formatNotAllowedMessage(imagePolicy.extension))
-                }
-                filePath.isMaxBitmapResolution(maxRes.width, maxRes.height) -> {
-                    UploadResult.Error(maxResBitmapMessage(maxRes.width, maxRes.height))
-                }
-                filePath.isMinBitmapResolution(minRes.width, minRes.height) -> {
-                    UploadResult.Error(minResBitmapMessage(minRes.width, minRes.height))
-                }
+//                file.isMaxFileSize(maxFileSize) -> {
+//                    UploadResult.Error(maxFileSizeMessage(maxFileSize))
+//                }
+//                !allowedExt(filePath, imagePolicy.extension) -> {
+//                    UploadResult.Error(formatNotAllowedMessage(imagePolicy.extension))
+//                }
+//                filePath.isMaxBitmapResolution(maxRes.width, maxRes.height) -> {
+//                    UploadResult.Error(maxResBitmapMessage(maxRes.width, maxRes.height))
+//                }
+//                filePath.isMinBitmapResolution(minRes.width, minRes.height) -> {
+//                    UploadResult.Error(minResBitmapMessage(minRes.width, minRes.height))
+//                }
                 else -> {
                     null
                 }
