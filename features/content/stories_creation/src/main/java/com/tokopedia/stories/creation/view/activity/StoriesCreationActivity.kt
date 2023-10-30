@@ -72,7 +72,8 @@ class StoriesCreationActivity : BaseActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             val data = it.data
             if (data != null) {
-                val mediaFilePath = MediaPicker.result(data).originalPaths.getOrNull(0).orEmpty()
+                val mediaData = MediaPicker.result(data)
+                val mediaFilePath = mediaData.editedPaths.firstOrNull() ?: mediaData.originalPaths.firstOrNull().orEmpty()
                 val mediaType = ContentMediaType.parse(mediaFilePath)
 
                 viewModel.submitAction(StoriesCreationAction.SetMedia(mediaFilePath, mediaType))
@@ -87,6 +88,11 @@ class StoriesCreationActivity : BaseActivity() {
         setupAttachFragmentListener()
         super.onCreate(savedInstanceState)
         setupContentView()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        videoSnapshotHelper.deleteLocalFile()
     }
 
     private fun inject() {
@@ -105,7 +111,7 @@ class StoriesCreationActivity : BaseActivity() {
                 is ProductSetupFragment -> {
                     fragment.setDataSource(object : ProductSetupFragment.DataSource {
                         override fun getProductSectionList(): List<ProductTagSectionUiModel> {
-                            return viewModel.productTag
+                            return viewModel.productTagSection
                         }
 
                         override fun isEligibleForPin(): Boolean = false
@@ -206,10 +212,10 @@ class StoriesCreationActivity : BaseActivity() {
                             )
                         },
                         onLoadMediaPreview = { mediaFilePath ->
-                            val bitmap = videoSnapshotHelper.snapVideoBitmap(this, mediaFilePath)
+                            val file = videoSnapshotHelper.snapVideo(this, mediaFilePath)
 
-                            if (bitmap != null)
-                                StoriesMediaCover.Success(bitmap)
+                            if (file != null)
+                                StoriesMediaCover.Success(file.absolutePath)
                             else
                                 StoriesMediaCover.Error
                         },

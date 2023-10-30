@@ -23,8 +23,8 @@ import com.tokopedia.content.common.usecase.GetUserReportListUseCase
 import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
-import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feedcomponent.domain.mapper.ProductMapper
 import com.tokopedia.feedcomponent.domain.usecase.FeedXGetActivityProductsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
@@ -1101,7 +1101,7 @@ class FeedPostViewModel @Inject constructor(
                     timestamp = timestamp,
                     reportDesc = desc,
                     partnerId = item.author.id.toLongOrZero(),
-                    partnerType = PostUserReportUseCase.PartnerType.getTypeFromFeed(item.author.type.value),
+                    partnerType = PostUserReportUseCase.PartnerType.getTypeValue(item.author.type.value),
                     reporterId = userSession.userId.toLongOrZero()
                 )
                 postReportUseCase.setRequestParams(request.parameters)

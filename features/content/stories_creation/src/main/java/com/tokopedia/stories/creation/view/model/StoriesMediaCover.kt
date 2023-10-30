@@ -10,7 +10,7 @@ sealed interface StoriesMediaCover {
     object Loading : StoriesMediaCover
 
     data class Success(
-        val bitmap: Bitmap
+        val localFilePath: String
     ) : StoriesMediaCover
 
     object Error : StoriesMediaCover

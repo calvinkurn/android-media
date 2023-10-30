@@ -21,10 +21,38 @@ class StoriesCreationProductMapper @Inject constructor(
 
 ) : ContentProductPickerSellerMapper() {
 
+    fun mapProductEtalase(
+        response: GetStoryProductEtalaseResponse
+    ): PagedDataUiModel<ProductUiModel> {
+        return PagedDataUiModel(
+            dataList = response.data.products.map { data ->
+                ProductUiModel(
+                    id = data.id,
+                    name = data.name,
+                    imageUrl = data.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
+                    stock = data.stock.toLong(),
+                    price = OriginalPrice(
+                        priceFormat.format(BigDecimal(data.price.min.orZero())),
+                        data.price.min.orZero()
+                    ),
+                    hasCommission = false,
+                    commissionFmt = "",
+                    commission = 0L,
+                    extraCommission = false,
+                    pinStatus = PinProductUiModel.Empty,
+                    number = "",
+                )
+            },
+            hasNextPage = response.data.pagerCursor.hasNext,
+            cursor = response.data.pagerCursor.cursor,
+        )
+    }
+
     fun mapProductDetails(
         response: GetStoryProductDetailsResponse
     ): List<ProductTagSectionUiModel> {
-        return listOf(
+        return if (response.data.products.isEmpty()) emptyList()
+        else listOf(
             ProductTagSectionUiModel(
                 name = "",
                 campaignStatus = CampaignStatus.Unknown,
@@ -53,33 +81,6 @@ class StoriesCreationProductMapper @Inject constructor(
                     )
                 }
             )
-        )
-    }
-
-    fun mapProductEtalase(
-        response: GetStoryProductEtalaseResponse
-    ): PagedDataUiModel<ProductUiModel> {
-        return PagedDataUiModel(
-            dataList = response.data.products.map { data ->
-                ProductUiModel(
-                    id = data.id,
-                    name = data.name,
-                    imageUrl = data.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
-                    stock = data.stock.toLong(),
-                    price = OriginalPrice(
-                        priceFormat.format(BigDecimal(data.price.min.orZero())),
-                        data.price.min.orZero()
-                    ),
-                    hasCommission = false,
-                    commissionFmt = "",
-                    commission = 0L,
-                    extraCommission = false,
-                    pinStatus = PinProductUiModel.Empty,
-                    number = "",
-                )
-            },
-            hasNextPage = response.data.pagerCursor.hasNext,
-            cursor = response.data.pagerCursor.cursor,
         )
     }
 }
