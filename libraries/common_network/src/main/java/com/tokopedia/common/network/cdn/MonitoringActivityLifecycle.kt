@@ -66,6 +66,7 @@ class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallb
                                 .url(item.url)
                                 .addHeader("host", item.host)
                                 .addHeader("user-agent", getUserAgent())
+                                .addHeader("cname", item.cname)
                                 .build()
                             client.newCall(request).execute()
                         }
@@ -83,9 +84,9 @@ class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallb
     override fun onActivityStarted(activity: Activity) {
         val className = activity.javaClass.canonicalName ?: return
         cdnConfig?.let { config ->
-            if (config.pageNameList?.contains(className) == true) {
-                process(activity, config)
-            }
+//            if (config.pageNameList?.contains(className) == true) {
+            process(activity, config)
+//            }
         }
     }
 
