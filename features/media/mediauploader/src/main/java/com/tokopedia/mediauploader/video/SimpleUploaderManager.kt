@@ -34,6 +34,7 @@ class SimpleUploaderManager @Inject constructor(
             file = file
         ))
 
+        val requestId = uploader.requestId ?: ""
         val error = uploader.errorMessage ?: UNKNOWN_ERROR
 
         if (withTranscode) {
@@ -72,7 +73,10 @@ class SimpleUploaderManager @Inject constructor(
                 videoUrl = it,
                 uploadId = uploader.uploadId.toString()
             )
-        }?: UploadResult.Error(error)
+        }?: UploadResult.Error(
+            message = error,
+            requestId = requestId
+        )
     }
 
     fun setProgressCallback(progressUploader: ProgressUploader?) {

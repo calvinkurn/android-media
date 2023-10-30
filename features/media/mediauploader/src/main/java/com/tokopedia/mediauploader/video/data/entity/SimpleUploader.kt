@@ -9,4 +9,5 @@ data class SimpleUploader(
     @Expose @SerializedName("video_url") val videoUrl: String? = "",
     @Expose @SerializedName("status") val status: Int? = 0,
     @Expose @SerializedName("error_message") val errorMessage: String? = "",
+    @Expose @SerializedName("request_id") val requestId: String? = "",
 )
