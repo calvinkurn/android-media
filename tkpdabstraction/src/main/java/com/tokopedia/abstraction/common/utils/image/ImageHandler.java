@@ -532,6 +532,7 @@ public class ImageHandler {
                 .into(imageView);
     }
 
+    // done
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder) {
         if(placeholder < 0) {
             loadImageWithoutPlaceholder(imageview, url);
@@ -548,6 +549,7 @@ public class ImageHandler {
                 .into(imageview);
     }
 
+    // done
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder, int error_image) {
         if(placeholder < 0) {
             loadImageWithoutPlaceholder(imageview, url);
