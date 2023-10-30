@@ -6,6 +6,7 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.stories.creation.model.GetStoryPreparationInfoResponse
 import com.tokopedia.stories.creation.model.StoriesCreationConfigResponse
 import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -37,8 +38,8 @@ class StoriesCreationUiMapper @Inject constructor(
             storiesId = config.draftStoryId,
             maxProductTag = config.maxProductTag,
             storyDuration = config.storyDuration,
-            minVideoDuration = config.minVideoDuration,
-            maxVideoDuration = config.maxVideoDuration,
+            minVideoDuration = TimeUnit.SECONDS.toMillis(config.minVideoDuration).toInt(),
+            maxVideoDuration = TimeUnit.SECONDS.toMillis(config.maxVideoDuration).toInt(),
             imageSourceId = config.imageSourceId,
             videoSourceId = config.videoSourceId,
             maxStoriesConfig = StoriesCreationConfiguration.MaxStoriesConfig(
@@ -55,7 +56,7 @@ class StoriesCreationUiMapper @Inject constructor(
     private fun mapConfig(data: GetStoryPreparationInfoResponse.Data): StoriesCreationConfigResponse {
         return try {
             gson.fromJson(data.config, StoriesCreationConfigResponse::class.java)
-        } catch (e: Throwable) {
+        } catch (throwable: Throwable) {
             StoriesCreationConfigResponse()
         }
     }
