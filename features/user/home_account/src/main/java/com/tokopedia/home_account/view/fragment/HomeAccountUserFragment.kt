@@ -28,6 +28,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.scp.auth.GotoSdk
+import com.scp.auth.common.utils.ScpUtils
+import com.scp.auth.common.utils.TkpdAdditionalHeaders
+import com.scp.login.core.domain.contracts.listener.LSdkCheckOneTapStatusListener
+import com.scp.login.core.domain.onetaplogin.mappers.OneTapLoginError
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.constant.TkpdCache
@@ -78,7 +83,9 @@ import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.databinding.BottomSheetOclBinding
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
+import com.tokopedia.home_account.fundsAndInvestment.FundsAndInvestmentComposeActivity
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
+import com.tokopedia.home_account.view.activity.FundsAndInvestmentActivity
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
@@ -1103,8 +1110,17 @@ open class HomeAccountUserFragment :
         setupSettingList()
         getFirstRecommendation()
         viewModel.getSafeModeValue()
-        if (oclUtils.isOclEnabled()) {
-            viewModel.getOclStatus()
+        if (ScpUtils.isGotoLoginEnabled()) {
+            GotoSdk.LSDKINSTANCE?.getOneTapStatus(lifecycle, additionalHeaders = TkpdAdditionalHeaders(requireContext()), object: LSdkCheckOneTapStatusListener {
+                override fun onCompleted(isEligible: Boolean) {
+                    viewModel.setOneTapStatus(isEligible)
+                }
+                override fun onError(error: OneTapLoginError) {}
+            })
+        } else {
+            if (oclUtils.isOclEnabled()) {
+                viewModel.getOclStatus()
+            }
         }
     }
 
@@ -1218,6 +1234,17 @@ open class HomeAccountUserFragment :
         }
     }
 
+    private fun goToFundsAndInvestment() {
+        val directionActivity = if (DeeplinkMapperUser.isFundsAndInvestmentComposeActivated()) {
+            FundsAndInvestmentComposeActivity::class.java
+        } else {
+            FundsAndInvestmentActivity::class.java
+        }
+
+        val intent = Intent(activity, directionActivity)
+        startActivity(intent)
+    }
+
     private fun goToApplink(applink: String) {
         if (applink.isNotEmpty()) {
             val intent = RouteManager.getIntent(context, applink)
@@ -1296,7 +1323,7 @@ open class HomeAccountUserFragment :
                     userId = userSession.userId
                 )
                 homeAccountAnalytic.eventClickViewMoreWalletAccountPage()
-                goToApplink(item.applink)
+                goToFundsAndInvestment()
             }
 
             AccountConstants.SettingCode.SETTING_MORE_MEMBER -> {
@@ -1444,9 +1471,9 @@ open class HomeAccountUserFragment :
     }
 
     private fun checkLogoutOffering() {
-        if (viewModel.getOclStatus.value?.isShowing == true) {
+        if (viewModel.isOclEligible.value == true) {
             showOclBtmSheet()
-        } else if (isEnableBiometricOffering()) {
+        } else if (DeeplinkMapperUser.isGotoLoginDisabled() && isEnableBiometricOffering()) {
             homeAccountAnalytic.trackOnClickLogoutDialog()
             viewModel.getFingerprintStatus()
         } else {

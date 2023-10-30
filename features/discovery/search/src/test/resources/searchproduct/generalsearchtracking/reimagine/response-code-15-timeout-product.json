@@ -1,0 +1,39 @@
+{
+  "searchProductV5": {
+    "header": {
+      "totalData": 734255,
+      "responseCode": 0,
+      "keywordProcess": "5",
+      "keywordIntention": 1,
+      "componentID": "01.02.02.01",
+      "meta": {
+        "productListType": "",
+        "hasPostProcessing": false,
+        "hasButtonATC": false
+      },
+      "isQuerySafe": true,
+      "additionalParams": "",
+      "autocompleteApplink": "tokopedia://search-autocomplete?q=samsung",
+      "backendFilters": "fcity=123,234#456&official=true",
+      "backendFiltersToggle": "fcity=123,234#456&official=true"
+    },
+    "data": {
+      "redirection": {
+        "applink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": ""
+      },
+      "suggestion": {
+        "suggestion": "",
+        "text": "",
+        "query": ""
+      },
+      "related": {
+        "relatedKeyword": ""
+      },
+      "products": []
+    }
+  }
+}

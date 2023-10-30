@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.timer.TimerUnifySingle xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tus_count_down"
+    android:layout_width="0dp"
+    android:layout_height="20dp"
+    android:layout_centerVertical="true"
+    android:layout_marginStart="4dp"
+    android:layout_marginTop="2dp" />

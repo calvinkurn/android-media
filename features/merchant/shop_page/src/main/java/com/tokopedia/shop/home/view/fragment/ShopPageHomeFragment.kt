@@ -86,6 +86,7 @@ import com.tokopedia.play.widget.ui.dialog.PlayWidgetWatchDialogContainer
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -609,6 +610,7 @@ open class ShopPageHomeFragment :
                     ) {
                         goToCart()
                     }
+                    updateMiniCartWidget()
                 }
                 is Fail -> {
                     showErrorToast(it.throwable.message.orEmpty())
@@ -2937,7 +2939,8 @@ open class ShopPageHomeFragment :
             pageSource = VariantPageSource.SHOP_PAGE_REIMAGINED_DIRECT_PURCHASE_WIDGET_PAGESOURCE,
             shopId = shopId,
             startActivitResult = this::startActivityForResult,
-            showQuantityEditor = true
+            showQuantityEditor = true,
+            trackerCdListName = VariantPageSource.SHOP_PAGE_REIMAGINED_DIRECT_PURCHASE_WIDGET_PAGESOURCE.source
         )
     }
 
@@ -4889,6 +4892,10 @@ open class ShopPageHomeFragment :
             model.isFestivity
         )
     }
+
+    override fun onPlayWidgetCtaClicked(model: PlayWidgetUiModel) {
+        RouteManager.route(context, model.actionAppLink)
+    }
     //endregion
 
     override fun onCardDonationClick(model: ShopHomeCardDonationUiModel) {
@@ -5473,10 +5480,11 @@ open class ShopPageHomeFragment :
                 AtcVariantHelper.goToAtcVariant(
                     context = requireContext(),
                     productId = productModel.productId,
-                    pageSource = VariantPageSource.SHOP_PAGE_PAGESOURCE,
+                    pageSource = VariantPageSource.SHOP_PAGE_REIMAGINED_DIRECT_PURCHASE_WIDGET_PAGESOURCE,
                     shopId = shopId,
                     startActivitResult = this::startActivityForResult,
-                    showQuantityEditor = false
+                    showQuantityEditor = false,
+                    trackerCdListName = VariantPageSource.SHOP_PAGE_REIMAGINED_DIRECT_PURCHASE_WIDGET_PAGESOURCE.source
                 )
             } else {
                 if (isLogin) {

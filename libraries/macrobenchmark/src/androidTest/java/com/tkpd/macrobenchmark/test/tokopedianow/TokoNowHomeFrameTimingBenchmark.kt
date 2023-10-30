@@ -26,6 +26,7 @@ class TokoNowHomeFrameTimingBenchmark : BaseFrameTimingBenchmark() {
     }
 
     override fun pageInteractionTest(currentIteration: Int) {
+        Thread.sleep(10000)
         MacroInteration.basicFlingInteraction(
             MacroIntent.TokopediaNow.PACKAGE_NAME,
             MacroIntent.TokopediaNow.RV_RESOURCE_ID,

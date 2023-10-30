@@ -11,7 +11,12 @@ import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import com.tokopedia.usecase.RequestParams
-import io.mockk.*
+import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
+import io.mockk.slot
+import io.mockk.verify
+import io.mockk.verifyOrder
 import org.junit.Test
 import rx.Subscriber
 
@@ -116,7 +121,7 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
                 product,
                 index + 1,
                 searchProductPageTitle,
-                localSearchRecommendationModel.getProductListType()
+                localSearchRecommendationModel.productListType()
             )
         }
     }
@@ -210,7 +215,7 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
                 product,
                 index + 9,
                 searchProductPageTitle,
-                localSearchRecommendationModel.getProductListType()
+                localSearchRecommendationModel.productListType()
             )
         }
     }
