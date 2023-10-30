@@ -160,7 +160,7 @@ ext {
     unifyExplorePromoVersion = '1.0.3.2'
     unifyImageGalleryVersion = '1.0.8'
     unifyViewAllCardVersion = '1.0.12'
-    nestPrinciplesVersion = '1.0.3'
+    nestPrinciplesVersion = '1.0.4'
     nestComponentsVersion = '1.0.8'
 
     gradlePlugin = [

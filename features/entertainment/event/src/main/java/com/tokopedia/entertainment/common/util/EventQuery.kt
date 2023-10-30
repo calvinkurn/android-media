@@ -154,6 +154,7 @@ object EventQuery {
                 category_name
                 quantity
                 total_price
+                tx_expired_time
                 item_map{
                     id
                     name
@@ -463,6 +464,11 @@ object EventQuery {
                            status
                            created_at
                            updated_at
+                        }
+                        availability_status {
+                           val
+                           name
+                           desc
                         }
                     }
                 }
