@@ -195,6 +195,7 @@ abstract class BaseAtcVariantViewModelTest {
         showQuantityEditor: Boolean,
         expectedSelectedProductId: String,
         expectedSelectedMainPrice: String,
+        expectedSelectedSlashPrice: String,
         expectedSelectedStockFmt: String,
         expectedSelectedOptionIdsLevelOne: String,
         expectedSelectedOptionIdsLevelTwo: String,
@@ -210,6 +211,7 @@ abstract class BaseAtcVariantViewModelTest {
                 is VariantHeaderDataModel -> {
                     Assert.assertEquals(it.productId, expectedSelectedProductId)
                     Assert.assertEquals(it.headerData.productMainPrice, expectedSelectedMainPrice)
+                    Assert.assertEquals(it.headerData.productSlashPrice, expectedSelectedSlashPrice)
                     Assert.assertEquals(it.headerData.productDiscountedPercentage, "0%")
                     Assert.assertEquals(it.headerData.productStockFmt, expectedSelectedStockFmt)
                     Assert.assertTrue(it.listOfVariantTitle.containsAll(expectedVariantName))

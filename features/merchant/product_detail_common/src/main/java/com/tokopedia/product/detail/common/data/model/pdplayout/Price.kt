@@ -25,13 +25,13 @@ data class Price(
     fun updatePrice(variantChild: VariantChild?) = copy(
         value = variantChild?.price.orZero(),
         priceFmt = variantChild?.priceFmt.ifNullOrBlank {
-            variantChild?.campaign?.discountedPrice?.getCurrencyFormatted().orEmpty()
+            variantChild?.finalPrice?.getCurrencyFormatted().orEmpty()
         },
         slashPriceFmt = variantChild?.slashPriceFmt.ifNullOrBlank {
-            variantChild?.finalMainPrice.orZero().getCurrencyFormatted()
+            variantChild?.finalMainPrice?.getCurrencyFormatted().orEmpty()
         },
         discPercentage = variantChild?.discPercentage.ifNullOrBlank {
-            variantChild?.campaign?.discountedPercentage.orZero().percentFormatted()
+            variantChild?.campaign?.discountedPercentage?.percentFormatted().orEmpty()
         }
     )
 

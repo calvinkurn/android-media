@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.collection.ArrayMap
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.detail.common.VariantConstant.DEFAULT_MAX_ORDER
 import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 
@@ -88,7 +87,7 @@ data class VariantChild(
     val finalMainPrice: Double
         get() {
             return if (campaign?.isActive == true) {
-                campaign.discountedPrice.orZero()
+                campaign.originalPrice ?: 0.0
             } else {
                 price
             }
