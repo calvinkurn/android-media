@@ -5,6 +5,8 @@ import com.tokopedia.shop.common.domain.GetMessageIdChatUseCase
 import com.tokopedia.shop.common.domain.GetShopReputationUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
+import com.tokopedia.shop.info.domain.GetEpharmacyShopInfoUseCase
+import com.tokopedia.shop.info.domain.GetNearestEpharmacyWarehouseLocationUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
@@ -36,6 +38,12 @@ abstract class ShopInfoViewModelTestFixture {
     lateinit var getMessageIdChatUseCase: GetMessageIdChatUseCase
 
     @RelaxedMockK
+    lateinit var getNearestEpharmacyWarehouseLocationUseCase: GetNearestEpharmacyWarehouseLocationUseCase
+
+    @RelaxedMockK
+    lateinit var getEpharmacyShopInfoUseCase: GetEpharmacyShopInfoUseCase
+
+    @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
 
     protected lateinit var viewModel: ShopInfoViewModel
@@ -54,6 +62,8 @@ abstract class ShopInfoViewModelTestFixture {
             getShopInfoUseCase,
             getShopReputationUseCase,
             getMessageIdChatUseCase,
+            getEpharmacyShopInfoUseCase,
+            getNearestEpharmacyWarehouseLocationUseCase,
             coroutineTestRule.dispatchers
         )
     }

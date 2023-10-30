@@ -28,8 +28,8 @@ class BuyerCommunicationBenefitItemView @JvmOverloads constructor(
     fun bind(number: String, text: String) {
         binding?.apply {
             val benefitText = SpannableStringBuilder(text)
-            val dotIndex = benefitText.indexOf(".")
-            val endIndex = benefitText.length - 1
+            val dotIndex = benefitText.indexOf(".") + 1
+            val endIndex = benefitText.length
             val boldTextColor = ContextCompat.getColor(
                 context,
                 unifyprinciplesR.color.Unify_NN950
