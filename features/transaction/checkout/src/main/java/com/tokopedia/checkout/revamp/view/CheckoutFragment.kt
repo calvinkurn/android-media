@@ -43,6 +43,7 @@ import com.tokopedia.checkout.databinding.HeaderCheckoutBinding
 import com.tokopedia.checkout.databinding.ToastRectangleBinding
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.domain.model.checkout.Prompt
 import com.tokopedia.checkout.revamp.di.CheckoutModule
@@ -545,6 +546,10 @@ class CheckoutFragment :
                 is CheckoutPageState.AkamaiRatesError -> {
                     showToastErrorAkamai(it.message)
                 }
+
+                is CheckoutPageState.ShipmentActionPopUpConfirmation -> {
+                    showShipmentActionPopUpConfirmation(it.cartStringGroup, it.action)
+                }
             }
         }
 
@@ -634,6 +639,28 @@ class CheckoutFragment :
             if (toasterErrorAkamai?.isShownOrQueued == false) {
                 toasterErrorAkamai?.show()
             }
+        }
+    }
+
+    private fun showShipmentActionPopUpConfirmation(cartStringGroup: String, shipmentAction: ShipmentAction) {
+        context?.let {
+            val dialogUnify = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+            dialogUnify.setTitle(shipmentAction.popup.title)
+            dialogUnify.setDescription(shipmentAction.popup.body)
+            dialogUnify.setPrimaryCTAText(shipmentAction.popup.primaryButton)
+            dialogUnify.setPrimaryCTAClickListener {
+                viewModel.doShipmentAction(shipmentAction)
+            }
+            dialogUnify.setSecondaryCTAText(shipmentAction.popup.secondaryButton)
+            dialogUnify.setSecondaryCTAClickListener {
+                val index = viewModel.listData.value.indexOfFirst { item -> item is CheckoutOrderModel && item.cartStringGroup == cartStringGroup }
+                if (index > 0) {
+                    adapter.notifyItemChanged(index)
+                }
+            }
+            dialogUnify.setCanceledOnTouchOutside(false)
+            dialogUnify.setCancelable(false)
+            dialogUnify.show()
         }
     }
 

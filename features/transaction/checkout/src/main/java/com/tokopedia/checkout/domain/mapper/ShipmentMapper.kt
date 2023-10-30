@@ -1336,8 +1336,14 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapShipmentAction(shipmentAction: List<ShipmentAction>): HashMap<Long, String> {
-        return HashMap(shipmentAction.associateBy({ it.spId }, { it.action }))
+    private fun mapShipmentAction(shipmentAction: List<ShipmentAction>): HashMap<Long, com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction> {
+        return HashMap(
+            shipmentAction.associateBy({ it.spId }, {
+                com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction(
+                    it.action
+                )
+            })
+        )
     }
 
     companion object {

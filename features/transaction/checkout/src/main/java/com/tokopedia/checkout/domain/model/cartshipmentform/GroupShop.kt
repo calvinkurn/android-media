@@ -54,7 +54,7 @@ data class GroupShop(
 
     var listSubtotalAddOn: List<ShipmentSubtotalAddOnData> = emptyList(),
 
-    val shipmentAction: HashMap<Long, String> = HashMap()
+    val shipmentAction: HashMap<Long, ShipmentAction> = HashMap()
 ) : Parcelable {
 
     companion object {

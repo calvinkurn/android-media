@@ -10,6 +10,7 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnProductServiceMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
 import com.tokopedia.checkout.revamp.view.converter.CheckoutDataConverter
@@ -1613,6 +1614,15 @@ class CheckoutViewModel @Inject constructor(
         sendEEStep3()
     }
 
+    fun doShipmentAction(shipmentAction: ShipmentAction) {
+        courierAction = shipmentAction.action
+        loadSAF(
+            isReloadData = true,
+            skipUpdateOnboardingState = true,
+            isReloadAfterPriceChangeHigher = false
+        )
+    }
+
     fun setSelectedScheduleDelivery(
         cartPosition: Int,
         order: CheckoutOrderModel,
@@ -1621,6 +1631,20 @@ class CheckoutViewModel @Inject constructor(
         newCourierItemData: CourierItemData
     ) {
         viewModelScope.launch(dispatchers.immediate) {
+            val shipmentAction =
+                order.shipmentAction[newCourierItemData.selectedShipper.shipperProductId.toLong()]
+            if (shipmentAction != null && !shipmentAction.action.equals(courierAction, ignoreCase = true)) {
+                if (shipmentAction.popup.title.isEmpty() && shipmentAction.popup.body.isEmpty()) {
+                    doShipmentAction(shipmentAction)
+                    return@launch
+                } else {
+                    pageState.value = CheckoutPageState.ShipmentActionPopUpConfirmation(
+                        order.cartStringGroup,
+                        shipmentAction
+                    )
+                    return@launch
+                }
+            }
             pageState.value = CheckoutPageState.Loading
             if (courierItemData.selectedShipper.logPromoCode.isNullOrEmpty() && newCourierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
                 setSelectedScheduleDeliveryWithNoPromo(
