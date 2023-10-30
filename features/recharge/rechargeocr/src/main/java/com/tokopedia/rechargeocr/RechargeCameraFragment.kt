@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -17,7 +18,7 @@ import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraUtils
 import com.otaliastudios.cameraview.PictureResult
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.rechargeocr.analytics.RechargeCameraAnalytics
@@ -186,7 +187,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
                 onSuccessImageTakenFromCamera(cameraResultFile)
                 if (cameraResultFile.exists()) {
                     binding?.fullImagePreview?.let {
-                        ImageHandler.loadImageFromFile(context, it, cameraResultFile)
+                        it.loadImage(cameraResultFile.toUri())
                     }
                 }
             }

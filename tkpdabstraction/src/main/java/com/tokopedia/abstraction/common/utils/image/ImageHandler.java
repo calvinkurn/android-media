@@ -472,6 +472,7 @@ public class ImageHandler {
                 .into(imageView);
     }
 
+    // done
     private static BitmapImageViewTarget getCircleImageViewTarget(final ImageView imageView) {
         return new BitmapImageViewTarget(imageView) {
             @Override
@@ -484,6 +485,7 @@ public class ImageHandler {
         };
     }
 
+    // done
     private static BitmapImageViewTarget getRoundedImageViewTarget(final ImageView imageView, final float radius) {
         return new BitmapImageViewTarget(imageView) {
             @Override
