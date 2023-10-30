@@ -49,6 +49,8 @@ import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.*
+import java.util.Collections.emptyList
 import javax.inject.Inject
 
 class OrderSummaryPagePaymentProcessor @Inject constructor(
@@ -349,16 +351,24 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                         )
                     }
                 ),
-                voucherOrders = orderPromo.lastApply.voucherOrders.map { voucher ->
-                    VoucherOrderItemData(
-                        code = voucher.code,
-                        uniqueId = voucher.uniqueId,
-                        shippingId = voucher.shippingId.toLong(),
-                        spId = voucher.spId.toLong(),
-                        type = voucher.type,
-                        success = voucher.success,
-                        cartStringGroup = voucher.cartStringGroup
-                    )
+                voucherOrders = orderPromo.lastApply.voucherOrders.mapNotNull { voucher ->
+                    if (orderCart.cartString == voucher.uniqueId &&
+                        voucher.message.state != "red" &&
+                        voucher.code.isNotEmpty() &&
+                        voucher.type.isNotEmpty()
+                    ) {
+                        VoucherOrderItemData(
+                            code = voucher.code,
+                            uniqueId = voucher.uniqueId,
+                            shippingId = voucher.shippingId.toLong(),
+                            spId = voucher.spId.toLong(),
+                            type = voucher.type,
+                            success = voucher.success,
+                            cartStringGroup = voucher.cartStringGroup
+                        )
+                    } else {
+                        null
+                    }
                 },
                 additionalInfo = AdditionalInfoData(
                     usageSummaries = orderPromo.lastApply.additionalInfo.usageSummaries.map { usage ->
@@ -370,7 +380,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                     }
                 )
             ),
-            ""
+            orderPayment.additionalData
         )
     }
 
