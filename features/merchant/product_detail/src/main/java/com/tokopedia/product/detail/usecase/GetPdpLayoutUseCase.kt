@@ -176,6 +176,9 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       isCOD
                       price {
                         value
+                        priceFmt
+                        slashPriceFmt
+                        discPercentage
                       }
                       campaign {
                         campaignID
@@ -344,6 +347,8 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         subText
                         price
                         priceFmt
+                        slashPriceFmt
+                        discPercentage
                         sku
                         optionID
                         optionName
@@ -445,6 +450,18 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     ... on pdpDataProductListComponent {
                       queryParam
                       thematicID
+                    }
+                    ... on pdpDataComponentSocialProofV2 {
+                        socialProofContent {
+                            socialProofType
+                            socialProofID
+                            title
+                            subtitle
+                            icon
+                            applink {
+                                appLink
+                            }
+                        }
                     }
                   }
                 }

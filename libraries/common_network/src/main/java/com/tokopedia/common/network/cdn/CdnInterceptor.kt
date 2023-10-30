@@ -23,7 +23,7 @@ class CdnInterceptor(val context: Context) : Interceptor {
         }
         val end = System.currentTimeMillis()
         val cost = end - start
-        CdnTracker.log(context, response, cost)
+        CdnTracker.log(context, request, response, cost)
         return response
     }
 }
