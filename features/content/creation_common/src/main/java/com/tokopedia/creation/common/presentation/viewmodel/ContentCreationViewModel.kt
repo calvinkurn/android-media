@@ -6,7 +6,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.creation.common.analytics.ContentCreationAnalytics
 import com.tokopedia.creation.common.domain.ContentCreationConfigUseCase
 import com.tokopedia.creation.common.presentation.model.ContentCreationConfigModel
+import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
+import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
+import com.tokopedia.creation.common.presentation.utils.ContentCreationRemoteConfigManager
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,6 +23,7 @@ import javax.inject.Inject
  */
 class ContentCreationViewModel @Inject constructor(
     private val contentCreationConfigUseCase: ContentCreationConfigUseCase,
+    private val contentCreationConfigManager: ContentCreationRemoteConfigManager,
     private val analytics: ContentCreationAnalytics
 ) : ViewModel() {
 
@@ -29,7 +33,9 @@ class ContentCreationViewModel @Inject constructor(
     private val _creationConfig = MutableStateFlow<Result<ContentCreationConfigModel>?>(null)
     val creationConfig = _creationConfig.asStateFlow()
 
-    private val _isFirstOpen = MutableStateFlow(true)
+    private val _isFirstTime = MutableStateFlow(true)
+
+    var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Unknown
 
     fun selectCreationItem(item: ContentCreationItemModel) {
         _selectedCreationType.value = item
@@ -38,13 +44,14 @@ class ContentCreationViewModel @Inject constructor(
     fun fetchConfig(creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty) {
         viewModelScope.launch {
             try {
-                if (creationConfig.isActive) {
-                    _creationConfig.value = Success(creationConfig)
-                    return@launch
+                val formattedCreationConfig = if (creationConfig.isActive) {
+                    formatCreationConfig(creationConfig)
+                } else {
+                    val response = contentCreationConfigUseCase(Unit)
+                    formatCreationConfig(response)
                 }
 
-                val response = contentCreationConfigUseCase(Unit)
-                _creationConfig.value = Success(response)
+                _creationConfig.value = Success(formattedCreationConfig)
             } catch (t: Throwable) {
                 _creationConfig.value = Fail(t)
             }
@@ -69,10 +76,9 @@ class ContentCreationViewModel @Inject constructor(
 
     fun sendClickPerformanceDashboardAnalytic() {
         creationConfig.value?.let {
-            if (it is Success && _isFirstOpen.value) {
+            if (it is Success) {
                 it.data.creationItems.firstOrNull()?.let { item ->
                     analytics.eventClickPerformanceDashboard(item.authorType)
-                    _isFirstOpen.value = false
                 }
             }
         }
@@ -80,9 +86,10 @@ class ContentCreationViewModel @Inject constructor(
 
     fun sendImpressionCreationBottomSheetAnalytic() {
         creationConfig.value?.let {
-            if (it is Success) {
+            if (it is Success && _isFirstTime.value) {
                 it.data.creationItems.firstOrNull()?.let { item ->
                     analytics.eventImpressionContentCreationBottomSheet(item.authorType)
+                    _isFirstTime.value = false
                 }
             }
         }
@@ -109,6 +116,20 @@ class ContentCreationViewModel @Inject constructor(
     }
 
     fun onDismissBottomSheet() {
-        _isFirstOpen.value = true
+        _isFirstTime.value = true
+    }
+
+    private fun formatCreationConfig(creationConfig: ContentCreationConfigModel): ContentCreationConfigModel =
+        creationConfig.copy(
+            creationItems = creationConfig.creationItems.mapNotNull { item ->
+                if (!isStoryEnabled() && item.type == ContentCreationTypeEnum.STORY) null
+                else item
+            }
+        )
+
+    private fun isStoryEnabled(): Boolean = when (widgetSource) {
+        ContentCreationEntryPointSource.Shop -> contentCreationConfigManager.isShowingShopEntryPoint()
+        ContentCreationEntryPointSource.Feed -> contentCreationConfigManager.isShowingFeedEntryPoint()
+        else -> contentCreationConfigManager.isShowingCreation()
     }
 }
