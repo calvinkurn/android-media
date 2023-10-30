@@ -107,7 +107,7 @@ class StoriesCreationActivity : BaseActivity() {
                 is ProductSetupFragment -> {
                     fragment.setDataSource(object : ProductSetupFragment.DataSource {
                         override fun getProductSectionList(): List<ProductTagSectionUiModel> {
-                            return viewModel.productTag
+                            return viewModel.productTagSection
                         }
 
                         override fun isEligibleForPin(): Boolean = false

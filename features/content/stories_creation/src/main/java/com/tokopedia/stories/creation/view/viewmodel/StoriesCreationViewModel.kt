@@ -51,7 +51,7 @@ class StoriesCreationViewModel @Inject constructor(
     val selectedAccount: ContentAccountUiModel
         get() = _uiState.value.selectedAccount
 
-    val productTag: List<ProductTagSectionUiModel>
+    val productTagSection: List<ProductTagSectionUiModel>
         get() = _uiState.value.productTags
 
     val maxProductTag: Int

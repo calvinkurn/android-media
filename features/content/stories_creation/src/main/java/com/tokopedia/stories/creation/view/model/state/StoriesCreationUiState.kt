@@ -3,6 +3,7 @@ package com.tokopedia.stories.creation.view.model.state
 import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
 
 /**
@@ -16,6 +17,10 @@ data class StoriesCreationUiState(
     val selectedAccount: ContentAccountUiModel,
     val productTags: List<ProductTagSectionUiModel>,
 ) {
+
+    val productList: List<ProductUiModel>
+        get() = productTags.flatMap { it.products }
+
     companion object {
         val Empty: StoriesCreationUiState
             get() = StoriesCreationUiState(
