@@ -153,7 +153,8 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         assertCampaign(
             visitablesData,
             expectedCampaignActive = true,
-            expectedDiscountedPrice = 208000.getCurrencyFormatted()
+            expectedMainPrice = 1000.getCurrencyFormatted(),
+            expectedSlashPrice = 208000.getCurrencyFormatted()
         )
         assertStockCopy("")
         assertButton(expectedCartText = "Simpan Perubahan")
@@ -220,7 +221,8 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         assertCampaign(
             visitablesData,
             expectedCampaignActive = true,
-            expectedDiscountedPrice = 208000.getCurrencyFormatted()
+            expectedMainPrice = 1000.getCurrencyFormatted(),
+            expectedSlashPrice = 208000.getCurrencyFormatted()
         )
         assertStockCopy("")
         assertButton(expectedCartText = "+ Keranjang", expectedIsBuyable = true)
@@ -462,7 +464,8 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         assertCampaign(
             visitablesData,
             expectedCampaignActive = false,
-            expectedDiscountedPrice = 2000.getCurrencyFormatted()
+            expectedMainPrice = 3000.getCurrencyFormatted(),
+            expectedSlashPrice = 2000.getCurrencyFormatted()
         )
         assertStockCopy("")
         assertButton()
@@ -934,7 +937,8 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 success = 1,
                 productId = "2147818593",
                 cartId = "2147818593"
-            ), status = "OK"
+            ),
+            status = "OK"
         )
         val slotRequest = slot<RequestParams>()
         coEvery {

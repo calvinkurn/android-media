@@ -177,14 +177,16 @@ abstract class BaseAtcVariantViewModelTest {
     fun assertCampaign(
         visitables: List<AtcVariantVisitable>,
         expectedCampaignActive: Boolean,
-        expectedDiscountedPrice: String
+        expectedMainPrice: String,
+        expectedSlashPrice: String
     ) {
         visitables.first {
             it is VariantHeaderDataModel
         }.let {
             val headerData = it as VariantHeaderDataModel
             Assert.assertEquals(expectedCampaignActive, headerData.headerData.isCampaignActive)
-            Assert.assertEquals(expectedDiscountedPrice, headerData.headerData.productSlashPrice)
+            Assert.assertEquals(expectedMainPrice, headerData.headerData.productMainPrice)
+            Assert.assertEquals(expectedSlashPrice, headerData.headerData.productSlashPrice)
         }
     }
 
