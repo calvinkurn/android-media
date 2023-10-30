@@ -10,6 +10,7 @@ import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.GetMilestoneDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.MilestoneData
 import com.tokopedia.sellerhomecommon.domain.model.MissionProgressBar
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMilestoneDataUseCase
 import com.tokopedia.sellerhomecommon.presentation.adapter.factory.MilestoneAdapterTypeFactory
 import com.tokopedia.sellerhomecommon.presentation.model.BaseMilestoneMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneCtaUiModel
@@ -45,6 +46,20 @@ class MilestoneMapper @Inject constructor(
         }
     }
 
+    override fun mapRemoteDataToUiData(
+        response: GetMilestoneDataResponse,
+        isFromCache: Boolean,
+        extra: Pair<String, Any?>
+    ): List<MilestoneDataUiModel> {
+        val (extraKey, extraObject) = extra
+        return if (extraKey == GetMilestoneDataUseCase.REWARD_KEY) {
+            // TODO: Map reward detail
+            super.mapRemoteDataToUiData(response, isFromCache, extra)
+        } else {
+            super.mapRemoteDataToUiData(response, isFromCache, extra)
+        }
+    }
+
     fun mapToUiModel(it: MilestoneData, isFromCache: Boolean): MilestoneDataUiModel {
         val missions: List<Visitable<MilestoneAdapterTypeFactory>> = mapGetMilestoneMission(it.showNumber.orFalse(), it.mission.orEmpty())
         val finishCard: List<Visitable<MilestoneAdapterTypeFactory>> = mapGetMilestoneFinish(it.showNumber.orFalse(), it.finishMission)
@@ -57,7 +72,7 @@ class MilestoneMapper @Inject constructor(
         }.toMutableList()
 
         if (finishCard.isEmpty() && it.reward.isHaveReward) {
-            val rewardCard = mapGetMilestoneReward(it.reward)
+            val rewardCard = mapGetMilestoneReward(it)
             allMissions.add(Int.ZERO, rewardCard)
         }
 
@@ -144,8 +159,9 @@ class MilestoneMapper @Inject constructor(
     }
 
     private fun mapGetMilestoneReward(
-        rewardData: MilestoneData.Reward
+        data: MilestoneData
     ): MilestoneItemRewardUiModel {
+        val rewardData = data.reward
         return MilestoneItemRewardUiModel(
             title = rewardData.rewardTitle,
             subtitle = rewardData.rewardSubtitle,
@@ -153,7 +169,7 @@ class MilestoneMapper @Inject constructor(
             buttonStatus = rewardData.button.buttonStatus,
             buttonVariant = rewardData.button.buttonStyleType,
             buttonApplink = rewardData.button.applink,
-            lottieUrl = getRewardLottieUrl(rewardData.rewardStatus)
+            lottieUrl = getRewardLottieUrl(data.questStatus)
         )
     }
 
@@ -190,10 +206,10 @@ class MilestoneMapper @Inject constructor(
         )
     }
 
-    private fun getRewardLottieUrl(rewardStatus: Int): String {
+    private fun getRewardLottieUrl(questStatus: Int): String {
         val isInitialState =
-            rewardStatus == MilestoneItemRewardUiModel.RewardStatus.NOT_STARTED ||
-                rewardStatus == MilestoneItemRewardUiModel.RewardStatus.ON_GOING
+            questStatus == MilestoneItemRewardUiModel.QuestStatus.NOT_STARTED ||
+                questStatus == MilestoneItemRewardUiModel.QuestStatus.ON_GOING
         return if (isInitialState) {
             TokopediaImageUrl.SELLER_HOME_REWARD_INITIAL_LOTTIE
         } else {
