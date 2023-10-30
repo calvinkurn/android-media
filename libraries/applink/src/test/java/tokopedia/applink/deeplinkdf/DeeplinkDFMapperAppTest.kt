@@ -25,7 +25,6 @@ import com.tokopedia.applink.DeeplinkDFMapper.DF_ALPHA_TESTING
 import com.tokopedia.applink.DeeplinkDFMapper.DF_CATEGORY_AFFILIATE
 import com.tokopedia.applink.DeeplinkDFMapper.DF_CATEGORY_TRADE_IN
 import com.tokopedia.applink.DeeplinkDFMapper.DF_CONTENT_PLAY_BROADCASTER
-import com.tokopedia.applink.DeeplinkDFMapper.DF_DIGITAL
 import com.tokopedia.applink.DeeplinkDFMapper.DF_DILAYANI_TOKOPEDIA
 import com.tokopedia.applink.DeeplinkDFMapper.DF_ENTERTAINMENT
 import com.tokopedia.applink.DeeplinkDFMapper.DF_FEED_CONTENT_CREATION
@@ -45,7 +44,6 @@ import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOFOOD
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOPEDIA_NOW
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TRAVEL
 import com.tokopedia.applink.DeeplinkDFMapper.DF_USER_SETTINGS
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.DROPOFF_PICKER
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
@@ -149,12 +147,6 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
             ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER,
             DF_CONTENT_PLAY_BROADCASTER
         )
-    }
-
-    @Test
-    fun `MA df_digital`() {
-        assertEqualDeepLinkMA(ApplinkConsInternalDigital.SMART_BILLS, DF_DIGITAL)
-        assertEqualDeepLinkMA(ApplinkConsInternalDigital.ADD_TELCO, DF_DIGITAL)
     }
 
     @Test

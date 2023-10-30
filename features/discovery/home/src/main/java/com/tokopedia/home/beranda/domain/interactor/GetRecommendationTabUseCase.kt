@@ -25,7 +25,8 @@ class GetRecommendationTabUseCase(
                 name = pair.value.name,
                 imageUrl = pair.value.imageUrl,
                 position = pair.index + 1,
-                sourceType = pair.value.sourceType
+                sourceType = pair.value.sourceType,
+                isJumperTab = pair.value.isJumperTab
             )
         }
     }

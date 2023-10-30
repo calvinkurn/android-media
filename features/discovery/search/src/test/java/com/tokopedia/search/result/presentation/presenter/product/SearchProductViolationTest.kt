@@ -2,9 +2,11 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.reimagine.Search3ProductCard
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.domain.model.SearchProductModel.Violation
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.separator.VerticalSeparator
@@ -32,7 +34,7 @@ internal class SearchProductViolationTest: ProductListPresenterTestFixtures() {
         `When load data`("diethylether")
 
         `Then verify view interaction for violation products`()
-        `Then verify violation products view model`(searchProductModel)
+        `Then verify violation products view model`(searchProductModel.searchProduct.data.violation)
     }
 
     private fun `Given search product API will return empty search with error message`(searchProductModel: SearchProductModel) {
@@ -52,18 +54,20 @@ internal class SearchProductViolationTest: ProductListPresenterTestFixtures() {
         }
     }
 
-    private fun `Then verify violation products view model`(searchProductModel: SearchProductModel) {
+    private fun `Then verify violation products view model`(violation: Violation) {
         visitableList.size shouldBe 1
 
-        val violationProductsViewModel = visitableList[0] as ViolationDataView
+        val violationDataView = visitableList[0] as ViolationDataView
 
-        val violation = searchProductModel.searchProduct.data.violation
+        violationDataView.verify(violation)
+    }
 
-        violationProductsViewModel.headerText shouldBe violation.headerText
-        violationProductsViewModel.descriptionText shouldBe violation.descriptionText
-        violationProductsViewModel.violationButton.ctaUrl shouldBe violation.ctaUrl
-        violationProductsViewModel.violationButton.text shouldBe violation.buttonText
-        violationProductsViewModel.verticalSeparator shouldBe VerticalSeparator.Bottom
+    private fun ViolationDataView.verify(violation: Violation) {
+        headerText shouldBe violation.headerText
+        descriptionText shouldBe violation.descriptionText
+        violationButton.ctaUrl shouldBe violation.ctaUrl
+        violationButton.text shouldBe violation.buttonText
+        verticalSeparator shouldBe VerticalSeparator.Bottom
     }
 
     @Test
@@ -76,24 +80,20 @@ internal class SearchProductViolationTest: ProductListPresenterTestFixtures() {
         `When load data`("avigan")
 
         `Then verify view interaction for violation products`()
-        `Then verify visitable list contains global nav and violation products`(searchProductModel)
+        `Then verify visitable list contains global nav and violation products`(
+            searchProductModel.searchProduct.data.violation
+        )
     }
 
     private fun `Then verify visitable list contains global nav and violation products`(
-        searchProductModel: SearchProductModel
+        violation: Violation
     ) {
         val globalNavWidgetDataView = visitableList[0]
         globalNavWidgetDataView.shouldBeInstanceOf<GlobalNavDataView>()
 
-        val violationProductsViewModel =
-            visitableList[1] as ViolationDataView
-        val violation = searchProductModel.searchProduct.data.violation
+        val violationDataView = visitableList[1] as ViolationDataView
 
-        violationProductsViewModel.headerText shouldBe violation.headerText
-        violationProductsViewModel.descriptionText shouldBe violation.descriptionText
-        violationProductsViewModel.violationButton.ctaUrl shouldBe violation.ctaUrl
-        violationProductsViewModel.violationButton.text shouldBe violation.buttonText
-        violationProductsViewModel.verticalSeparator shouldBe VerticalSeparator.Bottom
+        violationDataView.verify(violation)
     }
 
     @Test
@@ -118,5 +118,19 @@ internal class SearchProductViolationTest: ProductListPresenterTestFixtures() {
 
     private fun `Then assert visitable list contains empty state`() {
         assertTrue(visitableList.any { it is EmptyStateDataView })
+    }
+
+    @Test
+    fun `Show violation products message for search reimagine`() {
+        val searchProductModel = "searchproduct/violation/violation-reimagine.json"
+            .jsonToObject<SearchProductModel>()
+
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given search product API will return empty search with error message`(searchProductModel)
+
+        `When load data`("diethylether")
+
+        `Then verify view interaction for violation products`()
+        `Then verify violation products view model`(searchProductModel.searchProductV5.data.violation)
     }
 }

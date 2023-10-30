@@ -83,8 +83,8 @@ internal class LabelLayoutStrategyControl: LabelLayoutStrategy {
         val hasLabelBestSeller = productCardModel.isShowLabelBestSeller()
 
         return if (hasLabelBestSeller)
-            0
-        else context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin)
+            context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin_top)
+        else context.resources.getDimensionPixelSize(R.dimen.product_card_content_gone_margin_top)
     }
 
     override fun renderLabelBestSellerCategorySide(
@@ -127,10 +127,7 @@ internal class LabelLayoutStrategyControl: LabelLayoutStrategy {
     override fun renderLabelPrice(view: View, productCardModel: ProductCardModel) {
         val labelPrice = view.findViewById<Label?>(R.id.labelPrice)
 
-        if (productCardModel.isShowLabelPrice())
-            labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
-        else
-            labelPrice?.initLabelGroup(null)
+        labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
 
         val labelPriceReposition = view.findViewById<Label?>(R.id.labelPriceReposition)
         labelPriceReposition?.initLabelGroup(null)
@@ -162,21 +159,21 @@ internal class LabelLayoutStrategyControl: LabelLayoutStrategy {
             it.connect(
                 R.id.imageShopBadge,
                 ConstraintSet.TOP,
-                R.id.labelPriceBarrier,
+                R.id.labelPrice,
                 ConstraintSet.BOTTOM,
                 shopBadgeMarginTop,
             )
             it.connect(
                 R.id.textViewShopLocation,
                 ConstraintSet.TOP,
-                R.id.labelPriceBarrier,
+                R.id.labelPrice,
                 ConstraintSet.BOTTOM,
                 textViewShopLocationMarginTop,
             )
             it.connect(
                 R.id.imageFulfillment,
                 ConstraintSet.TOP,
-                R.id.labelPriceBarrier,
+                R.id.labelPrice,
                 ConstraintSet.BOTTOM,
                 imageFulfillmentnMarginTop,
             )

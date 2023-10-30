@@ -28,6 +28,7 @@ private const val searchProductPostProcessingWithoutTopadsJSON = "searchproduct/
 private const val searchProductPostProcessingWithoutTopadsSmallTotalDataJSON = "searchproduct/postprocessingfilter/postprocessing-without-topads-small-total-data.json"
 private const val postProcessingEmptyTotalDataNotZeroJSON = "searchproduct/postprocessingfilter/postprocessing-empty-total-data-not-0.json"
 private const val postProcessingEmptySmallTotalDataJSON = "searchproduct/postprocessingfilter/postprocessing-empty-small-total-data.json"
+private const val postProcessingEmptyTotalDataNotZeroReimagineJSON = "searchproduct/postprocessingfilter/postprocessing-empty-total-data-not-0-reimagine.json"
 
 internal class SearchProductPostProcessingFilter: ProductListPresenterTestFixtures() {
 
@@ -45,6 +46,8 @@ internal class SearchProductPostProcessingFilter: ProductListPresenterTestFixtur
         postProcessingEmptySmallTotalDataJSON.jsonToObject<SearchProductModel>()
     private val postProcessingNotEmptyProductSmallTotalData =
         searchProductPostProcessingWithoutTopadsSmallTotalDataJSON.jsonToObject<SearchProductModel>()
+    private val postProcessingEmptyProductTotalDataNotZeroReimagine =
+        postProcessingEmptyTotalDataNotZeroReimagineJSON.jsonToObject<SearchProductModel>()
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val visitableList by lazy { visitableListSlot.captured }
@@ -382,6 +385,28 @@ internal class SearchProductPostProcessingFilter: ProductListPresenterTestFixtur
         }
 
         verify(exactly = 2) {
+            productListView.removeLoading()
+        }
+    }
+
+    @Test
+    fun `post processing with empty products for reimagine`() {
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given search product APIs responses` { parameter ->
+            when (parameter[START].toString()) {
+                "0" -> postProcessingEmptyProductTotalDataNotZeroReimagine
+                "8" -> postProcessingEmptyProductTotalDataNotZeroReimagine
+                else -> postProcessingEmptyProductTotalDataNotZeroReimagine
+            }
+        }
+
+        productListPresenter.loadData(searchParameterPostProcessing)
+
+        verify(exactly = 3) {
+            searchProductFirstPageUseCase.execute(any(), any())
+        }
+
+        verify(exactly = 1) {
             productListView.removeLoading()
         }
     }
