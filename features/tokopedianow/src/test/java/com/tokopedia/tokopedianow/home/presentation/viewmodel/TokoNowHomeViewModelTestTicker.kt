@@ -48,8 +48,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf(),
-            enableNewRepurchase = true
+            removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(
             localCacheModel = LocalCacheModel()
@@ -131,8 +130,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf(),
-            enableNewRepurchase = true
+            removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(
             localCacheModel = LocalCacheModel()
@@ -167,7 +165,8 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
                         maxOrder = repurchaseProductMaxOrder,
                         position = repurchaseProductPosition,
                         originalPosition = repurchaseProductPosition,
-                        headerName = repurchaseProductTitle
+                        headerName = repurchaseProductTitle,
+                        blockAddToCart = true
                     )
                 ),
                 state = TokoNowLayoutState.SHOW
@@ -185,5 +184,4 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
         verifyGetHomeLayoutListSuccess(expectedResult)
         verifyBlockAddToCartNotNull()
     }
-
 }

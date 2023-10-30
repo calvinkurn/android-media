@@ -271,6 +271,22 @@ class CheckoutPromoProcessor @Inject constructor(
         return validateUsePromoRequest
     }
 
+    fun generateValidateUsePromoRequestForPromoUsage(
+        shipmentCartItemModelList: List<CheckoutItem>,
+        isTradeIn: Boolean,
+        isTradeInByDropOff: Boolean,
+        isOneClickShipment: Boolean
+    ): ValidateUsePromoRequest {
+        val validateUsePromoRequest = generateValidateUsePromoRequest(
+            shipmentCartItemModelList,
+            isTradeIn,
+            isTradeInByDropOff,
+            isOneClickShipment
+        )
+        setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
+        return validateUsePromoRequest
+    }
+
     private fun setValidateUseSpIdParam(
         shipmentCartItemModel: CheckoutOrderModel,
         ordersItem: OrdersItem

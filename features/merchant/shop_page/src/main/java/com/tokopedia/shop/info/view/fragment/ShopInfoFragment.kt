@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -26,9 +25,11 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.network.exception.UserNotLoginException
@@ -41,6 +42,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.FragmentShopInfoBinding
 import com.tokopedia.shop.extension.transformToVisitable
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
@@ -48,6 +50,7 @@ import com.tokopedia.shop.info.di.module.ShopInfoModule
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity.Companion.EXTRA_SHOP_INFO
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapter
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapterTypeFactory
+import com.tokopedia.shop.info.view.model.ShopEpharmacyDetailData
 import com.tokopedia.shop.info.view.viewmodel.ShopInfoViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity.Companion.SHOP_ID
 import com.tokopedia.shop.report.activity.ReportShopWebViewActivity
@@ -121,6 +124,8 @@ class ShopInfoFragment :
         get() = fragmentShopInfoBinding?.labelReport
 
     private var fragmentShopInfoBinding: FragmentShopInfoBinding? = null
+    private var shopId: String = "0"
+    private var warehouseId: Long = 0L
     private val userId: String
         get() = shopViewModel?.userId().orEmpty()
 
@@ -153,6 +158,7 @@ class ShopInfoFragment :
             removeObservers(it.shopInfo)
             removeObservers(it.shopNotesResp)
             removeObservers(it.messageIdOnChatExist)
+            removeObservers(it.epharmDetailData)
             it.flush()
         }
         super.onDestroy()
@@ -203,6 +209,7 @@ class ShopInfoFragment :
     private fun initObservers() {
         observeShopNotes()
         observeShopInfo()
+        observeShopEpharmData()
         observeShopBadgeReputation()
         observerMessageIdOnChatExist()
     }
@@ -296,9 +303,38 @@ class ShopInfoFragment :
     private fun observeShopInfo() {
         shopViewModel?.shopInfo?.let { shopInfo ->
             observe(shopInfo) { result ->
-                when(result) {
-                    is Success -> renderShopInfo(result.data)
+                when (result) {
+                    is Success -> {
+                        renderShopInfo(result.data)
+                        shopViewModel?.let {
+                            if (it.isShouldShowLicenseForDrugSeller(isGoApotik = result.data.isGoApotik, fsType = result.data.fsType)) {
+                                val widgetUserAddressLocalData = ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+                                getNearestEpharmWarehouseData(shopId, widgetUserAddressLocalData.district_id.toIntOrZero())
+                            }
+                        }
+                    }
                     is Fail -> showError(result.throwable)
+                }
+            }
+        }
+    }
+
+    private fun observeShopEpharmData() {
+        shopViewModel?.epharmDetailData?.let { epharmData ->
+            observe(epharmData) {
+                when (it) {
+                    is Success -> {
+                        shopViewModel?.let { _viewModel ->
+                            shopInfo?.let { _shopInfo ->
+                                if (_viewModel.isShouldShowLicenseForDrugSeller(isGoApotik = _shopInfo.isGoApotik, fsType = _shopInfo.fsType)) {
+                                    displayShopEpharmDetailsData(epharmData = it.data)
+                                }
+                            }
+                        }
+                    }
+                    is Fail -> {
+                        showToasterError(it.throwable)
+                    }
                 }
             }
         }
@@ -322,6 +358,7 @@ class ShopInfoFragment :
 
     private fun initView() {
         getShopId()?.let { shopId ->
+            this@ShopInfoFragment.shopId = shopId
             setupShopNotesList()
             setStatisticsVisibility()
 
@@ -330,6 +367,9 @@ class ShopInfoFragment :
             } else {
                 showShopInfo()
             }
+
+            val widgetUserAddressLocalData = ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+            getNearestEpharmWarehouseData(shopId, widgetUserAddressLocalData.district_id.toIntOrZero())
 
             getShopNotes(shopId)
             setReportStoreView()
@@ -342,6 +382,10 @@ class ShopInfoFragment :
         fragmentShopInfoBinding?.globalError?.setActionClickListener {
             getShopInfo(shopId)
             getShopNotes(shopId)
+
+            val widgetUserAddressLocalData = ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+            getNearestEpharmWarehouseData(shopId, widgetUserAddressLocalData.district_id.toIntOrZero())
+
             getShopBadgeReputation()
         }
     }
@@ -371,6 +415,13 @@ class ShopInfoFragment :
     private fun getShopNotes(shopId: String) {
         showNoteLoading()
         shopViewModel?.getShopNotes(shopId)
+    }
+
+    private fun getNearestEpharmWarehouseData(shopId: String, districtId: Int) {
+        shopViewModel?.getNearestEpharmWarehouseLocation(
+            shopId = shopId.toLongOrZero(),
+            districtId = districtId
+        )
     }
 
     private fun setStatisticsVisibility() {
@@ -432,19 +483,6 @@ class ShopInfoFragment :
                 }
             }
 
-            // go apotik info
-            shopViewModel?.let {
-                goApotikInfoContainer.shouldShowWithAction(
-                    shouldShow = it.isShouldShowLicenseForDrugSeller(isGoApotik = shopInfo.isGoApotik, fsType = shopInfo.fsType)
-                ) {
-                    tvSiaDescription.text =
-                        shopInfo.siaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
-                    tvSipaDescription.text =
-                        shopInfo.sipaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
-                    tvApjDescription.text = shopInfo.apj.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
-                }
-            }
-
             // shop location info
             shopInfoLocation.text = shopInfo.location
 
@@ -452,6 +490,39 @@ class ShopInfoFragment :
             shopInfoOpenSince?.text =
                 getString(R.string.shop_info_label_open_since_v3, shopInfo.openSince)
         }
+    }
+
+    private fun displayShopEpharmDetailsData(epharmData: ShopEpharmacyDetailData) {
+        if (!isErrorGetEpharmData(epharmData)) {
+            fragmentShopInfoBinding?.let { binding ->
+                binding.layoutPartialShopInfoDescription.shopGoApotikContainer.visibility = View.VISIBLE
+
+                val emptyChar = "-"
+                val weblinkPrefix = "tokopedia://webview?url="
+                binding.layoutPartialShopInfoDescription.shopInfoNearestPickupLocation.text = if (epharmData.address.isNotEmpty()) epharmData.address else emptyChar
+                binding.layoutPartialShopInfoDescription.tvSiaDescription.text = if (epharmData.siaNumber.isNotEmpty()) epharmData.siaNumber else emptyChar
+                binding.layoutPartialShopInfoDescription.tvSipaDescription.text = if (epharmData.sipaNumber.isNotEmpty()) epharmData.sipaNumber else emptyChar
+                binding.layoutPartialShopInfoDescription.tvApjDescription.text = if (epharmData.apj.isNotEmpty()) epharmData.apj else emptyChar
+                binding.layoutPartialShopInfoDescription.btnLihatLokasi.visibility = if (epharmData.gMapsUrl.isNotEmpty()) View.VISIBLE else View.GONE
+                binding.layoutPartialShopInfoDescription.btnLihatLokasi.setOnClickListener {
+                    RouteManager.route(context, "$weblinkPrefix${epharmData.gMapsUrl}")
+                }
+
+                val workingHoursText = epharmData.epharmacyWorkingHoursFmt.joinToString("\n")
+                binding.layoutPartialShopInfoDescription.tvOpenHoursDescription.text = if (workingHoursText.isNotEmpty()) workingHoursText else emptyChar
+            }
+        } else {
+            if (epharmData.errMessages.isNotEmpty()) {
+                val errMessage: String = epharmData.errMessages[0]
+                view?.let {
+                    Toaster.build(it, errMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                }
+            }
+        }
+    }
+
+    private fun isErrorGetEpharmData(errData: ShopEpharmacyDetailData): Boolean {
+        return errData.errorCode != 0 && errData.errMessages.isNotEmpty()
     }
 
     private fun renderListNote(notes: List<ShopNoteUiModel>) {

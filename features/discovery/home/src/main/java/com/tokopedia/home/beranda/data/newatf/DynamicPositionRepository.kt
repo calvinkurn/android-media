@@ -24,7 +24,7 @@ class DynamicPositionRepository @Inject constructor(
 ) {
 
     private val _cacheFlow: MutableStateFlow<AtfDataList?> = MutableStateFlow(null)
-    val cacheFlow: StateFlow<AtfDataList?>
+    private val cacheFlow: StateFlow<AtfDataList?>
         get() = _cacheFlow
 
     private val _remoteFlow: MutableStateFlow<AtfDataList?> = MutableStateFlow(null)
@@ -38,13 +38,20 @@ class DynamicPositionRepository @Inject constructor(
      *      - If cached position == remote position:
      *          - Merged the two by inserting cached ATF content to remote position
      *          - Expose the combined flow to collector
+     *      - If data error, expose cached data but with remote status
      *      - If different, then expose remote dynamic position (without content)
+     *        and marks as need to fetch components
      */
     val flow: Flow<AtfDataList?> = combine(cacheFlow, remoteFlow) { cache, remote ->
         if (cache != null && remote != null) {
             if (remote.positionEquals(cache)) {
+                // if remote position same with cache, 
+                // populate cache data to remote position
                 remote.copyAtfContentsFrom(cache)
             } else if (remote.isDataError()) {
+                // when remote failed, show user cached data
+                // but still set the status flag as failed
+                // to show error toaster
                 cache.copy(
                     needToFetchComponents = false,
                     status = remote.status

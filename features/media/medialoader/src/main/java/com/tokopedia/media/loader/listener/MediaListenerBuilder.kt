@@ -11,6 +11,7 @@ import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.internal.NetworkResponseManager
 import com.tokopedia.media.loader.tracker.IsIcon
 import com.tokopedia.media.loader.tracker.MediaLoaderTracker
+import com.tokopedia.media.loader.utils.RemoteConfig
 import com.tokopedia.media.loader.utils.adaptiveSizeImageRequest
 import com.tokopedia.media.loader.wrapper.MediaDataSource.Companion.mapTo as dataSource
 
@@ -77,8 +78,8 @@ internal object MediaListenerBuilder {
                 loadTime = loadTime
             )
 
-            if (properties.shouldTrackNetwork) {
-                val result = NetworkResponseManager.getInstance(context)
+            if (properties.shouldTrackNetwork && RemoteConfig.shouldAbleToExposeResponseHeader(context)) {
+                val result = NetworkResponseManager.getInstance()
                 val headers = result.header(properties.data.toString())
 
                 properties.setNetworkResponse?.header(

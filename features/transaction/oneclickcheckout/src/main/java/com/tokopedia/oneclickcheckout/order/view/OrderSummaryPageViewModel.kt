@@ -245,6 +245,15 @@ class OrderSummaryPageViewModel @Inject constructor(
         }
     }
 
+    private fun cleanPromoFromPromoRequest(promoRequest: PromoRequest): PromoRequest {
+        return promoRequest.copy(
+            codes = arrayListOf(),
+            orders = promoRequest.orders.map {
+                return@map it.copy(codes = mutableListOf())
+            }
+        )
+    }
+
     fun getEntryPointInfo(
         lastApply: LastApplyUiModel,
         oldLastApply: LastApplyUiModel? = null,
@@ -265,7 +274,9 @@ class OrderSummaryPageViewModel @Inject constructor(
                     } else {
                         false
                     }
-                    val entryPointInfo = promoProcessor.getEntryPointInfo(generatePromoRequest())
+                    val entryPointInfo = promoProcessor.getEntryPointInfo(
+                        cleanPromoFromPromoRequest(generatePromoRequest())
+                    )
 
                     withContext(executorDispatchers.main) {
                         val state = if (entryPointInfo.isSuccess) {

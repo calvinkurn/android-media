@@ -14,7 +14,9 @@ data class StickyNavigationUiModel(
 
     data class StickyNavigationItemData(
         val title: String,
-        val anchorTo: String
+        val anchorTo: String,
+        val anchorWidgets: String = "",
+        val titleColor: Int,
     )
 
     override fun type(typeFactory: CatalogAdapterFactory): Int {

@@ -45,8 +45,13 @@ class HomeRecommendationMapper {
                     }
                 }
                 TYPE_BANNER_ADS -> {
-                    visitables.add(HomeRecommendationBannerTopAdsDataModel(position = index))
+                    visitables.add(HomeRecommendationBannerTopAdsDataModel(position = index, bannerType = TYPE_BANNER_ADS))
                 }
+                TYPE_VERTICAL_BANNER_ADS -> {
+                    visitables.add(HomeRecommendationBannerTopAdsDataModel(position = index, bannerType = TYPE_VERTICAL_BANNER_ADS))
+                }
+
+
             }
         }
         return HomeRecommendationDataModel(visitables, recommendationProduct.hasNextPage)
@@ -92,6 +97,7 @@ class HomeRecommendationMapper {
     companion object {
         private const val TYPE_PRODUCT = "product"
         private const val TYPE_BANNER = "banner"
-        private const val TYPE_BANNER_ADS = "banner_ads"
+        const val TYPE_BANNER_ADS = "banner_ads"
+        const val TYPE_VERTICAL_BANNER_ADS = "banner_ads_vertical"
     }
 }

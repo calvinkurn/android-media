@@ -3,6 +3,7 @@ package com.tokopedia.search.result.domain.usecase.searchproduct
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -35,6 +36,7 @@ class SearchProductUseCaseModule {
         topAdsIrisSession: TopAdsIrisSession,
         performanceMonitoringProvider: PerformanceMonitoringProvider,
         remoteConfig: RemoteConfig,
+        reimagineRollence: ReimagineRollence,
     ): UseCase<SearchProductModel> {
         val firstPageGqlUseCase = provideSearchProductFirstPageUseCase(
             searchProductModelMapper,
@@ -42,14 +44,16 @@ class SearchProductUseCaseModule {
             coroutineDispatchers,
             topAdsIrisSession,
             remoteConfig,
+            reimagineRollence,
         )
 
         val topAdsGqlUseCase = provideSearchProductTopAdsUseCase()
 
         return SearchProductTypoCorrectionUseCase(
-            firstPageGqlUseCase,
-            topAdsGqlUseCase,
-            performanceMonitoringProvider,
+            searchProductUseCase = firstPageGqlUseCase,
+            searchProductTopAdsUseCase = topAdsGqlUseCase,
+            performanceMonitoringProvider = performanceMonitoringProvider,
+            reimagineRollence = reimagineRollence,
         )
     }
 
@@ -59,6 +63,7 @@ class SearchProductUseCaseModule {
         coroutineDispatchers: CoroutineDispatchers,
         topAdsIrisSession: TopAdsIrisSession,
         remoteConfig: RemoteConfig,
+        reimagineRollence: ReimagineRollence,
     ): UseCase<SearchProductModel> {
         val topAdsImageViewUseCase = TopAdsImageViewUseCase(
             userSession.userId,
@@ -74,6 +79,7 @@ class SearchProductUseCaseModule {
                 remoteConfig,
                 GlobalConfig.VERSION_CODE,
             ),
+            reimagineRollence,
         )
     }
 
@@ -83,20 +89,30 @@ class SearchProductUseCaseModule {
     fun provideSearchLoadMoreUseCase(
         searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
         performanceMonitoringProvider: PerformanceMonitoringProvider,
+        reimagineRollence: ReimagineRollence,
     ): UseCase<SearchProductModel> {
-        val loadMoreGqlUseCase = provideSearchProductLoadMoreUseCase(searchProductModelMapper)
+        val loadMoreGqlUseCase = provideSearchProductLoadMoreUseCase(
+            searchProductModelMapper,
+            reimagineRollence,
+        )
         val topAdsGqlUseCase = provideSearchProductTopAdsUseCase()
         return SearchProductTypoCorrectionUseCase(
-            loadMoreGqlUseCase,
-            topAdsGqlUseCase,
-            performanceMonitoringProvider,
+            searchProductUseCase = loadMoreGqlUseCase,
+            searchProductTopAdsUseCase = topAdsGqlUseCase,
+            performanceMonitoringProvider = performanceMonitoringProvider,
+            reimagineRollence = reimagineRollence,
         )
     }
 
     private fun provideSearchProductLoadMoreUseCase(
-        searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>
+        searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
+        reimagineRollence: ReimagineRollence,
     ): UseCase<SearchProductModel> {
-        return SearchProductLoadMoreGqlUseCase(GraphqlUseCase(), searchProductModelMapper)
+        return SearchProductLoadMoreGqlUseCase(
+            GraphqlUseCase(),
+            searchProductModelMapper,
+            reimagineRollence,
+        )
     }
 
     @SearchScope

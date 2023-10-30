@@ -46,7 +46,8 @@ private fun toRecommendationUiModel(
         warehouseId = postAtcInfo.warehouseInfo.warehouseId,
         productId = postAtcInfo.productId,
         offerId = data?.offerId.orEmpty(),
-        shopId = postAtcInfo.shopId
+        shopId = postAtcInfo.shopId,
+        thematicId = data?.thematicId.orEmpty()
     )
 }
 

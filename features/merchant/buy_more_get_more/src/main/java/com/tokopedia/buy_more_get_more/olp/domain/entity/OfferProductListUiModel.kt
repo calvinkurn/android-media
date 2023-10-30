@@ -27,6 +27,7 @@ data class OfferProductListUiModel(
         val soldCount: Int = 0,
         val stock: Int = 0,
         val isVbs: Boolean = false,
+        val minOrder: Int = 1,
         val campaign: Campaign = Campaign(),
         val labelGroup: List<LabelGroup> = emptyList(),
         val position: Int = 0

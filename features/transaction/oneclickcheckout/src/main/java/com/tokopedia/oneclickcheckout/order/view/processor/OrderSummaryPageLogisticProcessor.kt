@@ -4,9 +4,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
-import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.domain.usecase.SetStateChosenAddressFromAddressUseCase
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
@@ -51,10 +51,10 @@ import javax.inject.Inject
 class OrderSummaryPageLogisticProcessor @Inject constructor(
     private val ratesUseCase: GetRatesUseCase,
     private val ratesResponseStateConverter: RatesResponseStateConverter,
-    private val chooseAddressRepository: Lazy<ChooseAddressRepository>,
     private val chooseAddressMapper: Lazy<ChooseAddressMapper>,
     private val editAddressUseCase: UpdatePinpointUseCase,
     private val orderSummaryAnalytics: OrderSummaryAnalytics,
+    private val setStateChosenAddressUseCase: SetStateChosenAddressFromAddressUseCase,
     private val executorDispatchers: CoroutineDispatchers
 ) {
 
@@ -1001,8 +1001,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val stateChosenAddressFromAddress =
-                    chooseAddressRepository.get().setStateChosenAddressFromAddress(address)
+                val stateChosenAddressFromAddress = setStateChosenAddressUseCase(address)
                 chooseAddressMapper.get()
                     .mapSetStateChosenAddress(stateChosenAddressFromAddress.response)
             } catch (t: Throwable) {

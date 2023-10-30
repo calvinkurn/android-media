@@ -107,7 +107,9 @@ object ProductDetailConstant {
     const val CONTENT_WIDGET = "content_widget"
     const val PLAY_CAROUSEL = "play_carousel"
     const val FINTECH_WIDGET_TYPE = "chips_carousel"
+    const val FINTECH_WIDGET_V2_TYPE = "cicil_one_liner"
     const val FINTECH_WIDGET_NAME = "paylater_cicilan"
+    const val FINTECH_WIDGET_V2_NAME = "paylater_cicilan_v2"
     const val DILAYANI_TOKOPEDIA = "dt_info"
     const val AR_BUTTON = "button_ar"
     const val RECOM_VERTICAL = "pdp_vertical"
@@ -181,7 +183,6 @@ object ProductDetailConstant {
     const val ERROR_TYPE_KEY = "error_type"
     const val EXTRAS_KEY = "extras"
     const val PDP_LOG_TAG = "BUYER_FLOW_PDP"
-
     const val DEFAULT_ATC_MAX_ORDER = 100
     const val DEFAULT_MIN_QTY = 1
 

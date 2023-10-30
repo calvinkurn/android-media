@@ -10,6 +10,8 @@ import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
 import com.tokopedia.stories.domain.usecase.StoriesDetailsUseCase
 import com.tokopedia.stories.domain.usecase.StoriesGroupsUseCase
 import com.tokopedia.stories.domain.usecase.StoriesTrackActivityUseCase
+import com.tokopedia.stories.internal.StoriesPreferenceUtil
+import com.tokopedia.stories.internal.storage.StoriesSeenStorage
 import com.tokopedia.stories.uimodel.StoryActionType
 import com.tokopedia.stories.usecase.ProductMapper
 import com.tokopedia.stories.usecase.StoriesProductUseCase
@@ -33,6 +35,8 @@ class StoriesRepositoryImpl @Inject constructor(
     private val productMapper: ProductMapper,
     private val userSession: UserSessionInterface,
     private val mapper: StoriesMapperImpl,
+    private val seenStorage: StoriesSeenStorage,
+    private val storiesPrefUtil: StoriesPreferenceUtil,
 ) : StoriesRepository {
 
     override suspend fun getStoriesInitialData(data: StoriesRequestModel): StoriesUiModel =
@@ -60,6 +64,23 @@ class StoriesRepositoryImpl @Inject constructor(
         val param = UpdateStoryUseCase.Param(storyId, StoryActionType.Delete)
         val response = updateStoryUseCase(param)
         response.storyId.storyId == storyId
+    }
+
+    override suspend fun setHasSeenAllStories(
+        authorId: String,
+        authorType: String
+    ) = withContext(dispatchers.main) {
+        val author = when (authorType) {
+            "shop" -> StoriesSeenStorage.Author.Shop(authorId)
+            "user" -> StoriesSeenStorage.Author.User(authorId)
+            else -> null
+        } ?: return@withContext
+
+        seenStorage.setSeenAllAuthorStories(author)
+    }
+
+    override suspend fun setHasAckStoriesFeature() {
+        storiesPrefUtil.setHasAckStoriesFeature()
     }
 
     override suspend fun getStoriesProducts(

@@ -14,7 +14,6 @@ import com.tokopedia.product.detail.postatc.mapper.mapToUiModel
 import com.tokopedia.product.detail.postatc.mapper.toPostAtcInfo
 import com.tokopedia.product.detail.postatc.mapper.toUserLocationRequest
 import com.tokopedia.product.detail.postatc.usecase.GetPostAtcLayoutUseCase
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.asFail
 import com.tokopedia.recommendation_widget_common.viewutil.asSuccess
 import com.tokopedia.usecase.coroutines.Result
@@ -27,9 +26,6 @@ class PostAtcViewModel @Inject constructor(
 
     private val _layouts = MutableLiveData<Result<List<PostAtcUiModel>>>()
     val layouts: LiveData<Result<List<PostAtcUiModel>>> = _layouts
-
-    private val _recommendations = MutableLiveData<Pair<Int, Result<RecommendationWidget>>>()
-    val recommendations: LiveData<Pair<Int, Result<RecommendationWidget>>> = _recommendations
 
     var postAtcInfo: PostAtcInfo = PostAtcInfo()
         private set

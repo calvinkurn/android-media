@@ -4,11 +4,12 @@ import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
-import com.tokopedia.filter.common.data.IOption
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.IOption
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.filter.common.data.SortModel
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
@@ -39,6 +40,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
     private val lastFilterListener: LastFilterListener,
     private val screenNameProvider: ScreenNameProvider,
     private val userSessionInterface: UserSessionInterface,
+    private val reimagineRollence: ReimagineRollence,
 ) : BottomSheetFilterView,
     ContextProvider by WeakReferenceContextProvider(context),
     FragmentProvider by fragmentProvider,
@@ -74,7 +76,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
                 mapParameter = getSearchParameter()?.getSearchParameterHashMap(),
                 dynamicFilterModel = dynamicFilterModel,
                 callback = this,
-                isReimagine = true,
+                isReimagine = reimagineRollence.search2Component().isReimagineQuickFilter(),
             )
         }
         sortFilterBottomSheet?.setOnDismissListener {

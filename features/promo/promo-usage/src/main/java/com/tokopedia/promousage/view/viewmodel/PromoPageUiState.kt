@@ -13,7 +13,8 @@ sealed class PromoPageUiState {
         val items: List<DelegateAdapterItem> = emptyList(),
         val savingInfo: PromoSavingInfo = PromoSavingInfo(),
         val isCalculating: Boolean = false,
-        val isReload: Boolean = false
+        val isReload: Boolean = false,
+        val hasPromoRecommendationSection: Boolean = false
     ) : PromoPageUiState()
 
     data class Error(

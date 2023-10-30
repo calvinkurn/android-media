@@ -40,7 +40,7 @@ class ExpertReviewViewHolder(
     private var onceCreateCarousel = false
     override fun bind(element: ExpertReviewUiModel) {
         binding?.carousel?.apply {
-            autoplay = true
+            autoplay = false
             infinite = true
             onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener{
                 override fun onActiveIndexChanged(prev: Int, current: Int) {

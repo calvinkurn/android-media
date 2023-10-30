@@ -2,6 +2,7 @@ package com.tokopedia.promousage.view.mapper
 
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.PromoValidateUseResponse
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyBebasOngkirInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.AdditionalInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.DetailsItemUiModel
@@ -77,7 +78,11 @@ class PromoUsageValidateUseMapper @Inject constructor() {
                         uniqueId = promoSpId.uniqueId
                     )
                 },
-                pomlAutoApplied = promo.additionalInfo.pomlAutoApplied
+                pomlAutoApplied = promo.additionalInfo.pomlAutoApplied,
+                bebasOngkirInfo = LastApplyBebasOngkirInfoUiModel(
+                    isBoUnstackEnabled = promo.additionalInfo.bebasOngkirInfo.isBoUnstackEnabled,
+                    isUseBebasOngkirOnly = promo.additionalInfo.bebasOngkirInfo.isUseBebasOngkirOnly
+                )
             ),
             benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(
                 finalBenefitText = promo.benefitSummaryInfo.finalBenefitText,

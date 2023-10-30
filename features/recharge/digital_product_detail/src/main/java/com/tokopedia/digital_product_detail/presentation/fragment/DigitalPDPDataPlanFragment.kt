@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -20,7 +19,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
-import com.tokopedia.common.topupbills.analytics.PromotionMultiCheckout
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
@@ -136,7 +134,6 @@ import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.common_digital.R as common_digitalR
 import com.tokopedia.digital_product_detail.R as digital_product_detailR
 import com.tokopedia.recharge_component.R as recharge_componentR
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by firmanda on 04/01/21
@@ -205,7 +202,7 @@ class DigitalPDPDataPlanFragment :
                         it,
                         getString(digital_product_detailR.string.check_balance_failed_verification),
                         Toaster.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL
+                        Toaster.TYPE_ERROR
                     ).show()
                 }
             }
@@ -451,24 +448,18 @@ class DigitalPDPDataPlanFragment :
                         if (productId >= 0) {
                             viewModel.setAutoSelectedDenom(
                                 it.data.listDenomData,
-                                productId.toString()
+                                productId.toString(),
+                                DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE
                             )
                         }
                         val selectedPositionMCCM =
                             viewModel.getSelectedPositionId(it.data.listDenomData)
-                        if (it.data.isHorizontalMCCM) {
-                            onLoadingAndFailMCCMVertical()
-                            onSuccessMCCM(it.data, selectedPositionMCCM)
-                        } else {
-                            onLoadingAndFailMCCM()
-                            onSuccessMCCMVertical(it.data, selectedPositionMCCM)
-                        }
 
+                        onSuccessMCCMVertical(it.data, selectedPositionMCCM)
                         if (selectedPositionMCCM == null) {
                             onHideBuyWidget()
                         }
                     } else {
-                        onLoadingAndFailMCCM()
                         onLoadingAndFailMCCMVertical()
 
                         isMCCMEmpty = true
@@ -483,7 +474,6 @@ class DigitalPDPDataPlanFragment :
                 }
 
                 is RechargeNetworkResult.Fail, RechargeNetworkResult.Loading -> {
-                    onLoadingAndFailMCCM()
                     onLoadingAndFailMCCMVertical()
                 }
             }
@@ -1106,39 +1096,10 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    private fun onSuccessMCCM(denomFull: DenomWidgetModel, selectedPosition: Int?) {
-        binding?.let {
-            var selectedInitialPosition = selectedPosition
-            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_FULL_TYPE)) {
-                viewModel.updateSelectedPositionId(selectedPosition)
-                onShowBuyWidget(viewModel.selectedFullProduct.denomData)
-            } else {
-                selectedInitialPosition = null
-            }
-            if (denomFull.listDenomData.isNotEmpty()) {
-                val colorHexInt = ContextCompat.getColor(
-                    requireContext(),
-                    unifyprinciplesR.color.Unify_NN0
-                )
-                val colorHexString = "#${Integer.toHexString(colorHexInt)}"
-
-                it.rechargePdpPaketDataPromoWidget.show()
-                it.rechargePdpPaketDataPromoWidget.renderMCCMFull(
-                    this,
-                    denomFull,
-                    colorHexString,
-                    selectedInitialPosition
-                )
-            } else {
-                it.rechargePdpPaketDataPromoWidget.hide()
-            }
-        }
-    }
-
     private fun onSuccessMCCMVertical(denomFull: DenomWidgetModel, selectedPosition: Int?) {
         binding?.let {
             var selectedInitialPosition = selectedPosition
-            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_FULL_TYPE)) {
+            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE)) {
                 viewModel.updateSelectedPositionId(selectedPosition)
                 onShowBuyWidget(viewModel.selectedFullProduct.denomData)
             } else {
@@ -1157,21 +1118,9 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    private fun onLoadingAndFailMCCM() {
-        binding?.let {
-            it.rechargePdpPaketDataPromoWidget.hide()
-        }
-    }
-
     private fun onLoadingAndFailMCCMVertical() {
         binding?.let {
             it.rechargePdpPaketDataPromoWidgetVertical.hide()
-        }
-    }
-
-    private fun onClearSelectedMCCM(position: Int) {
-        binding?.let {
-            it.rechargePdpPaketDataPromoWidget.clearSelectedProduct(position)
         }
     }
 
@@ -1319,7 +1268,6 @@ class DigitalPDPDataPlanFragment :
                 }
 
                 sortFilterPaketData.hide()
-                rechargePdpPaketDataPromoWidget.hide()
                 rechargePdpPaketDataPromoWidgetVertical.hide()
                 rechargePdpPaketDataRecommendationWidget.hide()
                 rechargePdpPaketDataDenomFullWidget.hide()
@@ -1867,26 +1815,11 @@ class DigitalPDPDataPlanFragment :
         isShowBuyWidget: Boolean
     ) {
         hideKeyboard()
-        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
+        if (layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
             if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FULL_TYPE) {
                 onClearSelectedDenomFull(viewModel.selectedFullProduct.position)
             }
-
-            digitalPDPAnalytics.clickMCCMProduct(
-                productListTitle,
-                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                operator.attributes.name,
-                loyaltyStatus,
-                userSession.userId,
-                denomFull,
-                layoutType,
-                position
-            )
-        } else if (layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
-            if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FULL_TYPE) {
-                onClearSelectedDenomFull(viewModel.selectedFullProduct.position)
-            }
-            digitalPDPAnalytics.clickMCCMProductNew(
+            digitalPDPAnalytics.clickMCCMProductFullVertical(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
@@ -1897,11 +1830,7 @@ class DigitalPDPDataPlanFragment :
                 position
             )
         } else if (layoutType == DenomWidgetEnum.FULL_TYPE) {
-            if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.MCCM_FULL_TYPE ||
-                viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FLASH_FULL_TYPE ||
-                viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE
-            ) {
-                onClearSelectedMCCM(viewModel.selectedFullProduct.position)
+            if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
                 onClearSelectedMCCMVertical(viewModel.selectedFullProduct.position)
             }
             digitalPDPAnalytics.clickProductCluster(
@@ -1931,18 +1860,8 @@ class DigitalPDPDataPlanFragment :
         position: Int,
         productListTitle: String
     ) {
-        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
-            digitalPDPAnalytics.impressionProductMCCM(
-                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                operator.attributes.name,
-                loyaltyStatus,
-                userSession.userId,
-                denomFull,
-                layoutType,
-                position
-            )
-        } else if (layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
-            digitalPDPAnalytics.impressMCCMProductNew(
+        if (layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
+            digitalPDPAnalytics.impressMCCMProductFullVertical(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
@@ -2196,13 +2115,14 @@ class DigitalPDPDataPlanFragment :
             if (requestCode == REQUEST_CODE_DIGITAL_SAVED_NUMBER) {
                 if (data != null) {
                     val orderClientNumber =
-                        data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSavedNumber
-
-                    handleCallbackSavedNumber(
-                        orderClientNumber.clientName,
-                        orderClientNumber.clientNumber,
-                        orderClientNumber.inputNumberActionTypeIndex
-                    )
+                        data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as? TopupBillsSavedNumber
+                    orderClientNumber?.let {
+                        handleCallbackSavedNumber(
+                            it.clientName,
+                            it.clientNumber,
+                            it.inputNumberActionTypeIndex
+                        )
+                    }
                 } else {
                     handleCallbackAnySavedNumberCancel()
                 }

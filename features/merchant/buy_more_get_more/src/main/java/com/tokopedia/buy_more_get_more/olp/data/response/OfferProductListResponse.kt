@@ -50,6 +50,8 @@ data class OfferProductListResponse(
         val stock: Int = 0,
         @SerializedName("is_vbs")
         val isVbs: Boolean = false,
+        @SerializedName("min_order")
+        val minOrder: Int = 1,
         @SerializedName("campaign")
         val campaign: Campaign = Campaign(),
         @SerializedName("label_group")

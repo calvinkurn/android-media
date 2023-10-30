@@ -243,7 +243,7 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/global-sharing
     const val GLOBAL_SHARING = "$INTERNAL_GLOBAL/sharing?text={text}&image={image}&type={type}"
 
-    const val SHARE_NOT_FOUND = "$INTERNAL_GLOBAL/sharing-not-found"
+    const val DEEPLINK_NOT_FOUND = "$INTERNAL_GLOBAL/deeplink-not-found"
 
     //TkpdYoutubeVideoActivity
     const val YOUTUBE_VIDEO = "$INTERNAL_GLOBAL/youtube-video"

@@ -38,6 +38,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetV2DataModel
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundling
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
@@ -80,6 +81,7 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.asU
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
 import com.tokopedia.product.detail.data.model.review.ProductReviewImageListQuery
 import com.tokopedia.product.detail.data.model.review.ReviewImage
+import com.tokopedia.product.detail.data.model.social_proof.asUiModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.GLOBAL_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
@@ -133,7 +135,7 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(mapToProductDetailInfo(component = component))
                 }
                 ProductDetailConstant.MINI_SOCIAL_PROOF -> {
-                    listOfComponent.add(ProductMiniSocialProofDataModel(type = component.type, name = component.componentName))
+                    mapToSocialProof(component = component)?.let { listOfComponent.add(it) }
                 }
                 ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK -> {
                     listOfComponent.add(ProductMiniSocialProofStockDataModel(type = component.type, name = component.componentName))
@@ -153,29 +155,33 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(ProductMiniShopWidgetDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.PRODUCT_LIST -> {
-                    when (component.componentName) {
-                        PDP_7, PDP_9_TOKONOW ->
-                            listOfComponent.add(ProductRecomWidgetDataModel(type = component.type, name = component.componentName, position = index))
-                        SHOPADS_CAROUSEL -> {
-                            listOfComponent.add(TopadsHeadlineUiModel(type = component.type, name = component.componentName))
-                        }
-                        else -> {
-                            if (component.componentName.startsWith(RECOM_VERTICAL)) {
-                                listOfComponent.add(PdpRecommendationWidgetDataModel(mapPdpRecommendationWidgetModel(component)))
-                            } else {
-                                listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
-                            }
-                        }
-                    }
+                    val productList = mapToProductList(
+                        component = component,
+                        index = index
+                    )
+
+                    listOfComponent.add(productList)
                 }
                 ProductDetailConstant.VIEW_TO_VIEW -> {
-                    listOfComponent.add(ViewToViewWidgetDataModel(type = component.type, name = component.componentName, position = index))
+                    val componentData = component.componentData.firstOrNull() ?: return@forEachIndexed
+                    listOfComponent.add(
+                        ViewToViewWidgetDataModel(
+                            type = component.type,
+                            name = component.componentName,
+                            position = index,
+                            queryParam = componentData.queryParam,
+                            thematicId = componentData.thematicId
+                        )
+                    )
                 }
                 ProductDetailConstant.PRODUCT_LIST_VERTICAL -> {
+                    val componentData = component.componentData.firstOrNull() ?: return@forEachIndexed
                     listOfComponent.add(
                         ProductRecommendationVerticalPlaceholderDataModel(
                             type = component.type,
-                            name = component.componentName
+                            name = component.componentName,
+                            queryParam = componentData.queryParam,
+                            thematicId = componentData.thematicId
                         )
                     )
                     listOfComponent.add(LoadingDataModel())
@@ -301,6 +307,15 @@ object DynamicProductDetailMapper {
                         )
                     )
                 }
+                ProductDetailConstant.FINTECH_WIDGET_V2_TYPE -> {
+                    listOfComponent.add(
+                        FintechWidgetV2DataModel(
+                            type = component.type,
+                            name = component.componentName,
+                            widgetSession = System.currentTimeMillis()
+                        )
+                    )
+                }
                 ProductDetailConstant.PRODUCT_SHOP_ADDITIONAL -> {
                     val shopAdditional = ProductShopAdditionalDataModel(
                         name = component.componentName,
@@ -350,6 +365,44 @@ object DynamicProductDetailMapper {
             }
         }
         return listOfComponent
+    }
+
+    private fun mapToProductList(component: Component, index: Int): DynamicPdpDataModel {
+        val data = component.componentData.firstOrNull() ?: ComponentData()
+
+        return when (component.componentName) {
+            PDP_7, PDP_9_TOKONOW ->
+                ProductRecomWidgetDataModel(
+                    type = component.type,
+                    name = component.componentName,
+                    position = index,
+                    queryParam = data.queryParam,
+                    thematicId = data.thematicId
+                )
+
+            SHOPADS_CAROUSEL -> {
+                TopadsHeadlineUiModel(
+                    type = component.type,
+                    name = component.componentName
+                )
+            }
+
+            else -> {
+                if (component.componentName.startsWith(RECOM_VERTICAL)) {
+                    PdpRecommendationWidgetDataModel(
+                        recommendationWidgetModel = mapPdpRecommendationWidgetModel(component)
+                    )
+                } else {
+                    ProductRecommendationDataModel(
+                        type = component.type,
+                        name = component.componentName,
+                        position = index,
+                        queryParam = data.queryParam,
+                        thematicId = data.thematicId
+                    )
+                }
+            }
+        }
     }
 
     /**
@@ -570,7 +623,9 @@ object DynamicProductDetailMapper {
             separator = componentData.separator,
             icon = componentData.icon,
             status = componentData.status,
-            chevronPos = componentData.chevronPos
+            chevronPos = componentData.chevronPos,
+            paddingTop = componentData.padding.top,
+            paddingBottom = componentData.padding.bottom
         )
     }
 
@@ -944,10 +999,18 @@ object DynamicProductDetailMapper {
     }
 
     private fun mapPdpRecommendationWidgetModel(component: Component): RecommendationWidgetModel {
+        val data = component.componentData.firstOrNull()
+        val thematicIds = if (data?.thematicId.isNullOrBlank()) {
+            emptyList()
+        } else {
+            listOf(data?.thematicId.orEmpty())
+        }
         val metadata = RecommendationWidgetMetadata(
             pageSource = RecommendationWidgetSource.PDP.xSourceValue,
             pageName = component.componentName,
-            pageType = component.type
+            pageType = component.type,
+            queryParam = data?.queryParam.orEmpty(),
+            criteriaThematicIDs = thematicIds
         )
         val trackingModel = RecommendationWidgetTrackingModel(
             androidPageName = RecommendationCarouselTrackingConst.Category.PDP,
@@ -956,5 +1019,19 @@ object DynamicProductDetailMapper {
             listPageName = RecommendationCarouselTrackingConst.List.PDP
         )
         return RecommendationWidgetModel(metadata = metadata, trackingModel = trackingModel)
+    }
+
+    private fun mapToSocialProof(component: Component): ProductMiniSocialProofDataModel? {
+        val data = component.componentData.firstOrNull() ?: return null
+
+        if (data.socialProof.isEmpty()) {
+            return null
+        }
+
+        return ProductMiniSocialProofDataModel(
+            type = component.type,
+            name = component.componentName,
+            items = data.socialProof.asUiModel()
+        )
     }
 }

@@ -6,7 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.pdp.fintech.constants.GQL_GET_WIDGET_DETAIL_V2
 import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetail
-import com.tokopedia.pdp.fintech.view.FintechPriceDataModel
+import com.tokopedia.pdp.fintech.view.FintechPriceURLDataModel
 import javax.inject.Inject
 
 @GqlQuery("PayLaterGetPdpWidget", GQL_GET_WIDGET_DETAIL_V2)
@@ -17,7 +17,7 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
         onSuccess: (WidgetDetail) -> Unit,
         onError: (Throwable) -> Unit,
         productCategory: String,
-        listofAmountandUrls: HashMap<String, FintechPriceDataModel>,
+        listofAmountandUrls: HashMap<String, FintechPriceURLDataModel>,
         shopId: String,
         parentId: String,
         ) {
@@ -41,7 +41,7 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
 
     private fun getRequestParams(
         productCategory: String,
-        listofAmountandUrls: HashMap<String, FintechPriceDataModel>,
+        listofAmountandUrls: HashMap<String, FintechPriceURLDataModel>,
         shopId: String,
         parentId: String
     ): MutableMap<String, Any?> {
@@ -55,7 +55,7 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
     }
 
     private fun setAmountList(
-        listofAmountandUrls: HashMap<String, FintechPriceDataModel>
+        listofAmountandUrls: HashMap<String, FintechPriceURLDataModel>
     ): MutableList<WidgetRequestModel> {
         val listOfVariantDetail: MutableList<WidgetRequestModel> = ArrayList()
         listofAmountandUrls.forEach { (key, value) ->

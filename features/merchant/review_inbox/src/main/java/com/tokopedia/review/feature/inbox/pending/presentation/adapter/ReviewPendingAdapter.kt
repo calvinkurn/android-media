@@ -10,7 +10,9 @@ import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.R
 
 class ReviewPendingAdapter(
     reviewPendingAdapterTypeFactory: ReviewPendingAdapterTypeFactory
-) : BaseListAdapter<ReviewPendingUiModel, ReviewPendingAdapterTypeFactory>(reviewPendingAdapterTypeFactory) {
+) : BaseListAdapter<ReviewPendingUiModel, ReviewPendingAdapterTypeFactory>(
+    reviewPendingAdapterTypeFactory
+) {
 
     fun insertOvoIncentive(reviewPendingOvoIncentiveUiModel: ReviewPendingOvoIncentiveUiModel) {
         if (visitables.firstOrNull() is ReviewPendingOvoIncentiveUiModel) {
@@ -62,8 +64,10 @@ class ReviewPendingAdapter(
      */
     fun removeBulkReview() {
         val target = visitables.indexOfFirst { it is BulkReviewUiModel }
-        visitables.removeAt(target)
-        notifyItemRemoved(target)
+        if (target > -1) {
+            visitables.removeAt(target)
+            notifyItemRemoved(target)
+        }
     }
 
     fun getItemPosition(uiModel: CoachMarkUiModel?): Int {

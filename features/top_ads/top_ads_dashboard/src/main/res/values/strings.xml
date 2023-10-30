@@ -623,6 +623,7 @@
     <string name="top_ads_non_optimised_widget_subtitle_groups_page">Yuk, cek Saran TopAds untuk maksimalkan performa iklanmu!</string>
     <string name="top_ads_optimised_widget_title_group_detail_page">Pengaturan iklanmu sudah maksimal!</string>
     <string name="top_ads_non_optimised_widget_title_group_detail_page">%d pengaturan iklan belum maksimal</string>
+    <string name="topads_label_close">Tutup</string>
     <string name="topads_insight_centre_choose_potential_products_with_count">Pilih Produk Berpotensi (%d)</string>
     <string name="topads_insight_centre_choose_product">Pilih Produk</string>
     <string name="topads_insight_centre_product_item_description"><![CDATA[<font size="13">Dicari sebanyak: <b>%s kali</b></font>]]></string>

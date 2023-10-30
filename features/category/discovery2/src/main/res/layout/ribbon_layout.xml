@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    tools:parentTag="com.google.android.material.card.MaterialCardView">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/percentage_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:paddingVertical="4dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="0dp"
+            android:textColor="@color/Unify_RN500"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            tools:text="50" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/percentage_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:paddingEnd="4dp"
+            android:paddingStart="0dp"
+            android:paddingBottom="6dp"
+            android:textColor="@color/Unify_RN500"
+            app:layout_constraintBottom_toBottomOf="@id/percentage_value"
+            app:layout_constraintStart_toEndOf="@id/percentage_value"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="%" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</merge>

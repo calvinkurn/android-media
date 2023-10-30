@@ -88,11 +88,11 @@ class AtfMapper @Inject constructor(
 
     private fun AtfCacheEntity.getAtfContent(): AtfContent? {
         return when(this.component) {
-            AtfKey.TYPE_BANNER -> content?.getAtfContent<BannerDataModel>()
-            AtfKey.TYPE_ICON -> content?.getAtfContent<DynamicHomeIcon>()
+            AtfKey.TYPE_BANNER, AtfKey.TYPE_BANNER_V2 -> content?.getAtfContent<BannerDataModel>()
+            AtfKey.TYPE_ICON, AtfKey.TYPE_ICON_V2 -> content?.getAtfContent<DynamicHomeIcon>()
             AtfKey.TYPE_TICKER -> content?.getAtfContent<Ticker>()
             AtfKey.TYPE_CHANNEL -> content?.getAtfContent<DynamicHomeChannel>()
-            AtfKey.TYPE_MISSION -> content?.getAtfContent<HomeMissionWidgetData.GetHomeMissionWidget>()
+            AtfKey.TYPE_MISSION, AtfKey.TYPE_MISSION_V2 -> content?.getAtfContent<HomeMissionWidgetData.GetHomeMissionWidget>()
             AtfKey.TYPE_TODO -> content?.getAtfContent<HomeTodoWidgetData.GetHomeTodoWidget>()
             else -> null
         }
@@ -106,13 +106,13 @@ class AtfMapper @Inject constructor(
     fun mapToVisitableList(data: AtfDataList?): List<Visitable<*>> {
         val visitables = mutableListOf<Visitable<*>>()
         data?.listAtfData?.forEachIndexed { index, value ->
-            value.atfContent.run {
+            value.atfContent?.run {
                 when(this) {
                     is BannerDataModel -> visitables.add(homepageBannerMapper.asVisitable(this, index, value))
                     is DynamicHomeIcon -> visitables.add(dynamicIconMapper.asVisitable(this, value))
                     is Ticker -> tickerMapper.asVisitable(this, value)?.let { visitables.add(it) }
                     is HomeMissionWidgetData.GetHomeMissionWidget -> visitables.add(missionWidgetMapper.asVisitable(this, index, value))
-                    is HomeTodoWidgetData.GetHomeTodoWidget -> visitables.add(todoWidgetMapper.asVisitable(this, index, value))
+                    is HomeTodoWidgetData.GetHomeTodoWidget -> todoWidgetMapper.asVisitable(this, index, value)?.let { visitables.add(it) }
                     is DynamicHomeChannel -> visitables.addAll(atfChannelMapper.asVisitableList(this, index, value))
                 }
             }

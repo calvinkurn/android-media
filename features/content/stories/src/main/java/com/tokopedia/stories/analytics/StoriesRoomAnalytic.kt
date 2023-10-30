@@ -2,6 +2,7 @@ package com.tokopedia.stories.analytics
 
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.view.model.StoriesArgsModel
+import com.tokopedia.stories.view.model.StoriesDetailItem
 
 interface StoriesRoomAnalytic {
 
@@ -41,8 +42,7 @@ interface StoriesRoomAnalytic {
     fun sendClickMoveToOtherGroup()
     fun sendClickExitStoryRoomEvent(
         storiesId: String,
-        creatorType: String,
-        contentType: String,
+        contentType: StoriesDetailItem.StoriesItemContentType,
         currentCircle: String,
     )
 

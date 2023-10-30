@@ -2,7 +2,7 @@ package com.tokopedia.stories.view.model
 
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.stories.uimodel.StoryAuthor
-import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Image
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Unknown
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 
 data class StoriesUiModel(
@@ -30,10 +30,19 @@ data class StoriesDetail(
     val selectedDetailPosition: Int = -1,
     val selectedDetailPositionCached: Int = -1,
     val detailItems: List<StoriesDetailItem> = emptyList()
-)
+) {
+    companion object {
+        val Empty get() = StoriesDetail(
+            selectedGroupId = "",
+            selectedDetailPosition = 0,
+            selectedDetailPositionCached = 0,
+            detailItems = listOf(StoriesDetailItem(event = StoriesDetailItem.StoriesDetailItemUiEvent.RESUME, content = StoriesDetailItem.StoriesItemContent(duration = 3000)))
+        )
+    }
+}
 
 data class StoriesDetailItem(
-    val id: String = "",
+    val id: String = "0",
     val event: StoriesDetailItemUiEvent = StoriesDetailItemUiEvent.PAUSE,
     val content: StoriesItemContent = StoriesItemContent(),
     val resetValue: Int = -1,
@@ -52,13 +61,13 @@ data class StoriesDetailItem(
     )
 
     data class StoriesItemContent(
-        val type: StoriesItemContentType = Image,
+        val type: StoriesItemContentType = Unknown,
         val data: String = "",
         val duration: Int = -1
     )
 
     enum class StoriesItemContentType(val value: String) {
-        Image("image"), Video("video"), Unknown("unknown")
+        Image("image"), Video("video"), Unknown("0")
     }
 
     enum class StoriesDetailItemUiEvent {

@@ -123,6 +123,7 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_ACTION_IMPRESSION_CATEGORY_MENU_WIDGET = "impression category menu widget"
         const val EVENT_ACTION_CLICK_CATEGORY_MENU_WIDGET = "click category menu widget"
         const val EVENT_ACTION_CLICK_SEE_ALL_CATEGORY = "click lihat semua category menu"
+        const val EVENT_ACTION_IMPRESSION_PAGINATION = "view pagination"
     }
 
     object TRACKER_ID{

@@ -4,5 +4,6 @@ enum class LoadingType {
     ALL,
     FILTER,
     PROMO_LIST,
-    MERCHANT_PROMOTION
+    MERCHANT_PROMOTION,
+    NONE
 }

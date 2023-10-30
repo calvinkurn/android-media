@@ -5,9 +5,10 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.compact.databinding.ItemProductCardCompactCarouselBinding
-import com.tokopedia.tokopedianow.R
+import com.tokopedia.productcard.compact.productcard.presentation.listener.ProductCardCompactViewListener
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.productcard.compact.R as productcardcompactR
 
 class HomeLeftCarouselAtcProductCardViewHolder(
     itemView: View,
@@ -16,36 +17,42 @@ class HomeLeftCarouselAtcProductCardViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = com.tokopedia.productcard.compact.R.layout.item_product_card_compact_carousel
+        val LAYOUT = productcardcompactR.layout.item_product_card_compact_carousel
     }
 
     private var binding: ItemProductCardCompactCarouselBinding? by viewBinding()
 
     override fun bind(element: HomeLeftCarouselAtcProductCardUiModel) {
         binding?.productCard?.apply {
-            setData(
-                model = element.productCardModel
+            val productCardListener = ProductCardCompactViewListener(
+                onQuantityChangedListener = { quantity ->
+                    listener?.onProductCardQuantityChanged(
+                        product = element,
+                        quantity = quantity
+                    )
+                },
+                clickAddVariantListener = {
+                    listener?.onProductCardAddVariantClicked(
+                        product = element
+                    )
+                },
+                blockAddToCartListener = {
+                    listener?.onProductCardAddToCartBlocked()
+                }
             )
+
             setOnClickListener {
                 listener?.onProductCardClicked(
                     position = layoutPosition,
                     product = element
                 )
             }
-            setOnClickQuantityEditorListener { quantity ->
-                listener?.onProductCardQuantityChanged(
-                    product = element,
-                    quantity = quantity
-                )
-            }
-            setOnClickQuantityEditorVariantListener {
-                listener?.onProductCardAddVariantClicked(
-                    product = element
-                )
-            }
-            setOnBlockAddToCartListener {
-                listener?.onProductCardAddToCartBlocked()
-            }
+
+            bind(
+                model = element.productCardModel,
+                listener = productCardListener
+            )
+
             addOnImpressionListener(element) {
                 listener?.onProductCardImpressed(
                     position = layoutPosition,

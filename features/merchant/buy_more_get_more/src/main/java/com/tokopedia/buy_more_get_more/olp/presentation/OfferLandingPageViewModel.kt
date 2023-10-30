@@ -25,6 +25,7 @@ import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferProductListUse
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetSharingDataByOfferIDUseCase
 import com.tokopedia.buy_more_get_more.olp.utils.BmgmUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -256,9 +257,15 @@ class OfferLandingPageViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 mutex.withLock {
+                    val minOrder = if (product.minOrder.isMoreThanZero()) {
+                        product.minOrder
+                    } else {
+                        Int.ONE
+                    }
                     val param = AddToCartUseCase.getMinimumParams(
                         productId = product.productId.toString(),
-                        shopId = currentState.shopData.shopId.orZero().toString()
+                        shopId = currentState.shopData.shopId.orZero().toString(),
+                        quantity = minOrder
                     )
                     addToCartUseCase.setParams(param)
                     val result = addToCartUseCase.executeOnBackground()

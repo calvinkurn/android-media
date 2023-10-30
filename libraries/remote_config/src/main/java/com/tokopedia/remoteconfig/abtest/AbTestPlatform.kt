@@ -2,7 +2,6 @@ package com.tokopedia.remoteconfig.abtest
 
 import android.content.Context
 import android.util.Log
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase

@@ -29,8 +29,9 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2QuickFilterMapper
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addCategoryMenu
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addCategoryRecommendation
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addEmptyState
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addEmptyStateDivider
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addDivider
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addFeedbackWidget
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addLoadMoreLoading
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addProductCardItems
@@ -378,17 +379,23 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
             val getProductResponse = getCategoryProduct()
             val productList = getProductResponse.searchProduct.data.productList
 
-            val tickerData = categoryData.tickerData
-            val components = categoryData.componentList
-
             if(productList.isNotEmpty()) {
+                val tickerData = categoryData.tickerData
+                val components = categoryData.componentList
+                val categoryDetail = categoryData.categoryDetail
+                val totalData = getProductResponse.searchProduct.header.totalData
+                isAllProductShown = totalData == productList.count()
+
                 visitableList.mapCategoryTabLayout(
                     categoryIdL2,
                     tickerData,
+                    categoryDetail,
                     components
                 )
+
                 updateVisitableListLiveData()
                 getComponentsData(getProductResponse)
+                addCategoryRecommendationItem(isAllProductShown)
             } else {
                 showEmptyState(getProductResponse)
             }
@@ -418,6 +425,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
                 val productList = getProductResponse.searchProduct.data.productList
                 addProductCardItems(getProductResponse)
                 isAllProductShown = productList.isEmpty()
+                addCategoryRecommendationItem(isAllProductShown)
                 hideLoadMoreLoading()
                 page++
             }) {
@@ -427,11 +435,21 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         }
     }
 
+    private fun addCategoryRecommendationItem(allProductShown: Boolean) {
+        visitableList.addCategoryRecommendation(
+            categoryData.componentList,
+            categoryData.categoryDetail,
+            allProductShown
+        )
+        updateVisitableListLiveData()
+    }
+
     private fun showEmptyState(aceSearchResponse: AceSearchProductModel) {
         launchCatchError(block = {
             val violation = aceSearchResponse.searchProduct.data.violation
             val quickFilterItem = visitableList.findItem<CategoryQuickFilterUiModel>()
                 ?: CategoryQuickFilterUiModel(id = CategoryStaticLayoutId.QUICK_FILTER)
+            isAllProductShown = true
 
             visitableList.clear()
             visitableList.add(quickFilterItem)
@@ -439,7 +457,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
                 violation = violation
             )
             visitableList.addCategoryMenu()
-            visitableList.addEmptyStateDivider()
+            visitableList.addDivider()
             visitableList.addProductRecommendation()
             updateVisitableListLiveData()
 

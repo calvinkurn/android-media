@@ -692,6 +692,46 @@ class CheckoutFragment :
             REQUEST_CODE_PROMO -> {
                 onActivityResultFromPromo(resultCode, data)
             }
+
+            PaymentConstant.REQUEST_CODE -> {
+                onResultFromPayment(resultCode, data)
+            }
+        }
+    }
+
+    private fun onResultFromPayment(resultCode: Int, data: Intent?) {
+        when (resultCode) {
+            PaymentConstant.PAYMENT_FAILED, PaymentConstant.PAYMENT_CANCELLED -> {
+                if (data != null && data.getBooleanExtra(
+                        PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT,
+                        false
+                    )
+                ) {
+                    viewModel.loadSAF(
+                        isReloadData = true,
+                        skipUpdateOnboardingState = true,
+                        isReloadAfterPriceChangeHigher = false
+                    )
+                }
+                if (data != null && data.getBooleanExtra(
+                        PaymentConstant.EXTRA_PAGE_TIME_OUT,
+                        false
+                    )
+                ) {
+                    view?.let { v ->
+                        Toaster.build(
+                            v,
+                            getString(R.string.checkout_label_payment_try_again),
+                            type = Toaster.TYPE_ERROR
+                        ).show()
+                    }
+                }
+            }
+
+            else -> {
+                val activity: Activity? = activity
+                activity?.finish()
+            }
         }
     }
 
@@ -1809,9 +1849,9 @@ class CheckoutFragment :
 
     override fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel) {
         if (!viewModel.isLoading()) {
-            val validateUseRequestParam = viewModel.generateValidateUsePromoRequest()
             val promoRequestParam = viewModel.generateCouponListRecommendationRequest()
             if (viewModel.useNewPromoPage()) {
+                val validateUseRequestParam = viewModel.generateValidateUsePromoRequestForPromoUsage()
                 val totalAmount = viewModel.listData.value.buttonPayment()!!.totalPriceNum
                 val bottomSheetPromo = PromoUsageBottomSheet.newInstance(
                     entryPoint = PromoPageEntryPoint.CHECKOUT_PAGE,
@@ -1823,6 +1863,7 @@ class CheckoutFragment :
                 )
                 bottomSheetPromo.show(childFragmentManager)
             } else {
+                val validateUseRequestParam = viewModel.generateValidateUsePromoRequest()
                 val intent =
                     RouteManager.getIntent(
                         activity,

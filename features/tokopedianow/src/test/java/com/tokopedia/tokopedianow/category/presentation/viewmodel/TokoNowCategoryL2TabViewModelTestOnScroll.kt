@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.category.presentation.viewmodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.category.mapper.CategoryL2TabMapper.addProductCardItems
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabData
+import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
@@ -40,6 +41,36 @@ class TokoNowCategoryL2TabViewModelTestOnScroll: TokoNowCategoryL2TabViewModelTe
     }
 
     @Test
+    fun `given product list count same as totalData count when onScroll should not load more product`() {
+        val header = SearchProductHeader(totalData = 1)
+        val productResponse = getProductResponse.searchProduct.data.productList.first()
+        val searchData = getProductResponse.searchProduct.data.copy(productList = listOf(productResponse))
+        val searchProduct = getProductResponse.searchProduct.copy(header = header,data = searchData)
+        val getProductResponse = getProductResponse.copy(searchProduct)
+
+        onGetProductList(thenReturn = getProductResponse)
+        onGetProductAds(thenReturn = getProductAdsResponse)
+
+        onGetQuickFilter_thenReturn(getQuickFilterResponse)
+        onGetCategoryFilter_thenReturn(getCategoryFilterResponse)
+
+        val componentList = getCategoryLayoutResponse.components
+
+        val data = CategoryL2TabData(
+            title = categoryTitle,
+            categoryIdL1 = categoryIdL1,
+            categoryIdL2 = categoryIdL2,
+            componentList = componentList
+        )
+
+        viewModel.onViewCreated(data)
+        viewModel.onScroll(true)
+        viewModel.onScroll(true)
+
+        verifyGetProductUseCaseCalled(times = 1)
+    }
+
+    @Test
     fun `given isAllProductShown true when onScroll should call get product use case twice`() {
         val searchData = getProductResponse.searchProduct.data.copy(productList = emptyList())
         val searchProduct = getProductResponse.searchProduct.copy(data = searchData)
@@ -58,7 +89,7 @@ class TokoNowCategoryL2TabViewModelTestOnScroll: TokoNowCategoryL2TabViewModelTe
         viewModel.onScroll(true)
         viewModel.onScroll(true)
 
-        verifyGetProductUseCaseCalledTwice()
+        verifyGetProductUseCaseCalled(times = 2)
     }
 
     @Test

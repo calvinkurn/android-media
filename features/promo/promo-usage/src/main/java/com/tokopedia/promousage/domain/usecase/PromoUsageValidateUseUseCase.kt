@@ -219,6 +219,10 @@ class PromoUsageValidateUseUseCase @Inject constructor(
                        }
                      }
                      poml_auto_applied
+                     bebas_ongkir_info {
+                        is_bo_unstack_enabled
+                        is_use_bebas_ongkir_only
+                     }
                    }
                  }
               }

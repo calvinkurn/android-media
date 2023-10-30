@@ -1,8 +1,11 @@
 package com.tokopedia.search.result.presentation.model
 
+import com.tokopedia.discovery.common.constants.SearchConstant.ProductListType.FIXED_GRID
+import com.tokopedia.discovery.common.constants.SearchConstant.ProductListType.LIST_VIEW
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.product.banner.BannerDataView
 import com.tokopedia.search.result.product.broadmatch.RelatedDataView
+import com.tokopedia.search.result.product.changeview.ViewType
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
@@ -21,17 +24,14 @@ class ProductDataView {
     var keywordProcess: String? = null
     var tickerModel: TickerDataView? = null
     var suggestionModel: SuggestionDataView? = null
-    var totalData = 0
+    var totalData = 0L
     var isQuerySafe = false
     var adsModel: TopAdsModel = TopAdsModel()
     var cpmModel: CpmModel? = null
     var globalNavDataView: GlobalNavDataView? = null
     var inspirationCarouselDataView = listOf<InspirationCarouselDataView>()
     var inspirationWidgetDataView = listOf<InspirationWidgetVisitable>()
-    var defaultView = 0
-    var gridType = ""
     var relatedDataView: RelatedDataView? = null
-    var totalDataText = ""
     var bannerDataView = BannerDataView()
     var categoryIdL2 = ""
     var lastFilterDataView = LastFilterDataView()
@@ -39,6 +39,26 @@ class ProductDataView {
     var violation: ViolationDataView? = null
     var backendFilters: String = ""
     var keywordIntention: Int = SameSessionRecommendationConstant.DEFAULT_KEYWORD_INTENT
+    var isPostProcessing: Boolean = false
+    var redirectApplink: String = ""
+    var productListType: String = ""
+    var isShowButtonAtc: Boolean = false
+    var isReimagineProductCard: Boolean = false
+    val defaultView: Int
+        get() =
+            if (productListType == LIST_VIEW) ViewType.LIST.value
+            else ViewType.SMALL_GRID.value
+
+    val gridType: String
+        get() =
+            if (isReimagineProductCard) FIXED_GRID
+            else productListType.takeIf { it == FIXED_GRID } ?: ""
+
+    val suggestion: String
+        get() = suggestionModel?.suggestion.orEmpty()
+
+    val relatedKeyword: String
+        get() = relatedDataView?.relatedKeyword.orEmpty()
 
     fun isAdvancedNegativeKeywordSearch(): Boolean {
         if (keywordProcess.isNullOrEmpty()) return false

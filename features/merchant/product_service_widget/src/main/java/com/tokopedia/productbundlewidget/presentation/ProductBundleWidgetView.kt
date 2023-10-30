@@ -49,10 +49,10 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
     private var rvBundles: RecyclerView? = null
     private var pageSource: String = ""
     private var productId: String = ""
-    private var isOverrideWidgetTheme: Boolean = false
     private var bundleAdapter: ProductBundleWidgetAdapter? = null
     private var listener: ProductBundleWidgetListener? = null
     private var startActivityResult: ((intent: Intent, requestCode: Int) -> Unit)? = null
+    private var isOverrideWidgetTheme: Boolean = false
 
     constructor(context: Context) : super(context) {
         setup(context, null)
@@ -173,7 +173,10 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         val lifecycleOwner = context as? LifecycleOwner
         lifecycleOwner?.run {
             viewModel.bundleUiModels.observe(this) {
-                bundleAdapter?.updateDataSet(it)
+                bundleAdapter?.apply {
+                    updateDataSet(it)
+                    setIsOverrideWidgetTheme(isOverrideWidgetTheme)
+                }
             }
             viewModel.error.observe(this) {
                 listener?.onError(it)
@@ -204,7 +207,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
     }
 
     private fun setupItems(rvBundles: RecyclerView) {
-        bundleAdapter = ProductBundleWidgetAdapter(isOverrideWidgetTheme)
+        bundleAdapter = ProductBundleWidgetAdapter()
         rvBundles.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = bundleAdapter
@@ -292,10 +295,6 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         this.listener = listener
     }
 
-    fun setIsOverrideWidgetTheme(isOverrideWidgetTheme: Boolean) {
-        this.isOverrideWidgetTheme = isOverrideWidgetTheme
-    }
-
     fun startActivityResult(startActivityResult: (intent: Intent, requestCode: Int) -> Unit) {
         this.startActivityResult = startActivityResult
     }
@@ -306,6 +305,10 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         param.apply {
             viewModel.getBundleInfo(param)
         }
+    }
+
+    fun setIsOverrideWidgetTheme(isOverrideWidgetTheme: Boolean) {
+        this.isOverrideWidgetTheme = isOverrideWidgetTheme
     }
 
     fun setBundlingCarouselTopMargin(margin: Int) {

@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.domain.interactor.repository.GetHomeBalanceWid
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTokopointsListRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeWalletAppRepository
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -24,7 +25,7 @@ fun createBalanceWidgetUseCase(
     userSessionInterface: UserSessionInterface = createDefaultLoggedInUserSession(),
     injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase = mockk(relaxed = true),
     getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository = mockk(relaxed = true)
-    ): HomeBalanceWidgetUseCase {
+): HomeBalanceWidgetUseCase {
     return HomeBalanceWidgetUseCase(
         homeWalletAppRepository = homeWalletAppRepository,
         homeTokopointsListRepository = homeTokopointsListRepository,
@@ -35,14 +36,14 @@ fun createBalanceWidgetUseCase(
 }
 
 fun createHomeAtfUseCase(
-    homeDispatcher: CoroutineDispatchers = mockk(relaxed = true),
+    homeDispatcher: CoroutineDispatchers = CoroutineTestDispatchersProvider,
     dynamicPositionRepository: DynamicPositionRepository = mockk(relaxed = true),
     homepageBannerRepository: HomepageBannerRepository = mockk(relaxed = true),
     dynamicIconRepository: DynamicIconRepository = mockk(relaxed = true),
     tickerRepository: TickerRepository = mockk(relaxed = true),
     atfChannelRepository: AtfChannelRepository = mockk(relaxed = true),
     missionWidgetRepository: MissionWidgetRepository = mockk(relaxed = true),
-    todoWidgetRepository: TodoWidgetRepository = mockk(relaxed = true),
+    todoWidgetRepository: TodoWidgetRepository = mockk(relaxed = true)
 ): HomeAtfUseCase {
     return HomeAtfUseCase(
         homeDispatcher = homeDispatcher,
@@ -52,7 +53,7 @@ fun createHomeAtfUseCase(
         tickerRepository = tickerRepository,
         atfChannelRepository = atfChannelRepository,
         missionWidgetRepository = missionWidgetRepository,
-        todoWidgetRepository = todoWidgetRepository,
+        todoWidgetRepository = todoWidgetRepository
     )
 }
 

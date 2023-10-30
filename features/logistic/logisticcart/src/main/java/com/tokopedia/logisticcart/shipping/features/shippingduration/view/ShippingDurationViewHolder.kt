@@ -186,7 +186,7 @@ class ShippingDurationViewHolder(
             binding.layoutShippingDuration,
             label,
             text,
-            CoachMark2.POSITION_BOTTOM
+            CoachMark2.POSITION_TOP
         )
         val list = ArrayList<CoachMark2Item>().apply {
             add(coachMarkItem)

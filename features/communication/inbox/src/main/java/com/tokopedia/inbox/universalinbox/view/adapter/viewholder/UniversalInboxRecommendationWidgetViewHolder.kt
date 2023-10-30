@@ -18,6 +18,11 @@ class UniversalInboxRecommendationWidgetViewHolder(
         binding?.inboxRecommendationWidget?.bind(uiModel.recommendationWidgetModel)
     }
 
+    override fun onViewRecycled() {
+        super.onViewRecycled()
+        binding?.inboxRecommendationWidget?.recycle()
+    }
+
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.universal_inbox_recommendation_widget_item

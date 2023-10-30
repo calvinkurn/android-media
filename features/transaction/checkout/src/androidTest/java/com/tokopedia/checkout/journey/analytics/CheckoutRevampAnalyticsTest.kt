@@ -58,7 +58,7 @@ class CheckoutRevampAnalyticsTest {
             waitForData()
             clickChooseDuration(activityRule)
             waitForData()
-            selectFirstShippingDurationOption()
+            selectBebasOngkirDurationOption()
             waitForData()
             clickChoosePaymentButton(activityRule)
         } validateAnalytics {

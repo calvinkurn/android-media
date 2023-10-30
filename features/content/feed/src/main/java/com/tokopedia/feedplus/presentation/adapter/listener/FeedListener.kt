@@ -13,6 +13,8 @@ import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 
 interface FeedListener {
+    fun isMuted(): Boolean
+
     fun onMenuClicked(
         id: String,
         menuItems: List<ContentMenuItem>,
@@ -21,7 +23,7 @@ interface FeedListener {
 
     fun onProfileClicked(
         appLink: String,
-        type: AuthorType,
+        type: AuthorType
     )
 
     fun onFollowClicked(

@@ -20,8 +20,9 @@ object TickerMapper {
         response.getTargetedTicker?.tickers?.forEach { ticker ->
             val metadata = ticker.metadata
 
-            blockAddToCart = metadata.find { it.type == METADATA_TYPE_BLOCK_ADD_TO_CART }
-                ?.values?.firstOrNull()?.toBooleanStrictOrNull().orFalse()
+            metadata.find { it.type == METADATA_TYPE_BLOCK_ADD_TO_CART }?.let {
+                blockAddToCart = it.values.firstOrNull()?.toBooleanStrictOrNull().orFalse()
+            }
 
             val oosCategoryIdList = metadata.find { it.type == METADATA_OOS_CATEGORY_ID }
                 ?.values.orEmpty()
