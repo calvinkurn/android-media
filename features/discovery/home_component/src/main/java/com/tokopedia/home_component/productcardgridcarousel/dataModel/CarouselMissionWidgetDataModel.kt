@@ -2,6 +2,7 @@ package com.tokopedia.home_component.productcardgridcarousel.dataModel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.MissionWidgetDataModel
+import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.widget.common.carousel.HomeComponentCarouselDiffUtil
 import com.tokopedia.home_component.widget.mission.MissionWidgetTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -14,11 +15,13 @@ data class CarouselMissionWidgetDataModel(
     val channelId: String,
     val channelName: String,
     val headerName: String,
+    val withSubtitle: Boolean,
     val subtitleHeight: Int,
     val verticalPosition: Int,
     val cardPosition: Int,
     val animateOnPress: Int,
     val isCache: Boolean,
+    val type: MissionWidgetListDataModel.Type,
 ) : Visitable<MissionWidgetTypeFactory>, HomeComponentCarouselDiffUtil, ImpressHolder() {
 
     override fun getId(): String {

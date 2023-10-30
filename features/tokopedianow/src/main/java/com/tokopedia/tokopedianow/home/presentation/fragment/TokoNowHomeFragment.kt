@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -158,6 +159,7 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBott
 import com.tokopedia.tokopedianow.home.presentation.view.listener.QuestWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeHeaderViewHolder.HomeHeaderListener
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
@@ -211,6 +213,7 @@ class TokoNowHomeFragment :
         private const val PARAM_AFFILIATE_UUID = "aff_unique_id"
         private const val PARAM_AFFILIATE_CHANNEL = "channel"
         private const val VERTICAL_SCROLL_FULL_BOTTOM_OFFSET = 0
+        private const val MAX_VIEW_POOL = 99
 
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
@@ -279,7 +282,8 @@ class TokoNowHomeFragment :
                 productCarouselChipListener = createProductCarouselChipListener(),
                 productBundleWidgetListener = bundleWidgetCallback,
                 tokoNowBundleWidgetListener = bundleWidgetCallback,
-                homeHeaderListener = createHomeHeaderListener()
+                homeHeaderListener = createHomeHeaderListener(),
+                recycledViewPool = mRecycledViewPool
             ),
             differ = HomeListDiffer()
         )
@@ -318,6 +322,9 @@ class TokoNowHomeFragment :
 
             return height + padding
         }
+
+    private val mRecycledViewPool: RecycledViewPool
+        get() = RecycledViewPool()
 
     private val loadMoreListener by lazy { createLoadMoreListener() }
     private val navBarScrollListener by lazy { createNavBarScrollListener() }
@@ -388,6 +395,7 @@ class TokoNowHomeFragment :
 
     override fun onDestroy() {
         SharingUtil.clearState(screenshotDetector)
+        mRecycledViewPool.clear()
         super.onDestroy()
     }
 
@@ -887,9 +895,18 @@ class TokoNowHomeFragment :
             rvHome?.apply {
                 addItemDecoration(HomeSpacingDecoration())
                 adapter = this@TokoNowHomeFragment.adapter
-                rvLayoutManager = CustomLinearLayoutManager(it)
+                rvLayoutManager = CustomLinearLayoutManager(it).also { layoutManager ->
+                    layoutManager.recycleChildrenOnDetach = true
+                }
                 layoutManager = rvLayoutManager
                 itemAnimator = null
+                /**
+                 * RecycledViewPool is used to reduce many views unnecessarily being inflated.
+                 * The ViewHolder is picked from the RecycledViewPool based on ViewType,
+                 * so the pool only can be shared with the same ViewType (In this case we use the frequent type)
+                 */
+                setRecycledViewPool(mRecycledViewPool)
+                recycledViewPool.setMaxRecycledViews(HomeProductRecomViewHolder.LAYOUT, MAX_VIEW_POOL)
             }
             rvHome?.setItemViewCacheSize(ITEM_VIEW_CACHE_SIZE)
             addHomeComponentScrollListener()
@@ -2014,7 +2031,8 @@ class TokoNowHomeFragment :
             requireContext(),
             viewModelTokoNow,
             chipCarouselAnalytics,
-            ::startActivityForResult
+            ::startActivityForResult,
+            ::showToasterWhenAddToCartBlocked
         )
     }
 

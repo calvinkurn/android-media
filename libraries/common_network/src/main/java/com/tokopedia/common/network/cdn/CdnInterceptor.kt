@@ -9,6 +9,7 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 class CdnInterceptor(val context: Context) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
+        val start = System.currentTimeMillis()
         val response = try {
             chain.proceed(request)
         } catch (expected: Exception) {
@@ -20,7 +21,9 @@ class CdnInterceptor(val context: Context) : Interceptor {
                 .body("{$expected}".toResponseBody())
                 .build()
         }
-        CdnTracker.log(context, response)
+        val end = System.currentTimeMillis()
+        val cost = end - start
+        CdnTracker.log(context, response, cost)
         return response
     }
 }

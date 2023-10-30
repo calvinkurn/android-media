@@ -89,6 +89,8 @@ object ProductRecomMapper {
             title = channelModel.channelHeader.name,
             productList = channelModel.channelGrids.map { channelGrid ->
                 ProductCardCompactCarouselItemUiModel(
+                    channelId = channelModel.id,
+                    headerName = channelModel.channelHeader.name,
                     recomType = channelGrid.recommendationType,
                     pageName = channelModel.pageName,
                     productCardModel = mapChannelGridToProductCard(channelGrid, miniCartData, hasBlockedAddToCart),
@@ -102,7 +104,7 @@ object ProductRecomMapper {
                 )
             },
             seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
-                id = channelModel.channelHeader.id,
+                id = channelModel.id,
                 headerName = channelModel.channelHeader.name,
                 appLink = channelModel.channelHeader.applink
             ),
@@ -135,10 +137,17 @@ object ProductRecomMapper {
         item: HomeProductRecomUiModel,
         recomWidget: RecommendationWidget,
         parentProduct: HomeRealTimeRecomProductUiModel,
-        miniCartData: MiniCartSimplifiedData?
+        miniCartData: MiniCartSimplifiedData?,
+        hasBlockedAddToCart: Boolean
     ): HomeLayoutItemUiModel {
         val headerName = item.title
-        val productList = mapRecomWidgetToProductList(headerName, recomWidget, miniCartData, true)
+        val productList = mapRecomWidgetToProductList(
+            headerName = headerName,
+            recomWidget = recomWidget,
+            miniCartData = miniCartData,
+            needToChangeMaxLinesName = true,
+            hasBlockedAddToCart = hasBlockedAddToCart
+        )
         val categoryBreadcrumbs = parentProduct.categoryBreadcrumbs
 
         val realTimeRecom = item.realTimeRecom.copy(

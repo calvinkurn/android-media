@@ -15,8 +15,6 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import com.tokopedia.productcard.layout.LayoutStrategyBestSeller
-import com.tokopedia.productcard.layout.LayoutStrategyListView
 import com.tokopedia.productcard.utils.ViewId
 import com.tokopedia.productcard.utils.ViewStubId
 import com.tokopedia.productcard.utils.expandTouchArea

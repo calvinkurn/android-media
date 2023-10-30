@@ -15,7 +15,6 @@ import com.tokopedia.oneclickcheckout.order.domain.GoCicilInstallmentOptionUseCa
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
@@ -33,7 +32,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
 ) {
 
     suspend fun getCreditCardAdminFee(
-        orderPaymentCreditCard: OrderPaymentCreditCard,
+        orderPayment: OrderPayment,
         userId: String,
         orderCost: OrderCost,
         orderCart: OrderCart
@@ -43,7 +42,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
             try {
                 val creditCardData = creditCardTenorListUseCase.executeSuspend(
                     generateCreditCardTenorListRequest(
-                        orderPaymentCreditCard,
+                        orderPayment,
                         userId,
                         orderCost,
                         orderCart
@@ -64,7 +63,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
     }
 
     private fun generateCreditCardTenorListRequest(
-        orderPaymentCreditCard: OrderPaymentCreditCard,
+        orderPayment: OrderPayment,
         userId: String,
         orderCost: OrderCost,
         orderCart: OrderCart
@@ -75,7 +74,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
             paymentAmount = orderCost.totalItemPriceAndShippingFee
         )
         cartDetailsItemList.add(cartDetailsItem)
-
+        val orderPaymentCreditCard = orderPayment.creditCard
         return CreditCardTenorListRequest(
             tokenId = orderPaymentCreditCard.tokenId,
             userId = userId.toLong(),
@@ -85,7 +84,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
             timestamp = orderPaymentCreditCard.unixTimestamp,
             otherAmount = orderCost.totalAdditionalFee,
             discountAmount = orderCost.totalDiscounts.toDouble(),
-            cartDetails = cartDetailsItemList
+            cartDetails = cartDetailsItemList,
+            additionalData = orderPayment.additionalData
         )
     }
 
@@ -120,7 +120,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
             address = orderProfile.address,
             shop = orderCart.shop,
             products = orderCart.products,
-            promoCodes = promoCodes
+            promoCodes = promoCodes,
+            additionalData = orderPayment.additionalData
         )
     }
 
@@ -217,7 +218,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                     PaymentFeeRequest(
                         orderPayment.creditCard.additionalData.profileCode,
                         orderPayment.gatewayCode,
-                        orderCost.totalPriceWithoutPaymentFees
+                        orderCost.totalPriceWithoutPaymentFees,
+                        orderPayment.additionalData
                     )
                 )
             } catch (t: Throwable) {

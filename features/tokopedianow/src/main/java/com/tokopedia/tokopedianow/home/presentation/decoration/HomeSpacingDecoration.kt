@@ -40,6 +40,7 @@ class HomeSpacingDecoration : RecyclerView.ItemDecoration() {
                         it.topMargin = -dimen16dp
                     } else {
                         it.topMargin = -dimen4dp
+                        it.bottomMargin = dimen4dp
                     }
                 }
             }

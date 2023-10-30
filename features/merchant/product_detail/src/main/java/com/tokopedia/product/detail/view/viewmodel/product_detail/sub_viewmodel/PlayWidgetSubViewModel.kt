@@ -38,14 +38,15 @@ class PlayWidgetSubViewModel @Inject constructor(
 
     override fun getPlayWidgetData() {
         launch {
-            val productIds = productDetailMediator.getVariant()?.let { variant ->
-                listOf(variant.parentId) + variant.children.map { it.productId }
-            } ?: emptyList()
+            val parentProductId = productDetailMediator.getP1()?.parentProductId
+                ?.let { listOf(it) } ?: emptyList()
+            val variantProductIds = productDetailMediator.getVariant()?.children
+                ?.map { it.productId } ?: emptyList()
             val categoryIds = productDetailMediator.getP1()?.basic?.category?.detail?.map {
                 it.id
             } ?: emptyList()
             val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(
-                productIds,
+                parentProductId + variantProductIds,
                 categoryIds
             )
 

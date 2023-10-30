@@ -33,11 +33,11 @@ class FeedNetworkErrorBottomSheet : BottomSheetUnify() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         _binding = BottomsheetNetworkErrorBinding.inflate(layoutInflater)
         setChild(binding.root)
 
-        return binding.root
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -3,11 +3,11 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
 import com.tokopedia.product.detail.data.model.review.Review
@@ -27,7 +27,7 @@ import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewB
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetailListener) :
-        AbstractViewHolder<ProductMostHelpfulReviewDataModel>(view) {
+    AbstractViewHolder<ProductMostHelpfulReviewDataModel>(view) {
 
     companion object {
         const val MAX_LINES_REVIEW_DESCRIPTION = 3
@@ -53,7 +53,12 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             hideBasicInfoThreeDots()
             showTitle()
             val componentData = getComponentTrackData(it)
-            view.addOnImpressionListener(element.impressHolder) {
+            view.addOnImpressionListener(
+                holder = element.impressHolder,
+                holders = listener.getImpressionHolders(),
+                name = element.name,
+                useHolders = listener.isRemoteCacheableActive()
+            ) {
                 listener.onImpressComponent(componentData)
             }
             setSeeAllReviewClickListener(componentData)
@@ -149,15 +154,23 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
         binding.basicInfoMostHelpfulReview.setListeners(
             reviewBasicInfoListener = object : ReviewBasicInfoListener {
                 override fun onUserNameClicked(
-                    feedbackId: String, userId: String, statistics: String, label: String
+                    feedbackId: String,
+                    userId: String,
+                    statistics: String,
+                    label: String
                 ) {
                     element?.let {
                         listener.onSeeReviewCredibility(
-                            feedbackId, userId, statistics, label, getComponentTrackData(it)
+                            feedbackId,
+                            userId,
+                            statistics,
+                            label,
+                            getComponentTrackData(it)
                         )
                     }
                 }
-            }, threeDotsListener = null
+            },
+            threeDotsListener = null
         )
     }
 
@@ -207,7 +220,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             maxLines = MAX_LINES_REVIEW_DESCRIPTION
             val formattingResult = ProductDetailUtil.reviewDescFormatter(context, reviewData.message)
             text = formattingResult.first
-            if(formattingResult.second) {
+            if (formattingResult.second) {
                 setOnClickListener {
                     maxLines = Integer.MAX_VALUE
                     text = HtmlLinkHelper(context, reviewData.message).spannedString
@@ -218,7 +231,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     }
 
     private fun getComponentTrackData(data: ProductMostHelpfulReviewDataModel): ComponentTrackDataModel =
-            ComponentTrackDataModel(data.type, data.name, adapterPosition + 1)
+        ComponentTrackDataModel(data.type, data.name, adapterPosition + 1)
 
     private fun hideAllOtherElements() {
         binding.apply {

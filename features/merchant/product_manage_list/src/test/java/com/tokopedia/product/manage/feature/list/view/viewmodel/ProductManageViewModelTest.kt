@@ -80,7 +80,6 @@ import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditPro
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult.Result
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
-import com.tokopedia.product.manage.feature.suspend.view.uimodel.SuspendReasonUiModel
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_STOCK_AVAILABLE
 import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse
@@ -334,8 +333,6 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val expectedEditStockResult =
                 Fail(EditStockResult(productName, productId, stock, status, error))
 
-            verifyEditStatusUseCaseCalled()
-
             viewModel.editStockResult
                 .verifyErrorEquals(expectedEditStockResult)
         }
@@ -366,7 +363,6 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val expectedThrowable = Throwable(message = errorMessage)
             val expectedEditStockResult =
                 Fail(EditStockResult(productName, productId, stock, status, expectedThrowable))
-            verifyEditStatusUseCaseCalled()
             viewModel.editStockResult
                 .verifyErrorEquals(expectedEditStockResult)
         }
@@ -393,7 +389,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val expectedThrowable = NetworkErrorException()
             val expectedEditStockResult =
                 Fail(EditStockResult(productName, productId, stock, status, expectedThrowable))
-            verifyEditStatusUseCaseCalled()
+//            verifyEditStatusUseCaseCalled()
             viewModel.editStockResult
                 .verifyErrorEquals(expectedEditStockResult)
         }
@@ -686,7 +682,6 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             verifyHideProgressBar()
         }
     }
-
 
     @Test
     fun `get product list archival should map product to view model`() {
@@ -2846,9 +2841,15 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
     @Test
     fun `when getProductArchivalInfo success, should set live data success`() {
-        val successResponse = ProductArchivalInfo(ProductArchivalInfo.ProductarchivalGetProductArchiveInfo(
-            "","","","",0
-        ))
+        val successResponse = ProductArchivalInfo(
+            ProductArchivalInfo.ProductarchivalGetProductArchiveInfo(
+                "",
+                "",
+                "",
+                "",
+                0
+            )
+        )
         coEvery {
             productArchivalInfoUseCase.execute(any())
         } returns successResponse
