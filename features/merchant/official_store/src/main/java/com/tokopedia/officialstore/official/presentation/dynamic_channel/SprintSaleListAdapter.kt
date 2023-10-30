@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
@@ -29,7 +30,7 @@ class SprintSaleListAdapter(
         val itemData = channelData.grids?.get(position)
 
         itemData?.let { item ->
-            ImageHandler.loadImageFitCenter(holder.imageView.context, holder.imageView, item.imageUrl)
+            holder.imageView?.loadImageFitCenter(item.imageUrl, MediaCacheStrategy.RESOURCE)
 
             holder.apply {
                 imageView.setOnClickListener(dcEventHandler.onClickFlashSaleImage(channelData, position))

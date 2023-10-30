@@ -10,7 +10,8 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.GLOBAL_NAV_SPAN_COUNT
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.NAV_TEMPLATE_PILL
@@ -170,7 +171,7 @@ class GlobalNavWidget: BaseCustomView {
 
     private fun AppCompatImageView.setSingleGlobalNavIconImageWithUrl(url: String, hiddenView: AppCompatImageView?) {
         shouldShowWithAction(url.isNotEmpty()) {
-            ImageHandler.loadImageFitCenter(context, it, url)
+            it?.loadImageFitCenter(url, MediaCacheStrategy.RESOURCE)
             hiddenView?.visibility = View.GONE
         }
     }

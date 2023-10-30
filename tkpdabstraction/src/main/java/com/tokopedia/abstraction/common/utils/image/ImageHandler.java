@@ -460,6 +460,7 @@ public class ImageHandler {
                 .into(imageView);
     }
 
+    // done
     public static void loadImageFitCenter(Context context, ImageView imageView, String url) {
         Glide.with(context)
                 .load(url)

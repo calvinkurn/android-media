@@ -129,6 +129,15 @@ inline fun ImageView.loadImageFitCenter(
     .apply(properties)
     .fitCenter())
 
+inline fun ImageView.loadImageFitCenter(
+    url: String?,
+    cacheStrategy: MediaCacheStrategy,
+    crossinline properties: Properties.() -> Unit = {}
+) = call(url, Properties()
+    .apply(properties)
+    .fitCenter()
+    .setCacheStrategy(cacheStrategy))
+
 inline fun ImageView.loadImageCenterCrop(
     url: String?,
     crossinline properties: Properties.() -> Unit = {}
