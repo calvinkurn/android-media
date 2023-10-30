@@ -74,7 +74,7 @@ class CatalogListCarouselAdapter(var items: List<CatalogsValueEntity>,
         holder.btnContinue.isEnabled = !item.isDisabledButton
         holder.description.text = item.title
         holder.btnContinue.setText(R.string.tp_label_exchange) //TODO asked for server driven value
-        holder.imgBanner?.loadImageFitCenter(item.thumbnailUrlMobile, MediaCacheStrategy.RESOURCE)
+        holder.imgBanner?.loadImageFitCenter(item.thumbnailUrlMobile)
         holder.pointValue.visibility = View.VISIBLE
         //setting points info if exist in response
         if (item.pointsStr == null || item.pointsStr!!.isEmpty()) {

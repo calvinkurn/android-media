@@ -313,7 +313,7 @@ class CampaignStockFragment : BaseDaggerFragment(), CampaignStockListener {
         summary?.run {
             binding?.layoutCampaignStockProductInfo?.run {
                 productImageUrl.let { url ->
-                    imgCampaignStockProduct?.loadImageFitCenter(url, MediaCacheStrategy.RESOURCE)
+                    imgCampaignStockProduct?.loadImageFitCenter(url)
                 }
                 tvCampaignStockProductName.text = productName
                 tvCampaignStockProductTotalStockCount.text =

@@ -27,7 +27,7 @@ internal class GlobalNavWidgetPillViewHolder(
         }
 
         binding?.globalNavPillItemImage?.let {
-            it?.loadImageFitCenter(item.imageUrl, MediaCacheStrategy.RESOURCE)
+            it?.loadImageFitCenter(item.imageUrl)
         }
 
         binding?.globalNavPillItemName?.shouldShowWithAction(item.name.isNotEmpty()) {

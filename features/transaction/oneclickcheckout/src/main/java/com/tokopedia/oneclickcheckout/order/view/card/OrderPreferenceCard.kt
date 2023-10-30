@@ -282,7 +282,7 @@ class OrderPreferenceCard(
 
         binding.apply {
             ivPayment.let {
-                it?.loadImageFitCenter(paymentModel.image, MediaCacheStrategy.RESOURCE)
+                it?.loadImageFitCenter(paymentModel.image)
             }
             tvPaymentName.text = paymentModel.gatewayName
             val description = paymentModel.description

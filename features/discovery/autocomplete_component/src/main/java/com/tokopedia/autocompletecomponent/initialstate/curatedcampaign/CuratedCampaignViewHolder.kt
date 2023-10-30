@@ -36,7 +36,7 @@ class CuratedCampaignViewHolder(
         val image = binding?.autocompleteCuratedCampaignImage ?: return
 
         image.shouldShowWithAction(element.imageUrl.isNotEmpty()) {
-            image.loadImageFitCenter(element.imageUrl, MediaCacheStrategy.RESOURCE)
+            image.loadImageFitCenter(element.imageUrl)
         }
     }
 

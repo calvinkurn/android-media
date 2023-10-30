@@ -45,7 +45,7 @@ class SectionCarouselAdapter(
         fun bindData(item:ImageList?){
             item?.let {
                 if(URLUtil.isValidUrl(it.imageURLMobile))
-                    ivCol?.loadImageFitCenter(it.imageURLMobile, MediaCacheStrategy.RESOURCE)
+                    ivCol?.loadImageFitCenter(it.imageURLMobile)
 
                 bnrTitle?.text = it.inBannerTitle
                 bnrSubTitle?.text = it.inBannerSubTitle

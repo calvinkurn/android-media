@@ -42,13 +42,13 @@ internal class GlobalNavWidgetCardViewHolder(
         val backgroundUrl = if (item.imageUrl.isNotEmpty()) item.imageUrl else item.backgroundUrl
 
         binding?.globalNavCardItemBackground?.let {
-            it?.loadImageFitCenter(backgroundUrl, MediaCacheStrategy.RESOURCE)
+            it?.loadImageFitCenter(backgroundUrl)
         }
 
         val shouldShowLogo = item.imageUrl.isEmpty() && item.logoUrl.isNotEmpty()
 
         binding?.globalNavCardItemLogo?.shouldShowWithAction(shouldShowLogo) {
-            it?.loadImageFitCenter(item.logoUrl, MediaCacheStrategy.RESOURCE)
+            it?.loadImageFitCenter(item.logoUrl)
         }
     }
 

@@ -30,7 +30,7 @@ class SprintSaleListAdapter(
         val itemData = channelData.grids?.get(position)
 
         itemData?.let { item ->
-            holder.imageView?.loadImageFitCenter(item.imageUrl, MediaCacheStrategy.RESOURCE)
+            holder.imageView?.loadImageFitCenter(item.imageUrl)
 
             holder.apply {
                 imageView.setOnClickListener(dcEventHandler.onClickFlashSaleImage(channelData, position))

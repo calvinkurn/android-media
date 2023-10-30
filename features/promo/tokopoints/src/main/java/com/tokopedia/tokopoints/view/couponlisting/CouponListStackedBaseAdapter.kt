@@ -138,7 +138,7 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
 
     private fun setData(holder: ViewHolder, item: CouponValueEntity) {
         val itemContext = holder.itemView.context
-        holder.imgBanner?.loadImageFitCenter(item.imageUrlMobile, MediaCacheStrategy.RESOURCE)
+        holder.imgBanner?.loadImageFitCenter(item.imageUrlMobile)
 
         if (item.isNewCoupon) {
             holder.itemView.setBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_GN100))

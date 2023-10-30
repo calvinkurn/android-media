@@ -532,7 +532,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         mCouponName = data.title
         giftImage?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.ic_catalog_gift_btn), null, null, null)
 
-        imgBanner?.loadImageFitCenter(data.imageUrlMobile, MediaCacheStrategy.RESOURCE)
+        imgBanner?.loadImageFitCenter(data.imageUrlMobile)
         val tvHowToUse: Typography = requireView().findViewById(R.id.how_to_use_content)
         val webTnc: WebView = requireView().findViewById(R.id.tnc_content)
         webTnc.setOnLongClickListener { _ -> true }

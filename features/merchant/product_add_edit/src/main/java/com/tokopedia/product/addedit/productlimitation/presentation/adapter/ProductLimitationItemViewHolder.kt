@@ -20,7 +20,7 @@ class ProductLimitationItemViewHolder(itemView: View) :
 
     fun bindData(data: ProductLimitationActionItemModel) {
         val drawableIcon = MethodChecker.getDrawable(itemView.context, com.tokopedia.list.R.drawable.listitem_chevron)
-        ivCard.loadImageFitCenter(data.imageUrl, MediaCacheStrategy.RESOURCE)
+        ivCard.loadImageFitCenter(data.imageUrl)
         tvTitle.text = data.title
         tvDescription.text = data.description
         tvAction.text = data.actionText

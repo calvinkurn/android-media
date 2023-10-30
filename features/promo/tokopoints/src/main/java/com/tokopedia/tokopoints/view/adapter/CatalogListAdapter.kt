@@ -72,7 +72,7 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
         holder.btnContinue.isEnabled = !item.isDisabledButton
         holder.description.text = item.title
         holder.btnContinue.setText(R.string.tp_label_exchange) //TODO asked for server driven value
-        holder.imgBanner?.loadImageFitCenter(item.thumbnailUrlMobile, MediaCacheStrategy.RESOURCE)
+        holder.imgBanner?.loadImageFitCenter(item.thumbnailUrlMobile)
         //setting points info if exist in response
         if (item.pointsStr.isNullOrEmpty()) {
             holder.pointValue.visibility = View.GONE

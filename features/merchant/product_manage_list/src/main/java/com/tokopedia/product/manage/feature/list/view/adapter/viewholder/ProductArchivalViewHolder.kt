@@ -54,7 +54,7 @@ class ProductArchivalViewHolder(
 
     private fun showProductImage(product: ProductUiModel) {
         binding?.imageProduct?.let {
-            it?.loadImageFitCenter(product.imageUrl, MediaCacheStrategy.RESOURCE)
+            it?.loadImageFitCenter(product.imageUrl)
         }
     }
 

@@ -171,7 +171,7 @@ class GlobalNavWidget: BaseCustomView {
 
     private fun AppCompatImageView.setSingleGlobalNavIconImageWithUrl(url: String, hiddenView: AppCompatImageView?) {
         shouldShowWithAction(url.isNotEmpty()) {
-            it?.loadImageFitCenter(url, MediaCacheStrategy.RESOURCE)
+            it?.loadImageFitCenter(url)
             hiddenView?.visibility = View.GONE
         }
     }

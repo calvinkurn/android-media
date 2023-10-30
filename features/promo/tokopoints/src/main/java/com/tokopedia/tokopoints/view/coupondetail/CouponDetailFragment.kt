@@ -387,7 +387,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             val progressBar = tpContentCouponDetail.llBottomButton.progressRefetchCode
 
             description.text = data.title
-            imgBanner?.loadImageFitCenter(data.imageUrlMobile, MediaCacheStrategy.RESOURCE)
+            imgBanner?.loadImageFitCenter(data.imageUrlMobile)
 
             if (data.isIs_show_button) {
                 btnAction2.show()

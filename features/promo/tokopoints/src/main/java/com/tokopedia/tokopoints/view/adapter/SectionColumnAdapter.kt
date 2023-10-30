@@ -53,7 +53,7 @@ class SectionColumnAdapter(private val mItems: List<ImageList>?, private val mTy
                 return
             }
             if (URLUtil.isValidUrl(item.imageURLMobile)) {
-                ivCol?.loadImageFitCenter(item.imageURLMobile, MediaCacheStrategy.RESOURCE)
+                ivCol?.loadImageFitCenter(item.imageURLMobile)
             }
             bnrTitle.text = item.inBannerTitle
             bnrSubTitle.text = item.inBannerSubTitle

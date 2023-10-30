@@ -92,7 +92,7 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
             val item = mItems[position - 1]
             if (pHolder is ViewHolder) {
                 val holder = pHolder
-                holder.imgBanner.loadImageFitCenter(if (TextUtils.isEmpty(item.thumbnailUrlMobile)) item.imageUrlMobile else item.thumbnailUrlMobile, MediaCacheStrategy.RESOURCE)
+                holder.imgBanner.loadImageFitCenter(if (TextUtils.isEmpty(item.thumbnailUrlMobile)) item.imageUrlMobile else item.thumbnailUrlMobile)
                 if (item.usage != null) {
                     holder.label.visibility = View.VISIBLE
                     holder.value.visibility = View.VISIBLE

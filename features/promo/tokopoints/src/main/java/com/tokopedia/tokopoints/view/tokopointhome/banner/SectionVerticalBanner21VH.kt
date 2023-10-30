@@ -55,7 +55,7 @@ class SectionVerticalBanner21VH(val view: View) : RecyclerView.ViewHolder(view) 
                 && URLUtil.isValidUrl(content.layoutBannerAttr.imageList[0].imageURLMobile)) {
             val imgBanner = view.findViewById<ImageView>(R.id.img_banner)
             val data = content.layoutBannerAttr.imageList[0]
-            imgBanner?.loadImageFitCenter(data.imageURLMobile, MediaCacheStrategy.RESOURCE)
+            imgBanner?.loadImageFitCenter(data.imageURLMobile)
             imgBanner.setOnClickListener {
                 handledClick(data.redirectAppLink, data.redirectURL, "", "")
                 if (!TextUtils.isEmpty(content.sectionTitle)) sendBannerClick(content.sectionTitle)

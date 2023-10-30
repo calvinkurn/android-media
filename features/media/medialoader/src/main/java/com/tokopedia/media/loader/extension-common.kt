@@ -133,14 +133,7 @@ inline fun ImageView.loadImage(
 
 inline fun ImageView.loadImageFitCenter(
     url: String?,
-    crossinline properties: Properties.() -> Unit = {}
-) = call(url, Properties()
-    .apply(properties)
-    .fitCenter())
-
-inline fun ImageView.loadImageFitCenter(
-    url: String?,
-    cacheStrategy: MediaCacheStrategy,
+    cacheStrategy: MediaCacheStrategy = MediaCacheStrategy.RESOURCE,
     crossinline properties: Properties.() -> Unit = {}
 ) = call(url, Properties()
     .apply(properties)
