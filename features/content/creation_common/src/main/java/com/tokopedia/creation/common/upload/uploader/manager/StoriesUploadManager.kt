@@ -83,7 +83,7 @@ class StoriesUploadManager @Inject constructor(
 
                 updateStoryStatus(uploadData, StoriesStatus.Transcoding)
 
-                val mediaUploadResult = uploadMedia(uploadData.firstMediaUri, getSourceId(uploadData.firstMediaType))
+                val mediaUploadResult = uploadMedia(uploadData.firstMediaUri, uploadData.firstMediaType)
 
                 val coverUploadId = when (uploadData.firstMediaType) {
                     ContentMediaType.Video -> uploadCover(uploadData).uploadId
@@ -145,8 +145,11 @@ class StoriesUploadManager @Inject constructor(
 
     private suspend fun uploadMedia(
         mediaUri: String,
-        sourceId: String,
+        mediaType: ContentMediaType,
     ): UploadResult.Success {
+
+        val sourceId = getSourceId(mediaType)
+
         val param = uploaderUseCase.createParams(
             sourceId = sourceId,
             filePath = File(mediaUri),
@@ -162,8 +165,10 @@ class StoriesUploadManager @Inject constructor(
                 result
             }
             is UploadResult.Error -> {
-                /** TODO JOE: add requestId here */
-                sendErrorRequestId(uploadData, "")
+                if (mediaType.isVideo) {
+                    /** TODO JOE: add requestId here */
+                    sendErrorRequestId(uploadData, "")
+                }
 
                 throw Exception(result.message)
             }
@@ -182,7 +187,7 @@ class StoriesUploadManager @Inject constructor(
             uploadData.firstMediaUri
         }
 
-        return uploadMedia(coverFilePath, getSourceId(ContentMediaType.Image))
+        return uploadMedia(coverFilePath, ContentMediaType.Image)
     }
 
     private suspend fun addMedia(
