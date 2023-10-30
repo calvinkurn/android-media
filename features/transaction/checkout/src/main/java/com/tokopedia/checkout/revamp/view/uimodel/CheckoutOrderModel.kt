@@ -130,7 +130,13 @@ data class CheckoutOrderModel(
     var timeslotId: Long = 0L,
     var validationMetadata: String = "",
     val ratesValidationFlow: Boolean = false,
+    val shippingComponents: ShippingComponents = ShippingComponents.RATES,
     var hasSentScheduleDeliveryAnalytics: Boolean = false,
+    val startDate: String = "",
+    val isRecommend: Boolean = false,
+
+    // OFOC
+    val groupingState: Int = 0,
 
     // Multiple Order Plus Coachmark
     var coachmarkPlus: CoachmarkPlusData = CoachmarkPlusData(),
@@ -153,7 +159,10 @@ data class CheckoutOrderModel(
     val groupInfoDescriptionBadgeUrl: String = "",
 
     // add ons subtotal
-    var subtotalAddOnMap: HashMap<Int, String> = hashMapOf()
+    var subtotalAddOnMap: HashMap<Int, String> = hashMapOf(),
+
+    // ofoc
+    val shipmentAction: HashMap<Long, String> = HashMap()
 ) : CheckoutItem {
 
     val isCustomPinpointError: Boolean
@@ -188,3 +197,13 @@ data class CheckoutOrderShipment(
 data class CheckoutOrderInsurance(
     var isCheckInsurance: Boolean = false
 )
+
+enum class ShippingComponents(val value: Int) {
+    SCHELLY_WITH_RATES(1),
+    SCHELLY(2),
+    RATES(3);
+
+    companion object {
+        fun fromInt(value: Int) = ShippingComponents.values().firstOrNull { it.value == value } ?: RATES
+    }
+}

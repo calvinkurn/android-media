@@ -15,7 +15,9 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.request.EditPinpointParam
 import com.tokopedia.logisticCommon.data.request.UpdatePinpointParam
 import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.mapper.ScheduleDeliveryMapper
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleDeliveryCoroutineUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetScheduleDeliveryCoroutineUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.CodModel
@@ -45,6 +47,8 @@ class CheckoutLogisticProcessor @Inject constructor(
     private val ratesWithScheduleUseCase: GetRatesWithScheduleDeliveryCoroutineUseCase,
     private val ratesResponseStateConverter: RatesResponseStateConverter,
     private val shippingCourierConverter: ShippingCourierConverter,
+    private val scheduleDeliveryUseCase: GetScheduleDeliveryCoroutineUseCase,
+    private val schellyMapper: ScheduleDeliveryMapper,
     private val dispatchers: CoroutineDispatchers
 ) {
 
@@ -200,7 +204,8 @@ class CheckoutLogisticProcessor @Inject constructor(
                 destinationDistrictId = recipientAddressModel.destinationDistrictId,
                 destinationPostalCode = recipientAddressModel.postalCode,
                 destinationLatitude = recipientAddressModel.latitude,
-                destinationLongitude = recipientAddressModel.longitude
+                destinationLongitude = recipientAddressModel.longitude,
+                groupingState = order.groupingState
             )
         }
     }
@@ -236,7 +241,8 @@ class CheckoutLogisticProcessor @Inject constructor(
             isTradeInDropOff = isTradeInDropOff,
             preOrderDuration = shipmentDetailData.shipmentCartData!!.preOrderDuration,
             isFulfillment = shipmentDetailData.shipmentCartData!!.isFulfillment,
-            boMetadata = shipmentDetailData.shipmentCartData!!.boMetadata
+            boMetadata = shipmentDetailData.shipmentCartData!!.boMetadata,
+            groupingState = shipmentDetailData.shipmentCartData!!.groupingState
         )
         if (isTradeInDropOff && recipientAddressModel.locationDataModel != null) {
             shippingParam.destinationDistrictId = recipientAddressModel.locationDataModel.district
@@ -552,6 +558,7 @@ class CheckoutLogisticProcessor @Inject constructor(
             courierItemData.benefitClass = it.benefitClass
             courierItemData.shippingSubsidy = it.shippingSubsidy
             courierItemData.boCampaignId = it.boCampaignId
+            courierItemData.boOrderMessage = it.orderMessage
         }
         return courierItemData
     }
@@ -596,8 +603,15 @@ class CheckoutLogisticProcessor @Inject constructor(
     ): RatesResult? {
         return withContext(dispatchers.io) {
             try {
+                val schellyParam =
+                    schellyMapper.map(
+                        ratesParam,
+                        fullfilmentId,
+                        startDate = orderModel.startDate,
+                        isRecommend = orderModel.isRecommend
+                    )
                 var shippingRecommendationData =
-                    ratesWithScheduleUseCase(ratesParam to fullfilmentId)
+                    ratesWithScheduleUseCase(ratesParam to schellyParam)
                 shippingRecommendationData = ratesResponseStateConverter.fillState(
                     shippingRecommendationData,
                     shopShipments,
@@ -645,7 +659,10 @@ class CheckoutLogisticProcessor @Inject constructor(
                                                     )
                                                 return@withContext RatesResult(
                                                     courierItemData,
-                                                    generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
+                                                    generateCheckoutOrderInsuranceFromCourier(
+                                                        courierItemData,
+                                                        orderModel
+                                                    ),
                                                     shippingDurationUiModel.shippingCourierViewModelList
                                                 )
                                             }
@@ -711,7 +728,10 @@ class CheckoutLogisticProcessor @Inject constructor(
                                             }
                                             return@withContext RatesResult(
                                                 courierItemData,
-                                                generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
+                                                generateCheckoutOrderInsuranceFromCourier(
+                                                    courierItemData,
+                                                    orderModel
+                                                ),
                                                 shippingDurationUiModel.shippingCourierViewModelList
                                             )
                                         }
@@ -746,7 +766,10 @@ class CheckoutLogisticProcessor @Inject constructor(
                                     }
                                     return@withContext RatesResult(
                                         courierItemData,
-                                        generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
+                                        generateCheckoutOrderInsuranceFromCourier(
+                                            courierItemData,
+                                            orderModel
+                                        ),
                                         shippingDuration.shippingCourierViewModelList
                                     )
                                 }
@@ -767,6 +790,69 @@ class CheckoutLogisticProcessor @Inject constructor(
                     boPromoCode
                 )
                 return@withContext null
+            } catch (t: Throwable) {
+                Timber.d(t)
+                if (t is AkamaiErrorException) {
+                    return@withContext RatesResult(
+                        null,
+                        CheckoutOrderInsurance(),
+                        emptyList(),
+                        t.message ?: ""
+                    )
+                }
+                return@withContext null
+            }
+        }
+    }
+
+    suspend fun getScheduleDelivery(
+        ratesParam: RatesParam,
+        fullfilmentId: String,
+        orderModel: CheckoutOrderModel,
+        isOneClickShipment: Boolean
+    ): RatesResult? {
+        return withContext(dispatchers.io) {
+            try {
+                val schellyResponse =
+                    scheduleDeliveryUseCase(
+                        schellyMapper.map(
+                            ratesParam,
+                            fullfilmentId,
+                            isRecommend = orderModel.isRecommend,
+                            startDate = orderModel.startDate
+                        )
+                    )
+                val schellyData =
+                    schellyResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
+                val courierItemData =
+                    shippingCourierConverter.schellyToCourierItemData(
+                        schellyData,
+                        orderModel.validationMetadata
+                    )
+                handleSyncShipmentCartItemModel(courierItemData, orderModel)
+                if (courierItemData.scheduleDeliveryUiModel?.isSelected == true && courierItemData.scheduleDeliveryUiModel?.deliveryServices?.isNotEmpty() == true) {
+                    return@withContext RatesResult(
+                        courierItemData,
+                        generateCheckoutOrderInsuranceFromCourier(courierItemData, orderModel),
+                        emptyList()
+                    )
+                } else {
+                    val errorReason = "schelly is not selected"
+                    val boPromoCode = getBoPromoCode(
+                        orderModel
+                    )
+                    CheckoutLogger.logOnErrorLoadCourierNew(
+                        MessageErrorException(
+                            errorReason
+                        ),
+                        orderModel,
+                        isOneClickShipment,
+                        false,
+                        false,
+                        boPromoCode
+                    )
+                    return@withContext null
+                }
             } catch (t: Throwable) {
                 Timber.d(t)
                 if (t is AkamaiErrorException) {
@@ -850,6 +936,7 @@ class CheckoutLogisticProcessor @Inject constructor(
             courierItemData.benefitClass = it.benefitClass
             courierItemData.shippingSubsidy = it.shippingSubsidy
             courierItemData.boCampaignId = it.boCampaignId
+            courierItemData.boOrderMessage = it.orderMessage
         }
         return courierItemData
     }
@@ -1006,6 +1093,7 @@ class CheckoutLogisticProcessor @Inject constructor(
             benefitClass = logisticPromoUiModel.benefitClass
             shippingSubsidy = logisticPromoUiModel.shippingSubsidy
             boCampaignId = logisticPromoUiModel.boCampaignId
+            boOrderMessage = logisticPromoUiModel.orderMessage
         }
         return courierItemData
     }

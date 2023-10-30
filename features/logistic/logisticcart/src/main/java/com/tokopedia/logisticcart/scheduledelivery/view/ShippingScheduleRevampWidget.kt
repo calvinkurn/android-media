@@ -62,6 +62,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
 
     fun bind(
         titleNow2H: CharSequence?,
+        descriptionNow2H: String?,
         labelNow2H: CharSequence?,
         scheduleDeliveryUiModel: ScheduleDeliveryUiModel?,
         listener: ShippingScheduleWidgetListener
@@ -70,6 +71,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
         val scheduleUiModel = createWidget(
             titleNow2H = titleNow2H,
             labelNow2H = labelNow2H,
+            descriptionNow2H = descriptionNow2H,
             scheduleDeliveryUiModel = scheduleDeliveryUiModel
         )
         removeScheduleWidgetViews()
@@ -107,6 +109,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
     private fun createWidget(
         titleNow2H: CharSequence?,
         labelNow2H: CharSequence?,
+        descriptionNow2H: String?,
         scheduleDeliveryUiModel: ScheduleDeliveryUiModel?
     ): List<ShippingScheduleWidgetModel> {
         val shippingScheduleWidgets: ArrayList<ShippingScheduleWidgetModel> = arrayListOf()
@@ -115,13 +118,16 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
             shippingScheduleWidgets.add(createOtherOptionWidget())
         }
 
-        shippingScheduleWidgets.add(
-            create2HWidget(
-                titleNow2H = titleNow2H,
-                labelNow2H = labelNow2H,
-                scheduleDeliveryUiModel = scheduleDeliveryUiModel
+        if (!titleNow2H.isNullOrEmpty()) {
+            shippingScheduleWidgets.add(
+                create2HWidget(
+                    titleNow2H = titleNow2H,
+                    labelNow2H = labelNow2H,
+                    descriptionNow2H = descriptionNow2H,
+                    scheduleDeliveryUiModel = scheduleDeliveryUiModel
+                )
             )
-        )
+        }
 
         return shippingScheduleWidgets
     }
@@ -129,6 +135,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
     private fun create2HWidget(
         titleNow2H: CharSequence?,
         labelNow2H: CharSequence?,
+        descriptionNow2H: String?,
         scheduleDeliveryUiModel: ScheduleDeliveryUiModel?
     ): ShippingScheduleWidgetModel {
         val onClick = {
@@ -142,6 +149,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
             isEnable = true,
             title = titleNow2H,
             label = labelNow2H,
+            description = descriptionNow2H,
             isSelected = scheduleDeliveryUiModel?.isSelected != true,
             onSelectedWidgetListener = { onClick() },
             onClickIconListener = { onClick() }
@@ -163,7 +171,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
         return ShippingScheduleWidgetModel(
             isEnable = available,
             title = getTitleOtherOption(),
-            description = if (available) deliveryProduct.textEta else text,
+            description = text.ifEmpty { if (available) deliveryProduct.textEta else "" },
             label = deliveryProduct.promoText.convertToSpannedString(),
             isSelected = isSelected,
             isShowCoachMark = scheduleDeliveryPreferences?.isDisplayedCoachmark?.not() ?: true,
@@ -173,7 +181,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
                 ScheduleDeliveryAnalytics.sendChooseScheduledDeliveryOptionRadioButtonOnTokopediaNowEvent()
             },
             onClickIconListener = onClickIconListener,
-            showOtherScheduleButton = available
+            showOtherScheduleButton = deliveryServices.isNotEmpty()
         )
     }
 
@@ -240,7 +248,8 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
             scheduledDeliveryOptionBinding.apply {
                 setRadioButton(
                     shippingNowTimeOption.isSelected,
-                    shippingNowTimeOption.onSelectedWidgetListener
+                    shippingNowTimeOption.onSelectedWidgetListener,
+                    shippingNowTimeOptionModels.size > 1
                 )
                 setOnViewShipmentTextClickListener(
                     shippingNowTimeOption.onClickIconListener
@@ -321,17 +330,26 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
 
     private fun ItemShipmentNowRevampScheduledOptionBinding.setRadioButton(
         isSelected: Boolean,
-        onSelectedWidgetListener: (() -> Unit)?
+        onSelectedWidgetListener: (() -> Unit)?,
+        visible: Boolean
     ) {
-        rbShipment.isChecked = isSelected
-        rbShipment.skipAnimation()
-        rbShipment.setOnCheckedChangeListener { _, isChecked ->
-            delayChangeRadioButton?.cancel()
-            delayChangeRadioButton = GlobalScope.launch(Dispatchers.Main) {
-                delay(DEBOUNCE_TIME_SCHEDULE_RADIO_BUTTON)
-                if (isChecked) {
-                    onSelectedWidgetListener?.invoke()
+        rbShipment.run {
+            if (visible) {
+                isChecked = isSelected
+                skipAnimation()
+                setOnCheckedChangeListener { _, isChecked ->
+                    if (delayChangeRadioButton?.isCompleted != false) {
+                        delayChangeRadioButton = GlobalScope.launch(Dispatchers.Main) {
+                            if (isChecked) {
+                                onSelectedWidgetListener?.invoke()
+                            }
+                            delay(DEBOUNCE_TIME_SCHEDULE_RADIO_BUTTON)
+                        }
+                    }
                 }
+                visible()
+            } else {
+                gone()
             }
         }
     }

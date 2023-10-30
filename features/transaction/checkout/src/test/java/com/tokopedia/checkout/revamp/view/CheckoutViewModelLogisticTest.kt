@@ -16,6 +16,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerErrorModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
+import com.tokopedia.checkout.revamp.view.uimodel.ShippingComponents
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -594,7 +595,13 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         coEvery { ratesWithScheduleUseCase(any()) } returns shippingRecommendationData
 
         val orderModel =
-            CheckoutOrderModel("123", ratesValidationFlow = true, shippingId = 1, spId = 1)
+            CheckoutOrderModel(
+                "123",
+                shippingId = 1,
+                spId = 1,
+                isRecommend = true,
+                shippingComponents = ShippingComponents.SCHELLY_WITH_RATES
+            )
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -662,7 +669,13 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         )
 
         val orderModel =
-            CheckoutOrderModel("1", ratesValidationFlow = true, shippingId = 1, spId = 1)
+            CheckoutOrderModel(
+                "1",
+                shippingId = 1,
+                spId = 1,
+                isRecommend = true,
+                shippingComponents = ShippingComponents.SCHELLY_WITH_RATES
+            )
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -713,10 +726,11 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
 
         val orderModel = CheckoutOrderModel(
             "1",
-            ratesValidationFlow = true,
             isAutoCourierSelection = true,
             shippingId = 2,
-            spId = 2
+            spId = 2,
+            isRecommend = true,
+            shippingComponents = ShippingComponents.SCHELLY_WITH_RATES
         )
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
@@ -785,10 +799,11 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
 
         val orderModel = CheckoutOrderModel(
             "1",
-            ratesValidationFlow = true,
             isDisableChangeCourier = true,
             shippingId = 1,
-            spId = 1
+            spId = 1,
+            isRecommend = true,
+            shippingComponents = ShippingComponents.SCHELLY_WITH_RATES
         )
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
@@ -857,10 +872,11 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
 
         val orderModel = CheckoutOrderModel(
             "1",
-            ratesValidationFlow = true,
             isDisableChangeCourier = true,
             shippingId = 0,
-            spId = 0
+            spId = 0,
+            isRecommend = true,
+            shippingComponents = ShippingComponents.SCHELLY_WITH_RATES
         )
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
@@ -911,7 +927,14 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         coEvery { ratesWithScheduleUseCase(any()) } returns shippingRecommendationData
 
         val orderModel =
-            CheckoutOrderModel("1", ratesValidationFlow = true, shippingId = 1, spId = 1)
+            CheckoutOrderModel(
+                "1",
+                ratesValidationFlow = true,
+                shippingId = 1,
+                spId = 1,
+                isRecommend = true,
+                shippingComponents = ShippingComponents.SCHELLY_WITH_RATES
+            )
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -959,7 +982,14 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         coEvery { ratesWithScheduleUseCase(any()) } returns shippingRecommendationData
 
         val orderModel =
-            CheckoutOrderModel("1", ratesValidationFlow = true, shippingId = 1, spId = 1)
+            CheckoutOrderModel(
+                "1",
+                ratesValidationFlow = true,
+                shippingId = 1,
+                spId = 1,
+                isRecommend = true,
+                shippingComponents = ShippingComponents.SCHELLY_WITH_RATES
+            )
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -1007,7 +1037,13 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         coEvery { ratesWithScheduleUseCase(any()) } throws IOException()
 
         val orderModel =
-            CheckoutOrderModel("1", ratesValidationFlow = true, shippingId = 1, spId = 1)
+            CheckoutOrderModel(
+                "1",
+                shippingId = 1,
+                spId = 1,
+                isRecommend = true,
+                shippingComponents = ShippingComponents.SCHELLY_WITH_RATES
+            )
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -1076,10 +1112,11 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
 
         val orderModel = CheckoutOrderModel(
             "1",
-            ratesValidationFlow = true,
             boCode = "WGOIN",
             shippingId = 1,
-            spId = 1
+            spId = 1,
+            isRecommend = true,
+            shippingComponents = ShippingComponents.SCHELLY_WITH_RATES
         )
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
@@ -1606,7 +1643,9 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             )
         )
 
-        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
 
         // when
         viewModel.prepareFullCheckoutPage()
@@ -2105,5 +2144,180 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         coVerify(exactly = 1) {
             clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
         }
+    }
+
+    // OFOC
+    @Test
+    fun `WHEN get shipping schedule delivery rates success THEN should render success`() {
+        // Given
+        val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRecommendedRatesResponse()
+        val cartStringGroup = "123"
+
+        coEvery { scheduleDeliveryUseCase(any()) } returns ratesScheduleDeliveryResponse
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        code = "SICEPATTEST",
+                        shippingId = 10,
+                        spId = 28,
+                        cartStringGroup = cartStringGroup
+                    )
+                )
+            )
+        )
+
+        val orderModel =
+            CheckoutOrderModel(
+                cartStringGroup,
+                shippingId = 1,
+                spId = 1,
+                isRecommend = true,
+                shippingComponents = ShippingComponents.SCHELLY
+            )
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel(cartStringGroup),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        viewModel.loadShipping(orderModel, 5)
+
+        // Then
+        coVerify {
+            scheduleDeliveryUseCase(any())
+        }
+        assertEquals(
+            true,
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData!!.scheduleDeliveryUiModel!!.isSelected
+        )
+
+        assertEquals(
+            true,
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData!!.freeShippingChosenCourierTitle.isEmpty()
+        )
+    }
+
+    @Test
+    fun `WHEN schedule delivery not recommended from SAF or all schedule slot is full (delivery_service empty) THEN should render failed`() {
+        // Given
+        coEvery { scheduleDeliveryUseCase(any()) } returns DataProvider.provideScheduleDeliveryRatesResponse()
+
+        val orderModel =
+            CheckoutOrderModel(
+                "1",
+                ratesValidationFlow = true,
+                shippingId = 1,
+                spId = 1,
+                isRecommend = true,
+                shippingComponents = ShippingComponents.SCHELLY
+            )
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("1"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        viewModel.loadShipping(orderModel, 5)
+
+        // Then
+        coVerify {
+            scheduleDeliveryUseCase(any())
+        }
+        assertEquals(
+            null,
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData
+        )
+    }
+
+    @Test
+    fun `WHEN schedule delivery got akamai error THEN should render failed`() {
+        // Given
+        val exception = AkamaiErrorException("error akamai")
+        coEvery { scheduleDeliveryUseCase(any()) } throws exception
+
+        val orderModel =
+            CheckoutOrderModel(
+                "1",
+                ratesValidationFlow = true,
+                shippingId = 1,
+                spId = 1,
+                isRecommend = true,
+                shippingComponents = ShippingComponents.SCHELLY
+            )
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("1"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        viewModel.loadShipping(orderModel, 5)
+
+        // Then
+        coVerify {
+            scheduleDeliveryUseCase(any())
+        }
+        assertEquals(
+            null,
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData
+        )
     }
 }

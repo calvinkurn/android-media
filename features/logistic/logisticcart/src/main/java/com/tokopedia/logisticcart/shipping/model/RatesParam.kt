@@ -49,6 +49,8 @@ data class RatesParam(
     var warehouse_id: String = "",
     // new owoc
     val group_type: Int = 0,
+    // new ofoc
+    val grouping_state: Int = 0,
 
     var shopShipments: List<ShopShipment> = listOf()
 ) {
@@ -85,7 +87,8 @@ data class RatesParam(
         occ = builder.occ,
         warehouse_id = builder.warehouseId,
         group_type = builder.groupType,
-        shopShipments = builder.shopShipments
+        shopShipments = builder.shopShipments,
+        grouping_state = builder.groupingState
     )
 
     @Deprecated("please use RatesV3Param or RatesV3ApiParam")
@@ -210,7 +213,8 @@ data class RatesParam(
             is_fulfillment = is_fulfillment,
             bo_metadata = bo_metadata,
             warehouse_id = warehouse_id,
-            group_type = group_type
+            group_type = group_type,
+            grouping_state = grouping_state
         )
     }
 
@@ -275,6 +279,8 @@ data class RatesParam(
         var warehouseId: String = ""
             private set
         var groupType: Int = shipping.groupType
+            private set
+        var groupingState: Int = shipping.groupingState
             private set
 
         fun isCorner(isCorner: Boolean) = apply { this.isCorner = if (isCorner) 1 else 0 }
