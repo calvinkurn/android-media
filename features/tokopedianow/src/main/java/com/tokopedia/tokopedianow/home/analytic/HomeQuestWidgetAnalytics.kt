@@ -2,8 +2,8 @@ package com.tokopedia.tokopedianow.home.analytic
 
 import android.os.Bundle
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_SELECT_CONTENT
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_GROCERIES
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_GROCERIES
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID
@@ -53,61 +53,61 @@ class HomeQuestWidgetAnalytics @Inject constructor() {
 
     fun trackImpressionQuestWidget() {
         val dataLayer = getMarketplaceDataLayer(
-            event = EVENT_VIEW_ITEM,
+            event = EVENT_VIEW_GROCERIES,
             action = EVENT_ACTION_IMPRESSION_QUEST_WIDGET,
             trackerId = TRACKER_ID_IMPRESSION_QUEST_WIDGET
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_GROCERIES, dataLayer)
     }
 
     fun trackClickSeeDetailsQuestWidget() {
         val dataLayer = getMarketplaceDataLayer(
-            event = EVENT_SELECT_CONTENT,
+            event = EVENT_CLICK_GROCERIES,
             action = EVENT_ACTION_CLICK_SEE_DETAILS_QUEST_WIDGET,
             trackerId = TRACKER_ID_CLICK_SEE_DETAILS_QUEST_WIDGET
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_CLICK_GROCERIES, dataLayer)
     }
 
     fun trackClickCardQuestWidget() {
         val dataLayer = getMarketplaceDataLayer(
-            event = EVENT_SELECT_CONTENT,
+            event = EVENT_CLICK_GROCERIES,
             action = EVENT_ACTION_CLICK_QUEST_CARD_QUEST_WIDGET,
             trackerId = TRACKER_ID_CLICK_QUEST_CARD_QUEST_WIDGET
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_CLICK_GROCERIES, dataLayer)
     }
 
     fun trackImpressionFinishedQuestWidget() {
         val dataLayer = getMarketplaceDataLayer(
-            event = EVENT_VIEW_ITEM,
+            event = EVENT_VIEW_GROCERIES,
             action = EVENT_ACTION_IMPRESSION_FINISHED_QUEST_WIDGET,
             trackerId = TRACKER_ID_IMPRESSION_FINISHED_QUEST_WIDGET
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_GROCERIES, dataLayer)
     }
 
     fun trackClickProgressiveBarQuestWidget() {
         val dataLayer = getMarketplaceDataLayer(
-            event = EVENT_SELECT_CONTENT,
+            event = EVENT_CLICK_GROCERIES,
             action = EVENT_ACTION_CLICK_PROGRESSIVE_BAR_QUEST_WIDGET,
             trackerId = TRACKER_ID_CLICK_PROGRESSIVE_BAR_QUEST_WIDGET
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_CLICK_GROCERIES, dataLayer)
     }
 
     fun trackImpressionSwipeQuestCardQuestWidget() {
         val dataLayer = getMarketplaceDataLayer(
-            event = EVENT_VIEW_ITEM,
+            event = EVENT_VIEW_GROCERIES,
             action = EVENT_ACTION_IMPRESSION_SWIPE_QUEST_CARD_QUEST_WIDGET,
             trackerId = TRACKER_ID_IMPRESSION_SWIPE_QUEST_CARD_QUEST_WIDGET
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_GROCERIES, dataLayer)
     }
 }
