@@ -1,6 +1,7 @@
 package com.tokopedia.creation.common.analytics
 
 import com.tokopedia.creation.common.presentation.model.ContentCreationAuthorEnum
+import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.constant.TrackerConstant
 import com.tokopedia.user.session.UserSessionInterface
@@ -18,61 +19,78 @@ class ContentCreationAnalytics @Inject constructor(
     private val userId = userSession.userId
     private val shopId = userSession.shopId
 
-    // TODO : Implement Creation Source from another PR waiting to be merged
-    var creationSource = ""
-
-    fun eventClickNextButton(authorType: ContentCreationAuthorEnum, contentTypeTitle: String) {
+    fun eventClickNextButton(
+        authorType: ContentCreationAuthorEnum,
+        contentTypeTitle: String,
+        widgetSource: ContentCreationEntryPointSource
+    ) {
         sendEventTracker(
             generateGeneralTrackerMapData(
                 eventName = Event.CLICK_CONTENT,
                 eventAction = Action.CLICK_NEXT_CONTENT_CREATION,
                 eventLabel = "${getPartnerId(authorType)} - ${getUserType(authorType)} - ${contentTypeTitle.lowercase()}",
-                trackerId = if (creationSource == "shop") "47546" else "47965",
+                trackerId = if (widgetSource == ContentCreationEntryPointSource.Shop) "47546" else "47965",
+                widgetSource = widgetSource
             )
         )
     }
 
-    fun eventClickPerformanceDashboard(authorType: ContentCreationAuthorEnum) {
+    fun eventClickPerformanceDashboard(
+        authorType: ContentCreationAuthorEnum,
+        widgetSource: ContentCreationEntryPointSource
+    ) {
         sendEventTracker(
             generateGeneralTrackerMapData(
                 eventName = Event.CLICK_CONTENT,
                 eventAction = Action.CLICK_PERFORMANCE_DASHBOARD_CONTENT_CREATION,
                 eventLabel = "${getPartnerId(authorType)} - ${getUserType(authorType)}",
                 trackerId = "47550",
+                widgetSource = widgetSource
             )
         )
     }
 
-    // TODO : Implement Creation Source from another PR waiting to be merged
-    fun eventImpressionContentCreationBottomSheet(authorType: ContentCreationAuthorEnum) {
+    fun eventImpressionContentCreationBottomSheet(
+        authorType: ContentCreationAuthorEnum,
+        widgetSource: ContentCreationEntryPointSource
+    ) {
         sendEventTracker(
             generateGeneralTrackerMapData(
                 eventName = Event.VIEW_CONTENT_IRIS,
                 eventAction = Action.VIEW_CONTENT_CREATION_BOTTOM_SHEET,
                 eventLabel = "${getPartnerId(authorType)} - ${getUserType(authorType)}",
-                trackerId = if (creationSource == "shop") "47551" else "47966",
+                trackerId = if (widgetSource == ContentCreationEntryPointSource.Shop) "47551" else "47966",
+                widgetSource = widgetSource
             )
         )
     }
 
-    fun eventImpressionContentCreationEndpointWidget(authorType: ContentCreationAuthorEnum) {
+    fun eventImpressionContentCreationEndpointWidget(
+        authorType: ContentCreationAuthorEnum,
+        widgetSource: ContentCreationEntryPointSource
+    ) {
         sendEventTracker(
             generateGeneralTrackerMapData(
                 eventName = Event.VIEW_CONTENT_IRIS,
                 eventAction = Action.VIEW_CREATE_CONTENT,
                 eventLabel = "${getPartnerId(authorType)} - ${getUserType(authorType)}",
                 trackerId = "47797",
+                widgetSource = widgetSource
             )
         )
     }
 
-    fun clickContentCreationEndpointWidget(authorType: ContentCreationAuthorEnum) {
+    fun clickContentCreationEndpointWidget(
+        authorType: ContentCreationAuthorEnum,
+        widgetSource: ContentCreationEntryPointSource
+    ) {
         sendEventTracker(
             generateGeneralTrackerMapData(
                 eventName = Event.CLICK_CONTENT,
                 eventAction = Action.CLICK_CREATE_CONTENT,
                 eventLabel = "${getPartnerId(authorType)} - ${getUserType(authorType)}",
                 trackerId = "47798",
+                widgetSource = widgetSource
             )
         )
     }
@@ -86,9 +104,10 @@ class ContentCreationAnalytics @Inject constructor(
         eventAction: String,
         eventLabel: String,
         trackerId: String,
+        widgetSource: ContentCreationEntryPointSource
     ): Map<String, Any> = mapOf(
         TrackerConstant.EVENT to eventName,
-        TrackerConstant.EVENT_CATEGORY to getEventCategory(),
+        TrackerConstant.EVENT_CATEGORY to getEventCategory(widgetSource),
         TrackerConstant.EVENT_ACTION to eventAction,
         TrackerConstant.EVENT_LABEL to eventLabel,
         TrackerConstant.BUSINESS_UNIT to VALUE_BUSINESS_UNIT,
@@ -111,12 +130,12 @@ class ContentCreationAnalytics @Inject constructor(
             ContentCreationAuthorEnum.NONE -> ""
         }
 
-    // TODO : Implement Creation Source from another PR waiting to be merged
-    private fun getEventCategory() = when (creationSource) {
-        "shop" -> VALUE_CATEGORY_SHOP
-        "feed" -> VALUE_CATEGORY_FEED
-        else -> ""
-    }
+    private fun getEventCategory(widgetSource: ContentCreationEntryPointSource) =
+        when (widgetSource) {
+            ContentCreationEntryPointSource.Shop -> VALUE_CATEGORY_SHOP
+            ContentCreationEntryPointSource.Feed -> VALUE_CATEGORY_FEED
+            else -> ""
+        }
 
     private object Event {
         const val CLICK_CONTENT = "clickContent"

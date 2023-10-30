@@ -33,7 +33,7 @@ class ContentCreationViewModel @Inject constructor(
     private val _creationConfig = MutableStateFlow<Result<ContentCreationConfigModel>?>(null)
     val creationConfig = _creationConfig.asStateFlow()
 
-    private val _isFirstTime = MutableStateFlow(true)
+    private val _isFirstTimeOpenBottomSheet = MutableStateFlow(true)
 
     var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Unknown
 
@@ -69,7 +69,8 @@ class ContentCreationViewModel @Inject constructor(
         selectedCreationType.value?.let {
             analytics.eventClickNextButton(
                 it.authorType,
-                it.title
+                it.title,
+                widgetSource
             )
         }
     }
@@ -78,7 +79,10 @@ class ContentCreationViewModel @Inject constructor(
         creationConfig.value?.let {
             if (it is Success) {
                 it.data.creationItems.firstOrNull()?.let { item ->
-                    analytics.eventClickPerformanceDashboard(item.authorType)
+                    analytics.eventClickPerformanceDashboard(
+                        item.authorType,
+                        widgetSource
+                    )
                 }
             }
         }
@@ -86,10 +90,13 @@ class ContentCreationViewModel @Inject constructor(
 
     fun sendImpressionCreationBottomSheetAnalytic() {
         creationConfig.value?.let {
-            if (it is Success && _isFirstTime.value) {
+            if (it is Success && _isFirstTimeOpenBottomSheet.value) {
                 it.data.creationItems.firstOrNull()?.let { item ->
-                    analytics.eventImpressionContentCreationBottomSheet(item.authorType)
-                    _isFirstTime.value = false
+                    analytics.eventImpressionContentCreationBottomSheet(
+                        item.authorType,
+                        widgetSource
+                    )
+                    _isFirstTimeOpenBottomSheet.value = false
                 }
             }
         }
@@ -99,7 +106,10 @@ class ContentCreationViewModel @Inject constructor(
         creationConfig.value?.let {
             if (it is Success) {
                 it.data.creationItems.firstOrNull()?.let { item ->
-                    analytics.eventImpressionContentCreationEndpointWidget(item.authorType)
+                    analytics.eventImpressionContentCreationEndpointWidget(
+                        item.authorType,
+                        widgetSource
+                    )
                 }
             }
         }
@@ -109,21 +119,27 @@ class ContentCreationViewModel @Inject constructor(
         creationConfig.value?.let {
             if (it is Success) {
                 it.data.creationItems.firstOrNull()?.let { item ->
-                    analytics.clickContentCreationEndpointWidget(item.authorType)
+                    analytics.clickContentCreationEndpointWidget(
+                        item.authorType,
+                        widgetSource
+                    )
                 }
             }
         }
     }
 
     fun onDismissBottomSheet() {
-        _isFirstTime.value = true
+        _isFirstTimeOpenBottomSheet.value = true
     }
 
     private fun formatCreationConfig(creationConfig: ContentCreationConfigModel): ContentCreationConfigModel =
         creationConfig.copy(
             creationItems = creationConfig.creationItems.mapNotNull { item ->
-                if (!isStoryEnabled() && item.type == ContentCreationTypeEnum.STORY) null
-                else item
+                if (!isStoryEnabled() && item.type == ContentCreationTypeEnum.STORY) {
+                    null
+                } else {
+                    item
+                }
             }
         )
 
