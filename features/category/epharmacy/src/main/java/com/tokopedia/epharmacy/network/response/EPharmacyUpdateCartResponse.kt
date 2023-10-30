@@ -16,13 +16,19 @@ data class EPharmacyUpdateCartResponse(
         @Expose
         val status: String?
     ) {
+
+        interface Status {
+            companion object {
+                const val SUCCESS = "success"
+            }
+        }
         data class Header(
             @SerializedName("error_code")
             @Expose
             val errorCode: Int?,
             @SerializedName("error_message")
             @Expose
-            val errorMessage: List<String?>?,
+            val errorMessage: String?,
             @SerializedName("process_time")
             @Expose
             val processTime: Int?

@@ -33,10 +33,12 @@ import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.params.InitiateConsultationParam
 import com.tokopedia.epharmacy.network.request.EPharmacyUpdateCartParam
 import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationResponse
+import com.tokopedia.epharmacy.network.response.EPharmacyUpdateCartResponse
 import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyReminderScreenBottomSheet
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.ATTACH_PRESCRIPTION_PAGE
 import com.tokopedia.epharmacy.utils.EPHARMACY_ANDROID_SOURCE
 import com.tokopedia.epharmacy.utils.EPHARMACY_APPLINK
+import com.tokopedia.epharmacy.utils.EPHARMACY_APP_CHECKOUT_APPLINK
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_NAME
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
@@ -151,6 +153,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         observerPrescriptionError()
         observerInitiateConsultation()
         observerConsultationDetails()
+        observerUpdateEPharmacyCart()
     }
 
     private fun initViews(view: View) {
@@ -267,6 +270,25 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             }
         }
     }
+
+    private fun observerUpdateEPharmacyCart() {
+        ePharmacyPrescriptionAttachmentViewModel.updateEPharmacyCart.observe(viewLifecycleOwner) { updateEPharmacyCart ->
+            when (updateEPharmacyCart) {
+                is Success -> {
+                    if (updateEPharmacyCart.data.status == EPharmacyUpdateCartResponse.UpdateEPharmacyCart.Status.SUCCESS) {
+                        onSuccessUpdateEPharmacyCart()
+                    } else if (updateEPharmacyCart.data.header?.errorMessage.orEmpty().isNotBlank()) {
+                        showToast(TYPE_ERROR, updateEPharmacyCart.data.header?.errorMessage.orEmpty())
+                    }
+                }
+                is Fail -> {
+                    showToasterError(updateEPharmacyCart.throwable)
+                }
+            }
+        }
+    }
+
+    private fun onSuccessUpdateEPharmacyCart() = RouteManager.route(context, EPHARMACY_APP_CHECKOUT_APPLINK)
 
     private fun onFailGetConsultationDetails(throwable: Throwable) {
         showToasterError(throwable)
