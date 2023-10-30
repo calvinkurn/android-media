@@ -3244,10 +3244,6 @@ class ChatbotViewModelTest {
         }
     }
 
-    @Test
-    fun `sendQuickReplyInvoice_typingBlocked`() {
-    }
-
     private fun generateChatUiModelWithVideo(video: String, totalLength: Long): VideoUploadUiModel {
         return VideoUploadUiModel.Builder().withMsgId("123")
             .withFromUid("456")
