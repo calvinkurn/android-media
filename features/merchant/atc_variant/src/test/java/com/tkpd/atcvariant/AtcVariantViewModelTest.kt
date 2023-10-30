@@ -154,8 +154,8 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         assertCampaign(
             visitablesData,
             expectedCampaignActive = true,
-            expectedMainPrice = 1000.getCurrencyFormatted(),
-            expectedSlashPrice = 208000.getCurrencyFormatted()
+            expectedMainPrice = 208000.getCurrencyFormatted(),
+            expectedSlashPrice = 1000.getCurrencyFormatted()
         )
         assertStockCopy("")
         assertButton(expectedCartText = "Simpan Perubahan")
@@ -223,8 +223,8 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         assertCampaign(
             visitablesData,
             expectedCampaignActive = true,
-            expectedMainPrice = 1000.getCurrencyFormatted(),
-            expectedSlashPrice = 208000.getCurrencyFormatted()
+            expectedMainPrice = 208000.getCurrencyFormatted(),
+            expectedSlashPrice = 1000.getCurrencyFormatted()
         )
         assertStockCopy("")
         assertButton(expectedCartText = "+ Keranjang", expectedIsBuyable = true)
@@ -500,7 +500,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             showQuantityEditor = false,
             expectedSelectedProductId = "2147818570",
             expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
-            expectedSelectedSlashPrice = "",
+            expectedSelectedSlashPrice = 1000.getCurrencyFormatted(),
             expectedSelectedStockFmt = "kosong bro",
             expectedSelectedOptionIdsLevelOne = "254079",
             expectedSelectedOptionIdsLevelTwo = "254084",
@@ -548,7 +548,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             showQuantityEditor = false,
             expectedSelectedProductId = "2147818586",
             expectedSelectedMainPrice = 7000.getCurrencyFormatted(),
-            expectedSelectedSlashPrice = "",
+            expectedSelectedSlashPrice = 7000.getCurrencyFormatted(),
             expectedSelectedStockFmt = "Stock : 10",
             expectedSelectedOptionIdsLevelOne = "254082",
             expectedSelectedOptionIdsLevelTwo = "254085",
@@ -611,7 +611,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             showQuantityEditor = false,
             expectedSelectedProductId = "2147818575",
             expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
-            expectedSelectedSlashPrice = "",
+            expectedSelectedSlashPrice = 1000.getCurrencyFormatted(),
             expectedSelectedStockFmt = "kosong bro",
             expectedSelectedOptionIdsLevelOne = expectedLevelOneVariantIdChanged,
             expectedSelectedOptionIdsLevelTwo = "254084",
