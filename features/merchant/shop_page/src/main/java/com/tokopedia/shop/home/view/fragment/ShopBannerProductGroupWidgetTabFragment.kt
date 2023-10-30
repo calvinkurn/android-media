@@ -205,7 +205,9 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         }
         
         bannerProductGroupAdapter.setOnProductCardDrawn { productCardHeight -> 
-            viewModel.refreshVerticalBannerHeight(productCardHeight)
+            if (widgetStyle == WidgetStyle.VERTICAL.id) {
+                viewModel.refreshVerticalBannerHeight(productCardHeight)   
+            }
         }
 
         bannerProductGroupAdapter.setOnVerticalBannerClick { verticalBanner ->
