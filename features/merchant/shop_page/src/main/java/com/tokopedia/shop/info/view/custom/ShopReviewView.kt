@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
@@ -26,6 +25,14 @@ class ShopReviewView @JvmOverloads constructor(
     
     private var binding: ShopInfoTopReviewViewpagerBinding? = null
     private var isSwipeFromUserInteraction : Boolean = false 
+    
+    companion object {
+        private const val DOT_INDICATOR_INACTIVE_HEIGHT = 5
+        private const val DOT_INDICATOR_INACTIVE_WIDTH = 5
+        private const val DOT_INDICATOR_ACTIVE_HEIGHT = 5
+        private const val DOT_INDICATOR_ACTIVE_WIDTH = 28
+        private const val DOT_INDICATOR_MARGIN_START = 3
+    }
     
     init {
         binding = ShopInfoTopReviewViewpagerBinding.inflate(
@@ -77,7 +84,8 @@ class ShopReviewView @JvmOverloads constructor(
 
     private fun createSelectedTabIndicator(): ImageView {
         val imageView = ImageView(context)
-        val params = ViewGroup.LayoutParams(28.toPx() , 5.toPx())
+        val params = LayoutParams(DOT_INDICATOR_ACTIVE_WIDTH.toPx() , DOT_INDICATOR_ACTIVE_HEIGHT.toPx())
+        params.leftMargin = DOT_INDICATOR_MARGIN_START.toPx()
         imageView.layoutParams = params
         
         imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.shop_info_review_dot_indicator_selected))
@@ -87,7 +95,8 @@ class ShopReviewView @JvmOverloads constructor(
 
     private fun createUnselectedTabIndicator(): ImageView {
         val imageView = ImageView(context)
-        val params = ViewGroup.LayoutParams(5.toPx() , 5.toPx())
+        val params = LayoutParams(DOT_INDICATOR_INACTIVE_WIDTH.toPx() , DOT_INDICATOR_INACTIVE_HEIGHT.toPx())
+        params.leftMargin = DOT_INDICATOR_MARGIN_START.toPx()
         imageView.layoutParams = params
 
         imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.shop_info_review_dot_indicator_unselected))

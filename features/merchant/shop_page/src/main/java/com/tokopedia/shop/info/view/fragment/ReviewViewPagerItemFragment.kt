@@ -63,7 +63,7 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
                 binding?.tpgReviewerLabel?.text = review.reviewerLabel    
             }
             
-            binding?.tpgCompletedReview?.text = review.likeDislike.totalLike.toString() + " lengkap"
+            binding?.tpgCompletedReview?.text = review.likeDislike.totalLike.toString() + " ulasan lengkap"
             binding?.tpgReviewLikeCount?.text = review.likeDislike.likeStatus.toString() + " terbantu"
             binding?.tpgReviewtime?.text = review.reviewTime
             

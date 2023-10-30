@@ -523,9 +523,7 @@ fun ShopRating(rating: ShopRating) {
         }
         Spacer(modifier = Modifier.width(16.dp))
         Column(modifier = Modifier.weight(1f)) {
-            rating.detail.forEach { rating ->
-                ShopRatingBarItem(rating = rating)
-            }
+            rating.detail.forEach { rating -> ShopRatingBarItem(rating = rating) }
         }
     }
 }
@@ -729,7 +727,6 @@ fun ShopRatingBarItem(rating: ShopRating.Detail) {
         )
         Spacer(modifier = Modifier.width(4.dp))
         NestTypography(
-            modifier = Modifier.defaultMinSize(minWidth = 18.dp, minHeight = 10.dp),
             text = rating.rate.toString(),
             textStyle = NestTheme.typography.display2.copy(color = NestTheme.colors.NN._950)
         )
@@ -739,7 +736,8 @@ fun ShopRatingBarItem(rating: ShopRating.Detail) {
         LinearProgressIndicator(
             progress = (rating.percentageFloat.toFloat() / 100),
             modifier = Modifier
-                .size(width = 126.dp, height = 4.dp)
+                .weight(2f)
+                .height(4.dp)
                 .background(progressBarBackgroundColor, RoundedCornerShape(8.dp)),
             color = NestTheme.colors.YN._300,
             backgroundColor = progressBarBackgroundColor
@@ -747,6 +745,7 @@ fun ShopRatingBarItem(rating: ShopRating.Detail) {
         
         Spacer(modifier = Modifier.width(4.dp))
         NestTypography(
+            modifier = Modifier.weight(1f),
             text = rating.formattedTotalReviews,
             textStyle = NestTheme.typography.display2.copy(color = NestTheme.colors.NN._950)
         )
