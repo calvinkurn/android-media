@@ -83,8 +83,7 @@ class ShortsUploadManager @Inject constructor(
     ): Boolean {
         if (uploadData !is CreationUploadData.Shorts) return false
 
-        this.uploadData = uploadData
-        this.mListener = listener
+        setupInitialData(uploadData, listener)
 
         return withContext(dispatchers.io) {
             try {
@@ -119,6 +118,15 @@ class ShortsUploadManager @Inject constructor(
                 false
             }
         }
+    }
+
+    private fun setupInitialData(
+        uploadData: CreationUploadData.Shorts,
+        listener: CreationUploadManagerListener
+    ) {
+        this.currentProgress = 0
+        this.uploadData = uploadData
+        this.mListener = listener
     }
 
     private suspend fun uploadMedia(

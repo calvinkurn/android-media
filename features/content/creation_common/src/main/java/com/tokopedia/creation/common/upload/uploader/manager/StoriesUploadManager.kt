@@ -8,16 +8,15 @@ import com.tokopedia.creation.common.upload.domain.usecase.stories.StoriesAddMed
 import com.tokopedia.creation.common.upload.domain.usecase.stories.StoriesUpdateStoryUseCase
 import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.creation.common.upload.model.CreationUploadData
-import com.tokopedia.creation.common.upload.model.CreationUploadResult
 import com.tokopedia.creation.common.upload.model.dto.stories.StoriesAddMediaRequest
 import com.tokopedia.creation.common.upload.model.dto.stories.StoriesUpdateStoryRequest
 import com.tokopedia.creation.common.upload.model.stories.StoriesStatus
 import com.tokopedia.creation.common.upload.uploader.notification.StoriesUploadNotificationManager
+import com.tokopedia.creation.common.util.isMediaPotrait
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.play_common.const.PlayUploadSourceIdConst
-import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.VideoSnapshotHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -76,8 +75,7 @@ class StoriesUploadManager @Inject constructor(
     ): Boolean {
         if (uploadData !is CreationUploadData.Stories) return false
 
-        this.uploadData = uploadData
-        this.mListener = listener
+        setupInitialData(uploadData, listener)
 
         return withContext(dispatchers.io) {
             try {
@@ -117,6 +115,16 @@ class StoriesUploadManager @Inject constructor(
             }
         }
     }
+
+    private fun setupInitialData(
+        uploadData: CreationUploadData.Stories,
+        listener: CreationUploadManagerListener
+    ) {
+        this.currentProgress = 0
+        this.uploadData = uploadData
+        this.mListener = listener
+    }
+
 
     private suspend fun updateStoryStatus(
         uploadData: CreationUploadData.Stories,
@@ -195,7 +203,7 @@ class StoriesUploadManager @Inject constructor(
                 coverUrl = coverUploadId,
                 uploadId = "",
                 status = StoriesAddMediaRequest.Status.Active,
-                orientation = StoriesAddMediaRequest.Orientation.Potrait,
+                orientation = getMediaOrientation(uploadData.firstMediaUri),
             )
         )
 
@@ -216,7 +224,7 @@ class StoriesUploadManager @Inject constructor(
                 coverUrl = "",
                 uploadId = requestId,
                 status = StoriesAddMediaRequest.Status.Hidden,
-                orientation = StoriesAddMediaRequest.Orientation.Potrait,
+                orientation = getMediaOrientation(uploadData.firstMediaUri),
             )
         )
     }
@@ -247,6 +255,14 @@ class StoriesUploadManager @Inject constructor(
 
     private suspend fun broadcastProgress(progress: Int) {
         mListener?.setProgress(uploadData, progress)
+    }
+
+    private fun getMediaOrientation(filePath: String): StoriesAddMediaRequest.Orientation {
+        return if (isMediaPotrait(filePath)) {
+            StoriesAddMediaRequest.Orientation.Potrait
+        } else {
+            StoriesAddMediaRequest.Orientation.Landscape
+        }
     }
 
     private fun getSourceId(uploadType: UploadType): String {
