@@ -5,10 +5,8 @@
     android:id="@+id/rlBottomSheetWrapper"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    app:behavior_hideable="true"
-    app:behavior_peekHeight="@dimen/bottom_sheet_default_peek"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    app:layout_constrainedHeight="true">
 
     <!--Ticker Info-->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,7 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bottomsheet_background"
-        android:orientation="horizontal"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -66,22 +63,24 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Content -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clBottomSheetContent"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
+        app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toTopOf="@+id/clSavingInfo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_goneMarginTop="0dp"
-        tools:layout_height="wrap_content">
+        app:layout_constraintTop_toTopOf="@+id/clTickerInfo"
+        app:layout_goneMarginTop="0dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvPromo"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constrainedHeight="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -90,57 +89,26 @@
             tools:layout_height="match_parent"
             tools:listitem="@layout/promo_usage_item_promo_accordion_header" />
 
-        <!--Bottomsheet Header (Title, Close Icon)-->
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <!--Bottom Sheet Header (Title, Close Icon)-->
+        <include
             android:id="@+id/clBottomSheetHeader"
+            layout="@layout/promo_usage_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/btnBottomSheetHeaderClose"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                app:icon_color_light_enable="@color/Unify_Static_White"
-                app:icon_color_night_enable="@color/Unify_Static_White"
-                app:icon_name="CLOSE"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tpgBottomSheetHeaderTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="16dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textColor="@color/Unify_Static_White"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/btnBottomSheetHeaderClose"
-                app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="heading_3"
-                tools:text="Promo" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
         android:id="@+id/layoutShimmer"
         layout="@layout/promo_usage_shimmer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="gone" />
 
@@ -148,8 +116,9 @@
         android:id="@+id/layoutGlobalError"
         layout="@layout/promo_usage_error"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -168,12 +137,13 @@
         app:layout_constraintBottom_toTopOf="@+id/cvTotalAmount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clBottomSheetContent"
         tools:visibility="visible">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivCheckmark"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
@@ -214,6 +184,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clSavingInfo"
         tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -256,15 +227,15 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="12dp"
                 android:text="@string/promo_usage_label_buy"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:unifyButtonLoadingText=""
                 app:unifyButtonSize="medium" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/buttonBackToShipment"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"

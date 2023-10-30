@@ -12,6 +12,8 @@ data class ComponentAdditionalInfo(
         val totalProductData: TotalProductData?,
         @SerializedName("redirection")
         val redirection: Redirection? = null,
+        @SerializedName("timer")
+        val timer: Timer? = null
 )
 
 data class TotalProductData(
@@ -36,4 +38,12 @@ data class Redirection(
     val applink: String? = "",
     @SerializedName("cta_text")
     val ctaText: String? = null,
+)
+data class Timer(
+    @SerializedName("enabled")
+    val enabled: Boolean = false,
+    @SerializedName("start_date")
+    val startTime: String? = null,
+    @SerializedName("end_date")
+    val endTime: String? = null
 )

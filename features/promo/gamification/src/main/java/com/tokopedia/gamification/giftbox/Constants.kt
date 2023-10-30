@@ -11,8 +11,4 @@ object Constants {
     const val BELL_IMAGE_3X = "https://images.tokopedia.net/img/tseottk2bell3x.png"
     const val FILLED_BELL_IMAGE_4X = "https://images.tokopedia.net/img/tseottk2bellfilled4x.png"
     const val FILLED_BELL_IMAGE_3X = "https://images.tokopedia.net/img/tseottk2bellfilled3x.png"
-
-    val REDIRECT = "redirect"
-    val SHOP_BUTTON = "shop_redirection_cta"
-    val SERU_BUTTON = "joystick_icon"
 }

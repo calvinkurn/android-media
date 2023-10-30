@@ -43,11 +43,36 @@ internal class PromoAccordionItemDelegateAdapter(
         viewHolder.bind(item)
     }
 
+    override fun bindViewHolder(
+        item: PromoItem,
+        viewHolder: ViewHolder,
+        payloads: MutableList<Any>
+    ) {
+        viewHolder.bind(
+            item = item,
+            isReload = true,
+            isPromoStateUpdated = true
+        )
+    }
+
     inner class ViewHolder(
         private val binding: PromoUsageItemPromoBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: PromoItem) {
+        fun bind(
+            item: PromoItem,
+            isReload: Boolean = true,
+            isPromoStateUpdated: Boolean = true
+        ) {
+            if (isPromoStateUpdated) {
+                renderContent(item)
+            }
+            if (isReload) {
+                setupListener(item)
+            }
+        }
+
+        private fun renderContent(item: PromoItem) {
             with(binding) {
                 if (item.isRecommended) {
                     if (item.isLastRecommended) {
@@ -90,6 +115,13 @@ internal class PromoAccordionItemDelegateAdapter(
                     )
                     bottomDivider.gone()
                 }
+                vcvPromo.bind(item)
+                vcvPromo.isVisible = item.isExpanded && item.isVisible
+            }
+        }
+
+        private fun setupListener(item: PromoItem) {
+            with(binding) {
                 vcvPromo.setOnClickListener {
                     when (item.state) {
                         is PromoItemState.Normal, is PromoItemState.Selected -> {
@@ -103,8 +135,6 @@ internal class PromoAccordionItemDelegateAdapter(
                         }
                     }
                 }
-                vcvPromo.bind(item)
-                vcvPromo.isVisible = item.isExpanded && item.isVisible
                 if (vcvPromo.isVisible) {
                     vcvPromo.addOnImpressionListener(item) {
                         onImpressionPromo(item)

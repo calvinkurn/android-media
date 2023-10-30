@@ -15,6 +15,7 @@ import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BlankUiModel
 import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
+import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
@@ -29,6 +30,7 @@ import com.tokopedia.catalogcommon.viewholder.AccordionInformationViewHolder
 import com.tokopedia.catalogcommon.viewholder.BannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.BlankViewHolder
 import com.tokopedia.catalogcommon.viewholder.CharacteristicViewHolder
+import com.tokopedia.catalogcommon.viewholder.ComparisonViewHolder
 import com.tokopedia.catalogcommon.viewholder.DoubleBannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.ExpertReviewViewHolder
 import com.tokopedia.catalogcommon.viewholder.HeroBannerViewHolder
@@ -52,7 +54,9 @@ class CatalogAdapterFactoryImpl(
     private val trustMakerListener: TrustMakerListener? = null,
     private val videoExpertListener: VideoExpertListener? = null,
     private val topFeatureListener: TopFeatureListener? = null,
-    private val doubleBannerListener: DoubleBannerListener? = null
+    private val doubleBannerListener: DoubleBannerListener? = null,
+    private val comparisonItemListener: ComparisonViewHolder.ComparisonItemListener? = null,
+    private val isDisplayingTopSpec: Boolean = true
 ) : BaseAdapterTypeFactory(), HomeComponentTypeFactory, CatalogAdapterFactory {
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
@@ -71,6 +75,7 @@ class CatalogAdapterFactoryImpl(
             DoubleBannerViewHolder.LAYOUT -> DoubleBannerViewHolder(view, doubleBannerListener)
             ExpertReviewViewHolder.LAYOUT -> ExpertReviewViewHolder(view, videoExpertListener)
             SupportFeatureViewHolder.LAYOUT -> SupportFeatureViewHolder(view)
+            ComparisonViewHolder.LAYOUT -> ComparisonViewHolder(view, comparisonItemListener,isDisplayingTopSpec)
             BlankViewHolder.LAYOUT -> BlankViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
@@ -130,5 +135,9 @@ class CatalogAdapterFactoryImpl(
 
     override fun type(uiModel: SupportFeaturesUiModel): Int {
         return SupportFeatureViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: ComparisonUiModel): Int {
+        return ComparisonViewHolder.LAYOUT
     }
 }

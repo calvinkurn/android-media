@@ -149,4 +149,74 @@ internal class SearchProductSuggestionTest: ProductListPresenterTestFixtures() {
             `is`(searchProductModel.searchProduct.data.suggestion.suggestion)
         )
     }
+
+    @Test
+    fun `show suggestion data view in visitable list for reimagine`() {
+        val suggestionJSON = "searchproduct/suggestion/suggestion-response-code-7-reimagine.json"
+        val searchProductModel = suggestionJSON.jsonToObject<SearchProductModel>()
+        val typoKeyword = "smsung"
+        val searchParameter = mapOf(
+            SearchApiConst.Q to typoKeyword,
+            SearchApiConst.NAVSOURCE to "campaign",
+            SearchApiConst.SRP_PAGE_ID to "1234",
+            SearchApiConst.SRP_PAGE_TITLE to "testing title",
+        )
+
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given search product API will return suggestion`(searchProductModel)
+        `Given view will return keyword`(typoKeyword)
+
+        `When load data`(searchParameter)
+
+        `Then verify view set product list`()
+        `Then assert suggestion data view`(
+            visitableList.getSuggestionDataView(),
+            searchProductModel.searchProductV5.data.suggestion,
+            typoKeyword,
+            Dimension90Utils.getDimension90(searchParameter),
+            VerticalSeparator.None
+        )
+    }
+
+    @Test
+    fun `suggestion data view tracking value is from related when response code is 3 for reimagine`() {
+        val suggestionJSON = "searchproduct/suggestion/suggestion-response-code-3-reimagine.json"
+        val searchProductModel = suggestionJSON.jsonToObject<SearchProductModel>()
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given search product API will return suggestion`(searchProductModel)
+
+        `When load data`()
+
+        `Then verify view set product list`()
+        assertThat(
+            visitableList.getSuggestionDataView().trackingValue,
+            `is`(searchProductModel.searchProductV5.data.related.relatedKeyword)
+        )
+    }
+
+    @Test
+    fun `suggestion data view tracking value is from suggestion when response code is 6 for reimagine`() {
+        val suggestionJSON = "searchproduct/suggestion/suggestion-response-code-6-reimagine.json"
+        `suggestion data view tracking value from suggestion for reimagine`(suggestionJSON)
+    }
+
+    @Test
+    fun `suggestion data view tracking value is from suggestion when response code is 7 for reimagine`() {
+        val suggestionJSON = "searchproduct/suggestion/suggestion-response-code-7-reimagine.json"
+        `suggestion data view tracking value from suggestion for reimagine`(suggestionJSON)
+    }
+
+    private fun `suggestion data view tracking value from suggestion for reimagine`(suggestionJSON: String) {
+        val searchProductModel = suggestionJSON.jsonToObject<SearchProductModel>()
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given search product API will return suggestion`(searchProductModel)
+
+        `When load data`()
+
+        `Then verify view set product list`()
+        assertThat(
+            visitableList.getSuggestionDataView().trackingValue,
+            `is`(searchProductModel.searchProductV5.data.suggestion.suggestion)
+        )
+    }
 }

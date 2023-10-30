@@ -194,7 +194,7 @@ class DigitalPDPPulsaFragment :
                         it,
                         getString(digital_product_detailR.string.check_balance_failed_verification),
                         Toaster.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL
+                        Toaster.TYPE_ERROR
                     ).show()
                 }
             }
@@ -1464,7 +1464,7 @@ class DigitalPDPPulsaFragment :
             if (viewModel.selectedGridProduct.denomWidgetEnum == DenomWidgetEnum.GRID_TYPE) {
                 onClearSelectedDenomGrid(viewModel.selectedGridProduct.position)
             }
-            digitalPDPAnalytics.clickMCCMProduct(
+            digitalPDPAnalytics.clickMCCMGridProduct(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
@@ -1507,7 +1507,7 @@ class DigitalPDPPulsaFragment :
         position: Int
     ) {
         if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE) {
-            digitalPDPAnalytics.impressionProductMCCM(
+            digitalPDPAnalytics.impressionProductMCCMGrid(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,

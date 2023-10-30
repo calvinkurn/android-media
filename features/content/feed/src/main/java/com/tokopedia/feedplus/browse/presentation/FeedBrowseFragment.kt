@@ -35,6 +35,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.extension.withCache
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -176,7 +177,9 @@ class FeedBrowseFragment @Inject constructor(
         }
     }
 
-    private val adapter by lazy { FeedBrowseAdapter(chipsListener, bannerListener) }
+    private val adapter by viewLifecycleBound(
+        { FeedBrowseAdapter(chipsListener, bannerListener) }
+    )
 
     private val viewModel: FeedBrowseViewModel by viewModels { viewModelFactory }
 

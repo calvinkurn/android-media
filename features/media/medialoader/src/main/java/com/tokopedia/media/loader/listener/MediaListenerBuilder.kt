@@ -69,6 +69,9 @@ internal object MediaListenerBuilder {
 
         // tracker
         if (properties.data is String) {
+            val shouldAbleToExposeResponseHeader = properties.featureToggle
+                ?.shouldAbleToExposeResponseHeader(context)
+
             MediaLoaderTracker.succeed(
                 context = context.applicationContext,
                 bitmap = resource,
@@ -77,8 +80,8 @@ internal object MediaListenerBuilder {
                 loadTime = loadTime
             )
 
-            if (properties.shouldTrackNetwork) {
-                val result = NetworkResponseManager.getInstance(context)
+            if (properties.shouldTrackNetwork && shouldAbleToExposeResponseHeader == true) {
+                val result = NetworkResponseManager.getInstance()
                 val headers = result.header(properties.data.toString())
 
                 properties.setNetworkResponse?.header(

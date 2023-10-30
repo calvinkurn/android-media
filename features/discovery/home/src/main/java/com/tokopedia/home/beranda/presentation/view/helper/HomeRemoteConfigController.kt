@@ -25,7 +25,7 @@ class HomeRemoteConfigController @Inject constructor (
     }
 
     fun isUsingNewAtf(): Boolean {
-        return atfRemoteConfig
+        return atfRemoteConfig && HomeRollenceController.isLoadAtfFromCache()
     }
 
     fun getBannerExpiryDays(): Long {

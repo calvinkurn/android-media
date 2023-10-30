@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -1063,6 +1064,7 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         //
         bundle.putString(KEY_EVENT, keyEvent);
+
         pushEventV5(keyEvent, wrapWithSessionIris(bundle), context);
     }
 
@@ -1208,10 +1210,16 @@ public class GTMAnalytics extends ContextAnalytics {
             FirebaseAnalytics fa = FirebaseAnalytics.getInstance(context);
             fa.logEvent(eventName, bundle);
 
-            pushGeneralEcommerce(bundle);
-
             mappingToGA4(fa, eventName, bundle);
             logV5(context, eventName, bundle);
+
+            // https://tokopedia.atlassian.net/browse/AN-44955
+            addUtmHolder(bundle, eventName);
+            // https://tokopedia.atlassian.net/browse/AN-54858
+            addOsVersion(bundle, eventName);
+
+            pushGeneralEcommerce(bundle);
+
             trackEmbraceBreadcrumb(eventName, bundle);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1526,9 +1534,30 @@ public class GTMAnalytics extends ContextAnalytics {
             if (!eventName.isEmpty()) {
                 values.put("event", eventName);
             }
-            if (values.get("event") != null && !String.valueOf(values.get("event")).equals("")) {
+            Object evtName = values.get("event");
+            if (evtName != null && !String.valueOf(evtName).equals("")) {
                 iris.saveEvent(values);
             }
+        }
+    }
+
+    private void addUtmHolder(Bundle bundle, String eventName) {
+        // https://tokopedia.atlassian.net/browse/AN-44955
+        if (FirebaseAnalytics.Event.ECOMMERCE_PURCHASE.equals(eventName)) {
+            bundle.putString(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
+            bundle.putString(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
+            bundle.putString(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
+        }
+    }
+
+    private void addOsVersion(Bundle bundle, String eventName) {
+        // https://tokopedia.atlassian.net/browse/AN-54858
+        String eventAction = bundle.getString(AppEventTracking.EVENT_ACTION);
+        if (FirebaseAnalytics.Event.ECOMMERCE_PURCHASE.equals(eventName) ||
+                FirebaseAnalytics.Event.ADD_TO_CART.equals(eventName) ||
+                "addToCart".equals(eventName) ||
+                "view product page".equals(eventAction)) {
+            bundle.putString("os_version", Build.VERSION.RELEASE);
         }
     }
 

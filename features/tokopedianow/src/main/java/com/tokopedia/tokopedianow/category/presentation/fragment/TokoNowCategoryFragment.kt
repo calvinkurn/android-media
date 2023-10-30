@@ -1,5 +1,7 @@
 package com.tokopedia.tokopedianow.category.presentation.fragment
 
+import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,11 +10,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.discovery.common.utils.UrlParamUtils
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.tokopedianow.R
@@ -20,25 +32,29 @@ import com.tokopedia.tokopedianow.category.di.component.DaggerCategoryComponent
 import com.tokopedia.tokopedianow.category.di.module.CategoryContextModule
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryDiffer
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryAdapterTypeFactory
-import com.tokopedia.tokopedianow.category.presentation.callback.CategoryNavigationCallback
-import com.tokopedia.tokopedianow.category.presentation.callback.CategoryProductCardAdsCallback
-import com.tokopedia.tokopedianow.category.presentation.callback.CategoryProductRecommendationCallback
-import com.tokopedia.tokopedianow.category.presentation.callback.CategoryShowcaseHeaderCallback
-import com.tokopedia.tokopedianow.category.presentation.callback.CategoryShowcaseItemCallback
-import com.tokopedia.tokopedianow.category.presentation.callback.CategoryTitleCallback
-import com.tokopedia.tokopedianow.category.presentation.callback.ProductCardCompactCallback
-import com.tokopedia.tokopedianow.category.presentation.callback.ProductCardCompactSimilarProductTrackerCallback
-import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowCategoryMenuCallback
-import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowChooseAddressWidgetCallback
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAtcTrackerModel
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationItemUiModel
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType.CATEGORY_SHOWCASE
+import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryNavigationViewHolder
+import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryShowcaseItemViewHolder
+import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryTitleViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
+import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
+import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
+import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryL1Binding
-import com.tokopedia.tokopedianow.similarproduct.presentation.activity.TokoNowSimilarProductBottomSheetActivity
+import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
+import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_CATEGORY_ID
+import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_REF
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -102,8 +118,6 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
             tokoNowChooseAddressWidgetListener = createTokoNowChooseAddressWidgetCallback(),
             tokoNowCategoryMenuListener = createTokoNowCategoryMenuCallback(),
             tokoNowProductRecommendationListener = createProductRecommendationCallback(),
-            productCardCompactListener = createProductCardCompactCallback(),
-            productCardCompactSimilarProductTrackerListener = createProductCardCompactSimilarProductTrackerCallback(),
             productAdsCarouselListener = createProductCardAdsCallback(),
             recycledViewPool = recycledViewPool,
             lifecycleOwner = viewLifecycleOwner
@@ -269,159 +283,6 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
         }
     }
 
-    private fun clickProductCardShowcase(
-        appLink: String,
-        headerName: String,
-        index: Int,
-        productId: String,
-        productName: String,
-        productPrice: String,
-        isOos: Boolean,
-        productWarehouseId: String
-    ) {
-        clickProductCard(appLink)
-
-        analytic.categoryShowcaseAnalytic.sendClickProductShowcaseLEvent(
-            categoryIdL1 = categoryIdL1,
-            headerName = headerName,
-            index = index.getTrackerPosition(),
-            productId = productId,
-            isOos = isOos,
-            name = productName,
-            price = productPrice.getDigits()?.toLong().orZero(),
-            productWarehouseId = productWarehouseId
-        )
-    }
-
-    private fun clickProductCardRecommendation(
-        appLink: String,
-        headerName: String,
-        index: Int,
-        productId: String,
-        productName: String,
-        productPrice: String,
-        isOos: Boolean,
-        productWarehouseId: String
-    ) {
-        clickProductCard(appLink)
-
-        analytic.categoryProductRecommendationAnalytic.sendClickProductCarouselEvent(
-            categoryIdL1 = categoryIdL1,
-            headerName = headerName,
-            index = index.getTrackerPosition(),
-            productId = productId,
-            isOos = isOos,
-            name = productName,
-            price = productPrice.getDigits()?.toLong().orZero(),
-            productWarehouseId = productWarehouseId
-        )
-    }
-
-    private fun impressProductCardShowcase(
-        headerName: String,
-        index: Int,
-        productId: String,
-        productName: String,
-        productPrice: String,
-        isOos: Boolean,
-        productWarehouseId: String
-    ) {
-        analytic.categoryShowcaseAnalytic.sendImpressionProductInShowcaseLEvent(
-            categoryIdL1 = categoryIdL1,
-            headerName = headerName,
-            index = index.getTrackerPosition(),
-            productId = productId,
-            isOos = isOos,
-            name = productName,
-            price = productPrice.getDigits()?.toLong().orZero(),
-            productWarehouseId = productWarehouseId
-        )
-    }
-
-    private fun impressProductCardRecommendation(
-        headerName: String,
-        index: Int,
-        productId: String,
-        productName: String,
-        productPrice: String,
-        isOos: Boolean,
-        productWarehouseId: String
-    ) {
-        analytic.categoryProductRecommendationAnalytic.sendImpressionProductCarouselEvent(
-            categoryIdL1 = categoryIdL1,
-            headerName = headerName,
-            index = index.getTrackerPosition(),
-            productId = productId,
-            isOos = isOos,
-            name = productName,
-            price = productPrice.getDigits()?.toLong().orZero(),
-            productWarehouseId = productWarehouseId
-        )
-    }
-
-    private fun clickMoreCategories() {
-        analytic.categoryTitleAnalytics.sendClickMoreCategoriesEvent(
-            categoryIdL1 = categoryIdL1,
-            warehouseId = viewModel.getWarehouseId()
-        )
-    }
-
-    private fun clickCategoryNavigation(
-        categoryIdL2: String
-    ) {
-        analytic.categoryNavigationAnalytic.sendClickCategoryNavigationEvent(
-            categoryIdL1 = categoryIdL1,
-            categoryIdL2 = categoryIdL2,
-            warehouseId = viewModel.getWarehouseId()
-        )
-    }
-
-    private fun impressCategoryNavigation(
-        categoryIdL2: String
-    ) {
-        analytic.categoryNavigationAnalytic.sendImpressionCategoryNavigationEvent(
-            categoryIdL1 = categoryIdL1,
-            categoryIdL2 = categoryIdL2,
-            warehouseId = viewModel.getWarehouseId()
-        )
-    }
-
-    private fun clickCategoryMenu(
-        categoryRecomIdL1: String,
-        headerName: String
-    ) {
-        analytic.categoryMenuAnalytic.sendClickCategoryRecomWidgetEvent(
-            categoryIdL1 = categoryIdL1,
-            categoryRecomIdL1 = categoryRecomIdL1,
-            warehouseId = viewModel.getWarehouseId(),
-            headerName = headerName
-        )
-    }
-
-    private fun impressCategoryMenu(
-        categoryRecomIdL1: String,
-        headerName: String
-    ) {
-        analytic.categoryMenuAnalytic.sendImpressionCategoryRecomWidgetEvent(
-            categoryIdL1 = categoryIdL1,
-            categoryRecomIdL1 = categoryRecomIdL1,
-            warehouseId = viewModel.getWarehouseId(),
-            headerName = headerName
-        )
-    }
-
-    private fun clickSeeMoreShowcase(
-        headerName: String,
-        categoryIdL2: String
-    ) {
-        analytic.categoryShowcaseAnalytic.sendClickArrowButtonShowcaseLEvent(
-            categoryIdL1 = categoryIdL1,
-            categoryIdL2 = categoryIdL2,
-            warehouseId = viewModel.getWarehouseId(),
-            headerName = headerName
-        )
-    }
-
     private fun trackCategoryShowcaseAddToCart(model: CategoryAtcTrackerModel) {
         analytic.categoryShowcaseAnalytic.sendClickAtcOnShowcaseLEvent(
             categoryIdL1 = categoryIdL1,
@@ -450,17 +311,6 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
         )
     }
 
-    private fun changeProductCardQuantity(product: CategoryShowcaseItemUiModel, quantity: Int) {
-        viewModel.onCartQuantityChanged(
-            product = product.productCardModel,
-            shopId = product.shopId,
-            quantity = quantity,
-            layoutType = CATEGORY_SHOWCASE.name
-        )
-    }
-
-    private fun hideProductRecommendationWidget() = viewModel.removeProductRecommendation()
-
     private fun showToasterWhenAddToCartBlocked() {
         showToaster(
             message = getString(R.string.tokopedianow_home_toaster_description_you_are_not_be_able_to_shop),
@@ -468,115 +318,333 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
         )
     }
 
-    private fun clickWishlistButton(
-        productId: String,
-        isWishlistSelected: Boolean,
-        descriptionToaster: String,
-        ctaToaster: String,
-        type: Int,
-        ctaClickListener: (() -> Unit)?
-    ) {
-        if (isWishlistSelected) {
-            analytic.categoryOosProductAnalytic.trackClickAddToWishlist(
-                warehouseId = viewModel.getWarehouseId(),
-                productId = productId
-            )
-        } else {
-            analytic.categoryOosProductAnalytic.trackClickRemoveFromWishlist(
-                warehouseId = viewModel.getWarehouseId(),
-                productId = productId
-            )
-        }
-        viewModel.updateWishlistStatus(
-            productId,
-            isWishlistSelected
-        )
-        showToaster(
-            message = descriptionToaster,
-            type = type,
-            actionText = ctaToaster
-        ) {
-            ctaClickListener?.invoke()
-        }
-    }
-
     /**
      * -- callback function section --
      */
 
-    private fun createTitleCallback() = CategoryTitleCallback(
-        context = context,
-        onClickMoreCategories = ::clickMoreCategories
-    )
+    private fun createTitleCallback() = object : CategoryTitleViewHolder.CategoryTitleListener {
+        override fun onClickMoreCategories() {
+            RouteManager.route(
+                context,
+                ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY
+            )
 
-    private fun createCategoryNavigationCallback() = CategoryNavigationCallback(
-        onClickCategoryNavigation = ::clickCategoryNavigation,
-        onImpressCategoryNavigation = ::impressCategoryNavigation
-    )
+            analytic.categoryTitleAnalytics.sendClickMoreCategoriesEvent(
+                categoryIdL1 = categoryIdL1,
+                warehouseId = viewModel.getWarehouseId()
+            )
+        }
+    }
 
-    private fun createCategoryShowcaseItemCallback() = CategoryShowcaseItemCallback(
-        shopId = shopId,
-        categoryIdL1 = categoryIdL1,
-        onClickProductCard = ::clickProductCardShowcase,
-        onImpressProductCard = ::impressProductCardShowcase,
-        onAddToCartBlocked = ::showToasterWhenAddToCartBlocked,
-        onProductCartQuantityChanged = ::changeProductCardQuantity,
-        startActivityForResult = ::startActivityForResult,
-        onWishlistButtonClicked = ::clickWishlistButton
-    )
+    private fun createCategoryNavigationCallback() = object : CategoryNavigationViewHolder.CategoryNavigationListener {
+        override fun onCategoryNavigationItemClicked(
+            data: CategoryNavigationItemUiModel,
+            itemPosition: Int
+        ) {
+            analytic.categoryNavigationAnalytic.sendClickCategoryNavigationEvent(
+                categoryIdL1 = categoryIdL1,
+                categoryIdL2 = data.id,
+                warehouseId = viewModel.getWarehouseId()
+            )
+        }
 
-    private fun createCategoryShowcaseHeaderCallback() = CategoryShowcaseHeaderCallback(
-        onClickSeeMore = ::clickSeeMoreShowcase
-    )
+        override fun onCategoryNavigationItemImpressed(
+            data: CategoryNavigationItemUiModel,
+            itemPosition: Int
+        ) {
+            analytic.categoryNavigationAnalytic.sendImpressionCategoryNavigationEvent(
+                categoryIdL1 = categoryIdL1,
+                categoryIdL2 = data.id,
+                warehouseId = viewModel.getWarehouseId()
+            )
+        }
 
-    private fun createTokoNowCategoryMenuCallback() = TokoNowCategoryMenuCallback(
-        onClickCategoryMenu = ::clickCategoryMenu,
-        onImpressCategoryMenu = ::impressCategoryMenu
-    )
+        override fun onCategoryNavigationWidgetRetried() { /* nothing to do */ }
 
-    private fun createTokoNowChooseAddressWidgetCallback() = TokoNowChooseAddressWidgetCallback {
-        analytic.sendClickWidgetChooseAddressEvent(
+        override fun onCategoryNavigationWidgetImpression(data: CategoryNavigationUiModel) { /* nothing to do temp */ }
+    }
+
+    private fun createCategoryShowcaseItemCallback() = object : CategoryShowcaseItemViewHolder.CategoryShowcaseItemListener {
+        override fun onProductCardAddVariantClicked(
+            context: Context,
+            position: Int,
+            product: CategoryShowcaseItemUiModel
+        ) {
+            AtcVariantHelper.goToAtcVariant(
+                context = context,
+                productId = product.productCardModel.productId,
+                pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
+                isTokoNow = true,
+                shopId = shopId,
+                trackerCdListName = String.format(CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC, categoryIdL1),
+                startActivitResult = ::startActivityForResult
+            )
+        }
+
+        override fun onProductCardQuantityChanged(
+            position: Int,
+            product: CategoryShowcaseItemUiModel,
+            quantity: Int
+        ) {
+            viewModel.onCartQuantityChanged(
+                product = product.productCardModel,
+                shopId = product.shopId,
+                quantity = quantity,
+                layoutType = CATEGORY_SHOWCASE.name
+            )
+        }
+
+        override fun onProductCardClicked(
+            context: Context,
+            position: Int,
+            product: CategoryShowcaseItemUiModel
+        ) {
+            val appLink = UriUtil.buildUri(
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                product.productCardModel.productId
+            )
+            clickProductCard(appLink)
+
+            analytic.categoryShowcaseAnalytic.sendClickProductShowcaseLEvent(
+                categoryIdL1 = categoryIdL1,
+                headerName = product.headerName,
+                index = position.getTrackerPosition(),
+                productId = product.productCardModel.productId,
+                productWarehouseId = viewModel.getWarehouseId(),
+                isOos = product.productCardModel.isOos(),
+                name = product.productCardModel.name,
+                price = product.productCardModel.price.getDigits()?.toLong().orZero()
+            )
+        }
+
+        override fun onProductCardImpressed(
+            position: Int,
+            product: CategoryShowcaseItemUiModel
+        ) = analytic.categoryShowcaseAnalytic.sendImpressionProductInShowcaseLEvent(
+            categoryIdL1 = categoryIdL1,
+            headerName = product.headerName,
+            index = position.getTrackerPosition(),
+            productId = product.productCardModel.productId,
+            productWarehouseId = viewModel.getWarehouseId(),
+            isOos = product.productCardModel.isOos(),
+            name = product.productCardModel.name,
+            price = product.productCardModel.price.getDigits()?.toLong().orZero()
+        )
+
+        override fun onProductCardAddToCartBlocked() = showToasterWhenAddToCartBlocked()
+    }
+
+    private fun createCategoryShowcaseHeaderCallback() = object : TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
+        override fun onSeeAllClicked(
+            context: Context,
+            channelId: String,
+            headerName: String,
+            appLink: String,
+            widgetId: String
+        ) {
+            RouteManager.route(context, appLink)
+
+            analytic.categoryShowcaseAnalytic.sendClickArrowButtonShowcaseLEvent(
+                categoryIdL1 = categoryIdL1,
+                categoryIdL2 = widgetId,
+                headerName = headerName,
+                warehouseId = viewModel.getWarehouseId()
+            )
+        }
+
+        override fun onChannelExpired() { /* nothing to do */ }
+    }
+
+    private fun createTokoNowCategoryMenuCallback() = object : TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener {
+        override fun onCategoryMenuWidgetRetried() { /* nothing to do */ }
+
+        override fun onSeeAllCategoryClicked() { /* nothing to do */ }
+
+        override fun onCategoryMenuItemClicked(
+            data: TokoNowCategoryMenuItemUiModel,
+            itemPosition: Int
+        ) = analytic.categoryMenuAnalytic.sendClickCategoryRecomWidgetEvent(
+            categoryIdL1 = categoryIdL1,
+            categoryRecomIdL1 = data.id,
+            headerName = data.headerName,
+            warehouseId = viewModel.getWarehouseId()
+        )
+
+        override fun onCategoryMenuItemImpressed(
+            data: TokoNowCategoryMenuItemUiModel,
+            itemPosition: Int
+        ) = analytic.categoryMenuAnalytic.sendImpressionCategoryRecomWidgetEvent(
+            categoryIdL1 = categoryIdL1,
+            categoryRecomIdL1 = data.id,
+            headerName = data.headerName,
+            warehouseId = viewModel.getWarehouseId()
+        )
+
+        override fun onCategoryMenuWidgetImpression(data: TokoNowCategoryMenuUiModel) { /* nothing to do */ }
+    }
+
+    private fun createTokoNowChooseAddressWidgetCallback() = object : TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener {
+        override fun onChooseAddressWidgetRemoved() {
+            /* nothing to do */
+        }
+
+        override fun onClickChooseAddressWidgetTracker() = analytic.sendClickWidgetChooseAddressEvent(
             categoryIdL1 = categoryIdL1,
             warehouseId = viewModel.getWarehouseId()
         )
     }
 
-    private fun createProductRecommendationCallback() = CategoryProductRecommendationCallback(
-        productRecommendationViewModel = productRecommendationViewModel,
-        activity = activity,
-        categoryIdL1 = categoryIdL1,
-        onClickProductCard = ::clickProductCardRecommendation,
-        onImpressProductCard = ::impressProductCardRecommendation,
-        onOpenLoginPage = ::openLoginPage,
-        onAddToCartBlocked = ::showToasterWhenAddToCartBlocked,
-        onHideProductRecommendationWidget = ::hideProductRecommendationWidget,
-        startActivityResult = ::startActivityForResult
-    )
+    private fun createProductRecommendationCallback() = object : TokoNowProductRecommendationView.TokoNowProductRecommendationListener {
+        override fun getProductRecommendationViewModel(): TokoNowProductRecommendationViewModel = productRecommendationViewModel
 
-    private fun createProductCardCompactCallback() = ProductCardCompactCallback { productId, similarProductTrackerListener ->
-        context?.apply {
-            val intent = TokoNowSimilarProductBottomSheetActivity.createNewIntent(
-                this,
-                productId,
-                similarProductTrackerListener
+        override fun hideProductRecommendationWidget() = viewModel.removeProductRecommendation()
+
+        override fun openLoginPage() = this@TokoNowCategoryFragment.openLoginPage()
+
+        override fun productCardAddVariantClicked(
+            productId: String,
+            shopId: String
+        ) {
+            activity?.apply {
+                AtcVariantHelper.goToAtcVariant(
+                    context = this,
+                    productId = productId,
+                    pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
+                    isTokoNow = true,
+                    shopId = shopId,
+                    trackerCdListName = String.format(CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC, categoryIdL1),
+                    startActivitResult = ::startActivityForResult
+                )
+            }
+        }
+
+        override fun productCardClicked(
+            position: Int,
+            product: ProductCardCompactCarouselItemUiModel,
+            isLogin: Boolean,
+            userId: String
+        ) {
+            clickProductCard(product.appLink)
+
+            analytic.categoryShowcaseAnalytic.sendClickProductShowcaseLEvent(
+                categoryIdL1 = categoryIdL1,
+                headerName = product.headerName,
+                index = position.getTrackerPosition(),
+                productId = product.productCardModel.productId,
+                isOos = product.productCardModel.isOos(),
+                name = product.productCardModel.name,
+                price = product.productCardModel.price.getDigits()?.toLong().orZero(),
+                productWarehouseId = product.productCardModel.warehouseId
             )
-            startActivity(intent)
+        }
+
+        override fun productCardImpressed(
+            position: Int,
+            product: ProductCardCompactCarouselItemUiModel,
+            isLogin: Boolean,
+            userId: String
+        ) {
+            analytic.categoryProductRecommendationAnalytic.sendImpressionProductCarouselEvent(
+                categoryIdL1 = categoryIdL1,
+                headerName = product.headerName,
+                index = position.getTrackerPosition(),
+                productId = product.productCardModel.productId,
+                isOos = product.productCardModel.isOos(),
+                name = product.productCardModel.name,
+                price = product.productCardModel.price.getDigits()?.toLong().orZero(),
+                productWarehouseId = product.productCardModel.warehouseId
+            )
+        }
+
+        override fun seeMoreClicked(
+            seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel
+        ) {
+            directToSeeMorePage(seeMoreUiModel.appLink)
+        }
+
+        override fun seeAllClicked(
+            appLink: String
+        ) {
+            directToSeeMorePage(appLink)
+        }
+
+        override fun productCardAddToCartBlocked() = showToasterWhenAddToCartBlocked()
+
+        private fun directToSeeMorePage(
+            appLink: String
+        ) {
+            val modifiedAppLink = modifySeeMoreAppLink(appLink)
+            RouteManager.route(activity, modifiedAppLink)
+        }
+
+        private fun modifySeeMoreAppLink(
+            originalAppLink: String
+        ): String {
+            val uri = Uri.parse(originalAppLink)
+            val queryParamsMap = UrlParamUtils.getParamMap(uri.query ?: String.EMPTY)
+            val ref = queryParamsMap[RECOM_QUERY_PARAM_REF].orEmpty()
+
+            return if (ref == RecomPageConstant.TOKONOW_CLP) {
+                val categoryId = queryParamsMap[RECOM_QUERY_PARAM_CATEGORY_ID].orEmpty()
+
+                if (categoryId.isEmpty()) queryParamsMap[RECOM_QUERY_PARAM_CATEGORY_ID] = categoryIdL1
+
+                "${uri.scheme}://${uri.host}/${uri.path}?" + UrlParamUtils.generateUrlParamString(queryParamsMap)
+            } else {
+                originalAppLink
+            }
         }
     }
 
-    private fun createProductCardCompactSimilarProductTrackerCallback(): ProductCardCompactSimilarProductTrackerCallback {
-        return ProductCardCompactSimilarProductTrackerCallback(analytic.categoryOosProductAnalytic)
-    }
+    private fun createProductCardAdsCallback() = object : ProductAdsCarouselListener {
+        override fun onProductCardClicked(
+            position: Int,
+            title: String,
+            product: ProductCardCompactCarouselItemUiModel
+        ) {
+            RouteManager.route(context, product.appLink)
+            analytic.productAdsAnalytic.trackProductClick(position, title, product)
+        }
 
-    private fun createProductCardAdsCallback(): CategoryProductCardAdsCallback {
-        return CategoryProductCardAdsCallback(
-            context = context,
-            viewModel = viewModel,
-            analytic = analytic.productAdsAnalytic,
-            categoryIdL1 = categoryIdL1,
-            startActivityResult = ::startActivityForResult,
-            showToasterWhenAddToCartBlocked = ::showToasterWhenAddToCartBlocked
-        )
+        override fun onProductCardImpressed(
+            position: Int,
+            title: String,
+            product: ProductCardCompactCarouselItemUiModel
+        ) {
+            analytic.productAdsAnalytic.trackProductImpression(position, title, product)
+        }
+
+        override fun onProductCardQuantityChanged(
+            position: Int,
+            product: ProductCardCompactCarouselItemUiModel,
+            quantity: Int
+        ) {
+            viewModel.onCartQuantityChanged(
+                product = product.productCardModel,
+                shopId = product.shopId,
+                quantity = quantity,
+                layoutType = PRODUCT_ADS_CAROUSEL
+            )
+        }
+
+        override fun onProductCardAddVariantClicked(
+            position: Int,
+            product: ProductCardCompactCarouselItemUiModel
+        ) {
+            context?.apply {
+                AtcVariantHelper.goToAtcVariant(
+                    context = this,
+                    productId = product.getProductId(),
+                    pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
+                    isTokoNow = true,
+                    shopId = product.shopId,
+                    trackerCdListName = String.format(CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC, categoryIdL1),
+                    startActivitResult = ::startActivityForResult
+                )
+            }
+        }
+
+        override fun onProductCardAddToCartBlocked() = showToasterWhenAddToCartBlocked()
     }
 
     private fun createNavRecyclerViewOnScrollListener(

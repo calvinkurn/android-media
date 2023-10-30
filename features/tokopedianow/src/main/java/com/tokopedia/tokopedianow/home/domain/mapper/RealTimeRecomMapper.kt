@@ -24,11 +24,12 @@ object RealTimeRecomMapper {
         channelId: String,
         recomWidget: RecommendationWidget,
         miniCartData: MiniCartSimplifiedData?,
+        hasBlockedAddToCart: Boolean,
         @TokoNowLayoutType type: String
     ) {
         when (type) {
-            PRODUCT_RECOM -> mapProductRecomRTR(channelId, recomWidget, miniCartData)
-            MIX_LEFT_CAROUSEL_ATC -> mapMixLeftAtcRTR(channelId, recomWidget, miniCartData)
+            PRODUCT_RECOM -> mapProductRecomRTR(channelId, recomWidget, miniCartData, hasBlockedAddToCart)
+            MIX_LEFT_CAROUSEL_ATC -> mapMixLeftAtcRTR(channelId, recomWidget, miniCartData, hasBlockedAddToCart)
         }
     }
 
@@ -217,7 +218,8 @@ object RealTimeRecomMapper {
     private fun MutableList<HomeLayoutItemUiModel?>.mapProductRecomRTR(
         channelId: String,
         recomWidget: RecommendationWidget,
-        miniCartData: MiniCartSimplifiedData?
+        miniCartData: MiniCartSimplifiedData?,
+        hasBlockedAddToCart: Boolean
     ) {
         val item = getProductRecomItem(channelId)
         val realTimeRecom = item?.realTimeRecom
@@ -225,7 +227,7 @@ object RealTimeRecomMapper {
 
         item?.getRecomItem(productId)?.let {
             updateItemById(channelId) {
-                ProductRecomMapper.mapRealTimeRecomData(item, recomWidget, it, miniCartData)
+                ProductRecomMapper.mapRealTimeRecomData(item, recomWidget, it, miniCartData, hasBlockedAddToCart)
             }
         }
     }
@@ -233,7 +235,8 @@ object RealTimeRecomMapper {
     private fun MutableList<HomeLayoutItemUiModel?>.mapMixLeftAtcRTR(
         channelId: String,
         recomWidget: RecommendationWidget,
-        miniCartData: MiniCartSimplifiedData?
+        miniCartData: MiniCartSimplifiedData?,
+        hasBlockedAddToCart: Boolean
     ) {
         val item = getLeftAtcItem(channelId)
         val realTimeRecom = item?.realTimeRecom
@@ -241,7 +244,7 @@ object RealTimeRecomMapper {
 
         item?.getLeftAtcRecomItem(productId)?.let {
             updateItemById(channelId) {
-                LeftCarouselMapper.mapLeftAtcRTR(item, recomWidget, it, miniCartData)
+                LeftCarouselMapper.mapLeftAtcRTR(item, recomWidget, it, miniCartData, hasBlockedAddToCart)
             }
         }
     }

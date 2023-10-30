@@ -47,6 +47,7 @@ import com.tokopedia.feedplus.presentation.model.FeedScoreModel
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedViewModel
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
+import com.tokopedia.feedplus.presentation.model.type.FeedContentType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -138,7 +139,8 @@ class MapperFeedXHome @Inject constructor(
             publishedAt = card.publishedAt,
             maxDiscountPercentage = card.maximumDiscountPercentage,
             maxDiscountPercentageFmt = card.maximumDiscountPercentageFmt,
-            topAdsId = if (isTopAdsPost(card)) card.id else ""
+            topAdsId = if (isTopAdsPost(card)) card.id else "",
+            contentType = FeedContentType.getType(card.typename, card.type, medias.firstOrNull()?.type.orEmpty())
         )
     }
 
@@ -195,7 +197,8 @@ class MapperFeedXHome @Inject constructor(
             menuItems = getMenuItems(author, card),
             detailScore = card.detailScore.map { score -> transformDetailScore(score) },
             publishedAt = card.publishedAt,
-            playChannelId = card.playChannelId
+            playChannelId = card.playChannelId,
+            contentType = FeedContentType.getType(card.typename, card.type, medias.firstOrNull()?.type.orEmpty())
         )
     }
 

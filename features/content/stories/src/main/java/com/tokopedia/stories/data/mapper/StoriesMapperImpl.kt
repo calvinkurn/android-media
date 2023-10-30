@@ -1,5 +1,6 @@
 package com.tokopedia.stories.data.mapper
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.iconunify.IconUnify
@@ -102,12 +103,12 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     menus = buildMenu(stories.interaction, stories.author),
                     share = StoriesDetailItem.Sharing(
                         isShareable = stories.interaction.shareable,
-                        shareText = stories.meta.shareTextDescription,
+                        shareText = MethodChecker.fromHtml(stories.meta.shareTextDescription).toString(),
                         metadata = LinkProperties(
                             linkerType = LinkerData.STORIES_TYPE,
-                            ogTitle = stories.meta.shareTitle,
+                            ogTitle = MethodChecker.fromHtml(stories.meta.shareTitle).toString(),
                             ogImageUrl = stories.meta.shareImage,
-                            ogDescription = stories.meta.shareDescription,
+                            ogDescription = MethodChecker.fromHtml(stories.meta.shareDescription).toString(),
                             deeplink = stories.appLink,
                             desktopUrl = stories.webLink
                         )
@@ -144,17 +145,18 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
 
     private fun buildAuthor(author: ContentStoriesDetails.Stories.Author): StoryAuthor {
         val type = AuthorType.convertValue(author.type)
+        val name = MethodChecker.fromHtml(author.name).toString()
 
         return if (type == AuthorType.User) {
             StoryAuthor.Buyer(
-                userName = author.name,
+                userName = name,
                 userId = author.id,
                 avatarUrl = author.thumbnailURL,
                 appLink = author.appLink
             )
         } else {
             StoryAuthor.Shop(
-                shopName = author.name,
+                shopName = name,
                 shopId = author.id,
                 avatarUrl = author.thumbnailURL,
                 badgeUrl = author.badgeURL,

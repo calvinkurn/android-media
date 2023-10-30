@@ -5,9 +5,11 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.glide.loadImage
+import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -16,6 +18,7 @@ import com.tokopedia.user.session.util.EncoderDecoder
 import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
 import com.tokopedia.usercomponents.stickylogin.common.helper.getPrefLoginReminder
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Frenzel 06/07/23
@@ -49,12 +52,12 @@ class LoginWidgetView : FrameLayout {
         this.button = itemView.findViewById(R.id.home_login_widget_button)
     }
 
-    fun bind(listener: HomeCategoryListener?) {
+    fun bind(listener: HomeCategoryListener?, homeThematicUtil: HomeThematicUtil = HomeThematicUtil()) {
         this.listener = listener
-        renderWidget()
+        renderWidget(homeThematicUtil)
     }
 
-    private fun renderWidget() {
+    private fun renderWidget(homeThematicUtil: HomeThematicUtil) {
         setClickListener()
         val (name, profilePicture) = getAccountData()
         if(!name.isNullOrEmpty() && !profilePicture.isNullOrEmpty()) {
@@ -65,6 +68,7 @@ class LoginWidgetView : FrameLayout {
             renderSubtitle(R.string.login_widget_subtitle_non_saved)
         }
         renderImage(profilePicture)
+        renderTextColor(homeThematicUtil)
     }
 
     private fun setClickListener() {
@@ -99,5 +103,10 @@ class LoginWidgetView : FrameLayout {
         } else {
             this.image?.loadImage(profilePicture)
         }
+    }
+
+    fun renderTextColor(homeThematicUtil: HomeThematicUtil) {
+        this.title?.setTextColor(ContextCompat.getColor(context, homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_NN950)))
+        this.subtitle?.setTextColor(ContextCompat.getColor(context, homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_NN600)))
     }
 }

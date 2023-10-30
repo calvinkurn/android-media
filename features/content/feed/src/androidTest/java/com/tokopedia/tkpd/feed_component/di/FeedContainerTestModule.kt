@@ -5,9 +5,9 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.data.pojo.FeedTabs
-import com.tokopedia.feedplus.domain.repository.FeedPlusRepository
-import com.tokopedia.feedplus.view.di.FeedContainerScope
+import com.tokopedia.feedplus.oldFeed.data.pojo.FeedTabs
+import com.tokopedia.feedplus.oldFeed.domain.repository.FeedPlusRepository
+import com.tokopedia.feedplus.oldFeed.view.di.FeedContainerScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

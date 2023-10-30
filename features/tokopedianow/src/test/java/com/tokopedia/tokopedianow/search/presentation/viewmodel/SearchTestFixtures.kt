@@ -5,11 +5,11 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
@@ -37,6 +37,8 @@ open class SearchTestFixtures {
 
     @get:Rule
     val coroutineTestRule = UnconfinedTestRule()
+
+    private val remoteConfig = mockk<RemoteConfig>(relaxed = true)
 
     protected val defaultKeyword = "samsung"
     protected val defaultQueryParamMap = mapOf(SearchApiConst.Q to defaultKeyword)
@@ -78,6 +80,19 @@ open class SearchTestFixtures {
         } returns chooseAddressData
     }
 
+    protected fun `Given remote config`(
+        defaultValue: String,
+        key: String,
+        value: String
+    ) {
+        every {
+            remoteConfig.getString(
+                key,
+                defaultValue
+            )
+        } returns value
+    }
+
     protected fun `Given search view model`(queryParamMap: Map<String, String> = defaultQueryParamMap) {
         tokoNowSearchViewModel = TokoNowSearchViewModel(
                 CoroutineTestDispatchersProvider,
@@ -90,6 +105,7 @@ open class SearchTestFixtures {
                 cartService,
                 getWarehouseUseCase,
                 setUserPreferenceUseCase,
+                remoteConfig,
                 chooseAddressWrapper,
                 affiliateService,
                 userSession,

@@ -24,6 +24,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.util.*
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class DsarViewModelTest {
 
@@ -177,6 +179,8 @@ class DsarViewModelTest {
         val result = viewModel.transactionHistoryModel.getOrAwaitValue()
         assert(result.selectedDate.startDate == startDate.toString(DateUtil.YYYYMMDD))
         assert(result.selectedDate.endDate == endDate.toString(DateUtil.YYYYMMDD))
+        assertTrue(result.isChecked)
+        assertTrue(viewModel._filterItems.contains(DsarConstants.FILTER_TYPE_TRANSACTION))
     }
 
     @Test
@@ -189,6 +193,8 @@ class DsarViewModelTest {
 
         val result = viewModel.transactionHistoryModel.getOrAwaitValue()
         assert(result.selectedDate == mockDateResponse)
+        assertTrue(result.isChecked)
+        assertTrue(viewModel._filterItems.contains(DsarConstants.FILTER_TYPE_TRANSACTION))
     }
 
     @Test
@@ -203,6 +209,8 @@ class DsarViewModelTest {
 
         val result = viewModel.transactionHistoryModel.getOrAwaitValue()
         assert(result.selectedDate == mockDateResponse)
+        assertTrue(result.isChecked)
+        assertTrue(viewModel._filterItems.contains(DsarConstants.FILTER_TYPE_TRANSACTION))
     }
 
     @Test
@@ -217,6 +225,8 @@ class DsarViewModelTest {
 
         val result = viewModel.transactionHistoryModel.getOrAwaitValue()
         assert(result.selectedDate == mockDateResponse)
+        assertTrue(result.isChecked)
+        assertTrue(viewModel._filterItems.contains(DsarConstants.FILTER_TYPE_TRANSACTION))
     }
 
     @Test
@@ -225,8 +235,9 @@ class DsarViewModelTest {
 
         val result = viewModel.transactionHistoryModel.getOrAwaitValue()
         assert(result.showBottomSheet)
-        assert(result.isChecked)
-        assert(viewModel._filterItems.contains(DsarConstants.FILTER_TYPE_TRANSACTION))
+        assertFalse(result.isChecked)
+        assertFalse(result.isChecked)
+        assertTrue(viewModel._filterItems.isEmpty())
     }
 
     @Test
@@ -236,6 +247,8 @@ class DsarViewModelTest {
         val result = viewModel.transactionHistoryModel.getOrAwaitValue()
         assert(!result.showBottomSheet)
         assert(!result.isChecked)
+        assertTrue(result.selectedDate.startDate.isEmpty())
+        assertTrue(result.selectedDate.endDate.isEmpty())
 
         assert(!viewModel._filterItems.contains(DsarConstants.FILTER_TYPE_TRANSACTION))
     }
@@ -298,8 +311,11 @@ class DsarViewModelTest {
 
         viewModel.setSelectedDate(DsarConstants.LABEL_RANGE_CUSTOM, startDate, endDate)
 
+        val result = viewModel.transactionHistoryModel.getOrAwaitValue()
         assert(viewModel.getSelectedRangeItems()?.startDate == startDate.toString(DateUtil.YYYYMMDD))
         assert(viewModel.getSelectedRangeItems()?.endDate == endDate.toString(DateUtil.YYYYMMDD))
+        assertTrue(result.isChecked)
+        assertTrue(viewModel._filterItems.contains(DsarConstants.FILTER_TYPE_TRANSACTION))
     }
 
     @Test

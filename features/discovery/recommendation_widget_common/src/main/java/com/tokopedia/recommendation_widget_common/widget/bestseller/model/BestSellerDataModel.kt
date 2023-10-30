@@ -37,13 +37,16 @@ data class BestSellerDataModel(
         return b is BestSellerDataModel && b.title == title &&
                 b.pageName == pageName &&
                 b.seeMoreAppLink == seeMoreAppLink &&
+                b.recommendationItemList.isNotEmpty() &&
                 b.recommendationItemList === recommendationItemList &&
                 b.recommendationItemList.containsAll(recommendationItemList)
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
         if(b is BestSellerDataModel){
-            if(!b.recommendationItemList.containsAll(recommendationItemList) || (recommendationItemList.isEmpty() && b.recommendationItemList.isNotEmpty())){
+            if(b.recommendationItemList.isEmpty()) {
+                return Bundle().apply { putBoolean(BEST_SELLER_EMPTY_STATE, true) }
+            } else if(!b.recommendationItemList.containsAll(recommendationItemList) || (recommendationItemList.isEmpty() && b.recommendationItemList.isNotEmpty())){
                 return Bundle().apply { putBoolean(BEST_SELLER_UPDATE_RECOMMENDATION, true) }
             } else if(b.recommendationItemList !== recommendationItemList){
                 return Bundle().apply { putBoolean(BEST_SELLER_HIDE_LOADING_RECOMMENDATION, true) }
@@ -58,5 +61,6 @@ data class BestSellerDataModel(
     companion object{
         const val BEST_SELLER_UPDATE_RECOMMENDATION = "UPDATE_RECOMMENDATION"
         const val BEST_SELLER_HIDE_LOADING_RECOMMENDATION = "HIDE_LOADING_RECOMMENDATION"
+        const val BEST_SELLER_EMPTY_STATE = "EMPTY_STATE"
     }
 }

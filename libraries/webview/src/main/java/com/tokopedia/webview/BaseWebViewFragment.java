@@ -310,9 +310,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private String getIdentifierUserAgent() {
         String identifierUserAgent;
         if (GlobalConfig.isSellerApp()) {
-            identifierUserAgent = " Sellerapp Tokopedia webview ";
+            identifierUserAgent = " Sellerapp Tokopedia Mobile webview ";
         } else {
-            identifierUserAgent = " Tokopedia webview ";
+            identifierUserAgent = " Tokopedia Mobile webview ";
         }
         return identifierUserAgent;
     }
@@ -1276,5 +1276,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         startActivityForResult(intent, REQUEST_CODE_PARTNER_KYC);
     }
 
-
+    @Override
+    public void onDestroy() {
+        if (webView!= null) {
+            webView.setWebChromeClient(null);
+            webView = null;
+        }
+        super.onDestroy();
+    }
 }

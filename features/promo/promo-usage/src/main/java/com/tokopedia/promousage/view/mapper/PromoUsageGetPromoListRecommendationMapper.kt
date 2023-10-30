@@ -21,12 +21,12 @@ import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.PromoPageSection
 import com.tokopedia.promousage.domain.entity.PromoPageTickerInfo
 import com.tokopedia.promousage.domain.entity.PromoSavingInfo
-import com.tokopedia.promousage.domain.entity.SecondaryPromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionHeaderItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
 import com.tokopedia.promousage.domain.entity.list.PromoAttemptItem
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
+import com.tokopedia.promousage.domain.entity.list.SecondaryPromoItem
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import javax.inject.Inject
 
@@ -96,7 +96,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                                         couponSection = couponSection,
                                         coupon = coupon,
                                         recommendedPromoCodes = recommendedPromoCodes,
-                                        selectedPromoCodes = allSelectedPromoCodes
+                                        selectedPromoCodes = selectedPromoCodes,
+                                        selectedSecondaryPromoCodes = selectedSecondaryPromoCodes
                                     )
                                 )
                             }
@@ -108,11 +109,26 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                         if (couponSection.coupons.isNotEmpty()) {
                             val coupons = couponSection.coupons.filter { it.isGroupHeader }
                             hasRecommendedOrOtherSection = true
+
+                            val selectedPromoInSection = couponSection.coupons
+                                .filter { it.isSelected }
+                            val selectedSecondaryPromoInSection = couponSection.coupons
+                                .flatMap { it.secondaryCoupon }.filter { it.isSelected }
+
+                            val isExpanded = !couponSection.isCollapsed
+                            val hasSelectedPromoInSection = selectedPromoInSection.isNotEmpty() ||
+                                selectedSecondaryPromoInSection.isNotEmpty()
+
+                            val hiddenPromoCount = if (selectedPromoInSection.isNotEmpty()) {
+                                couponSection.coupons.size - selectedPromoInSection.size
+                            } else {
+                                coupons.size - 1
+                            }
                             items.add(
                                 PromoAccordionHeaderItem(
                                     id = couponSection.id,
                                     title = couponSection.title,
-                                    isExpanded = !couponSection.isCollapsed,
+                                    isExpanded = hiddenPromoCount > 0 && (isExpanded || hasSelectedPromoInSection),
                                     totalPromoCount = coupons.size
                                 )
                             )
@@ -123,29 +139,21 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                                         couponSection = couponSection,
                                         coupon = coupon,
                                         recommendedPromoCodes = recommendedPromoCodes,
-                                        selectedPromoCodes = allSelectedPromoCodes
+                                        selectedPromoCodes = selectedPromoCodes,
+                                        selectedSecondaryPromoCodes = selectedSecondaryPromoCodes
                                     )
                                 )
                             }
-                            val selectedPromoInSection = couponSection.coupons.filter { it.isSelected }
-                            val hiddenPromoCount = if (selectedPromoInSection.isNotEmpty()) {
-                                couponSection.coupons.size - selectedPromoInSection.size
-                            } else {
-                                coupons.size - 1
-                            }
-                            if (hiddenPromoCount > 0) {
-                                val isExpanded = !couponSection.isCollapsed
-                                if (isExpanded) {
-                                    items.add(
-                                        PromoAccordionViewAllItem(
-                                            headerId = couponSection.id,
-                                            hiddenPromoCount = hiddenPromoCount,
-                                            totalPromoCount = coupons.size,
-                                            isExpanded = true,
-                                            isVisible = true
-                                        )
+                            if (hiddenPromoCount > 0 && (isExpanded || hasSelectedPromoInSection)) {
+                                items.add(
+                                    PromoAccordionViewAllItem(
+                                        headerId = couponSection.id,
+                                        hiddenPromoCount = hiddenPromoCount,
+                                        totalPromoCount = coupons.size,
+                                        isExpanded = true,
+                                        isVisible = true
                                     )
-                                }
+                                )
                             }
                         }
                     }
@@ -172,7 +180,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                     couponSection = attemptedPromoSection,
                     coupon = coupon,
                     recommendedPromoCodes = recommendedPromoCodes,
-                    selectedPromoCodes = allSelectedPromoCodes
+                    selectedPromoCodes = selectedPromoCodes,
+                    selectedSecondaryPromoCodes = selectedSecondaryPromoCodes
                 )
             )
         }
@@ -203,7 +212,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         couponSection: CouponSection,
         coupon: Coupon,
         recommendedPromoCodes: List<String>,
-        selectedPromoCodes: List<String>
+        selectedPromoCodes: List<String>,
+        selectedSecondaryPromoCodes: List<String>
     ): PromoItem {
         val secondaryCoupon: SecondaryCoupon? = coupon.secondaryCoupon.firstOrNull()
         val remainingPromoCount = couponSection.couponGroups
@@ -217,27 +227,71 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         val isSelected = coupon.isSelected || secondaryCoupon?.isSelected ?: false
 
         val primaryClashingInfos =
-            coupon.clashingInfos.filter { selectedPromoCodes.contains(it.code) }
+            coupon.clashingInfos
+                .filter {
+                    coupon.code != it.code && secondaryCoupon?.code != it.code &&
+                        (selectedPromoCodes.contains(it.code) || selectedSecondaryPromoCodes.contains(it.code))
+                }
         val secondaryClashingInfos =
-            secondaryCoupon?.clashingInfos?.filter { selectedPromoCodes.contains(it.code) } ?: emptyList()
-
-        var state: PromoItemState = if (primaryClashingInfos.isNotEmpty() && secondaryCoupon != null && secondaryClashingInfos.isNotEmpty()) {
-            PromoItemState.Disabled(secondaryClashingInfos.first().message)
-        } else if (primaryClashingInfos.isNotEmpty() && secondaryCoupon == null) {
-            PromoItemState.Disabled(primaryClashingInfos.first().message)
-        } else {
-            if (isSelected) {
-                PromoItemState.Selected
+            secondaryCoupon?.clashingInfos
+                ?.filter {
+                    if (isRecommended) {
+                        coupon.code != it.code && secondaryCoupon.code != it.code &&
+                            (selectedPromoCodes.contains(it.code) || selectedSecondaryPromoCodes.contains(it.code)) &&
+                            !recommendedPromoCodes.contains(it.code)
+                    } else {
+                        coupon.code != it.code && secondaryCoupon.code != it.code &&
+                            (selectedPromoCodes.contains(it.code) || selectedSecondaryPromoCodes.contains(it.code))
+                    }
+                }
+                ?: emptyList()
+        var state: PromoItemState = if (secondaryCoupon != null) {
+            if (coupon.isSelected) {
+                PromoItemState.Selected(useSecondaryPromo = false)
+            } else if (secondaryCoupon.isSelected) {
+                PromoItemState.Selected(useSecondaryPromo = true)
             } else {
-                PromoItemState.Normal
+                if (primaryClashingInfos.isEmpty() && secondaryClashingInfos.isEmpty()) {
+                    PromoItemState.Normal(useSecondaryPromo = false)
+                } else if (primaryClashingInfos.isNotEmpty() && secondaryClashingInfos.isEmpty()) {
+                    PromoItemState.Normal(useSecondaryPromo = true)
+                } else if (primaryClashingInfos.isEmpty()) {
+                    PromoItemState.Normal(useSecondaryPromo = false)
+                } else {
+                    PromoItemState.Disabled(
+                        useSecondaryPromo = true,
+                        message = secondaryClashingInfos.first().message
+                    )
+                }
+            }
+        } else {
+            if (coupon.isSelected) {
+                if (primaryClashingInfos.isNotEmpty()) {
+                    PromoItemState.Disabled(
+                        useSecondaryPromo = false,
+                        message = primaryClashingInfos.first().message
+                    )
+                } else {
+                    PromoItemState.Selected(useSecondaryPromo = false)
+                }
+            } else {
+                if (primaryClashingInfos.isNotEmpty()) {
+                    PromoItemState.Disabled(
+                        useSecondaryPromo = false,
+                        message = primaryClashingInfos.first().message
+                    )
+                } else {
+                    PromoItemState.Normal(useSecondaryPromo = false)
+                }
             }
         }
         if (coupon.radioCheckState == "disabled") {
-            state = PromoItemState.Ineligible(coupon.message)
+            state = PromoItemState.Ineligible(message = coupon.message)
         }
 
         val benefitDetail = coupon.benefitDetails.firstOrNull() ?: BenefitDetail()
-        val selectedPromoInSection = couponSection.coupons.filter { it.isSelected }
+        val selectedPromoInSection = couponSection
+            .coupons.filter { c -> c.isSelected || c.secondaryCoupon.any { it.isSelected } }
         val isExpanded = when (couponSection.id) {
             PromoPageSection.SECTION_RECOMMENDATION -> {
                 true

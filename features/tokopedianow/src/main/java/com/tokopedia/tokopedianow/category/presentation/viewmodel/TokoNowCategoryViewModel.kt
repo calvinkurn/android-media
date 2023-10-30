@@ -360,22 +360,6 @@ class TokoNowCategoryViewModel @Inject constructor(
         )
     }
 
-    fun updateWishlistStatus(
-        productId: String,
-        hasBeenWishlist: Boolean
-    ) {
-        launchCatchError(
-            block = {
-                visitableList.updateWishlistStatus(
-                    productId = productId,
-                    hasBeenWishlist = hasBeenWishlist
-                )
-                updateVisitableListLiveData()
-            },
-            onError = { /* nothing to do */ }
-        )
-    }
-
     fun onCartQuantityChanged(
         product: ProductCardCompactUiModel,
         shopId: String,

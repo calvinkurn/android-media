@@ -24,7 +24,7 @@ object RecommendationCarouselTrackingConst {
     object List {
         const val REKOMENDASI_UNTUK_ANDA = "rekomendasi untuk anda"
         const val INBOX = "inbox"
-        const val PDP = "product detail"
+        const val PDP = "product"
         const val PRODUCT = "product"
     }
 

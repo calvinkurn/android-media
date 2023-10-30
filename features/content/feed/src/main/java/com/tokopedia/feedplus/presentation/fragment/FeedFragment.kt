@@ -23,6 +23,7 @@ import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
@@ -61,7 +62,7 @@ import com.tokopedia.feedplus.analytics.FeedMVCAnalytics
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
-import com.tokopedia.feedplus.di.FeedMainInjector
+import com.tokopedia.feedplus.di.DaggerFeedMainComponent
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
@@ -69,6 +70,8 @@ import com.tokopedia.feedplus.presentation.adapter.FeedContentAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.adapter.util.FeedPostLayoutManager
+import com.tokopedia.feedplus.presentation.callback.FeedUiActionListener
+import com.tokopedia.feedplus.presentation.callback.FeedUiListener
 import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
@@ -76,6 +79,7 @@ import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedContentUiModel
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
@@ -98,7 +102,6 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -137,7 +140,8 @@ class FeedFragment :
     FeedListener,
     ContentThreeDotsMenuBottomSheet.Listener,
     FeedTaggedProductBottomSheet.Listener,
-    FeedFollowersOnlyBottomSheet.Listener {
+    FeedFollowersOnlyBottomSheet.Listener,
+    FeedUiActionListener {
 
     private var _binding: FragmentFeedImmersiveBinding? = null
     private val binding: FragmentFeedImmersiveBinding
@@ -313,6 +317,11 @@ class FeedFragment :
                     if (binding.rvFeedPost.scrollState == RecyclerView.SCROLL_STATE_IDLE) return
                     adapter.onScrolling()
                 }
+
+                override fun onLayoutCompleted(layoutManager: LinearLayoutManager) {
+                    val currentPosition = layoutManager.findFirstVisibleItemPosition()
+                    updateBottomActionView(currentPosition)
+                }
             }
         )
     }
@@ -415,6 +424,12 @@ class FeedFragment :
         override fun isMuted(): Boolean = FeedContentManager.muteState.value.orFalse()
     }
 
+    private var mUiListener: FeedUiListener? = null
+
+    fun setUiListener(uiListener: FeedUiListener) {
+        mUiListener = uiListener
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         childFragmentManager.fragmentFactory = fragmentFactory
@@ -463,8 +478,6 @@ class FeedFragment :
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFeedImmersiveBinding.inflate(inflater, container, false)
-        binding.containerBottomAction.showWithCondition(isCdp)
-
         return binding.root
     }
 
@@ -520,10 +533,15 @@ class FeedFragment :
     override fun onDestroy() {
         super.onDestroy()
         FeedVideoCache.cleanUp(requireContext())
+        mUiListener = null
     }
 
     override fun initInjector() {
-        FeedMainInjector.get(requireContext()).inject(this)
+        DaggerFeedMainComponent.factory()
+            .build(
+                activityContext = requireContext(),
+                appComponent = (requireActivity().application as BaseMainApplication).baseAppComponent
+            ).inject(this)
     }
 
     override fun getScreenName(): String = "Feed Fragment"
@@ -639,10 +657,16 @@ class FeedFragment :
             }
 
             ContentMenuIdentifier.Mute -> {
+                binding.ivFeedMuteUnmute.setImageDrawable(muteAnimatedVector)
+                muteAnimatedVector?.start()
+
                 feedMainViewModel.muteSound()
             }
 
             ContentMenuIdentifier.Unmute -> {
+                binding.ivFeedMuteUnmute.setImageDrawable(unmuteAnimatedVector)
+                unmuteAnimatedVector?.start()
+
                 feedMainViewModel.unmuteSound()
             }
         }
@@ -1244,12 +1268,9 @@ class FeedFragment :
                                 )
                             )
                         }
-                        updateBottomActionView(RecyclerView.NO_POSITION)
+                        mUiListener?.onContentFailed()
                     } else {
-                        adapter.setList(it.data.items) {
-                            if (_binding == null) return@setList
-                            updateBottomActionView(getCurrentPosition())
-                        }
+                        adapter.setList(it.data.items)
                         context?.let { ctx ->
                             if (feedPostViewModel.shouldShowNoMoreContent && !isCdp) {
                                 adapter.addElement(FeedNoContentModel.getNoMoreContentInstance(ctx))
@@ -1263,6 +1284,7 @@ class FeedFragment :
                 }
 
                 is Fail -> {
+                    mUiListener?.onContentFailed()
                     hideLoading()
                     adapter.showErrorNetwork()
                 }
@@ -1436,15 +1458,6 @@ class FeedFragment :
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 FeedContentManager.muteState.collectLatest { isMuted ->
                     if (isMuted == null) return@collectLatest
-
-                    if (isMuted) {
-                        binding.ivFeedMuteUnmute.setImageDrawable(muteAnimatedVector)
-                        muteAnimatedVector?.start()
-                    } else {
-                        binding.ivFeedMuteUnmute.setImageDrawable(unmuteAnimatedVector)
-                        unmuteAnimatedVector?.start()
-                    }
-
                     updateCurrentVideoVolume(isMuted)
                 }
             }
@@ -1621,6 +1634,7 @@ class FeedFragment :
     }
 
     private fun showLoading() {
+        mUiListener?.onContentLoading()
         binding.feedLoading.show()
         binding.swipeRefreshFeedLayout.hide()
     }
@@ -2053,85 +2067,43 @@ class FeedFragment :
     }
 
     private fun updateBottomActionView(position: Int) {
-        with(binding) {
-            val currentItem =
-                if (position != RecyclerView.NO_POSITION && adapter.currentList.size > position) {
-                    adapter.currentList[position]
-                } else {
-                    null
-                }
-
-            if (currentItem == null || !isCdp) {
-                containerBottomAction.hide()
-                return@with
+        val currentItem =
+            if (position != RecyclerView.NO_POSITION && adapter.currentList.size > position) {
+                adapter.currentList[position]
+            } else {
+                null
             }
 
-            when {
-                currentItem.data is FeedCardImageContentModel && currentItem.data.showComment -> {
-                    val model = currentItem.data
-                    tyBottomAction.text =
-                        getString(feedplusR.string.feed_bottom_action_comment_label)
-                    containerBottomAction.setOnClickListener {
-                        onCommentClick(
-                            trackerModel = trackerModelMapper.transformImageContentToTrackerModel(
-                                model
-                            ),
-                            contentId = model.id,
-                            isPlayContent = false,
-                            rowNumber = position
-                        )
-                    }
-                    containerBottomAction.show()
-                }
+        val uiListener = mUiListener ?: return
 
-                currentItem.data is FeedCardImageContentModel -> {
-                    val model = currentItem.data
-                    tyBottomAction.text = getString(feedplusR.string.feed_bottom_action_share_label)
-                    containerBottomAction.setOnClickListener {
-                        onSharePostClicked(
-                            data = model.share,
-                            trackerModel = trackerModelMapper.transformImageContentToTrackerModel(
-                                model
-                            )
-                        )
-                    }
-                    containerBottomAction.show()
-                }
+        if (currentItem == null || !isCdp) return
 
-                currentItem.data is FeedCardVideoContentModel && !currentItem.data.isTypeProductHighlight -> {
-                    val model = currentItem.data
-                    tyBottomAction.text =
-                        getString(feedplusR.string.feed_bottom_action_comment_label)
-                    containerBottomAction.setOnClickListener {
-                        onCommentClick(
-                            trackerModel = trackerModelMapper.transformVideoContentToTrackerModel(
-                                model
-                            ),
-                            contentId = model.id,
-                            isPlayContent = model.isPlayContent,
-                            rowNumber = position
-                        )
-                    }
-                    containerBottomAction.show()
-                }
+        val feedContentUiModel = (currentItem.data as? FeedContentUiModel) ?: return
 
-                currentItem.data is FeedCardVideoContentModel -> {
-                    val model = currentItem.data
-                    tyBottomAction.text = getString(feedplusR.string.feed_bottom_action_share_label)
-                    containerBottomAction.setOnClickListener {
-                        onSharePostClicked(
-                            data = model.share,
-                            trackerModel = trackerModelMapper.transformVideoContentToTrackerModel(
-                                model
-                            )
-                        )
-                    }
-                    containerBottomAction.show()
-                }
+        val trackerModel = when (currentItem.data) {
+            is FeedCardImageContentModel -> {
+                trackerModelMapper.transformImageContentToTrackerModel(currentItem.data)
+            }
 
-                else -> containerBottomAction.hide()
+            is FeedCardVideoContentModel -> {
+                trackerModelMapper.transformVideoContentToTrackerModel(currentItem.data)
+            }
+
+            is FeedCardLivePreviewContentModel -> {
+                trackerModelMapper.transformLiveContentToTrackerModel(currentItem.data)
+            }
+
+            else -> {
+                null
             }
         }
+
+        uiListener.onContentLoaded(
+            feedContentUiModel,
+            trackerModel,
+            this,
+            position
+        )
     }
 
     private fun setDataEligibleForOnboarding() {
