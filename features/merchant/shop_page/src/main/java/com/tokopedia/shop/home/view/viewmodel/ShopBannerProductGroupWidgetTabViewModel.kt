@@ -40,7 +40,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     companion object {
         private const val FIRST_LABEL_INDEX = 0
         private const val FIRST_PAGE = 1
-        private const val PRODUCT_COUNT_TO_FETCH = 5
+        private const val PRODUCT_COUNT_TO_FETCH = 10
         private const val LABEL_TITLE_PRODUCT_SOLD_COUNT = "Terjual"
         private const val SORT_ID_SORT_BY_SOLD_DESC = 8
     }
