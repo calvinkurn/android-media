@@ -61,7 +61,7 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
     private var viewModel: ContentCreationViewModel? = null
     var creationBottomSheetListener: ContentCreationBottomSheet.ContentCreationBottomSheetListener? =
         null
-    var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Shop
+    var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Unknown
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()

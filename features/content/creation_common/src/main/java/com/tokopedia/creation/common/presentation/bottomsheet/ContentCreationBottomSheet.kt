@@ -38,7 +38,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
     var listener: ContentCreationBottomSheetListener? = null
     private var creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty
 
-    var widgetSource: ContentCreationEntryPointSource? = null
+    var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Unknown
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,10 +46,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
         activity?.let {
             factory = createComponent().contentCreationFactory()
             viewModel = ViewModelProvider(it, factory!!)[ContentCreationViewModel::class.java]
-
-            widgetSource?.let { source ->
-                viewModel?.widgetSource = source
-            }
+                viewModel?.widgetSource = widgetSource
         }
     }
 

@@ -31,7 +31,7 @@ class ContentCreationViewModel @Inject constructor(
     private val _creationConfig = MutableStateFlow<Result<ContentCreationConfigModel>?>(null)
     val creationConfig = _creationConfig.asStateFlow()
 
-    var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Feed
+    var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Unknown
 
     fun selectCreationItem(item: ContentCreationItemModel) {
         _selectedCreationType.value = item
