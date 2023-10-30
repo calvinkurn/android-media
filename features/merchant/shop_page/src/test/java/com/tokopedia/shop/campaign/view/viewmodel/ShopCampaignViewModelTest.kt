@@ -16,7 +16,7 @@ import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.data.model.WidgetIdList
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetDynamicTabUseCase
 import com.tokopedia.shop.home.WidgetNameEnum
-import com.tokopedia.shop.home.WidgetType
+import com.tokopedia.shop.home.WidgetTypeEnum
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetV2
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutV2UseCase
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
@@ -137,7 +137,7 @@ class ShopCampaignViewModelTest {
                 listOf(
                     ShopPageWidgetUiModel(
                         widgetId = "2",
-                        widgetType = WidgetType.CAMPAIGN,
+                        widgetType = WidgetTypeEnum.CAMPAIGN.value,
                         widgetName = WidgetNameEnum.BIG_CAMPAIGN_THEMATIC.value
                     )
                 ),

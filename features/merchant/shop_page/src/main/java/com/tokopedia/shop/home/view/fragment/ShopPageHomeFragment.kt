@@ -149,9 +149,7 @@ import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleLis
 import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.shop.databinding.FragmentShopPageHomeBinding
 import com.tokopedia.shop.home.WidgetNameEnum
-import com.tokopedia.shop.home.WidgetType.DYNAMIC
-import com.tokopedia.shop.home.WidgetType.PERSONALIZATION
-import com.tokopedia.shop.home.WidgetType.PROMO
+import com.tokopedia.shop.home.WidgetTypeEnum
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.util.CheckCampaignNplException
@@ -2049,15 +2047,15 @@ open class ShopPageHomeFragment :
     }
 
     private fun isWidgetPersoComparison(data: ShopPageWidgetUiModel): Boolean {
-        return data.widgetType == PERSONALIZATION && data.widgetName == WidgetNameEnum.PERSO_PRODUCT_COMPARISON.value
+        return data.widgetType == WidgetTypeEnum.PERSONALIZATION.value && data.widgetName == WidgetNameEnum.PERSO_PRODUCT_COMPARISON.value
     }
 
     private fun isWidgetMvc(data: ShopPageWidgetUiModel): Boolean {
-        return data.widgetType == PROMO && data.widgetName == WidgetNameEnum.VOUCHER_STATIC.value
+        return data.widgetType == WidgetTypeEnum.PROMO.value && data.widgetName == WidgetNameEnum.VOUCHER_STATIC.value
     }
 
     protected fun isWidgetPlay(data: ShopPageWidgetUiModel): Boolean {
-        return data.widgetType == DYNAMIC && data.widgetName == WidgetNameEnum.PLAY_CAROUSEL_WIDGET.value
+        return data.widgetType == WidgetTypeEnum.DYNAMIC.value && data.widgetName == WidgetNameEnum.PLAY_CAROUSEL_WIDGET.value
     }
 
     private fun getListWidgetLayoutToLoad(lastCompletelyVisibleItemPosition: Int): MutableList<ShopPageWidgetUiModel> {

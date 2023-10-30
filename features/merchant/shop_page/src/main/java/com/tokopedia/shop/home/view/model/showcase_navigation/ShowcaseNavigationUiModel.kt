@@ -2,7 +2,7 @@ package com.tokopedia.shop.home.view.model.showcase_navigation
 
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.home.WidgetNameEnum
-import com.tokopedia.shop.home.WidgetType
+import com.tokopedia.shop.home.WidgetTypeEnum
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
@@ -19,7 +19,7 @@ data class ShowcaseNavigationUiModel(
     override val widgetId: String = "",
     override val layoutOrder: Int = -1,
     override val name: String = WidgetNameEnum.SHOWCASE_NAVIGATION_BANNER.value,
-    override val type: String = WidgetType.DISPLAY,
+    override val type: String = WidgetTypeEnum.DISPLAY.value,
     override val header: Header = Header(),
     override val isFestivity: Boolean = false
 ): BaseShopHomeWidgetUiModel() {

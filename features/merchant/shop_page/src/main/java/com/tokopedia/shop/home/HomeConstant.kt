@@ -9,19 +9,19 @@ object HomeConstant {
     const val IS_SHOW_ETALASE_NAME = 1
 }
 
-object WidgetType {
-    const val DISPLAY = "display"
-    const val PRODUCT = "product"
-    const val DYNAMIC = "dynamic"
-    const val CAMPAIGN = "campaign"
-    const val PERSONALIZATION = "perso"
-    const val SHOWCASE = "etalase"
-    const val PROMO = "promo"
-    const val CARD = "card"
-    const val BUNDLE = "bundle"
-    const val VOUCHER_SLIDER = "voucher_slider"
-    const val REIMAGINE_DIRECT_PURCHASE = "direct_purchase"
-    const val REIMAGINE_COMPONENT = "component"
+enum class WidgetTypeEnum(val value: String) {
+    DISPLAY("display"),
+    PRODUCT("product"),
+    DYNAMIC("dynamic"),
+    CAMPAIGN("campaign"),
+    PERSONALIZATION("perso"),
+    SHOWCASE("etalase"),
+    PROMO("promo"),
+    CARD("card"),
+    BUNDLE("bundle"),
+    VOUCHER_SLIDER("voucher_slider"),
+    REIMAGINE_DIRECT_PURCHASE("direct_purchase"),
+    REIMAGINE_COMPONENT("component")
 }
 
 enum class WidgetNameEnum(val value: String) {
@@ -64,19 +64,4 @@ enum class WidgetNameEnum(val value: String) {
     SHOWCASE_GRID_SMALL("etalase_banner_3_x_2"),
     SHOWCASE_GRID_MEDIUM("etalase_banner_besar_2x2"),
     SHOWCASE_GRID_BIG("etalase_banner_besar_2x1")
-}
-
-enum class WidgetTypeEnum(val value: String) {
-    DISPLAY("display"),
-    PRODUCT("product"),
-    DYNAMIC("dynamic"),
-    CAMPAIGN("campaign"),
-    PERSONALIZATION("perso"),
-    SHOWCASE("etalase"),
-    PROMO("promo"),
-    CARD("card"),
-    BUNDLE("bundle"),
-    VOUCHER_SLIDER("voucher_slider"),
-    REIMAGINE_DIRECT_PURCHASE("direct_purchase"),
-    REIMAGINE_COMPONENT("component")
 }

@@ -70,7 +70,7 @@ import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
 import com.tokopedia.shop.home.WidgetNameEnum
-import com.tokopedia.shop.home.WidgetType
+import com.tokopedia.shop.home.WidgetTypeEnum
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetParamsModel
@@ -1216,10 +1216,10 @@ class ShopHomeViewModel @Inject constructor(
         widgetModel: ShopHomeCarousellProductUiModel
     ): ShopHomeCarousellProductUiModel? {
         val isProductWidgetWithDirectPurchase = when (widgetModel.type) {
-            WidgetType.PRODUCT -> {
+            WidgetTypeEnum.PRODUCT.value -> {
                 true
             }
-            WidgetType.PERSONALIZATION -> {
+            WidgetTypeEnum.PERSONALIZATION.value -> {
                 when (widgetModel.name) {
                     WidgetNameEnum.RECENT_ACTIVITY.value, WidgetNameEnum.REMINDER.value -> {
                         true
@@ -1299,7 +1299,7 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     fun isWidgetBundle(data: ShopPageWidgetUiModel): Boolean {
-        return data.widgetType == WidgetType.BUNDLE
+        return data.widgetType == WidgetTypeEnum.BUNDLE.value
     }
 
     fun getLatestShopHomeWidgetLayoutData(

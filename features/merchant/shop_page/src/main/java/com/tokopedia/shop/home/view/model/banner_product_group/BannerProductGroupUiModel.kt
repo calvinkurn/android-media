@@ -3,7 +3,7 @@ package com.tokopedia.shop.home.view.model.banner_product_group
 import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.home.WidgetNameEnum
-import com.tokopedia.shop.home.WidgetType
+import com.tokopedia.shop.home.WidgetTypeEnum
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
@@ -13,7 +13,7 @@ data class BannerProductGroupUiModel(
     override val widgetId: String = "",
     override val layoutOrder: Int = -1,
     override val name: String = WidgetNameEnum.BANNER_PRODUCT_GROUP.value,
-    override val type: String = WidgetType.REIMAGINE_COMPONENT,
+    override val type: String = WidgetTypeEnum.REIMAGINE_COMPONENT.value,
     override val header: Header = Header(),
     override val isFestivity: Boolean = false,
     val title: String = "",
