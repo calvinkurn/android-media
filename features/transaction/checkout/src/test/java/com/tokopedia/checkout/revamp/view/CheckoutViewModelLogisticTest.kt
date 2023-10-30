@@ -599,7 +599,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                 "123",
                 shippingId = 1,
                 spId = 1,
-                isRecommend = true,
+                isRecommendScheduleDelivery = true,
                 shippingComponents = ShippingComponents.SCHELLY_WITH_RATES
             )
         viewModel.listData.value = listOf(
@@ -673,7 +673,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                 "1",
                 shippingId = 1,
                 spId = 1,
-                isRecommend = true,
+                isRecommendScheduleDelivery = true,
                 shippingComponents = ShippingComponents.SCHELLY_WITH_RATES
             )
         viewModel.listData.value = listOf(
@@ -729,7 +729,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             isAutoCourierSelection = true,
             shippingId = 2,
             spId = 2,
-            isRecommend = true,
+            isRecommendScheduleDelivery = true,
             shippingComponents = ShippingComponents.SCHELLY_WITH_RATES
         )
         viewModel.listData.value = listOf(
@@ -802,7 +802,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             isDisableChangeCourier = true,
             shippingId = 1,
             spId = 1,
-            isRecommend = true,
+            isRecommendScheduleDelivery = true,
             shippingComponents = ShippingComponents.SCHELLY_WITH_RATES
         )
         viewModel.listData.value = listOf(
@@ -875,7 +875,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             isDisableChangeCourier = true,
             shippingId = 0,
             spId = 0,
-            isRecommend = true,
+            isRecommendScheduleDelivery = true,
             shippingComponents = ShippingComponents.SCHELLY_WITH_RATES
         )
         viewModel.listData.value = listOf(
@@ -932,7 +932,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                 ratesValidationFlow = true,
                 shippingId = 1,
                 spId = 1,
-                isRecommend = true,
+                isRecommendScheduleDelivery = true,
                 shippingComponents = ShippingComponents.SCHELLY_WITH_RATES
             )
         viewModel.listData.value = listOf(
@@ -987,7 +987,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                 ratesValidationFlow = true,
                 shippingId = 1,
                 spId = 1,
-                isRecommend = true,
+                isRecommendScheduleDelivery = true,
                 shippingComponents = ShippingComponents.SCHELLY_WITH_RATES
             )
         viewModel.listData.value = listOf(
@@ -1041,7 +1041,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                 "1",
                 shippingId = 1,
                 spId = 1,
-                isRecommend = true,
+                isRecommendScheduleDelivery = true,
                 shippingComponents = ShippingComponents.SCHELLY_WITH_RATES
             )
         viewModel.listData.value = listOf(
@@ -1115,7 +1115,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             boCode = "WGOIN",
             shippingId = 1,
             spId = 1,
-            isRecommend = true,
+            isRecommendScheduleDelivery = true,
             shippingComponents = ShippingComponents.SCHELLY_WITH_RATES
         )
         viewModel.listData.value = listOf(
@@ -2176,7 +2176,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                 cartStringGroup,
                 shippingId = 1,
                 spId = 1,
-                isRecommend = true,
+                isRecommendScheduleDelivery = true,
                 shippingComponents = ShippingComponents.SCHELLY
             )
         viewModel.listData.value = listOf(
@@ -2231,7 +2231,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                 ratesValidationFlow = true,
                 shippingId = 1,
                 spId = 1,
-                isRecommend = true,
+                isRecommendScheduleDelivery = true,
                 shippingComponents = ShippingComponents.SCHELLY
             )
         viewModel.listData.value = listOf(
@@ -2282,7 +2282,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                 ratesValidationFlow = true,
                 shippingId = 1,
                 spId = 1,
-                isRecommend = true,
+                isRecommendScheduleDelivery = true,
                 shippingComponents = ShippingComponents.SCHELLY
             )
         viewModel.listData.value = listOf(

@@ -134,7 +134,7 @@ data class CheckoutOrderModel(
     val shippingComponents: ShippingComponents = ShippingComponents.RATES,
     var hasSentScheduleDeliveryAnalytics: Boolean = false,
     val startDate: String = "",
-    val isRecommend: Boolean = false,
+    val isRecommendScheduleDelivery: Boolean = false,
 
     // OFOC
     val groupingState: Int = 0,
