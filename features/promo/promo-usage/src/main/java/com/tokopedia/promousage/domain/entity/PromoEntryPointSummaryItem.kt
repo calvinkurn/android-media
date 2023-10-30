@@ -1,4 +1,4 @@
-package com.tokopedia.promocheckout.common.view.uimodel
+package com.tokopedia.promousage.domain.entity
 
 data class PromoEntryPointSummaryItem(
     val title: String,

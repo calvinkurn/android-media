@@ -1,4 +1,4 @@
-package com.tokopedia.promocheckout.common.view.widget
+package com.tokopedia.promousage.view.widget
 
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
@@ -15,8 +15,8 @@ import androidx.core.view.updateLayoutParams
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
-import com.tokopedia.promocheckout.common.R
-import com.tokopedia.promocheckout.common.view.uimodel.PromoEntryPointSummaryItem
+import com.tokopedia.promousage.R
+import com.tokopedia.promousage.domain.entity.PromoEntryPointSummaryItem
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper

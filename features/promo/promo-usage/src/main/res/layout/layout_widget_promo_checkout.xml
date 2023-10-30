@@ -75,7 +75,7 @@
             app:typographyWeight="reguler"
             tools:text="1 promo dipakai" />
 
-        <com.tokopedia.promocheckout.common.view.widget.TextFlipper
+        <com.tokopedia.promousage.view.widget.TextFlipper
             android:id="@+id/tv_promo_checkout_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
                 app:typographyWeight="reguler"
                 tools:text="Ada promo Rp10.000 pakai JNE Same Day!Ada promo Rp10.000 pakai JNE Same Day!" />
 
-        </com.tokopedia.promocheckout.common.view.widget.TextFlipper>
+        </com.tokopedia.promousage.view.widget.TextFlipper>
 
     </LinearLayout>
 
