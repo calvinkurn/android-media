@@ -12,6 +12,4 @@ import dagger.Component
 @Component(modules = [ContentCreationModule::class], dependencies = [BaseAppComponent::class])
 interface ContentCreationComponent {
     fun contentCreationFactory(): ViewModelProvider.Factory
-
-    fun contentConfigManager(): ContentCreationRemoteConfigManager
 }

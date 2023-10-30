@@ -72,6 +72,6 @@ class ContentCreationViewModel @Inject constructor(
     private fun isStoryEnabled(): Boolean = when (widgetSource) {
         ContentCreationEntryPointSource.Shop -> contentCreationConfigManager.isShowingShopEntryPoint()
         ContentCreationEntryPointSource.Feed -> contentCreationConfigManager.isShowingFeedEntryPoint()
-        else -> true
+        else -> contentCreationConfigManager.isShowingCreation()
     }
 }

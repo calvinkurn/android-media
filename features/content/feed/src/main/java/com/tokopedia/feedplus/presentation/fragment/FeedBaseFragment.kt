@@ -185,7 +185,7 @@ class FeedBaseFragment :
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
             when (fragment) {
                 is ContentCreationBottomSheet -> {
-                    fragment.creationSource = ContentCreationEntryPointSource.Feed
+                    fragment.widgetSource = ContentCreationEntryPointSource.Feed
                     fragment.listener = this
                     fragment.shouldShowPerformanceAction = false
                 }

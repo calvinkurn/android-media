@@ -61,6 +61,7 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
     private var viewModel: ContentCreationViewModel? = null
     var creationBottomSheetListener: ContentCreationBottomSheet.ContentCreationBottomSheetListener? =
         null
+    var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Shop
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -69,12 +70,12 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
             owner = findViewTreeViewModelStoreOwner()!!,
             factory = factory
         )[ContentCreationViewModel::class.java]
-        viewModel?.widgetSource = ContentCreationEntryPointSource.Shop
+        viewModel?.widgetSource = widgetSource
 
         getFragmentManager()?.addFragmentOnAttachListener { _, childFragment ->
             when (childFragment) {
                 is ContentCreationBottomSheet -> {
-                    childFragment.creationSource = ContentCreationEntryPointSource.Shop
+                    childFragment.widgetSource = widgetSource
                     childFragment.shouldShowPerformanceAction = true
                     creationBottomSheetListener?.let {
                         childFragment.listener = it
