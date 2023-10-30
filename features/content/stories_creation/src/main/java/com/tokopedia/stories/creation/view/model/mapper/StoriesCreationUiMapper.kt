@@ -56,7 +56,7 @@ class StoriesCreationUiMapper @Inject constructor(
     private fun mapConfig(data: GetStoryPreparationInfoResponse.Data): StoriesCreationConfigResponse {
         return try {
             gson.fromJson(data.config, StoriesCreationConfigResponse::class.java)
-        } catch (throwable: Throwable) {
+        } catch (_: Throwable) {
             StoriesCreationConfigResponse()
         }
     }
