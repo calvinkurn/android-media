@@ -1,17 +1,16 @@
 package com.tokopedia.stories.creation.view.model.state
 
-import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
+import com.tokopedia.stories.creation.view.model.StoriesMedia
 
 /**
  * Created By : Jonathan Darwin on September 06, 2023
  */
 data class StoriesCreationUiState(
-    val mediaFilePath: String,
-    val mediaType: ContentMediaType,
+    val media: StoriesMedia,
     val config: StoriesCreationConfiguration,
     val accountList: List<ContentAccountUiModel>,
     val selectedAccount: ContentAccountUiModel,
@@ -24,8 +23,7 @@ data class StoriesCreationUiState(
     companion object {
         val Empty: StoriesCreationUiState
             get() = StoriesCreationUiState(
-                mediaFilePath = "",
-                mediaType = ContentMediaType.Unknown,
+                media = StoriesMedia.Empty,
                 config = StoriesCreationConfiguration.Empty,
                 accountList = emptyList(),
                 selectedAccount = ContentAccountUiModel.Empty,

@@ -8,17 +8,21 @@ import java.io.File
  */
 
 fun getMediaSize(filePath: String): Pair<Int, Int> {
-    val options = BitmapFactory.Options()
-    BitmapFactory.decodeFile(File(filePath).absolutePath, options)
-    val width = options.outWidth
-    val height = options.outHeight
+    return try {
+        val options = BitmapFactory.Options()
+        BitmapFactory.decodeFile(File(filePath).absolutePath, options)
+        val width = options.outWidth
+        val height = options.outHeight
 
-    return width to height
+        width to height
+    } catch(_: Throwable) {
+        0 to 0
+    }
 }
 
 fun isMediaPotrait(filePath: String): Boolean {
     val (width, height) = getMediaSize(filePath)
-    return width < height
+    return width <= height
 }
 
 fun isMediaLandscape(filePath: String): Boolean {
@@ -27,6 +31,9 @@ fun isMediaLandscape(filePath: String): Boolean {
 
 fun isMediaRatioSame(filePath: String, ratio: Float): Boolean {
     val (width, height) = getMediaSize(filePath)
+
+    if (height == 0) return false
+
     return ratio == (width / height.toFloat())
 }
 
