@@ -100,7 +100,6 @@ public class ImageHandler {
         }
     }
 
-    // done
     public static void loadImageWithoutPlaceholder(ImageView imageview, String url, int resId) {
         if (url != null && !TextUtils.isEmpty(url)) {
             Glide.with(imageview.getContext())
@@ -117,7 +116,6 @@ public class ImageHandler {
         }
     }
 
-    // done
     public static void loadImageWithoutPlaceholder(ImageView imageview, String url, Drawable drawable) {
         if (url != null && !TextUtils.isEmpty(url)) {
             Glide.with(imageview.getContext())
@@ -193,7 +191,6 @@ public class ImageHandler {
                 .into(imageview);
     }
 
-    // done
     public static void loadImage(Context context, ImageView imageview, String url, ColorDrawable colorDrawable) {
         Glide.with(context)
                 .load(url)
@@ -226,7 +223,6 @@ public class ImageHandler {
         }
     }
 
-    // done
     public static void loadImageWithoutPlaceholder(ImageView imageview, String url) {
 
         if (imageview.getContext() != null) {
@@ -239,7 +235,6 @@ public class ImageHandler {
         }
     }
 
-    // done
     public static void loadImageWithoutPlaceholder(ImageView imageview, String url, ImageLoaderStateListener imageLoaderStateListener) {
         if (imageview.getContext() != null) {
             Glide.with(imageview.getContext())
@@ -428,7 +423,6 @@ public class ImageHandler {
                 .into(getRoundedImageViewTarget(imageview, radius));
     }
 
-    // done
     public static void loadImageRounded2(Context context, final ImageView imageview, final String url, float radius) {
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
@@ -441,7 +435,6 @@ public class ImageHandler {
         }
     }
 
-    // done
     public static void loadImageRounded(Context context, final ImageView imageview, final String url, float radius) {
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
@@ -465,7 +458,6 @@ public class ImageHandler {
                 .into(imageView);
     }
 
-    // done
     public static void loadImageFitCenter(Context context, ImageView imageView, String url) {
         Glide.with(context)
                 .load(url)
@@ -477,7 +469,6 @@ public class ImageHandler {
                 .into(imageView);
     }
 
-    // done
     private static BitmapImageViewTarget getCircleImageViewTarget(final ImageView imageView) {
         return new BitmapImageViewTarget(imageView) {
             @Override
@@ -490,7 +481,6 @@ public class ImageHandler {
         };
     }
 
-    // done
     private static BitmapImageViewTarget getRoundedImageViewTarget(final ImageView imageView, final float radius) {
         return new BitmapImageViewTarget(imageView) {
             @Override
@@ -537,7 +527,6 @@ public class ImageHandler {
                 .into(imageView);
     }
 
-    // done
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder) {
         if(placeholder < 0) {
             loadImageWithoutPlaceholder(imageview, url);
@@ -554,7 +543,6 @@ public class ImageHandler {
                 .into(imageview);
     }
 
-    // done
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder, int error_image) {
         if(placeholder < 0) {
             loadImageWithoutPlaceholder(imageview, url);
@@ -693,7 +681,6 @@ public class ImageHandler {
         }
     }
 
-    // done
     public static void clearImage(ImageView imageView) {
         try {
             if (imageView != null) {
