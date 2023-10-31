@@ -1,11 +1,13 @@
 package com.tokopedia.sellerhomecommon.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 
 data class GetRewardDetailByIdResponse(
-    @SerializedName("data")
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("getRewardDetailByID")
     val data: GetRewardDetailByIdData = GetRewardDetailByIdData()
 )
 

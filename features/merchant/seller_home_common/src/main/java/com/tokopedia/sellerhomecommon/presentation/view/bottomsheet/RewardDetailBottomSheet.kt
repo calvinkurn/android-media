@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcBottomSheetRewardDetailBinding
 import com.tokopedia.sellerhomecommon.presentation.model.RewardDetailUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.adapter.RewardDetailAdapter
@@ -30,6 +31,7 @@ class RewardDetailBottomSheet: BaseBottomSheet<ShcBottomSheetRewardDetailBinding
     }
 
     override fun setupView() {
+        setTitle(context?.getString(R.string.shc_milestone_reward_detail_title).orEmpty())
         setupHeader()
         setupRecyclerView()
     }
@@ -47,6 +49,8 @@ class RewardDetailBottomSheet: BaseBottomSheet<ShcBottomSheetRewardDetailBinding
         isFullpage = true
         showCloseIcon = false
         showHeader = false
+        isDragable = true
+        isHideable = true
     }
 
     private fun setupHeader() {

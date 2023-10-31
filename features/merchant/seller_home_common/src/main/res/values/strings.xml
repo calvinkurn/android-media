@@ -77,6 +77,7 @@
     <string name="shc_cancel_timer">Batalkan (%1$d detik)</string>
     <string name="shc_n_info_deleted">%1$d info terhapus</string>
     <string name="shc_rich_list_last_updated">Update terakhir %1$s WIB</string>
+    <string name="shc_milestone_reward_detail_title">Detail hadiah</string>
     <string name="shc_milestone_reward_detail_benefit">Keuntungan</string>
     <string name="shc_milestone_reward_detail_tnc">Syarat &amp; Ketentuan</string>
     <string name="shc_milestone_reward_detail_tnc_first_point">1.&#160;</string>
