@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
+import android.provider.Telephony
 import android.text.TextUtils
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
@@ -23,6 +25,9 @@ import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.R
+import com.tokopedia.universal_sharing.model.CampaignStatus
+import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
+import com.tokopedia.universal_sharing.util.DateUtil
 import com.tokopedia.universal_sharing.util.MimeType
 import com.tokopedia.universal_sharing.util.UniversalShareConst
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
@@ -542,6 +547,41 @@ object SharingUtil {
             true
         } catch (ignored: PackageManager.NameNotFoundException) {
             false
+        }
+    }
+
+    fun shareWhatsapp(context: Context?, shareMessage: String) {
+        context?.startActivity(
+            getAppIntent(
+                MimeType.TEXT,
+                UniversalShareConst.PackageChannel.PACKAGE_NAME_WHATSAPP
+            ).apply {
+                putExtra(Intent.EXTRA_TEXT, shareMessage)
+            }
+        )
+    }
+
+    fun shareSMS(context: Context?, url: String) {
+        context?.startActivity(
+            getAppIntent(
+                MimeType.TEXT,
+                Telephony.Sms.getDefaultSmsPackage(context)
+            ).apply {
+                putExtra(Intent.EXTRA_TEXT, url)
+            }
+        )
+    }
+
+    private fun getAppIntent(type: MimeType, packageName: String?, actionType: String = Intent.ACTION_SEND, uri: Uri? = null): Intent {
+        val intentType = if (type == MimeType.IMAGE) {
+            MimeType.IMAGE.type
+        } else {
+            MimeType.TEXT.type
+        }
+        return Intent(actionType).apply {
+            setType(intentType)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            setPackage(packageName)
         }
     }
 }

@@ -33,6 +33,7 @@ import com.tokopedia.product.share.tracker.ProductShareTracking.onImpressShareWi
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
+import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.tracker.PageType
@@ -41,7 +42,10 @@ import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.customview.UniversalShareWidget
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.LinkProperties
+import com.tokopedia.universal_sharing.view.model.LinkShareWidgetProperties
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
@@ -546,6 +550,46 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         }
     }
 
+    fun setWhatsappShareWidget(shareWidget: UniversalShareWidget,
+                               productData: ProductData,
+                               personalizedCampaignModel: PersonalizedCampaignModel,
+                               imageGeneratorParamModel: PdpParamModel) {
+        var imageGenerator = imageGeneratorParamModel
+        var personalizedMessage = ""
+        var shareMessage = ""
+        if (personalizedCampaignModel.isPersonalizedCampaignActive()) {
+            imageGenerator = imageGenerator.copy(
+                campaignName = personalizedCampaignModel.getCampaignName(),
+                campaignInfo = personalizedCampaignModel.getPersonalizedImage(),
+                hasRibbon = true
+            )
+            personalizedMessage = personalizedCampaignModel.getPersonalizedMessage()
+        }
+
+        if (personalizedMessage.isEmpty()) {
+            shareMessage = if (personalizedCampaignModel.isThematicCampaign && personalizedCampaignModel.discountPercentage != 0F) {
+                productData.getTextDescriptionDisc(
+                    activity,
+                    "%s",
+                    personalizedCampaignModel.discountPercentage
+                )
+            } else {
+                productData.getTextDescriptionNonDisc(
+                    activity,
+                    "%s"
+                )
+            }
+        } else {
+            shareMessage = "$personalizedMessage %s"
+
+        }
+        shareWidget.setLinkProperties(generateLinkProperties(productData, shareMessage))
+        shareWidget.setImageGenerator(
+            ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP,
+            imageGenerator
+        )
+    }
+
     private fun setupAffiliate(
         affiliateInput: AffiliateInput,
         universalShareBottomSheet: UniversalShareBottomSheet
@@ -560,6 +604,21 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         override fun permissionAction(action: String, label: String) {
             onClickAccessPhotoMediaAndFiles(productData.userId, productData.productId, label)
         }
+    }
+
+    fun generateLinkProperties(productData: ProductData, message: String): LinkShareWidgetProperties {
+        return LinkShareWidgetProperties(
+            page = "PDP",
+            message = message,
+            deeplink = "tokopedia://product/${productData.productId}",
+            id = productData.productId,
+            desktopUrl = productData.productUrl.toString(),
+            linkerType = LinkerData.PRODUCT_TYPE,
+            userId = productData.userId,
+            ogTitle = generateOgTitle(productData),
+            ogDescription = generateOgDescription(productData),
+            ogImageUrl = productData.productImageUrl ?: ""
+        )
     }
 }
 

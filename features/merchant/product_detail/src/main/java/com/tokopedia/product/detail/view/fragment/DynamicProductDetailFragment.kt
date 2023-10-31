@@ -82,6 +82,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
@@ -274,6 +275,8 @@ import com.tokopedia.product.info.util.ProductDetailInfoHelper
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailBottomSheetListener
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
+import com.tokopedia.product.share.ekstensions.getTextDescriptionDisc
+import com.tokopedia.product.share.ekstensions.getTextDescriptionNonDisc
 import com.tokopedia.product.util.processor.ProductDetailViewsBundler
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
@@ -320,11 +323,13 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_INDEFINITE
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
+import com.tokopedia.universal_sharing.view.customview.UniversalShareWidget
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -530,6 +535,7 @@ open class DynamicProductDetailFragment :
     // View
     private lateinit var actionButtonView: PartialButtonActionView
     private var stickyLoginView: StickyLoginView? = null
+    private var shareWidget: UniversalShareWidget? = null
     private var shouldShowCartAnimation = false
     private var loadingProgressDialog: ProgressDialog? = null
     private var productVideoCoordinator: ProductVideoCoordinator? = null
@@ -630,7 +636,7 @@ open class DynamicProductDetailFragment :
         navToolbar = view.findViewById(R.id.pdp_navtoolbar)
         setupToolbarState()
         navAbTestCondition({ initToolbarMainApp() }, { initToolbarSellerApp() })
-
+        initShareWidget(view)
         if (!viewModel.isUserSessionActive) initStickyLogin(view)
         screenshotDetector = context?.let {
             SharingUtil.createAndStartScreenShotDetector(
@@ -3110,6 +3116,7 @@ open class DynamicProductDetailFragment :
         if (isShareAffiliateIconEnabled() && !GlobalConfig.isSellerApp()) {
             viewModel.getDynamicProductInfoP1?.let { dataP1 ->
                 val affiliateInput = generateAffiliateShareData(dataP1, shopInfo, viewModel.variantData)
+                shareWidget?.enableAffiliate(affiliateInput)
                 viewModel.checkAffiliateEligibility(affiliateInput)
             }
         }
@@ -3579,6 +3586,8 @@ open class DynamicProductDetailFragment :
 
         initNavigationTab(it)
         updateUi()
+        val productInfo = viewModel.getDynamicProductInfoP1
+        setShareWidget()
     }
 
     private fun initNavigationTab(data: ProductInfoP2UiData) {
@@ -4670,6 +4679,10 @@ open class DynamicProductDetailFragment :
             "?${SearchApiConst.Q}=$categoryName"
         }
         return applink
+    }
+
+    private fun initShareWidget(view: View) {
+        shareWidget = view.findViewById(R.id.share_widget)
     }
 
     private fun initStickyLogin(view: View) {
@@ -6186,6 +6199,30 @@ open class DynamicProductDetailFragment :
             productInfo = productInfo,
             trackDataModel = trackData
         )
+    }
+
+    private fun setShareWidget() {
+        val productInfo = viewModel.getDynamicProductInfoP1
+        productInfo?.let {
+            val productData = generateProductShareData(
+                productInfo = productInfo,
+                userId = viewModel.userId,
+                shopUrl = viewModel.getShopInfo().shopCore.url,
+                bundleId = "0"
+            )
+            val personalizedCampaignModel = generatePersonalizedData(it, viewModel.p2Data.value)
+            val imageGenerator = generateImageGeneratorData(productInfo, viewModel.getBebasOngkirDataByProductId()).apply {
+                productImageUrl = SharingUtil.transformOgImageURL(context, productInfo.data.getProductImageUrl() ?: "")
+            }
+            shareWidget?.let { shareWidget ->
+                shareProductInstance?.setWhatsappShareWidget(
+                    shareWidget,
+                    productData,
+                    personalizedCampaignModel,
+                    imageGenerator
+                )
+            }
+        }
     }
 
     override fun onShopReviewSeeMore(

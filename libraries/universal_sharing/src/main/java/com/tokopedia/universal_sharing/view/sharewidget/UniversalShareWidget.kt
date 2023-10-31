@@ -1,7 +1,6 @@
 package com.tokopedia.universal_sharing.view.customview
 
 import android.content.Context
-import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
@@ -10,19 +9,28 @@ import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyResourceIdRef
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.utils.AffiliateLinkType
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.databinding.UniversalShareWidgetBinding
 import com.tokopedia.universal_sharing.di.ActivityComponentFactory
+import com.tokopedia.universal_sharing.model.CampaignStatus
+import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
+import com.tokopedia.universal_sharing.model.PdpParamModel
+import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
+import com.tokopedia.universal_sharing.util.DateUtil
 import com.tokopedia.universal_sharing.util.UniversalShareConst
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
-import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.LinkShareWidgetProperties
 import com.tokopedia.universal_sharing.view.sharewidget.LinkerResultWidget
 import com.tokopedia.universal_sharing.view.sharewidget.UniversalShareWidgetViewModel
@@ -39,10 +47,19 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
     private var iconUnifyId: Int = IconUnify.WARNING
     private var callback: ShareWidgetLinkRequestCallback? = null
 
+    // properties for generation link
     private var linkProperties: LinkShareWidgetProperties? = null
+
+    // properties for image generator
+    private var sourceId: String? = null
+    private var imageGeneratorModel: ImageGeneratorParamModel? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val loading: LoaderDialog by lazy {
+        LoaderDialog(context)
+    }
 
     private val viewModel by lazy {
         findViewTreeViewModelStoreOwner()?.let {
@@ -65,8 +82,8 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
                 if (channelShareIconId != -1) {
                     iconUnifyId = getIconUnifyId()
                     if (iconUnifyId != IconUnify.WARNING) {
-                        val iconId = getIconUnifyResourceIdRef(channelShareIconId)
-                        popuplateView(iconId)
+                        val iconId = getIconUnifyResourceIdRef(iconUnifyId)
+                        populateView(iconId)
                     }
                 } else {
                     /* no-op */
@@ -97,7 +114,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
     }
 
 
-    private fun popuplateView(icon: Int) {
+    private fun populateView(icon: Int) {
         when (getVariant()) {
             UniversalShareConst.RemoteConfigKey.VALUE_VARIANT_A -> {
                 binding?.shareChannel?.setImage(IconUnify.SHARE)
@@ -112,7 +129,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
             }
 
             UniversalShareConst.RemoteConfigKey.CONTROL_VARIANT -> {
-//                this.gone()
+                this.gone()
             }
         }
         setOnClickChannel()
@@ -122,27 +139,23 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
         this.rootView.setOnClickListener {
             linkProperties?.let {
                 val linkerData = createLinkerData()
-                viewModel?.executeLinkRequest(linkerData)
-
-                when (channelShareIconId) {
-                    CHANNEL_WHATSAPP -> {
-//                    viewModel./executeLinkRequest(it)
-                    }
-
-                    else -> {
-                        /* no-op */
-                    }
-                }
+                viewModel?.executeLinkRequest(linkerData, sourceId, imageGeneratorModel)
             }
         }
     }
+
+    fun setImageGenerator(sourceId: String, param: ImageGeneratorParamModel) {
+        this.sourceId = sourceId
+        this.imageGeneratorModel = param
+    }
+
 
     private fun createLinkerData(): LinkerShareData {
         val linkerData = LinkerData()
         linkerData.apply {
             channel = getLinkChannel()
             campaign = createUtmCampaign()
-            feature = "share"
+            feature = FEATURE_SHARE
             type = linkProperties?.linkerType ?: ""
             isAffiliate = isAffiliate
             ogImageUrl = linkProperties?.ogImageUrl
@@ -176,7 +189,32 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
             viewModel?.linkerResult?.observe(treeLifecycleOwner) { result ->
                 when (result) {
                     is LinkerResultWidget.Success -> {
-                        result.linkerShareResult?.let { callback?.onSuccessCreateUrl(it) }
+                        result.linkerShareResult?.let {
+                            callback?.onSuccessCreateUrl(it)
+                            val shareMessage = if (linkProperties?.message?.isEmpty().orTrue()) {
+                                it.url
+                            } else {
+                                String.format(
+                                    linkProperties!!.message,
+                                    it.url
+                                )
+                            }
+
+                            when (channelShareIconId) {
+                                CHANNEL_WHATSAPP -> {
+                                    SharingUtil.shareWhatsapp(context, shareMessage)
+                                }
+
+                                CHANNEL_SMS -> {
+                                    SharingUtil.shareSMS(context, shareMessage)
+                                }
+
+                                else -> {
+                                    /* no-op */
+                                }
+                            }
+                        }
+
                     }
 
                     is LinkerResultWidget.Failed -> {
@@ -192,7 +230,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
                     }
 
                     is Fail -> {
-
+                        /* no-op */
                     }
                 }
             }
@@ -240,7 +278,13 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
         val sharingDate: String = SimpleDateFormat("ddMMyy", Locale.getDefault()).format(
             Date()
         )
-        val imageType = UniversalShareConst.ImageType.KEY_CONTEXTUAL_IMAGE
+        val imageType = if (sourceId != null && imageGeneratorModel != null) {
+            UniversalShareConst.ImageType.KEY_CONTEXTUAL_IMAGE
+        } else if (linkProperties?.ogImageUrl?.isEmpty().orFalse()) {
+            UniversalShareConst.ImageType.KEY_IMAGE_DEFAULT
+        } else {
+            UniversalShareConst.ImageType.KEY_NO_IMAGE
+        }
         return "${linkProperties?.page}-${linkProperties?.userId}-${linkProperties?.id}-$sharingDate-$imageType"
     }
 
@@ -248,6 +292,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
         private const val CHANNEL_WHATSAPP = 0
         private const val CHANNEL_TELEGRAM = 1
         private const val CHANNEL_SMS = 2
+        private const val FEATURE_SHARE = "share"
     }
 }
 
