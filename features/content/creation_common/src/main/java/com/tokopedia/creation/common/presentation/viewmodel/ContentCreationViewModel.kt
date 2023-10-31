@@ -46,7 +46,7 @@ class ContentCreationViewModel @Inject constructor(
     val selectedItemTitle: String
         get() = selectedCreationType.value?.let {
             it.title
-        } ?: ""
+        }.orEmpty()
 
     fun selectCreationItem(item: ContentCreationItemModel) {
         _selectedCreationType.value = item
