@@ -1754,7 +1754,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                     PaymentListingActivity.EXTRA_CALLBACK_URL,
                     payment.creditCard.additionalData.callbackUrl
                 )
-                val paymentRequest = viewModel.generatePaymentRequest()
+                val paymentRequest = viewModel.generatePaymentRequest(orderCost)
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_REQUEST, gson.get().toJson(paymentRequest, PaymentRequest::class.java))
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
@@ -1768,6 +1768,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                     payment,
                     viewModel.orderCart,
                     orderTotal.orderCost,
+                    viewModel.generatePaymentRequest(orderTotal.orderCost),
                     userSession.get().userId,
                     object : CreditCardInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
                         override fun onSelectInstallment(selectedInstallment: OrderPaymentInstallmentTerm, installmentList: List<OrderPaymentInstallmentTerm>) {

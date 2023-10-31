@@ -1206,7 +1206,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             validateUsePromoRevampUiModel,
             orderPayment.value
         )
-        val dynamicPaymentFee = paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost)
+        val dynamicPaymentFee = paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost, generatePaymentRequest(orderCost))
         val newOrderPayment = orderPayment.value
         orderPayment.value = newOrderPayment.copy(dynamicPaymentFees = dynamicPaymentFee)
         if (dynamicPaymentFee == null) {
@@ -1224,7 +1224,8 @@ class OrderSummaryPageViewModel @Inject constructor(
             orderPayment.value,
             userSession.userId,
             orderCost,
-            orderCart
+            orderCart,
+            generatePaymentRequest(orderCost)
         )
         if (installmentTermList == null) {
             val newOrderPayment = orderPayment.value
@@ -1269,7 +1270,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             orderCost.totalPriceWithoutPaymentFees <= payment.maximumAmount &&
             orderCost.totalPriceWithoutPaymentFees <= payment.walletAmount
         ) {
-            val dynamicPaymentFee = paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost)
+            val dynamicPaymentFee = paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost, generatePaymentRequest(orderCost))
             val newOrderPayment = orderPayment.value
             orderPayment.value = newOrderPayment.copy(dynamicPaymentFees = dynamicPaymentFee)
             if (dynamicPaymentFee == null) {
@@ -1323,7 +1324,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             validateUsePromoRevampUiModel,
             orderPayment.value
         )
-        val dynamicPaymentFee = paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost)
+        val dynamicPaymentFee = paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost, generatePaymentRequest(orderCost))
         val newOrderPayment = orderPayment.value
         orderPayment.value = newOrderPayment.copy(dynamicPaymentFees = dynamicPaymentFee)
         calculator.calculateTotal(
@@ -1465,7 +1466,7 @@ class OrderSummaryPageViewModel @Inject constructor(
         }
     }
 
-    fun generatePaymentRequest(): PaymentRequest {
+    fun generatePaymentRequest(orderCost: OrderCost): PaymentRequest {
         val paymentRequest = paymentProcessor.get().generatePaymentRequest(
             orderCart,
             orderProducts.value,
@@ -1473,7 +1474,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             orderProfile.value,
             orderShipment.value,
             orderPayment.value,
-            orderTotal.value,
+            orderCost,
             orderPromo.value
         )
         Log.i("qwertyuiop", "$paymentRequest")

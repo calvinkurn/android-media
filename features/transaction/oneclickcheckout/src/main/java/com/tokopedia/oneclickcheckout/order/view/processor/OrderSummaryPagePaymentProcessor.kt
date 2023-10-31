@@ -44,7 +44,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
-import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import kotlinx.coroutines.withContext
@@ -64,7 +63,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
         orderPayment: OrderPayment,
         userId: String,
         orderCost: OrderCost,
-        orderCart: OrderCart
+        orderCart: OrderCart,
+        paymentRequest: PaymentRequest
     ): List<OrderPaymentInstallmentTerm>? {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
@@ -237,7 +237,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
 
     suspend fun getPaymentFee(
         orderPayment: OrderPayment,
-        orderCost: OrderCost
+        orderCost: OrderCost,
+        paymentRequest: PaymentRequest
     ): List<OrderPaymentFee>? {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
@@ -267,14 +268,14 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
         orderProfile: OrderProfile,
         orderShipment: OrderShipment,
         orderPayment: OrderPayment,
-        orderTotal: OrderTotal,
+        orderCost: OrderCost,
         orderPromo: OrderPromo
     ): PaymentRequest {
         return PaymentRequest(
             payment = PaymentData(
                 gatewayCode = orderPayment.gatewayCode,
                 profileCode = orderPayment.creditCard.additionalData.profileCode,
-                paymentAmount = orderTotal.orderCost.totalPriceWithoutPaymentFees
+                paymentAmount = orderCost.totalPriceWithoutPaymentFees
             ),
             CartDetail(
                 cart = CartData(
