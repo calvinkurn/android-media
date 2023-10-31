@@ -52,8 +52,8 @@ class HomeRecommendationViewModel @Inject constructor(
 
     private val loadingModel = HomeRecommendationLoading()
     private val loadMoreModel = HomeRecommendationLoadMore()
-    private val emptyModel = HomeRecommendationEmpty()
-    private val errorModel = HomeRecommendationError()
+    val emptyModel = HomeRecommendationEmpty()
+    val errorModel = HomeRecommendationError()
     val homeRecommendationLiveData get() = _homeRecommendationLiveData
     private val _homeRecommendationLiveData: MutableLiveData<HomeRecommendationDataModel> =
         MutableLiveData()
@@ -117,7 +117,7 @@ class HomeRecommendationViewModel @Inject constructor(
             _homeRecommendationCardState.tryEmit(
                 HomeRecommendationCardState.LoadingMore(
                     HomeRecommendationDataModel(
-                        existingRecommendationData.apply {
+                        homeRecommendations = existingRecommendationData.apply {
                             add(loadMoreModel)
                         }.toList()
                     )
@@ -132,7 +132,9 @@ class HomeRecommendationViewModel @Inject constructor(
                     locationParam
                 )
 
-                existingRecommendationData.remove(loadMoreModel)
+                if (existingRecommendationData.contains(loadMoreModel)) {
+                    existingRecommendationData.remove(loadMoreModel)
+                }
 
                 existingRecommendationData.addAll(result.homeRecommendations)
 
@@ -145,7 +147,9 @@ class HomeRecommendationViewModel @Inject constructor(
                     HomeRecommendationCardState.SuccessNextPage(newHomeRecommendationDataModel)
                 )
             }, onError = {
-                    existingRecommendationData.remove(loadMoreModel)
+                    if (existingRecommendationData.contains(loadMoreModel)) {
+                        existingRecommendationData.remove(loadMoreModel)
+                    }
                     _homeRecommendationCardState.emit(
                         HomeRecommendationCardState.FailNextPage(
                             HomeRecommendationDataModel(existingRecommendationData.toList()),
