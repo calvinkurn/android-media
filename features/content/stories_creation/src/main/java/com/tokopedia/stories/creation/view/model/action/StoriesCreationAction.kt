@@ -1,6 +1,6 @@
 package com.tokopedia.stories.creation.view.model.action
 
-import com.tokopedia.stories.creation.view.model.StoriesMediaType
+import com.tokopedia.stories.creation.view.model.StoriesMedia
 
 /**
  * Created By : Jonathan Darwin on September 06, 2023
@@ -10,8 +10,7 @@ sealed interface StoriesCreationAction {
     object Prepare : StoriesCreationAction
 
     data class SetMedia(
-        val mediaFilePath: String,
-        val mediaType: StoriesMediaType,
+        val media: StoriesMedia
     ) : StoriesCreationAction
 
     object ClickUpload : StoriesCreationAction
