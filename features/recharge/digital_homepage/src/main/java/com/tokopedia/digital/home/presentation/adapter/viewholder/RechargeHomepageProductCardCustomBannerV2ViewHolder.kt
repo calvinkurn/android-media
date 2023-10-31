@@ -54,7 +54,7 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
 
         } else {
             showShimmer(bind)
-            listener.loadRechargeSectionData(element.visitableId(), element.section.template)
+            listener.loadRechargeSectionData(element.visitableId(), element.section.name)
         }
     }
 

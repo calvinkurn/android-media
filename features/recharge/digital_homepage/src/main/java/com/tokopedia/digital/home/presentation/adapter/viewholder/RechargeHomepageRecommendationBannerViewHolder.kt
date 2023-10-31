@@ -33,7 +33,7 @@ class RechargeHomepageRecommendationBannerViewHolder(
                 tvRechargeRecomBannerSeeAll.hide()
                 rvRechargeRecomBanner.hide()
             }
-            listener.loadRechargeSectionData(element.visitableId(), element.section.template)
+            listener.loadRechargeSectionData(element.visitableId(), element.section.name)
         }
     }
 

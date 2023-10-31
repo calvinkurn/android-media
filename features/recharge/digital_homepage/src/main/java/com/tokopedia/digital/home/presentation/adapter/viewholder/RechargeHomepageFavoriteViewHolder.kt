@@ -37,7 +37,7 @@ class RechargeHomepageFavoriteViewHolder(itemView: View?, val listener: Recharge
                 }
             } else {
                 viewRechargeHomeFavoritesShimmering.root.show()
-                listener.loadRechargeSectionData(element.visitableId(), element.section.template)
+                listener.loadRechargeSectionData(element.visitableId(), element.section.name)
             }
         }
     }

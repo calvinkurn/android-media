@@ -47,7 +47,7 @@ class RechargeHomepageProductBannerViewHolder(
             bind.viewRechargeHomeProductBannerShimmering.root.show()
             bind.viewRechargeHomeProductBannerLayout.hide()
 
-            listener.loadRechargeSectionData(element.visitableId(), element.section.template)
+            listener.loadRechargeSectionData(element.visitableId(), element.section.name)
         }
     }
 

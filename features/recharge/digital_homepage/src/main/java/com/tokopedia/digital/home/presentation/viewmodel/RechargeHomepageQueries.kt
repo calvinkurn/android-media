@@ -25,6 +25,7 @@ internal object RechargeHomepageSkeletonQuery{
                 sections {
                   id
                   template
+                  name
                 }
            }
         }

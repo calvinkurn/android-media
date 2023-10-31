@@ -257,6 +257,7 @@ class RechargeHomepageViewModel @Inject constructor(
         const val SECTION_MY_BILLS_WIDGET = "BILL_WIDGET"
         const val SECTION_MY_BILLS_ENTRYPOINT_WIDGET = "MYBILLS_ENTRYPOINT"
         const val SECTION_MY_BILLS_TRIPLE_ENTRYPOINT_WIDGET = "3_BUTTONS_MYBILLS_ENTRYPOINT"
+        const val SECTION_TODO_WIDGET = "TODO_WIDGET"
 
         const val ALL_CATEGORY_PLATFORM_ID = 52
     }

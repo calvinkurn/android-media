@@ -7,12 +7,14 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeListTodoWidgetBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeMyBillsBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeMyBillsEntrypointBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeMyBillsTripleEntrypointBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardCustomLastItemBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardsUnifyBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeRecommendationBannerBinding
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeTodoWidgetBinding
 import com.tokopedia.digital.home.model.RechargeHomepageBannerEmptyModel
 import com.tokopedia.digital.home.model.RechargeHomepageBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageCarousellModel
@@ -31,6 +33,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageRecommendationBannerMode
 import com.tokopedia.digital.home.model.RechargeHomepageSingleBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageSwipeBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageThreeIconsModel
+import com.tokopedia.digital.home.model.RechargeHomepageTodoWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageTrustMarkModel
 import com.tokopedia.digital.home.model.RechargeHomepageVideoHighlightModel
 import com.tokopedia.digital.home.model.RechargeProductCardCustomBannerModel
@@ -60,6 +63,7 @@ import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepa
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageSwipeBannerViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageThreeIconsViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageTickerViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageTodoWidgetViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageVideoHighlightViewHolder
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicLegoBannerCallback
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
@@ -157,6 +161,9 @@ class RechargeHomepageAdapterTypeFactory(
 
     fun type(myBillsTripleEntryPointWidget: RechargeHomepageMyBillsTripleEntryPointsModel): Int =
         RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder.LAYOUT
+
+    fun type(todoWidget: RechargeHomepageTodoWidgetModel): Int =
+        RechargeHomepageTodoWidgetViewHolder.LAYOUT
 
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return RechargeHomepageLegoBannerViewHolder.LAYOUT
@@ -308,6 +315,16 @@ class RechargeHomepageAdapterTypeFactory(
                 RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder(
                     binding,
                     listener
+                )
+            }
+            RechargeHomepageTodoWidgetViewHolder.LAYOUT -> {
+                val binding = ViewRechargeHomeListTodoWidgetBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent as ViewGroup,
+                    false
+                )
+                RechargeHomepageTodoWidgetViewHolder(
+                    binding, listener
                 )
             }
             else -> super.createViewHolder(parent, type)

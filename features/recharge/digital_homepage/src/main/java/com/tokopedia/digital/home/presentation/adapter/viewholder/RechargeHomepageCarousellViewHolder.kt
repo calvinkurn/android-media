@@ -51,7 +51,7 @@ class RechargeHomepageCarousellViewHolder(itemView: View, val listener: Recharge
                 viewContainerRechargeHomeCarousell.hide()
                 viewRechargeHomeCarousellShimmering.root.show()
 
-                listener.loadRechargeSectionData(element.visitableId(), element.section.template)
+                listener.loadRechargeSectionData(element.visitableId(), element.section.name)
             }
         }
     }

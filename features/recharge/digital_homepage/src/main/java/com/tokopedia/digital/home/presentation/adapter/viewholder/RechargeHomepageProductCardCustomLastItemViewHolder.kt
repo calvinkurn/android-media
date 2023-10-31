@@ -45,7 +45,7 @@ class RechargeHomepageProductCardCustomLastItemViewHolder(
 
         } else {
             showLoading()
-            listener.loadRechargeSectionData(element.visitableId(), element.section.template)
+            listener.loadRechargeSectionData(element.visitableId(), element.section.name)
         }
     }
 

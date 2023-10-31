@@ -62,7 +62,7 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
             }
             else -> {
                 hideItemView(bind)
-                listener.loadRechargeSectionData(element.visitableId(), element.section.template)
+                listener.loadRechargeSectionData(element.visitableId(), element.section.name)
             }
         }
     }

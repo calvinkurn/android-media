@@ -26,6 +26,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeHomepageSingleBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageSwipeBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageThreeIconsModel
+import com.tokopedia.digital.home.model.RechargeHomepageTodoWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageTrustMarkModel
 import com.tokopedia.digital.home.model.RechargeHomepageVideoHighlightModel
 import com.tokopedia.digital.home.model.RechargeProductCardCustomBannerModel
@@ -110,7 +111,8 @@ object RechargeHomepageSectionMapper {
             sectionsList.add(
                 RechargeHomepageSections.Section(
                     section.id,
-                    template = section.template
+                    template = section.template,
+                    name = section.name
                 )
             )
             if (section.template == RechargeHomepageViewModel.SECTION_TOP_BANNER ||
@@ -210,6 +212,7 @@ object RechargeHomepageSectionMapper {
                     SECTION_MY_BILLS_WIDGET -> RechargeHomepageMyBillsWidgetModel(it)
                     SECTION_MY_BILLS_ENTRYPOINT_WIDGET -> RechargeHomepageMyBillsEntryPointModel(it)
                     SECTION_MY_BILLS_TRIPLE_ENTRYPOINT_WIDGET -> RechargeHomepageMyBillsTripleEntryPointsModel(it, isTripleEntryPointLoaded)
+                    SECTION_TODO_WIDGET -> RechargeHomepageTodoWidgetModel(it)
                     else -> null
                 }
             }

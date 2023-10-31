@@ -52,7 +52,7 @@ class RechargeHomepageDualBannersViewHolder(itemView: View?, val listener: Recha
                     viewRechargeHomeDualBannersContainer.hide()
                     viewRechargeHomeDualBannersShimmering.root.show()
 
-                    listener.loadRechargeSectionData(element.visitableId(), element.section.template)
+                    listener.loadRechargeSectionData(element.visitableId(), element.section.name)
                 }
             }
         }

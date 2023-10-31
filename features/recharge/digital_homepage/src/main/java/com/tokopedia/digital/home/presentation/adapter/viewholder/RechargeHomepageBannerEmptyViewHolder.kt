@@ -26,7 +26,7 @@ class RechargeHomepageBannerEmptyViewHolder(itemView: View, val listener: Rechar
         val bind = ViewRechargeHomeBannerEmptyBinding.bind(itemView)
         val section = element.section
         if (section.title.isEmpty() && section.subtitle.isEmpty()) {
-            listener.loadRechargeSectionData(section.id, section.template)
+            listener.loadRechargeSectionData(section.id, section.name)
         } else {
             with(bind) {
                 if (section.title.isNotEmpty()) {
