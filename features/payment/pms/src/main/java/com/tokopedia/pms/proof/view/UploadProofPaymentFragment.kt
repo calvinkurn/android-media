@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.iconunify.IconUnify
@@ -100,7 +100,7 @@ class UploadProofPaymentFragment : BaseDaggerFragment(), UploadProofPaymentContr
 
     private fun invalidateView() {
         if (!TextUtils.isEmpty(imageUrl)) {
-            ImageHandler.LoadImage(image_payment, imageUrl)
+            image_payment?.loadImageFitCenter(imageUrl)
             container_image_helper!!.visibility = View.VISIBLE
             container_helper!!.visibility = View.GONE
             if (isUploaded) {

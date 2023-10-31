@@ -3,7 +3,7 @@ package com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.chatactionbubblel
 import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.uimodel.chatactionbubble.ChatActionBubbleUiModel
@@ -40,6 +40,6 @@ class ChatActionBubbleViewHolder(itemView: View) : BaseChatActionBubbleViewHolde
             )
         )
         customerCareImage.show()
-        ImageHandler.LoadImage(customerCareImage, element.iconUrl)
+        customerCareImage?.loadImageFitCenter(element.iconUrl)
     }
 }

@@ -11,7 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
@@ -216,7 +216,7 @@ class WidgetNotificationViewHolder constructor(
     }
 
     private fun bindThumbnail(element: NotificationUiModel) {
-        ImageHandler.LoadImage(thumbnail, element.widget.image)
+        thumbnail?.loadImageFitCenter(element.widget.image)
     }
 
     private fun bindWidgetTitle(element: NotificationUiModel) {

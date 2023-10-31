@@ -3,7 +3,7 @@ package com.tokopedia.chatbot.view.adapter.viewholder.chatactionbubblelist
 import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
@@ -28,6 +28,6 @@ class ChatActionBubbleViewHolder(itemView: View) : BaseChatActionBubbleViewHolde
     private fun setLiveChatButtonAction(element: ChatActionBubbleUiModel) {
         chatActionMessage.setTextColor(Color.parseColor(String.format(itemView.context.getString(R.string.chatbot_action_bubble_text_color_prefix), element.hexColor)))
         customerCareImage.show()
-        ImageHandler.LoadImage(customerCareImage, element.iconUrl)
+        customerCareImage?.loadImageFitCenter(element.iconUrl)
     }
 }

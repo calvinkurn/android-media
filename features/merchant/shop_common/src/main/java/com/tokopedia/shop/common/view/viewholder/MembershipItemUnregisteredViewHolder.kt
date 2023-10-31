@@ -5,7 +5,7 @@ import com.tokopedia.imageassets.TokopediaImageUrl
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.GO_TO_MEMBERSHIP_REGISTER
 import com.tokopedia.shop.common.data.viewmodel.ItemUnregisteredViewModel
@@ -23,7 +23,7 @@ class MembershipItemUnregisteredViewHolder(view: View, private val listener: Mem
     }
 
     override fun bind(element: ItemUnregisteredViewModel) {
-        ImageHandler.LoadImage(bgImgRegistration, URL_IMG_BG_MEMBERSHIP)
+        bgImgRegistration?.loadImageFitCenter(URL_IMG_BG_MEMBERSHIP)
         txtTitleRegistration.text = element.bannerTitle
         txtButtonRegistration.text = element.btnText
         txtButtonRegistration.setOnClickListener {

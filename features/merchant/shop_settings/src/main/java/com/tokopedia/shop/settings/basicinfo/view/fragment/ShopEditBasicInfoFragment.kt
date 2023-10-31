@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -691,10 +691,10 @@ class ShopEditBasicInfoFragment : Fragment() {
                                 MethodChecker.getDrawable(imageAvatar?.context, R.drawable.ic_shop_edit_avatar)
                             )
                         } else {
-                            ImageHandler.LoadImage(imageAvatar, logoUrl)
+                            imageAvatar?.loadImageFitCenter(logoUrl)
                         }
                     } else {
-                        ImageHandler.LoadImage(imageAvatar, savedLocalImageUrl)
+                        imageAvatar?.loadImageFitCenter(savedLocalImageUrl)
                     }
                 }
             } catch (e: Exception) { }

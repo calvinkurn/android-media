@@ -8,7 +8,7 @@ import android.text.style.StyleSpan
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -93,14 +93,14 @@ class ShippingDurationViewHolder(
                 flContainer.visibility = View.VISIBLE
                 flContainer.foreground =
                     ContextCompat.getDrawable(flContainer.context, logisticcartR.drawable.fg_enabled_item)
-                ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.merchantVoucherModel.mvcLogo)
+                imgMvc?.loadImageFitCenter(shippingDurationUiModel.merchantVoucherModel.mvcLogo)
                 tvMvcText.text = shippingDurationUiModel.merchantVoucherModel.mvcTitle
                 tvMvcError.visibility = View.GONE
             } else if (shippingDurationUiModel.merchantVoucherModel.isMvc == -1) {
                 flContainer.visibility = View.VISIBLE
                 flContainer.foreground =
                     ContextCompat.getDrawable(flContainer.context, logisticcartR.drawable.fg_disabled_item)
-                ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.merchantVoucherModel.mvcLogo)
+                imgMvc?.loadImageFitCenter(shippingDurationUiModel.merchantVoucherModel.mvcLogo)
                 tvMvcText.text = shippingDurationUiModel.merchantVoucherModel.mvcTitle
                 tvMvcError.visibility = View.VISIBLE
                 tvMvcError.text = shippingDurationUiModel.merchantVoucherModel.mvcErrorMessage
