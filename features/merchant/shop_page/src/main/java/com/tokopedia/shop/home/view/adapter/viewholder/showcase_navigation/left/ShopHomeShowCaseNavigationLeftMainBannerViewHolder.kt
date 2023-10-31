@@ -12,7 +12,6 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -133,7 +132,6 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
             val centeredTabIndicator = ContextCompat.getDrawable(tabsUnify.tabLayout.context, R.drawable.shape_showcase_tab_indicator_color)
             tabsUnify.tabLayout.setSelectedTabIndicator(centeredTabIndicator)
-            tabsUnify.tabLayout.setPadding(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
             
             TabsUnifyMediator(tabsUnify, viewPager) { tab, currentPosition ->
                 val tabView = LayoutInflater.from(tabsUnify.context).inflate(R.layout.item_viewpager_showcase_navigation_tab, tabsUnify, false)
