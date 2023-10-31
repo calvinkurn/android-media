@@ -70,16 +70,16 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                     viewModel?.selectedCreationType?.collectAsStateWithLifecycle()
                 val creationList = viewModel?.creationConfig?.collectAsStateWithLifecycle()
 
-                ContentCreationComponent(
+                ContentCreationView(
                     creationConfig = creationList?.value,
                     selectedItem = selectedCreation?.value,
-                    inImpressBottomSheet = {
+                    onImpressBottomSheet = {
                         analytics?.eventImpressionContentCreationBottomSheet(
                             viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
                             widgetSource
                         )
-                    }
-                        onSelectItem = {
+                    },
+                    onSelectItem = {
                         viewModel?.selectCreationItem(it)
                         listener?.onCreationItemSelected(it)
                     },

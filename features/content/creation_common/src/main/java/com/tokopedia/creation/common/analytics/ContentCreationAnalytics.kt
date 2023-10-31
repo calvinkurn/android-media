@@ -9,6 +9,7 @@ import javax.inject.Inject
 import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.BusinessUnit
 import com.tokopedia.content.analytic.CurrentSite
+import com.tokopedia.content.analytic.EventCategory
 
 /**
  * Created By : Muhammad Furqan on 27/10/23
@@ -138,7 +139,7 @@ class ContentCreationAnalytics @Inject constructor(
     private fun getEventCategory(widgetSource: ContentCreationEntryPointSource) =
         when (widgetSource) {
             ContentCreationEntryPointSource.Shop -> VALUE_CATEGORY_SHOP
-            ContentCreationEntryPointSource.Feed -> VALUE_CATEGORY_FEED
+            ContentCreationEntryPointSource.Feed -> EventCategory.unifiedFeed
             else -> ""
         }
 
@@ -153,6 +154,5 @@ class ContentCreationAnalytics @Inject constructor(
 
     companion object {
         private const val VALUE_CATEGORY_SHOP = "shop page - seller"
-        private const val VALUE_CATEGORY_FEED = "unified feed"
     }
 }

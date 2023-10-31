@@ -34,7 +34,7 @@ import com.tokopedia.creation.common.R as creationcommonR
  * Created By : Muhammad Furqan on 07/09/23
  */
 @Composable
-fun ContentCreationComponent(
+fun ContentCreationView(
     creationConfig: Result<ContentCreationConfigModel>?,
     onImpressBottomSheet: () -> Unit,
     selectedItem: ContentCreationItemModel?,
@@ -46,7 +46,7 @@ fun ContentCreationComponent(
         when (creationConfig) {
             is Success -> {
                 LaunchEffect(Unit) {
-onImpress()
+                    onImpressBottomSheet()
                 }
 
                 ContentCreationSuccessView(

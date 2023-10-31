@@ -95,8 +95,8 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
 
         if (creationConfig is Success && creationConfig.data.creationItems.isNotEmpty()) {
 
-            LaunchEffect(Unit) {
-                if (widgetSource != ContentCreationEntryPointSource.Unknown) {
+            if (widgetSource != ContentCreationEntryPointSource.Unknown) {
+                LaunchEffect(Unit) {
                     analytics.eventImpressionContentCreationEndpointWidget(
                         viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
                         widgetSource
