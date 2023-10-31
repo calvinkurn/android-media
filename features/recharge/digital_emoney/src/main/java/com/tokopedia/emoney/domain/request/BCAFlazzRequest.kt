@@ -38,5 +38,6 @@ enum class BCAFlazzAction(val action: Int) {
 enum class BCAFlazzStatus(val status: Int) {
     WRITE(0),
     DONE(1),
-    ERROR(2)
+    ERROR(2),
+    REVERSAL(3)
 }

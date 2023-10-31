@@ -126,6 +126,18 @@ class BCABalanceViewModel @Inject constructor(
                     isoDep, cardNumber, lastBalance, rawPublicKeyString,
                     rawPrivateKeyString, cardType, strCurrDateTime, ATD
                 )
+            } else if(result.status == BCAFlazzStatus.REVERSAL.status && result.attributes.transactionID.isNotEmpty()) {
+                processSDKReversal(
+                    isoDep,
+                    result.attributes.transactionID,
+                    ATD,
+                    cardNumber,
+                    lastBalance,
+                    rawPublicKeyString,
+                    rawPrivateKeyString,
+                    cardType,
+                    result
+                )
             } else {
                 bcaInquiryMutable.postValue(
                     BCAFlazzResponseMapper.bcaMapper(
