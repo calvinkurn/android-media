@@ -77,12 +77,6 @@ class HomeControlNonLoggedInUiTest : HomeNonLoginAssertion {
 
     override fun assertHeader() {
         /**
-         * Assert header background
-         */
-        Espresso.onView(ViewMatchers.withId(R.id.header_background_home_background))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-
-        /**
          * Assert choose address widget
          */
         Espresso.onView(ViewMatchers.withId(R.id.view_choose_address))

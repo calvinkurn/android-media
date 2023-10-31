@@ -1,11 +1,10 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import android.view.ViewGroup.LayoutParams
 import androidx.constraintlayout.widget.ConstraintSet
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
@@ -23,11 +22,8 @@ class DynamicOneLinerViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_one_liner
-
-        private const val STATUS_SHOW = "show"
         private const val STATUS_HIDE = "hide"
-        private const val STATUS_PLACEHOLDER = "placeholder"
-
+        private const val STATUS_SHOW = "show"
         private const val CHEVRON_POS_FOLLOW = "follow_text"
         private const val CHEVRON_POS_END = "end"
     }
@@ -36,21 +32,13 @@ class DynamicOneLinerViewHolder(
 
     override fun bind(element: DynamicOneLinerDataModel) = with(element.data) {
         when (status) {
-            STATUS_PLACEHOLDER -> {
-                itemView.show()
-                binding.dynamicOneLinerContentParent.hide()
-                binding.dynamicOneLinerShimmering.show()
-            }
-
             STATUS_SHOW -> {
-                itemView.show()
-                binding.dynamicOneLinerContentParent.show()
-                binding.dynamicOneLinerShimmering.hide()
+                itemView.setLayoutHeight(LayoutParams.WRAP_CONTENT)
                 renderContent(this, getComponentTrackData(element))
                 impressComponent(element)
             }
 
-            else -> {
+            STATUS_HIDE -> {
                 itemView.setLayoutHeight(0)
             }
         }
@@ -60,7 +48,6 @@ class DynamicOneLinerViewHolder(
         data: DynamicOneLinerDataModel.Data,
         componentTrackDataModel: ComponentTrackDataModel
     ) = with(binding) {
-
         configPadding(binding, data)
 
         val title = data.text

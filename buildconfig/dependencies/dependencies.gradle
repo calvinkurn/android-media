@@ -104,9 +104,9 @@ ext {
     windowVersion = '1.0.0'
     localBroadcastManagerVersion = '1.0.0'
     gojekSSOVersion = '1.0.1-67-0738bd6'
-    gotoLsdkVersion = '1.1.0-70670034-SNAPSHOT'
-    gotoCvsdkVersion = '2.0.1'
-    gotoPinSdkVersion = '0.1.2-dev-4-g1348aec'
+    gotoLsdkVersion = '2.0.1'
+    gotoCvsdkVersion = '2.1.1'
+    gotoPinSdkVersion = '0.2.1'
     playIntegrityVersion = '1.0.1'
     wearRemoteInteractionVersion = '1.0.0'
     conversationsVersion = '7.9.1-54af4674'
@@ -160,7 +160,7 @@ ext {
     unifyExplorePromoVersion = '1.0.3.2'
     unifyImageGalleryVersion = '1.0.8'
     unifyViewAllCardVersion = '1.0.12'
-    nestPrinciplesVersion = '1.0.3'
+    nestPrinciplesVersion = '1.0.4'
     nestComponentsVersion = '1.0.8'
 
     gradlePlugin = [
@@ -260,10 +260,10 @@ ext {
     ]
 
     gotoOneKyc = [
-            resource : "com.gojek.android:OneKycResources:2.0.0@aar",
-            oneKycSdk : "com.gojek.android:OneKycSdk:2.0.0@aar",
-            clickStream : "com.gojek.android:clickstream:2.0.1-alpha",
-            protoToko : "com.gojek.clickstream:proto-toko:4.219.0-snapshot-toko-1",
+            resource : "com.gojek.android:OneKycResources:2.2.2@aar",
+            oneKycSdk : "com.gojek.android:OneKycSdk:2.2.2@aar",
+            clickStream : "com.gojek.android:clickstream:4.0.3-alpha",
+            protoToko : "com.gojek.clickstream:proto-toko:4.273.5",
             protoSdk : "com.gojek.clickstream:proto-sdk:1.18.2"
     ]
 
