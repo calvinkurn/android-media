@@ -261,7 +261,6 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     }
 
     private fun successCheckout(checkoutData: EPharmacyCartGeneralCheckoutResponse.CheckoutResponse.CheckoutData.CartGeneralResponse?) {
-        val paymentPassData = PaymentPassData()
         PaymentPassData().apply {
             redirectUrl = checkoutData?.redirectUrl
             transactionId = checkoutData?.parameter?.transactionId
@@ -269,14 +268,15 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
             callbackSuccessUrl = checkoutData?.callbackUrl
             callbackFailedUrl = checkoutData?.callbackFailUrl
             queryString = checkoutData?.queryString
+        }.also {
+            val intent =
+                RouteManager.getIntent(
+                    activity,
+                    ApplinkConstInternalPayment.PAYMENT_CHECKOUT
+                )
+            intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, it)
+            startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
         }
-        val intent =
-            RouteManager.getIntent(
-                activity,
-                ApplinkConstInternalPayment.PAYMENT_CHECKOUT
-            )
-        intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
-        startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
     }
 
     private fun onFailCartCheckout() {
