@@ -164,7 +164,8 @@ private fun ContentCreationComponentFailedPreview() {
         selectedItem = null,
         onSelectItem = {},
         onNextClicked = {},
-        onRetryClicked = {}
+        onRetryClicked = {},
+        onImpressBottomSheet = {}
     )
 }
 
@@ -229,6 +230,7 @@ private fun ContentCreationComponentSuccessPreview() {
         ),
         onSelectItem = {},
         onNextClicked = {},
-        onRetryClicked = {}
+        onRetryClicked = {},
+        onImpressBottomSheet = {}
     )
 }
