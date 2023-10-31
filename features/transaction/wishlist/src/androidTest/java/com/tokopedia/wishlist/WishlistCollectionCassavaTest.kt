@@ -14,7 +14,6 @@ import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.trackingoptimizer.repository.TrackRepository
 import com.tokopedia.trackingoptimizer.sendTrack
-import com.tokopedia.wishlist.test.R
 import com.tokopedia.wishlist.util.WishlistIdlingResource
 import com.tokopedia.wishlist.util.disableWishlistCoachmark
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionActivity
@@ -26,6 +25,7 @@ import org.junit.Rule
 import org.junit.Test
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import com.tokopedia.wishlist.test.R as wishlisttestR
 
 @CassavaTest
 class WishlistCollectionCassavaTest {
@@ -51,7 +51,7 @@ class WishlistCollectionCassavaTest {
                 KEY_WISHLIST_COLLECTION,
                 InstrumentationMockHelper.getRawString(
                     context,
-                    R.raw.response_wishlist_collection
+                    wishlisttestR.raw.response_wishlist_collection
                 ),
                 MockModelConfig.FIND_BY_CONTAINS
             )
@@ -59,7 +59,7 @@ class WishlistCollectionCassavaTest {
                 KEY_GET_WISHLIST_COLLECTION_ITEMS,
                 InstrumentationMockHelper.getRawString(
                     context,
-                    R.raw.response_semua_wishlist
+                    wishlisttestR.raw.response_semua_wishlist
                 ),
                 MockModelConfig.FIND_BY_CONTAINS
             )
@@ -67,7 +67,7 @@ class WishlistCollectionCassavaTest {
                 KEY_CREATE_WISHLIST_COLLECTION,
                 InstrumentationMockHelper.getRawString(
                     context,
-                    R.raw.response_create_wishlist_collection
+                    wishlisttestR.raw.response_create_wishlist_collection
                 ),
                 MockModelConfig.FIND_BY_CONTAINS
             )
@@ -108,7 +108,7 @@ class WishlistCollectionCassavaTest {
             // Force TrackingQueue to send trackers
             runBlocking {
                 suspendCoroutine<Any?> {
-                    sendTrack(GlobalScope, TrackRepository(context)) {
+                    sendTrack(GlobalScope, TrackRepository.Companion.getInstance(context)) {
                         Log.i("WishlistCollectionCassavaTest", "finish send track")
                         it.resume(null)
                     }

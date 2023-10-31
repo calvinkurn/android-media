@@ -5,8 +5,8 @@ import android.app.Instrumentation
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.PerformException
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
@@ -20,6 +20,8 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert
+import com.tokopedia.dialog.R as dialogR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class WishlistCollectionRobot {
 
@@ -62,7 +64,7 @@ class WishlistCollectionRobot {
 
     fun clickXOnCreateNewCollectionBottomsheet() {
         Intents.intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        onView(withId(R.id.bottom_sheet_close))
+        onView(withId(dialogR.id.bottom_sheet_close))
             .perform(ViewActions.click())
     }
 
@@ -83,8 +85,8 @@ class WishlistCollectionRobot {
         typeNewCollection()
     }
 
-    fun typeNewCollection() {
-        onView(withId(R.id.text_field_input))
+    private fun typeNewCollection() {
+        onView(withId(unifycomponentsR.id.text_field_input))
             .perform(
                 ViewActions.typeText("test new collection name"),
                 ViewActions.closeSoftKeyboard()
