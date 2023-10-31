@@ -181,7 +181,9 @@ class RechargeHomepageTodoWidgetViewHolder (
 
         override fun bind(element: RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetBayarSekaligusItemModel) {
             with(binding) {
-                imgTodoBackground.loadImage(element.widget.iconUrl)
+                imgTodoWidgetBackground.loadImage(element.widget.iconUrl)
+                tgTitleTodoWidget.text = element.widget.title
+                tgSubTitleTodoWidget.text = element.widget.subtitle
             }
         }
     }
