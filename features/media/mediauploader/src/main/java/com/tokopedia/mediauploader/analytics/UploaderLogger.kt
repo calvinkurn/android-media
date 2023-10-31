@@ -17,6 +17,11 @@ object UploaderLogger {
         commonError(sourceId, err)
     }
 
+    fun commonError(sourceId: String, message: String, reqId: String) {
+        val err = UploadResult.Error(message, reqId)
+        commonError(sourceId, err)
+    }
+
     fun commonError(sourceId: String, error: UploadResult.Error) {
         if (error.message.isEmpty()) return
 

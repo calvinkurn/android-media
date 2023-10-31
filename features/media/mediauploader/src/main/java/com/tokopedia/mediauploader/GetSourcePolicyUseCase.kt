@@ -18,14 +18,12 @@ class GetSourcePolicyUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(param: Param): SourcePolicy {
-        val policy = if (isImageFormat(param.file.path)) {
-            if (param.isSecure) {
-                imageSecurePolicyUseCase(param.sourceId)
-            } else {
-                imagePolicyUseCase(param.sourceId)
+        val policy = when {
+            isImageFormat(param.file.path) -> {
+                if (param.isSecure.not()) imagePolicyUseCase(param.sourceId)
+                else imageSecurePolicyUseCase(param.sourceId)
             }
-        } else {
-            videoPolicyUseCase(param.sourceId)
+            else -> videoPolicyUseCase(param.sourceId)
         }
 
         return policy.also {

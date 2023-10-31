@@ -1,6 +1,6 @@
 package com.tokopedia.mediauploader
 
-import com.tokopedia.mediauploader.common.logger.trackToTimber
+import com.tokopedia.mediauploader.analytics.UploaderLogger
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.addPrefix
@@ -24,9 +24,7 @@ interface UploaderManager {
     }
 
     fun setError(message: String, sourceId: String, file: File): UploadResult {
-        if (message.isNotEmpty()) {
-            trackToTimber(file, sourceId, message)
-        }
+        if (message.isNotEmpty()) UploaderLogger.commonWithoutReqIdError(sourceId, message)
         return UploadResult.Error(message.addPrefix())
     }
 

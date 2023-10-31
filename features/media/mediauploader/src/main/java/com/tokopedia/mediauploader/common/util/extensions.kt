@@ -2,23 +2,8 @@ package com.tokopedia.mediauploader.common.util
 
 import android.graphics.BitmapFactory
 import android.text.TextUtils
-import android.util.Log
 import android.webkit.MimeTypeMap
-import com.tokopedia.mediauploader.UploaderManager
-import com.tokopedia.mediauploader.common.data.consts.NETWORK_ERROR
-import com.tokopedia.mediauploader.common.data.consts.TIMEOUT_ERROR
-import com.tokopedia.mediauploader.common.logger.ERROR_MAX_LENGTH
-import com.tokopedia.mediauploader.common.logger.trackToTimber
-import com.tokopedia.mediauploader.common.state.UploadResult
-import okhttp3.internal.http2.ConnectionShutdownException
-import okhttp3.internal.http2.StreamResetException
 import java.io.File
-import java.io.InterruptedIOException
-import java.net.SocketException
-import java.net.SocketTimeoutException
-import java.net.URLConnection
-import java.net.UnknownHostException
-import java.util.concurrent.CancellationException
 import java.util.concurrent.TimeUnit
 
 fun Int.mbToBytes(): Int {
@@ -83,31 +68,4 @@ fun String.addPrefix(): String {
     val lastMessage = this.substring(requestIdIndex, this.length).trim()
 
     return "$message $kodeError $lastMessage"
-}
-
-suspend fun request(
-    sourceId: String,
-    file: File,
-    uploaderManager: UploaderManager,
-    execute: suspend () -> UploadResult,
-): UploadResult {
-    return try {
-        execute().also {
-            if (it is UploadResult.Error) {
-                uploaderManager.setError(it.message, sourceId, file)
-            }
-        }
-    } catch (e: SocketTimeoutException) {
-        uploaderManager.setError(TIMEOUT_ERROR, sourceId, file)
-    } catch (e: StreamResetException) {
-        uploaderManager.setError(TIMEOUT_ERROR, sourceId, file)
-    } catch (e: Exception) {
-        val stackTrace = Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()
-
-        if (stackTrace.isNotEmpty()) {
-            trackToTimber(sourceId, stackTrace)
-        }
-
-        uploaderManager.setError(NETWORK_ERROR, sourceId, file)
-    }
 }

@@ -3,6 +3,8 @@
 package com.tokopedia.mediauploader
 
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
+import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
@@ -17,7 +19,8 @@ import javax.inject.Inject
 class UploaderUseCase @Inject constructor(
     private val imageUploaderManager: ImageUploaderManager,
     private val videoUploaderManager: VideoUploaderManager,
-    private val sourcePolicyUseCase: GetSourcePolicyUseCase
+    private val sourcePolicyUseCase: GetSourcePolicyUseCase,
+    private val sourcePolicyManager: SourcePolicyManager
 ) : CoroutineUseCase<RequestParams, UploadResult>(Dispatchers.IO) {
 
     private var progressUploader: ProgressUploader? = null
@@ -36,6 +39,15 @@ class UploaderUseCase @Inject constructor(
     override fun graphqlQuery() = ""
 
     override suspend fun execute(params: RequestParams): UploadResult {
+        setupRequestParams(params)
+        return shouldUploadMediaByType(getSourcePolicyAndSaveToCache())
+            .also {
+                // clear policy cache after upload succeed
+                sourcePolicyManager.dispose()
+            }
+    }
+
+    private fun setupRequestParams(params: RequestParams) {
         withTranscode = params.getBoolean(PARAM_WITH_TRANSCODE, true)
         shouldCompress = params.getBoolean(PARAM_SHOULD_COMPRESS, true)
         sourceId = params.getString(PARAM_SOURCE_ID, "")
@@ -44,51 +56,37 @@ class UploaderUseCase @Inject constructor(
         isRetriable = params.getBoolean(PARAM_IS_RETRY, false)
         extraHeader = params.getObject(PARAM_EXTRA_HEADER) as Map<String, String>
         extraBody = params.getObject(PARAM_EXTRA_BODY) as Map<String, String>
-
-        val param = GetSourcePolicyUseCase.Param(
-            sourceId = sourceId,
-            file = file,
-            isSecure = isSecure
-        )
-
-        // get source policy based on file type and sourceId
-        sourcePolicyUseCase(param)
-
-        return if (isVideoFormat(file.absolutePath)) {
-            videoUploader()
-        } else {
-            imageUploader()
-        }
     }
 
-    private suspend fun videoUploader() = request(
+    /**
+     * A new fetcher of source policy.
+     *
+     * We put all policies request in only method and make it offline-first mode.
+     * So we don't have to request the same policy if users encounter internet issue.
+     */
+    private suspend fun getSourcePolicyAndSaveToCache(): SourcePolicy {
+        val param = GetSourcePolicyUseCase.Param(sourceId, file, isSecure)
+        return sourcePolicyManager.get() ?: sourcePolicyUseCase(param)
+    }
+
+    /**
+     * A unify the UploaderManager.
+     *
+     * Create a single gate to handle both Image (as well as secure) and Video upload,
+     * by provide a dynamic [InternalUploadParam] to ensure the similar parameters could be
+     * use the same object.
+     */
+    private suspend fun shouldUploadMediaByType(policy: SourcePolicy) = request(
         file = file,
         sourceId = sourceId,
         uploaderManager = videoUploaderManager,
         execute = {
-            videoUploaderManager(
-                file,
-                sourceId,
-                progressUploader,
-                withTranscode,
-                shouldCompress,
-                isRetriable
-            )
-        }
-    )
+            val base = BaseParam(file, sourceId, progressUploader, policy)
 
-    private suspend fun imageUploader() = request(
-        file = file,
-        sourceId = sourceId,
-        uploaderManager = imageUploaderManager,
-        execute = {
-            imageUploaderManager(
-                file,
-                sourceId,
-                progressUploader,
-                isSecure,
-                extraHeader = extraHeader,
-                extraBody = extraBody
+            if (isVideoFormat(file.path)) videoUploaderManager(
+                VideoParam(withTranscode, shouldCompress, isRetriable, base)
+            ) else imageUploaderManager(
+                ImageParam(isSecure, extraHeader, extraBody, base)
             )
         }
     )

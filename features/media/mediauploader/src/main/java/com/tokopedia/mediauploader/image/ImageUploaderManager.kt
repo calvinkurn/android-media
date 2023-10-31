@@ -1,8 +1,10 @@
 package com.tokopedia.mediauploader.image
 
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.mediauploader.BaseParam
+import com.tokopedia.mediauploader.ImageParam
 import com.tokopedia.mediauploader.UploaderManager
-import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
+import com.tokopedia.mediauploader.analytics.UploaderLogger
 import com.tokopedia.mediauploader.common.data.consts.FILE_NOT_FOUND
 import com.tokopedia.mediauploader.common.data.consts.SOURCE_NOT_FOUND
 import com.tokopedia.mediauploader.common.data.consts.UNKNOWN_ERROR
@@ -11,9 +13,6 @@ import com.tokopedia.mediauploader.common.data.consts.maxFileSizeMessage
 import com.tokopedia.mediauploader.common.data.consts.maxResBitmapMessage
 import com.tokopedia.mediauploader.common.data.consts.minResBitmapMessage
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
-import com.tokopedia.mediauploader.common.di.UploaderQualifier
-import com.tokopedia.mediauploader.common.logger.DebugLog
-import com.tokopedia.mediauploader.common.logger.onShowDebugLogcat
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.isMaxBitmapResolution
@@ -25,73 +24,58 @@ import java.io.File
 import javax.inject.Inject
 
 class ImageUploaderManager @Inject constructor(
-    @UploaderQualifier private val policyManager: SourcePolicyManager,
     private val imageUploaderUseCase: GetImageUploaderUseCase,
 ) : UploaderManager {
 
-    suspend operator fun invoke(
-        file: File,
-        sourceId: String,
-        loader: ProgressUploader?,
-        isSecure: Boolean = false,
-        extraHeader: Map<String, String>,
-        extraBody: Map<String, String>
-    ): UploadResult {
-        if (sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
-        val policy = policyManager.get() ?: return UploadResult.Error(UNKNOWN_ERROR)
+    suspend operator fun invoke(param: ImageParam): UploadResult {
+        val base = param.base as BaseParam
+        if (base.sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
 
-        return validateError(policy, file) ?: kotlin.run {
-            setProgressUploader(loader)
-            upload(file, sourceId, policy, isSecure, extraHeader, extraBody)
+        return validateError(base.policy, base.file) ?: run {
+            setProgressUploader(base.progress)
+            upload(base.policy, param)
         }
     }
 
-    private suspend fun upload(
-        file: File,
-        sourceId: String,
-        policy: SourcePolicy,
-        isSecure: Boolean,
-        extraHeader: Map<String, String> = mapOf(),
-        extraBody: Map<String, String> = mapOf()
-    ): UploadResult {
-        val upload = imageUploaderUseCase(ImageUploadParam(
-            timeOut = policy.timeOut.orZero().toString(),
-            hostUrl = policy.host,
-            sourceId = sourceId,
-            file = file,
-            isSecure = isSecure,
-            extraBody = extraBody,
-            extraHeader = extraHeader
-        ))
+    private suspend fun upload(policy: SourcePolicy, param: ImageParam): UploadResult {
+        val base = param.base as BaseParam
+
+        val upload = imageUploaderUseCase(
+            ImageUploadParam(
+                timeOut = policy.timeOut.orZero().toString(),
+                hostUrl = policy.host,
+                sourceId = base.sourceId,
+                file = base.file,
+                isSecure = param.isSecure,
+                extraBody = param.extraBody,
+                extraHeader = param.extraHeader
+            )
+        )
 
         val requestId = upload.header.requestId ?: ""
+
         val error = if (upload.header.messages.isNotEmpty()) {
             upload.header.messages.first()
         } else {
             UNKNOWN_ERROR
         }
 
-        onShowDebugLogcat(
-            DebugLog(
-                sourceId = sourceId,
-                sourceFile = file.path,
-                uploadId = upload.data?.uploadId.toString(),
-                sourcePolicy = policy
-            )
-        )
-
         return if (upload.data != null && upload.header.isSuccess) {
             upload.data.let {
-                UploadResult.Success(fileUrl = it.fileUrl, uploadId = it.uploadId)
+                UploadResult.Success(
+                    fileUrl = it.fileUrl,
+                    uploadId = it.uploadId
+                )
             }
         } else {
             UploadResult.Error(
                 message = error,
                 requestId = requestId
-            )
+            ).also {
+                UploaderLogger.commonError(base.sourceId, it)
+            }
         }
     }
-
 
     private fun validateError(policy: SourcePolicy, file: File): UploadResult? {
         policy.imagePolicy?.let { imagePolicy ->
@@ -116,9 +100,7 @@ class ImageUploaderManager @Inject constructor(
                 filePath.isMinBitmapResolution(minRes.width, minRes.height) -> {
                     UploadResult.Error(minResBitmapMessage(minRes.width, minRes.height))
                 }
-                else -> {
-                    null
-                }
+                else -> null
             }
         }?: return UploadResult.Error(UNKNOWN_ERROR)
     }
@@ -126,5 +108,4 @@ class ImageUploaderManager @Inject constructor(
     override fun setProgressUploader(progress: ProgressUploader?) {
         imageUploaderUseCase.progressUploader = progress
     }
-
 }
