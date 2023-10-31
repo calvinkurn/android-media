@@ -36,9 +36,7 @@
     <com.tokopedia.unifycomponents.TabsUnify
         android:id="@+id/tabsUnify"
         android:layout_width="match_parent"
-        tools:layout_height="38dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tpgTitle"
@@ -47,7 +45,6 @@
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="0dp"
-        tools:layout_height="176dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
