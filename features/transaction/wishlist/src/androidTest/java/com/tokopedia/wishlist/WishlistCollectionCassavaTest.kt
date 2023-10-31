@@ -14,9 +14,9 @@ import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.trackingoptimizer.repository.TrackRepository
 import com.tokopedia.trackingoptimizer.sendTrack
-import com.tokopedia.wishlist.util.WishlistIdlingResource
+import com.tokopedia.wishlist.detail.util.WishlistIdlingResource
 import com.tokopedia.wishlist.util.disableWishlistCoachmark
-import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionActivity
+import com.tokopedia.wishlist.collection.view.activity.WishlistCollectionActivity
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.runBlocking
 import org.junit.After

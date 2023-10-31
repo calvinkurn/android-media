@@ -16,12 +16,12 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.runWishlistCollectionDetailBot
-import com.tokopedia.wishlist.util.WishlistIdlingResource
+import com.tokopedia.wishlist.detail.util.WishlistIdlingResource
 import com.tokopedia.wishlist.util.adapter
 import com.tokopedia.wishlist.util.setupRemoteConfig
-import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
-import com.tokopedia.wishlist.view.adapter.viewholder.WishlistV2RecommendationCarouselViewHolder
-import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionDetailActivity
+import com.tokopedia.wishlist.detail.view.adapter.WishlistV2Adapter
+import com.tokopedia.wishlist.detail.view.adapter.viewholder.WishlistV2RecommendationCarouselViewHolder
+import com.tokopedia.wishlist.detail.view.activity.WishlistCollectionDetailActivity
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
