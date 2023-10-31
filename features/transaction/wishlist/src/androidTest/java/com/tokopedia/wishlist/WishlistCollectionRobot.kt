@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.PerformException
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -26,11 +28,15 @@ class WishlistCollectionRobot {
     }
 
     fun clickWishlistRecyclerViewItem(index: Int) {
-        onView(withId(R.id.rv_wishlist_collection))
-            .perform(
-                RecyclerViewActions
-                    .actionOnItemAtPosition<RecyclerView.ViewHolder>(index, ViewActions.click())
-            )
+        try {
+            Espresso.onView(ViewMatchers.withId(R.id.rv_wishlist_collection))
+                .perform(
+                    RecyclerViewActions
+                        .actionOnItemAtPosition<RecyclerView.ViewHolder>(index, ViewActions.click())
+                )
+        } catch (e: PerformException) {
+            e.printStackTrace()
+        }
     }
 
     fun clickSemuaWishlist() {

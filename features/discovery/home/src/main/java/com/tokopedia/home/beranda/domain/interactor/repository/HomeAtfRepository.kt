@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
+import com.tokopedia.home.beranda.helper.DeviceScreenHelper
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.usecase.RequestParams
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 class HomeAtfRepository @Inject constructor(
     private val graphqlUseCase: GraphqlUseCase<HomeAtfData>,
-    private val homeRoomDataSource: HomeRoomDataSource
+    private val homeRoomDataSource: HomeRoomDataSource,
+    private val deviceScreenHelper: DeviceScreenHelper,
 ) : UseCase<HomeAtfData>(), HomeRepository<HomeAtfData> {
     private val params = RequestParams.create()
 
@@ -27,7 +29,8 @@ class HomeAtfRepository @Inject constructor(
     override suspend fun executeOnBackground(): HomeAtfData {
         graphqlUseCase.clearCache()
         val listOfExpKey = listOf(RollenceKey.HOME_COMPONENT_ATF, RollenceKey.HOME_LOAD_TIME_KEY).joinToString(EXP_SEPARATOR)
-        val listOfExpValue = listOf(HomeRollenceController.rollenceAtfValue, HomeRollenceController.rollenceLoadTime).joinToString(EXP_SEPARATOR)
+        val expAtf = HomeRollenceController.getAtfRollence(deviceScreenHelper.isFoldableOrTablet())
+        val listOfExpValue = listOf(expAtf, HomeRollenceController.rollenceLoadTime).joinToString(EXP_SEPARATOR)
         params.putString(EXPERIMENT, listOfExpKey)
         params.putString(VARIANT, listOfExpValue)
         graphqlUseCase.setRequestParams(params.parameters)

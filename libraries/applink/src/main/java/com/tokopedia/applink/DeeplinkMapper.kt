@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.category.DeeplinkMapperCategory
+import com.tokopedia.applink.centralizedpromo.DeeplinkMapperCentralizedPromo.getRegisteredNavigationCentralizedPromo
 import com.tokopedia.applink.chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.content.DeeplinkMapperContent
@@ -389,6 +390,8 @@ object DeeplinkMapper {
             deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> DeeplinkMapperUser.getRegisteredNavigationUser(
                 deeplink
             )
+
+            deeplink.startsWith(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO) -> getRegisteredNavigationCentralizedPromo(context)
 
             else -> return ""
         }

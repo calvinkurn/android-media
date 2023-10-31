@@ -125,7 +125,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             bidSettingsList.add(topAdsBidSettingsModel)
         }
         sharedViewModel.setBidSettings(bidSettingsList)
-        priceDaily = data.daiyBudget
+        priceDaily = data.dailyBudget
         sharedViewModel.setFirstFetchMaxBudgetValue(priceDaily.toInt())
         if (priceDaily != 0.0F) {
             dailyBudget?.visible()

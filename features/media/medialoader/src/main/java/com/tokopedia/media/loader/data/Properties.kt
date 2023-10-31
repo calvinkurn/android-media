@@ -5,6 +5,7 @@ import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.Transformation
 import com.tokopedia.media.loader.listener.MediaListener
 import com.tokopedia.media.loader.listener.NetworkResponseListener
+import com.tokopedia.media.loader.utils.FeatureToggle
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDataSource
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
@@ -55,6 +56,8 @@ data class Properties(
 
     // determine is request secure or not
     internal var isSecure = false
+
+    internal var featureToggle: FeatureToggle? = null
 
     fun isSecure(value: Boolean) = apply {
         isSecure = value
