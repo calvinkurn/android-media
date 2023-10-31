@@ -19,12 +19,6 @@ object StoriesCreationModule {
 
     @Provides
     @StoriesCreationScope
-    fun provideGraphQLRepository(): GraphqlRepository {
-        return GraphqlInteractor.getInstance().graphqlRepository
-    }
-
-    @Provides
-    @StoriesCreationScope
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }

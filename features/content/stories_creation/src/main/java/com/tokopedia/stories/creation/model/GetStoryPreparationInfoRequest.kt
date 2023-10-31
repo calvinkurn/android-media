@@ -1,34 +1,40 @@
 package com.tokopedia.stories.creation.model
 
-import com.tokopedia.content.common.types.ContentCommonUserType
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.graphql.data.GqlParam
 
 /**
  * Created By : Jonathan Darwin on September 11, 2023
  */
 data class GetStoryPreparationInfoRequest(
-    val authorId: String,
-    val authorType: String,
-) {
+    @SerializedName("req")
+    val req: Data,
+) : GqlParam {
 
-    fun buildRequestParam(): Map<String, Any> {
-        return mapOf(
-            PARAM_REQ to mapOf(
-                PARAM_AUTHOR to mapOf(
-                    PARAM_AUTHOR_ID to authorId,
-                    PARAM_AUTHOR_TYPE to when (authorType) {
-                        ContentCommonUserType.TYPE_USER -> ContentCommonUserType.VALUE_TYPE_ID_USER
-                        ContentCommonUserType.TYPE_SHOP -> ContentCommonUserType.VALUE_TYPE_ID_SHOP
-                        else -> 0
-                    }
+    data class Data(
+        @SerializedName("author")
+        val author: Author,
+    )
+
+    data class Author(
+        @SerializedName("ID")
+        val authorId: String,
+
+        @SerializedName("type")
+        val authorType: Int,
+    )
+
+    companion object {
+        fun create(
+            authorId: String,
+            authorType: Int,
+        ) = GetStoryPreparationInfoRequest(
+            req = Data(
+                author = Author(
+                    authorId = authorId,
+                    authorType = authorType,
                 )
             )
         )
-    }
-
-    companion object {
-        private const val PARAM_REQ = "req"
-        private const val PARAM_AUTHOR = "author"
-        private const val PARAM_AUTHOR_ID = "ID"
-        private const val PARAM_AUTHOR_TYPE = "type"
     }
 }
