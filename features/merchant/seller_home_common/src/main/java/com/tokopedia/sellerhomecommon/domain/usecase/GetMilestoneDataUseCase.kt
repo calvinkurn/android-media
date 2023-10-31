@@ -116,6 +116,7 @@ class GetMilestoneDataUseCase(
                       buttonStatus
                     }
                   }
+                  questStatus
                   reward {
                     rewardID
                     hasReward
