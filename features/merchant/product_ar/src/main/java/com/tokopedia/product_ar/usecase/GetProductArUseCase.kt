@@ -1,7 +1,6 @@
 package com.tokopedia.product_ar.usecase
 
 import com.google.gson.Gson
-import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -14,7 +13,6 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product_ar.model.ModifaceProvider
-import com.tokopedia.product_ar.model.PdpGetARData
 import com.tokopedia.product_ar.model.ProductArResponse
 import com.tokopedia.product_ar.model.ProductArUiModel
 import javax.inject.Inject
@@ -25,54 +23,6 @@ class GetProductArUseCase @Inject constructor(
 ) : GraphqlUseCase<ProductArResponse>(graphqlRepository) {
 
     companion object {
-        const val QUERY = """
-            query pdpGetARData(${'$'}productID : String, ${'$'}shopID : String,  ${'$'}userLocation: pdpUserLocation) {
-                  pdpGetARData(productID: ${'$'}productID, shopID: ${'$'}shopID,  userLocation: ${'$'}userLocation) {
-                    provider
-                    metadata {
-                      shopName
-                      categoryID
-                      shopType
-                      categoryName
-                      categoryDetail {
-                        id
-                        name
-                      }
-                    }
-                    options {
-                      psku
-                      name
-                      productID
-                      type
-                      providerData
-                      price
-                      minOrder
-                      campaignInfo {
-                        isActive
-                        campaignID
-                        campaignType
-                        campaignTypeName
-                        discountPercentage
-                        originalPrice
-                        discountPrice
-                        stock
-                        stockSoldPercentage
-                        minOrder
-                      }
-                      stock
-                      stockCopy
-                      button {
-                        text
-                        color
-                        cart_type
-                      }
-                      unavailableCopy
-                    }
-                    optionBgImage
-                  }
-                }
-        """
-
         fun createParams(
             productId: String,
             shopId: String,
@@ -95,15 +45,11 @@ class GetProductArUseCase @Inject constructor(
     }
 
     init {
-        setGraphqlQuery(PdpGetARData())
-        setCacheStrategy(
-            GraphqlCacheStrategy
-                .Builder(CacheType.ALWAYS_CLOUD).build()
-        )
+        setGraphqlQuery(GetARDataQuery())
+        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(ProductArResponse::class.java)
     }
 
-    @GqlQuery("pdpGetARData", QUERY)
     suspend fun executeOnBackground(requestParams: Map<String, Any>): ProductArUiModel {
         setRequestParams(requestParams)
         val data = executeOnBackground()
