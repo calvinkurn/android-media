@@ -25,7 +25,7 @@ import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTracker
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseItemDecoration
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChipsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseIntent
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel2
@@ -159,9 +159,9 @@ class FeedBrowseFragment @Inject constructor(
         }
     }
 
-    private val chipsListener = object : FeedBrowseChipsViewHolder.Listener {
+    private val chipsListener = object : ChipsViewHolder.Listener {
         override fun onChipClicked(
-            viewHolder: FeedBrowseChipsViewHolder,
+            viewHolder: ChipsViewHolder,
             slotId: String,
             chip: WidgetMenuModel
         ) {
@@ -169,7 +169,7 @@ class FeedBrowseFragment @Inject constructor(
         }
 
         override fun onChipSelected(
-            viewHolder: FeedBrowseChipsViewHolder,
+            viewHolder: ChipsViewHolder,
             slotId: String,
             chip: WidgetMenuModel
         ) {

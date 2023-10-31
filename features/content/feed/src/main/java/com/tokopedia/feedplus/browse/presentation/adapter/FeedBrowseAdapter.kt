@@ -8,21 +8,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseModel
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChipsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseInspirationCardViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
+import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel2
 import com.tokopedia.feedplus.browse.presentation.model.ItemListState
-import com.tokopedia.feedplus.browse.presentation.model.hasContent
-import com.tokopedia.feedplus.browse.presentation.model.hasContentAndNotEmpty
+import com.tokopedia.feedplus.browse.presentation.model.isNotEmpty
 
 /**
  * Created by kenny.hadisaputra on 25/09/23
  */
 internal class FeedBrowseAdapter(
-    private val chipsListener: FeedBrowseChipsViewHolder.Listener,
+    private val chipsListener: ChipsViewHolder.Listener,
     private val bannerListener: FeedBrowseBannerViewHolder.Listener
 ) : ListAdapter<FeedBrowseItemListModel, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<FeedBrowseItemListModel>() {
@@ -53,11 +52,10 @@ internal class FeedBrowseAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            TYPE_CHIPS -> FeedBrowseChipsViewHolder.create(parent, chipsListener)
+            TYPE_CHIPS -> ChipsViewHolder.create(parent, chipsListener)
             TYPE_HORIZONTAL_CHANNELS -> FeedBrowseHorizontalChannelsViewHolder.create(parent)
             TYPE_BANNER -> FeedBrowseBannerViewHolder.create(parent, bannerListener)
             TYPE_TITLE -> FeedBrowseTitleViewHolder.create(parent)
-            TYPE_INSPIRATION_CARD -> FeedBrowseInspirationCardViewHolder.create(parent)
             else -> error("ViewType $viewType is not supported")
         }
     }
@@ -65,7 +63,7 @@ internal class FeedBrowseAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
         when {
-            holder is FeedBrowseChipsViewHolder && item is FeedBrowseItemListModel.Chips -> {
+            holder is ChipsViewHolder && item is FeedBrowseItemListModel.Chips -> {
                 holder.bind(item)
             }
             holder is FeedBrowseHorizontalChannelsViewHolder && item is FeedBrowseItemListModel.HorizontalChannels -> {
@@ -75,9 +73,6 @@ internal class FeedBrowseAdapter(
                 holder.bind(item)
             }
             holder is FeedBrowseTitleViewHolder && item is FeedBrowseItemListModel.Title -> {
-                holder.bind(item)
-            }
-            holder is FeedBrowseInspirationCardViewHolder && item is FeedBrowseItemListModel.InspirationCard -> {
                 holder.bind(item)
             }
         }
@@ -94,7 +89,7 @@ internal class FeedBrowseAdapter(
         val payload = payloads.filterIsInstance<FeedBrowsePayloads>().combine()
         val item = getItem(position)
         when {
-            holder is FeedBrowseChipsViewHolder && item is FeedBrowseItemListModel.Chips -> {
+            holder is ChipsViewHolder && item is FeedBrowseItemListModel.Chips -> {
                 holder.bindPayloads(item, payload)
             }
             holder is FeedBrowseHorizontalChannelsViewHolder && item is FeedBrowseItemListModel.HorizontalChannels -> {
@@ -141,19 +136,9 @@ internal class FeedBrowseAdapter(
     private fun List<FeedBrowseUiModel2>.mapToItems(): List<FeedBrowseItemListModel> {
         return flatMap {
             when (it.model) {
-                is FeedBrowseModel.ChannelsWithMenus -> it.model.mapToItems(it.result)
+                is FeedBrowseModel.ChannelsWithMenus -> it.model.mapToChannelBlocks(it.result)
                 is FeedBrowseModel.InspirationBanner -> it.model.mapToItems()
             }
-        }
-    }
-
-    private fun FeedBrowseModel.ChannelsWithMenus.mapToItems(
-        state: ResultState
-    ): List<FeedBrowseItemListModel> {
-        return when (type) {
-            FeedBrowseModel.ChannelsWithMenus.Type.ChannelBlock -> mapToChannelBlocks(state)
-            FeedBrowseModel.ChannelsWithMenus.Type.ChannelRecommendation -> mapToChannelRecommendations(state)
-            FeedBrowseModel.ChannelsWithMenus.Type.Unknown -> emptyList()
         }
     }
 
@@ -161,7 +146,7 @@ internal class FeedBrowseAdapter(
         return buildList {
             if (state.isLoading) {
                 add(FeedBrowseItemListModel.Title(slotId, title))
-                add(FeedBrowseItemListModel.HorizontalChannels(slotId, ItemListState.Loading))
+                add(FeedBrowseItemListModel.HorizontalChannels(slotId, ItemListState.initLoading()))
                 return@buildList
             }
 
@@ -169,15 +154,15 @@ internal class FeedBrowseAdapter(
             val selectedMenu = menus.keys.firstOrNull { it.id == selectedMenuId } ?: menus.keys.firstOrNull()
             val itemsInSelectedMenu = menus[selectedMenu ?: menus.keys.firstOrNull()]
 
-            if (!isMenuEmpty || itemsInSelectedMenu?.hasContentAndNotEmpty() == true) {
+            if (!isMenuEmpty || itemsInSelectedMenu?.isNotEmpty() == true) {
                 add(FeedBrowseItemListModel.Title(slotId, title))
             }
             if (!isMenuEmpty) {
                 add(
-                    FeedBrowseItemListModel.Chips(
+                    FeedBrowseItemListModel.Chips.Item(
                         slotId,
                         menus.keys.toList().map {
-                            FeedBrowseItemListModel.Chips.Model(it, it == selectedMenu)
+                            ChipsModel(it, it == selectedMenu)
                         }
                     )
                 )
@@ -185,40 +170,9 @@ internal class FeedBrowseAdapter(
             add(
                 FeedBrowseItemListModel.HorizontalChannels(
                     slotId,
-                    itemsInSelectedMenu ?: ItemListState.Loading
+                    itemsInSelectedMenu ?: ItemListState.initLoading()
                 )
             )
-        }
-    }
-
-    private fun FeedBrowseModel.ChannelsWithMenus.mapToChannelRecommendations(
-        state: ResultState
-    ): List<FeedBrowseItemListModel> {
-        return buildList {
-            val isMenuEmpty = menus.keys.isEmpty() || menus.keys.any { !it.isValid }
-            val selectedMenu = menus.keys.firstOrNull { it.id == selectedMenuId } ?: menus.keys.firstOrNull()
-            val itemsInSelectedMenu = menus[selectedMenu ?: menus.keys.firstOrNull()]
-
-            if (!isMenuEmpty) {
-                add(
-                    FeedBrowseItemListModel.Chips(
-                        slotId,
-                        menus.keys.toList().map {
-                            FeedBrowseItemListModel.Chips.Model(it, it == selectedMenu)
-                        }
-                    )
-                )
-            }
-            if (!isMenuEmpty || itemsInSelectedMenu?.hasContentAndNotEmpty() == true) {
-                add(FeedBrowseItemListModel.Title(slotId, title))
-            }
-            if (itemsInSelectedMenu?.hasContent() == true) {
-                addAll(
-                    itemsInSelectedMenu.items.map {
-                        FeedBrowseItemListModel.InspirationCard(slotId, it)
-                    }
-                )
-            }
         }
     }
 

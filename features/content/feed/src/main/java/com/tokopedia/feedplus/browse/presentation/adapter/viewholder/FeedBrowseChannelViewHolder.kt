@@ -68,7 +68,7 @@ internal class FeedBrowseChannelViewHolder private constructor(
     private val recyclerViewChip = binding.feedBrowseChips
     private val recyclerViewCard = binding.feedBrowseCards
 
-    private val chipListener = object : FeedBrowseChipViewHolder.Listener {
+    private val chipListener = object : ChipViewHolder.Listener {
         override fun onChipImpressed(model: FeedBrowseChipUiModel, position: Int) {
             val widgetData = mData ?: return
             listener.onChipImpressed(model, widgetData, position, bindingAdapterPosition)

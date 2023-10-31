@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
+import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseChipBinding
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -13,7 +13,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 /**
  * Created by meyta.taliti on 11/08/23.
  */
-internal class FeedBrowseChipViewHolder private constructor(
+internal class ChipViewHolder private constructor(
     binding: ItemFeedBrowseChipBinding,
     private val listener: Listener
 ) : RecyclerView.ViewHolder(binding.root) {
@@ -35,7 +35,7 @@ internal class FeedBrowseChipViewHolder private constructor(
         }
     }
 
-    fun bind(item: FeedBrowseItemListModel.Chips.Model) {
+    fun bind(item: ChipsModel) {
         chipView.chipText = item.menu.label
 
         onChipSelected(item.menu, item.isSelected)
@@ -80,8 +80,8 @@ internal class FeedBrowseChipViewHolder private constructor(
         fun create(
             parent: ViewGroup,
             listener: Listener,
-        ): FeedBrowseChipViewHolder {
-            return FeedBrowseChipViewHolder(
+        ): ChipViewHolder {
+            return ChipViewHolder(
                 ItemFeedBrowseChipBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,

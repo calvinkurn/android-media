@@ -5,34 +5,64 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseInspirationCardBinding
+import com.tokopedia.feedplus.databinding.ItemFeedBrowseInspirationPlaceholderBinding
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.unifycomponents.CardUnify2
 
 /**
  * Created by kenny.hadisaputra on 21/09/23
  */
-internal class FeedBrowseInspirationCardViewHolder private constructor(
-    private val binding: ItemFeedBrowseInspirationCardBinding
-) : RecyclerView.ViewHolder(binding.root) {
+internal class FeedCategoryInspirationViewHolder private constructor() {
 
-    fun bind(item: FeedBrowseItemListModel.InspirationCard) {
-        binding.tvTitle.text = item.item.title
-        binding.imgCover.setImageUrl(item.item.video.coverUrl)
+    class Card private constructor(
+        private val binding: ItemFeedBrowseInspirationCardBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
-        binding.tvPartnerName.text = item.item.partner.name
-        binding.imgAvatar.setImageUrl(item.item.partner.avatarUrl)
-        binding.imgBadge.setImageUrl(item.item.partner.badgeUrl)
-        binding.imgBadge.showWithCondition(item.item.partner.badgeUrl.isNotBlank())
+        init {
+            binding.root.animateOnPress = CardUnify2.ANIMATE_BOUNCE
+        }
+
+        fun bind(item: FeedBrowseItemListModel.InspirationCard.Item) {
+            binding.tvTitle.text = item.item.title
+            binding.imgCover.setImageUrl(item.item.video.coverUrl)
+
+            binding.tvPartnerName.text = item.item.partner.name
+            binding.imgAvatar.setImageUrl(item.item.partner.avatarUrl)
+            binding.imgBadge.setImageUrl(item.item.partner.badgeUrl)
+            binding.imgBadge.showWithCondition(item.item.partner.badgeUrl.isNotBlank())
+        }
+
+        fun recycle() {
+            binding.imgCover.setImageResource(0)
+        }
+
+        companion object {
+            fun create(parent: ViewGroup): Card {
+                return Card(
+                    ItemFeedBrowseInspirationCardBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false,
+                    )
+                )
+            }
+        }
     }
 
-    companion object {
-        fun create(parent: ViewGroup): FeedBrowseInspirationCardViewHolder {
-            return FeedBrowseInspirationCardViewHolder(
-                ItemFeedBrowseInspirationCardBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false,
+    class Placeholder private constructor(
+        binding: ItemFeedBrowseInspirationPlaceholderBinding,
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        companion object {
+            fun create(parent: ViewGroup): Placeholder {
+                return Placeholder(
+                    ItemFeedBrowseInspirationPlaceholderBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false,
+                    )
                 )
-            )
+            }
         }
     }
 }

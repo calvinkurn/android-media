@@ -126,7 +126,7 @@ internal class FeedBrowseViewModel @Inject constructor(
             updateWidget<FeedBrowseModel.ChannelsWithMenus>(slotId, ResultState.Success) {
                 it.copy(
                     selectedMenuId = chip.id,
-                    menus = it.menus + (chip to ItemListState.Loading)
+                    menus = it.menus + (chip to ItemListState.initLoading())
                 )
             }
         }
@@ -160,7 +160,7 @@ internal class FeedBrowseViewModel @Inject constructor(
                 is ContentSlotModel.TabMenus -> {
                     updateWidget<FeedBrowseModel.ChannelsWithMenus>(slotId, ResultState.Success) {
                         it.copy(
-                            menus = response.menu.associateWith { ItemListState.Loading },
+                            menus = response.menu.associateWith { ItemListState.initLoading() },
                             selectedMenuId = response.menu.firstOrNull()?.id.orEmpty()
                         )
                     }
@@ -169,9 +169,8 @@ internal class FeedBrowseViewModel @Inject constructor(
                     if (menuKeys.isEmpty()) {
                         updateWidget<FeedBrowseModel.ChannelsWithMenus>(slotId, ResultState.Success) {
                             it.copy(
-                                type = FeedBrowseModel.ChannelsWithMenus.Type.ChannelBlock,
                                 menus = mapOf(
-                                    WidgetMenuModel.Default to ItemListState.HasContent(response.channels)
+                                    WidgetMenuModel.Empty to ItemListState.initSuccess(response.channels)
                                 )
                             )
                         }
@@ -179,28 +178,7 @@ internal class FeedBrowseViewModel @Inject constructor(
                         updateWidget<FeedBrowseModel.ChannelsWithMenus>(slotId, ResultState.Success) {
                             val menu = selectedMenu ?: menuKeys.first()
                             it.copy(
-                                type = FeedBrowseModel.ChannelsWithMenus.Type.ChannelBlock,
-                                menus = menus + (menu to ItemListState.HasContent(response.channels))
-                            )
-                        }
-                    }
-                }
-                is ContentSlotModel.ChannelRecommendation -> {
-                    if (menuKeys.isEmpty()) {
-                        updateWidget<FeedBrowseModel.ChannelsWithMenus>(slotId, ResultState.Success) {
-                            it.copy(
-                                type = FeedBrowseModel.ChannelsWithMenus.Type.ChannelRecommendation,
-                                menus = mapOf(
-                                    WidgetMenuModel.Default to ItemListState.HasContent(response.channels)
-                                )
-                            )
-                        }
-                    } else {
-                        updateWidget<FeedBrowseModel.ChannelsWithMenus>(slotId, ResultState.Success) {
-                            val menu = selectedMenu ?: menuKeys.first()
-                            it.copy(
-                                type = FeedBrowseModel.ChannelsWithMenus.Type.ChannelRecommendation,
-                                menus = menus + (menu to ItemListState.HasContent(response.channels))
+                                menus = menus + (menu to ItemListState.initSuccess(response.channels))
                             )
                         }
                     }

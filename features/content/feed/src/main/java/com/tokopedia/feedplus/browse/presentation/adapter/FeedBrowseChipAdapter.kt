@@ -1,51 +1,78 @@
 package com.tokopedia.feedplus.browse.presentation.adapter
 
+import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChannelViewHolder
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChipViewHolder
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipPlaceholderViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipViewHolder
+import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
+import com.tokopedia.feedplus.browse.presentation.model.LoadingModel
 
 /**
  * Created by meyta.taliti on 11/08/23.
  */
 internal class FeedBrowseChipAdapter(
-    private val listener: FeedBrowseChipViewHolder.Listener
-) : ListAdapter<FeedBrowseItemListModel.Chips.Model, FeedBrowseChipViewHolder>(
-    object : DiffUtil.ItemCallback<FeedBrowseItemListModel.Chips.Model>() {
+    private val listener: ChipViewHolder.Listener
+) : ListAdapter<Any, RecyclerView.ViewHolder>(
+    object : DiffUtil.ItemCallback<Any>() {
         override fun areItemsTheSame(
-            oldItem: FeedBrowseItemListModel.Chips.Model,
-            newItem: FeedBrowseItemListModel.Chips.Model
+            oldItem: Any,
+            newItem: Any
         ): Boolean {
-            return oldItem.menu.id == newItem.menu.id
+            return when {
+                oldItem is ChipsModel && newItem is ChipsModel -> oldItem.menu.id == newItem.menu.id
+                else -> oldItem == newItem
+            }
         }
 
+        @SuppressLint("DiffUtilEquals")
         override fun areContentsTheSame(
-            oldItem: FeedBrowseItemListModel.Chips.Model,
-            newItem: FeedBrowseItemListModel.Chips.Model
+            oldItem: Any,
+            newItem: Any
         ): Boolean {
             return oldItem == newItem
         }
 
         override fun getChangePayload(
-            oldItem: FeedBrowseItemListModel.Chips.Model,
-            newItem: FeedBrowseItemListModel.Chips.Model
+            oldItem: Any,
+            newItem: Any
         ): Any? {
             val payloadBuilder = FeedBrowsePayloads.Builder()
-            if (oldItem.isSelected != newItem.isSelected) payloadBuilder.addSelectedChipChanged()
+            if (oldItem is ChipsModel && newItem is ChipsModel) {
+                if (oldItem.isSelected != newItem.isSelected) payloadBuilder.addSelectedChipChanged()
+            }
             return payloadBuilder.build()
         }
     }
 ) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedBrowseChipViewHolder {
-        return FeedBrowseChipViewHolder.create(parent, listener)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            TYPE_PLACEHOLDER -> ChipPlaceholderViewHolder.create(parent)
+            TYPE_CHIPS -> ChipViewHolder.create(parent, listener)
+            else -> error("View type $viewType is not supported")
+        }
     }
 
-    override fun onBindViewHolder(holder: FeedBrowseChipViewHolder, position: Int) {
-        holder.bind(getItem(position))
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val item = getItem(position)
+        when {
+            item is ChipsModel && holder is ChipViewHolder -> holder.bind(item)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when (val type = getItem(position)) {
+            is ChipsModel -> TYPE_CHIPS
+            LoadingModel -> TYPE_PLACEHOLDER
+            else -> error("Type $type is not supported")
+        }
+    }
+
+    companion object {
+        private const val TYPE_PLACEHOLDER = 0
+        private const val TYPE_CHIPS = 1
     }
 }

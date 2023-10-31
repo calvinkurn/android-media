@@ -8,7 +8,8 @@ import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChannelAdapt
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseHorizontalChannelsItemDecoration
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowsePayloads
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
-import com.tokopedia.feedplus.browse.presentation.model.hasContent
+import com.tokopedia.feedplus.browse.presentation.model.isLoading
+import com.tokopedia.feedplus.browse.presentation.model.isNotEmpty
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseHorizontalChannelsBinding
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 
@@ -38,7 +39,7 @@ internal class FeedBrowseHorizontalChannelsViewHolder private constructor(
     }
 
     fun bind(item: FeedBrowseItemListModel.HorizontalChannels) {
-        if (item.itemState.hasContent()) {
+        if (!item.itemState.isLoading) {
             adapter.submitList(item.itemState.items) {
                 binding.root.doOnLayout {
                     binding.root.scrollToPosition(0)

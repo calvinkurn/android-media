@@ -53,7 +53,6 @@ class FeedBrowseMapper @Inject constructor() {
                         group = item.type,
                         menus = emptyMap(),
                         selectedMenuId = "",
-                        type = FeedBrowseModel.ChannelsWithMenus.Type.Unknown,
                     )
                 } else if (item.type.startsWith("browse_widget_recommendation")) {
                     FeedBrowseModel.InspirationBanner(
@@ -182,11 +181,7 @@ class FeedBrowseMapper @Inject constructor() {
                 )
             }
             FEED_TYPE_CHANNEL_BLOCK -> {
-//                ContentSlotModel.ChannelBlock(mapChannel(firstWidget))
-                ContentSlotModel.ChannelRecommendation(mapChannel(firstWidget))
-            }
-            FEED_TYPE_CHANNEL_RECOM -> {
-                ContentSlotModel.ChannelRecommendation(mapChannel(firstWidget))
+                ContentSlotModel.ChannelBlock(mapChannel(firstWidget))
             }
             else -> error("Type ${firstWidget?.type} is not currently supported")
         }

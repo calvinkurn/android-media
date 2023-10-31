@@ -15,16 +15,14 @@ internal sealed interface FeedBrowseItemListModel {
         override val slotId: String,
         val title: String,
     ) : FeedBrowseItemListModel
-    data class Chips(
-        override val slotId: String,
-        val chips: List<Model>,
-    ) : FeedBrowseItemListModel {
 
-        data class Model(
-            val menu: WidgetMenuModel,
-            val isSelected: Boolean,
-        )
+    sealed interface Chips : FeedBrowseItemListModel {
+        data class Item(override val slotId: String, val chips: List<ChipsModel>) : Chips
+        object Placeholder : Chips {
+            override val slotId: String = ""
+        }
     }
+
     data class HorizontalChannels(
         override val slotId: String,
         val itemState: ItemListState<PlayWidgetChannelUiModel>,
@@ -35,8 +33,19 @@ internal sealed interface FeedBrowseItemListModel {
         val banner: BannerWidgetModel,
     ) : FeedBrowseItemListModel
 
-    data class InspirationCard(
-        override val slotId: String,
-        val item: PlayWidgetChannelUiModel,
-    ) : FeedBrowseItemListModel
+    sealed interface InspirationCard : FeedBrowseItemListModel {
+        data class Item(
+            override val slotId: String,
+            val item: PlayWidgetChannelUiModel,
+        ) : InspirationCard
+
+        object Placeholder : InspirationCard {
+            override val slotId: String = ""
+        }
+    }
 }
+
+internal data class ChipsModel(
+    val menu: WidgetMenuModel,
+    val isSelected: Boolean,
+)

@@ -17,13 +17,16 @@ internal sealed interface FeedBrowseModel {
         val group: String,
         val menus: Map<WidgetMenuModel, ItemListState<PlayWidgetChannelUiModel>>,
         val selectedMenuId: String,
-        val type: Type,
     ) : FeedBrowseModel {
 
-        enum class Type {
-            ChannelBlock,
-            ChannelRecommendation,
-            Unknown,
+        companion object {
+            val Empty = ChannelsWithMenus(
+                slotId = "",
+                title = "",
+                group = "",
+                menus = emptyMap(),
+                selectedMenuId = "",
+            )
         }
     }
 
@@ -45,14 +48,13 @@ internal data class WidgetMenuModel(
 
     val isValid: Boolean = id.isNotBlank()
     companion object {
-        val Default: WidgetMenuModel
-            get() = WidgetMenuModel(
-                id = "",
-                label = "",
-                group = "",
-                sourceType = "",
-                sourceId = "",
-            )
+        val Empty = WidgetMenuModel(
+            id = "",
+            label = "",
+            group = "",
+            sourceType = "",
+            sourceId = "",
+        )
     }
 }
 
