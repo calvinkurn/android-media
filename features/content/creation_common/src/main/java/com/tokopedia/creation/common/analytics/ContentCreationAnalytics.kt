@@ -127,21 +127,21 @@ class ContentCreationAnalytics @Inject constructor(
         when (authorEnum) {
             ContentCreationAuthorEnum.USER -> Value.user
             ContentCreationAuthorEnum.SHOP -> Value.seller
-            ContentCreationAuthorEnum.NONE -> ""
+            ContentCreationAuthorEnum.NONE -> Value.empty
         }
 
     private fun getPartnerId(authorEnum: ContentCreationAuthorEnum) =
         when (authorEnum) {
             ContentCreationAuthorEnum.USER -> userId
             ContentCreationAuthorEnum.SHOP -> shopId
-            ContentCreationAuthorEnum.NONE -> ""
+            ContentCreationAuthorEnum.NONE -> Value.empty
         }
 
     private fun getEventCategory(widgetSource: ContentCreationEntryPointSource) =
         when (widgetSource) {
             ContentCreationEntryPointSource.Shop -> VALUE_CATEGORY_SHOP
             ContentCreationEntryPointSource.Feed -> EventCategory.unifiedFeed
-            else -> ""
+            else -> Value.empty
         }
 
     private object Action {
