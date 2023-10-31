@@ -54,7 +54,7 @@ class StoriesCreationProductRepositoryImpl @Inject constructor(
         if (userSession.shopId.isBlank()) error("User does not has shop")
 
         val response = getStoryProductEtalaseUseCase(
-            GetStoryProductEtalaseRequest(
+            GetStoryProductEtalaseRequest.create(
                 authorId = userSession.shopId,
                 authorType = AUTHOR_TYPE_SELLER,
                 cursor = cursor,
@@ -71,7 +71,7 @@ class StoriesCreationProductRepositoryImpl @Inject constructor(
     override suspend fun setProductTags(creationId: String, productIds: List<String>) {
         withContext(dispatchers.io) {
             setActiveProductTagUseCase(
-                SetActiveProductTagRequest(
+                SetActiveProductTagRequest.create(
                     storyId = creationId,
                     productIds = productIds
                 )
@@ -84,7 +84,7 @@ class StoriesCreationProductRepositoryImpl @Inject constructor(
         fetchCommission: Boolean
     ): List<ProductTagSectionUiModel> = withContext(dispatchers.io) {
         val response = getStoryProductDetailsUseCase(
-            GetStoryProductDetailsRequest(creationId)
+            GetStoryProductDetailsRequest.create(creationId)
         )
 
         return@withContext productMapper.mapProductDetails(response)

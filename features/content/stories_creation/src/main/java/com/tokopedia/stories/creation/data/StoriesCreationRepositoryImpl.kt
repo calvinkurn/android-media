@@ -2,6 +2,7 @@ package com.tokopedia.stories.creation.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.model.FeedXHeaderRequestFields
+import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
 import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepository
@@ -40,9 +41,9 @@ class StoriesCreationRepositoryImpl @Inject constructor(
     override suspend fun getStoryPreparationInfo(account: ContentAccountUiModel): StoriesCreationConfiguration {
         return withContext(dispatchers.io) {
             val response = getStoryPreparationInfoUseCase(
-                GetStoryPreparationInfoRequest(
+                GetStoryPreparationInfoRequest.create(
                     authorId = account.id,
-                    authorType = account.type,
+                    authorType = ContentCommonUserType.getUserType(account.type)
                 )
             )
 
@@ -53,9 +54,9 @@ class StoriesCreationRepositoryImpl @Inject constructor(
     override suspend fun createStory(account: ContentAccountUiModel): String {
         return withContext(dispatchers.io) {
             val response = createStoryUseCase(
-                CreateStoryRequest(
+                CreateStoryRequest.create(
                     authorId = account.id,
-                    authorType = account.type,
+                    authorType = ContentCommonUserType.getUserType(account.type)
                 )
             )
 

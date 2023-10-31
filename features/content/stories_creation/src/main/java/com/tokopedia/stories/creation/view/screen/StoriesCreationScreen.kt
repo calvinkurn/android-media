@@ -52,6 +52,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
 import com.tokopedia.stories.creation.R
+import com.tokopedia.stories.creation.view.model.StoriesMedia
 import com.tokopedia.stories.creation.view.model.StoriesMediaCover
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.nest.components.R as nestcomponentsR
@@ -82,7 +83,7 @@ fun StoriesCreationScreen(
         return
     }
 
-    if (uiState.mediaFilePath.isEmpty()) {
+    if (uiState.media.filePath.isEmpty()) {
         return
     }
 
@@ -133,8 +134,8 @@ fun StoriesCreationScreen(
         )
 
         StoriesCreationMediaCover(
-            mediaFilePath = uiState.mediaFilePath,
-            mediaType = uiState.mediaType,
+            mediaFilePath = uiState.media.filePath,
+            mediaType = uiState.media.type,
             onLoadMediaPreview = onLoadMediaPreview,
             modifier = Modifier.constrainAs(mediaCover) {
                 top.linkTo(headerDivider.bottom, 16.dp)
@@ -421,7 +422,10 @@ private fun StoriesCreationScreenPreview() {
     NestTheme {
         Surface {
             val uiState = StoriesCreationUiState.Empty.copy(
-                mediaFilePath = "media_file_path"
+                media = StoriesMedia(
+                    filePath = "media_file_path",
+                    type = ContentMediaType.Video,
+                )
             )
 
             StoriesCreationScreen(

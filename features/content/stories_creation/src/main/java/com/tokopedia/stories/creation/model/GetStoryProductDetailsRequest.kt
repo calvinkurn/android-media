@@ -1,23 +1,29 @@
 package com.tokopedia.stories.creation.model
 
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.graphql.data.GqlParam
+
 /**
  * Created By : Jonathan Darwin on October 09, 2023
  */
 data class GetStoryProductDetailsRequest(
-    val storyId: String
-) {
+    @SerializedName("req")
+    val req: Data,
+) : GqlParam {
 
-    fun buildRequestParam(): Map<String, Any> {
-        return mapOf(
-            PARAM_REQ to mapOf(
-                PARAM_STORY_ID to storyId,
-            )
-        )
-    }
+    data class Data(
+        @SerializedName("storyID")
+        val storyId: String
+    )
 
     companion object {
-        private const val PARAM_REQ = "req"
-        private const val PARAM_STORY_ID = "storyID"
+        fun create(
+            storyId: String
+        ) = GetStoryProductDetailsRequest(
+            req = Data(
+                storyId = storyId
+            )
+        )
     }
 }
 

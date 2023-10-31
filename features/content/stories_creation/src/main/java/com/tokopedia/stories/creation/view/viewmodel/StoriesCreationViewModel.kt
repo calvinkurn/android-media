@@ -10,6 +10,7 @@ import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepository
 import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
+import com.tokopedia.stories.creation.view.model.StoriesMedia
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
 import com.tokopedia.stories.creation.view.model.exception.NotEligibleException
@@ -60,7 +61,7 @@ class StoriesCreationViewModel @Inject constructor(
     fun submitAction(action: StoriesCreationAction) {
         when (action) {
             is StoriesCreationAction.Prepare -> handlePrepare()
-            is StoriesCreationAction.SetMedia -> handleSetMedia(action.mediaFilePath, action.mediaType)
+            is StoriesCreationAction.SetMedia -> handleSetMedia(action.media)
             is StoriesCreationAction.SetProduct -> handleSetProduct(action.productTags)
             is StoriesCreationAction.ClickUpload -> handleClickUpload()
         }
@@ -101,15 +102,9 @@ class StoriesCreationViewModel @Inject constructor(
         }
     }
 
-    private fun handleSetMedia(
-        mediaFilePath: String,
-        mediaType: ContentMediaType,
-    ) {
+    private fun handleSetMedia(media: StoriesMedia) {
         _uiState.update {
-            it.copy(
-                mediaFilePath = mediaFilePath,
-                mediaType = mediaType,
-            )
+            it.copy(media = media)
         }
     }
 
@@ -129,8 +124,8 @@ class StoriesCreationViewModel @Inject constructor(
 
             val data = CreationUploadData.buildForStories(
                 creationId = state.config.storiesId,
-                mediaUriList = listOf(state.mediaFilePath),
-                mediaTypeList = listOf(state.mediaType.code),
+                mediaUriList = listOf(state.media.filePath),
+                mediaTypeList = listOf(state.media.type.code),
                 coverUri = "",
                 authorId = state.selectedAccount.id,
                 authorType = state.selectedAccount.type,
