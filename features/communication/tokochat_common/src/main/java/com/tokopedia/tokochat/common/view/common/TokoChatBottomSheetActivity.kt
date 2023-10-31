@@ -12,6 +12,10 @@ import com.tokopedia.tokochat.common.view.common.TokoChatBottomSheetActivity.Typ
  */
 class TokoChatBottomSheetActivity: BaseActivity() {
 
+    private val guideChatBottomSheet: TokoChatGuideChatBottomSheet by lazy {
+        TokoChatGuideChatBottomSheet()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (intent.data == null) {
@@ -30,14 +34,15 @@ class TokoChatBottomSheetActivity: BaseActivity() {
     private fun openBottomSheet(type: Type) {
         when (type) {
             Type.GUIDE_CHAT -> {
-                val bottomSheet = TokoChatGuideChatBottomSheet()
-                bottomSheet.setOnDismissListener {
+                guideChatBottomSheet.setOnDismissListener {
                     finish()
                 }
-                bottomSheet.setCloseClickListener {
+                guideChatBottomSheet.setCloseClickListener {
                     finish()
                 }
-                bottomSheet.show(supportFragmentManager)
+                if (!guideChatBottomSheet.isAdded) {
+                    guideChatBottomSheet.show(supportFragmentManager)
+                }
             }
         }
     }

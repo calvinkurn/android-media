@@ -1139,6 +1139,7 @@ open class TokoChatFragment @Inject constructor(
             )
             showBubblesAwarenessBottomSheet()
         } else if (linkUrl.isNotBlank()) {
+            view?.hideKeyboard()
             context?.let {
                 RouteManager.route(it, linkUrl)
             }
