@@ -23,10 +23,6 @@ class PersonaOpeningFragment : BaseFragment<FragmentPersonaOpeningBinding>() {
         (activity as? SellerPersonaActivity)?.openingImpressHolder
     }
 
-    override fun inject() {
-        daggerComponent?.inject(this)
-    }
-
     override fun bind(
         layoutInflater: LayoutInflater, container: ViewGroup?
     ): FragmentPersonaOpeningBinding {
