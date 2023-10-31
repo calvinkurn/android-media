@@ -84,7 +84,7 @@ class MembershipBottomSheetSuccess : BottomSheetUnify() {
             imgBsMembership = findViewById(R.id.img_membership_success)
 
             if (resultCode != CODE_SUCCESS) {
-                findViewById(R.id.img_membership_success)?.loadImageFitCenter(IMG_BS_MEMBERSHIP_FAIL)
+                findViewById<ImageView>(R.id.img_membership_success)?.loadImageFitCenter(IMG_BS_MEMBERSHIP_FAIL)
                 btnClaim.text = context?.getString(com.tokopedia.abstraction.R.string.title_try_again)
                 btnClaim.setOnClickListener {
                     listener?.onButtonClaimClicked(questId)
@@ -92,7 +92,7 @@ class MembershipBottomSheetSuccess : BottomSheetUnify() {
                 }
             } else {
                 //route to voucher
-                findViewById(R.id.img_membership_success)?.loadImageFitCenter(IMG_BS_MEMBERSHIP_SUCCESS)
+                findViewById<ImageView>(R.id.img_membership_success)?.loadImageFitCenter(IMG_BS_MEMBERSHIP_SUCCESS)
                 btnClaim.text = context?.getString(R.string.bs_button_txt)
                 btnClaim.setOnClickListener {
                     listener?.goToVoucherOrRegister()
