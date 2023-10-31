@@ -73,7 +73,7 @@ class PofUiStateMapper @Inject constructor() {
                 includeProductListHeader()
                 includeThinDivider()
                 includeLoadingUiModel()
-            },
+            }.toList(),
             footerUiState = mapFooterOnLoading()
         )
     }
@@ -119,7 +119,7 @@ class PofUiStateMapper @Inject constructor() {
             items = mutableListOf<PofVisitable>().apply {
                 includeDescription()
                 includeErrorUiModel(pofInfoRequestState.throwable)
-            },
+            }.toList(),
             footerUiState = mapFooterOnInitialLoadError()
         )
     }
@@ -218,7 +218,7 @@ class PofUiStateMapper @Inject constructor() {
                 }
                 includeTicker(tickerUiModel)
             }
-        }
+        }.toList()
     }
 
     private fun mapFooterUiState(
@@ -258,7 +258,7 @@ class PofUiStateMapper @Inject constructor() {
                     includePriceBreakdownTotal(pofEstimateRequestState.data.partialOrderFulfillmentRequestEstimate?.pofFinalEstimation)
                     includeSummaryDescription(pofEstimateRequestState.data.partialOrderFulfillmentRequestEstimate?.pofFinalEstimation?.tooltip.orEmpty())
                     includeTicker(tickerUiModel)
-                }
+                }.toList()
             )
         } else {
             PofBottomSheetSummaryUiState.Hidden
@@ -340,7 +340,7 @@ class PofUiStateMapper @Inject constructor() {
         val quantityChanged = quantityEditorDataList.any { it.quantity != it.maxQuantity }
         val pofStatus = pofInfoRequestState.data.infoRequestPartialOrderFulfillment?.pofStatus.orZero()
         return if (pofStatus == STATUS_INITIAL) {
-            PofFooterUiState.ErrorReFetch(
+            PofFooterUiState.ShowingPofRequestData(
                 priceEstimationData = PofFooterUiState.PriceEstimationData(
                     title = StringRes(
                         R.string.som_pof_footer_title_with_counter,

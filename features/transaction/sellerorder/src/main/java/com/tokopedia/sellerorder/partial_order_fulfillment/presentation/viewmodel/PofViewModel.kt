@@ -348,6 +348,7 @@ class PofViewModel @Inject constructor(
             quantityEditorDataList.map { quantityEditorData ->
                 if (quantityEditorData.orderDetailId == event.orderDetailId) {
                     if (event.exceedCheckoutQuantity) {
+                        showToasterCannotExceedCheckoutQuantity()
                         changed = quantityEditorData.quantity != event.availableQuantity
                         if (changed) {
                             quantityEditorData.copy(
@@ -355,7 +356,6 @@ class PofViewModel @Inject constructor(
                                 updateTimestamp = System.currentTimeMillis()
                             )
                         } else {
-                            showToasterCannotExceedCheckoutQuantity()
                             quantityEditorData.copy(updateTimestamp = System.currentTimeMillis())
                         }
                     } else {
