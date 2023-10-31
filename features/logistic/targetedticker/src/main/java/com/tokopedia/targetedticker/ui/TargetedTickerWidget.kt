@@ -27,7 +27,7 @@ import javax.inject.Inject
  */
 class TargetedTickerWidget : FrameLayout {
 
-    private var ticker: Ticker? = null
+    var ticker: Ticker? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
