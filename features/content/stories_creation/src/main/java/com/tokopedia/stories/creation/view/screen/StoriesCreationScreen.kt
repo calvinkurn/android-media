@@ -419,7 +419,7 @@ private fun StoriesCreationScreenPreview() {
             val uiState = StoriesCreationUiState.Empty.copy(
                 media = StoriesMedia(
                     filePath = "media_file_path",
-                    type = StoriesMediaType.Video,
+                    type = ContentMediaType.Video,
                 )
             )
 

@@ -2,7 +2,6 @@ package com.tokopedia.stories.creation.view.activity
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.material.Surface
 import androidx.compose.runtime.LaunchedEffect
@@ -13,7 +12,6 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.creation.common.presentation.utils.ContentCreationRemoteConfigManager
 import com.tokopedia.globalerror.GlobalError
@@ -23,7 +21,6 @@ import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.play_common.util.VideoSnapshotHelper
-import com.tokopedia.play_common.view.getBitmapFromUrl
 import com.tokopedia.stories.creation.di.DaggerStoriesCreationComponent
 import com.tokopedia.stories.creation.view.screen.StoriesCreationScreen
 import com.tokopedia.stories.creation.view.viewmodel.StoriesCreationViewModel
