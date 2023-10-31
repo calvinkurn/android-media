@@ -81,7 +81,8 @@ object ShopPageConstant {
     }
 
     object ShopPageFeatureImprovementType {
-        const val V3_IMPROVEMENT = "V3"      // Faster shop header using more slimmer P1 network call
-        const val V4_REIMAGINED = "V4"       // Shop Page Reimagined
+        const val V3_IMPROVEMENT            = "V3"      // Faster shop header using more slimmer P1 network call
+        const val V4_REIMAGINED             = "V4"       // Shop Page Reimagined
+        const val V4_WITH_OPTIMIZED_P1      = "V4.1"       // Shop Page Reimagined with more optimized P1
     }
 }
