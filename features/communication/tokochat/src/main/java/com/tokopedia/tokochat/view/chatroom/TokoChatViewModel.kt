@@ -22,7 +22,6 @@ import com.tokopedia.tokochat.common.util.TokoChatCacheManager
 import com.tokopedia.tokochat.common.util.TokoChatCacheManagerImpl.Companion.TOKOCHAT_IMAGE_ATTACHMENT_MAP
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.SOURCE_TOKOFOOD
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSourceCategory
 import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.tokochat.domain.cache.TokoChatBubblesCache
@@ -148,7 +147,7 @@ class TokoChatViewModel @Inject constructor(
 
     @VisibleForTesting
     var connectionCheckJob: Job? = null
-    val orderStatusParamFlow = MutableSharedFlow<Pair<String, String>>(Int.ONE)
+    private val orderStatusParamFlow = MutableSharedFlow<Pair<String, String>>(Int.ONE)
 
     init {
         viewModelScope.launch {
@@ -398,7 +397,12 @@ class TokoChatViewModel @Inject constructor(
         serviceType: String
     ): Flow<Result<TokoChatOrderProgressResponse>> {
         return flow {
-            val result = getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(orderId, serviceType))
+            val result = getTokoChatOrderProgressUseCase(
+                TokoChatOrderProgressParam(
+                    orderId,
+                    serviceType
+                )
+            )
             emit(Success(result))
         }
     }

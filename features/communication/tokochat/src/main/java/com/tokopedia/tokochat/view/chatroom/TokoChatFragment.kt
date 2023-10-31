@@ -52,6 +52,7 @@ import com.tokopedia.tokochat.common.util.TokoChatValueUtil.CUSTOMER
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.DEFAULT_CENSOR_PERCENTAGE
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.DRIVER
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IS_FROM_BUBBLE_KEY
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSourceCategory
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSourceIcon
 import com.tokopedia.tokochat.common.util.TokoChatViewUtil
 import com.tokopedia.tokochat.common.util.TokoChatViewUtil.EIGHT_DP
@@ -586,7 +587,9 @@ open class TokoChatFragment @Inject constructor(
                             OrderStatusType.COMPLETED
                         )
                     ) {
-                        viewModel.updateOrderStatusParam(Pair(viewModel.tkpdOrderId, viewModel.source))
+                        viewModel.updateOrderStatusParam(
+                            Pair(viewModel.tkpdOrderId, getSourceCategory(viewModel.source))
+                        )
                     }
                 }
                 is Fail -> {
