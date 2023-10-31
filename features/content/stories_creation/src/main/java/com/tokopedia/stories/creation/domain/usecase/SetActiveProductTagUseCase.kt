@@ -14,7 +14,7 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on September 11, 2023
  */
 @GqlQuery(SetActiveProductTagUseCase.QUERY_NAME, SetActiveProductTagUseCase.QUERY)
-internal class SetActiveProductTagUseCase @Inject constructor(
+class SetActiveProductTagUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers,
     @ApplicationContext private val repository: GraphqlRepository,
 ) : CoroutineUseCase<SetActiveProductTagRequest, SetActiveProductTagResponse>(dispatchers.io) {
