@@ -260,7 +260,7 @@ class OrderSummaryPageViewModelPromoEntryPointTest : BaseOrderSummaryPageViewMod
         val resultPromoEntryPointInfo = PromoEntryPointInfo(
             isSuccess = false,
             messages = listOf("message"),
-            color = "green"
+            color = "grey"
         )
         every {
             chosenAddressRequestHelper.getChosenAddress()
@@ -275,7 +275,7 @@ class OrderSummaryPageViewModelPromoEntryPointTest : BaseOrderSummaryPageViewMod
                     ),
                     entryPointInfo = EntryPointInfo(
                         messages = listOf("message"),
-                        state = "green"
+                        state = "grey"
                     )
                 )
             )
