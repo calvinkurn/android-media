@@ -119,9 +119,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
     private static final String ENABLE_ASYNC_GCM_LEGACY = "android_async_gcm_legacy";
-
-    private static final String ENABLE_REMOTERESOURCE = "android_sellerapp_enable_remote_resource";
-
+    
     private static final int REDIRECTION_HOME = 1;
     private static final int REDIRECTION_WEBVIEW = 2;
     private static final int REDIRECTION_DEFAULT = 0;
@@ -209,9 +207,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
     }
 
     private void initResourceDownloadManager() {
-        if (remoteConfig.getBoolean(ENABLE_REMOTERESOURCE, false)) {
-            (new DeferredResourceInitializer()).initializeResourceDownloadManager(context);
-        }
+        (new DeferredResourceInitializer()).initializeResourceDownloadManager(context);
     }
 
     private void initIris() {
