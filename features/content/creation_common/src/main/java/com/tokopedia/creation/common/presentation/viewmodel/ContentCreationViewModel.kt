@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.creation.common.domain.ContentCreationConfigUseCase
+import com.tokopedia.creation.common.presentation.model.ContentCreationAuthorEnum
 import com.tokopedia.creation.common.presentation.model.ContentCreationConfigModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
@@ -31,20 +32,35 @@ class ContentCreationViewModel @Inject constructor(
     private val _creationConfig = MutableStateFlow<Result<ContentCreationConfigModel>?>(null)
     val creationConfig = _creationConfig.asStateFlow()
 
-    var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Unknown
+    val authorType: ContentCreationAuthorEnum
+        get() = selectedCreationType.value?.let {
+            it.authorType
+        } ?: creationConfig.value?.let {
+            if (it is Success) {
+                it.data.creationItems.firstOrNull()?.authorType ?: ContentCreationAuthorEnum.NONE
+            } else {
+                ContentCreationAuthorEnum.NONE
+            }
+        } ?: ContentCreationAuthorEnum.NONE
+
+    val selectedItemTitle: String
+        get() = selectedCreationType.value?.title.orEmpty()
 
     fun selectCreationItem(item: ContentCreationItemModel) {
         _selectedCreationType.value = item
     }
 
-    fun fetchConfig(creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty) {
+    fun fetchConfig(
+        widgetSource: ContentCreationEntryPointSource,
+        creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty
+    ) {
         viewModelScope.launch {
             try {
                 val formattedCreationConfig = if (creationConfig.isActive) {
-                    formatCreationConfig(creationConfig)
+                    formatCreationConfig(creationConfig, widgetSource)
                 } else {
                     val response = contentCreationConfigUseCase(Unit)
-                    formatCreationConfig(response)
+                    formatCreationConfig(response, widgetSource)
                 }
 
                 _creationConfig.value = Success(formattedCreationConfig)
@@ -61,17 +77,24 @@ class ContentCreationViewModel @Inject constructor(
             ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
         }
 
-    private fun formatCreationConfig(creationConfig: ContentCreationConfigModel): ContentCreationConfigModel =
+    private fun formatCreationConfig(
+        creationConfig: ContentCreationConfigModel,
+        widgetSource: ContentCreationEntryPointSource
+    ): ContentCreationConfigModel =
         creationConfig.copy(
             creationItems = creationConfig.creationItems.mapNotNull { item ->
-                if (!isStoryEnabled() && item.type == ContentCreationTypeEnum.STORY) null
-                else item
+                if (!isStoryEnabled(widgetSource) && item.type == ContentCreationTypeEnum.STORY) {
+                    null
+                } else {
+                    item
+                }
             }
         )
 
-    private fun isStoryEnabled(): Boolean = when (widgetSource) {
-        ContentCreationEntryPointSource.Shop -> contentCreationConfigManager.isShowingShopEntryPoint()
-        ContentCreationEntryPointSource.Feed -> contentCreationConfigManager.isShowingFeedEntryPoint()
-        else -> contentCreationConfigManager.isShowingCreation()
-    }
+    private fun isStoryEnabled(widgetSource: ContentCreationEntryPointSource): Boolean =
+        when (widgetSource) {
+            ContentCreationEntryPointSource.Shop -> contentCreationConfigManager.isShowingShopEntryPoint()
+            ContentCreationEntryPointSource.Feed -> contentCreationConfigManager.isShowingFeedEntryPoint()
+            else -> contentCreationConfigManager.isShowingCreation()
+        }
 }

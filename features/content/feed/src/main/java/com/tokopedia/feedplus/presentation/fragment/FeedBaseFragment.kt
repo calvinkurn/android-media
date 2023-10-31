@@ -316,10 +316,6 @@ class FeedBaseFragment :
         binding.viewVerticalSwipeOnboarding.showAnimated()
     }
 
-    override fun trackViewPerformanceClicked() {
-        /* TODO : Add Analytics, if any */
-    }
-
     private fun setupView() {
         binding.vpFeedTabItemsContainer.adapter = adapter
         binding.vpFeedTabItemsContainer.reduceDragSensitivity(3)
