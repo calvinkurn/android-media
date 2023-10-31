@@ -26,6 +26,7 @@ import com.tokopedia.banner.dynamic.util.ViewHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.banner.R as RB
 
 /**
@@ -95,11 +96,11 @@ class BannerViewDynamicBackground @JvmOverloads constructor(context: Context, at
         }
 
         //render first image on banner
-        ImageHandler.loadImageBlurWithViewTarget(
-                context.applicationContext,
-                url,
-                getBitmapImageViewTarget()
-        )
+        url.getBitmapImageUrl(context.applicationContext, properties = {
+            useBlurHash(true)
+        }) {
+            showImage(it)
+        }
 
         bannerRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             var currentImagePosition = 0
@@ -112,30 +113,16 @@ class BannerViewDynamicBackground @JvmOverloads constructor(context: Context, at
                 if (position != currentImagePosition && position != -1) {
 
                     val url = promoImageUrls[position]
-                    ImageHandler.loadImageBlurWithViewTarget(
-                            context.applicationContext,
-                            url,
-                            getBitmapImageViewTarget()
-                    )
+                    url.getBitmapImageUrl(context.applicationContext, properties = {
+                        useBlurHash(true)
+                    }) {
+                        showImage(it)
+                    }
                     oldImagePosition = currentImagePosition
                     currentImagePosition = position
                 }
             }
         })
-    }
-
-    fun getBitmapImageViewTarget(): CustomTarget<Bitmap> {
-        return object : CustomTarget<Bitmap>() {
-            override fun onLoadCleared(placeholder: Drawable?) {
-
-            }
-
-            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                resource.run {
-                    showImage(resource)
-                }
-            }
-        }
     }
 
     fun showImage(bitmap: Bitmap) {

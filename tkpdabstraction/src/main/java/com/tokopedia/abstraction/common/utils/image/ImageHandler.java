@@ -100,7 +100,7 @@ public class ImageHandler {
         }
     }
 
-
+    // done
     public static void loadImageWithoutPlaceholder(ImageView imageview, String url, int resId) {
         if (url != null && !TextUtils.isEmpty(url)) {
             Glide.with(imageview.getContext())
@@ -117,6 +117,7 @@ public class ImageHandler {
         }
     }
 
+    // done
     public static void loadImageWithoutPlaceholder(ImageView imageview, String url, Drawable drawable) {
         if (url != null && !TextUtils.isEmpty(url)) {
             Glide.with(imageview.getContext())
@@ -192,6 +193,7 @@ public class ImageHandler {
                 .into(imageview);
     }
 
+    // done
     public static void loadImage(Context context, ImageView imageview, String url, ColorDrawable colorDrawable) {
         Glide.with(context)
                 .load(url)
@@ -224,6 +226,7 @@ public class ImageHandler {
         }
     }
 
+    // done
     public static void loadImageWithoutPlaceholder(ImageView imageview, String url) {
 
         if (imageview.getContext() != null) {
@@ -236,6 +239,7 @@ public class ImageHandler {
         }
     }
 
+    // done
     public static void loadImageWithoutPlaceholder(ImageView imageview, String url, ImageLoaderStateListener imageLoaderStateListener) {
         if (imageview.getContext() != null) {
             Glide.with(imageview.getContext())
@@ -411,7 +415,7 @@ public class ImageHandler {
     }
 
     public static void loadImageRounded2(Context context, final ImageView imageview, final String url) {
-//        loadImageRounded2(context, imageview, url, 5.0f);
+        loadImageRounded2(context, imageview, url, 5.0f);
     }
 
     public static void loadImageRounded2(Context context, final ImageView imageview, final int resourceDrawable, float radius) {
@@ -424,6 +428,7 @@ public class ImageHandler {
                 .into(getRoundedImageViewTarget(imageview, radius));
     }
 
+    // done
     public static void loadImageRounded2(Context context, final ImageView imageview, final String url, float radius) {
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
