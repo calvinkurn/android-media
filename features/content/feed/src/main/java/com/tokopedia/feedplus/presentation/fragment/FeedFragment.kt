@@ -222,9 +222,7 @@ class FeedFragment :
     )
     private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
 
-    private val feedMvcAnalytics by lazyThreadSafetyNone {
-        FeedMVCAnalytics(feedEntrySource)
-    }
+    private val feedMvcAnalytics = FeedMVCAnalytics()
 
     private val feedEntrySource : MapperFeedModelToTrackerDataModel.FeedEntrySource by lazyThreadSafetyNone {
         val widgetId = arguments?.getString(UF_EXTRA_FEED_WIDGET_ID).ifNullOrBlank { ENTRY_POINT_DEFAULT }

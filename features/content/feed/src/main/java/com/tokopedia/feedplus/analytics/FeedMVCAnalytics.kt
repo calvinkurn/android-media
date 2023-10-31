@@ -6,8 +6,8 @@ import com.tokopedia.content.analytic.Key
 import com.tokopedia.feedplus.analytics.FeedAnalytics.Companion.getContentType
 import com.tokopedia.feedplus.analytics.FeedAnalytics.Companion.getPostType
 import com.tokopedia.feedplus.analytics.FeedAnalytics.Companion.getPrefix
-import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
+import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.mvcwidget.trackers.DefaultMvcTrackerImpl
 import com.tokopedia.mvcwidget.trackers.MvcSource
@@ -16,7 +16,7 @@ import com.tokopedia.track.TrackApp
 /**
  * Created By : Muhammad Furqan on 03/05/23
  */
-class FeedMVCAnalytics(private val entrySource: MapperFeedModelToTrackerDataModel.FeedEntrySource) : DefaultMvcTrackerImpl() {
+class FeedMVCAnalytics : DefaultMvcTrackerImpl() {
 
     var trackerData: FeedTrackerDataModel? = null
     var voucherList: List<AnimatedInfos?> = emptyList()
@@ -42,7 +42,7 @@ class FeedMVCAnalytics(private val entrySource: MapperFeedModelToTrackerDataMode
                 it.type,
                 it.mediaType
             )
-            } - ${it.contentScore} - ${it.hasVoucher} - ${it.campaignStatus} - ${entrySource.entryPoint}"
+            } - ${it.contentScore} - ${it.hasVoucher} - ${it.campaignStatus} - ${it.entrySource.entryPoint}"
         } ?: ""
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -67,7 +67,7 @@ class FeedMVCAnalytics(private val entrySource: MapperFeedModelToTrackerDataMode
                         }
                     }),
                 )
-                putString(Key.pageSource, "${entrySource.entryPoint.ifEmpty { "0" }}.0.0.${entrySource.widgetId.ifEmpty { "0" }}")
+                putString(Key.pageSource, "${trackerData?.entrySource?.entryPoint.ifNull { "0" }}.0.0.${trackerData?.entrySource?.widgetId.ifNull { "0" }}")
             }
         )
     }
