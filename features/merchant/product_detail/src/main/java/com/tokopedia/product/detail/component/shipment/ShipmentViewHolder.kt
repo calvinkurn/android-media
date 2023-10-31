@@ -11,7 +11,6 @@ import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.databinding.ItemShipmentBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentErrorBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentFailedBinding
@@ -22,8 +21,6 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.renderHtmlBold
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -34,9 +31,6 @@ class ShipmentViewHolder(
     companion object {
         val LAYOUT = R.layout.item_shipment
 
-        private const val TIPS_TYPE = "tips"
-        private const val TICKER_INFO_TYPE = "info"
-        private const val TICKER_WARNING_TYPE = "warning"
         private const val TICKER_ACTION_APPLINK = "applink"
     }
 
@@ -139,18 +133,7 @@ class ShipmentViewHolder(
             )
         }
 
-        val tickers = data.tickers.filter {
-            it.color == TICKER_INFO_TYPE ||
-                it.color == TICKER_WARNING_TYPE
-        }.map {
-            TickerData(
-                description = it.message,
-                type = mapTickerType(it.color),
-                title = it.title,
-                isFromHtml = true
-            )
-        }
-
+        val tickers = data.tickers
         pdpShipmentTicker.showIfWithBlock(tickers.isNotEmpty()) {
             addPagerView(
                 TickerPagerAdapter(context, tickers),
@@ -158,11 +141,9 @@ class ShipmentViewHolder(
             )
         }
 
-        val tips = data.tickers.firstOrNull {
-            it.color == TIPS_TYPE
-        } ?: return
+        pdpShipmentTips.showIfWithBlock(data.tips?.message?.isNotBlank() == true) {
+            val tips = data.tips ?: return@showIfWithBlock
 
-        pdpShipmentTips.showIfWithBlock(tips.message.isNotBlank()) {
             this.title = tips.title
 
             val htmlString = HtmlLinkHelper(context, generateHtml(tips.message, tips.link))
@@ -185,7 +166,7 @@ class ShipmentViewHolder(
 
     private fun renderShipmentPlus(
         vsShipmentPlus: ViewStub,
-        shipmentPlus: ShipmentPlusData,
+        shipmentPlus: ShipmentUiModel.ShipmentPlusData,
         componentTrackDataModel: ComponentTrackDataModel
     ) {
         if (shipmentPlus.isShow) {
@@ -204,14 +185,6 @@ class ShipmentViewHolder(
                 }
                 pdpShipmentPlus.show()
             }
-        }
-    }
-
-    private fun mapTickerType(type: String): Int {
-        return when (type) {
-            TICKER_INFO_TYPE -> Ticker.TYPE_ANNOUNCEMENT
-            TICKER_WARNING_TYPE -> Ticker.TYPE_WARNING
-            else -> Ticker.TYPE_ANNOUNCEMENT
         }
     }
 
@@ -279,14 +252,6 @@ class ShipmentViewHolder(
                 listener.refreshPage()
             }
         }
-    }
-
-    private fun getError() = lazy {
-        binding.pdpShipmentStateError.inflate()
-    }
-
-    private fun getFailed() = lazy {
-        binding.pdpShipmentStateFailed.inflate()
     }
 
     data class ShipmentView(

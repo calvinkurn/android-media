@@ -25,6 +25,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/pdp_shipment_info_logo"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginStart="0dp"
         app:typographyType="display_2"
         tools:text="Estimasi tiba besok - 25 Agu" />
 
