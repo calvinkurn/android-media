@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -45,7 +46,7 @@ fun ContentCreationView(
     NestTheme {
         when (creationConfig) {
             is Success -> {
-                LaunchEffect(Unit) {
+                LaunchedEffect(Unit) {
                     onImpressBottomSheet()
                 }
 
@@ -158,7 +159,7 @@ private fun ContentCreationFailView(onRetry: () -> Unit) {
 @Preview
 @Composable
 private fun ContentCreationComponentFailedPreview() {
-    ContentCreationComponent(
+    ContentCreationView(
         creationConfig = Fail(Throwable("Failed")),
         selectedItem = null,
         onSelectItem = {},
@@ -170,7 +171,7 @@ private fun ContentCreationComponentFailedPreview() {
 @Preview
 @Composable
 private fun ContentCreationComponentSuccessPreview() {
-    ContentCreationComponent(
+    ContentCreationView(
         creationConfig = Success(
             ContentCreationConfigModel(
                 isActive = true,

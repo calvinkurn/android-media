@@ -18,7 +18,7 @@ import com.tokopedia.creation.common.R
 import com.tokopedia.creation.common.analytics.ContentCreationAnalytics
 import com.tokopedia.creation.common.di.ContentCreationComponent
 import com.tokopedia.creation.common.di.DaggerContentCreationComponent
-import com.tokopedia.creation.common.presentation.components.ContentCreationComponent
+import com.tokopedia.creation.common.presentation.components.ContentCreationView
 import com.tokopedia.creation.common.presentation.model.ContentCreationAuthorEnum
 import com.tokopedia.creation.common.presentation.model.ContentCreationConfigModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource

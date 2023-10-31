@@ -10,6 +10,7 @@ import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.BusinessUnit
 import com.tokopedia.content.analytic.CurrentSite
 import com.tokopedia.content.analytic.EventCategory
+import com.tokopedia.content.analytic.Value
 
 /**
  * Created By : Muhammad Furqan on 27/10/23
