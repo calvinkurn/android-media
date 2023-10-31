@@ -991,7 +991,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_CLEAR_DATA_ONLY, true);
                 startActivityForResult(intent, REQUEST_CODE_LOGOUT);
             } else {
-                startActivityForResult(RouteManager.getIntent(getActivity(), url), REQUEST_CODE_LOGIN);
+                gotoLoginPage();
             }
             return true;
         }
@@ -1049,11 +1049,17 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             if (pathSegments.size() == 1 &&
                     LOGIN.equals(pathSegments.get(0)) &&
                     !userSession.isLoggedIn()) {
-                startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
-                return true;
+                gotoLoginPage();
+            return true;
             }
         }
         return false;
+    }
+
+    private void gotoLoginPage() {
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_FROM_WEBVIEW, true);
+        startActivityForResult(intent, REQUEST_CODE_LOGIN);
     }
 
     private boolean isBriIntent(Uri uri) {
