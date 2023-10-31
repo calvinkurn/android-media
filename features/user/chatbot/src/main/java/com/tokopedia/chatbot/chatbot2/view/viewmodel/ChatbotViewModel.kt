@@ -570,6 +570,7 @@ class ChatbotViewModel @Inject constructor(
                         ChatDataState.SuccessChatDataState(mappedResponse, chatReplies)
                     )
                 }
+                checkForAttachmentDirectActionFromExistingChat(response)
             },
             onError = {
                 _existingChatData.postValue(
@@ -579,6 +580,36 @@ class ChatbotViewModel @Inject constructor(
                 )
             }
         )
+    }
+
+    @VisibleForTesting
+    fun checkForAttachmentDirectActionFromExistingChat(data: GetExistingChatPojo) {
+        data.chatReplies.list.forEach { chatRepliesItem ->
+            chatRepliesItem.chats.forEach { chat ->
+                chat.replies.forEach { reply ->
+                    when (reply.attachment.type.toString()) {
+                        DYNAMIC_ATTACHMENT -> {
+                            val dynamicAttachment = GsonBuilder().create().fromJson(
+                                reply.attachment.attributes,
+                                DynamicAttachment::class.java
+                            )
+                            val contentCode =
+                                dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
+                            when (contentCode) {
+                                ChatbotConstant.DynamicAttachment.DYNAMIC_NEW_CHATBOT_SESSION -> {
+                                    val dynamicAttachmentNewChatbotSession = GsonBuilder().create().fromJson(
+                                        dynamicAttachment.dynamicAttachmentAttribute.dynamicAttachmentBodyAttributes.dynamicContent,
+                                        DynamicAttachmentNewChatbotSession::class.java
+                                    )
+
+                                    handleDynamicAttachmentNewChatbotSession(dynamicAttachmentNewChatbotSession.isNewChatbotSession)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     fun getBottomChat(
