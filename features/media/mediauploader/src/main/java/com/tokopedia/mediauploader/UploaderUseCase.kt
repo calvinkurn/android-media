@@ -67,7 +67,9 @@ class UploaderUseCase @Inject constructor(
      */
     private suspend fun getSourcePolicyAndSaveToCache(): SourcePolicy {
         val param = GetSourcePolicyUseCase.Param(sourceId, file, isSecure)
-        return sourcePolicyManager.get() ?: sourcePolicyUseCase(param)
+        return sourcePolicyManager.get() ?: sourcePolicyUseCase(param).also {
+            sourcePolicyManager.set(it)
+        }
     }
 
     /**
