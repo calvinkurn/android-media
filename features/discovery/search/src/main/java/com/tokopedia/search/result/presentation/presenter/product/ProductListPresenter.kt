@@ -1013,6 +1013,7 @@ class ProductListPresenter @Inject constructor(
             title = title,
             isSelected = isChipSelected,
             hasChevron = !isSingleFilter,
+            iconUrl = filter.getIconImage(title)
         )
     }
 
