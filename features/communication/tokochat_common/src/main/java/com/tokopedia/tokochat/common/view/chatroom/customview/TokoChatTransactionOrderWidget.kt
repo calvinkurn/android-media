@@ -17,8 +17,9 @@ import com.tokopedia.tokochat.common.util.CommonUtil
 import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatOrderProgressUiModel
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.databinding.TokochatItemOrderStatusShimmerBinding
-import com.tokopedia.tokochat_common.databinding.TokochatPartialOrderStatusWidgetBinding
+import com.tokopedia.tokochat_common.databinding.TokochatPartialTokofoodOrderStatusWidgetBinding
 import com.tokopedia.tokochat_common.databinding.TokochatTransactionWidgetBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TokoChatTransactionOrderWidget : LinearLayout {
 
@@ -29,7 +30,7 @@ class TokoChatTransactionOrderWidget : LinearLayout {
 
     private var binding: TokochatTransactionWidgetBinding? = null
 
-    private var partialOrderStatusWidgetBinding: TokochatPartialOrderStatusWidgetBinding? = null
+    private var partialOrderStatusWidgetBinding: TokochatPartialTokofoodOrderStatusWidgetBinding? = null
 
     private var shimmerOrderStatusWidgetBinding: TokochatItemOrderStatusShimmerBinding? = null
 
@@ -98,7 +99,7 @@ class TokoChatTransactionOrderWidget : LinearLayout {
 
     private fun setBringToFrontAndBgColor() {
         bringToFront()
-        setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+        setBackgroundColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Background))
     }
 
     private fun updateOrderStatus(newOrderStatus: String) {
@@ -196,7 +197,8 @@ class TokoChatTransactionOrderWidget : LinearLayout {
     private fun bindPartialOrderStatusWidget(root: View) {
         if (partialOrderStatusWidgetBinding == null) {
             partialOrderStatusWidgetBinding =
-                TokochatPartialOrderStatusWidgetBinding.bind(root.findViewById(R.id.tokochat_partial_order_status_viewstub))
+                TokochatPartialTokofoodOrderStatusWidgetBinding
+                    .bind(root.findViewById(R.id.tokochat_partial_order_status_viewstub))
         }
     }
 
@@ -408,8 +410,8 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         }
 
         companion object {
-            val COLOR_NOT_SEEN = com.tokopedia.unifyprinciples.R.color.Unify_GN50
-            var COLOR_SEEN = com.tokopedia.unifyprinciples.R.color.Unify_Background
+            val COLOR_NOT_SEEN = unifyprinciplesR.color.Unify_GN50
+            var COLOR_SEEN = unifyprinciplesR.color.Unify_Background
 
             const val OPEN = "Tutup"
             const val CLOSE = "Lihat"
