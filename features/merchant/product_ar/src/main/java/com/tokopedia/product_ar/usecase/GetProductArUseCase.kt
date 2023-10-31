@@ -14,6 +14,7 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product_ar.model.ModifaceProvider
+import com.tokopedia.product_ar.model.PdpGetARData
 import com.tokopedia.product_ar.model.ProductArResponse
 import com.tokopedia.product_ar.model.ProductArUiModel
 import javax.inject.Inject
@@ -45,9 +46,6 @@ class GetProductArUseCase @Inject constructor(
                       type
                       providerData
                       price
-                      priceFmt
-                      slashPriceFmt
-                      discPercentage
                       minOrder
                       campaignInfo {
                         isActive
