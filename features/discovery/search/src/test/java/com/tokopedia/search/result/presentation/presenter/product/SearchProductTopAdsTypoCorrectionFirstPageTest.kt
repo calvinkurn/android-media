@@ -19,6 +19,7 @@ import rx.Observable
 
 internal class SearchProductTopAdsTypoCorrectionFirstPageTest : ProductListPresenterTestFixtures() {
     private val searchProductResponseCode3 = "searchproduct/typocorrection/response-code-3.json"
+    private val searchProductResponseCode3Reimagine = "searchproduct/typocorrection/response-code-3-reimagine.json"
     private val topAdsTypoCorrected = "searchproduct/typocorrection/topads-typo-corrected.json"
 
     private val requestParamsSlot = slot<RequestParams>()
@@ -33,6 +34,7 @@ internal class SearchProductTopAdsTypoCorrectionFirstPageTest : ProductListPrese
             searchProductTopAdsUseCase,
             { performanceMonitoring },
             testSchedulersProvider,
+            reimagineRollence,
         )
 
     @Test
@@ -52,8 +54,8 @@ internal class SearchProductTopAdsTypoCorrectionFirstPageTest : ProductListPrese
         )
         `Then verify view will set product list`()
         `Then verify topAds products is replaced with typo correction`(
-            searchProductModel,
             expectedTopAds,
+            searchProductModel.searchProduct.header.meta.productListType,
         )
     }
 
@@ -98,18 +100,40 @@ internal class SearchProductTopAdsTypoCorrectionFirstPageTest : ProductListPrese
     }
 
     private fun `Then verify topAds products is replaced with typo correction`(
-        searchProductModel: SearchProductModel,
-        expectedTopAds: TopAdsModel
+        expectedTopAds: TopAdsModel,
+        expectedProductListType: String,
     ) {
         visitableList.filter { it is ProductItemDataView && it.isTopAds }
             .forEachIndexed { index, visitable ->
                 visitable.assertTopAdsProduct(
                     expectedTopAds.data[index],
                     index + 1,
-                    searchProductModel.getProductListType(),
-                    searchProductModel.isShowButtonAtc,
+                    expectedProductListType,
                 )
             }
+    }
+
+    @Test
+    fun `Response Code 3 will call TopAds GQL again for reimagine`() {
+        val searchProductModel = searchProductResponseCode3Reimagine.jsonToObject<SearchProductModel>()
+        val expectedRelatedKeyword = searchProductModel.searchProductV5.data.related.relatedKeyword
+        val expectedTopAds = topAdsTypoCorrected.jsonToObject<ProductTopAdsModel>().topAdsModel
+
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given TopAds API will return TopAdsModel`(expectedTopAds)
+
+        `When Load Data`(mapOf(SearchApiConst.Q to "samsung"))
+
+        `Then verify TopAds use case is executed`()
+        `Then verify topAds request params query replaced with relatedKeywords`(
+            expectedRelatedKeyword
+        )
+        `Then verify view will set product list`()
+        `Then verify topAds products is replaced with typo correction`(
+            expectedTopAds,
+            searchProductModel.searchProductV5.header.meta.productListType,
+        )
     }
 
     @Test

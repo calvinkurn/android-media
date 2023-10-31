@@ -846,6 +846,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
                     productList = listOf(),
                     realTimeRecom = realTimeRecom,
                     seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
+                        id = channelId,
                         headerName = "Product Recommendation"
                     ),
                     headerModel = TokoNowDynamicHeaderUiModel(
@@ -1265,6 +1266,8 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
 
         val productList = listOf(
             ProductCardCompactCarouselItemUiModel(
+                channelId = channelId,
+                headerName = "Lagi Diskon",
                 productCardModel = ProductCardCompactUiModel(
                     productId = "2",
                     usePreDraw = true,
@@ -1286,6 +1289,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
             productList = productList,
             realTimeRecom = realTimeRecom,
             seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
+                id = channelId,
                 headerName = "Lagi Diskon"
             ),
             headerModel = TokoNowDynamicHeaderUiModel(

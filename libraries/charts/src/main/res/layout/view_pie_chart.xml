@@ -10,13 +10,13 @@
         android:id="@+id/pieChart"
         android:layout_width="@dimen/charts_140dp"
         android:layout_height="@dimen/charts_140dp"
-        android:layout_marginTop="@dimen/layout_lvl3" />
+        android:layout_marginTop="16dp" />
 
     <View
         android:id="@+id/vPieChartEmpty"
         android:layout_width="@dimen/charts_140dp"
         android:layout_height="@dimen/charts_140dp"
-        android:layout_marginTop="@dimen/layout_lvl3"
+        android:layout_marginTop="16dp"
         android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -25,6 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         tools:itemCount="3"
         tools:listitem="@layout/item_pie_chart_legend" />
+
 </LinearLayout>

@@ -37,6 +37,7 @@ object SomConsts {
     const val DETAIL_PRODUCTS_TYPE = "products"
     const val DETAIL_SHIPPING_TYPE = "shipping"
     const val DETAIL_PAYMENT_TYPE = "payment"
+    const val DETAIL_INCOME_TYPE = "income"
     const val DETAIL_MVC_USAGE_TYPE = "mvc_usage"
     const val DETAIL_POF_DATA_TYPE = "pof_data"
 

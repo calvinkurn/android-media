@@ -347,6 +347,11 @@
     <string name="som_dropoff_template_text_no_manual_input_resi">Tidak perlu masukin resi manual karena akan otomatis update di sistem. </string>
     <string name="som_dropoff_template_text_auto_confirm">Konfirmasi pengiriman otomatis maks. 3 jam setelah paket diserahkan ke kurir. </string>
 
+
+    <!-- SOM Transparency Fee -->
+    <string name="som_detail_summary_transparency_fee_note"><![CDATA[%1$s]]></string>
+    <string name="som_transparency_fee_entry_point_coachmark">Lihat rincian dengan klik tanda panah di sebelah kanan.</string>
+
     <!-- SOM POF -->
     <string name="som_pof_title_request">Kirim Pesanan Sebagian</string>
     <string name="som_pof_title_result">Detail Pesanan Sebagian</string>

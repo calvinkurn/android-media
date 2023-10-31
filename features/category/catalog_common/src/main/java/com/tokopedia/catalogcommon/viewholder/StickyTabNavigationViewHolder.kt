@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class StickyTabNavigationViewHolder(
     itemView: View,
@@ -59,13 +60,14 @@ class StickyTabNavigationViewHolder(
             catalogTabsUnify.getTabAt(element?.currentSelectTab.orZero())?.select()
             catalogTabsUnify.tabMode = TabLayout.MODE_FIXED
             catalogTabsUnify.isTabIndicatorFullWidth = false
+            catalogTabsUnify.tabRippleColor = null
             catalogTabsUnify.setBackgroundColor(widgetBackgroundColor)
             val centeredTabIndicator = ContextCompat.getDrawable(
                 catalogTabsUnify.context,
                 R.drawable.shape_showcase_tab_indicator_color
             )
+            catalogTabsUnify.setSelectedTabIndicatorColor(ContextCompat.getColor(catalogTabsUnify.context, unifyprinciplesR.color.Unify_GN500))
             catalogTabsUnify.setSelectedTabIndicator(centeredTabIndicator)
-            catalogTabsUnify.setTabTextColors(Color.BLUE, Color.BLACK)
             catalogTabsUnify.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     listener?.onNavigateWidget(

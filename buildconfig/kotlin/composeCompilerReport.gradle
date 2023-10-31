@@ -1,0 +1,35 @@
+static def isComposeEnabled(project) {
+    def buildGradlePath = project.file('build.gradle')
+    if (buildGradlePath.exists()) {
+        return buildGradlePath.text.contains('compose true')
+    } else {
+        return false
+    }
+}
+
+if (isComposeEnabled(project)) {
+    apply plugin: rootProject.ext.gradlePlugin.composeCompilerReportPlugin
+}
+
+android {
+    if (isComposeEnabled(project)) {
+        task cleanComposeCompilerReport {
+            group = 'compose compiler report'
+            doLast { delete('build/compose_report') }
+        }
+
+        if (project.plugins.hasPlugin('com.android.application')) {
+            applicationVariants.all { variant ->
+                "${variant.name}ComposeCompilerHtmlReport" {
+                    dependsOn cleanComposeCompilerReport
+                }
+            }
+        } else if (project.plugins.hasPlugin('com.android.library')) {
+            libraryVariants.all { variant ->
+                "${variant.name}ComposeCompilerHtmlReport" {
+                    dependsOn cleanComposeCompilerReport
+                }
+            }
+        }
+    }
+}

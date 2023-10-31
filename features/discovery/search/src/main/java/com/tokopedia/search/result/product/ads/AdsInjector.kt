@@ -16,6 +16,7 @@ class AdsInjector {
         productList: List<ProductItemDataView>,
         adsModel: TopAdsModel,
         searchParameter: Map<String, Any>,
+        isPostProcessing: Boolean,
         dimension90: String,
         productListType: String,
         externalReference: String,
@@ -31,7 +32,7 @@ class AdsInjector {
 
         for (i in 0 until totalProductItem) {
             try {
-                val willInjectAds = willInjectAds(adsModel, i, searchParameter)
+                val willInjectAds = willInjectAds(adsModel, i, searchParameter, isPostProcessing)
                 if (!willInjectAds) continue
 
                 val topAds = adsModel.data[topAdsIndex]
@@ -60,8 +61,10 @@ class AdsInjector {
         adsModel: TopAdsModel,
         index: Int,
         searchParameter: Map<String, Any>,
+        isPostProcessing: Boolean,
     ) = isInjectAdsByTemplate(adsModel, index)
         || isPostProcessingFilter(searchParameter)
+        || isPostProcessing
 
     private fun isInjectAdsByTemplate(adsModel: TopAdsModel, index: Int) =
         adsModel.templates.size > 0
