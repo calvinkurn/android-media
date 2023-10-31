@@ -76,20 +76,15 @@ class UploaderUseCase @Inject constructor(
      * by provide a dynamic [InternalUploadParam] to ensure the similar parameters could be
      * use the same object.
      */
-    private suspend fun shouldUploadMediaByType(policy: SourcePolicy) = request(
-        file = file,
-        sourceId = sourceId,
-        uploaderManager = videoUploaderManager,
-        execute = {
-            val base = BaseParam(file, sourceId, progressUploader, policy)
+    private suspend fun shouldUploadMediaByType(policy: SourcePolicy) = request(sourceId) {
+        val base = BaseParam(file, sourceId, progressUploader, policy)
 
-            if (isVideoFormat(file.path)) videoUploaderManager(
-                VideoParam(withTranscode, shouldCompress, isRetriable, base)
-            ) else imageUploaderManager(
-                ImageParam(isSecure, extraHeader, extraBody, base)
-            )
-        }
-    )
+        if (isVideoFormat(file.path)) videoUploaderManager(
+            VideoParam(withTranscode, shouldCompress, isRetriable, base)
+        ) else imageUploaderManager(
+            ImageParam(isSecure, extraHeader, extraBody, base)
+        )
+    }
 
     // Public Method
     @Deprecated(
