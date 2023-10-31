@@ -3,11 +3,14 @@ package com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeyw
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.reimagine.LayoutType
 
 data class InspirationKeywordCardView(
     val title: String = "",
     val optionsItems: List<InspirationKeywordDataView>,
-    val isOneOrMoreIsEmptyImage: Boolean = false, val isInspirationKeywordGridCard: Boolean = false,
+    val isOneOrMoreIsEmptyImage: Boolean = false,
+    val type: LayoutType = LayoutType.DEFAULT_SEAMLESS,
+    val searchTerm: String = "",
 ) : Visitable<ProductListTypeFactory> {
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this).orZero()
@@ -18,12 +21,15 @@ data class InspirationKeywordCardView(
             title: String,
             optionsItems: List<InspirationKeywordDataView>,
             isOneOrMoreIsEmptyImage: Boolean,
-            isInspirationKeywordGridCard: Boolean = false
+            type: String,
+            searchTerm: String
         ): InspirationKeywordCardView {
             return InspirationKeywordCardView(
                 title = title,
                 optionsItems = optionsItems,
-                isOneOrMoreIsEmptyImage = isOneOrMoreIsEmptyImage, isInspirationKeywordGridCard = isInspirationKeywordGridCard
+                isOneOrMoreIsEmptyImage = isOneOrMoreIsEmptyImage,
+                type = LayoutType.getLayoutType(type),
+                searchTerm = searchTerm
             )
         }
     }

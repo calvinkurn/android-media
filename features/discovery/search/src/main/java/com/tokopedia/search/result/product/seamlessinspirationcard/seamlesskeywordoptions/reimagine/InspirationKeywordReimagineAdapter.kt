@@ -3,21 +3,26 @@ package com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeyw
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordDataView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordCardView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordListener
 
 class InspirationKeywordReimagineAdapter(
-    inspirationKeywords: List<InspirationKeywordDataView>,
+    private val inspirationKeywords: InspirationKeywordCardView,
     private val inspirationCarouselListener: InspirationKeywordListener,
-): RecyclerView.Adapter<InspirationKeywordReimagineItemViewHolder>() {
+    ): RecyclerView.Adapter<InspirationKeywordReimagineItemViewHolder>() {
 
-    private val optionList = inspirationKeywords
+    private val optionList = inspirationKeywords.optionsItems
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InspirationKeywordReimagineItemViewHolder {
         val context = parent.context
         val view = LayoutInflater.from(context).inflate(InspirationKeywordReimagineItemViewHolder.LAYOUT, parent, false)
 
-        return InspirationKeywordReimagineItemViewHolder(view, inspirationCarouselListener)
+        return InspirationKeywordReimagineItemViewHolder(
+            view,
+            inspirationCarouselListener,
+            inspirationKeywords.type,
+            inspirationKeywords.searchTerm,
+        )
     }
 
     override fun getItemCount() = optionList.size

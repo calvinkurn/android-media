@@ -36,7 +36,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     @param:Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE)
     private val getInspirationCarouselChipsUseCase: Lazy<UseCase<InspirationCarouselChipsProductModel>>,
     private val chooseAddressDelegate: ChooseAddressPresenterDelegate,
-    private val viewUpdater: ViewUpdater
+    private val viewUpdater: ViewUpdater,
 ) : InspirationCarouselPresenter,
     ApplinkOpener by ApplinkOpenerDelegate {
 
@@ -51,6 +51,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     fun processInspirationCarouselPosition(
         productList: List<Visitable<*>>,
         externalReference: String,
+        searchTerm: String,
         action: (Int, List<Visitable<*>>) -> Unit,
     ) {
         if (inspirationCarouselDataViewList.isEmpty()) return
@@ -66,7 +67,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
 
             if (data.position <= productList.size && shouldShowInspirationCarousel(data.layout)) {
                 val inspirationCarouselVisitableList =
-                    constructInspirationCarouselVisitableList(data, externalReference)
+                    constructInspirationCarouselVisitableList(data, externalReference, searchTerm)
 
                 action(data.position, inspirationCarouselVisitableList)
 
@@ -107,6 +108,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     private fun constructInspirationCarouselVisitableList(
         data: InspirationCarouselDataView,
         externalReference: String,
+        searchTerm: String,
     ) = when {
         data.isDynamicProductLayout() ->
             convertInspirationCarouselToBroadMatch(data, externalReference)
@@ -120,8 +122,8 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         data.isListAtcLayout() ->
             inspirationListAtcPresenterDelegate.convertInspirationCarouselToInspirationListAtc(data)
 
-        data.isSeamlessLayout() || data.isInspirationKeywordGridCard() ->
-            convertInspirationCarouselToSeamlessInspiration(data, externalReference, data.isInspirationKeywordGridCard())
+        data.isSeamlessLayout() ->
+            convertInspirationCarouselToSeamlessInspiration(data, externalReference, searchTerm)
 
         else ->
             listOf(data)
@@ -142,12 +144,9 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     private fun InspirationCarouselDataView.isSeamlessLayout() =
         layout == LAYOUT_INSPIRATION_KEYWORD_SEAMLESS
 
-    private fun InspirationCarouselDataView.isInspirationKeywordGridCard() =
-        layout == LAYOUT_INSPIRATION_KEYWORD_GRID
-
     private fun convertInspirationCarouselToInspirationProductBundle(
         data: InspirationCarouselDataView,
-        externalReference: String
+        externalReference: String,
     ): List<Visitable<*>> {
         return listOf(
             data.convertToInspirationProductBundleDataView(
@@ -157,7 +156,9 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         )
     }
 
-    private fun convertInspirationCarouselToInspirationCarouselVideo(data: InspirationCarouselDataView): List<Visitable<*>> {
+    private fun convertInspirationCarouselToInspirationCarouselVideo(
+        data: InspirationCarouselDataView
+    ): List<Visitable<*>> {
         return listOf(InspirationCarouselVideoDataView(data))
     }
 
@@ -182,7 +183,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     private fun convertInspirationCarouselToSeamlessInspiration(
         data: InspirationCarouselDataView,
         externalReference: String,
-        isInspirationKeywordGridCard : Boolean = false
+        searchTerm: String,
     ): List<Visitable<*>> {
         val inspirationKeywordVisitableList = mutableListOf<Visitable<*>>()
         val (inspirationKeyboard, inspirationProduct, isOneOrMoreItemIsEmptyImage) =
@@ -192,7 +193,9 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
                 data.title,
                 inspirationKeyboard,
                 isOneOrMoreItemIsEmptyImage,
-                isInspirationKeywordGridCard)
+                data.type,
+                searchTerm,
+            )
         )
         inspirationKeywordVisitableList.addAll(inspirationProduct)
         return inspirationKeywordVisitableList
@@ -209,7 +212,6 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
             LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
             LAYOUT_INSPIRATION_CAROUSEL_VIDEO,
             LAYOUT_INSPIRATION_KEYWORD_SEAMLESS,
-            LAYOUT_INSPIRATION_KEYWORD_GRID
         )
     }
 

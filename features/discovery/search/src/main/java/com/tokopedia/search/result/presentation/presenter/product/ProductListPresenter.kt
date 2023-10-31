@@ -436,6 +436,7 @@ class ProductListPresenter @Inject constructor(
             productDataView,
             searchParameter,
         )
+        val searchTerm = getQueryKey(searchParameter)
         productList.addAll(loadMoreProductList)
 
         return visitableFactory.createLoadMoreVisitableList(
@@ -447,6 +448,7 @@ class ProductListPresenter @Inject constructor(
                 externalReference,
                 constructGlobalSearchApplink(),
                 loadMoreProductList,
+                searchTerm,
             )
         )
     }
@@ -896,6 +898,7 @@ class ProductListPresenter @Inject constructor(
         adsInjector.resetTopAdsPosition()
 
         productList = createProductItemVisitableList(productDataView, searchParameter).toMutableList()
+        val searchTerm = getQueryKey(searchParameter)
 
         val visitableList = visitableFactory.createFirstPageVisitableList(
             VisitableFactoryFirstPageData(
@@ -909,6 +912,7 @@ class ProductListPresenter @Inject constructor(
                 searchProductModel,
                 externalReference,
                 constructGlobalSearchApplink(),
+                searchTerm,
             )
         )
 
@@ -1503,5 +1507,9 @@ class ProductListPresenter @Inject constructor(
     private fun unsubscribeCompositeSubscription() {
         compositeSubscription?.unsubscribe()
         compositeSubscription = null
+    }
+
+    private fun getQueryKey(searchParameter: Map<String, Any>): String {
+        return searchParameter[SearchApiConst.Q].toString()
     }
 }

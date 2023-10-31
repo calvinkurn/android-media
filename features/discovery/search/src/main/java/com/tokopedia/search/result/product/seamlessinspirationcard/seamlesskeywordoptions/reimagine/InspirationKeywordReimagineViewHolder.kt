@@ -45,8 +45,14 @@ class InspirationKeywordReimagineViewHolder(
         inspirationKeywords: InspirationKeywordCardView,
     ) {
         binding?.searchInspirationKeywordReimagineList?.run {
-            this.layoutManager = LinearLayoutManager(itemView.context, RecyclerView.VERTICAL, false)
-            this.adapter = InspirationKeywordReimagineAdapter(inspirationKeywords.optionsItems, inspirationKeywordListener)
+            this.layoutManager = LinearLayoutManager(
+                itemView.context,
+                RecyclerView.VERTICAL,
+                false)
+            this.adapter = InspirationKeywordReimagineAdapter(
+                inspirationKeywords,
+                inspirationKeywordListener,
+            )
         }
     }
 

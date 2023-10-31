@@ -12,6 +12,7 @@
     app:cardCornerRadius="12dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/searchInspirationKeywordReimagineContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="6dp"
@@ -26,6 +27,17 @@
             app:layout_constraintTop_toTopOf="parent"
             android:src="@drawable/ic_product_navigation_search_grayscale_24"/>
 
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/searchInspirationKeywordReimagineImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
+            tools:visibility="gone"
+            tools:ignore="ContentDescription" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/searchInspirationKeywordReimagineKeyword"
             android:layout_width="0dp"
@@ -34,12 +46,12 @@
             android:maxLines="2"
             android:textColor="@color/Unify_NN950_96"
             android:visibility="visible"
-            android:layout_marginStart="4dp"
-            app:layout_constraintBottom_toBottomOf="@+id/searchInspirationKeywordReimagineIcon"
+            android:layout_marginStart="8dp"
+            app:layout_goneMarginStart="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/searchInspirationKeywordReimagineImage"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/searchInspirationKeywordReimagineIcon"
-            app:layout_constraintTop_toTopOf="@+id/searchInspirationKeywordReimagineIcon"
-            app:layout_goneMarginTop="@dimen/product_card_text_view_product_name_gone_margin_top"
+            app:layout_constraintStart_toEndOf="@+id/searchInspirationKeywordReimagineImage"
+            app:layout_constraintTop_toTopOf="@+id/searchInspirationKeywordReimagineImage"
             app:typographyType="small"
             tools:text="Product Name Product Name Product Name Product Name Product Name Product Name Product Name" />
 

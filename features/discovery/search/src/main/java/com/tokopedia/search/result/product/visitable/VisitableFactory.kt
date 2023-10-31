@@ -82,7 +82,8 @@ class VisitableFactory @Inject constructor(
                 productDataView.inspirationCarouselDataView,
                 visitableList,
                 data.productList,
-                data.externalReference
+                data.externalReference,
+                data.searchTerm,
             )
         }
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_WIDGET) {
@@ -246,11 +247,12 @@ class VisitableFactory @Inject constructor(
         list: MutableList<Visitable<*>>,
         productList: List<Visitable<*>>,
         externalReference: String,
+        searchTerm: String,
     ) {
         inspirationCarouselPresenter.setInspirationCarouselDataViewList(
             inspirationCarouselDataView
         )
-        processInspirationCarouselPosition(list, productList, externalReference)
+        processInspirationCarouselPosition(list, productList, externalReference, searchTerm)
     }
 
     private fun addInspirationWidget(
@@ -278,10 +280,12 @@ class VisitableFactory @Inject constructor(
         list: MutableList<Visitable<*>>,
         productList: List<Visitable<*>>,
         externalReference: String,
+        searchTerm: String,
     ) {
         inspirationCarouselPresenter.processInspirationCarouselPosition(
             productList,
             externalReference,
+            searchTerm,
         ) { position, inspirationCarouselVisitableList ->
             val visitableIndex = getVisitableIndex(productList, list, position)
             list.addAll(visitableIndex, inspirationCarouselVisitableList)
@@ -428,7 +432,12 @@ class VisitableFactory @Inject constructor(
         )
         processTopAdsImageViewModel(visitableList, data.allProductList)
         processInspirationWidgetPosition(visitableList, data.allProductList)
-        processInspirationCarouselPosition(visitableList, data.allProductList, data.externalReference)
+        processInspirationCarouselPosition(
+            visitableList,
+            data.allProductList,
+            data.externalReference,
+            data.searchTerm,
+        )
         processBannerAndBroadMatchInSamePosition(
             visitableList,
             data.allProductList,

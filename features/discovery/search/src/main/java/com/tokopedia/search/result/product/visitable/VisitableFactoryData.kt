@@ -15,6 +15,7 @@ data class VisitableFactoryFirstPageData(
     val searchProductModel: SearchProductModel,
     val externalReference: String,
     val globalSearchApplink: String,
+    val searchTerm: String,
 )
 
 data class VisitableFactorySecondPageData(
@@ -25,4 +26,5 @@ data class VisitableFactorySecondPageData(
     val externalReference: String,
     val globalSearchApplink: String,
     val loadMoreProductList: List<Visitable<*>>,
+    val searchTerm: String,
 )
