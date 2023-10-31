@@ -27,7 +27,6 @@ import io.mockk.*
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import org.junit.Rule
@@ -1737,7 +1736,7 @@ class HomeRecommendationViewModelTest {
 
         homeRecommendationViewModel.fetchHomeRecommendationCard("", "", sourceType = "")
 
-        assertCollectingRecommendationCardStateWithJob { it, job ->
+        assertCollectingRecommendationCardState {
             val actualResult = (it.first() as HomeRecommendationCardState.Success)
             assertTrue(it.first() is HomeRecommendationCardState.Success)
             assertEquals(
@@ -1784,8 +1783,6 @@ class HomeRecommendationViewModelTest {
                 actualNextResult.data.homeRecommendations
             )
             assertEquals(homeRecommendationNextDataModel.isHasNextPage, actualNextResult.data.isHasNextPage)
-
-            job.cancel()
         }
     }
 
@@ -1817,7 +1814,7 @@ class HomeRecommendationViewModelTest {
 
         homeRecommendationViewModel.fetchHomeRecommendationCard("", "", sourceType = "")
 
-        assertCollectingRecommendationCardStateWithJob { it, job ->
+        assertCollectingRecommendationCardState {
             val actualResult = (it.first() as HomeRecommendationCardState.Success)
             assertTrue(it.first() is HomeRecommendationCardState.Success)
             assertEquals(
@@ -1848,8 +1845,6 @@ class HomeRecommendationViewModelTest {
                 actualNextResult.throwable.localizedMessage
             )
             assertEquals(homeRecommendationDataModel.homeRecommendations, actualNextResult.data.homeRecommendations)
-
-            job.cancel()
         }
     }
 
@@ -1862,17 +1857,5 @@ class HomeRecommendationViewModelTest {
         }
         block.invoke(testCollectorList)
         uiStateCollectorJob.cancel()
-    }
-
-    private fun assertCollectingRecommendationCardStateWithJob(
-        block: (List<HomeRecommendationCardState<HomeRecommendationDataModel>>, Job) -> Unit
-    ) {
-        val scope = CoroutineScope(rule.dispatchers.coroutineDispatcher)
-        val testCollectorList =
-            mutableListOf<HomeRecommendationCardState<HomeRecommendationDataModel>>()
-        val cardStateCollectorJob = scope.launch {
-            homeRecommendationViewModel.homeRecommendationCardState.toList(testCollectorList)
-        }
-        block.invoke(testCollectorList, cardStateCollectorJob)
     }
 }
