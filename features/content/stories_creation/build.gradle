@@ -68,6 +68,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
@@ -89,8 +90,6 @@ dependencies {
     implementation rootProject.ext.composeDependencies.composeCoil
 
     implementation rootProject.ext.networkDependencies.glide
-
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     androidTestImplementation rootProject.ext.testDependencies.fragmentTest
 
