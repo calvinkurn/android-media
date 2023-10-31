@@ -186,7 +186,7 @@ class ThematicWidgetViewHolder(
     }
 
     private fun configMarginFestivity() {
-        val rvLayoutParams = rvProduct?.layoutParams as? ConstraintLayout.LayoutParams
+        val rvLayoutParams = rvProduct?.layoutParams as? ViewGroup.MarginLayoutParams
         rvLayoutParams?.setMargins(
             rvLayoutParams.leftMargin,
             Int.ZERO,
@@ -205,7 +205,7 @@ class ThematicWidgetViewHolder(
     }
 
     private fun configMarginNonFestivity() {
-        val rvLayoutParams = rvProduct?.layoutParams as? ConstraintLayout.LayoutParams
+        val rvLayoutParams = rvProduct?.layoutParams as? ViewGroup.MarginLayoutParams
         rvLayoutParams?.setMargins(
             rvLayoutParams.leftMargin,
             RV_DEFAULT_MARGIN_TOP.dpToPx().toInt(),
