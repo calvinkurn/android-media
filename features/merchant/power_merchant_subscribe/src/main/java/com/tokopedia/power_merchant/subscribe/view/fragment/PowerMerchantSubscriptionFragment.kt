@@ -41,6 +41,8 @@ import com.tokopedia.power_merchant.subscribe.view.helper.PMActiveTermHelper
 import com.tokopedia.power_merchant.subscribe.view.model.*
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSharedViewModel
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSubscriptionViewModel
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -71,6 +73,9 @@ open class PowerMerchantSubscriptionFragment :
 
     @Inject
     lateinit var powerMerchantTracking: PowerMerchantTracking
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     protected val mViewModel: PowerMerchantSubscriptionViewModel by lazy {
         ViewModelProvider(
@@ -773,11 +778,18 @@ open class PowerMerchantSubscriptionFragment :
     }
 
     private fun showDeactivationQuestionnaire() {
-        val pmExpirationDate = pmBasicInfo?.pmStatus?.expiredTime.orEmpty()
+        val shouldUseNextMonthlyRefreshDate = getShouldUseNextMonthlyRefreshDate()
+        val pmExpirationDate =
+            if (shouldUseNextMonthlyRefreshDate) {
+                pmBasicInfo?.shopInfo?.nextMonthlyRefreshDate.orEmpty()
+            } else {
+                pmBasicInfo?.pmStatus?.expiredTime.orEmpty()
+            }
         val currentPmTireType = pmBasicInfo?.pmStatus?.pmTier
             ?: PMConstant.PMTierType.POWER_MERCHANT
         val bottomSheet = DeactivationQuestionnaireBottomSheet.createInstance(
             pmExpirationDate,
+            shouldUseNextMonthlyRefreshDate,
             currentPmTireType,
             PMConstant.PMTierType.POWER_MERCHANT
         )
@@ -787,6 +799,10 @@ open class PowerMerchantSubscriptionFragment :
             fetchPowerMerchantBasicInfo()
         }
         bottomSheet.show(childFragmentManager)
+    }
+
+    private fun getShouldUseNextMonthlyRefreshDate(): Boolean {
+        return remoteConfig.getBoolean(RemoteConfigKey.ANDROID_PM_OPT_OUT_DATE)
     }
 
     private fun getUpgradePmProWidget(
