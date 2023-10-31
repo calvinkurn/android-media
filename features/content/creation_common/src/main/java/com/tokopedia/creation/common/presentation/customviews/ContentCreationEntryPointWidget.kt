@@ -28,10 +28,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.creation.common.analytics.ContentCreationAnalytics
 import com.tokopedia.creation.common.di.ContentCreationComponent
 import com.tokopedia.creation.common.di.ContentCreationModule
 import com.tokopedia.creation.common.di.DaggerContentCreationComponent
 import com.tokopedia.creation.common.presentation.bottomsheet.ContentCreationBottomSheet
+import com.tokopedia.creation.common.presentation.model.ContentCreationAuthorEnum
 import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.creation.common.presentation.viewmodel.ContentCreationViewModel
 import com.tokopedia.iconunify.IconUnify
@@ -59,6 +61,7 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
 
     private val component = createComponent()
     private val factory: ViewModelProvider.Factory = component.contentCreationFactory()
+    private val analytics: ContentCreationAnalytics = component.contentCreationAnalytics()
 
     private var viewModel: ContentCreationViewModel? = null
     var creationBottomSheetListener: ContentCreationBottomSheet.ContentCreationBottomSheetListener? =
@@ -72,7 +75,6 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
             owner = findViewTreeViewModelStoreOwner()!!,
             factory = factory
         )[ContentCreationViewModel::class.java]
-        viewModel?.widgetSource = widgetSource
 
         getFragmentManager()?.addFragmentOnAttachListener { _, childFragment ->
             when (childFragment) {
@@ -93,9 +95,11 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
         val isFirstTime = remember { mutableStateOf(true) }
 
         if (creationConfig is Success && creationConfig.data.creationItems.isNotEmpty()) {
-
-            if (isFirstTime.value) {
-                viewModel?.sendImpressionContentCreationWidgetAnalytic()
+            if (isFirstTime.value && widgetSource != ContentCreationEntryPointSource.Unknown) {
+                analytics.eventImpressionContentCreationEndpointWidget(
+                    viewModel?.getSelectedAuthorType() ?: ContentCreationAuthorEnum.NONE,
+                    widgetSource
+                )
                 isFirstTime.value = false
             }
 
@@ -105,7 +109,10 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
                     .toAnnotatedString(),
                 buttonText = stringResource(id = creationcommonR.string.content_creation_entry_point_button_label)
             ) {
-                viewModel?.sendClickContentCreationWidgetAnalytic()
+                analytics.clickContentCreationEndpointWidget(
+                    viewModel?.getSelectedAuthorType() ?: ContentCreationAuthorEnum.NONE,
+                    widgetSource
+                )
                 onClickListener()
 
                 getFragmentManager()?.let { fm ->
@@ -121,7 +128,7 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
     }
 
     fun fetchConfig() {
-        viewModel?.fetchConfig()
+        viewModel?.fetchConfig(widgetSource)
     }
 
     private fun createComponent(): ContentCreationComponent =
