@@ -15,7 +15,6 @@ import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.shop.info.domain.entity.ShopEpharmacyInfo
 import com.tokopedia.shop.info.domain.entity.ShopNote
-import com.tokopedia.shop.info.domain.entity.ShopOperationalHour
 import com.tokopedia.shop.info.domain.entity.ShopPerformance
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
 import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopRatingAndTopicsUseCase
@@ -45,8 +44,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ShopInfoUiState())
     val uiState = _uiState.asStateFlow()
     
-    
-    fun getShopRating(shopId: String, localCacheModel: LocalCacheModel) {
+    fun getShopInfo(shopId: String, localCacheModel: LocalCacheModel) {
         launchCatchError(
             context = coroutineDispatcherProvider.io,
             block = {
@@ -178,10 +176,25 @@ class ShopInfoReimagineViewModel @Inject constructor(
         }
     }
 
-    private fun ShopOperationalHoursListResponse.toFormattedOperationalHours(): List<ShopOperationalHour> {
-        return getShopOperationalHoursList?.data?.map { 
-            ShopOperationalHour(days[it.day].orEmpty(), it.startTime, it.endTime, it.status)
-        }.orEmpty()
+    private fun ShopOperationalHoursListResponse.toFormattedOperationalHours(): Map<String, String> {
+        val operationalHours = mutableMapOf<String, String>()
+        
+        val daysDictionary = mapOf(
+            1 to "Senin",
+            2 to "Selasa",
+            3 to "Rabu",
+            4 to "Kamis",
+            5 to "Jumat",
+            6 to "Sabtu",
+            7 to "Minggu"
+        )
+        
+        getShopOperationalHoursList?.data?.forEach { operationalHour ->
+            val formattedDay = daysDictionary[operationalHour.day].orEmpty()
+            operationalHours[formattedDay] = "${operationalHour.startTime} - ${operationalHour.endTime}"
+        }
+        
+        return operationalHours
     }
     
     private fun ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.toOrderProcessTime(): String {
@@ -196,14 +209,5 @@ class ShopInfoReimagineViewModel @Inject constructor(
         val textHtmls = listText.map { it.textHtml }
         return textHtmls.firstOrNull().orEmpty()
     }
-    
-    private val days = mapOf<Int, String>(
-        1 to "Senin",
-        2 to "Selasa",
-        3 to "Rabu",
-        4 to "Kamis",
-        5 to "Jumat",
-        6 to "Sabtu",
-        7 to "Minggu"
-    )
+
 }

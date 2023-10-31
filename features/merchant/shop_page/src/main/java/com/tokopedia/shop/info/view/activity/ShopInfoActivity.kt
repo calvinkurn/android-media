@@ -92,7 +92,7 @@ class ShopInfoActivity : BaseActivity(), HasComponent<ShopComponent>{
     
     private fun renderWithCompose() {
         val localCacheModel = ShopUtil.getShopPageWidgetUserAddressLocalData(this) ?: return
-        viewModel.getShopRating(shopId, localCacheModel)
+        viewModel.getShopInfo(shopId, localCacheModel)
         
         setContent {
           /*  // Observe for any effect / one-time event

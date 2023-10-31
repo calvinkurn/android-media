@@ -3,7 +3,6 @@ package com.tokopedia.shop.info.view.model
 import com.tokopedia.shop.info.domain.entity.ShopEpharmacyInfo
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.domain.entity.ShopNote
-import com.tokopedia.shop.info.domain.entity.ShopOperationalHour
 import com.tokopedia.shop.info.domain.entity.ShopPerformance
 import com.tokopedia.shop.info.domain.entity.ShopRating
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
@@ -16,7 +15,7 @@ data class ShopInfoUiState(
     val shopDescription: String = "",
     val mainLocation: String = "",
     val otherLocation: String = "",
-    val operationalHours: List<ShopOperationalHour> = emptyList(),
+    val operationalHours: Map<String, String> = mapOf(),
     val shopJoinDate: String = "",
     val rating: ShopRating = ShopRating(
         detail = emptyList(),

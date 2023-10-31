@@ -194,7 +194,7 @@ fun ShopCoreInfo(shopImageUrl: String, shopBadgeUrl: String, shopName: String) {
 fun ShopInfo(
     mainLocation: String,
     otherLocation: String,
-    operationalHours: List<ShopOperationalHour>,
+    operationalHours: Map<String, String>,
     shopJoinDate: String
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -263,7 +263,7 @@ fun ShopLocation(mainLocation: String, otherLocation: String) {
     }
 }
 @Composable
-fun ShopOperationalHour(operationalHours: List<ShopOperationalHour>) {
+fun ShopOperationalHour(operationalHours: Map<String, String>) {
     NestTypography(
         modifier = Modifier.fillMaxWidth(),
         text = "Jam Operasional",
@@ -272,18 +272,30 @@ fun ShopOperationalHour(operationalHours: List<ShopOperationalHour>) {
         )
     )
     Spacer(modifier = Modifier.height(4.dp))
-    operationalHours.forEach { operationalHour ->
-        NestTypography(
-            modifier = Modifier.fillMaxWidth(),
-            text = "${operationalHour.day}: ${operationalHour.startTime}-${operationalHour.endTime}",
-            textStyle = NestTheme.typography.display2.copy(
-                fontWeight = FontWeight.Bold,
-                color = NestTheme.colors.NN._950
-            )
-        )
-    }
-    
+    ShopOperationalHoursList(operationalHours)
+}
 
+@Composable
+fun ShopOperationalHoursList(operationalHours: Map<String, String>) {
+    operationalHours.forEach { operationalHour ->
+        Row {
+            NestTypography(
+                text = operationalHour.key + ":",
+                textStyle = NestTheme.typography.display3.copy(
+                    color = NestTheme.colors.NN._600
+                )
+            )
+            Spacer(modifier = Modifier.width(2.dp))
+            NestTypography(
+                text = operationalHour.value,
+                textStyle = NestTheme.typography.display2.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = NestTheme.colors.NN._950
+                )
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+    }
 }
 
 @Composable
@@ -432,7 +444,7 @@ fun ShopRatingAndReviews(rating: ShopRating, review: ShopReview) {
         Spacer(modifier = Modifier.height(8.dp))
         NestTypography(
             modifier = Modifier.fillMaxWidth(),
-            text = "Ulasan Pembeli",
+            text = "Ulasan buat toko ini",
             textStyle = NestTheme.typography.display1.copy(
                 fontWeight = FontWeight.Bold,
                 color = NestTheme.colors.NN._950
@@ -547,7 +559,7 @@ fun ShopPerformance(shopPerformance: ShopPerformance) {
     Column(modifier = Modifier.fillMaxWidth()) {
         NestTypography(
             modifier = Modifier.fillMaxWidth(),
-            text = "Performa Toko",
+            text = "Performa toko",
             textStyle = NestTheme.typography.display1.copy(
                 fontWeight = FontWeight.Bold,
                 color = NestTheme.colors.NN._950
@@ -628,7 +640,15 @@ fun ShopSupportedShipment(shipments: List<ShopSupportedShipment>) {
                 color = NestTheme.colors.NN._950
             )
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
+        NestTypography(
+            modifier = Modifier.fillMaxWidth(),
+            text = "Durasi dihitung sejak barang diserahkan ke kurir",
+            textStyle = NestTheme.typography.display3.copy(
+                color = NestTheme.colors.NN._600
+            )
+        )
+        Spacer(modifier = Modifier.height(4.dp))
         shipments.forEach { shipment -> 
             ShopShipmentItem(shipment = shipment)
         }
@@ -751,7 +771,7 @@ fun ShopRatingBarItem(rating: ShopRating.Detail) {
     }
 }
 
-@Preview(name = "Light Mode", device = "spec:width=411dp,height=891dp", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(device = "spec:width=411dp,height=891dp", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun ShopInfoScreenPreview(
     @PreviewParameter(ShopInfoPreviewParameterProvider::class) uiState: ShopInfoUiState
