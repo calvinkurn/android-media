@@ -21,7 +21,9 @@ import com.tokopedia.core.network.R;
 
 import java.io.IOException;
 
-@Deprecated
+import kotlin.Deprecated;
+
+@Deprecated(message = "Please adopt the image loader with medialoader instead")
 public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.ImageHandler {
 
     public static Bitmap ResizeBitmap(Bitmap bitmap, float bounding) {
