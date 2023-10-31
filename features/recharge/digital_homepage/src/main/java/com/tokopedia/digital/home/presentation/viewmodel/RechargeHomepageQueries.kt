@@ -73,6 +73,8 @@ internal object RechargeHomepageSectionQuery{
                       button_app_link
                       button_web_link
                       type
+                      is_close_button
+                      is_sticky
                       tracking{
                         action
                         data

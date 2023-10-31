@@ -14,7 +14,6 @@ import com.tokopedia.digital.home.databinding.ViewRechargeHomeMyBillsTripleEntry
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardCustomLastItemBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardsUnifyBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeRecommendationBannerBinding
-import com.tokopedia.digital.home.databinding.ViewRechargeHomeTodoWidgetBinding
 import com.tokopedia.digital.home.model.RechargeHomepageBannerEmptyModel
 import com.tokopedia.digital.home.model.RechargeHomepageBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageCarousellModel

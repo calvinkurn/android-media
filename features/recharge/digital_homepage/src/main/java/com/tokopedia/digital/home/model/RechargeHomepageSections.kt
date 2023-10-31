@@ -169,6 +169,12 @@ data class RechargeHomepageSections(
         @SerializedName("option_buttons")
         @Expose
         val optionButtons: List<OptionButton> = listOf(),
+        @SerializedName("is_close_button")
+        @Expose
+        val isCloseButton: Boolean = false,
+        @SerializedName("is_sticky")
+        @Expose
+        val isSticky: Boolean = false,
     )
 
     data class Attributes(
