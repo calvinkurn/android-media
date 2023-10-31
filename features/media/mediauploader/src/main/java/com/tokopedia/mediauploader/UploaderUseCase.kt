@@ -5,6 +5,7 @@ package com.tokopedia.mediauploader
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
+import com.tokopedia.mediauploader.common.di.UploaderQualifier
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
@@ -20,7 +21,7 @@ class UploaderUseCase @Inject constructor(
     private val imageUploaderManager: ImageUploaderManager,
     private val videoUploaderManager: VideoUploaderManager,
     private val sourcePolicyUseCase: GetSourcePolicyUseCase,
-    private val sourcePolicyManager: SourcePolicyManager
+    @UploaderQualifier private val sourcePolicyManager: SourcePolicyManager
 ) : CoroutineUseCase<RequestParams, UploadResult>(Dispatchers.IO) {
 
     private var progressUploader: ProgressUploader? = null

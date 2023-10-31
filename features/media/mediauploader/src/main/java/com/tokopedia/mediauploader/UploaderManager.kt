@@ -1,11 +1,7 @@
 package com.tokopedia.mediauploader
 
-import com.tokopedia.mediauploader.analytics.UploaderLogger
 import com.tokopedia.mediauploader.common.state.ProgressUploader
-import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.common.util.addPrefix
 import com.tokopedia.mediauploader.common.util.fileExtension
-import java.io.File
 
 interface UploaderManager {
 
@@ -23,13 +19,7 @@ interface UploaderManager {
         return allowed.contains(fileExt)
     }
 
-    fun setError(message: String, sourceId: String, file: File): UploadResult {
-        if (message.isNotEmpty()) UploaderLogger.commonWithoutReqIdError(sourceId, message)
-        return UploadResult.Error(message.addPrefix())
-    }
-
     companion object {
         private const val NUM_EXT_DROP_FIRST = 1
     }
-
 }
