@@ -232,9 +232,7 @@ class MilestoneMapper @Inject constructor(
     }
 
     private fun getRewardLottieUrl(questStatus: Int): String {
-        val isInitialState =
-            questStatus == MilestoneItemRewardUiModel.QuestStatus.NOT_STARTED ||
-                questStatus == MilestoneItemRewardUiModel.QuestStatus.ON_GOING
+        val isInitialState = questStatus == MilestoneItemRewardUiModel.QuestStatus.NOT_STARTED_OR_ONGOING
         return if (isInitialState) {
             TokopediaImageUrl.SELLER_HOME_REWARD_INITIAL_LOTTIE
         } else {

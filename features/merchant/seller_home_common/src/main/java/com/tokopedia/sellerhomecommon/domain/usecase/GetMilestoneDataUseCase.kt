@@ -45,7 +45,7 @@ class GetMilestoneDataUseCase(
                 val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
                 val questStatus = it.fetchMilestoneWidgetData?.data?.firstOrNull()?.questStatus
                 val shouldLoadRewardDetail =
-                    questStatus == MilestoneItemRewardUiModel.QuestStatus.NOT_STARTED || questStatus == MilestoneItemRewardUiModel.QuestStatus.ON_GOING
+                    questStatus == MilestoneItemRewardUiModel.QuestStatus.NOT_STARTED_OR_ONGOING
                 return if (shouldLoadRewardDetail) {
                     val rewardDetail = getRewardDetailById(
                         it.fetchMilestoneWidgetData?.data?.firstOrNull()?.reward?.rewardId.orZero()

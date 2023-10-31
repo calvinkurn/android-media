@@ -22,8 +22,7 @@ data class MilestoneItemRewardUiModel(
     }
 
     object QuestStatus {
-        const val NOT_STARTED = 1
-        const val ON_GOING = 2
+        const val NOT_STARTED_OR_ONGOING = 0
         const val QUEST_FINISH = 3
         const val REWARD_CLAIMED = 4
     }
