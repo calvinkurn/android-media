@@ -87,7 +87,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                         selectedCreation?.value?.let {
                             analytics?.eventClickNextButton(
                                 viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
-                                viewModel?.selectedItemTitle ?: "",
+                                viewModel?.selectedItemTitle.orEmpty(),
                                 widgetSource
                             )
                             listener?.onCreationNextClicked(it)
