@@ -132,7 +132,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
             val centeredTabIndicator = ContextCompat.getDrawable(tabsUnify.tabLayout.context, R.drawable.shape_showcase_tab_indicator_color)
             tabsUnify.tabLayout.setSelectedTabIndicator(centeredTabIndicator)
-            
+
             TabsUnifyMediator(tabsUnify, viewPager) { tab, currentPosition ->
                 val tabView = LayoutInflater.from(tabsUnify.context).inflate(R.layout.item_viewpager_showcase_navigation_tab, tabsUnify, false)
                 tab.customView = tabView
