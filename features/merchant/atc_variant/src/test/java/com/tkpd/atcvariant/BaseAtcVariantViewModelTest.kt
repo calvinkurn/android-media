@@ -14,7 +14,6 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -184,8 +183,8 @@ abstract class BaseAtcVariantViewModelTest {
             it is VariantHeaderDataModel
         }.let {
             val headerData = it as VariantHeaderDataModel
-            Assert.assertEquals(headerData.headerData.isCampaignActive, expectedCampaignActive)
-            Assert.assertEquals(headerData.headerData.productSlashPrice, expectedDiscountedPrice)
+            Assert.assertEquals(expectedCampaignActive, headerData.headerData.isCampaignActive)
+            Assert.assertEquals(expectedDiscountedPrice, headerData.headerData.productSlashPrice)
         }
     }
 
@@ -209,7 +208,7 @@ abstract class BaseAtcVariantViewModelTest {
                 is VariantHeaderDataModel -> {
                     Assert.assertEquals(it.productId, expectedSelectedProductId)
                     Assert.assertEquals(it.headerData.productMainPrice, expectedSelectedMainPrice)
-                    Assert.assertEquals(it.headerData.productDiscountedPercentage, Float.ZERO)
+                    Assert.assertEquals(it.headerData.productDiscountedPercentage, "0%")
                     Assert.assertEquals(it.headerData.productStockFmt, expectedSelectedStockFmt)
                     Assert.assertTrue(it.listOfVariantTitle.containsAll(expectedVariantName))
                     Assert.assertEquals(it.cashBackPercentage, cashBackPercentage)

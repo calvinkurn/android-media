@@ -73,5 +73,58 @@
 
     <string name="topads_edit_keyword_title">Biaya Iklan dan Kata Kunci</string>
     <string name="topads_edit_auto_bid_ticker_title"><![CDATA[Biaya iklan dan kata kunci pada grup iklan ini akan diatur oleh TopAds untuk memaksimalkan penjualanmu. <font color = "#03AC0E"><a href="">Pelajari Selengkapnya</a></font>]]></string>
+    <string name="footer_potential_widget_edit_ad_group_text">Perkiraan seberapa sering iklanmu tampil berdasarkan perubahan pada produk yang dipilih, biaya grup iklan, dan anggaran harian.</string>
+
+    <string name="top_ads_edit_ad_activity_title">Ubah Grup Iklan</string>
+    <string name="top_ads_edit_ad_group_apply_bottom_sheet_cta">Terapkan</string>
+
+    <string name="top_ads_edit_ad_group_name_bottom_sheet_title">Ubah nama grup</string>
+
+
+    <string name="top_ads_edit_ad_group_recommendation_bid_bottom_sheet_title">Iklan di rekomendasi</string>
+    <string name="top_ads_edit_ad_group_recommendation_bid_bottom_sheet_desc">Iklanmu akan tampil pada bagian halaman strategis seperti di halaman home, keranjang, inbox dan detail produk. Pelajari</string>
+    <string name="top_ads_edit_ad_group_recommendation_bid_bottom_sheet_label">Biaya Iklan di Rekomendasi</string>
+
+    <string name="top_ads_edit_ad_group_daily_budget_bottom_sheet_title">Ubah anggaran harian</string>
+    <string name="top_ads_edit_ad_group_daily_budget_bottom_sheet_label">Anggaran harian</string>
+    <string name="top_ads_edit_ad_group_daily_budget_bottom_sheet_toggle_title">Batasi anggaran harian</string>
+    <string name="top_ads_edit_ad_group_daily_budget_bottom_sheet_toggle_subtitle">Atur anggaran iklan sesuai kebutuhan.</string>
+
+    <string name="top_ads_edit_ad_group_setting_mode_bottom_sheet_title">Mode pengaturan</string>
+
+    <string name="top_ads_edit_ad_group_item_mode_manual">Iklan diatur manual</string>
+    <string name="top_ads_edit_ad_group_item_mode_automatic">Iklan diatur sistem Topads</string>
+
+    <string name="edit_ad_item_title_name">Nama Grup</string>
+    <string name="edit_ad_item_title_product">Produk</string>
+    <string name="edit_ad_item_title_mode">Mode Pengaturan</string>
+    <string name="edit_ad_item_title_ads_search">Iklan di Pencarian</string>
+    <string name="edit_ad_item_title_ads_recommendation">Iklan di Rekomendasi</string>
+    <string name="edit_ad_item_title_daily_budget">Anggaran Harian</string>
+    <string name="edit_ad_item_title_potential_performance">Potensi tampil</string>
+    <string name="selected_product">%d produk dipilih</string>
+    <string name="ads_search_item_template">Biaya iklan %s dan %s kata kunci</string>
+    <string name="top_ads_text_info_browse_bid"><![CDATA[Iklanmu akan tampil pada bagian halaman strategis seperti di halaman home, keranjang, inbox dan detail produk. <strong><span style="color:#00AA5B">Pelajari</span></strong>]]></string>
+    <string name="top_ads_kata_kunci_tab_positive">Kata Kunci Positif</string>
+    <string name="top_ads_kata_kunci_tab_negative">Kata Kunci Negatif</string>
+    <string name="top_ads_search_browse_item_settings_subtitle_manual">Iklan diatur manual</string>
+    <string name="top_ads_search_browse_item_settings_subtitle_auto">Iklan diatur sistem Topads</string>
+    <string name="top_ads_search_browse_item_settings_toast_manual">Pengaturan iklanmu berhasil diubah ke manual.</string>
+    <string name="top_ads_search_browse_item_settings_toast_auto">Pengaturan iklanmu berhasil diubah ke sistem TopAds. Kamu cukup atur anggaran harian, ya.</string>
+    <string name="top_ads_name_change_toast">Nama grup iklan berhasil diubah.</string>
+    <string name="top_ads_product_add_delete_toast">Produk berhasil disimpan..</string>
+    <string name="top_ads_search_bid_change_toast">Pengaturan Iklan di Pencarian berhasil diterapkan.</string>
+    <string name="top_ads_browse_bid_change_toast">Biaya Iklan di Rekomendasi berhasil diterapkan.</string>
+    <string name="top_ads_daily_budget_change_toast">Perubahan anggaran harian berhasil diterapkan.</string>
+    <string name="top_ads_add_product_toast">%d produk berhasil ditambah.</string>
+    <string name="top_ads_performance_increment_text">%s %% meningkat</string>
+    <string name="top_ads_performance_increment_text_int">%d %% meningkat</string>
+    <string name="top_ads_minimum_budget">Minimum Rp%s</string>
+    <string name="top_ads_maximum_budget">Maksimum Rp%s</string>
+    <string name="top_ads_recommendation_performance">%dx</string>
+    <string name="top_ads_recommendation_performance_default_increment">0% meningkat</string>
+    <string name="top_ads_browse_bid_tooltip_desxription">Iklanmu akan tampil pada berbagai halaman strategis seperti di halaman home, keranjang, inbox dan detail produk.
+Sistem Tokopedia akan menampilkan iklan produkmu dengan kemampuan teknologi yang dapat menyesuaikan ketertarikan dan riwayat penjelajahan calon pembeli memungkinkan iklanmu menjangkau calon pembeli dengan lebih luas dan tepat.</string>
+
 
 </resources>

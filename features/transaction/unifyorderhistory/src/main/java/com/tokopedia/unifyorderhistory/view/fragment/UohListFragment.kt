@@ -736,6 +736,10 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         uohListViewModel.orderHistoryListResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    binding?.run {
+                        globalErrorUoh.gone()
+                        rvOrderList.visible()
+                    }
                     if (currPage == 1) impressedUUIDs.clear()
                     refreshHandler?.finishRefresh()
                     orderList = it.data
