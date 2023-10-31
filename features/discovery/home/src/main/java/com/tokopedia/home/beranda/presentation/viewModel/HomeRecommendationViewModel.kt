@@ -132,9 +132,7 @@ class HomeRecommendationViewModel @Inject constructor(
                     locationParam
                 )
 
-                if (existingRecommendationData.contains(loadMoreModel)) {
-                    existingRecommendationData.remove(loadMoreModel)
-                }
+                existingRecommendationData.remove(loadMoreModel)
 
                 existingRecommendationData.addAll(result.homeRecommendations)
 
@@ -147,9 +145,8 @@ class HomeRecommendationViewModel @Inject constructor(
                     HomeRecommendationCardState.SuccessNextPage(newHomeRecommendationDataModel)
                 )
             }, onError = {
-                    if (existingRecommendationData.contains(loadMoreModel)) {
-                        existingRecommendationData.remove(loadMoreModel)
-                    }
+                    existingRecommendationData.remove(loadMoreModel)
+
                     _homeRecommendationCardState.emit(
                         HomeRecommendationCardState.FailNextPage(
                             HomeRecommendationDataModel(existingRecommendationData.toList()),
@@ -176,7 +173,8 @@ class HomeRecommendationViewModel @Inject constructor(
             )
         )
         launchCatchError(coroutineContext, block = {
-            getHomeRecommendationUseCase.get().setParams(tabName, recommendationId, count, 1, locationParam, sourceType)
+            getHomeRecommendationUseCase.get()
+                .setParams(tabName, recommendationId, count, 1, locationParam, sourceType)
             val data = getHomeRecommendationUseCase.get().executeOnBackground()
             if (data.homeRecommendations.isEmpty()) {
                 _homeRecommendationLiveData.postValue(
@@ -363,7 +361,8 @@ class HomeRecommendationViewModel @Inject constructor(
         )
         launchCatchError(coroutineContext, block = {
             // todo will remove
-            getHomeRecommendationUseCase.get().setParams(tabName, recomId, count, page, locationParam, sourceType)
+            getHomeRecommendationUseCase.get()
+                .setParams(tabName, recomId, count, page, locationParam, sourceType)
             val data = getHomeRecommendationUseCase.get().executeOnBackground()
             list.remove(loadMoreModel)
 

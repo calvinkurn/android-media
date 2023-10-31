@@ -9,6 +9,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
 import com.tokopedia.home.ext.observeOnce
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -1845,6 +1846,28 @@ class HomeRecommendationViewModelTest {
                 actualNextResult.throwable.localizedMessage
             )
             assertEquals(homeRecommendationDataModel.homeRecommendations, actualNextResult.data.homeRecommendations)
+        }
+    }
+
+    @Test
+    fun `When Failed Fetch Home Recommendation and Hit fetchNextHomeRecommendationCard, then no op and the state is Fail`() {
+        val productPage = 1
+        val exception = MessageErrorException("something went wrong")
+
+        getHomeRecommendationCardUseCase.givenThrows(exception, productPage)
+
+        // assert HomeRecommendationCardState is equal LoadingState
+        assertCollectingRecommendationCardState {
+            assertTrue(it.first() is HomeRecommendationCardState.Loading)
+        }
+
+        homeRecommendationViewModel.fetchHomeRecommendationCard("", "", sourceType = "")
+
+        assertCollectingRecommendationCardState {
+            assertTrue(it.first() is HomeRecommendationCardState.Fail)
+
+            homeRecommendationViewModel.fetchNextHomeRecommendationCard("", productPage + Int.ONE, "", "")
+            assertTrue(it.first() is HomeRecommendationCardState.Fail)
         }
     }
 
