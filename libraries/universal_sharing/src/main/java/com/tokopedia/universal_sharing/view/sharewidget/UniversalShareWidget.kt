@@ -12,6 +12,8 @@ import com.tokopedia.iconunify.getIconUnifyResourceIdRef
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
@@ -20,14 +22,10 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.databinding.UniversalShareWidgetBinding
 import com.tokopedia.universal_sharing.di.ActivityComponentFactory
-import com.tokopedia.universal_sharing.model.CampaignStatus
 import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
-import com.tokopedia.universal_sharing.model.PdpParamModel
-import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
-import com.tokopedia.universal_sharing.util.DateUtil
+import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.util.UniversalShareConst
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
@@ -45,7 +43,10 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
 
     private var channelShareIconId: Int = -1
     private var iconUnifyId: Int = IconUnify.WARNING
-    private var callback: ShareWidgetLinkRequestCallback? = null
+    private var callback: ShareWidgetCallback? = null
+    private var isDirectChannel = false
+    private var isAffiliate = false
+    private var channel = ""
 
     // properties for generation link
     private var linkProperties: LinkShareWidgetProperties? = null
@@ -56,6 +57,9 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var tracker: UniversalSharebottomSheetTracker
 
     private val loading: LoaderDialog by lazy {
         LoaderDialog(context)
@@ -71,6 +75,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
 
     init {
         binding = UniversalShareWidgetBinding.inflate(LayoutInflater.from(context), this, true)
+        this.gone()
         inject()
         context.theme.obtainStyledAttributes(
             attrs,
@@ -109,27 +114,32 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
         ).inject(this)
     }
 
-    private fun setShareWidgetCallback(shareWidgetLinkRequestCallback: ShareWidgetLinkRequestCallback) {
-        callback = shareWidgetLinkRequestCallback
+    fun setShareWidgetCallback(shareWidgetCallback: ShareWidgetCallback) {
+        callback = shareWidgetCallback
     }
 
 
     private fun populateView(icon: Int) {
         when (getVariant()) {
             UniversalShareConst.RemoteConfigKey.VALUE_VARIANT_A -> {
-                binding?.shareChannel?.setImage(IconUnify.SHARE)
+                binding?.shareChannel?.setImage(IconUnify.SHARE_MOBILE)
             }
 
             UniversalShareConst.RemoteConfigKey.VALUE_VARIANT_B -> {
                 if (SharingUtil.isAppInstalled(context, getPackageName())) {
                     binding?.shareChannel?.setImage(icon)
+                    isDirectChannel = true
                 } else {
-                    binding?.shareChannel?.setImage(IconUnify.SHARE)
+                    binding?.shareChannel?.setImage(IconUnify.SHARE_MOBILE)
                 }
             }
 
             UniversalShareConst.RemoteConfigKey.CONTROL_VARIANT -> {
                 this.gone()
+            }
+
+            else -> {
+                /* no-op */
             }
         }
         setOnClickChannel()
@@ -137,10 +147,16 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
 
     private fun setOnClickChannel() {
         this.rootView.setOnClickListener {
-            linkProperties?.let {
-                val linkerData = createLinkerData()
-                viewModel?.executeLinkRequest(linkerData, sourceId, imageGeneratorModel)
+            if (isDirectChannel.not()) {
+                callback?.onShowNormalBottomSheet()
+
+            } else {
+                linkProperties?.let {
+                    val linkerData = createLinkerData()
+                    viewModel?.executeLinkRequest(linkerData, sourceId, imageGeneratorModel)
+                }
             }
+            callback?.onClickShareWidget(linkProperties?.id.orEmpty(), getLinkChannel(), isAffiliate, isDirectChannel)
         }
     }
 
@@ -226,7 +242,10 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
             viewModel?.resultAffiliate?.observe(treeLifecycleOwner) { result ->
                 when (result) {
                     is Success -> {
-                        binding?.shareChannel?.setImage(IconUnify.SHARE_AFFILIATE)
+                        if (result.data.affiliateEligibility?.isEligible.orFalse()) {
+                            binding?.shareChannel?.setImage(IconUnify.SHARE_AFFILIATE)
+                            isAffiliate = true
+                        }
                     }
 
                     is Fail -> {
@@ -244,6 +263,15 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
      */
     fun enableAffiliate(affiliateInput: AffiliateInput) {
         viewModel?.checkIsAffiliate(affiliateInput)
+    }
+
+    fun show() {
+        if (getVariant() == UniversalShareConst.RemoteConfigKey.CONTROL_VARIANT) return
+        this.visible()
+        tracker.viewShareWidget(
+            shareIconId = getLinkChannel(),
+            productId = linkProperties?.id ?: ""
+        )
     }
 
     /**
@@ -293,12 +321,31 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
         private const val CHANNEL_TELEGRAM = 1
         private const val CHANNEL_SMS = 2
         private const val FEATURE_SHARE = "share"
+        const val EMPTY_ATTRS = "-1"
     }
 }
 
-interface ShareWidgetLinkRequestCallback {
+interface ShareWidgetCallback {
+    /**
+     * this method will be invoked when failed create share link url
+     */
     fun onErrorCreateUrl(error: LinkerError)
 
+    /**
+     * this method will be invoked when successfully create share link url
+     */
     fun onSuccessCreateUrl(result: LinkerShareResult)
+
+    /**
+     * this method will be invoked when show normal share icon instead of channel icon (WA, Telegram, and etc)
+     * and should show [com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet]
+     */
+    fun onShowNormalBottomSheet()
+
+    /**
+     * @param isAffiliate will return true if eligible for affiliate
+     * @param isDirectChannel will return true if showing channel icon (WA, Telegram, and etc)
+     */
+    fun onClickShareWidget(id: String, channel: String, isAffiliate: Boolean, isDirectChannel: Boolean)
 }
 

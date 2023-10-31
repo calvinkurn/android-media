@@ -96,6 +96,8 @@ import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -329,6 +331,7 @@ import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
+import com.tokopedia.universal_sharing.view.customview.ShareWidgetCallback
 import com.tokopedia.universal_sharing.view.customview.UniversalShareWidget
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.usecase.coroutines.Fail
@@ -6223,6 +6226,45 @@ open class DynamicProductDetailFragment :
                 )
             }
         }
+        shareWidget?.setShareWidgetCallback(object: ShareWidgetCallback {
+            override fun onErrorCreateUrl(error: LinkerError) {
+                /* no-op */
+            }
+
+            override fun onSuccessCreateUrl(result: LinkerShareResult) {
+                /* no-op */
+            }
+
+            override fun onShowNormalBottomSheet() {
+                shareProduct(productInfo)
+            }
+
+            override fun onClickShareWidget(id: String, channel: String, isAffiliate: Boolean, isDirectChannel: Boolean) {
+                val campaignId = if (this@DynamicProductDetailFragment.campaignId.isEmpty()) {
+                    "0"
+                } else {
+                    this@DynamicProductDetailFragment.campaignId
+                }
+                if (isDirectChannel) {
+                    DynamicProductDetailTracking.Click.clickDirectChannel(
+                        channel,
+                        isAffiliate,
+                        id,
+                        campaignId,
+                        "0"
+
+                    )
+                } else {
+                    DynamicProductDetailTracking.Click.clickShareWidget(
+                        isAffiliate,
+                        id,
+                        campaignId,
+                        "0"
+                    )
+                }
+            }
+        })
+        shareWidget?.show()
     }
 
     override fun onShopReviewSeeMore(
