@@ -35,6 +35,9 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Key
 import com.tokopedia.content.common.util.eventbus.EventBus
 import com.tokopedia.content.common.util.throwable.isNetworkError
+import com.tokopedia.content.common.view.fragment.LoadingDialogFragment
+import com.tokopedia.content.product.picker.ProductSetupFragment
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -46,7 +49,6 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticStateHolder
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
-import com.tokopedia.content.product.picker.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.schedule.util.SchedulePicker
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.shorts.view.custom.isMenuExists
@@ -59,7 +61,6 @@ import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS
-import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
@@ -76,7 +77,6 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.livetovod.PlayBroLiveToVo
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationSetupFragment
-import com.tokopedia.content.common.view.fragment.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
@@ -150,6 +150,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private var coachMarkItems = mutableListOf<CoachMark2Item>()
     private var coachMark: CoachMark2? = null
     private var productSetupPendingToaster: String? = null
+    private var showToasterSetUpCover: String? = null
 
     override fun getScreenName(): String = "Play Prepare Page"
 
@@ -431,6 +432,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         }
                     }
                 )
+                childFragment.needToShowErrorToaster(showToasterSetUpCover)
 
                 val isShowCoachMark = parentViewModel.isShowSetupCoverCoachMark
                 childFragment.needToShowCoachMark(isShowCoachMark)
@@ -606,26 +608,29 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
-    private fun requireTitleAndCover(isTitleAndCoverSet: () -> Unit) {
-        if (parentViewModel.channelTitle.isNotEmpty()) {
-            if (viewModel.isCoverAvailable()) {
-                isTitleAndCoverSet()
-            } else {
-                val errorMessage = getString(R.string.play_bro_cover_empty_error)
+    private fun checkLiveStreamRequirement(startLiveStream: () -> Unit) {
+        when {
+            parentViewModel.channelTitle.isEmpty() -> {
+                val errorMessage = getString(R.string.play_bro_title_empty_error)
+                toaster.showToaster(errorMessage)
+            }
+            !viewModel.isCoverAvailable() -> {
+                showToasterSetUpCover = getString(R.string.play_bro_cover_empty_error)
+                openSetupCoverBottomSheet()
+            }
+            parentViewModel.productSectionList.isEmpty() -> {
+                val errorMessage = getString(R.string.play_bro_cover_setup_product_empty)
                 toaster.showError(
                     err = MessageErrorException(errorMessage),
                     customErrMessage = errorMessage
                 )
-                openSetupCoverBottomSheet()
             }
-        } else {
-            val errorMessage = getString(R.string.play_bro_title_empty_error)
-            toaster.showToaster(errorMessage)
+            else -> startLiveStream.invoke()
         }
     }
 
     private fun validateAndStartLive() {
-        requireTitleAndCover { startCountDown() }
+        checkLiveStreamRequirement { startCountDown() }
     }
 
     private fun setupObserver() {
@@ -871,7 +876,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             eventBus.subscribe().collect { event ->
                 when (event) {
                     Event.ClickSetSchedule -> {
-                        requireTitleAndCover { openScheduleBottomSheet() }
+                        checkLiveStreamRequirement { openScheduleBottomSheet() }
                     }
                     is Event.SaveSchedule -> {
                         parentViewModel.submitAction(

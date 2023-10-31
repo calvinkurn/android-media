@@ -14,8 +14,9 @@ object RollenceKey {
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
-    const val HOME_COMPONENT_ATF = "revamp_atf"
-    const val HOME_COMPONENT_ATF_2 = "home_atf2"
+    const val HOME_COMPONENT_ATF = "test_atf"
+    const val HOME_COMPONENT_ATF_2 = "control_atf2"
+    const val HOME_COMPONENT_ATF_3 = "exp_atf3"
     const val HOME_LOAD_TIME_KEY = "load_time"
     const val HOME_LOAD_TIME_CONTROL = "control_variant"
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_KEY = "loadtime_homepage_an"
@@ -72,9 +73,6 @@ object RollenceKey {
     const val PRODUCT_CARD_EXPERIMENT_GIMMICK = "gimmick"
     const val PRODUCT_CARD_EXPERIMENT_PORTRAIT = "portrait"
     const val PRODUCT_CARD_EXPERIMENT_ETA = "eta"
-    const val PRODUCT_CARD_SLASHED_PRICE_CASHBACK_EXPERIMENT = "seg_sp_cb"
-    const val PRODUCT_CARD_SLASHED_PRICE_CASHBACK_SRP = "sp_cb_srp"
-    const val PRODUCT_CARD_SLASHED_PRICE_CASHBACK_ALL = "sp_cb_all"
 
     // PDP
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"

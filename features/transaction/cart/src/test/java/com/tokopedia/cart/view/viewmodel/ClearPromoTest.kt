@@ -2,9 +2,11 @@ package com.tokopedia.cart.view.viewmodel
 
 import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import io.mockk.coEvery
+import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -80,5 +82,22 @@ class ClearPromoTest : BaseCartViewModelTest() {
             CartGlobalEvent.SuccessClearRedPromosThenGoToPromo,
             cartViewModel.globalEvent.value
         )
+    }
+
+    @Test
+    fun `WHEN clear all bo THEN should hit clear`() {
+        // GIVEN
+        val clearPromoModel = ClearPromoUiModel()
+
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()) } returns clearCacheAutoApplyStackUseCase
+        coEvery { clearCacheAutoApplyStackUseCase.executeOnBackground() } returns clearPromoModel
+
+        // WHEN
+        cartViewModel.clearAllBo(ClearPromoOrderData())
+
+        // THEN
+        verify {
+            clearCacheAutoApplyStackUseCase.setParams(any())
+        }
     }
 }

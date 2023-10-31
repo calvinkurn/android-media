@@ -198,7 +198,7 @@ class StoriesDetailFragment @Inject constructor(
                 if (!isEligiblePage) return@collect
                 when (event) {
                     is StoriesUiEvent.EmptyDetailPage -> {
-                        setErrorType(StoriesErrorView.Type.EmptyCategory, isTimerAvailable = false)
+                        setErrorType(StoriesErrorView.Type.EmptyCategory)
                     }
 
                     is StoriesUiEvent.ErrorDetailPage -> {
@@ -578,15 +578,12 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun setErrorType(errorType: StoriesErrorView.Type, isTimerAvailable: Boolean = true, onClick: () -> Unit = {}) = with(binding.vStoriesError) {
+    private fun setErrorType(errorType: StoriesErrorView.Type, onClick: () -> Unit = {}) = with(binding.vStoriesError) {
         show()
         type = errorType
         setAction { onClick() }
         setCloseAction { activity?.finish() }
         translationZ = if (errorType == StoriesErrorView.Type.NoContent || errorType == StoriesErrorView.Type.EmptyCategory) 0f else 1f
-
-        if(errorType != StoriesErrorView.Type.EmptyCategory && isTimerAvailable) return@with
-        renderTimer(null, TimerStatusInfo.Empty)
     }
 
     private fun hideError() = binding.vStoriesError.gone()

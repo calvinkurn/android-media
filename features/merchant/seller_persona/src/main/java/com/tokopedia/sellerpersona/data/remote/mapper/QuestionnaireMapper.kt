@@ -31,7 +31,7 @@ class QuestionnaireMapper @Inject constructor() {
     private fun getOptions(
         type: Int,
         options: List<QuestionnaireModel.OptionModel>?
-    ): List<BaseOptionUiModel>? {
+    ): List<BaseOptionUiModel> {
         return options?.map {
             if (type == Int.ONE) {
                 BaseOptionUiModel.QuestionOptionSingleUiModel(
@@ -44,6 +44,6 @@ class QuestionnaireMapper @Inject constructor() {
                     title = it.title
                 )
             }
-        }
+        }.orEmpty()
     }
 }

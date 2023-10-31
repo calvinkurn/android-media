@@ -1,6 +1,9 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
+import com.tokopedia.kotlin.extensions.view.percentFormatted
 import java.util.Date
 import java.util.concurrent.TimeUnit
 
@@ -52,10 +55,13 @@ data class CampaignModular(
     }
 
     @Transient
-    var discountedPriceFmt: String = ""
+    var priceFmt: String = ""
 
     @Transient
-    var originalPriceFmt: String = ""
+    var slashPriceFmt: String = ""
+
+    @Transient
+    var discPercentageFmt: String = ""
 
     private fun timeIsUnder1Day(): Boolean {
         return try {
@@ -84,4 +90,25 @@ data class CampaignModular(
 
     val activeAndHasId
         get() = isActive && (campaignID.toIntOrNull() ?: 0) > 0
+
+    fun processMaskingPrice(price: Price) {
+        discPercentageFmt = price.discPercentage.ifNullOrBlank {
+            percentageAmount.percentFormatted()
+        }
+        slashPriceFmt = price.slashPriceFmt.ifNullOrBlank {
+            discountedPrice.getCurrencyFormatted()
+        }
+        priceFmt = price.priceFmt.ifNullOrBlank {
+            originalPrice.getCurrencyFormatted()
+        }
+
+        /**
+         * refer to [AtcCommonMapper]
+         */
+        if (hideGimmick) {
+            priceFmt = price.slashPriceFmt.ifNullOrBlank {
+                discountedPrice.getCurrencyFormatted()
+            }
+        }
+    }
 }

@@ -13,7 +13,7 @@ import com.tokopedia.feedplus.R as feedplusR
 class FeedBrowseItemDecoration(
     private val context: Context,
     @DimenRes spacingHorizontal: Int,
-    @DimenRes spacingTop: Int,
+    @DimenRes spacingTop: Int
 ) : RecyclerView.ItemDecoration() {
 
     private val spacingStart = getDimensionInPixel(feedplusR.dimen.feed_space_16)
@@ -41,11 +41,11 @@ class FeedBrowseItemDecoration(
     }
 
     private fun isPositionStart(parent: RecyclerView, view: View): Boolean {
-        return parent.getChildAdapterPosition(view) == 0
+        return parent.getChildLayoutPosition(view) == 0
     }
 
     private fun isPositionEnd(parent: RecyclerView, view: View, state: RecyclerView.State): Boolean {
         val lastPosition = state.itemCount - 1
-        return parent.getChildAdapterPosition(view) == lastPosition
+        return parent.getChildLayoutPosition(view) == lastPosition
     }
 }
