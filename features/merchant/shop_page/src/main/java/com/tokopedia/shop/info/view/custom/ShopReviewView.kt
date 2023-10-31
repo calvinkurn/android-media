@@ -3,7 +3,7 @@ package com.tokopedia.shop.info.view.custom
 import android.content.Context
 import android.content.ContextWrapper
 import android.util.AttributeSet
-import android.view.LayoutInflater
+import android.view.Gravity
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
@@ -11,8 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.R
-import com.tokopedia.shop.databinding.ShopInfoTopReviewViewpagerBinding
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.view.fragment.ReviewViewPagerItemFragment
 import com.tokopedia.unifycomponents.toPx
@@ -23,8 +23,10 @@ class ShopReviewView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
     
-    private var binding: ShopInfoTopReviewViewpagerBinding? = null
-    private var isSwipeFromUserInteraction : Boolean = false 
+    private var isSwipeFromUserInteraction : Boolean = false
+    init {
+        orientation = VERTICAL
+    }
     
     companion object {
         private const val DOT_INDICATOR_INACTIVE_HEIGHT = 5
@@ -32,57 +34,94 @@ class ShopReviewView @JvmOverloads constructor(
         private const val DOT_INDICATOR_ACTIVE_HEIGHT = 5
         private const val DOT_INDICATOR_ACTIVE_WIDTH = 28
         private const val DOT_INDICATOR_MARGIN_START = 3
-    }
-    
-    init {
-        binding = ShopInfoTopReviewViewpagerBinding.inflate(
-            LayoutInflater.from(context),
-            this,
-            true
-        )
+        private const val DOT_INDICATOR_MARGIN_TOP = 16
     }
 
     fun render(review: ShopReview) {
+        val viewpager = createViewpager()
+        val tabIndicator = createTabIndicator(review.reviews.size)
+        
+        addView(viewpager)
+        addView(tabIndicator)
+        
+        setupViewPager(viewpager, tabIndicator, review)
+    }
+
+    private fun setupViewPager(
+        viewPager: ViewPager2,
+        tabIndicator: LinearLayout,
+        review: ShopReview
+    ) {
         val fragments = createFragments(review.reviews)
         val fragmentActivity = context.findActivity() ?: return
-        
-        val viewpager = binding?.viewpager  ?: return
+
         val pagerAdapter = ReviewViewPagerAdapter(fragmentActivity, fragments)
-        viewpager.adapter = pagerAdapter
+        viewPager.adapter = pagerAdapter
 
-        val linearLayout = binding?.tabIndicator ?: return
+        addViewPagerPageChangeListener(viewPager, tabIndicator, review.reviews.size)
+    }
 
-        for (currentIndex in 0 until review.reviews.size) {
-            if (currentIndex == 0) {
-                linearLayout.addView(createSelectedTabIndicator())
-            } else {
-                linearLayout.addView(createUnselectedTabIndicator())
-            }
-        }
-        
-        viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+    private fun addViewPagerPageChangeListener(
+        viewPager: ViewPager2,
+        tabIndicator: LinearLayout,
+        reviewCount: Int
+    ) {
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                
+
                 if (isSwipeFromUserInteraction) {
-                    linearLayout.removeAllViews()    
+                    tabIndicator.removeAllViews()
                 }
                 
-                for (currentIndex in 0 until review.reviews.size) {
+                for (currentIndex in Int.ZERO until reviewCount) {
                     if (currentIndex == position) {
-                        linearLayout.addView(createSelectedTabIndicator())
+                        tabIndicator.addView(createSelectedDot())
                     } else {
-                        linearLayout.addView(createUnselectedTabIndicator())
+                        tabIndicator.addView(createUnselectedDot())
                     }
                 }
-                
+
                 isSwipeFromUserInteraction = true
             }
         })
-        
     }
 
-    private fun createSelectedTabIndicator(): ImageView {
+    private fun createViewpager(): ViewPager2 {
+        return ViewPager2(context).apply {
+            layoutParams = LayoutParams(
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.WRAP_CONTENT
+            )
+        }
+    }
+
+    private fun createTabIndicator(reviewCount: Int): LinearLayout {
+        val tabIndicator =  LinearLayout(context).apply {
+            val params = LayoutParams(
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.WRAP_CONTENT
+            )
+            params.topMargin = DOT_INDICATOR_MARGIN_TOP.toPx()
+            layoutParams = params
+
+            orientation = HORIZONTAL
+            gravity = Gravity.CENTER_HORIZONTAL
+        }
+   
+        for (currentIndex in Int.ZERO until reviewCount) {
+            if (currentIndex == Int.ZERO) {
+                tabIndicator.addView(createSelectedDot())
+            } else {
+                tabIndicator.addView(createUnselectedDot())
+            }
+        }
+        
+        return tabIndicator
+    }
+
+    
+    private fun createSelectedDot(): ImageView {
         val imageView = ImageView(context)
         val params = LayoutParams(DOT_INDICATOR_ACTIVE_WIDTH.toPx() , DOT_INDICATOR_ACTIVE_HEIGHT.toPx())
         params.leftMargin = DOT_INDICATOR_MARGIN_START.toPx()
@@ -93,7 +132,7 @@ class ShopReviewView @JvmOverloads constructor(
         return imageView
     }
 
-    private fun createUnselectedTabIndicator(): ImageView {
+    private fun createUnselectedDot(): ImageView {
         val imageView = ImageView(context)
         val params = LayoutParams(DOT_INDICATOR_INACTIVE_WIDTH.toPx() , DOT_INDICATOR_INACTIVE_HEIGHT.toPx())
         params.leftMargin = DOT_INDICATOR_MARGIN_START.toPx()
