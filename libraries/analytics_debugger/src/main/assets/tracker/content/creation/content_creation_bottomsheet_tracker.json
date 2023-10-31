@@ -1,0 +1,17 @@
+{
+  "readme": "Content Creation Entry Point Widget Trackers",
+  "mode": "subset",
+  "query": [
+    {
+      "businessUnit" : "content",
+      "clientId" : ".*",
+      "eventCategory": "shop page - seller",
+      "currentSite" : "tokopediamarketplace",
+      "event": "",
+      "userId" : ".*",
+      "eventAction": "",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .*"
+    }
+  ]
+}

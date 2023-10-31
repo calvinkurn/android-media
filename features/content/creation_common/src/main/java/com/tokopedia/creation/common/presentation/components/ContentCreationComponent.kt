@@ -36,6 +36,7 @@ import com.tokopedia.creation.common.R as creationcommonR
 @Composable
 fun ContentCreationComponent(
     creationConfig: Result<ContentCreationConfigModel>?,
+    onImpressBottomSheet: () -> Unit,
     selectedItem: ContentCreationItemModel?,
     onSelectItem: (ContentCreationItemModel) -> Unit,
     onNextClicked: () -> Unit,
@@ -43,12 +44,19 @@ fun ContentCreationComponent(
 ) {
     NestTheme {
         when (creationConfig) {
-            is Success -> ContentCreationSuccessView(
-                creationItemList = creationConfig.data.creationItems,
-                selectedItem = selectedItem,
-                onSelectItem = onSelectItem,
-                onNextClicked = onNextClicked
-            )
+            is Success -> {
+                LaunchEffect(Unit) {
+onImpress()
+                }
+
+                ContentCreationSuccessView(
+                    creationItemList = creationConfig.data.creationItems,
+                    selectedItem = selectedItem,
+                    onSelectItem = onSelectItem,
+                    onNextClicked = onNextClicked
+                )
+            }
+
             is Fail -> ContentCreationFailView(onRetry = onRetryClicked)
             else -> ContentCreationLoadingView()
         }

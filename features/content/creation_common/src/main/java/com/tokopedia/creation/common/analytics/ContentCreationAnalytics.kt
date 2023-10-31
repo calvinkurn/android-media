@@ -6,6 +6,9 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.constant.TrackerConstant
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.content.analytic.Event
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.CurrentSite
 
 /**
  * Created By : Muhammad Furqan on 27/10/23
@@ -13,11 +16,13 @@ import javax.inject.Inject
  * Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4256
  */
 class ContentCreationAnalytics @Inject constructor(
-    userSession: UserSessionInterface
+    val userSession: UserSessionInterface
 ) {
 
-    private val userId = userSession.userId
-    private val shopId = userSession.shopId
+    private val userId: String
+        get() = userSession.userId
+    private val shopId: String
+        get() = userSession.shopId
 
     fun eventClickNextButton(
         authorType: ContentCreationAuthorEnum,
@@ -26,7 +31,7 @@ class ContentCreationAnalytics @Inject constructor(
     ) {
         sendEventTracker(
             generateGeneralTrackerMapData(
-                eventName = Event.CLICK_CONTENT,
+                eventName = Event.clickContent,
                 eventAction = Action.CLICK_NEXT_CONTENT_CREATION,
                 eventLabel = "${getPartnerId(authorType)} - ${getUserType(authorType)} - ${contentTypeTitle.lowercase()}",
                 trackerId = if (widgetSource == ContentCreationEntryPointSource.Shop) "47546" else "47965",
@@ -41,7 +46,7 @@ class ContentCreationAnalytics @Inject constructor(
     ) {
         sendEventTracker(
             generateGeneralTrackerMapData(
-                eventName = Event.CLICK_CONTENT,
+                eventName = Event.clickContent,
                 eventAction = Action.CLICK_PERFORMANCE_DASHBOARD_CONTENT_CREATION,
                 eventLabel = "${getPartnerId(authorType)} - ${getUserType(authorType)}",
                 trackerId = "47550",
@@ -56,7 +61,7 @@ class ContentCreationAnalytics @Inject constructor(
     ) {
         sendEventTracker(
             generateGeneralTrackerMapData(
-                eventName = Event.VIEW_CONTENT_IRIS,
+                eventName = Event.viewContentIris,
                 eventAction = Action.VIEW_CONTENT_CREATION_BOTTOM_SHEET,
                 eventLabel = "${getPartnerId(authorType)} - ${getUserType(authorType)}",
                 trackerId = if (widgetSource == ContentCreationEntryPointSource.Shop) "47551" else "47966",
@@ -71,7 +76,7 @@ class ContentCreationAnalytics @Inject constructor(
     ) {
         sendEventTracker(
             generateGeneralTrackerMapData(
-                eventName = Event.VIEW_CONTENT_IRIS,
+                eventName = Event.viewContentIris,
                 eventAction = Action.VIEW_CREATE_CONTENT,
                 eventLabel = "${getPartnerId(authorType)} - ${getUserType(authorType)}",
                 trackerId = "47797",
@@ -86,7 +91,7 @@ class ContentCreationAnalytics @Inject constructor(
     ) {
         sendEventTracker(
             generateGeneralTrackerMapData(
-                eventName = Event.CLICK_CONTENT,
+                eventName = Event.clickContent,
                 eventAction = Action.CLICK_CREATE_CONTENT,
                 eventLabel = "${getPartnerId(authorType)} - ${getUserType(authorType)}",
                 trackerId = "47798",
@@ -110,16 +115,16 @@ class ContentCreationAnalytics @Inject constructor(
         TrackerConstant.EVENT_CATEGORY to getEventCategory(widgetSource),
         TrackerConstant.EVENT_ACTION to eventAction,
         TrackerConstant.EVENT_LABEL to eventLabel,
-        TrackerConstant.BUSINESS_UNIT to VALUE_BUSINESS_UNIT,
-        TrackerConstant.CURRENT_SITE to VALUE_CURRENT_SITE,
+        TrackerConstant.BUSINESS_UNIT to BusinessUnit.content,
+        TrackerConstant.CURRENT_SITE to CurrentSite.tokopediaMarketplace,
         TrackerConstant.TRACKER_ID to trackerId,
         TrackerConstant.USERID to userId
     )
 
     private fun getUserType(authorEnum: ContentCreationAuthorEnum) =
         when (authorEnum) {
-            ContentCreationAuthorEnum.USER -> VALUE_USER
-            ContentCreationAuthorEnum.SHOP -> VALUE_SELLER
+            ContentCreationAuthorEnum.USER -> Value.user
+            ContentCreationAuthorEnum.SHOP -> Value.seller
             ContentCreationAuthorEnum.NONE -> ""
         }
 
@@ -137,11 +142,6 @@ class ContentCreationAnalytics @Inject constructor(
             else -> ""
         }
 
-    private object Event {
-        const val CLICK_CONTENT = "clickContent"
-        const val VIEW_CONTENT_IRIS = "viewContentIris"
-    }
-
     private object Action {
         const val CLICK_NEXT_CONTENT_CREATION = "click - lanjut content creation"
         const val CLICK_PERFORMANCE_DASHBOARD_CONTENT_CREATION =
@@ -152,12 +152,6 @@ class ContentCreationAnalytics @Inject constructor(
     }
 
     companion object {
-        private const val VALUE_BUSINESS_UNIT = "content"
-        private const val VALUE_CURRENT_SITE = "tokopediamarketplace"
-
-        private const val VALUE_SELLER = "seller"
-        private const val VALUE_USER = "user"
-
         private const val VALUE_CATEGORY_SHOP = "shop page - seller"
         private const val VALUE_CATEGORY_FEED = "unified feed"
     }

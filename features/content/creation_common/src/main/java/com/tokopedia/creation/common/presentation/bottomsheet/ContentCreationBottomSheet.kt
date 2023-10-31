@@ -66,24 +66,20 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
         val composeView = ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                val isFirstTime = remember { mutableStateOf(true) }
-
                 val selectedCreation =
                     viewModel?.selectedCreationType?.collectAsStateWithLifecycle()
                 val creationList = viewModel?.creationConfig?.collectAsStateWithLifecycle()
 
-                if (isFirstTime.value && viewModel != null && analytics != null) {
-                    analytics?.eventImpressionContentCreationBottomSheet(
-                        viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
-                        widgetSource
-                    )
-                    isFirstTime.value = false
-                }
-
                 ContentCreationComponent(
                     creationConfig = creationList?.value,
                     selectedItem = selectedCreation?.value,
-                    onSelectItem = {
+                    inImpressBottomSheet = {
+                        analytics?.eventImpressionContentCreationBottomSheet(
+                            viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
+                            widgetSource
+                        )
+                    }
+                        onSelectItem = {
                         viewModel?.selectCreationItem(it)
                         listener?.onCreationItemSelected(it)
                     },

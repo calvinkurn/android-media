@@ -92,15 +92,16 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
     @Composable
     override fun Content() {
         val creationConfig = viewModel?.creationConfig?.collectAsStateWithLifecycle()?.value
-        val isFirstTime = remember { mutableStateOf(true) }
 
         if (creationConfig is Success && creationConfig.data.creationItems.isNotEmpty()) {
-            if (isFirstTime.value && widgetSource != ContentCreationEntryPointSource.Unknown) {
-                analytics.eventImpressionContentCreationEndpointWidget(
-                    viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
-                    widgetSource
-                )
-                isFirstTime.value = false
+
+            LaunchEffect(Unit) {
+                if (widgetSource != ContentCreationEntryPointSource.Unknown) {
+                    analytics.eventImpressionContentCreationEndpointWidget(
+                        viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
+                        widgetSource
+                    )
+                }
             }
 
             ContentCreationEntryPointComponent(
