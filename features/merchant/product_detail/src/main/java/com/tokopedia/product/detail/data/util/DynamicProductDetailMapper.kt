@@ -781,6 +781,7 @@ object DynamicProductDetailMapper {
             MethodChecker.fromHtml(productInfo.getProductName).toString(),
             productInfo.data.price.currency,
             productInfo.basic.url,
+            isProductHasMaskingPrice(productInfo.data.price.priceFmt),
             shopUrl,
             productInfo.basic.shopName,
             productInfo.basic.productID,
@@ -788,6 +789,10 @@ object DynamicProductDetailMapper {
             campaignId = zeroIfEmpty(productInfo.data.campaign.campaignID),
             bundleId = zeroIfEmpty(bundleId)
         )
+    }
+
+    private fun isProductHasMaskingPrice(finalPrice: String): Boolean {
+        return finalPrice.contains("?")
     }
 
     fun generatePersonalizedData(product: DynamicProductInfoP1, productP2: ProductInfoP2UiData?): PersonalizedCampaignModel {
@@ -818,7 +823,8 @@ object DynamicProductDetailMapper {
                 catLevel3 = productInfo.basic.category.detail.getOrNull(2)?.id ?: "0",
                 productPrice = productInfo.data.price.value.toString(),
                 maxProductPrice = getMaxPriceVariant(productInfo, variantData).toString(), // to do
-                productStatus = productInfo.basic.status
+                productStatus = productInfo.basic.status,
+                formattedProductPrice = productInfo.data.price.priceFmt
             ),
             shop = Shop(
                 shopID = productInfo.basic.shopID,
@@ -834,22 +840,21 @@ object DynamicProductDetailMapper {
             productId = product.basic.productID,
             isBebasOngkir = isBebasOngkir(bebasOngkir.boType),
             bebasOngkirType = mapBebasOngkirType(bebasOngkir.boType),
-            productPrice = getProductPrice(product),
+            productPrice = getProductOriginalPrice(product),
             productRating = product.basic.stats.rating,
             productTitle = product.data.name,
             hasCampaign = product.data.campaign.activeAndHasId.compareTo(false).toString(),
             campaignName = product.data.campaign.campaignTypeName,
             campaignDiscount = product.data.campaign.percentageAmount.toInt(),
-            newProductPrice = product.data.campaign.discountedPrice.toLong()
+            newProductPrice = product.data.price.priceFmt
 
         )
     }
 
-    private fun getProductPrice(product: DynamicProductInfoP1): Long {
-        return if (product.data.campaign.activeAndHasId) {
-            product.data.campaign.originalPrice.toLong()
-        } else {
-            product.data.price.value.toLong()
+    private fun getProductOriginalPrice(product: DynamicProductInfoP1): String {
+        val originalPrice = product.data.price.slashPriceFmt
+        return originalPrice.ifEmpty {
+            product.data.price.priceFmt
         }
     }
 
