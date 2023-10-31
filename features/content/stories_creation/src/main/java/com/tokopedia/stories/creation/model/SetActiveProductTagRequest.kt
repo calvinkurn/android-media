@@ -1,25 +1,35 @@
 package com.tokopedia.stories.creation.model
 
+import android.annotation.SuppressLint
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.graphql.data.GqlParam
+
 /**
  * Created By : Jonathan Darwin on September 11, 2023
  */
 data class SetActiveProductTagRequest(
-    val storyId: String,
-    val productIds: List<String>
-) {
+    @SerializedName("req")
+    val req: Data,
+) : GqlParam {
 
-    fun buildRequestParam(): Map<String, Any> {
-        return mapOf(
-            PARAM_REQ to mapOf(
-                PARAM_STORY_ID to storyId,
-                PARAM_PRODUCT_IDS to productIds,
-            )
-        )
-    }
+    data class Data(
+        @SerializedName("storyID")
+        val storyId: String,
+
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("productIDs")
+        val productIds: List<String>
+    )
 
     companion object {
-        private const val PARAM_REQ = "req"
-        private const val PARAM_STORY_ID = "storyID"
-        private const val PARAM_PRODUCT_IDS = "productIDs"
+        fun create(
+            storyId: String,
+            productIds: List<String>
+        ) = SetActiveProductTagRequest(
+            req = Data(
+                storyId = storyId,
+                productIds = productIds,
+            )
+        )
     }
 }

@@ -31,8 +31,10 @@ import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import com.tokopedia.stories.creation.R
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationErrorBottomSheet
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationInfoBottomSheet
+import com.tokopedia.stories.creation.view.model.StoriesMedia
 import com.tokopedia.stories.creation.view.model.StoriesMediaCover
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
+import com.tokopedia.stories.creation.view.model.activityResult.MediaPickerForResult
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
 import com.tokopedia.stories.creation.view.model.exception.NotEligibleException
 import kotlinx.coroutines.launch
@@ -58,14 +60,9 @@ class StoriesCreationActivity : BaseActivity() {
     private val viewModel by viewModels<StoriesCreationViewModel> { viewModelFactory }
 
     private val mediaPickerResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            val data = it.data
-            if (data != null) {
-                val mediaData = MediaPicker.result(data)
-                val mediaFilePath = mediaData.editedPaths.firstOrNull() ?: mediaData.originalPaths.firstOrNull().orEmpty()
-                val mediaType = ContentMediaType.parse(mediaFilePath)
-
-                viewModel.submitAction(StoriesCreationAction.SetMedia(mediaFilePath, mediaType))
+        registerForActivityResult(MediaPickerForResult()) { media ->
+            if (media != StoriesMedia.Empty) {
+                viewModel.submitAction(StoriesCreationAction.SetMedia(media))
             } else {
                 finish()
             }
