@@ -74,7 +74,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
 
                 if (isFirstTime.value && viewModel != null && analytics != null) {
                     analytics?.eventImpressionContentCreationBottomSheet(
-                        viewModel?.getSelectedAuthorType() ?: ContentCreationAuthorEnum.NONE,
+                        viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
                         widgetSource
                     )
                     isFirstTime.value = false
@@ -90,9 +90,8 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                     onNextClicked = {
                         selectedCreation?.value?.let {
                             analytics?.eventClickNextButton(
-                                viewModel?.getSelectedAuthorType()
-                                    ?: ContentCreationAuthorEnum.NONE,
-                                viewModel?.getSelectedItemTitle() ?: "",
+                                viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
+                                viewModel?.selectedItemTitle ?: "",
                                 widgetSource
                             )
                             listener?.onCreationNextClicked(it)
@@ -122,7 +121,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
             if (shouldShowPerformanceAction) {
                 setAction(it.getString(R.string.content_creation_bottom_sheet_performance_action)) { _ ->
                     analytics?.eventClickPerformanceDashboard(
-                        viewModel?.getSelectedAuthorType() ?: ContentCreationAuthorEnum.NONE,
+                        viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
                         widgetSource
                     )
                     RouteManager.route(

@@ -97,7 +97,7 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
         if (creationConfig is Success && creationConfig.data.creationItems.isNotEmpty()) {
             if (isFirstTime.value && widgetSource != ContentCreationEntryPointSource.Unknown) {
                 analytics.eventImpressionContentCreationEndpointWidget(
-                    viewModel?.getSelectedAuthorType() ?: ContentCreationAuthorEnum.NONE,
+                    viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
                     widgetSource
                 )
                 isFirstTime.value = false
@@ -110,7 +110,7 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
                 buttonText = stringResource(id = creationcommonR.string.content_creation_entry_point_button_label)
             ) {
                 analytics.clickContentCreationEndpointWidget(
-                    viewModel?.getSelectedAuthorType() ?: ContentCreationAuthorEnum.NONE,
+                    viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
                     widgetSource
                 )
                 onClickListener()

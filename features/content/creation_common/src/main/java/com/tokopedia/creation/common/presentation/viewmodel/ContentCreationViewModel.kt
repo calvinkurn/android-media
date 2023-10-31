@@ -32,6 +32,22 @@ class ContentCreationViewModel @Inject constructor(
     private val _creationConfig = MutableStateFlow<Result<ContentCreationConfigModel>?>(null)
     val creationConfig = _creationConfig.asStateFlow()
 
+    val authorType: ContentCreationAuthorEnum
+        get() = selectedCreationType.value?.let {
+            it.authorType
+        } ?: creationConfig.value?.let {
+            if (it is Success) {
+                it.data.creationItems.firstOrNull()?.authorType ?: ContentCreationAuthorEnum.NONE
+            } else {
+                ContentCreationAuthorEnum.NONE
+            }
+        } ?: ContentCreationAuthorEnum.NONE
+
+    val selectedItemTitle: String
+        get() = selectedCreationType.value?.let {
+            it.title
+        } ?: ""
+
     fun selectCreationItem(item: ContentCreationItemModel) {
         _selectedCreationType.value = item
     }
@@ -62,20 +78,6 @@ class ContentCreationViewModel @Inject constructor(
         } else {
             ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
         }
-
-    fun getSelectedAuthorType() = selectedCreationType.value?.let {
-        it.authorType
-    } ?: creationConfig.value?.let {
-        if (it is Success) {
-            it.data.creationItems.firstOrNull()?.authorType ?: ContentCreationAuthorEnum.NONE
-        } else {
-            ContentCreationAuthorEnum.NONE
-        }
-    } ?: ContentCreationAuthorEnum.NONE
-
-    fun getSelectedItemTitle() = selectedCreationType.value?.let {
-        it.title
-    } ?: ""
 
     private fun formatCreationConfig(
         creationConfig: ContentCreationConfigModel,
