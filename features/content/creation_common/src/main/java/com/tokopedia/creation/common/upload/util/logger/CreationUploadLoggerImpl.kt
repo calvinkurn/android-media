@@ -36,7 +36,7 @@ class CreationUploadLoggerImpl @Inject constructor() : CreationUploadLogger {
     }
 
     companion object {
-        private const val TAG_CONTENT_UPLOAD_ERROR = "TAG_CONTENT_UPLOAD_ERROR"
+        private const val TAG_CONTENT_UPLOAD_ERROR = "CONTENT_UPLOAD_ERROR"
 
         private const val FIELD_UPLOAD_DATA = "uploadData"
         private const val FIELD_STACK_TRACE = "stackTrace"

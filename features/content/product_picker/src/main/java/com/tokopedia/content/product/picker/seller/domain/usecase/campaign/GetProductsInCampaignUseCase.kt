@@ -1,5 +1,6 @@
 package com.tokopedia.content.product.picker.seller.domain.usecase.campaign
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -16,7 +17,7 @@ import javax.inject.Inject
  */
 @GqlQuery(GetProductsInCampaignUseCase.QUERY_NAME, GetProductsInCampaignUseCase.QUERY)
 class GetProductsInCampaignUseCase @Inject constructor(
-    gqlRepository: GraphqlRepository,
+    @ApplicationContext gqlRepository: GraphqlRepository,
     private val dispatchers: CoroutineDispatchers,
 ) : RetryableGraphqlUseCase<GetCampaignProductResponse>(gqlRepository) {
 
