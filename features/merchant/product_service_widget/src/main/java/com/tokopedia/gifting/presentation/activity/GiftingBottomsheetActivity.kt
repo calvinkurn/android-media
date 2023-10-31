@@ -20,7 +20,8 @@ class GiftingBottomsheetActivity: BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gifting_bottomsheet)
         setOrientation()
-        GiftingBottomSheet(getAddonIdFromUri()).apply {
+        GiftingBottomSheet().apply {
+            setAddonId(getAddonIdFromUri())
             setOnDismissListener {
                 finish()
             }

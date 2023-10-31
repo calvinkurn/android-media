@@ -47,8 +47,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicIconSectionViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicIconTwoRowsSectionViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.EmptyBannerViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderAtf2ViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderOvoViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeLoadingMoreViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomePayLaterWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder
@@ -69,7 +68,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.ShimmeringChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.ShimmeringIconViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CarouselPlayWidgetCallback
@@ -343,12 +341,8 @@ class HomeAdapterFactory(
         return EmptyBannerViewHolder.LAYOUT
     }
 
-    override fun type(homeHeaderOvoDataModel: HomeHeaderDataModel): Int {
-        return if (HomeRollenceController.isUsingAtf2Variant()) {
-            HomeHeaderAtf2ViewHolder.LAYOUT
-        } else {
-            HomeHeaderOvoViewHolder.LAYOUT
-        }
+    override fun type(homeHeaderDataModel: HomeHeaderDataModel): Int {
+        return HomeHeaderViewHolder.LAYOUT
     }
 
     override fun type(homeInitialShimmerDataModel: HomeInitialShimmerDataModel): Int {
@@ -428,7 +422,8 @@ class HomeAdapterFactory(
     }
 
     override fun type(bannerRevampDataModel: BannerRevampDataModel): Int {
-        return BannerRevampViewHolder.LAYOUT
+        return if(bannerRevampDataModel.isBleeding) BannerRevampViewHolder.LAYOUT_BLEEDING
+        else BannerRevampViewHolder.LAYOUT
     }
 
     override fun type(todoWidgetListDataModel: TodoWidgetListDataModel): Int {
@@ -459,8 +454,7 @@ class HomeAdapterFactory(
         val viewHolder: AbstractViewHolder<*>
         when (type) {
             EmptyBannerViewHolder.LAYOUT -> viewHolder = EmptyBannerViewHolder(view, listener)
-            HomeHeaderOvoViewHolder.LAYOUT -> viewHolder = HomeHeaderOvoViewHolder(view, listener)
-            HomeHeaderAtf2ViewHolder.LAYOUT -> viewHolder = HomeHeaderAtf2ViewHolder(view, listener, homeThematicUtil)
+            HomeHeaderViewHolder.LAYOUT -> viewHolder = HomeHeaderViewHolder(view, listener, homeThematicUtil)
             HomeInitialShimmerViewHolder.LAYOUT -> viewHolder = HomeInitialShimmerViewHolder(view, listener)
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
@@ -550,7 +544,7 @@ class HomeAdapterFactory(
                     BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener)
             DynamicIconViewHolder.LAYOUT ->
                 viewHolder =
-                    DynamicIconViewHolder(view, dynamicIconComponentListener, HomeRollenceController.isUsingAtf2Variant())
+                    DynamicIconViewHolder(view, dynamicIconComponentListener)
             ErrorStateIconViewHolder.LAYOUT -> viewHolder = ErrorStateIconViewHolder(view, listener)
             ErrorStateChannelOneViewHolder.LAYOUT ->
                 viewHolder =
@@ -616,7 +610,7 @@ class HomeAdapterFactory(
                         view,
                         todoWidgetComponentListener
                     )
-            BannerRevampViewHolder.LAYOUT ->
+            BannerRevampViewHolder.LAYOUT, BannerRevampViewHolder.LAYOUT_BLEEDING ->
                 viewHolder =
                     BannerRevampViewHolder(view, bannerComponentListener, cardInteraction = true)
             DealsWidgetViewHolder.LAYOUT ->

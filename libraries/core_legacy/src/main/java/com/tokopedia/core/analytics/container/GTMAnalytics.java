@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -891,24 +892,6 @@ public class GTMAnalytics extends ContextAnalytics {
                 .subscribe(getDefaultSubscriber());
     }
 
-    @Override
-    public void sendGTMGeneralEvent(String event, String category, String action, String label,
-                                    String shopId, String shopType, String userId,
-                                    @Nullable Map<String, Object> customDimension) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(KEY_EVENT, event);
-        map.put(KEY_CATEGORY, category);
-        map.put(KEY_ACTION, action);
-        map.put(KEY_LABEL, label);
-        map.put(USER_ID, userId);
-        map.put(SHOP_TYPE, shopType);
-        map.put(SHOP_ID, shopId);
-        if (customDimension != null) {
-            map.putAll(customDimension);
-        }
-        pushGeneral(map);
-    }
-
     private void logV5(Context context, String eventName, Bundle bundle) {
         log(context, eventName, bundleToMap(bundle), true);
     }
@@ -1064,7 +1047,7 @@ public class GTMAnalytics extends ContextAnalytics {
         //
         bundle.putString(KEY_EVENT, keyEvent);
 
-        pushEventV5Legacy(keyEvent, wrapWithSessionIris(bundle), context);
+        pushEventV5(keyEvent, wrapWithSessionIris(bundle), context);
     }
 
     @Override
@@ -1168,7 +1151,6 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private boolean pushGeneralGtmV5InternalOrigin(Map<String, Object> params) {
-        pushGeneral(params);
 
         if (TextUtils.isEmpty((String) params.get(KEY_EVENT)))
             return false;
@@ -1200,28 +1182,6 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     @SuppressLint("MissingPermission")
-    public void pushEventV5Legacy(String eventName, Bundle bundle, Context context) {
-        try {
-            if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
-                bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
-            }
-            publishNewRelic(eventName, bundle);
-            FirebaseAnalytics fa = FirebaseAnalytics.getInstance(context);
-            fa.logEvent(eventName, bundle);
-
-            mappingToGA4(fa, eventName, bundle);
-            logV5(context, eventName, bundle);
-
-            addUtmHolder(bundle);
-            pushGeneralEcommerce(bundle);
-
-            trackEmbraceBreadcrumb(eventName, bundle);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    @SuppressLint("MissingPermission")
     public void pushEventV5(String eventName, Bundle bundle, Context context) {
         try {
             if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
@@ -1231,10 +1191,16 @@ public class GTMAnalytics extends ContextAnalytics {
             FirebaseAnalytics fa = FirebaseAnalytics.getInstance(context);
             fa.logEvent(eventName, bundle);
 
-            pushGeneralEcommerce(bundle);
-
             mappingToGA4(fa, eventName, bundle);
             logV5(context, eventName, bundle);
+
+            // https://tokopedia.atlassian.net/browse/AN-44955
+            addUtmHolder(bundle, eventName);
+            // https://tokopedia.atlassian.net/browse/AN-54858
+            addOsVersion(bundle, eventName);
+
+            pushGeneralEcommerce(bundle);
+
             trackEmbraceBreadcrumb(eventName, bundle);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1490,12 +1456,6 @@ public class GTMAnalytics extends ContextAnalytics {
         }
     }
 
-    private void pushGeneral(Map<String, Object> values) {
-        Map<String, Object> data = new HashMap<>(values);
-        // push Iris already launch in coroutine in background. No need to wrap this with Observable.
-        pushIris("", data);
-    }
-
     private void pushGeneralEcommerce(Bundle values) {
         Observable.just(values)
                 .subscribeOn(Schedulers.io())
@@ -1556,10 +1516,24 @@ public class GTMAnalytics extends ContextAnalytics {
         }
     }
 
-    private void addUtmHolder(Bundle values) {
-        values.putString(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
-        values.putString(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
-        values.putString(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
+    private void addUtmHolder(Bundle bundle, String eventName) {
+        // https://tokopedia.atlassian.net/browse/AN-44955
+        if (FirebaseAnalytics.Event.ECOMMERCE_PURCHASE.equals(eventName)) {
+            bundle.putString(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
+            bundle.putString(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
+            bundle.putString(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
+        }
+    }
+
+    private void addOsVersion(Bundle bundle, String eventName) {
+        // https://tokopedia.atlassian.net/browse/AN-54858
+        String eventAction = bundle.getString(AppEventTracking.EVENT_ACTION);
+        if (FirebaseAnalytics.Event.ECOMMERCE_PURCHASE.equals(eventName) ||
+                FirebaseAnalytics.Event.ADD_TO_CART.equals(eventName) ||
+                "addToCart".equals(eventName) ||
+                "view product page".equals(eventAction)) {
+            bundle.putString("os_version", Build.VERSION.RELEASE);
+        }
     }
 
     private void pushIris(Bundle values) {
