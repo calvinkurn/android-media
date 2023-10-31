@@ -15,6 +15,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.catalog.R
+import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant
 import com.tokopedia.catalog.databinding.FragmentCatalogComparisonDetailBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
@@ -87,6 +89,14 @@ class CatalogComparisonDetailFragment :
             compareCatalogId = requireArguments().getString(ARG_PARAM_COMPARE_CATALOG_ID, "")
             getComparison(catalogId, compareCatalogId)
         }
+        val label = "$catalogId | compared catalog id: $compareCatalogId"
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = CatalogTrackerConstant.EVENT_VIEW_PG_IRIS,
+            action = CatalogTrackerConstant.EVENT_IMPRESSION_COMPARISON_DETAIL,
+            category = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_COMPARISON,
+            labels = label,
+            trackerId = CatalogTrackerConstant.TRACKER_ID_IMPRESSION_COMPARISON_DETAIL
+        )
     }
 
     private fun getComparison(catalogId: String, compareCatalogId: String) {
@@ -107,7 +117,7 @@ class CatalogComparisonDetailFragment :
                 if (comparison != null) {
                     widgetAdapter.addWidget(listOf(comparison))
                 }
-            } else if (it is Fail){
+            } else if (it is Fail) {
                 val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
                 when (it.throwable) {
                     is UnknownHostException, is SocketTimeoutException -> {
@@ -126,10 +136,14 @@ class CatalogComparisonDetailFragment :
         viewModel.errorsToasterGetComparison.observe(viewLifecycleOwner) {
             val errorMessage = if (it is UnknownHostException) {
                 getString(R.string.catalog_error_message_no_connection)
-            } else ErrorHandler.getErrorMessage(requireView().context, it)
+            } else {
+                ErrorHandler.getErrorMessage(requireView().context, it)
+            }
 
             Toaster.build(
-                requireView(), errorMessage, duration = Toaster.LENGTH_LONG,
+                requireView(),
+                errorMessage,
+                duration = Toaster.LENGTH_LONG,
                 type = Toaster.TYPE_ERROR,
                 actionText = getString(R.string.catalog_retry_action)
             ) {
@@ -140,12 +154,12 @@ class CatalogComparisonDetailFragment :
             binding?.gePageError?.gone()
             binding?.rvContent?.show()
             binding?.loadingLayout?.root?.gone()
-            if (it == null)
+            if (it == null) {
                 Toaster.build(
                     view,
                     getString(R.string.catalog_error_message_inactive)
                 ).show()
-            else {
+            } else {
                 if (widgetAdapter.isVisitableEmpty()) {
                     widgetAdapter.addWidget(listOf(it))
                 } else {
@@ -204,6 +218,14 @@ class CatalogComparisonDetailFragment :
         item: ComparisonUiModel.ComparisonContent
     ) {
         compareCatalogId = item.id
+        val label = "$catalogId | compared catalog id: $compareCatalogId"
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = CatalogTrackerConstant.EVENT_VIEW_CLICK_PG,
+            action = CatalogTrackerConstant.EVENT_CLICK_CHANGE_COMPARISON,
+            category = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_COMPARISON,
+            labels = label,
+            trackerId = CatalogTrackerConstant.TRACKER_ID_CHANGE_COMPARISON_IN_COMPARISON_DETAIL
+        )
         CatalogComponentBottomSheet.newInstance(
             "",
             catalogId,
@@ -227,6 +249,10 @@ class CatalogComparisonDetailFragment :
         RouteManager.getIntent(context, catalogProductList).apply {
             startActivity(this)
         }
+    }
+
+    override fun onComparisonImpression() {
+        TODO("Not yet implemented")
     }
 
     override fun changeComparison(comparedCatalogId: String) {

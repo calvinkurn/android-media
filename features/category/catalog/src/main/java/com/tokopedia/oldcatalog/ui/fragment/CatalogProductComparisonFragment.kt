@@ -19,21 +19,22 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.catalog.R
-import com.tokopedia.oldcatalog.adapter.CatalogDetailDiffUtil
-import com.tokopedia.oldcatalog.adapter.factory.CatalogDetailAdapterFactoryImpl
-import com.tokopedia.oldcatalog.analytics.CatalogDetailAnalytics
+import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant
 import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.oldcatalog.adapter.CatalogDetailDiffUtil
+import com.tokopedia.oldcatalog.adapter.factory.CatalogDetailAdapterFactoryImpl
 import com.tokopedia.oldcatalog.listener.CatalogDetailListener
 import com.tokopedia.oldcatalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.oldcatalog.model.util.CatalogConstant
 import com.tokopedia.oldcatalog.model.util.CatalogUtil
 import com.tokopedia.oldcatalog.ui.bottomsheet.CatalogComponentBottomSheet
 import com.tokopedia.oldcatalog.viewmodel.CatalogProductComparisonViewModel
-import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
@@ -284,14 +285,22 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
     }
 
     private fun onTapSearchBar() {
-        CatalogDetailAnalytics.sendEvent(
-            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-            CatalogDetailAnalytics.ActionKeys.CLICK_SEARCH_BAR_PERBANDINGAN_PRODUK,
-            "$catalogName - $catalogId",
-            userSession?.userId ?: "",
-            catalogId,
-            CatalogDetailAnalytics.TrackerId.CLICK_SEARCH_BAR
+//        CatalogDetailAnalytics.sendEvent(
+//            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+//            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+//            CatalogDetailAnalytics.ActionKeys.CLICK_SEARCH_BAR_PERBANDINGAN_PRODUK,
+//            "$catalogName - $catalogId",
+//            userSession?.userId ?: "",
+//            catalogId,
+//            CatalogDetailAnalytics.TrackerId.CLICK_SEARCH_BAR
+//        )
+
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = CatalogTrackerConstant.EVENT_VIEW_CLICK_PG,
+            action = CatalogTrackerConstant.EVENT_CLICK_SEARCH_COMPARISON,
+            category = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = CatalogTrackerConstant.TRACKER_ID_SEARCH_COMPARISON
         )
     }
 
@@ -350,16 +359,25 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
     }
 
     override fun changeComparison(comparedCatalogId: String) {
-        CatalogDetailAnalytics.sendEvent(
-            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-            CatalogDetailAnalytics.ActionKeys.CLICK_BANDINGKAN_PERBANDINGAN_PRODUK,
-            "catalog page: $catalogId | catalog comparison: $comparedCatalogId | search keyword: $searchKeyword",
-            userSession?.userId ?: "",
-            catalogId,
-            CatalogDetailAnalytics.TrackerId.CLICK_BANDINGAN
-        )
+//        CatalogDetailAnalytics.sendEvent(
+//            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+//            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+//            CatalogDetailAnalytics.ActionKeys.CLICK_BANDINGKAN_PERBANDINGAN_PRODUK,
+//            "catalog page: $catalogId | catalog comparison: $comparedCatalogId | search keyword: $searchKeyword",
+//            userSession?.userId ?: "",
+//            catalogId,
+//            CatalogDetailAnalytics.TrackerId.CLICK_BANDINGAN
+//        )
 
+        val label = "$catalogId | chosen catalog id: $comparedCatalogId"
+
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = CatalogTrackerConstant.EVENT_VIEW_CLICK_PG,
+            action = CatalogTrackerConstant.EVENT_CLICK_COMPARE_ON_COMPARISON,
+            category = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = label,
+            trackerId = CatalogTrackerConstant.TRACKER_ID_CLICK_COMPARE_COMPARISON
+        )
         dismissBottomSheet()
         (parentFragment as? CatalogComponentBottomSheet)?.changeComparison(comparedCatalogId)
     }

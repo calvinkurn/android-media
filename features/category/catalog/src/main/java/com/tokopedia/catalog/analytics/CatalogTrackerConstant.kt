@@ -49,16 +49,23 @@ object CatalogTrackerConstant {
     const val EVENT_ACTION_CLICK_BACK_BUTTON = "click back button"
     const val EVENT_ACTION_CLICK_QUICK_FILTER = "click quick filter"
     const val EVENT_ACTION_CLICK_FILTER = "click filter"
-    const val EVENT_ACTION_CLICK_PRODUCT= "click product"
+    const val EVENT_ACTION_CLICK_PRODUCT = "click product"
     const val EVENT_ACTION_CLICK_ADD_TO_CART = "click keranjang"
     const val EVENT_ACTION_IMPRESSION_PRODUCT = "impress product"
     const val EVENT_IMAGE_BANNER_IMPRESSION = "image banner impression"
     const val EVENT_TRUSTMAKER_IMPRESSION = "trustmaker banner impression"
     const val EVENT_TOP_FEATURE_IMPRESSION = "top feature banner impression"
     const val EVENT_REVIEW_BANNER_IMPRESSION = "expert review banner impression"
+    const val EVENT_IMPRESSION_COMPARISON = "impress comparison"
+    const val EVENT_CLICK_SEE_MORE_COMPARISON = "click lihat semua on comparison"
+    const val EVENT_CLICK_CHANGE_COMPARISON = "click change catalog on comparison"
+    const val EVENT_CLICK_SEARCH_COMPARISON = "click search bar on comparison"
+    const val EVENT_CLICK_COMPARE_ON_COMPARISON = "click bandingkan on comparison"
+    const val EVENT_IMPRESSION_COMPARISON_DETAIL = "impress catalog comparison"
 
     const val EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE = "catalog page reimagined - main page"
     const val EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_PRODUCT_LIST = "catalog page reimagined - product list"
+    const val EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_COMPARISON = "catalog page reimagined - comparison page"
 
     const val TRACKER_ID_IMPRESSION_HERO_BANNER = "46964"
     const val TRACKER_ID_IMPRESSION_TRUSTMAKER = "46966"
@@ -83,8 +90,14 @@ object CatalogTrackerConstant {
     const val TRACKER_ID_CLICK_ADD_TO_CART_CATALOG_PRODUCT_LIST = "46993"
     const val TRACKER_ID_IMPRESSION_PRODUCT = "46994"
 
+    const val TRACKER_ID_CLICK_SEE_MORE_COMPARISON = "47977"
+    const val TRACKER_ID_IMPRESSION_COMPARISON = "47715"
+    const val TRACKER_ID_CHANGE_COMPARISON = "48041"
+    const val TRACKER_ID_CHANGE_COMPARISON_IN_COMPARISON_DETAIL = "48042"
+    const val TRACKER_ID_SEARCH_COMPARISON = "47978"
+    const val TRACKER_ID_CLICK_COMPARE_COMPARISON = "47979"
+    const val TRACKER_ID_IMPRESSION_COMPARISON_DETAIL = "47980"
 
     const val BUSINESS_UNITS = "Physical Goods"
     const val CURRENT_SITE = "tokopediamarketplace"
-
 }
