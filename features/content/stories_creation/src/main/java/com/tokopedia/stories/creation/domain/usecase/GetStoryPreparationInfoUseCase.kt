@@ -22,7 +22,7 @@ class GetStoryPreparationInfoUseCase @Inject constructor(
     override fun graphqlQuery(): String = ContentCreatorStoryGetPreparationInfoQuery().getQuery()
 
     override suspend fun execute(params: GetStoryPreparationInfoRequest): GetStoryPreparationInfoResponse {
-        return repository.request(graphqlQuery(), params.buildRequestParam())
+        return repository.request(graphqlQuery(), params)
     }
 
     companion object {

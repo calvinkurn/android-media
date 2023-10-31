@@ -22,7 +22,7 @@ internal class SetActiveProductTagUseCase @Inject constructor(
     override fun graphqlQuery(): String = ContentCreatorSetActiveProductTagQuery().getQuery()
 
     override suspend fun execute(params: SetActiveProductTagRequest): SetActiveProductTagResponse {
-        return repository.request(graphqlQuery(), params.buildRequestParam())
+        return repository.request(graphqlQuery(), params)
     }
 
     companion object {

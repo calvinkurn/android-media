@@ -22,7 +22,7 @@ class CreateStoryUseCase @Inject constructor(
     override fun graphqlQuery(): String = ContentCreatorStoryCreateStoryQuery().getQuery()
 
     override suspend fun execute(params: CreateStoryRequest): CreateStoryResponse {
-        return repository.request(graphqlQuery(), params.buildRequestParam())
+        return repository.request(graphqlQuery(), params)
     }
 
     companion object {
