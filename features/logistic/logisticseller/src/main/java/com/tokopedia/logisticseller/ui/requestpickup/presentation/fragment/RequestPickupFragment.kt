@@ -51,7 +51,6 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -178,7 +177,7 @@ class RequestPickupFragment :
                     )
                     LogisticSellerErrorHandler.logExceptionToServer(
                         errorTag = LogisticSellerErrorHandler.SOM_TAG,
-                         throwable = it.throwable,
+                        throwable = it.throwable,
                         errorType =
                         LogisticSellerErrorHandler.SomMessage.GET_REQUEST_PICKUP_DATA_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
@@ -205,7 +204,6 @@ class RequestPickupFragment :
     }
 
     private fun renderTicker() {
-
         binding?.tickerInfoCourier?.apply { ->
             setTickerShape(Ticker.SHAPE_LOOSE)
             val param = TargetedTickerParamModel(
@@ -268,8 +266,6 @@ class RequestPickupFragment :
 
     @SuppressLint("SetTextI18n")
     private fun renderConfirmReqPickup() {
-
-
         binding?.run {
             shopAddress.text = confirmReqPickupResponse.dataSuccess.pickupLocation.address
             shopPhone.text = confirmReqPickupResponse.dataSuccess.pickupLocation.phone
