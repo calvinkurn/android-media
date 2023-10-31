@@ -66,7 +66,7 @@
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivClose"
             android:visibility="visible"
-            android:foregroundTint="@color/Unify_NN500"
+            android:foregroundTint="@color/Unify_TN500"
             tools:src="@drawable/iconunify_clear_small"
             android:layout_width="50dp"
             android:layout_height="50dp"

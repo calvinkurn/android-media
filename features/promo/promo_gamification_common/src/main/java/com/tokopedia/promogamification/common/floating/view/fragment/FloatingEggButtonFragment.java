@@ -608,7 +608,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         if(!isPermanent){
             ivClose.setVisibility(View.VISIBLE);
             minimizeButtonLeft.setVisibility(View.GONE);
-            ivClose.setImageDrawable(IconUnifyHelperKt.getIconUnifyDrawable(getContext(), IconUnify.CLEAR_SMALL, com.tokopedia.unifyprinciples.R.color.Unify_NN500));
+            ivClose.setImageDrawable(IconUnifyHelperKt.getIconUnifyDrawable(getContext(), IconUnify.CLEAR_SMALL, com.tokopedia.unifyprinciples.R.color.Unify_TN500));
         }
         else{
             minimizeButtonLeft.setVisibility(View.VISIBLE);
@@ -653,7 +653,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         if(!isPermanent){
             ivClose.setVisibility(View.VISIBLE);
             minimizeButtonLeft.setVisibility(View.GONE);
-            ivClose.setImageDrawable(IconUnifyHelperKt.getIconUnifyDrawable(getContext(), IconUnify.CLEAR_SMALL, com.tokopedia.unifyprinciples.R.color.Unify_NN500));
+            ivClose.setImageDrawable(IconUnifyHelperKt.getIconUnifyDrawable(getContext(), IconUnify.CLEAR_SMALL, com.tokopedia.unifyprinciples.R.color.Unify_TN500));
         }
         else{
             minimizeButtonLeft.setVisibility(View.VISIBLE);
