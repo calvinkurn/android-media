@@ -560,7 +560,9 @@ open class TokoChatFragment @Inject constructor(
                                 OrderStatusType.COMPLETED
                             )
                         ) {
-                            viewModel.updateOrderStatusParam(Pair(viewModel.tkpdOrderId, viewModel.source))
+                            viewModel.updateOrderStatusParam(
+                                Pair(viewModel.tkpdOrderId, getSourceCategory(viewModel.source))
+                            )
                         }
                     }
                     is Fail -> {
@@ -569,7 +571,9 @@ open class TokoChatFragment @Inject constructor(
                             TokoChatErrorLogger.ErrorType.ERROR_POOL_ORDER_PROGRESS,
                             TokoChatErrorLogger.ErrorDescription.POOL_ORDER_PROGRESS_ERROR
                         )
-                        viewModel.updateOrderStatusParam(Pair(viewModel.tkpdOrderId, viewModel.source))
+                        viewModel.updateOrderStatusParam(
+                            Pair(viewModel.tkpdOrderId, getSourceCategory(viewModel.source))
+                        )
                     }
                 }
             }
