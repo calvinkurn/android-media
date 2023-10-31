@@ -217,7 +217,7 @@ class PofViewModel @Inject constructor(
         return getPofEstimateRequestState.mapLatest { pofRequestEstimateRequestState ->
             val currentModel = tickerUiModel.value
             if (pofRequestEstimateRequestState is RequestState.Success) {
-                pofUiStateMapper.mapTicker(pofRequestEstimateRequestState.data.partialOrderFulfillmentRequestEstimate?.pofInfo)
+                pofUiStateMapper.mapTicker(pofRequestEstimateRequestState.data)
             } else currentModel
         }.stateIn(
             scope = viewModelScope,

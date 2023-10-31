@@ -37,8 +37,9 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class PofUiStateMapper @Inject constructor() {
     fun mapTicker(
-        pofInfo: GetPofRequestEstimateResponse.Data.PartialOrderFulfillmentRequestEstimate.PofInfo?
+        pofInfoData: GetPofRequestEstimateResponse.Data
     ): PofTickerUiModel? {
+        val pofInfo = pofInfoData.partialOrderFulfillmentRequestEstimate?.pofInfo
         return if (pofInfo != null && pofInfo.hasInfo == true) {
             PofTickerUiModel(text = pofInfo.text.orEmpty())
         } else null

@@ -826,9 +826,6 @@ class PofViewModelTest : PofViewModelTestFixture() {
             //region verify toaster queue
             assertEquals(emptyList<ToasterQueue>(), toasterQueues)
             //endregion verify toaster queue
-            //region validate ui effect
-            assertEquals(UiEffect.FinishActivity, uiEffects.last())
-            //endregion validate ui effect
             //endregion perform change quantity on first product
 
             //region perform send pof request
@@ -839,12 +836,15 @@ class PofViewModelTest : PofViewModelTestFixture() {
                 sendPofUseCase(any())
             }
             //endregion validate use case
+            //region validate ui effect
+            assertEquals(UiEffect.FinishActivity, uiEffects.last())
+            //endregion validate ui effect
             //endregion perform send pof request
         }
     }
 
     @Test
-    fun `validate when receive OnClickSendPof and error`() {
+    fun `validate when receive OnClickSendPof and error from BE`() {
         runCollecting { uiStates, toasterQueues, uiEffects ->
             //region perform open screen
             excludeCalls {
@@ -941,7 +941,119 @@ class PofViewModelTest : PofViewModelTestFixture() {
             //endregion perform change quantity on first product
 
             //region perform send pof request
-            createErrorSendPof()
+            createBEErrorSendPof()
+            sendOnClickSendPofEvent()
+            //region validate use case
+            coVerify(exactly = 1) {
+                sendPofUseCase(any())
+            }
+            //endregion validate use case
+            //region validate ui effect
+            assertEquals(emptyList<UiEffect>(), uiEffects)
+            //endregion validate ui effect
+            //endregion perform send pof request
+        }
+    }
+
+    @Test
+    fun `validate when receive OnClickSendPof and error from FE`() {
+        runCollecting { uiStates, toasterQueues, uiEffects ->
+            //region perform open screen
+            excludeCalls {
+                excludeInvalidCalls()
+                excludeOpenScreenGetPofInfoCalls()
+                excludeOpenScreenGetPofEstimateCalls()
+            }
+            createSuccessGetPofInfoWithStatus0()
+            createSuccessGetPofEstimate()
+
+            sendOpenScreenEvent()
+
+            var uiState = uiStates.last()
+            //region verify items
+            assertEquals(initialVisitableListWithStatus0, uiState.items)
+            //endregion verify items
+            //region verify summary bottom sheet should hidden
+            assertEquals(PofBottomSheetSummaryUiState.Hidden, uiState.bottomSheetSummaryUiState)
+            //endregion verify summary bottom sheet should hidden
+            //region verify footer
+            assertEquals(createFooterUiState(), uiState.footerUiState)
+            //endregion verify footer
+            //endregion perform open screen
+
+            //region perform change quantity on first product
+            createSuccessGetPofEstimate()
+            sendProductAvailableQuantityChangedEvent(
+                orderDetailId = getFirstOriginalOrderDetailId(),
+                quantity = 0,
+                exceedCheckoutQuantity = false
+            )
+            uiState = uiStates.last()
+            //region verify use-cases
+            coVerify(exactly = 1) {
+                getPofEstimateUseCase(
+                    createGetPofEstimateParamsWithDefinedQuantity(
+                        delay = 1000,
+                        quantityList = listOf(getFirstOriginalOrderDetailId() to 0)
+                    )
+                )
+            }
+            coVerify(inverse = true) {
+                getPofInfoUseCase(createGetPofInfoParams())
+            }
+            //endregion verify use-cases
+            //region verify items
+            val expectedVisitableList = initialVisitableListWithStatus0
+                .map { visitable ->
+                    if (
+                        visitable is PofProductEditableUiModel &&
+                        visitable.orderDetailId == getFirstOriginalOrderDetailId()
+                    ) {
+                        visitable.copy(
+                            quantityEditorData = visitable
+                                .quantityEditorData
+                                .copy(quantity = 0)
+                        )
+                    } else visitable
+                }
+            uiState.items.forEachIndexed { index, visitable ->
+                if (
+                    visitable is PofProductEditableUiModel
+                ) {
+                    Assertions
+                        .assertThat(visitable)
+                        .isEqualToIgnoringGivenFields(
+                            expectedVisitableList[index] as PofProductEditableUiModel,
+                            PofProductEditableUiModel::quantityEditorData.name
+                        )
+                    Assertions
+                        .assertThat(visitable.quantityEditorData)
+                        .isEqualToIgnoringGivenFields(
+                            (expectedVisitableList[index] as PofProductEditableUiModel).quantityEditorData,
+                            PofProductEditableUiModel.QuantityEditorData::updateTimestamp.name
+                        )
+                } else {
+                    assertEquals(expectedVisitableList[index], visitable)
+                }
+            }
+            //endregion verify items
+            //region verify summary bottom sheet should hidden
+            assertEquals(PofBottomSheetSummaryUiState.Hidden, uiState.bottomSheetSummaryUiState)
+            //endregion verify summary bottom sheet should hidden
+            //region verify footer
+            val expectedFooterUiState = createFooterUiState(
+                pofEstimateResponseFilePath = SUCCESS_RESPONSE_GET_POF_ESTIMATE_RESULT_WITH_FIRST_PRODUCT_ZERO,
+                quantityList = listOf(getFirstOriginalOrderDetailId() to 0)
+            )
+            assertEquals(expectedFooterUiState, uiState.footerUiState)
+            //endregion verify footer
+            //region verify toaster queue
+            assertEquals(emptyList<ToasterQueue>(), toasterQueues)
+            //endregion verify toaster queue
+            //endregion perform change quantity on first product
+
+            //region perform send pof request
+            createFEErrorSendPof()
             sendOnClickSendPofEvent()
             //region validate use case
             coVerify(exactly = 1) {

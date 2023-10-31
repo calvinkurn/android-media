@@ -553,7 +553,7 @@ abstract class PofViewModelTestFixture {
         }
     }
 
-    protected fun createErrorSendPof() {
+    protected fun createBEErrorSendPof() {
         val originalResponse = TestHelper.createSuccessResponse<SendPofResponse.Data>(
             ERROR_RESPONSE_SEND_POF
         )
@@ -562,6 +562,15 @@ abstract class PofViewModelTestFixture {
         } returns flow {
             emit(RequestState.Requesting)
             emit(RequestState.Success(originalResponse))
+        }
+    }
+
+    protected fun createFEErrorSendPof() {
+        coEvery {
+            sendPofUseCase(any())
+        } returns flow {
+            emit(RequestState.Requesting)
+            emit(RequestState.Error(Throwable()))
         }
     }
 
