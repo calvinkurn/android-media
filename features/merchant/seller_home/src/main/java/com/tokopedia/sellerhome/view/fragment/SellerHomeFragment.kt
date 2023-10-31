@@ -180,6 +180,9 @@ import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.globalerror.R as globalerrorR
+import com.tokopedia.sellerhomecommon.R as sellerhomecommonR
 
 /**
  * Created By @ilhamsuaib on 2020-01-14
@@ -582,7 +585,7 @@ class SellerHomeFragment :
                 ?: WidgetFilterBottomSheet.newInstance()
         postFilterBottomSheet.init(
             requireContext(),
-            com.tokopedia.sellerhomecommon.R.string.shc_select_category,
+            sellerhomecommonR.string.shc_select_category,
             element.postFilter
         ) {
             recyclerView?.post {
@@ -601,7 +604,7 @@ class SellerHomeFragment :
                 ?: WidgetFilterBottomSheet.newInstance()
         tableFilterBottomSheet.init(
             requireContext(),
-            com.tokopedia.sellerhomecommon.R.string.shc_select_statistic_data,
+            sellerhomecommonR.string.shc_select_statistic_data,
             element.tableFilters
         ) {
             SellerHomeTracking.sendTableFilterClickEvent(element)
@@ -990,7 +993,7 @@ class SellerHomeFragment :
 
     private fun setContentBackground() {
         activity?.let {
-            val background = it.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            val background = it.getResColor(unifyprinciplesR.color.Unify_Background)
             it.window.decorView.setBackgroundColor(background)
         }
     }
@@ -1182,7 +1185,7 @@ class SellerHomeFragment :
             setTitle(context?.getString(R.string.sah_failed_to_get_information).orEmpty())
             try {
                 val imageDrawable = requireContext().getResDrawable(
-                    com.tokopedia.globalerror.R.drawable.unify_globalerrors_500
+                    globalerrorR.drawable.unify_globalerrors_500
                 )
                 if (imageDrawable != null) {
                     setImageDrawable(imageDrawable)
@@ -1193,7 +1196,7 @@ class SellerHomeFragment :
                 setImageUrl(SellerHomeConst.Images.IMG_ERROR_500)
             }
             setPrimaryCTAText(
-                context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty()
+                context?.getString(globalerrorR.string.error500Action).orEmpty()
             )
             setPrimaryCTAClickListener {
                 reloadPage(TRIGGER_ERROR_RELOAD)
@@ -2035,11 +2038,11 @@ class SellerHomeFragment :
                     val titleTextColor: Int
                     val subTitleTextColor: Int
                     if (isNewSellerState) {
-                        titleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0
-                        subTitleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                        titleTextColor = unifyprinciplesR.color.Unify_NN0
+                        subTitleTextColor = unifyprinciplesR.color.Unify_NN0
                     } else {
-                        titleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
-                        subTitleTextColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
+                        titleTextColor = unifyprinciplesR.color.Unify_NN950_96
+                        subTitleTextColor = unifyprinciplesR.color.Unify_NN950_68
                     }
                     return@map it.copy(
                         titleTextColorId = titleTextColor, subTitleTextColorId = subTitleTextColor

@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.ResponseEtalase
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
@@ -43,6 +44,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyImageButton
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
+import com.tokopedia.topads.common.R as topadscommonR
 
 private const val CLICK_BELUM_DIIKLANKAN = "click - belum diiklankan"
 private const val CLICK_SUDAH_DIIKLANKAN = "click - sudah diiklankan"
@@ -327,7 +329,10 @@ class ProductAdsListFragment : BaseDaggerFragment() {
             getSelectedProduct().size + selectedPrevNonPro.size
         }
 
-        selectProductInfo?.text = String.format(getString(com.tokopedia.topads.common.R.string.format_selected_produk), count)
+        selectProductInfo?.text = MethodChecker.fromHtml(String.format(
+            getString(topadscommonR.string.format_selected_produk),
+            count
+        ))
         btnNext?.isEnabled = count > 0
     }
 
@@ -371,7 +376,10 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         }
         val count = selectedPrevNonPro.size + selectedPrevPro.size
 
-        selectProductInfo?.text = String.format(getString(com.tokopedia.topads.common.R.string.format_selected_produk), count)
+        selectProductInfo?.text = MethodChecker.fromHtml(String.format(
+            getString(topadscommonR.string.format_selected_produk),
+            count
+        ))
         btnNext?.isEnabled = count > 0
     }
 

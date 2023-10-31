@@ -1,6 +1,7 @@
 package com.tokopedia.sellerpersona.view.model
 
 import android.os.Parcelable
+import androidx.compose.runtime.Immutable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.sellerpersona.view.adapter.factory.PersonaTypeFactory
@@ -10,6 +11,7 @@ import kotlinx.parcelize.Parcelize
  * Created by @ilhamsuaib on 29/01/23.
  */
 
+@Immutable
 @Parcelize
 data class PersonaUiModel(
     val value: String = String.EMPTY,
