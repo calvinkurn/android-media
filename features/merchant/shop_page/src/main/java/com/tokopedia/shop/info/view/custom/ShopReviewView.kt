@@ -50,7 +50,6 @@ class ShopReviewView @JvmOverloads constructor(
         addView(tabIndicator)
         
         setupViewPager(viewpager, tabIndicator, review)
-        startTimer(5_000,1_000)
     }
 
     private fun setupViewPager(
@@ -83,6 +82,7 @@ class ShopReviewView @JvmOverloads constructor(
                 for (currentIndex in Int.ZERO until reviewCount) {
                     if (currentIndex == position) {
                         tabIndicator.addView(createSelectedDot())
+                        startTimer()
                     } else {
                         tabIndicator.addView(createUnselectedDot())
                     }
@@ -127,22 +127,31 @@ class ShopReviewView @JvmOverloads constructor(
     }
 
     
-    private fun startTimer(totalTime: Long, intervalMillis: Long) {
+    private fun startTimer() {
+        val totalTime: Long = 5000
+        val interval: Long = 250
+        
         if (countDownTimer == null) {
-            countDownTimer = object : CountDownTimer(totalTime, intervalMillis) {
+            countDownTimer = object : CountDownTimer(totalTime, interval) {
                 override fun onTick(millisUntilFinished: Long) {
-                    // Update the progress bar and any other UI elements here
-                    val progress = (totalTime - (millisUntilFinished/totalTime))*100
-                    progressBar?.progress = progress.toInt()
+                    val remainingProgressPercent = (millisUntilFinished.toFloat() / totalTime.toFloat()) * 100f
+                    val progressPercent = 100f - remainingProgressPercent
+                    println("Timer. millisUntilFinished : $millisUntilFinished, remainingProgressPercent $remainingProgressPercent progressPercent $progressPercent")
+
+                    val percent = progressPercent.toInt()
+                    progressBar?.progress = percent
+                    println("Timer updated to $percent percent")
                 }
 
                 override fun onFinish() {
+                    progressBar?.progress = 100
                     // Handle timer completion
                     // For example, show a message or perform a task
                 }
             }
-            countDownTimer?.start()
         }
+        
+        countDownTimer?.start()
     }
     
     private fun stopTimer() {
@@ -151,24 +160,24 @@ class ShopReviewView @JvmOverloads constructor(
     }
     
     private fun createSelectedDot(): ProgressBar? {
-        progressBar = ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal)
-        progressBar?.max = 100 // Set the maximum progress value
-        progressBar?.progress = 0 // Set the current progress value
-        progressBar?.layoutParams = LayoutParams(
-            DOT_INDICATOR_ACTIVE_WIDTH.toPx(),
-            DOT_INDICATOR_ACTIVE_HEIGHT.toPx()
-        )
-        // Set the custom rounded background
-        progressBar?.progressDrawable = ContextCompat.getDrawable(context, R.drawable.shape_shop_review_rounded_progressbar)
+        val progressBar = ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal).apply {
+            layoutParams = LayoutParams(
+                DOT_INDICATOR_ACTIVE_WIDTH.toPx(),
+                DOT_INDICATOR_ACTIVE_HEIGHT.toPx()
+            ).apply {
+                leftMargin = DOT_INDICATOR_MARGIN_START.toPx()
+            }
+            max = 100 // Set the maximum progress value
+            progress = 0 // Set the current progress value
+        }
         
-        /*val imageView = ImageView(context)
-        val params = LayoutParams(DOT_INDICATOR_ACTIVE_WIDTH.toPx() , DOT_INDICATOR_ACTIVE_HEIGHT.toPx())
-        params.leftMargin = DOT_INDICATOR_MARGIN_START.toPx()
-        imageView.layoutParams = params
+        this.progressBar = progressBar
         
-        imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.shop_info_review_dot_indicator_selected))
+        val backgroundDrawable = ContextCompat.getDrawable(context, R.drawable.shape_shop_review_rounded_progressbar_background)
+        val progressDrawable = ContextCompat.getDrawable(context, R.drawable.shape_shop_review_rounded_progressbar_progress)
         
-        return imageView*/
+        progressBar.progressDrawable = progressDrawable
+        progressBar.background = backgroundDrawable
         
         return progressBar
     }
