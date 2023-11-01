@@ -78,7 +78,7 @@ public abstract class MainApplication extends CoreNetworkApplication {
     public void onCreate() {
         super.onCreate();
         userSession = new UserSession(this);
-        setupAppScreenMode()
+        setupAppScreenMode();
         initCrashlytics();
         initAnalyticUserId();
 
