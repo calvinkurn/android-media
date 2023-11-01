@@ -60,12 +60,8 @@ object HomeRollenceController {
         return rollenceLoadAtfCache == RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_EXP
     }
 
-    fun isUsingAtf2Variant(): Boolean {
-        return rollenceAtfValue != RollenceKey.HOME_COMPONENT_ATF_3
-    }
-
-    fun isUsingAtf3Variant(): Boolean {
-        return rollenceAtfValue == RollenceKey.HOME_COMPONENT_ATF_3
+    fun isUsingAtf3Variant(forceAtf3: Boolean): Boolean {
+        return forceAtf3 || rollenceAtfValue == RollenceKey.HOME_COMPONENT_ATF_3
     }
 
     fun getAtfRollence(forceAtf3: Boolean): String {
