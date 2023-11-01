@@ -39,10 +39,10 @@ class ShopInfoPreviewParameterProvider : PreviewParameterProvider<ShopInfoUiStat
             ShopNote("3", "Masa berlaku garansi")
         ),
         shipments = listOf(
-            ShopSupportedShipment("JNE", ""),
-            ShopSupportedShipment("J&T", ""),
-            ShopSupportedShipment("Gojek", ""),
-            ShopSupportedShipment("Grab", "")
+            ShopSupportedShipment("JNE", "", serviceNames = listOf("JNE Trucking")),
+            ShopSupportedShipment("J&T", "", serviceNames = listOf("Regular")),
+            ShopSupportedShipment("Gojek", "", serviceNames = listOf("Same Day, Instant")),
+            ShopSupportedShipment("Grab", "", serviceNames = listOf("Same Day, Instant"))
         ),
         rating = ShopRating(
             positivePercentageFmt = "99% pembeli merasa puas",

@@ -651,6 +651,12 @@ fun ShopSupportedShipment(shipments: List<ShopSupportedShipment>) {
         Spacer(modifier = Modifier.height(4.dp))
         shipments.forEach { shipment -> 
             ShopShipmentItem(shipment = shipment)
+            Spacer(modifier = Modifier.height(4.dp))
+            Divider(
+                modifier = Modifier.fillMaxWidth(),
+                thickness = 1.dp,
+                color = NestTheme.colors.NN._50
+            )
         }
     }
 }
@@ -724,12 +730,28 @@ fun ShopNoteItem(shopNote: ShopNote) {
 
 @Composable
 fun ShopShipmentItem(shipment: ShopSupportedShipment) {
-    NestTypography(
-        text = shipment.title,
-        textStyle = NestTheme.typography.display3.copy(
-            color = NestTheme.colors.NN._600
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+        NestImage(
+            modifier = Modifier.size(48.dp),
+            source = ImageSource.Remote(source = shipment.imageUrl),
+            type = NestImageType.Rect()
         )
-    )
+        Column {
+            NestTypography(
+                text = shipment.title,
+                textStyle = NestTheme.typography.display2.copy(
+                    color = NestTheme.colors.NN._950
+                )
+            )
+            NestTypography(
+                text = shipment.serviceNames.joinToString(separator = ",") { it },
+                textStyle = NestTheme.typography.paragraph3.copy(
+                    color = NestTheme.colors.NN._600
+                )
+            )
+        }
+    }
+ 
 }
 
 @Composable

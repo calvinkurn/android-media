@@ -172,7 +172,11 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     private fun List<ShopShipment>.toShipments(): List<ShopSupportedShipment> {
         return map { shipment ->
-            ShopSupportedShipment(title = shipment.name, imageUrl = shipment.image)
+            ShopSupportedShipment(
+                title = shipment.name,
+                imageUrl = shipment.image,
+                serviceNames = shipment.product.map { it.name }
+            )
         }
     }
 
