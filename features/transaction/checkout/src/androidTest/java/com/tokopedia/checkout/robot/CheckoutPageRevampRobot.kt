@@ -263,6 +263,46 @@ class CheckoutPageRevampRobot {
         }
     }
 
+    fun clickDonasi(activityRule: IntentsTestRule<RevampShipmentActivity>) {
+        val position = scrollRecyclerViewToCrossSell(activityRule)
+        if (position != RecyclerView.NO_POSITION) {
+            onView(ViewMatchers.withId(R.id.rv_checkout))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        object : ViewAction {
+                            override fun getConstraints(): Matcher<View>? = null
+
+                            override fun getDescription(): String =
+                                "Click Donasi UI"
+
+                            override fun perform(uiController: UiController?, view: View) {
+                                if (view.findViewById<View>(R.id.item_checkout_cross_sell_item).visibility == View.VISIBLE) {
+                                    val checkbox =
+                                        view.findViewById<CheckboxUnify>(R.id.cb_checkout_cross_sell_item)
+                                    checkbox.isChecked = !checkbox.isChecked
+                                } else {
+                                    val rv = view.findViewById<RecyclerView>(R.id.rv_checkout_cross_sell)
+                                    val itemCount = rv.adapter?.itemCount ?: 0
+
+                                    for (i in 0 until itemCount) {
+                                        rv.scrollToPosition(i)
+                                        val viewHolder = rv.findViewHolderForAdapterPosition(i)
+                                        val itemView = viewHolder?.itemView
+                                        if (itemView?.findViewById<Typography>(R.id.tv_checkout_cross_sell_item)?.text.toString().contains("donasi", ignoreCase = true)) {
+                                            val checkbox = itemView?.findViewById<CheckboxUnify>(R.id.cb_checkout_cross_sell_item) ?: return
+                                            checkbox.isChecked = !checkbox.isChecked
+                                            return
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    )
+                )
+        }
+    }
+
     fun expandShoppingSummary(activityRule: IntentsTestRule<RevampShipmentActivity>) {
         val position = scrollRecyclerViewToShoppingSummary(activityRule)
         if (position != RecyclerView.NO_POSITION) {
@@ -766,6 +806,60 @@ class CheckoutPageRevampRobot {
                                 }
 
                                 assertEquals(false, hasEgold)
+                            }
+                        }
+                    )
+                )
+        }
+    }
+
+    fun assertDonasiShoppingSummary(
+        activityRule: IntentsTestRule<RevampShipmentActivity>,
+        hasDonasi: Boolean,
+        donasiPrice: String
+    ) {
+        val position = scrollRecyclerViewToShoppingSummary(activityRule)
+        if (position != RecyclerView.NO_POSITION) {
+            onView(ViewMatchers.withId(R.id.rv_checkout))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        object : ViewAction {
+                            override fun getConstraints(): Matcher<View>? = null
+
+                            override fun getDescription(): String =
+                                "Assert Donasi Shopping Summary UI"
+
+                            override fun perform(uiController: UiController?, view: View) {
+                                val llOthers =
+                                    view.findViewById<LinearLayout>(R.id.ll_checkout_cost_others)
+                                if (llOthers.visibility == View.VISIBLE && llOthers.childCount > 0) {
+                                    for (child in llOthers.children) {
+                                        if (child.findViewById<Typography>(R.id.tv_checkout_cost_item_title).text.toString().contains("donasi", ignoreCase = true)) {
+                                            assertEquals(donasiPrice, child.findViewById<Typography>(R.id.tv_checkout_cost_item_value).text.toString())
+                                            assertEquals(true, hasDonasi)
+                                            return
+                                        }
+                                    }
+                                    assertEquals(false, hasDonasi)
+                                    return
+                                }
+
+                                val llOtherExpanded =
+                                    view.findViewById<LinearLayout>(R.id.ll_checkout_cost_others_expanded)
+                                if (llOtherExpanded.visibility == View.VISIBLE) {
+                                    for (child in llOtherExpanded.children) {
+                                        if (child.findViewById<Typography>(R.id.tv_checkout_cost_item_title).text.toString().contains("donasi", ignoreCase = true)) {
+                                            assertEquals(donasiPrice, child.findViewById<Typography>(R.id.tv_checkout_cost_item_value).text.toString())
+                                            assertEquals(true, hasDonasi)
+                                            return
+                                        }
+                                    }
+                                    assertEquals(false, hasDonasi)
+                                    return
+                                }
+
+                                assertEquals(false, hasDonasi)
                             }
                         }
                     )
