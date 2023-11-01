@@ -13,9 +13,13 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class DigitalPDPPulsaFrameTimingBenchmark : BaseFrameTimingBenchmark() {
 
-    override fun setupEnvironment() {}
+    override fun setupEnvironment() {
+        // no-op
+    }
 
-    override fun setupMock() {}
+    override fun setupMock() {
+        // no-op
+    }
 
     override fun pageInteractionTest(currentIteration: Int) {
         MacroInteration.basicRecyclerviewInteraction(

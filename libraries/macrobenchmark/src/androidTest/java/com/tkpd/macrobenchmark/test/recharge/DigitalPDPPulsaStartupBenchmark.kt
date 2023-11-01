@@ -16,9 +16,13 @@ import org.junit.runners.Parameterized
 class DigitalPDPPulsaStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchmark(startupMode) {
     override fun getIntent(): Intent = MacroIntent.DigitalProductDetail.getPulsaPdpIntent()
 
-    override fun setupEnvironment() {}
+    override fun setupEnvironment() {
+        // no-op
+    }
 
-    override fun setupMock() {}
+    override fun setupMock() {
+        // no-op
+    }
 
     override fun waitUntil() {
         MacroInteration.waitForRecyclerViewContent(
