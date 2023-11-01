@@ -1,10 +1,13 @@
 package com.tokopedia.app.common;
 
 import android.content.SharedPreferences;
+import androidx.appcompat.app.AppCompatDelegate;
+
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
