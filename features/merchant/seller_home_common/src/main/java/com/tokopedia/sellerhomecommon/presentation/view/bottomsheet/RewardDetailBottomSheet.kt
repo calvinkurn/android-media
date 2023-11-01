@@ -2,6 +2,9 @@ package com.tokopedia.sellerhomecommon.presentation.view.bottomsheet
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +15,7 @@ import com.tokopedia.sellerhomecommon.databinding.ShcBottomSheetRewardDetailBind
 import com.tokopedia.sellerhomecommon.presentation.model.RewardDetailUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.adapter.RewardDetailAdapter
 
-class RewardDetailBottomSheet: BaseBottomSheet<ShcBottomSheetRewardDetailBinding>() {
+class RewardDetailBottomSheet : BaseBottomSheet<ShcBottomSheetRewardDetailBinding>() {
 
     private val rewardDetail by lazy {
         val cacheManager = context?.let {
@@ -28,6 +31,17 @@ class RewardDetailBottomSheet: BaseBottomSheet<ShcBottomSheetRewardDetailBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initBottomSheet()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = ShcBottomSheetRewardDetailBinding.inflate(inflater, container, false).apply {
+            setChild(root)
+        }
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun setupView() {
@@ -48,7 +62,7 @@ class RewardDetailBottomSheet: BaseBottomSheet<ShcBottomSheetRewardDetailBinding
         showKnob = true
         isFullpage = true
         showCloseIcon = false
-        showHeader = false
+        showHeader = true
         isDragable = true
         isHideable = true
     }
@@ -76,8 +90,9 @@ class RewardDetailBottomSheet: BaseBottomSheet<ShcBottomSheetRewardDetailBinding
         private const val REWARD_DETAIL_KEY = "reward_detail"
         private const val REWARD_DETAIL_CACHE_ID_KEY = "reward_detail_cache"
 
-        fun createInstance(context: Context,
-                           rewardDetail: RewardDetailUiModel
+        fun createInstance(
+            context: Context,
+            rewardDetail: RewardDetailUiModel
         ): RewardDetailBottomSheet {
             SaveInstanceCacheManager(context, true).apply {
                 put(
@@ -91,8 +106,6 @@ class RewardDetailBottomSheet: BaseBottomSheet<ShcBottomSheetRewardDetailBinding
                     }
                 }
             }
-
         }
     }
-
 }
