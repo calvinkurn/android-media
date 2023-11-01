@@ -1,17 +1,38 @@
 package com.tokopedia.creation.common.upload.model.dto.stories
 
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.graphql.data.GqlParam
+
 /**
  * Created By : Jonathan Darwin on October 02, 2023
  */
 data class StoriesAddMediaRequest(
-    val storyId: String,
-    val type: Int,
-    val videoURL: String,
-    val imageUploadID: String,
-    val requestID: String,
-    val status: Status,
-    val orientation: Orientation,
-) {
+    @SerializedName("req")
+    val req: Data,
+) : GqlParam {
+
+    data class Data(
+        @SerializedName("storyID")
+        val storyId: String,
+
+        @SerializedName("type")
+        val type: Int,
+
+        @SerializedName("videoURL")
+        val videoURL: String,
+
+        @SerializedName("imageUploadID")
+        val imageUploadID: String,
+
+        @SerializedName("requestID")
+        val requestID: String,
+
+        @SerializedName("status")
+        val status: Int,
+
+        @SerializedName("orientation")
+        val orientation: Int,
+    )
 
     enum class Status(val value: Int) {
         Hidden(0),
@@ -23,16 +44,24 @@ data class StoriesAddMediaRequest(
         Landscape(1),
     }
 
-    fun buildRequestParam(): Map<String, Any> {
-        return mapOf(
-            "req" to mapOf(
-                "storyID" to storyId,
-                "type" to type,
-                "videoURL" to videoURL,
-                "imageUploadID" to imageUploadID,
-                "requestID" to requestID,
-                "status" to status.value,
-                "orientation" to orientation.value,
+    companion object {
+        fun create(
+            storyId: String,
+            type: Int,
+            videoURL: String,
+            imageUploadID: String,
+            requestID: String,
+            status: Status,
+            orientation: Orientation,
+        ) = StoriesAddMediaRequest(
+            req = Data(
+                storyId = storyId,
+                type = type,
+                videoURL = videoURL,
+                imageUploadID = imageUploadID,
+                requestID = requestID,
+                status = status.value,
+                orientation = orientation.value,
             )
         )
     }

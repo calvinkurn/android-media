@@ -22,7 +22,7 @@ class GetStoryProductDetailsUseCase @Inject constructor(
     override fun graphqlQuery(): String = ContentCreatorStoryGetProductDetailsQuery().getQuery()
 
     override suspend fun execute(params: GetStoryProductDetailsRequest): GetStoryProductDetailsResponse {
-        return repository.request(graphqlQuery(), params)
+        return repository.request(ContentCreatorStoryGetProductDetailsQuery(), params)
     }
 
     companion object {

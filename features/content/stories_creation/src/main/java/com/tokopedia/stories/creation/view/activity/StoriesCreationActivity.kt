@@ -36,6 +36,7 @@ import com.tokopedia.stories.creation.view.model.StoriesMedia
 import com.tokopedia.stories.creation.view.model.StoriesMediaCover
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.activityResult.MediaPickerForResult
+import com.tokopedia.stories.creation.view.model.activityResult.MediaPickerIntentData
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
 import com.tokopedia.stories.creation.view.model.exception.NotEligibleException
 import kotlinx.coroutines.launch
@@ -281,17 +282,12 @@ class StoriesCreationActivity : BaseActivity() {
     }
 
     private fun openMediaPicker() {
-        val intent = MediaPicker.intent(this) {
-            pageSource(PageSource.Stories)
-            minVideoDuration(viewModel.minVideoDuration)
-            maxVideoDuration(viewModel.maxVideoDuration)
-            pageType(PageType.GALLERY)
-            modeType(ModeType.COMMON)
-            singleSelectionMode()
-            withImmersiveEditor()
-            previewActionText(getString(R.string.stories_creation_continue))
-        }
+        val intentData = MediaPickerIntentData(
+            minVideoDuration = viewModel.minVideoDuration,
+            maxVideoDuration = viewModel.maxVideoDuration,
+            previewActionText = getString(R.string.stories_creation_continue),
+        )
 
-        router.route(mediaPickerResult, intent)
+        router.route(mediaPickerResult, intentData)
     }
 }
