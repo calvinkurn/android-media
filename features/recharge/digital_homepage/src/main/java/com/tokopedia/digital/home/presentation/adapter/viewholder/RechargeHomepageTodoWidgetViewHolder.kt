@@ -24,7 +24,8 @@ import com.tokopedia.unifycomponents.toDp
 
 class RechargeHomepageTodoWidgetViewHolder (
     val binding: ViewRechargeHomeListTodoWidgetBinding,
-    val listener: RechargeHomepageItemListener
+    val listener: RechargeHomepageItemListener,
+    val todoWidgetListener: RechargeHomepageTodoWidgetListener
 ): AbstractViewHolder<RechargeHomepageTodoWidgetModel>(binding.root) {
 
     companion object {
@@ -69,7 +70,7 @@ class RechargeHomepageTodoWidgetViewHolder (
                 with(binding.rvTodoWidgetFirst) {
                    val list = mapperTodoList(element.section.items.first().widgets)
                    adapter = BaseAdapter(
-                       RechargeHomepageTodoWidgetAdapterTypeFactory(),
+                       RechargeHomepageTodoWidgetAdapterTypeFactory(todoWidgetListener),
                        list
                    )
                    layoutManager= LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
@@ -106,7 +107,7 @@ class RechargeHomepageTodoWidgetViewHolder (
                     }
                     with(binding.rvTodoWidgetSecond) {
                         adapter = BaseAdapter(
-                            RechargeHomepageTodoWidgetAdapterTypeFactory(),
+                            RechargeHomepageTodoWidgetAdapterTypeFactory(todoWidgetListener),
                             mapperTodoList(element.section.items.second().widgets)
                         )
                         layoutManager= LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
@@ -119,7 +120,8 @@ class RechargeHomepageTodoWidgetViewHolder (
     }
 
     class RechargeHomepageTodoWidgetPostReminderViewHolder(
-        val binding: ViewRechargeHomeTodoWidgetPostReminderBinding
+        val binding: ViewRechargeHomeTodoWidgetPostReminderBinding,
+        val todoWidgetListener: RechargeHomepageTodoWidgetListener
     ): AbstractViewHolder<RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetPostReminderItemModel>(binding.root) {
 
         companion object {
@@ -149,12 +151,18 @@ class RechargeHomepageTodoWidgetViewHolder (
                 if (widget.button.isNotEmpty()) {
                     btnMainTodoWidget.show()
                     btnMainTodoWidget.text = widget.button
+                    btnMainTodoWidget.setOnClickListener {
+                        todoWidgetListener.onClickTodoWidget(widget.buttonAppLink)
+                    }
                 } else {
                     btnMainTodoWidget.hide()
                 }
 
                 if (widget.optionButtons.isNotEmpty()) {
                     iconThreeButtonTodoWidget.show()
+                    iconThreeButtonTodoWidget.setOnClickListener {
+                        todoWidgetListener.onClickThreeButton(widget.optionButtons)
+                    }
                 } else {
                     iconThreeButtonTodoWidget.hide()
                 }
@@ -167,12 +175,17 @@ class RechargeHomepageTodoWidgetViewHolder (
                     tgInfoTodoWidget.hide()
                     viewInfoTodoWidget.hide()
                 }
+
+                root.setOnClickListener {
+                    todoWidgetListener.onClickTodoWidget(widget.appLink)
+                }
             }
         }
     }
 
     class RechargeHomepageTodoWidgetAutoPayViewHolder(
-        val binding: ViewRechargeHomeTodoWidgetAutopayBinding
+        val binding: ViewRechargeHomeTodoWidgetAutopayBinding,
+        val todoWidgetListener: RechargeHomepageTodoWidgetListener
     ): AbstractViewHolder<RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayItemModel>(binding.root) {
 
         companion object {
@@ -202,12 +215,18 @@ class RechargeHomepageTodoWidgetViewHolder (
                 if (widget.button.isNotEmpty()) {
                     btnMainTodoWidget.show()
                     btnMainTodoWidget.text = widget.button
+                    btnMainTodoWidget.setOnClickListener {
+                        todoWidgetListener.onClickTodoWidget(widget.buttonAppLink)
+                    }
                 } else {
                     btnMainTodoWidget.hide()
                 }
 
                 if (widget.optionButtons.isNotEmpty()) {
                     iconThreeButtonTodoWidget.show()
+                    iconThreeButtonTodoWidget.setOnClickListener {
+                        todoWidgetListener.onClickThreeButton(widget.optionButtons)
+                    }
                 } else {
                     iconThreeButtonTodoWidget.hide()
                 }
@@ -219,6 +238,10 @@ class RechargeHomepageTodoWidgetViewHolder (
                 } else {
                     tgInfoTodoWidget.hide()
                     viewInfoTodoWidget.hide()
+                }
+
+                root.setOnClickListener {
+                    todoWidgetListener.onClickTodoWidget(widget.appLink)
                 }
             }
         }
@@ -248,5 +271,10 @@ class RechargeHomepageTodoWidgetViewHolder (
             itemList.add(item)
         }
         return itemList.toList()
+    }
+
+    interface RechargeHomepageTodoWidgetListener {
+        fun onClickTodoWidget(applink: String)
+        fun onClickThreeButton(optionButtons: List<RechargeHomepageSections.OptionButton>)
     }
 }

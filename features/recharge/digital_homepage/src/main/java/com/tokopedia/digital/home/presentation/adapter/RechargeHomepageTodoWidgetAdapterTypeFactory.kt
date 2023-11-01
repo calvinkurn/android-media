@@ -12,7 +12,9 @@ import com.tokopedia.digital.home.databinding.ViewRechargeHomeTodoWidgetPostRemi
 import com.tokopedia.digital.home.model.RechargeHomepageTodoWidgetModel
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageTodoWidgetViewHolder
 
-class RechargeHomepageTodoWidgetAdapterTypeFactory : BaseAdapterTypeFactory() {
+class RechargeHomepageTodoWidgetAdapterTypeFactory(
+    private val rechargeHomepageTodoWidgetListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetListener
+) : BaseAdapterTypeFactory() {
 
     fun type(model : RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetPostReminderItemModel): Int {
         return RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetPostReminderViewHolder.LAYOUT
@@ -30,7 +32,7 @@ class RechargeHomepageTodoWidgetAdapterTypeFactory : BaseAdapterTypeFactory() {
                     parent as ViewGroup,
                     false
                 )
-                RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetPostReminderViewHolder(binding)
+                RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetPostReminderViewHolder(binding, rechargeHomepageTodoWidgetListener)
             }
 
             RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetAutoPayViewHolder.LAYOUT -> {
@@ -39,7 +41,7 @@ class RechargeHomepageTodoWidgetAdapterTypeFactory : BaseAdapterTypeFactory() {
                     parent as ViewGroup,
                     false
                 )
-                RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetAutoPayViewHolder(binding)
+                RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetAutoPayViewHolder(binding, rechargeHomepageTodoWidgetListener)
             }
 
             else -> super.createViewHolder(parent, type)

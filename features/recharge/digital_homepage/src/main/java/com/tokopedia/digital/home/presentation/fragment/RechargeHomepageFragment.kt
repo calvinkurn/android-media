@@ -39,6 +39,7 @@ import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchAct
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomeSectionDecoration
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapter
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapterTypeFactory
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageTodoWidgetViewHolder
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicLegoBannerCallback
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminderWidgetCallback
@@ -59,7 +60,9 @@ import javax.inject.Inject
 class RechargeHomepageFragment : BaseDaggerFragment(),
     RechargeHomepageItemListener,
     RechargeHomepageAdapter.LoaderListener,
-    RechargeSearchBarWidget.FocusChangeListener {
+    RechargeSearchBarWidget.FocusChangeListener,
+    RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetListener
+{
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -108,7 +111,8 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
                 it, RechargeHomepageAdapterTypeFactory(
                     this,
                     RechargeHomepageReminderWidgetCallback(this),
-                    RechargeHomepageDynamicLegoBannerCallback(this)
+                    RechargeHomepageDynamicLegoBannerCallback(this),
+                    this
                 ), this
             )
 
@@ -510,6 +514,14 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
             redirectToSearchByDynamicIconsFragment()
         }
+    }
+
+    override fun onClickTodoWidget(applink: String) {
+        RouteManager.route(context, applink)
+    }
+
+    override fun onClickThreeButton(optionButtons: List<RechargeHomepageSections.OptionButton>) {
+        //TODO Show Bottomsheet
     }
 
     private fun redirectToSearchByDynamicIconsFragment() {

@@ -75,7 +75,8 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 class RechargeHomepageAdapterTypeFactory(
     val listener: RechargeHomepageItemListener,
     private val reminderWidgetCallback: RechargeHomepageReminderWidgetCallback,
-    private val dynamicLegoBannerCallback: RechargeHomepageDynamicLegoBannerCallback
+    private val dynamicLegoBannerCallback: RechargeHomepageDynamicLegoBannerCallback,
+    private val rechargeHomepageTodoWidgetListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetListener
 ) : BaseAdapterTypeFactory(), HomeComponentTypeFactory {
 
     fun type(bannerModel: RechargeHomepageBannerModel): Int {
@@ -323,7 +324,9 @@ class RechargeHomepageAdapterTypeFactory(
                     false
                 )
                 RechargeHomepageTodoWidgetViewHolder(
-                    binding, listener
+                    binding,
+                    listener,
+                    rechargeHomepageTodoWidgetListener
                 )
             }
             else -> super.createViewHolder(parent, type)
