@@ -34,6 +34,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import com.tokopedia.logisticcart.R as logisticcartR
 import com.tokopedia.promocheckout.common.R as promocheckoutcommonR
+import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 
 fun checkoutPageRevamp(func: CheckoutPageRevampRobot.() -> Unit) =
     CheckoutPageRevampRobot().apply(func)
@@ -628,6 +629,42 @@ class CheckoutPageRevampRobot {
         }
     }
 
+    fun assertAddOnsProduct(
+        activityRule: IntentsTestRule<RevampShipmentActivity>,
+        productIndex: Int,
+        addOnsName: String,
+        addOnsPrice: String,
+        isChecked: Boolean
+    ) {
+        val position = scrollRecyclerViewToShipmentCartItem(activityRule, productIndex)
+        if (position != RecyclerView.NO_POSITION) {
+            onView(ViewMatchers.withId(R.id.rv_checkout))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        object : ViewAction {
+                            override fun getConstraints(): Matcher<View>? = null
+
+                            override fun getDescription(): String = "Assert Add Ons Product UI"
+
+                            override fun perform(uiController: UiController?, view: View) {
+                                val layout = view.findViewById<LinearLayout>(R.id.ll_addon_product_items)
+                                assertEquals(View.VISIBLE, layout.visibility)
+                                for (v in layout.children) {
+                                    if (v.findViewById<Typography>(purchase_platformcommonR.id.tv_checkout_add_ons_item_name).text.toString() == addOnsName) {
+                                        assertEquals(addOnsPrice, v.findViewById<Typography>(purchase_platformcommonR.id.tv_checkout_add_ons_item_price).text.toString())
+                                        assertEquals(isChecked, v.findViewById<CheckboxUnify>(purchase_platformcommonR.id.cb_checkout_add_ons).isChecked)
+                                        return
+                                    }
+                                }
+                                throw AssertionError("product add on with name $addOnsName not found in $productIndex")
+                            }
+                        }
+                    )
+                )
+        }
+    }
+
     fun assertEgold(activityRule: IntentsTestRule<RevampShipmentActivity>, text: String, isChecked: Boolean) {
         val position = scrollRecyclerViewToCrossSell(activityRule)
         if (position != RecyclerView.NO_POSITION) {
@@ -860,6 +897,61 @@ class CheckoutPageRevampRobot {
                                 }
 
                                 assertEquals(false, hasDonasi)
+                            }
+                        }
+                    )
+                )
+        }
+    }
+
+    fun assertAddOnsShoppingSummary(
+        activityRule: IntentsTestRule<RevampShipmentActivity>,
+        hasAddOns: Boolean,
+        addOnsName: String,
+        addOnsPrice: String?
+    ) {
+        val position = scrollRecyclerViewToShoppingSummary(activityRule)
+        if (position != RecyclerView.NO_POSITION) {
+            onView(ViewMatchers.withId(R.id.rv_checkout))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        object : ViewAction {
+                            override fun getConstraints(): Matcher<View>? = null
+
+                            override fun getDescription(): String =
+                                "Assert Donasi Shopping Summary UI"
+
+                            override fun perform(uiController: UiController?, view: View) {
+                                val llOthers =
+                                    view.findViewById<LinearLayout>(R.id.ll_checkout_cost_others)
+                                if (llOthers.visibility == View.VISIBLE && llOthers.childCount > 0) {
+                                    for (child in llOthers.children) {
+                                        if (child.findViewById<Typography>(R.id.tv_checkout_cost_item_title).text.toString().contains(addOnsName, ignoreCase = true)) {
+                                            assertEquals(addOnsPrice!!, child.findViewById<Typography>(R.id.tv_checkout_cost_item_value).text.toString())
+                                            assertEquals(true, hasAddOns)
+                                            return
+                                        }
+                                    }
+                                    assertEquals(false, hasAddOns)
+                                    return
+                                }
+
+                                val llOtherExpanded =
+                                    view.findViewById<LinearLayout>(R.id.ll_checkout_cost_others_expanded)
+                                if (llOtherExpanded.visibility == View.VISIBLE) {
+                                    for (child in llOtherExpanded.children) {
+                                        if (child.findViewById<Typography>(R.id.tv_checkout_cost_item_title).text.toString().contains(addOnsName, ignoreCase = true)) {
+                                            assertEquals(addOnsPrice, child.findViewById<Typography>(R.id.tv_checkout_cost_item_value).text.toString())
+                                            assertEquals(true, hasAddOns)
+                                            return
+                                        }
+                                    }
+                                    assertEquals(false, hasAddOns)
+                                    return
+                                }
+
+                                assertEquals(false, hasAddOns)
                             }
                         }
                     )
