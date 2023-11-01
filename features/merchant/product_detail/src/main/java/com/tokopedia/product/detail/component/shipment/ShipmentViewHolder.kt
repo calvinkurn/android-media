@@ -18,11 +18,9 @@ import com.tokopedia.product.detail.databinding.ViewShipmentInfoBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentPlusBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentSuccessBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.util.renderHtmlBold
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShipmentViewHolder(
     view: View,
@@ -224,10 +222,7 @@ class ShipmentViewHolder(
 
         val subtitle = data.subtitle
         pdpShipmentErrorSubtitle.showIfWithBlock(subtitle.isNotEmpty()) {
-            text = subtitle.renderHtmlBold(
-                context = context,
-                boldColor = unifyprinciplesR.color.Unify_GN500
-            )
+            text = HtmlLinkHelper(context, subtitle).spannedString
         }
 
         val background = data.background

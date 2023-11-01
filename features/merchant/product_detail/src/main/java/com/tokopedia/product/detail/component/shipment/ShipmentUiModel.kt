@@ -10,7 +10,6 @@ import com.tokopedia.product.detail.common.data.model.rates.ShipmentBody
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.component.shipment.ShipmentUiModel.Ticker.mapTickerType
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.utils.resources.isDarkMode
@@ -27,8 +26,8 @@ data class ShipmentUiModel(
     override fun name(): String = name
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
-        // TODO vindo - complete this
-        return false
+        return newData is ShipmentUiModel &&
+            state == newData.state
     }
 
     override fun newInstance(): DynamicPdpDataModel = this.copy()
@@ -65,7 +64,6 @@ data class ShipmentUiModel(
             logo = data.boBadge.imageUrl,
             title = data.title,
             slashPrice = slashPrice,
-            appLink = "",
             background = rates.background,
             body = data.shipmentBody.toUiModel(),
             tickers = data.tickers.toTickerData(),
@@ -141,7 +139,6 @@ data class ShipmentUiModel(
         val logo: String,
         val title: String,
         val slashPrice: String,
-        val appLink: String,
         val background: String,
         val body: List<Info>,
 
