@@ -735,7 +735,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
         isEnableDirectPurchase: Boolean,
         isShouldShowFeed: Boolean
     ) {
-        isShowFeed = isShouldShowFeed // shopPageHeaderP1Data.isWhitelist
+        isShowFeed = isShouldShowFeed
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
             shopId = this@ShopPageHeaderFragmentTabContentWrapper.shopId
             isOfficial = shopPageHeaderP1Data.isOfficial
