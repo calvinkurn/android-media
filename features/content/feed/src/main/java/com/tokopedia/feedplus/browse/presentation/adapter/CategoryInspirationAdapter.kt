@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.common.producttag.view.adapter.viewholder.LoadingViewHolder
 import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.CategoryInspirationViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.CategoryInspirationViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationMap
 import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
@@ -22,7 +22,7 @@ import com.tokopedia.feedplus.browse.presentation.model.isLoading
  * Created by kenny.hadisaputra on 30/10/23
  */
 internal class CategoryInspirationAdapter(
-    private val chipsListener: ChipsViewHolder.Listener,
+    private val chipsListener: ChipsViewHolder.Listener
 ) : ListAdapter<Any, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<Any>() {
         override fun areItemsTheSame(
@@ -115,7 +115,7 @@ internal class CategoryInspirationAdapter(
         onCommit: () -> Unit = {}
     ) {
         submitList(
-            if (state.isLoading) getPlaceholders() else items.mapToListItems(selectedMenuId),
+            if (state.isLoading) getPlaceholders() else items.mapToListItems(state, selectedMenuId),
             onCommit
         )
     }
@@ -128,6 +128,7 @@ internal class CategoryInspirationAdapter(
     }
 
     private fun CategoryInspirationMap.mapToListItems(
+        pageState: ResultState,
         selectedMenuId: String
     ): List<Any> {
         return buildList {
@@ -154,9 +155,8 @@ internal class CategoryInspirationAdapter(
                         FeedBrowseItemListModel.InspirationCard.Item("", it)
                     }
                 )
+                if (menuItem.isLoading && !pageState.isLoading) { add(LoadingModel) }
             }
-
-            if (menuItem.isLoading) { add(LoadingModel) }
         }
     }
 
