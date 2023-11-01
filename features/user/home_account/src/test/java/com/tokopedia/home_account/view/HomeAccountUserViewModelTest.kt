@@ -846,7 +846,7 @@ class HomeAccountUserViewModelTest {
         val resp = OclStatus(true)
         coEvery { getOclStatusUseCase(any()) } returns resp
         viewModel.getOclStatus()
-        assert(viewModel.getOclStatus.value == resp)
+        assert(viewModel.isOclEligible.value == resp.isShowing)
     }
 
     @Test

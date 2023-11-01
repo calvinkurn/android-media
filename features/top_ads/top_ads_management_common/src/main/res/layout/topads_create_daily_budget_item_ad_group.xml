@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/ad_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Batasi anggaran harian" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/edit_ad_item_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="@id/ad_item_title"
+        app:layout_constraintTop_toBottomOf="@id/ad_item_title"
+        app:typographyType="paragraph_3"
+        tools:text="Atur anggaran iklan sesuai kebutuhan." />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+        android:id="@+id/daily_budget_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/edit_ad_item_subtitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ad_item_title" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/recommendationBudget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="@id/ad_item_title"
+        app:layout_constraintTop_toBottomOf="@id/edit_ad_item_subtitle"
+        app:unify_text_field_append_text="per hari"
+        app:unify_text_field_clearable="false"
+        app:unify_text_field_input_type="number"
+        app:unify_text_field_label="Anggaran harian"
+        app:unify_text_field_label_static="true"
+        app:unify_text_field_placeholder="Rp 0" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

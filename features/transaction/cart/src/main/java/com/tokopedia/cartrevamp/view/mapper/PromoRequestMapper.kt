@@ -38,9 +38,14 @@ object PromoRequestMapper {
                     val tmpProductDetails = mutableListOf<ProductDetailsItem>()
                     cartPromoHolderData.productUiModelList.forEach { cartItemHolderData ->
                         if (cartItemHolderData.isSelected) {
+                            val quantity = if (cartItemHolderData.isBundlingItem) {
+                                cartItemHolderData.quantity * cartItemHolderData.bundleQuantity
+                            } else {
+                                cartItemHolderData.quantity
+                            }
                             val productDetailsItem = ProductDetailsItem(
                                 productId = cartItemHolderData.productId.toLongOrZero(),
-                                quantity = cartItemHolderData.quantity,
+                                quantity = quantity,
                                 bundleId = cartItemHolderData.bundleId.toLongOrZero()
                             )
                             tmpProductDetails.add(productDetailsItem)
@@ -281,9 +286,14 @@ object PromoRequestMapper {
                 if (!hasCheckedItem && cartItem.isSelected) {
                     hasCheckedItem = true
                 }
+                val quantity = if (cartItem.isBundlingItem) {
+                    cartItem.quantity * cartItem.bundleQuantity
+                } else {
+                    cartItem.quantity
+                }
                 val productDetail = ProductDetail(
                     productId = cartItem.productId.toLong(),
-                    quantity = cartItem.quantity,
+                    quantity = quantity,
                     bundleId = cartItem.bundleId.toLongOrZero(),
                     isChecked = cartItem.isSelected,
                     cartId = cartItem.cartId

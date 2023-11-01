@@ -36,6 +36,7 @@ class GetCategoryFirstPageUseCase(
 ) : UseCase<CategoryModel>() {
 
     override suspend fun executeOnBackground(): CategoryModel {
+        val parameters = useCaseRequestParams.parameters
         val queryParams = getTokonowQueryParam(useCaseRequestParams)
         val categoryFilterParams = createCategoryFilterParams(queryParams)
         val quickFilterParams = createQuickFilterParams(queryParams)
@@ -44,7 +45,7 @@ class GetCategoryFirstPageUseCase(
         graphqlUseCase.addRequest(
             request = createGetTargetedTickerRequest(
                 page = CATEGORY_PAGE,
-                warehouseId = queryParams[SearchApiConst.USER_WAREHOUSE_ID].toString()
+                warehouseId = parameters[SearchApiConst.USER_WAREHOUSE_ID].toString()
             )
         )
         graphqlUseCase.addRequest(createTokonowCategoryDetailRequest())

@@ -30,7 +30,7 @@ class TokoNowProductRecommendationViewHolder(
             productRecommendation.setListener(
                 productRecommendationListener = listener
             )
-            realTimeRecommendationCarousel.hide()
+            realTimeRecommendationViewStub.hide()
         }
     }
 }

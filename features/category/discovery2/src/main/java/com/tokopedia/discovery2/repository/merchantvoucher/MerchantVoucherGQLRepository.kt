@@ -30,6 +30,7 @@ class MerchantVoucherGQLRepository @Inject constructor() : BaseRepository(), Mer
         val nextPage = response.data.component?.compAdditionalInfo?.nextPage
         val subComponentName = when(productComponentName){
             ComponentNames.MerchantVoucherList.componentName -> ComponentNames.MerchantVoucherListItem.componentName
+            ComponentNames.MerchantVoucherGrid.componentName -> ComponentNames.MerchantVoucherGridItem.componentName
             else -> ComponentNames.MerchantVoucherCarouselItem.componentName
         }
         val list = withContext(Dispatchers.Default) {

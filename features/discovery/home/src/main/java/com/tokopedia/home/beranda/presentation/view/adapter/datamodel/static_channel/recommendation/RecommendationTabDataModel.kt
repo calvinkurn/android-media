@@ -7,7 +7,8 @@ class RecommendationTabDataModel(
     val name: String,
     val imageUrl: String,
     val position: Int,
-    val sourceType: String = ""
+    val sourceType: String = "",
+    val isJumperTab: Boolean
 ) {
 
     fun convertFeedTabModelToDataObject(): Any {

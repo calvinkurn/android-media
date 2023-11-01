@@ -8,6 +8,7 @@ import com.tokopedia.feedcomponent.databinding.BottomsheetReportBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.content.common.R as contentcommonR
 
 class ReportBottomSheet : BottomSheetUnify() {
 
@@ -41,12 +42,12 @@ class ReportBottomSheet : BottomSheetUnify() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         _binding = BottomsheetReportBinding.inflate(layoutInflater)
         setChild(binding.root)
-        setTitle(getString(com.tokopedia.content.common.R.string.feed_report_comment))
+        setTitle(getString(contentcommonR.string.feed_report_comment))
 
-        return binding.root
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun sendReport() {
@@ -57,16 +58,16 @@ class ReportBottomSheet : BottomSheetUnify() {
     private fun getReason() {
         when (isClicked) {
             TYPE1 -> {
-                reasonType = getString(com.tokopedia.content.common.R.string.feed_common_reason_type_spam)
-                reasonDesc = getString(com.tokopedia.content.common.R.string.feed_common_reason_desc_spam)
+                reasonType = getString(contentcommonR.string.feed_common_reason_type_spam)
+                reasonDesc = getString(contentcommonR.string.feed_common_reason_desc_spam)
             }
             TYPE2 -> {
-                reasonType = getString(com.tokopedia.content.common.R.string.feed_common_reason_type_abuse)
-                reasonDesc = getString(com.tokopedia.content.common.R.string.feed_common_reason_desc_abuse)
+                reasonType = getString(contentcommonR.string.feed_common_reason_type_abuse)
+                reasonDesc = getString(contentcommonR.string.feed_common_reason_desc_abuse)
             }
             TYPE3 -> {
-                reasonType = getString(com.tokopedia.content.common.R.string.feed_common_reason_type_inappropriate)
-                reasonDesc = getString(com.tokopedia.content.common.R.string.feed_common_reason_desc_inappropriate)
+                reasonType = getString(contentcommonR.string.feed_common_reason_type_inappropriate)
+                reasonDesc = getString(contentcommonR.string.feed_common_reason_desc_inappropriate)
             }
         }
     }

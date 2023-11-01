@@ -22,6 +22,10 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -32,6 +36,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageTopRightCrop
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
+import com.tokopedia.productcard.utils.RoundedCornersTransformation.CornerType
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Label
@@ -41,6 +46,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.video_widget.VideoPlayerView
 import timber.log.Timber
+import kotlin.math.roundToInt
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.unifyprinciples.R.color as unifyRColor
 import com.tokopedia.unifycomponents.R as unifycomponentsR
@@ -166,6 +172,31 @@ internal fun ImageView.loadImageRounded(url: String?, radius: Float) {
             setRoundedRadius(radius)
         }
     }
+}
+
+internal fun ImageView.imageRounded(url: String?, radius: Float, cornerType: CornerType?) {
+    if(url == null) return
+
+    if (cornerType == null || cornerType == CornerType.ALL) {
+        this.loadImageRounded(url, radius)
+    } else {
+        this.loadImageRounded(url,radius.roundToInt(), cornerType)
+    }
+}
+
+internal fun ImageView.loadImageRounded(
+    url: String,
+    roundingRadius: Int,
+    cornerType: CornerType
+){
+    val transformation = MultiTransformation(
+        RoundedCornersTransformation(roundingRadius, cornerType)
+    )
+    Glide.with(context)
+        .load(url)
+        .transform(CenterCrop(), transformation)
+        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+        .into(this)
 }
 
 internal fun Label.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
