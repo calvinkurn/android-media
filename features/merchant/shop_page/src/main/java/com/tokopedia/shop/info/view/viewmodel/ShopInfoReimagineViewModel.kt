@@ -14,6 +14,7 @@ import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.shop.info.domain.entity.ShopEpharmacyInfo
+import com.tokopedia.shop.info.domain.entity.ShopInfo as ReimagineShopInfo
 import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopPerformance
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
@@ -79,14 +80,17 @@ class ShopInfoReimagineViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        shopImageUrl = shopInfo.shopAssets.avatar,
-                        shopBadgeUrl = shopInfo.goldOS.badge,
-                        shopName = shopInfo.shopCore.name,
-                        shopDescription = shopInfo.shopCore.description,
-                        mainLocation = shopInfo.location,
-                        otherLocation = "",
-                        operationalHours = shopOperationalHours.toFormattedOperationalHours(),
-                        shopJoinDate = shopInfo.createdInfo.openSince,
+                        info = ReimagineShopInfo(
+                            shopImageUrl = shopInfo.shopAssets.avatar,
+                            shopBadgeUrl = shopInfo.goldOS.badge,
+                            shopName = shopInfo.shopCore.name,
+                            shopDescription = shopInfo.shopCore.description,
+                            mainLocation = shopInfo.location,
+                            otherLocations = listOf(),
+                            operationalHours = shopOperationalHours.toFormattedOperationalHours(),
+                            shopJoinDate = shopInfo.createdInfo.openSince,
+                            totalProduct = 2
+                        ),
                         rating = shopRating,
                         review = shopReview,
                         shopPerformance = ShopPerformance(
@@ -103,7 +107,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
                             pharmacistOperationalHour = "",
                             pharmacistName = shopInfo.epharmacyInfo.apj,
                             siaNumber = shopInfo.epharmacyInfo.siaNumber,
-                            sipaNumber = shopInfo.epharmacyInfo.sipaNumber
+                            sipaNumber = shopInfo.epharmacyInfo.sipaNumber,
+                            collapseEpcharmacyInfo = true
                         )
                     )
                 }

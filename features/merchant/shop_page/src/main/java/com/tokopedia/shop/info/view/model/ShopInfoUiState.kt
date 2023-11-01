@@ -1,6 +1,7 @@
 package com.tokopedia.shop.info.view.model
 
 import com.tokopedia.shop.info.domain.entity.ShopEpharmacyInfo
+import com.tokopedia.shop.info.domain.entity.ShopInfo
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopPerformance
@@ -9,14 +10,17 @@ import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
 
 data class ShopInfoUiState(
     val isLoading: Boolean = true,
-    val shopImageUrl: String = "",
-    val shopBadgeUrl: String = "",
-    val shopName: String = "",
-    val shopDescription: String = "",
-    val mainLocation: String = "",
-    val otherLocation: String = "",
-    val operationalHours: Map<String, String> = mapOf(),
-    val shopJoinDate: String = "",
+    val info : ShopInfo = ShopInfo(
+        shopImageUrl = "",
+        shopBadgeUrl = "",
+        shopName = "",
+        shopDescription = "",
+        mainLocation = "",
+        otherLocations = listOf(),
+        operationalHours = emptyMap(),
+        shopJoinDate = "",
+        totalProduct = 0
+),
     val rating: ShopRating = ShopRating(
         detail = emptyList(),
         positivePercentageFmt = "",
@@ -42,7 +46,8 @@ data class ShopInfoUiState(
         pharmacistName = "",
         pharmacistOperationalHour = "",
         siaNumber = "",
-        sipaNumber = ""
+        sipaNumber = "",
+        collapseEpcharmacyInfo = true
     ),
     val error: Throwable? = null
 )

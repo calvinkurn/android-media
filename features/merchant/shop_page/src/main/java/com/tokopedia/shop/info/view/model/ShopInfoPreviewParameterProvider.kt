@@ -2,6 +2,7 @@ package com.tokopedia.shop.info.view.model
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.tokopedia.shop.info.domain.entity.ShopEpharmacyInfo
+import com.tokopedia.shop.info.domain.entity.ShopInfo
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopPerformance
@@ -16,18 +17,21 @@ class ShopInfoPreviewParameterProvider : PreviewParameterProvider<ShopInfoUiStat
 
     private val shopInfoAllData = ShopInfoUiState(
         isLoading = false,
-        shopImageUrl = "https://images.tokopedia.net/img/official_store/badge_os.png",
-        shopBadgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png",
-        shopName = "Kimia Farma",
-        shopDescription = "Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups",
-        mainLocation = "Jakarta Selatan",
-        otherLocation = "+10 lainnya",
-        operationalHours = mapOf(
-            "Senin-Rabu" to "07:00 - 18:00",
-            "Kamis" to "07:00 - 16:00",
-            "Sabtu-Minggu" to "10:00 - 15:00"
+        info = ShopInfo(
+            shopImageUrl = "https://images.tokopedia.net/img/official_store/badge_os.png",
+            shopBadgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png",
+            shopName = "Kimia Farma",
+            shopDescription = "Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups",
+            mainLocation = "Jakarta Selatan",
+            otherLocations = listOf("Jakarta Barat", "Depok"),
+            operationalHours = mapOf(
+                "Senin-Rabu" to "07:00 - 18:00",
+                "Kamis" to "07:00 - 16:00",
+                "Sabtu-Minggu" to "10:00 - 15:00"
+            ),
+            shopJoinDate = "9 Mar 2017",
+            totalProduct = 1200
         ),
-        shopJoinDate = "9 Mar 2017",
         shopPerformance = ShopPerformance(
             totalProductSoldCount = "51 rb",
             chatPerformance = ">1 jam",
@@ -112,13 +116,14 @@ class ShopInfoPreviewParameterProvider : PreviewParameterProvider<ShopInfoUiStat
             pharmacistOperationalHour = "09:00 - 18:00",
             pharmacistName = "apt. Epin Ambarwati, S.Farm",
             siaNumber = "201221003602300001",
-            sipaNumber = "201221003602300001"
+            sipaNumber = "201221003602300001",
+            collapseEpcharmacyInfo = true
         ),
         error = null
     )
 
     private val noEpharmachyScenario = shopInfoAllData.copy(showEpharmacyInfo = false)
     private val noShopNotesScenario = shopInfoAllData.copy(shopNotes = emptyList())
-    private val noMultilocationScenario = shopInfoAllData.copy(otherLocation = "")
+    private val noMultilocationScenario = shopInfoAllData.copy(info = shopInfoAllData.info.copy(otherLocations = listOf()))
     private val noSupportedShipmentScenario = shopInfoAllData.copy(shipments = emptyList())
 }

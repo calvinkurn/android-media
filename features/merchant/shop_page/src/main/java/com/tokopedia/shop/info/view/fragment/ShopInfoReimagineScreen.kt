@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -47,7 +48,6 @@ import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.shop.R
 import com.tokopedia.shop.info.domain.entity.ShopEpharmacyInfo
 import com.tokopedia.shop.info.domain.entity.ShopNote
-import com.tokopedia.shop.info.domain.entity.ShopOperationalHour
 import com.tokopedia.shop.info.domain.entity.ShopPerformance
 import com.tokopedia.shop.info.domain.entity.ShopRating
 import com.tokopedia.shop.info.domain.entity.ShopReview
@@ -73,7 +73,6 @@ fun ShopInfoScreen(uiState: ShopInfoUiState) {
         } else {
             Content(modifier = Modifier.padding(paddingValues), uiState)    
         }
-        
     }
 
 }
@@ -92,48 +91,54 @@ fun LoadingContent() {
 @Composable
 fun Content(modifier: Modifier = Modifier, uiState: ShopInfoUiState) {
     val scrollState = rememberScrollState()
-    
     Column(modifier = modifier
         .fillMaxWidth()
-        .padding(horizontal = 16.dp)
         .verticalScroll(scrollState)
     ) {
+        MainContent(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp), 
+            uiState = uiState
+        )
+        ReportShop()
+    }
+}
+
+@Composable
+fun MainContent(modifier: Modifier, uiState: ShopInfoUiState) {
+    Column(modifier = modifier,) {
         Spacer(modifier = Modifier.height(16.dp))
         ShopCoreInfo(
-            shopImageUrl = uiState.shopImageUrl,
-            shopBadgeUrl = uiState.shopBadgeUrl,
-            shopName = uiState.shopName
+            shopImageUrl = uiState.info.shopImageUrl,
+            shopBadgeUrl = uiState.info.shopBadgeUrl,
+            shopName = uiState.info.shopName
         )
 
-        val hasMainLocation = uiState.mainLocation.isNotEmpty()
-        val hasOperationalHour = uiState.operationalHours.isNotEmpty()
-        val hasJoinDate = uiState.shopJoinDate.isNotEmpty()
+        val hasMainLocation = uiState.info.mainLocation.isNotEmpty()
+        val hasOperationalHour = uiState.info.operationalHours.isNotEmpty()
+        val hasJoinDate = uiState.info.shopJoinDate.isNotEmpty()
         val showShopInfo = hasMainLocation || hasOperationalHour || hasJoinDate
-        
+
         if (showShopInfo) {
             Spacer(modifier = Modifier.height(16.dp))
             ShopInfo(
-                mainLocation = uiState.mainLocation,
-                otherLocation = uiState.otherLocation,
-                operationalHours = uiState.operationalHours,
-                shopJoinDate = uiState.shopJoinDate
+                mainLocation = uiState.info.mainLocation,
+                otherLocation = uiState.info.otherLocations,
+                operationalHours = uiState.info.operationalHours,
+                shopJoinDate = uiState.info.shopJoinDate,
+                totalProduct = uiState.info.totalProduct
             )
         }
-        
+
         if (uiState.showEpharmacyInfo) {
             Spacer(modifier = Modifier.height(16.dp))
-            Divider(
-                modifier = Modifier.fillMaxWidth(),
-                thickness = 1.dp,
-                color = NestTheme.colors.NN._50
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            ShopEpharmacyInfo(epharmacy = uiState.epharmacy)
+            EpharmacyInformation(epharmacy = uiState.epharmacy)
         }
-        
+
         val hasRating = uiState.rating.detail.isNotEmpty()
         val hasReview = uiState.review.reviews.isNotEmpty()
-        
+
         if (hasRating || hasReview) {
             Spacer(modifier = Modifier.height(8.dp))
             ShopRatingAndReviews(uiState.rating, uiState.review)
@@ -141,23 +146,21 @@ fun Content(modifier: Modifier = Modifier, uiState: ShopInfoUiState) {
 
         Spacer(modifier = Modifier.height(16.dp))
         ShopPerformance(uiState.shopPerformance)
-       
+
         if (uiState.shopNotes.isNotEmpty()) {
             Spacer(modifier = Modifier.height(32.dp))
             ShopNotes(uiState.shopNotes)
         }
-    
-        if (uiState.shopDescription.isNotEmpty()) {
+
+        if (uiState.info.shopDescription.isNotEmpty()) {
             Spacer(modifier = Modifier.height(16.dp))
-            ShopDescription(uiState.shopDescription)
+            ShopDescription(uiState.info.shopDescription)
         }
-        
+
         if (uiState.shipments.isNotEmpty()) {
             Spacer(modifier = Modifier.height(16.dp))
             ShopSupportedShipment(uiState.shipments)
         }
-        
-        ReportShop()
     }
 }
 
@@ -193,9 +196,10 @@ fun ShopCoreInfo(shopImageUrl: String, shopBadgeUrl: String, shopName: String) {
 @Composable
 fun ShopInfo(
     mainLocation: String,
-    otherLocation: String,
+    otherLocation: List<String>,
     operationalHours: Map<String, String>,
-    shopJoinDate: String
+    shopJoinDate: String,
+    totalProduct: Int
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Spacer(modifier = Modifier.height(8.dp))
@@ -222,11 +226,16 @@ fun ShopInfo(
             Spacer(modifier = Modifier.height(12.dp))
             ShopJoinDate(shopJoinDate)
         }
+
+        if (totalProduct.isMoreThanZero()) {
+            Spacer(modifier = Modifier.height(12.dp))
+            ShopTotalProduct(totalProduct)
+        }
     }
 }
 
 @Composable
-fun ShopLocation(mainLocation: String, otherLocation: String) {
+fun ShopLocation(mainLocation: String, otherLocation: List<String>) {
     NestTypography(
         modifier = Modifier.fillMaxWidth(),
         text = "Lokasi",
@@ -238,8 +247,7 @@ fun ShopLocation(mainLocation: String, otherLocation: String) {
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom)  {
         NestTypography(
             text = mainLocation,
-            textStyle = NestTheme.typography.display2.copy(
-                fontWeight = FontWeight.Bold,
+            textStyle = NestTheme.typography.display3.copy(
                 color = NestTheme.colors.NN._950
             )
         )
@@ -247,7 +255,7 @@ fun ShopLocation(mainLocation: String, otherLocation: String) {
         if (otherLocation.isNotEmpty()) {
             Spacer(modifier = Modifier.width(2.dp))
             NestTypography(
-                text = otherLocation,
+                text = "+${otherLocation.size} lainnya",
                 textStyle = NestTheme.typography.display3.copy(
                     color = NestTheme.colors.NN._600
                 )
@@ -282,14 +290,13 @@ fun ShopOperationalHoursList(operationalHours: Map<String, String>) {
             NestTypography(
                 text = operationalHour.key + ":",
                 textStyle = NestTheme.typography.display3.copy(
-                    color = NestTheme.colors.NN._600
+                    color = NestTheme.colors.NN._950
                 )
             )
             Spacer(modifier = Modifier.width(2.dp))
             NestTypography(
                 text = operationalHour.value,
-                textStyle = NestTheme.typography.display2.copy(
-                    fontWeight = FontWeight.Bold,
+                textStyle = NestTheme.typography.display3.copy(
                     color = NestTheme.colors.NN._950
                 )
             )
@@ -311,35 +318,73 @@ fun ShopJoinDate(shopJoinDate: String) {
     NestTypography(
         modifier = Modifier.fillMaxWidth(),
         text = shopJoinDate,
-        textStyle = NestTheme.typography.display2.copy(
-            fontWeight = FontWeight.Bold,
+        textStyle = NestTheme.typography.display3.copy(
             color = NestTheme.colors.NN._950
         )
     )
 }
 
 @Composable
-fun ShopEpharmacyInfo(epharmacy: ShopEpharmacyInfo) {
+fun ShopTotalProduct(totalProduct: Int) {
+    NestTypography(
+        modifier = Modifier.fillMaxWidth(),
+        text = "Total produk",
+        textStyle = NestTheme.typography.display3.copy(
+            color = NestTheme.colors.NN._600
+        )
+    )
+    Spacer(modifier = Modifier.height(4.dp))
+    NestTypography(
+        modifier = Modifier.fillMaxWidth(),
+        text = totalProduct.splitByThousand(),
+        textStyle = NestTheme.typography.display3.copy(
+            color = NestTheme.colors.NN._950
+        )
+    )
+}
+
+@Composable
+fun EpharmacyInformation(epharmacy: ShopEpharmacyInfo) {
     Column(modifier = Modifier.fillMaxWidth()) {
         ShopEpharmacyNearestPickup(epharmacy.nearestPickupAddress)
-        
         Spacer(modifier = Modifier.height(8.dp))
-        ShopEpharmacyNearestPickupLocationCta(epharmacy.nearPickupAddressAppLink)
         
-        Spacer(modifier = Modifier.height(12.dp))
-        ShopEpharmacyPharmacistOperationalHour(epharmacy.pharmacistOperationalHour)
-        
-        Spacer(modifier = Modifier.height(12.dp))
-        ShopEpharmacyPharmacistName(epharmacy.pharmacistName)
-        
-        Spacer(modifier = Modifier.height(12.dp))
-        ShopEpharmacySiaNumber(epharmacy.siaNumber)
+        if (epharmacy.collapseEpcharmacyInfo) {
+            NestTypography(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Lihat Selengkapnya",
+                textStyle = NestTheme.typography.display3.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = NestTheme.colors.GN._500
+                )
+            )
+        } else {
+            ShopEpharmacyNearestPickupLocationCta(epharmacy.nearPickupAddressAppLink)
+
+            Spacer(modifier = Modifier.height(12.dp))
+            ShopEpharmacyPharmacistOperationalHour(epharmacy.pharmacistOperationalHour)
+
+            Spacer(modifier = Modifier.height(12.dp))
+            ShopEpharmacyPharmacistName(epharmacy.pharmacistName)
+
+            Spacer(modifier = Modifier.height(12.dp))
+            ShopEpharmacySiaNumber(epharmacy.siaNumber)
+        }
     }
 }
 
 
 @Composable
 fun ShopEpharmacyNearestPickup(nearestPickupAddress: String) {
+    NestTypography(
+        modifier = Modifier.fillMaxWidth(),
+        text = "Informasi Apotek",
+        textStyle = NestTheme.typography.display1.copy(
+            fontWeight = FontWeight.Bold,
+            color = NestTheme.colors.NN._950
+        )
+    )
+    Spacer(modifier = Modifier.height(4.dp))
     NestTypography(
         modifier = Modifier.fillMaxWidth(),
         text = "Lokasi pickup terdekat",
@@ -512,6 +557,7 @@ fun ShopRatingAndReviewRecap(rating: ShopRating, review: ShopReview) {
 @Composable
 fun ShopRating(rating: ShopRating) {
     val cornerShapeRadiusDp = 12.dp
+    
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Column(
             modifier = Modifier
@@ -567,23 +613,37 @@ fun ShopPerformance(shopPerformance: ShopPerformance) {
         )
         
         Spacer(modifier = Modifier.height(16.dp))
-        
-        Column(modifier = Modifier.fillMaxWidth()){
-            Row(modifier = Modifier.fillMaxWidth()) {
-                ShopPerformanceMetricItem(
-                    modifier = Modifier.weight(1f),
-                    metricName = "Produk terjual",
-                    metricValue = shopPerformance.totalProductSoldCount.ifEmpty { "-" }
-                )
-                ShopPerformanceMetricItem(
-                    modifier = Modifier.weight(1f),
-                    metricName = "Performa chat",
-                    metricValue = shopPerformance.chatPerformance.ifEmpty { "-" }
-                )
-            }
 
-            Spacer(modifier = Modifier.height(16.dp))
-            
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            ShopPerformanceMetricItem(
+                metricName = "Produk terjual",
+                metricValue = shopPerformance.totalProductSoldCount.ifEmpty { "-" }
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Divider(
+                modifier = Modifier
+                    .width(1.dp)
+                    .height(36.dp),
+                thickness = 1.dp,
+                color = NestTheme.colors.NN._50
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            ShopPerformanceMetricItem(
+                metricName = "Performa chat",
+                metricValue = shopPerformance.chatPerformance.ifEmpty { "-" }
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Divider(
+                modifier = Modifier
+                    .width(1.dp)
+                    .height(36.dp),
+                thickness = 1.dp,
+                color = NestTheme.colors.NN._50
+            )
+            Spacer(modifier = Modifier.width(12.dp))
             ShopPerformanceMetricItem(
                 metricName = "Pesanan diproses",
                 metricValue = shopPerformance.orderProcessTime.ifEmpty { "-" }
@@ -663,8 +723,16 @@ fun ShopSupportedShipment(shipments: List<ShopSupportedShipment>) {
 
 @Composable
 fun ReportShop() {
-    Row(
+    Spacer(modifier = Modifier.height(12.dp))
+    Divider(
         modifier = Modifier.fillMaxWidth(),
+        thickness = 1.dp,
+        color = NestTheme.colors.NN._50
+    )
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -674,7 +742,7 @@ fun ReportShop() {
                 color = NestTheme.colors.NN._950
             )
         )
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(4.dp))
         NestTypography(
             text = "Laporkan",
             textStyle = NestTheme.typography.display3.copy(
@@ -768,6 +836,7 @@ fun ShopRatingBarItem(rating: ShopRating.Detail) {
         )
         Spacer(modifier = Modifier.width(4.dp))
         NestTypography(
+            modifier = Modifier.defaultMinSize(minWidth = 18.dp),
             text = rating.rate.toString(),
             textStyle = NestTheme.typography.display2.copy(color = NestTheme.colors.NN._950)
         )

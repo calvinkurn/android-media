@@ -6,5 +6,6 @@ data class ShopEpharmacyInfo(
     val pharmacistOperationalHour: String,
     val pharmacistName: String, 
     val siaNumber: String,
-    val sipaNumber: String
+    val sipaNumber: String,
+    val collapseEpcharmacyInfo: Boolean
 )
