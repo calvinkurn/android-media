@@ -1984,7 +1984,6 @@ class ShopPageReimagineHeaderFragment :
         shopPageHeaderDataModel?.listDynamicTabData?.forEach {
             if (it.name == ShopPageHeaderTabName.FEED) {
                 isShowFeed = it.isActive == 1
-                return@forEach
             }
             val tabContentWrapper = ShopPageHeaderFragmentTabContentWrapper.createInstance().apply {
                 setTabData(it)
