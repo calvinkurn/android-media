@@ -909,9 +909,9 @@
     "data": [
       {
         "title": "Coba cari \"HP Samsung\" di rekomendasi lain",
-        "type": "seamless_funneling",
+        "type": "icon_keyword_card_drifting",
         "position": 8,
-        "layout": "carousel_keyword_inspiration",
+        "layout": "carousel_seamless",
         "tracking_option": "3",
         "options": [
           {

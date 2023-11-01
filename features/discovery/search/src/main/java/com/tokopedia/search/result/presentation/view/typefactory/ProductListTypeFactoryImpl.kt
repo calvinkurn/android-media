@@ -260,7 +260,7 @@ class ProductListTypeFactoryImpl(
         AdsLowOrganicTitleViewHolder.LAYOUT
 
     override fun type(inspirationKeywordCardView: InspirationKeywordCardView): Int {
-        return if(inspirationKeywordCardView.type.isGridLayout())
+        return if(inspirationKeywordCardView.layoutType.isGridLayout())
             InspirationKeywordReimagineViewHolder.LAYOUT
         else
             InspirationKeywordViewHolder.LAYOUT

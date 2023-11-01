@@ -20,7 +20,7 @@ class InspirationKeywordReimagineAdapter(
         return InspirationKeywordReimagineItemViewHolder(
             view,
             inspirationCarouselListener,
-            inspirationKeywords.type,
+            inspirationKeywords.layoutType,
             inspirationKeywords.searchTerm,
         )
     }

@@ -9,7 +9,7 @@ data class InspirationKeywordCardView(
     val title: String = "",
     val optionsItems: List<InspirationKeywordDataView>,
     val isOneOrMoreIsEmptyImage: Boolean = false,
-    val type: LayoutType = LayoutType.DEFAULT_SEAMLESS,
+    val layoutType: LayoutType = LayoutType.DEFAULT_SEAMLESS,
     val searchTerm: String = "",
 ) : Visitable<ProductListTypeFactory> {
     override fun type(typeFactory: ProductListTypeFactory?): Int {
@@ -28,7 +28,7 @@ data class InspirationKeywordCardView(
                 title = title,
                 optionsItems = optionsItems,
                 isOneOrMoreIsEmptyImage = isOneOrMoreIsEmptyImage,
-                type = LayoutType.getLayoutType(type),
+                layoutType = LayoutType.getLayoutType(type),
                 searchTerm = searchTerm
             )
         }
