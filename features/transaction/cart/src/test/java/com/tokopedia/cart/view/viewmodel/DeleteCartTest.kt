@@ -58,7 +58,7 @@ class DeleteCartTest : BaseCartViewModelTest() {
                 isFromGlobalCheckbox = true,
                 isFromEditBundle = false,
                 addWishList = false,
-                listOfferId = arrayListOf()
+                listCartStringOrderAndOfferId = arrayListOf()
             ),
             cartViewModel.deleteCartEvent.value
         )
@@ -103,7 +103,7 @@ class DeleteCartTest : BaseCartViewModelTest() {
                 isFromGlobalCheckbox = false,
                 isFromEditBundle = false,
                 addWishList = false,
-                listOfferId = arrayListOf()
+                listCartStringOrderAndOfferId = arrayListOf()
             ),
             cartViewModel.deleteCartEvent.value
         )
@@ -148,7 +148,7 @@ class DeleteCartTest : BaseCartViewModelTest() {
                 isFromGlobalCheckbox = false,
                 isFromEditBundle = false,
                 addWishList = false,
-                listOfferId = arrayListOf()
+                listCartStringOrderAndOfferId = arrayListOf()
             ),
             cartViewModel.deleteCartEvent.value
         )

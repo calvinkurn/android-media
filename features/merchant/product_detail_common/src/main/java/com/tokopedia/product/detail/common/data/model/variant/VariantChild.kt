@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.common.data.model.variant
 
+import android.annotation.SuppressLint
 import androidx.collection.ArrayMap
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -20,7 +21,15 @@ data class VariantChild(
 
     @SerializedName("priceFmt")
     @Expose
-    val priceFmt: String? = null, // ex: Rp 100.000.000
+    val priceFmt: String? = null, // ex: Rp 100.000.000,
+
+    @SerializedName("slashPriceFmt")
+    @Expose
+    val slashPriceFmt: String? = null, // ex: Rp 100.000.000,
+
+    @SerializedName("discPercentage")
+    @Expose
+    val discPercentage: String? = null, // ex: 10%
 
     @SerializedName("sku")
     @Expose
@@ -30,6 +39,7 @@ data class VariantChild(
     @Expose
     val stock: VariantStock? = null,
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("optionID")
     @Expose
     val optionIds: List<String> = listOf(),
@@ -101,8 +111,12 @@ data class VariantChild(
             }
         }
 
-    fun getFinalMinOrder(): Int = if (campaign?.isActive == true) campaign.minOrder
-            ?: 0 else stock?.minimumOrder?.toIntOrNull() ?: 0
+    fun getFinalMinOrder(): Int = if (campaign?.isActive == true) {
+        campaign.minOrder
+            ?: 0
+    } else {
+        stock?.minimumOrder?.toIntOrNull() ?: 0
+    }
 
     fun getFinalMaxOrder(): Int = stock?.maximumOrder?.toIntOrNull() ?: DEFAULT_MAX_ORDER
 

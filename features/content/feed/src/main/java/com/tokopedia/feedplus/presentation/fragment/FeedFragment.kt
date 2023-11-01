@@ -23,6 +23,7 @@ import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
@@ -61,7 +62,7 @@ import com.tokopedia.feedplus.analytics.FeedMVCAnalytics
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
-import com.tokopedia.feedplus.di.FeedMainInjector
+import com.tokopedia.feedplus.di.DaggerFeedMainComponent
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
@@ -536,7 +537,11 @@ class FeedFragment :
     }
 
     override fun initInjector() {
-        FeedMainInjector.get(requireContext()).inject(this)
+        DaggerFeedMainComponent.factory()
+            .build(
+                activityContext = requireContext(),
+                appComponent = (requireActivity().application as BaseMainApplication).baseAppComponent
+            ).inject(this)
     }
 
     override fun getScreenName(): String = "Feed Fragment"
@@ -652,10 +657,16 @@ class FeedFragment :
             }
 
             ContentMenuIdentifier.Mute -> {
+                binding.ivFeedMuteUnmute.setImageDrawable(muteAnimatedVector)
+                muteAnimatedVector?.start()
+
                 feedMainViewModel.muteSound()
             }
 
             ContentMenuIdentifier.Unmute -> {
+                binding.ivFeedMuteUnmute.setImageDrawable(unmuteAnimatedVector)
+                unmuteAnimatedVector?.start()
+
                 feedMainViewModel.unmuteSound()
             }
         }
@@ -1447,15 +1458,6 @@ class FeedFragment :
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 FeedContentManager.muteState.collectLatest { isMuted ->
                     if (isMuted == null) return@collectLatest
-
-                    if (isMuted) {
-                        binding.ivFeedMuteUnmute.setImageDrawable(muteAnimatedVector)
-                        muteAnimatedVector?.start()
-                    } else {
-                        binding.ivFeedMuteUnmute.setImageDrawable(unmuteAnimatedVector)
-                        unmuteAnimatedVector?.start()
-                    }
-
                     updateCurrentVideoVolume(isMuted)
                 }
             }
@@ -2082,12 +2084,15 @@ class FeedFragment :
             is FeedCardImageContentModel -> {
                 trackerModelMapper.transformImageContentToTrackerModel(currentItem.data)
             }
+
             is FeedCardVideoContentModel -> {
                 trackerModelMapper.transformVideoContentToTrackerModel(currentItem.data)
             }
+
             is FeedCardLivePreviewContentModel -> {
                 trackerModelMapper.transformLiveContentToTrackerModel(currentItem.data)
             }
+
             else -> {
                 null
             }

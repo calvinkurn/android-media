@@ -5,6 +5,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL
 import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.HEADLINE_ITEM_VALUE_FIRST_PAGE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.filter.common.helper.getSortFilterParamsString
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -41,11 +42,12 @@ private const val TDN_SEARCH_DIMENSION = 3
 private const val HEADLINE_IMPRESSION_COUNT_FIRST_PAGE = "0"
 
 class SearchProductFirstPageGqlUseCase(
-        private val graphqlUseCase: GraphqlUseCase,
-        private val searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
-        private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-        private val coroutineDispatchers: CoroutineDispatchers,
-        private val searchLogger: SearchLogger
+    private val graphqlUseCase: GraphqlUseCase,
+    private val searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
+    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+    private val coroutineDispatchers: CoroutineDispatchers,
+    private val searchLogger: SearchLogger,
+    private val reimagineRollence: ReimagineRollence,
 ): UseCase<SearchProductModel>(), CoroutineScope {
 
     private val masterJob = SupervisorJob()
@@ -65,7 +67,7 @@ class SearchProductFirstPageGqlUseCase(
         )
 
         val graphqlRequestList = graphqlRequests {
-            addAceSearchProductRequest(params)
+            addAceSearchProductRequest(reimagineRollence, params)
             addQuickFilterRequest(query, params)
             addProductAdsRequest(requestParams, params)
             addHeadlineAdsRequest(requestParams, headlineAdsParams)
@@ -103,7 +105,7 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     @GqlQuery("QuickFilter", QUICK_FILTER_QUERY)
-    private fun createQuickFilterRequest(query: String, params: String) =
+    private fun createQuickFilterRequest(query: String, params: String): GraphqlRequest =
         GraphqlRequest(
             QuickFilter(),
             QuickFilterModel::class.java,
@@ -117,12 +119,12 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     @GqlQuery("GlobalNav", GLOBAL_NAV_GQL_QUERY)
-    private fun createGlobalSearchNavigationRequest(query: String, params: String) =
-            GraphqlRequest(
-                    GlobalNav(),
-                    GlobalSearchNavigationModel::class.java,
-                    mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
-            )
+    private fun createGlobalSearchNavigationRequest(query: String, params: String): GraphqlRequest =
+        GraphqlRequest(
+            GlobalNav(),
+            GlobalSearchNavigationModel::class.java,
+            mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
+        )
 
     private fun MutableList<GraphqlRequest>.addInspirationCarouselRequest(requestParams: RequestParams, params: String) {
         if (!requestParams.isSkipInspirationCarousel()) {
@@ -131,12 +133,12 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     @GqlQuery("InspirationCarousel", SEARCH_INSPIRATION_CAROUSEL_QUERY)
-    private fun createSearchInspirationCarouselRequest(params: String) =
-            GraphqlRequest(
-                    InspirationCarousel(),
-                    SearchInspirationCarouselModel::class.java,
-                    mapOf(GQL.KEY_PARAMS to params)
-            )
+    private fun createSearchInspirationCarouselRequest(params: String): GraphqlRequest =
+        GraphqlRequest(
+            InspirationCarousel(),
+            SearchInspirationCarouselModel::class.java,
+            mapOf(GQL.KEY_PARAMS to params)
+        )
 
     private fun MutableList<GraphqlRequest>.addInspirationWidgetRequest(requestParams: RequestParams, params: String) {
         if (!requestParams.isSkipInspirationWidget()) {
@@ -145,12 +147,12 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     @GqlQuery("InspirationWidget", SEARCH_INSPIRATION_WIDGET_QUERY)
-    private fun createSearchInspirationWidgetRequest(params: String) =
-            GraphqlRequest(
-                    InspirationWidget(),
-                    SearchInspirationWidgetModel::class.java,
-                    mapOf(GQL.KEY_PARAMS to params)
-            )
+    private fun createSearchInspirationWidgetRequest(params: String): GraphqlRequest =
+        GraphqlRequest(
+            InspirationWidget(),
+            SearchInspirationWidgetModel::class.java,
+            mapOf(GQL.KEY_PARAMS to params)
+        )
 
     private fun MutableList<GraphqlRequest>.addGetLastFilterRequest(
         requestParams: RequestParams,
@@ -161,7 +163,7 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     @GqlQuery("GetLastFilter", GET_LAST_FILTER_GQL_QUERY)
-    private fun createGetLastFilterRequest(params: String) =
+    private fun createGetLastFilterRequest(params: String): GraphqlRequest =
         GraphqlRequest(
             GetLastFilter(),
             LastFilterModel::class.java,
@@ -190,7 +192,7 @@ class SearchProductFirstPageGqlUseCase(
         withContext(coroutineDispatchers.io) {
             try {
                 val topAdsImageViewModelList = topAdsImageViewUseCase.getImageData(
-                        topAdsImageViewUseCase.getQueryMapSearch(query)
+                    topAdsImageViewUseCase.getQueryMapSearch(query)
                 )
                 emitter.onNext(topAdsImageViewModelList)
                 emitter.onCompleted()
@@ -203,7 +205,7 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     private fun TopAdsImageViewUseCase.getQueryMapSearch(query: String) =
-            getQueryMap(query, TDN_SEARCH_INVENTORY_ID, "", TDN_SEARCH_ITEM_COUNT, TDN_SEARCH_DIMENSION, "")
+        getQueryMap(query, TDN_SEARCH_INVENTORY_ID, "", TDN_SEARCH_ITEM_COUNT, TDN_SEARCH_DIMENSION, "")
 
     private fun Observable<List<TopAdsImageViewModel>>.tdnTimeout(): Observable<List<TopAdsImageViewModel>> {
         val timeoutMs : Long = TDN_TIMEOUT
@@ -215,8 +217,8 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     private fun setTopAdsImageViewModelList(
-            searchProductModel: SearchProductModel?,
-            topAdsImageViewModelList: List<TopAdsImageViewModel>?
+        searchProductModel: SearchProductModel?,
+        topAdsImageViewModelList: List<TopAdsImageViewModel>?
     ): SearchProductModel? {
         if (searchProductModel == null || topAdsImageViewModelList == null) return searchProductModel
 

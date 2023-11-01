@@ -111,7 +111,6 @@ import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.SearchIdlingResource
 import com.tokopedia.search.utils.SearchLogger
-import com.tokopedia.search.utils.SmallGridSpanCount
 import com.tokopedia.search.utils.applinkmodifier.ApplinkModifier
 import com.tokopedia.search.utils.applyQuickFilterElevation
 import com.tokopedia.search.utils.componentIdMap
@@ -177,9 +176,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
-
-    @Inject
-    lateinit var smallGridSpanCount: SmallGridSpanCount
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
@@ -419,9 +415,6 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun setupRecyclerView(rootView: View) {
-        val isReimagineSearchComponent =
-            reimagineRollence.search2Component() != Search2Component.CONTROL
-
         gridLayoutManager.spanSizeLookup = spanSizeLookup
         recyclerViewUpdater.initialize(
             rootView.findViewById(R.id.recyclerview),
@@ -432,7 +425,6 @@ class ProductListFragment: BaseDaggerFragment(),
             ),
             createProductListTypeFactory(),
             viewLifecycleOwner,
-            isReimagineSearchComponent,
         )
 
         recyclerViewUpdater.recyclerView?.let {
@@ -530,6 +522,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 this
             ),
             reimagineSearch2Component = reimagineRollence.search2Component(),
+            reimagineSearch3ProductCard = reimagineRollence.search3ProductCard(),
         )
     }
 

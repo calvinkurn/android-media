@@ -1,8 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.play.widget.ui.PlayWidgetView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/play_widget_view"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_minus12"
-    android:layout_marginRight="@dimen/dp_minus12" />
+    android:layout_marginHorizontal="-12dp"
+    android:orientation="vertical">
 
+    <LinearLayout
+        android:id="@+id/header_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginHorizontal="12dp"
+        android:paddingVertical="16dp">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:visibility="gone"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
+            tools:text="Title"
+            tools:visibility="visible" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_cta_chevron"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:visibility="gone"
+            app:icon_name="CHEVRON_RIGHT"
+            tools:visibility="visible" />
+    </LinearLayout>
+
+    <com.tokopedia.play.widget.ui.PlayWidgetView
+        android:id="@+id/play_widget_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

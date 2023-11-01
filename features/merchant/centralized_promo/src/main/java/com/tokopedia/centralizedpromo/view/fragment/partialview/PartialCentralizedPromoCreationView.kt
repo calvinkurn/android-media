@@ -52,6 +52,7 @@ class PartialCentralizedPromoCreationView(
 
     override fun renderError(cause: Throwable) {
         with(promoCreationBinding) {
+            dividerCentralizedPromoCreation.hide()
             when (currentLoadingType) {
                 LoadingType.FILTER -> {
                     filter.hide()
@@ -76,6 +77,7 @@ class PartialCentralizedPromoCreationView(
     }
 
     override fun renderLoading(loadingType: LoadingType) = with(promoCreationBinding) {
+        dividerCentralizedPromoCreation.hide()
         currentLoadingType = loadingType
         when (loadingType) {
             LoadingType.FILTER -> {
@@ -101,6 +103,7 @@ class PartialCentralizedPromoCreationView(
     override fun onRecyclerViewResultDispatched() = with(promoCreationBinding) {
         rvCentralizedPromoCreation.show()
         filter.show()
+        dividerCentralizedPromoCreation.show()
         centralizedPromoCreationShimmering.layoutCentralizedPromoCreationShimmering.hide()
         centralizedFilterPromoCreationShimmering.layoutCentralizedPromoCreationShimmering.hide()
         centralizedPromoCreationError.layoutCentralizedPromoCreationError.hide()

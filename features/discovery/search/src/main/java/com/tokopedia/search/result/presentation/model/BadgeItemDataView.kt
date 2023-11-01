@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.model
 
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelatedProductBadge
+import com.tokopedia.search.result.domain.model.SearchProductV5
 
 data class BadgeItemDataView(
         val imageUrl: String = "",
@@ -16,5 +17,8 @@ data class BadgeItemDataView(
                 otherRelatedProductBadge.title,
                 otherRelatedProductBadge.isShown,
             )
+
+        fun create(badge: SearchProductV5.Data.Badge) =
+            BadgeItemDataView(badge.url, badge.title, true)
     }
 }
