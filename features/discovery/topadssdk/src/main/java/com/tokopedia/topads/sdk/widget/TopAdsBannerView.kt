@@ -31,6 +31,8 @@ import com.tokopedia.shopwidget.shopcard.ShopCardView
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.TopAdsConstants.DILYANI_TOKOPEDIA
 import com.tokopedia.topads.sdk.TopAdsConstants.FULFILLMENT
+import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_10
+import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_11
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_8
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_9
 import com.tokopedia.topads.sdk.base.adapter.Item
@@ -297,6 +299,14 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             shopAdsWithThreeProducts.show()
             list?.hide()
             setWidget(cpmData, appLink, adsClickUrl, shopAdsWithThreeProducts, topAdsBannerViewClickListener, hasAddProductToCartButton)
+        } else if(cpmData.cpm?.layout == LAYOUT_10 || cpmData.cpm?.layout == LAYOUT_11){
+//            topAdsCarousel.hide()
+//            shopDetail?.hide()
+//            shopAdsProductView.hide()
+//            adsBannerShopCardView?.hide()
+//            shopAdsWithThreeProducts.show()
+//            list?.hide()
+//            setWidget(cpmData, appLink, adsClickUrl, shopAdsWithThreeProducts, topAdsBannerViewClickListener, hasAddProductToCartButton)
         }
 
     }
@@ -311,7 +321,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         topAdsFlashSaleTimer?.show()
     }
 
-    private fun renderFlashSaleTimer(flashSaleCampaignDetail: FlashSaleCampaignDetail) {
+    private fun  renderFlashSaleTimer(flashSaleCampaignDetail: FlashSaleCampaignDetail) {
         flashSaleTimerData = null
         val startDate = TopAdsSdkUtil.parseData(flashSaleCampaignDetail.startTime)
         val endDate = TopAdsSdkUtil.parseData(flashSaleCampaignDetail.endTime)
