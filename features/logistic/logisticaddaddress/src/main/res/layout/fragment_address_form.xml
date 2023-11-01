@@ -13,7 +13,7 @@
         android:layout_marginTop="16dp"
         android:paddingBottom="16dp">
 
-        <com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.widget.CardAddressPinpointWidget
+        <com.tokopedia.logisticaddaddress.features.addeditaddress.addressform.widget.CardAddressPinpointWidget
             android:id="@+id/card_address_pinpoint_widget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.widget.FormAddressPositiveWidget
+        <com.tokopedia.logisticaddaddress.features.addeditaddress.addressform.widget.FormAddressPositiveWidget
             android:id="@+id/form_address_positive_widget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/card_address_pinpoint_widget" />
 
-        <com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.widget.FormAccountWidget
+        <com.tokopedia.logisticaddaddress.features.addeditaddress.addressform.widget.FormAccountWidget
             android:id="@+id/form_account_widget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/form_address_positive_widget" />
 
-        <com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.widget.FormAddressNegativeWidget
+        <com.tokopedia.logisticaddaddress.features.addeditaddress.addressform.widget.FormAddressNegativeWidget
             android:id="@+id/form_address_negative_widget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/form_account_widget" />
 
-        <com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.widget.CardAddressNegativeWidget
+        <com.tokopedia.logisticaddaddress.features.addeditaddress.addressform.widget.CardAddressNegativeWidget
             android:id="@+id/card_address_negative_widget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -127,10 +127,7 @@ internal class LabelLayoutStrategyControl: LabelLayoutStrategy {
     override fun renderLabelPrice(view: View, productCardModel: ProductCardModel) {
         val labelPrice = view.findViewById<Label?>(R.id.labelPrice)
 
-        if (productCardModel.isShowLabelPrice())
-            labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
-        else
-            labelPrice?.initLabelGroup(null)
+        labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
 
         val labelPriceReposition = view.findViewById<Label?>(R.id.labelPriceReposition)
         labelPriceReposition?.initLabelGroup(null)

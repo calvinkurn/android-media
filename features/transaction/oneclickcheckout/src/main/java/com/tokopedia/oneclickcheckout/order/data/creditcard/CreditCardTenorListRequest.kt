@@ -31,7 +31,10 @@ data class CreditCardTenorListRequest(
     val ccfeeSignature: String = "",
 
     @SerializedName("timestamp")
-    val timestamp: String = ""
+    val timestamp: String = "",
+
+    @SerializedName("additional_data")
+    val additionalData: String = ""
 )
 
 data class CartDetailsItem(
