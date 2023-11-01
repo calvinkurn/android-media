@@ -507,7 +507,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         isPermanent = tokenData.getPermanent();
 
         if (needHideFloatingToken) {
-            hideFLoatingEgg();
+            hideFloatingEgg();
         } else {
             showFloatingEgg();
             floatingEggTracker.trackingEggImpression(tokenData.getId(), tokenData.getName());
