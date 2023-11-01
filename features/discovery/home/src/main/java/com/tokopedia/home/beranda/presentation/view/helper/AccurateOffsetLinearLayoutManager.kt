@@ -1,6 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.helper
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -46,16 +48,21 @@ class AccurateOffsetLinearLayoutManager(context: Context?, val adapter: HomeRecy
         return bundle
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onRestoreInstanceState(state: Parcelable?) {
         var savedInstanceState = state
-        if(state is Bundle) {
-            savedInstanceState = state.getParcelable(SAVED_INSTANCE_STATE)
-            val childSizesMap = state.getSerializable(SAVED_CHILD_SIZE_MAP) as? Map<Int, Int>
-            childSizesMap?.let {
-                this.childSizesMap.clear()
-                this.childSizesMap.putAll(it)
+        try {
+            if(state is Bundle) {
+                val childSizesMap = state.getSerializable(SAVED_CHILD_SIZE_MAP) as? Map<Int, Int>
+                childSizesMap?.let {
+                    this.childSizesMap.clear()
+                    this.childSizesMap.putAll(it)
+                }
+                savedInstanceState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    state.getParcelable(SAVED_INSTANCE_STATE, SavedState::class.java)
+                } else state.getParcelable(SAVED_INSTANCE_STATE)
             }
-        }
+        } catch (_: Exception) { }
         super.onRestoreInstanceState(savedInstanceState)
     }
 
