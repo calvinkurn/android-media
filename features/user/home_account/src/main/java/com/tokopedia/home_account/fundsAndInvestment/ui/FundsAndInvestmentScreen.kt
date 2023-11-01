@@ -21,7 +21,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.header.compose.NestHeader
@@ -77,7 +76,7 @@ fun FundsAndInvestmentScreen(
                                 }
 
                                 is FundsAndInvestmentResult.Content -> {
-                                    Spacer(modifier = Modifier.height(16.dp))
+                                    Spacer(modifier = Modifier.height(dp_16))
                                     FundsAndInvestmentSection(
                                         userId = userId,
                                         title = LocalContext.current.getString(R.string.funds_and_investment_balance_and_points),
@@ -86,7 +85,7 @@ fun FundsAndInvestmentScreen(
                                         onItemClicked(it)
                                     }
 
-                                    Spacer(modifier = Modifier.height(24.dp))
+                                    Spacer(modifier = Modifier.height(dp_24))
                                     FundsAndInvestmentSection(
                                         userId = userId,
                                         title = LocalContext.current.getString(R.string.funds_and_investment_try_another),

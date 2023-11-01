@@ -19,7 +19,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.analytics.TokopediaCardAnalytics
@@ -60,12 +59,12 @@ fun ItemList(
                 source = ImageSource.Remote(source = item.urlImage),
                 modifier = Modifier
                     .padding(
-                        start = 24.dp,
-                        top = 16.dp,
-                        end = 16.dp,
-                        bottom = 16.dp
+                        start = dp_24,
+                        top = dp_16,
+                        end = dp_16,
+                        bottom = dp_16
                     )
-                    .size(48.dp)
+                    .size(dp_48)
             )
 
             ContentText(
@@ -83,11 +82,11 @@ fun ItemList(
                 isFailed = item.isFailed
             )
 
-            Spacer(modifier = Modifier.width(24.dp))
+            Spacer(modifier = Modifier.width(dp_24))
         }
         NestDivider(
             modifier = Modifier
-                .padding(start = 72.dp)
+                .padding(start = dp_72)
                 .fillMaxWidth(),
             size = NestDividerSize.Small
         )
@@ -117,11 +116,11 @@ private fun ContentText(
 
         when {
             isFailed -> {
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(dp_4))
                 Subtitle(subtitle = LocalContext.current.getString(R.string.funds_and_investment_failed))
             }
             subtitle.isNotEmpty() && isActive || !isVertical -> {
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(dp_4))
                 Subtitle(subtitle = subtitle)
             }
         }
@@ -166,7 +165,7 @@ private fun IconAction(
     NestIcon(
         iconId = iconId,
         modifier = Modifier
-            .size(24.dp),
+            .size(dp_24),
         colorLightEnable = colorLightEnable,
         colorNightEnable = colorNightEnable
     )

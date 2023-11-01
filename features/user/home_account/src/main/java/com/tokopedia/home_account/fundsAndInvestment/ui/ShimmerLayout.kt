@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.components.loader.NestLoader
 import com.tokopedia.nest.components.loader.NestLoaderType
 import com.tokopedia.nest.components.loader.NestShimmerType
@@ -21,9 +20,9 @@ import com.tokopedia.nest.principles.ui.NestTheme
 @Composable
 fun ShimmerLayout() {
     Column {
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(dp_16))
         SectionShimmer(3)
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(dp_24))
         SectionShimmer(1)
     }
 }
@@ -33,9 +32,9 @@ fun SectionShimmer(listSize: Int) {
     Column {
         NestLoader(
             modifier = Modifier
-                .padding(start = 16.dp)
-                .width(100.dp)
-                .height(24.dp),
+                .padding(start = dp_16)
+                .width(dp_100)
+                .height(dp_24),
             variant = NestLoaderType.Shimmer(type = NestShimmerType.Line)
         )
 
@@ -55,12 +54,12 @@ fun ItemShimmer() {
             NestLoader(
                 modifier = Modifier
                     .padding(
-                        start = 24.dp,
-                        top = 16.dp,
-                        end = 16.dp,
-                        bottom = 16.dp
+                        start = dp_24,
+                        top = dp_16,
+                        end = dp_16,
+                        bottom = dp_16
                     )
-                    .size(48.dp),
+                    .size(dp_48),
                 variant = NestLoaderType.Shimmer(type = NestShimmerType.Line)
             )
 
@@ -82,15 +81,15 @@ private fun ContentShimmer(
     ) {
         NestLoader(
             modifier = Modifier
-                .width(72.dp),
+                .width(dp_72),
             variant = NestLoaderType.Shimmer(type = NestShimmerType.Line)
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(dp_8))
 
         NestLoader(
             modifier = Modifier
-                .width(120.dp),
+                .width(dp_120),
             variant = NestLoaderType.Shimmer(type = NestShimmerType.Line)
         )
     }
