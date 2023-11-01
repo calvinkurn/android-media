@@ -29,6 +29,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.oldcatalog.adapter.CatalogDetailDiffUtil
 import com.tokopedia.oldcatalog.adapter.factory.CatalogDetailAdapterFactoryImpl
+import com.tokopedia.oldcatalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.oldcatalog.listener.CatalogDetailListener
 import com.tokopedia.oldcatalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.oldcatalog.model.util.CatalogConstant
@@ -285,15 +286,15 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
     }
 
     private fun onTapSearchBar() {
-//        CatalogDetailAnalytics.sendEvent(
-//            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-//            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-//            CatalogDetailAnalytics.ActionKeys.CLICK_SEARCH_BAR_PERBANDINGAN_PRODUK,
-//            "$catalogName - $catalogId",
-//            userSession?.userId ?: "",
-//            catalogId,
-//            CatalogDetailAnalytics.TrackerId.CLICK_SEARCH_BAR
-//        )
+        CatalogDetailAnalytics.sendEvent(
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_SEARCH_BAR_PERBANDINGAN_PRODUK,
+            "$catalogName - $catalogId",
+            userSession?.userId ?: "",
+            catalogId,
+            CatalogDetailAnalytics.TrackerId.CLICK_SEARCH_BAR
+        )
 
         CatalogReimagineDetailAnalytics.sendEvent(
             event = CatalogTrackerConstant.EVENT_VIEW_CLICK_PG,
@@ -359,15 +360,15 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
     }
 
     override fun changeComparison(comparedCatalogId: String) {
-//        CatalogDetailAnalytics.sendEvent(
-//            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-//            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-//            CatalogDetailAnalytics.ActionKeys.CLICK_BANDINGKAN_PERBANDINGAN_PRODUK,
-//            "catalog page: $catalogId | catalog comparison: $comparedCatalogId | search keyword: $searchKeyword",
-//            userSession?.userId ?: "",
-//            catalogId,
-//            CatalogDetailAnalytics.TrackerId.CLICK_BANDINGAN
-//        )
+        CatalogDetailAnalytics.sendEvent(
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_BANDINGKAN_PERBANDINGAN_PRODUK,
+            "catalog page: $catalogId | catalog comparison: $comparedCatalogId | search keyword: $searchKeyword",
+            userSession?.userId ?: "",
+            catalogId,
+            CatalogDetailAnalytics.TrackerId.CLICK_BANDINGAN
+        )
 
         val label = "$catalogId | chosen catalog id: $comparedCatalogId"
 
