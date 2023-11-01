@@ -291,4 +291,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_PDP_P1_CACHE_AGE = "android_pdp_p1_cache_age";
 
     public static final String SELLER_SEARCH_COMPOSE = "android_seller_search_compose";
+
+    public static final String ANDROID_INTERNAL_TEST_UPDATE_CONFIG = "android_internal_test_update_config";
 }

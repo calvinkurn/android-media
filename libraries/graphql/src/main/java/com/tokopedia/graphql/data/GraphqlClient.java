@@ -177,9 +177,7 @@ public class GraphqlClient {
         }
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
 
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            tkpdOkHttpBuilder.addInterceptor(new BannerEnvironmentInterceptor(context));
-        }
+        addEnvironmentInterceptor(tkpdOkHttpBuilder, context);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
@@ -190,6 +188,10 @@ public class GraphqlClient {
             }
         }
         return tkpdOkHttpBuilder;
+    }
+
+    public static void addEnvironmentInterceptor(TkpdOkHttpBuilder tkpdOkHttpBuilder, @NonNull Context context) {
+        tkpdOkHttpBuilder.addInterceptor(new BannerEnvironmentInterceptor(context));
     }
 
     public static class Function {
