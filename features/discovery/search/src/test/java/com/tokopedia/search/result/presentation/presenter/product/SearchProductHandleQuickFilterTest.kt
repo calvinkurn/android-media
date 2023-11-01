@@ -23,6 +23,7 @@ import io.mockk.verify
 import io.mockk.verifyOrder
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import rx.Subscriber
@@ -169,7 +170,8 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     @Test
     fun `Search Product should not init quick filter after opening filter page`() {
         val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
-        val dynamicFilterModel = "searchproduct/dynamicfilter/dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        val dynamicFilterModel =
+            "searchproduct/dynamicfilter/dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
         `Given Search Product API will return SearchProductModel`(searchProductModel)
         `Given get dynamic filter model API will success`(dynamicFilterModel)
 
@@ -284,7 +286,9 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     @Test
     fun `Quick Filter Item Type Is Selected When There Is Active Filter And Has Icon`() {
         val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
-        val selectedFilterIndex = searchProductModel.quickFilterModel.filter.indexOfFirst { it.options.all { it.iconUrl.isNotEmpty() } }
+        val selectedFilterIndex = searchProductModel.quickFilterModel.filter.indexOfFirst {
+            it.options.all { it.iconUrl.isNotEmpty() }
+        }
         val selectedFilter = searchProductModel.quickFilterModel.filter[selectedFilterIndex]
         val selectedFilterOption = selectedFilter.options[0]
         val expectedChipName = selectedFilterOption.name
@@ -363,7 +367,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
         iconUrl: String = "",
     ) {
         val sortFilterItemList = listItemSlot.captured
-        assert(sortFilterItemList[selectedFilterIndex].initIconUrl == iconUrl)
+        assertEquals(iconUrl, sortFilterItemList[selectedFilterIndex].initIconUrl)
     }
 
     private fun `Given Selected Option will return true`(selectedOption: Option) {
@@ -436,7 +440,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
             productListView.trackEventApplyDropdownQuickFilter(optionList, any())
         }
     }
-    
+
     @Test
     fun `Search Product initialize quick filter reimagine`() {
         val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
