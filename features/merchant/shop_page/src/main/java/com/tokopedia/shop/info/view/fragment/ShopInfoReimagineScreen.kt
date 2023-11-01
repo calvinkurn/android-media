@@ -47,6 +47,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.shop.R
 import com.tokopedia.shop.info.domain.entity.ShopEpharmacyInfo
+import com.tokopedia.shop.info.domain.entity.ShopInfo
 import com.tokopedia.shop.info.domain.entity.ShopNote
 import com.tokopedia.shop.info.domain.entity.ShopPerformance
 import com.tokopedia.shop.info.domain.entity.ShopRating
@@ -91,14 +92,21 @@ fun LoadingContent() {
 @Composable
 fun Content(modifier: Modifier = Modifier, uiState: ShopInfoUiState) {
     val scrollState = rememberScrollState()
-    Column(modifier = modifier
-        .fillMaxWidth()
-        .verticalScroll(scrollState)
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .verticalScroll(scrollState)
     ) {
-        MainContent(
+        ShopCoreInfo(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp), 
+                .padding(16.dp), info = uiState.info
+        )
+        Divider(modifier = Modifier.height(8.dp), color = NestTheme.colors.NN._50)
+        ContentBody(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             uiState = uiState
         )
         ReportShop()
@@ -106,22 +114,14 @@ fun Content(modifier: Modifier = Modifier, uiState: ShopInfoUiState) {
 }
 
 @Composable
-fun MainContent(modifier: Modifier, uiState: ShopInfoUiState) {
-    Column(modifier = modifier,) {
-        Spacer(modifier = Modifier.height(16.dp))
-        ShopCoreInfo(
-            shopImageUrl = uiState.info.shopImageUrl,
-            shopBadgeUrl = uiState.info.shopBadgeUrl,
-            shopName = uiState.info.shopName
-        )
-
+fun ContentBody(modifier: Modifier, uiState: ShopInfoUiState) {
+    Column(modifier = modifier) {
         val hasMainLocation = uiState.info.mainLocation.isNotEmpty()
         val hasOperationalHour = uiState.info.operationalHours.isNotEmpty()
         val hasJoinDate = uiState.info.shopJoinDate.isNotEmpty()
         val showShopInfo = hasMainLocation || hasOperationalHour || hasJoinDate
 
         if (showShopInfo) {
-            Spacer(modifier = Modifier.height(16.dp))
             ShopInfo(
                 mainLocation = uiState.info.mainLocation,
                 otherLocation = uiState.info.otherLocations,
@@ -165,26 +165,26 @@ fun MainContent(modifier: Modifier, uiState: ShopInfoUiState) {
 }
 
 @Composable
-fun ShopCoreInfo(shopImageUrl: String, shopBadgeUrl: String, shopName: String) {
-    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+fun ShopCoreInfo(modifier: Modifier = Modifier, info: ShopInfo) {
+    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         NestImage(
             modifier = Modifier.size(52.dp),
-            source = ImageSource.Remote(source = shopImageUrl),
+            source = ImageSource.Remote(source = info.shopImageUrl),
             type = NestImageType.Circle
         )
         Spacer(modifier = Modifier.width(12.dp))
         
-        if (shopBadgeUrl.isNotEmpty()) {
+        if (info.shopBadgeUrl.isNotEmpty()) {
             NestImage(
                 modifier = Modifier.size(12.dp),
-                source = ImageSource.Remote(source = shopBadgeUrl)
+                source = ImageSource.Remote(source = info.shopBadgeUrl)
             )
             Spacer(modifier = Modifier.width(4.dp))
         }
       
         NestTypography(
             modifier = Modifier.fillMaxWidth(),
-            text = shopName,
+            text = info.shopName,
             textStyle = NestTheme.typography.display2.copy(
                 fontWeight = FontWeight.Bold,
                 color = NestTheme.colors.NN._950
