@@ -144,7 +144,7 @@ class ProductDirectPurchaseViewHolder private constructor() {
             tvSlashedPrice.setRetainTextColor(colorPallete, ColorPallete.ColorType.SECONDARY_TEXT)
             tvRating.setRetainTextColor(colorPallete, ColorPallete.ColorType.SECONDARY_TEXT)
             tvSoldCount.setRetainTextColor(colorPallete, ColorPallete.ColorType.SECONDARY_TEXT)
-            tvDotSeparator.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
+            tvDotSeparator.setRetainTextColor(colorPallete, ColorPallete.ColorType.SECONDARY_TEXT)
         }
 
         companion object {
