@@ -1,7 +1,7 @@
 package com.tokopedia.mediauploader.image
 
 import com.tokopedia.mediauploader.Validator
-import com.tokopedia.mediauploader.InternalUploadValidator
+import com.tokopedia.mediauploader.UploaderValidator
 import com.tokopedia.mediauploader.common.data.consts.FILE_NOT_FOUND
 import com.tokopedia.mediauploader.common.data.consts.UNKNOWN_ERROR
 import com.tokopedia.mediauploader.common.data.consts.formatNotAllowedMessage
@@ -14,7 +14,7 @@ import com.tokopedia.mediauploader.common.util.isMinBitmapResolution
 import com.tokopedia.mediauploader.image.data.entity.ImagePolicy
 import java.io.File
 
-object ImageUploaderValidator : InternalUploadValidator<ImagePolicy> {
+object ImageUploaderValidator : UploaderValidator<ImagePolicy> {
 
     override operator fun invoke(file: File, policy: ImagePolicy?): Validator {
         if (policy == null) return Validator(false, UNKNOWN_ERROR)

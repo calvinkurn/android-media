@@ -38,12 +38,14 @@ class UploaderUseCase @Inject constructor(
             isSecure = imageParam.isSecure
         )
 
-        return UploaderFactory(
-            video = videoUploaderManager,
-            image = imageUploaderManager
-        ).createUploader(useCaseParam).also {
-            // clear policy cache after upload succeed
-            sourcePolicyManager.dispose()
+        return request(baseParam.sourceId) {
+            UploaderFactory(
+                video = videoUploaderManager,
+                image = imageUploaderManager
+            ).createUploader(useCaseParam).also {
+                // clear policy cache after upload succeed
+                sourcePolicyManager.dispose()
+            }
         }
     }
 

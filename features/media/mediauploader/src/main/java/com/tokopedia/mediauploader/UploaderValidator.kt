@@ -3,9 +3,9 @@ package com.tokopedia.mediauploader
 import com.tokopedia.mediauploader.common.util.fileExtension
 import java.io.File
 
-typealias Validator = InternalUploadValidator.Validator
+typealias Validator = UploaderValidator.Validator
 
-interface InternalUploadValidator<T> {
+interface UploaderValidator<T> {
 
     operator fun invoke(file: File, policy: T?): Validator
 
