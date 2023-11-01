@@ -35,6 +35,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PATH_SELLER_PARTIAL_ORDER_FULFILLMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
@@ -974,6 +975,9 @@ object DeeplinkMainApp {
             },
             DLP.startsWith("seller-center") { _: String ->
                 DeeplinkMapperMerchant.getRegisteredSellerCenter()
+            },
+            DLP.startsWith(PATH_SELLER_PARTIAL_ORDER_FULFILLMENT) { uri: Uri ->
+                DeeplinkMapperOrder.getRegisteredNavigationSellerPartialOrderFulfillment(uri)
             }
         ),
         "seller-review-detail" to mutableListOf(

@@ -378,4 +378,7 @@
     <string name="som_pof_dialog_subtitle_order_has_ongoing_pof">Pembeli belum konfirmasi. Pastikan kamu bisa mengirim sesuai jumlah barang yang dipesan pembeli, ya.</string>
     <string name="som_pof_dialog_button_negative_order_has_ongoing_pof">Kembali</string>
     <string name="som_pof_dialog_button_positive_order_has_ongoing_pof">Ya, Terima</string>
+
+    <!-- Common -->
+    <string name="som_link_formatted">&lt;a href=\"%1$s\"&gt;%2$s&lt;/a&gt;</string>
 </resources>

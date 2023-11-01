@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_POF_STATUS
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.activities.SomPrintAwbActivity
@@ -160,8 +162,8 @@ object SomNavigator {
     fun goToPofPage(fragment: Fragment, orderId: String, pofStatus: Int) {
         fragment.run {
             val intent = Intent(fragment.context, PofActivity::class.java).apply {
-                putExtra(PofActivity.PARAMS_ORDER_ID, orderId)
-                putExtra(PofActivity.PARAMS_POF_STATUS, pofStatus)
+                putExtra(PARAM_ORDER_ID, orderId)
+                putExtra(PARAM_POF_STATUS, pofStatus)
             }
             startActivityForResult(intent, REQUEST_POF)
         }

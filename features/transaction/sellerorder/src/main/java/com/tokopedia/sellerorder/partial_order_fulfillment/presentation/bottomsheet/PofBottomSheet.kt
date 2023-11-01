@@ -11,11 +11,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_POF_STATUS
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.sellerorder.databinding.BottomSheetPofBinding
 import com.tokopedia.sellerorder.partial_order_fulfillment.di.PofComponent
-import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.activity.PofActivity
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.adapter.PofAdapter
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.adapter.PofAdapterTypeFactory
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.adapter.PofAdapterTypeFactoryImpl
@@ -43,8 +44,8 @@ class PofBottomSheet : BottomSheetUnify(),
         fun createInstance(orderId: Long, pofStatus: Int): PofBottomSheet {
             return PofBottomSheet().apply {
                 val fragmentArguments = Bundle()
-                fragmentArguments.putLong(PofActivity.PARAMS_ORDER_ID, orderId)
-                fragmentArguments.putInt(PofActivity.PARAMS_POF_STATUS, pofStatus)
+                fragmentArguments.putLong(PARAM_ORDER_ID, orderId)
+                fragmentArguments.putInt(PARAM_POF_STATUS, pofStatus)
                 arguments = fragmentArguments
             }
         }
@@ -60,10 +61,10 @@ class PofBottomSheet : BottomSheetUnify(),
         PofAdapter(PofAdapterTypeFactoryImpl(this))
     }
     private val orderId by lazyThreadSafetyNone {
-        arguments?.getLong(PofActivity.PARAMS_ORDER_ID).orZero()
+        arguments?.getLong(PARAM_ORDER_ID).orZero()
     }
     private val pofStatus by lazyThreadSafetyNone {
-        arguments?.getInt(PofActivity.PARAMS_POF_STATUS).orZero()
+        arguments?.getInt(PARAM_POF_STATUS).orZero()
     }
 
     private var binding by viewBinding(BottomSheetPofBinding::bind)

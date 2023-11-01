@@ -971,11 +971,7 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
                     )
                     when {
                         key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackShipmentPage(it)
-                        key.equals(KEY_REJECT_ORDER, true) -> SomNavigator.goToPofPage(
-                            this,
-                            orderId,
-                            detailResponse?.pofData?.pofStatus.orZero()
-                        )
+                        key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
                         key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
                         key.equals(
                             KEY_UBAH_NO_RESI,

@@ -44,7 +44,6 @@ import com.tokopedia.applink.DeeplinkDFMapper.DF_USER_LIVENESS
 import com.tokopedia.applink.DeeplinkDFMapper.DF_USER_SETTINGS
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.constant.DeeplinkConstant.SCHEME_SELLERAPP
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital.HOST_RECHARGE
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.HOST_CATEGORY
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.HOST_MONEYIN
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication.HOST_COMMUNICATION
@@ -64,6 +63,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOperational.HOST_CONTA
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational.HOST_CUSTOMERAPP_INBOX_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational.HOST_TICKET
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.HOST_SELLER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PATH_SELLER_PARTIAL_ORDER_FULFILLMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.HOST_TOKOPOINTS
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.HOST_SELLERAPP
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood.HOST_FOOD
@@ -423,6 +423,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/finished", SELLER_ORDER),
         DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/cancellationrequest", SELLER_ORDER),
         DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/order", SELLER_ORDER),
+        DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/$PATH_SELLER_PARTIAL_ORDER_FULFILLMENT", SELLER_ORDER),
 
         // editshipping
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-settings-shipping"),

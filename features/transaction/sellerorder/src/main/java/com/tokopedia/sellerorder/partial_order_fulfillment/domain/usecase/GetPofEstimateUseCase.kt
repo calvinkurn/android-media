@@ -55,9 +55,11 @@ class GetPofEstimateUseCase @Inject constructor(
     }
 
     override suspend fun execute(params: GetPofEstimateRequestParams) = flow {
-        emit(RequestState.Requesting)
-        delay(params.delay.orZero())
-        emit(RequestState.Success(sendRequest(params)))
+        if (params.valid()) {
+            emit(RequestState.Requesting)
+            delay(params.delay.orZero())
+            emit(RequestState.Success(sendRequest(params)))
+        }
     }.catch {
         emit(RequestState.Error(it))
     }

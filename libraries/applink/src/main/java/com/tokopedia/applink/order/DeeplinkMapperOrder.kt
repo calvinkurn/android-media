@@ -6,11 +6,14 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_POF_STATUS
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import java.net.URLDecoder
 
 /**
@@ -247,5 +250,17 @@ object DeeplinkMapperOrder {
 
     fun getBuyerCancellationRequestInternalAppLink(): String {
         return ApplinkConstInternalOrder.INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE
+    }
+
+    fun getRegisteredNavigationSellerPartialOrderFulfillment(uri: Uri): String {
+        val redirectToSellerApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false)
+        val orderId = uri.getQueryParameter(PARAM_ORDER_ID) ?: uri.pathSegments.last()
+        val pofStatus = uri.getQueryParameter(PARAM_POF_STATUS).toIntOrZero()
+        val params = mapOf<String, Any>(
+            PARAM_ORDER_ID to orderId,
+            PARAM_POF_STATUS to pofStatus,
+            RouteManager.KEY_REDIRECT_TO_SELLER_APP to redirectToSellerApp
+        )
+        return UriUtil.buildUriAppendParams(ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_PARTIAL_ORDER_FULFILLMENT, params)
     }
 }

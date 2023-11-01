@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_POF_STATUS
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -18,17 +20,12 @@ import com.tokopedia.abstraction.R as abstractionR
 
 class PofActivity : BaseSimpleActivity(), HasComponent<PofComponent> {
 
-    companion object {
-        const val PARAMS_ORDER_ID = "ORDER_ID"
-        const val PARAMS_POF_STATUS = "POF_STATUS"
-    }
-
     private val orderId by lazyThreadSafetyNone {
-        intent.extras?.getString(PARAMS_ORDER_ID).toLongOrZero()
+        intent.extras?.getString(PARAM_ORDER_ID).toLongOrZero()
     }
 
     private val pofStatus by lazyThreadSafetyNone {
-        intent.extras?.getString(PARAMS_POF_STATUS).toIntOrZero()
+        intent.extras?.getString(PARAM_POF_STATUS).toIntOrZero()
     }
 
     private val daggerComponent by lazyThreadSafetyNone {
