@@ -673,7 +673,7 @@ class LottieBottomNavbar : LinearLayout {
 
     private fun handleItemClicked(index: Int, bottomMenu: BottomMenu) {
         // invoke listener
-        Handler(Looper.getMainLooper()).post {
+        Handler().post {
             if (listener?.menuClicked(index, bottomMenu.id) == true) {
                 changeColor(index)
                 selectedItem = index
