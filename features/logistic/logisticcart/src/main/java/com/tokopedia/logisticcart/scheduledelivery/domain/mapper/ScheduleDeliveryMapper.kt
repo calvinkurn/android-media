@@ -34,7 +34,8 @@ class ScheduleDeliveryMapper @Inject constructor() {
             insurance = ratesParam.insurance.toLongOrZero(),
             productInsurance = ratesParam.product_insurance.toLongOrZero(),
             isRecommend = isRecommend,
-            startDate = startDate
+            startDate = startDate,
+            groupingState = ratesParam.grouping_state
         )
     }
 }
