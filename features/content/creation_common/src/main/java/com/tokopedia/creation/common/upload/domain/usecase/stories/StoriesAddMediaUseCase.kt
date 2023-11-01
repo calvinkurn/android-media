@@ -22,7 +22,7 @@ class StoriesAddMediaUseCase @Inject constructor(
     override fun graphqlQuery(): String = ContentCreatorStoryAddMediaQuery().getQuery()
 
     override suspend fun execute(params: StoriesAddMediaRequest): StoriesAddMediaResponse {
-        return repository.request(graphqlQuery(), params)
+        return repository.request(ContentCreatorStoryAddMediaQuery(), params)
     }
 
     companion object {
