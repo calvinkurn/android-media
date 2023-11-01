@@ -47,8 +47,10 @@ class MilestoneRewardViewHolder(
         lottieCompositionTask.addListener { result ->
             binding?.imgShcMissionReward?.run {
                 setComposition(result)
-                playAnimation()
                 repeatCount = LottieDrawable.INFINITE
+                post {
+                    playAnimation()
+                }
             }
         }
     }
