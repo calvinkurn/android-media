@@ -77,7 +77,7 @@ fun FundsAndInvestmentScreen(
                                 }
 
                                 is FundsAndInvestmentResult.Content -> {
-                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Spacer(modifier = Modifier.height(16.dp))
                                     FundsAndInvestmentSection(
                                         userId = userId,
                                         title = LocalContext.current.getString(R.string.funds_and_investment_balance_and_points),
@@ -86,12 +86,12 @@ fun FundsAndInvestmentScreen(
                                         onItemClicked(it)
                                     }
 
-                                    Spacer(modifier = Modifier.height(16.dp))
+                                    Spacer(modifier = Modifier.height(24.dp))
                                     FundsAndInvestmentSection(
                                         userId = userId,
                                         title = LocalContext.current.getString(R.string.funds_and_investment_try_another),
                                         list = state.listHorizontal,
-                                        textStyle = NestTheme.typography.heading3.copy(
+                                        textStyle = NestTheme.typography.heading4.copy(
                                             fontWeight = FontWeight.Bold
                                         )
                                     ) {

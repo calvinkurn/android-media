@@ -32,7 +32,7 @@ fun FundsAndInvestmentSection(
             NestTypography(
                 text = title,
                 textStyle = textStyle,
-                modifier = Modifier.padding(horizontal = 12.dp)
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
 
             LazyColumn {

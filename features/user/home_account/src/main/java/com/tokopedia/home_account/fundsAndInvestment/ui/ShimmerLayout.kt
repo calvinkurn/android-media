@@ -21,9 +21,9 @@ import com.tokopedia.nest.principles.ui.NestTheme
 @Composable
 fun ShimmerLayout() {
     Column {
-        Spacer(modifier = Modifier.height(8.dp))
-        SectionShimmer(3)
         Spacer(modifier = Modifier.height(16.dp))
+        SectionShimmer(3)
+        Spacer(modifier = Modifier.height(24.dp))
         SectionShimmer(1)
     }
 }
@@ -33,7 +33,7 @@ fun SectionShimmer(listSize: Int) {
     Column {
         NestLoader(
             modifier = Modifier
-                .padding(start = 12.dp)
+                .padding(start = 16.dp)
                 .width(100.dp)
                 .height(24.dp),
             variant = NestLoaderType.Shimmer(type = NestShimmerType.Line)
@@ -54,7 +54,12 @@ fun ItemShimmer() {
 
             NestLoader(
                 modifier = Modifier
-                    .padding(12.dp)
+                    .padding(
+                        start = 24.dp,
+                        top = 16.dp,
+                        end = 16.dp,
+                        bottom = 16.dp
+                    )
                     .size(48.dp),
                 variant = NestLoaderType.Shimmer(type = NestShimmerType.Line)
             )

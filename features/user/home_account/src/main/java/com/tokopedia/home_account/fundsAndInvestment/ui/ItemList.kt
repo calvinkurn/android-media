@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -58,7 +59,12 @@ fun ItemList(
             NestImage(
                 source = ImageSource.Remote(source = item.urlImage),
                 modifier = Modifier
-                    .padding(12.dp)
+                    .padding(
+                        start = 24.dp,
+                        top = 16.dp,
+                        end = 16.dp,
+                        bottom = 16.dp
+                    )
                     .size(48.dp)
             )
 
@@ -77,7 +83,7 @@ fun ItemList(
                 isFailed = item.isFailed
             )
 
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(24.dp))
         }
         NestDivider(
             modifier = Modifier
@@ -111,9 +117,11 @@ private fun ContentText(
 
         when {
             isFailed -> {
+                Spacer(modifier = Modifier.height(4.dp))
                 Subtitle(subtitle = LocalContext.current.getString(R.string.funds_and_investment_failed))
             }
             subtitle.isNotEmpty() && isActive || !isVertical -> {
+                Spacer(modifier = Modifier.height(4.dp))
                 Subtitle(subtitle = subtitle)
             }
         }
@@ -202,7 +210,7 @@ fun ListItemFailedPreview() {
 
 @Preview(device = Devices.PIXEL_3A_XL, showBackground = true)
 @Composable
-fun ListItemSuccessPreview() {
+fun ListItemLinkedSuccessPreview() {
     NestTheme {
         ItemList(
             modifier = Modifier,
@@ -212,6 +220,28 @@ fun ListItemSuccessPreview() {
                 subtitle = "Test Subtitle 1",
                 isFailed = false,
                 isActive = true,
+                isVertical = true,
+                hideTitle = false
+            ),
+            userId = "12345"
+        ) {
+
+        }
+    }
+}
+
+@Preview(device = Devices.PIXEL_3A_XL, showBackground = true)
+@Composable
+fun ListItemUnlinkedSuccessPreview() {
+    NestTheme {
+        ItemList(
+            modifier = Modifier,
+            item = WalletUiModel(
+                id = "1",
+                title = "Test Title 1",
+                subtitle = "Test Subtitle 1",
+                isFailed = false,
+                isActive = false,
                 isVertical = true,
                 hideTitle = false
             ),
