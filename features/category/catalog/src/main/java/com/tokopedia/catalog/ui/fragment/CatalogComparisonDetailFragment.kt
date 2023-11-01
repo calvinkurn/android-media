@@ -252,7 +252,7 @@ class CatalogComparisonDetailFragment :
     }
 
     override fun onComparisonImpression() {
-        TODO("Not yet implemented")
+        // no-op
     }
 
     override fun changeComparison(comparedCatalogId: String) {
