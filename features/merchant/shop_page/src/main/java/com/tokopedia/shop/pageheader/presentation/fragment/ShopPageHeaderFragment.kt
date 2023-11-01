@@ -3498,8 +3498,8 @@ class ShopPageHeaderFragment :
                             } else {
                                 ShopPageParamModel.ShopInfoName.FREE_TEXT.infoNameValue
                             }
-                        shopInfoValue = textValueComponentUiModel.text[Int.ZERO].textHtml.clearHtmlTag()
-                        shopInfoLabel = textValueComponentUiModel.text[Int.ONE].textHtml.clearHtmlTag()
+                        shopInfoValue = textValueComponentUiModel.text.getOrNull(Int.ZERO)?.textHtml.orEmpty().clearHtmlTag()
+                        shopInfoLabel = textValueComponentUiModel.text.getOrNull(Int.ONE)?.textHtml.orEmpty().clearHtmlTag()
                     }
 
                     ShopPageParamModel.ShopInfoType.IMAGE_ONLY.typeName -> {
