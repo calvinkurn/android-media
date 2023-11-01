@@ -4,8 +4,10 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.BaseParam
 import com.tokopedia.mediauploader.VideoParam
 import com.tokopedia.mediauploader.analytics.UploaderLogger
+import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.data.consts.TRANSCODING_FAILED
 import com.tokopedia.mediauploader.common.data.consts.UNKNOWN_ERROR
+import com.tokopedia.mediauploader.common.di.UploaderQualifier
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.video.data.params.SimpleUploadParam
@@ -15,6 +17,7 @@ import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class SimpleUploaderManager @Inject constructor(
+    @UploaderQualifier val sourcePolicyManager: SourcePolicyManager,
     private val simpleUploaderUseCase: GetSimpleUploaderUseCase,
     private val transcodingUseCase: GetTranscodingStatusUseCase,
 ) {
@@ -23,11 +26,12 @@ class SimpleUploaderManager @Inject constructor(
     private var maxRetryTranscoding = 0
 
     suspend operator fun invoke(param: VideoParam): UploadResult {
+        val policy = sourcePolicyManager.get() ?: return UploadResult.Error(UNKNOWN_ERROR)
         val base = param.base as BaseParam
 
         val uploader = simpleUploaderUseCase(
             SimpleUploadParam(
-                timeOut = base.policy.timeOut.orZero().toString(),
+                timeOut = policy.timeOut.orZero().toString(),
                 sourceId = base.sourceId,
                 file = base.file
             )
