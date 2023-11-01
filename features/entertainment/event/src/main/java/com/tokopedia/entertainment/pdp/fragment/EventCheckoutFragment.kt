@@ -320,8 +320,12 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initProgressDialog()
-        initTimerCountdown()
         requestData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initTimerCountdown()
     }
 
     private fun initTimerCountdown() {
