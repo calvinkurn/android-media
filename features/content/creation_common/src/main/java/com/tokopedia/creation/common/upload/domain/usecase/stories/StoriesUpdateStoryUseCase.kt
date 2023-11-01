@@ -31,7 +31,7 @@ class StoriesUpdateStoryUseCase @Inject constructor(
         const val QUERY_NAME = "ContentCreatorStoryUpdateStoryQuery"
         const val QUERY = """
             mutation contentCreatorStoryUpdateStory(
-                ${"$$PARAM_REQ"}: ContentCreatorStoryUpdateStoryRequest!,
+                ${"$$PARAM_REQ"}: ContentCreatorStoryUpdateStoryRequest!
             ) {
                 contentCreatorStoryUpdateStory(
                     $PARAM_REQ: ${"$$PARAM_REQ"}
