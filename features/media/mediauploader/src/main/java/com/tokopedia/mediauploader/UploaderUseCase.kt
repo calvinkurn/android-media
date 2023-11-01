@@ -2,6 +2,7 @@
 
 package com.tokopedia.mediauploader
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
@@ -11,52 +12,63 @@ import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.video.VideoUploaderManager
-import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.usecase.RequestParams
-import kotlinx.coroutines.Dispatchers
 import java.io.File
 import javax.inject.Inject
 
 class UploaderUseCase @Inject constructor(
+    @UploaderQualifier private val sourcePolicyManager: SourcePolicyManager,
     private val imageUploaderManager: ImageUploaderManager,
     private val videoUploaderManager: VideoUploaderManager,
     private val sourcePolicyUseCase: GetSourcePolicyUseCase,
-    @UploaderQualifier private val sourcePolicyManager: SourcePolicyManager
-) : CoroutineUseCase<RequestParams, UploadResult>(Dispatchers.IO) {
+    dispatchers: CoroutineDispatchers,
+) : CoroutineUseCase<RequestParams, UploadResult>(dispatchers.io) {
 
     private var progressUploader: ProgressUploader? = null
 
-    private lateinit var sourceId: String
-    private lateinit var file: File
-
-    private var withTranscode = true
-    private var shouldCompress = true
-    private var isSecure = false
-    private var isRetriable = true
-    private var extraHeader: Map<String, String> = mapOf()
-    private var extraBody: Map<String, String> = mapOf()
-
-    // this domain isn't using graphql service
-    override fun graphqlQuery() = ""
-
     override suspend fun execute(params: RequestParams): UploadResult {
-        setupRequestParams(params)
-        return shouldUploadMediaByType(getSourcePolicyAndSaveToCache())
-            .also {
-                // clear policy cache after upload succeed
-                sourcePolicyManager.dispose()
-            }
+        val useCaseParam = setupRequestParams(params)
+
+        val baseParam = useCaseParam.base as BaseParam
+        val imageParam = useCaseParam.image as ImageParam
+
+        getOrSetGlobalSourcePolicy(
+            file = baseParam.file,
+            sourceId = baseParam.sourceId,
+            isSecure = imageParam.isSecure
+        )
+
+        return UploaderFactory(
+            video = videoUploaderManager,
+            image = imageUploaderManager
+        ).createUploader(useCaseParam).also {
+            // clear policy cache after upload succeed
+            sourcePolicyManager.dispose()
+        }
     }
 
-    private fun setupRequestParams(params: RequestParams) {
-        withTranscode = params.getBoolean(PARAM_WITH_TRANSCODE, true)
-        shouldCompress = params.getBoolean(PARAM_SHOULD_COMPRESS, true)
-        sourceId = params.getString(PARAM_SOURCE_ID, "")
-        file = params.getObject(PARAM_FILE_PATH) as File
-        isSecure = params.getBoolean(PARAM_IS_SECURE, false)
-        isRetriable = params.getBoolean(PARAM_IS_RETRY, false)
-        extraHeader = params.getObject(PARAM_EXTRA_HEADER) as Map<String, String>
-        extraBody = params.getObject(PARAM_EXTRA_BODY) as Map<String, String>
+    private fun setupRequestParams(params: RequestParams): UseCaseParam {
+        val base = BaseParam(
+            file = params.getObject(PARAM_FILE_PATH) as File,
+            sourceId = params.getString(PARAM_SOURCE_ID, ""),
+            progress = progressUploader
+        )
+
+        return UseCaseParam(
+            base = base,
+            image = ImageParam(
+                isSecure = params.getBoolean(PARAM_IS_SECURE, false),
+                extraHeader = params.getObject(PARAM_EXTRA_HEADER) as Map<String, String>,
+                extraBody = params.getObject(PARAM_EXTRA_BODY) as Map<String, String>,
+                base = base
+            ),
+            video = VideoParam(
+                withTranscode = params.getBoolean(PARAM_WITH_TRANSCODE, true),
+                shouldCompress = params.getBoolean(PARAM_SHOULD_COMPRESS, true),
+                ableToRetry = params.getBoolean(PARAM_IS_RETRY, false),
+                base = base
+            )
+        )
     }
 
     /**
@@ -65,28 +77,11 @@ class UploaderUseCase @Inject constructor(
      * We put all policies request in only method and make it offline-first mode.
      * So we don't have to request the same policy if users encounter internet issue.
      */
-    private suspend fun getSourcePolicyAndSaveToCache(): SourcePolicy {
+    private suspend fun getOrSetGlobalSourcePolicy(sourceId: String, file: File, isSecure: Boolean): SourcePolicy {
         val param = GetSourcePolicyUseCase.Param(sourceId, file, isSecure)
         return sourcePolicyManager.get() ?: sourcePolicyUseCase(param).also {
             sourcePolicyManager.set(it)
         }
-    }
-
-    /**
-     * A unify the UploaderManager.
-     *
-     * Create a single gate to handle both Image (as well as secure) and Video upload,
-     * by provide a dynamic [InternalUploadParam] to ensure the similar parameters could be
-     * use the same object.
-     */
-    private suspend fun shouldUploadMediaByType(policy: SourcePolicy) = request(sourceId) {
-        val base = BaseParam(file, sourceId, progressUploader, policy)
-
-        if (isVideoFormat(file.path)) videoUploaderManager(
-            VideoParam(withTranscode, shouldCompress, isRetriable, base)
-        ) else imageUploaderManager(
-            ImageParam(isSecure, extraHeader, extraBody, base)
-        )
     }
 
     // Public Method
@@ -146,6 +141,9 @@ class UploaderUseCase @Inject constructor(
             }
         } catch (ignored: Throwable) {}
     }
+
+    // this domain isn't using graphql service
+    override fun graphqlQuery() = ""
 
     companion object {
         const val PARAM_SOURCE_ID = "source_id"
