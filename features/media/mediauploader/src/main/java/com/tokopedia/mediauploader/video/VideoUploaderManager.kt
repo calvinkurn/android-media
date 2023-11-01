@@ -2,16 +2,17 @@ package com.tokopedia.mediauploader.video
 
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.BaseParam
+import com.tokopedia.mediauploader.BaseUploaderParam
 import com.tokopedia.mediauploader.UploaderManager
 import com.tokopedia.mediauploader.VideoParam
-import com.tokopedia.mediauploader.common.FeatureToggleUploader
-import com.tokopedia.mediauploader.common.data.consts.*
-import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.analytics.MediaUploaderAnalytics
+import com.tokopedia.mediauploader.common.FeatureToggleUploader
+import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
+import com.tokopedia.mediauploader.common.data.consts.SOURCE_NOT_FOUND
+import com.tokopedia.mediauploader.common.data.consts.UNKNOWN_ERROR
 import com.tokopedia.mediauploader.common.di.UploaderQualifier
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.common.util.isMaxFileSize
 import com.tokopedia.mediauploader.common.util.mbToBytes
 import com.tokopedia.mediauploader.video.data.entity.VideoPolicy
 import com.tokopedia.mediauploader.video.data.params.VideoCompressionParam
@@ -29,8 +30,9 @@ class VideoUploaderManager @Inject constructor(
 
     private var isSimpleUpload = true
 
-    suspend operator fun invoke(param: VideoParam): UploadResult {
-        val base = param.base as BaseParam
+    override suspend fun upload(param: BaseUploaderParam): UploadResult {
+        val base = (param as VideoParam).base as BaseParam
+        setProgressUploader(base.progress)
 
         if (base.sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
         val policy = policyManager.get() ?: return UploadResult.Error(UNKNOWN_ERROR)
@@ -48,44 +50,24 @@ class VideoUploaderManager @Inject constructor(
             loader = base.progress
         )
 
-        // return the upload result
-        return policy.videoPolicy?.let { videoPolicy ->
-            val maxSizeOfSimpleUpload = videoPolicy.thresholdSizeOfVideo()
-            val maxFileSize = videoPolicy.maxFileSize
+        val (isValid, message) = VideoUploaderValidator(filePath, policy.videoPolicy)
+        if (isValid.not()) return UploadResult.Error(message)
 
-            when {
-                !filePath.exists() -> {
-                    UploadResult.Error(FILE_NOT_FOUND)
-                }
-                filePath.isMaxFileSize(maxFileSize) -> {
-                    UploadResult.Error(maxFileSizeMessage(maxFileSize))
-                }
-                !allowedExt(filePath.path, videoPolicy.extension) -> {
-                    UploadResult.Error(formatNotAllowedMessage(videoPolicy.extension))
-                }
-                else -> {
-                    isSimpleUpload = filePath.length() <= maxSizeOfSimpleUpload.mbToBytes()
-                    setProgressUploader(base.progress)
+        val maxSizeOfSimpleUpload = policy.videoPolicy
+            ?.thresholdSizeOfVideo()
+            ?.mbToBytes() ?: 0
 
-                    // start upload time tracker
-                    analytics.setStartUploadTime(trackerCacheKey, System.currentTimeMillis())
+        isSimpleUpload = filePath.length() <= maxSizeOfSimpleUpload
 
-                    val upload = if (!isSimpleUpload) {
-                        largeUploaderManager(param)
-                    } else {
-                        simpleUploaderManager(param)
-                    }
+        // start upload time tracker before do uploads
+        analytics.setStartUploadTime(trackerCacheKey, System.currentTimeMillis())
 
-                    upload.also {
-                        // set the end upload time tracker
-                        analytics.setEndUploadTime(trackerCacheKey, System.currentTimeMillis())
+        val upload = if (!isSimpleUpload) largeUploaderManager(param) else simpleUploaderManager(param)
 
-                        // send tracker to thanos
-                        analytics.sendEvent(base.sourceId, base.file, param.ableToRetry, isSimpleUpload)
-                    }
-                }
-            }
-        } ?: UploadResult.Error(UNKNOWN_ERROR)
+        return upload.also {
+            analytics.setEndUploadTime(trackerCacheKey, System.currentTimeMillis()) // set the end upload time tracker
+            analytics.sendEvent(base.sourceId, base.file, param.ableToRetry, isSimpleUpload) // send tracker to thanos
+        }
     }
 
     suspend fun abortUpload(sourceId: String, fileName: String, abort: suspend () -> Unit) {
@@ -140,5 +122,4 @@ class VideoUploaderManager @Inject constructor(
             originalFile
         }
     }
-
 }
