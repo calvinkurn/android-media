@@ -74,7 +74,7 @@ class ShipmentViewHolder(
     }
 
     private fun ShipmentUiModel.Error.render(componentTrackDataModel: ComponentTrackDataModel) {
-        ViewShipmentErrorBinding.bind(viewError.view).apply(this, componentTrackDataModel)
+        viewError.binding.apply(this, componentTrackDataModel)
 
         viewSuccess.hide()
         viewError.show()
@@ -92,7 +92,7 @@ class ShipmentViewHolder(
     }
 
     private fun ShipmentUiModel.Failed.render() {
-        ViewShipmentFailedBinding.bind(viewFailed.view).apply()
+        viewFailed.binding.apply()
 
         viewSuccess.hide()
         viewError.hide()
