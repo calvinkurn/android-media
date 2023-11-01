@@ -5,8 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
@@ -17,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.creation.common.R
 import com.tokopedia.creation.common.analytics.ContentCreationAnalytics
 import com.tokopedia.creation.common.di.ContentCreationComponent
+import com.tokopedia.creation.common.di.ContentCreationModule
 import com.tokopedia.creation.common.di.DaggerContentCreationComponent
 import com.tokopedia.creation.common.presentation.components.ContentCreationView
 import com.tokopedia.creation.common.presentation.model.ContentCreationAuthorEnum
@@ -148,7 +147,8 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
 
     private fun createComponent(): ContentCreationComponent =
         DaggerContentCreationComponent.builder()
-            .baseAppComponent((context?.applicationContext as BaseMainApplication).baseAppComponent)
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .contentCreationModule(ContentCreationModule(requireContext()))
             .build()
 
     interface ContentCreationBottomSheetListener {
