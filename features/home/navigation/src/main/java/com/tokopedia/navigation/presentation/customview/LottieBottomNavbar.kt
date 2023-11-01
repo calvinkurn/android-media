@@ -44,9 +44,6 @@ class LottieBottomNavbar : LinearLayout {
             context.isDarkMode()
         }
 
-    private val isIconJumperEnabled: Boolean
-        get() = IconJumperUtil.isEnabledIconJumper()
-
     private val modeAwareContext: Context
         get() = if (isDarkMode) mDarkModeContext else context
     private var mIsForceDarkMode = false
@@ -596,7 +593,7 @@ class LottieBottomNavbar : LinearLayout {
     }
 
     private fun getNewAnimationName(index: Int, bottomMenu: BottomMenu): Int? {
-        return if (isIconJumperEnabled && index == Int.ZERO) {
+        return if (IconJumperUtil.isEnabledIconJumper() && index == Int.ZERO) {
             if (isForYouToHomeSelected) {
                 getOldAnimationName(bottomMenu)
             } else {
@@ -612,7 +609,7 @@ class LottieBottomNavbar : LinearLayout {
     }
 
     private fun getIconTitle(index: Int, bottomMenu: BottomMenu): String? {
-        return if (isIconJumperEnabled && index == Int.ZERO) {
+        return if (IconJumperUtil.isEnabledIconJumper() && index == Int.ZERO) {
             if (isForYouToHomeSelected) {
                 bottomMenu.homeForYou?.homeTitle
             } else {
@@ -628,7 +625,7 @@ class LottieBottomNavbar : LinearLayout {
     }
 
     private fun getNewAnimationToEnabledName(index: Int, bottomMenu: BottomMenu): Int? {
-        return if (isIconJumperEnabled && index == Int.ZERO) {
+        return if (IconJumperUtil.isEnabledIconJumper() && index == Int.ZERO) {
             if (isForYouToHomeSelected) {
                 getOldAnimationToEnabledName(bottomMenu)
             } else {
@@ -644,7 +641,7 @@ class LottieBottomNavbar : LinearLayout {
     }
 
     private fun getNewImageName(index: Int, bottomMenu: BottomMenu): Int? {
-        return if (isIconJumperEnabled && index == Int.ZERO) {
+        return if (IconJumperUtil.isEnabledIconJumper() && index == Int.ZERO) {
             if (isForYouToHomeSelected) {
                 bottomMenu.homeForYou?.homeImageName
             } else {
@@ -749,12 +746,12 @@ class LottieBottomNavbar : LinearLayout {
     }
 
     private fun isForYouSelectedByPosition(index: Int): Boolean {
-        return isIconJumperEnabled && index == Int.ZERO && !isForYouToHomeSelected
+        return IconJumperUtil.isEnabledIconJumper() && index == Int.ZERO && !isForYouToHomeSelected
     }
 
     private fun changeColor(newPosition: Int) {
         if (selectedItem == newPosition) {
-            if (newPosition == Int.ZERO && isIconJumperEnabled) {
+            if (newPosition == Int.ZERO && IconJumperUtil.isEnabledIconJumper()) {
                 homeForYouListener?.homeForYouMenuReselected(newPosition, menu[newPosition].id)
             } else {
                 listener?.menuReselected(newPosition, menu[newPosition].id)
@@ -858,7 +855,7 @@ class LottieBottomNavbar : LinearLayout {
     }
 
     private fun setTitleIconHomeOrForYou(newPosition: Int) {
-        if (isIconJumperEnabled) {
+        if (IconJumperUtil.isEnabledIconJumper()) {
             val textIcon = titleList.getOrNull(Int.ZERO)
             val iconTitle = when {
                 newPosition == Int.ZERO -> {
