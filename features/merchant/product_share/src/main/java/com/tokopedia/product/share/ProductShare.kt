@@ -33,7 +33,6 @@ import com.tokopedia.product.share.tracker.ProductShareTracking.onImpressShareWi
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
-import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.tracker.PageType
@@ -44,9 +43,10 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListe
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.customview.UniversalShareWidget
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
-import com.tokopedia.universal_sharing.view.model.LinkProperties
+import com.tokopedia.universal_sharing.view.model.ImageGeneratorShareWidgetParam
 import com.tokopedia.universal_sharing.view.model.LinkShareWidgetProperties
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.universal_sharing.view.model.ShareWidgetParam
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 
@@ -553,6 +553,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
     fun setWhatsappShareWidget(shareWidget: UniversalShareWidget,
                                productData: ProductData,
                                personalizedCampaignModel: PersonalizedCampaignModel,
+                               affiliateInput: AffiliateInput,
                                imageGeneratorParamModel: PdpParamModel) {
         var imageGenerator = imageGeneratorParamModel
         var personalizedMessage = ""
@@ -583,10 +584,15 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
             shareMessage = "$personalizedMessage %s"
 
         }
-        shareWidget.setLinkProperties(generateLinkProperties(productData, shareMessage))
-        shareWidget.setImageGenerator(
-            ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP,
-            imageGenerator
+        shareWidget.setData(
+            shareWidgetParam = ShareWidgetParam(
+                linkProperties = generateLinkProperties(productData, shareMessage),
+                affiliateInput = affiliateInput,
+                imageGenerator = ImageGeneratorShareWidgetParam(
+                    ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP,
+                    imageGenerator
+                ),
+            )
         )
     }
 

@@ -12,7 +12,6 @@ import com.tokopedia.iconunify.getIconUnifyResourceIdRef
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.model.LinkerData
@@ -30,6 +29,7 @@ import com.tokopedia.universal_sharing.util.UniversalShareConst
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.LinkShareWidgetProperties
+import com.tokopedia.universal_sharing.view.model.ShareWidgetParam
 import com.tokopedia.universal_sharing.view.sharewidget.LinkerResultWidget
 import com.tokopedia.universal_sharing.view.sharewidget.UniversalShareWidgetViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -99,8 +99,15 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
         }
     }
 
-    fun setLinkProperties(linkShareWidgetProperties: LinkShareWidgetProperties) {
-        viewModel?.setData(linkShareWidgetProperties)
+    fun setData(shareWidgetParam: ShareWidgetParam) {
+        viewModel?.setData(shareWidgetParam.linkProperties)
+        shareWidgetParam.affiliateInput?.let {
+            enableAffiliate(it)
+        }
+
+        shareWidgetParam.imageGenerator?.let {
+            setImageGenerator(it.sourceId, it.imageGeneratorParamModel)
+        }
     }
 
     override fun onAttachedToWindow() {
@@ -261,7 +268,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
      * method to enable affiliate if user eligible as affiliate
      * @param affiliateInput
      */
-    fun enableAffiliate(affiliateInput: AffiliateInput) {
+    private fun enableAffiliate(affiliateInput: AffiliateInput) {
         viewModel?.checkIsAffiliate(affiliateInput)
     }
 

@@ -538,7 +538,6 @@ open class DynamicProductDetailFragment :
     // View
     private lateinit var actionButtonView: PartialButtonActionView
     private var stickyLoginView: StickyLoginView? = null
-    private var shareWidget: UniversalShareWidget? = null
     private var shouldShowCartAnimation = false
     private var loadingProgressDialog: ProgressDialog? = null
     private var productVideoCoordinator: ProductVideoCoordinator? = null
@@ -639,7 +638,6 @@ open class DynamicProductDetailFragment :
         navToolbar = view.findViewById(R.id.pdp_navtoolbar)
         setupToolbarState()
         navAbTestCondition({ initToolbarMainApp() }, { initToolbarSellerApp() })
-        initShareWidget(view)
         if (!viewModel.isUserSessionActive) initStickyLogin(view)
         screenshotDetector = context?.let {
             SharingUtil.createAndStartScreenShotDetector(
@@ -3119,7 +3117,6 @@ open class DynamicProductDetailFragment :
         if (isShareAffiliateIconEnabled() && !GlobalConfig.isSellerApp()) {
             viewModel.getDynamicProductInfoP1?.let { dataP1 ->
                 val affiliateInput = generateAffiliateShareData(dataP1, shopInfo, viewModel.variantData)
-                shareWidget?.enableAffiliate(affiliateInput)
                 viewModel.checkAffiliateEligibility(affiliateInput)
             }
         }
@@ -3589,8 +3586,7 @@ open class DynamicProductDetailFragment :
 
         initNavigationTab(it)
         updateUi()
-        val productInfo = viewModel.getDynamicProductInfoP1
-        setShareWidget()
+//        setShareWidget()
     }
 
     private fun initNavigationTab(data: ProductInfoP2UiData) {
@@ -4682,10 +4678,6 @@ open class DynamicProductDetailFragment :
             "?${SearchApiConst.Q}=$categoryName"
         }
         return applink
-    }
-
-    private fun initShareWidget(view: View) {
-        shareWidget = view.findViewById(R.id.share_widget)
     }
 
     private fun initStickyLogin(view: View) {
@@ -6204,68 +6196,70 @@ open class DynamicProductDetailFragment :
         )
     }
 
-    private fun setShareWidget() {
-        val productInfo = viewModel.getDynamicProductInfoP1
-        productInfo?.let {
-            val productData = generateProductShareData(
-                productInfo = productInfo,
-                userId = viewModel.userId,
-                shopUrl = viewModel.getShopInfo().shopCore.url,
-                bundleId = "0"
-            )
-            val personalizedCampaignModel = generatePersonalizedData(it, viewModel.p2Data.value)
-            val imageGenerator = generateImageGeneratorData(productInfo, viewModel.getBebasOngkirDataByProductId()).apply {
-                productImageUrl = SharingUtil.transformOgImageURL(context, productInfo.data.getProductImageUrl() ?: "")
-            }
-            shareWidget?.let { shareWidget ->
-                shareProductInstance?.setWhatsappShareWidget(
-                    shareWidget,
-                    productData,
-                    personalizedCampaignModel,
-                    imageGenerator
-                )
-            }
-        }
-        shareWidget?.setShareWidgetCallback(object: ShareWidgetCallback {
-            override fun onErrorCreateUrl(error: LinkerError) {
-                /* no-op */
-            }
-
-            override fun onSuccessCreateUrl(result: LinkerShareResult) {
-                /* no-op */
-            }
-
-            override fun onShowNormalBottomSheet() {
-                shareProduct(productInfo)
-            }
-
-            override fun onClickShareWidget(id: String, channel: String, isAffiliate: Boolean, isDirectChannel: Boolean) {
-                val campaignId = if (this@DynamicProductDetailFragment.campaignId.isEmpty()) {
-                    "0"
-                } else {
-                    this@DynamicProductDetailFragment.campaignId
-                }
-                if (isDirectChannel) {
-                    DynamicProductDetailTracking.Click.clickDirectChannel(
-                        channel,
-                        isAffiliate,
-                        id,
-                        campaignId,
-                        "0"
-
-                    )
-                } else {
-                    DynamicProductDetailTracking.Click.clickShareWidget(
-                        isAffiliate,
-                        id,
-                        campaignId,
-                        "0"
-                    )
-                }
-            }
-        })
-        shareWidget?.show()
-    }
+//    private fun setShareWidget() {
+//        val productInfo = viewModel.getDynamicProductInfoP1
+//        productInfo?.let {
+//            val productData = generateProductShareData(
+//                productInfo = productInfo,
+//                userId = viewModel.userId,
+//                shopUrl = viewModel.getShopInfo().shopCore.url,
+//                bundleId = "0"
+//            )
+//            val personalizedCampaignModel = generatePersonalizedData(it, viewModel.p2Data.value)
+//            val imageGenerator = generateImageGeneratorData(productInfo, viewModel.getBebasOngkirDataByProductId()).apply {
+//                productImageUrl = SharingUtil.transformOgImageURL(context, productInfo.data.getProductImageUrl() ?: "")
+//            }
+//            val affiliateInput = generateAffiliateShareData(it, viewModel.p2Data.value?.shopInfo, viewModel.variantData)
+//            shareWidget?.let { shareWidget ->
+//                shareProductInstance?.setWhatsappShareWidget(
+//                    shareWidget,
+//                    productData,
+//                    personalizedCampaignModel,
+//                    affiliateInput,
+//                    imageGenerator
+//                )
+//            }
+//        }
+//        shareWidget?.setShareWidgetCallback(object: ShareWidgetCallback {
+//            override fun onErrorCreateUrl(error: LinkerError) {
+//                /* no-op */
+//            }
+//
+//            override fun onSuccessCreateUrl(result: LinkerShareResult) {
+//                /* no-op */
+//            }
+//
+//            override fun onShowNormalBottomSheet() {
+//                shareProduct(productInfo)
+//            }
+//
+//            override fun onClickShareWidget(id: String, channel: String, isAffiliate: Boolean, isDirectChannel: Boolean) {
+//                val campaignId = if (this@DynamicProductDetailFragment.campaignId.isEmpty()) {
+//                    "0"
+//                } else {
+//                    this@DynamicProductDetailFragment.campaignId
+//                }
+//                if (isDirectChannel) {
+//                    DynamicProductDetailTracking.Click.clickDirectChannel(
+//                        channel,
+//                        isAffiliate,
+//                        id,
+//                        campaignId,
+//                        "0"
+//
+//                    )
+//                } else {
+//                    DynamicProductDetailTracking.Click.clickShareWidget(
+//                        isAffiliate,
+//                        id,
+//                        campaignId,
+//                        "0"
+//                    )
+//                }
+//            }
+//        })
+//        shareWidget?.show()
+//    }
 
     override fun onShopReviewSeeMore(
         appLink: String,
