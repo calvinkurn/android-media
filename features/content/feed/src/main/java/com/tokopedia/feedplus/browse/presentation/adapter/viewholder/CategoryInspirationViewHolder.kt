@@ -12,7 +12,7 @@ import com.tokopedia.unifycomponents.CardUnify2
 /**
  * Created by kenny.hadisaputra on 21/09/23
  */
-internal class FeedCategoryInspirationViewHolder private constructor() {
+internal class CategoryInspirationViewHolder private constructor() {
 
     class Card private constructor(
         private val binding: ItemFeedBrowseInspirationCardBinding
@@ -24,6 +24,7 @@ internal class FeedCategoryInspirationViewHolder private constructor() {
 
         fun bind(item: FeedBrowseItemListModel.InspirationCard.Item) {
             binding.tvTitle.text = item.item.title
+            binding.totalView.setTotalWatch(item.item.totalView.totalViewFmt)
             binding.imgCover.setImageUrl(item.item.video.coverUrl)
 
             binding.tvPartnerName.text = item.item.partner.name

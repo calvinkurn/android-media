@@ -6,13 +6,15 @@ package com.tokopedia.feedplus.browse.data.model
 data class WidgetRequestModel(
     val group: String,
     val sourceType: String = "",
-    val sourceId: String = ""
+    val sourceId: String = "",
+    val cursor: String = "",
 ) {
     companion object {
         val Empty = WidgetRequestModel(
             "",
             "",
-            ""
+            "",
+            "",
         )
     }
 }

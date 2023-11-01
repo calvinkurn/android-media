@@ -1,17 +1,20 @@
 package com.tokopedia.feedplus.browse.presentation.adapter
 
+import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.content.common.producttag.view.adapter.viewholder.LoadingViewHolder
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedCategoryInspirationViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.CategoryInspirationViewHolder
+import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationMap
 import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
-import com.tokopedia.feedplus.browse.presentation.model.FeedCategoryInspirationItems
+import com.tokopedia.feedplus.browse.presentation.model.LoadingModel
 import com.tokopedia.feedplus.browse.presentation.model.isEmpty
 import com.tokopedia.feedplus.browse.presentation.model.isLoading
 
@@ -20,11 +23,11 @@ import com.tokopedia.feedplus.browse.presentation.model.isLoading
  */
 internal class CategoryInspirationAdapter(
     private val chipsListener: ChipsViewHolder.Listener,
-) : ListAdapter<FeedBrowseItemListModel, RecyclerView.ViewHolder>(
-    object : DiffUtil.ItemCallback<FeedBrowseItemListModel>() {
+) : ListAdapter<Any, RecyclerView.ViewHolder>(
+    object : DiffUtil.ItemCallback<Any>() {
         override fun areItemsTheSame(
-            oldItem: FeedBrowseItemListModel,
-            newItem: FeedBrowseItemListModel
+            oldItem: Any,
+            newItem: Any
         ): Boolean {
             return when {
                 oldItem is FeedBrowseItemListModel.Chips.Item && newItem is FeedBrowseItemListModel.Chips.Item -> {
@@ -42,9 +45,10 @@ internal class CategoryInspirationAdapter(
             }
         }
 
+        @SuppressLint("DiffUtilEquals")
         override fun areContentsTheSame(
-            oldItem: FeedBrowseItemListModel,
-            newItem: FeedBrowseItemListModel
+            oldItem: Any,
+            newItem: Any
         ): Boolean {
             return oldItem == newItem
         }
@@ -60,10 +64,13 @@ internal class CategoryInspirationAdapter(
                 FeedBrowseTitleViewHolder.create(parent)
             }
             TYPE_INSPIRATION_CARD -> {
-                FeedCategoryInspirationViewHolder.Card.create(parent)
+                CategoryInspirationViewHolder.Card.create(parent)
             }
             TYPE_INSPIRATION_CARD_PLACEHOLDER -> {
-                FeedCategoryInspirationViewHolder.Placeholder.create(parent)
+                CategoryInspirationViewHolder.Placeholder.create(parent)
+            }
+            TYPE_LOADING -> {
+                LoadingViewHolder.create(parent)
             }
             else -> error("ViewType $viewType is not supported")
         }
@@ -78,7 +85,7 @@ internal class CategoryInspirationAdapter(
             holder is FeedBrowseTitleViewHolder && item is FeedBrowseItemListModel.Title -> {
                 holder.bind(item)
             }
-            holder is FeedCategoryInspirationViewHolder.Card && item is FeedBrowseItemListModel.InspirationCard.Item -> {
+            holder is CategoryInspirationViewHolder.Card && item is FeedBrowseItemListModel.InspirationCard.Item -> {
                 holder.bind(item)
             }
         }
@@ -90,19 +97,20 @@ internal class CategoryInspirationAdapter(
             is FeedBrowseItemListModel.Title -> TYPE_TITLE
             is FeedBrowseItemListModel.InspirationCard.Item -> TYPE_INSPIRATION_CARD
             is FeedBrowseItemListModel.InspirationCard.Placeholder -> TYPE_INSPIRATION_CARD_PLACEHOLDER
+            is LoadingModel -> TYPE_LOADING
             else -> error("Type $item is not supported in this page")
         }
     }
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         when (holder) {
-            is FeedCategoryInspirationViewHolder.Card -> holder.recycle()
+            is CategoryInspirationViewHolder.Card -> holder.recycle()
         }
     }
 
     fun setList(
         state: ResultState,
-        items: FeedCategoryInspirationItems,
+        items: CategoryInspirationMap,
         selectedMenuId: String,
         onCommit: () -> Unit = {}
     ) {
@@ -119,19 +127,21 @@ internal class CategoryInspirationAdapter(
         }
     }
 
-    private fun FeedCategoryInspirationItems.mapToListItems(
+    private fun CategoryInspirationMap.mapToListItems(
         selectedMenuId: String
-    ): List<FeedBrowseItemListModel> {
+    ): List<Any> {
         return buildList {
-            val isMenuEmpty = keys.isEmpty() || (keys.size == 1 && keys.first().id.isBlank())
-            val selectedMenu = keys.firstOrNull { it.id == selectedMenuId } ?: keys.firstOrNull()
-            val menuItem = get(selectedMenu) ?: return@buildList
+            val isMenuEmpty = keys.isEmpty() || (keys.size == 1 && keys.first().isBlank())
+            val selectedData = get(selectedMenuId) ?: values.firstOrNull()
+            val menuItem = selectedData?.items ?: return@buildList
 
             if (!isMenuEmpty) {
                 add(
                     FeedBrowseItemListModel.Chips.Item(
                         "",
-                        keys.toList().map { ChipsModel(it, it == selectedMenu) }
+                        entries.map {
+                            ChipsModel(it.value.menu, it.key == selectedMenuId)
+                        }
                     )
                 )
             }
@@ -145,6 +155,8 @@ internal class CategoryInspirationAdapter(
                     }
                 )
             }
+
+            if (menuItem.isLoading) { add(LoadingModel) }
         }
     }
 
@@ -165,5 +177,6 @@ internal class CategoryInspirationAdapter(
         private const val TYPE_TITLE = 1
         private const val TYPE_INSPIRATION_CARD = 2
         private const val TYPE_INSPIRATION_CARD_PLACEHOLDER = 3
+        private const val TYPE_LOADING = 4
     }
 }

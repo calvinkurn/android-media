@@ -15,7 +15,7 @@ data class ContentSlot(
     val data: List<Content> = emptyList(),
 
     @SerializedName("meta")
-    val playGetContentSlot: ContentSlotMeta = ContentSlotMeta()
+    val meta: ContentSlotMeta = ContentSlotMeta()
 )
 
 data class ContentSlotMeta(

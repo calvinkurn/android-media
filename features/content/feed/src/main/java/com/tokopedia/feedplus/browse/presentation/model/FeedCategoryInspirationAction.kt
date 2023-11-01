@@ -9,5 +9,7 @@ internal sealed interface FeedCategoryInspirationAction {
 
     object Init : FeedCategoryInspirationAction
     data class LoadData(val menu: WidgetMenuModel) : FeedCategoryInspirationAction
+
+    object LoadMoreData : FeedCategoryInspirationAction
     data class SelectMenu(val menu: WidgetMenuModel) : FeedCategoryInspirationAction
 }

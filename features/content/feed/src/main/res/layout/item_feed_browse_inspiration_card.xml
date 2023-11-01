@@ -35,6 +35,26 @@
 
         </com.tokopedia.play_common.view.RoundedFrameLayout>
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_play_widget_top_gradient"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <com.tokopedia.play.widget.ui.custom.PlayTotalWatchBadgeView
+            android:id="@+id/total_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_title"
             android:layout_width="match_parent"

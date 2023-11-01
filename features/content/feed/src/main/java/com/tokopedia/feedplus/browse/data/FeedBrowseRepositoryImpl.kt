@@ -13,6 +13,7 @@ import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemUiModel
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -67,12 +68,13 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
     override suspend fun getWidgetContentSlot(
         extraParam: WidgetRequestModel
     ): ContentSlotModel = withContext(dispatchers.io) {
+        delay(2000)
         val isWifi = connectionUtil.isEligibleForHeavyDataUsage()
         val response = playWidgetSlotUseCase(
             GetPlayWidgetSlotUseCase.Param(
                 req = GetPlayWidgetSlotUseCase.Param.Request(
                     group = extraParam.group,
-                    cursor = "",
+                    cursor = extraParam.cursor,
                     sourceId = extraParam.sourceId,
                     sourceType = extraParam.sourceType,
                     isWifi = isWifi

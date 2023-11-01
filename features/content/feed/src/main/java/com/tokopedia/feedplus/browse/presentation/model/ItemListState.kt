@@ -10,19 +10,25 @@ import kotlin.contracts.contract
 data class ItemListState<T>(
     val items: List<T>,
     val state: ResultState,
+    val nextCursor: String,
+    val hasNextPage: Boolean,
 ) {
 
     companion object {
         fun <T> init(state: ResultState): ItemListState<T> {
-            return ItemListState(emptyList(), state)
+            return ItemListState(emptyList(), state, "", true)
         }
 
         fun <T> initLoading(): ItemListState<T> {
             return init(ResultState.Loading)
         }
 
-        fun <T> initSuccess(items: List<T>): ItemListState<T> {
-            return ItemListState(items, ResultState.Success)
+        fun <T> initSuccess(
+            items: List<T>,
+            nextCursor: String = "",
+            hasNextPage: Boolean = true,
+        ): ItemListState<T> {
+            return ItemListState(items, ResultState.Success, nextCursor, hasNextPage)
         }
     }
 }

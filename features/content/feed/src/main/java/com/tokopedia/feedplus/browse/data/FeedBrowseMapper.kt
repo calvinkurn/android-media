@@ -30,7 +30,6 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetVideoUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.videoTabComponent.domain.mapper.FEED_TYPE_CHANNEL_BLOCK
-import com.tokopedia.videoTabComponent.domain.mapper.FEED_TYPE_CHANNEL_RECOM
 import com.tokopedia.videoTabComponent.domain.mapper.FEED_TYPE_TAB_MENU
 import javax.inject.Inject
 
@@ -156,7 +155,7 @@ class FeedBrowseMapper @Inject constructor() {
             FEED_TYPE_CHANNEL_BLOCK -> {
                 ChannelUiState.Data(
                     mapChannel(firstWidget),
-                    mapConfig(response.playGetContentSlot.playGetContentSlot)
+                    mapConfig(response.playGetContentSlot.meta)
                 )
             }
             else -> ChannelUiState.Error(IllegalStateException())
@@ -166,6 +165,7 @@ class FeedBrowseMapper @Inject constructor() {
     internal fun mapWidgetResponse(response: WidgetSlot): ContentSlotModel {
         val data = response.playGetContentSlot.data
         val firstWidget = data.firstOrNull()
+        val nextCursor = response.playGetContentSlot.meta.nextCursor
         return when (firstWidget?.type) {
             FEED_TYPE_TAB_MENU -> {
                 ContentSlotModel.TabMenus(
@@ -181,9 +181,11 @@ class FeedBrowseMapper @Inject constructor() {
                 )
             }
             FEED_TYPE_CHANNEL_BLOCK -> {
-                ContentSlotModel.ChannelBlock(mapChannel(firstWidget))
+                ContentSlotModel.ChannelBlock(mapChannel(firstWidget), nextCursor)
             }
-            else -> error("Type ${firstWidget?.type} is not currently supported")
+            else -> {
+                ContentSlotModel.NoData(nextCursor)
+            }
         }
     }
 

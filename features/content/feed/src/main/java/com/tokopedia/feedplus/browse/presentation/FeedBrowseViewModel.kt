@@ -183,6 +183,7 @@ internal class FeedBrowseViewModel @Inject constructor(
                         }
                     }
                 }
+                is ContentSlotModel.NoData -> { this }
             }
         } catch (e: IllegalStateException) { this }
     }

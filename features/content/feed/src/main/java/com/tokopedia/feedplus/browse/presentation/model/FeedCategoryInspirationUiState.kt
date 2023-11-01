@@ -7,10 +7,14 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 /**
  * Created by kenny.hadisaputra on 31/10/23
  */
-internal typealias FeedCategoryInspirationItems = Map<WidgetMenuModel, ItemListState<PlayWidgetChannelUiModel>>
+internal data class CategoryInspirationData(
+    val menu: WidgetMenuModel,
+    val items: ItemListState<PlayWidgetChannelUiModel>,
+)
+internal typealias CategoryInspirationMap = Map<String, CategoryInspirationData>
 internal data class FeedCategoryInspirationUiState(
     val title: String,
-    val items: FeedCategoryInspirationItems,
+    val items: CategoryInspirationMap,
     val selectedMenuId: String,
     val state: ResultState,
 ) {

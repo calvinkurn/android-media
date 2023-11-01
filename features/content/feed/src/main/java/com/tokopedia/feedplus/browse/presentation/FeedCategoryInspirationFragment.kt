@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.browse.presentation
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
@@ -52,6 +54,18 @@ class FeedCategoryInspirationFragment @Inject constructor(
             chip: WidgetMenuModel
         ) {
             viewModel.onAction(FeedCategoryInspirationAction.LoadData(chip))
+        }
+    }
+
+    private val loadMoreListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
+
+            val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+            if (lastVisibleItemPosition >= adapter.itemCount - 2) {
+                Log.d("CategoryInspiration", "LoadMoreData")
+                viewModel.onAction(FeedCategoryInspirationAction.LoadMoreData)
+            }
         }
     }
 
@@ -104,6 +118,7 @@ class FeedCategoryInspirationFragment @Inject constructor(
                 layoutManager.spanCount
             )
         )
+        binding.rvCategoryInspiration.addOnScrollListener(loadMoreListener)
         binding.rvCategoryInspiration.adapter = adapter
     }
 

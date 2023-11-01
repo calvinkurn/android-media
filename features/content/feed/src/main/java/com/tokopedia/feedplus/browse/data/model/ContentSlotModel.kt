@@ -12,6 +12,13 @@ internal sealed interface ContentSlotModel {
     ) : ContentSlotModel
 
     data class ChannelBlock(
-        val channels: List<PlayWidgetChannelUiModel>
-    ) : ContentSlotModel
+        val channels: List<PlayWidgetChannelUiModel>,
+        val nextCursor: String,
+    ) : ContentSlotModel {
+        val hasNextPage: Boolean = nextCursor.isNotBlank()
+    }
+
+    data class NoData(val nextCursor: String) : ContentSlotModel {
+        val hasNextPage: Boolean = nextCursor.isNotBlank()
+    }
 }
