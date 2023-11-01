@@ -17,8 +17,8 @@ import com.tokopedia.wishlist.collection.util.WishlistCollectionConsts.TYPE_COLL
 import com.tokopedia.wishlist.collection.util.WishlistCollectionConsts.TYPE_COLLECTION_PUBLIC_SELF
 import com.tokopedia.wishlist.collection.util.WishlistCollectionConsts.TYPE_COLLECTION_SHARE
 import com.tokopedia.wishlist.collection.util.WishlistCollectionConsts.TYPE_COLLECTION_TICKER
-import com.tokopedia.wishlist.detail.data.model.WishlistV2RecommendationDataModel
-import com.tokopedia.wishlist.detail.util.WishlistV2Consts
+import com.tokopedia.wishlist.detail.data.model.WishlistRecommendationDataModel
+import com.tokopedia.wishlist.detail.util.WishlistConsts
 
 object WishlistCollectionUtils {
     fun isAffiliateTickerEnabled() = RemoteConfigInstance.getInstance().abTestPlatform.getString(
@@ -28,7 +28,7 @@ object WishlistCollectionUtils {
 
     fun mapCollection(
             data: GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData,
-            recomm: WishlistV2RecommendationDataModel
+            recomm: WishlistRecommendationDataModel
     ): List<WishlistCollectionTypeLayoutData> {
         val listCollection = arrayListOf<WishlistCollectionTypeLayoutData>()
         if ((data.ticker.title.isNotEmpty() && data.ticker.description.isNotEmpty()) || isAffiliateTickerEnabled()) {
@@ -64,7 +64,7 @@ object WishlistCollectionUtils {
             listCollection.add(
                 WishlistCollectionTypeLayoutData(
                     recomm.title,
-                        WishlistV2Consts.TYPE_RECOMMENDATION_TITLE
+                        WishlistConsts.TYPE_RECOMMENDATION_TITLE
                 )
             )
             recomm.recommendationProductCardModelData.forEachIndexed { index, productCardModel ->
@@ -72,7 +72,7 @@ object WishlistCollectionUtils {
                     listCollection.add(
                         WishlistCollectionTypeLayoutData(
                             productCardModel,
-                                WishlistV2Consts.TYPE_RECOMMENDATION_LIST,
+                                WishlistConsts.TYPE_RECOMMENDATION_LIST,
                             recommItem = recomm.listRecommendationItem[index]
                         )
                     )
@@ -86,7 +86,7 @@ object WishlistCollectionUtils {
     private fun mapToEmptyState(
             collectionEmptyState: GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.EmptyState,
             listData: ArrayList<WishlistCollectionTypeLayoutData>,
-            recomm: WishlistV2RecommendationDataModel
+            recomm: WishlistRecommendationDataModel
     ): ArrayList<WishlistCollectionTypeLayoutData> {
         listData.add(
             WishlistCollectionTypeLayoutData(
@@ -98,7 +98,7 @@ object WishlistCollectionUtils {
         listData.add(
             WishlistCollectionTypeLayoutData(
                 recomm.title,
-                    WishlistV2Consts.TYPE_RECOMMENDATION_TITLE
+                    WishlistConsts.TYPE_RECOMMENDATION_TITLE
             )
         )
         recomm.recommendationProductCardModelData.forEachIndexed { index, productCardModel ->
@@ -106,7 +106,7 @@ object WishlistCollectionUtils {
                 listData.add(
                     WishlistCollectionTypeLayoutData(
                         productCardModel,
-                            WishlistV2Consts.TYPE_RECOMMENDATION_LIST,
+                            WishlistConsts.TYPE_RECOMMENDATION_LIST,
                         recommItem = recomm.listRecommendationItem[index]
                     )
                 )

@@ -19,8 +19,8 @@ import com.tokopedia.wishlist.runWishlistCollectionDetailBot
 import com.tokopedia.wishlist.detail.util.WishlistIdlingResource
 import com.tokopedia.wishlist.util.adapter
 import com.tokopedia.wishlist.util.setupRemoteConfig
-import com.tokopedia.wishlist.detail.view.adapter.WishlistV2Adapter
-import com.tokopedia.wishlist.detail.view.adapter.viewholder.WishlistV2RecommendationCarouselViewHolder
+import com.tokopedia.wishlist.detail.view.adapter.WishlistAdapter
+import com.tokopedia.wishlist.detail.view.adapter.viewholder.WishlistRecommendationCarouselViewHolder
 import com.tokopedia.wishlist.detail.view.activity.WishlistCollectionDetailActivity
 import org.junit.After
 import org.junit.Before
@@ -80,7 +80,7 @@ class WishlistCollectionDetailTopAdsVerificationTest {
                     )
                 ) {
                     val recommendationItems = wishlistRecyclerView
-                        .adapter<WishlistV2Adapter>()
+                        .adapter<WishlistAdapter>()
                         .getRecommendationDataAtIndex(wishlistIndex)
                         .recommendationProductCardModelData
 
@@ -104,6 +104,6 @@ class WishlistCollectionDetailTopAdsVerificationTest {
     }
 
     private fun isRecommendationCarousel(viewHolder: RecyclerView.ViewHolder?): Boolean {
-        return viewHolder is WishlistV2RecommendationCarouselViewHolder
+        return viewHolder is WishlistRecommendationCarouselViewHolder
     }
 }

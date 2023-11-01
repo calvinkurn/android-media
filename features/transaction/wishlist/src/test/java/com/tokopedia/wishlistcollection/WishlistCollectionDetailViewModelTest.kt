@@ -21,15 +21,15 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.detail.data.model.WishlistV2BulkRemoveAdditionalParams
-import com.tokopedia.wishlist.detail.data.model.WishlistV2RecommendationDataModel
-import com.tokopedia.wishlist.detail.data.model.WishlistV2TypeLayoutData
-import com.tokopedia.wishlist.detail.data.model.WishlistV2UiModel
+import com.tokopedia.wishlist.detail.data.model.WishlistBulkRemoveAdditionalParams
+import com.tokopedia.wishlist.detail.data.model.WishlistRecommendationDataModel
+import com.tokopedia.wishlist.detail.data.model.WishlistTypeLayoutData
+import com.tokopedia.wishlist.detail.data.model.WishlistUiModel
 import com.tokopedia.wishlist.detail.data.model.response.BulkDeleteWishlistV2Response
 import com.tokopedia.wishlist.detail.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.detail.domain.BulkDeleteWishlistV2UseCase
 import com.tokopedia.wishlist.detail.domain.DeleteWishlistProgressUseCase
-import com.tokopedia.wishlist.detail.util.WishlistV2Consts
+import com.tokopedia.wishlist.detail.util.WishlistConsts
 import com.tokopedia.wishlist.collection.data.params.AddWishlistBulkParams
 import com.tokopedia.wishlist.collection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlist.collection.data.params.GetWishlistCollectionItemsParams
@@ -47,7 +47,7 @@ import com.tokopedia.wishlist.collection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlist.collection.domain.GetWishlistCollectionItemsUseCase
 import com.tokopedia.wishlist.collection.domain.GetWishlistCollectionSharingDataUseCase
 import com.tokopedia.wishlist.collection.domain.GetWishlistCollectionTypeUseCase
-import com.tokopedia.wishlist.collection.view.viewmodel.WishlistCollectionDetailViewModel
+import com.tokopedia.wishlist.detail.view.viewmodel.WishlistCollectionDetailViewModel
 import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
@@ -258,7 +258,7 @@ class WishlistCollectionDetailViewModelTest {
     private val throwable = Fail(Throwable(message = "Error"))
 
     private val getWishlistCollectionItemsParams = GetWishlistCollectionItemsParams()
-    private val typeLayout = WishlistV2Consts.TYPE_GRID
+    private val typeLayout = WishlistConsts.TYPE_GRID
 
     private var topAdsImageViewModel = TopAdsImageViewModel()
     private val productCardModel1 = ProductCardModel(
@@ -304,7 +304,7 @@ class WishlistCollectionDetailViewModelTest {
     val recommItem2 = RecommendationItem(name = "recomm2", badgesUrl = badgesUrl, labelGroupList = listRecommLabel)
     val recommItem3 = RecommendationItem(name = "recomm3", badgesUrl = badgesUrl, labelGroupList = listRecommLabel)
     private val listRecommendationItem = listOf(recommItem1, recommItem2, recommItem3)
-    private val wishlistRecommendation = WishlistV2RecommendationDataModel(listProductCardModel, listRecommendationItem, "TitleRecommendation")
+    private val wishlistRecommendation = WishlistRecommendationDataModel(listProductCardModel, listRecommendationItem, "TitleRecommendation")
     private val recommendationWidget = RecommendationWidget(
         tid = "123",
         recommendationItemList = listRecommendationItem,
@@ -579,7 +579,7 @@ class WishlistCollectionDetailViewModelTest {
         wishlistCollectionDetailViewModel.loadRecommendation(0)
 
         // then
-        assert(wishlistCollectionDetailViewModel.collectionData.value is Success<List<WishlistV2TypeLayoutData>>)
+        assert(wishlistCollectionDetailViewModel.collectionData.value is Success<List<WishlistTypeLayoutData>>)
     }
 
     @Test
@@ -644,7 +644,7 @@ class WishlistCollectionDetailViewModelTest {
         } returns Success(bulkDeleteResult)
 
         // when
-        wishlistCollectionDetailViewModel.bulkDeleteWishlistV2(listOf(), "", 0, WishlistV2BulkRemoveAdditionalParams(), "")
+        wishlistCollectionDetailViewModel.bulkDeleteWishlistV2(listOf(), "", 0, WishlistBulkRemoveAdditionalParams(), "")
 
         // then
         assert(wishlistCollectionDetailViewModel.bulkDeleteWishlistV2Result.value is Success)
@@ -659,7 +659,7 @@ class WishlistCollectionDetailViewModelTest {
         } returns Fail(Exception())
 
         // when
-        wishlistCollectionDetailViewModel.bulkDeleteWishlistV2(listOf(), "", 0, WishlistV2BulkRemoveAdditionalParams(), "")
+        wishlistCollectionDetailViewModel.bulkDeleteWishlistV2(listOf(), "", 0, WishlistBulkRemoveAdditionalParams(), "")
 
         // then
         assert(wishlistCollectionDetailViewModel.bulkDeleteWishlistV2Result.value is Fail)
@@ -1435,8 +1435,8 @@ class WishlistCollectionDetailViewModelTest {
     @Test
     fun `integration test affiliate cookie sdk from atc`() {
         val productId = "2"
-        val wishlistItem = WishlistV2UiModel.Item(
-            shop = WishlistV2UiModel.Item.Shop(id = "1"),
+        val wishlistItem = WishlistUiModel.Item(
+            shop = WishlistUiModel.Item.Shop(id = "1"),
             id = productId
         )
 
@@ -1468,8 +1468,8 @@ class WishlistCollectionDetailViewModelTest {
     @Test
     fun `when init affiliate cookie from atc throw, no op`() {
         val productId = "2"
-        val wishlistItem = WishlistV2UiModel.Item(
-            shop = WishlistV2UiModel.Item.Shop(id = "1"),
+        val wishlistItem = WishlistUiModel.Item(
+            shop = WishlistUiModel.Item.Shop(id = "1"),
             id = productId
         )
 

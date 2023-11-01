@@ -11,7 +11,7 @@ import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.detail.util.WishlistV2LayoutPreference
+import com.tokopedia.wishlist.detail.util.WishlistLayoutPreference
 import dagger.Module
 import dagger.Provides
 
@@ -33,7 +33,7 @@ class WishlistCollectionModule(private val activity: Activity) {
 
     @ActivityScope
     @Provides
-    fun providePreference(@ApplicationContext context: Context): WishlistV2LayoutPreference = WishlistV2LayoutPreference(context)
+    fun providePreference(@ApplicationContext context: Context): WishlistLayoutPreference = WishlistLayoutPreference(context)
 
     @Provides
     @ActivityScope

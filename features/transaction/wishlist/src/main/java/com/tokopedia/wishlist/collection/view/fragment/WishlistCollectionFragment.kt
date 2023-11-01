@@ -53,9 +53,9 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.detail.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.databinding.FragmentCollectionWishlistBinding
-import com.tokopedia.wishlist.detail.util.WishlistV2Analytics
-import com.tokopedia.wishlist.detail.util.WishlistV2Consts.EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
-import com.tokopedia.wishlist.detail.view.adapter.WishlistV2Adapter.Companion.LAYOUT_RECOMMENDATION_TITLE
+import com.tokopedia.wishlist.detail.util.WishlistAnalytics
+import com.tokopedia.wishlist.detail.util.WishlistConsts.EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
+import com.tokopedia.wishlist.detail.view.adapter.WishlistAdapter.Companion.LAYOUT_RECOMMENDATION_TITLE
 import com.tokopedia.wishlist.collection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlist.collection.data.model.WishlistCollectionCarouselEmptyStateData
 import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
@@ -1107,11 +1107,11 @@ class WishlistCollectionFragment :
                 recommendationItem.imageUrl
             )
         }
-        WishlistV2Analytics.impressionEmptyWishlistRecommendation(trackingQueue, recommendationItem, position)
+        WishlistAnalytics.impressionEmptyWishlistRecommendation(trackingQueue, recommendationItem, position)
     }
 
     override fun onRecommendationItemClick(recommendationItem: RecommendationItem, position: Int) {
-        WishlistV2Analytics.clickRecommendationItem(recommendationItem, position, userSession.userId)
+        WishlistAnalytics.clickRecommendationItem(recommendationItem, position, userSession.userId)
         if (recommendationItem.isTopAds) {
             TopAdsUrlHitter(context).hitClickUrl(
                 this::class.java.simpleName,

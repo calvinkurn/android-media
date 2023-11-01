@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.wishlist.detail.data.model.response.WishlistV2Response
-import com.tokopedia.wishlist.detail.util.WishlistV2Consts.PARAMS
+import com.tokopedia.wishlist.detail.util.WishlistConsts.PARAMS
 import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import javax.inject.Inject
 

@@ -15,8 +15,8 @@ import com.tokopedia.wishlist.databinding.WishlistCollectionDividerItemBinding
 import com.tokopedia.wishlist.databinding.WishlistCollectionEmptyStateCarouselBinding
 import com.tokopedia.wishlist.databinding.WishlistV2RecommendationItemBinding
 import com.tokopedia.wishlist.databinding.WishlistV2RecommendationTitleItemBinding
-import com.tokopedia.wishlist.detail.util.WishlistV2Consts
-import com.tokopedia.wishlist.detail.view.adapter.WishlistV2Adapter
+import com.tokopedia.wishlist.detail.util.WishlistConsts
+import com.tokopedia.wishlist.detail.view.adapter.WishlistAdapter
 import com.tokopedia.wishlist.collection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlist.collection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlist.collection.util.WishlistCollectionConsts.TYPE_COLLECTION_CREATE
@@ -132,7 +132,7 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
                 )
                 WishlistCollectionEmptyStateCarouselViewHolder(binding, actionListener)
             }
-            WishlistV2Adapter.LAYOUT_RECOMMENDATION_TITLE -> {
+            WishlistAdapter.LAYOUT_RECOMMENDATION_TITLE -> {
                 val binding = WishlistV2RecommendationTitleItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -140,7 +140,7 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
                 )
                 WishlistCollectionRecommendationTitleViewHolder(binding, false)
             }
-            WishlistV2Adapter.LAYOUT_RECOMMENDATION_LIST -> {
+            WishlistAdapter.LAYOUT_RECOMMENDATION_LIST -> {
                 val binding = WishlistV2RecommendationItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -184,13 +184,13 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
                         holder.itemView
                     )
                 }
-                WishlistV2Consts.TYPE_RECOMMENDATION_LIST -> {
+                WishlistConsts.TYPE_RECOMMENDATION_LIST -> {
                     (holder as WishlistCollectionRecommendationItemViewHolder).bind(
                         element,
                         holder.adapterPosition
                     )
                 }
-                WishlistV2Consts.TYPE_RECOMMENDATION_TITLE -> {
+                WishlistConsts.TYPE_RECOMMENDATION_TITLE -> {
                     (holder as WishlistCollectionRecommendationTitleViewHolder).bind(element)
                 }
                 TYPE_COLLECTION_EMPTY_CAROUSEL -> {
@@ -213,8 +213,8 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
             TYPE_COLLECTION_ITEM -> LAYOUT_COLLECTION_ITEM
             TYPE_COLLECTION_CREATE -> LAYOUT_CREATE_COLLECTION
             TYPE_COLLECTION_EMPTY_CAROUSEL -> LAYOUT_EMPTY_COLLECTION
-            WishlistV2Consts.TYPE_RECOMMENDATION_LIST -> WishlistV2Adapter.LAYOUT_RECOMMENDATION_LIST
-            WishlistV2Consts.TYPE_RECOMMENDATION_TITLE -> WishlistV2Adapter.LAYOUT_RECOMMENDATION_TITLE
+            WishlistConsts.TYPE_RECOMMENDATION_LIST -> WishlistAdapter.LAYOUT_RECOMMENDATION_LIST
+            WishlistConsts.TYPE_RECOMMENDATION_TITLE -> WishlistAdapter.LAYOUT_RECOMMENDATION_TITLE
             TYPE_COLLECTION_DIVIDER -> LAYOUT_DIVIDER
             TYPE_COLLECTION_LOADER -> LAYOUT_LOADER
             else -> throw IllegalArgumentException("Invalid view type")

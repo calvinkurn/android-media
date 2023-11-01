@@ -11,12 +11,12 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.detail.data.model.WishlistV2RecommendationDataModel
+import com.tokopedia.wishlist.detail.data.model.WishlistRecommendationDataModel
 import com.tokopedia.wishlist.detail.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.detail.domain.DeleteWishlistProgressUseCase
 import com.tokopedia.wishlist.detail.util.WishlistIdlingResource
-import com.tokopedia.wishlist.detail.util.WishlistV2Consts
-import com.tokopedia.wishlist.detail.util.WishlistV2Utils
+import com.tokopedia.wishlist.detail.util.WishlistConsts
+import com.tokopedia.wishlist.detail.util.WishlistUtils
 import com.tokopedia.wishlist.collection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
 import com.tokopedia.wishlist.collection.data.response.AffiliateUserDetailOnBoardingBottomSheetResponse
@@ -128,7 +128,7 @@ class WishlistCollectionViewModel @Inject constructor(
         page: Int,
         productIds: List<String>,
         pageName: String
-    ): WishlistV2RecommendationDataModel {
+    ): WishlistRecommendationDataModel {
         val recommendation = singleRecommendationUseCase.getData(
             GetRecommendationRequestParam(
                 pageNumber = page,
@@ -136,8 +136,8 @@ class WishlistCollectionViewModel @Inject constructor(
                 pageName = pageName
             )
         )
-        return WishlistV2RecommendationDataModel(
-            WishlistV2Utils.convertRecommendationIntoProductDataModel(recommendation.recommendationItemList),
+        return WishlistRecommendationDataModel(
+            WishlistUtils.convertRecommendationIntoProductDataModel(recommendation.recommendationItemList),
             recommendation.recommendationItemList,
             recommendation.title
         )
@@ -157,7 +157,7 @@ class WishlistCollectionViewModel @Inject constructor(
                     listData.add(
                         WishlistCollectionTypeLayoutData(
                             item,
-                            WishlistV2Consts.TYPE_RECOMMENDATION_LIST
+                            WishlistConsts.TYPE_RECOMMENDATION_LIST
                         )
                     )
                 }

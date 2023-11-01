@@ -12,9 +12,9 @@ import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.databinding.CollectionWishlistItemBinding
-import com.tokopedia.wishlist.detail.util.WishlistV2Consts.SPEC_0
-import com.tokopedia.wishlist.detail.util.WishlistV2Consts.SPEC_2
-import com.tokopedia.wishlist.detail.util.WishlistV2Utils
+import com.tokopedia.wishlist.detail.util.WishlistConsts.SPEC_0
+import com.tokopedia.wishlist.detail.util.WishlistConsts.SPEC_2
+import com.tokopedia.wishlist.detail.util.WishlistUtils
 import com.tokopedia.wishlist.collection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlist.collection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlist.collection.util.WishlistCollectionUtils.clickWithDebounce
@@ -84,7 +84,7 @@ class WishlistCollectionItemViewHolder(
                             GridLayout.LayoutParams(binding.imgCollection1.layoutParams)
                         params1.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
                         params1.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
-                        params1.setMargins(0, 0, WishlistV2Utils.toDp(1.5), WishlistV2Utils.toDp(1.5))
+                        params1.setMargins(0, 0, WishlistUtils.toDp(1.5), WishlistUtils.toDp(1.5))
                         binding.imgCollection1.apply {
                             visible()
                             layoutParams = params1
@@ -100,7 +100,7 @@ class WishlistCollectionItemViewHolder(
                             GridLayout.LayoutParams(binding.imgCollection2.layoutParams)
                         params2.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
                         params2.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
-                        params2.setMargins(WishlistV2Utils.toDp(1.5), 0, 0, WishlistV2Utils.toDp(1.5))
+                        params2.setMargins(WishlistUtils.toDp(1.5), 0, 0, WishlistUtils.toDp(1.5))
                         binding.imgCollection2.apply {
                             visible()
                             layoutParams = params2
@@ -116,7 +116,7 @@ class WishlistCollectionItemViewHolder(
                             GridLayout.LayoutParams(binding.imgCollection3.layoutParams)
                         params3.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
                         params3.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
-                        params3.setMargins(WishlistV2Utils.toDp(1.5), WishlistV2Utils.toDp(1.5), WishlistV2Utils.toDp(1.5), 0)
+                        params3.setMargins(WishlistUtils.toDp(1.5), WishlistUtils.toDp(1.5), WishlistUtils.toDp(1.5), 0)
                         binding.imgCollection3.apply {
                             visible()
                             layoutParams = params3
@@ -132,7 +132,7 @@ class WishlistCollectionItemViewHolder(
                             GridLayout.LayoutParams(binding.imgCollection4.layoutParams)
                         params4.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
                         params4.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
-                        params4.setMargins(WishlistV2Utils.toDp(1.5), WishlistV2Utils.toDp(1.5), WishlistV2Utils.toDp(1.5), 0)
+                        params4.setMargins(WishlistUtils.toDp(1.5), WishlistUtils.toDp(1.5), WishlistUtils.toDp(1.5), 0)
                         binding.imgCollection4.apply {
                             visible()
                             layoutParams = params4
@@ -152,7 +152,7 @@ class WishlistCollectionItemViewHolder(
                             GridLayout.LayoutParams(binding.imgCollection1.layoutParams)
                         params1.rowSpec = GridLayout.spec(SPEC_0, SPEC_2, 1.0F)
                         params1.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
-                        params1.setMargins(0, 0, WishlistV2Utils.toDp(3), 0)
+                        params1.setMargins(0, 0, WishlistUtils.toDp(3), 0)
                         binding.imgCollection1.apply {
                             visible()
                             layoutParams = params1
@@ -168,7 +168,7 @@ class WishlistCollectionItemViewHolder(
                             GridLayout.LayoutParams(binding.imgCollection2.layoutParams)
                         params2.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
                         params2.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
-                        params2.setMargins(0, 0, 0, WishlistV2Utils.toDp(3))
+                        params2.setMargins(0, 0, 0, WishlistUtils.toDp(3))
                         binding.imgCollection2.apply {
                             visible()
                             layoutParams = params2
@@ -204,7 +204,7 @@ class WishlistCollectionItemViewHolder(
                             GridLayout.LayoutParams(binding.imgCollection1.layoutParams)
                         params1.rowSpec = GridLayout.spec(SPEC_0, SPEC_2, 1.0F)
                         params1.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
-                        params1.setMargins(0, 0, WishlistV2Utils.toDp(3), 0)
+                        params1.setMargins(0, 0, WishlistUtils.toDp(3), 0)
                         binding.imgCollection1.apply {
                             visible()
                             layoutParams = params1

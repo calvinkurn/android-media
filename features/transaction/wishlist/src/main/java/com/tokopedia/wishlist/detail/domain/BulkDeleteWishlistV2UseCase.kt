@@ -7,9 +7,9 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.detail.data.model.WishlistV2BulkRemoveAdditionalParams
+import com.tokopedia.wishlist.detail.data.model.WishlistBulkRemoveAdditionalParams
 import com.tokopedia.wishlist.detail.data.model.response.BulkDeleteWishlistV2Response
-import com.tokopedia.wishlist.detail.util.WishlistV2Consts
+import com.tokopedia.wishlist.detail.util.WishlistConsts
 import javax.inject.Inject
 
 class BulkDeleteWishlistV2UseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) {
@@ -17,7 +17,7 @@ class BulkDeleteWishlistV2UseCase @Inject constructor(@ApplicationContext privat
             productId: List<String>,
             userId: String,
             mode: Int,
-            additionalParams: WishlistV2BulkRemoveAdditionalParams,
+            additionalParams: WishlistBulkRemoveAdditionalParams,
             source: String
     ): Result<BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2> {
         return try {
@@ -38,18 +38,18 @@ class BulkDeleteWishlistV2UseCase @Inject constructor(@ApplicationContext privat
             productId: List<String>,
             userId: String,
             mode: Int,
-            additionalParams: WishlistV2BulkRemoveAdditionalParams,
+            additionalParams: WishlistBulkRemoveAdditionalParams,
             source: String
     ): MutableMap<String, Any> {
         val params = mutableMapOf(
-            WishlistV2Consts.PRODUCT_ID to productId,
-            WishlistV2Consts.USER_ID to userId,
-            WishlistV2Consts.MODE to mode,
-            WishlistV2Consts.SOURCE to source
+            WishlistConsts.PRODUCT_ID to productId,
+            WishlistConsts.USER_ID to userId,
+            WishlistConsts.MODE to mode,
+            WishlistConsts.SOURCE to source
         )
 
         if (mode == 2) {
-            params[WishlistV2Consts.ADDITIONAL_PARAMS] = additionalParams
+            params[WishlistConsts.ADDITIONAL_PARAMS] = additionalParams
         }
         return params
     }

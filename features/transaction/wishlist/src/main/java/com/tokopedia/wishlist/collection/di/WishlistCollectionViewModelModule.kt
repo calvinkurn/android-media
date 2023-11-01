@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.wishlist.collection.view.viewmodel.BottomSheetAddCollectionViewModel
 import com.tokopedia.wishlist.collection.view.viewmodel.BottomSheetCreateNewCollectionViewModel
 import com.tokopedia.wishlist.collection.view.viewmodel.BottomSheetUpdateWishlistCollectionNameViewModel
-import com.tokopedia.wishlist.collection.view.viewmodel.WishlistCollectionDetailViewModel
+import com.tokopedia.wishlist.detail.view.viewmodel.WishlistCollectionDetailViewModel
 import com.tokopedia.wishlist.collection.view.viewmodel.WishlistCollectionEditViewModel
 import com.tokopedia.wishlist.collection.view.viewmodel.WishlistCollectionViewModel
 import dagger.Binds

@@ -5,7 +5,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.databinding.CollectionWishlistCreateItemBinding
-import com.tokopedia.wishlist.detail.util.WishlistV2Consts.CREATE_NEW_COLLECTION_BG_IMAGE
+import com.tokopedia.wishlist.detail.util.WishlistConsts.CREATE_NEW_COLLECTION_BG_IMAGE
 import com.tokopedia.wishlist.collection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlist.collection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlist.collection.data.response.GetWishlistCollectionResponse

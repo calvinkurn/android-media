@@ -3,7 +3,7 @@ package com.tokopedia.wishlist.collection.analytics
 import android.os.Bundle
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
-import com.tokopedia.wishlist.detail.data.model.WishlistV2UiModel
+import com.tokopedia.wishlist.detail.data.model.WishlistUiModel
 
 object WishlistCollectionAnalytics {
 
@@ -511,7 +511,7 @@ object WishlistCollectionAnalytics {
             .send()
     }
 
-    fun sendClickProductCardOnWishlistPageEvent(collectionId: String, wishlistItem: WishlistV2UiModel.Item, userId: String, position: Int) {
+    fun sendClickProductCardOnWishlistPageEvent(collectionId: String, wishlistItem: WishlistUiModel.Item, userId: String, position: Int) {
         val arrayWishlistItems = arrayListOf<Bundle>()
         val bundleProduct = Bundle().apply {
             putString(DIMENSION_38, "")
@@ -544,7 +544,7 @@ object WishlistCollectionAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
-    fun sendViewProductCardOnWishlistPageEvent(wishlistItem: WishlistV2UiModel.Item, userId: String, position: String) {
+    fun sendViewProductCardOnWishlistPageEvent(wishlistItem: WishlistUiModel.Item, userId: String, position: String) {
         val arrayWishlistItems = arrayListOf<Bundle>()
         val bundleProduct = Bundle().apply {
             putString(DIMENSION_38, "")
@@ -578,7 +578,7 @@ object WishlistCollectionAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, bundle)
     }
 
-    fun sendClickAddToCartOnWishlistPageEvent(collectionId: String, wishlistItem: WishlistV2UiModel.Item, userId: String, position: Int, cartId: String) {
+    fun sendClickAddToCartOnWishlistPageEvent(collectionId: String, wishlistItem: WishlistUiModel.Item, userId: String, position: Int, cartId: String) {
         val arrayWishlistItems = arrayListOf<Bundle>()
         val bundleProduct = Bundle().apply {
             putString(CATEGORY_ID, "")
