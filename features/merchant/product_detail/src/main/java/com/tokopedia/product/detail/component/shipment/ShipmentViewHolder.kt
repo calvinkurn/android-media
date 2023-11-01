@@ -9,15 +9,14 @@ import androidx.viewbinding.ViewBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.databinding.ItemShipmentBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentErrorBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentFailedBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentInfoBinding
+import com.tokopedia.product.detail.databinding.ViewShipmentLoadingBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentPlusBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentSuccessBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -38,13 +37,18 @@ class ShipmentViewHolder(
     private val context = view.context
     private val binding = ItemShipmentBinding.bind(view)
 
-    private val viewSuccess = ShipmentView(binding.pdpShipmentStateSuccess)
-    private val viewError = ShipmentView(binding.pdpShipmentStateError)
-    private val viewLoading = ShipmentView(binding.pdpShipmentStateLoading)
-    private val viewFailed = ShipmentView(binding.pdpShipmentStateFailed)
+    private val viewSuccess =
+        ShipmentView(binding.pdpShipmentStateSuccess) { ViewShipmentSuccessBinding.bind(it) }
+    private val viewError =
+        ShipmentView(binding.pdpShipmentStateError) { ViewShipmentErrorBinding.bind(it) }
+    private val viewLoading =
+        ShipmentView(binding.pdpShipmentStateLoading) { ViewShipmentLoadingBinding.bind(it) }
+    private val viewFailed =
+        ShipmentView(binding.pdpShipmentStateFailed) { ViewShipmentFailedBinding.bind(it) }
 
-    private var viewPlus:ShipmentView? = null
-    private var viewBindingPlus: ViewShipmentPlusBinding? = null
+    private val viewPlus: ShipmentView<ViewShipmentPlusBinding> by lazy {
+        ShipmentView(viewSuccess.binding.pdpShipmentPlus) { ViewShipmentPlusBinding.bind(it) }
+    }
 
     override fun bind(element: ShipmentUiModel) {
         val componentTrackDataModel = getComponentTrackData(element)
@@ -61,7 +65,7 @@ class ShipmentViewHolder(
     }
 
     private fun ShipmentUiModel.Success.render(componentTrackDataModel: ComponentTrackDataModel) {
-        ViewShipmentSuccessBinding.bind(viewSuccess.view).apply(this, componentTrackDataModel)
+        viewSuccess.binding.apply(this, componentTrackDataModel)
 
         viewSuccess.show()
         viewError.hide()
@@ -165,15 +169,7 @@ class ShipmentViewHolder(
             }
         }
 
-
-//        if(viewBindingPlus == null){
-//            val viewPlus = viewPlus ?: ShipmentView(pdpShipmentPlus)
-//            this@ShipmentViewHolder.viewPlus = viewPlus
-//
-//            val viewBindingPlus = ViewShipmentPlusBinding.bind(viewPlus.view)
-//            this@ShipmentViewHolder.viewBindingPlus = viewBindingPlus
-//        }
-//        renderShipmentPlus( data.shipmentPlus, componentTrackDataModel)
+        renderShipmentPlus(data.shipmentPlus, componentTrackDataModel)
     }
 
     private fun renderShipmentPlus(
@@ -181,9 +177,7 @@ class ShipmentViewHolder(
         componentTrackDataModel: ComponentTrackDataModel
     ) {
         if (shipmentPlus.isShow) {
-            val viewShipmentPlus = viewBindingPlus ?: return
-
-            with(viewShipmentPlus) {
+            with(viewPlus.binding) {
                 pdpShipmentPlusBackground.loadImage(shipmentPlus.getBackgroundUrl(context))
                 pdpShipmentPlusLogo.loadImage(shipmentPlus.getLogoUrl(context))
                 pdpShipmentPlusText.text = HtmlLinkHelper(context, shipmentPlus.text).spannedString
@@ -262,11 +256,16 @@ class ShipmentViewHolder(
         }
     }
 
-    data class ShipmentView(
-        val viewStub: ViewStub
+    data class ShipmentView<T : ViewBinding>(
+        val viewStub: ViewStub,
+        private val inflater: (View) -> T
     ) {
         private val inflateDelegate = lazy { viewStub.inflate() }
         val view: View by inflateDelegate
+
+        val binding: T by lazy {
+            inflater.invoke(view)
+        }
 
         fun hide() {
             if (inflateDelegate.isInitialized()) view.hide()
