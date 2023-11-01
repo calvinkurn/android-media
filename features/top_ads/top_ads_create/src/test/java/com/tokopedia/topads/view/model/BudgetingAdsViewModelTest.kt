@@ -10,6 +10,8 @@ import com.tokopedia.topads.common.data.response.ResponseBidInfo
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.usecase.SuggestionKeywordUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsImpressionPredictionSearchUseCase
+import com.tokopedia.topads.domain.usecase.TopAdsGetBidSuggestionByProductIDsUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.every
 import io.mockk.mockk
@@ -37,6 +39,8 @@ class BudgetingAdsViewModelTest {
     private lateinit var context: Context
     private val bidInfoUseCase: BidInfoUseCase = mockk(relaxed = true)
     private val bidInfoUseCaseDefault: BidInfoUseCase = mockk(relaxed = true)
+    private val topAdsGetBidSuggestionByProductIDsUseCase: TopAdsGetBidSuggestionByProductIDsUseCase = mockk(relaxed = true)
+    private val topAdsImpressionPredictionUseCase: TopAdsImpressionPredictionSearchUseCase = mockk(relaxed = true)
     private val suggestionKeywordUseCase: SuggestionKeywordUseCase = mockk(relaxed = true)
 
     @Before
@@ -44,7 +48,7 @@ class BudgetingAdsViewModelTest {
         repository = mockk()
         context = mockk(relaxed = true)
         viewModel = spyk(BudgetingAdsViewModel(rule.dispatchers,
-            bidInfoUseCase, bidInfoUseCaseDefault, suggestionKeywordUseCase))
+            bidInfoUseCase, bidInfoUseCaseDefault, topAdsGetBidSuggestionByProductIDsUseCase, topAdsImpressionPredictionUseCase, suggestionKeywordUseCase))
     }
 
 
