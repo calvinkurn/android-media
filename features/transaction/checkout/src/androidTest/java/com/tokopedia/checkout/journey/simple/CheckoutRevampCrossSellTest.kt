@@ -56,25 +56,29 @@ class CheckoutRevampCrossSellTest {
             )
             assertEgoldShoppingSummary(activityRule, false, "")
             assertDonasiShoppingSummary(activityRule, false, "")
+
+            // choose shipping
             clickChooseDuration(activityRule)
             waitForData()
             selectDurationOptionWithText("Reguler (Rp93.000)")
             waitForData()
+
+            // assert new egold value
             assertEgold(
                 activityRule,
                 text = "Bulatkan dengan nabung emas. S&K berlaku (Rp7.000)",
                 isChecked = false
             )
+            expandShoppingSummary(activityRule)
             assertEgoldShoppingSummary(activityRule, false, "")
             assertDonasiShoppingSummary(activityRule, false, "")
-            expandShoppingSummary(activityRule)
-            assertEgoldShoppingSummary(activityRule, false, "")
+
             clickEgold(activityRule)
-            waitForData()
             expandShoppingSummary(activityRule)
             assertEgoldShoppingSummary(activityRule, true, "Rp7.000")
+            assertDonasiShoppingSummary(activityRule, false, "")
+
             clickDonasi(activityRule)
-            waitForData()
             expandShoppingSummary(activityRule)
             assertDonasiShoppingSummary(activityRule, true, "Rp5.000")
             assertEgoldShoppingSummary(activityRule, true, "Rp7.000")
@@ -87,6 +91,7 @@ class CheckoutRevampCrossSellTest {
                 totalPrice = "Rp168.000"
             )
             assertPlatformFee(activityRule, fee = "Rp3.000", originalFee = null)
+
             clickChoosePaymentButton(activityRule)
         }
     }
