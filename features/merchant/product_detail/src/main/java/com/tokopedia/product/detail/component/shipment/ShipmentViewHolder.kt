@@ -5,12 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewStub
 import android.widget.LinearLayout
+import androidx.viewbinding.ViewBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.databinding.ItemShipmentBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentErrorBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentFailedBinding
@@ -39,6 +42,9 @@ class ShipmentViewHolder(
     private val viewError = ShipmentView(binding.pdpShipmentStateError)
     private val viewLoading = ShipmentView(binding.pdpShipmentStateLoading)
     private val viewFailed = ShipmentView(binding.pdpShipmentStateFailed)
+
+    private var viewPlus:ShipmentView? = null
+    private var viewBindingPlus: ViewShipmentPlusBinding? = null
 
     override fun bind(element: ShipmentUiModel) {
         val componentTrackDataModel = getComponentTrackData(element)
@@ -159,16 +165,23 @@ class ShipmentViewHolder(
             }
         }
 
-        renderShipmentPlus(vsShipmentPlus, data.shipmentPlus, componentTrackDataModel)
+
+//        if(viewBindingPlus == null){
+//            val viewPlus = viewPlus ?: ShipmentView(pdpShipmentPlus)
+//            this@ShipmentViewHolder.viewPlus = viewPlus
+//
+//            val viewBindingPlus = ViewShipmentPlusBinding.bind(viewPlus.view)
+//            this@ShipmentViewHolder.viewBindingPlus = viewBindingPlus
+//        }
+//        renderShipmentPlus( data.shipmentPlus, componentTrackDataModel)
     }
 
     private fun renderShipmentPlus(
-        vsShipmentPlus: ViewStub,
         shipmentPlus: ShipmentUiModel.ShipmentPlusData,
         componentTrackDataModel: ComponentTrackDataModel
     ) {
         if (shipmentPlus.isShow) {
-            val viewShipmentPlus = ViewShipmentPlusBinding.bind(vsShipmentPlus.inflate())
+            val viewShipmentPlus = viewBindingPlus ?: return
 
             with(viewShipmentPlus) {
                 pdpShipmentPlusBackground.loadImage(shipmentPlus.getBackgroundUrl(context))

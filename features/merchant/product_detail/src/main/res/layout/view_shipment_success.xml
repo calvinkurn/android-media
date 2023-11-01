@@ -16,6 +16,7 @@
         tools:src="@tools:sample/avatars" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/pdp_shipment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
@@ -113,15 +114,16 @@
             app:unify_tips_description="Test"
             tools:visibility="visible" />
 
-        <ViewStub
-            android:id="@+id/vs_shipment_plus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="16dp"
-            android:layout="@layout/view_shipment_plus"
-            app:layout_constraintTop_toBottomOf="@id/pdp_shipment_tips" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ViewStub
+        android:id="@+id/pdp_shipment_plus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout="@layout/view_shipment_plus"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pdp_shipment_container" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
