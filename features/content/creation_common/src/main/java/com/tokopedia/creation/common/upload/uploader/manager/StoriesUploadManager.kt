@@ -139,7 +139,7 @@ class StoriesUploadManager @Inject constructor(
         activeMediaId: String = "0"
     ) {
         updateStoryUseCase(
-            StoriesUpdateStoryRequest(
+            StoriesUpdateStoryRequest.create(
                 storyId = uploadData.creationId,
                 activeMediaId = activeMediaId,
                 status = status
@@ -204,7 +204,7 @@ class StoriesUploadManager @Inject constructor(
         coverUploadId: String,
     ): String {
         val response = addMediaUseCase(
-            StoriesAddMediaRequest(
+            StoriesAddMediaRequest.create(
                 storyId = uploadData.creationId,
                 type = uploadData.firstMediaType.code,
                 videoURL = if (uploadData.firstMediaType.isVideo) {
@@ -227,7 +227,7 @@ class StoriesUploadManager @Inject constructor(
         requestId: String,
     ) {
         addMediaUseCase(
-            StoriesAddMediaRequest(
+            StoriesAddMediaRequest.create(
                 storyId = uploadData.creationId,
                 type = uploadData.firstMediaType.code,
                 videoURL = "",
