@@ -49,6 +49,7 @@ object GqlQueryConstant {
         "            isAllowManage\n" +
         "            goldOS {\n" +
         "                isGold\n" +
+        "                badge\n" +
         "                isGoldBadge\n" +
         "                isOfficial\n" +
         "            }\n" +
