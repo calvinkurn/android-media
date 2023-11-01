@@ -3,6 +3,7 @@ package com.tokopedia.seller.menu.common.view.typefactory
 import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.IndentedSettingTitleUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.ToggleMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SellerSettingsTitleUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SettingLoadingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleMenuUiModel
@@ -16,4 +17,5 @@ interface OtherMenuTypeFactory {
     fun type(menuItemUiModel: MenuItemUiModel): Int
     fun type(settingTitleMenuUiModel: SettingTitleMenuUiModel): Int
     fun type(settingLoadingUiModel: SettingLoadingUiModel): Int
+    fun type(model: ToggleMenuItemUiModel): Int
 }

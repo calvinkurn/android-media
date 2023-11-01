@@ -17,6 +17,20 @@ android {
     buildFeatures {
         viewBinding true
         buildConfig true
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11
     }
 }
 
@@ -79,6 +93,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.calendar
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.sortFilter
+    implementation rootProject.ext.unifyDependencies.nestComponents
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation projectOrAar(rootProject.ext.libraries.network)
@@ -103,6 +118,10 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.playServicesDependencies.playServiceWearable
     implementation rootProject.ext.miscDependencies.wearRemoteInteraction
+
+    implementation rootProject.ext.composeDependencies.composeUi
+    implementation rootProject.ext.composeDependencies.composePreview
+    implementation rootProject.ext.composeDependencies.composeRuntime
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockitorCore

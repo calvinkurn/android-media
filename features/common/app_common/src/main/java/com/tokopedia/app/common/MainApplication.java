@@ -1,5 +1,6 @@
 package com.tokopedia.app.common;
 
+import android.content.SharedPreferences;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
@@ -74,6 +75,7 @@ public abstract class MainApplication extends CoreNetworkApplication {
     public void onCreate() {
         super.onCreate();
         userSession = new UserSession(this);
+        setupAppScreenMode()
         initCrashlytics();
         initAnalyticUserId();
 
@@ -191,5 +193,28 @@ public abstract class MainApplication extends CoreNetworkApplication {
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchUserIdentityWeave, ENABLE_ASYNC_BRANCH_USER_INFO, getApplicationContext(), true);
         return true;
+    }
+
+    private void setupAppScreenMode() {
+        boolean isForceLightMode = checkForceLightMode();
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isDarkMode = sharedPreferences.getBoolean(TkpdCache.Key.KEY_DARK_MODE, false);
+        int screenMode;
+        if (isDarkMode && !isForceLightMode) {
+            screenMode = AppCompatDelegate.MODE_NIGHT_YES;
+        } else {
+            screenMode = AppCompatDelegate.MODE_NIGHT_NO;
+        }
+        AppCompatDelegate.setDefaultNightMode(screenMode);
+    }
+
+    private boolean checkForceLightMode() {
+        if (remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE, false)) {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            sharedPreferences.edit().putBoolean(TkpdCache.Key.KEY_DARK_MODE, false).apply();
+            return true;
+        }
+        return false;
     }
 }

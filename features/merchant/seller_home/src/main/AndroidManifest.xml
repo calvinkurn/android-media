@@ -78,6 +78,7 @@
             android:exported="false"
             android:label="@string/menu_setting_title"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:theme="@style/MenuSettingStyle">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

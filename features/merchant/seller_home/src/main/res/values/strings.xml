@@ -53,7 +53,9 @@
     <string name="setting_menu_share_app">Bagikan Aplikasi</string>
     <string name="setting_menu_review_app">Review Aplikasi</string>
     <string name="setting_menu_give_feedback">Beri Feedback</string>
+    <string name="setting_set_theme">Atur Tema</string>
     <string name="setting_new_tag">BARU</string>
+    <string name="setting_beta_tag">BETA</string>
     <string name="setting_menu_developer_options">Developer Options</string>
     <string name="setting_header_error_message">Error when get %s in other setting</string>
     <string name="setting_header_multiple_error_message">Beberapa data gagal ditampilkan</string>
@@ -167,4 +169,8 @@
     <string name="sah_persona_bottom_sheet_title">Akses profil di pengaturan</string>
     <string name="sah_activate_persona_entry_point_info">Aktifkan personalisasi berdasarkan tipe Seller agar tampilan Home sesuai kebutuhanmu, ya.</string>
     <string name="menu_setting_persona_coach_mack">Penasaran apa tipe Seller kamu? Cari tahu lewat kuis ini, yuk!</string>
+
+    <string name="settings_set_theme">Atur Tema</string>
+    <string name="settings_light_theme">Tema Cerah</string>
+    <string name="settings_dark_theme">Tema Gelap</string>
 </resources>

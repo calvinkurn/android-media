@@ -11,6 +11,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
@@ -19,6 +20,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.IndentedSettingTitleUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SettingLoadingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleMenuUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.ToggleMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.R
@@ -29,6 +31,7 @@ import com.tokopedia.sellerhome.settings.analytics.SocialMediaLinksTracker
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.MenuSettingAccess
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import java.util.*
 
 class MenuSettingAdapter(
@@ -298,6 +301,12 @@ class MenuSettingAdapter(
                     title = context?.getString(R.string.setting_menu_give_feedback).orEmpty(),
                     settingTypeInfix = SettingTrackingConstant.APP_SETTING
                 ) { listener.onGiveFeedback() },
+                ToggleMenuItemUiModel(
+                    title = context?.getString(R.string.setting_set_theme).orEmpty(),
+                    tag = context?.getString(R.string.setting_beta_tag).orEmpty(),
+                    isChecked = context?.isDarkMode().orFalse(),
+                    onCheckedChanged = { isChecked -> listener.onSetAppTheme(isChecked) }
+                ),
                 DividerUiModel(DividerType.THIN_INDENTED),
                 MenuItemUiModel(
                     title = context?.getString(R.string.sah_social_menu_title).orEmpty(),
@@ -323,5 +332,6 @@ class MenuSettingAdapter(
         fun onGiveFeedback()
         fun onOpenSocialMediaLinks()
         fun onNoAccess()
+        fun onSetAppTheme(isDarkModeEnabled: Boolean)
     }
 }

@@ -31,6 +31,7 @@ open class OtherMenuAdapterTypeFactory(
             SettingTitleMenuViewHolder.LAYOUT -> SettingTitleMenuViewHolder(parent)
             SellerSettingsTitleViewHolder.LAYOUT -> SellerSettingsTitleViewHolder(parent)
             LoadingViewholder.LAYOUT -> SellerLoadingViewHolder(parent)
+            ToggleMenuItemViewHolder.LAYOUT -> ToggleMenuItemViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -61,6 +62,10 @@ open class OtherMenuAdapterTypeFactory(
 
     override fun type(settingLoadingUiModel: SettingLoadingUiModel): Int {
         return LoadingViewholder.LAYOUT
+    }
+
+    override fun type(model: ToggleMenuItemUiModel): Int {
+        return ToggleMenuItemViewHolder.LAYOUT
     }
 }
 

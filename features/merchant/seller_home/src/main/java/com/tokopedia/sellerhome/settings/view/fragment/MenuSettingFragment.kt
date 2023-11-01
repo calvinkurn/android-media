@@ -6,18 +6,22 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -56,6 +60,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
@@ -197,6 +203,33 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
             context?.getString(R.string.sah_admin_restriction_message)
                 .orEmpty()
         )
+    }
+
+    override fun onSetAppTheme(isDarkModeEnabled: Boolean) {
+        val activity = activity ?: return
+        val screenMode = if (isDarkModeEnabled) {
+            AppCompatDelegate.MODE_NIGHT_YES
+        } else {
+            AppCompatDelegate.MODE_NIGHT_NO
+        }
+        AppCompatDelegate.setDefaultNightMode(screenMode)
+        saveDarkModeStateToSharedPref(isDarkModeEnabled) {
+            activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            startActivity(Intent(activity, activity.javaClass))
+        }
+    }
+
+    @Suppress("DEPRECATION", "DeprecatedMethod")
+    private fun saveDarkModeStateToSharedPref(isDarkModeEnabled: Boolean, onSaved: () -> Unit) {
+        val activity = activity ?: return
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
+            val sharedPref = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext)
+            val editor = sharedPref.edit()
+            editor.putBoolean(TkpdCache.Key.KEY_DARK_MODE, isDarkModeEnabled)
+            editor.apply()
+        }.invokeOnCompletion {
+            onSaved()
+        }
     }
 
     override fun onDestroyView() {
