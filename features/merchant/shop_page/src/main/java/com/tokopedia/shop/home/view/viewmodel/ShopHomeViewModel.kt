@@ -1498,20 +1498,20 @@ class ShopHomeViewModel @Inject constructor(
         selectedEtalaseIndex: Int,
         errorMessage: String = ""
     ) {
-        val position = visitable.indexOfFirst { it is ShopDirectPurchaseByEtalaseUiModel }.orZero()
+        val position = visitable.indexOfFirst { it is ShopDirectPurchaseByEtalaseUiModel }
         val curModel = visitable.getOrNull(position) as? ShopDirectPurchaseByEtalaseUiModel
-        curModel?.widgetData?.titleList?.forEachIndexed { index, title ->
-            if (index == selectedSwitcherIndex) {
-                title.etalaseList.forEachIndexed { index2, etalase ->
-                    if (index2 == selectedEtalaseIndex) {
+        curModel?.widgetData?.titleList?.forEachIndexed { titleItemIndex, title ->
+            if (titleItemIndex == selectedSwitcherIndex) {
+                title.etalaseList.forEachIndexed { etalaseItemIndex, etalase ->
+                    if (etalaseItemIndex == selectedEtalaseIndex) {
                         etalase.productList = listProductData.map {
                             ProductCardDirectPurchaseDataModel(
                                 productId = it.id,
-                                imageUrl = it.imageUrl.orEmpty(),
+                                imageUrl = it.imageUrl,
                                 name = it.name,
                                 price = it.displayedPrice,
-                                discount = it.discountPercentage.orEmpty(),
-                                slashPrice = it.originalPrice.orEmpty(),
+                                discount = it.discountPercentage,
+                                slashPrice = it.originalPrice,
                                 ratingAverage = it.averageRating,
                                 isVariant = it.isVariant,
                                 minimumOrder = it.minimumOrder,
