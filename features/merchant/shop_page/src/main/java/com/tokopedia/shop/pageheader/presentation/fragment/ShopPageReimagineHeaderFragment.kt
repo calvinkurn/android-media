@@ -1983,7 +1983,7 @@ class ShopPageReimagineHeaderFragment :
         val listShopPageTabModel = mutableListOf<ShopPageHeaderTabModel>()
         shopPageHeaderDataModel?.listDynamicTabData?.forEach {
             if (it.name == ShopPageHeaderTabName.FEED) {
-                isShowFeed = it.isActive == 1
+                isShowFeed = it.isActive == ShopPageConstant.ShopTabActiveStatus.ACTIVE
             }
             val tabContentWrapper = ShopPageHeaderFragmentTabContentWrapper.createInstance().apply {
                 setTabData(it)

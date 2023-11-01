@@ -1846,7 +1846,7 @@ class ShopPageHeaderFragment :
     private fun onSuccessGetShopPageP1Data(shopPageHeaderP1Data: ShopPageHeaderP1HeaderData) {
         shopPageHeaderP1Data.listDynamicTabData.map {
             if (it.name == ShopPageHeaderTabName.FEED) {
-                isShowFeed = it.isActive == 1
+                isShowFeed = it.isActive == ShopPageConstant.ShopTabActiveStatus.ACTIVE
             }
         }
 
