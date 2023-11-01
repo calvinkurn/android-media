@@ -348,4 +348,9 @@
     <string name="som_dropoff_template_text_auto_confirm">Konfirmasi pengiriman otomatis maks. 3 jam setelah paket diserahkan ke kurir. </string>
 
 
+    <!-- SOM Transparency Fee -->
+    <string name="som_detail_summary_transparency_fee_note"><![CDATA[%1$s]]></string>
+
+    <string name="som_transparency_fee_entry_point_coachmark">Lihat rincian dengan klik tanda panah di sebelah kanan.</string>
+
 </resources>

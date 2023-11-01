@@ -5,7 +5,7 @@ package com.tokopedia.charts.model
  */
 
 data class BarChartMetricValue(
-        val value: Int,
-        val yLabel: String,
-        val xLabel: String
+    val value: Int,
+    val yLabel: String,
+    val xLabel: String
 )

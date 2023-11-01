@@ -14,12 +14,15 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvcwidget.MVCActivityCallbacks
 import com.tokopedia.mvcwidget.R
 import com.tokopedia.mvcwidget.multishopmvc.data.AdInfo
 import com.tokopedia.mvcwidget.multishopmvc.data.MultiShopModel
+import com.tokopedia.mvcwidget.multishopmvc.data.ProductsItem
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.MvcTracker
 import com.tokopedia.mvcwidget.trackers.MvcTrackerImpl
@@ -32,6 +35,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MvcMultiShopView @JvmOverloads constructor(
     context: Context,
@@ -88,58 +92,10 @@ class MvcMultiShopView @JvmOverloads constructor(
                 ivShopIcon?.hide()
             }
         }
-        if (item.products?.size != null && item.products.isNotEmpty()) {
-            if (item.products.size == 1) {
-                productParentOne?.show()
-                item.products[0]?.imageURL?.let {
-                    if (it.isNotEmpty()) {
-                        ivCouponOne?.setImageUrl(it, 1f)
-                    }
-                }
-                if (!item.products[0]?.benefitLabel.isNullOrEmpty()) {
-                    tvDealsCouponOne?.show()
-                    tvDealsCouponOne?.text = item.products[0]?.benefitLabel
-                    if ((tvDealsCouponOne?.context).isDarkMode()) {
-                        setStrokeColor(tvDealsCouponOne)
-                    }
-                } else {
-                    tvDealsCouponOne?.hide()
-                }
-            }
 
-            if (item.products.size > 1) {
-                productParentTwo?.show()
-                item.products[1]?.imageURL?.let {
-                    if (it.isNotEmpty()) {
-                        ivCouponTwo?.setImageUrl(it, 1f)
-                    }
-                }
-                if (!item.products[1]?.benefitLabel.isNullOrEmpty()) {
-                    tvDealsCouponTwo?.show()
-                    tvDealsCouponTwo?.text = item.products[1]?.benefitLabel
-                    if ((tvDealsCouponTwo?.context).isDarkMode()) {
-                        setStrokeColor(tvDealsCouponTwo)
-                    }
-                } else {
-                    tvDealsCouponTwo?.hide()
-                }
-                productParentOne?.show()
-                item.products[0]?.imageURL?.let {
-                    if (it.isNotEmpty()) {
-                        ivCouponOne?.loadImage(it)
-                    }
-                }
-                if (!item.products[0]?.benefitLabel.isNullOrEmpty()) {
-                    tvDealsCouponOne?.show()
-                    tvDealsCouponOne?.text = item.products[0]?.benefitLabel
-                    if ((tvDealsCouponOne?.context).isDarkMode()) {
-                        setStrokeColor(tvDealsCouponOne)
-                    }
-                } else {
-                    tvDealsCouponOne?.hide()
-                }
-            }
-        }
+        renderFirstProductImage(item.products)
+        renderSecondProductImage(item.products)
+
         tvShopName?.text = MethodChecker.fromHtml(item.shopName).toString()
         tvCashBackTitle?.text = item.cashBackTitle
         tvCashBackValue?.text = item.cashBackValue
@@ -205,6 +161,44 @@ class MvcMultiShopView @JvmOverloads constructor(
         }
     }
 
+    private fun renderFirstProductImage(products: List<ProductsItem?>?) {
+        val productCount = products?.size
+
+        productParentOne?.isVisible = productCount != null && products.isNotEmpty()
+        val firstProduct = products?.firstOrNull()
+
+        renderProductImage(ivCouponOne, firstProduct?.imageURL)
+        renderBenefitLabel(tvDealsCouponOne, firstProduct?.benefitLabel)
+    }
+
+    private fun renderSecondProductImage(products: List<ProductsItem?>?) {
+        val productCount = products?.size
+
+        productParentTwo?.isVisible = productCount.orZero() > 1
+        if (productParentTwo?.isVisible == true) {
+            val secondProduct = products?.get(1)
+
+            renderProductImage(ivCouponTwo, secondProduct?.imageURL)
+            renderBenefitLabel(tvDealsCouponTwo, secondProduct?.benefitLabel)
+        }
+    }
+
+    private fun renderBenefitLabel(view: Typography?, label: String?) {
+        view?.isVisible = !label.isNullOrEmpty()
+
+        view?.text = label
+
+        if ((view?.context).isDarkMode()) {
+            setStrokeColor(view)
+        }
+    }
+
+    private fun renderProductImage(view: ImageUnify?, imageURL: String?) {
+        if (!imageURL.isNullOrEmpty()) {
+            view?.setImageUrl(imageURL, 1f)
+        }
+    }
+
     private fun cardClickEvent(
         context: Context,
         item: MultiShopModel,
@@ -222,7 +216,7 @@ class MvcMultiShopView @JvmOverloads constructor(
             TransParentActivity.getIntent(
                 context,
                 shopId,
-                0,
+                MvcSource.DEFAULT,
                 shopApplink,
                 shopName,
                 mvcActivityCallbacks.hashCodeForMVC
@@ -282,17 +276,17 @@ class MvcMultiShopView @JvmOverloads constructor(
     private fun setStrokeColor(view: Typography?) {
         val drawable = view?.background as GradientDrawable
         drawable.setStroke(
-            view.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1)
+            view.context.resources.getDimension(unifyprinciplesR.dimen.spacing_lvl1)
                 .toInt(),
             ContextCompat.getColor(
                 view.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                unifyprinciplesR.color.Unify_Static_White
             )
         )
         view.setTextColor(
             ContextCompat.getColor(
                 view.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                unifyprinciplesR.color.Unify_Static_White
             )
         )
     }

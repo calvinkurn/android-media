@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.newrelic.agent.android.NewRelic;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -42,7 +43,9 @@ import com.tokopedia.fcmcommon.FirebaseMessagingManager;
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent;
 import com.tokopedia.fcmcommon.di.FcmComponent;
 import com.tokopedia.fcmcommon.di.FcmModule;
+import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.keys.Keys;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
@@ -50,6 +53,7 @@ import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker;
 import com.tokopedia.loginregister.login.router.LoginRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.network.data.model.ScpTokenModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.worker.PushWorker;
@@ -57,6 +61,7 @@ import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSell
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.fcm.di.DaggerGcmUpdateComponent;
 import com.tokopedia.sellerapp.fcm.di.GcmUpdateComponent;
@@ -114,10 +119,10 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
     private static final String ENABLE_ASYNC_GCM_LEGACY = "android_async_gcm_legacy";
-
+    
     private static final int REDIRECTION_HOME = 1;
     private static final int REDIRECTION_WEBVIEW = 2;
-    private static final int REDIRECTION_DEFAULT= 0;
+    private static final int REDIRECTION_DEFAULT = 0;
 
     @Override
     public void onCreate() {
@@ -127,6 +132,8 @@ public abstract class SellerRouterApplication extends MainApplication implements
         initResourceDownloadManager();
         initIris();
         performLibraryInitialisation();
+        initNewRelicInBackground();
+        initPushNotif();
     }
 
     private void performLibraryInitialisation() {
@@ -147,16 +154,54 @@ public abstract class SellerRouterApplication extends MainApplication implements
         return true;
     }
 
+    private void initNewRelicInBackground() {
+        Weaver.Companion.executeWeaveCoRoutineNow(() -> {
+            initNewRelic();
+            return true;
+        });
+    }
+
+    private void initNewRelic() {
+        NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_SA)
+                .start(SellerRouterApplication.this);
+        setUserIdNewRelic();
+    }
+
+    private void setUserIdNewRelic() {
+        userSession = new UserSession(this);
+        if (userSession.isLoggedIn()) {
+            NewRelic.setUserId(userSession.getUserId());
+        }
+    }
+
+    private void initPushNotif() {
+        WeaveInterface weave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                CMPushNotificationManager.getInstance()
+                        .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(SellerRouterApplication.this), false);
+                syncFcmToken();
+                return true;
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(weave);
+    }
+
+    private void syncFcmToken() {
+        SyncFcmTokenService.Companion.startService(this);
+    }
+
     private void initSeamlessLoginWorker() {
         UserSessionInterface userSession = new UserSession(context);
-        if(userSession.isLoggedIn()) {
+        if (userSession.isLoggedIn()) {
             TemporaryTokenWorker.Companion.scheduleWorker(this);
         }
     }
 
     private void initRefreshProfileWorker() {
         UserSessionInterface userSession = new UserSession(context);
-        if(userSession.isLoggedIn()) {
+        if (userSession.isLoggedIn()) {
             RefreshProfileWorker.scheduleWorker(this);
         }
     }
@@ -216,7 +261,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
     @Override
     public void onForceLogoutV2(Activity activity, int redirectionType, String url) {
         forceLogout();
-        if(redirectionType == REDIRECTION_WEBVIEW) {
+        if (redirectionType == REDIRECTION_WEBVIEW) {
             Intent homeIntent = new Intent(context, SplashScreenActivity.class);
             homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             Intent webViewIntent = RouteManager.getIntent(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
@@ -491,6 +536,21 @@ public abstract class SellerRouterApplication extends MainApplication implements
     @Override
     public void disconnectTokoChat() {
         //Do nothing
+    }
+
+    @Override
+    public void onRefreshCM(String token) {
+        refreshFCMFromInstantIdService(token);
+    }
+
+    public boolean isGotoAuthSdkEnabled() {
+        return false;
+    }
+
+    @Override
+    public ScpTokenModel onNewRefreshToken() {
+        return new ScpTokenModel("", "");
+        /* no-op */
     }
 
 }

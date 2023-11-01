@@ -93,6 +93,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyorderhistory.R
 import com.tokopedia.unifyorderhistory.analytics.UohAnalytics
+import com.tokopedia.unifyorderhistory.analytics.UohAnalytics.ULAS_TYPE_STAR
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAdd
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAddRecommendation
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceClick
@@ -217,6 +218,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.atc_common.R as atc_commonR
 
 /**
  * Created by fwidjaja on 29/06/20.
@@ -279,6 +281,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     private lateinit var trackingQueue: TrackingQueue
     private var _buttonAction = ""
     private var _atcOccParams: AddToCartOccMultiRequestParams? = null
+    private val impressedUUIDs = mutableListOf<String>()
 
     private var binding by autoClearedNullable<FragmentUohListBinding>()
 
@@ -733,6 +736,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         uohListViewModel.orderHistoryListResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    binding?.run {
+                        globalErrorUoh.gone()
+                        rvOrderList.visible()
+                    }
+                    if (currPage == 1) impressedUUIDs.clear()
                     refreshHandler?.finishRefresh()
                     orderList = it.data
                     if (orderList.orders.isNotEmpty()) {
@@ -2453,6 +2461,15 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         handleRouting(appLink, index, order)
     }
 
+    override fun onReviewRatingImpressed(
+        orderUUID: String,
+        componentData: UohListOrder.UohOrders.Order.Metadata.ExtraComponent
+    ) {
+        if (!isReviewRatingImpressed(orderUUID)) {
+            UohAnalytics.sendViewBeriUlasanButtonEvent(ULAS_TYPE_STAR)
+        }
+    }
+
     private fun doChatSeller(appUrl: String, order: UohListOrder.UohOrders.Order) {
         var invoiceCode = ""
         var invoiceUrl = ""
@@ -2510,7 +2527,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 userSession.userId ?: "",
                 GraphqlHelper.loadRawString(
                     activity?.resources,
-                    com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi
+                    atc_commonR.raw.mutation_add_to_cart_multi
                 ),
                 _listParamAtcMulti,
                 _atcVerticalCategory
@@ -2607,6 +2624,15 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 context?.getString(R.string.fail_cancellation)
                     ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
             }
+        }
+    }
+
+    private fun isReviewRatingImpressed(orderUUID: String): Boolean {
+        return if (impressedUUIDs.contains(orderUUID)) {
+            true
+        } else {
+            impressedUUIDs.add(orderUUID)
+            false
         }
     }
 

@@ -25,6 +25,7 @@ class HomeFrameTimingBenchmark : BaseFrameTimingBenchmark() {
     }
 
     override fun pageInteractionTest(currentIteration: Int) {
+        Thread.sleep(10000)
         MacroInteration.basicFlingInteraction(
             MacroIntent.TKPD_PACKAGE_NAME,
             MacroIntent.Home.RV_RESOURCE_ID,

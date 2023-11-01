@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 
-
 data class DynamicProductInfoP1(
     val basic: BasicInfo = BasicInfo(),
     val data: ComponentData = ComponentData(),
@@ -10,7 +9,9 @@ data class DynamicProductInfoP1(
     val stockAssuranceContent: Map<String, OneLinersContent>? = mapOf(),
     val layoutName: String = "",
     val pdpSession: String = "",
-    val requestId: String = ""
+    val requestId: String = "",
+    val isCampaign: Boolean = false,
+    val cacheState: CacheState = CacheState()
 ) {
 
     fun isProductVariant(): Boolean = data.variant.isVariant
@@ -50,6 +51,9 @@ data class DynamicProductInfoP1(
             }
         }
 
+    val isFromCache
+        get() = cacheState.isFromCache
+
     fun getFinalStock(): String {
         return if (data.campaign.isActive) {
             data.campaign.stock.toString()
@@ -58,3 +62,12 @@ data class DynamicProductInfoP1(
         }
     }
 }
+
+data class CacheState(
+    val remoteCacheableActive: Boolean = false,
+    // data source state, true = from cache, false = from cloud
+    val isFromCache: Boolean = false,
+
+    // caching flow pdp, true = cache first then cloud, false = cache only or cloud only
+    val cacheFirstThenCloud: Boolean = false
+)

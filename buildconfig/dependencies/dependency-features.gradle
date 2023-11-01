@@ -73,7 +73,6 @@ ext {
             rechargeCreditCard              : ":features:recharge:recharge_credit_card",
             rechargeComponent               : ":features:recharge:recharge_component",
             rechargePdpEmoney               : ":features:recharge:recharge_pdp_emoney",
-            smartBills                      : ":features:recharge:smart_bills",
             voucherGame                     : ":features:recharge:voucher_game",
             digitalProductDetail            : ":features:recharge:digital_product_detail",
 
@@ -145,6 +144,7 @@ ext {
             mediaeditor                     : ":features:media:mediaeditor",
             mediapicker                     : ":features:media:mediapicker",
             mediapickerCommon               : ":features:media:mediapicker-common",
+			universalEditor		        	: ":features:media:universal-editor",
 
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
             powerMerchantSubscribe          : ":features:merchant:power_merchant_subscribe",
@@ -315,5 +315,6 @@ ext {
             watch                           : ":features:watch",
             tokofood                        : ":features:tokofood",
             samples                         : ":features:samples",
+			scpAuth                         : ":features:scp:auth"
     ]
 }

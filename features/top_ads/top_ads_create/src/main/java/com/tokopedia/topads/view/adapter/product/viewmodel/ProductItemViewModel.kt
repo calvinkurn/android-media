@@ -9,6 +9,7 @@ import com.tokopedia.topads.view.adapter.product.ProductListAdapterTypeFactory
 class ProductItemViewModel(var data: TopAdsProductModel) : ProductViewModel() {
 
     var isChecked: Boolean = false
+    var isCompact: Boolean = false
 
     override fun type(typesFactory: ProductListAdapterTypeFactory): Int {
         return typesFactory.type(this)

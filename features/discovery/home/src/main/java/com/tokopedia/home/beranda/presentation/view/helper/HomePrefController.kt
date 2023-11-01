@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.helper
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.tokopedia.home.beranda.helper.DeviceScreenHelper
 
 class HomePrefController(private val context: Context?) {
     companion object {
@@ -16,11 +17,12 @@ class HomePrefController(private val context: Context?) {
             Context.MODE_PRIVATE
         )
     }
+    private val isFoldableOrTablet = context?.let { DeviceScreenHelper(it).isFoldableOrTablet() } ?: true
 
     fun setHomeRevampAtfVariant() {
         context?.run {
             try {
-                HomeRollenceController.rollenceAtfValue.let {
+                HomeRollenceController.getAtfRollence(isFoldableOrTablet).let {
                     if (rollenceValue != it) {
                         rollenceValue = it
                         sharedPrefs?.edit()?.putString(
@@ -36,7 +38,7 @@ class HomePrefController(private val context: Context?) {
     fun isUsingDifferentAtfRollenceVariant(): Boolean {
         return context?.run {
             val lastVariant = sharedPrefs?.getString(PREF_KEY_HOME_REVAMP_ATF_VARIANT, null)
-            return lastVariant != HomeRollenceController.rollenceAtfValue
+            return lastVariant != HomeRollenceController.getAtfRollence(isFoldableOrTablet)
         } ?: true
     }
 }

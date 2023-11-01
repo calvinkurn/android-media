@@ -4,12 +4,12 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.AtcVariantOptionAdapter
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -70,7 +70,12 @@ class ProductSingleVariantViewHolder(
                 hideError()
             }
         }
-        view.addOnImpressionListener(element.impressHolder) {
+        view.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = pdpListener.getImpressionHolders(),
+            name = element.name,
+            useHolders = pdpListener.isRemoteCacheableActive()
+        ) {
             pdpListener.onImpressComponent(getComponentTrackData(element))
         }
     }
