@@ -1,43 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_todo_widget_first"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:typographyWeight="bold"
-        app:typographyType="display_1"
-        tools:text="Saatnya bayar dan beli ini"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        />
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="Saatnya bayar dan beli ini" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_todo_widget_first"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@+id/view_sticky_layout_first"
+            layout="@layout/view_recharge_home_todo_widget_bayar_sekaligus"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginStart="128dp"
+            android:id="@+id/rv_todo_widget_first"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_todo_widget_second"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:typographyWeight="bold"
-        app:typographyType="display_1"
-        tools:text="Bebas cemas pakai Bayar Otomatis"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        />
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="Bebas cemas pakai Bayar Otomatis" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_todo_widget_second"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@+id/view_sticky_layout_second"
+            layout="@layout/view_recharge_home_todo_widget_bayar_sekaligus"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginStart="128dp"
+            android:id="@+id/rv_todo_widget_second"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </FrameLayout>
 
 </LinearLayout>

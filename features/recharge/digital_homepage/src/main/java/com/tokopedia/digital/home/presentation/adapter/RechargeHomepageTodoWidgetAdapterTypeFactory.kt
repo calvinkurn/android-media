@@ -22,10 +22,6 @@ class RechargeHomepageTodoWidgetAdapterTypeFactory : BaseAdapterTypeFactory() {
         return RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetAutoPayViewHolder.LAYOUT
     }
 
-    fun type(model: RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetBayarSekaligusItemModel): Int {
-        return RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetBayarSekaligusViewHolder.LAYOUT
-    }
-
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetPostReminderViewHolder.LAYOUT -> {
@@ -44,16 +40,6 @@ class RechargeHomepageTodoWidgetAdapterTypeFactory : BaseAdapterTypeFactory() {
                     false
                 )
                 RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetAutoPayViewHolder(binding)
-            }
-
-            RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetBayarSekaligusViewHolder.LAYOUT -> {
-                val binding = ViewRechargeHomeTodoWidgetBayarSekaligusBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent as ViewGroup,
-                    false
-                )
-
-                RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetBayarSekaligusViewHolder(binding)
             }
 
             else -> super.createViewHolder(parent, type)
