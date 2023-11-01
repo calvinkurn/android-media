@@ -17,14 +17,14 @@ class MiniCartDiffUtilCallback(
     override fun getNewListSize(): Int = newList.size
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val old = oldList.getOrNull(oldItemPosition)
-        val new = newList.getOrNull(newItemPosition)
-        return old?.getItemId() == new?.getItemId()
+        val old = oldList.getOrNull(oldItemPosition) ?: return false
+        val new = newList.getOrNull(newItemPosition) ?: return false
+        return old.getItemId() == new.getItemId()
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val old = oldList.getOrNull(oldItemPosition)
-        val new = newList.getOrNull(newItemPosition)
-        return old?.toString() == new?.toString()
+        val old = oldList.getOrNull(oldItemPosition) ?: return false
+        val new = newList.getOrNull(newItemPosition) ?: return false
+        return old.toString() == new.toString()
     }
 }
