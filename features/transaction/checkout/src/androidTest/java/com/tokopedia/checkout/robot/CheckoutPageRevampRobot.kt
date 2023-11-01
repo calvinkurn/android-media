@@ -164,6 +164,37 @@ class CheckoutPageRevampRobot {
             ViewActions.click().perform(uiController, view.findViewById(viewId))
     }
 
+    fun clickProductAddOn(activityRule: IntentsTestRule<RevampShipmentActivity>, productIndex: Int, addOnsName: String) {
+        val position = scrollRecyclerViewToShipmentCartItem(activityRule, productIndex)
+        if (position != RecyclerView.NO_POSITION) {
+            onView(ViewMatchers.withId(R.id.rv_checkout))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        object : ViewAction {
+                            override fun getConstraints(): Matcher<View>? = null
+
+                            override fun getDescription(): String =
+                                "Click Add Ons Product"
+
+                            override fun perform(uiController: UiController?, view: View) {
+                                val layout = view.findViewById<LinearLayout>(R.id.ll_addon_product_items)
+                                assertEquals(View.VISIBLE, layout.visibility)
+                                for (v in layout.children) {
+                                    if (v.findViewById<Typography>(purchase_platformcommonR.id.tv_checkout_add_ons_item_name).text.toString() == addOnsName) {
+                                        val checkboxUnify = v.findViewById<CheckboxUnify>(purchase_platformcommonR.id.cb_checkout_add_ons)
+                                        checkboxUnify.isChecked = !checkboxUnify.isChecked
+                                        return
+                                    }
+                                }
+                                throw AssertionError("product add on with name $addOnsName not found in $productIndex")
+                            }
+                        }
+                    )
+                )
+        }
+    }
+
     fun clickChooseDuration(activityRule: IntentsTestRule<RevampShipmentActivity>) {
         val position = scrollRecyclerViewToFirstOrder(activityRule)
         if (position != RecyclerView.NO_POSITION) {
@@ -920,7 +951,7 @@ class CheckoutPageRevampRobot {
                             override fun getConstraints(): Matcher<View>? = null
 
                             override fun getDescription(): String =
-                                "Assert Donasi Shopping Summary UI"
+                                "Assert Add Ons Shopping Summary UI"
 
                             override fun perform(uiController: UiController?, view: View) {
                                 val llOthers =

@@ -94,6 +94,36 @@ class CheckoutRevampAddOnsTest {
             )
             assertPlatformFee(activityRule, fee = "Rp3.000", originalFee = null)
 
+            clickProductAddOn(
+                activityRule,
+                productIndex = 0,
+                addOnsName = "jasa pasang ac"
+            )
+            waitForData()
+            assertAddOnsProduct(
+                activityRule,
+                productIndex = 0,
+                addOnsName = "jasa pasang ac",
+                addOnsPrice = " (Rp0)",
+                isChecked = true
+            )
+            assertAddOnsShoppingSummary(
+                activityRule,
+                hasAddOns = true,
+                addOnsName = "Total Jasa Pasang (3 Jasa)",
+                addOnsPrice = "Rp0"
+            )
+            expandShoppingSummary(activityRule)
+            assertShoppingSummary(
+                activityRule,
+                itemTotalPrice = "Rp60.000",
+                itemOriginalPrice = null,
+                shippingTotalPrice = "Rp93.000",
+                shippingOriginalPrice = null,
+                totalPrice = "Rp156.000"
+            )
+            assertPlatformFee(activityRule, fee = "Rp3.000", originalFee = null)
+
             clickChoosePaymentButton(activityRule)
         }
     }
