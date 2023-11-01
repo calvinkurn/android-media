@@ -392,12 +392,11 @@ fun ShopEpharmacyNearestPickup(nearestPickupAddress: String) {
             color = NestTheme.colors.NN._600
         )
     )
-    Spacer(modifier = Modifier.height(2.dp))
+    Spacer(modifier = Modifier.height(4.dp))
     NestTypography(
         modifier = Modifier.fillMaxWidth(),
         text = nearestPickupAddress,
         textStyle = NestTheme.typography.display2.copy(
-            fontWeight = FontWeight.Bold,
             color = NestTheme.colors.NN._950
         )
     )
@@ -619,32 +618,19 @@ fun ShopPerformance(shopPerformance: ShopPerformance) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             ShopPerformanceMetricItem(
+                modifier = Modifier.weight(1f),
                 metricName = "Produk terjual",
                 metricValue = shopPerformance.totalProductSoldCount.ifEmpty { "-" }
             )
-            Spacer(modifier = Modifier.width(12.dp))
-            Divider(
-                modifier = Modifier
-                    .width(1.dp)
-                    .height(36.dp),
-                thickness = 1.dp,
-                color = NestTheme.colors.NN._50
-            )
-            Spacer(modifier = Modifier.width(12.dp))
+            
             ShopPerformanceMetricItem(
+                modifier = Modifier.weight(1f),
                 metricName = "Performa chat",
                 metricValue = shopPerformance.chatPerformance.ifEmpty { "-" }
             )
-            Spacer(modifier = Modifier.width(12.dp))
-            Divider(
-                modifier = Modifier
-                    .width(1.dp)
-                    .height(36.dp),
-                thickness = 1.dp,
-                color = NestTheme.colors.NN._50
-            )
-            Spacer(modifier = Modifier.width(12.dp))
+           
             ShopPerformanceMetricItem(
+                modifier = Modifier.weight(1f),
                 metricName = "Pesanan diproses",
                 metricValue = shopPerformance.orderProcessTime.ifEmpty { "-" }
             )
@@ -705,17 +691,56 @@ fun ShopSupportedShipment(shipments: List<ShopSupportedShipment>) {
             modifier = Modifier.fillMaxWidth(),
             text = "Durasi dihitung sejak barang diserahkan ke kurir",
             textStyle = NestTheme.typography.display3.copy(
-                color = NestTheme.colors.NN._600
+                color = NestTheme.colors.NN._950
             )
         )
-        Spacer(modifier = Modifier.height(4.dp))
-        shipments.forEach { shipment -> 
-            ShopShipmentItem(shipment = shipment)
-            Spacer(modifier = Modifier.height(4.dp))
+        ShopShipmentList(shipments)
+    }
+}
+
+@Composable
+fun ShopShipmentList(shipments: List<ShopSupportedShipment>) {
+    shipments.forEachIndexed { index, shipment ->
+        ShopShipmentItem(modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp), shipment = shipment)
+        val shouldShowDivider = index < shipments.size.dec()
+        if (shouldShowDivider) {
             Divider(
                 modifier = Modifier.fillMaxWidth(),
                 thickness = 1.dp,
                 color = NestTheme.colors.NN._50
+            )
+        }
+    }
+}
+
+@Composable
+fun ShopShipmentItem(modifier: Modifier = Modifier, shipment: ShopSupportedShipment) {
+    Row(modifier = modifier, verticalAlignment = Alignment.Top) {
+        NestImage(
+            modifier = Modifier.size(48.dp),
+            source = ImageSource.Remote(source = shipment.imageUrl),
+            type = NestImageType.Rect()
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Column {
+            NestTypography(
+                text = shipment.title,
+                textStyle = NestTheme.typography.display2.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = NestTheme.colors.NN._950
+                )
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            NestTypography(
+                text = shipment.serviceNames.joinToString(separator = ", ") { it },
+                textStyle = NestTheme.typography.paragraph3.copy(
+                    color = NestTheme.colors.NN._600
+                ),
+                maxLines = 2
             )
         }
     }
@@ -754,7 +779,11 @@ fun ReportShop() {
 }
 
 @Composable
-fun ShopPerformanceMetricItem(modifier: Modifier = Modifier, metricValue: String, metricName: String) {
+fun ShopPerformanceMetricItem(
+    modifier: Modifier = Modifier,
+    metricValue: String,
+    metricName: String
+) {
     Column(modifier = modifier) {
         NestTypography(
             text = metricValue,
@@ -765,9 +794,7 @@ fun ShopPerformanceMetricItem(modifier: Modifier = Modifier, metricValue: String
         )
         NestTypography(
             text = metricName,
-            textStyle = NestTheme.typography.display3.copy(
-                color = NestTheme.colors.NN._600
-            )
+            textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600)
         )
     }
 }
@@ -794,32 +821,6 @@ fun ShopNoteItem(shopNote: ShopNote) {
             color = NestTheme.colors.NN._50
         )
     }
-}
-
-@Composable
-fun ShopShipmentItem(shipment: ShopSupportedShipment) {
-    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
-        NestImage(
-            modifier = Modifier.size(48.dp),
-            source = ImageSource.Remote(source = shipment.imageUrl),
-            type = NestImageType.Rect()
-        )
-        Column {
-            NestTypography(
-                text = shipment.title,
-                textStyle = NestTheme.typography.display2.copy(
-                    color = NestTheme.colors.NN._950
-                )
-            )
-            NestTypography(
-                text = shipment.serviceNames.joinToString(separator = ",") { it },
-                textStyle = NestTheme.typography.paragraph3.copy(
-                    color = NestTheme.colors.NN._600
-                )
-            )
-        }
-    }
- 
 }
 
 @Composable

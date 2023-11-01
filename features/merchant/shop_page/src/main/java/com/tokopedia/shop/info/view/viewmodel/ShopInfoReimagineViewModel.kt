@@ -33,7 +33,6 @@ import javax.inject.Inject
 class ShopInfoReimagineViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     private val coroutineDispatcherProvider: CoroutineDispatchers,
-    @GqlGetShopInfoForHeaderUseCaseQualifier
     private val getShopInfoUseCase: GQLGetShopInfoUseCase,
     private val getShopNoteUseCase: GetShopNoteUseCase,
     private val getShopRatingUseCase: ProductRevGetShopRatingAndTopicsUseCase,
