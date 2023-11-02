@@ -68,6 +68,7 @@ import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailS
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailToolbarMenu
 import com.tokopedia.buyerorderdetail.presentation.scroller.BuyerOrderDetailRecyclerViewScroller
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.SavingsWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
@@ -561,6 +562,7 @@ open class BuyerOrderDetailFragment :
         updateToolbarMenu(uiState)
         updateContent(uiState)
         updateStickyButtons(uiState)
+        updateSavingsWidget(uiState)
         swipeRefreshBuyerOrderDetail?.isRefreshing = false
         stopLoadTimeMonitoring()
     }
@@ -604,6 +606,23 @@ open class BuyerOrderDetailFragment :
         stickyActionButton?.setupActionButtons(
             actionButtonsUiModel = uiState.actionButtonsUiState.data
         )
+    }
+
+    private fun updateSavingsWidget(uiState: BuyerOrderDetailUiState.HasData) {
+        when (uiState.savingsWidgetUiState) {
+            is SavingsWidgetUiState.Success -> {
+                stickyActionButton?.setupSavingWidget(
+                    (uiState.savingsWidgetUiState as SavingsWidgetUiState.Success).data
+                )
+            }
+
+            is SavingsWidgetUiState.Error -> {
+                stickyActionButton?.hideSavingWidget()
+            }
+            else -> {
+               //noop
+            }
+        }
     }
 
     private fun setupToolbarMenu(showChatIcon: Boolean) {
@@ -691,6 +710,7 @@ open class BuyerOrderDetailFragment :
         }
         toolbarMenuAnimator?.transitionToEmpty()
         swipeRefreshBuyerOrderDetail?.isRefreshing = false
+        stickyActionButton?.hideSavingWidget()
         stopLoadTimeMonitoring()
     }
 
@@ -706,6 +726,7 @@ open class BuyerOrderDetailFragment :
         updateToolbarMenu(uiState)
         updateContent(uiState)
         updateStickyButtons(uiState)
+        updateSavingsWidget(uiState)
     }
 
     private fun GlobalError.showMessageExceptionError(

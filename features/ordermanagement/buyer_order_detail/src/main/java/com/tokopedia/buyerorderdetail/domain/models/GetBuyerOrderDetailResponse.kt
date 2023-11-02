@@ -105,10 +105,12 @@ data class GetBuyerOrderDetailResponse(
                 @SerializedName("epharmacy_data")
                 @Expose
                 val epharmacyData: EpharmacyData = EpharmacyData(),
+                @SerializedName("plus_savings")
+                @Expose
+                val plusSavings: PlusSavings = PlusSavings(),
                 @SerializedName("group_order_data")
                 val groupOrderData: GroupOrderData? = GroupOrderData()
             ) {
-
                 data class GroupOrderData(
                     @SerializedName("tx_id")
                     val txId: String = "0",

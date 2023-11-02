@@ -27,6 +27,7 @@ import com.tokopedia.buyerorderdetail.presentation.mapper.OrderStatusUiStateMapp
 import com.tokopedia.buyerorderdetail.presentation.mapper.PGRecommendationWidgetUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.PaymentInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ProductListUiStateMapper
+import com.tokopedia.buyerorderdetail.presentation.mapper.SavingsWidgetUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ScpRewardsMedalTouchPointWidgetMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ShipmentInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
@@ -42,6 +43,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.PGRecommendationWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.PaymentInfoUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.SavingsWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -143,6 +145,14 @@ class BuyerOrderDetailViewModel @Inject constructor(
         emit(EpharmacyInfoUiState.HasData.Showing(EpharmacyInfoUiModel()))
     }.toStateFlow(EpharmacyInfoUiState.Loading)
 
+    private val savingsWidgetUiState = buyerOrderDetailDataRequestState.mapLatest(
+        ::mapSavingsWidgetUiState
+    ).catch { t ->
+        // There is a case that additional_info returning null from backend, so make this default yet
+        // it will be hide in the section
+        emit(SavingsWidgetUiState.Hide)
+    }.toStateFlow(SavingsWidgetUiState.Hide)
+
     val buyerOrderDetailUiState: StateFlow<BuyerOrderDetailUiState> = combine(
         actionButtonsUiState,
         orderStatusUiState,
@@ -154,6 +164,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
         orderInsuranceUiState,
         epharmacyInfoUiState,
         scpRewardsMedalTouchPointWidgetUiState,
+        savingsWidgetUiState,
         ::mapBuyerOrderDetailUiState
     ).toStateFlow(BuyerOrderDetailUiState.FullscreenLoading)
 
@@ -404,6 +415,14 @@ class BuyerOrderDetailViewModel @Inject constructor(
         )
     }
 
+    private fun mapSavingsWidgetUiState(
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
+    ): SavingsWidgetUiState {
+        return SavingsWidgetUiStateMapper.map(
+            getBuyerOrderDetailDataRequestState
+        )
+    }
+
     private fun mapProductListUiState(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
@@ -465,7 +484,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
         orderResolutionTicketStatusUiState: OrderResolutionTicketStatusUiState,
         orderInsuranceUiState: OrderInsuranceUiState,
         epharmacyInfoUiState: EpharmacyInfoUiState,
-        scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState
+        scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState,
+        savingsWidgetUiState: SavingsWidgetUiState
     ): BuyerOrderDetailUiState {
         return BuyerOrderDetailUiStateMapper.map(
             actionButtonsUiState,
@@ -477,7 +497,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
             orderResolutionTicketStatusUiState,
             orderInsuranceUiState,
             epharmacyInfoUiState,
-            scpRewardsMedalTouchPointWidgetUiState
+            scpRewardsMedalTouchPointWidgetUiState,
+            savingsWidgetUiState
         )
     }
 
