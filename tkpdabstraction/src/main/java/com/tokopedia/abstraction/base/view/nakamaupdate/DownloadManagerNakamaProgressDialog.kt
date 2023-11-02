@@ -35,9 +35,9 @@ class DownloadManagerNakamaProgressDialog(
 
     private val downloadCompleteReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-//            hideProgressDialog()
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
             if (downloadID == id) {
+                setDialogPending()
                 handleDownloadCompletion()
             }
         }
@@ -85,10 +85,6 @@ class DownloadManagerNakamaProgressDialog(
                         DownloadManager.STATUS_FAILED -> {
                             finishDownload = true
                             changeStyleAndHideProgressDialog()
-                        }
-
-                        DownloadManager.STATUS_PENDING -> {
-                            setDialogPending()
                         }
 
                         DownloadManager.STATUS_RUNNING -> {
