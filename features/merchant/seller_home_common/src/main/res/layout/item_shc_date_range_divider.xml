@@ -3,5 +3,5 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="8dp"
-    android:background="@color/Unify_NN200"
+    android:background="@color/Unify_NN50"
     tools:viewBindingIgnore="true" />

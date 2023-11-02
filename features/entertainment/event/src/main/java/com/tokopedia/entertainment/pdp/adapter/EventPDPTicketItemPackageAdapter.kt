@@ -6,28 +6,32 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.databinding.EntTicketAdapterItemBinding
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter.getRupiahFormat
+import com.tokopedia.entertainment.pdp.common.util.EventConst
+import com.tokopedia.entertainment.pdp.data.AvailabilityStatus
 import com.tokopedia.entertainment.pdp.data.PackageItem
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getDigit
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.checkDate
-import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.checkNotEndSale
-import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.checkStartSale
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getDate
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
-import java.util.Calendar
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class EventPDPTicketItemPackageAdapter(
-        val onBindItemTicketListener: OnBindItemTicketListener,
+    val onBindItemTicketListener: OnBindItemTicketListener
 ) : RecyclerView.Adapter<EventPDPTicketItemPackageAdapter.EventPDPTicketItemPackageViewHolder>() {
 
     private var listItemPackage = emptyList<PackageItem>()
@@ -45,16 +49,114 @@ class EventPDPTicketItemPackageAdapter(
         private var isListenerRegistered = false
         private var textWatcher: TextWatcher? = null
         fun bind(items: PackageItem) {
-            if (isRecommendationPackage) {
-                renderForRecommendationPackage(items)
-            } else {
-                renderForMainPackage(items)
+            renderPackage(items)
+        }
+
+        private fun renderTicketStatus(
+            items: PackageItem
+        ) {
+            binding.run {
+                when (items.availabilityStatus.code) {
+                    EventConst.EVENT_TICKET_STATUS_AVAILABLE -> {
+                        val isAvailableOnSelectedDate = checkDate(items.dates, onBindItemTicketListener.getSelectedDate())
+                        if (isRecommendationPackage) {
+                            renderForRecommendationPackage(items)
+                        } else if (isAvailableOnSelectedDate) {
+                            renderGeneralPackage(items)
+                        } else {
+                            renderGeneralRecommendationPackage(items)
+                        }
+                        txtPriceTicket.show()
+                        adjustContainerBottomMargin(true)
+                        hideTicketStatus()
+                    }
+                    EventConst.EVENT_TICKET_STATUS_FULL -> {
+                        showTicketStatus(items.availabilityStatus)
+                        showTicketStatusRedBackground()
+                        showSoldOut()
+                        adjustContainerBottomMargin(false)
+                    }
+                    EventConst.EVENT_TICKET_STATUS_NOT_STARTED -> {
+                        showTicketStatus(items.availabilityStatus)
+                        showTicketStatusRedBackground()
+                        showSoldOut()
+                        adjustContainerBottomMargin(false)
+                    }
+                    else -> {
+                        showTicketStatus(items.availabilityStatus)
+                        showTicketStatusSoldOutBackground()
+                        showSoldOut()
+                        adjustContainerBottomMargin(false)
+                    }
+                }
             }
         }
 
-        private fun renderForMainPackage(items: PackageItem) {
-            with(binding) {
+        private fun showTicketStatusRedBackground() {
+            binding.run {
+                with(txtStatusTicket) {
+                    setTextColor(getColorResource(unifyprinciplesR.color.Unify_RN500))
+                    setBackgroundColor(getColorResource(unifyprinciplesR.color.Unify_RN50))
+                }
+                with(txtStatusDescTicket) {
+                    setTextColor(getColorResource(unifyprinciplesR.color.Unify_NN950))
+                    setBackgroundColor(getColorResource(unifyprinciplesR.color.Unify_RN50))
+                }
+            }
+        }
 
+        private fun showTicketStatusSoldOutBackground() {
+            binding.run {
+                with(txtStatusTicket) {
+                    setTextColor(getColorResource(unifyprinciplesR.color.Unify_NN600))
+                    setBackgroundColor(getColorResource(unifyprinciplesR.color.Unify_NN50))
+                }
+                with(txtStatusDescTicket) {
+                    setTextColor(getColorResource(unifyprinciplesR.color.Unify_NN950))
+                    setBackgroundColor(getColorResource(unifyprinciplesR.color.Unify_NN50))
+                }
+            }
+        }
+
+        private fun getColorResource(unifyResId: Int): Int {
+            return MethodChecker.getColor(itemView.context, unifyResId)
+        }
+
+        private fun hideTicketStatus() {
+            binding.run {
+                txtStatusTicket.hide()
+                txtStatusDescTicket.hide()
+            }
+        }
+
+        private fun showTicketStatus(availabilityStatus: AvailabilityStatus) {
+            binding.run {
+                if (availabilityStatus.name.isNotEmpty()) {
+                    txtStatusTicket.text = availabilityStatus.name
+                    if (availabilityStatus.desc.isNotEmpty()) {
+                        txtStatusDescTicket.text = " · ${availabilityStatus.desc}"
+                    } else {
+                        txtStatusDescTicket.text = ""
+                    }
+                    txtStatusTicket.show()
+                    txtStatusDescTicket.show()
+                } else {
+                    hideTicketStatus()
+                }
+            }
+        }
+
+        private fun adjustContainerBottomMargin(shouldAddMargin: Boolean) {
+            val marginValue = if (shouldAddMargin) {
+                16.dpToPx(itemView.resources.displayMetrics)
+            } else {
+                0.dpToPx(itemView.resources.displayMetrics)
+            }
+            (binding.containerWrapperTicket.layoutParams as? MarginLayoutParams)?.bottomMargin = marginValue
+        }
+
+        private fun renderPackage(items: PackageItem) {
+            with(binding) {
                 root.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                     if (!hasFocus) {
                         val imm = root.context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -65,30 +167,12 @@ class EventPDPTicketItemPackageAdapter(
                 txtTitleTicket.text = items.name
                 txtSubtitleTicket.text = items.description
                 txtSubtitleTicket.visibility = if (items.description.isNotEmpty()) View.VISIBLE else View.GONE
-                txtPriceTicket.text = if(items.salesPrice.toIntSafely() != ZERO_PRICE) getRupiahFormat(items.salesPrice.toIntSafely())
-                else root.context.resources.getString(R.string.ent_free_price)
-
-                val isSaleStarted = checkStartSale(items.startDate, Calendar.getInstance().time)
-                val isNotEnded = checkNotEndSale(items.endDate, Calendar.getInstance().time)
-                val itemIsAvailable = (checkDate(items.dates, onBindItemTicketListener.getSelectedDate()) && items.available.toIntSafely() >= 1)
-                val isRecomended = checkDate(items.dates, onBindItemTicketListener.getSelectedDate())
-                if (isRecomended) {
-                    if (isSaleStarted && isNotEnded) {
-                        if (itemIsAvailable) {
-                            txtPilihTicket.show()
-                        } else {
-                            txtHabisTicket.show()
-                            showSoldOut()
-                        }
-                    } else if (!isSaleStarted && isNotEnded) {
-                        txtNotStarted.show()
-                    } else if (isSaleStarted && !isNotEnded) {
-                        txtAlreadyEnd.show()
-                    }
+                txtPriceTicket.text = if (items.salesPrice.toIntSafely() != ZERO_PRICE) {
+                    getRupiahFormat(items.salesPrice.toIntSafely())
                 } else {
-                    txtisRecommeded.show()
+                    root.context.resources.getString(R.string.ent_free_price)
                 }
-
+                renderTicketStatus(items)
                 if (!isListenerRegistered) {
                     quantityEditor.setValue(items.minQty.toIntSafely())
                     quantityEditor.minValue = items.minQty.toIntSafely() - Int.ONE
@@ -97,10 +181,12 @@ class EventPDPTicketItemPackageAdapter(
                     quantityEditor.setValueChangedListener { newValue, _, _ ->
                         isError = !((quantityEditor.getValue() >= items.minQty.toIntSafely() || quantityEditor.getValue() >= EMPTY_QTY) && quantityEditor.getValue() <= items.maxQty.toIntSafely())
                         val total = if (newValue < items.minQty.toIntSafely()) EMPTY_QTY else newValue
-                        onBindItemTicketListener.quantityEditorValueButtonClicked(idPackage, items.id, items,
-                                items.salesPrice.toIntSafely() * total, total.toString(),
-                                isError, items.name, items.productId, items.salesPrice,
-                                getDate(items.dates, onBindItemTicketListener.getSelectedDate()), packageName)
+                        onBindItemTicketListener.quantityEditorValueButtonClicked(
+                            idPackage, items.id, items,
+                            items.salesPrice.toIntSafely() * total, total.toString(),
+                            isError, items.name, items.productId, items.salesPrice,
+                            getDate(items.dates, onBindItemTicketListener.getSelectedDate()), packageName
+                        )
                         eventPDPTracking.onClickQuantity()
                     }
 
@@ -129,8 +215,9 @@ class EventPDPTicketItemPackageAdapter(
                                     }
                                 }
                                 if (getDigit(txtTotal.toString()) > EMPTY_QTY &&
-                                        getDigit(txtTotal.toString()) >= items.minQty.toIntSafely() &&
-                                        getDigit(txtTotal.toString()) <= items.maxQty.toIntSafely()) {
+                                    getDigit(txtTotal.toString()) >= items.minQty.toIntSafely() &&
+                                    getDigit(txtTotal.toString()) <= items.maxQty.toIntSafely()
+                                ) {
                                     quantityEditor.editText.error = null
                                     isError = false
                                 }
@@ -146,16 +233,23 @@ class EventPDPTicketItemPackageAdapter(
                             }
 
                             val total = if (getDigit(txtTotal.toString()) < items.minQty.toIntSafely()) EMPTY_QTY else getDigit(txtTotal.toString())
-                            onBindItemTicketListener.quantityEditorValueButtonClicked(idPackage, items.id, items, items.salesPrice.toIntSafely() * total,
-                                    total.toString(), isError, items.name, items.productId, items.salesPrice,
-                                    getDate(items.dates, onBindItemTicketListener.getSelectedDate()), packageName)
+                            onBindItemTicketListener.quantityEditorValueButtonClicked(
+                                idPackage, items.id, items, items.salesPrice.toIntSafely() * total,
+                                total.toString(), isError, items.name, items.productId, items.salesPrice,
+                                getDate(items.dates, onBindItemTicketListener.getSelectedDate()), packageName
+                            )
                         }
                     }
 
                     quantityEditor.editText.addTextChangedListener(textWatcher)
                     isListenerRegistered = true
                 }
+            }
+        }
 
+        private fun renderGeneralPackage(items: PackageItem) {
+            binding.run {
+                txtPilihTicket.show()
                 txtPilihTicket.setOnClickListener {
                     txtPilihTicket.visibility = View.GONE
                     greenDivider.visibility = View.VISIBLE
@@ -168,29 +262,23 @@ class EventPDPTicketItemPackageAdapter(
                     quantityEditor.subtractButton.visibility = View.VISIBLE
                     eventPDPTracking.onClickPackage(items, quantityEditor.getValue())
                 }
+            }
+        }
 
+        private fun renderForRecommendationPackage(items: PackageItem) {
+            with(binding) {
+                txtisRecommeded.show()
+                txtisRecommeded.text = root.context.resources.getString(R.string.ent_pdp_ticket_change_date)
                 txtisRecommeded.setOnClickListener {
                     onBindItemTicketListener.clickRecommendation(items.dates)
                 }
             }
         }
 
-        private fun renderForRecommendationPackage(items: PackageItem) {
+        private fun renderGeneralRecommendationPackage(items: PackageItem) {
             with(binding) {
-                root.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                    if (!hasFocus) {
-                        val imm = root.context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.hideSoftInputFromWindow(root.rootView.windowToken, Int.ZERO)
-                    }
-                }
-
-                txtPilihTicket.text = items.name
-                txtSubtitleTicket.text = items.description
-                txtSubtitleTicket.visibility = if (items.description.isNotEmpty()) View.VISIBLE else View.GONE
-                txtPriceTicket.text = getRupiahFormat(items.salesPrice.toIntSafely())
-
                 txtisRecommeded.show()
-                txtisRecommeded.text = root.context.resources.getString(R.string.ent_pdp_ticket_change_date)
+                txtisRecommeded.text = root.context.resources.getString(R.string.ent_pdp_ticket_recommended)
                 txtisRecommeded.setOnClickListener {
                     onBindItemTicketListener.clickRecommendation(items.dates)
                 }
@@ -200,11 +288,10 @@ class EventPDPTicketItemPackageAdapter(
         private fun showSoldOut() {
             with(binding) {
                 bgTicket.background = ContextCompat.getDrawable(root.context, R.drawable.ent_pdp_ticket_sold_out)
-                txtPilihTicket.setTextColor(root.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
-                txtTermurahTicket.setTextColor(root.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
-                txtSubtitleTicket.setTextColor(root.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
-                txtPriceTicket.text = root.context.resources.getString(R.string.ent_pdp_ticket_sold_out)
-                txtPriceTicket.setTextColor(root.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
+                txtPilihTicket.setTextColor(root.context.resources.getColor(unifyprinciplesR.color.Unify_NN950_44))
+                txtTermurahTicket.setTextColor(root.context.resources.getColor(unifyprinciplesR.color.Unify_NN950_44))
+                txtSubtitleTicket.setTextColor(root.context.resources.getColor(unifyprinciplesR.color.Unify_NN950_44))
+                txtPriceTicket.hide()
             }
         }
     }
