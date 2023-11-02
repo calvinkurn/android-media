@@ -35,13 +35,10 @@ class DownloadManagerNakamaProgressDialog(
 
     private val downloadCompleteReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
+//            hideProgressDialog()
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-            if (id == downloadID) {
-                if (id == -1L) {
-                    hideProgressDialog()
-                } else {
-                    handleDownloadCompletion()
-                }
+            if (downloadID == id) {
+                handleDownloadCompletion()
             }
         }
     }
@@ -54,32 +51,33 @@ class DownloadManagerNakamaProgressDialog(
         showProgressDialog()
         val request = getDownloadRequest(apkUrl)
 
-        downloadID = downloadManager?.enqueue(request) ?: -1L
-
         weakActivity.get()?.registerReceiver(
             downloadCompleteReceiver,
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         )
+
+        downloadID = downloadManager?.enqueue(request) ?: -1L
     }
 
     private fun handleDownloadCompletion() {
         val query = DownloadManager.Query()
         query.setFilterById(downloadID)
-        val cursor = downloadManager?.query(query)
-
-        val statusColumnIndex = cursor?.getColumnIndex(DownloadManager.COLUMN_STATUS) ?: -1
-        val totalSizeColumnIndex =
-            cursor?.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES) ?: -1
-        val downloadedColumnIndex =
-            cursor?.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR) ?: -1
 
         var finishDownload = false
-
         while (!finishDownload) {
+            val cursor = downloadManager?.query(query)
+
+            val statusColumnIndex = cursor?.getColumnIndex(DownloadManager.COLUMN_STATUS) ?: -1
+            val totalSizeColumnIndex =
+                cursor?.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES) ?: -1
+            val downloadedColumnIndex =
+                cursor?.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR) ?: -1
+
             if (statusColumnIndex != -1) {
                 if (cursor?.moveToFirst() == true) {
                     when (cursor.getInt(statusColumnIndex)) {
                         DownloadManager.STATUS_SUCCESSFUL -> {
+                            progressDialog?.progress = MAX_PROGRESS
                             finishDownload = true
                             changeStyleAndHideProgressDialog()
                         }
@@ -113,18 +111,23 @@ class DownloadManagerNakamaProgressDialog(
                     }
                 }
             }
+            cursor?.close()
         }
-
-        cursor?.close()
     }
 
     private fun getDownloadRequest(
-        apkUrl: String
+        apkUrl: String,
+        authorization: String = ""
     ): DownloadManager.Request {
         val fileName = getFileNameFromUrl(apkUrl)
+
         return DownloadManager.Request(Uri.parse(apkUrl))
             .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+            .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
             .setTitle(fileName)
+//            .addRequestHeader(HEADER_AUTHORIZATION, authorization)
+            .setAllowedOverRoaming(true)
+            .setAllowedOverMetered(true)
             .setDescription(fileName)
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
     }

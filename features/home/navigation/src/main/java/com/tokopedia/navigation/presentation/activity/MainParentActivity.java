@@ -43,6 +43,7 @@ import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver;
 import com.tokopedia.abstraction.base.view.model.InAppCallback;
+import com.tokopedia.abstraction.base.view.nakamaupdate.DownloadManagerNakamaDialog;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -112,6 +113,7 @@ import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -249,6 +251,8 @@ public class MainParentActivity extends BaseActivity implements
 
     private LottieBottomNavbar bottomNavigation;
 
+    private DownloadManagerNakamaDialog downloadManagerNakamaDialog;
+
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -294,6 +298,7 @@ public class MainParentActivity extends BaseActivity implements
         }
         cacheManager = PreferenceManager.getDefaultSharedPreferences(this);
         appUpdate = new FirebaseRemoteAppUpdate(this);
+        initDownloadManagerDialog();
         createView(savedInstanceState);
         WeaveInterface executeEventsWeave = new WeaveInterface() {
             @NotNull
@@ -310,6 +315,12 @@ public class MainParentActivity extends BaseActivity implements
             pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
         }
         sendNotificationUserSetting();
+    }
+
+    private void initDownloadManagerDialog() {
+        if (downloadManagerNakamaDialog == null) {
+            downloadManagerNakamaDialog = new DownloadManagerNakamaDialog(new WeakReference(this));
+        }
     }
 
     private void sendNotificationUserSetting() {
@@ -731,6 +742,7 @@ public class MainParentActivity extends BaseActivity implements
         // if user is downloading the update (in app update feature),
         // check if the download is finished or is in progress
         checkForInAppUpdateInProgressOrCompleted();
+        showDownloadManagerDialog();
         presenter.get().onResume();
         if (userSession.get().isLoggedIn() && isUserFirstTimeLogin) {
             int position = HOME_MENU;
@@ -757,6 +769,12 @@ public class MainParentActivity extends BaseActivity implements
         if (pageLoadTimePerformanceCallback != null && pageLoadTimePerformanceCallback.getCustomMetric().containsKey(MAIN_PARENT_ON_RESUME_METRICS) && !getIntent().getBooleanExtra(MAIN_PARENT_LOAD_ON_RESUME, false)) {
             pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_RESUME_METRICS);
             getIntent().putExtra(MAIN_PARENT_LOAD_ON_RESUME, true);
+        }
+    }
+
+    private void showDownloadManagerDialog() {
+        if (downloadManagerNakamaDialog != null) {
+            downloadManagerNakamaDialog.showDialog();
         }
     }
 
@@ -792,6 +810,9 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (downloadManagerNakamaDialog != null) {
+            downloadManagerNakamaDialog.getWeakActivity().clear();
+        }
         if (presenter != null)
             presenter.get().onDestroy();
     }

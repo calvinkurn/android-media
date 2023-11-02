@@ -112,6 +112,7 @@ class DownloadManagerNakamaDialog(
         const val PRE_APP_DISTRIBUTION_EXPIRED_TIME = "expired_time"
         const val PRE_APP_DISTRIBUTION_TIMESTAMP = "timestamp"
 
-        const val APK_URL = "https://jenkins-android.tokopedia.net/job/bundle-internal-nakama/52/artifact/android_repo/apks/universal.apk"
+//        const val APK_URL = "https://jenkins-android.tokopedia.net/job/bundle-internal-nakama/52/artifact/android_repo/apks/universal.apk"
+        const val APK_URL = "https://images.tokopedia.net/img/android/shop_score/ic_shop_score_penalty_empty.png"
     }
 }
