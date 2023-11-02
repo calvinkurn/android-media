@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.content.common.producttag.view.adapter.viewholder.LoadingViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.CategoryInspirationViewHolder
@@ -51,7 +52,12 @@ internal class CategoryInspirationItemDecoration(
             is CategoryInspirationViewHolder.Placeholder -> {
                 outRect.itemOffsetsInspirationCard(parent, view, state)
             }
-            else -> outRect.itemOffsetsElse()
+            is LoadingViewHolder -> {
+                outRect.itemOffsetsLoading()
+            }
+            else -> {
+                outRect.itemOffsetsElse()
+            }
         }
 
         outRect.itemOffsetsBottom(parent, view, state)
@@ -105,6 +111,10 @@ internal class CategoryInspirationItemDecoration(
                 offset16
             }
         }
+    }
+
+    private fun Rect.itemOffsetsLoading() {
+        top = offset12
     }
 
     private fun Rect.itemOffsetsElse() {
