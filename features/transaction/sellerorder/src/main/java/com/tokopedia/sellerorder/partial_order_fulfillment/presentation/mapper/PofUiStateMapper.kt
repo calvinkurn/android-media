@@ -160,8 +160,10 @@ class PofUiStateMapper @Inject constructor() {
             .orEmpty()
             .filterNotNull()
         val pofStatus = pofInfoRequestState.data.infoRequestPartialOrderFulfillment?.pofStatus.orZero()
+        val quantityChanged = quantityEditorDataList.any { it.quantity != it.maxQuantity }
         return UiState(
             title = mapTitle(pofStatus),
+            showResetButton = pofStatus == STATUS_INITIAL && quantityChanged,
             items = mapItemsOnGetPofInfoSuccess(
                 sendPofRequestState,
                 detailsOriginal,

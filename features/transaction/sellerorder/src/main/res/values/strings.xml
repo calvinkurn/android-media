@@ -355,6 +355,7 @@
     <!-- SOM POF -->
     <string name="som_pof_title_request">Kirim Pesanan Sebagian</string>
     <string name="som_pof_title_result">Detail Pesanan Sebagian</string>
+    <string name="som_pof_action_reset">Reset</string>
     <string name="som_pof_summary_title">Rincian Harga</string>
     <string name="som_pof_product_list_header_left_label">DETAIL PRODUK</string>
     <string name="som_pof_product_list_header_right_label">BARANG TERSEDIA</string>

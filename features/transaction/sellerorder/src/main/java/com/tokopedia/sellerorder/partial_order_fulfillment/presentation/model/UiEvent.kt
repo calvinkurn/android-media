@@ -10,6 +10,7 @@ sealed interface UiEvent {
         val initialPofStatus: Int
     ) : UiEvent
 
+    object OnClickResetPofForm : UiEvent
     object ClickRetryOnErrorState : UiEvent
     object OnClickRetryFetchPofEstimate : UiEvent
     object OnClickOpenPofInfoSummary : UiEvent

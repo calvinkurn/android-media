@@ -15,6 +15,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_POF_STATUS
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.BottomSheetPofBinding
 import com.tokopedia.sellerorder.partial_order_fulfillment.di.PofComponent
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.adapter.PofAdapter
@@ -112,6 +113,7 @@ class PofBottomSheet : BottomSheetUnify(),
             viewModel.uiState.collectLatest { uiState ->
                 Handler(Looper.getMainLooper()).post {
                     setTitle(uiState.title.getStringWithDefaultValue(context))
+                    updateResetButton(uiState.showResetButton)
                     updateBody(uiState.items)
                     updateFooter(uiState.footerUiState)
                     updateSummaryBottomSheetUi(uiState.bottomSheetSummaryUiState)
@@ -149,6 +151,14 @@ class PofBottomSheet : BottomSheetUnify(),
     private fun onCloseBottomSheet() {
         activity?.setResult(Activity.RESULT_OK)
         activity?.finish()
+    }
+
+    private fun updateResetButton(show: Boolean) {
+        if (show) {
+            setAction(getString(R.string.som_pof_action_reset)) { viewModel.onEvent(UiEvent.OnClickResetPofForm) }
+        } else {
+            clearAction()
+        }
     }
 
     private fun updateBody(items: List<PofVisitable>) {

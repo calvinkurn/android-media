@@ -251,6 +251,7 @@ class PofViewModel @Inject constructor(
                     is UiEvent.None -> { /* noop */ }
                     is UiEvent.OnClickDismissSummaryBottomSheet -> onClickDismissSummaryBottomSheet()
                     is UiEvent.OnClickOpenPofInfoSummary -> onClickOpenPofInfoSummary()
+                    is UiEvent.OnClickResetPofForm -> onClickResetPofForm()
                     is UiEvent.OnClickRetryFetchPofEstimate -> onClickRetryFetchPofEstimate()
                     is UiEvent.OnClickSendPof -> onClickSendPof(event)
                     is UiEvent.OpenScreen -> onOpenScreen(event)
@@ -323,6 +324,16 @@ class PofViewModel @Inject constructor(
 
     private suspend fun onClickOpenPofInfoSummary() {
         showBottomSheetSummary.emit(true)
+    }
+
+    private suspend fun onClickResetPofForm() {
+        getPofInfoRequestState.value.let { requestState ->
+            if (requestState is RequestState.Success) {
+                quantityEditorDataList.value = pofUiStateMapper
+                    .mapInitialQuantityEditorData(requestState.data)
+                delayFetchPofEstimate.emit(DELAY_FETCH_INITIAL_POF_ESTIMATE)
+            }
+        }
     }
 
     private suspend fun onClickRetryFetchPofEstimate() {
