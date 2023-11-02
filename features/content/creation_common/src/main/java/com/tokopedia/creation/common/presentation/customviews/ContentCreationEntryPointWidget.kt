@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -26,10 +29,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.creation.common.analytics.ContentCreationAnalytics
 import com.tokopedia.creation.common.di.ContentCreationComponent
 import com.tokopedia.creation.common.di.ContentCreationModule
 import com.tokopedia.creation.common.di.DaggerContentCreationComponent
 import com.tokopedia.creation.common.presentation.bottomsheet.ContentCreationBottomSheet
+import com.tokopedia.creation.common.presentation.model.ContentCreationAuthorEnum
+import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.creation.common.presentation.viewmodel.ContentCreationViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
@@ -56,10 +62,12 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
 
     private val component = createComponent()
     private val factory: ViewModelProvider.Factory = component.contentCreationFactory()
+    private val analytics: ContentCreationAnalytics = component.contentCreationAnalytics()
 
     private var viewModel: ContentCreationViewModel? = null
     var creationBottomSheetListener: ContentCreationBottomSheet.ContentCreationBottomSheetListener? =
         null
+    var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Unknown
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -72,6 +80,7 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
         getFragmentManager()?.addFragmentOnAttachListener { _, childFragment ->
             when (childFragment) {
                 is ContentCreationBottomSheet -> {
+                    childFragment.widgetSource = widgetSource
                     childFragment.shouldShowPerformanceAction = true
                     creationBottomSheetListener?.let {
                         childFragment.listener = it
@@ -86,12 +95,26 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
         val creationConfig = viewModel?.creationConfig?.collectAsStateWithLifecycle()?.value
 
         if (creationConfig is Success && creationConfig.data.creationItems.isNotEmpty()) {
+
+            if (widgetSource != ContentCreationEntryPointSource.Unknown) {
+                LaunchedEffect(Unit) {
+                    analytics.eventImpressionContentCreationEndpointWidget(
+                        viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
+                        widgetSource
+                    )
+                }
+            }
+
             ContentCreationEntryPointComponent(
                 iconId = IconUnify.VIDEO,
                 text = MethodChecker.fromHtml(stringResource(id = creationcommonR.string.content_creation_entry_point_desription))
                     .toAnnotatedString(),
                 buttonText = stringResource(id = creationcommonR.string.content_creation_entry_point_button_label)
             ) {
+                analytics.clickContentCreationEndpointWidget(
+                    viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
+                    widgetSource
+                )
                 onClickListener()
 
                 getFragmentManager()?.let { fm ->
@@ -99,7 +122,7 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
                         .getFragment(fm, context.classLoader)
                         .show(
                             fm,
-                            creationConfig = creationConfig.data
+                            creationConfig = creationConfig.data,
                         )
                 }
             }
@@ -107,7 +130,7 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
     }
 
     fun fetchConfig() {
-        viewModel?.fetchConfig()
+        viewModel?.fetchConfig(widgetSource)
     }
 
     private fun createComponent(): ContentCreationComponent =

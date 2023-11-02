@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.creation.common.presentation.customviews.ContentCreationEntryPointWidget
+import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -201,6 +202,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                 widgetPlayRootContainer?.creationBottomSheetListener =
                     it.getContentCreationListener()
             }
+            widgetPlayRootContainer?.widgetSource = ContentCreationEntryPointSource.Shop
             widgetPlayRootContainer?.onClickListener = {
                 shopPageTrackingSGCPlayWidget?.onClickSGCContent(
                     shopId = modelComponent.shopPageHeaderDataModel?.shopId.orEmpty()
@@ -627,7 +629,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         } else {
             Ticker.TYPE_ANNOUNCEMENT
         }
-  
+
         tickerShopStatus?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 listenerHeader?.onShopStatusTickerClickableDescriptionClicked(linkUrl)
@@ -640,10 +642,13 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         } else {
             tickerShopStatus?.closeButtonVisibility = View.VISIBLE
         }
-        
+
         doOnDelayFinished(DELAY_DURATION_TICKER_MILLIS) {
             tickerShopStatus?.tickerTitle =
-                HtmlLinkHelper(context, shopOperationalHourStatus.tickerTitle).spannedString.toString()
+                HtmlLinkHelper(
+                    context,
+                    shopOperationalHourStatus.tickerTitle
+                ).spannedString.toString()
             tickerShopStatus?.setHtmlDescription(shopOperationalHourStatus.tickerMessage)
         }
     }
@@ -671,7 +676,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             ShopTickerType.DANGER -> Ticker.TYPE_ERROR
             else -> Ticker.TYPE_WARNING
         }
-      
+
         tickerShopStatus?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 // set tracker data based on shop status
@@ -727,7 +732,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                 tickerShopStatus?.closeButtonVisibility = View.VISIBLE
             }
         }
-        
+
         doOnDelayFinished(DELAY_DURATION_TICKER_MILLIS) {
             tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(statusTitle).toString()
             tickerShopStatus?.setHtmlDescription(
@@ -750,7 +755,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             }
         }
     }
-    
+
     private fun hideShopStatusTicker() {
         tickerShopStatus?.hide()
     }
@@ -920,7 +925,8 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     }
 
     fun startDynamicUspCycle(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>) {
-        val listDynamicUspValue = listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
+        val listDynamicUspValue =
+            listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
         if (listDynamicUspValue.isNotEmpty()) {
             timer.startTimer(CYCLE_DURATION) {
                 if (currentIndexUspDynamicValue == listDynamicUspValue.size - Int.ONE) {
