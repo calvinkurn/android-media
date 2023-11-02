@@ -151,7 +151,9 @@ class DiscoveryTDNBannerViewHolder(
         root.hide()
     }
 
-    private fun onTdnBannerClicked(bannerData: TopAdsImageViewModel) {
+    private fun onTdnBannerClicked(
+        bannerData: TopAdsImageViewModel
+    ) {
         viewModel?.apply {
             analytics?.trackTDNBannerClick(
                 componentsItem = components,
@@ -167,7 +169,9 @@ class DiscoveryTDNBannerViewHolder(
         }
     }
 
-    private fun onTdnBannerImpressed(bannerData: TopAdsImageViewModel) {
+    private fun onTdnBannerImpressed(
+        bannerData: TopAdsImageViewModel
+    ) {
         viewModel?.apply {
             analytics?.trackTDNBannerImpression(
                 componentsItem = components,
