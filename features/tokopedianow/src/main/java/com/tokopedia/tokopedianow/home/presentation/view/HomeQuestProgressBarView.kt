@@ -24,6 +24,7 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
         private const val STAR_SCALE_DOWN = 0.7f
         private const val PROGRESS_ANIM_START = 0
         private const val ANIM_DURATION = 600L
+        private const val DEFAULT_PROGRESS = 1
     }
 
     private val binding = LayoutTokopedianowQuestProgressBarViewBinding.inflate(
@@ -32,7 +33,7 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
         true
     )
 
-    private var progressAnimEnd = 0
+    private var progressAnimEnd = DEFAULT_PROGRESS
 
     fun bind(uiModel: HomeQuestWidgetUiModel) {
         binding.root.addOneTimeGlobalLayoutListener {
