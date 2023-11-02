@@ -24,7 +24,7 @@ data class SearchParamUiModel(
         }
 
     var rows: Int
-        get() = try { value[KEY_ROWS]?.toString()?.toIntOrZero() ?: LIMIT_PER_PAGE }
+        get() = try { value[KEY_ROWS]?.toString()?.toInt() ?: LIMIT_PER_PAGE }
                 catch (e: Exception) { LIMIT_PER_PAGE }
         set(newValue) {
             value[KEY_ROWS] = newValue
