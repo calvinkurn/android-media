@@ -3,6 +3,7 @@ package com.tokopedia.stories.creation.domain.usecase
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
@@ -19,10 +20,12 @@ class SetActiveProductTagUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
 ) : CoroutineUseCase<SetActiveProductTagRequest, SetActiveProductTagResponse>(dispatchers.io) {
 
-    override fun graphqlQuery(): String = ContentCreatorStorySetActiveProductTagsQuery().getQuery()
+    private val gqlQuery: GqlQueryInterface = ContentCreatorStorySetActiveProductTagsQuery()
+
+    override fun graphqlQuery(): String = gqlQuery.getQuery()
 
     override suspend fun execute(params: SetActiveProductTagRequest): SetActiveProductTagResponse {
-        return repository.request(ContentCreatorStorySetActiveProductTagsQuery(), params)
+        return repository.request(gqlQuery, params)
     }
 
     companion object {
