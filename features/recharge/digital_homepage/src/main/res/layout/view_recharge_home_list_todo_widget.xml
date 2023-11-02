@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginBottom="24dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -17,6 +18,7 @@
         tools:text="Saatnya bayar dan beli ini" />
 
     <FrameLayout
+        android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -26,13 +28,13 @@
             />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginStart="128dp"
             android:id="@+id/rv_todo_widget_first"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </FrameLayout>
 
     <com.tokopedia.unifyprinciples.Typography
+        android:layout_marginTop="8dp"
         android:id="@+id/title_todo_widget_second"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,6 +45,7 @@
         tools:text="Bebas cemas pakai Bayar Otomatis" />
 
     <FrameLayout
+        android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -52,7 +55,6 @@
             />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginStart="128dp"
             android:id="@+id/rv_todo_widget_second"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

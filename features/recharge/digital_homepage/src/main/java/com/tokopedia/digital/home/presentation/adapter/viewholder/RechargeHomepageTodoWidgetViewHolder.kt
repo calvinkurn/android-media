@@ -12,9 +12,12 @@ import com.tokopedia.digital.home.databinding.ViewRechargeHomeTodoWidgetPostRemi
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeHomepageTodoWidgetModel
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageTodoWidgetAdapterTypeFactory
+import com.tokopedia.digital.home.presentation.adapter.decoration.RechargeItemProductCardsDecorator
+import com.tokopedia.digital.home.presentation.adapter.decoration.RechargeTodoWidgetSpaceDecorator
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -22,16 +25,17 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.toDp
 
-class RechargeHomepageTodoWidgetViewHolder (
+class RechargeHomepageTodoWidgetViewHolder(
     val binding: ViewRechargeHomeListTodoWidgetBinding,
     val listener: RechargeHomepageItemListener,
     val todoWidgetListener: RechargeHomepageTodoWidgetListener
-): AbstractViewHolder<RechargeHomepageTodoWidgetModel>(binding.root) {
+) : AbstractViewHolder<RechargeHomepageTodoWidgetModel>(binding.root) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.view_recharge_home_list_todo_widget
         private const val SIZE_MAX = 2
+        const val SPACE_DP = 8
         private const val BAYAR_SEKALIGUS_TYPE = "BAYAR_SEKALIGUS"
         private const val POSTPAIDREMINDER_TYPE = "POSTPAIDREMINDER"
         private const val AUTOPAY_TYPE = "AUTOPAY"
@@ -45,7 +49,7 @@ class RechargeHomepageTodoWidgetViewHolder (
                 if (stickyLayoutFirst != null) {
                     rvTodoWidgetFirst.apply {
                         setMargin(
-                            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_128),
+                            getDimens(com.tokopedia.digital.home.R.dimen.product_card_width_bayar_sekaligus_todo_widget),
                             getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
                             getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
                             getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
@@ -68,12 +72,20 @@ class RechargeHomepageTodoWidgetViewHolder (
                 }
 
                 with(binding.rvTodoWidgetFirst) {
-                   val list = mapperTodoList(element.section.items.first().widgets)
-                   adapter = BaseAdapter(
-                       RechargeHomepageTodoWidgetAdapterTypeFactory(todoWidgetListener),
-                       list
-                   )
-                   layoutManager= LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+                    val list = mapperTodoList(element.section.items.first().widgets)
+                    adapter = BaseAdapter(
+                        RechargeHomepageTodoWidgetAdapterTypeFactory(todoWidgetListener),
+                        list
+                    )
+                    layoutManager =
+                        LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+                    val displayMetrics = itemView.context.resources.displayMetrics
+                    addItemDecoration(
+                        RechargeTodoWidgetSpaceDecorator(
+                            SPACE_DP.dpToPx(displayMetrics),
+                            (stickyLayoutFirst != null)
+                        )
+                    )
                 }
 
 
@@ -83,7 +95,7 @@ class RechargeHomepageTodoWidgetViewHolder (
                     if (stickyLayoutSecond != null) {
                         rvTodoWidgetSecond.apply {
                             setMargin(
-                                getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_128),
+                                getDimens(com.tokopedia.digital.home.R.dimen.product_card_width_bayar_sekaligus_todo_widget),
                                 getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
                                 getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
                                 getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
@@ -91,7 +103,8 @@ class RechargeHomepageTodoWidgetViewHolder (
                         }
                         viewStickyLayoutSecond.root.show()
                         viewStickyLayoutSecond.tgTitleTodoWidget.text = stickyLayoutSecond.title
-                        viewStickyLayoutSecond.tgSubTitleTodoWidget.text = stickyLayoutSecond.subtitle
+                        viewStickyLayoutSecond.tgSubTitleTodoWidget.text =
+                            stickyLayoutSecond.subtitle
                         viewStickyLayoutSecond.imgTodoWidgetBackground.loadImage(TokopediaImageUrl.RECHARGE_SUBHOME_TODO_WIDGET)
 
                     } else {
@@ -110,7 +123,18 @@ class RechargeHomepageTodoWidgetViewHolder (
                             RechargeHomepageTodoWidgetAdapterTypeFactory(todoWidgetListener),
                             mapperTodoList(element.section.items.second().widgets)
                         )
-                        layoutManager= LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+                        layoutManager = LinearLayoutManager(
+                            itemView.context,
+                            LinearLayoutManager.HORIZONTAL,
+                            false
+                        )
+                        val displayMetrics = itemView.context.resources.displayMetrics
+                        addItemDecoration(
+                            RechargeTodoWidgetSpaceDecorator(
+                                SPACE_DP.dpToPx(displayMetrics),
+                                (stickyLayoutSecond != null)
+                            )
+                        )
                     }
                 }
             }
@@ -122,7 +146,9 @@ class RechargeHomepageTodoWidgetViewHolder (
     class RechargeHomepageTodoWidgetPostReminderViewHolder(
         val binding: ViewRechargeHomeTodoWidgetPostReminderBinding,
         val todoWidgetListener: RechargeHomepageTodoWidgetListener
-    ): AbstractViewHolder<RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetPostReminderItemModel>(binding.root) {
+    ) : AbstractViewHolder<RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetPostReminderItemModel>(
+        binding.root
+    ) {
 
         companion object {
             @LayoutRes
@@ -130,10 +156,13 @@ class RechargeHomepageTodoWidgetViewHolder (
         }
 
         override fun bind(element: RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetPostReminderItemModel) {
-           renderCommonTodoLayout(binding, element.widget)
+            renderCommonTodoLayout(binding, element.widget)
         }
 
-        fun renderCommonTodoLayout(binding: ViewRechargeHomeTodoWidgetPostReminderBinding, widget: RechargeHomepageSections.Widgets) {
+        fun renderCommonTodoLayout(
+            binding: ViewRechargeHomeTodoWidgetPostReminderBinding,
+            widget: RechargeHomepageSections.Widgets
+        ) {
             with(binding) {
                 imgIconTodoWidget.loadImage(widget.iconUrl)
 
@@ -143,7 +172,7 @@ class RechargeHomepageTodoWidgetViewHolder (
                     imgCloseTodoWidget.hide()
                 }
 
-                tgCategoryNameTodoWidget.text= widget.title
+                tgCategoryNameTodoWidget.text = widget.title
                 tgProductNameTodoWidget.text = widget.subtitle
                 tgFavoriteNumberTodoWidget.text = widget.label
                 tgPriceTodoWidget.text = widget.price
@@ -186,7 +215,9 @@ class RechargeHomepageTodoWidgetViewHolder (
     class RechargeHomepageTodoWidgetAutoPayViewHolder(
         val binding: ViewRechargeHomeTodoWidgetAutopayBinding,
         val todoWidgetListener: RechargeHomepageTodoWidgetListener
-    ): AbstractViewHolder<RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayItemModel>(binding.root) {
+    ) : AbstractViewHolder<RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayItemModel>(
+        binding.root
+    ) {
 
         companion object {
             @LayoutRes
@@ -197,7 +228,10 @@ class RechargeHomepageTodoWidgetViewHolder (
             renderCommonTodoLayout(binding, element.widget)
         }
 
-        fun renderCommonTodoLayout(binding: ViewRechargeHomeTodoWidgetAutopayBinding, widget: RechargeHomepageSections.Widgets) {
+        fun renderCommonTodoLayout(
+            binding: ViewRechargeHomeTodoWidgetAutopayBinding,
+            widget: RechargeHomepageSections.Widgets
+        ) {
             with(binding) {
                 imgIconTodoWidget.loadImage(widget.iconUrl)
 
@@ -207,7 +241,7 @@ class RechargeHomepageTodoWidgetViewHolder (
                     imgCloseTodoWidget.hide()
                 }
 
-                tgCategoryNameTodoWidget.text= widget.title
+                tgCategoryNameTodoWidget.text = widget.title
                 tgProductNameTodoWidget.text = widget.subtitle
                 tgFavoriteNumberTodoWidget.text = widget.label
                 tgPriceTodoWidget.text = widget.price
@@ -263,9 +297,17 @@ class RechargeHomepageTodoWidgetViewHolder (
             it.type != BAYAR_SEKALIGUS_TYPE
         }.forEach {
             val item = when (it.type) {
-                AUTOPAY_TYPE -> RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayItemModel(it)
-                POSTPAIDREMINDER_TYPE -> RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetPostReminderItemModel(it)
-                else -> RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayItemModel(it)
+                AUTOPAY_TYPE -> RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayItemModel(
+                    it
+                )
+
+                POSTPAIDREMINDER_TYPE -> RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetPostReminderItemModel(
+                    it
+                )
+
+                else -> RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayItemModel(
+                    it
+                )
             }
 
             itemList.add(item)
