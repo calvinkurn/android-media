@@ -67,6 +67,7 @@ import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment;
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.kotlin.extensions.view.StringExtKt;
 import com.tokopedia.navigation.GlobalNavAnalytics;
@@ -86,7 +87,6 @@ import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
 import com.tokopedia.navigation.util.FeedCoachMark;
-import com.tokopedia.navigation.util.IconJumperUtil;
 import com.tokopedia.navigation.util.MainParentServerLogger;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
@@ -287,6 +287,7 @@ public class MainParentActivity extends BaseActivity implements
         }
 
         super.onCreate(savedInstanceState);
+        HomeRollenceController.fetchIconJumperValue();
         initInjector();
         presenter.get().setView(this);
         if (savedInstanceState != null) {
@@ -335,7 +336,6 @@ public class MainParentActivity extends BaseActivity implements
         if (userSession.get().hasShop()) {
             moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_SELLER);
         }
-        moduleNameList.add(DeeplinkDFMapper.DF_DIGITAL);
         moduleNameList.add(DeeplinkDFMapper.DF_TRAVEL);
         moduleNameList.add(DeeplinkDFMapper.DF_ENTERTAINMENT);
         moduleNameList.add(DeeplinkDFMapper.DF_TOKOPEDIA_NOW);
@@ -1319,7 +1319,7 @@ public class MainParentActivity extends BaseActivity implements
 
     public void populateBottomNavigationView() {
         BottomMenu homeOrForYouMenu;
-        if (IconJumperUtil.isEnabledIconJumper()) {
+        if (HomeRollenceController.isIconJumper()) {
             homeOrForYouMenu = new BottomMenu(R.id.menu_home, getResources().getString(R.string.home),
                     new HomeForYouMenu(
                             getResources().getString(R.string.home),
@@ -1393,7 +1393,7 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public boolean isIconJumperEnabled() {
-        return IconJumperUtil.isEnabledIconJumper();
+        return HomeRollenceController.isIconJumper();
     }
 
     @Override

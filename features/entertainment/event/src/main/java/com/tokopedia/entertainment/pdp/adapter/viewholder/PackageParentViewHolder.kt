@@ -90,7 +90,9 @@ class PackageParentViewHolder(
                 title = value.name,
                 subtitle = subtitle,
                 expandableView = expandableLayout
-        )
+        ).apply {
+            setContentPadding(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
+        }
     }
 
     private fun renderForMainPackage(element: PackageV3) {

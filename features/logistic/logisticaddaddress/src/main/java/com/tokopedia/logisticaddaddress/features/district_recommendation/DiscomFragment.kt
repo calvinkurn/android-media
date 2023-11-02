@@ -23,7 +23,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class DiscomFragment :
-    DiscomBottomSheetRevamp.DiscomRevampListener,
+    DiscomBottomSheet.DiscomRevampListener,
     BaseDaggerFragment() {
     companion object {
 
@@ -74,7 +74,7 @@ class DiscomFragment :
     private var source: DiscomSource = DiscomSource.ShopAddress
     private var isGmsAvailable: Boolean = false
 
-    private var bottomSheet: DiscomBottomSheetRevamp? = null
+    private var bottomSheet: DiscomBottomSheet? = null
 
     private var binding by autoClearedNullable<FragmentDistrictRecommendationBinding>()
 
@@ -179,7 +179,7 @@ class DiscomFragment :
     }
 
     private fun openBottomSheet() {
-        bottomSheet = DiscomBottomSheetRevamp.show(
+        bottomSheet = DiscomBottomSheet.show(
             activity?.supportFragmentManager,
             this,
             source,

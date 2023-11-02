@@ -30,7 +30,7 @@ import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 import javax.inject.Inject
 import kotlin.math.abs
 
-class PenaltyMapper @Inject constructor(
+open class PenaltyMapper @Inject constructor(
     @ApplicationContext val context: Context?,
     private val shopScorePrefManager: ShopScorePrefManager
 ) {
@@ -228,7 +228,6 @@ class PenaltyMapper @Inject constructor(
                         colorPenalty = colorTypePenalty,
                         prefixDatePenalty = prefixDatePenaltyDetail,
                         descStatusPenalty = descStatusPenaltyDetail,
-                        isOldPage = false,
                         pageType = pageType
                     )
                 )
