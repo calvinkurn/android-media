@@ -88,14 +88,7 @@ class BalanceWidgetView : FrameLayout {
         if (element.balanceDrawerItemModels.isNotEmpty()) {
             subscriptionPosition = element.balancePositionSubscriptions
             balanceWidgetAdapter?.setVisitables(listOf(element))
-            if(!HomeRollenceController.isUsingAtf2Variant()) {
-                listener?.showHomeCoachmark(true, element)
-                rvBalance?.post {
-                    listener?.showHomeCoachmark(true, element)
-                }
-            } else {
-                listener?.showHomeCoachmark(false, element)
-            }
+            listener?.showHomeCoachmark(false, element)
         } else {
             balanceWidgetAdapter?.setVisitables(listOf(BalanceWidgetFailedModel()))
         }

@@ -12,11 +12,15 @@ class DeviceScreenHelper @Inject constructor(
 ) {
     fun isFoldableOrTablet(): Boolean {
         val isTablet = DeviceScreenInfo.isTablet(context)
-        val isFoldable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        val isFoldable = isFoldable()
+        return isFoldable || isTablet
+    }
+
+    fun isFoldable(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             context.packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_HINGE_ANGLE)
         } else {
             false
         }
-        return isFoldable || isTablet
     }
 }

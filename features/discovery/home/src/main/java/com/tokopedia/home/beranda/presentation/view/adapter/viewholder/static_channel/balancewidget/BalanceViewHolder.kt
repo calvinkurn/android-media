@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.BalanceWidgetTracking
+import com.tokopedia.home.beranda.helper.DeviceScreenHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_REWARDS
@@ -52,7 +53,7 @@ class BalanceViewHolder(
     private val subtitleLayoutParams by lazy { binding?.homeContainerBalance?.homeTvSubtitle?.layoutParams as? ConstraintLayout.LayoutParams }
     private val imageLayoutParams by lazy { binding?.homeContainerBalance?.homeIvLogoBalance?.layoutParams }
     private val loaderImageLayoutParams by lazy { binding?.shimmerItemBalanceWidget?.loaderBalanceImage?.layoutParams }
-    private val isAtf3 by lazy { HomeRollenceController.isUsingAtf3Variant() }
+    private val isAtf3 by lazy { HomeRollenceController.isUsingAtf3Variant(DeviceScreenHelper(itemView.context).isFoldableOrTablet()) }
 
     override fun bind(
         model: BalanceDrawerItemModel?,
