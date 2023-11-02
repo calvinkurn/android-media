@@ -2,6 +2,7 @@ package com.tokopedia.creation.common.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.creation.common.domain.ContentCreationConfigUseCase
 import com.tokopedia.creation.common.presentation.model.ContentCreationConfigModel
@@ -12,13 +13,15 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
  * Created By : Muhammad Furqan on 07/09/23
  */
 class ContentCreationViewModel @Inject constructor(
-    private val contentCreationConfigUseCase: ContentCreationConfigUseCase
+    private val contentCreationConfigUseCase: ContentCreationConfigUseCase,
+    private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
     private val _selectedCreationType = MutableStateFlow<ContentCreationItemModel?>(null)
@@ -39,7 +42,7 @@ class ContentCreationViewModel @Inject constructor(
                     return@launch
                 }
 
-                val response = contentCreationConfigUseCase(Unit)
+                val response = withContext(dispatchers.io) { contentCreationConfigUseCase(Unit) }
                 _creationConfig.value = Success(response)
             } catch (t: Throwable) {
                 _creationConfig.value = Fail(t)
