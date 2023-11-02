@@ -13,7 +13,9 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
 import com.tokopedia.unifycomponents.toPx
@@ -81,10 +83,10 @@ class DiscoveryTDNBannerViewHolder(
                     tdnBanners = tdnBanners,
                     cornerRadius = BANNER_CORNER_RADIUS_DP.toPx(),
                     onTdnBannerClicked = ::onTdnBannerClicked,
-                    onTdnBannerImpressed = ::onTopAdsImageViewImpression
+                    onTdnBannerImpressed = ::onTdnBannerImpressed
                 )
             } else {
-                root.hide()
+                hideWidget()
             }
         }
     }
@@ -92,7 +94,7 @@ class DiscoveryTDNBannerViewHolder(
     override fun onError(
         t: Throwable
     ) {
-        binding?.root?.hide()
+        binding?.hideWidget()
     }
 
     private fun DiscoveryTdnBannerViewBinding.setupLayout(
@@ -107,7 +109,7 @@ class DiscoveryTDNBannerViewHolder(
                 }
             }
         } else {
-            root.hide()
+            hideWidget()
         }
     }
 
@@ -131,14 +133,22 @@ class DiscoveryTDNBannerViewHolder(
     private fun DiscoveryTdnBannerViewBinding.getBannerData(
         component: ComponentsItem
     ) {
-        val dataItem =  component.data?.firstOrNull()
-        tdnBannerView.getTdnData(
-            source = "30",
-            adsCount = 10,
-            dimenId = 3,
-            depId = dataItem?.depID.orEmpty(),
-            productID = "2151054613"
-        )
+        component.data?.firstOrNull()?.run {
+            tdnBannerView.getTdnData(
+                source = inventoryId.orEmpty(),
+                adsCount = adsCount.orZero(),
+                dimenId = dimensionId.toIntSafely(),
+                depId = depID.orEmpty(),
+                productID = productId.orEmpty()
+            )
+        }
+    }
+
+    private fun DiscoveryTdnBannerViewBinding.hideWidget() {
+        headerView.removeAllViews()
+        headerView.hide()
+        tdnBannerView.hide()
+        root.hide()
     }
 
     private fun onTdnBannerClicked(bannerData: TopAdsImageViewModel) {
@@ -157,7 +167,7 @@ class DiscoveryTDNBannerViewHolder(
         }
     }
 
-    private fun onTopAdsImageViewImpression(bannerData: TopAdsImageViewModel) {
+    private fun onTdnBannerImpressed(bannerData: TopAdsImageViewModel) {
         viewModel?.apply {
             analytics?.trackTDNBannerImpression(
                 componentsItem = components,
