@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
-import com.tokopedia.tokochat.config.domain.TokoChatChannelUseCase
+import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
 import com.tokopedia.tokofood.feature.ordertracking.di.scope.TokoFoodOrderTrackingScope
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.ITokoFoodOrderCompletedMapper
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.ITokoFoodOrderLiveTrackingMapper
@@ -47,9 +47,9 @@ class TokoFoodOrderTrackingModule {
 
     @TokoFoodOrderTrackingScope
     @Provides
-    fun provideTokoChatChannelUseCase(
-        @TokoChatQualifier tokoChatChannelUseCase: TokoChatChannelUseCase
-    ): TokoChatChannelUseCase {
-        return tokoChatChannelUseCase
+    fun provideTokoChatGroupBookingUseCase(
+        @TokoChatQualifier tokoChatGroupBookingUseCase: TokoChatGroupBookingUseCase
+    ): TokoChatGroupBookingUseCase {
+        return tokoChatGroupBookingUseCase
     }
 }

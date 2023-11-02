@@ -5,7 +5,8 @@ import com.gojek.conversations.courier.BabbleCourierClient
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
-import com.tokopedia.tokochat.config.domain.TokoChatChannelUseCase
+import com.tokopedia.tokochat.config.domain.TokoChatCounterUseCase
+import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
 import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import com.tokopedia.tokochat.config.util.TokoChatCoroutineDispatchers
 import com.tokopedia.user.session.UserSession
@@ -60,7 +61,15 @@ object TokoChatConfigModule {
     fun provideTokoChatChannelUseCase(
         @TokoChatQualifier repository: TokoChatRepository,
         @TokoChatQualifier dispatchers: TokoChatCoroutineDispatchers
-    ): TokoChatChannelUseCase {
-        return TokoChatChannelUseCase(repository, dispatchers)
+    ): TokoChatGroupBookingUseCase {
+        return TokoChatGroupBookingUseCase(repository, dispatchers)
+    }
+
+    @Provides
+    @TokoChatQualifier
+    fun provideTokoChatCounterUseCase(
+        @TokoChatQualifier repository: TokoChatRepository
+    ): TokoChatCounterUseCase {
+        return TokoChatCounterUseCase(repository)
     }
 }

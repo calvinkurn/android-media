@@ -1,6 +1,5 @@
 package com.tokopedia.tokochat.config.domain
 
-import androidx.lifecycle.asFlow
 import com.gojek.conversations.babble.network.data.OrderChatType
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.network.ConversationsNetworkError
@@ -13,29 +12,22 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 /**
  * Predefined common usage for TokoChat related feature
+ * Specific for initiation of channel (group booking)
  */
-open class TokoChatChannelUseCase@Inject constructor(
+open class TokoChatGroupBookingUseCase@Inject constructor(
     private val repository: TokoChatRepository,
     dispatchers: TokoChatCoroutineDispatchers
 ) {
 
     private val _groupBookingResultFlow = MutableSharedFlow<TokoChatResult<String>>()
     val groupBookingResultFlow = _groupBookingResultFlow.asSharedFlow()
-
-    private val _unreadCounterFlow = MutableStateFlow<TokoChatResult<Int>>(TokoChatResult.Loading)
-    val unreadCounterFlow = _unreadCounterFlow.asStateFlow()
 
     private val supervisorJob = SupervisorJob()
     private val scope = CoroutineScope(dispatchers.main + supervisorJob)
@@ -81,17 +73,6 @@ open class TokoChatChannelUseCase@Inject constructor(
                 }
             }
         }
-    }
-
-    suspend fun fetchUnreadCount(channelId: String) {
-        repository.getConversationRepository()
-            ?.getUnreadCountForGroupBookings(channelId)
-            ?.asFlow()
-            ?.map { TokoChatResult.Success(it) }
-            ?.catch { TokoChatResult.Error(it) }
-            ?.collectLatest {
-                _unreadCounterFlow.emit(it)
-            }
     }
 
     fun cancel() {

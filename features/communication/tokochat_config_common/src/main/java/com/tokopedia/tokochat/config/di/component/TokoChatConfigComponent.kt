@@ -9,7 +9,8 @@ import com.tokopedia.tokochat.config.di.module.TokoChatConfigConversationModule
 import com.tokopedia.tokochat.config.di.module.TokoChatConfigModule
 import com.tokopedia.tokochat.config.di.module.TokoChatConfigNetworkModule
 import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
-import com.tokopedia.tokochat.config.domain.TokoChatChannelUseCase
+import com.tokopedia.tokochat.config.domain.TokoChatCounterUseCase
+import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
 import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import dagger.Component
 import retrofit2.Retrofit
@@ -43,5 +44,8 @@ interface TokoChatConfigComponent {
     fun getRemoteConfig(): RemoteConfig
 
     @TokoChatQualifier
-    fun getTokoChatChannelUseCase(): TokoChatChannelUseCase
+    fun getTokoChatGroupBookingUseCase(): TokoChatGroupBookingUseCase
+
+    @TokoChatQualifier
+    fun getTokoChatCounterUseCase(): TokoChatCounterUseCase
 }
