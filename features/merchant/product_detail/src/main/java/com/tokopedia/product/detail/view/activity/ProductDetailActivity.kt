@@ -364,7 +364,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
                     view = findViewById<View>(android.R.id.content).getRootView(),
                     text = "PDP Perf\n TTIL=${summaryModel.ttil()}\n Prefetch=$prefetchTime",
                     duration = Toaster.LENGTH_INDEFINITE
-                )
+                ).show()
             }
         }
 
