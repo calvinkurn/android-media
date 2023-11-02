@@ -94,7 +94,8 @@ class MultiComponentMapper @Inject constructor(
             isFromCache = isFromCache,
             emptyState = tabConfig.emptyStateModel.mapToUiModel(),
             useRealtime = tabConfig.useRealtime,
-            sectionId = tabConfig.sectionId.toString()
+            sectionId = tabConfig.sectionId.toString(),
+            isMultiComponentWidget = true
         )
     }
 
@@ -122,7 +123,8 @@ class MultiComponentMapper @Inject constructor(
             emptyState = tabConfig.emptyStateModel.mapToUiModel(),
             useRealtime = tabConfig.useRealtime,
             isComparePeriodOnly = tabConfig.isComparePeriodOnly,
-            sectionId = tabConfig.sectionId.toString()
+            sectionId = tabConfig.sectionId.toString(),
+            isMultiComponentWidget = true
         )
     }
 }

@@ -14,6 +14,7 @@ object TodoWidgetMapper {
 
     fun HomeTodoWidgetData.Config.getAsChannelConfig() = ChannelConfig(
         dividerType = dividerType,
+        styleParam = styleParam,
         dividerSize = styleParam.parseDividerSize(),
         borderStyle = styleParam.parseBorderStyle(),
         imageStyle = styleParam.parseImageStyle()
