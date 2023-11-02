@@ -46,8 +46,12 @@ object Logger {
 
         val connectionType = NetworkManager.getConnectionType(context)
 
+        val sourceId = getSourceId(param.url)
+        if (sourceId.isEmpty()) return
+
         val data = mapOf(
             "url" to param.url,
+            "source_id" to sourceId,
             "page_name" to activityName,
             "file_size" to fileSize,
             "load_time" to param.requestLoadTime,
@@ -82,6 +86,33 @@ object Logger {
             javaClass.name.split(".").last()
         } catch (ignored: Throwable) {
             "None"
+        }
+    }
+
+    private fun getSourceId(url: String): String {
+        val baseImgUrl = "https://images.tokopedia.net/img/"
+        if (!url.startsWith(baseImgUrl)) return ""
+
+        val segments = url.split("/")
+        val startIndex = segments.indexOf("img")
+
+        if (startIndex == -1) return ""
+
+        val sourceIdCachedIndex = 3
+        val sourceIdPristineIndex = 1
+
+        return when {
+            // cached: /img/cache/{size}/{source_id}
+            url.contains("cache") && segments.size > startIndex + sourceIdCachedIndex -> {
+                segments[startIndex + sourceIdCachedIndex]
+            }
+
+            // pristine: /img/{source_id}
+            segments.size > startIndex + sourceIdPristineIndex -> {
+                segments[startIndex + sourceIdPristineIndex]
+            }
+
+            else -> ""
         }
     }
 
