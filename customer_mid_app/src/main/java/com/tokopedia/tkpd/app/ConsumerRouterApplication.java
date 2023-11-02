@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.newrelic.agent.android.FeatureFlag;
 import com.newrelic.agent.android.NewRelic;
 import com.scp.auth.common.utils.ScpRefreshHelper;
 import com.scp.auth.common.utils.ScpUtils;
@@ -176,9 +177,20 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private void initializationNewRelic() {
         boolean isEnableInitNrInAct = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY);
         if (isEnableInitNrInAct) {
+            enableNetworkRequestNewRelic();
+            enableCrashReportingNewRelic();
             NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(ConsumerRouterApplication.this);
         }
     }
+
+    private void enableNetworkRequestNewRelic() {
+        NewRelic.enableFeature(FeatureFlag.NetworkRequests);
+    }
+
+    private void enableCrashReportingNewRelic() {
+        NewRelic.enableFeature(FeatureFlag.CrashReporting);
+    }
+
 
     private void syncFcmToken() {
         SyncFcmTokenService.Companion.startService(this);
