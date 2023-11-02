@@ -512,7 +512,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    private void handleAppLinkBottomNavigation() {
+    private void handleAppLinkBottomNavigation(boolean isFirstInit) {
 
         if (bottomNavigation == null) return;
 
@@ -533,7 +533,7 @@ public class MainParentActivity extends BaseActivity implements
             case RECOMENDATION_LIST:
             case HOME_MENU:
             default:
-                bottomNavigation.setSelected(HOME_MENU);
+                setHomeNavSelected(isFirstInit, tabPosition);
                 break;
         }
     }
@@ -546,7 +546,7 @@ public class MainParentActivity extends BaseActivity implements
 
         setIntent(intent);
         showSelectedPage();
-        handleAppLinkBottomNavigation();
+        handleAppLinkBottomNavigation(false);
     }
 
     private void initInjector() {
@@ -1317,6 +1317,12 @@ public class MainParentActivity extends BaseActivity implements
         return embracePageName;
     }
 
+    private void setHomeNavSelected(boolean isFirstInit, int homePosition) {
+        if (isFirstInit) {
+            bottomNavigation.setSelected(homePosition);
+        }
+    }
+
     public void populateBottomNavigationView() {
         BottomMenu homeOrForYouMenu;
         if (HomeRollenceController.isIconJumper()) {
@@ -1347,7 +1353,7 @@ public class MainParentActivity extends BaseActivity implements
         menu.add(new BottomMenu(R.id.menu_wishlist, getResources().getString(R.string.wishlist), null, R.raw.bottom_nav_wishlist, R.raw.bottom_nav_wishlist_to_enabled, R.raw.bottom_nav_wishlist_dark, R.raw.bottom_nav_wishlist_to_enabled_dark, R.drawable.ic_bottom_nav_wishlist_active, R.drawable.ic_bottom_nav_wishlist_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         menu.add(new BottomMenu(R.id.menu_uoh, getResources().getString(R.string.uoh), null, R.raw.bottom_nav_transaction, R.raw.bottom_nav_transaction_to_enabled, R.raw.bottom_nav_transaction_dark, R.raw.bottom_nav_transaction_to_enabled_dark, R.drawable.ic_bottom_nav_uoh_active, R.drawable.ic_bottom_nav_uoh_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         bottomNavigation.setMenu(menu);
-        handleAppLinkBottomNavigation();
+        handleAppLinkBottomNavigation(true);
     }
 
     private void gotoNewUserZonePage() {
