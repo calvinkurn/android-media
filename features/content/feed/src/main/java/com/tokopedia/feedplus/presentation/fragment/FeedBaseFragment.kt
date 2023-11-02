@@ -28,6 +28,7 @@ import com.tokopedia.content.common.util.reduceDragSensitivity
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.creation.common.consts.ContentCreationConsts
 import com.tokopedia.creation.common.presentation.bottomsheet.ContentCreationBottomSheet
+import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
@@ -69,9 +70,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.tokopedia.content.common.R as contentcommonR
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 import com.tokopedia.creation.common.R as creationcommonR
 
 /**
@@ -188,6 +186,7 @@ class FeedBaseFragment :
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
             when (fragment) {
                 is ContentCreationBottomSheet -> {
+                    fragment.widgetSource = ContentCreationEntryPointSource.Feed
                     fragment.listener = this
                     fragment.shouldShowPerformanceAction = false
                 }
@@ -316,10 +315,6 @@ class FeedBaseFragment :
 
     private fun showSwipeOnboarding() {
         binding.viewVerticalSwipeOnboarding.showAnimated()
-    }
-
-    override fun trackViewPerformanceClicked() {
-        /* TODO : Add Analytics, if any */
     }
 
     private fun setupView() {
