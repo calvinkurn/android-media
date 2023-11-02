@@ -32,6 +32,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -173,7 +174,9 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        navigator?.navigateOnRestored(savedInstanceState, lifecycleScope)
+        binding?.sahBottomNav?.addOneTimeGlobalLayoutListener {
+            navigator?.navigateOnRestored(savedInstanceState, lifecycleScope)
+        }
     }
 
     override fun onResume() {
