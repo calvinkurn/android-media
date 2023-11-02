@@ -62,7 +62,7 @@ object CatalogTrackerConstant {
     const val EVENT_CLICK_SEARCH_COMPARISON = "click search bar on comparison"
     const val EVENT_CLICK_COMPARE_ON_COMPARISON = "click bandingkan on comparison"
     const val EVENT_IMPRESSION_COMPARISON_DETAIL = "impress catalog comparison"
-    const val EVENT_CLICK_CHANGE_COMPARISON_ON_DETAIL = "click change catalog"
+    const val EVENT_CLICK_CHANGE_COMPARISON_DETAIL = "click change catalog"
 
     const val EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE = "catalog page reimagined - main page"
     const val EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_PRODUCT_LIST = "catalog page reimagined - product list"
