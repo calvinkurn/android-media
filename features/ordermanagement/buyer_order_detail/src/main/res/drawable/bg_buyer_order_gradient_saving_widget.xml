@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
         android:angle="90"
-        android:endColor="#C2FFF0"
-        android:startColor="#FFFFFF"
+        android:endColor="@color/buyer_order_detail_dms_saving_widget_end"
+        android:startColor="@color/buyer_order_detail_dms_saving_widget_start"
         android:type="linear" />
 </shape>

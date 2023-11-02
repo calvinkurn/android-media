@@ -17,6 +17,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.view.DarkModeUtil.getHtmlTextDarkModeSupport
 
 class SavingsWidgetBottomSheet : BottomSheetUnify() {
 
@@ -58,11 +59,17 @@ class SavingsWidgetBottomSheet : BottomSheetUnify() {
             val bindItem = ItemBuyerOrderDetailSavingWidgetDetailBinding.inflate(layoutInflater)
 
             bindItem.tvLabelSavingWidget.showIfWithBlock(component.label.isNotEmpty()) {
-                text = HtmlLinkHelper(ctx, component.label).spannedString
+                text = HtmlLinkHelper(
+                    ctx,
+                    getHtmlTextDarkModeSupport(ctx, component.label)
+                ).spannedString
             }
 
             bindItem.tvValueSavingWidget.showIfWithBlock(component.value.isNotEmpty()) {
-                text = HtmlLinkHelper(ctx, component.value).spannedString
+                text = HtmlLinkHelper(
+                    ctx,
+                    getHtmlTextDarkModeSupport(ctx, component.value)
+                ).spannedString
             }
 
             bindItem.imgSavingWidgetPlus.showIfWithBlock(component.imageUrl.isNotEmpty()) {
@@ -85,13 +92,18 @@ class SavingsWidgetBottomSheet : BottomSheetUnify() {
             bindItem.tvLabelSavingWidget.showIfWithBlock(plusFooter.footerLabel.isNotEmpty()) {
                 setType(Typography.DISPLAY_2)
                 setWeight(Typography.BOLD)
-                text = HtmlLinkHelper(ctx, plusFooter.footerLabel).spannedString
+                text = HtmlLinkHelper(
+                    ctx, getHtmlTextDarkModeSupport(ctx, plusFooter.footerLabel)
+                ).spannedString
             }
 
             bindItem.tvValueSavingWidget.showIfWithBlock(plusFooter.footerValue.isNotEmpty()) {
                 setType(Typography.DISPLAY_2)
                 setWeight(Typography.BOLD)
-                text = HtmlLinkHelper(ctx, plusFooter.footerValue).spannedString
+                text = HtmlLinkHelper(
+                    ctx,
+                    getHtmlTextDarkModeSupport(ctx, plusFooter.footerValue)
+                ).spannedString
             }
 
             binding?.root?.addView(bindItem.root)

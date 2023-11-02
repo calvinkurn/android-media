@@ -26,6 +26,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyImageButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.DarkModeUtil
 
 class BuyerOrderDetailStickyActionButton @JvmOverloads constructor(
     context: Context,
@@ -161,11 +162,19 @@ class BuyerOrderDetailStickyActionButton @JvmOverloads constructor(
         savingWidgetButton?.show()
         val tickerData = savingsWidgetUiModel.plusTicker
         leftTextSavingWidget?.showIfWithBlock(tickerData.leftText.isNotEmpty()) {
-            text = HtmlLinkHelper(context, tickerData.leftText).spannedString
+            text = HtmlLinkHelper(
+                context, DarkModeUtil.getHtmlTextDarkModeSupport(
+                    context,
+                    tickerData.leftText
+                )
+            ).spannedString
         }
 
         rightTextSavingWidget?.showIfWithBlock(tickerData.rightText.isNotEmpty()) {
-            text = HtmlLinkHelper(context, tickerData.rightText).spannedString
+            text = HtmlLinkHelper(context, DarkModeUtil.getHtmlTextDarkModeSupport(
+                context,
+                tickerData.rightText
+            )).spannedString
         }
 
         imgCenterSavingWidget?.showIfWithBlock(tickerData.imageUrl.isNotEmpty()) {
