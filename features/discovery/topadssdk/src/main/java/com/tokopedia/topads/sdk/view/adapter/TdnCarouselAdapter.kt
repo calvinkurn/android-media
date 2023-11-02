@@ -28,11 +28,11 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import timber.log.Timber
 
 class TdnCarouselAdapter(
-    private val onTdnBannerClicked: (applink: String) -> Unit,
+    private val onTdnBannerClicked: (imageData: TopAdsImageViewModel) -> Unit,
     private val cornerRadius: Int,
     private val isUsingInfiniteScroll: Boolean,
     private val onLoadFailed: () -> Unit,
-    private val onTdnBannerImpressed: () -> Unit
+    private val onTdnBannerImpressed: (imageData: TopAdsImageViewModel) -> Unit
 ) : RecyclerView.Adapter<TdnCarouselAdapter.TdnCarouselViewHolder>() {
 
     private val shopAdsProductItemList = arrayListOf<TopAdsImageViewModel>()
@@ -66,9 +66,9 @@ class TdnCarouselAdapter(
     inner class TdnCarouselViewHolder(
         itemView: View,
         private val cornerRadius: Int,
-        private val onTdnBannerClicked: (applink: String) -> Unit,
+        private val onTdnBannerClicked: (imageData: TopAdsImageViewModel) -> Unit,
         private val onLoadFailed: () -> Unit,
-        private val onTdnBannerImpressed: () -> Unit
+        private val onTdnBannerImpressed: (imageData: TopAdsImageViewModel) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val tdnBanner = itemView.findViewById<ImageView>(R.id.tdnBanner)
@@ -117,8 +117,8 @@ class TdnCarouselAdapter(
             imageData: TopAdsImageViewModel,
             cornerRadius: Int = Int.ZERO,
             onLoadFailed: () -> Unit = {},
-            onTdnBannerClicked: (applink: String) -> Unit,
-            onTdnBannerImpressed: () -> Unit
+            onTdnBannerClicked: (imageData: TopAdsImageViewModel) -> Unit,
+            onTdnBannerImpressed: (imageData: TopAdsImageViewModel) -> Unit
         ) {
             if (!imageData.imageUrl.isNullOrEmpty()) {
                 val width = itemView.context.resources.displayMetrics.widthPixels
@@ -174,10 +174,10 @@ class TdnCarouselAdapter(
 
         private fun recordClick(
             imageData: TopAdsImageViewModel,
-            onTdnBannerClicked: (applink: String) -> Unit
+            onTdnBannerClicked: (imageData: TopAdsImageViewModel) -> Unit
         ) {
             itemView.setOnClickListener {
-                imageData.applink?.let { applink -> onTdnBannerClicked(applink) }
+                imageData.applink?.let { applink -> onTdnBannerClicked(imageData) }
                 Timber.d("TDN Banner is clicked")
                 TopAdsUrlHitter(itemView.context).hitClickUrl(
                     this@TdnCarouselAdapter.javaClass.canonicalName,
@@ -191,7 +191,7 @@ class TdnCarouselAdapter(
 
         private fun recordImpression(
             imageData: TopAdsImageViewModel,
-            onTdnBannerImpressed: () -> Unit
+            onTdnBannerImpressed: (imageData: TopAdsImageViewModel) -> Unit
         ) {
             imageData.ImpressHolder?.let { ImpressHolder ->
                 tdnBanner?.addOnImpressionListener(ImpressHolder) {
@@ -202,7 +202,7 @@ class TdnCarouselAdapter(
                         "",
                         ""
                     )
-                    onTdnBannerImpressed.invoke()
+                    onTdnBannerImpressed.invoke(imageData)
                 }
             }
         }
