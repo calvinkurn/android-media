@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewStub
 import android.widget.LinearLayout
+import androidx.core.view.updateLayoutParams
 import androidx.viewbinding.ViewBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -23,6 +24,7 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.toPx
 
 class ShipmentViewHolder(
     view: View,
@@ -107,7 +109,15 @@ class ShipmentViewHolder(
         val logo = data.logo
         pdpShipmentHeaderLogo.showIfWithBlock(logo.isNotEmpty()) {
             setImageUrl(logo)
+
+            val logoHeight = data.logoHeight
+            if (logoHeight > 0) {
+                updateLayoutParams {
+                    height = logoHeight.toPx()
+                }
+            }
         }
+
 
         val title = data.title
         pdpShipmentHeaderPrice.showIfWithBlock(title.isNotEmpty()) {
@@ -256,8 +266,8 @@ class ShipmentViewHolder(
         }
     }
 
-    data class ShipmentView<T : ViewBinding>(
-        val viewStub: ViewStub,
+    class ShipmentView<T : ViewBinding>(
+        private val viewStub: ViewStub,
         private val inflater: (View) -> T
     ) {
         private val inflateDelegate = lazy { viewStub.inflate() }

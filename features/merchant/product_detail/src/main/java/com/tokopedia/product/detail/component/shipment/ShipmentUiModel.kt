@@ -62,6 +62,7 @@ data class ShipmentUiModel(
 
         Success(
             logo = data.boBadge.imageUrl,
+            logoHeight = data.boBadge.imageHeight,
             title = data.title,
             slashPrice = slashPrice,
             background = rates.background,
@@ -137,6 +138,7 @@ data class ShipmentUiModel(
 
     data class Success(
         val logo: String,
+        val logoHeight: Int,
         val title: String,
         val slashPrice: String,
         val background: String,
