@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
+@Deprecated("This logger will be deprecated in the next sprint cycle")
 internal object MediaLoaderTracker : CoroutineScope {
 
     private const val CDN_URL = "https://images.tokopedia.net/img/"
