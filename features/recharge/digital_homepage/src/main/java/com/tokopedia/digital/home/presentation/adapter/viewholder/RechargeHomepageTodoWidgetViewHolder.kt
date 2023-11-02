@@ -12,9 +12,9 @@ import com.tokopedia.digital.home.databinding.ViewRechargeHomeTodoWidgetPostRemi
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeHomepageTodoWidgetModel
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageTodoWidgetAdapterTypeFactory
-import com.tokopedia.digital.home.presentation.adapter.decoration.RechargeItemProductCardsDecorator
 import com.tokopedia.digital.home.presentation.adapter.decoration.RechargeTodoWidgetSpaceDecorator
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
+import com.tokopedia.home_component.util.removeAllItemDecoration
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -80,6 +80,7 @@ class RechargeHomepageTodoWidgetViewHolder(
                     layoutManager =
                         LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
                     val displayMetrics = itemView.context.resources.displayMetrics
+                    removeAllItemDecoration()
                     addItemDecoration(
                         RechargeTodoWidgetSpaceDecorator(
                             SPACE_DP.dpToPx(displayMetrics),
@@ -129,6 +130,7 @@ class RechargeHomepageTodoWidgetViewHolder(
                             false
                         )
                         val displayMetrics = itemView.context.resources.displayMetrics
+                        removeAllItemDecoration()
                         addItemDecoration(
                             RechargeTodoWidgetSpaceDecorator(
                                 SPACE_DP.dpToPx(displayMetrics),
