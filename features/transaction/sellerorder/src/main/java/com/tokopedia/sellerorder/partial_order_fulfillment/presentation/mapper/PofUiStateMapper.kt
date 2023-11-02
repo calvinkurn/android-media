@@ -10,7 +10,6 @@ import com.tokopedia.sellerorder.orderextension.presentation.model.StringRes
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofRequestEstimateResponse
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofRequestInfoResponse
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofRequestInfoResponse.Data.InfoRequestPartialOrderFulfillment.Companion.STATUS_INITIAL
-import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofRequestInfoResponse.Data.InfoRequestPartialOrderFulfillment.Companion.STATUS_WAITING_RESPONSE
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.RequestState
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.SendPofRequestParams
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.SendPofResponse
@@ -106,8 +105,7 @@ class PofUiStateMapper @Inject constructor() {
     private fun mapTitle(pofStatus: Int): StringRes {
         return when(pofStatus) {
             STATUS_INITIAL -> StringRes(R.string.som_pof_title_request)
-            STATUS_WAITING_RESPONSE -> StringRes(R.string.som_pof_title_result)
-            else -> StringRes(Int.ZERO)
+            else -> StringRes(R.string.som_pof_title_result)
         }
     }
 
@@ -407,8 +405,7 @@ class PofUiStateMapper @Inject constructor() {
             PofDescriptionUiModel(
                 when (pofStatus) {
                     STATUS_INITIAL -> StringRes(R.string.som_pof_description_initial)
-                    STATUS_WAITING_RESPONSE -> StringRes(R.string.som_pof_description_waiting_response)
-                    else -> StringRes(Int.ZERO)
+                    else -> StringRes(R.string.som_pof_description_waiting_response)
                 }
             )
         )

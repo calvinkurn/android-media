@@ -1,7 +1,9 @@
 package com.tokopedia.sellerorder.partial_order_fulfillment.presentation.adapter.viewholder
 
+import android.text.method.LinkMovementMethod
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.ItemPofDescriptionBinding
@@ -30,6 +32,11 @@ class PofDescriptionViewHolder(
     private fun setupText(text: StringRes) {
         binding.tvPofDescription.text = HtmlLinkHelper(
             binding.root.context, text.getString(binding.root.context)
-        ).spannedString ?: String.EMPTY
+        ).apply {
+            urlList.forEach { url ->
+                url.onClick = { RouteManager.route(binding.root.context, url.linkUrl) }
+            }
+        }.spannedString ?: String.EMPTY
+        binding.tvPofDescription.movementMethod = LinkMovementMethod.getInstance()
     }
 }
