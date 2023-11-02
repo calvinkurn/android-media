@@ -176,7 +176,7 @@ class ComparisonViewHolder(
     }
 
     override fun bind(element: ComparisonUiModel) {
-        comparisonItemListener?.onComparisonImpression(element.content.getOrNull(Int.ONE)?.id.orEmpty())
+//        comparisonItemListener?.onComparisonImpression(element.content.getOrNull(Int.ONE)?.id.orEmpty())
         if (element.content.isEmpty()) return
         val comparisonItems = element.content.subList(Int.ONE, element.content.size)
         val comparedItem = element.content.firstOrNull()
