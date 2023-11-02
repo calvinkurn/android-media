@@ -11,7 +11,7 @@ data class MilestoneItemRewardUiModel(
     val buttonVariant: Int,
     val buttonStatus: Int,
     val buttonApplink: String,
-    val lottieUrl: String,
+    val animationUrl: String,
     val rewardDetailUiModel: RewardDetailUiModel?
 ) : Visitable<MilestoneAdapterTypeFactory> {
 

@@ -80,6 +80,8 @@ data class MilestoneData(
         val rewardTitle: String = "",
         @SerializedName("rewardSubtitle")
         val rewardSubtitle: String = "",
+        @SerializedName("rewardImg")
+        val rewardImage: String = "",
         @SuppressLint("Invalid Data Type")
         @SerializedName("rewardID")
         val rewardId: Int = 0,

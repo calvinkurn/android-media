@@ -179,7 +179,7 @@ class MilestoneMapper @Inject constructor(
             buttonStatus = rewardData.button.buttonStatus,
             buttonVariant = rewardData.button.buttonStyleType,
             buttonApplink = rewardData.button.applink,
-            lottieUrl = getRewardLottieUrl(data.questStatus),
+            animationUrl = getRewardAnimationUrl(rewardData.rewardImage, data.questStatus),
             rewardDetailUiModel = rewardDetailUiModel
         )
     }
@@ -231,12 +231,16 @@ class MilestoneMapper @Inject constructor(
         }
     }
 
-    private fun getRewardLottieUrl(questStatus: Int): String {
+    private fun getRewardAnimationUrl(rewardImage: String, questStatus: Int): String {
+        return rewardImage.takeIf { it.isNotBlank() } ?: getRewardAnimationGif(questStatus)
+    }
+
+    private fun getRewardAnimationGif(questStatus: Int): String {
         val isInitialState = questStatus == MilestoneItemRewardUiModel.QuestStatus.NOT_STARTED_OR_ONGOING
         return if (isInitialState) {
-            TokopediaImageUrl.SELLER_HOME_REWARD_INITIAL_LOTTIE
+            TokopediaImageUrl.SELLER_HOME_REWARD_INITIAL_GIF
         } else {
-            TokopediaImageUrl.SELLER_HOME_REWARD_ENDING_LOTTIE
+            TokopediaImageUrl.SELLER_HOME_REWARD_ENDING_GIF
         }
     }
 }

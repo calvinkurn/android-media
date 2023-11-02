@@ -12,7 +12,7 @@
         android:paddingHorizontal="12dp"
         android:paddingVertical="16dp">
 
-        <com.airbnb.lottie.LottieAnimationView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imgShcMissionReward"
             android:layout_width="40dp"
             android:layout_height="40dp"

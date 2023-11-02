@@ -2,18 +2,19 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder.milestone
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.airbnb.lottie.LottieCompositionFactory
-import com.airbnb.lottie.LottieDrawable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadAsGif
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcItemMissionRewardMilestoneWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.MilestoneMissionAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneItemRewardUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MilestoneRewardViewHolder(
     itemView: View,
@@ -21,6 +22,7 @@ class MilestoneRewardViewHolder(
 ) : AbstractViewHolder<MilestoneItemRewardUiModel>(itemView) {
 
     companion object {
+        private const val GIF_EXT = ".gif"
         @LayoutRes
         val LAYOUT = R.layout.shc_item_mission_reward_milestone_widget
     }
@@ -32,25 +34,17 @@ class MilestoneRewardViewHolder(
             tvShcMissionRewardTitle.text = element.title
             tvShcMissionRewardDesc.text = element.subtitle
         }
-        setupLottieAnimation(element.lottieUrl)
+        setupAnimation(element.animationUrl)
         setupCtaButton(element)
     }
 
-    override fun onViewRecycled() {
-        super.onViewRecycled()
-        clearLottieAnimation()
-    }
-
-    private fun setupLottieAnimation(lottieUrl: String) {
-        val lottieCompositionTask = LottieCompositionFactory.fromUrl(itemView.context, lottieUrl)
-
-        lottieCompositionTask.addListener { result ->
-            binding?.imgShcMissionReward?.run {
-                setComposition(result)
-                repeatCount = LottieDrawable.INFINITE
-                post {
-                    playAnimation()
-                }
+    private fun setupAnimation(animationUrl: String) {
+        val isGif = animationUrl.endsWith(GIF_EXT)
+        binding?.imgShcMissionReward?.run {
+            if (isGif) {
+                loadAsGif(animationUrl)
+            } else {
+                loadImage(animationUrl)
             }
         }
     }
@@ -81,7 +75,7 @@ class MilestoneRewardViewHolder(
                     setTextColor(
                         MethodChecker.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                            unifyprinciplesR.color.Unify_GN500
                         )
                     )
                     setOnClickListener {
@@ -93,7 +87,7 @@ class MilestoneRewardViewHolder(
                     setTextColor(
                         MethodChecker.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN300
+                            unifyprinciplesR.color.Unify_NN300
                         )
                     )
                     setOnClickListener(null)
@@ -133,10 +127,4 @@ class MilestoneRewardViewHolder(
         }
     }
 
-    private fun clearLottieAnimation() {
-        binding?.imgShcMissionReward?.run {
-            cancelAnimation()
-            (drawable as? LottieDrawable)?.clearComposition()
-        }
-    }
 }
