@@ -4,10 +4,8 @@ import android.graphics.Paint
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.product.detail.common.generateTheme
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.model.ModifaceUiModel
@@ -59,7 +57,7 @@ class PartialBottomArView private constructor(val view: View, val listener: Prod
                 text = data.stockCopy
                 show()
             }
-            renderCampaign(data)
+            renderPrice(data)
         }
         atcButton.text = data.button.text
         atcButton?.run {
@@ -90,23 +88,31 @@ class PartialBottomArView private constructor(val view: View, val listener: Prod
         txtSlashPrice.hide()
     }
 
-    private fun renderCampaign(data: ProductAr) = with(view) {
-        if (data.campaignInfo.isActive == true) {
-            txtMainPrice.text = data.campaignInfo.discountedPrice?.getCurrencyFormatted()
-            txtSlashPrice.text = data.campaignInfo.originalPrice?.getCurrencyFormatted()
-            lblDiscounted.text = context.getString(
-                    com.tokopedia.product.detail.common.R.string.template_campaign_off_string,
-                    data.campaignInfo.discountedPercentage.toIntSafely().toString())
-
-            txtSlashPrice.paintFlags = txtSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            txtMainPrice.show()
-            txtSlashPrice.show()
-            lblDiscounted.show()
+    private fun renderPrice(data: ProductAr) {
+        if (data.campaignInfo.hideGimmick == true) {
+            renderNoCampaign(price = data.slashPriceFmt)
+        } else if (data.campaignInfo.isActive == true) {
+            renderCampaign(data = data)
         } else {
-            txtMainPrice.text = data.price.getCurrencyFormatted()
-            txtMainPrice.show()
-            txtSlashPrice.hide()
-            lblDiscounted.hide()
+            renderNoCampaign(price = data.priceFmt)
         }
+    }
+
+    private fun renderNoCampaign(price: String) {
+        txtMainPrice.text = price
+        txtMainPrice.show()
+        txtSlashPrice.hide()
+        lblDiscounted.hide()
+    }
+
+    private fun renderCampaign(data: ProductAr) {
+        txtMainPrice.text = data.priceFmt
+        txtSlashPrice.text = data.slashPriceFmt
+        lblDiscounted.text = data.discPercentage
+
+        txtSlashPrice.paintFlags = txtSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        txtMainPrice.show()
+        txtSlashPrice.show()
+        lblDiscounted.show()
     }
 }

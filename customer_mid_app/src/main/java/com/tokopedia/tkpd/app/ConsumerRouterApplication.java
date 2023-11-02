@@ -138,8 +138,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private static final int REDIRECTION_WEBVIEW = 2;
     private static final int REDIRECTION_DEFAULT = 0;
 
-    private static final String ENABLE_REMOTERESOURCE = "android_mainapp_enable_remote_resource";
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -285,9 +283,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void initResourceDownloadManager() {
-        if (remoteConfig.getBoolean(ENABLE_REMOTERESOURCE, false)) {
-            (new DeferredResourceInitializer()).initializeResourceDownloadManager(context);
-        }
+        (new DeferredResourceInitializer()).initializeResourceDownloadManager(context);
     }
 
     private void initIris() {

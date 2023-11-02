@@ -5,9 +5,11 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils.Companion.getParentPosition
 import com.tokopedia.discovery2.data.*
+import com.tokopedia.discovery2.data.producthighlight.DiscoveryOCSDataModel
 import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_ECOMMERCE
 import com.tokopedia.quest_widget.tracker.Tracker
@@ -643,8 +645,7 @@ open class DiscoveryAnalytics(
             productMap[LIST] = it.gtmItemName?.replace("#POSITION", (getParentPosition(componentsItems) + 1).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
             productMap[DIMENSION83] = getProductDime83(it)
             productMap[DIMENSION90] = sourceIdentifier
-            productMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
-                "${if (it.campaignSoldCount.toIntOrZero() > 0) it.campaignSoldCount else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
+            productMap[DIMENSION96] = getValueForDimension96(it, componentsItems.parentComponentId)
             productMap[DIMENSION38] = ""
             productMap[DIMENSION84] = ""
             productMap[DIMENSION56] = isFulFillment.toString()
@@ -671,6 +672,29 @@ open class DiscoveryAnalytics(
 
         trackingQueue.putEETracking(map as HashMap<String, Any>)
         productCardImpressionLabel = EMPTY_STRING
+    }
+
+    private fun getValueForDimension96(
+        data: DataItem,
+        parentComponentId: String?
+    ): String {
+        val notificationStatus = if (parentComponentId.isNullOrEmpty()) {
+            NOTIFY_ON
+        } else {
+            getNotificationStatus(getComponent(parentComponentId, pageIdentifier), data)
+        }
+
+        return " - ${if (data.notifyMeCount.toIntOrZero() > 0) data.notifyMeCount else " "} " +
+            "- ${data.pdpView.toIntOrZero()} - ${data.campaignSoldCount.toIntOrZero()} " +
+            "$SOLD - ${data.customStock.toIntOrZero()} $LEFT - - ${data.tabName.orEmpty()} " +
+            "- ${getLabelCampaign(data)} - $NOTIFY_ME $notificationStatus"
+    }
+
+    private fun getNotificationStatus(parentContainer: ComponentsItem?, dataItem: DataItem?): String {
+        parentContainer?.let {
+            return if (dataItem?.notifyMe != null) NOTIFY_ON else NOTIFY_OFF
+        }
+        return NOTIFY_ON
     }
 
     private fun getLabelCampaign(it: DataItem) =
@@ -715,8 +739,7 @@ open class DiscoveryAnalytics(
             productMap[DIMENSION83] = getProductDime83(it)
             productMap[DIMENSION84] = ""
             productMap[DIMENSION90] = sourceIdentifier
-            productMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
-                "${if (it.campaignSoldCount.toIntOrZero() > 0) it.campaignSoldCount else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
+            productMap[DIMENSION96] = getValueForDimension96(it, componentsItems.parentComponentId)
             productMap[KEY_QUANTITY] = it.quantity
             productMap[KEY_ATC_SHOP_ID] = it.shopId ?: ""
             productMap[KEY_SHOP_NAME] = it.shopName ?: ""
@@ -2682,58 +2705,69 @@ open class DiscoveryAnalytics(
         }
     }
 
-    override fun trackProductHighlightOCSClick(productHighlightData: DataItem, productHighlightPosition: Int, components: ComponentsItem?) {
-        if (!components?.data.isNullOrEmpty()) {
-            val list = ArrayList<Map<String, Any>>()
-            val listMap = HashMap<String, Any>()
-            var productItemList = ""
-            productHighlightData.let {
-                productItemList = it.gtmItemName?.replace("#POSITION", (components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
-                productCardImpressionLabel = EMPTY_STRING
-                listMap[KEY_NAME] = it.productName.toString()
-                listMap[KEY_ID] = it.productId.toString()
-                listMap[PRICE] = convertRupiahToInt(it.price ?: "")
-                listMap[KEY_BRAND] = NONE_OTHER
-                listMap[KEY_ITEM_CATEGORY] = NONE_OTHER
-                listMap[KEY_VARIANT] = NONE_OTHER
-                listMap[KEY_POSITION] = (components?.position ?: 0) + 1
-                listMap[LIST] = productItemList
-                listMap[DIMENSION83] = getProductDime83(it)
-                listMap[DIMENSION90] = sourceIdentifier
-                listMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
-                    "${if (it.campaignSoldCount.toIntOrZero() > 0) it.campaignSoldCount else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME ${components?.let { it1 -> getNotificationStatus(it1) }}"
-                listMap[DIMENSION38] = ""
-                listMap[DIMENSION84] = ""
-                val gtmItemName = it.gtmItemName?.replace("#POSITION", (components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
-                listMap[DIMENSION40] = processGtmItemName(gtmItemName, it)
-            }
-            list.add(listMap)
+    override fun trackProductHighlightOCSClick(
+        ocsDataModel: DiscoveryOCSDataModel,
+        parentPosition: Int?,
+        parentComponentId: String?
+    ) {
+        val list = ArrayList<Map<String, Any>>()
+        val productMap = HashMap<String, Any>()
+        val login = if (userSession.isLoggedIn) LOGIN else NON_LOGIN
 
-            val eCommerce = mapOf(
-                CLICK to mapOf(
-                    ACTION_FIELD to mapOf(
-                        LIST to productItemList
-                    ),
-                    PRODUCTS to list
-                )
-            )
-            val map = createGeneralEvent(
-                eventName = EVENT_PRODUCT_ATC,
-                eventAction = CLICK_OCS,
-                eventLabel = ComponentNames.ProductBundling.componentName,
-                shouldSendSourceAsDestination = true
-            )
-            map[TRACKER_ID] = "21643"
-            map[KEY_CAMPAIGN_CODE] = campaignCode
-            map[PAGE_TYPE] = pageType
-            map[PAGE_PATH] = removedDashPageIdentifier
-            map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
-            map[USER_ID] = (userSession.userId ?: "")
-            map[BUSINESS_UNIT] = HOME_BROWSE
-            map[KEY_E_COMMERCE] = eCommerce
-            getTracker().sendEnhanceEcommerceEvent(map)
-            productCardImpressionLabel = EMPTY_STRING
+        with(ocsDataModel.dataItem) {
+            val productTypeName = getProductName(typeProductCard)
+
+            productMap[KEY_ATC_CATEGORY_ID] = NONE_OTHER
+            productMap[DIMENSION40] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${
+            parentPosition.orZero() + 1
+            } - $login - $productTypeName - - ${if (isTopads == true) TOPADS else NON_TOPADS} - ${creativeName.orEmpty()} - ${tabName.orEmpty()}"
+            productMap[DIMENSION83] = getProductDime83(this)
+            productMap[DIMENSION84] = EMPTY_STRING
+            productMap[DIMENSION90] = sourceIdentifier
+            productMap[DIMENSION96] = getValueForDimension96(this, parentComponentId)
+
+            productMap[KEY_BRAND] = NONE_OTHER
+            productMap[KEY_CATEGORY] = NONE_OTHER
+            productMap[KEY_ID] = productId.toString()
+            productMap[KEY_NAME] = productName.toString()
+            productMap[KEY_VARIANT] = NONE_OTHER
+
+            productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(price.orEmpty())
+            productMap[KEY_QUANTITY] = minQuantity
+            productMap[KEY_ATC_SHOP_ID] = shopId.orEmpty()
+            productMap[KEY_SHOP_NAME] = shopName.orEmpty()
+            productMap[KEY_SHOP_TYPE] = shopType.orEmpty()
         }
+
+        with(ocsDataModel.atcData.data) {
+            productMap[DIMENSION38] = trackerAttribution
+            productMap[DIMENSION45] = cartId
+        }
+
+        list.add(productMap)
+
+        val productsMap = mapOf(PRODUCTS to list)
+
+        val eCommerce = mapOf(
+            CURRENCY_CODE to IDR,
+            KEY_ADD to productsMap
+        )
+
+        val map = createGeneralEvent(
+            eventName = EVENT_PRODUCT_ATC,
+            eventAction = CLICK_OCS,
+            eventLabel = ComponentNames.ProductHighlight.componentName,
+            shouldSendSourceAsDestination = true
+        )
+        map[TRACKER_ID] = PRODUCT_HIGHLIGHT_CLICK_OCS_TRACKER_ID
+        map[PAGE_TYPE] = pageType
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[USER_ID] = userSession.userId.orEmpty()
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[KEY_E_COMMERCE] = eCommerce
+
+        getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     private fun processGtmItemName(gtmItemName: String, dataItem: DataItem): String {
