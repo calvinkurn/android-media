@@ -13,6 +13,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.stories.creation.view.model.exception.NotEligibleException
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -55,7 +56,7 @@ class StoriesCreationErrorBottomSheet : BottomSheetUnify() {
                             setType(errorType)
 
                             setActionClickListener {
-                                listener?.onRetry()
+                                listener?.onRetry(errorType)
                             }
                         }
                     }
@@ -73,7 +74,7 @@ class StoriesCreationErrorBottomSheet : BottomSheetUnify() {
     }
 
     interface Listener {
-        fun onRetry()
+        fun onRetry(errorType: Int)
 
         fun onClose()
     }
@@ -107,6 +108,7 @@ class StoriesCreationErrorBottomSheet : BottomSheetUnify() {
                 is ConnectException,
                 is UnknownHostException,
                 is SocketTimeoutException -> GlobalError.NO_CONNECTION
+                is NotEligibleException -> GlobalError.PAGE_NOT_FOUND
                 else -> GlobalError.SERVER_ERROR
             }
         }

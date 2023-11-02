@@ -109,6 +109,7 @@ fun StoriesCreationInfoLayout(
                 top.linkTo(btnPrimary.bottom, 8.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
+                bottom.linkTo(parent.bottom, 16.dp)
 
                 width = Dimension.fillToConstraints
             }
