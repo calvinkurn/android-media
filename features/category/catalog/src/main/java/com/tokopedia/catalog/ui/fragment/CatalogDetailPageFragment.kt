@@ -38,6 +38,7 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_TRUSTMAKER
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_SEE_OPTIONS
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_CHANGE_COMPARISON_ON_DETAIL
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_SEE_MORE_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_REVIEW_BANNER_IMPRESSION
@@ -46,6 +47,7 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_TRUSTMAKER_I
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_VIEW_CLICK_PG
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_VIEW_ITEM
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_VIEW_PG_IRIS
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CHANGE_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_BUTTON_CHOOSE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_FAQ
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_NAVIGATION
