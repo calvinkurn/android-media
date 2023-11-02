@@ -6,7 +6,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 /**
  * Created by kenny.hadisaputra on 13/10/23
  */
-internal sealed interface FeedBrowseModel {
+internal sealed interface FeedBrowseSlotUiModel {
 
     val slotId: String
     val title: String
@@ -17,7 +17,7 @@ internal sealed interface FeedBrowseModel {
         val group: String,
         val menus: Map<WidgetMenuModel, ItemListState<PlayWidgetChannelUiModel>>,
         val selectedMenuId: String,
-    ) : FeedBrowseModel {
+    ) : FeedBrowseSlotUiModel {
 
         companion object {
             val Empty = ChannelsWithMenus(
@@ -35,7 +35,7 @@ internal sealed interface FeedBrowseModel {
         override val title: String,
         val identifier: String,
         val bannerList: List<BannerWidgetModel>,
-    ) : FeedBrowseModel
+    ) : FeedBrowseSlotUiModel
 }
 
 internal data class WidgetMenuModel(

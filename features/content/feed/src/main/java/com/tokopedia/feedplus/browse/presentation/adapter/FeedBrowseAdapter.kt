@@ -6,14 +6,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.common.types.ResultState
-import com.tokopedia.feedplus.browse.data.model.FeedBrowseModel
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
+import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel2
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseStatefulModel
 import com.tokopedia.feedplus.browse.presentation.model.ItemListState
 import com.tokopedia.feedplus.browse.presentation.model.isNotEmpty
 
@@ -129,20 +129,20 @@ internal class FeedBrowseAdapter(
         internal const val TYPE_INSPIRATION_CARD = 4
     }
 
-    fun setList(items: List<FeedBrowseUiModel2>, onCommit: () -> Unit = {}) {
+    fun setList(items: List<FeedBrowseStatefulModel>, onCommit: () -> Unit = {}) {
         submitList(items.mapToItems(), onCommit)
     }
 
-    private fun List<FeedBrowseUiModel2>.mapToItems(): List<FeedBrowseItemListModel> {
+    private fun List<FeedBrowseStatefulModel>.mapToItems(): List<FeedBrowseItemListModel> {
         return flatMap {
             when (it.model) {
-                is FeedBrowseModel.ChannelsWithMenus -> it.model.mapToChannelBlocks(it.result)
-                is FeedBrowseModel.InspirationBanner -> it.model.mapToItems()
+                is FeedBrowseSlotUiModel.ChannelsWithMenus -> it.model.mapToChannelBlocks(it.result)
+                is FeedBrowseSlotUiModel.InspirationBanner -> it.model.mapToItems()
             }
         }
     }
 
-    private fun FeedBrowseModel.ChannelsWithMenus.mapToChannelBlocks(state: ResultState): List<FeedBrowseItemListModel> {
+    private fun FeedBrowseSlotUiModel.ChannelsWithMenus.mapToChannelBlocks(state: ResultState): List<FeedBrowseItemListModel> {
         return buildList {
             if (state.isLoading) {
                 add(FeedBrowseItemListModel.Title(slotId, title))
@@ -176,7 +176,7 @@ internal class FeedBrowseAdapter(
         }
     }
 
-    private fun FeedBrowseModel.InspirationBanner.mapToItems(): List<FeedBrowseItemListModel> {
+    private fun FeedBrowseSlotUiModel.InspirationBanner.mapToItems(): List<FeedBrowseItemListModel> {
         return buildList {
             add(FeedBrowseItemListModel.Title(slotId, title))
             addAll(

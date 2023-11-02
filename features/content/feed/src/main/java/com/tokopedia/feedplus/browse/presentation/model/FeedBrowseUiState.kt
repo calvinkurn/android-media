@@ -8,6 +8,6 @@ internal sealed class FeedBrowseUiState {
     data class Error(val throwable: Throwable) : FeedBrowseUiState()
     data class Success(
         val title: String,
-        val widgets: List<FeedBrowseUiModel2>
+        val widgets: List<FeedBrowseStatefulModel>
     ) : FeedBrowseUiState()
 }

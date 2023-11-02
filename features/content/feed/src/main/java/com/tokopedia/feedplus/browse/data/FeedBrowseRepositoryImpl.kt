@@ -6,7 +6,7 @@ import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
 import com.tokopedia.content.common.usecase.GetPlayWidgetSlotUseCase
 import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
-import com.tokopedia.feedplus.browse.data.model.FeedBrowseModel
+import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
@@ -44,14 +44,14 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSlots(): List<FeedBrowseModel> {
+    override suspend fun getSlots(): List<FeedBrowseSlotUiModel> {
         return withContext(dispatchers.io) {
             val response = feedXHomeUseCase(
                 feedXHomeUseCase.createParams(source = FeedXHomeUseCase.SOURCE_BROWSE)
             )
             // TODO("Remove this mock data")
             listOf(
-                FeedBrowseModel.InspirationBanner(
+                FeedBrowseSlotUiModel.InspirationBanner(
                     slotId = "item.id",
                     title = "Ini Banner",
                     identifier = "Identifier Banner",

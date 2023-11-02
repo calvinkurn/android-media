@@ -24,11 +24,11 @@ import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTracker
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedBrowseItemDecoration
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseIntent
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel2
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseStatefulModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
 import com.tokopedia.feedplus.databinding.FragmentFeedBrowseBinding
 import com.tokopedia.globalerror.GlobalError
@@ -334,7 +334,7 @@ class FeedBrowseFragment @Inject constructor(
         binding.feedBrowseHeader.title = newTitle
     }
 
-    private fun renderContent(widgets: List<FeedBrowseUiModel2>) {
+    private fun renderContent(widgets: List<FeedBrowseStatefulModel>) {
 //        if (binding.feedBrowseList.isComputingLayout ||
 //            binding.feedBrowseList.scrollState != RecyclerView.SCROLL_STATE_IDLE
 //        ) {

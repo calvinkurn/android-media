@@ -6,7 +6,7 @@ import com.tokopedia.content.common.model.ContentSlotMeta
 import com.tokopedia.content.common.model.FeedXHeaderResponse
 import com.tokopedia.content.common.model.WidgetSlot
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
-import com.tokopedia.feedplus.browse.data.model.FeedBrowseModel
+import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
@@ -41,11 +41,11 @@ class FeedBrowseMapper @Inject constructor() {
         return response.feedXHeaderData.data.browse.title
     }
 
-    internal fun mapSlotsResponse(response: FeedXHomeEntity): List<FeedBrowseModel> {
+    internal fun mapSlotsResponse(response: FeedXHomeEntity): List<FeedBrowseSlotUiModel> {
         return response.items.mapNotNull { item ->
             if (item.typename == FeedXCard.TYPE_FEED_X_CARD_PLACEHOLDER) {
                 if (item.type.startsWith("browse_channel_slot")) {
-                    FeedBrowseModel.ChannelsWithMenus(
+                    FeedBrowseSlotUiModel.ChannelsWithMenus(
                         slotId = item.id,
                         title = item.title,
                         group = item.type,
@@ -53,7 +53,7 @@ class FeedBrowseMapper @Inject constructor() {
                         selectedMenuId = ""
                     )
                 } else if (item.type.startsWith("browse_widget_recommendation")) {
-                    FeedBrowseModel.InspirationBanner(
+                    FeedBrowseSlotUiModel.InspirationBanner(
                         slotId = item.id,
                         title = item.title,
                         identifier = item.type,
