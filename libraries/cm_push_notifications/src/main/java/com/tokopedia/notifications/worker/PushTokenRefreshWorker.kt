@@ -1,7 +1,6 @@
 package com.tokopedia.notifications.worker
 
 import android.content.Context
-import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.google.firebase.messaging.FirebaseMessaging
@@ -25,8 +24,6 @@ class PushTokenRefreshWorker(appContext: Context, workerParams: WorkerParameters
             FirebaseMessaging.getInstance().token.addOnCompleteListener { p0 ->
                 SyncFcmTokenService.startService(applicationContext)
             }
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-        }
+        } catch (_: Exception) { }
     }
 }

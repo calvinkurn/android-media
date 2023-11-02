@@ -8,14 +8,13 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.tokopedia.notifications.worker.PushAmplificationWorker
-import com.tokopedia.notifications.worker.PushTokenRefreshWorker
 import java.util.concurrent.TimeUnit
 
 class PushAmplificationRefreshUtil {
     private var WORKER_ID = "PUSH_AMPLIFICATION_REFRESH_WORKER"
     private var WORKER_INITIAL_DELAY: Long = 3
     companion object{
-        lateinit var application :Application
+        var application :Application? = null
     }
     fun scheduleWorker(appContext: Context, time: Long) {
         try {
@@ -35,8 +34,6 @@ class PushAmplificationRefreshUtil {
                 ExistingPeriodicWorkPolicy.KEEP,
                 periodicWorker
             )
-        } catch (_: Exception) {
-
-        }
+        } catch (_: Exception) { }
     }
 }

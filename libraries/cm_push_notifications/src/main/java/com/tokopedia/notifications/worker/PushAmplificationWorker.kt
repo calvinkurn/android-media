@@ -1,7 +1,6 @@
 package com.tokopedia.notifications.worker
 
 import android.content.Context
-import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.tokopedia.notifications.data.AmplificationDataSource
@@ -11,7 +10,9 @@ class PushAmplificationWorker (appContext: Context, workerParams: WorkerParamete
     CoroutineWorker(appContext, workerParams) {
     private val TAG = "PushAmplificationWorker"
     override suspend fun doWork(): Result {
-        AmplificationDataSource.invoke(application)
-        return Result.success()
+        try {
+            application?.let { AmplificationDataSource.invoke(it) }
+            return Result.success()
+        } catch (_: Exception) { return Result.failure() }
     }
 }
