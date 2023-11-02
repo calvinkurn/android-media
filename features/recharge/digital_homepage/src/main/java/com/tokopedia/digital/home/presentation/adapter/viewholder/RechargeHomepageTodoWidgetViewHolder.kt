@@ -59,6 +59,9 @@ class RechargeHomepageTodoWidgetViewHolder(
                     viewStickyLayoutFirst.tgTitleTodoWidget.text = stickyLayoutFirst.title
                     viewStickyLayoutFirst.tgSubTitleTodoWidget.text = stickyLayoutFirst.subtitle
                     viewStickyLayoutFirst.imgTodoWidgetBackground.loadImage(TokopediaImageUrl.RECHARGE_SUBHOME_TODO_WIDGET)
+                    viewStickyLayoutFirst.root.setOnClickListener {
+                        todoWidgetListener.onClickTodoWidget(stickyLayoutFirst.appLink)
+                    }
                 } else {
                     viewStickyLayoutFirst.root.hide()
                     rvTodoWidgetFirst.apply {
@@ -107,7 +110,9 @@ class RechargeHomepageTodoWidgetViewHolder(
                         viewStickyLayoutSecond.tgSubTitleTodoWidget.text =
                             stickyLayoutSecond.subtitle
                         viewStickyLayoutSecond.imgTodoWidgetBackground.loadImage(TokopediaImageUrl.RECHARGE_SUBHOME_TODO_WIDGET)
-
+                        viewStickyLayoutSecond.root.setOnClickListener {
+                            todoWidgetListener.onClickTodoWidget(stickyLayoutSecond.appLink)
+                        }
                     } else {
                         viewStickyLayoutSecond.root.hide()
                         rvTodoWidgetSecond.apply {
