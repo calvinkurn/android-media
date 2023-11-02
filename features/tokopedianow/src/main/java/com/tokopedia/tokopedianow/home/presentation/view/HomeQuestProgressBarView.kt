@@ -37,8 +37,13 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
 
     fun bind(uiModel: HomeQuestWidgetUiModel) {
         binding.root.addOneTimeGlobalLayoutListener {
+            val hasFinishedQuest = uiModel.questList
+                .firstOrNull { it.isFinished() } != null
             setupView(uiModel)
-            startAnimation()
+
+            if(hasFinishedQuest) {
+                startAnimation()
+            }
         }
     }
 
