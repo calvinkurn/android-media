@@ -79,6 +79,7 @@ class DiscoveryTDNBannerViewHolder(
         binding?.apply {
             val tdnBanners = categoriesList.firstOrNull()
             if (!tdnBanners.isNullOrEmpty()) {
+                shimmerView.hide()
                 tdnBannerView.renderTdnBanner(
                     tdnBanners = tdnBanners,
                     cornerRadius = BANNER_CORNER_RADIUS_DP.toPx(),
@@ -149,6 +150,7 @@ class DiscoveryTDNBannerViewHolder(
         headerView.removeAllViews()
         headerView.hide()
         tdnBannerView.hide()
+        shimmerView.hide()
         root.hide()
     }
 
