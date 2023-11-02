@@ -14,7 +14,6 @@ import com.tokopedia.feedplus.browse.presentation.model.ChipUiState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseConfigUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemUiModel
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXHomeEntity
 import com.tokopedia.play.widget.ui.model.PartnerType
@@ -51,14 +50,14 @@ class FeedBrowseMapper @Inject constructor() {
                         title = item.title,
                         group = item.type,
                         menus = emptyMap(),
-                        selectedMenuId = "",
+                        selectedMenuId = ""
                     )
                 } else if (item.type.startsWith("browse_widget_recommendation")) {
                     FeedBrowseModel.InspirationBanner(
                         slotId = item.id,
                         title = item.title,
                         identifier = item.type,
-                        bannerList = emptyList(),
+                        bannerList = emptyList()
                     )
                 } else {
                     null
@@ -66,82 +65,6 @@ class FeedBrowseMapper @Inject constructor() {
             } else {
                 null
             }
-        }
-    }
-
-    fun mapSlots(response: FeedXHomeEntity): List<FeedBrowseUiModel> {
-//        return response.items.mapNotNull { item ->
-//            if (item.typename == FeedXCard.TYPE_FEED_X_CARD_PLACEHOLDER) {
-//                FeedBrowseUiModel.Channel(
-//                    id = item.id,
-//                    title = item.title,
-//                    extraParam = WidgetRequestModel(group = item.type),
-//                    chipUiState = ChipUiState.Placeholder,
-//                    channelUiState = ChannelUiState.Placeholder
-//                )
-//            } else {
-//                null
-//            }
-//        }
-
-        val slots = response.items.mapNotNull { item ->
-            if (item.typename == FeedXCard.TYPE_FEED_X_CARD_PLACEHOLDER) {
-                FeedBrowseUiModel.Channel(
-                    id = item.id,
-                    title = item.title,
-                    extraParam = WidgetRequestModel(group = item.type),
-                    chipUiState = ChipUiState.Placeholder,
-                    channelUiState = ChannelUiState.Placeholder
-                )
-            } else {
-                null
-            }
-        }
-
-        return buildList {
-            add(
-                FeedBrowseUiModel.Title(
-                    slotId = "1",
-                    title = "Inspirasi ide belanja \uD83D\uDCA1"
-                )
-            )
-            addAll(
-                List(5) {
-                    listOf(
-                        FeedBrowseUiModel.Banner(
-                            slotId = it.toString(),
-                            title = "Buku",
-                            imageUrl = "https://t4.ftcdn.net/jpg/01/77/47/67/360_F_177476718_VWfYMWCzK32bfPI308wZljGHvAUYSJcn.jpg",
-                            appLink = "",
-                        ),
-                        FeedBrowseUiModel.Banner(
-                            slotId = it.toString(),
-                            title = "Dapur",
-                            imageUrl = "https://t3.ftcdn.net/jpg/00/89/98/90/360_F_89989031_L8rIrutZm7gnGsIkkyDEAO9s43BYipqt.jpg",
-                            appLink = "",
-                        ),
-                        FeedBrowseUiModel.Banner(
-                            slotId = it.toString(),
-                            title = "Elektronik",
-                            imageUrl = "https://t4.ftcdn.net/jpg/00/86/56/65/240_F_86566504_1yU5DuXgM97XOXkZwcsSAvjP9EXtB4v2.jpg",
-                            appLink = "",
-                        ),
-                        FeedBrowseUiModel.Banner(
-                            slotId = it.toString(),
-                            title = "Fashion Wanita",
-                            imageUrl = "https://t3.ftcdn.net/jpg/03/67/86/38/360_F_367863869_tYibIxEubHFxMl33Ow38JAHYakAZGsNz.jpg",
-                            appLink = "",
-                        ),
-                        FeedBrowseUiModel.Banner(
-                            slotId = it.toString(),
-                            title = "Fashion Anak",
-                            imageUrl = "https://t3.ftcdn.net/jpg/02/47/59/52/360_F_247595262_LGff0kg2mdraH9DOqPGlftfsZCACc6Fn.jpg",
-                            appLink = "",
-                        ),
-                    )
-                }.flatten()
-            )
-            addAll(slots)
         }
     }
 
@@ -175,7 +98,7 @@ class FeedBrowseMapper @Inject constructor() {
                             label = item.label,
                             group = item.group,
                             sourceType = item.sourceType,
-                            sourceId = item.sourceId,
+                            sourceId = item.sourceId
                         )
                     }
                 )
@@ -242,7 +165,7 @@ class FeedBrowseMapper @Inject constructor() {
                 avatarUrl = item.partner.thumbnailUrl,
                 badgeUrl = item.partner.badgeUrl,
                 appLink = item.partner.appLink,
-                type = PartnerType.Unknown,
+                type = PartnerType.Unknown
             ),
             video = PlayWidgetVideoUiModel.Empty.copy(coverUrl = coverUrl),
             channelType = channelType,

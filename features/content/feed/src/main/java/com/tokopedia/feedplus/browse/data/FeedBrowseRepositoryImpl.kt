@@ -9,11 +9,8 @@ import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
-import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemUiModel
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -52,13 +49,14 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
             val response = feedXHomeUseCase(
                 feedXHomeUseCase.createParams(source = FeedXHomeUseCase.SOURCE_BROWSE)
             )
+            // TODO("Remove this mock data")
             listOf(
                 FeedBrowseModel.InspirationBanner(
                     slotId = "item.id",
                     title = "Ini Banner",
                     identifier = "Identifier Banner",
-                    bannerList = emptyList(),
-                ),
+                    bannerList = emptyList()
+                )
             ) + mapper.mapSlotsResponse(response).ifEmpty {
                 throw IllegalStateException("no slots available")
             }
@@ -68,7 +66,6 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
     override suspend fun getWidgetContentSlot(
         extraParam: WidgetRequestModel
     ): ContentSlotModel = withContext(dispatchers.io) {
-        delay(2000)
         val isWifi = connectionUtil.isEligibleForHeavyDataUsage()
         val response = playWidgetSlotUseCase(
             GetPlayWidgetSlotUseCase.Param(
@@ -84,31 +81,10 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
         mapper.mapWidgetResponse(response)
     }
 
-    override suspend fun getWidget(extraParam: WidgetRequestModel): FeedBrowseItemUiModel {
-        val isWifi = connectionUtil.isEligibleForHeavyDataUsage()
-        return withContext(dispatchers.io) {
-            try {
-                val response = playWidgetSlotUseCase(
-                    GetPlayWidgetSlotUseCase.Param(
-                        req = GetPlayWidgetSlotUseCase.Param.Request(
-                            group = extraParam.group,
-                            cursor = "",
-                            sourceId = extraParam.sourceId,
-                            sourceType = extraParam.sourceType,
-                            isWifi = isWifi
-                        )
-                    )
-                )
-                mapper.mapWidget(response)
-            } catch (err: Throwable) {
-                ChannelUiState.Error(err, extraParam = extraParam)
-            }
-        }
-    }
-
     override suspend fun getWidgetRecommendation(
         identifier: String
     ): WidgetRecommendationModel = withContext(dispatchers.io) {
+        // TODO("Replace this mock data")
         WidgetRecommendationModel.Banners(
             listOf(
                 BannerWidgetModel(

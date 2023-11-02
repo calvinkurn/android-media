@@ -1,7 +1,5 @@
 package com.tokopedia.feedplus.browse.presentation.model
 
-import com.tokopedia.feedplus.browse.data.model.FeedBrowseModel
-
 /**
  * Created by meyta.taliti on 11/08/23.
  */
