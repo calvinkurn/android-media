@@ -58,6 +58,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         private const val PRODUCT_PERFORMANCE_MONITORING_NON_VARIANT_VALUE = "non-variant"
         private const val PRODUCT_VIDEO_DETAIL_TAG = "videoDetailTag"
         private const val PRODUCT_DETAIL_TAG = "productDetailTag"
+        private const val PREFETCH_PERF_TRACE_NAME = "pdp_prefetch_perf_trace"
 
         private const val AFFILIATE_HOST = "affiliate"
         private const val PARAM_CAMPAIGN_ID = "campaign_id"
@@ -98,11 +99,13 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     private var productDetailComponent: ProductDetailComponent? = null
     private var campaignId: String? = null
     private var variantId: String? = null
+    private var prefetchTime = 0L
 
     // Performance Monitoring
     var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var performanceMonitoringP1: PerformanceMonitoring? = null
     private var performanceMonitoringP2Data: PerformanceMonitoring? = null
+    private var prefetchPerformanceMonitoring: PerformanceMonitoring? = PerformanceMonitoring()
 
     // Temporary (disscussion/talk, review/ulasan)
     private var performanceMonitoringP2Other: PerformanceMonitoring? = null
@@ -348,9 +351,8 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         finish()
     }
 
-    var prefetchTime = 0L
-
     private fun initBlocksPLTMonitoring() {
+        prefetchPerformanceMonitoring?.startTrace(PREFETCH_PERF_TRACE_NAME)
         blocksPerformanceTrace = BlocksPerformanceTrace(
             this,
             "perf_trace_pdp",
@@ -376,6 +378,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
                 ) && prefetchTime == 0L
             ) {
                 this.prefetchTime = elapsedTime
+                prefetchPerformanceMonitoring?.stopTrace()
             }
         }
     }
