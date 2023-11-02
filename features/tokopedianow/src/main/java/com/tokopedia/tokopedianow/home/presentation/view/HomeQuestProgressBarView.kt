@@ -41,7 +41,7 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
                 .firstOrNull { it.isFinished() } != null
             setupView(uiModel)
 
-            if(hasFinishedQuest) {
+            if (hasFinishedQuest) {
                 startAnimation()
             }
         }
@@ -73,14 +73,14 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
         binding.apply {
             val progressAnim = ValueAnimator.ofInt(PROGRESS_ANIM_START, progressAnimEnd)
 
-            val scaleXAnim = ObjectAnimator.ofFloat(
+            val starScaleXAnim = ObjectAnimator.ofFloat(
                 imageStar,
                 SCALE_X,
                 STAR_SCALE_UP,
                 STAR_SCALE_DOWN,
                 STAR_SCALE_UP
             )
-            val scaleYAnim = ObjectAnimator.ofFloat(
+            val starScaleYAnim = ObjectAnimator.ofFloat(
                 imageStar,
                 SCALE_Y,
                 STAR_SCALE_UP,
@@ -98,7 +98,7 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
             }
 
             val animSet = AnimatorSet().apply {
-                playTogether(scaleXAnim, scaleYAnim, progressAnim)
+                playTogether(starScaleXAnim, starScaleYAnim, progressAnim)
             }
 
             animSet.duration = ANIM_DURATION
@@ -109,7 +109,8 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
     private fun getViewX(): Float {
         val rect = Rect()
         val endOffset = context.resources.getDimensionPixelSize(
-            unifyprinciplesR.dimen.unify_space_16)
+            unifyprinciplesR.dimen.unify_space_16
+        )
         binding.root.getLocalVisibleRect(rect)
         return rect.right.toFloat() - endOffset
     }
