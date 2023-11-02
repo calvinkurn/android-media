@@ -221,7 +221,7 @@ class CatalogComparisonDetailFragment :
         val label = "$catalogId | compared catalog id: $compareCatalogId"
         CatalogReimagineDetailAnalytics.sendEvent(
             event = CatalogTrackerConstant.EVENT_VIEW_CLICK_PG,
-            action = CatalogTrackerConstant.EVENT_CLICK_CHANGE_COMPARISON,
+            action = CatalogTrackerConstant.EVENT_CLICK_CHANGE_COMPARISON_ON_DETAIL,
             category = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_COMPARISON,
             labels = label,
             trackerId = CatalogTrackerConstant.TRACKER_ID_CHANGE_COMPARISON_IN_COMPARISON_DETAIL
