@@ -4,6 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'com.google.gms.google-services'
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply plugin: 'io.hansel.preprocessor'
+apply plugin: "com.google.devtools.ksp"
 
 buildscript {
     repositories {
@@ -137,11 +138,16 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.loginregister)
     implementation projectOrAar(rootProject.ext.features.logout)
     implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)
+    implementation project(rootProject.ext.features.scpAuth)
 
     /*
         Do not remove this dependency, because we use it for MQTT
      */
     implementation project(rootProject.ext.features.tokochat_config_common)
+    /*
+        Do not remove this dependency, because we use it for GQL Annotation KSP Processor
+     */
+    implementation project(rootProject.ext.libraries.gqlKspProcessor)
 
     //you can delete below line if you are not using developer options, then Build -> Switch to TestApp again
     //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented
@@ -150,4 +156,5 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
+
 }

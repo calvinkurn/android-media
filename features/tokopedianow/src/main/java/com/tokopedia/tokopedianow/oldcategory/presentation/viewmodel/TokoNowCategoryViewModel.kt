@@ -13,6 +13,7 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.PREFIX_ALL
 import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
@@ -78,6 +79,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
     private val getCategoryListUseCase: GetCategoryListUseCase,
     setUserPreferenceUseCase: SetUserPreferenceUseCase,
+    remoteConfig: RemoteConfig,
     chooseAddressWrapper: ChooseAddressWrapper,
     affiliateService: NowAffiliateService,
     userSession: UserSessionInterface
@@ -90,6 +92,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     cartService,
     getWarehouseUseCase,
     setUserPreferenceUseCase,
+    remoteConfig,
     chooseAddressWrapper,
     affiliateService,
     userSession
@@ -336,15 +339,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     }
 
     private fun setSharingModel(categoryModel: CategoryModel) {
-        var categoryIdLvl2 = DEFAULT_CATEGORY_ID
-        var categoryIdLvl3 = DEFAULT_CATEGORY_ID
-
-        queryParam.forEach {
-            when (it.key) {
-                "${OptionHelper.EXCLUDE_PREFIX}${SearchApiConst.SC}" -> categoryIdLvl2 = it.value
-                SearchApiConst.SC -> categoryIdLvl3 = it.value
-            }
-        }
+        val (categoryIdLvl2, categoryIdLvl3) = getCategorySelectedIdL2L3()
 
         val title = getTitleCategory(categoryIdLvl2, categoryModel)
         val constructedLink = getConstructedLink(categoryModel.categoryDetail.data.url, categoryIdLvl2, categoryIdLvl3)
@@ -358,6 +353,20 @@ class TokoNowCategoryViewModel @Inject constructor(
             url = constructedLink.second,
             utmCampaignList = utmCampaignList
         )
+    }
+
+    fun getCategorySelectedIdL2L3(): Pair<String, String> {
+        var categoryIdLvl2 = DEFAULT_CATEGORY_ID
+        var categoryIdLvl3 = DEFAULT_CATEGORY_ID
+
+        queryParam.forEach {
+            when (it.key) {
+                "${OptionHelper.EXCLUDE_PREFIX}${SearchApiConst.SC}" -> categoryIdLvl2 = it.value
+                SearchApiConst.SC -> categoryIdLvl3 = it.value
+            }
+        }
+
+        return Pair(categoryIdLvl2, categoryIdLvl3)
     }
 
     private fun getTitleCategory(categoryIdLvl2: String, categoryModel: CategoryModel): String {

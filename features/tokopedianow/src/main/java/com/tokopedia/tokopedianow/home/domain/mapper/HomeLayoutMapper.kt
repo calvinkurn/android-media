@@ -385,10 +385,11 @@ object HomeLayoutMapper {
     fun MutableList<HomeLayoutItemUiModel?>.mapProductPurchaseData(
         item: TokoNowRepurchaseUiModel,
         response: RepurchaseData,
-        miniCartData: MiniCartSimplifiedData? = null
+        miniCartData: MiniCartSimplifiedData? = null,
+        blockAddToCart: Boolean
     ) {
         updateItemById(item.id) {
-            val uiModel = mapToRepurchaseUiModel(item, response, miniCartData)
+            val uiModel = mapToRepurchaseUiModel(item, response, miniCartData, blockAddToCart)
             HomeLayoutItemUiModel(uiModel, HomeLayoutItemState.LOADED)
         }
     }

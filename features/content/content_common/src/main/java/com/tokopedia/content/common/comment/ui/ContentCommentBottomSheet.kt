@@ -1,5 +1,6 @@
 package com.tokopedia.content.common.comment.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -17,6 +18,8 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.core.text.toSpanned
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -45,8 +48,8 @@ import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.ConnectionHelper
 import com.tokopedia.content.common.util.Router
-import com.tokopedia.content.common.view.getImeHeight
-import com.tokopedia.content.common.view.isImeVisible
+import com.tokopedia.content.common.util.doOnApplyWindowInsets
+import com.tokopedia.content.common.util.requestApplyInsetsWhenAttached
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
@@ -64,7 +67,7 @@ import kotlinx.coroutines.flow.collectLatest
 import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.roundToInt
-import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by astidhiyaa on 09/02/23
@@ -115,14 +118,11 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     private val disabledColor by lazyThreadSafetyNone {
-        MethodChecker.getColor(requireContext(), unifyR.color.Unify_NN300)
+        MethodChecker.getColor(requireContext(), unifyprinciplesR.color.Unify_NN300)
     }
 
     private val enabledColor by lazyThreadSafetyNone {
-        MethodChecker.getColor(
-            requireContext(),
-            unifyR.color.Unify_GN500
-        )
+        MethodChecker.getColor(requireContext(), unifyprinciplesR.color.Unify_GN500)
     }
 
     private val textWatcher by lazyThreadSafetyNone {
@@ -234,6 +234,7 @@ class ContentCommentBottomSheet @Inject constructor(
         showHeader = false
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupView() {
         binding.commentHeader.title = getString(R.string.content_comment_header)
         binding.commentHeader.closeListener = View.OnClickListener {
@@ -245,17 +246,17 @@ class ContentCommentBottomSheet @Inject constructor(
         binding.rvComment.addOnScrollListener(scrollListener)
 
         Toaster.toasterCustomBottomHeight =
-            context?.resources?.getDimensionPixelSize(unifyR.dimen.unify_space_48).orZero()
+            context?.resources?.getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_48).orZero()
         binding.newComment.addTextChangedListener(textWatcher)
-        binding.root.setOnApplyWindowInsetsListener { view, windowInsets ->
-            val height = view.getImeHeight()
-            if (view.isImeVisible(threshold = keyboardThreshold)) {
-                binding.root.setPadding(0, 0, 0, height)
-            } else {
-                binding.root.setPadding(0, 0, 0, 0)
-            }
-            windowInsets
+
+        dialog?.window?.decorView?.doOnApplyWindowInsets { _, insets, padding, _ ->
+            val isImeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+            val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
+            binding.root.updatePadding(
+                bottom = padding.bottom + if (isImeVisible) imeInsets.bottom else 0
+            )
         }
+
         binding.newComment.setOnTouchListener { view, motionEvent ->
             view.performClick()
             if (motionEvent.action == MotionEvent.ACTION_UP) {
@@ -456,11 +457,31 @@ class ContentCommentBottomSheet @Inject constructor(
         super.onCancel(dialog)
     }
 
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.decorView?.requestApplyInsetsWhenAttached()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        val window = dialog?.window
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window?.attributes?.layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT
+        }
+    }
+
     override fun onResume() {
         super.onResume()
 
         val window = dialog?.window
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window?.attributes?.layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        }
 
         binding.root.layoutParams = binding.root.layoutParams.apply {
             height = newHeight

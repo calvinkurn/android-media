@@ -31,43 +31,6 @@ data class SupportFeaturesUiModel(
         val titleColor: Int,
         val descColor: Int,
         val description: String,
-        val backgroundColor: Int,
+        val backgroundColor: Int
     )
-
-//    companion object {
-//        private const val dummyDarkMode = true
-//        fun dummyTopFeatures() = SupportFeaturesUiModel(
-//            "dummy", "", "", "#FFFFFF".stringHexColorParseToInt(),
-//            items = listOf(
-//                ItemTopFeatureUiModel(
-//                    "",
-//                    "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
-//                    "360 All Round",
-//                    textColor = colorMapping(dummyDarkMode, "#AEB2BF", "#6D7588"),
-//                    backgroundColor = colorMapping(dummyDarkMode, "#AAB4C8", "#FFFFFF", 20),
-//                ),
-//                ItemTopFeatureUiModel(
-//                    "",
-//                    "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
-//                    "360 All Round",
-//                    textColor = colorMapping(dummyDarkMode, "#AEB2BF", "#6D7588"),
-//                    backgroundColor = colorMapping(dummyDarkMode, "#AAB4C8", "#FFFFFF", 20),
-//                ),
-//                ItemTopFeatureUiModel(
-//                    "",
-//                    "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
-//                    "360 All Round",
-//                    textColor = colorMapping(dummyDarkMode, "#AEB2BF", "#6D7588"),
-//                    backgroundColor = colorMapping(dummyDarkMode, "#AAB4C8", "#FFFFFF", 20),
-//                ),
-//                ItemTopFeatureUiModel(
-//                    "",
-//                    "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
-//                    "360 All Round",
-//                    textColor = colorMapping(dummyDarkMode, "#AEB2BF", "#6D7588"),
-//                    backgroundColor = colorMapping(dummyDarkMode, "#AAB4C8", "#FFFFFF", 20),
-//                )
-//            )
-//        )
-//    }
 }

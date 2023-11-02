@@ -21,4 +21,23 @@
     <declare-styleable name="FeedFloatingButton">
         <attr name="fab_text" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="SideSheetBehavior_Layout">
+
+        <attr name="behavior_draggable"/>
+
+        <attr name="shapeAppearance"/>
+
+        <attr name="shapeAppearanceOverlay"/>
+
+        <attr name="backgroundTint"/>
+
+        <attr name="android:elevation"/>
+        <attr name="android:maxWidth"/>
+        <attr name="android:maxHeight"/>
+
+
+        <attr format="reference" name="coplanarSiblingViewId"/>
+
+    </declare-styleable>
 </resources>

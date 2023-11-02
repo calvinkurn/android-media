@@ -39,8 +39,3 @@ internal fun DialogUnify.setLoading(isLoading: Boolean) {
         if (!isLoading) dismiss()
     }
 }
-
-internal val Throwable.isNetworkError: Boolean
-    get() = this is ConnectException ||
-            this is SocketTimeoutException ||
-            this is UnknownHostException

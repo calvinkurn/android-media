@@ -271,10 +271,10 @@ class PlayAnalytic(
         )
     }
 
-    fun clickActionProductWithVariant(productId: String, productAction: ProductAction) {
+    fun clickActionProductWithVariant(product: PlayProductUiModel.Product, productAction: ProductAction) {
         when (productAction) {
-            ProductAction.AddToCart -> clickAtcButtonProductWithVariant(productId)
-            ProductAction.Buy, ProductAction.OCC -> clickBeliButtonProductWithVariant(productId)
+            ProductAction.AddToCart -> clickAtcButtonProductWithVariant(product)
+            ProductAction.Buy, ProductAction.OCC -> clickBeliButtonProductWithVariant(product)
             else -> {
                 //no-op
             }
@@ -634,22 +634,34 @@ class PlayAnalytic(
         )
     }
 
-    private fun clickBeliButtonProductWithVariant(productId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            Event.clickGroupChat,
-            EventCategory.groupChatRoom,
-            "click buy in bottom sheet with varian",
-            "$mChannelId - $productId - ${mChannelType.value}"
-        )
+    private fun clickBeliButtonProductWithVariant(product: PlayProductUiModel.Product) {
+        Tracker.Builder()
+            .setEvent(Event.clickContent)
+            .setEventAction("click buy in bottom sheet with varian")
+            .setEventCategory(EventCategory.groupChatRoom)
+            .setEventLabel("$mChannelId - ${product.id} - ${mChannelType.value} - is pinned product ${product.isPinned} - ${product.label.rankType}")
+            .setBusinessUnit(BusinessUnit.content)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris , TrackApp.getInstance().gtm.irisSessionId)
+            .setCustomProperty(Key.trackerId , "46422")
+            .setCustomProperty(Key.userId , userId)
+            .build()
+            .send()
     }
 
-    private fun clickAtcButtonProductWithVariant(productId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            Event.clickGroupChat,
-            EventCategory.groupChatRoom,
-            "click atc in bottom sheet with varian",
-            "$mChannelId - $productId - ${mChannelType.value}"
-        )
+    private fun clickAtcButtonProductWithVariant(product: PlayProductUiModel.Product) {
+        Tracker.Builder()
+            .setEvent(Event.clickContent)
+            .setEventAction("click atc in bottom sheet with varian",)
+            .setEventCategory(EventCategory.groupChatRoom)
+            .setEventLabel("$mChannelId - ${product.id} - ${mChannelType.value} - is pinned product ${product.isPinned} - ${product.label.rankType}")
+            .setBusinessUnit(BusinessUnit.content)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris , TrackApp.getInstance().gtm.irisSessionId)
+            .setCustomProperty(Key.trackerId , "46421")
+            .setCustomProperty(Key.userId , userId)
+            .build()
+            .send()
     }
 
     private fun clickBeliButtonProductWithNoVariant(

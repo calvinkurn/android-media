@@ -33,6 +33,7 @@ class CategoryL2Analytic @Inject constructor(userSession: UserSessionInterface) 
     val sortFilterAnalytic = CategoryL2SortFilterAnalytic()
     val tickerAnalytic = CategoryL2TickerAnalytic()
     val similarProductAnalytic = CategoryL2SimilarProductAnalytic(userSession)
+    val categoryMenuAnalytic = CategoryL2MenuAnalytic()
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3979
     // Tracker ID: 43878

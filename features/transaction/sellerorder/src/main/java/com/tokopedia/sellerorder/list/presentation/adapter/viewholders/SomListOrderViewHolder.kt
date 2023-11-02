@@ -43,6 +43,8 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.sellerorder.R as sellerorderR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 open class SomListOrderViewHolder(
     itemView: View,
@@ -296,7 +298,7 @@ open class SomListOrderViewHolder(
             val deadlineBackground = Utils.getColoredDeadlineBackground(
                 context = root.context,
                 colorHex = element.deadlineColor,
-                defaultColor = com.tokopedia.unifyprinciples.R.color.Unify_YN600
+                defaultColor = unifyprinciplesR.color.Unify_YN600
             )
             layoutSomListDeadline.background = deadlineBackground
         }
@@ -312,24 +314,28 @@ open class SomListOrderViewHolder(
     }
 
     private fun ItemSomListOrderBinding.setDeadlineLowerThan12Hours() {
-        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN600)
-        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, sellerorderR.color._dms_som_operational_less_than_24_hour_color)
+        val colorDeadline = MethodChecker.getColor(root.context, unifyprinciplesR.color.Unify_Static_White)
         layoutSomListDeadline.background = bgDeadline
         icDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
         tvSomListDeadline.setTextColor(colorDeadline)
     }
 
     private fun ItemSomListOrderBinding.setDeadlineBetween12To24Hours() {
-        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN50)
-        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN600)
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, unifyprinciplesR.color.Unify_RN50)
+        val colorDeadline = MethodChecker.getColor(root.context, unifyprinciplesR.color.Unify_RN600)
         layoutSomListDeadline.background = bgDeadline
-        icDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
+        icDeadline.setImage(
+            newIconId = IconUnify.CLOCK,
+            newLightEnable = colorDeadline,
+            newDarkEnable = colorDeadline
+        )
         tvSomListDeadline.setTextColor(colorDeadline)
     }
 
     private fun ItemSomListOrderBinding.setDeadlineMoreThan24Hours() {
-        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.sellerorder.R.color._dms_som_operational_more_than_24_hour_color)
-        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, sellerorderR.color._dms_som_operational_more_than_24_hour_color)
+        val colorDeadline = MethodChecker.getColor(root.context, unifyprinciplesR.color.Unify_Static_White)
         layoutSomListDeadline.background = bgDeadline
         icDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
         tvSomListDeadline.setTextColor(colorDeadline)
@@ -393,7 +399,7 @@ open class SomListOrderViewHolder(
     private fun onQuickActionButtonClicked(element: SomListOrderUiModel) {
         element.buttons.firstOrNull()?.let { button ->
             when (button.key) {
-                KEY_TRACK_SELLER -> listener.onTrackButtonClicked(element.orderId, button.url)
+                KEY_TRACK_SELLER -> listener.onTrackButtonClicked(button.url)
                 KEY_CONFIRM_SHIPPING -> listener.onConfirmShippingButtonClicked(button.displayName, element.orderId, skipValidateOrder(element))
                 KEY_CONFIRM_SHIPPING_AUTO, KEY_CONFIRM_SHIPPING_DROP_OFF -> listener.onConfirmShippingAutoButtonClicked(element.buttons.firstOrNull()?.popUp)
                 KEY_ACCEPT_ORDER -> listener.onAcceptOrderButtonClicked(button.displayName, element.orderId, skipValidateOrder(element))
@@ -491,7 +497,7 @@ open class SomListOrderViewHolder(
         fun onCheckChanged()
         fun onCheckBoxClickedWhenDisabled()
         fun onOrderClicked(order: SomListOrderUiModel)
-        fun onTrackButtonClicked(orderId: String, url: String)
+        fun onTrackButtonClicked(url: String)
         fun onConfirmShippingButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean)
         fun onConfirmShippingAutoButtonClicked(popUp: PopUp?)
         fun onAcceptOrderButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean)

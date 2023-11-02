@@ -10,13 +10,16 @@ import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryProductMapper.mapResponseToProductItem
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryProductMapper.updateProductCardItems
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryRecommendationMapper.mapToCategoryRecommendation
+import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse.CategoryDetail
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
+import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.CATEGORY_JUMPER
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.FEATURED_PRODUCT
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.PRODUCT_LIST_FILTER
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.PRODUCT_LIST_INFINITE_SCROLL
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.STATIC_TEXT
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryStaticLayoutId
-import com.tokopedia.tokopedianow.category.presentation.model.CategoryEmptyStateDivider
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryDividerUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryProductListUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -43,12 +46,14 @@ object CategoryL2TabMapper {
         FEATURED_PRODUCT,
         PRODUCT_LIST_FILTER,
         STATIC_TEXT,
-        PRODUCT_LIST_INFINITE_SCROLL
+        PRODUCT_LIST_INFINITE_SCROLL,
+        CATEGORY_JUMPER
     )
 
     fun MutableList<Visitable<*>>.mapCategoryTabLayout(
         categoryIdL2: String,
         tickerData: GetTickerData?,
+        categoryDetail: CategoryDetail,
         components: List<Component>
     ) {
         val quickFilter = findItem<CategoryQuickFilterUiModel>()
@@ -61,6 +66,7 @@ object CategoryL2TabMapper {
                 PRODUCT_LIST_FILTER -> addQuickFilter(it, quickFilter)
                 PRODUCT_LIST_INFINITE_SCROLL -> addProductList(it)
                 FEATURED_PRODUCT -> addProductAdsCarousel(it.id)
+                CATEGORY_JUMPER -> addCategoryRecommendation(categoryDetail, components)
             }
         }
     }
@@ -169,12 +175,28 @@ object CategoryL2TabMapper {
         add(categoryMenuUiModel)
     }
 
+    fun MutableList<Visitable<*>>.addCategoryRecommendation(
+        components: List<Component>,
+        categoryDetail: CategoryDetail,
+        isAllProductShown: Boolean
+    ) {
+        val isLastItem = components.lastOrNull()?.type == CATEGORY_JUMPER
+
+        if(isLastItem && isAllProductShown) {
+            val categoryMenuUiModel = categoryDetail.mapToCategoryRecommendation(
+                source = TOKONOW_CATEGORY_L2
+            )
+            add(CategoryDividerUiModel(topMargin = 16))
+            add(categoryMenuUiModel)
+        }
+    }
+
     fun MutableList<Visitable<*>>.addFeedbackWidget() {
         add(TokoNowFeedbackWidgetUiModel(isDivider = true))
     }
 
-    fun MutableList<Visitable<*>>.addEmptyStateDivider() {
-        add(CategoryEmptyStateDivider())
+    fun MutableList<Visitable<*>>.addDivider() {
+        add(CategoryDividerUiModel())
     }
 
     fun MutableList<Visitable<*>>.addProductRecommendation() {
@@ -240,6 +262,20 @@ object CategoryL2TabMapper {
 
     private fun MutableList<Visitable<*>>.addProductList(response: Component) {
         add(CategoryProductListUiModel(id = response.id))
+    }
+
+    private fun MutableList<Visitable<*>>.addCategoryRecommendation(
+        categoryDetail: CategoryDetail,
+        components: List<Component>
+    ) {
+        val isLastItem = components.lastOrNull()?.type == CATEGORY_JUMPER
+
+        if(!isLastItem) {
+            val categoryMenuUiModel = categoryDetail.mapToCategoryRecommendation(
+                source = TOKONOW_CATEGORY_L2
+            )
+            add(categoryMenuUiModel)
+        }
     }
 
     private fun MutableList<Visitable<*>>.getItemIndex(visitableId: String?): Int? {

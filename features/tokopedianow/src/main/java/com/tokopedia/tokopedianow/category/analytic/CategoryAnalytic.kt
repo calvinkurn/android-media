@@ -46,10 +46,6 @@ class CategoryAnalytic @Inject constructor(
         const val EVENT_ACTION_CLICK_ATC_ON_PRODUCT_RECOM_WIDGET = "click atc carousel widget"
         const val EVENT_ACTION_CLICK_CART_BUTTON = "click cart button"
         const val EVENT_ACTION_CLICK_SEARCH_BAR = "click search bar"
-        const val EVENT_ACTION_CLICK_PRODUCT = "click product oos bottomsheet"
-        const val EVENT_ACTION_CLICK_ADD_TO_CART = "add to cart product oos bottomsheet"
-        const val EVENT_ACTION_CLICK_CLOSE_BOTTOMSHEET = "click close bottomsheet"
-        const val EVENT_ACTION_IMPRESSION_EMPTY_STATE = "impression empty state bottomsheet"
         const val EVENT_ACTION_CLICK_WIDGET_CHOOSE_ADDRESS = "click widget choose address"
     }
 
@@ -106,9 +102,6 @@ class CategoryAnalytic @Inject constructor(
 
     val categorySharingExperienceAnalytic: CategorySharingExperienceAnalytic
         get() = CategorySharingExperienceAnalytic(userSession.userId)
-
-    val categoryOosProductAnalytic: CategoryOosProductAnalytic
-        get() = CategoryOosProductAnalytic()
 
     val productAdsAnalytic: CategoryProductAdsAnalytic
         get() = CategoryProductAdsAnalytic(userSession, addressData)

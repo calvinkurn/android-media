@@ -1,9 +1,10 @@
 package com.tokopedia.tkpd.feed_component.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.feedplus.view.di.FeedContainerComponent
-import com.tokopedia.feedplus.view.di.FeedContainerScope
-import com.tokopedia.feedplus.view.di.FeedContainerViewModelModule
+import com.tokopedia.content.common.di.ContentCoachMarkSharedPrefModule
+import com.tokopedia.feedplus.oldFeed.view.di.FeedContainerComponent
+import com.tokopedia.feedplus.oldFeed.view.di.FeedContainerScope
+import com.tokopedia.feedplus.oldFeed.view.di.FeedContainerViewModelModule
 import com.tokopedia.play.widget.di.PlayWidgetModule
 import com.tokopedia.play_common.shortsuploader.di.uploader.PlayShortsUploaderModule
 import dagger.Component
@@ -17,7 +18,8 @@ import dagger.Component
         FeedContainerTestModule::class,
         FeedContainerViewModelModule::class,
         PlayWidgetModule::class,
-        PlayShortsUploaderModule::class
+        PlayShortsUploaderModule::class,
+        ContentCoachMarkSharedPrefModule::class
     ], dependencies = [BaseAppComponent::class]
 )
 interface FeedContainerTestComponent : FeedContainerComponent

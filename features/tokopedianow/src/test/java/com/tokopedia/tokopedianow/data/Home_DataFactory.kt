@@ -487,7 +487,8 @@ fun createHomeProductCardUiModel(
     parentId: String = "",
     position: Int = 0,
     originalPosition: Int = 0,
-    headerName: String = ""
+    headerName: String = "",
+    blockAddToCart: Boolean = false
 ): TokoNowRepurchaseProductUiModel {
     return TokoNowRepurchaseProductUiModel(
         channelId = channelId,
@@ -501,7 +502,8 @@ fun createHomeProductCardUiModel(
         position = position,
         originalPosition = originalPosition,
         needToShowQuantityEditor = true,
-        headerName = headerName
+        headerName = headerName,
+        blockAddToCart = blockAddToCart
     )
 }
 

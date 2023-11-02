@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import com.scp.auth.GotoSdk;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -57,6 +58,7 @@ import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallback
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.device.info.model.AdditionalDeviceInfo;
 import com.tokopedia.devicefingerprint.datavisor.lifecyclecallback.DataVisorLifecycleCallbacks;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.encryption.security.AESEncryptorECB;
@@ -204,10 +206,15 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         Typography.Companion.setFontTypeOpenSauceOne(true);
 
         showDevOptNotification();
+        initGotoSDK();
         if(RemoteConfigInstance.getInstance().getABTestPlatform().getBoolean(ENABLE_PUSH_TOKEN_DELETION_WORKER)){
             PushTokenRefreshUtil pushTokenRefreshUtil = new PushTokenRefreshUtil();
             pushTokenRefreshUtil.scheduleWorker(context.getApplicationContext(), remoteConfig.getLong(PUSH_DELETION_TIME_GAP));
         }
+    }
+
+    private void initGotoSDK() {
+        GotoSdk.init(this);
     }
 
     private void initializationNewRelic() {
@@ -454,9 +461,23 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             }
         });
 
+        getWidevineId();
+
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
         return true;
+    }
+
+    private void getWidevineId() {
+        if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_GENERATE_WIDEVINE_ID_SUSPEND, true)) {
+            AdditionalDeviceInfo.getWidevineIdSuspend(ConsumerMainApplication.this, new Function1<String, Unit>() {
+                @Override
+                public Unit invoke(String s) {
+                    FingerprintModelGenerator.INSTANCE.expireFingerprint();
+                    return Unit.INSTANCE;
+                }
+            });
+        }
     }
 
     private boolean getLeakCanaryToggleValue() {

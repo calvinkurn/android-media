@@ -53,6 +53,7 @@ import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuU
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
+import com.tokopedia.tokopedianow.oldcategory.utils.TOKONOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_TOKONOW_DIRECTORY
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -138,7 +139,9 @@ class TokoNowCategoryViewModel @Inject constructor(
         )
 
         val categoryNavigationUiModel = detailResponse.mapToCategoryNavigation()
-        categoryRecommendation = detailResponse.mapToCategoryRecommendation()
+        categoryRecommendation = detailResponse.mapToCategoryRecommendation(
+            source = TOKONOW_CATEGORY_L1
+        )
 
         visitableList.clear()
 
@@ -351,22 +354,6 @@ class TokoNowCategoryViewModel @Inject constructor(
         launchCatchError(
             block = {
                 removeVisitableItem(PRODUCT_RECOMMENDATION.name)
-                updateVisitableListLiveData()
-            },
-            onError = { /* nothing to do */ }
-        )
-    }
-
-    fun updateWishlistStatus(
-        productId: String,
-        hasBeenWishlist: Boolean
-    ) {
-        launchCatchError(
-            block = {
-                visitableList.updateWishlistStatus(
-                    productId = productId,
-                    hasBeenWishlist = hasBeenWishlist
-                )
                 updateVisitableListLiveData()
             },
             onError = { /* nothing to do */ }

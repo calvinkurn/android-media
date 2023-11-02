@@ -10,10 +10,8 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.internal.ParamObject
-import com.tokopedia.topads.common.domain.usecase.GetWhiteListedUserUseCase
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.DEFAULT_TOP_UP_FREQUENCY
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.IS_TOP_UP_CREDIT_NEW_UI
 import com.tokopedia.topads.dashboard.data.model.CreditResponse
 import com.tokopedia.topads.dashboard.data.model.DataCredit
 import com.tokopedia.topads.dashboard.data.model.TkpdProducts
@@ -33,7 +31,6 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
     private val autoTopUpUSeCase: TopAdsAutoTopUpUSeCase,
     private val saveSelectionUseCase: TopAdsSaveSelectionUseCase,
     private val userSession: UserSessionInterface,
-    private val whiteListedUserUseCase: GetWhiteListedUserUseCase,
     val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -53,24 +50,6 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
         }, {
             getAutoTopUpStatus.value = Fail(it)
         })
-    }
-
-    fun getWhiteListedUser() {
-        whiteListedUserUseCase.setParams()
-        whiteListedUserUseCase.executeQuerySafeMode(
-            onSuccess = {
-                var isWhitelisted = false
-                it.data.forEach { data ->
-                    if (data.featureName == IS_TOP_UP_CREDIT_NEW_UI) {
-                        isWhitelisted = true
-                    }
-                }
-                _isUserWhitelisted.value = Success(isWhitelisted)
-            },
-            onError = {
-                _isUserWhitelisted.value = Fail(it)
-            }
-        )
     }
 
     fun saveSelection(isActive: Boolean, selectedItem: AutoTopUpItem, frequency: String = DEFAULT_TOP_UP_FREQUENCY.toString()) {

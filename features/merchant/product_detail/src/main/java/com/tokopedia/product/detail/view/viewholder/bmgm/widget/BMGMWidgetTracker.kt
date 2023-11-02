@@ -12,7 +12,11 @@ interface BMGMWidgetTracker {
 
     fun getImpressionHolder(): ImpressHolder
 
+    fun getImpressionHolders(): MutableList<String>
+
     fun onImpressed()
 
     fun onClick(data: BMGMWidgetUiModel)
+
+    fun isCacheable(): Boolean
 }

@@ -285,16 +285,20 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
     }
 
     private fun LayoutProductCardCompactQuantityEditorViewBinding.onClickAddToCartWithoutAnimation() {
-        root.setTransition(R.id.end, R.id.end)
-        root.transitionToEnd()
+        if(hasBlockedAddToCart) {
+            onBlockAddToCartListener?.invoke()
+        } else {
+            root.setTransition(R.id.end, R.id.end)
+            root.transitionToEnd()
 
-        addButton.alpha = MIN_ALPHA
-        addButton.gone()
+            addButton.alpha = MIN_ALPHA
+            addButton.gone()
 
-        addToCartBtnShimmer.alpha = MAX_ALPHA
-        addToCartBtnShimmer.show()
+            addToCartBtnShimmer.alpha = MAX_ALPHA
+            addToCartBtnShimmer.show()
 
-        onQuantityChangedListener?.invoke(minQuantity)
+            onQuantityChangedListener?.invoke(minQuantity)
+        }
     }
 
     private fun LayoutProductCardCompactQuantityEditorViewBinding.setupSubButton() {

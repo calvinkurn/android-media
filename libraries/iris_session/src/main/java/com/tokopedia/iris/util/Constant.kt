@@ -55,6 +55,7 @@ const val VALUE = "value"
 
 const val DEFAULT_CONFIG = "{\"row_limit\":50,\"interval\":1}"
 const val DEFAULT_PERF_CONFIG = "{\"sampling_rate\":100}"
+const val DEFAULT_WHITELIST_PERF_CONFIG = "{\"whitelist_user_id\":[\"661089\"],\"whitelist_version_suffix\":[\"perftest\"]}"
 const val JOB_IRIS_ID = 1500
 const val DEFAULT_SERVICE_TIME: Long = 1
 const val DEFAULT_MAX_ROW = 50

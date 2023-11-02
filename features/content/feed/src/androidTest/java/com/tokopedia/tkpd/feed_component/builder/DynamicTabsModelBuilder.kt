@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.feed_component.builder
 
-import com.tokopedia.feedplus.data.pojo.FeedTabs
+import com.tokopedia.feedplus.oldFeed.data.pojo.FeedTabs
 
 /**
  * Created By : Jonathan Darwin on September 23, 2022

@@ -13,4 +13,5 @@ object FragmentConst {
     const val SHOP_SHOWCASE_TAB_FRAGMENT_CLASS_PATH = "com.tokopedia.shop_showcase.shop_showcase_tab.presentation.fragment.ShopPageShowcaseFragment"
     const val FEED_SHOP_FRAGMENT = "com.tokopedia.feed_shop.shop.view.fragment.FeedShopFragment"
     const val DISCOVERY_FRAGMENT = "com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryExtensibleFragment"
+    const val HOME_REVAMP_FRAGMENT = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
 }

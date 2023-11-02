@@ -66,6 +66,7 @@ import com.tokopedia.shop.pageheader.di.component.DaggerShopPageHeaderComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageHeaderComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageHeaderModule
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderPlayWidgetViewHolder
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageReimagineHeaderFragment.Companion.SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageHeaderFragmentHeaderViewHolderV2
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageHeaderFragmentViewHolderListener
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopFollowButtonUiModel
@@ -100,7 +101,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
         private const val DEFAULT_SHOWCASE_ID = "0"
         private const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
         private const val FEED_SHOP_FRAGMENT_SHOP_ID = "PARAM_SHOP_ID"
-        private const val FEED_SHOP_FRAGMENT_CREATE_POST_URL = "PARAM_CREATE_POST_URL"
         private const val ARGS_SHOP_ID_FOR_REVIEW_TAB = "ARGS_SHOP_ID"
         private const val MAX_ALPHA = 255f
         private const val PADDING_TOP_IN_DP = 8
@@ -126,7 +126,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private var shopDomain: String? = null
     private var shopAttribution: String? = null
     private var isShowFeed: Boolean = false
-    private var createPostUrl: String = ""
     private var shopPageHeaderFragmentHeaderViewHolder: ShopPageHeaderFragmentHeaderViewHolderV2? = null
     private var isForceNotShowingTab: Boolean = false
 
@@ -457,7 +456,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
             UriUtil.buildUri(
                 ApplinkConst.SHOP_ETALASE,
                 shopId,
-                DEFAULT_SHOWCASE_ID
+                SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA
             ),
             "utf-8"
         )
@@ -683,7 +682,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
                             FEED_SHOP_FRAGMENT,
                             Bundle().apply {
                                 putString(FEED_SHOP_FRAGMENT_SHOP_ID, shopId)
-                                putString(FEED_SHOP_FRAGMENT_CREATE_POST_URL, createPostUrl)
                             }
                         )
                         feedFragment
@@ -735,10 +733,10 @@ class ShopPageHeaderFragmentTabContentWrapper :
 
     fun setShopPageHeaderP1Data(
         shopPageHeaderP1Data: ShopPageHeaderP1HeaderData,
-        isEnableDirectPurchase: Boolean
+        isEnableDirectPurchase: Boolean,
+        isShouldShowFeed: Boolean
     ) {
-        isShowFeed = shopPageHeaderP1Data.isWhitelist
-        createPostUrl = shopPageHeaderP1Data.feedUrl
+        isShowFeed = isShouldShowFeed
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
             shopId = this@ShopPageHeaderFragmentTabContentWrapper.shopId
             isOfficial = shopPageHeaderP1Data.isOfficial

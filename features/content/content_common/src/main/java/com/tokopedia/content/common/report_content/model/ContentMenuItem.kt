@@ -26,5 +26,7 @@ enum class ContentMenuIdentifier {
     WatchMode,
     SeePerformance,
     LearnVideoInsight,
-    Delete;
+    Delete,
+    Mute,
+    Unmute;
 }
