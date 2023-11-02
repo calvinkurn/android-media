@@ -789,9 +789,6 @@ class DiscoveryPageDataMapper(
     private fun parseSectionComponent(component: ComponentsItem): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         listComponents.add(component)
-        component.getComponentsItem()?.let {
-            listComponents.addAll(getSectionComponentList(it, component.position + 1))
-        }
         return listComponents
     }
 

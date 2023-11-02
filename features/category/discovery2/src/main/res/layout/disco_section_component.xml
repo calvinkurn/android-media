@@ -5,10 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/section_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <include
         layout="@layout/disco_section_shimmer"
-        app:layout_constraintLeft_toLeftOf="parent"
         android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.LocalLoad

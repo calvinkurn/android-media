@@ -1,25 +1,32 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section
 
 import android.view.View
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.LocalLoad
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class SectionViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     var viewModel: SectionViewModel? = null
     val shimmer: ConstraintLayout = itemView.findViewById(R.id.section_shimmer)
     private var carouselEmptyState: LocalLoad = itemView.findViewById(R.id.viewEmptyState)
+    private val container = itemView.findViewById<LinearLayoutCompat>(R.id.section_container)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as SectionViewModel
@@ -28,6 +35,53 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
         }
         viewModel?.shouldShowShimmer()?.let { shimmer.showWithCondition(it) }
         viewModel?.shouldShowError()?.let { carouselEmptyState.showWithCondition(it) }
+
+        val items = viewModel?.components?.getComponentsItem()
+
+        val backgroundColor = if (items?.find { it.name == ComponentNames.ProductCardCarousel.componentName } != null) {
+            unifyprinciplesR.color.Unify_RN200_96
+        } else {
+            unifyprinciplesR.color.Unify_G200_96
+        }
+
+        container.setBackgroundColor(ContextCompat.getColor(itemView.context, backgroundColor))
+
+        if (items != null) {
+            for (item in items) {
+                when (item.name) {
+                    ComponentNames.ProductCardCarousel.componentName -> {
+                        container.addView(
+                            CustomViewCreator.getCustomViewObject(
+                                itemView.context,
+                                ComponentsList.ProductCardCarousel,
+                                item,
+                                fragment
+                            )
+                        )
+                    }
+                    ComponentNames.LihatSemua.componentName -> {
+                        container.addView(
+                            CustomViewCreator.getCustomViewObject(
+                                itemView.context,
+                                ComponentsList.LihatSemua,
+                                item,
+                                fragment
+                            )
+                        )
+                    }
+                    ComponentNames.MerchantVoucherGrid.componentName -> {
+                        container.addView(
+                            CustomViewCreator.getCustomViewObject(
+                                itemView.context,
+                                ComponentsList.MerchantVoucherGrid,
+                                item,
+                                fragment
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
