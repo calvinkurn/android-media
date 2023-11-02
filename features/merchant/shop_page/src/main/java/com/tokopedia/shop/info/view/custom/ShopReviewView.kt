@@ -9,11 +9,14 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.view.fragment.ReviewViewPagerItemFragment
@@ -24,15 +27,13 @@ class ShopReviewView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
-    
-    private var isSwipeFromUserInteraction : Boolean = false
-    private var countDownTimer: CountDownTimer? = null
-    private var progressBar: ProgressBar? = null
-    
+
+    private var isSwipeFromUserInteraction: Boolean = false
+
     init {
         orientation = VERTICAL
     }
-    
+
     companion object {
         private const val DOT_INDICATOR_INACTIVE_HEIGHT = 5
         private const val DOT_INDICATOR_INACTIVE_WIDTH = 5
@@ -40,15 +41,28 @@ class ShopReviewView @JvmOverloads constructor(
         private const val DOT_INDICATOR_ACTIVE_WIDTH = 28
         private const val DOT_INDICATOR_MARGIN_START = 3
         private const val DOT_INDICATOR_MARGIN_TOP = 16
+
+        private const val COUNTDOWN_TIMER_TOTAL_TIME: Long = 5000
+        private const val COUNTDOWN_TIMER_INTERVAL: Long = 250
     }
 
     fun render(review: ShopReview) {
         val viewpager = createViewpager()
         val tabIndicator = createTabIndicator(review.reviews.size)
-        
         addView(viewpager)
         addView(tabIndicator)
-        
+
+        if (tabIndicator.size.isMoreThanZero()) {
+            val firstTabIndicator = tabIndicator[0]
+            val progressBar = (firstTabIndicator as? ProgressBar) ?: return
+            startTimer(progressBar)
+        }
+
+        /*addView(tabIndicator)
+        val dot = createSelectedDot()
+        addView(dot)
+        startTimer(dot)*/
+
         setupViewPager(viewpager, tabIndicator, review)
     }
 
@@ -63,26 +77,27 @@ class ShopReviewView @JvmOverloads constructor(
         val pagerAdapter = ReviewViewPagerAdapter(fragmentActivity, fragments)
         viewPager.adapter = pagerAdapter
 
-        addViewPagerPageChangeListener(viewPager, tabIndicator, review.reviews.size)
+        addViewPagerPageChangeListener(viewPager, tabIndicator, review.reviews)
     }
 
     private fun addViewPagerPageChangeListener(
         viewPager: ViewPager2,
         tabIndicator: LinearLayout,
-        reviewCount: Int
+        reviews: List<ShopReview.Review>
     ) {
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
                 if (isSwipeFromUserInteraction) {
                     tabIndicator.removeAllViews()
                 }
-                
-                for (currentIndex in Int.ZERO until reviewCount) {
+
+                for (currentIndex in Int.ZERO until reviews.size) {
                     if (currentIndex == position) {
-                        tabIndicator.addView(createSelectedDot())
-                        startTimer()
+                        val progressBar = createSelectedDot()
+                        tabIndicator.addView(progressBar)
+                        startTimer(progressBar)
                     } else {
                         tabIndicator.addView(createUnselectedDot())
                     }
@@ -103,7 +118,7 @@ class ShopReviewView @JvmOverloads constructor(
     }
 
     private fun createTabIndicator(reviewCount: Int): LinearLayout {
-        val tabIndicator =  LinearLayout(context).apply {
+        val tabIndicator = LinearLayout(context).apply {
             val params = LayoutParams(
                 LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT
@@ -114,7 +129,7 @@ class ShopReviewView @JvmOverloads constructor(
             orientation = HORIZONTAL
             gravity = Gravity.CENTER_HORIZONTAL
         }
-   
+
         for (currentIndex in Int.ZERO until reviewCount) {
             if (currentIndex == Int.ZERO) {
                 tabIndicator.addView(createSelectedDot())
@@ -122,44 +137,35 @@ class ShopReviewView @JvmOverloads constructor(
                 tabIndicator.addView(createUnselectedDot())
             }
         }
-        
+
         return tabIndicator
     }
 
-    
-    private fun startTimer() {
-        val totalTime: Long = 5000
-        val interval: Long = 250
-        
-        if (countDownTimer == null) {
-            countDownTimer = object : CountDownTimer(totalTime, interval) {
+    private fun startTimer(progressBar: ProgressBar) {
+        val countDownTimer =
+            object : CountDownTimer(COUNTDOWN_TIMER_TOTAL_TIME, COUNTDOWN_TIMER_INTERVAL) {
                 override fun onTick(millisUntilFinished: Long) {
-                    val remainingProgressPercent = (millisUntilFinished.toFloat() / totalTime.toFloat()) * 100f
+                    val remainingProgressPercent =
+                        (millisUntilFinished.toFloat() / COUNTDOWN_TIMER_TOTAL_TIME.toFloat()) * 100f
                     val progressPercent = 100f - remainingProgressPercent
                     println("Timer. millisUntilFinished : $millisUntilFinished, remainingProgressPercent $remainingProgressPercent progressPercent $progressPercent")
 
                     val percent = progressPercent.toInt()
-                    progressBar?.progress = percent
+                    progressBar.progress = percent
                     println("Timer updated to $percent percent")
                 }
 
                 override fun onFinish() {
-                    progressBar?.progress = 100
+                    progressBar.progress = 100
                     // Handle timer completion
                     // For example, show a message or perform a task
                 }
             }
-        }
-        
-        countDownTimer?.start()
+
+        countDownTimer.start()
     }
-    
-    private fun stopTimer() {
-        countDownTimer?.cancel()
-        countDownTimer = null
-    }
-    
-    private fun createSelectedDot(): ProgressBar? {
+
+    private fun createSelectedDot(): ProgressBar {
         val progressBar = ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal).apply {
             layoutParams = LayoutParams(
                 DOT_INDICATOR_ACTIVE_WIDTH.toPx(),
@@ -170,21 +176,18 @@ class ShopReviewView @JvmOverloads constructor(
             max = 100 // Set the maximum progress value
             progress = 0 // Set the current progress value
         }
-        
-        this.progressBar = progressBar
-        
         val backgroundDrawable = ContextCompat.getDrawable(context, R.drawable.shape_shop_review_rounded_progressbar_background)
         val progressDrawable = ContextCompat.getDrawable(context, R.drawable.shape_shop_review_rounded_progressbar_progress)
-        
+
         progressBar.progressDrawable = progressDrawable
         progressBar.background = backgroundDrawable
-        
+
         return progressBar
     }
 
     private fun createUnselectedDot(): ImageView {
         val imageView = ImageView(context)
-        val params = LayoutParams(DOT_INDICATOR_INACTIVE_WIDTH.toPx() , DOT_INDICATOR_INACTIVE_HEIGHT.toPx())
+        val params = LayoutParams(DOT_INDICATOR_INACTIVE_WIDTH.toPx(), DOT_INDICATOR_INACTIVE_HEIGHT.toPx())
         params.leftMargin = DOT_INDICATOR_MARGIN_START.toPx()
         imageView.layoutParams = params
 
@@ -192,13 +195,12 @@ class ShopReviewView @JvmOverloads constructor(
 
         return imageView
     }
-    
+
     private fun createFragments(reviews: List<ShopReview.Review>): List<Fragment> {
         return reviews.map { review ->
             ReviewViewPagerItemFragment.newInstance(review)
         }
     }
-
 
     private class ReviewViewPagerAdapter(
         fragmentActivity: FragmentActivity,
