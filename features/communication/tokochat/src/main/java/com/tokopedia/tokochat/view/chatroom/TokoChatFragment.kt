@@ -750,7 +750,10 @@ open class TokoChatFragment @Inject constructor(
     private fun loadTransactionWidget(isFromLocalLoad: Boolean = false) {
         if (viewModel.tkpdOrderId.isNotBlank()) {
             baseBinding?.tokochatTransactionOrder?.showShimmeringWidget()
-            viewModel.loadOrderCompletedStatus(viewModel.tkpdOrderId, viewModel.source)
+            viewModel.loadOrderCompletedStatus(
+                viewModel.tkpdOrderId,
+                getSourceCategory(viewModel.source)
+            )
         } else if (isFromLocalLoad) {
             // Re-fetch tkpd order id from local load click
             baseBinding?.tokochatTransactionOrder?.showShimmeringWidget()
@@ -762,8 +765,13 @@ open class TokoChatFragment @Inject constructor(
         }
     }
 
-    private fun updateShowTransactionWidget(tokoChatOrderProgress: TokoChatOrderProgressResponse.TokoChatOrderProgress) {
+    private fun updateShowTransactionWidget(
+        tokoChatOrderProgress: TokoChatOrderProgressResponse.TokoChatOrderProgress
+    ) {
         val orderProgressUiModel = TokoChatOrderProgressUiModel(
+            orderProgressType = TokoChatOrderProgressUiModel.Type.sourceToType(
+                getSourceCategory(viewModel.source)
+            ),
             isEnable = tokoChatOrderProgress.enable,
             state = tokoChatOrderProgress.state,
             imageUrl = tokoChatOrderProgress.imageUrl,
@@ -774,13 +782,22 @@ open class TokoChatFragment @Inject constructor(
             orderId = tokoChatOrderProgress.orderId,
             status = tokoChatOrderProgress.status,
             statusId = tokoChatOrderProgress.statusId,
-            appLink = tokoChatOrderProgress.uri
+            appLink = tokoChatOrderProgress.uri,
+            additionalInfo = tokoChatOrderProgress.additionalInfo,
+            buttonText = tokoChatOrderProgress.button.title,
+            buttonApplink = tokoChatOrderProgress.button.uri,
+            buttonEnable = tokoChatOrderProgress.button.enable
         )
         baseBinding?.tokochatTransactionOrder?.updateTransactionWidget(orderProgressUiModel)
     }
 
-    private fun setShowTransactionWidget(tokoChatOrderProgress: TokoChatOrderProgressResponse.TokoChatOrderProgress) {
+    private fun setShowTransactionWidget(
+        tokoChatOrderProgress: TokoChatOrderProgressResponse.TokoChatOrderProgress
+    ) {
         val orderProgressUiModel = TokoChatOrderProgressUiModel(
+            orderProgressType = TokoChatOrderProgressUiModel.Type.sourceToType(
+                getSourceCategory(viewModel.source)
+            ),
             isEnable = tokoChatOrderProgress.enable,
             state = tokoChatOrderProgress.state,
             imageUrl = tokoChatOrderProgress.imageUrl,
@@ -791,7 +808,11 @@ open class TokoChatFragment @Inject constructor(
             orderId = tokoChatOrderProgress.orderId,
             status = tokoChatOrderProgress.status,
             statusId = tokoChatOrderProgress.statusId,
-            appLink = tokoChatOrderProgress.uri
+            appLink = tokoChatOrderProgress.uri,
+            additionalInfo = tokoChatOrderProgress.additionalInfo,
+            buttonText = tokoChatOrderProgress.button.title,
+            buttonApplink = tokoChatOrderProgress.button.uri,
+            buttonEnable = tokoChatOrderProgress.button.enable
         )
 
         baseBinding?.tokochatTransactionOrder?.showTransactionWidget(
@@ -1122,6 +1143,15 @@ open class TokoChatFragment @Inject constructor(
                     }
                     startActivity(intent)
                 }
+            }
+        }
+    }
+
+    override fun onButtonClicked(appLink: String) {
+        if (appLink.isNotBlank()) {
+            context?.let {
+                val intent = RouteManager.getIntent(it, appLink)
+                startActivity(intent)
             }
         }
     }

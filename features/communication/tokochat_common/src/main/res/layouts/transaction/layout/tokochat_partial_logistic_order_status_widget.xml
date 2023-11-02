@@ -85,11 +85,10 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/Unify_NN950"
-            tools:text="Buku Disney Anak 7 Tahun"
-            tools:visibility="visible"/>
+            tools:text="Buku Disney Anak 7 Tahun"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tokochat_tp_additional_info"
+            android:id="@+id/tokochat_logistic_tp_additional_info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/tokochat_logistic_tp_order_name"
@@ -103,20 +102,39 @@
             tools:text="+2 produk lainnya"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tokochat_tp_estimate_value"
+            android:id="@+id/tokochat_logistic_tp_estimate_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/tokochat_tp_additional_info"
-            app:layout_constraintStart_toStartOf="@id/tokochat_tp_additional_info"
-            app:layout_constraintEnd_toEndOf="@id/tokochat_logistic_tp_order_name"
+            app:layout_constraintTop_toBottomOf="@id/tokochat_logistic_tp_additional_info"
+            app:layout_constraintStart_toStartOf="@id/tokochat_logistic_tp_additional_info"
+            app:layout_constraintEnd_toStartOf="@id/tokochat_logistic_tp_estimate_value"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintWidth_default="wrap"
+            app:layout_constrainedWidth="true"
             android:layout_marginTop="8dp"
             android:includeFontPadding="false"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/Unify_NN950"
             app:typographyType="display_3"
-            tools:text="Tiba pukul: 13:00"/>
+            tools:text="Tiba Pukul:"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tokochat_logistic_tp_estimate_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/tokochat_logistic_tp_estimate_label"
+            app:layout_constraintStart_toEndOf="@id/tokochat_logistic_tp_estimate_label"
+            app:layout_constraintEnd_toEndOf="@id/tokochat_logistic_tp_order_name"
+            app:layout_constraintBottom_toBottomOf="@id/tokochat_logistic_tp_estimate_label"
+            app:layout_constrainedWidth="true"
+            android:includeFontPadding="false"
+            android:layout_marginStart="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="display_3"
+            tools:text="10:00-16:00 WIB"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/tokochat_logistic_btn_order_progress"
