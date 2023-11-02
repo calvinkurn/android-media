@@ -136,6 +136,7 @@ class BlocksPerformanceTrace(
                 perfBlockFlow.collect {
                     val currentElapsedTime = System.currentTimeMillis() - startCurrentTimeMillis
                     onBlocksRendered?.invoke(summaryModel.get(), atomicPerformanceBlocks.get(), currentElapsedTime)
+                    Log.d("FikryPerf", "ElapsedTime: $currentElapsedTime")
                     if (!ttflMeasured && TTFLperformanceMonitoring != null && it >= FINISHED_LOADING_TTFL_BLOCKS_THRESHOLD) {
                         measureTTFL(atomicPerformanceBlocks.get())
                         endAsyncSystraceSection("PageLoadTime.AsyncTTFL$traceName", COOKIE_TTFL)

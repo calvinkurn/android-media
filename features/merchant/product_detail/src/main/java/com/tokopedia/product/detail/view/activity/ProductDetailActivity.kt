@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
@@ -369,11 +370,14 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         }
 
         blocksPerformanceTrace?.onBlocksRendered = { summaryModel, capturedBlocks, elapsedTime ->
+            Log.d("FikryPerf", "Callback ElapsedTime: $elapsedTime")
+            Log.d("FikryPerf", "Callback Blocks: $capturedBlocks")
+
             if (capturedBlocks.containsAll(
                     listOf(
-                            "ProductContentDataModel",
-                            "ProductMediaDataModel",
-                            "ProductMiniSocialProofDataModel"
+                            "product_content",
+                            "product_media",
+                            "social_proof_mini"
                         )
                 ) && prefetchTime == 0L
             ) {
