@@ -2,6 +2,7 @@ package com.tokopedia.app.common;
 
 import android.content.SharedPreferences;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
