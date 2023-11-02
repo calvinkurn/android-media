@@ -65,7 +65,11 @@ data class GetPofRequestEstimateResponse(
                 @SerializedName("text")
                 @Expose
                 val text: String? = null
-            )
+            ) {
+                fun hasValidInfo(): Boolean {
+                    return hasInfo == true && !text.isNullOrBlank()
+                }
+            }
 
             data class PofSummary(
                 @SerializedName("label")

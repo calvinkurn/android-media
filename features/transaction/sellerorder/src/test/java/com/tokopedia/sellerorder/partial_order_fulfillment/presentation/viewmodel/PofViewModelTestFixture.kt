@@ -314,7 +314,7 @@ abstract class PofViewModelTestFixture {
 
     protected fun createGetPofInfoParams(
         orderId: Long = 167756654,
-        delay: Long = 0
+        delay: Long = 500
     ): GetPofInfoRequestParams {
         return GetPofInfoRequestParams(
             orderId = orderId,
@@ -377,6 +377,10 @@ abstract class PofViewModelTestFixture {
         viewModel.onEvent(UiEvent.OpenScreen(167756654, initialPofStatus = 0))
     }
 
+    protected fun sendOnClickResetPofFormEvent() {
+        viewModel.onEvent(UiEvent.OnClickResetPofForm)
+    }
+
     protected fun sendClickRetryOnErrorStateEvent() {
         viewModel.onEvent(UiEvent.ClickRetryOnErrorState)
     }
@@ -425,69 +429,6 @@ abstract class PofViewModelTestFixture {
         coExcludeRecords(excludeBlock = calls)
     }
 
-    protected suspend fun excludeInvalidCalls() {
-        // exclude invalid calls
-        getPofInfoUseCase(createGetPofInfoParams(orderId = 0, delay = 0))
-        getPofInfoUseCase(createGetPofInfoParams(orderId = 0, delay = 1000))
-        getPofEstimateUseCase(
-            createGetPofEstimateParams(
-                orderId = 0,
-                delay = 0,
-                detailInfo = emptyList()
-            )
-        )
-        getPofEstimateUseCase(
-            createGetPofEstimateParams(
-                orderId = 0,
-                delay = 1000,
-                detailInfo = emptyList()
-            )
-        )
-        getPofEstimateUseCase(
-            createGetPofEstimateParams(
-                orderId = 0,
-                delay = 0,
-                detailInfo = null
-            )
-        )
-        getPofEstimateUseCase(
-            createGetPofEstimateParams(
-                orderId = 0,
-                delay = 1000,
-                detailInfo = null
-            )
-        )
-        getPofEstimateUseCase(
-            createGetPofEstimateParams(
-                orderId = 167756654,
-                delay = 0,
-                detailInfo = emptyList()
-            )
-        )
-        getPofEstimateUseCase(
-            createGetPofEstimateParams(
-                orderId = 167756654,
-                delay = 1000,
-                detailInfo = emptyList()
-            )
-        )
-        getPofEstimateUseCase(
-            createGetPofEstimateParams(
-                orderId = 167756654,
-                delay = 0,
-                detailInfo = null
-            )
-        )
-        getPofEstimateUseCase(
-            createGetPofEstimateParams(
-                orderId = 167756654,
-                delay = 1000,
-                detailInfo = null
-            )
-        )
-        sendPofUseCase(SendPofRequestParams(orderId = 167756654, pofDetail = listOf()))
-    }
-
     protected suspend fun excludeOpenScreenGetPofInfoCalls() {
         // exclude open screen calls
         getPofInfoUseCase(createGetPofInfoParams())
@@ -495,7 +436,7 @@ abstract class PofViewModelTestFixture {
 
     protected suspend fun excludeOpenScreenGetPofEstimateCalls() {
         // exclude open screen calls
-        getPofEstimateUseCase(createGetPofEstimateParamsWithDefinedQuantity())
+        getPofEstimateUseCase(createGetPofEstimateParams())
     }
 
     protected fun createSuccessGetPofInfoWithStatus0() {
@@ -535,7 +476,7 @@ abstract class PofViewModelTestFixture {
         }
     }
 
-    protected fun createErrorGetPofInfo() {
+    protected fun createBEErrorGetPofInfo() {
         coEvery {
             getPofInfoUseCase(any())
         } returns flow {
@@ -544,13 +485,25 @@ abstract class PofViewModelTestFixture {
         }
     }
 
-    protected fun createErrorGetPofEstimate() {
+    protected fun createFEErrorGetPofInfo() {
+        coEvery {
+            getPofInfoUseCase(any())
+        } throws throwable
+    }
+
+    protected fun createBEErrorGetPofEstimate() {
         coEvery {
             getPofEstimateUseCase(any())
         } returns flow {
             emit(RequestState.Requesting)
             emit(RequestState.Error(throwable))
         }
+    }
+
+    protected fun createFEErrorGetPofEstimate() {
+        coEvery {
+            getPofEstimateUseCase(any())
+        } throws throwable
     }
 
     protected fun createBEErrorSendPof() {
@@ -568,10 +521,7 @@ abstract class PofViewModelTestFixture {
     protected fun createFEErrorSendPof() {
         coEvery {
             sendPofUseCase(any())
-        } returns flow {
-            emit(RequestState.Requesting)
-            emit(RequestState.Error(Throwable()))
-        }
+        } throws throwable
     }
 
     protected fun getFirstOriginalOrderDetailId(): Long {
