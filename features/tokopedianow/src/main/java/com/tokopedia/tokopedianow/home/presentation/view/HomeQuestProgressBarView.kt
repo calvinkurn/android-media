@@ -49,8 +49,10 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
 
     private fun setupView(uiModel: HomeQuestWidgetUiModel) {
         binding.apply {
-            val questCount = uiModel.questList.count()
-            val progressIndex = 0
+            val questList = uiModel.questList
+            val questCount = questList.count()
+            val lastFinishedQuest = questList.lastOrNull { it.isFinished() }
+            val progressIndex = lastFinishedQuest?.let { questList.indexOf(lastFinishedQuest) }
             val xMultiplier = getViewX() / (questCount - 1)
 
             for (i in 0 until questCount) {
