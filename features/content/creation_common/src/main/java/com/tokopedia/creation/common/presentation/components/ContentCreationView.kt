@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -34,8 +35,9 @@ import com.tokopedia.creation.common.R as creationcommonR
  * Created By : Muhammad Furqan on 07/09/23
  */
 @Composable
-fun ContentCreationComponent(
+fun ContentCreationView(
     creationConfig: Result<ContentCreationConfigModel>?,
+    onImpressBottomSheet: () -> Unit,
     selectedItem: ContentCreationItemModel?,
     onSelectItem: (ContentCreationItemModel) -> Unit,
     onNextClicked: () -> Unit,
@@ -43,12 +45,19 @@ fun ContentCreationComponent(
 ) {
     NestTheme {
         when (creationConfig) {
-            is Success -> ContentCreationSuccessView(
-                creationItemList = creationConfig.data.creationItems,
-                selectedItem = selectedItem,
-                onSelectItem = onSelectItem,
-                onNextClicked = onNextClicked
-            )
+            is Success -> {
+                LaunchedEffect(Unit) {
+                    onImpressBottomSheet()
+                }
+
+                ContentCreationSuccessView(
+                    creationItemList = creationConfig.data.creationItems,
+                    selectedItem = selectedItem,
+                    onSelectItem = onSelectItem,
+                    onNextClicked = onNextClicked
+                )
+            }
+
             is Fail -> ContentCreationFailView(onRetry = onRetryClicked)
             else -> ContentCreationLoadingView()
         }
@@ -150,19 +159,20 @@ private fun ContentCreationFailView(onRetry: () -> Unit) {
 @Preview
 @Composable
 private fun ContentCreationComponentFailedPreview() {
-    ContentCreationComponent(
+    ContentCreationView(
         creationConfig = Fail(Throwable("Failed")),
         selectedItem = null,
         onSelectItem = {},
         onNextClicked = {},
-        onRetryClicked = {}
+        onRetryClicked = {},
+        onImpressBottomSheet = {}
     )
 }
 
 @Preview
 @Composable
 private fun ContentCreationComponentSuccessPreview() {
-    ContentCreationComponent(
+    ContentCreationView(
         creationConfig = Success(
             ContentCreationConfigModel(
                 isActive = true,
@@ -220,6 +230,7 @@ private fun ContentCreationComponentSuccessPreview() {
         ),
         onSelectItem = {},
         onNextClicked = {},
-        onRetryClicked = {}
+        onRetryClicked = {},
+        onImpressBottomSheet = {}
     )
 }
