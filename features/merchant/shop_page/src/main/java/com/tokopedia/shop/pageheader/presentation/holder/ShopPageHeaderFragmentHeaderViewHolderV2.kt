@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.creation.common.presentation.customviews.ContentCreationEntryPointWidget
+import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -45,6 +46,7 @@ import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
+import com.tokopedia.shop.common.util.ShopTimer
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.convertUrlToBitmapAndLoadImage
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
@@ -81,7 +83,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopPageHeaderFragmentHeaderViewHolderV2(
@@ -95,7 +96,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
 ) {
 
     companion object {
-        private const val CYCLE_DURATION = 5000L
+        private const val CYCLE_DURATION = 3500L
         private const val MAXIMUM_WIDTH_STATIC_USP = 100
         private const val DELAY_DURATION_TICKER_MILLIS = 1000L
         private const val NEW_SELLER_TEXT_HTML = "Penjual Baru"
@@ -152,8 +153,8 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     private var coachMark: CoachMark2? = null
     private val tickerShopStatus: Ticker? = viewBinding?.tickerShopStatus
     private var playVideoWrapper: PlayVideoWrapper? = null
-    private var timer: Timer? = null
     private var currentIndexUspDynamicValue: Int = 0
+    private val timer = ShopTimer()
 
     fun setupChooseAddressWidget(isMyShop: Boolean) {
         chooseAddressWidget?.apply {
@@ -201,6 +202,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                 widgetPlayRootContainer?.creationBottomSheetListener =
                     it.getContentCreationListener()
             }
+            widgetPlayRootContainer?.widgetSource = ContentCreationEntryPointSource.Shop
             widgetPlayRootContainer?.onClickListener = {
                 shopPageTrackingSGCPlayWidget?.onClickSGCContent(
                     shopId = modelComponent.shopPageHeaderDataModel?.shopId.orEmpty()
@@ -627,7 +629,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         } else {
             Ticker.TYPE_ANNOUNCEMENT
         }
-  
+
         tickerShopStatus?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 listenerHeader?.onShopStatusTickerClickableDescriptionClicked(linkUrl)
@@ -640,10 +642,13 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         } else {
             tickerShopStatus?.closeButtonVisibility = View.VISIBLE
         }
-        
+
         doOnDelayFinished(DELAY_DURATION_TICKER_MILLIS) {
             tickerShopStatus?.tickerTitle =
-                HtmlLinkHelper(context, shopOperationalHourStatus.tickerTitle).spannedString.toString()
+                HtmlLinkHelper(
+                    context,
+                    shopOperationalHourStatus.tickerTitle
+                ).spannedString.toString()
             tickerShopStatus?.setHtmlDescription(shopOperationalHourStatus.tickerMessage)
         }
     }
@@ -671,7 +676,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             ShopTickerType.DANGER -> Ticker.TYPE_ERROR
             else -> Ticker.TYPE_WARNING
         }
-      
+
         tickerShopStatus?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 // set tracker data based on shop status
@@ -727,7 +732,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                 tickerShopStatus?.closeButtonVisibility = View.VISIBLE
             }
         }
-        
+
         doOnDelayFinished(DELAY_DURATION_TICKER_MILLIS) {
             tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(statusTitle).toString()
             tickerShopStatus?.setHtmlDescription(
@@ -750,7 +755,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             }
         }
     }
-    
+
     private fun hideShopStatusTicker() {
         tickerShopStatus?.hide()
     }
@@ -922,28 +927,21 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     fun startDynamicUspCycle(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>) {
         val listDynamicUspValue =
             listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
-        if (timer == null && listDynamicUspValue.isNotEmpty()) {
-            timer = Timer()
-            timer?.scheduleAtFixedRate(
-                object : TimerTask() {
-                    override fun run() {
-                        if (currentIndexUspDynamicValue == listDynamicUspValue.size - Int.ONE) {
-                            currentIndexUspDynamicValue = Int.ZERO
-                        } else {
-                            ++currentIndexUspDynamicValue
-                        }
-                        val currentValue = listDynamicUspValue[currentIndexUspDynamicValue]
-                        cycleDynamicUspText(currentValue)
-                    }
-                },
-                CYCLE_DURATION, CYCLE_DURATION
-            )
+        if (listDynamicUspValue.isNotEmpty()) {
+            timer.startTimer(CYCLE_DURATION) {
+                if (currentIndexUspDynamicValue == listDynamicUspValue.size - Int.ONE) {
+                    currentIndexUspDynamicValue = Int.ZERO
+                } else {
+                    ++currentIndexUspDynamicValue
+                }
+                val currentValue = listDynamicUspValue[currentIndexUspDynamicValue]
+                cycleDynamicUspText(currentValue)
+            }
         }
     }
 
     fun clearTimerDynamicUsp() {
-        timer?.cancel()
-        timer = null
+        timer.stopTimer()
         currentIndexUspDynamicValue = Int.ZERO
         updateDynamicUspValue(String.EMPTY)
     }
@@ -957,8 +955,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     }
 
     fun pauseTimerDynamicUspCycle() {
-        timer?.cancel()
-        timer = null
+        timer.stopTimer()
     }
 
     fun resumeTimerDynamicUspCycle() {

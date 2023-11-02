@@ -3,17 +3,23 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 import android.app.Application
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.discovery2.Utils
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.usecase.producthighlightusecase.ProductHighlightUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSession
 import io.mockk.*
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
@@ -22,6 +28,7 @@ import org.junit.Rule
 import org.junit.Test
 import java.net.SocketTimeoutException
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ProductHighlightViewModelTest {
 
     @get:Rule
@@ -38,15 +45,20 @@ class ProductHighlightViewModelTest {
         mockk()
     }
 
+    private val atcUseCase: AddToCartOcsUseCase by lazy {
+        mockk()
+    }
+
+    private val testDispatchers = CoroutineTestDispatchersProvider
+
     val list = arrayListOf<DataItem>()
     var dataItem: DataItem = mockk()
-    var userSession: UserSession = mockk()
     var context: Context = mockk(relaxed = true)
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        Dispatchers.setMain(TestCoroutineDispatcher())
+        Dispatchers.setMain(UnconfinedTestDispatcher())
 
         mockkObject(Utils)
         mockkConstructor(UserSession::class)
@@ -93,7 +105,6 @@ class ProductHighlightViewModelTest {
         every { componentsItem.noOfPagesLoaded } returns 1
         every { componentsItem.verticalProductFailState } returns false
         assert(!viewModel.shouldShowShimmer())
-
     }
 
     /****************************************** onAttachToViewHolder() ****************************************/
@@ -237,6 +248,89 @@ class ProductHighlightViewModelTest {
     }
 
     /**************************** end of Login *******************************************/
+
+    /**************************** test for OCS *******************************************/
+    @Test
+    fun `test for click on OCS button when success add to cart`() {
+        viewModel.atcUseCase = atcUseCase
+        viewModel.dispatcher = testDispatchers
+
+        val slot = slot<RequestParams>()
+
+        val atcResponseSuccess = AddToCartDataModel(
+            data = DataModel(success = 1, productId = "2147818593"),
+            status = "OK"
+        )
+
+        every { dataItem.productId } returns "2147818593"
+        every { dataItem.shopId } returns "shopId#1"
+        every { dataItem.minQuantity } returns 1
+        every { dataItem.productName } returns "ProductName#1"
+        every { dataItem.category } returns ""
+        every { dataItem.price } returns "Rp15.000"
+
+        coEvery {
+            atcUseCase.createObservable(capture(slot)).toBlocking().single()
+        } returns atcResponseSuccess
+
+        viewModel.onOCSClicked(dataItem, context)
+
+        TestCase.assertEquals(atcResponseSuccess, viewModel.redirectToOCS.value)
+        TestCase.assertEquals(null, viewModel.ocsErrorMessage.value)
+    }
+
+    @Test
+    fun `test for click on OCS button when failed to add to cart`() {
+        viewModel.atcUseCase = atcUseCase
+        viewModel.dispatcher = testDispatchers
+
+        val errorMessage = "gagal ya"
+        val atcResponseError = AddToCartDataModel(
+            data = DataModel(success = 0),
+            status = "",
+            errorMessage = arrayListOf(errorMessage)
+        )
+
+        every { dataItem.productId } returns "2147818593"
+        every { dataItem.shopId } returns "shopId#1"
+        every { dataItem.minQuantity } returns 1
+        every { dataItem.productName } returns "ProductName#1"
+        every { dataItem.category } returns ""
+        every { dataItem.price } returns "Rp15.000"
+
+        coEvery {
+            atcUseCase.createObservable(any()).toBlocking().single()
+        } returns atcResponseError
+
+        viewModel.onOCSClicked(dataItem, context)
+
+        TestCase.assertEquals(null, viewModel.redirectToOCS.value)
+        TestCase.assertEquals(errorMessage, viewModel.ocsErrorMessage.value)
+    }
+
+    @Test
+    fun `test for click on OCS button when result is null`() {
+        viewModel.atcUseCase = atcUseCase
+        viewModel.dispatcher = testDispatchers
+
+        every { dataItem.productId } returns "2147818593"
+        every { dataItem.shopId } returns "shopId#1"
+        every { dataItem.minQuantity } returns 1
+        every { dataItem.productName } returns "ProductName#1"
+        every { dataItem.category } returns ""
+        every { dataItem.price } returns "Rp15.000"
+
+        coEvery {
+            atcUseCase.createObservable(any()).toBlocking().single()
+        } returns null
+
+        viewModel.onOCSClicked(dataItem, context)
+
+        TestCase.assertEquals(null, viewModel.redirectToOCS.value)
+        TestCase.assertEquals("Failed to request ATC", viewModel.ocsErrorMessage.value)
+    }
+
+    /**************************** end of OCS *******************************************/
 
     @After
     fun shutDown() {

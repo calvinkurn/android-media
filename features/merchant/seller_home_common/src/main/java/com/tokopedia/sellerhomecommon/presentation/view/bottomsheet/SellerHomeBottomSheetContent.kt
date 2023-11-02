@@ -1,16 +1,11 @@
 package com.tokopedia.sellerhomecommon.presentation.view.bottomsheet
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.kotlin.extensions.view.getResDrawable
-import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcBottomSheetContentBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.BottomSheetAdapterTypeFactory
 import com.tokopedia.sellerhomecommon.presentation.model.BaseBottomSheetUiModel
@@ -55,8 +50,6 @@ class SellerHomeBottomSheetContent : LinearLayout {
         binding?.rvBottomSheetContent?.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = this@SellerHomeBottomSheetContent.adapter
-            val divider = context.getResDrawable(R.drawable.shc_tooltip_item_divider)
-            addItemDecoration(SellerHomeTooltipItemDivider(divider ?: return))
         }
     }
 
@@ -70,10 +63,11 @@ class SellerHomeBottomSheetContent : LinearLayout {
             }
 
             if (list.isNotEmpty()) {
-                adapter?.data?.addAll(list.map { item ->
+                adapter?.data?.addAll(list.mapIndexed { index, tooltipListItemUiModel ->
                     BottomSheetListItemUiModel(
-                        item.title,
-                        item.description
+                        tooltipListItemUiModel.title,
+                        tooltipListItemUiModel.description,
+                        index + 1 == list.size
                     )
                 })
             }
@@ -81,28 +75,6 @@ class SellerHomeBottomSheetContent : LinearLayout {
 
         binding?.rvBottomSheetContent?.post {
             adapter?.notifyDataSetChanged()
-        }
-    }
-
-    class SellerHomeTooltipItemDivider(private val mDivider: Drawable) :
-        RecyclerView.ItemDecoration() {
-
-        override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-            val dividerLeft = parent.paddingLeft
-            val dividerRight = parent.width - parent.paddingRight
-
-            val childCount = parent.childCount
-            for (i in 0..childCount - 2) {
-                val child = parent.getChildAt(i)
-
-                val params = child.layoutParams as RecyclerView.LayoutParams
-
-                val dividerTop = child.bottom + params.bottomMargin
-                val dividerBottom = dividerTop + mDivider.intrinsicHeight
-
-                mDivider.setBounds(dividerLeft, dividerTop, dividerRight, dividerBottom)
-                mDivider.draw(canvas)
-            }
         }
     }
 }

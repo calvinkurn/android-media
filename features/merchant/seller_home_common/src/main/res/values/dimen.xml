@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="shc_super_large_widget_height">352dp</dimen>
-    <dimen name="shc_large_widget_height">320dp</dimen>
+    <dimen name="shc_large_widget_height">280dp</dimen>
     <dimen name="shc_medium_widget_height">180dp</dimen>
     <dimen name="shc_dimen_1dp">1dp</dimen>
     <dimen name="shc_dimen_6dp">6dp</dimen>

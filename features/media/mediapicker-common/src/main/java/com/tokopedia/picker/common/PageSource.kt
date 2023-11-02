@@ -26,7 +26,10 @@ enum class PageSource(val value: String) {
     PlayShorts("Play Shorts"),
     AddLogo("Add Logo"),
     WebView("WebView"),
+    Stories("Stories"),
     Unknown("");
+
+    fun isUnknown() = this == Unknown
 
     companion object {
         private val map = values().associateBy(PageSource::value)

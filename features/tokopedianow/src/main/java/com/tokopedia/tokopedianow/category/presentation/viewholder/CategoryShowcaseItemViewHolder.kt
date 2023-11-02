@@ -9,6 +9,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactView
+import com.tokopedia.productcard.compact.productcard.presentation.listener.ProductCardCompactViewListener
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductGridCardBinding
 import com.tokopedia.utils.view.binding.viewBinding
@@ -34,9 +35,11 @@ class CategoryShowcaseItemViewHolder(
     override fun bind(element: CategoryShowcaseItemUiModel) {
         job = lifecycleOwner?.lifecycleScope?.launch(Dispatchers.Main.immediate) {
             binding?.productCard?.apply {
-                setData(
-                    model = element.productCardModel
+                bind(
+                    model = element.productCardModel,
+                    listener = createProductListener(element)
                 )
+
                 setOnClickListener {
                     listener?.onProductCardClicked(
                         context = context,
@@ -44,23 +47,7 @@ class CategoryShowcaseItemViewHolder(
                         product = element
                     )
                 }
-                setOnClickQuantityEditorListener { quantity ->
-                    listener?.onProductCardQuantityChanged(
-                        position = layoutPosition,
-                        product = element,
-                        quantity = quantity
-                    )
-                }
-                setOnClickQuantityEditorVariantListener {
-                    listener?.onProductCardAddVariantClicked(
-                        context = context,
-                        position = layoutPosition,
-                        product = element
-                    )
-                }
-                setOnBlockAddToCartListener {
-                    listener?.onProductCardAddToCartBlocked()
-                }
+
                 addOnImpressionListener(element) {
                     listener?.onProductCardImpressed(
                         position = layoutPosition,
@@ -73,8 +60,9 @@ class CategoryShowcaseItemViewHolder(
 
     override fun bind(element: CategoryShowcaseItemUiModel?, payloads: MutableList<Any>) {
         if (payloads.firstOrNull() == true && element != null) {
-            binding?.productCard?.setData(
-                model = element.productCardModel
+            binding?.productCard?.bind(
+                model = element.productCardModel,
+                listener = createProductListener(element)
             )
         }
     }
@@ -83,6 +71,28 @@ class CategoryShowcaseItemViewHolder(
         job?.cancel()
         super.onViewRecycled()
     }
+
+    private fun createProductListener(
+        element: CategoryShowcaseItemUiModel
+    ) = ProductCardCompactViewListener(
+        onQuantityChangedListener = { quantity ->
+            listener?.onProductCardQuantityChanged(
+                position = layoutPosition,
+                product = element,
+                quantity = quantity
+            )
+        },
+        clickAddVariantListener = {
+            listener?.onProductCardAddVariantClicked(
+                context = itemView.context,
+                position = layoutPosition,
+                product = element
+            )
+        },
+        blockAddToCartListener = {
+            listener?.onProductCardAddToCartBlocked()
+        }
+    )
 
     interface CategoryShowcaseItemListener {
         fun onProductCardAddVariantClicked(

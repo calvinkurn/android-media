@@ -15,6 +15,7 @@ internal object QueryRecommendationTabV2 {
             "      name\n" +
             "      imageUrl\n" +
             "      sourceType\n" +
+            "      isJumperTab\n" +
             "    }\n" +
             "  }\n" +
             "}"

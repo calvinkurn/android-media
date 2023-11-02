@@ -12,6 +12,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailDividerViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailHeaderViewHolder
+import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailIncomeViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailMVCUsageViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailNonProductBundleCardViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailPaymentsViewHolder
@@ -50,6 +51,9 @@ class SomDetailAdapterFactoryImpl(
             }
             SomConsts.DETAIL_POF_DATA_TYPE -> {
                 SomDetailPofDataViewHolder.LAYOUT
+            }
+            SomConsts.DETAIL_INCOME_TYPE -> {
+                SomDetailIncomeViewHolder.LAYOUT
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -108,6 +112,9 @@ class SomDetailAdapterFactoryImpl(
             BmgmSectionViewHolder.LAYOUT -> {
                 BmgmSectionViewHolder(parent, actionListener, recyclerViewSharedPool)
             }
+            SomDetailIncomeViewHolder.LAYOUT -> {
+                SomDetailIncomeViewHolder(actionListener, parent)
+            }
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -126,5 +133,6 @@ class SomDetailAdapterFactoryImpl(
         override fun onCopyAddOnDescription(label: String, description: CharSequence)
         fun onResoClicked(redirectPath: String)
         fun onDropOffButtonClicked(url: String)
+        fun onDetailIncomeClicked()
     }
 }

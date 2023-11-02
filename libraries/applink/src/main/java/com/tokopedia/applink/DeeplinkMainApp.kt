@@ -470,8 +470,8 @@ object DeeplinkMainApp {
             DLP.startsWith("qr") { _: String ->
                 ApplinkConstInternalUserPlatform.QR_LOGIN
             },
-            DLP.matchPattern("") { _: String ->
-                ApplinkConstInternalUserPlatform.LOGIN
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "marketplace" to mutableListOf(
@@ -832,13 +832,13 @@ object DeeplinkMainApp {
             }
         ),
         "register-init" to mutableListOf(
-            DLP.goTo { _: String ->
-                ApplinkConstInternalUserPlatform.INIT_REGISTER
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "registration" to mutableListOf(
-            DLP.matchPattern("") { _: String ->
-                ApplinkConstInternalUserPlatform.INIT_REGISTER
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "rekomendasi" to mutableListOf(
@@ -1196,7 +1196,7 @@ object DeeplinkMainApp {
         ),
         "shop-penalty" to mutableListOf(
             DLP.matchPattern("") { context, _, _, _ ->
-                ShopScoreDeepLinkMapper.getInternalApplinkPenalty(context)
+                ApplinkConstInternalMarketplace.SHOP_PENALTY
             }
         ),
         "shop-penalty-detail" to mutableListOf(
@@ -1218,7 +1218,10 @@ object DeeplinkMainApp {
             DLP.matchPattern(
                 "shop/{shop_id}",
                 DeeplinkMapperContent::getRegisteredNavigation
-            )
+            ),
+            DLP.matchPattern("creation") { deeplink: String ->
+                DeeplinkMapperContent.getRegisteredNavigation(deeplink)
+            }
         ),
         "talk" to mutableListOf(
             DLP.goTo { deeplink: String ->
@@ -1270,6 +1273,11 @@ object DeeplinkMainApp {
         "travelentertainment" to mutableListOf(
             DLP.goTo { context: Context, deeplink: String ->
                 DeeplinkMapperDigital.getRegisteredNavigationDigital(context, deeplink)
+            }
+        ),
+        "universal-editor" to mutableListOf(
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalMedia.INTERNAL_UNIVERSAL_MEDIA_EDITOR
             }
         ),
         "universal-page" to mutableListOf(

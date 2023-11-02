@@ -1,6 +1,7 @@
 package com.tokopedia.wishlistcollection.view.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -55,7 +56,6 @@ import com.tokopedia.wishlist.databinding.FragmentCollectionWishlistBinding
 import com.tokopedia.wishlist.util.WishlistV2Analytics
 import com.tokopedia.wishlist.util.WishlistV2Consts.EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter.Companion.LAYOUT_RECOMMENDATION_TITLE
-import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionCarouselEmptyStateData
 import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
@@ -88,6 +88,8 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.roundToInt
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.abstraction.R as abstractionR
 
 @Keep
 class WishlistCollectionFragment :
@@ -177,6 +179,7 @@ class WishlistCollectionFragment :
         private const val COACHMARK_WISHLIST_SHARING = "coachmark-wishlist-sharing"
         private const val WISHLIST_PAGE = "wishlist page"
         private const val EDIT_WISHLIST_COLLECTION_REQUEST_CODE = 188
+        private const val REQUEST_CODE_LOGIN = 288128
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -198,8 +201,7 @@ class WishlistCollectionFragment :
             getWishlistCollections()
         } else {
             startActivityForResult(
-                RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                WishlistV2Fragment.REQUEST_CODE_LOGIN
+                RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN
             )
         }
     }
@@ -260,7 +262,7 @@ class WishlistCollectionFragment :
             activity?.window?.decorView?.setBackgroundColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                    unifyprinciplesR.color.Unify_NN0
                 )
             )
         }
@@ -331,7 +333,7 @@ class WishlistCollectionFragment :
                 layoutParams = margins
                 layoutManager = glm
                 adapter = collectionAdapter
-                addItemDecoration(WishlistCollectionItemOffsetDecoration(requireContext(), com.tokopedia.abstraction.R.dimen.dp_8))
+                addItemDecoration(WishlistCollectionItemOffsetDecoration(requireContext(), abstractionR.dimen.dp_8))
                 addOnScrollListener(rvScrollListener)
             }
         }
@@ -1073,6 +1075,12 @@ class WishlistCollectionFragment :
                 data?.getStringExtra(ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER)
             if (messageToaster != null && isSuccess == true) {
                 showToasterActionOke(messageToaster, Toaster.TYPE_NORMAL)
+            }
+        } else if (requestCode == REQUEST_CODE_LOGIN) {
+            if (resultCode == Activity.RESULT_OK) {
+                doRefresh()
+            } else {
+                activity?.finish()
             }
         }
     }

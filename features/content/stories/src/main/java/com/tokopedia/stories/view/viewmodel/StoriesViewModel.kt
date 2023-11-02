@@ -1,11 +1,15 @@
 package com.tokopedia.stories.view.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.stories.R
 import com.tokopedia.stories.data.repository.StoriesRepository
@@ -30,9 +34,13 @@ import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetStatusDefault
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
 import com.tokopedia.stories.view.viewmodel.state.ProductBottomSheetUiState
-import com.tokopedia.stories.view.viewmodel.state.TimerStatusInfo
 import com.tokopedia.stories.view.viewmodel.state.StoriesUiState
+import com.tokopedia.stories.view.viewmodel.state.StoryReportStatusInfo
+import com.tokopedia.stories.view.viewmodel.state.TimerStatusInfo
 import com.tokopedia.stories.view.viewmodel.state.isAnyShown
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -48,7 +56,8 @@ import kotlinx.coroutines.launch
 class StoriesViewModel @AssistedInject constructor(
     @Assisted private val args: StoriesArgsModel,
     private val repository: StoriesRepository,
-    private val userSession: UserSessionInterface
+    val userSession: UserSessionInterface,
+    private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
     @AssistedFactory
@@ -59,6 +68,7 @@ class StoriesViewModel @AssistedInject constructor(
     private val _storiesMainDataState = MutableStateFlow(StoriesUiModel())
     private val _bottomSheetStatusState = MutableStateFlow(BottomSheetStatusDefault)
     private val _productsState = MutableStateFlow(ProductBottomSheetUiState.Empty)
+    private val _reportState = MutableStateFlow(StoryReportStatusInfo.Empty)
 
     private val _storiesEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
     val storiesEvent: Flow<StoriesUiEvent>
@@ -141,29 +151,46 @@ class StoriesViewModel @AssistedInject constructor(
         get() = combine(
             _storiesMainDataState,
             _productsState,
-            timerState,
-        ) { storiesMainData, product, timerState ->
+            _timerState,
+            _reportState
+        ) { storiesMainData, product, timerState, reportState ->
             StoriesUiState(
                 storiesMainData = storiesMainData,
                 productSheet = product,
                 timerStatus = timerState,
+                reportState = reportState
             )
         }
 
-    private val timerState: Flow<TimerStatusInfo>
+    private val _timerState: Flow<TimerStatusInfo>
         get() = combine(
             _bottomSheetStatusState,
             _storiesMainDataState,
             _groupPos,
             _detailPos
         ) { bottomSheet, mainData, groupPosition, detailPosition ->
-            val listOfDetail = mainData.groupItems.getOrNull(groupPosition)?.detail?.detailItems ?: emptyList()
+            val listOfDetail =
+                mainData.groupItems.getOrNull(groupPosition)?.detail?.detailItems ?: emptyList()
             val detail = listOfDetail.getOrNull(detailPosition) ?: StoriesDetailItem()
-            TimerStatusInfo(event = if (bottomSheet.isAnyShown) PAUSE else detail.event, story = TimerStatusInfo.Companion.StoryTimer(id = detail.id, itemCount = listOfDetail.size, resetValue = detail.resetValue, duration = detail.content.duration, position = detailPosition))
+            TimerStatusInfo(
+                event = if (bottomSheet.isAnyShown) PAUSE else detail.event,
+                story = TimerStatusInfo.Companion.StoryTimer(
+                    id = detail.id,
+                    itemCount = listOfDetail.size,
+                    resetValue = detail.resetValue,
+                    duration = detail.content.duration,
+                    position = detailPosition
+                )
+            )
         }
 
     val userId: String
         get() = userSession.userId.ifEmpty { "0" }
+
+    private val _userReportReasonList =
+        MutableLiveData<Result<List<PlayUserReportReasoningUiModel>>>()
+    val userReportReasonList: Result<List<PlayUserReportReasoningUiModel>>
+        get() = _userReportReasonList.value ?: Success(emptyList())
 
     fun submitAction(action: StoriesUiAction) {
         when (action) {
@@ -179,6 +206,8 @@ class StoriesViewModel @AssistedInject constructor(
             is StoriesUiAction.ProductAction -> handleProductAction(action.action, action.product)
             is StoriesUiAction.ShowVariantSheet -> handleVariantSheet(action.product)
             is StoriesUiAction.UpdateStoryDuration -> handleUpdateDuration(action.duration)
+            is StoriesUiAction.OpenBottomSheet -> handleOpenBottomSheet(action.type)
+            is StoriesUiAction.SelectReportReason -> handleSelectReportReason(action.reason)
             StoriesUiAction.SetInitialData -> handleSetInitialData()
             StoriesUiAction.NextDetail -> handleNext()
             StoriesUiAction.PreviousDetail -> handlePrevious()
@@ -193,6 +222,50 @@ class StoriesViewModel @AssistedInject constructor(
             StoriesUiAction.ContentIsLoaded -> handleContentIsLoaded()
             StoriesUiAction.PageIsSelected -> handlePageIsSelected()
             StoriesUiAction.VideoBuffering -> handleVideoBuffering()
+            StoriesUiAction.OpenReport -> handleOpenReport()
+            StoriesUiAction.ResetReportState -> handleReportState(StoryReportStatusInfo.ReportState.None) {}
+        }
+    }
+
+    private fun getReportReasonList() {
+        viewModelScope.launchCatchError(block = {
+            if (userReportReasonList is Success && (userReportReasonList as Success).data.isNotEmpty()) return@launchCatchError
+
+            val reasonList = repository.getReportReasonList()
+            _userReportReasonList.value = Success(reasonList)
+        }) {
+            _userReportReasonList.value = Fail(it)
+        }
+    }
+
+    fun submitReport(description: String, timestamp: Long) {
+        viewModelScope.launchCatchError(block = {
+            val submitReportResult = repository.submitReport(
+                storyDetail = mDetail,
+                reasonId = _reportState.value.report.selectedReason?.reasoningId.orZero(),
+                timestamp = timestamp,
+                reportDesc = description,
+            )
+
+            _reportState.update { statusInfo ->
+                statusInfo.copy(
+                    state = StoryReportStatusInfo.ReportState.Submitted,
+                    report = statusInfo.report.copy(
+                        submitStatus = if (submitReportResult) Success(Unit) else Fail(
+                            MessageErrorException()
+                        )
+                    )
+                )
+            }
+        }) {
+            _reportState.update { statusInfo ->
+                statusInfo.copy(
+                    state = StoryReportStatusInfo.ReportState.Submitted,
+                    report = statusInfo.report.copy(
+                        submitStatus = Fail(it)
+                    )
+                )
+            }
         }
     }
 
@@ -287,6 +360,37 @@ class StoriesViewModel @AssistedInject constructor(
         viewModelScope.launch {
             repository.setHasSeenAllStories(args.authorId, args.authorType)
         }
+    }
+
+    private fun handleOpenReport() {
+        handleReportState(StoryReportStatusInfo.ReportState.OnSelectReason) {
+            handleOpenBottomSheet(BottomSheetType.Report)
+        }
+    }
+
+    private fun handleReportState(
+        newState: StoryReportStatusInfo.ReportState,
+        nextAction: () -> Unit
+    ) {
+        _reportState.update { statusInfo ->
+            statusInfo.copy(
+                state = newState
+            )
+        }
+        nextAction()
+    }
+
+    private fun handleSelectReportReason(item: PlayUserReportReasoningUiModel.Reasoning) {
+        _reportState.update { statusInfo ->
+            statusInfo.copy(
+                state = StoryReportStatusInfo.ReportState.OnSubmit,
+                report = statusInfo.report.copy(
+                    selectedReason = item
+                )
+            )
+        }
+
+        handleOpenBottomSheet(BottomSheetType.SubmitReport)
     }
 
     private suspend fun setInitialData() {
@@ -393,6 +497,16 @@ class StoriesViewModel @AssistedInject constructor(
             _storiesEvent.emit(StoriesUiEvent.OpenKebab)
             _bottomSheetStatusState.update { bottomSheet ->
                 bottomSheet.mapValues { it.key == BottomSheetType.Kebab }
+            }
+
+            getReportReasonList()
+        }
+    }
+
+    private fun handleOpenBottomSheet(type: BottomSheetType) {
+        viewModelScope.launch {
+            _bottomSheetStatusState.update { bottomSheet ->
+                bottomSheet.mapValues { it.key == type }
             }
         }
     }

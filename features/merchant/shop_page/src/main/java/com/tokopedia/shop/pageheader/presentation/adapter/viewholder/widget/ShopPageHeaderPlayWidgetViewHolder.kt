@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.creation.common.presentation.bottomsheet.ContentCreationBottomSheet
 import com.tokopedia.creation.common.presentation.customviews.ContentCreationEntryPointWidget
+import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.databinding.LayoutShopHeaderPlayWidgetBinding
@@ -45,6 +46,7 @@ class ShopPageHeaderPlayWidgetViewHolder(
                 .firstOrNull()
 
         modelComponent?.let {
+            widgetPlayRootContainer?.widgetSource = ContentCreationEntryPointSource.Shop
             widgetPlayRootContainer?.creationBottomSheetListener =
                 listener.getContentCreationListener()
             widgetPlayRootContainer?.onClickListener = {

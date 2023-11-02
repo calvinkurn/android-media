@@ -6,7 +6,8 @@ package com.tokopedia.sellerorder.detail.data.model
 data class SomDetailPayments (
         var paymentDataUiModel: PaymentDataUiModel = PaymentDataUiModel(),
         var paymentMethodUiModel: List<PaymentMethodUiModel> = listOf(),
-        var pricingData: List<PricingData> = listOf()
+        var pricingData: List<PricingData> = listOf(),
+        var subsidyInfo: String = ""
 ) {
 
     data class PaymentDataUiModel(

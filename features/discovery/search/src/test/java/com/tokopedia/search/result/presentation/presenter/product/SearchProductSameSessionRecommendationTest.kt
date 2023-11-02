@@ -23,6 +23,8 @@ import rx.Subscriber
 internal class SearchProductSameSessionRecommendationTest : ProductListPresenterTestFixtures() {
     private val searchProductLowIntentKeywordResponseJSON =
         "searchproduct/samesessionrecommendation/low-intention-response.json"
+    private val searchProductLowIntentKeywordResponseReimagineJSON =
+        "searchproduct/samesessionrecommendation/low-intention-response-reimagine.json"
     private val sameSessionRecommendationResponseJSON =
         "searchproduct/samesessionrecommendation/same-session-recommendation.json"
     private val emptySameSessionRecommendationResponseJSON =
@@ -73,6 +75,27 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         `Then verify same session recommendation API called once`()
         `Then assert same session request params`(productItemDataView, LocalCacheModel())
         `Then verify no recommendationItem added`()
+    }
+
+    @Test
+    fun `Product click with low keyword intent will show same session recommendation for reimagine`() {
+        val lowIntentionKeywordResponse =
+            searchProductLowIntentKeywordResponseReimagineJSON.jsonToObject<SearchProductModel>()
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given view already load data`(lowIntentionKeywordResponse)
+        `Given recyclerViewUpdater`()
+        `Given same session recommendation preference will return empty`()
+        `Given product filter indicator has default sorting and no active filter`()
+        `Given queryKeyProvider queryKey return empty string`()
+
+        val productItemDataViewIndex = visitableList.indexOfFirst { it is ProductItemDataView }
+        val productItemDataView = visitableList[productItemDataViewIndex] as ProductItemDataView
+
+        `Given viewUpdater getItemAtPosition`(productItemDataViewIndex + 1)
+
+        `When product item is clicked`(productItemDataView, productItemDataViewIndex)
+
+        `Then verify same session recommendation API called once`()
     }
 
     @Test
