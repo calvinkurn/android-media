@@ -9,15 +9,12 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.os.PersistableBundle
 import android.provider.Settings
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenResumed
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -174,9 +171,9 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             .build()
     }
 
-    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
-        super.onSaveInstanceState(outState, outPersistentState)
-        navigator?.navigateOnRestored(outState, lifecycleScope)
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        navigator?.navigateOnRestored(savedInstanceState, lifecycleScope)
     }
 
     override fun onResume() {
