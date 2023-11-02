@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlGetShopOperationalHoursListUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -86,7 +85,7 @@ class ShopInfoReimagineViewModel @Inject constructor(
                             shopDescription = shopInfo.shopCore.description,
                             mainLocation = shopInfo.location,
                             otherLocations = listOf(),
-                            operationalHours = shopOperationalHours.toFormattedOperationalHours(),
+                            operationalHours = shopOperationalHours.format(),
                             shopJoinDate = shopInfo.createdInfo.openSince,
                             totalProduct = 2
                         ),
@@ -205,6 +204,31 @@ class ShopInfoReimagineViewModel @Inject constructor(
         return operationalHours
     }
     
+    private fun ShopOperationalHoursListResponse.format(): Map<String, List<String>> {
+        val operationalHours = mutableMapOf<String, String>()
+
+        val daysDictionary = mapOf(
+            1 to "Senin",
+            2 to "Selasa",
+            3 to "Rabu",
+            4 to "Kamis",
+            5 to "Jumat",
+            6 to "Sabtu",
+            7 to "Minggu"
+        )
+
+        getShopOperationalHoursList?.data?.forEach { operationalHour ->
+            val formattedDay = daysDictionary[operationalHour.day].orEmpty()
+            operationalHours[formattedDay] = "${operationalHour.startTime} - ${operationalHour.endTime}"
+        }
+
+        val groupedByHours = operationalHours.groupByHours()
+        
+       
+
+        return groupedByHours
+    }
+    
     private fun ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.toOrderProcessTime(): String {
         val shopPerformance= this.widgets.firstOrNull { it.name == "shop_performance" }
         if (shopPerformance == null) return ""
@@ -218,4 +242,10 @@ class ShopInfoReimagineViewModel @Inject constructor(
         return textHtmls.firstOrNull().orEmpty()
     }
 
+    private fun Map<String, String>.groupByHours(): Map<String, List<String>> {
+        return this.entries.groupBy(
+            keySelector = { it.value },
+            valueTransform = { it.key }
+        )
+    }
 }

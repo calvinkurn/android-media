@@ -25,9 +25,9 @@ class ShopInfoPreviewParameterProvider : PreviewParameterProvider<ShopInfoUiStat
             mainLocation = "Jakarta Selatan",
             otherLocations = listOf("Jakarta Barat", "Depok"),
             operationalHours = mapOf(
-                "Senin-Rabu" to "07:00 - 18:00",
-                "Kamis" to "07:00 - 16:00",
-                "Sabtu-Minggu" to "10:00 - 15:00"
+                "07:00 - 18:00" to listOf("Senin", "Selasa"),
+                "07:00 - 21:00" to listOf("Rabu", "Kamis", "Jumat"),
+                "07:00 - 16:00" to listOf("Sabtu", "Minggu"),
             ),
             shopJoinDate = "9 Mar 2017",
             totalProduct = 1200

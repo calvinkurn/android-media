@@ -122,13 +122,7 @@ fun ContentBody(modifier: Modifier, uiState: ShopInfoUiState) {
         val showShopInfo = hasMainLocation || hasOperationalHour || hasJoinDate
 
         if (showShopInfo) {
-            ShopInfo(
-                mainLocation = uiState.info.mainLocation,
-                otherLocation = uiState.info.otherLocations,
-                operationalHours = uiState.info.operationalHours,
-                shopJoinDate = uiState.info.shopJoinDate,
-                totalProduct = uiState.info.totalProduct
-            )
+            ShopInfo(info = uiState.info)
         }
 
         if (uiState.showEpharmacyInfo) {
@@ -194,13 +188,7 @@ fun ShopCoreInfo(modifier: Modifier = Modifier, info: ShopInfo) {
     }
 }
 @Composable
-fun ShopInfo(
-    mainLocation: String,
-    otherLocation: List<String>,
-    operationalHours: Map<String, String>,
-    shopJoinDate: String,
-    totalProduct: Int
-) {
+fun ShopInfo(info: ShopInfo) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Spacer(modifier = Modifier.height(8.dp))
         NestTypography(
@@ -212,24 +200,24 @@ fun ShopInfo(
             )
         )
         
-        if (mainLocation.isNotEmpty()) {
+        if (info.mainLocation.isNotEmpty()) {
             Spacer(modifier = Modifier.height(12.dp))
-            ShopLocation(mainLocation, otherLocation)
+            ShopLocation(info.mainLocation, info.otherLocations)
         }
         
-        if (operationalHours.isNotEmpty()){
+        if (info.operationalHours.isNotEmpty()){
             Spacer(modifier = Modifier.height(12.dp))
-            ShopOperationalHour(operationalHours)
+            ShopOperationalHour(info.operationalHours)
         }
         
-        if (shopJoinDate.isNotEmpty()) {
+        if (info.shopJoinDate.isNotEmpty()) {
             Spacer(modifier = Modifier.height(12.dp))
-            ShopJoinDate(shopJoinDate)
+            ShopJoinDate(info.shopJoinDate)
         }
 
-        if (totalProduct.isMoreThanZero()) {
+        if (info.totalProduct.isMoreThanZero()) {
             Spacer(modifier = Modifier.height(12.dp))
-            ShopTotalProduct(totalProduct)
+            ShopTotalProduct(info.totalProduct)
         }
     }
 }
@@ -271,7 +259,7 @@ fun ShopLocation(mainLocation: String, otherLocation: List<String>) {
     }
 }
 @Composable
-fun ShopOperationalHour(operationalHours: Map<String, String>) {
+fun ShopOperationalHour(operationalHours: Map<String, List<String>>) {
     NestTypography(
         modifier = Modifier.fillMaxWidth(),
         text = "Jam Operasional",
@@ -284,18 +272,18 @@ fun ShopOperationalHour(operationalHours: Map<String, String>) {
 }
 
 @Composable
-fun ShopOperationalHoursList(operationalHours: Map<String, String>) {
+fun ShopOperationalHoursList(operationalHours: Map<String, List<String>>) {
     operationalHours.forEach { operationalHour ->
         Row {
             NestTypography(
-                text = operationalHour.key + ":",
+                text = operationalHour.value.joinToString(separator = ", ", postfix = ": ") { it },
                 textStyle = NestTheme.typography.display3.copy(
                     color = NestTheme.colors.NN._950
                 )
             )
             Spacer(modifier = Modifier.width(2.dp))
             NestTypography(
-                text = operationalHour.value,
+                text = operationalHour.key,
                 textStyle = NestTheme.typography.display3.copy(
                     color = NestTheme.colors.NN._950
                 )
