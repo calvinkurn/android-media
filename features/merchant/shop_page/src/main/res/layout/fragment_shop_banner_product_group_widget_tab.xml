@@ -15,6 +15,7 @@
         android:id="@+id/imgMainBanner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
         app:unify_image_corner_radius="12"
         tools:layout_height="220dp"
         tools:visibility="visible" />
@@ -28,7 +29,9 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
         android:layout_marginTop="8dp"
         tools:itemCount="2"
+        android:clipToPadding="false"
         tools:listitem="@layout/item_shop_home_banner_product_group_product_info_card" />
 </LinearLayout>
