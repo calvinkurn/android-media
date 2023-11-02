@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.imageview.ShapeableImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/image_circle"
+    android:layout_width="14dp"
+    android:layout_height="14dp"
+    android:layout_marginTop="6dp"
+    android:padding="0.85dp"
+    app:shapeAppearanceOverlay="@style/circleImageDisplay"
+    app:srcCompat="@color/Unify_BN600"
+    app:strokeColor="@color/Unify_NN200"
+    app:strokeWidth="1.75dp" />

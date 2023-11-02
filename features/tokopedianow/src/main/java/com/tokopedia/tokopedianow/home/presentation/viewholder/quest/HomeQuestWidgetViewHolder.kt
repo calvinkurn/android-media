@@ -74,6 +74,7 @@ class HomeQuestWidgetViewHolder(
             root.addOnImpressionListener(element) {
                 listener?.onImpressQuestWidget()
             }
+            questProgressBar.bind(element)
         }
     }
 
