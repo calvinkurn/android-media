@@ -11,7 +11,6 @@ class PushAmplificationWorker (appContext: Context, workerParams: WorkerParamete
     CoroutineWorker(appContext, workerParams) {
     private val TAG = "PushAmplificationWorker"
     override suspend fun doWork(): Result {
-        Log.d(TAG, "Push Amplification Worker started")
         AmplificationDataSource.invoke(application)
         return Result.success()
     }
