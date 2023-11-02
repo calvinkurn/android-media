@@ -19,17 +19,6 @@ interface BaseLogger {
     }
 
     /**
-     * There's no other option to get the page name, thus we should get it as context's source name.
-     */
-    fun Context.pageName(): String {
-        return try {
-            javaClass.name.split(".").last()
-        } catch (ignored: Throwable) {
-            "None"
-        }
-    }
-
-    /**
      * A sourceId extraction from image url.
      *
      * Currently we have a lot of type of image url across Tokopedia. But in particular pages already
@@ -69,20 +58,22 @@ interface BaseLogger {
         return when {
             // caches: /img/cache/{size}/{source_id}
             url.contains("cache") && segments.size > startIndex + sourceIdCachedIndex -> {
-                Pair("cache", segments[startIndex + sourceIdCachedIndex])
+                Pair("cache", filterSourceId(segments[startIndex + sourceIdCachedIndex]))
             }
 
             // pristine: /img/{source_id}
             segments.size > startIndex + sourceIdPristineIndex -> {
-                var sourceId = segments[startIndex + sourceIdPristineIndex]
-
-                // a source id is not exceed more than 6 character.
-                if (sourceId.length > SOURCE_ID_MAX_LENGTH) sourceId = ""
-
-                Pair("pristine", sourceId)
+                Pair("pristine", filterSourceId(segments[startIndex + sourceIdPristineIndex]))
             }
 
             else -> Pair("", "")
         }
+    }
+
+    // a source id should be not exceed more than 6 character.
+    private fun filterSourceId(id: String): String {
+        if (id.length > SOURCE_ID_MAX_LENGTH) return ""
+
+        return id
     }
 }

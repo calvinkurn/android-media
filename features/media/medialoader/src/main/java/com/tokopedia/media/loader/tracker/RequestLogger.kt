@@ -23,7 +23,6 @@ object RequestLogger : BaseLogger {
          */
         if (param.isEligible().not()) return
 
-        val activityName = context.pageName()
         val qualitySetting = context.getQualitySetting()
         val connectionType = NetworkManager.getConnectionType(context)
         val (type, sourceId) = getSourceId(param.url)
@@ -35,10 +34,9 @@ object RequestLogger : BaseLogger {
             "url" to param.url,
             "img_type" to type,
             "source_id" to sourceId,
-            "page_name" to activityName,
             "file_size" to param.fileSize,
             "load_time" to param.requestLoadTime,
-            "content_type" to param.contentType,
+            "content_type" to param.prettyContentType(),
             "quality_setting" to qualitySetting,
             "connection_type" to connectionType,
         )
@@ -62,5 +60,7 @@ object RequestLogger : BaseLogger {
     ) {
 
         fun isEligible() = url.isNotEmpty() && url.isFromInternalCdnImageUrl()
+
+        fun prettyContentType() = "image/$contentType"
     }
 }
