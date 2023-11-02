@@ -2904,12 +2904,6 @@ class ShopPageHeaderFragment :
                     else -> {}
                 }
             }
-
-            override fun trackViewPerformanceClicked() {
-                playPerformanceDashboardEntryPointAnalytic.onClickPerformanceDashboardEntryPointShopPage(
-                    shopHeaderViewModel?.userShopId.orEmpty()
-                )
-            }
         }
 
     private fun handleResultVideoFromLiveStreaming(resultCode: Int, data: Intent) {

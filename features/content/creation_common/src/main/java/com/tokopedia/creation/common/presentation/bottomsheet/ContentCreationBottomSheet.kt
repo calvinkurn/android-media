@@ -13,10 +13,14 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.creation.common.R
+import com.tokopedia.creation.common.analytics.ContentCreationAnalytics
 import com.tokopedia.creation.common.di.ContentCreationComponent
+import com.tokopedia.creation.common.di.ContentCreationModule
 import com.tokopedia.creation.common.di.DaggerContentCreationComponent
-import com.tokopedia.creation.common.presentation.components.ContentCreationComponent
+import com.tokopedia.creation.common.presentation.components.ContentCreationView
+import com.tokopedia.creation.common.presentation.model.ContentCreationAuthorEnum
 import com.tokopedia.creation.common.presentation.model.ContentCreationConfigModel
+import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.viewmodel.ContentCreationViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -35,7 +39,10 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
 
     var shouldShowPerformanceAction: Boolean = false
     var listener: ContentCreationBottomSheetListener? = null
+    var analytics: ContentCreationAnalytics? = null
     private var creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty
+
+    var widgetSource: ContentCreationEntryPointSource = ContentCreationEntryPointSource.Unknown
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,21 +69,32 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                     viewModel?.selectedCreationType?.collectAsStateWithLifecycle()
                 val creationList = viewModel?.creationConfig?.collectAsStateWithLifecycle()
 
-                ContentCreationComponent(
+                ContentCreationView(
                     creationConfig = creationList?.value,
                     selectedItem = selectedCreation?.value,
+                    onImpressBottomSheet = {
+                        analytics?.eventImpressionContentCreationBottomSheet(
+                            viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
+                            widgetSource
+                        )
+                    },
                     onSelectItem = {
                         viewModel?.selectCreationItem(it)
                         listener?.onCreationItemSelected(it)
                     },
                     onNextClicked = {
                         selectedCreation?.value?.let {
+                            analytics?.eventClickNextButton(
+                                viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
+                                viewModel?.selectedItemTitle.orEmpty(),
+                                widgetSource
+                            )
                             listener?.onCreationNextClicked(it)
                             RouteManager.route(context, it.applink)
                         }
                     },
                     onRetryClicked = {
-                        viewModel?.fetchConfig()
+                        viewModel?.fetchConfig(widgetSource)
                     }
                 )
             }
@@ -97,7 +115,10 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
 
             if (shouldShowPerformanceAction) {
                 setAction(it.getString(R.string.content_creation_bottom_sheet_performance_action)) { _ ->
-                    listener?.trackViewPerformanceClicked()
+                    analytics?.eventClickPerformanceDashboard(
+                        viewModel?.authorType ?: ContentCreationAuthorEnum.NONE,
+                        widgetSource
+                    )
                     RouteManager.route(
                         it,
                         viewModel?.getPerformanceDashboardApplink()
@@ -105,7 +126,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                 }
             }
 
-            viewModel?.fetchConfig(creationConfig)
+            viewModel?.fetchConfig(widgetSource, creationConfig)
         }
     }
 
@@ -113,7 +134,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
         fragmentManager: FragmentManager,
         @StringRes title: Int? = null,
         showPerformanceAction: Boolean = false,
-        creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty
+        creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty,
     ) {
         title?.let {
             this.title = it
@@ -126,13 +147,13 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
 
     private fun createComponent(): ContentCreationComponent =
         DaggerContentCreationComponent.builder()
-            .baseAppComponent((context?.applicationContext as BaseMainApplication).baseAppComponent)
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .contentCreationModule(ContentCreationModule(requireContext()))
             .build()
 
     interface ContentCreationBottomSheetListener {
         fun onCreationItemSelected(data: ContentCreationItemModel)
         fun onCreationNextClicked(data: ContentCreationItemModel)
-        fun trackViewPerformanceClicked()
     }
 
     companion object {

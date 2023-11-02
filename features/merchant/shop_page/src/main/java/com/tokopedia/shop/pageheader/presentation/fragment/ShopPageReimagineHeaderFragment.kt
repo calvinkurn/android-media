@@ -532,12 +532,6 @@ class ShopPageReimagineHeaderFragment :
                     else -> {}
                 }
             }
-
-            override fun trackViewPerformanceClicked() {
-                playPerformanceDashboardEntryPointAnalytic.onClickPerformanceDashboardEntryPointShopPage(
-                    shopHeaderViewModel?.userShopId.orEmpty()
-                )
-            }
         }
 
     override fun getStoriesWidgetManager(): StoriesWidgetManager {
