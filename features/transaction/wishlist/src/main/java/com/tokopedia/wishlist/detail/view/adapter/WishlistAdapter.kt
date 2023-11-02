@@ -9,23 +9,25 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.wishlist.R
+import com.tokopedia.wishlist.collection.view.adapter.viewholder.WishlistCollectionEmptyStateViewHolder
+import com.tokopedia.wishlist.collection.view.fragment.WishlistCollectionDetailFragment
+import com.tokopedia.wishlist.databinding.WishlistCountDeletionItemBinding
+import com.tokopedia.wishlist.databinding.WishlistEmptyStateCarouselBinding
+import com.tokopedia.wishlist.databinding.WishlistEmptyStateItemBinding
+import com.tokopedia.wishlist.databinding.WishlistEmptyStateNotFoundItemBinding
+import com.tokopedia.wishlist.databinding.WishlistGridItemBinding
+import com.tokopedia.wishlist.databinding.WishlistListItemBinding
+import com.tokopedia.wishlist.databinding.WishlistLoaderGridItemBinding
+import com.tokopedia.wishlist.databinding.WishlistLoaderListItemBinding
+import com.tokopedia.wishlist.databinding.WishlistRecommendationCarouselItemBinding
+import com.tokopedia.wishlist.databinding.WishlistRecommendationItemBinding
+import com.tokopedia.wishlist.databinding.WishlistRecommendationTitleItemBinding
+import com.tokopedia.wishlist.databinding.WishlistStickyItemBinding
+import com.tokopedia.wishlist.databinding.WishlistTdnItemBinding
+import com.tokopedia.wishlist.databinding.WishlistTickerItemBinding
 import com.tokopedia.wishlist.detail.data.model.WishlistRecommendationDataModel
 import com.tokopedia.wishlist.detail.data.model.WishlistTypeLayoutData
 import com.tokopedia.wishlist.detail.data.model.WishlistUiModel
-import com.tokopedia.wishlist.databinding.WishlistV2CountDeletionItemBinding
-import com.tokopedia.wishlist.databinding.WishlistV2EmptyStateCarouselBinding
-import com.tokopedia.wishlist.databinding.WishlistV2EmptyStateItemBinding
-import com.tokopedia.wishlist.databinding.WishlistV2EmptyStateNotFoundItemBinding
-import com.tokopedia.wishlist.databinding.WishlistV2GridItemBinding
-import com.tokopedia.wishlist.databinding.WishlistV2ListItemBinding
-import com.tokopedia.wishlist.databinding.WishlistV2LoaderGridItemBinding
-import com.tokopedia.wishlist.databinding.WishlistV2LoaderListItemBinding
-import com.tokopedia.wishlist.databinding.WishlistV2RecommendationCarouselItemBinding
-import com.tokopedia.wishlist.databinding.WishlistV2RecommendationItemBinding
-import com.tokopedia.wishlist.databinding.WishlistV2RecommendationTitleItemBinding
-import com.tokopedia.wishlist.databinding.WishlistV2StickyItemBinding
-import com.tokopedia.wishlist.databinding.WishlistV2TdnItemBinding
-import com.tokopedia.wishlist.databinding.WishlistV2TickerItemBinding
 import com.tokopedia.wishlist.detail.util.WishlistConsts.TYPE_COUNT_MANAGE_ROW
 import com.tokopedia.wishlist.detail.util.WishlistConsts.TYPE_DELETION_PROGRESS_WIDGET
 import com.tokopedia.wishlist.detail.util.WishlistConsts.TYPE_EMPTY_NOT_FOUND
@@ -56,8 +58,6 @@ import com.tokopedia.wishlist.detail.view.adapter.viewholder.WishlistRecommendat
 import com.tokopedia.wishlist.detail.view.adapter.viewholder.WishlistRecommendationTitleViewHolder
 import com.tokopedia.wishlist.detail.view.adapter.viewholder.WishlistTdnViewHolder
 import com.tokopedia.wishlist.detail.view.adapter.viewholder.WishlistTickerViewHolder
-import com.tokopedia.wishlist.collection.view.adapter.viewholder.WishlistCollectionEmptyStateViewHolder
-import com.tokopedia.wishlist.collection.view.fragment.WishlistCollectionDetailFragment
 
 class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: ActionListener? = null
@@ -129,7 +129,7 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             LAYOUT_COUNT_MANAGE_ROW -> {
-                val binding = WishlistV2StickyItemBinding.inflate(
+                val binding = WishlistStickyItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -137,7 +137,7 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 WishlistCountManageRowItemViewHolder(binding, actionListener)
             }
             LAYOUT_LOADER_LIST -> {
-                val binding = WishlistV2LoaderListItemBinding.inflate(
+                val binding = WishlistLoaderListItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -145,7 +145,7 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 WishlistListLoaderViewHolder(binding)
             }
             LAYOUT_LOADER_GRID -> {
-                val binding = WishlistV2LoaderGridItemBinding.inflate(
+                val binding = WishlistLoaderGridItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -153,7 +153,7 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 WishlistGridLoaderViewHolder(binding)
             }
             LAYOUT_LIST -> {
-                val binding = WishlistV2ListItemBinding.inflate(
+                val binding = WishlistListItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -161,7 +161,7 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 WishlistListItemViewHolder(binding, actionListener)
             }
             LAYOUT_GRID -> {
-                val binding = WishlistV2GridItemBinding.inflate(
+                val binding = WishlistGridItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -169,7 +169,7 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 WishlistGridItemViewHolder(binding, actionListener)
             }
             LAYOUT_EMPTY_STATE -> {
-                val binding = WishlistV2EmptyStateItemBinding.inflate(
+                val binding = WishlistEmptyStateItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -177,7 +177,7 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 WishlistEmptyStateViewHolder(binding, actionListener)
             }
             LAYOUT_EMPTY_STATE_CAROUSEL -> {
-                val binding = WishlistV2EmptyStateCarouselBinding.inflate(
+                val binding = WishlistEmptyStateCarouselBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -185,7 +185,7 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 WishlistEmptyStateCarouselViewHolder(binding, actionListener)
             }
             LAYOUT_EMPTY_NOT_FOUND -> {
-                val binding = WishlistV2EmptyStateNotFoundItemBinding.inflate(
+                val binding = WishlistEmptyStateNotFoundItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -193,7 +193,7 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 WishlistEmptyStateNotFoundViewHolder(binding, actionListener)
             }
             LAYOUT_RECOMMENDATION_TITLE -> {
-                val binding = WishlistV2RecommendationTitleItemBinding.inflate(
+                val binding = WishlistRecommendationTitleItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -201,7 +201,7 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 WishlistRecommendationTitleViewHolder(binding, false)
             }
             LAYOUT_RECOMMENDATION_LIST -> {
-                val binding = WishlistV2RecommendationItemBinding.inflate(
+                val binding = WishlistRecommendationItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -209,7 +209,7 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 WishlistRecommendationItemViewHolder(binding, actionListener)
             }
             LAYOUT_TOPADS -> {
-                val binding = WishlistV2TdnItemBinding.inflate(
+                val binding = WishlistTdnItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -217,7 +217,7 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 WishlistTdnViewHolder(binding, actionListener)
             }
             LAYOUT_RECOMMENDATION_CAROUSEL -> {
-                val binding = WishlistV2RecommendationCarouselItemBinding.inflate(
+                val binding = WishlistRecommendationCarouselItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -225,7 +225,7 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 WishlistRecommendationCarouselViewHolder(binding, actionListener)
             }
             LAYOUT_RECOMMENDATION_TITLE_WITH_MARGIN -> {
-                val binding = WishlistV2RecommendationTitleItemBinding.inflate(
+                val binding = WishlistRecommendationTitleItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -233,7 +233,7 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 WishlistRecommendationTitleViewHolder(binding, true)
             }
             LAYOUT_TICKER -> {
-                val binding = WishlistV2TickerItemBinding.inflate(
+                val binding = WishlistTickerItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -241,7 +241,7 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 WishlistTickerViewHolder(binding, actionListener)
             }
             LAYOUT_DELETION_PROGRESS_WIDGET -> {
-                val binding = WishlistV2CountDeletionItemBinding.inflate(
+                val binding = WishlistCountDeletionItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -249,7 +249,7 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 WishlistDeletionProgressWidgetItemViewHolder(binding)
             }
             LAYOUT_EMPTY_STATE_COLLECTION -> {
-                val binding = WishlistV2EmptyStateItemBinding.inflate(
+                val binding = WishlistEmptyStateItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false

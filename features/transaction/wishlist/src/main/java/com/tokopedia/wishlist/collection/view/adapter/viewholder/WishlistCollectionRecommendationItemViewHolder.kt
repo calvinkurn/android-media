@@ -4,12 +4,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.wishlist.databinding.WishlistV2RecommendationItemBinding
 import com.tokopedia.wishlist.collection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlist.collection.view.adapter.WishlistCollectionAdapter
+import com.tokopedia.wishlist.databinding.WishlistRecommendationItemBinding
 
 class WishlistCollectionRecommendationItemViewHolder(
-    private val binding: WishlistV2RecommendationItemBinding,
+    private val binding: WishlistRecommendationItemBinding,
     private val actionListener: WishlistCollectionAdapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
     private val cardView: ProductCardGridView by lazy { binding.wishlistProductItem }

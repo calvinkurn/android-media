@@ -4,8 +4,8 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.wishlist.collection.data.model.WishlistCollectionEmptyStateData
+import com.tokopedia.wishlist.databinding.WishlistEmptyStateItemBinding
 import com.tokopedia.wishlist.detail.data.model.WishlistTypeLayoutData
-import com.tokopedia.wishlist.databinding.WishlistV2EmptyStateItemBinding
 import com.tokopedia.wishlist.detail.util.WishlistConsts.ACTION_ADD_ITEM_TO_COLLECTION
 import com.tokopedia.wishlist.detail.util.WishlistConsts.ACTION_BACK_TO_HOME
 import com.tokopedia.wishlist.detail.util.WishlistConsts.ACTION_OPEN_MY_WISHLIST
@@ -16,7 +16,7 @@ import com.tokopedia.wishlist.detail.util.WishlistConsts.ACTION_UPDATE_COLLECTIO
 import com.tokopedia.wishlist.detail.util.WishlistConsts.ACTION_UPDATE_COLLECTION_NAME
 import com.tokopedia.wishlist.detail.view.adapter.WishlistAdapter
 
-class WishlistCollectionEmptyStateViewHolder(private val binding: WishlistV2EmptyStateItemBinding, private val actionListener: WishlistAdapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
+class WishlistCollectionEmptyStateViewHolder(private val binding: WishlistEmptyStateItemBinding, private val actionListener: WishlistAdapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: WishlistTypeLayoutData) {
         if (item.dataObject is WishlistCollectionEmptyStateData) {

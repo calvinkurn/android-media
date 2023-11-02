@@ -3,8 +3,8 @@ package com.tokopedia.wishlist.detail.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.wishlist.databinding.BottomsheetWishlistThreeDotsMenuItemBinding
 import com.tokopedia.wishlist.detail.data.model.WishlistUiModel
-import com.tokopedia.wishlist.databinding.BottomsheetWishlistV2ThreeDotsMenuItemBinding
 import com.tokopedia.wishlist.detail.view.adapter.viewholder.WishlistThreeDotsMenuItemViewHolder
 import com.tokopedia.wishlist.detail.view.bottomsheet.BottomSheetThreeDotsMenuWishlist
 
@@ -13,7 +13,7 @@ class BottomSheetThreeDotsMenuWishlistAdapter : RecyclerView.Adapter<RecyclerVie
     var wishlistItem = WishlistUiModel.Item()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val binding = BottomsheetWishlistV2ThreeDotsMenuItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+        val binding = BottomsheetWishlistThreeDotsMenuItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
         return WishlistThreeDotsMenuItemViewHolder(binding, actionListener)
     }
 

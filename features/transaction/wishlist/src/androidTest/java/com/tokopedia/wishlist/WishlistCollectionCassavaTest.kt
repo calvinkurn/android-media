@@ -1,6 +1,5 @@
 package com.tokopedia.wishlist
 
-import android.util.Log
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.pressBackUnconditionally
 import androidx.test.espresso.IdlingRegistry
@@ -14,15 +13,16 @@ import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.trackingoptimizer.repository.TrackRepository
 import com.tokopedia.trackingoptimizer.sendTrack
+import com.tokopedia.wishlist.collection.view.activity.WishlistCollectionActivity
 import com.tokopedia.wishlist.detail.util.WishlistIdlingResource
 import com.tokopedia.wishlist.util.disableWishlistCoachmark
-import com.tokopedia.wishlist.collection.view.activity.WishlistCollectionActivity
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import timber.log.Timber
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import com.tokopedia.wishlist.test.R as wishlisttestR
@@ -109,7 +109,7 @@ class WishlistCollectionCassavaTest {
             runBlocking {
                 suspendCoroutine<Any?> {
                     sendTrack(GlobalScope, TrackRepository.Companion.getInstance(context)) {
-                        Log.i("WishlistCollectionCassavaTest", "finish send track")
+                        Timber.d("WishlistCollectionCassavaTest - finish send track")
                         it.resume(null)
                     }
                 }

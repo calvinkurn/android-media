@@ -20,6 +20,7 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert
+import timber.log.Timber
 import com.tokopedia.dialog.R as dialogR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
@@ -37,7 +38,7 @@ class WishlistCollectionRobot {
                         .actionOnItemAtPosition<RecyclerView.ViewHolder>(index, ViewActions.click())
                 )
         } catch (e: PerformException) {
-            e.printStackTrace()
+            Timber.d(e.printStackTrace().toString())
         }
     }
 
@@ -73,7 +74,7 @@ class WishlistCollectionRobot {
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                     1,
-                    MyViewAction.clickChildViewWithId(R.id.collection_kebab_menu)
+                    clickChildViewWithId(R.id.collection_kebab_menu)
                 )
             )
     }
@@ -117,21 +118,19 @@ class ResultRobot {
     }
 }
 
-object MyViewAction {
-    fun clickChildViewWithId(id: Int): ViewAction {
-        return object : ViewAction {
-            override fun getConstraints(): Matcher<View>? {
-                return null
-            }
+fun clickChildViewWithId(id: Int): ViewAction {
+    return object : ViewAction {
+        override fun getConstraints(): Matcher<View>? {
+            return null
+        }
 
-            override fun getDescription(): String {
-                return "Click on a child view with specified id."
-            }
+        override fun getDescription(): String {
+            return "Click on a child view with specified id."
+        }
 
-            override fun perform(uiController: UiController?, view: View) {
-                val v: View = view.findViewById(id)
-                v.performClick()
-            }
+        override fun perform(uiController: UiController?, view: View) {
+            val v: View = view.findViewById(id)
+            v.performClick()
         }
     }
 }

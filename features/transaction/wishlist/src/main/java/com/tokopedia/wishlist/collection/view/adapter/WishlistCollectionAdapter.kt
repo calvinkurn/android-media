@@ -7,16 +7,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.wishlist.databinding.CollectionWishlistCreateItemBinding
-import com.tokopedia.wishlist.databinding.CollectionWishlistItemBinding
-import com.tokopedia.wishlist.databinding.CollectionWishlistLoaderItemBinding
-import com.tokopedia.wishlist.databinding.CollectionWishlistTickerItemBinding
-import com.tokopedia.wishlist.databinding.WishlistCollectionDividerItemBinding
-import com.tokopedia.wishlist.databinding.WishlistCollectionEmptyStateCarouselBinding
-import com.tokopedia.wishlist.databinding.WishlistV2RecommendationItemBinding
-import com.tokopedia.wishlist.databinding.WishlistV2RecommendationTitleItemBinding
-import com.tokopedia.wishlist.detail.util.WishlistConsts
-import com.tokopedia.wishlist.detail.view.adapter.WishlistAdapter
 import com.tokopedia.wishlist.collection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlist.collection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlist.collection.util.WishlistCollectionConsts.TYPE_COLLECTION_CREATE
@@ -34,6 +24,16 @@ import com.tokopedia.wishlist.collection.view.adapter.viewholder.WishlistCollect
 import com.tokopedia.wishlist.collection.view.adapter.viewholder.WishlistCollectionRecommendationTitleViewHolder
 import com.tokopedia.wishlist.collection.view.adapter.viewholder.WishlistCollectionTickerItemViewHolder
 import com.tokopedia.wishlist.collection.view.fragment.WishlistCollectionFragment
+import com.tokopedia.wishlist.databinding.CollectionWishlistCreateItemBinding
+import com.tokopedia.wishlist.databinding.CollectionWishlistItemBinding
+import com.tokopedia.wishlist.databinding.CollectionWishlistLoaderItemBinding
+import com.tokopedia.wishlist.databinding.CollectionWishlistTickerItemBinding
+import com.tokopedia.wishlist.databinding.WishlistCollectionDividerItemBinding
+import com.tokopedia.wishlist.databinding.WishlistCollectionEmptyStateCarouselBinding
+import com.tokopedia.wishlist.databinding.WishlistRecommendationItemBinding
+import com.tokopedia.wishlist.databinding.WishlistRecommendationTitleItemBinding
+import com.tokopedia.wishlist.detail.util.WishlistConsts
+import com.tokopedia.wishlist.detail.view.adapter.WishlistAdapter
 
 class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: ActionListener? = null
@@ -59,21 +59,21 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
     interface ActionListener {
         fun onCloseTicker()
         fun onKebabMenuClicked(
-                collectionId: String,
-                collectionName: String,
-                actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
-                collectionIndicatorTitle: String
+            collectionId: String,
+            collectionName: String,
+            actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
+            collectionIndicatorTitle: String
         )
 
         fun onCreateNewCollectionClicked()
         fun onCollectionItemClicked(id: String)
         fun onCreateCollectionItemBind(allCollectionView: View, createCollectionView: View)
         fun onFirstCollectionItemBind(
-                anchorKebabMenuView: View,
-                collectionId: String,
-                collectionName: String,
-                actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
-                collectionIndicatorTitle: String
+            anchorKebabMenuView: View,
+            collectionId: String,
+            collectionName: String,
+            actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
+            collectionIndicatorTitle: String
         )
 
         fun onCariBarangClicked()
@@ -133,7 +133,7 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
                 WishlistCollectionEmptyStateCarouselViewHolder(binding, actionListener)
             }
             WishlistAdapter.LAYOUT_RECOMMENDATION_TITLE -> {
-                val binding = WishlistV2RecommendationTitleItemBinding.inflate(
+                val binding = WishlistRecommendationTitleItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -141,7 +141,7 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
                 WishlistCollectionRecommendationTitleViewHolder(binding, false)
             }
             WishlistAdapter.LAYOUT_RECOMMENDATION_LIST -> {
-                val binding = WishlistV2RecommendationItemBinding.inflate(
+                val binding = WishlistRecommendationItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false

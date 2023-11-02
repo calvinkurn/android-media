@@ -3,10 +3,10 @@ package com.tokopedia.wishlist.collection.view.adapter.viewholder
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.wishlist.databinding.WishlistV2RecommendationTitleItemBinding
 import com.tokopedia.wishlist.collection.data.model.WishlistCollectionTypeLayoutData
+import com.tokopedia.wishlist.databinding.WishlistRecommendationTitleItemBinding
 
-class WishlistCollectionRecommendationTitleViewHolder(private val binding: WishlistV2RecommendationTitleItemBinding, private val isWithMargin: Boolean) : RecyclerView.ViewHolder(binding.root) {
+class WishlistCollectionRecommendationTitleViewHolder(private val binding: WishlistRecommendationTitleItemBinding, private val isWithMargin: Boolean) : RecyclerView.ViewHolder(binding.root) {
 
     private companion object {
         private const val PADDING_8 = 8
