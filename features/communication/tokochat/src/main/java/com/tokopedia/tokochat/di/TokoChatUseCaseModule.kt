@@ -2,7 +2,6 @@ package com.tokopedia.tokochat.di
 
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
-import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
 import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import com.tokopedia.tokochat.domain.usecase.TokoChatRoomUseCase
 import dagger.Module
@@ -17,13 +16,5 @@ object TokoChatUseCaseModule {
         @TokoChatQualifier tokoChatRepository: TokoChatRepository
     ): TokoChatRoomUseCase {
         return TokoChatRoomUseCase(tokoChatRepository)
-    }
-
-    @ActivityScope
-    @Provides
-    fun provideTokoChatChannelUseCase(
-        @TokoChatQualifier tokoChatGroupBookingUseCase: TokoChatGroupBookingUseCase
-    ): TokoChatGroupBookingUseCase {
-        return tokoChatGroupBookingUseCase
     }
 }

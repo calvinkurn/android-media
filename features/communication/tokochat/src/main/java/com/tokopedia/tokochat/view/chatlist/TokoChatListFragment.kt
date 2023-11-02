@@ -238,8 +238,7 @@ class TokoChatListFragment @Inject constructor(
             val source = "?${ApplinkConst.TokoChat.PARAM_SOURCE}=$serviceName"
             val paramOrderIdGojek = "&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=${element.orderId}"
             val applink = "${ApplinkConstInternalCommunication.TOKO_CHAT}$source$paramOrderIdGojek"
-            val intent = RouteManager.getIntent(it, applink)
-            startActivity(intent)
+            viewModel.processAction(TokoChatListAction.NavigateToPage(applink))
         }
     }
 

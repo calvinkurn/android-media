@@ -127,11 +127,8 @@ class TokoChatListViewModel @Inject constructor(
             null
         }
         // If local data is not flagged, then this is first load from local DB
-        val page = if (!_chatListUiState.value.localListLoaded) {
+        if (!_chatListUiState.value.localListLoaded) {
             loadNextPageChatList(channelList.size) // Load the page, then set as true
-            1 // Set page as 1
-        } else {
-            _chatListUiState.value.page + 1 // Page plus 1
         }
         _chatListUiState.update {
             it.copy(
@@ -139,8 +136,7 @@ class TokoChatListViewModel @Inject constructor(
                 chatItemList = it.chatItemList + filteredChatItemList,
                 trackerData = trackerData,
                 errorMessage = null,
-                page = page,
-                hasNextPage = filteredChatItemList.isNotEmpty(),
+                hasNextPage = it.chatItemList.size <= filteredChatItemList.size,
                 localListLoaded = true
             )
         }
@@ -160,6 +156,9 @@ class TokoChatListViewModel @Inject constructor(
     private fun loadNextPageChatList(batchSize: Int) {
         viewModelScope.launch {
             try {
+                _chatListUiState.update {
+                    it.copy(page = it.page + 1)
+                }
                 withContext(dispatcher.io) {
                     chatListUseCase.fetchAllChannel(
                         channelTypes = listOf(ChannelType.GroupBooking),

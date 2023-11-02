@@ -1,6 +1,7 @@
 package com.tokopedia.tokochat.config.domain
 
 import androidx.lifecycle.asFlow
+import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
 import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import com.tokopedia.tokochat.config.util.TokoChatResult
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,7 @@ import javax.inject.Inject
  * Specific for counter in general
  */
 class TokoChatCounterUseCase @Inject constructor(
-    private val repository: TokoChatRepository
+    @TokoChatQualifier private val repository: TokoChatRepository
 ) {
 
     private val _unreadCounterFlow = MutableStateFlow<TokoChatResult<Int>>(TokoChatResult.Loading)

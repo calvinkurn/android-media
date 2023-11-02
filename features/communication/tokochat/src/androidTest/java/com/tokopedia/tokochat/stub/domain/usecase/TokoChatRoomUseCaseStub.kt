@@ -5,7 +5,7 @@ import com.tokopedia.tokochat.domain.usecase.TokoChatRoomUseCase
 import com.tokopedia.tokochat.stub.repository.TokoChatRepositoryStub
 import javax.inject.Inject
 
-class TokoChatChannelUseCaseStub @Inject constructor(
+class TokoChatRoomUseCaseStub @Inject constructor(
     @ActivityScope tokoChatRepositoryStub: TokoChatRepositoryStub
 ) : TokoChatRoomUseCase(tokoChatRepositoryStub) {
 

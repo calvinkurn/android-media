@@ -4,6 +4,7 @@ import com.gojek.conversations.babble.network.data.OrderChatType
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.network.ConversationsNetworkError
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
 import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import com.tokopedia.tokochat.config.util.TokoChatCoroutineDispatchers
 import com.tokopedia.tokochat.config.util.TokoChatResult
@@ -21,9 +22,9 @@ import javax.inject.Inject
  * Predefined common usage for TokoChat related feature
  * Specific for initiation of channel (group booking)
  */
-open class TokoChatGroupBookingUseCase@Inject constructor(
-    private val repository: TokoChatRepository,
-    dispatchers: TokoChatCoroutineDispatchers
+open class TokoChatGroupBookingUseCase @Inject constructor(
+    @TokoChatQualifier private val repository: TokoChatRepository,
+    @TokoChatQualifier dispatchers: TokoChatCoroutineDispatchers
 ) {
 
     private val _groupBookingResultFlow = MutableSharedFlow<TokoChatResult<String>>()
