@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.partial_order_fulfillment.presentation.viewmod
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -48,6 +49,10 @@ class PofViewModel @Inject constructor(
         private const val DELAY_FETCH_POF_INFO_ON_ERROR = 1000L
         private const val DELAY_FETCH_INITIAL_POF_ESTIMATE = 0L
         private const val DELAY_FETCH_POF_ESTIMATE_ON_PRODUCT_QUANTITY_CHANGED = 1000L
+
+        private const val SAVED_STATE_KEY_ORDER_ID = "orderId"
+        private const val SAVED_STATE_KEY_INITIAL_POF_STATUS = "initialPofStatus"
+        private const val SAVED_STATE_KEY_QUANTITY_EDITOR_DATA_LIST = "quantityEditorDataList"
     }
 
     private var getPofInfoJob: Job? = null
@@ -96,6 +101,8 @@ class PofViewModel @Inject constructor(
                     is UiEvent.OnClickSendPof -> onClickSendPof(event)
                     is UiEvent.OpenScreen -> onOpenScreen(event)
                     is UiEvent.ProductAvailableQuantityChanged -> onProductAvailableQuantityChanged(event)
+                    is UiEvent.RestoreState -> onRestoreState(event)
+                    is UiEvent.SaveState -> onSaveState(event)
                     is UiEvent.None -> { /* noop */ }
                 }
             }
@@ -148,6 +155,27 @@ class PofViewModel @Inject constructor(
         updateUiState()
     }
 
+    private fun onRestoreState(event: UiEvent.RestoreState) {
+        val savedOrderId = event.bundle.getLong(SAVED_STATE_KEY_ORDER_ID, -1)
+        val savedInitialPofStatus = event.bundle.getInt(SAVED_STATE_KEY_INITIAL_POF_STATUS, -1)
+        val savedQuantityEditorDataList = event.bundle.getParcelableArrayList<PofProductEditableUiModel.QuantityEditorData>(SAVED_STATE_KEY_QUANTITY_EDITOR_DATA_LIST).orEmpty()
+        if (savedOrderId == -1L || savedInitialPofStatus == -1 || savedQuantityEditorDataList.isEmpty()) {
+            event.onFailedRestoreState()
+        } else {
+            orderId = savedOrderId
+            initialPofStatus = savedInitialPofStatus
+            quantityEditorDataList = savedQuantityEditorDataList.toList()
+            updateDetailInfo()
+            getPofInfo(DELAY_FETCH_INITIAL_POF_INFO, CacheType.CACHE_FIRST)
+        }
+    }
+
+    private fun onSaveState(event: UiEvent.SaveState) {
+        event.bundle.putLong(SAVED_STATE_KEY_ORDER_ID, orderId)
+        event.bundle.putInt(SAVED_STATE_KEY_INITIAL_POF_STATUS, initialPofStatus)
+        event.bundle.putParcelableArrayList(SAVED_STATE_KEY_QUANTITY_EDITOR_DATA_LIST, ArrayList(quantityEditorDataList))
+    }
+
     private fun showToasterCannotEmptyAllProduct() {
         viewModelScope.launch {
             _toasterQueue.emit(pofToasterMapper.mapToasterCannotEmptyAllProduct())
@@ -172,30 +200,32 @@ class PofViewModel @Inject constructor(
         }
     }
 
-    private fun getPofInfo(delay: Long) {
+    private fun getPofInfo(delay: Long, cacheType: CacheType = CacheType.ALWAYS_CLOUD) {
         getPofInfoJob?.cancel()
         getPofInfoJob = viewModelScope.launchCatchError(block = {
             getPofInfoUseCase(
                 GetPofInfoRequestParams(
                     orderId = orderId,
-                    delay = delay
+                    delay = delay,
+                    cacheType = cacheType
                 )
             ).collectLatest { requestState ->
-                onGetPofInfoRequestStateChanged(requestState)
+                onGetPofInfoRequestStateChanged(requestState, cacheType)
             }
         }, onError = {
-            onGetPofInfoRequestStateChanged(RequestState.Error(it))
+            onGetPofInfoRequestStateChanged(RequestState.Error(it), cacheType)
         })
     }
 
-    private fun getPofEstimate(delay: Long) {
+    private fun getPofEstimate(delay: Long, cacheType: CacheType = CacheType.ALWAYS_CLOUD) {
         getPofEstimateJob?.cancel()
         getPofEstimateJob = viewModelScope.launchCatchError(block = {
             getPofEstimateUseCase(
                 GetPofEstimateRequestParams(
                     orderId = orderId,
                     detailInfo = detailInfo,
-                    delay = delay
+                    delay = delay,
+                    cacheType = cacheType
                 )
             ).collectLatest { requestState ->
                 onGetPofEstimateRequestStateChanged(requestState)
@@ -245,7 +275,8 @@ class PofViewModel @Inject constructor(
     }
 
     private fun onGetPofInfoRequestStateChanged(
-        requestState: RequestState<GetPofRequestInfoResponse.Data>
+        requestState: RequestState<GetPofRequestInfoResponse.Data>,
+        cacheType: CacheType
     ) {
         getPofInfoRequestState = requestState
         when (requestState) {
@@ -255,7 +286,7 @@ class PofViewModel @Inject constructor(
             is RequestState.Success -> {
                 updateQuantityEditorDataList(requestState.data)
                 updateDetailInfo()
-                getPofEstimate(DELAY_FETCH_INITIAL_POF_ESTIMATE)
+                getPofEstimate(DELAY_FETCH_INITIAL_POF_ESTIMATE, cacheType)
             }
             is RequestState.Requesting -> getPofEstimateRequestState = RequestState.Requesting
             else -> { /* noop */ }

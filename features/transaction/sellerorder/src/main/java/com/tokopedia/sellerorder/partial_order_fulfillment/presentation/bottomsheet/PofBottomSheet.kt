@@ -92,7 +92,12 @@ class PofBottomSheet : BottomSheetUnify(),
         collectUiState()
         collectToasterQueue()
         collectUiEffect()
-        viewModel.onEvent(UiEvent.OpenScreen(orderId = orderId, initialPofStatus = pofStatus))
+        init(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        viewModel.onEvent(UiEvent.SaveState(outState))
     }
 
     override fun onEvent(event: UiEvent) {
@@ -145,6 +150,18 @@ class PofBottomSheet : BottomSheetUnify(),
                     is UiEffect.FinishActivity -> onCloseBottomSheet()
                 }
             }
+        }
+    }
+
+    private fun init(savedInstanceState: Bundle?) {
+        if (savedInstanceState == null) {
+            viewModel.onEvent(UiEvent.OpenScreen(orderId = orderId, initialPofStatus = pofStatus))
+        } else {
+            viewModel.onEvent(
+                UiEvent.RestoreState(savedInstanceState) {
+                    init(null)
+                }
+            )
         }
     }
 

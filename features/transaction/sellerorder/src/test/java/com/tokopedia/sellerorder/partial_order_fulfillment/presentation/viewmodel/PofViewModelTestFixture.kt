@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.partial_order_fulfillment.presentation.viewmodel
 
+import android.os.Bundle
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -67,6 +68,9 @@ abstract class PofViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var sendPofUseCase: SendPofUseCase
+
+    @RelaxedMockK
+    lateinit var bundle: Bundle
 
     @get:Rule
     val rule = UnconfinedTestRule()
@@ -325,7 +329,7 @@ abstract class PofViewModelTestFixture {
     protected fun createGetPofEstimateParams(
         orderId: Long = 167756654,
         delay: Long = 0,
-        detailInfo: List<GetPofEstimateRequestParams.DetailInfo?>? = TestHelper
+        detailInfo: List<GetPofEstimateRequestParams.DetailInfo?> = TestHelper
             .createSuccessResponse<GetPofRequestInfoResponse.Data>(
                 SUCCESS_RESPONSE_GET_POF_INFO_RESULT_WITH_STATUS_0
             )
@@ -340,9 +344,9 @@ abstract class PofViewModelTestFixture {
             }.orEmpty()
     ): GetPofEstimateRequestParams {
         return GetPofEstimateRequestParams(
+            detailInfo = detailInfo,
             orderId = orderId,
-            delay = delay,
-            detailInfo = detailInfo
+            delay = delay
         )
     }
 
@@ -352,8 +356,6 @@ abstract class PofViewModelTestFixture {
         quantityList: List<Pair<Long, Int>> = listOf()
     ): GetPofEstimateRequestParams {
         return GetPofEstimateRequestParams(
-            orderId = orderId,
-            delay = delay,
             detailInfo = TestHelper
                 .createSuccessResponse<GetPofRequestInfoResponse.Data>(
                     SUCCESS_RESPONSE_GET_POF_INFO_RESULT_WITH_STATUS_0
@@ -369,12 +371,22 @@ abstract class PofViewModelTestFixture {
                             it.first == orderDetailId
                         }?.second ?: details?.quantityRequest.orZero()
                     )
-                }.orEmpty()
+                }.orEmpty(),
+            orderId = orderId,
+            delay = delay
         )
     }
 
     protected fun sendOpenScreenEvent() {
         viewModel.onEvent(UiEvent.OpenScreen(167756654, initialPofStatus = 0))
+    }
+
+    protected fun sendSaveStateEvent() {
+        viewModel.onEvent(UiEvent.SaveState(bundle))
+    }
+
+    protected fun sendRestoreStateEvent(onFailedRestoreState: () -> Unit) {
+        viewModel.onEvent(UiEvent.RestoreState(bundle, onFailedRestoreState))
     }
 
     protected fun sendOnClickResetPofFormEvent() {

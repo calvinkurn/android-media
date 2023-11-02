@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model
 
+import android.os.Bundle
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.SendPofRequestParams
 
 sealed interface UiEvent {
@@ -10,11 +11,14 @@ sealed interface UiEvent {
         val initialPofStatus: Int
     ) : UiEvent
 
-    object OnClickResetPofForm : UiEvent
-    object ClickRetryOnErrorState : UiEvent
-    object OnClickRetryFetchPofEstimate : UiEvent
-    object OnClickOpenPofInfoSummary : UiEvent
-    object OnClickDismissSummaryBottomSheet : UiEvent
+    data class RestoreState(
+        val bundle: Bundle,
+        val onFailedRestoreState: () -> Unit
+    ) : UiEvent
+
+    data class SaveState(
+        val bundle: Bundle
+    ) : UiEvent
 
     data class ProductAvailableQuantityChanged(
         val orderDetailId: Long,
@@ -25,4 +29,10 @@ sealed interface UiEvent {
     data class OnClickSendPof(
         val pofDetailList: List<SendPofRequestParams.PofDetail>
     ) : UiEvent
+
+    object OnClickResetPofForm : UiEvent
+    object ClickRetryOnErrorState : UiEvent
+    object OnClickRetryFetchPofEstimate : UiEvent
+    object OnClickOpenPofInfoSummary : UiEvent
+    object OnClickDismissSummaryBottomSheet : UiEvent
 }

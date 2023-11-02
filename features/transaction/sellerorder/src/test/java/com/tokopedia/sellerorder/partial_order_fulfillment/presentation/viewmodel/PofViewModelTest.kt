@@ -7,6 +7,9 @@ import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model.Ui
 import io.mockk.Ordering
 import io.mockk.clearMocks
 import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.assertj.core.api.Assertions
 import org.junit.Assert.assertEquals
@@ -669,7 +672,7 @@ class PofViewModelTest : PofViewModelTestFixture() {
     }
 
     @Test
-    fun `validate when receive ProductAvailableQuantityChanged and quantity is above checkout quantity`() {
+    fun `validate when receive ProductAvailableQuantityChanged event and quantity is above checkout quantity`() {
         runCollecting { uiStates, toasterQueues, _ ->
             //region perform open screen
             createSuccessGetPofInfoWithStatus0()
@@ -734,7 +737,7 @@ class PofViewModelTest : PofViewModelTestFixture() {
     }
 
     @Test
-    fun `validate when receive ProductAvailableQuantityChanged and quantity is zero but others quantity is above zero`() {
+    fun `validate when receive ProductAvailableQuantityChanged event and quantity is zero but others quantity is above zero`() {
         runCollecting { uiStates, toasterQueues, _ ->
             //region perform open screen
             createSuccessGetPofInfoWithStatus0()
@@ -842,7 +845,7 @@ class PofViewModelTest : PofViewModelTestFixture() {
     }
 
     @Test
-    fun `validate when receive ProductAvailableQuantityChanged and all quantity is zero`() {
+    fun `validate when receive ProductAvailableQuantityChanged event and all quantity is zero`() {
         runCollecting { uiStates, toasterQueues, _ ->
             //region perform open screen
             createSuccessGetPofInfoWithStatus0()
@@ -1003,7 +1006,7 @@ class PofViewModelTest : PofViewModelTestFixture() {
     }
 
     @Test
-    fun `validate when receive OnClickSendPof and success`() {
+    fun `validate when receive OnClickSendPof event and success`() {
         runCollecting { uiStates, toasterQueues, uiEffects ->
             //region perform open screen
             createSuccessGetPofInfoWithStatus0()
@@ -1131,7 +1134,7 @@ class PofViewModelTest : PofViewModelTestFixture() {
     }
 
     @Test
-    fun `validate when receive OnClickSendPof and error from BE`() {
+    fun `validate when receive OnClickSendPof event and error from BE`() {
         runCollecting { uiStates, toasterQueues, uiEffects ->
             //region perform open screen
             createSuccessGetPofInfoWithStatus0()
@@ -1259,7 +1262,7 @@ class PofViewModelTest : PofViewModelTestFixture() {
     }
 
     @Test
-    fun `validate when receive OnClickSendPof and error from FE`() {
+    fun `validate when receive OnClickSendPof event and error from FE`() {
         runCollecting { uiStates, toasterQueues, uiEffects ->
             //region perform open screen
             createSuccessGetPofInfoWithStatus0()
@@ -1383,6 +1386,227 @@ class PofViewModelTest : PofViewModelTestFixture() {
             assertEquals(emptyList<UiEffect>(), uiEffects)
             //endregion validate ui effect
             //endregion perform send pof request
+        }
+    }
+
+    @Test
+    fun `validate when receive SaveState event`() {
+        runCollecting { uiStates, _, _ ->
+            //region perform open screen
+            createSuccessGetPofInfoWithStatus0()
+            createSuccessGetPofEstimate()
+
+            sendOpenScreenEvent()
+
+            var uiState = uiStates.last()
+            //region verify use-cases
+            coVerify(exactly = 1) {
+                getPofInfoUseCase(createGetPofInfoParams())
+                getPofEstimateUseCase(createGetPofEstimateParams())
+            }
+            coVerify(ordering = Ordering.SEQUENCE) {
+                getPofInfoUseCase(createGetPofInfoParams())
+                getPofEstimateUseCase(createGetPofEstimateParams())
+            }
+            //endregion verify use-cases
+            //region verify items
+            assertEquals(initialVisitableListWithStatus0, uiState.items)
+            //endregion verify items
+            //region verify summary bottom sheet should hidden
+            assertEquals(PofBottomSheetSummaryUiState.Hidden, uiState.bottomSheetSummaryUiState)
+            //endregion verify summary bottom sheet should hidden
+            //region verify footer
+            assertEquals(createFooterUiState(), uiState.footerUiState)
+            //endregion verify footer
+            //endregion perform open screen
+
+            //region perform save state
+            sendSaveStateEvent()
+            uiState = uiStates.last()
+            //region validate bundle put operations
+            val quantityEditorDataList = uiState
+                .items
+                .mapNotNull {
+                    if (it is PofProductEditableUiModel) {
+                        it.quantityEditorData
+                    } else null
+                }
+            verify {
+                bundle.putLong("orderId", 167756654L)
+                bundle.putInt("initialPofStatus", 0)
+                bundle.putParcelableArrayList("quantityEditorDataList", ArrayList(quantityEditorDataList))
+            }
+            verify(exactly = 1) {
+                bundle.putLong(any(), any())
+            }
+            verify(exactly = 1) {
+                bundle.putInt(any(), any())
+            }
+            verify(exactly = 1) {
+                bundle.putParcelableArrayList(any(), any())
+            }
+            //endregion validate bundle put operations
+            //endregion perform save state
+        }
+    }
+
+    @Test
+    fun `validate when receive RestoreState event and success`() {
+        runCollecting { _, _, _ ->
+            //region perform restore state
+            val onFailedRestoreState = mockk<() -> Unit>(relaxed = true)
+            every {
+                bundle.getLong("orderId", -1)
+            } returns 167756654L
+            every {
+                bundle.getInt("initialPofStatus", -1)
+            } returns 0
+            every {
+                bundle.getParcelableArrayList<PofProductEditableUiModel.QuantityEditorData>("quantityEditorDataList")
+            } returns arrayListOf(mockk(relaxed = true), mockk(relaxed = true))
+            sendRestoreStateEvent(onFailedRestoreState)
+            //region validate success restore
+            verify(inverse = true) {
+                onFailedRestoreState()
+            }
+            //endregion validate success restore
+            //region validate bundle put operations
+            verify {
+                bundle.getLong("orderId", -1)
+                bundle.getInt("initialPofStatus", -1)
+                bundle.getParcelableArrayList<PofProductEditableUiModel.QuantityEditorData>("quantityEditorDataList")
+            }
+            verify(exactly = 1) {
+                bundle.getLong(any(), any())
+            }
+            verify(exactly = 1) {
+                bundle.getInt(any(), any())
+            }
+            verify(exactly = 1) {
+                bundle.getParcelableArrayList<PofProductEditableUiModel.QuantityEditorData>("quantityEditorDataList")
+            }
+            //endregion validate bundle put operations
+            //endregion perform save state
+        }
+    }
+
+    @Test
+    fun `validate when receive RestoreState event and error restore order ID`() {
+        runCollecting { _, _, _ ->
+            //region perform restore state
+            val onFailedRestoreState = mockk<() -> Unit>(relaxed = true)
+            every {
+                bundle.getLong("orderId", -1)
+            } returns -1
+            every {
+                bundle.getInt("initialPofStatus", -1)
+            } returns 0
+            every {
+                bundle.getParcelableArrayList<PofProductEditableUiModel.QuantityEditorData>("quantityEditorDataList")
+            } returns arrayListOf(mockk(relaxed = true), mockk(relaxed = true))
+            sendRestoreStateEvent(onFailedRestoreState)
+            //region validate success restore
+            verify(exactly = 1) {
+                onFailedRestoreState()
+            }
+            //endregion validate success restore
+            //region validate bundle put operations
+            verify {
+                bundle.getLong("orderId", -1)
+                bundle.getInt("initialPofStatus", -1)
+                bundle.getParcelableArrayList<PofProductEditableUiModel.QuantityEditorData>("quantityEditorDataList")
+            }
+            verify(exactly = 1) {
+                bundle.getLong(any(), any())
+            }
+            verify(exactly = 1) {
+                bundle.getInt(any(), any())
+            }
+            verify(exactly = 1) {
+                bundle.getParcelableArrayList<PofProductEditableUiModel.QuantityEditorData>("quantityEditorDataList")
+            }
+            //endregion validate bundle put operations
+            //endregion perform save state
+        }
+    }
+
+    @Test
+    fun `validate when receive RestoreState event and error restore initial pof status`() {
+        runCollecting { _, _, _ ->
+            //region perform restore state
+            val onFailedRestoreState = mockk<() -> Unit>(relaxed = true)
+            every {
+                bundle.getLong("orderId", -1)
+            } returns 167756654L
+            every {
+                bundle.getInt("initialPofStatus", -1)
+            } returns -1
+            every {
+                bundle.getParcelableArrayList<PofProductEditableUiModel.QuantityEditorData>("quantityEditorDataList")
+            } returns arrayListOf(mockk(relaxed = true), mockk(relaxed = true))
+            sendRestoreStateEvent(onFailedRestoreState)
+            //region validate success restore
+            verify(exactly = 1) {
+                onFailedRestoreState()
+            }
+            //endregion validate success restore
+            //region validate bundle put operations
+            verify {
+                bundle.getLong("orderId", -1)
+                bundle.getInt("initialPofStatus", -1)
+                bundle.getParcelableArrayList<PofProductEditableUiModel.QuantityEditorData>("quantityEditorDataList")
+            }
+            verify(exactly = 1) {
+                bundle.getLong(any(), any())
+            }
+            verify(exactly = 1) {
+                bundle.getInt(any(), any())
+            }
+            verify(exactly = 1) {
+                bundle.getParcelableArrayList<PofProductEditableUiModel.QuantityEditorData>("quantityEditorDataList")
+            }
+            //endregion validate bundle put operations
+            //endregion perform save state
+        }
+    }
+
+    @Test
+    fun `validate when receive RestoreState event and error restore quantity edit data list`() {
+        runCollecting { _, _, _ ->
+            //region perform restore state
+            val onFailedRestoreState = mockk<() -> Unit>(relaxed = true)
+            every {
+                bundle.getLong("orderId", -1)
+            } returns 167756654L
+            every {
+                bundle.getInt("initialPofStatus", -1)
+            } returns 0
+            every {
+                bundle.getParcelableArrayList<PofProductEditableUiModel.QuantityEditorData>("quantityEditorDataList")
+            } returns null
+            sendRestoreStateEvent(onFailedRestoreState)
+            //region validate success restore
+            verify(exactly = 1) {
+                onFailedRestoreState()
+            }
+            //endregion validate success restore
+            //region validate bundle put operations
+            verify {
+                bundle.getLong("orderId", -1)
+                bundle.getInt("initialPofStatus", -1)
+                bundle.getParcelableArrayList<PofProductEditableUiModel.QuantityEditorData>("quantityEditorDataList")
+            }
+            verify(exactly = 1) {
+                bundle.getLong(any(), any())
+            }
+            verify(exactly = 1) {
+                bundle.getInt(any(), any())
+            }
+            verify(exactly = 1) {
+                bundle.getParcelableArrayList<PofProductEditableUiModel.QuantityEditorData>("quantityEditorDataList")
+            }
+            //endregion validate bundle put operations
+            //endregion perform save state
         }
     }
 }

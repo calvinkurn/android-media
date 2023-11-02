@@ -1,6 +1,8 @@
 package com.tokopedia.sellerorder.partial_order_fulfillment.presentation.adapter.model
 
+import android.os.Parcelable
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.adapter.PofAdapterTypeFactory
+import kotlinx.parcelize.Parcelize
 
 data class PofProductEditableUiModel(
     val orderDetailId: Long,
@@ -10,6 +12,7 @@ data class PofProductEditableUiModel(
     val quantityEditorData: QuantityEditorData
 ) : PofVisitable {
 
+    @Parcelize
     data class QuantityEditorData(
         val orderDetailId: Long,
         val productId: Long,
@@ -17,7 +20,7 @@ data class PofProductEditableUiModel(
         val maxQuantity: Int,
         val updateTimestamp: Long,
         val enabled: Boolean
-    )
+    ) : Parcelable
 
     override fun type(typeFactory: PofAdapterTypeFactory): Int {
         return typeFactory.type(this)
