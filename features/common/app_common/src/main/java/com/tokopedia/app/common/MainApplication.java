@@ -1,6 +1,7 @@
 package com.tokopedia.app.common;
 
 import android.content.SharedPreferences;
+
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
@@ -214,10 +215,17 @@ public abstract class MainApplication extends CoreNetworkApplication {
     }
 
     private boolean checkForceLightMode() {
-        if (remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE, false)) {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            sharedPreferences.edit().putBoolean(TkpdCache.Key.KEY_DARK_MODE, false).apply();
-            return true;
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (GlobalConfig.isSellerApp()) {
+            if (remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE_SELLER_APP, false)) {
+                sharedPreferences.edit().putBoolean(TkpdCache.Key.KEY_DARK_MODE, false).apply();
+                return true;
+            }
+        } else {
+            if (remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE, false)) {
+                sharedPreferences.edit().putBoolean(TkpdCache.Key.KEY_DARK_MODE, false).apply();
+                return true;
+            }
         }
         return false;
     }
