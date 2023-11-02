@@ -9,12 +9,15 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.PersistableBundle
 import android.provider.Settings
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenResumed
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -88,7 +91,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         private const val BOTTOM_NAV_ENTER_ANIM_DURATION = 4f
         private const val BOTTOM_NAV_EXIT_ANIM_DURATION = 1f
 
-        private const val LAST_FRAGMENT_TYPE_KEY = "last_fragment"
         private const val ACTION_GET_ALL_APP_WIDGET_DATA =
             "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
         private const val NAVIGATION_OTHER_MENU_POSITION = 4
@@ -97,6 +99,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
         private const val WEAR_POPUP_KEY = "isWearPopupShown"
         private const val TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.tokopedia.sellerapp"
+        const val LAST_FRAGMENT_TYPE_KEY = "last_fragment"
     }
 
     @Inject
@@ -169,6 +172,11 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         return DaggerHomeDashboardComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
             .build()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        navigator?.navigateOnRestored(outState, lifecycleScope)
     }
 
     override fun onResume() {
@@ -355,6 +363,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                     initSomListLoadTimeMonitoring()
                     lastSomTab = page
                 }
+
                 FragmentType.PRODUCT -> lastProductManagePage = page
             }
 
