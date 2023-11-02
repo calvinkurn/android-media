@@ -124,7 +124,8 @@ import kotlin.math.abs
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class MerchantPageFragment : BaseMultiFragment(),
+class MerchantPageFragment :
+    BaseMultiFragment(),
     MerchantCarouseItemViewHolder.OnCarouselItemClickListener,
     ProductCardViewHolder.OnProductCardItemClickListener,
     OrderNoteBottomSheet.OnSaveNoteButtonClickListener,
@@ -219,7 +220,6 @@ class MerchantPageFragment : BaseMultiFragment(),
         if (!userSession.isLoggedIn) {
             goToLoginPage()
         }
-
     }
 
     override fun initInjector() {
@@ -343,7 +343,6 @@ class MerchantPageFragment : BaseMultiFragment(),
             // handle negative case: no-address,no-pinpoint
             validateAddressData()
         }
-
     }
 
     override fun onStop() {
@@ -433,7 +432,8 @@ class MerchantPageFragment : BaseMultiFragment(),
                 val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
                 val categoryFilter =
                     TokoFoodMerchantUiModelMapper.mapProductListItemToCategoryFilterUiModel(
-                        viewModel.filterList, viewModel.filterNameSelected
+                        viewModel.filterList,
+                        viewModel.filterNameSelected
                     )
                 cacheManager?.put(
                     CategoryFilterBottomSheet.KEY_CATEGORY_FILTER_LIST,
@@ -457,8 +457,9 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun openSharedProductDetail(sharedProductId: String) {
-        if (sharedProductId.isBlank()) return
-        else {
+        if (sharedProductId.isBlank()) {
+            return
+        } else {
             val productListItem = productListAdapter?.getProductListItems()?.find { productList -> productList.productUiModel.id == sharedProductId }
             val position = productListAdapter?.getProductListItems()?.indexOf(productListItem)
             if (position != null && position != RecyclerView.NO_POSITION) {
@@ -564,7 +565,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 )
                 setMetaData(
                     tnTitle = merchantShareComponent.previewTitle,
-                    tnImage = merchantShareComponent.previewThumbnail,
+                    tnImage = merchantShareComponent.previewThumbnail
                 )
                 setOgImageUrl(imgUrl = merchantShareComponent.ogImage)
                 imageSaved(storageImagePath)
@@ -616,7 +617,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             )
             setMetaData(
                 tnTitle = merchantShareComponent.previewTitle,
-                tnImage = merchantShareComponent.previewThumbnail,
+                tnImage = merchantShareComponent.previewThumbnail
             )
             setOgImageUrl(imgUrl = merchantShareComponent.ogImage)
             imageSaved(storageImagePath)
@@ -891,7 +892,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                     }
                 }
                 UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
-                    if (it.source == SOURCE){
+                    if (it.source == SOURCE) {
                         (it.data as? CartGeneralCartListData)?.let { cartData ->
                             val products = cartData.getProductListFromCart()
                             val purchaseAmount = cartData.data.shoppingSummary.getTokofoodBusinessBreakdown().totalBillFmt
@@ -1065,7 +1066,9 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun renderProductList(productListItems: List<ProductListItem>) {
-        productListAdapter?.setProductListItems(productListItems)
+        binding?.rvProductList?.post {
+            productListAdapter?.setProductListItems(productListItems)
+        }
     }
 
     private fun scrollToCategorySection(positionItem: Int) {
@@ -1080,7 +1083,6 @@ class MerchantPageFragment : BaseMultiFragment(),
             binding?.rvProductList?.layoutManager?.startSmoothScroll(smoothScroller)
         }
     }
-
 
     private fun onSuccessAddCart(addCartData: Pair<UpdateParam, CartGeneralAddToCartData>?) {
         addCartData?.let { (updateParam, cartListData) ->
@@ -1230,7 +1232,8 @@ class MerchantPageFragment : BaseMultiFragment(),
         // track click atc button event
         viewModel.merchantData?.let {
             merchantPageAnalytics.clickOnAtcButton(
-                productListItem, merchantId,
+                productListItem,
+                merchantId,
                 it.merchantProfile.name,
                 cardPositions.first
             )
@@ -1279,7 +1282,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         activityViewModel?.deleteProduct(
             cartId = cartId,
             productId = productId,
-            source = SOURCE,
+            source = SOURCE
         )
     }
 
@@ -1386,7 +1389,6 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
         merchantShareComponent?.let {
-
             merchantPageAnalytics.clickShareBottomSheet(
                 merchantShareComponent?.id.orEmpty(),
                 userSession.userId.orEmpty()
@@ -1410,7 +1412,6 @@ class MerchantPageFragment : BaseMultiFragment(),
             userSession.userId.orEmpty()
         )
     }
-
 
     override fun onDeleteCustomOrderButtonClicked(cartId: String, productId: String) {
         activityViewModel?.deleteProduct(
@@ -1480,7 +1481,6 @@ class MerchantPageFragment : BaseMultiFragment(),
                 productUiModel
             )
         }
-
 
         val bottomSheet = ChangeMerchantBottomSheet.newInstance(bundle)
 
@@ -1594,18 +1594,20 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun isNoPinPoin(localCacheModel: LocalCacheModel): Boolean {
-        return (!localCacheModel.address_id.isEmpty() || localCacheModel.address_id != EMPTY_ADDRESS_ID)
-                && (localCacheModel.lat.isEmpty() || localCacheModel.long.isEmpty() ||
-            localCacheModel.lat == EMPTY_COORDINATE || localCacheModel.long == EMPTY_COORDINATE)
+        return (!localCacheModel.address_id.isEmpty() || localCacheModel.address_id != EMPTY_ADDRESS_ID) &&
+            (
+                localCacheModel.lat.isEmpty() || localCacheModel.long.isEmpty() ||
+                    localCacheModel.lat == EMPTY_COORDINATE || localCacheModel.long == EMPTY_COORDINATE
+                )
     }
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
         data.let { chooseAddressData ->
-            if (chooseAddressData.data.addressId.isMoreThanZero()
-                && chooseAddressData.data.latitude.isNotEmpty()
-                && chooseAddressData.data.longitude.isNotEmpty()
-                && chooseAddressData.data.latitude != EMPTY_COORDINATE
-                && chooseAddressData.data.longitude != EMPTY_COORDINATE
+            if (chooseAddressData.data.addressId.isMoreThanZero() &&
+                chooseAddressData.data.latitude.isNotEmpty() &&
+                chooseAddressData.data.longitude.isNotEmpty() &&
+                chooseAddressData.data.latitude != EMPTY_COORDINATE &&
+                chooseAddressData.data.longitude != EMPTY_COORDINATE
             ) {
                 ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                     context = requireContext(),
@@ -1721,7 +1723,8 @@ class MerchantPageFragment : BaseMultiFragment(),
                 showCustomOrderDetailBottomSheet(
                     productListAdapter?.getProductUiModel(
                         dataSetPosition
-                    ) ?: ProductUiModel(), this
+                    ) ?: ProductUiModel(),
+                    this
                 )
             }
         }

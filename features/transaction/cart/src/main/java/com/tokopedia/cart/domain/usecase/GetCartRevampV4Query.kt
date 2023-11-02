@@ -487,6 +487,10 @@ const val CART_REVAMP_V4_QUERY =
                 selected_unavailable_action_id
                 unavailable_description
                 products_count
+                cta {
+                   id
+                   message
+                }
                 action {
                   id
                   code
