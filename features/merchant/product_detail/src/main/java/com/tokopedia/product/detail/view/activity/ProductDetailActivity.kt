@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.lifecycleScope
@@ -28,6 +29,7 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.fragment.ProductVideoDetailFragment
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -346,13 +348,36 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         finish()
     }
 
+    var prefetchTime = 0L
+
     private fun initBlocksPLTMonitoring() {
         blocksPerformanceTrace = BlocksPerformanceTrace(
             this,
             "perf_trace_pdp",
             lifecycleScope,
             this
-        ) { summaryModel, capturedBlocks -> }
+        ) { summaryModel, capturedBlocks ->
+            if (summaryModel.ttil() != 0L) {
+                Toaster.build(
+                    view = findViewById<View>(android.R.id.content).getRootView(),
+                    text = "PDP Perf\n TTIL=${summaryModel.ttil()}\n Prefetch=$prefetchTime",
+                    duration = Toaster.LENGTH_INDEFINITE
+                )
+            }
+        }
+
+        blocksPerformanceTrace?.onBlocksRendered = { summaryModel, capturedBlocks, elapsedTime ->
+            if (capturedBlocks.containsAll(
+                    listOf(
+                            "ProductContentDataModel",
+                            "ProductMediaDataModel",
+                            "ProductMiniSocialProofDataModel"
+                        )
+                ) && prefetchTime == 0L
+            ) {
+                this.prefetchTime = elapsedTime
+            }
+        }
     }
     private fun initPLTMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
