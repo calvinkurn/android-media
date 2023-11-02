@@ -55,7 +55,6 @@ import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
 import com.tokopedia.stories.creation.R
 import com.tokopedia.stories.creation.view.model.StoriesMedia
 import com.tokopedia.stories.creation.view.model.StoriesMediaCover
-import com.tokopedia.stories.creation.view.model.StoriesMedia
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.nest.components.R as nestcomponentsR
 
