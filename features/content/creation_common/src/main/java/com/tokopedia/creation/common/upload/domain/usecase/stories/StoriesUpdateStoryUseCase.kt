@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.model.dto.stories.StoriesUpdateStoryRequest
 import com.tokopedia.creation.common.upload.model.dto.stories.StoriesUpdateStoryResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
@@ -19,10 +20,12 @@ class StoriesUpdateStoryUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
 ) : CoroutineUseCase<StoriesUpdateStoryRequest, StoriesUpdateStoryResponse>(dispatchers.io) {
 
-    override fun graphqlQuery(): String = ContentCreatorStoryUpdateStoryQuery().getQuery()
+    private val gqlQuery: GqlQueryInterface = ContentCreatorStoryUpdateStoryQuery()
+
+    override fun graphqlQuery(): String = gqlQuery.getQuery()
 
     override suspend fun execute(params: StoriesUpdateStoryRequest): StoriesUpdateStoryResponse {
-        return repository.request(ContentCreatorStoryUpdateStoryQuery(), params)
+        return repository.request(gqlQuery, params)
     }
 
     companion object {
