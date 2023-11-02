@@ -1,23 +1,24 @@
-package com.tokopedia.feedplus.browse.presentation.adapter
+package com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration
 
 import android.content.res.Resources
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.content.common.producttag.view.adapter.viewholder.LoadingViewHolder
+import androidx.recyclerview.widget.RecyclerView.State
+import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.CategoryInspirationViewHolder
 import com.tokopedia.feedplus.presentation.util.findViewHolderByPositionInfo
 import com.tokopedia.feedplus.presentation.util.getChildValidPositionInfo
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.feedplus.R
 
 /**
- * Created by kenny.hadisaputra on 30/10/23
+ * Created by kenny.hadisaputra on 19/09/23
  */
-internal class CategoryInspirationItemDecoration(
+class FeedBrowseItemDecoration(
     resources: Resources,
     private val spanCount: Int
 ) : RecyclerView.ItemDecoration() {
@@ -44,23 +45,22 @@ internal class CategoryInspirationItemDecoration(
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        when (parent.findContainingViewHolder(view)) {
-            is ChipsViewHolder -> {
-                outRect.itemOffsetsChips(parent, view, state)
-            }
-            is CategoryInspirationViewHolder.Card,
-            is CategoryInspirationViewHolder.Placeholder -> {
-                outRect.itemOffsetsInspirationCard(parent, view, state)
-            }
-            is LoadingViewHolder -> {
-                outRect.itemOffsetsLoading()
-            }
-            else -> {
-                outRect.itemOffsetsElse()
-            }
+        val positionInfo = parent.getChildValidPositionInfo(view, state)
+        when (parent.findViewHolderByPositionInfo(positionInfo)) {
+            is FeedBrowseTitleViewHolder -> outRect.itemOffsetsTitle()
+            is FeedBrowseBannerViewHolder -> outRect.itemOffsetsBanner(parent, view, state)
+            is ChipsViewHolder -> outRect.itemOffsetsChips(parent, view, state)
+            is FeedBrowseHorizontalChannelsViewHolder -> outRect.itemOffsetsHorizontalChannels()
+            else -> outRect.itemOffsetsElse()
         }
 
         outRect.itemOffsetsBottom(parent, view, state)
+    }
+
+    private fun Rect.itemOffsetsTitle() {
+        left = offset16
+        right = offset16
+        top = offset16
     }
 
     private fun Rect.itemOffsetsChips(
@@ -84,7 +84,7 @@ internal class CategoryInspirationItemDecoration(
         }
     }
 
-    private fun Rect.itemOffsetsInspirationCard(
+    private fun Rect.itemOffsetsBanner(
         parent: RecyclerView,
         child: View,
         state: RecyclerView.State
@@ -103,18 +103,9 @@ internal class CategoryInspirationItemDecoration(
         if (prevSpanRowPosition < 0) return
 
         top = when (parent.findViewHolderByPositionInfo(positionInfo)) {
-            is CategoryInspirationViewHolder.Card,
-            is CategoryInspirationViewHolder.Placeholder -> {
-                offset24
-            }
-            else -> {
-                offset16
-            }
+            is FeedBrowseBannerViewHolder -> offset8
+            else -> offset12
         }
-    }
-
-    private fun Rect.itemOffsetsLoading() {
-        top = offset12
     }
 
     private fun Rect.itemOffsetsElse() {
@@ -122,10 +113,15 @@ internal class CategoryInspirationItemDecoration(
         left = offset16
     }
 
+    private fun Rect.itemOffsetsHorizontalChannels() {
+        top = offset12
+        bottom = offset16
+    }
+
     private fun Rect.itemOffsetsBottom(
         parent: RecyclerView,
         child: View,
-        state: RecyclerView.State
+        state: State
     ) {
         val viewHolder = parent.getChildViewHolder(child)
         val lParams = viewHolder.itemView.layoutParams as? GridLayoutManager.LayoutParams ?: return

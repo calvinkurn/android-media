@@ -2,7 +2,6 @@ package com.tokopedia.feedplus.browse.presentation
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,9 +18,9 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTracker
 import com.tokopedia.feedplus.browse.presentation.adapter.CategoryInspirationAdapter
-import com.tokopedia.feedplus.browse.presentation.adapter.CategoryInspirationItemDecoration
+import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.CategoryInspirationItemDecoration
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
-import com.tokopedia.feedplus.browse.presentation.model.FeedCategoryInspirationAction
+import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationAction
 import com.tokopedia.feedplus.databinding.FragmentFeedCategoryInspirationBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -31,7 +29,7 @@ import javax.inject.Inject
 /**
  * Created by kenny.hadisaputra on 21/09/23
  */
-class FeedCategoryInspirationFragment @Inject constructor(
+internal class CategoryInspirationFragment @Inject constructor(
     viewModelFactory: ViewModelProvider.Factory,
     private val tracker: FeedBrowseTracker
 ) : TkpdBaseV4Fragment() {
@@ -45,7 +43,7 @@ class FeedCategoryInspirationFragment @Inject constructor(
             slotId: String,
             chip: WidgetMenuModel
         ) {
-            viewModel.onAction(FeedCategoryInspirationAction.SelectMenu(chip))
+            viewModel.onAction(CategoryInspirationAction.SelectMenu(chip))
         }
 
         override fun onChipSelected(
@@ -53,7 +51,7 @@ class FeedCategoryInspirationFragment @Inject constructor(
             slotId: String,
             chip: WidgetMenuModel
         ) {
-            viewModel.onAction(FeedCategoryInspirationAction.LoadData(chip))
+            viewModel.onAction(CategoryInspirationAction.LoadData(chip))
         }
     }
 
@@ -62,9 +60,8 @@ class FeedCategoryInspirationFragment @Inject constructor(
             val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
 
             val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
-            if (lastVisibleItemPosition >= adapter.itemCount - 2) {
-                Log.d("CategoryInspiration", "LoadMoreData")
-                viewModel.onAction(FeedCategoryInspirationAction.LoadMoreData)
+            if (lastVisibleItemPosition >= adapter.itemCount - LOAD_PAGE_THRESHOLD) {
+                viewModel.onAction(CategoryInspirationAction.LoadMoreData)
             }
         }
     }
@@ -92,7 +89,7 @@ class FeedCategoryInspirationFragment @Inject constructor(
         setupView()
         observe()
 
-        viewModel.onAction(FeedCategoryInspirationAction.Init)
+        viewModel.onAction(CategoryInspirationAction.Init)
     }
 
     override fun onDestroyView() {
@@ -137,5 +134,9 @@ class FeedCategoryInspirationFragment @Inject constructor(
                     }
                 }
         }
+    }
+
+    companion object {
+        private const val LOAD_PAGE_THRESHOLD = 2
     }
 }

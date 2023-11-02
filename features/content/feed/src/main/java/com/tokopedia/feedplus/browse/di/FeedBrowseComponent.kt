@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.content.common.di.ContentFragmentFactoryModule
 import com.tokopedia.feedplus.browse.presentation.FeedBrowseActivity
-import com.tokopedia.feedplus.browse.presentation.FeedCategoryInspirationActivity
+import com.tokopedia.feedplus.browse.presentation.CategoryInspirationActivity
 import dagger.Component
 
 /**
@@ -24,5 +24,5 @@ interface FeedBrowseComponent {
 
     fun inject(activity: FeedBrowseActivity)
 
-    fun inject(activity: FeedCategoryInspirationActivity)
+    fun inject(activity: CategoryInspirationActivity)
 }

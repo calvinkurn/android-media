@@ -12,7 +12,7 @@ internal data class CategoryInspirationData(
     val items: ItemListState<PlayWidgetChannelUiModel>,
 )
 internal typealias CategoryInspirationMap = Map<String, CategoryInspirationData>
-internal data class FeedCategoryInspirationUiState(
+internal data class CategoryInspirationUiState(
     val title: String,
     val items: CategoryInspirationMap,
     val selectedMenuId: String,
@@ -20,8 +20,8 @@ internal data class FeedCategoryInspirationUiState(
 ) {
 
     companion object {
-        fun empty(state: ResultState): FeedCategoryInspirationUiState {
-            return FeedCategoryInspirationUiState(
+        fun empty(state: ResultState): CategoryInspirationUiState {
+            return CategoryInspirationUiState(
                 title = "",
                 items = emptyMap(),
                 selectedMenuId = "",

@@ -10,11 +10,10 @@ import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationData
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationMap
-import com.tokopedia.feedplus.browse.presentation.model.FeedCategoryInspirationAction
-import com.tokopedia.feedplus.browse.presentation.model.FeedCategoryInspirationUiState
+import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationAction
+import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationUiState
 import com.tokopedia.feedplus.browse.presentation.model.ItemListState
 import com.tokopedia.feedplus.browse.presentation.model.isLoading
-import com.tokopedia.feedplus.browse.presentation.model.orInitLoading
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -29,16 +28,16 @@ internal class CategoryInspirationViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
-        FeedCategoryInspirationUiState.empty(ResultState.Loading)
+        CategoryInspirationUiState.empty(ResultState.Loading)
     )
     val uiState get() = _uiState.asStateFlow()
 
-    fun onAction(action: FeedCategoryInspirationAction) {
+    fun onAction(action: CategoryInspirationAction) {
         when (action) {
-            FeedCategoryInspirationAction.Init -> onInit()
-            is FeedCategoryInspirationAction.LoadData -> onLoadData(action.menu)
-            FeedCategoryInspirationAction.LoadMoreData -> onLoadMoreData()
-            is FeedCategoryInspirationAction.SelectMenu -> onSelectMenu(action.menu)
+            CategoryInspirationAction.Init -> onInit()
+            is CategoryInspirationAction.LoadData -> onLoadData(action.menu)
+            CategoryInspirationAction.LoadMoreData -> onLoadMoreData()
+            is CategoryInspirationAction.SelectMenu -> onSelectMenu(action.menu)
         }
     }
 

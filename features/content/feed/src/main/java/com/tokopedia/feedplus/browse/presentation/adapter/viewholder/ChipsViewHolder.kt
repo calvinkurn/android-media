@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChipAdapter
-import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChipsItemDecoration
+import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedBrowseChipsItemDecoration
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowsePayloads
 import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel

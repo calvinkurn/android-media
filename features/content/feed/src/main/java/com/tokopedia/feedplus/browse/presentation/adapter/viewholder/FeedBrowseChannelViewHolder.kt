@@ -11,7 +11,7 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.adapter.CenterScrollLayoutManager
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChannelAdapter
-import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChannelItemDecoration
+import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedBrowseChannelItemDecoration
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChipAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowsePayloads
 import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState

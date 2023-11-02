@@ -1,4 +1,4 @@
-package com.tokopedia.feedplus.browse.presentation.adapter
+package com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration
 
 import android.content.res.Resources
 import android.graphics.Rect

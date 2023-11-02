@@ -23,7 +23,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTracker
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
-import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseItemDecoration
+import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedBrowseItemDecoration
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseIntent
@@ -155,7 +155,7 @@ class FeedBrowseFragment @Inject constructor(
             item: FeedBrowseItemListModel.Banner
         ) {
 //            showToast(item.title)
-            startActivity(Intent(requireContext(), FeedCategoryInspirationActivity::class.java))
+            startActivity(Intent(requireContext(), CategoryInspirationActivity::class.java))
         }
     }
 

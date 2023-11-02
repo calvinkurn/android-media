@@ -74,7 +74,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.feedplus.browse.presentation.FeedCategoryInspirationActivity"
+            android:name="com.tokopedia.feedplus.browse.presentation.CategoryInspirationActivity"
             android:exported="false"
             android:theme="@style/Theme.White">
             <intent-filter>
