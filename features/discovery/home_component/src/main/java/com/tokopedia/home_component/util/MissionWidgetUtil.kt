@@ -10,6 +10,11 @@ import com.tokopedia.unifyprinciples.Typography
  */
 abstract class MissionWidgetUtil {
 
+    abstract fun findMaxTitleHeight(
+        data: MissionWidgetListDataModel,
+        context: Context
+    ): Int
+
     abstract fun findMaxSubtitleHeight(
         data: MissionWidgetListDataModel,
         context: Context
