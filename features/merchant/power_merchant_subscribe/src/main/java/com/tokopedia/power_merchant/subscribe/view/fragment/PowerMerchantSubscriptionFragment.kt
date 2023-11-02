@@ -50,6 +50,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By @ilhamsuaib on 02/03/21
@@ -199,9 +200,9 @@ open class PowerMerchantSubscriptionFragment :
 
     override fun setOptInConfirmationSuccess(pmActivationStatusUiModel: PMActivationStatusUiModel, isPmPro: Boolean) {
         val successMessage = if (isPmPro) {
-            getString(com.tokopedia.power_merchant.subscribe.R.string.opt_in_pm_pro_activation_success_message)
+            getString(R.string.opt_in_pm_pro_activation_success_message)
         } else {
-            getString(com.tokopedia.power_merchant.subscribe.R.string.opt_in_pm_activation_success_message)
+            getString(R.string.opt_in_pm_activation_success_message)
         }
         setOnPmActivationSuccess(pmActivationStatusUiModel, successMessage)
     }
@@ -428,15 +429,25 @@ open class PowerMerchantSubscriptionFragment :
         }
     }
 
-    private fun getExpiredTimeFmt(): String {
-        val expiredTime = pmBasicInfo?.pmStatus?.expiredTime.orEmpty()
+    private fun getExpiredTimeFmt(shouldUseNextMonthlyRefreshDate: Boolean): String {
+        val expiredTime =
+            if (shouldUseNextMonthlyRefreshDate) {
+                pmBasicInfo?.shopInfo?.nextMonthlyRefreshDate.orEmpty()
+            } else {
+                pmBasicInfo?.pmStatus?.expiredTime.orEmpty()
+            }
         return try {
-            val currentFormat = "dd MMMM yyyy HH:mm:ss"
             val dateFormat = "dd MMMM yyyy"
-            val hourFormat = "HH.mm"
-            val dateStr = DateFormatUtils.formatDate(currentFormat, dateFormat, expiredTime)
-            val hourStr = DateFormatUtils.formatDate(currentFormat, hourFormat, expiredTime)
-            context?.getString(R.string.pm_expired_time_format, dateStr, hourStr).orEmpty()
+            if (shouldUseNextMonthlyRefreshDate) {
+                val currentFormat = DateFormatUtils.FORMAT_YYYY_MM_DD
+                DateFormatUtils.formatDate(currentFormat, dateFormat, expiredTime)
+            } else {
+                val currentFormat = "dd MMMM yyyy HH:mm:ss"
+                val hourFormat = "HH.mm"
+                val dateStr = DateFormatUtils.formatDate(currentFormat, dateFormat, expiredTime)
+                val hourStr = DateFormatUtils.formatDate(currentFormat, hourFormat, expiredTime)
+                context?.getString(R.string.pm_expired_time_format, dateStr, hourStr).orEmpty()
+            }
         } catch (e: Exception) {
             expiredTime
         }
@@ -486,7 +497,7 @@ open class PowerMerchantSubscriptionFragment :
 
         view?.run {
             Toaster.toasterCustomBottomHeight =
-                context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5)
+                context?.resources?.getDimensionPixelSize(unifyprinciplesR.dimen.layout_lvl5)
                     .orZero()
             val message =
                 if (pmBasicInfo?.pmStatus?.isPowerMerchantPro() == true) {
@@ -574,7 +585,7 @@ open class PowerMerchantSubscriptionFragment :
             it.post {
                 val message = if (successMessage.isNullOrBlank()) getString(R.string.pm_submit_activation_success) else successMessage
                 Toaster.toasterCustomBottomHeight = it.context.resources.getDimensionPixelSize(
-                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl5
+                    unifyprinciplesR.dimen.layout_lvl5
                 )
                 Toaster.build(
                     it,
@@ -663,10 +674,18 @@ open class PowerMerchantSubscriptionFragment :
         }
 
         if (!isAutoExtendEnabled) {
+            val shouldUseNextMonthlyExpiredDate = getShouldUseNextMonthlyRefreshDate()
+            val stringRes =
+                if (shouldUseNextMonthlyExpiredDate) {
+                    R.string.pm_deactivate_power_merchant_pro_message_new_info
+                } else {
+                    R.string.pm_deactivate_power_merchant_pro_message_info
+                }
             widgets.add(
                 WidgetCancelDeactivationSubmissionUiModel(
-                    getExpiredTimeFmt(),
-                    deactivatedStatusName.orEmpty()
+                    getExpiredTimeFmt(shouldUseNextMonthlyExpiredDate),
+                    deactivatedStatusName.orEmpty(),
+                    stringRes
                 )
             )
         }
@@ -802,7 +821,11 @@ open class PowerMerchantSubscriptionFragment :
     }
 
     private fun getShouldUseNextMonthlyRefreshDate(): Boolean {
-        return remoteConfig.getBoolean(RemoteConfigKey.ANDROID_PM_OPT_OUT_DATE)
+        return try {
+            remoteConfig.getBoolean(RemoteConfigKey.ANDROID_PM_OPT_OUT_DATE).orFalse()
+        } catch (ex: Exception) {
+            false
+        }
     }
 
     private fun getUpgradePmProWidget(
