@@ -46,11 +46,12 @@ object Logger {
 
         val connectionType = NetworkManager.getConnectionType(context)
 
-        val sourceId = getSourceId(param.url)
+        val (type, sourceId) = getSourceId(param.url)
         if (sourceId.isEmpty()) return
 
         val data = mapOf(
             "url" to param.url,
+            "img_type" to type,
             "source_id" to sourceId,
             "page_name" to activityName,
             "file_size" to fileSize,
@@ -89,30 +90,30 @@ object Logger {
         }
     }
 
-    private fun getSourceId(url: String): String {
+    private fun getSourceId(url: String): Pair<String, String> {
         val baseImgUrl = "https://images.tokopedia.net/img/"
-        if (!url.startsWith(baseImgUrl)) return ""
+        if (!url.startsWith(baseImgUrl)) return Pair("", "")
 
         val segments = url.split("/")
         val startIndex = segments.indexOf("img")
 
-        if (startIndex == -1) return ""
+        if (startIndex == -1) return Pair("", "")
 
         val sourceIdCachedIndex = 3
         val sourceIdPristineIndex = 1
 
         return when {
-            // cached: /img/cache/{size}/{source_id}
+            // caches: /img/cache/{size}/{source_id}
             url.contains("cache") && segments.size > startIndex + sourceIdCachedIndex -> {
-                segments[startIndex + sourceIdCachedIndex]
+                Pair("cache", segments[startIndex + sourceIdCachedIndex])
             }
 
             // pristine: /img/{source_id}
             segments.size > startIndex + sourceIdPristineIndex -> {
-                segments[startIndex + sourceIdPristineIndex]
+                Pair("pristine", segments[startIndex + sourceIdPristineIndex])
             }
 
-            else -> ""
+            else -> Pair("", "")
         }
     }
 
