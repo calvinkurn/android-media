@@ -823,7 +823,7 @@ open class PowerMerchantSubscriptionFragment :
     private fun getShouldUseNextMonthlyRefreshDate(): Boolean {
         return try {
             remoteConfig.getBoolean(RemoteConfigKey.ANDROID_PM_OPT_OUT_DATE).orFalse()
-        } catch (ex: Exception) {
+        } catch (ignored: Exception) {
             false
         }
     }
