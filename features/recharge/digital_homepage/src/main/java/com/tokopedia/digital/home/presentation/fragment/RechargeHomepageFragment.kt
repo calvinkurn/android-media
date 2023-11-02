@@ -40,6 +40,7 @@ import com.tokopedia.digital.home.presentation.adapter.RechargeHomeSectionDecora
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapter
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapterTypeFactory
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageTodoWidgetViewHolder
+import com.tokopedia.digital.home.presentation.bottomsheet.RechargeHomepageTodoWidgetBottomSheet
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicLegoBannerCallback
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminderWidgetCallback
@@ -61,7 +62,8 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     RechargeHomepageItemListener,
     RechargeHomepageAdapter.LoaderListener,
     RechargeSearchBarWidget.FocusChangeListener,
-    RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetListener
+    RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetListener,
+    RechargeHomepageTodoWidgetBottomSheet.BottomSheetTodoWidgetListener
 {
 
     @Inject
@@ -521,7 +523,14 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     }
 
     override fun onClickThreeButton(optionButtons: List<RechargeHomepageSections.OptionButton>) {
-        //TODO Show Bottomsheet
+        val bottomSheet = RechargeHomepageTodoWidgetBottomSheet()
+        bottomSheet.setOptionButtons(optionButtons)
+        bottomSheet.setListener(this)
+        bottomSheet.show(childFragmentManager, "")
+    }
+
+    override fun onClickBottomSheetTodoWidget(applink: String) {
+        RouteManager.route(context, applink)
     }
 
     private fun redirectToSearchByDynamicIconsFragment() {

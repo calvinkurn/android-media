@@ -262,13 +262,9 @@ data class RechargeHomepageSections(
         @Expose
         val button: String = "",
 
-        @SerializedName("applink")
+        @SerializedName("app_link")
         @Expose
         val applink: String = "",
-
-        @SerializedName("weblink")
-        @Expose
-        val weblink: String = ""
     )
 }
 
