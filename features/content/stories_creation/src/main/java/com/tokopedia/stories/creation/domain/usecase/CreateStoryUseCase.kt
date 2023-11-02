@@ -3,6 +3,7 @@ package com.tokopedia.stories.creation.domain.usecase
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
@@ -19,10 +20,12 @@ class CreateStoryUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
 ) : CoroutineUseCase<CreateStoryRequest, CreateStoryResponse>(dispatchers.io) {
 
-    override fun graphqlQuery(): String = ContentCreatorStoryCreateStoryQuery().getQuery()
+    private val gqlQuery: GqlQueryInterface = ContentCreatorStoryCreateStoryQuery()
+
+    override fun graphqlQuery(): String = gqlQuery.getQuery()
 
     override suspend fun execute(params: CreateStoryRequest): CreateStoryResponse {
-        return repository.request(ContentCreatorStoryCreateStoryQuery(), params)
+        return repository.request(gqlQuery, params)
     }
 
     companion object {
