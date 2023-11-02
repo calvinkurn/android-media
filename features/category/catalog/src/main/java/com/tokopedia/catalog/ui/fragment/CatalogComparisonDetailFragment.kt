@@ -251,7 +251,7 @@ class CatalogComparisonDetailFragment :
         }
     }
 
-    override fun onComparisonImpression() {
+    override fun onComparisonImpression(id: String) {
         // no-op
     }
 

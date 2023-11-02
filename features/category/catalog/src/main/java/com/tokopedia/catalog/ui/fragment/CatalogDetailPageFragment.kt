@@ -38,7 +38,6 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_TRUSTMAKER
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_SEE_OPTIONS
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE
-import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_CHANGE_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_SEE_MORE_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_REVIEW_BANNER_IMPRESSION
@@ -47,7 +46,6 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_TRUSTMAKER_I
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_VIEW_CLICK_PG
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_VIEW_ITEM
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_VIEW_PG_IRIS
-import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CHANGE_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_BUTTON_CHOOSE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_FAQ
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_NAVIGATION
@@ -712,14 +710,14 @@ class CatalogDetailPageFragment :
         item: ComparisonUiModel.ComparisonContent
     ) {
         compareCatalogId = item.id
-        val label = "$catalogId | compared catalog id: $compareCatalogId"
-        CatalogReimagineDetailAnalytics.sendEvent(
-            event = EVENT_VIEW_CLICK_PG,
-            action = EVENT_CLICK_CHANGE_COMPARISON,
-            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
-            labels = label,
-            trackerId = TRACKER_ID_CHANGE_COMPARISON
-        )
+//        val label = "$catalogId | compared catalog id: $compareCatalogId"
+//        CatalogReimagineDetailAnalytics.sendEvent(
+//            event = EVENT_VIEW_CLICK_PG,
+//            action = EVENT_CLICK_CHANGE_COMPARISON_ON_DETAIL,
+//            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+//            labels = label,
+//            trackerId = TRACKER_ID_CHANGE_COMPARISON
+//        )
         CatalogComponentBottomSheet.newInstance(
             "",
             catalogId,
@@ -759,8 +757,9 @@ class CatalogDetailPageFragment :
         }
     }
 
-    override fun onComparisonImpression() {
-        val label = "$catalogId | compared catalog id: $compareCatalogId"
+    override fun onComparisonImpression(id: String) {
+        compareCatalogId = id
+        val label = "$catalogId | compared catalog id: $id"
 
         CatalogReimagineDetailAnalytics.sendEvent(
             event = EVENT_VIEW_PG_IRIS,
