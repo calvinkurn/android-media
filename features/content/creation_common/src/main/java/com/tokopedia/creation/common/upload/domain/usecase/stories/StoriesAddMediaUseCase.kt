@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.model.dto.stories.StoriesAddMediaRequest
 import com.tokopedia.creation.common.upload.model.dto.stories.StoriesAddMediaResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
@@ -19,10 +20,12 @@ class StoriesAddMediaUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
 ) : CoroutineUseCase<StoriesAddMediaRequest, StoriesAddMediaResponse>(dispatchers.io) {
 
-    override fun graphqlQuery(): String = ContentCreatorStoryAddMediaQuery().getQuery()
+    private val gqlQuery: GqlQueryInterface = ContentCreatorStoryAddMediaQuery()
+
+    override fun graphqlQuery(): String = gqlQuery.getQuery()
 
     override suspend fun execute(params: StoriesAddMediaRequest): StoriesAddMediaResponse {
-        return repository.request(ContentCreatorStoryAddMediaQuery(), params)
+        return repository.request(gqlQuery, params)
     }
 
     companion object {
