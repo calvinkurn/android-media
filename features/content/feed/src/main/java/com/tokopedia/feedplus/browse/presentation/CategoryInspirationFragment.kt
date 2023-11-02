@@ -15,12 +15,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTracker
 import com.tokopedia.feedplus.browse.presentation.adapter.CategoryInspirationAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.CategoryInspirationItemDecoration
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.InspirationCardViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationAction
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.databinding.FragmentFeedCategoryInspirationBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -31,6 +34,7 @@ import javax.inject.Inject
  */
 internal class CategoryInspirationFragment @Inject constructor(
     viewModelFactory: ViewModelProvider.Factory,
+    private val router: Router,
     private val tracker: FeedBrowseTracker
 ) : TkpdBaseV4Fragment() {
 
@@ -55,6 +59,15 @@ internal class CategoryInspirationFragment @Inject constructor(
         }
     }
 
+    private val inspirationCardListener = object : InspirationCardViewHolder.Item.Listener {
+        override fun onClicked(
+            viewHolder: InspirationCardViewHolder.Item,
+            model: FeedBrowseItemListModel.InspirationCard.Item
+        ) {
+            router.route(context, model.item.appLink)
+        }
+    }
+
     private val loadMoreListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
@@ -66,7 +79,9 @@ internal class CategoryInspirationFragment @Inject constructor(
         }
     }
 
-    private val adapter by lazy { CategoryInspirationAdapter(chipsListener) }
+    private val adapter by lazy {
+        CategoryInspirationAdapter(chipsListener, inspirationCardListener)
+    }
 
     private val viewModel by viewModels<CategoryInspirationViewModel> { viewModelFactory }
 

@@ -6,13 +6,13 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.common.producttag.view.adapter.viewholder.LoadingViewHolder
+import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.CategoryInspirationViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.InspirationCardViewHolder
 import com.tokopedia.feedplus.presentation.util.findViewHolderByPositionInfo
 import com.tokopedia.feedplus.presentation.util.getChildValidPositionInfo
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.feedplus.R
 
 /**
  * Created by kenny.hadisaputra on 30/10/23
@@ -48,8 +48,8 @@ internal class CategoryInspirationItemDecoration(
             is ChipsViewHolder -> {
                 outRect.itemOffsetsChips(parent, view, state)
             }
-            is CategoryInspirationViewHolder.Card,
-            is CategoryInspirationViewHolder.Placeholder -> {
+            is InspirationCardViewHolder.Item,
+            is InspirationCardViewHolder.Placeholder -> {
                 outRect.itemOffsetsInspirationCard(parent, view, state)
             }
             is LoadingViewHolder -> {
@@ -103,8 +103,8 @@ internal class CategoryInspirationItemDecoration(
         if (prevSpanRowPosition < 0) return
 
         top = when (parent.findViewHolderByPositionInfo(positionInfo)) {
-            is CategoryInspirationViewHolder.Card,
-            is CategoryInspirationViewHolder.Placeholder -> {
+            is InspirationCardViewHolder.Item,
+            is InspirationCardViewHolder.Placeholder -> {
                 offset24
             }
             else -> {

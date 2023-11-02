@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.common.producttag.view.adapter.viewholder.LoadingViewHolder
 import com.tokopedia.content.common.types.ResultState
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.CategoryInspirationViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.InspirationCardViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationMap
 import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
@@ -22,7 +22,8 @@ import com.tokopedia.feedplus.browse.presentation.model.isLoading
  * Created by kenny.hadisaputra on 30/10/23
  */
 internal class CategoryInspirationAdapter(
-    private val chipsListener: ChipsViewHolder.Listener
+    private val chipsListener: ChipsViewHolder.Listener,
+    private val cardListener: InspirationCardViewHolder.Item.Listener
 ) : ListAdapter<Any, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<Any>() {
         override fun areItemsTheSame(
@@ -64,10 +65,10 @@ internal class CategoryInspirationAdapter(
                 FeedBrowseTitleViewHolder.create(parent)
             }
             TYPE_INSPIRATION_CARD -> {
-                CategoryInspirationViewHolder.Card.create(parent)
+                InspirationCardViewHolder.Item.create(parent, cardListener)
             }
             TYPE_INSPIRATION_CARD_PLACEHOLDER -> {
-                CategoryInspirationViewHolder.Placeholder.create(parent)
+                InspirationCardViewHolder.Placeholder.create(parent)
             }
             TYPE_LOADING -> {
                 LoadingViewHolder.create(parent)
@@ -85,7 +86,7 @@ internal class CategoryInspirationAdapter(
             holder is FeedBrowseTitleViewHolder && item is FeedBrowseItemListModel.Title -> {
                 holder.bind(item)
             }
-            holder is CategoryInspirationViewHolder.Card && item is FeedBrowseItemListModel.InspirationCard.Item -> {
+            holder is InspirationCardViewHolder.Item && item is FeedBrowseItemListModel.InspirationCard.Item -> {
                 holder.bind(item)
             }
         }
@@ -104,7 +105,7 @@ internal class CategoryInspirationAdapter(
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         when (holder) {
-            is CategoryInspirationViewHolder.Card -> holder.recycle()
+            is InspirationCardViewHolder.Item -> holder.recycle()
         }
     }
 

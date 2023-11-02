@@ -12,10 +12,11 @@ import com.tokopedia.unifycomponents.CardUnify2
 /**
  * Created by kenny.hadisaputra on 21/09/23
  */
-internal class CategoryInspirationViewHolder private constructor() {
+internal class InspirationCardViewHolder private constructor() {
 
-    class Card private constructor(
-        private val binding: ItemFeedBrowseInspirationCardBinding
+    class Item private constructor(
+        private val binding: ItemFeedBrowseInspirationCardBinding,
+        private val listener: Listener,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
@@ -31,6 +32,10 @@ internal class CategoryInspirationViewHolder private constructor() {
             binding.imgAvatar.setImageUrl(item.item.partner.avatarUrl)
             binding.imgBadge.setImageUrl(item.item.partner.badgeUrl)
             binding.imgBadge.showWithCondition(item.item.partner.badgeUrl.isNotBlank())
+
+            binding.root.setOnClickListener {
+                listener.onClicked(this, item)
+            }
         }
 
         fun recycle() {
@@ -38,15 +43,20 @@ internal class CategoryInspirationViewHolder private constructor() {
         }
 
         companion object {
-            fun create(parent: ViewGroup): Card {
-                return Card(
+            fun create(parent: ViewGroup, listener: Listener): Item {
+                return Item(
                     ItemFeedBrowseInspirationCardBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false,
-                    )
+                    ),
+                    listener,
                 )
             }
+        }
+
+        interface Listener {
+            fun onClicked(viewHolder: Item, model: FeedBrowseItemListModel.InspirationCard.Item)
         }
     }
 
