@@ -650,4 +650,8 @@
         <key>android_enable_compose_centralized_promo</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>android_force_light_mode_seller_app</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>

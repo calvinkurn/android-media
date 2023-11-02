@@ -174,6 +174,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_PEDULI_LINDUNGI_SCANQR = "android_customer_enable_peduli_lindungi_scanqr";
 
     public static final String FORCE_LIGHT_MODE = "android_force_light_mode";
+    public static final String FORCE_LIGHT_MODE_SELLER_APP = "android_force_light_mode_seller_app";
 
     public static final String SHOW_SHOPADS_FEED_NEW_DESIGN = "app_android_feed_shopads_new_design_flag";
     public static final String ENABLE_QUEST_WIDGET = "android_enable_quest_widget";
