@@ -25,6 +25,13 @@ import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListR
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentData
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOption
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentTicker
+import com.tokopedia.oneclickcheckout.order.data.payment.AdditionalInfoData
+import com.tokopedia.oneclickcheckout.order.data.payment.BenefitSummaryInfoData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartDetail
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentData
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
+import com.tokopedia.oneclickcheckout.order.data.payment.PromoDetail
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
@@ -1333,7 +1340,16 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 0.0,
                 "TKPD_DEFAULT",
                 0.0,
-                listOf(CartDetailsItem(1, 11000.0))
+                listOf(CartDetailsItem(1, 11000.0)),
+                detailData = PaymentRequest(
+                    payment = PaymentData(),
+                    cartDetail = CartDetail(cart = CartData(data = emptyList())),
+                    promoDetail = PromoDetail(
+                        benefitSummaryInfo = BenefitSummaryInfoData(),
+                        voucherOrders = emptyList(),
+                        additionalInfo = AdditionalInfoData()
+                    )
+                )
             )
         )
 
@@ -1381,7 +1397,16 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 0.0,
                 "TKPD_DEFAULT",
                 0.0,
-                listOf(CartDetailsItem(1, 11000.0))
+                listOf(CartDetailsItem(1, 11000.0)),
+                detailData = PaymentRequest(
+                    payment = PaymentData(),
+                    cartDetail = CartDetail(cart = CartData(data = emptyList())),
+                    promoDetail = PromoDetail(
+                        benefitSummaryInfo = BenefitSummaryInfoData(),
+                        voucherOrders = emptyList(),
+                        additionalInfo = AdditionalInfoData()
+                    )
+                )
             )
         )
 
@@ -1447,7 +1472,16 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 0.0,
                 "TKPD_DEFAULT",
                 0.0,
-                listOf(CartDetailsItem(1, 11000.0))
+                listOf(CartDetailsItem(1, 11000.0)),
+                detailData = PaymentRequest(
+                    payment = PaymentData(),
+                    cartDetail = CartDetail(cart = CartData(data = emptyList())),
+                    promoDetail = PromoDetail(
+                        benefitSummaryInfo = BenefitSummaryInfoData(),
+                        voucherOrders = emptyList(),
+                        additionalInfo = AdditionalInfoData()
+                    )
+                )
             )
         )
 
