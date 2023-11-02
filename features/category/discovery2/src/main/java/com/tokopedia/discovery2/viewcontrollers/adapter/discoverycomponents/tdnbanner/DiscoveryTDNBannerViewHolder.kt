@@ -82,6 +82,7 @@ class DiscoveryTDNBannerViewHolder(
                 tdnBannerView.renderTdnBanner(
                     tdnBanners = tdnBanners,
                     cornerRadius = BANNER_CORNER_RADIUS_DP.toPx(),
+                    onLoadFailed = ::onTdnBannerFailedLoaded,
                     onTdnBannerClicked = ::onTdnBannerClicked,
                     onTdnBannerImpressed = ::onTdnBannerImpressed
                 )
@@ -149,6 +150,10 @@ class DiscoveryTDNBannerViewHolder(
         headerView.hide()
         tdnBannerView.hide()
         root.hide()
+    }
+
+    private fun onTdnBannerFailedLoaded() {
+        binding?.hideWidget()
     }
 
     private fun onTdnBannerClicked(
