@@ -74,7 +74,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                         orderPayment,
                         userId,
                         orderCost,
-                        orderCart
+                        orderCart,
+                        paymentRequest
                     )
                 )
                 if (creditCardData.errorMsg.isNotEmpty()) {
@@ -95,7 +96,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
         orderPayment: OrderPayment,
         userId: String,
         orderCost: OrderCost,
-        orderCart: OrderCart
+        orderCart: OrderCart,
+        paymentRequest: PaymentRequest
     ): CreditCardTenorListRequest {
         val cartDetailsItemList = ArrayList<CartDetailsItem>()
         val cartDetailsItem = CartDetailsItem(
@@ -114,7 +116,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
             otherAmount = orderCost.totalAdditionalFee,
             discountAmount = orderCost.totalDiscounts.toDouble(),
             cartDetails = cartDetailsItemList,
-            additionalData = orderPayment.additionalData
+            additionalData = orderPayment.additionalData,
+            detailData = paymentRequest
         )
     }
 
@@ -136,7 +139,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
         orderCost: OrderCost,
         orderCart: OrderCart,
         orderProfile: OrderProfile,
-        promoCodes: List<String>
+        promoCodes: List<String>,
+        paymentRequest: PaymentRequest
     ): GoCicilInstallmentRequest {
         return GoCicilInstallmentRequest(
             gatewayCode = orderPayment.gatewayCode,
@@ -149,7 +153,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
             shop = orderCart.shop,
             products = orderCart.products,
             promoCodes = promoCodes,
-            additionalData = orderPayment.additionalData
+            additionalData = orderPayment.additionalData,
+            detailData = paymentRequest
         )
     }
 
@@ -248,7 +253,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                         orderPayment.creditCard.additionalData.profileCode,
                         orderPayment.gatewayCode,
                         orderCost.totalPriceWithoutPaymentFees,
-                        orderPayment.additionalData
+                        orderPayment.additionalData,
+                        paymentRequest
                     )
                 )
             } catch (t: Throwable) {
@@ -313,7 +319,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                                                         price = orderProduct.finalPrice,
                                                         quantity = orderProduct.orderQuantity.toLong(),
                                                         totalPrice = orderProduct.finalPrice * orderProduct.orderQuantity,
-                                                        bundleGroupId = 0,
+                                                        bundleGroupId = "",
                                                         addonItems = generateAddonProductLevel(
                                                             orderProduct
                                                         ),
@@ -380,8 +386,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                         )
                     }
                 )
-            ),
-            orderPayment.additionalData
+            )
         )
     }
 

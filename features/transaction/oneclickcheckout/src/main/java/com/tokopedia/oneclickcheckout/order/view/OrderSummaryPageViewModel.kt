@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.order.view
 
-import android.util.Log
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -1255,7 +1254,8 @@ class OrderSummaryPageViewModel @Inject constructor(
             orderCost,
             orderCart,
             orderProfile.value,
-            promoProcessor.getValidPromoCodes(validateUsePromoRevampUiModel)
+            promoProcessor.getValidPromoCodes(validateUsePromoRevampUiModel),
+            generatePaymentRequest(orderCost)
         )
     }
     private suspend fun adjustGoCicilFee() {
@@ -1477,7 +1477,6 @@ class OrderSummaryPageViewModel @Inject constructor(
             orderCost,
             orderPromo.value
         )
-        Log.i("qwertyuiop", "$paymentRequest")
         return paymentRequest
     }
 

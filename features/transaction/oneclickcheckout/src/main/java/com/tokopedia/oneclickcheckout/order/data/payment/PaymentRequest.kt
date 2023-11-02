@@ -8,9 +8,7 @@ data class PaymentRequest(
     @SerializedName("cart_details")
     val cartDetail: CartDetail,
     @SerializedName("promo_details")
-    val promoDetail: PromoDetail,
-    @SerializedName("additional_data")
-    val additionalData: String
+    val promoDetail: PromoDetail
 )
 
 data class PaymentData(
@@ -125,7 +123,7 @@ data class CartProductData(
     @SerializedName("total_price")
     val totalPrice: Double,
     @SerializedName("bundle_group_id")
-    val bundleGroupId: Long,
+    val bundleGroupId: String,
     @SerializedName("addon_items")
     val addonItems: List<CartAddOnData>,
     @SerializedName("category")

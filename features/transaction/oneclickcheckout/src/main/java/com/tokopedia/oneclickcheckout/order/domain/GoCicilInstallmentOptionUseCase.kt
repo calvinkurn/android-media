@@ -41,7 +41,8 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(
             PARAM_ORDER_METADATA to param.orderMetadata,
             PARAM_PROMO_PARAM to param.promoParam,
             PARAM_APP_VERSION to generateAppVersionForPayment(),
-            PARAM_ADDITIONAL_DATA to param.additionalData
+            PARAM_ADDITIONAL_DATA to param.additionalData,
+            PARAM_DETAIL_DATA to param.detailData
         )
     }
 
@@ -55,6 +56,7 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(
         private const val PARAM_PROMO_PARAM = "promoParam"
         private const val PARAM_APP_VERSION = "appVersion"
         private const val PARAM_ADDITIONAL_DATA = "additionalData"
+        private const val PARAM_DETAIL_DATA = "detailData"
 
         private const val GoCicilInstallmentOptionQuery = "GoCicilInstallmentOptionQuery"
         private const val QUERY = """
