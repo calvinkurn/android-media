@@ -374,7 +374,7 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
             CatalogDetailAnalytics.TrackerId.CLICK_BANDINGAN
         )
 
-        val label = "$catalogId | chosen catalog id: $comparedCatalogId"
+        val label = "$catalogId | chosen catalog id: $comparedCatalogId | keyword: $searchKeyword"
 
         CatalogReimagineDetailAnalytics.sendEvent(
             event = CatalogTrackerConstant.EVENT_VIEW_CLICK_PG,
