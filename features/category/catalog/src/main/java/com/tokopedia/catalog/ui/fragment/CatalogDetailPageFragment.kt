@@ -38,7 +38,7 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_TRUSTMAKER
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_SEE_OPTIONS
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE
-import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_CHANGE_COMPARISON_ON_DETAIL
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_CHANGE_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_SEE_MORE_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_REVIEW_BANNER_IMPRESSION
@@ -715,7 +715,7 @@ class CatalogDetailPageFragment :
         val label = "$catalogId | compared catalog id: $compareCatalogId"
         CatalogReimagineDetailAnalytics.sendEvent(
             event = EVENT_VIEW_CLICK_PG,
-            action = EVENT_CLICK_CHANGE_COMPARISON_ON_DETAIL,
+            action = EVENT_CLICK_CHANGE_COMPARISON,
             category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
             labels = label,
             trackerId = TRACKER_ID_CHANGE_COMPARISON
