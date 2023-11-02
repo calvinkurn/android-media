@@ -1,5 +1,7 @@
 package com.tokopedia.catalog.ui.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -64,15 +66,10 @@ class CatalogComparisonDetailFragment :
 
     @Inject
     lateinit var viewModel: CatalogDetailPageViewModel
-
     private var binding by autoClearedNullable<FragmentCatalogComparisonDetailBinding>()
-
-    var catalogId = ""
-    var categoryId = ""
-    var compareCatalogId = ""
-
-    private var catalogAllReviewBottomSheet: CatalogComponentBottomSheet? = null
-
+    private var catalogId = ""
+    private var categoryId = ""
+    private var compareCatalogId = ""
     private val widgetAdapter by lazy {
         WidgetCatalogAdapter(
             CatalogAdapterFactoryImpl(isDisplayingTopSpec = false, comparisonItemListener = this)
@@ -89,15 +86,6 @@ class CatalogComparisonDetailFragment :
             categoryId = requireArguments().getString(ARG_PARAM_CATEGORY_ID, "")
             compareCatalogId = requireArguments().getString(ARG_PARAM_COMPARE_CATALOG_ID, "")
             getComparison(catalogId, compareCatalogId)
-            catalogAllReviewBottomSheet = CatalogComponentBottomSheet.newInstance(
-                "",
-                catalogId,
-                "",
-                categoryId,
-                "",
-                CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,
-                this
-            )
         }
     }
 
@@ -185,6 +173,7 @@ class CatalogComparisonDetailFragment :
                 shareButton?.hide()
                 setColors(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950))
                 setNavigationOnClickListener {
+                    onFragmentBackPressed()
                     activity?.finish()
                 }
             }
@@ -210,8 +199,20 @@ class CatalogComparisonDetailFragment :
             .inject(this)
     }
 
-    override fun onComparisonSwitchButtonClicked(position: Int) {
-        catalogAllReviewBottomSheet?.show(childFragmentManager, "")
+    override fun onComparisonSwitchButtonClicked(
+        position: Int,
+        item: ComparisonUiModel.ComparisonContent
+    ) {
+        compareCatalogId = item.id
+        CatalogComponentBottomSheet.newInstance(
+            "",
+            catalogId,
+            "",
+            categoryId,
+            compareCatalogId,
+            CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,
+            this
+        ).show(childFragmentManager, "")
     }
 
     override fun onComparisonSeeMoreButtonClicked() {
@@ -231,5 +232,13 @@ class CatalogComparisonDetailFragment :
     override fun changeComparison(comparedCatalogId: String) {
         this.compareCatalogId = comparedCatalogId
         getComparison(catalogId, comparedCatalogId)
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        val intent = Intent().apply {
+            putExtra(ARG_PARAM_COMPARE_CATALOG_ID, compareCatalogId)
+        }
+        activity?.setResult(Activity.RESULT_OK, intent)
+        return super.onFragmentBackPressed()
     }
 }
