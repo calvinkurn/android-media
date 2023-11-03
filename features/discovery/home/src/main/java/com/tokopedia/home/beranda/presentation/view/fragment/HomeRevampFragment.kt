@@ -841,14 +841,13 @@ open class HomeRevampFragment :
 
     private fun setupHomePlayWidgetListener() {
         homeRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            val contentRect = Rect(
-                0,
-                homeMainToolbarHeight,
-                getScreenWidth(),
-                getScreenHeight() - resources.getDimensionPixelOffset(
+            val contentRect = Rect()
+
+            private val bottomRvOffset = (
+                context?.resources?.getDimensionPixelOffset(
                     unifyprinciplesR.dimen.unify_space_48
+                ) ?: 0
                 )
-            )
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (!::playWidgetCoordinator.isInitialized) return
@@ -864,6 +863,12 @@ open class HomeRevampFragment :
                 val playViewHolder = viewHolders.firstOrNull { it is CarouselPlayWidgetViewHolder }
 
                 if (playViewHolder != null) {
+                    contentRect.set(
+                        0,
+                        homeMainToolbarHeight,
+                        getScreenWidth(),
+                        getScreenHeight() - bottomRvOffset
+                    )
                     val visiblePortion = playViewHolder.itemView.getVisiblePortion(contentRect)
                     if (visiblePortion[1] >= PLAY_CAROUSEL_WIDGET_VISIBLE_PORTION_THRESHOLD) {
                         playWidgetCoordinator.onVisible()
