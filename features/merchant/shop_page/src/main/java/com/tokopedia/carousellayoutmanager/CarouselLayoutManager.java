@@ -490,7 +490,18 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
         for (int i = 0, count = mLayoutHelper.mLayoutOrder.length; i < count; ++i) {
             final LayoutOrder layoutOrder = mLayoutHelper.mLayoutOrder[i];
             final int offset = getCardOffsetByPositionDiff(layoutOrder.mItemPositionDiff);
-            final int start = centerViewStart + offset + getPaddingStart();
+            int start;
+            //Need to adjust behavior for handling 2 items on rv
+            if (mItemsCount == 2 && HORIZONTAL == mOrientation) {
+                //If there are 2 items, we need to make sure that the first item is always on the left
+                if (layoutOrder.mItemAdapterPosition == 0) {
+                    start = getPaddingStart();
+                } else {
+                    start = centerViewStart + offset + getPaddingStart();
+                }
+            } else {
+                start = centerViewStart + offset + getPaddingStart();
+            }
             final int end = start + mDecoratedChildWidth;
             fillChildItem(start, top, end, bottom, layoutOrder, recycler, i);
         }
@@ -508,9 +519,30 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
         if (null == transformation) {
             view.layout(start, top, end, bottom);
         } else {
-            view.layout(Math.round(start + transformation.mTranslationX), Math.round(top + transformation.mTranslationY),
-                    Math.round(end + transformation.mTranslationX), Math.round(bottom + transformation.mTranslationY));
-
+            //Need to adjust behavior for handling 2 items on rv
+            if (mItemsCount == 2 && HORIZONTAL == mOrientation) {
+                //For only 2 items, need to make sure that horizontal movement doesn't affect horizontal position of the item
+                view.layout(
+                        Math.round(start),
+                        Math.round(top + transformation.mTranslationY),
+                        Math.round(end),
+                        Math.round(bottom + transformation.mTranslationY)
+                );
+                //Need to set pivot for scaling based on first item or second item
+                if (layoutOrder.mItemAdapterPosition == 0) {
+                    view.setPivotX(0f);
+                } else {
+                    view.setPivotX(mDecoratedChildWidth);
+                }
+                view.setPivotY((float) mDecoratedChildHeight / 2);
+            } else {
+                view.layout(
+                        Math.round(start + transformation.mTranslationX),
+                        Math.round(top + transformation.mTranslationY),
+                        Math.round(end + transformation.mTranslationX),
+                        Math.round(bottom + transformation.mTranslationY)
+                );
+            }
             view.setScaleX(transformation.mScaleX);
             view.setScaleY(transformation.mScaleY);
             if(mIsLeftRightChildTransparant) {
@@ -555,7 +587,7 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
         final int centerItem = Math.round(absCurrentScrollPosition);
 
         if (mCircleLayout && 1 < mItemsCount) {
-            if (mItemsCount == 2) {
+            if (mItemsCount == 2 && HORIZONTAL == mOrientation) {
                 final int firstVisible = Math.max(centerItem - mLayoutHelper.mMaxVisibleItems, 0);
                 final int lastVisible = Math.min(centerItem + mLayoutHelper.mMaxVisibleItems, mItemsCount - 1);
                 final int layoutCount = lastVisible - firstVisible + 1;
@@ -665,7 +697,12 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
             dimenDiff = (getWidthNoPadding() - mDecoratedChildWidth) / 2;
         }
         //noinspection NumericCastThatLosesPrecision
-        return (int) Math.round(Math.signum(itemPositionDiff) * dimenDiff * smoothPosition);
+        //Handle scroll behavior for 2 item on horizontal orientation, ensuring that the first item is always on the left
+        if (mItemsCount == 2 && HORIZONTAL == mOrientation) {
+            return dimenDiff;
+        } else {
+            return (int) Math.round(Math.signum(itemPositionDiff) * dimenDiff * smoothPosition);
+        }
     }
 
     /**
