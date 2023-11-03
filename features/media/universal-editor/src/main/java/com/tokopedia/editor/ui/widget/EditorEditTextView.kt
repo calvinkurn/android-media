@@ -30,7 +30,7 @@ class EditorEditTextView @JvmOverloads constructor(
 
     // used for edittext padding & span padding
     private val padding: Int = 16.toPx()
-    private val roundedPadding = 12.toPx()
+    private val roundedPadding = 7.toPx()
 
     private var isSpanImplemented = false
 
@@ -65,7 +65,7 @@ class EditorEditTextView @JvmOverloads constructor(
         val roundedSpan = RoundedSpan(
             backgroundColor,
             padding = roundedPadding,
-            radius = roundedPadding / 2,
+            radius = roundedPadding,
             lineHeightExtra = lineSpacingExtra
         ).apply {
             this.setAlignment(alignment)
