@@ -149,7 +149,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
             }
         })
 
-        if(activity?.isDarkMode() == true){
+        if(activity?.isDarkMode() != true){
             imageView7?.setImageDrawable(view.context.getResDrawable(R.drawable.ill_header))
         }
         context?.let {

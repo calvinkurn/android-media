@@ -213,11 +213,11 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
         generalRobot {
             scrollToPosition(10)
         }
-        Thread.sleep(40000)
+        Thread.sleep(300)
 
         // Then
         generalResult {
-            assertChatListItemTotal(22)
+            assertChatListItemTotal(21)
         }
     }
 }

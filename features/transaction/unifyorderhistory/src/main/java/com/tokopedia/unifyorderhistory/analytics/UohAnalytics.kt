@@ -121,6 +121,8 @@ object UohAnalytics {
     private const val CLICK_BELI_LAGI_BUTTON = "click beli lagi button"
     private const val VIEW_ERROR_TOASTER_BELI_LAGI = "view error toaster beli lagi"
     private const val VIEW_BERI_ULASAN_BUTTON = "view beri ulasan button"
+    const val ULAS_TYPE_STAR = "type: star"
+    const val ULAS_TYPE_BUTTON = "type: button"
 
     // tracker id
     private const val VIEW_BELI_LAGI_BUTTON_TRACKER_ID = "40123"
@@ -767,12 +769,12 @@ object UohAnalytics {
             .send()
     }
 
-    fun sendViewBeriUlasanButtonEvent() {
+    fun sendViewBeriUlasanButtonEvent(eventLabel: String) {
         uohTrackerBuilder()
             .setEvent(VIEW_PP_IRIS)
             .setEventAction(VIEW_BERI_ULASAN_BUTTON)
             .setEventCategory(ORDER_LIST_EVENT_CATEGORY)
-            .setEventLabel("")
+            .setEventLabel(eventLabel)
             .setCustomProperty(TRACKER_ID, VIEW_BERI_ULASAN_BUTTON_TRACKER_ID)
             .build()
             .send()

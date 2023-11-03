@@ -34,15 +34,15 @@ class InternalCdnAdaptiveLoaderTest : BaseMeasurementTest() {
             "image-url.txt"
         )
 
-        // v1
         urls.forEachIndexed { index, url ->
-            loadImageV1Test(
+            loadImageTest(
                 imageUrl = url,
                 skipCache = true
             ) { prop, bitmap ->
                 results.add(
                     CsvUtil.CsvLoader(
                         iterationIndex = index,
+                        improvedLoadTime = prop.loadTime,
                         properties = prop,
                         bitmap = bitmap
                     )
@@ -50,22 +50,7 @@ class InternalCdnAdaptiveLoaderTest : BaseMeasurementTest() {
             }
         }
 
-        // idle
-        idle()
-
-        // v2
-        urls.forEachIndexed { index, url ->
-            loadImageV2Test(
-                imageUrl = url,
-                skipCache = true
-            ) { prop, _ ->
-                try {
-                    results[index].improvedLoadTime = prop.loadTime
-                } catch (ignored: Throwable) {}
-            }
-        }
-
         // save as csv
-        saveResult(results)
+        saveComparisonResult(results)
     }
 }

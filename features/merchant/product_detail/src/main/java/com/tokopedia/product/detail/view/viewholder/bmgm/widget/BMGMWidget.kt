@@ -11,13 +11,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.databinding.BmgmProductListBinding
 import com.tokopedia.product.detail.databinding.BmgmWidgetBinding
 import com.tokopedia.product.detail.view.util.isInflated
@@ -109,7 +109,12 @@ class BMGMWidget @JvmOverloads constructor(
     // region show content
     private fun showContent(uiModel: BMGMWidgetUiModel, router: BMGMWidgetRouter, tracker: BMGMWidgetTracker) {
         binding.root.setLayoutHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
-        binding.root.addOnImpressionListener(tracker.getImpressionHolder()) {
+        binding.root.addOnImpressionListener(
+            holder = tracker.getImpressionHolder(),
+            holders = tracker.getImpressionHolders(),
+            name = uiModel.title,
+            useHolders = tracker.isCacheable()
+        ) {
             tracker.onImpressed()
         }
 

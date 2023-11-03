@@ -41,10 +41,10 @@ import com.tokopedia.discovery2.repository.quickFilter.QuickFilterGQLRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponGQLRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponRepository
-import com.tokopedia.discovery2.repository.shopcard.ShopCardGQLRepository
-import com.tokopedia.discovery2.repository.shopcard.ShopCardRepository
 import com.tokopedia.discovery2.repository.section.SectionGQLRepository
 import com.tokopedia.discovery2.repository.section.SectionRepository
+import com.tokopedia.discovery2.repository.shopcard.ShopCardGQLRepository
+import com.tokopedia.discovery2.repository.shopcard.ShopCardRepository
 import com.tokopedia.discovery2.repository.tabs.TabsGQLRepository
 import com.tokopedia.discovery2.repository.tabs.TabsRepository
 import com.tokopedia.discovery2.repository.topads.TopAdsHeadlineRepository
@@ -65,6 +65,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
+import com.tokopedia.atc_common.R as atc_commonR
 
 @Module(includes = [PlayWidgetModule::class])
 class DiscoveryModule(val repoProvider: RepositoryProvider) {
@@ -99,7 +101,6 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
         return ClaimCouponGQLRepository(provideGetStringMethod(context))
     }
 
-
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
@@ -116,7 +117,7 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     }
 
     @Provides
-    fun provideMerchantVoucherRepository():MerchantVoucherRepository{
+    fun provideMerchantVoucherRepository(): MerchantVoucherRepository {
         return MerchantVoucherGQLRepository()
     }
 
@@ -169,8 +170,8 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     }
 
     @Provides
-    fun provideEmptyStateRepository() : EmptyStateRepository {
-        return  repoProvider.provideEmptyStateRepository()
+    fun provideEmptyStateRepository(): EmptyStateRepository {
+        return repoProvider.provideEmptyStateRepository()
     }
 
     @Provides
@@ -194,7 +195,7 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     }
 
     @Provides
-    fun provideSectionRepository():SectionRepository{
+    fun provideSectionRepository(): SectionRepository {
         return SectionGQLRepository()
     }
 
@@ -210,7 +211,7 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
 
     @DiscoveryScope
     @Provides
-    fun providePageLoadTimePerformanceMonitoring() : PageLoadTimePerformanceInterface {
+    fun providePageLoadTimePerformanceMonitoring(): PageLoadTimePerformanceInterface {
         return repoProvider.providePageLoadTimePerformanceMonitoring()
     }
 
@@ -218,11 +219,12 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
     @Provides
-    fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
-                          playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
-                          playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
-                          mapper: PlayWidgetUiMapper,
-                          connectionUtil: PlayWidgetConnectionUtil
+    fun providePlayWidget(
+        playWidgetUseCase: PlayWidgetUseCase,
+        playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
+        playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
+        mapper: PlayWidgetUiMapper,
+        connectionUtil: PlayWidgetConnectionUtil
     ): PlayWidgetTools {
         return PlayWidgetTools(
             playWidgetUseCase,
@@ -236,5 +238,11 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideContentCardGQLRepository(): ContentCardRepository {
         return ContentCardGQLRepository()
+    }
+
+    @Provides
+    @Named("atcOcsMutation")
+    fun provideAddToCartOcsMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, atc_commonR.raw.mutation_add_to_cart_one_click_shipment)
     }
 }

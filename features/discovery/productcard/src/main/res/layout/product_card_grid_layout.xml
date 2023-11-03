@@ -334,7 +334,7 @@
                 app:layout_constraintStart_toStartOf="@id/mediaAnchorProduct"
                 app:layout_constraintTop_toBottomOf="@id/labelBestSeller"
                 app:layout_constraintEnd_toEndOf="@id/mediaAnchorProduct"
-                app:layout_goneMarginTop="8dp"
+                app:layout_goneMarginTop="@dimen/product_card_content_gone_margin_top"
                 layout="@layout/product_card_content_layout" />
 
             <ImageView

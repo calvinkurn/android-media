@@ -30,6 +30,7 @@ class TokoChatStateChatListTest : BaseTokoChatListTest() {
         launchChatListActivity()
 
         // Then
+        Thread.sleep(300)
         stateResult {
             assertEmptyState(0)
         }
@@ -48,6 +49,7 @@ class TokoChatStateChatListTest : BaseTokoChatListTest() {
         launchChatListActivity()
 
         // Then
+        Thread.sleep(300)
         stateResult {
             assertNetworkErrorState()
         }
@@ -66,6 +68,7 @@ class TokoChatStateChatListTest : BaseTokoChatListTest() {
         launchChatListActivity()
 
         // Then
+        Thread.sleep(300)
         stateResult {
             assertGlobalErrorState()
         }
@@ -84,6 +87,7 @@ class TokoChatStateChatListTest : BaseTokoChatListTest() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(
             Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
+        Thread.sleep(300)
         stateRobot {
             clickGoToHome()
         }
