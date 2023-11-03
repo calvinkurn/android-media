@@ -4,13 +4,16 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.mapper.EpharmacyInfoUiStateMapper
+import com.tokopedia.buyerorderdetail.presentation.mapper.SavingsWidgetUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ScpRewardsMedalTouchPointWidgetMapper
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.SavingsWidgetUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.SavingsWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
@@ -478,6 +481,43 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 (it.last() as BuyerOrderDetailUiState.HasData.Showing)
                     .epharmacyInfoUiState.data
                     .isEmptyData()
+            )
+        }
+
+    @Test
+    fun `SavingsWidgetUiState should success when SavingsWidgetUiStateMapper success`() =
+        runCollectingUiState {
+            createSuccessGetBuyerOrderDetailDataResult()
+
+            every { SavingsWidgetUiStateMapper.map(any()) } returns
+                SavingsWidgetUiState.Success(SavingsWidgetUiModel())
+
+            getBuyerOrderDetailData()
+
+            // if error happen in ephar mapper, return empty data so the section not showing
+            assertTrue(it.last() is BuyerOrderDetailUiState.HasData.Showing)
+            assertTrue(
+                (it.last() as BuyerOrderDetailUiState.HasData.Showing)
+                    .savingsWidgetUiState is SavingsWidgetUiState.Success
+            )
+        }
+
+    @Test
+    fun `SavingsWidgetUiState should catch error when SavingsWidgetUiStateMapper throwing crash`() =
+        runCollectingUiState {
+            createSuccessGetBuyerOrderDetailDataResult()
+
+            every { SavingsWidgetUiStateMapper.map(any()) } throws Throwable("Error")
+
+            getBuyerOrderDetailData()
+
+            advanceUntilIdle()
+
+            // if error happen in ephar mapper, return empty data so the section not showing
+            assertTrue(it.last() is BuyerOrderDetailUiState.HasData.Showing)
+            assertTrue(
+                (it.last() as BuyerOrderDetailUiState.HasData.Showing)
+                    .savingsWidgetUiState is SavingsWidgetUiState.Hide
             )
         }
 
