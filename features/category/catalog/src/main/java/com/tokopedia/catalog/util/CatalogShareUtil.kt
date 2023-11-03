@@ -97,20 +97,15 @@ class CatalogShareUtil(
                 ogImageUrl = shareModel.ogImgUrl
             }
         }
-        if (universalShareBottomSheet?.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET) {
-            CatalogUniversalShareAnalytics.sharingChannelSelectedGTM(
-                shareModel.channel.orEmpty(),
-                shareProperties.catalogId,
-                userId
-            )
-        } else {
-            CatalogUniversalShareAnalytics.sharingChannelScreenShotSelectedGTM(
-                shareModel.channel.orEmpty(),
-                shareProperties.catalogId,
-                userId
-            )
-        }
+        CatalogUniversalShareAnalytics.sharingChannelSelectedGTM(
+            shareModel.channel.orEmpty(),
+            shareProperties.catalogId,
+            userId
+        )
+        executeShare(linkerShareData, shareModel)
+    }
 
+    private fun executeShare(linkerShareData: LinkerShareData, shareModel: ShareModel) {
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(
                 Int.ZERO,
