@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 
@@ -33,7 +34,8 @@ object ProductListUiStateMapper {
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
         currentState: ProductListUiState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
-        collapseProductList: Boolean
+        collapseProductList: Boolean,
+        impressedWarrantyClaimButton: ArrayList<String>
     ): ProductListUiState {
         val p1DataRequestState = getBuyerOrderDetailDataRequestState.getP1DataRequestState
         val getBuyerOrderDetailRequestState = getBuyerOrderDetailDataRequestState
@@ -58,7 +60,8 @@ object ProductListUiStateMapper {
                     p1DataRequestState,
                     currentState,
                     singleAtcRequestStates,
-                    collapseProductList
+                    collapseProductList,
+                    impressedWarrantyClaimButton
                 )
             }
         }
@@ -161,7 +164,8 @@ object ProductListUiStateMapper {
         p1DataRequestState: GetP1DataRequestState,
         currentState: ProductListUiState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
-        collapseProductList: Boolean
+        collapseProductList: Boolean,
+        impressedWarrantyClaimButton: ArrayList<String>
     ): ProductListUiState {
         return when (
             val insuranceDetailRequestState =
@@ -173,7 +177,8 @@ object ProductListUiStateMapper {
                     insuranceDetailRequestState,
                     currentState,
                     singleAtcRequestStates,
-                    collapseProductList
+                    collapseProductList,
+                    impressedWarrantyClaimButton
                 )
             }
 
@@ -182,7 +187,8 @@ object ProductListUiStateMapper {
                     buyerOrderDetailData,
                     insuranceDetailRequestState,
                     singleAtcRequestStates,
-                    collapseProductList
+                    collapseProductList,
+                    impressedWarrantyClaimButton
                 )
             }
         }
@@ -203,7 +209,8 @@ object ProductListUiStateMapper {
         insuranceDetailRequestState: GetInsuranceDetailRequestState.Requesting,
         currentState: ProductListUiState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
-        collapseProductList: Boolean
+        collapseProductList: Boolean,
+        impressedWarrantyClaimButton: ArrayList<String>
     ): ProductListUiState {
         return if (currentState is ProductListUiState.HasData) {
             mapOnReloading(
@@ -211,14 +218,16 @@ object ProductListUiStateMapper {
                 insuranceDetailRequestState,
                 currentState,
                 singleAtcRequestStates,
-                collapseProductList
+                collapseProductList,
+                impressedWarrantyClaimButton
             )
         } else {
             mapOnDataReady(
                 buyerOrderDetailData,
                 insuranceDetailRequestState,
                 singleAtcRequestStates,
-                collapseProductList
+                collapseProductList,
+                impressedWarrantyClaimButton
             )
         }
     }
@@ -233,13 +242,15 @@ object ProductListUiStateMapper {
         buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
         insuranceDetailRequestState: GetInsuranceDetailRequestState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
-        collapseProductList: Boolean
+        collapseProductList: Boolean,
+        impressedWarrantyClaimButton: ArrayList<String>
     ): ProductListUiState {
         return mapOnDataReady(
             buyerOrderDetailData,
             insuranceDetailRequestState,
             singleAtcRequestStates,
-            collapseProductList
+            collapseProductList,
+            impressedWarrantyClaimButton
         )
     }
 
@@ -258,7 +269,8 @@ object ProductListUiStateMapper {
         insuranceDetailRequestState: GetInsuranceDetailRequestState,
         currentState: ProductListUiState.HasData,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
-        collapseProductList: Boolean
+        collapseProductList: Boolean,
+        impressedWarrantyClaimButton: ArrayList<String>
     ): ProductListUiState {
         val insuranceDetailData = when (insuranceDetailRequestState) {
             is GetInsuranceDetailRequestState.Requesting -> {
@@ -283,7 +295,8 @@ object ProductListUiStateMapper {
                 buyerOrderDetailData.orderStatus.id,
                 insuranceDetailData,
                 singleAtcRequestStates,
-                collapseProductList
+                collapseProductList,
+                impressedWarrantyClaimButton
             )
         )
     }
@@ -292,7 +305,8 @@ object ProductListUiStateMapper {
         buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
         insuranceDetailRequestState: GetInsuranceDetailRequestState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
-        collapseProductList: Boolean
+        collapseProductList: Boolean,
+        impressedWarrantyClaimButton: ArrayList<String>
     ): ProductListUiState {
         val insuranceDetailData = insuranceDetailRequestState.let {
             if (it is GetInsuranceDetailRequestState.Complete.Success) {
@@ -311,7 +325,8 @@ object ProductListUiStateMapper {
                 buyerOrderDetailData.orderStatus.id,
                 insuranceDetailData,
                 singleAtcRequestStates,
-                collapseProductList
+                collapseProductList,
+                impressedWarrantyClaimButton
             )
         )
     }
@@ -405,7 +420,8 @@ object ProductListUiStateMapper {
         orderStatusId: String,
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
-        collapseProductList: Boolean
+        collapseProductList: Boolean,
+        impressedWarrantyClaimButton: ArrayList<String>
     ): ProductListUiModel {
         /**
          * Map product bmgm response into UI model and limit the number of mapped items based on
@@ -424,7 +440,8 @@ object ProductListUiStateMapper {
             collapseProductList,
             MAX_PRODUCT_WHEN_COLLAPSED,
             singleAtcResultFlow,
-            insuranceDetailData
+            insuranceDetailData,
+            impressedWarrantyClaimButton
         )
 
         /**
@@ -442,7 +459,8 @@ object ProductListUiStateMapper {
             insuranceDetailData,
             singleAtcResultFlow,
             collapseProductList,
-            MAX_PRODUCT_WHEN_COLLAPSED - productBmgmList.size
+            MAX_PRODUCT_WHEN_COLLAPSED - productBmgmList.size,
+            impressedWarrantyClaimButton
         )
 
         /**
@@ -454,7 +472,7 @@ object ProductListUiStateMapper {
          * limited by the MAX_PRODUCT_WHEN_COLLAPSED minus the number of mapped product bundle.
          */
         val (numOfRemovedNonProductBundle, nonProductBundlingList) = details?.let {
-            mapProductList(
+            val mapProductList = mapProductList(
                 details = it,
                 orderId = orderId,
                 orderStatusId = orderStatusId,
@@ -463,8 +481,10 @@ object ProductListUiStateMapper {
                 collapseProductList = collapseProductList,
                 remainingSlot = MAX_PRODUCT_WHEN_COLLAPSED - productBmgmList.size - productBundlingList.size,
                 isPof = false,
-                shop = shop
+                shop = shop,
+                impressedWarrantyClaimButton = impressedWarrantyClaimButton
             )
+            mapProductList
         } ?: (Int.ZERO to emptyList())
 
         /**
@@ -489,7 +509,8 @@ object ProductListUiStateMapper {
                 singleAtcResultFlow = singleAtcResultFlow,
                 collapseProductList = collapseProductList,
                 remainingSlot = MAX_UNFULFILLED_PRODUCT_WHEN_COLLAPSED,
-                isPof = true
+                isPof = true,
+                impressedWarrantyClaimButton = impressedWarrantyClaimButton
             )
         } ?: (Int.ZERO to emptyList())
         val tickerDetails = mapTickerDetails(details?.tickerInfo)
@@ -553,7 +574,8 @@ object ProductListUiStateMapper {
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean,
         remainingSlot: Int,
-        shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop? = null
+        shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop? = null,
+        impressedWarrantyClaimButton: ArrayList<String>
     ): Pair<Int, List<ProductListUiModel.ProductUiModel>> {
         /**
          * Reduce the non-bundle response items to be mapped based on the remaining slot on the product
@@ -571,15 +593,16 @@ object ProductListUiStateMapper {
         } ?: (Int.ZERO to null)
         val mappedNonBundles = reducedNonBundles?.map {
             mapProduct(
-                details,
-                it,
-                it.addonSummary,
-                orderId,
-                orderStatusId,
-                isPof,
-                insuranceDetailData,
-                singleAtcResultFlow,
-                shop = shop
+                details = details,
+                product = it,
+                addonSummary = it.addonSummary,
+                orderId = orderId,
+                orderStatusId = orderStatusId,
+                isPof = isPof,
+                insuranceDetailData = insuranceDetailData,
+                singleAtcResultFlow = singleAtcResultFlow,
+                shop = shop,
+                impressedWarrantyClaimButton = impressedWarrantyClaimButton
             )
         }.orEmpty()
         return numOfRemovedNonBundles to mappedNonBundles
@@ -594,7 +617,8 @@ object ProductListUiStateMapper {
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean,
-        remainingSlot: Int
+        remainingSlot: Int,
+        impressedWarrantyClaimButton: ArrayList<String>
     ): Pair<Int, List<ProductListUiModel.ProductBundlingUiModel>> {
         /**
          * Reduce the bundle response items to be mapped based on the remaining slot on the product
@@ -624,7 +648,8 @@ object ProductListUiStateMapper {
                         orderStatusId,
                         bundle.bundleId,
                         insuranceDetailData,
-                        singleAtcResultFlow
+                        singleAtcResultFlow,
+                        impressedWarrantyClaimButton
                     )
                 }
             )
@@ -642,7 +667,8 @@ object ProductListUiStateMapper {
         collapseProductList: Boolean,
         remainingSlot: Int,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
-        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?
+        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
+        impressedWarrantyClaimButton: ArrayList<String>
     ): Pair<Int, List<ProductBmgmSectionUiModel>> {
         /**
          * Reduce the bmgm response items to be mapped based on the remaining slot on the product
@@ -674,7 +700,8 @@ object ProductListUiStateMapper {
                         addOnLabel,
                         addOnIcon,
                         singleAtcResultFlow,
-                        insuranceDetailData
+                        insuranceDetailData,
+                        impressedWarrantyClaimButton
                     )
                 }
             )
@@ -786,7 +813,8 @@ object ProductListUiStateMapper {
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean,
-        remainingSlot: Int
+        remainingSlot: Int,
+        impressedWarrantyClaimButton: ArrayList<String>
     ): Pair<Int, List<ProductListUiModel.ProductUiModel>> {
         val (numOfRemovedUnfulfilled, reducedUnfulfilled) = details.partialFulfillment?.unfulfilled?.details?.run {
             if (collapseProductList) {
@@ -797,14 +825,15 @@ object ProductListUiStateMapper {
         } ?: (Int.ZERO to null)
         val mappedUnfulfilled = reducedUnfulfilled?.map {
             mapProduct(
-                details,
-                it,
-                it.addonSummary,
-                orderId,
-                orderStatusId,
-                isPof,
-                insuranceDetailData,
-                singleAtcResultFlow
+                details = details,
+                product = it,
+                addonSummary = it.addonSummary,
+                orderId = orderId,
+                orderStatusId = orderStatusId,
+                isPof = isPof,
+                insuranceDetailData = insuranceDetailData,
+                singleAtcResultFlow = singleAtcResultFlow,
+                impressedWarrantyClaimButton = impressedWarrantyClaimButton
             )
         }.orEmpty()
         return numOfRemovedUnfulfilled to mappedUnfulfilled
@@ -819,7 +848,8 @@ object ProductListUiStateMapper {
         isPof: Boolean,
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
-        shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop? = null
+        shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop? = null,
+        impressedWarrantyClaimButton: ArrayList<String>
     ): ProductListUiModel.ProductUiModel {
         return ProductListUiModel.ProductUiModel(
             button = mapActionButton(product.button),
@@ -844,7 +874,12 @@ object ProductListUiStateMapper {
             productUrl = product.productUrl,
             shopId = shop?.shopId,
             shopName = shop?.shopName,
-            shopType = shop?.shopType
+            shopType = shop?.shopType,
+            impressHolder = ImpressHolder().apply {
+                if (impressedWarrantyClaimButton.contains(product.productId)) {
+                    invoke()
+                }
+            }
         )
     }
 
@@ -913,7 +948,8 @@ object ProductListUiStateMapper {
         addOnLabel: String,
         addOnIcon: String,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
-        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?
+        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
+        impressedWarrantyClaimButton: ArrayList<String>
     ): ProductBmgmSectionUiModel.ProductUiModel {
         return ProductBmgmSectionUiModel.ProductUiModel(
             orderId = orderId,
@@ -953,6 +989,11 @@ object ProductListUiStateMapper {
                         )
                     }.orEmpty()
                 )
+            },
+            impressHolder = ImpressHolder().apply {
+                if (impressedWarrantyClaimButton.contains(product.productId)) {
+                    invoke()
+                }
             }
         )
     }
@@ -963,7 +1004,8 @@ object ProductListUiStateMapper {
         orderStatusId: String,
         bundleId: String,
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
-        singleAtcResultFlow: Map<String, AddToCartSingleRequestState>
+        singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
+        impressedWarrantyClaimButton: ArrayList<String>
     ): ProductListUiModel.ProductUiModel {
         return ProductListUiModel.ProductUiModel(
             button = mapActionButton(product.button),
@@ -983,7 +1025,12 @@ object ProductListUiStateMapper {
             totalPriceText = product.totalPriceText,
             isProcessing = singleAtcResultFlow[product.productId] is AddToCartSingleRequestState.Requesting,
             insurance = mapInsurance(product.productId, bundleId, insuranceDetailData),
-            productUrl = ""
+            productUrl = "",
+            impressHolder = ImpressHolder().apply {
+                if (impressedWarrantyClaimButton.contains(product.productId)) {
+                    invoke()
+                }
+            }
         )
     }
 

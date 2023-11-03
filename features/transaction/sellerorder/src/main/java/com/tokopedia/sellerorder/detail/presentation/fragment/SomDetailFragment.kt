@@ -1171,6 +1171,10 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
         // no op
     }
 
+    override fun onBmgmItemImpressed(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
+        // no op
+    }
+
     override fun onDetailIncomeClicked() {
         val somDetailTransparencyFeeBottomSheet =
             SomDetailTransparencyFeeBottomSheet.newInstance(orderId)
