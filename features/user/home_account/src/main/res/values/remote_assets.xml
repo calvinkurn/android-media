@@ -10,4 +10,6 @@
 
     <string name="add_name_url_icon" translatable="false">https://images.tokopedia.net/img/android/user/profile_page/Group3082@3x.png</string>
 
+    <string name="fund_and_investment_failed">https://images.tokopedia.net/img/android/user/failed_fund_and_investment.png</string>
+
 </resources>

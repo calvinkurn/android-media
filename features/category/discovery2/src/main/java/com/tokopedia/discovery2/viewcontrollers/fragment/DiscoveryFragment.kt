@@ -423,6 +423,7 @@ open class DiscoveryFragment :
         }
     }
 
+    @SuppressLint("RestrictedApi")
     private fun initView(view: View) {
         mAnchorHeaderView = view.findViewById(R.id.header_comp_holder)
         globalError = view.findViewById(R.id.global_error)

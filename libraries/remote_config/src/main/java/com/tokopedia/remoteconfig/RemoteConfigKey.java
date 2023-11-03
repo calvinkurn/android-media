@@ -250,8 +250,6 @@ public class RemoteConfigKey {
 
     public static final String FEED_NEW_ICON = "FeedNewIcon";
 
-    public static final String IS_SHOP_PENALTY_NEW_PAGE = "android_shop_penalty_new";
-
     public static final String SELLER_FEEDBACK_KMP = "android_seller_feedback_kmp";
 
     public static final String SCP_REWARDS_MEDALI_TOUCH_POINT = "android_scp_rewards_medali_touch_point";
@@ -291,4 +289,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_PDP_P1_CACHEABLE = "android_pdp_p1_should_cacheable";
 
     public static final String ENABLE_PDP_P1_CACHE_AGE = "android_pdp_p1_cache_age";
+
+    public static final String SELLER_SEARCH_COMPOSE = "android_seller_search_compose";
+
+    public static final String ANDROID_PM_OPT_OUT_DATE = "android_pm_opt_out_date";
 }

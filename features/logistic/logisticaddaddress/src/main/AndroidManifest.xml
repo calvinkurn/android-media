@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".features.addnewaddressrevamp.search.SearchPageActivity"
+            android:name=".features.addeditaddress.search.SearchPageActivity"
             android:theme="@style/Theme.WhiteUnify"
             android:exported="false">
             <intent-filter>
@@ -44,7 +44,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".features.pinpoint.pinpointnew.PinpointNewPageActivity"
+            android:name=".features.pinpoint.PinpointPageActivity"
             android:label="@string/title_pinpoint_new"
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait"
@@ -62,7 +62,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".features.addnewaddressrevamp.addressform.AddressFormActivity"
+            android:name=".features.addeditaddress.addressform.AddressFormActivity"
             android:label="@string/title_address_form"
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait"
