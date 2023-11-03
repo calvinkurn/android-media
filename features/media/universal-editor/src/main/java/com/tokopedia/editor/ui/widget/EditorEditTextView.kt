@@ -15,7 +15,6 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.setPadding
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.util.FontAlignment.Companion.toGravity
-import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.getTypeface as unifyTypeFaceGetter
 
@@ -30,7 +29,8 @@ class EditorEditTextView @JvmOverloads constructor(
 
     // used for edittext padding & span padding
     private val padding: Int = 16.toPx()
-    private val roundedPadding = 7.toPx()
+    private val textBackgroundPadding = 7.toPx()
+    private val textRoundedSize = 8.toPx()
 
     private var isSpanImplemented = false
 
@@ -64,8 +64,8 @@ class EditorEditTextView @JvmOverloads constructor(
         val spanString = SpannableString(paramText)
         val roundedSpan = RoundedSpan(
             backgroundColor,
-            padding = roundedPadding,
-            radius = roundedPadding,
+            padding = textBackgroundPadding,
+            radius = textRoundedSize,
             lineHeightExtra = lineSpacingExtra
         ).apply {
             this.setAlignment(alignment)

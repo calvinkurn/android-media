@@ -109,9 +109,11 @@ class RoundedSpan(
 
         // skip spike on index 0
         val skipSpike = if (lnum == 0 ) true else listOfEmptyLine[lnum - 1]?.isNotEmpty() ?: false
-        val isWiderThenPrev = width > prevWidth
+        val isWiderThenPrev = (width + (radius * 1.5f)) > prevWidth
 
         val bridgeBlendWidth = radius * 2
+
+        val onTransitionSize = ((prevLeft - bridgeBlendWidth) <= rect.left)
 
         /**
          * For comment note number please refer to the path flow on
@@ -134,14 +136,16 @@ class RoundedSpan(
 
             if (align != ALIGN_LEFT) {
                 // 14
+                val xTargetLine14 = if (onTransitionSize) rect.left else prevLeft - bridgeBlendWidth
                 path.cubicTo(
                     prevLeft, rect.top,
                     prevLeft, rect.top,
-                    prevLeft - bridgeBlendWidth, rect.top
+                    xTargetLine14, rect.top
                 )
 
                 // 15
-                path.lineTo(rect.left + radius, rect.top)
+                val xTargetLine15 = if (onTransitionSize) prevLeft else rect.left + radius
+                path.lineTo(xTargetLine15, rect.top)
             }
         } else {
             // 1
@@ -152,6 +156,11 @@ class RoundedSpan(
             // 10
             var pathTenPosY =  prevBottom
             var pathTenPosX = rect.left - bridgeBlendWidth
+
+            if (pathTenPosX <= prevLeft) {
+                pathTenPosX = prevLeft
+            }
+
             if (align == ALIGN_LEFT) {
                 pathTenPosY -= radius
                 pathTenPosX += bridgeBlendWidth
@@ -194,10 +203,16 @@ class RoundedSpan(
             if (align == ALIGN_RIGHT) {
                 path.lineTo(rect.right, rect.top - radius)
             } else {
+                var pathElevenPosX = rect.right + bridgeBlendWidth
+
+                if (pathElevenPosX >= prevRight) {
+                    pathElevenPosX = prevRight
+                }
+
                 path.cubicTo(
                     rect.right, rect.top,
                     rect.right, rect.top,
-                    rect.right + bridgeBlendWidth, rect.top
+                    pathElevenPosX, rect.top
                 )
             }
         } else {
@@ -205,10 +220,11 @@ class RoundedSpan(
             if (align == ALIGN_RIGHT && !skipSpike) {
                 path.lineTo(rect.right, rect.top - radius)
             } else {
+                val xTargetLine8 = if (onTransitionSize && !skipSpike) prevRight else rect.right - radius
                 path.cubicTo(
                     rect.right, rect.top,
                     rect.right, rect.top,
-                    rect.right - radius, rect.top
+                    xTargetLine8, rect.top
                 )
             }
 
@@ -217,7 +233,8 @@ class RoundedSpan(
         if (isWiderThenPrev && !skipSpike) {
             if (align != ALIGN_RIGHT) {
                 // 16
-                path.lineTo(prevRight + bridgeBlendWidth, rect.top)
+                val xTargetLine16 = if (onTransitionSize) rect.right else prevRight + bridgeBlendWidth
+                path.lineTo(xTargetLine16, rect.top)
 
                 // 17
                 path.cubicTo(
