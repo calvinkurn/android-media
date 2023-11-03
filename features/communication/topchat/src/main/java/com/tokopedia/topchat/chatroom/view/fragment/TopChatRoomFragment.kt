@@ -1075,20 +1075,8 @@ open class TopChatRoomFragment :
 
     private fun handleProductApplink(element: ProductAttachmentUiModel) {
         if (!GlobalConfig.isSellerApp() || opponentRole != "shop") {
-            context?.let {
-                if (element.androidUrl.isNotBlank()) {
-                    redirectionUtil.getRedirectionUrl(
-                        originalApplink = element.androidUrl,
-                        onStart = {
-                            addFullPageGeneralLoading()
-                        },
-                        onCompleted = { applink ->
-                            removeFullPageGeneralLoading()
-                            val intent = RouteManager.getIntent(it, applink)
-                            startActivity(intent)
-                        }
-                    )
-                }
+            if (element.androidUrl.isNotBlank()) {
+                redirectToPdp(element)
             }
         } else {
             // Necessary to do it this way to prevent PDP opened in seller app
@@ -1098,17 +1086,45 @@ open class TopChatRoomFragment :
         }
     }
 
+    private fun redirectToPdp(element: ProductAttachmentUiModel) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                addFullPageGeneralLoading()
+                val applink = redirectionUtil.getRedirectionUrl(
+                    originalApplink = element.androidUrl
+                )
+                removeFullPageGeneralLoading()
+                goToApplinkSafely(applink)
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+                // When fail, remove the loading & use old product click handler
+                removeFullPageGeneralLoading()
+                super.onProductClicked(element)
+            }
+        }
+    }
+
+    private fun goToApplinkSafely(applink: String) {
+        // Check if fragment is still added and not detached
+        if (this.isAdded && !this.isDetached) {
+            context?.let {
+                val intent = RouteManager.getIntent(it, applink)
+                startActivity(intent)
+            }
+        }
+    }
+
     private fun addFullPageGeneralLoading() {
         try {
             if (generalLoading == null) {
-                val rootView = view as ViewGroup
+                val rootView = view as? ViewGroup
                 val inflater = LayoutInflater.from(context)
                 generalLoading = inflater.inflate(
                     R.layout.topchat_room_general_loading,
                     rootView,
                     false
                 )
-                rootView.addView(generalLoading)
+                rootView?.addView(generalLoading)
             }
         } catch (throwable: Throwable) {
             Timber.d(throwable)
@@ -1119,8 +1135,8 @@ open class TopChatRoomFragment :
         lifecycleScope.launch(dispatcher.main) {
             try {
                 if (generalLoading != null) {
-                    val rootView = view as ViewGroup
-                    rootView.removeView(generalLoading)
+                    val rootView = view as? ViewGroup
+                    rootView?.removeView(generalLoading)
                     generalLoading = null
                 }
             } catch (throwable: Throwable) {
