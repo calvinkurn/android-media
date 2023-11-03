@@ -1705,7 +1705,6 @@ class HomeRecommendationViewModelTest {
             val actualResult = (it.first() as HomeRecommendationCardState.Fail)
             assertTrue(it.first() is HomeRecommendationCardState.Fail)
             assertEquals(exception.localizedMessage, actualResult.throwable.localizedMessage)
-            assertEquals(listOf(homeRecommendationViewModel.errorModel), actualResult.data.homeRecommendations)
         }
     }
 

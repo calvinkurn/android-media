@@ -285,12 +285,13 @@ class HomeRecommendationFragment :
     }
 
     private fun isNewForYouQueryEnabled(): Boolean {
-        return context?.let {
-            RemoteConfigInstance.getRemoteConfig(it).getString(
-                RollenceKey.FOR_YOU_FEATURE_FLAG,
-                ""
-            )
-        } == RollenceKey.FOR_YOU_FEATURE_FLAG
+//        return context?.let {
+//            RemoteConfigInstance.getRemoteConfig(it).getString(
+//                RollenceKey.FOR_YOU_FEATURE_FLAG,
+//                ""
+//            )
+//        } == RollenceKey.FOR_YOU_FEATURE_FLAG
+        return true
     }
 
     private fun showToasterError() {

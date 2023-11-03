@@ -14,7 +14,7 @@ const val GET_HOME_RECOMMENDATION_CARD_QUERY = """
             pageName
             layoutName
             hasNextPage
-            recommendationCards {
+            cards {
               id
               layout
               dataStringJson
@@ -121,6 +121,6 @@ class GetHomeRecommendationCardUseCase @Inject constructor(
         private const val PARAM_PRODUCT_PAGE = "productPage"
         private const val PARAM_LAYOUTS = "layouts"
 
-        private const val LAYOUTS_VALUE = "product,recom_card,banner_ads"
+        private const val LAYOUTS_VALUE = "product,recom_card,banner_ads,video_card"
     }
 }

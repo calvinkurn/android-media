@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.ListAdapter
@@ -15,7 +16,7 @@ import com.tokopedia.recommendation_widget_common.widget.entrypointcard.viewhold
 
 class HomeRecommendationAdapter(
     private val adapterTypeFactory: HomeRecommendationTypeFactoryImpl
-) : ListAdapter<HomeRecommendationVisitable, AbstractViewHolder<Visitable<*>>>(
+) : ListAdapter<Visitable<HomeRecommendationTypeFactoryImpl>, AbstractViewHolder<Visitable<*>>>(
     AsyncDifferConfig.Builder(HomeRecommendationDiffUtil()).build()
 ) {
 
@@ -23,7 +24,8 @@ class HomeRecommendationAdapter(
         parent: ViewGroup,
         viewType: Int
     ): AbstractViewHolder<Visitable<*>> {
-        return adapterTypeFactory.createViewHolder(parent, viewType) as AbstractViewHolder<Visitable<*>>
+        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+        return adapterTypeFactory.createViewHolder(view, viewType) as AbstractViewHolder<Visitable<*>>
     }
 
     override fun onBindViewHolder(

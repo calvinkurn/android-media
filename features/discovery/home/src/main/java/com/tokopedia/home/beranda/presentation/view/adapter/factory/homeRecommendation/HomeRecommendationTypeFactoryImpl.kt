@@ -97,7 +97,7 @@ class HomeRecommendationTypeFactoryImpl(
                 topAdsBannerClickListener
             )
 
-            else -> return super.createViewHolder(parent, type)
+            else -> super.createViewHolder(parent, type)
         }
     }
 }

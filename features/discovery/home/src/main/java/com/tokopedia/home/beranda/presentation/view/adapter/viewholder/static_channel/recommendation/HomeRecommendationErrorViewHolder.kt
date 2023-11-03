@@ -8,6 +8,9 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationError
 import com.tokopedia.home.databinding.ItemHomeRecommendationErrorLayoutBinding
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 class HomeRecommendationErrorViewHolder(
     view: View,
@@ -18,8 +21,15 @@ class HomeRecommendationErrorViewHolder(
 
     override fun bind(element: HomeRecommendationError) {
         with(binding.globalUnifyError) {
-            setType(GlobalError.NO_CONNECTION)
+            element.throwable?.getGlobalErrorType()?.let { setType(it) }
             setActionClickListener { listener.onRetryGetProductRecommendationData() }
+        }
+    }
+
+    private fun Throwable?.getGlobalErrorType(): Int {
+        return when (this) {
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> GlobalError.NO_CONNECTION
+            else -> GlobalError.SERVER_ERROR
         }
     }
 
