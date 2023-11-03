@@ -38,7 +38,7 @@ class WishlistCollectionRobot {
                         .actionOnItemAtPosition<RecyclerView.ViewHolder>(index, ViewActions.click())
                 )
         } catch (e: PerformException) {
-            Timber.d(e.printStackTrace().toString())
+            Timber.d("Perform Exception")
         }
     }
 
