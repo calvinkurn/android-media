@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
@@ -59,7 +58,9 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         private const val PRODUCT_PERFORMANCE_MONITORING_NON_VARIANT_VALUE = "non-variant"
         private const val PRODUCT_VIDEO_DETAIL_TAG = "videoDetailTag"
         private const val PRODUCT_DETAIL_TAG = "productDetailTag"
-        private const val PREFETCH_PERF_TRACE_NAME = "pdp_prefetch_perf_trace"
+        private const val P1_PREFETCH_PERF_TRACE_NAME = "pdp_p1_prefetch_perf_trace"
+        private const val P1_CACHE_PERF_TRACE_NAME = "pdp_p1_cache_perf_trace"
+        private const val P1_NETWORK_PERF_TRACE_NAME = "pdp_p1_network_perf_trace"
 
         private const val AFFILIATE_HOST = "affiliate"
         private const val PARAM_CAMPAIGN_ID = "campaign_id"
@@ -108,7 +109,10 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var performanceMonitoringP1: PerformanceMonitoring? = null
     private var performanceMonitoringP2Data: PerformanceMonitoring? = null
-    private var prefetchPerformanceMonitoring: PerformanceMonitoring? = PerformanceMonitoring()
+
+    private var p1PrefetchPerformanceMonitoring: PerformanceMonitoring? = PerformanceMonitoring()
+    private var p1CachePerformanceMonitoring: PerformanceMonitoring? = PerformanceMonitoring()
+    private var p1NetworkPerformanceMonitoring: PerformanceMonitoring? = PerformanceMonitoring()
 
     // Temporary (disscussion/talk, review/ulasan)
     private var performanceMonitoringP2Other: PerformanceMonitoring? = null
@@ -354,16 +358,18 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         finish()
     }
 
-    var blocksIdentifier = ""
     private fun initBlocksPLTMonitoring() {
-        prefetchPerformanceMonitoring?.startTrace(PREFETCH_PERF_TRACE_NAME)
+        p1PrefetchPerformanceMonitoring?.startTrace(P1_PREFETCH_PERF_TRACE_NAME)
+        p1PrefetchPerformanceMonitoring?.startTrace(P1_CACHE_PERF_TRACE_NAME)
+        p1PrefetchPerformanceMonitoring?.startTrace(P1_NETWORK_PERF_TRACE_NAME)
+
         blocksPerformanceTrace = BlocksPerformanceTrace(
             this,
             "perf_trace_pdp",
             lifecycleScope,
             this
         ) { summaryModel, capturedBlocks ->
-            if (summaryModel.ttil() != 0L) {
+            if (summaryModel.ttil() != 0L && p1NetworkDuration != 0L) {
                 Toaster.build(
                     view = findViewById<View>(android.R.id.content).getRootView(),
                     text = "PDP PERFORMANCE\n " +
@@ -378,44 +384,48 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         }
 
         blocksPerformanceTrace?.onBlocksRendered = { summaryModel, capturedBlocks, elapsedTime, identifier ->
-            Log.d("FikryPerf", "Callback ElapsedTime: $elapsedTime")
-            Log.d("FikryPerf", "Callback Blocks: $capturedBlocks")
-
-            if (capturedBlocks.containsAll(
-                    listOf(
-                            "product_content",
-                            "product_media",
-                            "social_proof_mini"
-                        )
-                ) && identifier == "prefetch" && prefetchDuration == 0L
-            ) {
-                this.prefetchDuration = elapsedTime
-                prefetchPerformanceMonitoring?.stopTrace()
-            }
-
-            if (capturedBlocks.containsAll(
-                    listOf(
-                            "product_content",
-                            "product_media",
-                            "social_proof_mini"
-                        )
-                ) && identifier == "cache" && cacheDuration == 0L
-            ) {
-                this.cacheDuration = elapsedTime
-            }
-
-            if (capturedBlocks.containsAll(
-                    listOf(
-                            "product_content",
-                            "product_media",
-                            "social_proof_mini"
-                        )
-                ) && identifier == "network" && cacheDuration == 0L
-            ) {
-                this.p1NetworkDuration = elapsedTime
-            }
+            recordP1PrefetchPerformance(capturedBlocks, identifier, elapsedTime)
+            recordP1CachePerformance(capturedBlocks, identifier, elapsedTime)
+            recordP1NetworkPerformance(capturedBlocks, identifier, elapsedTime)
         }
     }
+
+    private fun recordP1PrefetchPerformance(capturedBlocks: Set<String>, identifier: String, elapsedTime: Long) {
+        if (capturedBlocks.isNotEmpty() && identifier == "prefetch" && prefetchDuration == 0L
+        ) {
+            this.prefetchDuration = elapsedTime
+            p1PrefetchPerformanceMonitoring?.stopTrace()
+        }
+    }
+
+    private fun recordP1CachePerformance(capturedBlocks: Set<String>, identifier: String, elapsedTime: Long) {
+        if (capturedBlocks.containsAll(
+                listOf(
+                        "product_content",
+                        "product_media",
+                        "social_proof_mini"
+                    )
+            ) && identifier == "cache" && cacheDuration == 0L
+        ) {
+            this.cacheDuration = elapsedTime
+            p1CachePerformanceMonitoring?.stopTrace()
+        }
+    }
+
+    private fun recordP1NetworkPerformance(capturedBlocks: Set<String>, identifier: String, elapsedTime: Long) {
+        if (capturedBlocks.containsAll(
+                listOf(
+                        "product_content",
+                        "product_media",
+                        "social_proof_mini"
+                    )
+            ) && identifier == "network" && p1NetworkDuration == 0L
+        ) {
+            this.p1NetworkDuration = elapsedTime
+            p1NetworkPerformanceMonitoring?.stopTrace()
+        }
+    }
+
     private fun initPLTMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
             ProductDetailConstant.PDP_RESULT_PLT_PREPARE_METRICS,
