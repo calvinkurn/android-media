@@ -5,12 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.splitByThousand
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.FragmentShopInfoReimagineBinding
@@ -118,7 +123,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         renderShopCoreInfo(uiState)
         renderShopInfo(uiState)
         renderShopPharmacy(uiState)
-        renderShopReview(uiState)
+        renderShopRatingAndReview(uiState)
         renderShopPerformance(uiState)
         renderShopNotes(uiState)
         renderShopDescription(uiState)
@@ -126,29 +131,76 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     }
     
     private fun renderShopCoreInfo(uiState: ShopInfoUiState) {
-        binding?.run { 
-            
+        binding?.run {
+            imgShop.loadImage(uiState.info.shopImageUrl)
+            imgShopBadge.loadImage(uiState.info.shopBadgeUrl)
+            tpgShopName.text = uiState.info.shopName
+            tpgShopUsp.text = ""
+            tpgLicensedPharmacy.isVisible = true
         }
     }
+    
     private fun renderShopInfo(uiState: ShopInfoUiState) {
         binding?.run {
+            tpgShopInfoLocation.text = uiState.info.mainLocation
+            tpgShopInfoOtherLocation.text = uiState.info.otherLocations.firstOrNull().orEmpty()
+            tpgShopInfoOtherLocation.isVisible = true
 
+            val stringBuilder = StringBuilder()
+            uiState.info.operationalHours.map { 
+                val hour = it.key
+                val days = it.value
+                val groupedDays = days.joinToString(separator = ", ", postfix = ": ") { it }
+                
+                stringBuilder.append(groupedDays)
+                stringBuilder.append(": ")
+                stringBuilder.append(hour)
+                stringBuilder.append("\n")
+            }
+            
+            tpgShopInfoOpsHour.text = stringBuilder.toString()
+            tpgShopInfoJoinDate.text = uiState.info.shopJoinDate
+            tpgShopInfoTotalProduct.text = uiState.info.totalProduct.toString()
         }
     }
     private fun renderShopPharmacy(uiState: ShopInfoUiState) {
         binding?.run {
-
+            tpgShopPharmacyNearestPickup.text = uiState.epharmacy.nearestPickupAddress
+            tpgShopPharmacyPharmacistOpsHour.text = uiState.epharmacy.pharmacistOperationalHour
+            tpgShopPharmacyPharmacistName.text = uiState.epharmacy.pharmacistName
+            tpgShopPharmacySiaNumber.text = uiState.epharmacy.siaNumber
+            tpgShopPharmacySipaNumber.text = uiState.epharmacy.sipaNumber
         }
     }
 
-    private fun renderShopReview(uiState: ShopInfoUiState) {
+    private fun renderShopRatingAndReview(uiState: ShopInfoUiState) {
+        val ratingAndReviewText = when {
+            uiState.rating.totalRating.isMoreThanZero() && uiState.review.totalReviews.isMoreThanZero() -> {
+                "${uiState.rating.totalRatingFmt} rating • ${uiState.review.totalReviews.splitByThousand()} ulasan"
+            }
+            uiState.rating.totalRating.isMoreThanZero() -> {
+                "${uiState.rating.totalRatingFmt} rating"
+            }
+            uiState.review.totalReviews.isMoreThanZero() -> {
+                "${uiState.review.totalReviews} ulasan"
+            }
+            else -> ""
+        }
+        val formattedRatingAndReviewText = "($ratingAndReviewText)"
+        
         binding?.run {
-
+            tpgShopRating.text = uiState.rating.ratingScore
+            tpgRatingAndReviewText.text = formattedRatingAndReviewText
+            tpgBuyerSatisfactionPercentage.text = "${uiState.rating.positivePercentageFmt}%"
         }
     }
+    
+    
     private fun renderShopPerformance(uiState: ShopInfoUiState) {
         binding?.run {
-
+            labelProductSoldCount.text = uiState.shopPerformance.totalProductSoldCount
+            labelChatPerformance.text = uiState.shopPerformance.chatPerformance
+            labelOrderProcessTime.text = uiState.shopPerformance.orderProcessTime
         }
     }
 
@@ -158,9 +210,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         }
     }
     private fun renderShopDescription(uiState: ShopInfoUiState) {
-        binding?.run {
-
-        }
+        binding?.tpgShopDescription?.text = MethodChecker.fromHtml(uiState.info.shopDescription)
     }
 
     private fun renderShopSupportedShipment(uiState: ShopInfoUiState) {

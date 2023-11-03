@@ -23,9 +23,10 @@
             app:unify_header_title="Profil Toko" />
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/imageUnify"
+            android:id="@+id/imgShop"
             android:layout_width="52dp"
             android:layout_height="52dp"
+            app:unify_image_type="circle"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +38,7 @@
             android:layout_height="16dp"
             android:layout_marginStart="12dp"
             app:layout_constraintBottom_toBottomOf="@+id/tpgShopName"
-            app:layout_constraintStart_toEndOf="@+id/imageUnify"
+            app:layout_constraintStart_toEndOf="@+id/imgShop"
             app:layout_constraintTop_toTopOf="@+id/tpgShopName" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -50,7 +51,7 @@
             android:maxLines="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imgShopBadge"
-            app:layout_constraintTop_toTopOf="@+id/imageUnify"
+            app:layout_constraintTop_toTopOf="@+id/imgShop"
             app:typographyType="display_1"
             app:typographyWeight="bold"
             tools:text="Kimia Farma Maju Jaya" />
@@ -63,6 +64,8 @@
             android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:maxLines="1"
+            android:visibility="gone"
+            tools:visibility="visible"
             android:textColor="@color/Unify_BN500"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/imgShopBadge"
@@ -77,6 +80,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
+            android:paddingTop="4dp"
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/Unify_NN600"
@@ -492,10 +496,10 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="2dp"
             app:icon_color_light_enable="@color/Unify_YN300"
             app:icon_color_night_enable="@color/Unify_YN600"
             app:icon_name="STAR_FILLED"
+            app:layout_constraintBottom_toBottomOf="@+id/tpgShopRating"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tpgSectionTitleBuyerReview" />
 
