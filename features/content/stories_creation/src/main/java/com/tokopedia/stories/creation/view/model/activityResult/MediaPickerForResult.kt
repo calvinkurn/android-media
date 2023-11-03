@@ -21,7 +21,7 @@ class MediaPickerForResult : ActivityResultContract<MediaPickerIntentData, Stori
             pageSource(PageSource.Stories)
             minVideoDuration(input.minVideoDuration)
             maxVideoDuration(input.maxVideoDuration)
-            pageType(PageType.GALLERY)
+            pageType(PageType.COMMON)
             modeType(ModeType.COMMON)
             singleSelectionMode()
             withImmersiveEditor()
