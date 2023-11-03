@@ -57,7 +57,8 @@ class ScpAuthViewModel @Inject constructor(
                     email = account.email,
                     phone = account.phoneNumber,
                     fullName = account.fullname,
-                    auth_code = account.token
+                    gotoAccountId = account.accountId,
+                    gotoAuthCode = account.token
                 )
                 when (val resp = registerV2AndSaveSessionUseCase(params)) {
                     is Success -> {

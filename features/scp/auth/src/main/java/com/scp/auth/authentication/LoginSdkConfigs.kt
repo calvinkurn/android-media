@@ -39,9 +39,9 @@ class LoginSdkConfigs(val context: Context) : LSdkConfig {
 
     private fun getEnvironment(): LSdkEnvironment {
         return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-            LSdkEnvironment.INTEGRATION
+            LSdkEnvironment.DEV
         } else {
-            LSdkEnvironment.PROD
+            LSdkEnvironment.ALPHA
         }
     }
 }

@@ -105,12 +105,12 @@ class ScpAuthActivity : BaseActivity() {
                     handleError()
                 }
             }
-            showFullScreenLoading.observe(this@ScpAuthActivity) {
-                if (it) {
-                    binding.screenLoader.root.visible()
-                } else {
-                    binding.screenLoader.root.gone()
-                }
+        }
+        viewModel.showFullScreenLoading.observe(this@ScpAuthActivity) {
+            if (it) {
+                binding.screenLoader.root.visible()
+            } else {
+                binding.screenLoader.root.gone()
             }
         }
     }
@@ -174,6 +174,7 @@ class ScpAuthActivity : BaseActivity() {
                 }
 
                 override fun onProgressiveSignupFlow(accountDetails: GeneralAccountDetails) {
+                    GotoSdk.LSDKINSTANCE?.closeScreenAndExit()
                     viewModel.register(accountDetails)
                 }
             },

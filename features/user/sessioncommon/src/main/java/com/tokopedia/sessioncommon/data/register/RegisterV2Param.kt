@@ -25,7 +25,9 @@ data class RegisterV2Param(
     @SerializedName("h")
     val hash: String = "",
 
-    @SerializedName("auth_code")
-    val auth_code: String = ""
+    @SerializedName("goto_auth_code")
+    val gotoAuthCode: String = "",
 
+    @SerializedName("goto_sso_acc_id")
+    val gotoAccountId: String = ""
 ) : GqlParam

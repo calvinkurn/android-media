@@ -37,9 +37,9 @@ class VerificationSdkConfig(val context: Context) : VerificationSDKConfigs {
 
     private fun getEnvironment(): VerificationEnvironment {
         return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-            VerificationEnvironment.INTEGRATION
+            VerificationEnvironment.DEV
         } else {
-            VerificationEnvironment.PROD
+            VerificationEnvironment.ALPHA
         }
     }
 
