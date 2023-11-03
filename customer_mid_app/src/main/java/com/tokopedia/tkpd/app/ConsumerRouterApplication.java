@@ -183,14 +183,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
     }
 
-    private void enableNetworkRequestNewRelic() {
+    protected void enableNetworkRequestNewRelic() {
         NewRelic.enableFeature(FeatureFlag.NetworkRequests);
     }
 
-    private void enableCrashReportingNewRelic() {
+    protected void enableCrashReportingNewRelic() {
         NewRelic.enableFeature(FeatureFlag.CrashReporting);
     }
-
 
     private void syncFcmToken() {
         SyncFcmTokenService.Companion.startService(this);

@@ -228,14 +228,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         }
     }
 
-    private void enableNetworkRequestNewRelic() {
-        NewRelic.enableFeature(FeatureFlag.NetworkRequests);
-    }
-
-    private void enableCrashReportingNewRelic() {
-        NewRelic.enableFeature(FeatureFlag.CrashReporting);
-    }
-
     private void checkAppPackageNameAsync() {
         WeaveInterface checkAppPackageNameWeave = new WeaveInterface() {
             @NotNull
