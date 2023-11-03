@@ -753,6 +753,18 @@
             app:typographyType="display_1"
             app:typographyWeight="bold" />
 
+        <LinearLayout
+            android:id="@+id/layoutShopNotesContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tpgSectionTitleShopNotes"
+            tools:layout_height="120dp" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpgSectionTitleShopDescription"
             android:layout_width="0dp"
@@ -766,7 +778,7 @@
             android:textColor="@color/Unify_NN950"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tpgSectionTitleShopNotes"
+            app:layout_constraintTop_toBottomOf="@+id/layoutShopNotesContainer"
             app:typographyType="display_1"
             app:typographyWeight="bold" />
 
@@ -832,8 +844,8 @@
             android:id="@+id/dividerShopSupportedShipment"
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:background="@color/Unify_NN50"
             android:layout_marginTop="12dp"
+            android:background="@color/Unify_NN50"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recyclerViewShopSupportedShipment" />
