@@ -183,9 +183,11 @@ internal class FeedBrowseViewModel @Inject constructor(
                         }
                     }
                 }
-                is ContentSlotModel.NoData -> { this }
+                is ContentSlotModel.NoData -> { }
             }
-        } catch (e: IllegalStateException) { this }
+        } catch (e: Throwable) {
+            updateWidget<FeedBrowseSlotUiModel.ChannelsWithMenus>(slotId, ResultState.Fail(e)) { it }
+        }
     }
 
     private suspend fun FeedBrowseSlotUiModel.InspirationBanner.getAndUpdateData() {

@@ -26,6 +26,7 @@ import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedBrowseItemDecoration
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseIntent
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseStatefulModel
@@ -177,8 +178,18 @@ class FeedBrowseFragment @Inject constructor(
         }
     }
 
+    private val channelListener = object : FeedBrowseHorizontalChannelsViewHolder.Listener {
+        override fun onRetry(
+            viewHolder: FeedBrowseHorizontalChannelsViewHolder,
+            slotId: String,
+            menu: WidgetMenuModel
+        ) {
+            viewModel.onIntent(FeedBrowseIntent.FetchCardsWidget(slotId, menu))
+        }
+    }
+
     private val adapter by viewLifecycleBound(
-        { FeedBrowseAdapter(chipsListener, bannerListener) }
+        { FeedBrowseAdapter(chipsListener, bannerListener, channelListener) }
     )
 
     private val viewModel: FeedBrowseViewModel by viewModels { viewModelFactory }

@@ -25,6 +25,7 @@ internal sealed interface FeedBrowseItemListModel {
 
     data class HorizontalChannels(
         override val slotId: String,
+        val menu: WidgetMenuModel,
         val itemState: ItemListState<PlayWidgetChannelUiModel>,
     ) : FeedBrowseItemListModel
 

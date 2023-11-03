@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.content.common.types.isFailed
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
+import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
@@ -22,7 +24,8 @@ import com.tokopedia.feedplus.browse.presentation.model.isNotEmpty
  */
 internal class FeedBrowseAdapter(
     private val chipsListener: ChipsViewHolder.Listener,
-    private val bannerListener: FeedBrowseBannerViewHolder.Listener
+    private val bannerListener: FeedBrowseBannerViewHolder.Listener,
+    private val channelListener: FeedBrowseHorizontalChannelsViewHolder.Listener,
 ) : ListAdapter<FeedBrowseItemListModel, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<FeedBrowseItemListModel>() {
         override fun areItemsTheSame(oldItem: FeedBrowseItemListModel, newItem: FeedBrowseItemListModel): Boolean {
@@ -52,10 +55,18 @@ internal class FeedBrowseAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            TYPE_CHIPS -> ChipsViewHolder.create(parent, chipsListener)
-            TYPE_HORIZONTAL_CHANNELS -> FeedBrowseHorizontalChannelsViewHolder.create(parent)
-            TYPE_BANNER -> FeedBrowseBannerViewHolder.create(parent, bannerListener)
-            TYPE_TITLE -> FeedBrowseTitleViewHolder.create(parent)
+            TYPE_CHIPS -> {
+                ChipsViewHolder.create(parent, chipsListener)
+            }
+            TYPE_HORIZONTAL_CHANNELS -> {
+                FeedBrowseHorizontalChannelsViewHolder.create(parent, channelListener)
+            }
+            TYPE_BANNER -> {
+                FeedBrowseBannerViewHolder.create(parent, bannerListener)
+            }
+            TYPE_TITLE -> {
+                FeedBrowseTitleViewHolder.create(parent)
+            }
             else -> error("ViewType $viewType is not supported")
         }
     }
@@ -144,17 +155,15 @@ internal class FeedBrowseAdapter(
 
     private fun FeedBrowseSlotUiModel.ChannelsWithMenus.mapToChannelBlocks(state: ResultState): List<FeedBrowseItemListModel> {
         return buildList {
-            if (state.isLoading) {
-                add(FeedBrowseItemListModel.Title(slotId, title))
-                add(FeedBrowseItemListModel.HorizontalChannels(slotId, ItemListState.initLoading()))
-                return@buildList
-            }
-
             val isMenuEmpty = menus.keys.isEmpty() || menus.keys.any { !it.isValid }
-            val selectedMenu = menus.keys.firstOrNull { it.id == selectedMenuId } ?: menus.keys.firstOrNull()
-            val itemsInSelectedMenu = menus[selectedMenu ?: menus.keys.firstOrNull()]
+            val selectedMenu = if (menus.keys.isNotEmpty()) {
+                menus.keys.firstOrNull { it.id == selectedMenuId } ?: menus.keys.first()
+            } else {
+                WidgetMenuModel.Empty
+            }
+            val itemsInSelectedMenu = menus[selectedMenu]
 
-            if (!isMenuEmpty || itemsInSelectedMenu?.isNotEmpty() == true) {
+            if (!isMenuEmpty || itemsInSelectedMenu?.isNotEmpty() == true || !state.isSuccess) {
                 add(FeedBrowseItemListModel.Title(slotId, title))
             }
             if (!isMenuEmpty) {
@@ -167,9 +176,19 @@ internal class FeedBrowseAdapter(
                     )
                 )
             }
+
+            if (state.isLoading) {
+                add(FeedBrowseItemListModel.HorizontalChannels(slotId, selectedMenu, ItemListState.initLoading()))
+                return@buildList
+            } else if (state.isFailed()) {
+                add(FeedBrowseItemListModel.HorizontalChannels(slotId, selectedMenu, ItemListState.initFail(state.error)))
+                return@buildList
+            }
+
             add(
                 FeedBrowseItemListModel.HorizontalChannels(
                     slotId,
+                    selectedMenu,
                     itemsInSelectedMenu ?: ItemListState.initLoading()
                 )
             )

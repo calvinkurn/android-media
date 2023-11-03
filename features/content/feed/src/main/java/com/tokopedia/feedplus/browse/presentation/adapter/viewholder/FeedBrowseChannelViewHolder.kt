@@ -104,7 +104,14 @@ internal class FeedBrowseChannelViewHolder private constructor(
             listener.onCardClicked(item, config.data, widgetData, position, bindingAdapterPosition)
         }
     }
-    private val cardAdapter by lazy { FeedBrowseChannelAdapter(cardListener) }
+    private val cardAdapter by lazy { FeedBrowseChannelAdapter(
+        cardListener,
+        object : FeedBrowseChannelViewHolder2.Error.Listener {
+            override fun onRetry(viewHolder: FeedBrowseChannelViewHolder2.Error) {
+
+            }
+        }
+    ) }
     private val cardItemDecoration = FeedBrowseChannelItemDecoration(
         context = binding.root.context,
         spacingHorizontal = feedplusR.dimen.feed_space_8,

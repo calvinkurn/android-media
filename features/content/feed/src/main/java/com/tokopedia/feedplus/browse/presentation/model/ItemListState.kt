@@ -23,6 +23,10 @@ data class ItemListState<T>(
             return init(ResultState.Loading)
         }
 
+        fun <T> initFail(error: Throwable): ItemListState<T> {
+            return init(ResultState.Fail(error))
+        }
+
         fun <T> initSuccess(
             items: List<T>,
             nextCursor: String = "",
@@ -48,3 +52,4 @@ internal val <T> ItemListState<T>.isLoading: Boolean
     get() = this.state == ResultState.Loading
 
 internal object LoadingModel
+internal object ErrorModel
