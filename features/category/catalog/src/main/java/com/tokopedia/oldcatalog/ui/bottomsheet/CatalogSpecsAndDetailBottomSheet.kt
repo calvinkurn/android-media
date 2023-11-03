@@ -22,6 +22,8 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_bottomsheet_catalog_specifications.*
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.google.android.material.R as materialR
 
 class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
 
@@ -51,6 +53,8 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
         private const val JUMP_TO_FULL_SPEC_INDEX = "JUMP_TO_FULL_SPEC_INDEX"
         const val PAGE_DESCRIPTION = 0
         const val PAGE_SPECIFICATIONS = 1
+        const val FIRST_TAB = 0
+        const val SECOND_TAB = 1
         fun newInstance(catalogName : String, catalogId :String, description: String, specifications: ArrayList<FullSpecificationsComponentData>,
                         openPage : String, jumpTo : Int = 0): CatalogSpecsAndDetailBottomSheet {
             return CatalogSpecsAndDetailBottomSheet().apply {
@@ -156,7 +160,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
         val bottomSheetDialog = super.onCreateDialog(savedInstanceState)
 
         bottomSheetDialog.setOnShowListener {
-            val bottomSheet: FrameLayout = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
+            val bottomSheet: FrameLayout = bottomSheetDialog.findViewById(materialR.id.design_bottom_sheet)
 
             val behavior = BottomSheetBehavior.from(bottomSheet)
             behavior.skipCollapsed = true
@@ -181,7 +185,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
                 text = context.getString(R.string.catalog_description)
                 setType(Typography.HEADING_5)
                 gravity = Gravity.CENTER
-                setTextColor(MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                setTextColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_GN500))
             }
 
             val tabTwo = Typography(context)
@@ -189,10 +193,10 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
                 text = context.getString(R.string.catalog_spesification)
                 setType(Typography.HEADING_5)
                 gravity = Gravity.CENTER
-                setTextColor(MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
+                setTextColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950_44))
             }
-            tabLayout.getTabAt(0)?.customView = tabOne
-            tabLayout.getTabAt(1)?.customView = tabTwo
+            tabLayout.getTabAt(FIRST_TAB)?.customView = tabOne
+            tabLayout.getTabAt(SECOND_TAB)?.customView = tabTwo
         }
     }
 

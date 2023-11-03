@@ -153,7 +153,6 @@ class InspirationListAtcViewHolder(
             cardInteraction = true,
             hasAddToCartButton = true,
             isTopAds = isOrganicAds,
-            pageSource = ProductCardModel.PageSource.SEARCH,
         )
     }
 

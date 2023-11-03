@@ -86,6 +86,7 @@ import com.tokopedia.play.widget.ui.dialog.PlayWidgetWatchDialogContainer
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -4897,6 +4898,10 @@ open class ShopPageHomeFragment :
             model.widgetMasterId,
             model.isFestivity
         )
+    }
+
+    override fun onPlayWidgetCtaClicked(model: PlayWidgetUiModel) {
+        RouteManager.route(context, model.actionAppLink)
     }
     //endregion
 
