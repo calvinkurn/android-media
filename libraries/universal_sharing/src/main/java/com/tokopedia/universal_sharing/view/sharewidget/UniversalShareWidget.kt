@@ -46,7 +46,6 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
     private var callback: ShareWidgetCallback? = null
     private var isDirectChannel = false
     private var isAffiliate = false
-    private var channel = ""
 
     // properties for generation link
     private var linkProperties: LinkShareWidgetProperties? = null
@@ -80,7 +79,9 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
         context.theme.obtainStyledAttributes(
             attrs,
             universal_sharingR.styleable.UniversalShareWidget,
-            0, 0).apply {
+            0,
+            0
+        ).apply {
 
             try {
                 channelShareIconId = getInteger(universal_sharingR.styleable.UniversalShareWidget_channel_share, -1)
@@ -125,7 +126,6 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
         callback = shareWidgetCallback
     }
 
-
     private fun populateView(icon: Int) {
         when (getVariant()) {
             UniversalShareConst.RemoteConfigKey.VALUE_VARIANT_A -> {
@@ -156,7 +156,6 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
         this.rootView.setOnClickListener {
             if (isDirectChannel.not()) {
                 callback?.onShowNormalBottomSheet()
-
             } else {
                 linkProperties?.let {
                     val linkerData = createLinkerData()
@@ -171,7 +170,6 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
         this.sourceId = sourceId
         this.imageGeneratorModel = param
     }
-
 
     private fun createLinkerData(): LinkerShareData {
         val linkerData = LinkerData()
@@ -237,7 +235,6 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
                                 }
                             }
                         }
-
                     }
 
                     is LinkerResultWidget.Failed -> {
@@ -262,7 +259,6 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
             }
         }
     }
-
 
     /**
      * method to enable affiliate if user eligible as affiliate
@@ -355,4 +351,3 @@ interface ShareWidgetCallback {
      */
     fun onClickShareWidget(id: String, channel: String, isAffiliate: Boolean, isDirectChannel: Boolean)
 }
-
