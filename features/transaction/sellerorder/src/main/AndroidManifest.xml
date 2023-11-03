@@ -125,7 +125,6 @@
         <activity
             android:name=".partial_order_fulfillment.presentation.activity.PofActivity"
             android:exported="false"
-            android:label="@string/som_pof_title_request"
             android:theme="@style/Theme.AppCompat.Translucent"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
