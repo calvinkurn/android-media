@@ -26,6 +26,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BadgedBox
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,8 +39,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gm.common.constant.PMProURL
+import com.tokopedia.header.compose.HeaderActionButton
+import com.tokopedia.header.compose.HeaderIconSource
+import com.tokopedia.header.compose.NestHeader
+import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -48,8 +54,12 @@ import com.tokopedia.nest.components.NestDivider
 import com.tokopedia.nest.components.NestDividerSize
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.NestImageType
+import com.tokopedia.nest.components.NestLabel
+import com.tokopedia.nest.components.NestLabelType
 import com.tokopedia.nest.components.NestLocalLoad
 import com.tokopedia.nest.components.NestNotification
+import com.tokopedia.nest.components.card.NestCard
+import com.tokopedia.nest.components.card.NestCardType
 import com.tokopedia.nest.components.loader.NestLoader
 import com.tokopedia.nest.components.loader.NestLoaderType
 import com.tokopedia.nest.components.loader.NestShimmerType
@@ -68,6 +78,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuActionClick
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuComposeItem
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuDividerUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuFeatureUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuInfoLoadingUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuInfoUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuItemUiModel
@@ -76,6 +87,9 @@ import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuProductU
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuSectionTitleUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuSettingTitleUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuUIState
+import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
+import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
+import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import java.util.*
 import com.tokopedia.gm.common.R as gmcommonR
 import com.tokopedia.seller.menu.R as sellermenuR
@@ -84,27 +98,77 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 // TODO: Add alpha to text
 @Composable
+fun SellerMenuScreen(
+    viewModel: SellerMenuViewModel,
+    onSuccessLoadInitialState: () -> Unit,
+    onActionClick: (SellerMenuActionClick) -> Unit
+) {
+
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+
+    Scaffold(
+        topBar = {
+            NestHeader(
+                type = NestHeaderType.SingleLine(
+                    title = stringResource(id = R.string.title_seller_menu),
+                    optionsButton = listOf(
+                        HeaderActionButton(
+                            onClicked = {
+                                onActionClick(SellerMenuActionClick.INBOX)
+                            },
+                            contentDescription = "Inbox",
+                            notification = null,
+                            icon = HeaderIconSource.Painter(
+                                painterResource(id = sellermenuR.drawable.ic_seller_menu_inbox)
+                            )
+                        ),
+                        HeaderActionButton(
+                            onClicked = {
+                                onActionClick(SellerMenuActionClick.NOTIF_CENTER)
+                            },
+                            contentDescription = "Notif",
+                            notification = null,
+                            icon = HeaderIconSource.Painter(
+                                painterResource(id = sellermenuR.drawable.ic_seller_menu_notif)
+                            )
+                        )
+                    ),
+                    onBackClicked = {
+                        onActionClick(SellerMenuActionClick.BACK_BUTTON)
+                    }
+                )
+            )
+        },
+        content = {
+            SellerMenuContent(uiState.value, onSuccessLoadInitialState, onActionClick, Modifier.padding(it))
+        }
+    )
+}
+
+@Composable
 fun SellerMenuContent(
     uiState: SellerMenuUIState,
     onSuccessLoadInitialState: () -> Unit,
-    onActionClick: (SellerMenuActionClick) -> Unit
+    onActionClick: (SellerMenuActionClick) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     when (uiState) {
         is SellerMenuUIState.OnSuccessGetMenuList -> {
             onSuccessLoadInitialState()
-            SellerMenuSuccessState(uiState.visitableList, onActionClick)
+            SellerMenuSuccessState(uiState.visitableList, onActionClick, modifier)
         }
-        else -> SellerMenuSuccessState(listOf(), onActionClick)
+        else -> SellerMenuSuccessState(listOf(), onActionClick, modifier)
     }
 }
 
 @Composable
 fun SellerMenuSuccessState(
     items: List<SellerMenuComposeItem>,
-    onActionClick: (SellerMenuActionClick) -> Unit
+    onActionClick: (SellerMenuActionClick) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     // TODO: add toolbar
-    LazyColumn {
+    LazyColumn(modifier = modifier) {
         items(
             items,
             contentType = {
@@ -223,6 +287,9 @@ fun SellerMenuSuccessState(
                             userShopInfoWrapper = it.userShopInfoWrapper,
                             onActionClick = onActionClick
                         )
+                    }
+                    is SellerMenuFeatureUiModel -> {
+                        SellerMenuFeatureSection(onActionClick = onActionClick)
                     }
                 }
             }
@@ -547,7 +614,8 @@ fun SellerMenuShopInfo(
                         top.linkTo(shopScore.bottom)
                         start.linkTo(avatarImage.start)
                         end.linkTo(parent.end)
-                    },
+                    }
+                    .padding(end = 8.dp),
                 onActionClick = onActionClick
             )
         } else {
@@ -595,13 +663,29 @@ fun SellerMenuShopStatusInfo(
             val totalTransaction =
                 userShopInfoWrapper.userShopInfoUiModel?.totalTransaction.orZero()
             userShopInfoWrapper.userShopInfoUiModel?.let { uiModel ->
+                var statsRmText: String? = null
+                var totalStatsRmText: String? = null
+
                 val shouldShowTransactionSection =
                     totalTransaction < Constant.ShopStatus.THRESHOLD_TRANSACTION &&
                         uiModel.periodTypePmPro == Constant.D_DAY_PERIOD_TYPE_PM_PRO
 
+                val ctaColor =
+                    when (shopType) {
+                        is RegularMerchant.Verified, is RegularMerchant.NeedUpgrade -> {
+                            NestTheme.colors.GN._500
+                        }
+                        is RegularMerchant.Pending -> {
+                            NestTheme.colors.NN._950.copy(
+                                alpha = 0.68f
+                            )
+                        }
+                        else -> {
+                            null
+                        }
+                    }
+
                 if (shouldShowTransactionSection) {
-                    val statsRmText: String
-                    val totalStatsRmText: String?
                     if (totalTransaction > Constant.ShopStatus.MAX_TRANSACTION) {
                         statsRmText = MethodChecker.fromHtml(
                             stringResource(id = sellermenuR.string.transaction_passed)
@@ -613,35 +697,19 @@ fun SellerMenuShopStatusInfo(
                             id = sellermenuR.string.total_transaction,
                             totalTransaction.toString()
                         )
-                    }.toString()
-
-                    val ctaColor =
-                        when (shopType) {
-                            is RegularMerchant.Verified, is RegularMerchant.NeedUpgrade -> {
-                                NestTheme.colors.GN._500
-                            }
-                            is RegularMerchant.Pending -> {
-                                NestTheme.colors.NN._950.copy(
-                                    alpha = 0.68f
-                                )
-                            }
-                            else -> {
-                                null
-                            }
-                        }
-
-                    SellerMenuStatusRegular(
-                        rmStatsText = statsRmText,
-                        rmTotalStatsText = totalStatsRmText,
-                        pmEligibleIcon = getPmEligibleIcon(userShopInfoWrapper),
-                        ctaTextRes = getRmVerificationTextRes(shopType),
-                        ctaColor = ctaColor,
-                        modifier = modifier
-                            .clickable {
-                                onActionClick(SellerMenuActionClick.POWER_MERCHANT)
-                            }
-                    )
+                    }
                 }
+                SellerMenuStatusRegular(
+                    rmStatsText = statsRmText,
+                    rmTotalStatsText = totalStatsRmText,
+                    pmEligibleIcon = getPmEligibleIcon(userShopInfoWrapper),
+                    ctaTextRes = getRmVerificationTextRes(shopType),
+                    ctaColor = ctaColor,
+                    modifier = modifier
+                        .clickable {
+                            onActionClick(SellerMenuActionClick.POWER_MERCHANT)
+                        }
+                )
             }
         }
         is PowerMerchantStatus -> {
@@ -834,7 +902,8 @@ fun SellerMenuBalanceSection(
                     start.linkTo(parent.start)
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
-                }.clickable {
+                }
+                .clickable {
                     onClick()
                 }
         )
@@ -852,7 +921,8 @@ fun SellerMenuBalanceSection(
                     end.linkTo(parent.end)
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
-                }.clickable {
+                }
+                .clickable {
                     onClick()
                 }
         )
@@ -1368,6 +1438,13 @@ fun SellerMenuStatusPm(
     modifier: Modifier,
     onActionClick: (SellerMenuActionClick) -> Unit
 ) {
+    val actionClick =
+        when {
+            !isActive -> SellerMenuActionClick.POWER_MERCHANT_INACTIVE
+            canUpgrade -> SellerMenuActionClick.POWER_MERCHANT_UPGRADE
+            else -> SellerMenuActionClick.POWER_MERCHANT
+        }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
@@ -1376,6 +1453,7 @@ fun SellerMenuStatusPm(
             .clip(RoundedCornerShape(8.dp))
             .border(1.dp, NestTheme.colors.NN._50, RoundedCornerShape(8.dp))
             .background(Color.Transparent)
+            .clickable { onActionClick(actionClick) }
     ) {
         ConstraintLayout(
             modifier = Modifier.fillMaxWidth()
@@ -1618,6 +1696,184 @@ fun SellerMenuStatusOS(
     }
 }
 
+@Composable
+fun SellerMenuFeatureSection(
+    modifier: Modifier = Modifier,
+    onActionClick: (SellerMenuActionClick) -> Unit
+) {
+    ConstraintLayout(
+        modifier = modifier.fillMaxWidth()
+    ) {
+        val (titleRef, labelRef, statisticCardRef, promoCardRef, feedCardRef, financialCardRef) = createRefs()
+
+        NestTypography(
+            text = stringResource(id = R.string.seller_menu_business_section),
+            textStyle = NestTheme.typography.body1.copy(
+                color = NestTheme.colors.NN._950.copy(
+                    alpha = 0.96f
+                ),
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier
+                .constrainAs(titleRef) {
+                    start.linkTo(parent.start)
+                    top.linkTo(parent.top)
+                }
+                .padding(
+                    start = 16.dp,
+                    top = 8.dp,
+                    end = 16.dp,
+                    bottom = 16.dp
+                )
+        )
+
+        NestLabel(
+            labelText = stringResource(id = R.string.seller_menu_seller_app_only),
+            labelType = NestLabelType.HIGHLIGHT_LIGHT_GREEN,
+            modifier = Modifier
+                .constrainAs(labelRef) {
+                    start.linkTo(titleRef.end)
+                    top.linkTo(titleRef.top)
+                    bottom.linkTo(titleRef.bottom)
+                }
+                .padding(start = 8.dp)
+        )
+
+        SellerMenuFeatureCard(
+            iconUrl = SellerMigrationConstants.URL_STATISTICS_ICON,
+            titleString = stringResource(id = R.string.seller_menu_shop_statistics),
+            descString = stringResource(id = R.string.seller_menu_shop_statistics_description),
+            modifier = Modifier
+                .constrainAs(statisticCardRef) {
+                    top.linkTo(titleRef.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(promoCardRef.start)
+                    width = Dimension.fillToConstraints
+                }
+                .padding(start = 8.dp, top = 16.dp)
+                .clickable {
+                    onActionClick(SellerMenuActionClick.MIGRATION_STATISTIC)
+                }
+        )
+
+        SellerMenuFeatureCard(
+            iconUrl = SellerMigrationConstants.URL_PROMO_ICON,
+            titleString = stringResource(id = R.string.seller_menu_ads_and_promo),
+            descString = stringResource(id = R.string.seller_menu_ads_and_promo_description),
+            modifier = Modifier
+                .constrainAs(promoCardRef) {
+                    top.linkTo(titleRef.bottom)
+                    start.linkTo(statisticCardRef.end)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                }
+                .padding(start = 8.dp, top = 16.dp, end = 8.dp)
+                .clickable {
+                    onActionClick(SellerMenuActionClick.MIGRATION_PROMO)
+                }
+        )
+
+        SellerMenuFeatureCard(
+            iconUrl = SellerMigrationConstants.URL_FEED_ICON,
+            titleString = stringResource(id = R.string.seller_menu_feed_and_play),
+            descString = stringResource(id = R.string.seller_menu_feed_and_play_description),
+            modifier = Modifier
+                .constrainAs(feedCardRef) {
+                    top.linkTo(statisticCardRef.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(financialCardRef.start)
+                    width = Dimension.fillToConstraints
+                }
+                .padding(start = 8.dp, top = 8.dp)
+                .clickable {
+                    onActionClick(SellerMenuActionClick.MIGRATION_FEED)
+                }
+        )
+
+        SellerMenuFeatureCard(
+            iconUrl = SellerMigrationConstants.URL_FINANCE_ICON,
+            titleString = stringResource(id = R.string.seller_menu_financial_service),
+            descString = stringResource(id = R.string.seller_menu_financial_service_description),
+            modifier = Modifier
+                .constrainAs(financialCardRef) {
+                    top.linkTo(promoCardRef.bottom)
+                    start.linkTo(feedCardRef.end)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                }
+                .padding(start = 8.dp, top = 8.dp, end = 8.dp)
+                .clickable {
+                    onActionClick(SellerMenuActionClick.MIGRATION_FINANCE)
+                }
+        )
+    }
+}
+
+@Composable
+fun SellerMenuFeatureCard(
+    iconUrl: String,
+    titleString: String,
+    descString: String,
+    modifier: Modifier
+) {
+    NestCard(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(110.dp),
+        type = NestCardType.Shadow
+    ) {
+        ConstraintLayout(
+            modifier = Modifier
+                .padding(8.dp)
+        ) {
+            val (featureImageRef, titleRef, descriptionRef) = createRefs()
+            
+            NestImage(
+                source = ImageSource.Remote(iconUrl),
+                modifier = Modifier
+                    .size(24.dp)
+                    .constrainAs(featureImageRef) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                    }
+            )
+
+            NestTypography(
+                text = titleString.uppercase(),
+                textStyle = NestTheme.typography.body3.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier
+                    .constrainAs(titleRef) {
+                        start.linkTo(featureImageRef.end)
+                        top.linkTo(featureImageRef.top)
+                        bottom.linkTo(featureImageRef.bottom)
+                        end.linkTo(parent.end)
+                        width = Dimension.fillToConstraints
+                    }
+                    .padding(start = 8.dp)
+            )
+
+            NestTypography(
+                text = descString,
+                textStyle = NestTheme.typography.body3.copy(
+                    fontWeight = FontWeight.Normal,
+                    color = NestTheme.colors.NN._950.copy(
+                        alpha = 0.68f
+                    )
+                ),
+                modifier = Modifier
+                    .constrainAs(descriptionRef) {
+                        start.linkTo(parent.start)
+                        top.linkTo(titleRef.bottom)
+                    }
+                    .padding(top = 8.dp)
+            )
+
+        }
+    }
+}
+
 @Preview
 @Composable
 fun preview() {
@@ -1649,13 +1905,14 @@ fun preview() {
 //            partialResponseStatus = true to true,
 //            totalBalance = "Rp 100"
 //        )
-    SellerMenuStatusRegular(
-        rmStatsText = "Pesanan",
-        rmTotalStatsText = "10/100",
-        pmEligibleIcon = IconUnify.BADGE_PM_FILLED,
-        ctaTextRes = sellermenucommonR.string.setting_verified,
-        ctaColor = NestTheme.colors.NN._950
-    )
+//    SellerMenuStatusRegular(
+//        rmStatsText = "Pesanan",
+//        rmTotalStatsText = "10/100",
+//        pmEligibleIcon = IconUnify.BADGE_PM_FILLED,
+//        ctaTextRes = sellermenucommonR.string.setting_verified,
+//        ctaColor = NestTheme.colors.NN._950
+//    )
+//    SellerMenuFeatureSection(Modifier)
 //    SellerMenuBalanceSection(balance = "Rp 200", modifier = Modifier)
 //
 //    }

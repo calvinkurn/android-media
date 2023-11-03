@@ -9,6 +9,7 @@ import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuActionClick
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuComposeItem
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuDividerUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuFeatureUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuInfoLoadingUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuItemUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuOrderUiModel
@@ -52,6 +53,7 @@ object SellerMenuList {
         menuList.addAll(buyerInfoMenu)
         menuList.addAll(otherInfoMenu)
         menuList.add(SellerMenuDividerUiModel(DividerType.THICK))
+        menuList.add(SellerMenuFeatureUiModel)
 
         return menuList.toList()
     }

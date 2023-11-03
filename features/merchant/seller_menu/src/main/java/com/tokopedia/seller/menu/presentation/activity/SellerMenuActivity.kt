@@ -4,14 +4,17 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
+import com.tokopedia.content.common.types.BundleData
+import com.tokopedia.imagepicker_insta.common.ImagePickerInstaQueryBuilder
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -19,10 +22,11 @@ import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.base.BaseSellerMenuActivity
-import com.tokopedia.seller.menu.presentation.component.SellerMenuContent
+import com.tokopedia.seller.menu.presentation.component.SellerMenuScreen
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuActionClick
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuUIEvent
 import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
+import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.shopadmin.common.util.AdminFeature
 import com.tokopedia.shopadmin.common.util.AdminPermissionMapper
 import com.tokopedia.user.session.UserSessionInterface
@@ -75,10 +79,8 @@ class SellerMenuActivity : BaseSellerMenuActivity() {
                     }
                 })
 
-                val state = viewModel.uiState.collectAsState()
-
-                SellerMenuContent(
-                    uiState = state.value,
+                SellerMenuScreen(
+                    viewModel = viewModel,
                     onSuccessLoadInitialState = ::onSuccessLoadInitialState,
                     onActionClick = ::onActionClick
                 )
@@ -99,6 +101,15 @@ class SellerMenuActivity : BaseSellerMenuActivity() {
 
     private fun onActionClick(actionClick: SellerMenuActionClick) {
         when (actionClick) {
+            SellerMenuActionClick.BACK_BUTTON -> {
+                finish()
+            }
+            SellerMenuActionClick.INBOX -> {
+                goToInbox()
+            }
+            SellerMenuActionClick.NOTIF_CENTER -> {
+                goToNotifCenter()
+            }
             SellerMenuActionClick.SHOP -> {
                 goToShop()
             }
@@ -159,10 +170,32 @@ class SellerMenuActivity : BaseSellerMenuActivity() {
             SellerMenuActionClick.SETTINGS -> {
                 goToSettings()
             }
+            SellerMenuActionClick.MIGRATION_FEED -> {
+                goToFeedMigration()
+            }
+            SellerMenuActionClick.MIGRATION_PROMO -> {
+                goToPromoMigration()
+            }
+            SellerMenuActionClick.MIGRATION_STATISTIC -> {
+                goToStatisticMigration()
+            }
+            SellerMenuActionClick.MIGRATION_FINANCE -> {
+                goToFinanceMigration()
+            }
             else -> {
                 // No-op
             }
         }
+    }
+
+    private fun goToInbox() {
+        RouteManager.route(this, ApplinkConst.INBOX)
+        sellerMenuTracker.sendEventClickInbox()
+    }
+
+    private fun goToNotifCenter() {
+        RouteManager.route(this, ApplinkConst.NOTIFICATION)
+        sellerMenuTracker.sendEventClickNotification()
     }
 
     private fun goToShop() {
@@ -270,6 +303,35 @@ class SellerMenuActivity : BaseSellerMenuActivity() {
         sellerMenuTracker.sendEventClickShopSettings()
     }
 
+    private fun goToStatisticMigration() {
+        checkAccessPermissionIfNotShopOwner(AdminFeature.STATISTIC)
+        sellerMenuTracker.sendEventClickShopStatistic()
+    }
+
+    private fun goToPromoMigration() {
+        checkAccessPermissionIfNotShopOwner(AdminFeature.ADS_AND_PROMOTION)
+        sellerMenuTracker.sendEventClickCentralizePromo()
+    }
+
+    private fun goToFeedMigration() {
+        val appLinks = ArrayList<String>().apply {
+            add(ApplinkConstInternalSellerapp.SELLER_HOME)
+            add(UriUtil.buildUri(ApplinkConst.SHOP, userSession.shopId))
+            add(generateFeedCreatePostAppLink())
+        }
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_PLAY_FEED, appLinks)
+        sellerMenuTracker.sendEventClickFeedAndPlay()
+    }
+
+    private fun goToFinanceMigration() {
+        val appLinks = ArrayList<String>().apply {
+            add(ApplinkConstInternalSellerapp.SELLER_HOME)
+            add("${ApplinkConst.LAYANAN_FINANSIAL}/")
+        }
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_FINANCIAL_SERVICES, appLinks)
+        sellerMenuTracker.sendEventClickFintech()
+    }
+
     private fun checkAccessPermissionIfNotShopOwner(@AdminFeature feature: String) {
         val intent =
             if (userSession.isShopOwner) {
@@ -280,9 +342,28 @@ class SellerMenuActivity : BaseSellerMenuActivity() {
         startActivity(intent)
     }
 
+    private fun goToSellerMigrationPage(@SellerMigrationFeatureName featureName: String, appLinks: ArrayList<String>) {
+        val intent = SellerMigrationActivity.createIntent(this, featureName,
+            SCREEN_NAME, appLinks)
+        startActivity(intent)
+    }
+
+    private fun generateFeedCreatePostAppLink(): String {
+        val queries = listOf<Pair<String, Any>>(
+            Pair(BundleData.TITLE, BundleData.VALUE_POST_SEBAGAI),
+            Pair(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2),
+            Pair(BundleData.APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2),
+            Pair(BundleData.MAX_MULTI_SELECT_ALLOWED, BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED),
+            Pair(BundleData.KEY_IS_OPEN_FROM, BundleData.VALUE_IS_OPEN_FROM_SHOP_PAGE),
+        )
+        return "${ApplinkConst.IMAGE_PICKER_V2}?${ImagePickerInstaQueryBuilder.generateQuery(queries)}"
+    }
+
     companion object {
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
 
         private const val APPLINK_FORMAT = "%s?url=%s%s"
+
+        private const val SCREEN_NAME = "MA - Akun Toko"
     }
 }
