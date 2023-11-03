@@ -44,7 +44,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 object ViewToViewBottomSheetTracker : BaseTrackerConst() {
     private const val TOPADS = "topads"
     private const val NONTOPADS = "nontopads"
-    private const val ITEM_LIST_TEMPLATE = "/product - v2v widget - rekomendasi untuk anda - %s - product %s"
+    private const val ITEM_LIST_TEMPLATE = "/product - v2v widget - p%s - rekomendasi untuk anda - %s - product %s - %s"
 
     private const val IMPRESSION_ACTION = "impression on product bottom sheet v2v widget"
     private const val IMPRESSION_TRACKER_ID = "40440"
@@ -141,7 +141,7 @@ object ViewToViewBottomSheetTracker : BaseTrackerConst() {
 
     private fun RecommendationItem.asItemList(): String {
         val isTopAds = if (isTopAds) TOPADS else NONTOPADS
-        return ITEM_LIST_TEMPLATE.format(recommendationType, isTopAds)
+        return ITEM_LIST_TEMPLATE.format((position + 1).toString(), recommendationType, isTopAds, anchorProductId)
     }
 
     private fun RecommendationItem.asBundle(position: Int, isAtc: Boolean = false): Bundle {
