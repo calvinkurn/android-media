@@ -54,24 +54,7 @@ class HomeThematicUnitTest {
     }
 
     @Test
-    fun `given old home rollence then ignore thematic`() {
-        every { HomeRollenceController.isOldHome() } returns true
-        homeViewModel = createHomeViewModel(homeThematicUseCase = homeThematicUseCase)
-
-        coVerify(exactly = 0) { homeThematicUseCase.executeOnBackground() }
-    }
-
-    @Test
-    fun `given new ATF rollence then get thematic data`() {
-        every { HomeRollenceController.isOldHome() } returns false
-        homeViewModel = createHomeViewModel(homeThematicUseCase = homeThematicUseCase)
-
-        coVerify(exactly = 1) { homeThematicUseCase.executeOnBackground() }
-    }
-
-    @Test
     fun `given success when get thematic background then update live data`() {
-        every { HomeRollenceController.isOldHome() } returns false
         coEvery { homeThematicUseCase.executeOnBackground() } returns mockHomeThematicModel
         homeViewModel = createHomeViewModel(homeThematicUseCase = homeThematicUseCase)
 
@@ -80,7 +63,6 @@ class HomeThematicUnitTest {
 
     @Test
     fun `given thrown error when get thematic background then do not show thematic`() {
-        every { HomeRollenceController.isOldHome() } returns false
         coEvery { homeThematicUseCase.executeOnBackground() } throws Exception()
         homeViewModel = createHomeViewModel(homeThematicUseCase = homeThematicUseCase)
 

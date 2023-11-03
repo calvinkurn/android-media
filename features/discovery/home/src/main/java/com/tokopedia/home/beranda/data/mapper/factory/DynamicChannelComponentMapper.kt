@@ -110,6 +110,7 @@ object DynamicChannelComponentMapper {
                 createdTimeMillis = channel.timestamp,
                 isAutoRefreshAfterExpired = channel.isAutoRefreshAfterExpired,
                 dividerType = channel.dividerType,
+                styleParam = channel.styleParam,
                 dividerSize = channel.styleParam.parseDividerSize(),
                 borderStyle = channel.styleParam.parseBorderStyle(),
                 imageStyle = channel.styleParam.parseImageStyle()
@@ -273,6 +274,7 @@ object DynamicChannelComponentMapper {
         createdTimeMillis = timestamp,
         isAutoRefreshAfterExpired = isAutoRefreshAfterExpired,
         dividerType = dividerType,
+        styleParam = styleParam,
         dividerSize = styleParam.parseDividerSize(),
         borderStyle = styleParam.parseBorderStyle(),
         imageStyle = styleParam.parseImageStyle()

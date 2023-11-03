@@ -30,6 +30,7 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
 
 class TokoNowProductRecommendationView @JvmOverloads constructor(
     context: Context,
@@ -48,6 +49,7 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
     private var requestParam: GetRecommendationRequestParam? = null
     private var header: TokoNowDynamicHeaderView? = null
     private var mTickerPageSource: String = String.EMPTY
+    private var headerListener: TokoNowDynamicHeaderListener? = null
 
     private fun TokoNowProductRecommendationViewModel.observeRecommendationWidget() {
         productRecommendation.observe(context as AppCompatActivity) {
@@ -77,9 +79,13 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
     ) {
         binding.apply {
             root.show()
+            inflateHeader()
             productCardCarousel.bindItems(
                 items = productRecommendation.productModels,
                 seeMoreModel = productRecommendation.seeMoreModel
+            )
+            header?.setListener(
+                headerListener = headerListener
             )
             header?.setModel(
                 model = productRecommendation.headerModel
@@ -116,14 +122,12 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
      */
     fun setListener(
         productCardCarouselListener: ProductCardCompactCarouselListener? = null,
-        headerCarouselListener: TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener? = null
+        headerCarouselListener: TokoNowDynamicHeaderListener? = null
     ) {
         binding.productCardCarousel.setListener(
             productCardCarouselListener = productCardCarouselListener,
         )
-        header?.setListener(
-            headerListener =  headerCarouselListener
-        )
+        this.headerListener = headerCarouselListener
     }
 
     /**
@@ -186,19 +190,25 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
         headerUiModel: TokoNowDynamicHeaderUiModel?,
         state: TokoNowProductRecommendationState
     ) {
-        if(headerUiModel != null && state == LOADED) {
-            inflateHeader()
-            header?.setModel(headerUiModel)
-        } else {
-            header?.gone()
+        binding.apply {
+            if(headerUiModel != null && state == LOADED) {
+                inflateHeader()
+                header?.setListener(headerListener)
+                header?.setModel(headerUiModel)
+                headerViewStub.show()
+                header?.show()
+            } else {
+                headerViewStub.hide()
+                header?.hide()
+            }
         }
     }
 
-    private fun inflateHeader() {
-        if(header == null) {
-            val view = binding.headerViewStub
+    private fun LayoutTokopedianowProductRecommendationViewBinding.inflateHeader() {
+        if(headerViewStub.parent != null) {
+            val view = headerViewStub
                 .inflateView(R.layout.layout_tokopedianow_dynamic_header_view)
-            header = view.findViewById(R.id.header)
+            header = view as? TokoNowDynamicHeaderView
         }
     }
 

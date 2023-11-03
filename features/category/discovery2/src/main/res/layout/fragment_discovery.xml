@@ -48,6 +48,38 @@
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+            <com.tokopedia.discovery2.viewcontrollers.customview.PriceBoxView
+                android:id="@+id/priceBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:theme="@style/Theme.MaterialComponents.Light"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/appbarLayout"
+                />
+
+            <com.tokopedia.discovery2.viewcontrollers.customview.CashbackView
+                android:id="@+id/cashbackView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:visibility="gone"
+                android:theme="@style/Theme.MaterialComponents.Light"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/priceBox"
+                />
+
+            <com.tokopedia.discovery2.viewcontrollers.customview.DiscoveryStockBar
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintStart_toEndOf="@id/cashbackView"
+                app:layout_constraintTop_toBottomOf="@id/priceBox" />
+
             <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
                 android:id="@+id/choose_address_widget"
                 android:layout_width="match_parent"

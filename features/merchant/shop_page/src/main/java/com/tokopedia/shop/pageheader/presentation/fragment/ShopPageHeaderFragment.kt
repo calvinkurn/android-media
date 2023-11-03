@@ -322,7 +322,6 @@ class ShopPageHeaderFragment :
         const val DEFAULT_SHOWCASE_ID = "0"
         const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
         private const val FEED_SHOP_FRAGMENT_SHOP_ID = "PARAM_SHOP_ID"
-        private const val FEED_SHOP_FRAGMENT_CREATE_POST_URL = "PARAM_CREATE_POST_URL"
         private const val ARGS_SHOP_ID_FOR_REVIEW_TAB = "ARGS_SHOP_ID"
         private const val DELAY_MINI_CART_RESUME = 1000L
         private const val IDR_CURRENCY_TO_RAW_STRING_REGEX = "[Rp, .]"
@@ -375,7 +374,6 @@ class ShopPageHeaderFragment :
     private var affiliateData: ShopAffiliateData? = null
     var isFirstCreateShop: Boolean = false
     var isShowFeed: Boolean = false
-    var createPostUrl: String = ""
     private var isTabClickByUser = false
     private var isFollowing: Boolean = false
     private var tabPosition = TAB_POSITION_HOME
@@ -1847,8 +1845,13 @@ class ShopPageHeaderFragment :
     }
 
     private fun onSuccessGetShopPageP1Data(shopPageHeaderP1Data: ShopPageHeaderP1HeaderData) {
-        isShowFeed = shopPageHeaderP1Data.isWhitelist
-        createPostUrl = shopPageHeaderP1Data.feedUrl
+        shopPageHeaderP1Data.listDynamicTabData.map {
+            if (it.name == ShopPageHeaderTabName.FEED) {
+                isShowFeed = it.isActive == ShopPageConstant.ShopTabActiveStatus.ACTIVE
+            }
+        }
+
+        isShowFeed = isShowFeed
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
             shopId = this@ShopPageHeaderFragment.shopId
             isOfficial = shopPageHeaderP1Data.isOfficial
@@ -2158,108 +2161,6 @@ class ShopPageHeaderFragment :
         }
     }
 
-    private fun createListShopPageTabModel(): List<ShopPageHeaderTabModel> {
-        val listShopPageTabModel = mutableListOf<ShopPageHeaderTabModel>()
-        if (isShowHomeTab()) {
-            getHomeFragment()?.let { homeFragment ->
-                listShopPageTabModel.add(
-                    ShopPageHeaderTabModel(
-                        getString(R.string.shop_info_title_tab_home),
-                        iconTabHomeInactive,
-                        iconTabHomeActive,
-                        homeFragment
-                    )
-                )
-            }
-        }
-        val shopPageProductFragment = ShopPageProductListFragment.createInstance(
-            shopId = shopId,
-            shopName = shopPageHeaderDataModel?.shopName.orEmpty(),
-            isOfficial = shopPageHeaderDataModel?.isOfficial ?: false,
-            isGoldMerchant = shopPageHeaderDataModel?.isGoldMerchant ?: false,
-            shopAttribution = shopAttribution,
-            shopRef = shopRef,
-            isEnableDirectPurchase = shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
-        )
-        shopHeaderViewModel?.productListData?.let {
-            shopPageProductFragment.setInitialProductListData(it)
-        }
-        listShopPageTabModel.add(
-            ShopPageHeaderTabModel(
-                getString(R.string.new_shop_info_title_tab_product),
-                iconTabProductInactive,
-                iconTabProductActive,
-                shopPageProductFragment
-            )
-        )
-
-        val shopShowcaseTabFragment = RouteManager.instantiateFragmentDF(
-            activity as AppCompatActivity,
-            FragmentConst.SHOP_SHOWCASE_TAB_FRAGMENT_CLASS_PATH,
-            Bundle().apply {
-                putString(FRAGMENT_SHOWCASE_KEY_SHOP_ID, shopId)
-                putString(FRAGMENT_SHOWCASE_KEY_SHOP_REF, shopRef)
-                putString(FRAGMENT_SHOWCASE_KEY_SHOP_ATTRIBUTION, shopAttribution)
-                putBoolean(
-                    FRAGMENT_SHOWCASE_KEY_IS_OS,
-                    shopPageHeaderDataModel?.isOfficial ?: false
-                )
-                putBoolean(
-                    FRAGMENT_SHOWCASE_KEY_IS_GOLD_MERCHANT,
-                    shopPageHeaderDataModel?.isGoldMerchant ?: false
-                )
-                putParcelable(
-                    FRAGMENT_SHOWCASE_KEY_FOR_SHARE,
-                    shopPageHeaderDataModel?.mapperForShopShowCase()
-                )
-            }
-        )
-        listShopPageTabModel.add(
-            ShopPageHeaderTabModel(
-                getString(R.string.shop_info_title_tab_showcase),
-                iconTabShowcaseInactive,
-                iconTabShowcaseActive,
-                shopShowcaseTabFragment
-            )
-        )
-
-        if (isShowFeed) {
-            val feedFragment = RouteManager.instantiateFragmentDF(
-                activity as AppCompatActivity,
-                FEED_SHOP_FRAGMENT,
-                Bundle().apply {
-                    putString(FEED_SHOP_FRAGMENT_SHOP_ID, shopId)
-                    putString(FEED_SHOP_FRAGMENT_CREATE_POST_URL, createPostUrl)
-                }
-            )
-            listShopPageTabModel.add(
-                ShopPageHeaderTabModel(
-                    getString(R.string.shop_info_title_tab_feed),
-                    iconTabFeedInactive,
-                    iconTabFeedActive,
-                    feedFragment
-                )
-            )
-        }
-
-        val reviewTabFragment = RouteManager.instantiateFragmentDF(
-            activity as AppCompatActivity,
-            SHOP_REVIEW_FRAGMENT,
-            Bundle().apply {
-                putString(ARGS_SHOP_ID_FOR_REVIEW_TAB, shopId)
-            }
-        )
-        listShopPageTabModel.add(
-            ShopPageHeaderTabModel(
-                getString(R.string.shop_info_title_tab_review),
-                iconTabReviewInactive,
-                iconTabReviewActive,
-                reviewTabFragment
-            )
-        )
-        return listShopPageTabModel
-    }
-
     private fun createListShopPageDynamicTabModel(): List<ShopPageHeaderTabModel> {
         val listShopPageTabModel = mutableListOf<ShopPageHeaderTabModel>()
         shopPageHeaderDataModel?.listDynamicTabData?.forEach {
@@ -2331,7 +2232,6 @@ class ShopPageHeaderFragment :
                             FEED_SHOP_FRAGMENT,
                             Bundle().apply {
                                 putString(FEED_SHOP_FRAGMENT_SHOP_ID, shopId)
-                                putString(FEED_SHOP_FRAGMENT_CREATE_POST_URL, createPostUrl)
                             }
                         )
                         feedFragment
