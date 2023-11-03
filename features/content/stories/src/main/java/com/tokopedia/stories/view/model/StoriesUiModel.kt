@@ -32,11 +32,11 @@ data class StoriesDetail(
     val detailItems: List<StoriesDetailItem> = emptyList()
 ) {
     companion object {
-        val Empty get() = StoriesDetail(
+        val EmptyDetail get() = StoriesDetail(
             selectedGroupId = "",
             selectedDetailPosition = 0,
             selectedDetailPositionCached = 0,
-            detailItems = listOf(StoriesDetailItem(event = StoriesDetailItem.StoriesDetailItemUiEvent.RESUME, content = StoriesDetailItem.StoriesItemContent(duration = 3000)))
+            detailItems = listOf(StoriesDetailItem.Empty)
         )
     }
 }
@@ -54,6 +54,9 @@ data class StoriesDetailItem(
     val share: Sharing = Sharing.Empty,
     val status: StoryStatus = StoryStatus.Unknown,
 ) {
+    companion object {
+        val Empty get() = StoriesDetailItem(event = StoriesDetailItemUiEvent.RESUME, content = StoriesItemContent(duration = 3000), resetValue = 0)
+    }
 
     data class Meta(
         val activityTracker: String = "",
