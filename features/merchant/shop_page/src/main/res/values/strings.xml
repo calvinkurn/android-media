@@ -46,9 +46,6 @@
 
     <string name="shop_info_label_open_since_v3">Buka Sejak %1$s</string>
     
-    <!--Shop Info Reimagine-->
-    <string name="shop_info_shop_profile">Profil Toko</string>
-
     <string name="shop_note_empty_note_title_buyer">Toko ini belum memiliki catatan toko.</string>
     <string name="shop_note_empty_note_title_seller">Toko Anda belum memiliki catatan toko.</string>
 
@@ -257,6 +254,53 @@
 
     <string name="shop_content_description_gradient_black">Background Etalase Utama</string>
     
+    <!--Shop Info Reimagine-->
+    <string name="shop_info_shop_profile">Profil Toko</string>
+
+    <!--Informasi Toko-->
+    <string name="shop_info_shop_information">Informasi Toko</string>
+    <string name="shop_info_location">Lokasi</string>
+    <string name="shop_info_placeholder_other_location">%d lainnya</string>
+    <string name="shop_info_ops_hour">Jam Operasional</string>
+    <string name="shop_info_join_date">Tanggal Bergabung</string>
+    <string name="shop_info_total_product">Total produk</string>
+
+    <!--Informasi Apotek-->
+    <string name="shop_info_pharmacy_information">Informasi apotek</string>
+    <string name="shop_info_nearest_pickup_point">Lokasi Pickup Terdekat</string>
+    <string name="shop_info_view_location">Lihat Lokasi</string>
+    <string name="shop_info_view_more">Lihat Selengkapnya</string>
+    <string name="shop_info_pharmacist_ops_hour">Jam Kerja Apoteker</string>
+    <string name="shop_info_pharmacist_name">Apotek Jaga</string>
+    <string name="shop_info_sia_number">Nomor SIA</string>
+    <string name="shop_info_sipa_number">Nomor SIPA</string>
+
+    <!--Ulasan Pembeli-->
+    <string name="shop_info_buyer_review">Ulasan Pembeli</string>
+    <string name="shop_info_rating">rating</string>
+    <string name="shop_info_review">ulasan</string>
+    <string name="shop_info_buyer_satisfied">pembeli puas</string>
+    <string name="shop_info_complete_review">ulasan lengkap</string>
+    <string name="shop_info_useful_review">terbantu</string>
+    <string name="shop_info_more">Selengkapnya</string>
+
+    <!--Performa Toko-->
+    <string name="shop_info_shop_performance">Performa toko</string>
+    <string name="shop_info_product_sold_count">Produk terjual</string>
+    <string name="shop_info_chat_performance">Performa chat</string>
+    <string name="shop_info_process_time">Pesanan diproses</string>
+
+    <!--Catatan Toko-->
+    <string name="shop_info_shop_note">Catatan toko</string>
     
+    <!--Deskripsi Toko-->
+    <string name="shop_info_shop_description">Deskripsi toko</string>
+    
+    <!--Dukungan pengiriman-->
+    <string name="shop_info_supported_shipment">Dukungan pengiriman</string>
+    <string name="shop_info_delivery_duration">Durasi dihitung sejak barang diserahkan ke kurir</string>
+    
+    <!--Report Shop-->
+    <string name="shop_info_report_shop">Toko ini bermasalah? Laporkan Di Sini</string>
     
 </resources>

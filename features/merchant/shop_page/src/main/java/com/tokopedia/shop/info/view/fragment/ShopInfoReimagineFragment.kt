@@ -1,13 +1,12 @@
 package com.tokopedia.shop.info.view.fragment
 
+import com.tokopedia.shop.R
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
-import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -16,6 +15,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.ShopComponentHelper
@@ -24,7 +24,6 @@ import com.tokopedia.shop.databinding.FragmentShopInfoReimagineBinding
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.component.ShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
-import com.tokopedia.shop.info.view.custom.ShopReviewView
 import com.tokopedia.shop.info.view.model.ShopInfoUiState
 import com.tokopedia.shop.info.view.viewmodel.ShopInfoReimagineViewModel
 import com.tokopedia.unifycomponents.toPx
@@ -32,7 +31,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
-
+import com.tokopedia.kotlin.extensions.view.*
 
 class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoComponent> {
 
@@ -149,8 +148,10 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private fun renderShopInfo(uiState: ShopInfoUiState) {
         binding?.run {
             tpgShopInfoLocation.text = uiState.info.mainLocation
-            tpgShopInfoOtherLocation.text = uiState.info.otherLocations.firstOrNull().orEmpty()
-            tpgShopInfoOtherLocation.isVisible = true
+            
+            tpgShopInfoOtherLocation.text = getString(R.string.shop_info_placeholder_other_location, uiState.info.otherLocations.size)
+            tpgShopInfoOtherLocation.isVisible = uiState.info.otherLocations.isNotEmpty()
+            
             renderOperationalHours(uiState.info.operationalHours)
             tpgShopInfoJoinDate.text = uiState.info.shopJoinDate
             tpgShopInfoTotalProduct.text = uiState.info.totalProduct.toString()
@@ -181,11 +182,28 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     
     private fun renderShopPharmacy(uiState: ShopInfoUiState) {
         binding?.run {
-            tpgShopPharmacyNearestPickup.text = uiState.epharmacy.nearestPickupAddress
-            tpgShopPharmacyPharmacistOpsHour.text = uiState.epharmacy.pharmacistOperationalHour
-            tpgShopPharmacyPharmacistName.text = uiState.epharmacy.pharmacistName
-            tpgShopPharmacySiaNumber.text = uiState.epharmacy.siaNumber
-            tpgShopPharmacySipaNumber.text = uiState.epharmacy.sipaNumber
+            labelShopPharmacyNearestPickup.isVisible = uiState.showEpharmacyInfo
+            labelShopPharmacyPharmacistOpsHour.isVisible = uiState.showEpharmacyInfo
+            labelShopPharmacyPharmacistName.isVisible = uiState.showEpharmacyInfo
+            labelShopPharmacySiaNumber.isVisible = uiState.showEpharmacyInfo
+            labelShopPharmacySipaNumber.isVisible = uiState.showEpharmacyInfo
+            tpgShopPharmacyCtaViewMaps.isVisible = uiState.showEpharmacyInfo
+            tpgShopPharmacyCtaViewAll.isVisible = uiState.showEpharmacyInfo
+            
+            tpgSectionTitlePharmacyInformation.isVisible = uiState.showEpharmacyInfo
+            tpgShopPharmacyNearestPickup.isVisible = uiState.showEpharmacyInfo
+            tpgShopPharmacyPharmacistOpsHour.isVisible = uiState.showEpharmacyInfo
+            tpgShopPharmacyPharmacistName.isVisible = uiState.showEpharmacyInfo
+            tpgShopPharmacySiaNumber.isVisible = uiState.showEpharmacyInfo
+            tpgShopPharmacySipaNumber.isVisible = uiState.showEpharmacyInfo
+            
+            if (uiState.showEpharmacyInfo) {
+                tpgShopPharmacyNearestPickup.text = uiState.epharmacy.nearestPickupAddress
+                tpgShopPharmacyPharmacistOpsHour.text = uiState.epharmacy.pharmacistOperationalHour
+                tpgShopPharmacyPharmacistName.text = uiState.epharmacy.pharmacistName
+                tpgShopPharmacySiaNumber.text = uiState.epharmacy.siaNumber
+                tpgShopPharmacySipaNumber.text = uiState.epharmacy.sipaNumber
+            }
         }
     }
 
