@@ -47,6 +47,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
     private var isDirectChannel = false
     private var isAffiliate = false
     private var channel = ""
+    var shareColorIcon: Int? = null
 
     // properties for generation link
     private var linkProperties: LinkShareWidgetProperties? = null
@@ -80,7 +81,9 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
         context.theme.obtainStyledAttributes(
             attrs,
             universal_sharingR.styleable.UniversalShareWidget,
-            0, 0).apply {
+            0,
+            0
+        ).apply {
 
             try {
                 channelShareIconId = getInteger(universal_sharingR.styleable.UniversalShareWidget_channel_share, -1)
@@ -110,6 +113,15 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
         }
     }
 
+    /**
+     * change color for icon with the type IconUnify.SHARE or IconUnify.SHARE_AFFILIATE
+     */
+    fun setColorShareIcon(color: Int) {
+        if (isDirectChannel.not()) {
+            binding?.shareChannel?.setColorFilter(color)
+        }
+    }
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         setObserver()
@@ -124,7 +136,6 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
     fun setShareWidgetCallback(shareWidgetCallback: ShareWidgetCallback) {
         callback = shareWidgetCallback
     }
-
 
     private fun populateView(icon: Int) {
         when (getVariant()) {
@@ -156,7 +167,6 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
         this.rootView.setOnClickListener {
             if (isDirectChannel.not()) {
                 callback?.onShowNormalBottomSheet()
-
             } else {
                 linkProperties?.let {
                     val linkerData = createLinkerData()
@@ -171,7 +181,6 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
         this.sourceId = sourceId
         this.imageGeneratorModel = param
     }
-
 
     private fun createLinkerData(): LinkerShareData {
         val linkerData = LinkerData()
@@ -237,7 +246,6 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
                                 }
                             }
                         }
-
                     }
 
                     is LinkerResultWidget.Failed -> {
@@ -263,7 +271,6 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
         }
     }
 
-
     /**
      * method to enable affiliate if user eligible as affiliate
      * @param affiliateInput
@@ -274,6 +281,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
 
     fun show() {
         if (getVariant() == UniversalShareConst.RemoteConfigKey.CONTROL_VARIANT) return
+
         this.visible()
         tracker.viewShareWidget(
             shareIconId = getLinkChannel(),
@@ -355,4 +363,3 @@ interface ShareWidgetCallback {
      */
     fun onClickShareWidget(id: String, channel: String, isAffiliate: Boolean, isDirectChannel: Boolean) {}
 }
-
