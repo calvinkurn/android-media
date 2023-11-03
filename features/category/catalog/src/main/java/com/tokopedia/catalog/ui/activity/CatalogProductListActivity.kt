@@ -10,6 +10,7 @@ import com.tokopedia.catalog.ui.fragment.CatalogProductListFragment
 import com.tokopedia.catalog.ui.fragment.CatalogProductListImprovementFragment
 import com.tokopedia.core.analytics.AppScreen
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_IMPROVMENT_CATALOG_PRODUCT_LIST
 import javax.inject.Inject
 
 class CatalogProductListActivity : BaseSimpleActivity() {
@@ -67,7 +68,7 @@ class CatalogProductListActivity : BaseSimpleActivity() {
 
     private fun prepareView(savedInstanceIsNull: Boolean) {
         if (savedInstanceIsNull) {
-            val fragment = if (true) {
+            val fragment =if (remoteConfig.getBoolean(ENABLE_IMPROVMENT_CATALOG_PRODUCT_LIST)){
                 CatalogProductListImprovementFragment.newInstance(
                     catalogId,
                     catalogTitle,
