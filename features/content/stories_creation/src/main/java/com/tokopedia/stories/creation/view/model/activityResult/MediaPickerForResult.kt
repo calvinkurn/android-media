@@ -17,7 +17,7 @@ import com.tokopedia.stories.creation.view.model.StoriesMedia
 class MediaPickerForResult : ActivityResultContract<MediaPickerIntentData, StoriesMedia>() {
 
     override fun createIntent(context: Context, input: MediaPickerIntentData): Intent {
-        return MediaPicker.intent(context) {
+        return MediaPicker.intentWithGalleryFirst(context) {
             pageSource(PageSource.Stories)
             minVideoDuration(input.minVideoDuration)
             maxVideoDuration(input.maxVideoDuration)
