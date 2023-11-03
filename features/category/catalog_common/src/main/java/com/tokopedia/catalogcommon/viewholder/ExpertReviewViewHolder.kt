@@ -22,7 +22,6 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase.Companion.KEY_YOUTUBE_VIDEO_ID
 
 class ExpertReviewViewHolder(
     itemView: View,
@@ -36,6 +35,7 @@ class ExpertReviewViewHolder(
     }
 
     private val binding by viewBinding<WidgetExpertsReviewBinding>()
+    val KEY_YOUTUBE_VIDEO_ID = "v"
 
     private var onceCreateCarousel = false
     override fun bind(element: ExpertReviewUiModel) {
