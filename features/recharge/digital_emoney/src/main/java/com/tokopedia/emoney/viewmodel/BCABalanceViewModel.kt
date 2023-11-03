@@ -616,6 +616,15 @@ class BCABalanceViewModel @Inject constructor(
                             bcaFlazzData,
                             separateCardDataFromResponseCode(reversal.strLogRsp)
                         )
+                    } else if(getBCARC8303(reversal.strLogRsp)) {
+                        processSDKBCAlastBCATopUp(
+                            isoDep,
+                            strTransactionId,
+                            cardNumber,
+                            rawPublicKeyString,
+                            rawPrivateKeyString,
+                            cardType
+                        )
                     } else {
                         errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     }
@@ -752,6 +761,10 @@ class BCABalanceViewModel @Inject constructor(
         return strLogResp.startsWith(SUCCESS_PREFIX)
     }
 
+    private fun getBCARC8303(strLogResp: String): Boolean {
+        return strLogResp.startsWith(RC_8303)
+    }
+
     private fun separateCardDataFromResponseCode(strLogResp: String): String {
         return if (strLogResp.length > PREFIX_SIZE) {
             strLogResp.substring(PREFIX_SIZE, strLogResp.length)
@@ -766,5 +779,6 @@ class BCABalanceViewModel @Inject constructor(
         private const val SUCCESS_JNI = 1
         private const val SUCCESS_PREFIX = "0000"
         private const val PREFIX_SIZE = 4
+        private const val RC_8303 = "8303"
     }
 }
