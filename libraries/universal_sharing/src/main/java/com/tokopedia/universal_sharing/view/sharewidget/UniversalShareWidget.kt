@@ -1,9 +1,11 @@
 package com.tokopedia.universal_sharing.view.customview
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
@@ -118,7 +120,10 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
      */
     fun setColorShareIcon(color: Int) {
         if (isDirectChannel.not()) {
-            binding?.shareChannel?.setColorFilter(color)
+            runCatching {
+                val colorRes = ContextCompat.getColor(context, color)
+                binding?.shareChannel?.setColorFilter(colorRes, PorterDuff.Mode.SRC_ATOP)
+            }
         }
     }
 

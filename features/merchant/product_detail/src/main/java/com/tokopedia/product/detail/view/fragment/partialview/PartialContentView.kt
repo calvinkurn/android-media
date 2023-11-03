@@ -100,7 +100,7 @@ class PartialContentView(
     fun updateUniversalShareWidget(shouldShow: Boolean) = with(binding.universalShareWidget) {
         if (shouldShow) {
             listener.onUniversalShareWidget(this)
-            setColorShareIcon(unifyprinciplesR.color.Unify_NN500)
+            setColorShareIcon(unifyprinciplesR.color.Unify_NN700)
             show()
         }
     }
