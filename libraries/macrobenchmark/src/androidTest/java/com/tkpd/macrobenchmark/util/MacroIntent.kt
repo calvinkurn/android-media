@@ -279,14 +279,14 @@ object MacroIntent {
          * Target recyclerview
          * Capture view by resource id
          */
-        const val RV_RESOURCE_ID_CATALOG_PRODUCT_LIST = "catalog_product_list_parent_view"
+        const val RV_RESOURCE_ID_CATALOG_PRODUCT_LIST = "product_recyclerview"
 
         private const val DF_MODULE_NAME = "df_base"
         const val PACKAGE_NAME = "$TKPD_PACKAGE_NAME.$DF_MODULE_NAME"
 
         fun getCatalogProductListIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
-            intent.data = Uri.parse("tokopedia-android-internal://catalog/product_list/Samsung A54?catalog_id=41&product_sorting_status=1")
+            intent.data = Uri.parse("tokopedia-android-internal://catalog-product-list/Samsung?catalog_id=42417&product_sorting_status=1")
             return intent
         }
     }

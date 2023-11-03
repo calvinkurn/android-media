@@ -27,7 +27,7 @@ class CatalogProductListFrameTimingBenchmark : BaseFrameTimingBenchmark() {
     }
 
     override fun pageInteractionTest(currentIteration: Int) {
-        Thread.sleep(10000)
+        Thread.sleep(15000)
         MacroInteration.basicFlingInteraction(
             MacroIntent.Catalog.PACKAGE_NAME,
             MacroIntent.Catalog.RV_RESOURCE_ID_CATALOG_PRODUCT_LIST,

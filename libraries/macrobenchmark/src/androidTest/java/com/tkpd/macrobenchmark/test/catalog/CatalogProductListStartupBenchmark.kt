@@ -4,6 +4,7 @@ import androidx.benchmark.macro.StartupMode
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SdkSuppress
 import com.tkpd.macrobenchmark.base.BaseStartupBenchmark
+import com.tkpd.macrobenchmark.util.MacroDevOps
 import com.tkpd.macrobenchmark.util.MacroIntent
 import com.tkpd.macrobenchmark.util.MacroInteration
 import org.junit.runner.RunWith
@@ -24,6 +25,7 @@ class CatalogProductListStartupBenchmark(startupMode: StartupMode) : BaseStartup
     }
 
     override fun setupMock() {
+        MacroDevOps.setupEnvironment(MacroIntent.Mock.getCatalogProductListMockIntent())
     }
 
     override fun getIntent() = MacroIntent.Catalog.getCatalogProductListIntent()
@@ -33,7 +35,7 @@ class CatalogProductListStartupBenchmark(startupMode: StartupMode) : BaseStartup
             MacroIntent.Catalog.PACKAGE_NAME,
             MacroIntent.Catalog.RV_RESOURCE_ID_CATALOG_PRODUCT_LIST
         )
-        Thread.sleep(10000)
+//        Thread.sleep(10000)
     }
 
     override fun traceName() = "catalog_product_list"

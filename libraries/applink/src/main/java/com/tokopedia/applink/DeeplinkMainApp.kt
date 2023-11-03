@@ -182,6 +182,11 @@ object DeeplinkMainApp {
                 DeeplinkMapperCategory.getRegisteredNavigationCatalog(deeplink)
             }
         ),
+        "catalog-product-list" to mutableListOf(
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredNavigationCatalogProductList(deeplink)
+            }
+        ),
         "catalog-library" to mutableListOf(
             DLP.goTo { deeplink: String ->
                 DeeplinkMapperCategory.getRegisteredNavigationCategory(deeplink)
