@@ -1592,7 +1592,8 @@ open class ShopPageHomeFragment :
             selectedSortName = sortName,
             filterIndicatorCounter = getIndicatorCount(
                 shopProductFilterParameter?.getMapData()
-            )
+            ),
+            isOverrideTheme = isOverrideTheme()
         )
         shopHomeAdapter?.setSortFilterData(shopProductSortFilterUiModel)
     }
