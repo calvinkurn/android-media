@@ -42,6 +42,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
         val LAYOUT = R.layout.item_shop_home_banner_product_group_viewpager
         private const val ONE_TAB = 1
         private const val MARGIN_16_DP = 16f
+        private const val THREE_TAB = 3
     }
 
     private val viewBinding: ItemShopHomeBannerProductGroupViewpagerBinding? by viewBinding()
@@ -165,7 +166,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
 
                     val screenWidth = getScreenWidth()
 
-                    if (tabTotalWidth < screenWidth) {
+                    if (tabTotalWidth < screenWidth || tabs.size <= THREE_TAB) {
                         tabsUnify.customTabMode = TabLayout.MODE_FIXED
                         tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
                     } else {

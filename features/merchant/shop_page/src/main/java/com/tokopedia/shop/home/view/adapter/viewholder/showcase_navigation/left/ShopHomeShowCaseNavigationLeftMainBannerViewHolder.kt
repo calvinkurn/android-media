@@ -44,6 +44,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         private const val ONE_TAB = 1
         private const val MARGIN_16_DP = 16f
         private const val MINIMAL_SHOWCASE_COUNT_ON_A_TAB = 5
+        private const val THREE_TAB = 3
     }
 
     private var tabTotalWidth = 0
@@ -214,7 +215,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
                     tabsUnify.visible()
 
                     val screenWidth = getScreenWidth()
-                    if (tabTotalWidth < screenWidth) {
+                    if (tabTotalWidth < screenWidth || tabs.size <= THREE_TAB) {
                         tabsUnify.customTabMode = TabLayout.MODE_FIXED
                         tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
                     } else {
