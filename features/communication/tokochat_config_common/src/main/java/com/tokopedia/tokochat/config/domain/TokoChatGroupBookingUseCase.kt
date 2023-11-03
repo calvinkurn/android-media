@@ -76,6 +76,14 @@ open class TokoChatGroupBookingUseCase @Inject constructor(
         }
     }
 
+    fun getServiceType(source: String): TokoChatServiceType {
+        return when (source) {
+            SOURCE_GOSEND_INSTANT -> TokoChatServiceType.GOSEND_INSTANT
+            SOURCE_GOSEND_SAMEDAY -> TokoChatServiceType.GOSEND_SAMEDAY
+            else -> TokoChatServiceType.TOKOFOOD // default tokofood
+        }
+    }
+
     fun cancel() {
         scope.cancel()
     }

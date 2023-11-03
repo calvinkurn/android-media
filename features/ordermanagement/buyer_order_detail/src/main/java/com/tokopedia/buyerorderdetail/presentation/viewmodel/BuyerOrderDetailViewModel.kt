@@ -48,6 +48,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder
+import com.tokopedia.tokochat.config.domain.TokoChatCounterUseCase
+import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
+import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -79,7 +82,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private val getBuyerOrderDetailDataUseCase: Lazy<GetBuyerOrderDetailDataUseCase>,
     private val finishOrderUseCase: Lazy<FinishOrderUseCase>,
     private val atcUseCase: Lazy<AddToCartMultiUseCase>,
-    private val tokoChatChannelUseCase: Lazy<TokoChatChannelUseCase>,
+    private val tokoChatGroupBookingUseCase: Lazy<TokoChatGroupBookingUseCase>,
+    private val tokoChatCounterUseCase: Lazy<TokoChatCounterUseCase>,
     private val resourceProvider: Lazy<ResourceProvider>
 ) : ViewModel() {
 
@@ -507,21 +511,21 @@ class BuyerOrderDetailViewModel @Inject constructor(
         source: String
     ) {
         if (chatChannelId.isBlank()) {
-            tokoChatChannelUseCase.get().initGroupBookingChat(
+            tokoChatGroupBookingUseCase.get().initGroupBookingChat(
                 orderId = orderIdGojek,
-                serviceType = tokoChatChannelUseCase.get().getServiceType(source)
+                serviceType = tokoChatGroupBookingUseCase.get().getServiceType(source)
             )
         }
     }
 
     fun getGroupBookingFlow(): SharedFlow<TokoChatResult<String>> {
-        return tokoChatChannelUseCase.get().groupBookingResultFlow
+        return tokoChatGroupBookingUseCase.get().groupBookingResultFlow
     }
 
     fun fetchUnreadCounter(channelId: String) {
         viewModelScope.launch {
             try {
-                tokoChatChannelUseCase.get().fetchUnreadCount(channelId)
+                tokoChatCounterUseCase.get().fetchUnreadCount(channelId)
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
             }
@@ -529,7 +533,6 @@ class BuyerOrderDetailViewModel @Inject constructor(
     }
 
     fun getUnreadCounterFlow(): StateFlow<TokoChatResult<Int>> {
-        return tokoChatChannelUseCase.get().unreadCounterFlow
+        return tokoChatCounterUseCase.get().unreadCounterFlow
     }
-
 }

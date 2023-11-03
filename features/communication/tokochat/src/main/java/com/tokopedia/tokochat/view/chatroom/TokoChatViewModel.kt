@@ -216,7 +216,7 @@ class TokoChatViewModel @Inject constructor(
         try {
             groupBookingUseCase.initGroupBookingChat(
                 orderId = gojekOrderId,
-                source = source
+                serviceType = groupBookingUseCase.getServiceType(source)
             )
         } catch (throwable: Throwable) {
             _error.value = Pair(throwable, ::initGroupBooking.name)
