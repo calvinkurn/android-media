@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.people.R
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentFollowerFollowingListingBinding
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
@@ -27,6 +26,8 @@ import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.getCustomText
 import com.tokopedia.unifycomponents.setCustomText
 import javax.inject.Inject
+import com.tokopedia.people.R as peopleR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class FollowerFollowingListingFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
@@ -85,14 +86,17 @@ class FollowerFollowingListingFragment @Inject constructor(
         binding.tpFollow.getUnifyTabLayout().setTabTextColors(
             MethodChecker.getColor(
                 activity,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                unifyprinciplesR.color.Unify_NN600
             ),
-            MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+            MethodChecker.getColor(
+                activity,
+                unifyprinciplesR.color.Unify_GN500
+            )
         )
 
         val listOfPages = listOf<Pair<String, Fragment>>(
             Pair(
-                String.format(getString(R.string.up_title_followers), totalFollowers),
+                String.format(getString(peopleR.string.up_title_followers), totalFollowers),
                 FollowerListingFragment.getFragment(
                     childFragmentManager,
                     requireContext().classLoader,
@@ -100,7 +104,7 @@ class FollowerFollowingListingFragment @Inject constructor(
                 )
             ),
             Pair(
-                String.format(getString(R.string.up_title_following), totalFollowing),
+                String.format(getString(peopleR.string.up_title_following), totalFollowing),
                 FollowingListingFragment.getFragment(
                     childFragmentManager,
                     requireContext().classLoader,
@@ -125,7 +129,7 @@ class FollowerFollowingListingFragment @Inject constructor(
     }
 
     private fun setHeader() {
-        val header = view?.findViewById<HeaderUnify>(R.id.header_follower)
+        val header = view?.findViewById<HeaderUnify>(peopleR.id.header_follower)
         header?.apply {
             title = arguments?.getString(EXTRA_DISPLAY_NAME).toString()
             userId = arguments?.getString(UserProfileFragment.EXTRA_USER_ID).toString()
@@ -150,7 +154,7 @@ class FollowerFollowingListingFragment @Inject constructor(
             tabLayout.getTabAt(FOLLOWERS_PAGE_POSITION)?.let { tab ->
                 val oldValue = tab.getCustomText()
                 val newValue = String.format(
-                    getString(R.string.up_title_followers),
+                    getString(peopleR.string.up_title_followers),
                     followCount.totalFollowers
                 )
                 if (oldValue != newValue) tab.setCustomText(newValue)
@@ -159,7 +163,7 @@ class FollowerFollowingListingFragment @Inject constructor(
             tabLayout.getTabAt(FOLLOWING_PAGE_POSITION)?.let {
                 val oldValue = it.getCustomText()
                 val newValue = String.format(
-                    getString(com.tokopedia.people.R.string.up_title_following),
+                    getString(peopleR.string.up_title_following),
                     followCount.totalFollowing
                 )
                 if (oldValue != newValue) it.setCustomText(newValue)

@@ -39,6 +39,7 @@ import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.people.R as peopleR
 
 class FollowerListingFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
@@ -233,9 +234,9 @@ class FollowerListingFragment @Inject constructor(
                 is FollowResultUiModel.Fail -> {
                     val errMessage = result.message.ifBlank {
                         if (result.isFollowed) {
-                            getString(com.tokopedia.people.R.string.up_error_unfollow)
+                            getString(peopleR.string.up_error_unfollow)
                         } else {
-                            getString(com.tokopedia.people.R.string.up_error_follow)
+                            getString(peopleR.string.up_error_follow)
                         }
                     }
                     requireView().showErrorToast(errMessage)
@@ -293,12 +294,12 @@ class FollowerListingFragment @Inject constructor(
 
         val currentUserId = arguments?.getString(UserProfileFragment.EXTRA_USER_ID)
         if (currentUserId == userSessionInterface.userId) {
-            textTitle?.text = getString(com.tokopedia.people.R.string.up_empty_page_my_follower_title)
+            textTitle?.text = getString(peopleR.string.up_empty_page_my_follower_title)
         } else {
-            textTitle?.text = getString(com.tokopedia.people.R.string.up_empty_page_follower_title)
+            textTitle?.text = getString(peopleR.string.up_empty_page_follower_title)
         }
         textDescription?.showWithCondition(currentUserId == userSessionInterface.userId)
-        textDescription?.text = getString(com.tokopedia.people.R.string.up_empty_page_my_follower_desc)
+        textDescription?.text = getString(peopleR.string.up_empty_page_my_follower_desc)
     }
 
     override fun onStartFirstPageLoad() {
@@ -404,9 +405,9 @@ class FollowerListingFragment @Inject constructor(
             true
         } else {
             val errorMessage = if (isFollowed) {
-                getString(com.tokopedia.people.R.string.up_error_unfollow)
+                getString(peopleR.string.up_error_unfollow)
             } else {
-                getString(com.tokopedia.people.R.string.up_error_follow)
+                getString(peopleR.string.up_error_follow)
             }
             requireView().showErrorToast(errorMessage)
             false

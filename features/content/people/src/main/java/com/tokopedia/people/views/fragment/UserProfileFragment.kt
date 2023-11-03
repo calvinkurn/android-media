@@ -105,7 +105,7 @@ import java.net.URLEncoder
 import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.abs
-import com.tokopedia.content.common.R as contentCommonR
+import com.tokopedia.content.common.R as contentcommonR
 
 class UserProfileFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
@@ -835,7 +835,7 @@ class UserProfileFragment @Inject constructor(
     private fun createLiveFab(): FloatingButtonItem {
         return FloatingButtonItem(
             iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
-            title = getString(contentCommonR.string.feed_fab_create_live),
+            title = getString(contentcommonR.string.feed_fab_create_live),
             listener = {
                 mainBinding.fabUp.menuOpen = false
 
@@ -847,7 +847,7 @@ class UserProfileFragment @Inject constructor(
     private fun createPostFab(): FloatingButtonItem {
         return FloatingButtonItem(
             iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
-            title = getString(contentCommonR.string.feed_fab_create_post),
+            title = getString(contentcommonR.string.feed_fab_create_post),
             listener = {
                 mainBinding.fabUp.menuOpen = false
                 userProfileTracker.clickCreatePost(viewModel.profileUserID)
@@ -860,7 +860,7 @@ class UserProfileFragment @Inject constructor(
     private fun createShortsFab(): FloatingButtonItem {
         return FloatingButtonItem(
             iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.SHORT_VIDEO),
-            title = getString(contentCommonR.string.feed_fab_create_shorts),
+            title = getString(contentcommonR.string.feed_fab_create_shorts),
             listener = {
                 mainBinding.fabUp.menuOpen = false
                 userProfileTracker.clickCreateShorts(viewModel.profileUserID)
@@ -1002,8 +1002,8 @@ class UserProfileFragment @Inject constructor(
     private fun setupCoachMark() {
         coachMarkManager.setupCoachMark(
             ContentCoachMarkConfig(mainBinding.fabUserProfile).apply {
-                title = getString(contentCommonR.string.feed_play_shorts_entry_point_coachmark_title)
-                subtitle = getString(contentCommonR.string.feed_play_shorts_entry_point_coachmark_description)
+                title = getString(contentcommonR.string.feed_play_shorts_entry_point_coachmark_title)
+                subtitle = getString(contentcommonR.string.feed_play_shorts_entry_point_coachmark_description)
                 setCoachmarkPrefKey(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
             }
         )
@@ -1057,7 +1057,7 @@ class UserProfileFragment @Inject constructor(
         val intent = RouteManager.getIntent(requireContext(), ApplinkConst.IMAGE_PICKER_V2)
         intent.putExtra(KEY_APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
         intent.putExtra(KEY_MAX_MULTI_SELECT_ALLOWED, KEY_MAX_MULTI_SELECT_ALLOWED_VALUE)
-        intent.putExtra(KEY_TITLE, getString(contentCommonR.string.feed_post_sebagai))
+        intent.putExtra(KEY_TITLE, getString(contentcommonR.string.feed_post_sebagai))
         intent.putExtra(KEY_APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
         intent.putExtra(KEY_IS_CREATE_POST_AS_BUYER, true)
         intent.putExtra(KEY_IS_OPEN_FROM, VALUE_IS_OPEN_FROM_USER_PROFILE)
