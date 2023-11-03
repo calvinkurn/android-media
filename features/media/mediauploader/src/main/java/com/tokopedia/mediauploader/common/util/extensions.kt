@@ -3,11 +3,29 @@ package com.tokopedia.mediauploader.common.util
 import android.graphics.BitmapFactory
 import android.text.TextUtils
 import android.webkit.MimeTypeMap
+import com.tokopedia.picker.common.utils.fileExtension
 import java.io.File
+import java.net.URLConnection
 import java.util.concurrent.TimeUnit
+
+private const val MIME_TYPE_IMAGE = "image"
+private const val MIME_TYPE_VIDEO = "video"
 
 fun Int.mbToBytes(): Int {
     return this * 1024 * 1024
+}
+
+fun getFileFormatByMimeType(type: String, path: String, extension: String): Boolean {
+    val mimeType =
+        if (TextUtils.isEmpty(extension)) {
+            URLConnection.guessContentTypeFromName(path)
+        } else {
+            MimeTypeMap
+                .getSingleton()
+                .getMimeTypeFromExtension(extension)
+        }
+
+    return mimeType != null && mimeType.startsWith(type)
 }
 
 fun String.fileExtension(): String {
@@ -21,6 +39,18 @@ fun String.fileExtension(): String {
         ""
     }
 }
+
+fun isImageFormat(path: String) = getFileFormatByMimeType(
+    type = MIME_TYPE_IMAGE,
+    path = path,
+    extension = fileExtension(path)
+)
+
+fun isVideoFormat(path: String) = getFileFormatByMimeType(
+    type = MIME_TYPE_VIDEO,
+    path = path,
+    extension = fileExtension(path)
+)
 
 fun File.isMaxFileSize(maxFileSize: Int): Boolean {
     return this.length() > maxFileSize

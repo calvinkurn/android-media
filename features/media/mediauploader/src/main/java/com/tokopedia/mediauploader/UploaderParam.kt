@@ -4,7 +4,7 @@ package com.tokopedia.mediauploader
 
 import android.annotation.SuppressLint
 import com.tokopedia.mediauploader.common.state.ProgressUploader
-import com.tokopedia.picker.common.utils.isVideoFormat
+import com.tokopedia.mediauploader.common.util.isVideoFormat
 import java.io.File
 
 sealed interface BaseUploaderParam

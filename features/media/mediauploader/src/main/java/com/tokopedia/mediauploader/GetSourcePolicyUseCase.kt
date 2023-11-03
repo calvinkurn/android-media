@@ -4,7 +4,7 @@ import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageSecurePolicyUseCase
 import com.tokopedia.mediauploader.video.domain.GetVideoPolicyUseCase
-import com.tokopedia.picker.common.utils.isImageFormat
+import com.tokopedia.mediauploader.common.util.isImageFormat
 import java.io.File
 import javax.inject.Inject
 
@@ -27,6 +27,6 @@ class GetSourcePolicyUseCase @Inject constructor(
     data class Param(
         val sourceId: String,
         val file: File,
-        val isSecure: Boolean,
+        val isSecure: Boolean
     )
 }
