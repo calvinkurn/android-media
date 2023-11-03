@@ -1,9 +1,11 @@
 package com.tokopedia.universal_sharing.view.customview
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
@@ -46,7 +48,6 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
     private var callback: ShareWidgetCallback? = null
     private var isDirectChannel = false
     private var isAffiliate = false
-
     // properties for generation link
     private var linkProperties: LinkShareWidgetProperties? = null
 
@@ -79,9 +80,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
         context.theme.obtainStyledAttributes(
             attrs,
             universal_sharingR.styleable.UniversalShareWidget,
-            0,
-            0
-        ).apply {
+            0, 0).apply {
 
             try {
                 channelShareIconId = getInteger(universal_sharingR.styleable.UniversalShareWidget_channel_share, -1)
@@ -108,6 +107,18 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
 
         shareWidgetParam.imageGenerator?.let {
             setImageGenerator(it.sourceId, it.imageGeneratorParamModel)
+        }
+    }
+
+    /**
+     * change color for icon with the type IconUnify.SHARE or IconUnify.SHARE_AFFILIATE
+     */
+    fun setColorShareIcon(color: Int) {
+        if (isDirectChannel.not()) {
+            runCatching {
+                val colorRes = ContextCompat.getColor(context, color)
+                binding?.shareChannel?.setColorFilter(colorRes, PorterDuff.Mode.SRC_ATOP)
+            }
         }
     }
 
@@ -270,6 +281,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
 
     fun show() {
         if (getVariant() == UniversalShareConst.RemoteConfigKey.CONTROL_VARIANT) return
+
         this.visible()
         tracker.viewShareWidget(
             shareIconId = getLinkChannel(),
@@ -332,22 +344,22 @@ interface ShareWidgetCallback {
     /**
      * this method will be invoked when failed create share link url
      */
-    fun onErrorCreateUrl(error: LinkerError)
+    fun onErrorCreateUrl(error: LinkerError) {}
 
     /**
      * this method will be invoked when successfully create share link url
      */
-    fun onSuccessCreateUrl(result: LinkerShareResult)
+    fun onSuccessCreateUrl(result: LinkerShareResult) {}
 
     /**
      * this method will be invoked when show normal share icon instead of channel icon (WA, Telegram, and etc)
      * and should show [com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet]
      */
-    fun onShowNormalBottomSheet()
+    fun onShowNormalBottomSheet() {}
 
     /**
      * @param isAffiliate will return true if eligible for affiliate
      * @param isDirectChannel will return true if showing channel icon (WA, Telegram, and etc)
      */
-    fun onClickShareWidget(id: String, channel: String, isAffiliate: Boolean, isDirectChannel: Boolean)
+    fun onClickShareWidget(id: String, channel: String, isAffiliate: Boolean, isDirectChannel: Boolean) {}
 }

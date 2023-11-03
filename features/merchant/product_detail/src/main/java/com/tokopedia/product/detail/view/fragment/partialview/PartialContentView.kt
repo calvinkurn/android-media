@@ -17,6 +17,7 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import com.tokopedia.common_tradein.R as common_tradeinR
 import com.tokopedia.product.detail.common.R as productdetailcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Yehezkiel on 25/05/20
@@ -93,6 +94,14 @@ class PartialContentView(
     fun renderFreeOngkir(freeOngkirUrl: String) = with(binding) {
         imgFreeOngkir.shouldShowWithAction(freeOngkirUrl.isNotEmpty()) {
             imgFreeOngkir.loadImage(freeOngkirUrl)
+        }
+    }
+
+    fun updateUniversalShareWidget(shouldShow: Boolean) = with(binding.universalShareWidget) {
+        if (shouldShow) {
+            listener.onUniversalShareWidget(this)
+            setColorShareIcon(unifyprinciplesR.color.Unify_NN700)
+            show()
         }
     }
 
