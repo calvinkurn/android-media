@@ -204,6 +204,9 @@ class StoriesCreationActivity : BaseActivity() {
                         is StoriesCreationUiEvent.ShowTooManyStoriesReminder -> {
                             showInfoBottomSheet()
                         }
+                        is StoriesCreationUiEvent.StoriesUploadQueued -> {
+                            finish()
+                        }
                     }
             }
         }
