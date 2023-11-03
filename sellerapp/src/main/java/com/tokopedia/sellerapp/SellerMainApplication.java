@@ -151,6 +151,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             showDevOptNotification();
             initDevMonitoringTools();
         }
+        super.setupAppScreenMode();
     }
 
     private void initCassava() {

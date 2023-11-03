@@ -80,7 +80,6 @@ public abstract class MainApplication extends CoreNetworkApplication {
     public void onCreate() {
         super.onCreate();
         userSession = new UserSession(this);
-        setupAppScreenMode();
         initCrashlytics();
         initAnalyticUserId();
 
@@ -200,7 +199,7 @@ public abstract class MainApplication extends CoreNetworkApplication {
         return true;
     }
 
-    private void setupAppScreenMode() {
+    protected void setupAppScreenMode() {
         boolean isForceLightMode = checkForceLightMode();
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);

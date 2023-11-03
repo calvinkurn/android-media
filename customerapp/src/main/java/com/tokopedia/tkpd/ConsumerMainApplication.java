@@ -101,6 +101,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         CheckAndTraceAppStartIfEnabled();
         Embrace.getInstance().start(this);
         super.onCreate();
+        super.setupAppScreenMode();
         setupAlphaObserver();
         registerAppLifecycleCallbacks();
     }
