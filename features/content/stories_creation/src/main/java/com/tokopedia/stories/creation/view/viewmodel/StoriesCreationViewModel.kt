@@ -134,6 +134,8 @@ class StoriesCreationViewModel @Inject constructor(
             )
 
             creationUploader.upload(data)
+
+            _uiEvent.emit(StoriesCreationUiEvent.StoriesUploadQueued)
         }
     }
 }
