@@ -574,58 +574,57 @@
             android:layout_marginEnd="16dp"
             android:gravity="center"
             android:orientation="vertical"
-            tools:layout_height="102dp"
             android:padding="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/layoutRating"
-            app:layout_constraintTop_toBottomOf="@+id/iconRating">
-            
-      
+            app:layout_constraintTop_toBottomOf="@+id/iconRating"
+            tools:layout_height="102dp">
+
 
         </LinearLayout>
-        
+
         <FrameLayout
             android:id="@+id/layoutReview"
             android:layout_width="0dp"
-            app:layout_constraintTop_toBottomOf="@id/layoutRatingBarContainer"
-            android:layout_marginTop="16dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            tools:layout_height="236dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_height="wrap_content">
-            
+            app:layout_constraintTop_toBottomOf="@id/layoutRatingBarContainer"
+            tools:layout_height="236dp">
+
             <com.tokopedia.shop.info.view.custom.ShopReviewView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-            
-        </FrameLayout>
-       <!-- <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/iconRatingFive"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_marginStart="12dp"
-            app:icon_color_light_enable="@color/Unify_YN300"
-            app:icon_color_night_enable="@color/Unify_YN600"
-            app:icon_name="STAR_FILLED"
-            app:layout_constraintStart_toEndOf="@+id/layoutRating"
-            app:layout_constraintTop_toTopOf="@+id/layoutRating" />
+                android:layout_height="wrap_content" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tpgRatingFive"
-            android:layout_width="10dp"
-            android:layout_height="wrap_content"
-            android:text="5"
-            android:textColor="@color/Unify_NN950"
-            app:typographyType="display_2" />
-        
-        <com.tokopedia.unifycomponents.ProgressBarUnify
-            android:id="@+id/progressBarRatingFive"
-            android:layout_width="wrap_content"
-            android:layout_height="4dp"/>-->
-        
-        
+        </FrameLayout>
+        <!-- <com.tokopedia.iconunify.IconUnify
+             android:id="@+id/iconRatingFive"
+             android:layout_width="16dp"
+             android:layout_height="16dp"
+             android:layout_marginStart="12dp"
+             app:icon_color_light_enable="@color/Unify_YN300"
+             app:icon_color_night_enable="@color/Unify_YN600"
+             app:icon_name="STAR_FILLED"
+             app:layout_constraintStart_toEndOf="@+id/layoutRating"
+             app:layout_constraintTop_toTopOf="@+id/layoutRating" />
+ 
+         <com.tokopedia.unifyprinciples.Typography
+             android:id="@+id/tpgRatingFive"
+             android:layout_width="10dp"
+             android:layout_height="wrap_content"
+             android:text="5"
+             android:textColor="@color/Unify_NN950"
+             app:typographyType="display_2" />
+         
+         <com.tokopedia.unifycomponents.ProgressBarUnify
+             android:id="@+id/progressBarRatingFive"
+             android:layout_width="wrap_content"
+             android:layout_height="4dp"/>-->
+
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpgSectionTitleShopPerformance"
             android:layout_width="0dp"
@@ -644,6 +643,100 @@
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/labelProductSoldCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tpgSectionTitleShopPerformance"
+            app:typographyType="display_2"
+            tools:text="51 rb" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgProductSoldCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Produk terjual"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/labelProductSoldCount"
+            app:typographyType="display_3" />
+
+        <View
+            android:id="@+id/dividerProductSoldCount"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="12dp"
+            android:background="@color/Unify_NN50"
+            app:layout_constraintBottom_toBottomOf="@id/tpgProductSoldCount"
+            app:layout_constraintStart_toEndOf="@id/tpgProductSoldCount"
+            app:layout_constraintTop_toTopOf="@id/labelProductSoldCount" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/labelChatPerformance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintStart_toEndOf="@id/dividerProductSoldCount"
+            app:layout_constraintTop_toBottomOf="@+id/tpgSectionTitleShopPerformance"
+            app:typographyType="display_2"
+            tools:text="> 1 jam" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgChatPerformance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Performa chat"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintStart_toEndOf="@id/dividerProductSoldCount"
+            app:layout_constraintTop_toBottomOf="@+id/labelChatPerformance"
+            app:typographyType="display_3" />
+
+        <View
+            android:id="@+id/dividerChatPerformance"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="12dp"
+            android:background="@color/Unify_NN50"
+            app:layout_constraintBottom_toBottomOf="@id/tpgChatPerformance"
+            app:layout_constraintStart_toEndOf="@id/tpgChatPerformance"
+            app:layout_constraintTop_toTopOf="@id/labelChatPerformance" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/labelOrderProcessTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintStart_toEndOf="@id/dividerChatPerformance"
+            app:layout_constraintTop_toBottomOf="@+id/tpgSectionTitleShopPerformance"
+            app:typographyType="display_2"
+            tools:text="> 1 menit" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgOrderProcessDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Pesanan diproses"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintStart_toEndOf="@id/dividerChatPerformance"
+            app:layout_constraintTop_toBottomOf="@+id/labelOrderProcessTime"
+            app:typographyType="display_3" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpgSectionTitleShopNotes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -656,7 +749,7 @@
             android:textColor="@color/Unify_NN950"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tpgSectionTitleShopPerformance"
+            app:layout_constraintTop_toBottomOf="@+id/tpgProductSoldCount"
             app:typographyType="display_1"
             app:typographyWeight="bold" />
 
@@ -678,6 +771,19 @@
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgShopDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tpgSectionTitleShopDescription"
+            app:typographyType="display_3"
+            tools:text="Lorem ipsum dolor sit amet" />
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpgSectionTitleShopShopSupportedShipment"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -690,10 +796,47 @@
             android:textColor="@color/Unify_NN950"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tpgSectionTitleShopDescription"
+            app:layout_constraintTop_toBottomOf="@+id/tpgShopDescription"
             app:typographyType="display_1"
             app:typographyWeight="bold" />
 
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/labelShopSupportedShipment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Durasi dihitung sejak barang diserahkan ke kurir"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tpgSectionTitleShopShopSupportedShipment"
+            app:typographyType="display_3" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewShopSupportedShipment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/labelShopSupportedShipment" />
+
+        <View
+            android:id="@+id/dividerShopSupportedShipment"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/Unify_NN50"
+            android:layout_marginTop="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recyclerViewShopSupportedShipment" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpgReportShop"
@@ -706,9 +849,9 @@
             android:paddingVertical="12dp"
             android:text="Toko ini bermasalah? Laporkan Di Sini"
             android:textColor="@color/Unify_NN950"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dividerShopSupportedShipment"
             app:typographyType="paragraph_3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
