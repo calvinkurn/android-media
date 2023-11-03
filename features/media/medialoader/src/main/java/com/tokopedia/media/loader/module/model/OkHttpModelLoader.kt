@@ -71,6 +71,7 @@ internal class CustomOkHttpStreamFetcher constructor(
 
         if (response.isSuccessful) {
             val endTime = System.currentTimeMillis()
+            val mContentType = response.body?.contentType()
 
             // expose headers for MediaListenerBuilder.
             if (FeatureToggleManager.instance().shouldAbleToExposeResponseHeader(context)) {
@@ -84,7 +85,7 @@ internal class CustomOkHttpStreamFetcher constructor(
                 url = response.request.url.toString()
                 requestLoadTime = (endTime - startTime).toString()
                 fileSize = response.body?.contentLength()?.toString() ?: "0"
-                contentType = response.body?.contentType()?.subtype.toString()
+                contentType = "${mContentType?.type}/${mContentType?.subtype}"
             }
         }
     }

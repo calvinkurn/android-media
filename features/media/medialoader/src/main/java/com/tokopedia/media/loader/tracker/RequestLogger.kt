@@ -36,7 +36,7 @@ object RequestLogger : BaseLogger {
             "source_id" to sourceId,
             "file_size" to param.fileSize,
             "load_time" to param.requestLoadTime,
-            "content_type" to param.prettyContentType(),
+            "content_type" to param.contentType,
             "quality_setting" to qualitySetting,
             "connection_type" to connectionType,
         )
@@ -60,7 +60,5 @@ object RequestLogger : BaseLogger {
     ) {
 
         fun isEligible() = url.isNotEmpty() && url.isFromInternalCdnImageUrl()
-
-        fun prettyContentType() = "image/$contentType"
     }
 }
