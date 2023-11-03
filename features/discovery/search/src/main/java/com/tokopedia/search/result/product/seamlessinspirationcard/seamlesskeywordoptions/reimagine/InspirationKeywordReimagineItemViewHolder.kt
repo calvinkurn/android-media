@@ -80,17 +80,21 @@ class InspirationKeywordReimagineItemViewHolder(
 
     private fun setTitleKeyword(inspirationKeywordDataView: InspirationKeywordDataView) {
         val titleTextView = binding?.searchInspirationKeywordReimagineKeyword
+        val isFunneling = type.isFunneling()
         titleTextView?.isSingleLine = type.isSingleLine()
-        titleTextView?.text =
-            if (type.isFunneling()) {
-                inspirationKeywordDataView.keyword.toSpanTitle()
-            } else
-                inspirationKeywordDataView.keyword
+        titleTextView?.text = inspirationKeywordDataView.keyword.generateTitleText(isFunneling)
     }
 
-    private fun String.toSpanTitle() : SpannableString {
+    private fun String.generateTitleText(isFunneling: Boolean) : CharSequence {
+        val startIndex = this.indexOf(searchTerm, ignoreCase = true)
+        return if(!isFunneling || startIndex <= 0) {
+            this
+        } else {
+            this.toSpanTitle(startIndex)
+        }
+    }
+    private fun String.toSpanTitle(startIndex: Int) : SpannableString {
         val textKeyword = this
-        val startIndex = textKeyword.indexOf(searchTerm, ignoreCase = true)
         val highlightedTitle = SpannableString(textKeyword)
         highlightedTitle.setSpan(
             getBoldStyle(itemView.context),

@@ -53,7 +53,8 @@ class InspirationKeywordViewHolder(
     private fun initCardView() {
         val cardView = binding?.cardViewInspirationKeywordOptions
         cardView?.cardType = CardUnify2.TYPE_SHADOW
-        cardView?.setMargin(-12, 0, -12, 0)
+        cardView?.useCompatPadding = true
+        cardView?.setMargin(0, 0, 0, 0)
     }
 
     private fun InspirationKeywordDataView.doImpressedTracker() {
