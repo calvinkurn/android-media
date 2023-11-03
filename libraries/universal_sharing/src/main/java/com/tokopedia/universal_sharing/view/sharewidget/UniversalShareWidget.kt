@@ -48,9 +48,6 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
     private var callback: ShareWidgetCallback? = null
     private var isDirectChannel = false
     private var isAffiliate = false
-    private var channel = ""
-    var shareColorIcon: Int? = null
-
     // properties for generation link
     private var linkProperties: LinkShareWidgetProperties? = null
 
@@ -83,9 +80,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
         context.theme.obtainStyledAttributes(
             attrs,
             universal_sharingR.styleable.UniversalShareWidget,
-            0,
-            0
-        ).apply {
+            0, 0).apply {
 
             try {
                 channelShareIconId = getInteger(universal_sharingR.styleable.UniversalShareWidget_channel_share, -1)
