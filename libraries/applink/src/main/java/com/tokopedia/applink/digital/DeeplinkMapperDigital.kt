@@ -92,7 +92,7 @@ object DeeplinkMapperDigital {
                 if (!uri.getQueryParameter(PLATFORM_ID_PARAM).isNullOrEmpty()) {
                     ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE
                 } else {
-                    UriUtil.buildUri(ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE_WITH_PARAM, DEFAULT_SUBHOMEPAGE_PLATFORM_ID, false.toString())
+                    UriUtil.buildUri(ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE_WITH_PARAM, DEFAULT_SUBHOMEPAGE_PLATFORM_ID, true.toString())
                 }
             }
             deeplink.startsWith(ApplinkConst.TRAVEL_SUBHOMEPAGE) -> {
