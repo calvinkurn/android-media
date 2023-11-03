@@ -6,6 +6,7 @@ import com.tokopedia.mediauploader.common.data.consts.NETWORK_ERROR
 import com.tokopedia.mediauploader.common.data.consts.TIMEOUT_ERROR
 import com.tokopedia.mediauploader.common.state.UploadResult
 import okhttp3.internal.http2.StreamResetException
+import timber.log.Timber
 import java.net.SocketTimeoutException
 
 const val ERROR_MAX_LENGTH = 1500
@@ -17,8 +18,10 @@ suspend inline fun request(
     return try {
         execute()
     } catch (e: SocketTimeoutException) {
+        Timber.d(e)
         UploadResult.Error(TIMEOUT_ERROR)
     } catch (e: StreamResetException) {
+        Timber.d(e)
         UploadResult.Error(TIMEOUT_ERROR)
     } catch (e: Exception) {
         val stackTrace = Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()
