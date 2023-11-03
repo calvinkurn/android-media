@@ -3,7 +3,6 @@ package com.tokopedia.mediauploader.common.util
 import android.graphics.BitmapFactory
 import android.text.TextUtils
 import android.webkit.MimeTypeMap
-import com.tokopedia.picker.common.utils.fileExtension
 import java.io.File
 import java.net.URLConnection
 import java.util.concurrent.TimeUnit
@@ -43,13 +42,13 @@ fun String.fileExtension(): String {
 fun isImageFormat(path: String) = getFileFormatByMimeType(
     type = MIME_TYPE_IMAGE,
     path = path,
-    extension = fileExtension(path)
+    extension = path.fileExtension()
 )
 
 fun isVideoFormat(path: String) = getFileFormatByMimeType(
     type = MIME_TYPE_VIDEO,
     path = path,
-    extension = fileExtension(path)
+    extension = path.fileExtension()
 )
 
 fun File.isMaxFileSize(maxFileSize: Int): Boolean {
