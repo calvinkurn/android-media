@@ -78,8 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="pdp_shipment_header_logo, pdp_shipment_header_price, pdp_shipment_header_slash_price, pdp_shipment_chevron"
-            tools:visibility="invisible" />
+            app:constraint_referenced_ids="pdp_shipment_header_logo, pdp_shipment_header_price, pdp_shipment_header_slash_price, pdp_shipment_chevron" />
 
         <LinearLayout
             android:id="@+id/pdp_shipment_container_body"

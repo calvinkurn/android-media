@@ -41,7 +41,7 @@
         app:layout_constraintEnd_toEndOf="@id/pdp_shipment_error_title"
         app:layout_constraintStart_toStartOf="@id/pdp_shipment_error_title"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_error_title"
-        app:typographyType="display_1"
+        app:typographyType="paragraph_2"
         tools:text="Yuk, cari produk lain atau Ganti Alamat." />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
