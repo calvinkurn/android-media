@@ -13,6 +13,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -46,7 +47,10 @@ class DiscoveryTDNBannerViewHolder(
     private var shouldHitService: Boolean = true
 
     init {
-        binding?.tdnBannerView?.setTdnResponseListener(this)
+        binding?.apply {
+            showWidget()
+            tdnBannerView.setTdnResponseListener(this@DiscoveryTDNBannerViewHolder)
+        }
     }
 
     override fun bindView(
@@ -80,6 +84,7 @@ class DiscoveryTDNBannerViewHolder(
             val tdnBanners = categoriesList.firstOrNull()
             if (!tdnBanners.isNullOrEmpty()) {
                 shimmerView.hide()
+                tdnBannerView.show()
                 tdnBannerView.renderTdnBanner(
                     tdnBanners = tdnBanners,
                     cornerRadius = BANNER_CORNER_RADIUS_DP.toPx(),
@@ -103,12 +108,12 @@ class DiscoveryTDNBannerViewHolder(
         owner: LifecycleOwner
     ) {
         if (userSession.isLoggedIn) {
+            if (!shouldHitService) return
+
             viewModel?.componentLiveData?.observe(owner) { component ->
-                if (shouldHitService) {
-                    shouldHitService = false
-                    addHeader(component)
-                    getBannerData(component)
-                }
+                shouldHitService = false
+                addHeader(component)
+                getBannerData(component)
             }
         } else {
             hideWidget()
@@ -146,12 +151,16 @@ class DiscoveryTDNBannerViewHolder(
         }
     }
 
+    private fun DiscoveryTdnBannerViewBinding.showWidget() {
+        headerView.removeAllViews()
+        tdnBannerView.hide()
+        shimmerView.show()
+    }
+
     private fun DiscoveryTdnBannerViewBinding.hideWidget() {
         headerView.removeAllViews()
-        headerView.hide()
         tdnBannerView.hide()
         shimmerView.hide()
-        root.hide()
     }
 
     private fun onTdnBannerFailedLoaded() {
