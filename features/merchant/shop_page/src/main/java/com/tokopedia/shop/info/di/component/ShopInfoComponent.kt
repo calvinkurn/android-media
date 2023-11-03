@@ -3,8 +3,8 @@ package com.tokopedia.shop.info.di.component
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
 import com.tokopedia.shop.info.di.scope.ShopInfoScope
-import com.tokopedia.shop.info.view.activity.ShopInfoActivity
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
+import com.tokopedia.shop.info.view.fragment.ShopInfoReimagineFragment
 import dagger.Component
 
 /**
@@ -14,5 +14,5 @@ import dagger.Component
 @Component(modules = [ShopInfoModule::class], dependencies = [ShopComponent::class])
 interface ShopInfoComponent {
     fun inject(shopInfoFragment: ShopInfoFragment?)
-    fun inject(activity: ShopInfoActivity?)
+    fun inject(shopInfoReimagineFragment: ShopInfoReimagineFragment?)
 }

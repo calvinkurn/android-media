@@ -578,10 +578,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/layoutRating"
             app:layout_constraintTop_toBottomOf="@+id/iconRating"
-            tools:layout_height="102dp">
-
-
-        </LinearLayout>
+            tools:layout_height="102dp"/>
 
         <FrameLayout
             android:id="@+id/layoutReview"
@@ -600,30 +597,7 @@
                 android:layout_height="wrap_content" />
 
         </FrameLayout>
-        <!-- <com.tokopedia.iconunify.IconUnify
-             android:id="@+id/iconRatingFive"
-             android:layout_width="16dp"
-             android:layout_height="16dp"
-             android:layout_marginStart="12dp"
-             app:icon_color_light_enable="@color/Unify_YN300"
-             app:icon_color_night_enable="@color/Unify_YN600"
-             app:icon_name="STAR_FILLED"
-             app:layout_constraintStart_toEndOf="@+id/layoutRating"
-             app:layout_constraintTop_toTopOf="@+id/layoutRating" />
- 
-         <com.tokopedia.unifyprinciples.Typography
-             android:id="@+id/tpgRatingFive"
-             android:layout_width="10dp"
-             android:layout_height="wrap_content"
-             android:text="5"
-             android:textColor="@color/Unify_NN950"
-             app:typographyType="display_2" />
-         
-         <com.tokopedia.unifycomponents.ProgressBarUnify
-             android:id="@+id/progressBarRatingFive"
-             android:layout_width="wrap_content"
-             android:layout_height="4dp"/>-->
-
+        
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpgSectionTitleShopPerformance"
