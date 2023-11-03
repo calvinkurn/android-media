@@ -179,21 +179,18 @@
             app:layout_constraintTop_toBottomOf="@+id/tpgShopInfoLocation"
             app:typographyType="display_3" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tpgShopInfoOpsHour"
+        <LinearLayout
+            android:id="@+id/layoutOperationalHoursContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="16dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/Unify_NN950"
+            tools:layout_height="60dp"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/labelShopInfoOpsHour"
-            app:typographyType="display_2"
-            tools:text="Senin-Rabu, Jumat: 07:00 - 18:00" />
+            app:layout_constraintTop_toBottomOf="@+id/labelShopInfoOpsHour" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/labelShopInfoJoinDate"
@@ -208,7 +205,7 @@
             android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tpgShopInfoOpsHour"
+            app:layout_constraintTop_toBottomOf="@+id/layoutOperationalHoursContainer"
             app:typographyType="display_3" />
 
         <com.tokopedia.unifyprinciples.Typography

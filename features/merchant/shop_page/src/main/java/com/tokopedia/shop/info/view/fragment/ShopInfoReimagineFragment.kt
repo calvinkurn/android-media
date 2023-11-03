@@ -1,9 +1,11 @@
 package com.tokopedia.shop.info.view.fragment
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
@@ -22,8 +24,11 @@ import com.tokopedia.shop.databinding.FragmentShopInfoReimagineBinding
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.component.ShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
+import com.tokopedia.shop.info.view.custom.ShopReviewView
 import com.tokopedia.shop.info.view.model.ShopInfoUiState
 import com.tokopedia.shop.info.view.viewmodel.ShopInfoReimagineViewModel
+import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -33,6 +38,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
     companion object {
         private const val BUNDLE_KEY_SHOP_ID = "shop_id"
+        private const val MARGIN_4_DP = 4
         
         @JvmStatic
         fun newInstance(shopId: String): ShopInfoReimagineFragment {
@@ -145,24 +151,34 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             tpgShopInfoLocation.text = uiState.info.mainLocation
             tpgShopInfoOtherLocation.text = uiState.info.otherLocations.firstOrNull().orEmpty()
             tpgShopInfoOtherLocation.isVisible = true
-
-            val stringBuilder = StringBuilder()
-            uiState.info.operationalHours.map { 
-                val hour = it.key
-                val days = it.value
-                val groupedDays = days.joinToString(separator = ", ", postfix = ": ") { it }
-                
-                stringBuilder.append(groupedDays)
-                stringBuilder.append(": ")
-                stringBuilder.append(hour)
-                stringBuilder.append("\n")
-            }
-            
-            tpgShopInfoOpsHour.text = stringBuilder.toString()
+            renderOperationalHours(uiState.info.operationalHours)
             tpgShopInfoJoinDate.text = uiState.info.shopJoinDate
             tpgShopInfoTotalProduct.text = uiState.info.totalProduct.toString()
         }
     }
+    
+    private fun renderOperationalHours(operationalHours: Map<String, List<String>>) {
+        val linearLayout = binding?.layoutOperationalHoursContainer
+        operationalHours.forEach {
+            val hour = it.key
+            val days = it.value
+            val groupedDays = days.joinToString(separator = ", ", postfix = ": ") { it }
+            
+            val textViewOperationalHour = Typography(context ?: return).apply {
+                val params = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                params.topMargin = MARGIN_4_DP.toPx()
+                layoutParams = params
+            }
+            
+            textViewOperationalHour.text = groupedDays + hour
+            linearLayout?.addView(textViewOperationalHour)
+        }
+        
+    }
+    
     private fun renderShopPharmacy(uiState: ShopInfoUiState) {
         binding?.run {
             tpgShopPharmacyNearestPickup.text = uiState.epharmacy.nearestPickupAddress
