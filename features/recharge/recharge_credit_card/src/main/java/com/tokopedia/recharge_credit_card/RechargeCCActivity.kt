@@ -15,6 +15,7 @@ import com.tokopedia.recharge_credit_card.di.DaggerRechargeCCComponent
 import com.tokopedia.recharge_credit_card.di.RechargeCCComponent
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.iconunify.R as iconunifyR
 
 /*
  * applink production = tokopedia://digital/form?category_id=26&menu_id=169&template=tagihancc
@@ -66,12 +67,12 @@ class RechargeCCActivity : BaseSimpleActivity(), HasComponent<RechargeCCComponen
         setSecureWindowFlag()
         component.inject(this)
 
-        toolbarCreditCard?.addRightIcon(com.tokopedia.common_digital.R.drawable.digital_common_ic_tagihan)
-        toolbarCreditCard?.rightIcons?.let {
-            it[0].setOnClickListener {
-                RouteManager.route(this, ApplinkConst.DIGITAL_ORDER)
-            }
-        }
+//        toolbarCreditCard?.addRightIcon(iconunifyR.drawable.iconunify_list_transaction)
+//        toolbarCreditCard?.rightIcons?.let {
+//            it[0].setOnClickListener {
+//                RouteManager.route(this, ApplinkConst.DIGITAL_ORDER)
+//            }
+//        }
     }
 
     override fun onResume() {
