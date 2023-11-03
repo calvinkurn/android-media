@@ -16,6 +16,9 @@ buildscript {
 android {
     namespace 'com.tokopedia.topads.auto'
     testNamespace 'com.tokopedia.topads.auto.test'
+    buildFeatures{
+        viewBinding true
+    }
 }
 
 dependencies {

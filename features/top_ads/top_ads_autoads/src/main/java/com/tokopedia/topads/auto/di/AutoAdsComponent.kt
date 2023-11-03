@@ -20,5 +20,6 @@ interface AutoAdsComponent {
     fun inject(autoAdsOnboardingFragment: AutoAdsOnboardingFragScreen1)
     fun inject(autoAdsOnboardingFragment: AutoAdsOnboardingFragScreen2)
     fun inject(autoAdsOnboardingFragment: AutoAdsOnboardingFragScreen3)
+    fun inject(createAutoPsAdsFragment: CreateAutoPsAdsFragment)
 
 }

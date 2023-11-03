@@ -34,12 +34,17 @@
     <string name="iklankan">Iklankan</string>
     <string name="budget_range">Anggaran Harian</string>
     <string name="auto_ads_creation">Buat Iklan Otomatis</string>
+    <string name="auto_ads_ps_creation">Waktu yang tepat untuk buat iklan!</string>
     <string name="info_text">Sistem TopAds melindungi iklanmu dari klik yang tidak valid. Info Selengkapnya</string>
     <string name="confirmation_switch_manual_description">Dengan Iklan Otomatis, pasti lebih mudah dan cepat untuk promosikan produkmu di halaman teratas.</string>
     <string name="confirmation_switch_manual">Yakin beralih dari Iklan Otomatis?</string>
     <string name="gunakan_iklan_manual">Mulai Iklan Manual</string>
     <string name="cancel_btn">Batalkan</string>
-
+    <string name="topads_auto_ps_set_daily_budget_title">Berapa banyak anggaran harian untuk iklanmu?</string>
+    <string name="topads_auto_ps_set_manual_ads_title">Mau atur iklan dengan strategimu sendiri?</string>
+    <string name="topads_auto_ps_set_manual_ads_cta">Atur Iklan Manual</string>
+    <string name="topads_auto_ps_info_text">Sistem TopAds melindungi iklanmu dari klik yang tidak valid.</string>
+    <string name="topads_auto_ps_info_text_cta">Pelajari Selengkapnya</string>
 
     <!--Auto ads Onboarding-->
     <string name="autoads_lottie_title1">Semakin mudah beriklan</string>

@@ -6,7 +6,7 @@
         <activity
             android:name=".view.activity.CreateAutoAdsActivity"
             android:theme="@style/Theme.WhiteUnify"
-            android:label="@string/auto_ads_creation"
+            android:label="@string/auto_ads_ps_creation"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
