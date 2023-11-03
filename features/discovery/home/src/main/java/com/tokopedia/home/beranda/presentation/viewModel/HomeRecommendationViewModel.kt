@@ -93,13 +93,13 @@ class HomeRecommendationViewModel @Inject constructor(
                 _homeRecommendationCardState.emit(HomeRecommendationCardState.Success(result))
             }
         }, onError = {
-            _homeRecommendationCardState.emit(
-                HomeRecommendationCardState.Fail(
-                    HomeRecommendationDataModel(listOf(HomeRecommendationError(it))),
-                    throwable = it
+                _homeRecommendationCardState.emit(
+                    HomeRecommendationCardState.Fail(
+                        HomeRecommendationDataModel(listOf(HomeRecommendationError(it))),
+                        throwable = it
+                    )
                 )
-            )
-        })
+            })
     }
 
     fun fetchNextHomeRecommendationCard(
@@ -144,15 +144,15 @@ class HomeRecommendationViewModel @Inject constructor(
                     HomeRecommendationCardState.SuccessNextPage(newHomeRecommendationDataModel)
                 )
             }, onError = {
-                existingRecommendationData.remove(loadMoreModel)
+                    existingRecommendationData.remove(loadMoreModel)
 
-                _homeRecommendationCardState.emit(
-                    HomeRecommendationCardState.FailNextPage(
-                        HomeRecommendationDataModel(existingRecommendationData.toList()),
-                        throwable = it
+                    _homeRecommendationCardState.emit(
+                        HomeRecommendationCardState.FailNextPage(
+                            HomeRecommendationDataModel(existingRecommendationData.toList()),
+                            throwable = it
+                        )
                     )
-                )
-            })
+                })
         }
     }
 
@@ -443,20 +443,20 @@ class HomeRecommendationViewModel @Inject constructor(
 
     fun updateWishlist(id: String, position: Int, isWishlisted: Boolean) {
         val homeRecomendationList =
-            _homeRecommendationLiveData.value?.homeRecommendations?.toMutableList()
+            _homeRecommendationLiveData.value?.homeRecommendations?.filterIsInstance<HomeRecommendationItemDataModel>()?.toMutableList()
                 ?: mutableListOf()
         var recommendationItem: HomeRecommendationItemDataModel? = null
         var recommendationItemPosition: Int = -1
         if (homeRecomendationList.getOrNull(position)?.getUniqueIdentity() == id) {
             recommendationItem =
-                homeRecomendationList[position] as HomeRecommendationItemDataModel
+                homeRecomendationList[position]
             recommendationItemPosition = position
         } else {
             homeRecomendationList.withIndex()
-                .find { it.value.getUniqueIdentity() == id && it.value is HomeRecommendationItemDataModel }
+                .find { it.value.getUniqueIdentity() == id }
                 ?.let {
                     recommendationItemPosition = it.index
-                    recommendationItem = (it.value as? HomeRecommendationItemDataModel)
+                    recommendationItem = it.value
                 }
         }
         if (recommendationItemPosition != -1) {

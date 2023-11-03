@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.recommendation_widget_common.widget.entrypointcard.typefactory.RecomEntryPointCardTypeFactory
 
 data class RecomEntryPointCardUiModel(
+    val id: String,
     val title: String,
     val subTitle: String,
     val imageUrl: String,

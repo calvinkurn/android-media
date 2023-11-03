@@ -1,18 +1,11 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 
-class HomeRecommendationLoadMore : HomeRecommendationVisitable {
-    override fun getUniqueIdentity(): Any {
-        return LOADING_ID
-    }
-
-    override fun equalsDataModel(dataModel: Visitable<HomeRecommendationTypeFactoryImpl>): Boolean {
-        return dataModel == this
-    }
-
+data class HomeRecommendationLoadMore(
+    val id: String = LOADING_ID
+) : HomeRecommendationVisitable {
     override fun type(typeFactory: HomeRecommendationTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }

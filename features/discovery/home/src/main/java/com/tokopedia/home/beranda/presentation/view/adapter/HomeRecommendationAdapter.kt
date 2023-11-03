@@ -17,7 +17,7 @@ import com.tokopedia.recommendation_widget_common.widget.entrypointcard.viewhold
 class HomeRecommendationAdapter(
     private val adapterTypeFactory: HomeRecommendationTypeFactoryImpl
 ) : ListAdapter<Visitable<HomeRecommendationTypeFactoryImpl>, AbstractViewHolder<Visitable<*>>>(
-    AsyncDifferConfig.Builder(HomeRecommendationDiffUtil()).build()
+    AsyncDifferConfig.Builder(HomeRecommendationDiffUtil(adapterTypeFactory)).build()
 ) {
 
     override fun onCreateViewHolder(
