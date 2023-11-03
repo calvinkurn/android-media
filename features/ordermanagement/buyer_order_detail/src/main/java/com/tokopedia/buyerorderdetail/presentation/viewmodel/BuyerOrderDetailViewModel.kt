@@ -45,20 +45,20 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder
-import com.tokopedia.tokochat.config.domain.TokoChatChannelUseCase
+import com.tokopedia.tokochat.config.domain.TokoChatCounterUseCase
+import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
 import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -66,7 +66,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -82,7 +82,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private val getBuyerOrderDetailDataUseCase: Lazy<GetBuyerOrderDetailDataUseCase>,
     private val finishOrderUseCase: Lazy<FinishOrderUseCase>,
     private val atcUseCase: Lazy<AddToCartMultiUseCase>,
-    private val tokoChatChannelUseCase: Lazy<TokoChatChannelUseCase>,
+    private val tokoChatGroupBookingUseCase: Lazy<TokoChatGroupBookingUseCase>,
+    private val tokoChatCounterUseCase: Lazy<TokoChatCounterUseCase>,
     private val resourceProvider: Lazy<ResourceProvider>
 ) : ViewModel() {
 
@@ -91,6 +92,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
         private const val DELAY_FINISH_ORDER_RESULT = 2000L
         private const val PRODUCT_LIST_COLLAPSE_DEBOUNCE_TIME = 300L
     }
+
+    private var getBuyerOrderDetailDataJob: Job? = null
 
     private val _finishOrderResult = MutableLiveData<Result<FinishOrderResponse.Data.FinishOrderBuyer>>()
     val finishOrderResult: LiveData<Result<FinishOrderResponse.Data.FinishOrderBuyer>>
@@ -107,12 +110,9 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private val scpRewardsMedalTouchPointWidgetUiState = MutableStateFlow<ScpRewardsMedalTouchPointWidgetUiState>(
         value = ScpRewardsMedalTouchPointWidgetUiState.HasData.Hidden
     )
-    private val buyerOrderDetailDataRequestParams = MutableSharedFlow<GetBuyerOrderDetailDataParams>(
-        replay = Int.ONE
+    private val buyerOrderDetailDataRequestState = MutableStateFlow<GetBuyerOrderDetailDataRequestState>(
+        GetBuyerOrderDetailDataRequestState.Requesting()
     )
-    private val buyerOrderDetailDataRequestState = buyerOrderDetailDataRequestParams.flatMapLatest(
-        ::doGetBuyerOrderDetailData
-    ).toStateFlow(GetBuyerOrderDetailDataRequestState.Requesting())
     private val singleAtcRequestStates = MutableStateFlow<Map<String, AddToCartSingleRequestState>>(mapOf())
     private val productListCollapsed = MutableStateFlow(true)
     private val actionButtonsUiState = buyerOrderDetailDataRequestState.mapLatest(
@@ -172,13 +172,16 @@ class BuyerOrderDetailViewModel @Inject constructor(
         cart: String,
         shouldCheckCache: Boolean
     ) {
-        viewModelScope.launch {
-            buyerOrderDetailDataRequestParams.emit(
-                GetBuyerOrderDetailDataParams(
-                    cart = cart,
-                    orderId = orderId,
-                    paymentId = paymentId,
-                    shouldCheckCache = shouldCheckCache
+        getBuyerOrderDetailDataJob?.cancel()
+        getBuyerOrderDetailDataJob = viewModelScope.launch {
+            buyerOrderDetailDataRequestState.emitAll(
+                getBuyerOrderDetailDataUseCase.get().invoke(
+                    GetBuyerOrderDetailDataParams(
+                        cart = cart,
+                        orderId = orderId,
+                        paymentId = paymentId,
+                        shouldCheckCache = shouldCheckCache
+                    )
                 )
             )
         }
@@ -373,10 +376,6 @@ class BuyerOrderDetailViewModel @Inject constructor(
         initialValue = initialValue
     )
 
-    private suspend fun doGetBuyerOrderDetailData(params: GetBuyerOrderDetailDataParams): Flow<GetBuyerOrderDetailDataRequestState> {
-        return getBuyerOrderDetailDataUseCase.get().invoke(params)
-    }
-
     private fun mapActionButtonsUiState(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
     ): ActionButtonsUiState {
@@ -512,21 +511,21 @@ class BuyerOrderDetailViewModel @Inject constructor(
         source: String
     ) {
         if (chatChannelId.isBlank()) {
-            tokoChatChannelUseCase.get().initGroupBookingChat(
+            tokoChatGroupBookingUseCase.get().initGroupBookingChat(
                 orderId = orderIdGojek,
-                serviceType = tokoChatChannelUseCase.get().getServiceType(source)
+                serviceType = tokoChatGroupBookingUseCase.get().getServiceType(source)
             )
         }
     }
 
     fun getGroupBookingFlow(): SharedFlow<TokoChatResult<String>> {
-        return tokoChatChannelUseCase.get().groupBookingResultFlow
+        return tokoChatGroupBookingUseCase.get().groupBookingResultFlow
     }
 
     fun fetchUnreadCounter(channelId: String) {
         viewModelScope.launch {
             try {
-                tokoChatChannelUseCase.get().fetchUnreadCount(channelId)
+                tokoChatCounterUseCase.get().fetchUnreadCount(channelId)
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
             }
@@ -534,7 +533,6 @@ class BuyerOrderDetailViewModel @Inject constructor(
     }
 
     fun getUnreadCounterFlow(): StateFlow<TokoChatResult<Int>> {
-        return tokoChatChannelUseCase.get().unreadCounterFlow
+        return tokoChatCounterUseCase.get().unreadCounterFlow
     }
-
 }

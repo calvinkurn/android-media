@@ -39,6 +39,11 @@ abstract class ViewModelModule {
     @ViewModelKey(BudgetingAdsViewModel::class)
     internal abstract fun provideBudgetingAdsViewModel(viewModel: BudgetingAdsViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(RecommendationBidViewModel::class)
+    internal abstract fun provideRecommendationBidViewModel(viewModel: RecommendationBidViewModel): ViewModel
+
 
     @Binds
     @IntoMap

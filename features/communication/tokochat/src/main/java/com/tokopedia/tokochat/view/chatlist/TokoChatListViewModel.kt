@@ -1,88 +1,173 @@
 package com.tokopedia.tokochat.view.chatlist
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.distinctUntilChanged
+import android.content.Intent
 import androidx.lifecycle.viewModelScope
 import com.gojek.conversations.babble.channel.data.ChannelType
 import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.BATCH_LIMIT
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
-import com.tokopedia.tokochat.domain.usecase.TokoChatRoomUseCase
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.tokochat.config.util.TokoChatResult
+import com.tokopedia.tokochat.domain.usecase.TokoChatListUseCase
+import com.tokopedia.tokochat.view.chatlist.uistate.TokoChatListErrorUiState
+import com.tokopedia.tokochat.view.chatlist.uistate.TokoChatListNavigationUiState
+import com.tokopedia.tokochat.view.chatlist.uistate.TokoChatListUiState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TokoChatListViewModel @Inject constructor(
-    private val chatRoomUseCase: TokoChatRoomUseCase,
+    private val chatListUseCase: TokoChatListUseCase,
     private val mapper: TokoChatListUiMapper,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
-    private val _chatListPair = MutableLiveData<Map<String, Int>>()
-    val chatListPair: LiveData<Map<String, Int>>
-        get() = _chatListPair
+    private val _actionFlow =
+        MutableSharedFlow<TokoChatListAction>(extraBufferCapacity = 16)
 
-    private val _error = MutableLiveData<Pair<Throwable, String>>()
-    val error: LiveData<Pair<Throwable, String>>
-        get() = _error
+    private val _chatListUiState = MutableStateFlow(TokoChatListUiState())
+    val chatListUiState = _chatListUiState.asStateFlow()
 
-    private val _chatList:
-        MediatorLiveData<Result<List<TokoChatListItemUiModel>>?> = MediatorLiveData()
-    val chatList: LiveData<Result<List<TokoChatListItemUiModel>>?>
-        get() = _chatList.distinctUntilChanged()
+    private val _errorUiState = MutableSharedFlow<TokoChatListErrorUiState>(
+        extraBufferCapacity = 16
+    )
+    val errorUiState = _errorUiState.asSharedFlow()
 
-    fun setupChatListSource() {
+    private val _navigationUiState = MutableSharedFlow<TokoChatListNavigationUiState>(
+        extraBufferCapacity = 16,
+        replay = 0
+    )
+    val navigationUiState = _navigationUiState.asSharedFlow()
+
+    private var chatListJob: Job? = null
+
+    fun setupViewModelObserver() {
+        _actionFlow.process()
+    }
+
+    fun processAction(action: TokoChatListAction) {
         viewModelScope.launch {
-            try {
-                setPaginationTimeStamp(0L) // reset
-                val cachedChannels = chatRoomUseCase.getAllCachedChannels(listOf(ChannelType.GroupBooking))
-                _chatList.addSource(cachedChannels!!) { // expected to use !!
-                    _chatList.value = Success(filterExpiredChannelAndMap(it))
+            _actionFlow.emit(action)
+        }
+    }
+
+    private fun Flow<TokoChatListAction>.process() {
+        onEach {
+            when (it) {
+                is TokoChatListAction.NavigateWithIntent -> {
+                    navigateWithIntent(it.intent)
                 }
+                is TokoChatListAction.NavigateToPage -> {
+                    navigateToPage(it.applink)
+                }
+                TokoChatListAction.RefreshPage -> {
+                    resetChatListData()
+                    observeChatListItemFlow()
+                    fetchLocalChatList()
+                }
+                TokoChatListAction.LoadNextPage -> {
+                    loadNextPageChatList(BATCH_LIMIT)
+                }
+            }
+        }
+            .flowOn(dispatcher.immediate)
+            .launchIn(viewModelScope)
+    }
+
+    private fun observeChatListItemFlow() {
+        if (chatListJob != null) {
+            chatListJob?.cancel()
+        }
+        chatListJob = viewModelScope.launch {
+            try {
+                chatListUseCase.conversationChannelFlow
+                    .collectLatest { result ->
+                        when (result) {
+                            is TokoChatResult.Success -> {
+                                onSuccessGetChatItemList(result.data)
+                            }
+                            is TokoChatResult.Error -> {
+                                _chatListUiState.update {
+                                    it.copy(errorMessage = result.throwable.message.toString())
+                                }
+                            }
+                            TokoChatResult.Loading -> {
+                                _chatListUiState.update {
+                                    it.copy(isLoading = true)
+                                }
+                            }
+                        }
+                    }
             } catch (throwable: Throwable) {
-                _error.value = Pair(throwable, ::setupChatListSource.name)
-                _chatList.value = Fail(throwable)
+                val errorPair = Pair(throwable, ::observeChatListItemFlow.name)
+                _errorUiState.emit(TokoChatListErrorUiState(errorPair))
             }
         }
     }
 
-    fun loadNextPageChatList(
-        localSize: Int = Int.ZERO,
-        isLoadMore: Boolean,
-        onCompleted: (Pair<Boolean, Int?>) -> Unit = {}
-    ) {
+    private fun onSuccessGetChatItemList(channelList: List<ConversationsChannel>) {
+        val filteredChatItemList = filterExpiredChannelAndMap(channelList)
+        val trackerData = if (_chatListUiState.value.page == 0 &&
+            _chatListUiState.value.trackerData == null
+        ) {
+            mapper.mapToTypeCounter(channelList)
+        } else {
+            null
+        }
+        // If local data is not flagged, then this is first load from local DB
+        if (!_chatListUiState.value.localListLoaded) {
+            loadNextPageChatList(channelList.size) // Load the page, then set as true
+        }
+        _chatListUiState.update {
+            it.copy(
+                isLoading = false,
+                chatItemList = it.chatItemList + filteredChatItemList,
+                trackerData = trackerData,
+                errorMessage = null,
+                hasNextPage = it.chatItemList.size <= filteredChatItemList.size,
+                localListLoaded = true
+            )
+        }
+    }
+
+    private fun fetchLocalChatList() {
         viewModelScope.launch {
             try {
+                chatListUseCase.fetchAllCachedChannels(listOf(ChannelType.GroupBooking))
+            } catch (throwable: Throwable) {
+                val errorPair = Pair(throwable, ::fetchLocalChatList.name)
+                _errorUiState.emit(TokoChatListErrorUiState(errorPair))
+            }
+        }
+    }
+
+    private fun loadNextPageChatList(batchSize: Int) {
+        viewModelScope.launch {
+            try {
+                _chatListUiState.update {
+                    it.copy(page = it.page + 1)
+                }
                 withContext(dispatcher.io) {
-                    chatRoomUseCase.getAllChannel(
+                    chatListUseCase.fetchAllChannel(
                         channelTypes = listOf(ChannelType.GroupBooking),
-                        batchSize = getBatchSize(localSize),
-                        onSuccess = {
-                            // Set to -1 to mark as no more data
-                            setPaginationTimeStamp(it.lastOrNull()?.createdAt ?: -1)
-                            if (!isLoadMore) {
-                                emitChatListPairData(channelList = it)
-                            }
-                            onCompleted(Pair(true, it.size))
-                        },
-                        onError = {
-                            it?.let { error ->
-                                _error.postValue(Pair(error, ::loadNextPageChatList.name))
-                            }
-                            onCompleted(Pair(false, null))
-                        }
+                        batchSize = getBatchSize(batchSize)
                     )
                 }
             } catch (throwable: Throwable) {
-                _error.value = Pair(throwable, ::loadNextPageChatList.name)
+                val errorPair = Pair(throwable, ::loadNextPageChatList.name)
+                _errorUiState.emit(TokoChatListErrorUiState(errorPair))
             }
         }
     }
@@ -95,14 +180,6 @@ class TokoChatListViewModel @Inject constructor(
         }
     }
 
-    private fun setPaginationTimeStamp(newTimeStamp: Long) {
-        chatRoomUseCase.setLastTimeStamp(newTimeStamp)
-    }
-
-    private fun emitChatListPairData(channelList: List<ConversationsChannel>) {
-        _chatListPair.postValue(mapper.mapToTypeCounter(channelList))
-    }
-
     private fun filterExpiredChannelAndMap(
         channelList: List<ConversationsChannel>
     ): List<TokoChatListItemUiModel> {
@@ -113,6 +190,43 @@ class TokoChatListViewModel @Inject constructor(
     }
 
     fun resetChatListData() {
-        _chatList.value = null
+        _chatListUiState.update {
+            it.copy(
+                isLoading = false,
+                chatItemList = listOf(),
+                page = 0,
+                hasNextPage = false,
+                errorMessage = null,
+                trackerData = null
+            )
+        }
+    }
+
+    private fun navigateWithIntent(intent: Intent) {
+        viewModelScope.launch {
+            _navigationUiState.emit(
+                TokoChatListNavigationUiState(
+                    intent = intent,
+                    applink = ""
+                )
+            )
+        }
+    }
+
+    private fun navigateToPage(applink: String) {
+        viewModelScope.launch {
+            _navigationUiState.emit(
+                TokoChatListNavigationUiState(
+                    intent = null,
+                    applink = applink
+                )
+            )
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        chatListJob?.cancel()
+        chatListUseCase.cancel()
     }
 }
