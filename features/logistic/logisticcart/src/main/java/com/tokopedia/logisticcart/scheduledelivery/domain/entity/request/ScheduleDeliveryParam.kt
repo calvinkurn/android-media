@@ -57,7 +57,9 @@ data class ScheduleDeliveryParam(
     @SerializedName("start_date")
     val startDate: String = "",
     @Transient
-    val isRecommend: Boolean = true
+    val isRecommend: Boolean = true,
+    @SerializedName("grouping_state")
+    val groupingState: Int = 0
 ) : GqlParam {
 
     fun toMap() = mapOf(
