@@ -96,6 +96,13 @@ class PartialContentView(
         }
     }
 
+    fun updateUniversalShareWidget(shouldShow: Boolean) {
+        if (shouldShow) {
+            listener.onUniversalShareWidget(binding.universalShareWidget)
+            binding.universalShareWidget.show()
+        }
+    }
+
     private fun renderCampaignInactive(price: String) = with(binding) {
         txtMainPrice.text = price
         textSlashPrice.gone()

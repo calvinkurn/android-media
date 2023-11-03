@@ -78,7 +78,7 @@
         android:id="@+id/fab_detail_pdp"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/txt_main_price"
         app:layout_constraintTop_toTopOf="@+id/txt_main_price"
         app:layout_constraintEnd_toStartOf="@id/universal_share_widget"
@@ -86,9 +86,11 @@
 
     <com.tokopedia.universal_sharing.view.customview.UniversalShareWidget
         android:id="@+id/universal_share_widget"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_width="32dp"
         app:channel_share="WHATSAPP"
+        android:layout_marginEnd="12dp"
+        app:layout_goneMarginEnd="4dp"
         app:layout_constraintBottom_toBottomOf="@+id/txt_main_price"
         app:layout_constraintTop_toTopOf="@+id/txt_main_price"
         app:layout_constraintEnd_toEndOf="parent"

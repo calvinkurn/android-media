@@ -336,23 +336,23 @@ interface ShareWidgetCallback {
     /**
      * this method will be invoked when failed create share link url
      */
-    fun onErrorCreateUrl(error: LinkerError)
+    fun onErrorCreateUrl(error: LinkerError) {}
 
     /**
      * this method will be invoked when successfully create share link url
      */
-    fun onSuccessCreateUrl(result: LinkerShareResult)
+    fun onSuccessCreateUrl(result: LinkerShareResult) {}
 
     /**
      * this method will be invoked when show normal share icon instead of channel icon (WA, Telegram, and etc)
      * and should show [com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet]
      */
-    fun onShowNormalBottomSheet()
+    fun onShowNormalBottomSheet() {}
 
     /**
      * @param isAffiliate will return true if eligible for affiliate
      * @param isDirectChannel will return true if showing channel icon (WA, Telegram, and etc)
      */
-    fun onClickShareWidget(id: String, channel: String, isAffiliate: Boolean, isDirectChannel: Boolean)
+    fun onClickShareWidget(id: String, channel: String, isAffiliate: Boolean, isDirectChannel: Boolean) {}
 }
 
