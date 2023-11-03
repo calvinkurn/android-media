@@ -30,17 +30,11 @@ class BalanceWidgetShimmerViewHolder (
     override fun bind(element: BalanceShimmerModel) {
         if ((itemView.context.isDarkMode() && homeThematicUtil.isDefault()) || homeThematicUtil.isDarkMode()) {
             binding?.dividerBalance?.setBackgroundColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_NN100)
-                )
+                homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN100)
             )
         } else {
             binding?.dividerBalance?.setBackgroundColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_NN50)
-                )
+                homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN50)
             )
         }
     }
