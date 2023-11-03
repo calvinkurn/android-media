@@ -25,55 +25,12 @@ class CatalogShareUtil(
     private val fragment: Fragment,
     private val shareProperties: ShareProperties
 ): ShareBottomsheetListener {
+
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector: ScreenshotDetector? = null
     private var userId: String = ""
 
-    fun showNativeShare(linkerShareData: LinkerShareData) {
-        CatalogDetailAnalytics.sendEvent(
-            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-            CatalogDetailAnalytics.ActionKeys.CLICK_SHARE,
-            "${shareProperties.title} - ${shareProperties.catalogId}",
-            userId,
-            shareProperties.catalogId
-        )
-        CatalogUtil.shareData(
-            fragment.activity,
-            linkerShareData.linkerData.description,
-            linkerShareData.linkerData.uri
-        )
-    }
-
-    fun showUniversalShareBottomSheet(userId: String) {
-        this.userId = userId
-        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            init(this@CatalogShareUtil)
-            setUtmCampaignData(
-                CatalogConstant.CATALOG,
-                userId,
-                shareProperties.catalogId,
-                CatalogConstant.CATALOG_SHARE
-            )
-            setMetaData(
-                "${CatalogConstant.KATALOG} ${shareProperties.title}",
-                shareProperties.images.firstOrNull().orEmpty(),
-                "",
-                ArrayList(shareProperties.images)
-            )
-            setOgImageUrl(shareProperties.images.firstOrNull().orEmpty())
-        }
-        universalShareBottomSheet?.show(
-            fragment.childFragmentManager,
-            fragment,
-            screenshotDetector
-        )
-        if (universalShareBottomSheet?.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET) {
-            CatalogUniversalShareAnalytics.shareBottomSheetAppearGTM(shareProperties.catalogId, userId)
-        }
-    }
-
-    private fun linkerDataMapper(catalogId: String): LinkerShareData {
+    private fun createLinkerShareData(catalogId: String): LinkerShareData {
         val linkerData = LinkerData()
         linkerData.id = catalogId
         linkerData.type = LinkerData.CATALOG_TYPE
@@ -84,25 +41,6 @@ class CatalogShareUtil(
         val linkerShareData = LinkerShareData()
         linkerShareData.linkerData = linkerData
         return linkerShareData
-    }
-
-    override fun onShareOptionClicked(shareModel: ShareModel) {
-        val linkerShareData = linkerDataMapper(shareProperties.catalogId)
-        linkerShareData.linkerData.apply {
-            feature = shareModel.feature
-            channel = shareModel.channel
-            campaign = shareModel.campaign
-            isThrowOnError = false
-            if (shareModel.ogImgUrl?.isNotEmpty() == true) {
-                ogImageUrl = shareModel.ogImgUrl
-            }
-        }
-        CatalogUniversalShareAnalytics.sharingChannelSelectedGTM(
-            shareModel.channel.orEmpty(),
-            shareProperties.catalogId,
-            userId
-        )
-        executeShare(linkerShareData, shareModel)
     }
 
     private fun executeShare(linkerShareData: LinkerShareData, shareModel: ShareModel) {
@@ -137,7 +75,71 @@ class CatalogShareUtil(
         )
     }
 
+    fun showNativeShare(linkerShareData: LinkerShareData) {
+        CatalogDetailAnalytics.sendEvent(
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_SHARE,
+            "${shareProperties.title} - ${shareProperties.catalogId}",
+            userId,
+            shareProperties.catalogId
+        )
+        CatalogUtil.shareData(
+            fragment.activity,
+            linkerShareData.linkerData.description,
+            linkerShareData.linkerData.uri
+        )
+    }
+
+    fun showUniversalShareBottomSheet(userId: String) {
+        this.userId = userId
+        CatalogUniversalShareAnalytics.navBarShareButtonClickedGTM(shareProperties.catalogId, userId)
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(this@CatalogShareUtil)
+            setUtmCampaignData(
+                CatalogConstant.CATALOG,
+                userId,
+                shareProperties.catalogId,
+                CatalogConstant.CATALOG_SHARE
+            )
+            setMetaData(
+                "${CatalogConstant.KATALOG} ${shareProperties.title}",
+                shareProperties.images.firstOrNull().orEmpty(),
+                "",
+                ArrayList(shareProperties.images)
+            )
+            setOgImageUrl(shareProperties.images.firstOrNull().orEmpty())
+        }
+        universalShareBottomSheet?.show(
+            fragment.childFragmentManager,
+            fragment,
+            screenshotDetector
+        )
+        if (universalShareBottomSheet?.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET) {
+            CatalogUniversalShareAnalytics.shareBottomSheetAppearGTM(shareProperties.catalogId, userId)
+        }
+    }
+
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+        val linkerShareData = createLinkerShareData(shareProperties.catalogId)
+        linkerShareData.linkerData.apply {
+            feature = shareModel.feature
+            channel = shareModel.channel
+            campaign = shareModel.campaign
+            isThrowOnError = false
+            if (shareModel.ogImgUrl?.isNotEmpty() == true) {
+                ogImageUrl = shareModel.ogImgUrl
+            }
+        }
+        CatalogUniversalShareAnalytics.sharingChannelSelectedGTM(
+            shareModel.channel.orEmpty(),
+            shareProperties.catalogId,
+            userId
+        )
+        executeShare(linkerShareData, shareModel)
+    }
+
     override fun onCloseOptionClicked() {
-        // no-op
+        CatalogUniversalShareAnalytics.dismissShareBottomSheetGTM(shareProperties.catalogId, userId)
     }
 }
