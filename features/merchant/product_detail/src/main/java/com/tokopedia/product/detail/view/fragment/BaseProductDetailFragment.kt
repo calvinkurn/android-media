@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.data.model.pdplayout.CacheState
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.util.CenterLayoutManager
@@ -86,8 +87,9 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         observeData()
     }
 
-    fun submitInitialList(visitables: List<DynamicPdpDataModel>) {
+    fun submitInitialList(visitables: List<DynamicPdpDataModel>, cacheState: CacheState?) {
         hideSwipeLoading()
+        recordPerformanceTrace(visitables, true, cacheState)
 
         rvPdp?.post {
             productAdapter?.submitList(visitables)
@@ -96,23 +98,43 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     fun submitList(visitables: List<DynamicPdpDataModel>) {
         rvPdp?.post {
-            var position = 0
-            (getRecyclerView()?.layoutManager as? CenterLayoutManager)?.let { layoutManager ->
-                val lastVisibleItemPosition = IntArray(layoutManager.getSpanCount())
-                layoutManager.findLastVisibleItemPositions(lastVisibleItemPosition)
-                val lastVisibleItemPositionSpan0 = lastVisibleItemPosition[0]
-                val lastVisibleItemPositionSpan1 = lastVisibleItemPosition[1]
-                position = lastVisibleItemPositionSpan1
-            }
-            if (position >= 0) {
-                getProductDetailActivity()?.getBlocksPerformanceMonitoring()?.setBlock(
-                    visitables.take(
-                        position
-                    )
-                )
-            }
+            recordPerformanceTrace(visitables, false)
             productAdapter?.submitList(visitables)
         }
+    }
+
+    private fun recordPerformanceTrace(
+        visitables: List<DynamicPdpDataModel>,
+        intialList: Boolean,
+        cacheState: CacheState? = null
+    ) {
+        var position = 0
+        (getRecyclerView()?.layoutManager as? CenterLayoutManager)?.let { layoutManager ->
+            val lastVisibleItemPosition = IntArray(layoutManager.getSpanCount())
+            layoutManager.findLastVisibleItemPositions(lastVisibleItemPosition)
+            val lastVisibleItemPositionSpan0 = lastVisibleItemPosition[0]
+            val lastVisibleItemPositionSpan1 = lastVisibleItemPosition[1]
+            position = lastVisibleItemPositionSpan1
+        }
+        var visitablesForPerf = visitables
+        if (!intialList) {
+            visitables.take(
+                position
+            )
+        }
+        val blockIdentifier = if (cacheState?.isFromCache == true) {
+            "cache"
+        } else if (cacheState?.isPrefetch == true) {
+            "prefetch"
+        } else {
+            "network"
+        }
+
+        getProductDetailActivity()?.getBlocksPerformanceMonitoring()?.setBlock(
+            visitablesForPerf,
+            blockIdentifier,
+            5
+        )
     }
 
     fun showLoading() {

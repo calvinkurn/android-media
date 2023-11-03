@@ -81,7 +81,7 @@ class BlocksPerformanceTrace(
         emit(performanceBlocksTemp.size)
     }.stateIn(scope, SharingStarted.WhileSubscribed(5000), 0)
 
-    var onBlocksRendered: ((summaryModel: BlocksSummaryModel, capturedBlocks: Set<String>, elapsedTime: Long) -> Unit)? = null
+    var onBlocksRendered: ((summaryModel: BlocksSummaryModel, capturedBlocks: Set<String>, elapsedTime: Long, identifier: String) -> Unit)? = null
 
     enum class BlocksPerfState {
         STATE_ERROR,
@@ -134,9 +134,6 @@ class BlocksPerformanceTrace(
 
             performanceTraceJob = scope.launch(Dispatchers.IO) {
                 perfBlockFlow.collect {
-                    val currentElapsedTime = System.currentTimeMillis() - startCurrentTimeMillis
-                    onBlocksRendered?.invoke(summaryModel.get(), atomicPerformanceBlocks.get(), currentElapsedTime)
-                    Log.d("FikryPerf", "ElapsedTime: $currentElapsedTime")
                     if (!ttflMeasured && TTFLperformanceMonitoring != null && it >= FINISHED_LOADING_TTFL_BLOCKS_THRESHOLD) {
                         measureTTFL(atomicPerformanceBlocks.get())
                         endAsyncSystraceSection("PageLoadTime.AsyncTTFL$traceName", COOKIE_TTFL)
@@ -211,10 +208,22 @@ class BlocksPerformanceTrace(
         }
     }
 
-    fun setBlock(list: List<Any>) {
-        if (list.allLoadableComponentFinished()) {
+    fun setBlock(list: List<Any>, identifier: String = "", blockLimit: Int = 0) {
+        if (list.allLoadableComponentFinished() && list.size >= blockLimit) {
             setLoadableComponentListPerformanceBlocks(
                 list.getFinishedLoadableComponent()
+            )
+        }
+        val allFinishedLoadableComponent = list.filter { it is LoadableComponent && !it.isLoading() }
+        viewHierarchyInUsableState {
+            val currentElapsedTime = System.currentTimeMillis() - startCurrentTimeMillis
+            onBlocksRendered?.invoke(
+                summaryModel.get(),
+                allFinishedLoadableComponent.map {
+                    (it as? LoadableComponent)?.name() ?: ""
+                }.toSet(),
+                currentElapsedTime,
+                identifier
             )
         }
     }

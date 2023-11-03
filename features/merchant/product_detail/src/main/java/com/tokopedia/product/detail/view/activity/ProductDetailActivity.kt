@@ -100,7 +100,9 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     private var productDetailComponent: ProductDetailComponent? = null
     private var campaignId: String? = null
     private var variantId: String? = null
-    private var prefetchTime = 0L
+    private var prefetchDuration = 0L
+    private var cacheDuration = 0L
+    private var p1NetworkDuration = 0L
 
     // Performance Monitoring
     var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -352,6 +354,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         finish()
     }
 
+    var blocksIdentifier = ""
     private fun initBlocksPLTMonitoring() {
         prefetchPerformanceMonitoring?.startTrace(PREFETCH_PERF_TRACE_NAME)
         blocksPerformanceTrace = BlocksPerformanceTrace(
@@ -363,13 +366,18 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
             if (summaryModel.ttil() != 0L) {
                 Toaster.build(
                     view = findViewById<View>(android.R.id.content).getRootView(),
-                    text = "PDP Perf\n TTIL=${summaryModel.ttil()}\n Prefetch=$prefetchTime",
+                    text = "PDP PERFORMANCE\n " +
+                        "TTIL=${summaryModel.ttil()}" +
+                        "\n P1 Prefetch=$prefetchDuration " +
+                        "\n P1 Cache=$cacheDuration " +
+                        "\n P1 Network=$p1NetworkDuration " +
+                        "\nTTIL Blocks:${summaryModel.timeToInitialLayout?.capturedBlocks}",
                     duration = Toaster.LENGTH_INDEFINITE
                 ).show()
             }
         }
 
-        blocksPerformanceTrace?.onBlocksRendered = { summaryModel, capturedBlocks, elapsedTime ->
+        blocksPerformanceTrace?.onBlocksRendered = { summaryModel, capturedBlocks, elapsedTime, identifier ->
             Log.d("FikryPerf", "Callback ElapsedTime: $elapsedTime")
             Log.d("FikryPerf", "Callback Blocks: $capturedBlocks")
 
@@ -379,10 +387,32 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
                             "product_media",
                             "social_proof_mini"
                         )
-                ) && prefetchTime == 0L
+                ) && identifier == "prefetch" && prefetchDuration == 0L
             ) {
-                this.prefetchTime = elapsedTime
+                this.prefetchDuration = elapsedTime
                 prefetchPerformanceMonitoring?.stopTrace()
+            }
+
+            if (capturedBlocks.containsAll(
+                    listOf(
+                            "product_content",
+                            "product_media",
+                            "social_proof_mini"
+                        )
+                ) && identifier == "cache" && cacheDuration == 0L
+            ) {
+                this.cacheDuration = elapsedTime
+            }
+
+            if (capturedBlocks.containsAll(
+                    listOf(
+                            "product_content",
+                            "product_media",
+                            "social_proof_mini"
+                        )
+                ) && identifier == "network" && cacheDuration == 0L
+            ) {
+                this.p1NetworkDuration = elapsedTime
             }
         }
     }

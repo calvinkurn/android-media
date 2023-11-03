@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewmodel.product_detail
 
 import com.tokopedia.product.detail.common.ProductDetailPrefetch
+import com.tokopedia.product.detail.common.data.model.pdplayout.CacheState
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
@@ -37,6 +38,9 @@ object PDPMock {
 
         return ProductDetailDataModel(
             layoutData = DynamicProductInfoP1(
+                cacheState = CacheState(
+                    isPrefetch = true
+                ),
                 data = ComponentData(
                     media = listOf(
                         Media(
