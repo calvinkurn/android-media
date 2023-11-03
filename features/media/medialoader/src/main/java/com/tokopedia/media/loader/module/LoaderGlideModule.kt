@@ -10,7 +10,7 @@ import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.module.AppGlideModule
 import com.tokopedia.media.loader.module.model.AdaptiveImageSizeLoader
-import com.tokopedia.media.loader.module.model.M3U8ModelLoaderFactory
+import com.tokopedia.media.loader.module.model.M3U8ModelLoader
 import com.tokopedia.media.loader.module.model.OkHttpModelLoader
 import com.tokopedia.media.loader.utils.FeatureToggleManager
 import java.io.InputStream
@@ -58,7 +58,7 @@ class LoaderGlideModule : AppGlideModule() {
 
         // m3u8 video preview
         if (FeatureToggleManager.instance().glideM3U8ThumbnailLoaderEnabled(context)) {
-            registry.prepend(String::class.java, Bitmap::class.java, M3U8ModelLoaderFactory())
+            registry.prepend(String::class.java, Bitmap::class.java, M3U8ModelLoader.Factory())
         }
     }
 
