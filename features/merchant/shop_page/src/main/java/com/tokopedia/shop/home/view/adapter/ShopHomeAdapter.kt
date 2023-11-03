@@ -105,7 +105,7 @@ open class ShopHomeAdapter(
         holder: AbstractViewHolder<*>,
         position: Int
     ) {
-        if(anyFestivityOnShopHomeWidget() && data[position] == firstNonFestivityUiModel()){
+        if(anyFestivityOnShopHomeWidget() && data.getOrNull(position) == firstNonFestivityUiModel()){
             holder.itemView.setMargin(
                 holder.itemView.marginLeft,
                 DEFAULT_MARGIN_ON_FESTIVITY_BORDER.toPx(),

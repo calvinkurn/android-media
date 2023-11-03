@@ -253,7 +253,6 @@ class ShopPageHeaderViewModelTest {
             ShopPageHeaderMapper.mapToNewShopPageP1HeaderData(
                 shopInfoCoreData = any(),
                 shopPageGetDynamicTabResponse = any(),
-                feedWhitelistData = any(),
                 shopPageHeaderLayoutData = any(),
                 mapOf(),
                 false
