@@ -262,6 +262,7 @@
     <string name="shop_info_location">Lokasi</string>
     <string name="shop_info_placeholder_other_location">%d lainnya</string>
     <string name="shop_info_ops_hour">Jam Operasional</string>
+    <string name="shop_info_placeholder_ops_hour_template">%s:%s</string>
     <string name="shop_info_join_date">Tanggal Bergabung</string>
     <string name="shop_info_total_product">Total produk</string>
 

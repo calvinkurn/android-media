@@ -582,7 +582,7 @@
             tools:layout_height="102dp"/>
 
         <FrameLayout
-            android:id="@+id/layoutReview"
+            android:id="@+id/layoutReviewContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -594,6 +594,7 @@
             tools:layout_height="236dp">
 
             <com.tokopedia.shop.info.view.custom.ShopReviewView
+                android:id="@+id/shopReviewView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -613,7 +614,7 @@
             android:textColor="@color/Unify_NN950"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layoutReview"
+            app:layout_constraintTop_toBottomOf="@+id/layoutReviewContainer"
             app:typographyType="display_1"
             app:typographyWeight="bold" />
 
@@ -804,12 +805,14 @@
             app:layout_constraintTop_toBottomOf="@+id/tpgSectionTitleShopShopSupportedShipment"
             app:typographyType="display_3" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewShopSupportedShipment"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/layoutShopSupportedShipmentContainer"
+            android:layout_width="0dp"
+            android:orientation="vertical"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
+            tools:layout_height="220dp"
             android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -823,7 +826,7 @@
             android:background="@color/Unify_NN50"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/recyclerViewShopSupportedShipment" />
+            app:layout_constraintTop_toBottomOf="@id/layoutShopSupportedShipmentContainer" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpgReportShop"
