@@ -7,6 +7,19 @@
     android:layout_height="match_parent"
     android:background="@color/Unify_Background">
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loading"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular"
+        android:elevation="50dp"/>
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/create_auto_bg"
         android:layout_width="match_parent"
@@ -90,7 +103,6 @@
                 android:id="@+id/range_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/range_start"
                 tools:text="Rp25.000"
                 android:textSize="12sp"
                 app:typographyType="display_3"
@@ -103,7 +115,6 @@
                 android:id="@+id/range_end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/range_start"
                 tools:text="Rp10.000.000"
                 android:textSize="12sp"
                 app:typographyType="display_3"
@@ -117,7 +128,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:progress="10"
+                android:progress="0"
                 android:progressTint="@color/Unify_GN200"
                 android:thumb="@drawable/seekbar_thumb"
                 app:layout_constraintTop_toBottomOf="@id/range_start"
@@ -128,7 +139,6 @@
                 android:id="@+id/daily_budget"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:unify_text_field_label="@string/budget_range"
                 android:layout_marginTop="50dp"
                 app:unify_text_field_append_text="@string/topads_common_hari_"
                 app:unify_text_field_prepend_text="Rp"

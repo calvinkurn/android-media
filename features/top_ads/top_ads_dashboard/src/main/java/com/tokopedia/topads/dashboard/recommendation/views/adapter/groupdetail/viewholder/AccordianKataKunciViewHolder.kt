@@ -19,7 +19,8 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.topads.common.data.response.KeywordEditInput
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
-import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.R as topadsdashboardR
+import com.tokopedia.topads.common.R as topadscommonR
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.CONST_2
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.ACTION_CREATE_PARAM
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_MULTIPLIER
@@ -49,12 +50,12 @@ class AccordianKataKunciViewHolder(
 
         inner class KataKunciItemsViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-            private val checkbox : com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify = itemView.findViewById(R.id.checkbox)
-            private val title : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.title)
-            private val searchesCount : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.searches_count_value)
-            private val potentialCount : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.show_potential_value)
-            private val keywordStateType : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.keyword_state_type)
-            private val keywordCost : com.tokopedia.unifycomponents.TextFieldUnify2 = itemView.findViewById(R.id.keyword_cost)
+            private val checkbox : com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify = itemView.findViewById(topadsdashboardR.id.checkbox)
+            private val title : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(topadsdashboardR.id.title)
+            private val searchesCount : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(topadsdashboardR.id.searches_count_value)
+            private val potentialCount : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(topadsdashboardR.id.show_potential_value)
+            private val keywordStateType : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(topadsdashboardR.id.keyword_state_type)
+            private val keywordCost : com.tokopedia.unifycomponents.TextFieldUnify2 = itemView.findViewById(topadsdashboardR.id.keyword_cost)
             fun bind(element: NewPositiveKeywordsRecom) {
                 setTextChangeListener(element)
                 bindValues(element)
@@ -75,7 +76,7 @@ class AccordianKataKunciViewHolder(
                         if(errorMsg.isEmpty()){
                             keywordCost.isInputError = false
                             if(bid == element.suggestionBid) {
-                                keywordCost.setMessage(getString(R.string.biaya_optimal))
+                                keywordCost.setMessage(getString(topadsdashboardR.string.biaya_optimal))
                             } else {
                                 keywordCost.setMessage(getClickableString(element,keywordCost))
                             }
@@ -96,14 +97,14 @@ class AccordianKataKunciViewHolder(
                 title.text = element.keywordTag
                 searchesCount.text = HtmlCompat.fromHtml(
                     String.format(
-                        getString(R.string.topads_dashboard_times_per_month_template),
+                        getString(topadsdashboardR.string.topads_dashboard_times_per_month_template),
                         element.totalSearch
                     ),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
                 potentialCount.text = HtmlCompat.fromHtml(
                     String.format(
-                        getString(R.string.topads_dashboard_times_per_day_value),
+                        getString(topadsdashboardR.string.topads_dashboard_times_per_day_value),
                         element.predictedImpression
                     ),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
@@ -111,7 +112,7 @@ class AccordianKataKunciViewHolder(
                 if(keywordCost.editText.text.isNullOrEmpty())
                     keywordCost.editText.setText(element.suggestionBid.toString())
                 if (element.keywordType == KEYWORD_TYPE_POSITIVE_PHRASE) {
-                    keywordStateType.text = getString(R.string.wide)
+                    keywordStateType.text = getString(topadsdashboardR.string.wide)
                     keywordStateType.setBackgroundColor(
                         ContextCompat.getColor(
                             itemView.context,
@@ -119,7 +120,7 @@ class AccordianKataKunciViewHolder(
                         )
                     )
                 } else {
-                    keywordStateType.text = getString(R.string.specific)
+                    keywordStateType.text = getString(topadsdashboardR.string.specific)
                     keywordStateType.setBackgroundColor(
                         ContextCompat.getColor(
                             itemView.context,
@@ -149,7 +150,7 @@ class AccordianKataKunciViewHolder(
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KataKunciItemsViewHolder {
             return KataKunciItemsViewHolder(
                 LayoutInflater.from(parent.context).inflate(
-                    R.layout.topads_insights_accordian_kata_kunci_item_layout,
+                    topadsdashboardR.layout.topads_insights_accordian_kata_kunci_item_layout,
                     parent,
                     false
                 )
@@ -166,8 +167,8 @@ class AccordianKataKunciViewHolder(
     }
 
     private val adapter by lazy { KataKunciItemsAdapter() }
-    private val kataKunciRv: RecyclerView = itemView.findViewById(R.id.kataKunciRv)
-    private val selectAllCheckbox: com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify = itemView.findViewById(R.id.selectAllCheckbox)
+    private val kataKunciRv: RecyclerView = itemView.findViewById(topadsdashboardR.id.kataKunciRv)
+    private val selectAllCheckbox: com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify = itemView.findViewById(topadsdashboardR.id.selectAllCheckbox)
     private var topadsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput? = null
     private var maxBid: Int? = Int.ZERO
     private var minBid: Int? = Int.ZERO
@@ -303,11 +304,11 @@ class AccordianKataKunciViewHolder(
 
     private fun validateKataKunciBid(bid: Int): String{
         return if(bid < minBid.toZeroIfNull())
-            String.format(getString(R.string.topads_insight_min_bid_error_msg_format), minBid.toZeroIfNull())
+            String.format(getString(topadscommonR.string.topads_min_bid_error_msg_format), minBid.toZeroIfNull())
         else if(bid > maxBid.toZeroIfNull())
-            String.format(getString(R.string.topads_insight_max_bid_error_msg_format), maxBid.toZeroIfNull())
+            String.format(getString(topadscommonR.string.topads_max_bid_error_msg_format), maxBid.toZeroIfNull())
         else if(bid % INSIGHT_MULTIPLIER != Int.ZERO)
-            getString(R.string.error_bid_not_multiple_50)
+            getString(topadsdashboardR.string.error_bid_not_multiple_50)
         else String.EMPTY
     }
 
@@ -326,7 +327,7 @@ class AccordianKataKunciViewHolder(
         keywordCost: TextFieldUnify2
     ): SpannableString {
         val msg = String.format(
-            getString(R.string.topads_insight_recommended_bid_apply),
+            getString(topadsdashboardR.string.topads_insight_recommended_bid_apply),
             element.suggestionBid
         )
         val ss = SpannableString(msg)
@@ -349,6 +350,6 @@ class AccordianKataKunciViewHolder(
     }
 
     companion object {
-        val LAYOUT = R.layout.top_ads_accordian_kata_kunci_layout
+        val LAYOUT = topadsdashboardR.layout.top_ads_accordian_kata_kunci_layout
     }
 }

@@ -23,9 +23,9 @@
 
     //Ad Create Auto
     <string name="tip_title">Tips anggaran harian</string>
-    <string name="tip_desc_1">Semakin tinggi anggaran harian, semakin besar potensi produkmu jangkau lebih banyak pembeli.</string>
-    <string name="tip_desc_2">Anggaran harian hanya akan mengiklankan produk-produkmu yang berpotensi laku.</string>
-    <string name="tip_desc_3">Kamu dapat atur atau hentikan anggaran harian kapan saja!</string>
+    <string name="tip_desc_1">Semakin tinggi anggaran harian, semakin tinggi potensi produkmu diklik atau tokomu dilihat oleh pembeli.</string>
+    <string name="tip_desc_2">Semakin tinggi anggaran harian, semakin banyak produk yang akan diiklankan.</string>
+    <string name="tip_desc_3">Kamu dapat kelola anggaran harian dan menghentikan Iklan Otomatis kapan saja.</string>
     <string name="more_info">https://seller.tokopedia.com/edu/cara-topads-mendeteksi-klik-tampil-yang-tidak-valid/</string>
     <string name="range_start">Rp%d</string>
     <string name="range_end">Rp%d</string>
