@@ -1030,10 +1030,6 @@ class ChatbotFragment2 :
                 RouteManager.route(context, applink)
             }
         }
-
-//        viewModel.typingBlockedState.observe(viewLifecycleOwner) {
-//            handleIsTypingBlocked(it)
-//        }
     }
 
     private fun handleAddAttachmentButtonViewState(toShow: Boolean) {

@@ -13,15 +13,12 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_BALLOON_ACTION
-import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_SEND
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.WebsocketEvent
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
-import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.SESSION_CHANGE
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CHAT_SEPARATOR
@@ -31,7 +28,6 @@ import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_HELPFULL_QUESTI
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_UPDATE_TOOLBAR
 import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceLinkPojo
-import com.tokopedia.chatbot.chatbot2.data.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes
 import com.tokopedia.chatbot.chatbot2.data.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.BigReplyBoxAttribute
 import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.DynamicAttachment
@@ -42,7 +38,6 @@ import com.tokopedia.chatbot.chatbot2.data.livechatdivider.LiveChatDividerAttrib
 import com.tokopedia.chatbot.chatbot2.data.newsession.TopBotNewSessionResponse
 import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyPojo
-import com.tokopedia.chatbot.chatbot2.data.quickreplysend.QuickReplySendAttachmentAttributes
 import com.tokopedia.chatbot.chatbot2.data.ratinglist.ChipGetChatRatingListInput
 import com.tokopedia.chatbot.chatbot2.data.ratinglist.ChipGetChatRatingListResponse
 import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
@@ -237,9 +232,6 @@ class ChatbotViewModel @Inject constructor(
     private val _dynamicAttachmentRejectReasonState = MutableLiveData<ChatbotRejectReasonsState>()
     val dynamicAttachmentRejectReasonState: LiveData<ChatbotRejectReasonsState>
         get() = _dynamicAttachmentRejectReasonState
-//    private val _typingBlockedState = MutableLiveData<Boolean>()
-//    val typingBlockedState: LiveData<Boolean>
-//        get() = _typingBlockedState
 
     // Video Upload Related
     @VisibleForTesting
@@ -574,7 +566,6 @@ class ChatbotViewModel @Inject constructor(
                         ChatDataState.SuccessChatDataState(mappedResponse, chatReplies)
                     )
                 }
-//                checkIsTypingBlockedDataFromExistingChat(response)
             },
             onError = {
                 _existingChatData.postValue(
@@ -584,34 +575,6 @@ class ChatbotViewModel @Inject constructor(
                 )
             }
         )
-    }
-
-    @VisibleForTesting
-    fun checkIsTypingBlockedDataFromExistingChat(data: GetExistingChatPojo) {
-        data.chatReplies.list.forEach { chatRepliesItem ->
-            chatRepliesItem.chats.forEach { chat ->
-                chat.replies.forEach { reply ->
-                    when (reply.attachment.type.toString()) {
-                        TYPE_CHAT_BALLOON_ACTION -> {
-                            val pojoAttribute = GsonBuilder().create().fromJson(
-                                reply.attachment.attributes,
-                                ChatActionBalloonSelectionAttachmentAttributes::class.java
-                            )
-                            if (pojoAttribute.isTypingBlockedOnButtonSelect != null) {
-                                handleTypingBlockState(pojoAttribute.isTypingBlockedOnButtonSelect)
-                            }
-                        }
-                        TYPE_QUICK_REPLY_SEND -> {
-                            val pojoAttribute = GsonBuilder().create().fromJson(
-                                reply.attachment.attributes,
-                                QuickReplySendAttachmentAttributes::class.java
-                            )
-                            handleTypingBlockState(pojoAttribute.isTypingBlocked)
-                        }
-                    }
-                }
-            }
-        }
     }
 
     fun getBottomChat(
@@ -1069,7 +1032,6 @@ class ChatbotViewModel @Inject constructor(
         chatResponse = pojo
 
         mappingSocketEvent(webSocketResponse, messageId)
-//        checkIsTypingBlockedDataFromWebSocket(pojo)
 
         val attachmentType = chatResponse?.attachment?.type
         if (attachmentType != null) {
@@ -1080,31 +1042,6 @@ class ChatbotViewModel @Inject constructor(
                 SESSION_CHANGE -> handleSessionChangeAttachment()
                 DYNAMIC_ATTACHMENT -> handleDynamicAttachment34(pojo)
                 else -> mapToVisitable(pojo)
-            }
-        }
-    }
-
-    @VisibleForTesting
-    fun checkIsTypingBlockedDataFromWebSocket(chatResponse: ChatSocketPojo) {
-        val attachmentType = chatResponse.attachment?.type
-        if (attachmentType != null) {
-            when (attachmentType) {
-                TYPE_CHAT_BALLOON_ACTION -> {
-                    val pojoAttribute = GsonBuilder().create().fromJson(
-                        chatResponse.attachment?.attributes,
-                        ChatActionBalloonSelectionAttachmentAttributes::class.java
-                    )
-                    if (pojoAttribute.isTypingBlockedOnButtonSelect != null) {
-                        handleTypingBlockState(pojoAttribute.isTypingBlockedOnButtonSelect)
-                    }
-                }
-                TYPE_QUICK_REPLY_SEND -> {
-                    val pojoAttribute = GsonBuilder().create().fromJson(
-                        chatResponse.attachment?.attributes,
-                        QuickReplySendAttachmentAttributes::class.java
-                    )
-                    handleTypingBlockState(pojoAttribute.isTypingBlocked)
-                }
             }
         }
     }
