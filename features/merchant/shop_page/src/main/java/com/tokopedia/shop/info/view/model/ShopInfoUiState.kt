@@ -19,7 +19,9 @@ data class ShopInfoUiState(
         otherLocations = listOf(),
         operationalHours = emptyMap(),
         shopJoinDate = "",
-        totalProduct = 0
+        totalProduct = 0,
+        shopUsp = listOf(),
+        showPharmacyLicenseBadge = false
 ),
     val rating: ShopRating = ShopRating(
         detail = emptyList(),

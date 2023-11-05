@@ -9,5 +9,7 @@ data class ShopInfo(
     val otherLocations: List<String>,
     val operationalHours: Map<String, List<String>>,
     val shopJoinDate: String,
-    val totalProduct: Int
+    val totalProduct: Int,
+    val shopUsp: List<String>,
+    val showPharmacyLicenseBadge: Boolean
 )

@@ -16,9 +16,12 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.digitsOnly
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.splitByThousand
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.util.ShopUtil
@@ -39,6 +42,7 @@ import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.domain.entity.ShopSupportedShipment
 import com.tokopedia.shop_widget.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.ProgressBarUnify
 
 class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoComponent> {
 
@@ -132,6 +136,30 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     
 
     private fun handleUiState(uiState: ShopInfoUiState) {
+        val isLoading = uiState.isLoading
+        val isError = uiState.error != null
+        
+        when {
+            isLoading -> {
+                binding?.loader?.visible()
+                binding?.mainContent?.gone()
+                binding?.globalError?.gone()
+            }
+            isError -> {
+                binding?.loader?.gone()
+                binding?.mainContent?.gone()
+                binding?.globalError?.visible()
+            }
+            else -> {
+                binding?.loader?.gone()
+                binding?.mainContent?.visible()
+                binding?.globalError?.gone()
+                renderContent(uiState)
+            }
+        }
+    }
+    
+    private fun renderContent(uiState: ShopInfoUiState) {
         renderShopCoreInfo(uiState)
         renderShopInfo(uiState)
         renderShopPharmacy(uiState)
@@ -158,6 +186,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             
             tpgShopInfoOtherLocation.text = getString(R.string.shop_info_placeholder_other_location, uiState.info.otherLocations.size)
             tpgShopInfoOtherLocation.isVisible = uiState.info.otherLocations.isNotEmpty()
+            iconChevronShopLocation.isVisible = uiState.info.otherLocations.isNotEmpty()
             
             renderOperationalHours(uiState.info.operationalHours)
             tpgShopInfoJoinDate.text = uiState.info.shopJoinDate
@@ -231,13 +260,13 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         if (showRating) {
             val ratingAndReviewText = when {
                 rating.totalRating.isMoreThanZero() && review.totalReviews.isMoreThanZero() -> {
-                    "${rating.totalRatingFmt} rating • ${review.totalReviews.splitByThousand()} ulasan"
+                    getString(R.string.shop_info_placeholder_rating_and_review, rating.totalRatingFmt, review.totalReviews.splitByThousand())
                 }
                 rating.totalRating.isMoreThanZero() -> {
-                    "${rating.totalRatingFmt} rating"
+                    getString(R.string.shop_info_placeholder_rating, rating.totalRatingFmt)
                 }
                 review.totalReviews.isMoreThanZero() -> {
-                    "${review.totalReviews} ulasan"
+                    getString(R.string.shop_info_placeholder_review, review.totalReviews.splitByThousand())
                 }
                 else -> ""
             }
@@ -253,7 +282,8 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         val showRating = rating.totalRating.isMoreThanZero()
         
         binding?.layoutRating?.isVisible = rating.positivePercentageFmt.isNotEmpty()
-        binding?.tpgBuyerSatisfactionPercentage?.text = "${rating.positivePercentageFmt}%"
+        val satisfactionPercentage = rating.positivePercentageFmt.digitsOnly().toInt()
+        binding?.tpgBuyerSatisfactionPercentage?.text = getString(R.string.shop_info_placeholder_discount_percentage, satisfactionPercentage)
 
         binding?.layoutRatingBarContainer?.isVisible = showRating
 
@@ -267,12 +297,12 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
 
             val ratingView = layoutInflater.inflate(R.layout.item_shop_info_rating, binding?.layoutRatingBarContainer, false)
             val tpgRating = ratingView.findViewById<Typography?>(R.id.tpgRating)
-            val progressBarRating = ratingView.findViewById<ProgressBar?>(R.id.progressBarRating)
+            val progressBarRating = ratingView.findViewById<ProgressBarUnify?>(R.id.progressBarRating)
             val tpgTotalRatingNumber = ratingView.findViewById<Typography?>(R.id.tpgTotalRatingNumber)
 
 
             tpgRating.text = rating.rate.toString()
-            progressBarRating.progress = rating.percentageFloat.toInt()
+            progressBarRating.setValue(rating.percentageFloat.toInt()) 
             tpgTotalRatingNumber.text = rating.formattedTotalReviews
 
             binding?.layoutRatingBarContainer?.addView(ratingView)
@@ -339,15 +369,17 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     }
     
     private fun renderShopSupportedShipmentList(shipments: List<ShopSupportedShipment>) {
-        shipments.forEach { shipment ->
+        shipments.forEachIndexed { index, shipment ->
             val shipmentView = layoutInflater.inflate(R.layout.item_shop_info_shipment, binding?.layoutShopSupportedShipmentContainer, false)
             val imgShipment = shipmentView.findViewById<ImageUnify?>(R.id.imgShipment)
             val tpgShipmentName = shipmentView.findViewById<Typography?>(R.id.tpgShipmentName)
             val tpgShipmentServices = shipmentView.findViewById<Typography?>(R.id.tpgShipmentServices)
+            val divider = shipmentView.findViewById<View?>(R.id.dividerShopSupportedShipment)
 
             imgShipment.loadImage(shipment.imageUrl)
             tpgShipmentName.text = shipment.title
             tpgShipmentServices.text = shipment.serviceNames.joinToString(separator = ", ") { it }
+            divider.isVisible = index < (shipments.size - 1)
 
             binding?.layoutShopSupportedShipmentContainer?.addView(shipmentView)
         }

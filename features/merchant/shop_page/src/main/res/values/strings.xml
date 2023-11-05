@@ -278,12 +278,16 @@
 
     <!--Ulasan Pembeli-->
     <string name="shop_info_buyer_review">Ulasan Pembeli</string>
+    <string name="shop_info_placeholder_discount_percentage">%d%%</string>
     <string name="shop_info_rating">rating</string>
     <string name="shop_info_review">ulasan</string>
     <string name="shop_info_buyer_satisfied">pembeli puas</string>
-    <string name="shop_info_complete_review">ulasan lengkap</string>
-    <string name="shop_info_useful_review">terbantu</string>
+    <string name="shop_info_placeholder_complete_review">%d ulasan lengkap</string>
+    <string name="shop_info_placeholder_useful_review">%d terbantu</string>
     <string name="shop_info_more">Selengkapnya</string>
+    <string name="shop_info_placeholder_rating">(%s rating)</string>
+    <string name="shop_info_placeholder_review">(%s ulasan)</string>
+    <string name="shop_info_placeholder_rating_and_review">(%s rating • %s ulasan)</string>
 
     <!--Performa Toko-->
     <string name="shop_info_shop_performance">Performa toko</string>

@@ -22,6 +22,7 @@ import com.tokopedia.shop.info.domain.usecase.ProductRevGetShopReviewReadingList
 import com.tokopedia.shop.info.view.model.ShopInfoUiState
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageHeaderLayoutUseCase
+import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,9 +38,13 @@ class ShopInfoReimagineViewModel @Inject constructor(
     private val getShopRatingUseCase: ProductRevGetShopRatingAndTopicsUseCase,
     private val getShopReviewUseCase: ProductRevGetShopReviewReadingListUseCase,
     private val getShopGqlGetShopOperationalHoursListUseCase: GqlGetShopOperationalHoursListUseCase,
-    private val getShopPageHeaderLayoutUseCase: GetShopPageHeaderLayoutUseCase
+    private val getShopPageHeaderLayoutUseCase: GetShopPageHeaderLayoutUseCase,
+    private val getShopProductUseCase: GqlGetShopProductUseCase,
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
+    companion object {
+        private const val ID_FULFILLMENT_SERVICE_E_PHARMACY = 2
+    }
     private val _uiState = MutableStateFlow(ShopInfoUiState())
     val uiState = _uiState.asStateFlow()
     
@@ -73,36 +78,38 @@ class ShopInfoReimagineViewModel @Inject constructor(
                 val shopNotes = shopNotesDeferred.await()
                 val shopOperationalHours = shopOperationalHoursDeferred.await()
                 
-                val orderProcessTime = shopHeaderLayout.shopPageGetHeaderLayout.toOrderProcessTime()
                 
                 _uiState.update {
                     it.copy(
                         isLoading = false,
+                        error = null,
                         info = ReimagineShopInfo(
                             shopImageUrl = shopInfo.shopAssets.avatar,
                             shopBadgeUrl = shopInfo.goldOS.badge,
                             shopName = shopInfo.shopCore.name,
                             shopDescription = shopInfo.shopCore.description,
                             mainLocation = shopInfo.location,
-                            otherLocations = listOf(),
-                            operationalHours = shopOperationalHours.format(),
+                            otherLocations = listOf(), //TODO replace with real data
+                            operationalHours = shopOperationalHours.toFormattedOperationalHours(),
                             shopJoinDate = shopInfo.createdInfo.openSince,
-                            totalProduct = 2
+                            totalProduct = 2, //TODO replace with real data
+                            shopUsp = shopHeaderLayout.shopPageGetHeaderLayout.toShopUsp(),
+                            showPharmacyLicenseBadge = shouldShowPharmacyLicenseBadge(shopInfo)
                         ),
                         rating = shopRating,
                         review = shopReview,
                         shopPerformance = ShopPerformance(
-                            totalProductSoldCount = "",
-                            chatPerformance = "",
-                            orderProcessTime = orderProcessTime
+                            totalProductSoldCount = "", //TODO replace with real data
+                            chatPerformance = "", //TODO replace with real data
+                            orderProcessTime = shopHeaderLayout.shopPageGetHeaderLayout.toOrderProcessTime()
                         ),
                         shopNotes = shopNotes.toShopNotes(),
                         shipments = shopInfo.shipments.toShipments(),
-                        showEpharmacyInfo = shopInfo.isGoApotik,
+                        showEpharmacyInfo = shouldShowPharmacyLicenseBadge(shopInfo),
                         epharmacy = ShopEpharmacyInfo(
-                            nearestPickupAddress = "",
-                            nearPickupAddressAppLink = "",
-                            pharmacistOperationalHour = "",
+                            nearestPickupAddress = "", //TODO replace with real data
+                            nearPickupAddressAppLink = "", //TODO replace with real data
+                            pharmacistOperationalHour = "", //TODO replace with real data
                             pharmacistName = shopInfo.epharmacyInfo.apj,
                             siaNumber = shopInfo.epharmacyInfo.siaNumber,
                             sipaNumber = shopInfo.epharmacyInfo.sipaNumber,
@@ -118,6 +125,20 @@ class ShopInfoReimagineViewModel @Inject constructor(
         ) 
     }
 
+    fun handleCtaExpandPharmacyInfoClick() {
+        _uiState.update { 
+            it.copy(epharmacy = it.epharmacy.copy(collapseEpcharmacyInfo = false))
+        }
+    }
+    
+    fun handleCtaViewPharmacyMapClick() {
+        //TODO emit event redirect to gmap
+    }
+    
+    fun handleRetryGetShopInfo(shopId: String, localCacheModel: LocalCacheModel) {
+        getShopInfo(shopId, localCacheModel)
+    }
+    
     private suspend fun getShopInfo(shopId: Int): ShopInfo {
         getShopInfoUseCase.isFromCacheFirst = false
         getShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(
@@ -182,29 +203,8 @@ class ShopInfoReimagineViewModel @Inject constructor(
             )
         }
     }
-
-    private fun ShopOperationalHoursListResponse.toFormattedOperationalHours(): Map<String, String> {
-        val operationalHours = mutableMapOf<String, String>()
-        
-        val daysDictionary = mapOf(
-            1 to "Senin",
-            2 to "Selasa",
-            3 to "Rabu",
-            4 to "Kamis",
-            5 to "Jumat",
-            6 to "Sabtu",
-            7 to "Minggu"
-        )
-        
-        getShopOperationalHoursList?.data?.forEach { operationalHour ->
-            val formattedDay = daysDictionary[operationalHour.day].orEmpty()
-            operationalHours[formattedDay] = "${operationalHour.startTime} - ${operationalHour.endTime}"
-        }
-        
-        return operationalHours
-    }
     
-    private fun ShopOperationalHoursListResponse.format(): Map<String, List<String>> {
+    private fun ShopOperationalHoursListResponse.toFormattedOperationalHours(): Map<String, List<String>> {
         val operationalHours = mutableMapOf<String, String>()
 
         val daysDictionary = mapOf(
@@ -224,8 +224,6 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
         val groupedByHours = operationalHours.groupByHours()
         
-       
-
         return groupedByHours
     }
     
@@ -242,6 +240,35 @@ class ShopInfoReimagineViewModel @Inject constructor(
         return textHtmls.firstOrNull().orEmpty()
     }
 
+    private fun ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.toShopUsp(): List<String> {
+        val shopBasicInfo = this.widgets.firstOrNull { it.name == "shop_basic_info" }
+        if (shopBasicInfo == null) return emptyList()
+
+        val shopBasicInfoListComponent = shopBasicInfo.listComponent
+        val shopAttributeList = shopBasicInfoListComponent.firstOrNull { it.name == "shop_attribute_list" }
+        if (shopAttributeList == null) return emptyList()
+
+        val listText = shopAttributeList.data.listText
+        val textHtmls = listText.map { it.textHtml }
+        return textHtmls
+    }
+
+    private fun shouldShowPharmacyLicenseBadge(shopInfo: ShopInfo): Boolean {
+        if (!shopInfo.isGoApotik) {
+            return false
+        }
+
+        val hasPharmacyFulfilmentService = shopInfo.partnerInfo.any { partnerInfo ->
+            partnerInfo.fsType == ID_FULFILLMENT_SERVICE_E_PHARMACY
+        }
+        
+        if (!hasPharmacyFulfilmentService) {
+            return false
+        }
+        
+        return true
+    }
+    
     private fun Map<String, String>.groupByHours(): Map<String, List<String>> {
         return this.entries.groupBy(
             keySelector = { it.value },
