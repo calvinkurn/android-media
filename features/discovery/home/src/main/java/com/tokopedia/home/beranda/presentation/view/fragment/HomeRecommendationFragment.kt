@@ -522,6 +522,7 @@ class HomeRecommendationFragment :
     }
 
     override fun onEntryPointCardClickListener(item: RecomEntryPointCardUiModel, position: Int) {
+        goToProductDetail(item.id, position)
     }
 
     override fun onRetryGetProductRecommendationData() {

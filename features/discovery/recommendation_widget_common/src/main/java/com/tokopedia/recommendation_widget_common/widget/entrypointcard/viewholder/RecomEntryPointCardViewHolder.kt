@@ -3,7 +3,11 @@ package com.tokopedia.recommendation_widget_common.widget.entrypointcard.viewhol
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.view.View
+import android.widget.ImageView
+import android.widget.Space
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -14,6 +18,7 @@ import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomEntryPointCardBinding
 import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
 import com.tokopedia.recommendation_widget_common.widget.entrypointcard.model.RecomEntryPointCardUiModel
+import com.tokopedia.unifycomponents.CardUnify2
 
 class RecomEntryPointCardViewHolder(
     view: View,
@@ -28,6 +33,7 @@ class RecomEntryPointCardViewHolder(
         val LAYOUT = R.layout.item_recom_entry_point_card
 
         private const val mingHeightCard = 320f
+        internal const val SQUARE_IMAGE_RATIO = "1:1"
     }
 
     private val binding = ItemRecomEntryPointCardBinding.bind(itemView)
@@ -41,6 +47,12 @@ class RecomEntryPointCardViewHolder(
         setProductImageUrl(element.imageUrl)
         setLabelTitle(element.labelState)
         setLabelIcon(element.labelState.iconUrl)
+        setupImageRatio(
+            binding.clEntryPointCard,
+            binding.imgEntryPointCard,
+            binding.entryPointCardSpace,
+            SQUARE_IMAGE_RATIO
+        )
         setOnCardClickListener(element)
         setMinHeightEntryPointCard()
     }
@@ -90,7 +102,7 @@ class RecomEntryPointCardViewHolder(
     }
 
     private fun setBackgroundCardColor(bgColor: List<String>) {
-        binding.entryPointCard.setGradientBackground(bgColor)
+        binding.clEntryPointCard.setGradientBackground(bgColor)
     }
 
     private fun setProductName(title: String) {
@@ -106,7 +118,7 @@ class RecomEntryPointCardViewHolder(
     }
 
     private fun setProductImageUrl(productImageUrl: String) {
-        binding.imgProductCard.loadImage(productImageUrl)
+        binding.imgEntryPointCard.loadImage(productImageUrl)
     }
 
     private fun setLabelTitle(labelState: RecomEntryPointCardUiModel.LabelState) {
@@ -141,20 +153,44 @@ class RecomEntryPointCardViewHolder(
         }
     }
 
-    private fun View.setGradientBackground(colorArray: List<String>) {
-        try {
-            if (colorArray.size > Int.ONE) {
-                val colors = IntArray(colorArray.size)
-                for (i in colorArray.indices) {
-                    colors[i] = Color.parseColor(colorArray[i])
-                }
-                val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
-                gradient.cornerRadius = 0f
-                this.background = gradient
-            } else if (colorArray.size == Int.ONE) {
-                this.setBackgroundColor(Color.parseColor(colorArray[0]))
+    private fun ConstraintLayout.setGradientBackground(colorArray: List<String>) {
+        if (colorArray.size > Int.ONE) {
+            val colors = IntArray(colorArray.size)
+            for (i in colorArray.indices) {
+                colors[i] = Color.parseColor(colorArray[i])
             }
-        } catch (e: Exception) {
+            val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
+            gradient.cornerRadius = 0f
+            this.background = gradient
+            this.invalidate()
+        } else if (colorArray.size == Int.ONE) {
+            this.setBackgroundColor(Color.parseColor(colorArray[0]))
+        }
+    }
+
+    private fun setupImageRatio(
+        constraintLayoutEntryPointCard: ConstraintLayout?,
+        imgEntryPointCard: ImageView?,
+        mediaAnchorProduct: Space?,
+        ratio: String
+    ) {
+        constraintLayoutEntryPointCard.applyConstraintSet {
+            imgEntryPointCard?.id?.let { id ->
+                it.setDimensionRatio(id, ratio)
+            }
+            mediaAnchorProduct?.id?.let { id ->
+                it.setDimensionRatio(id, ratio)
+            }
+        }
+    }
+
+    private fun ConstraintLayout?.applyConstraintSet(configureConstraintSet: (ConstraintSet) -> Unit) {
+        this?.let {
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(it)
+            configureConstraintSet(constraintSet)
+            constraintSet.applyTo(it)
         }
     }
 

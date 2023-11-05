@@ -68,7 +68,8 @@ class HomeRecommendationCardMapper @Inject constructor(
                                     position = index,
                                     topAdsImageViewModel = mapToTopAdsImageViewModel(
                                         bannerItemResponse
-                                    )
+                                    ),
+                                    bannerType = TYPE_BANNER_ADS
                                 )
                             )
                         }
@@ -77,10 +78,8 @@ class HomeRecommendationCardMapper @Inject constructor(
             }
         }
 
-        val homeRecommendationVisitableList = convertToHomeRecommendationVisitable(homeRecommendationTypeFactoryImplList)
-
         return HomeRecommendationDataModel(
-            homeRecommendationVisitableList,
+            homeRecommendationTypeFactoryImplList,
             getHomeRecommendationCard.hasNextPage
         )
     }
@@ -93,6 +92,7 @@ class HomeRecommendationCardMapper @Inject constructor(
 
     private fun mapToEntryPointRecommendationCard(recommendationCard: RecommendationCard): RecomEntryPointCardUiModel {
         return RecomEntryPointCardUiModel(
+            id = recommendationCard.id,
             title = recommendationCard.name,
             subTitle = recommendationCard.subtitle,
             imageUrl = recommendationCard.imageUrl,
@@ -107,7 +107,8 @@ class HomeRecommendationCardMapper @Inject constructor(
 
     private fun convertDataJsonToAdsBannerItem(dataStringJson: String): AdsBannerItemResponse? {
         return try {
-            gson.get().fromJson(dataStringJson, AdsBannerItemResponse::class.java)
+            val unescapedJsonString = dataStringJson.replace("\\\"", "\"")
+            gson.get().fromJson(unescapedJsonString, AdsBannerItemResponse::class.java)
         } catch (e: Exception) {
             null
         }
@@ -204,8 +205,10 @@ class HomeRecommendationCardMapper @Inject constructor(
 
     companion object {
         private const val TYPE_PRODUCT = "product"
-        private const val TYPE_BANNER = "banner"
+        const val TYPE_BANNER = "banner"
         private const val TYPE_BANNER_ADS = "banner_ads"
         private const val TYPE_RECOM_CARD = "recom_card"
+
+        const val TYPE_VERTICAL_BANNER_ADS = "banner_ads_vertical"
     }
 }

@@ -2,10 +2,12 @@ package com.tokopedia.home.viewModel.homeRecommendation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.home.beranda.data.mapper.HomeRecommendationCardMapper
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.GetHomeRecommendationCardUseCase
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
 import com.tokopedia.home.ext.observeOnce
@@ -687,7 +689,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 1
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 1)
+                HomeRecommendationBannerTopAdsDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = false
         )
@@ -738,7 +740,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 1
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 1)
+                HomeRecommendationBannerTopAdsDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = false
         )
@@ -787,7 +789,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 1
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 1)
+                HomeRecommendationBannerTopAdsDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = false
         )
@@ -836,7 +838,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 1
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 1)
+                HomeRecommendationBannerTopAdsDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = true
         )
@@ -852,7 +854,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 2
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 1)
+                HomeRecommendationBannerTopAdsDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = true
         )
@@ -934,7 +936,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 2
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 2)
+                HomeRecommendationBannerTopAdsDataModel(position = 2, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = true
         )
@@ -960,7 +962,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 2
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 2)
+                HomeRecommendationBannerTopAdsDataModel(position = 2, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = true
         )
@@ -1041,7 +1043,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 2
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 2)
+                HomeRecommendationBannerTopAdsDataModel(position = 2, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = true
         )
@@ -1067,7 +1069,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 1
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 2)
+                HomeRecommendationBannerTopAdsDataModel(position = 2, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = true
         )
@@ -1244,7 +1246,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 1
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 1)
+                HomeRecommendationBannerTopAdsDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = false
         )
@@ -1302,7 +1304,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 1
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 1)
+                HomeRecommendationBannerTopAdsDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = false
         )
@@ -1362,7 +1364,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 1
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 1),
+                HomeRecommendationBannerTopAdsDataModel(position = 1, bannerType = HomeRecommendationCardMapper.TYPE_BANNER),
                 HomeRecommendationItemDataModel(
                     recommendationProductItem = HomeRecommendationItemDataModel.HomeRecommendationProductItem(
                         id = "12",
@@ -1433,7 +1435,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 1
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 4)
+                HomeRecommendationBannerTopAdsDataModel(position = 4, bannerType = HomeRecommendationCardMapper.TYPE_BANNER)
             ),
             isHasNextPage = false
         )
@@ -1502,7 +1504,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 1
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 2),
+                HomeRecommendationBannerTopAdsDataModel(position = 2, bannerType = HomeRecommendationCardMapper.TYPE_BANNER),
                 HomeRecommendationItemDataModel(
                     recommendationProductItem = HomeRecommendationItemDataModel.HomeRecommendationProductItem(
                         id = "12",
@@ -1572,7 +1574,7 @@ class HomeRecommendationViewModelTest {
                     productCardModel = ProductCardModel(),
                     position = 2
                 ),
-                HomeRecommendationBannerTopAdsDataModel(position = 7),
+                HomeRecommendationBannerTopAdsDataModel(position = 7, bannerType = HomeRecommendationCardMapper.TYPE_BANNER),
                 HomeRecommendationItemDataModel(
                     recommendationProductItem = HomeRecommendationItemDataModel.HomeRecommendationProductItem(
                         id = "12",
@@ -1747,7 +1749,7 @@ class HomeRecommendationViewModelTest {
 
             val productPage = 2
             val homeRecommendationNextDataModel = HomeRecommendationDataModel(
-                listOf<HomeRecommendationVisitable>(
+                listOf<Visitable<HomeRecommendationTypeFactoryImpl>>(
                     HomeRecommendationItemDataModel(
                         productCardModel = ProductCardModel(),
                         recommendationProductItem = HomeRecommendationItemDataModel.HomeRecommendationProductItem()

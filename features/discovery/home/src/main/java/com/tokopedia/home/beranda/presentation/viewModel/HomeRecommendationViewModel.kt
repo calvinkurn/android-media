@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.viewModel
 
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper.Companion.TYPE_BANNER_ADS
@@ -8,8 +9,8 @@ import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper.Companion
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.GetHomeRecommendationCardUseCase
 import com.tokopedia.home.beranda.helper.copy
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -266,7 +267,7 @@ class HomeRecommendationViewModel @Inject constructor(
         topAdsBanner: ArrayList<Pair<String, ArrayList<TopAdsImageViewModel>>>,
         homeBannerTopAds: List<HomeRecommendationBannerTopAdsDataModel>,
         headlineAds: TopAdsHeadlineResponse,
-        newList: MutableList<HomeRecommendationVisitable>
+        newList: MutableList<Visitable<HomeRecommendationTypeFactoryImpl>>
     ) {
         incrementTopadsPage()
         val headlineData = headlineAds.displayAds.data
@@ -447,13 +448,13 @@ class HomeRecommendationViewModel @Inject constructor(
                 ?: mutableListOf()
         var recommendationItem: HomeRecommendationItemDataModel? = null
         var recommendationItemPosition: Int = -1
-        if (homeRecomendationList.getOrNull(position)?.getUniqueIdentity() == id) {
+        if (homeRecomendationList.getOrNull(position)?.recommendationProductItem?.id == id) {
             recommendationItem =
                 homeRecomendationList[position]
             recommendationItemPosition = position
         } else {
             homeRecomendationList.withIndex()
-                .find { it.value.getUniqueIdentity() == id }
+                .find { it.value.recommendationProductItem.id == id }
                 ?.let {
                     recommendationItemPosition = it.index
                     recommendationItem = it.value
