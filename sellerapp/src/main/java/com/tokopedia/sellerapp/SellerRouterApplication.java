@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.newrelic.agent.android.FeatureFlag;
 import com.newrelic.agent.android.NewRelic;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
@@ -156,6 +157,8 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     private void initNewRelicInBackground() {
         Weaver.Companion.executeWeaveCoRoutineNow(() -> {
+            enableNetworkRequestNewRelic();
+            enableCrashReportingNewRelic();
             initNewRelic();
             return true;
         });
@@ -165,6 +168,14 @@ public abstract class SellerRouterApplication extends MainApplication implements
         NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_SA)
                 .start(SellerRouterApplication.this);
         setUserIdNewRelic();
+    }
+
+    private void enableNetworkRequestNewRelic() {
+        NewRelic.enableFeature(FeatureFlag.NetworkRequests);
+    }
+
+    private void enableCrashReportingNewRelic() {
+        NewRelic.enableFeature(FeatureFlag.CrashReporting);
     }
 
     private void setUserIdNewRelic() {
