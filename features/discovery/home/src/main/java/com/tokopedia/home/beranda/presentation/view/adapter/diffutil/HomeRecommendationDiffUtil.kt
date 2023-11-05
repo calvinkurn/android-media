@@ -26,28 +26,6 @@ class HomeRecommendationDiffUtil(
         oldItem: Visitable<HomeRecommendationTypeFactoryImpl>,
         newItem: Visitable<HomeRecommendationTypeFactoryImpl>
     ): Boolean {
-//        return if (oldItem is BannerRecommendationDataModel && newItem is BannerRecommendationDataModel) {
-//            oldItem == newItem
-//        } else if (oldItem is HomeRecommendationBannerTopAdsDataModel && newItem is HomeRecommendationBannerTopAdsDataModel) {
-//            oldItem == newItem
-//        } else if (oldItem is HomeRecommendationEmpty && newItem is HomeRecommendationEmpty) {
-//            oldItem == newItem
-//        } else if (oldItem is HomeRecommendationError && newItem is HomeRecommendationError) {
-//            oldItem == newItem
-//        } else if (oldItem is HomeRecommendationHeadlineTopAdsDataModel && newItem is HomeRecommendationHeadlineTopAdsDataModel) {
-//            oldItem == newItem
-//        } else if (oldItem is HomeRecommendationItemDataModel && newItem is HomeRecommendationItemDataModel) {
-//            oldItem == newItem
-//        } else if (oldItem is RecomEntryPointCardUiModel && newItem is RecomEntryPointCardUiModel) {
-//            oldItem == newItem
-//        }
-//        else if (oldItem is HomeRecommendationLoading && newItem is HomeRecommendationLoading) {
-//            oldItem == newItem
-//        } else if (oldItem is HomeRecommendationLoadMore && newItem is HomeRecommendationLoadMore) {
-//            oldItem == newItem
-//        } else {
-//            oldItem == newItem
-//        }
         return oldItem.equals(newItem)
     }
 }
