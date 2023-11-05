@@ -15,31 +15,30 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recommendation_widget_common.R
-import com.tokopedia.recommendation_widget_common.databinding.ItemRecomEntryPointCardBinding
+import com.tokopedia.recommendation_widget_common.databinding.ItemRecomEntityCardBinding
 import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
-import com.tokopedia.recommendation_widget_common.widget.entrypointcard.model.RecomEntryPointCardUiModel
-import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.recommendation_widget_common.widget.entrypointcard.model.RecomEntityCardUiModel
 
 class RecomEntryPointCardViewHolder(
     view: View,
     private val listener: Listener
-) : BaseRecommendationForYouViewHolder<RecomEntryPointCardUiModel>(
+) : BaseRecommendationForYouViewHolder<RecomEntityCardUiModel>(
     view,
-    RecomEntryPointCardUiModel::class.java
+    RecomEntityCardUiModel::class.java
 ) {
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_recom_entry_point_card
+        val LAYOUT = R.layout.item_recom_entity_card
 
         private const val mingHeightCard = 320f
         internal const val SQUARE_IMAGE_RATIO = "1:1"
     }
 
-    private val binding = ItemRecomEntryPointCardBinding.bind(itemView)
+    private val binding = ItemRecomEntityCardBinding.bind(itemView)
 
-    private var item: RecomEntryPointCardUiModel? = null
-    override fun bind(element: RecomEntryPointCardUiModel) {
+    private var item: RecomEntityCardUiModel? = null
+    override fun bind(element: RecomEntityCardUiModel) {
         this.item = element
         setBackgroundCardColor(element.backgroundColor)
         setProductName(element.title)
@@ -57,7 +56,7 @@ class RecomEntryPointCardViewHolder(
         setMinHeightEntryPointCard()
     }
 
-    override fun bindPayload(newItem: RecomEntryPointCardUiModel?) {
+    override fun bindPayload(newItem: RecomEntityCardUiModel?) {
         newItem?.run {
             if (item?.backgroundColor != backgroundColor) {
                 setBackgroundCardColor(backgroundColor)
@@ -84,13 +83,13 @@ class RecomEntryPointCardViewHolder(
         }
     }
 
-    private fun setOnCardClickListener(element: RecomEntryPointCardUiModel) {
+    private fun setOnCardClickListener(element: RecomEntityCardUiModel) {
         itemView.setOnClickListener {
             listener.onEntryPointCardClickListener(element, bindingAdapterPosition)
         }
     }
 
-    private fun setOnCardImpressionListener(element: RecomEntryPointCardUiModel) {
+    private fun setOnCardImpressionListener(element: RecomEntityCardUiModel) {
         itemView.addOnImpressionListener(
             element,
             object : ViewHintListener {
@@ -121,7 +120,7 @@ class RecomEntryPointCardViewHolder(
         binding.imgEntryPointCard.loadImage(productImageUrl)
     }
 
-    private fun setLabelTitle(labelState: RecomEntryPointCardUiModel.LabelState) {
+    private fun setLabelTitle(labelState: RecomEntityCardUiModel.LabelState) {
         with(binding.tvLabelState) {
             shouldShowWithAction(labelState.title.isNotBlank()) {
                 text = labelState.title
@@ -195,7 +194,7 @@ class RecomEntryPointCardViewHolder(
     }
 
     interface Listener {
-        fun onEntryPointCardImpressionListener(item: RecomEntryPointCardUiModel, position: Int)
-        fun onEntryPointCardClickListener(item: RecomEntryPointCardUiModel, position: Int)
+        fun onEntryPointCardImpressionListener(item: RecomEntityCardUiModel, position: Int)
+        fun onEntryPointCardClickListener(item: RecomEntityCardUiModel, position: Int)
     }
 }

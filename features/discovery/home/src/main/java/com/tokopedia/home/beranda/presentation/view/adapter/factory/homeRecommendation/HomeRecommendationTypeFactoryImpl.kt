@@ -8,15 +8,15 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationLi
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil.getLayout
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.*
-import com.tokopedia.recommendation_widget_common.widget.entrypointcard.model.RecomEntryPointCardUiModel
-import com.tokopedia.recommendation_widget_common.widget.entrypointcard.typefactory.RecomEntryPointCardTypeFactory
+import com.tokopedia.recommendation_widget_common.widget.entrypointcard.model.RecomEntityCardUiModel
+import com.tokopedia.recommendation_widget_common.widget.entrypointcard.typefactory.RecomEntityCardTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.entrypointcard.viewholder.RecomEntryPointCardViewHolder
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 
 class HomeRecommendationTypeFactoryImpl(
     private val topAdsBannerClickListener: TopAdsBannerClickListener,
     private val homeRecommendationListener: HomeRecommendationListener
-) : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory, RecomEntryPointCardTypeFactory {
+) : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory, RecomEntityCardTypeFactory {
     override fun type(dataModel: HomeRecommendationItemDataModel): Int {
         return dataModel.getLayout()
     }
@@ -49,7 +49,11 @@ class HomeRecommendationTypeFactoryImpl(
         return HomeRecommendationHeadlineTopAdsViewHolder.LAYOUT
     }
 
-    override fun type(uiModel: RecomEntryPointCardUiModel): Int {
+    override fun type(dataModel: HomeRecommendationPlayWidgetUiModel): Int {
+        return HomeRecommendationPlayWidgetViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: RecomEntityCardUiModel): Int {
         return RecomEntryPointCardViewHolder.LAYOUT
     }
 
@@ -96,6 +100,8 @@ class HomeRecommendationTypeFactoryImpl(
                 parent,
                 topAdsBannerClickListener
             )
+
+            HomeRecommendationPlayWidgetViewHolder.LAYOUT -> HomeRecommendationPlayWidgetViewHolder(parent)
 
             else -> super.createViewHolder(parent, type)
         }
