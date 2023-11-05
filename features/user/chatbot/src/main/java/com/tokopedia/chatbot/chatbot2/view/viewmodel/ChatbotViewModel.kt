@@ -1233,10 +1233,6 @@ class ChatbotViewModel @Inject constructor(
         }
     }
 
-    private fun handleTypingBlockState(isTypingBlocked: Boolean) {
-//        _typingBlockedState.postValue(isTypingBlocked)
-    }
-
     fun validateHistoryForAttachment34(dynamicAttachmentBodyAttributes: DynamicAttachmentBodyAttributes?): Boolean {
         if (dynamicAttachmentBodyAttributes == null) {
             return false
