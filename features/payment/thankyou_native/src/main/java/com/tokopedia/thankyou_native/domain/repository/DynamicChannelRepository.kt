@@ -16,23 +16,20 @@ import javax.inject.Inject
 
 class DynamicChannelRepository @Inject constructor(
     private val graphqlRepository: GraphqlRepository
-) : ThankyouPageRepository<ThankYouPageChannelData> {
+): ThankyouPageRepository<ThankYouPageChannelData> {
     suspend fun getDynamicChannelData(params: RequestParams): ThankYouPageChannelData {
         try {
             val gqlRequest = buildRequestV2(params)
             val gqlResponse = graphqlRepository.response(
-                listOf(gqlRequest),
-                GraphqlCacheStrategy
-                    .Builder(CacheType.ALWAYS_CLOUD).build()
-            )
+                listOf(gqlRequest), GraphqlCacheStrategy
+                    .Builder(CacheType.ALWAYS_CLOUD).build())
             val errors = gqlResponse.getError(ThankYouPageChannelData::class.java)
             if (errors.isNullOrEmpty()) {
                 val result: ThankYouPageChannelData = gqlResponse.getData(ThankYouPageChannelData::class.java)
                 return result
-            } else {
-                throw MessageErrorException(errors.joinToString { it.message })
-            }
+            } else throw MessageErrorException(errors.joinToString { it.message })
         } catch (e: Exception) {
+            e.printStackTrace()
             Timber.e(e)
             throw e
         }
@@ -42,7 +39,7 @@ class DynamicChannelRepository @Inject constructor(
         return GraphqlRequest(DYNAMIC_CHANNEL_V2_QUERY, ThankYouPageChannelData::class.java, params.parameters)
     }
 
-    companion object {
+    companion object{
         const val GROUP_IDS = "groupIDs"
         const val TOKEN = "token"
         const val NUM_OF_CHANNEL = "numOfChannel"
@@ -58,7 +55,7 @@ class DynamicChannelRepository @Inject constructor(
             numOfChannel: Int = 0,
             queryParams: String = "",
             locationParams: String = ""
-        ): RequestParams {
+        ) : RequestParams {
             val params = RequestParams.create()
             params.parameters.clear()
             params.putString(PARAMS, queryParams)
@@ -75,7 +72,7 @@ class DynamicChannelRepository @Inject constructor(
             queryParams: String = "",
             locationParams: String = "",
             page: String = ""
-        ): RequestParams {
+        ) : RequestParams {
             val params = RequestParams.create()
             params.parameters.clear()
             params.putString(PARAMS, queryParams)
@@ -254,3 +251,5 @@ internal object QueryDynamicChannelV2 {
         "  }\n" +
         "}"
 }
+
+
