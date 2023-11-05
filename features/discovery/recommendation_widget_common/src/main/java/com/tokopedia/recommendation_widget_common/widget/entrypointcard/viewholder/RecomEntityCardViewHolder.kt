@@ -161,7 +161,6 @@ class RecomEntityCardViewHolder(
             val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
             gradient.cornerRadius = 0f
             this.background = gradient
-            this.invalidate()
         } else if (colorArray.size == Int.ONE) {
             this.setBackgroundColor(Color.parseColor(colorArray[0]))
         }
