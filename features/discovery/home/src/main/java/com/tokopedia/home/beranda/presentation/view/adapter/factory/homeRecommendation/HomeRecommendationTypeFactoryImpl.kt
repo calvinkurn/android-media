@@ -10,7 +10,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.*
 import com.tokopedia.recommendation_widget_common.widget.entrypointcard.model.RecomEntityCardUiModel
 import com.tokopedia.recommendation_widget_common.widget.entrypointcard.typefactory.RecomEntityCardTypeFactory
-import com.tokopedia.recommendation_widget_common.widget.entrypointcard.viewholder.RecomEntryPointCardViewHolder
+import com.tokopedia.recommendation_widget_common.widget.entrypointcard.viewholder.RecomEntityCardViewHolder
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 
 class HomeRecommendationTypeFactoryImpl(
@@ -54,7 +54,7 @@ class HomeRecommendationTypeFactoryImpl(
     }
 
     override fun type(uiModel: RecomEntityCardUiModel): Int {
-        return RecomEntryPointCardViewHolder.LAYOUT
+        return RecomEntityCardViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
@@ -64,7 +64,7 @@ class HomeRecommendationTypeFactoryImpl(
                 homeRecommendationListener
             )
 
-            RecomEntryPointCardViewHolder.LAYOUT -> RecomEntryPointCardViewHolder(
+            RecomEntityCardViewHolder.LAYOUT -> RecomEntityCardViewHolder(
                 parent,
                 homeRecommendationListener
             )

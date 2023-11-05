@@ -19,7 +19,7 @@ import com.tokopedia.recommendation_widget_common.databinding.ItemRecomEntityCar
 import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
 import com.tokopedia.recommendation_widget_common.widget.entrypointcard.model.RecomEntityCardUiModel
 
-class RecomEntryPointCardViewHolder(
+class RecomEntityCardViewHolder(
     view: View,
     private val listener: Listener
 ) : BaseRecommendationForYouViewHolder<RecomEntityCardUiModel>(
