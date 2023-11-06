@@ -300,7 +300,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     any<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>(),
                     any<GetInsuranceDetailRequestState>(),
                     any<Map<String, AddToCartSingleRequestState>>(),
-                    any<Boolean>()
+                    any<Boolean>(),
+                    any<ArrayList<String>>()
                 )
             } returns showingState
             every {
