@@ -63,8 +63,6 @@ public class AccessTokenRefresh {
     public String refreshToken(Context context, UserSessionInterface userSession, NetworkRouter
             networkRouter, String path) {
 
-        System.out.println("refresh From: AuthIntercept, ");
-
         if (networkRouter.isGotoAuthSdkEnabled()) {
             return newRefreshToken(networkRouter, userSession);
         }

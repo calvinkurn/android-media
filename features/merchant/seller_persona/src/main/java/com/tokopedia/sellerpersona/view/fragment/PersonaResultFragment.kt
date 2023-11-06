@@ -23,7 +23,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.analytics.SellerPersonaTracking
 import com.tokopedia.sellerpersona.common.Utils
-import com.tokopedia.sellerpersona.data.local.PersonaSharedPref
+import com.tokopedia.sellerpersona.data.local.PersonaSharedPrefInterface
 import com.tokopedia.sellerpersona.databinding.FragmentPersonaResultBinding
 import com.tokopedia.sellerpersona.view.adapter.PersonaSimpleListAdapter
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
@@ -35,6 +35,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.resources.isDarkMode
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by @ilhamsuaib on 17/01/23.
@@ -51,7 +52,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var sharedPref: PersonaSharedPref
+    lateinit var sharedPref: PersonaSharedPrefInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -116,7 +117,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
                     setSecondaryCTAText(it.getString(R.string.sp_popup_exit_secondary_cta))
                     setSecondaryCTAClickListener {
                         dismiss()
-                        if (sharedPref.isFirstVisit) {
+                        if (sharedPref.isFirstVisit()) {
                             val appLink = ApplinkConstInternalSellerapp.SELLER_HOME
                             RouteManager.route(it, appLink)
                         }
@@ -188,6 +189,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
                     this.personaData = it.data
                     showPersonaData()
                 }
+
                 is Fail -> handleError()
             }
         }
@@ -268,7 +270,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
 
     private fun setApplyButtonText() {
         binding?.run {
-            btnSpApplyPersona.text = if (sharedPref.isFirstVisit) {
+            btnSpApplyPersona.text = if (sharedPref.isFirstVisit()) {
                 root.context.getString(R.string.sp_apply)
             } else {
                 root.context.getString(R.string.sp_apply_changes)
@@ -342,7 +344,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
     private fun setupView() {
         binding?.run {
             val hexColor = Utils.getHexColor(
-                root.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                root.context, unifyprinciplesR.color.Unify_GN500
             )
             tvSpSelectManualType.text = root.context.getString(
                 R.string.sp_persona_result_select_manual, hexColor

@@ -28,7 +28,11 @@ object BmGmTickerRequestMapper {
                     productId = product.productId,
                     warehouseId = product.warehouseId,
                     qty = product.quantity,
-                    finalPrice = if (product.wholesalePrice > 0.0) product.wholesalePrice.toString().removeSingleDecimalSuffix() else product.productPrice.toString().removeSingleDecimalSuffix(),
+                    finalPrice = if (product.wholesalePrice > 0.0) {
+                        product.wholesalePrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix()
+                    } else {
+                        product.productPrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix()
+                    },
                     checkboxState = product.isSelected
                 )
             )
@@ -80,7 +84,11 @@ object BmGmTickerRequestMapper {
                     productId = product.productId,
                     warehouseId = product.warehouseId,
                     qty = product.quantity,
-                    finalPrice = if (product.wholesalePrice > 0.0) product.wholesalePrice.toString().removeSingleDecimalSuffix() else product.productPrice.toString().removeSingleDecimalSuffix(),
+                    finalPrice = if (product.wholesalePrice > 0.0) {
+                        product.wholesalePrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix()
+                    } else {
+                        product.productPrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix()
+                    },
                     checkboxState = product.isSelected
                 )
             )
