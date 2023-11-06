@@ -15,7 +15,6 @@ import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCa
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,7 +25,7 @@ class ScpAuthViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
-    private val _onLoginSuccess = SingleLiveEvent<Boolean>()
+    private val _onLoginSuccess = MutableLiveData<Boolean>()
     val onLoginSuccess: LiveData<Boolean> = _onLoginSuccess
 
     private val _showFullScreenLoading = MutableLiveData<Boolean>()
@@ -63,6 +62,7 @@ class ScpAuthViewModel @Inject constructor(
                 when (val resp = registerV2AndSaveSessionUseCase(params)) {
                     is Success -> {
                         ScpUtils.saveTokens(resp.data.accessToken, resp.data.refreshToken)
+                        getUserInfoAndSaveSessionUseCase(Unit)
                         _onLoginSuccess.postValue(true)
                     }
                     is Fail -> {

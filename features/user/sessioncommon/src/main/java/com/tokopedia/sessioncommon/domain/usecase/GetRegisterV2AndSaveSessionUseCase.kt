@@ -53,6 +53,7 @@ class GetRegisterV2AndSaveSessionUseCase @Inject constructor(
                       body
                       action
                     }
+                    name
                 }
             }
         """.trimIndent()
