@@ -1,4 +1,4 @@
-package com.tokopedia.manageaddress
+package com.tokopedia.targetedticker
 
 import com.google.gson.Gson
 import com.tokopedia.targetedticker.domain.GetTargetedTickerResponse

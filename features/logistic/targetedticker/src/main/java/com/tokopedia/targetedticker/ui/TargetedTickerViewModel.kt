@@ -24,7 +24,7 @@ class TargetedTickerViewModel @Inject constructor(
     val tickerState: LiveData<Result<TickerModel>>
         get() = _tickerState
 
-    fun getTargetedTicker(targetedTickerParam: TargetedTickerParamModel) {
+    fun getTargetedTicker(targetedTickerParam: TargetedTickerParamModel = TargetedTickerParamModel()) {
         viewModelScope.launchCatchError(
             block = {
                 val response = getTargetedTickerUseCase(targetedTickerParam)
