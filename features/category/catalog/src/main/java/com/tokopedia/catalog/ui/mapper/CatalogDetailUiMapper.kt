@@ -76,7 +76,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_BANNER_DOUBLE.type -> it.mapToDoubleBannerImage(isDarkMode)
                 WidgetTypes.CATALOG_NAVIGATION.type -> it.mapToStickyNavigation(remoteModel)
                 WidgetTypes.CATALOG_SLIDER_IMAGE.type -> it.mapToSliderImageText(isDarkMode)
-                WidgetTypes.CATALOG_TEXT.type -> it.mapToTextDescription(isDarkMode)
+                WidgetTypes.CATALOG_TEXT.type -> it.mapToTextDescription(isDarkMode, remoteModel.version)
                 WidgetTypes.CATALOG_REVIEW_EXPERT.type -> it.mapToExpertReview(isDarkMode)
                 WidgetTypes.CATALOG_FEATURE_SUPPORT.type -> it.mapToSupportFeature(remoteModel)
                 WidgetTypes.CATALOG_ACCORDION.type -> it.mapToAccordion(isDarkMode)
@@ -309,12 +309,17 @@ class CatalogDetailUiMapper @Inject constructor(
     }
 
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToTextDescription(
-        isDarkMode: Boolean
+        isDarkMode: Boolean, layoutVersion: Int
     ): TextDescriptionUiModel {
+        val title = if (layoutVersion == LAYOUT_VERSION_4_VALUE){
+            data?.text?.title.orEmpty()
+        } else {
+            "Deskripsi"
+        }
         return TextDescriptionUiModel(
             item = TextDescriptionUiModel.ItemTextDescriptionUiModel(
                 highlight = data?.text?.subtitle.orEmpty(),
-                title = data?.text?.title.orEmpty(),
+                title = title,
                 description = data?.text?.desc.orEmpty()
             ),
             isDarkMode = isDarkMode
