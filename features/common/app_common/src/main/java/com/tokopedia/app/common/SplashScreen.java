@@ -126,6 +126,7 @@ abstract public class SplashScreen extends AppCompatActivity {
         if (isUnderVersion) {
             intent = RouteManager.getDeeplinkNotFoundIntent(SplashScreen.this);
             intent.putExtra("type", "update");
+            intent.putExtra("source", "share");
 
             logLinker(deeplink, "update");
         } else {
@@ -145,6 +146,7 @@ abstract public class SplashScreen extends AppCompatActivity {
                 Intent intentCheck = RouteManager.getIntentNoFallback(SplashScreen.this, tokopediaDeeplink);
                 if (intentCheck == null) {
                     intent = RouteManager.getDeeplinkNotFoundIntent(SplashScreen.this);
+                    intent.putExtra("source", "share");
                     logLinker(tokopediaDeeplink, "404");
                 } else {
                     intent.setClassName(SplashScreen.this.getPackageName(),
