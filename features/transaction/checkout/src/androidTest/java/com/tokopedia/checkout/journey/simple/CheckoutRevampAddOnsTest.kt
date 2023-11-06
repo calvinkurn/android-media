@@ -8,7 +8,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.checkout.RevampShipmentActivity
 import com.tokopedia.checkout.interceptor.CheckoutInterceptor
-import com.tokopedia.checkout.interceptor.SAF_EGOLD_DONASI_RESPONSE_PATH
+import com.tokopedia.checkout.interceptor.SAF_FREE_ADDONS_RESPONSE_PATH
 import com.tokopedia.checkout.robot.checkoutPageRevamp
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -18,7 +18,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @UiTest
-class CheckoutRevampCrossSellTest {
+class CheckoutRevampAddOnsTest {
 
     @get:Rule
     var activityRule = object :
@@ -39,9 +39,9 @@ class CheckoutRevampCrossSellTest {
     }
 
     @Test
-    fun egold_and_donasi() {
+    fun free_addons() {
         interceptor.cartInterceptor.customSafResponsePath =
-            SAF_EGOLD_DONASI_RESPONSE_PATH
+            SAF_FREE_ADDONS_RESPONSE_PATH
         activityRule.launchActivity(null)
 
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
@@ -49,13 +49,19 @@ class CheckoutRevampCrossSellTest {
         checkoutPageRevamp {
             // Wait for SAF
             waitForData()
-            assertEgold(
+            assertAddOnsProduct(
                 activityRule,
-                text = "Bulatkan dengan nabung emas. S&K berlaku (Rp5.000)",
+                productIndex = 0,
+                addOnsName = "jasa pasang ac",
+                addOnsPrice = " (Rp0)",
                 isChecked = false
             )
-            assertEgoldShoppingSummary(activityRule, false, "")
-            assertDonasiShoppingSummary(activityRule, false, "")
+            assertAddOnsShoppingSummary(
+                activityRule,
+                hasAddOns = false,
+                addOnsName = "jasa pasang",
+                addOnsPrice = null
+            )
 
             // choose shipping
             clickChooseDuration(activityRule)
@@ -63,32 +69,58 @@ class CheckoutRevampCrossSellTest {
             selectDurationOptionWithText("Reguler (Rp93.000)")
             waitForData()
 
-            // assert new egold value
-            assertEgold(
+            // assert add ons value
+            assertAddOnsProduct(
                 activityRule,
-                text = "Bulatkan dengan nabung emas. S&K berlaku (Rp7.000)",
+                productIndex = 0,
+                addOnsName = "jasa pasang ac",
+                addOnsPrice = " (Rp0)",
                 isChecked = false
             )
+            assertAddOnsShoppingSummary(
+                activityRule,
+                hasAddOns = false,
+                addOnsName = "jasa pasang",
+                addOnsPrice = null
+            )
             expandShoppingSummary(activityRule)
-            assertEgoldShoppingSummary(activityRule, false, "")
-            assertDonasiShoppingSummary(activityRule, false, "")
-
-            clickEgold(activityRule)
-            expandShoppingSummary(activityRule)
-            assertEgoldShoppingSummary(activityRule, true, "Rp7.000")
-            assertDonasiShoppingSummary(activityRule, false, "")
-
-            clickDonasi(activityRule)
-            expandShoppingSummary(activityRule)
-            assertDonasiShoppingSummary(activityRule, true, "Rp5.000")
-            assertEgoldShoppingSummary(activityRule, true, "Rp7.000")
             assertShoppingSummary(
                 activityRule,
                 itemTotalPrice = "Rp60.000",
                 itemOriginalPrice = null,
                 shippingTotalPrice = "Rp93.000",
                 shippingOriginalPrice = null,
-                totalPrice = "Rp168.000"
+                totalPrice = "Rp156.000"
+            )
+            assertPlatformFee(activityRule, fee = "Rp3.000", originalFee = null)
+
+            clickProductAddOn(
+                activityRule,
+                productIndex = 0,
+                addOnsName = "jasa pasang ac"
+            )
+            waitForData()
+            assertAddOnsProduct(
+                activityRule,
+                productIndex = 0,
+                addOnsName = "jasa pasang ac",
+                addOnsPrice = " (Rp0)",
+                isChecked = true
+            )
+            assertAddOnsShoppingSummary(
+                activityRule,
+                hasAddOns = true,
+                addOnsName = "Total Jasa Pasang (3 Jasa)",
+                addOnsPrice = "Rp0"
+            )
+            expandShoppingSummary(activityRule)
+            assertShoppingSummary(
+                activityRule,
+                itemTotalPrice = "Rp60.000",
+                itemOriginalPrice = null,
+                shippingTotalPrice = "Rp93.000",
+                shippingOriginalPrice = null,
+                totalPrice = "Rp156.000"
             )
             assertPlatformFee(activityRule, fee = "Rp3.000", originalFee = null)
 
