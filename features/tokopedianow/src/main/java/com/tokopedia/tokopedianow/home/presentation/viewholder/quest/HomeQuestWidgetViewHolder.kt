@@ -53,6 +53,8 @@ class HomeQuestWidgetViewHolder(
         )
     }
 
+    private var shouldTrackSwipe = false
+
     private val binding: ItemTokopedianowQuestBinding? by viewBinding()
 
     init {
@@ -101,6 +103,7 @@ class HomeQuestWidgetViewHolder(
         return object : HomeQuestProgressBarListener {
             override fun onClickProgressItem(index: Int, isSelected: Boolean) {
                 if(!isSelected) {
+                    shouldTrackSwipe = false
                     smoothSnapToPosition(index)
                 }
             }
@@ -121,8 +124,11 @@ class HomeQuestWidgetViewHolder(
     }
 
     override fun onSnapPositionChange(position: Int) {
+        if(shouldTrackSwipe) {
+            listener?.onImpressQuestCardSwiped()
+        }
         switchProgressItemColor(position)
-        listener?.onImpressQuestCardSwiped()
+        shouldTrackSwipe = true
     }
 
     override fun onClickQuestCard() {
