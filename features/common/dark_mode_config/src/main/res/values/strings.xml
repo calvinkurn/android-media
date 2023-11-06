@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dmc_set_theme">Atur Tampilan</string>
+    <string name="dmc_light_mode_name">Light Mode</string>
+    <string name="dmc_light_mode_description">Tampilan warna standar yang saat ini sudah tersedia di Tokopedia.</string>
+    <string name="dmc_dark_mode_name">Dark Mode</string>
+    <string name="dmc_dark_mode_description">Tampilan warna gelap yang saat ini sudah tersedia di Tokopedia.</string>
+    <string name="dmc_follow_system_name">Ikuti Pengaturan Sistem</string>
+    <string name="dmc_follow_system_description">Ubah tampilan warna gelap dan terang dengan ikuti pengaturan sistem.</string>
+</resources>

@@ -13,6 +13,7 @@ includeIfEnabled("features:common:nps")
 includeIfEnabled("features:common:internal_review")
 includeIfEnabled("features:common:app_common")
 includeIfEnabled("features:common:resources_common")
+includeIfEnabled("features:common:dark_mode_config")
 includeIfEnabled("features:category:common_tradein")
 
 includeIfEnabled("features:home:navigation-common")
