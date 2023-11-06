@@ -61,8 +61,8 @@ class DynamicPaymentFeeUseCase @Inject constructor(
         private const val DETAIL_DATA_PARAM = "detailData"
 
         private const val QUERY = """
-            query getPaymentFee(${"$"}profileCode: String!, ${"$"}gatewayCode: String!, ${"$"}paymentAmount: Float!, ${"$"}additionalData: String!) {
-                getPaymentFee(profileCode: ${"$"}profileCode, gatewayCode: ${"$"}gatewayCode, paymentAmount: ${"$"}paymentAmount, additionalData: ${"$"}additionalData) {
+            query getPaymentFee(${"$"}profileCode: String!, ${"$"}gatewayCode: String!, ${"$"}paymentAmount: Float!, ${"$"}additionalData: String!, ${"$"}detailData: JSONType) {
+                getPaymentFee(profileCode: ${"$"}profileCode, gatewayCode: ${"$"}gatewayCode, paymentAmount: ${"$"}paymentAmount, additionalData: ${"$"}additionalData, detailData: ${"$"}detailData) {
                     success
                     errors {
                         code

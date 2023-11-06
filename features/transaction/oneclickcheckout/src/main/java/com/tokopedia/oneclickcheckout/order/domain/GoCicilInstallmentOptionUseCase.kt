@@ -60,8 +60,8 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(
 
         private const val GoCicilInstallmentOptionQuery = "GoCicilInstallmentOptionQuery"
         private const val QUERY = """
-            query getInstallmentInfo(${'$'}gatewayCode: String!, ${'$'}merchantCode: String!, ${'$'}profileCode: String!, ${'$'}userDefinedValue: String!, ${'$'}paymentAmount: Float!, ${'$'}orderMetadata: String, ${'$'}promoParam: String, ${'$'}appVersion: String, ${'$'}additionalData: String) {
-                getInstallmentInfo(gatewayCode: ${'$'}gatewayCode, merchantCode: ${'$'}merchantCode, profileCode: ${'$'}profileCode, userDefinedValue: ${'$'}userDefinedValue, paymentAmount: ${'$'}paymentAmount, orderMetadata: ${'$'}orderMetadata, promoParam: ${'$'}promoParam, appVersion: ${'$'}appVersion, additionalData: ${'$'}additionalData) {
+            query getInstallmentInfo(${'$'}gatewayCode: String!, ${'$'}merchantCode: String!, ${'$'}profileCode: String!, ${'$'}userDefinedValue: String!, ${'$'}paymentAmount: Float!, ${'$'}orderMetadata: String, ${'$'}promoParam: String, ${'$'}appVersion: String, ${'$'}additionalData: String, ${"$"}detailData: JSONType) {
+                getInstallmentInfo(gatewayCode: ${'$'}gatewayCode, merchantCode: ${'$'}merchantCode, profileCode: ${'$'}profileCode, userDefinedValue: ${'$'}userDefinedValue, paymentAmount: ${'$'}paymentAmount, orderMetadata: ${'$'}orderMetadata, promoParam: ${'$'}promoParam, appVersion: ${'$'}appVersion, additionalData: ${'$'}additionalData, detailData: ${"$"}detailData) {
                     success
                     data {
                         ticker {
