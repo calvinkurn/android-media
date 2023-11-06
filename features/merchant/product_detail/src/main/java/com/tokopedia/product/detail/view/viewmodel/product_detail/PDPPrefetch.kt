@@ -14,7 +14,10 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofD
 import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 
-object PDPMock {
+object PDPPrefetch {
+
+    private const val SOCIAL_PROOF_ICON_STAR =
+        "https://images.tokopedia.net/img/pdp/info/icon/star_filled.png"
 
     fun toProductDetailDataModel(data: ProductDetailPrefetch.Data): ProductDetailDataModel {
         val socialProofItems = mutableListOf<SocialProofUiModel>()
@@ -32,7 +35,7 @@ object PDPMock {
                 SocialProofUiModel(
                     type = SocialProofUiModel.Type.Chip,
                     title = data.rating,
-                    icon = "https://images.tokopedia.net/img/pdp/info/icon/star_filled.png"
+                    icon = SOCIAL_PROOF_ICON_STAR
                 )
             )
         }
@@ -64,7 +67,7 @@ object PDPMock {
                 data = ComponentData(
                     media = listOf(
                         Media(
-                            type = "image",
+                            type = ProductMediaDataModel.IMAGE_TYPE,
                             uRLOriginal = data.image
                         ).apply { prefetch = true }
                     ),
