@@ -76,8 +76,8 @@ open class SubmitPostUseCase @Inject constructor(
         setRequestParams(
             mapOf(
                 PARAM_INPUT to mapOf(
-                    PARAM_ACTION to if(id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
-                    PARAM_ID to if(id.isNullOrEmpty()) null else id,
+                    PARAM_ACTION to if (id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
+                    PARAM_ID to if (id.isNullOrEmpty()) null else id,
                     PARAM_AD_ID to null,
                     PARAM_TYPE to INPUT_TYPE_CONTENT,
                     PARAM_TOKEN to token,
@@ -122,8 +122,8 @@ open class SubmitPostUseCase @Inject constructor(
         setRequestParams(
             mapOf(
                 PARAM_INPUT to mapOf(
-                    PARAM_ACTION to if(id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
-                    PARAM_ID to if(id.isNullOrEmpty()) null else id,
+                    PARAM_ACTION to if (id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
+                    PARAM_ID to if (id.isNullOrEmpty()) null else id,
                     PARAM_AD_ID to null,
                     PARAM_TYPE to INPUT_TYPE_CONTENT,
                     PARAM_TOKEN to token,
@@ -158,7 +158,7 @@ open class SubmitPostUseCase @Inject constructor(
             position.add(it.posY.toDouble())
 
             val id = productItem.getOrNull(it.tagIndex)?.id
-            if(id != null) {
+            if (id != null) {
                 val tag = MediaTag(
                     type = TAGS_TYPE_PRODUCT,
                     content = id,
