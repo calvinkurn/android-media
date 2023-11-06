@@ -16,15 +16,19 @@ import com.tokopedia.play_common.domain.usecase.broadcaster.BroadcasterAddMedias
 import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.VideoSnapshotHelper
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.io.File
-import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on September 15, 2023
  */
-class ShortsUploadManager @Inject constructor(
+class ShortsUploadManager @AssistedInject constructor(
     @ApplicationContext private val appContext: Context,
+    @Assisted private val uploadData: CreationUploadData.Shorts,
     private val notificationManager: ShortsUploadNotificationManager,
     private val uploaderUseCase: UploaderUseCase,
     private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
@@ -33,7 +37,10 @@ class ShortsUploadManager @Inject constructor(
     private val snapshotHelper: VideoSnapshotHelper,
 ) : CreationUploadManager(notificationManager) {
 
-    private lateinit var uploadData: CreationUploadData.Shorts
+    @AssistedFactory
+    interface Factory {
+        fun create(uploadData: CreationUploadData.Shorts): ShortsUploadManager
+    }
 
     private var isUploadShortsMedia = false
 
@@ -65,15 +72,10 @@ class ShortsUploadManager @Inject constructor(
      *
      */
     override suspend fun execute(
-        uploadData: CreationUploadData,
         notificationId: Int,
     ): CreationUploadExecutionResult {
-        if (uploadData !is CreationUploadData.Shorts) return CreationUploadExecutionResult.Error(
-            uploadData,
-            Exception("ShortsUploadManager is not receiving CreationUploadData.Shorts data")
-        )
 
-        setupInitialData(uploadData)
+        setupInitialData()
 
         withContext(dispatchers.main) {
             uploaderUseCase.trackProgress { progress, type ->
@@ -113,6 +115,10 @@ class ShortsUploadManager @Inject constructor(
                     snapshotHelper.deleteLocalFile()
                     updateChannelStatus(uploadData, PlayChannelStatusType.TranscodingFailed)
                 } catch (e: Exception) {
+                    return@withContext CreationUploadExecutionResult.Error(
+                        uploadData,
+                        throwable
+                    )
                 }
 
                 broadcastFail(uploadData)
@@ -135,10 +141,7 @@ class ShortsUploadManager @Inject constructor(
         return mediaUrl
     }
 
-    private fun setupInitialData(
-        uploadData: CreationUploadData.Shorts,
-    ) {
-        this.uploadData = uploadData
+    private fun setupInitialData() {
         this.isUploadShortsMedia = false
     }
 
