@@ -2,9 +2,9 @@
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shcCardPieChart"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:cardCornerRadius="8dp">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/containerPieChart"
@@ -105,12 +105,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
-            tools:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/horLineShcPieChartBtm"
             app:layout_constraintEnd_toStartOf="@+id/btnShcPieChartSeeMore"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/horLineShcPieChartBtm" />
+            app:layout_constraintTop_toTopOf="@+id/horLineShcPieChartBtm"
+            tools:visibility="gone" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/btnShcPieChartSeeMore"
@@ -142,26 +142,26 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:visibility="visible"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
         <include
             android:id="@+id/shcPieChartLoadingState"
             layout="@layout/shc_partial_common_widget_state_loading"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            tools:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvPieChartTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/tvPieChartTitle"
+            tools:visibility="gone" />
 
         <include
             layout="@layout/shc_partial_pie_chart_widget_empty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@+id/tvPieChartTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/tvPieChartTitle"
+            tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

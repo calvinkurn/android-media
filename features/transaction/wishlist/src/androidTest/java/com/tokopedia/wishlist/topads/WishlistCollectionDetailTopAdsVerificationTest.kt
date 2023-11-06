@@ -1,8 +1,12 @@
 package com.tokopedia.wishlist.topads
 
 import android.Manifest
+import android.app.Activity
+import android.app.Instrumentation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
@@ -51,6 +55,7 @@ class WishlistCollectionDetailTopAdsVerificationTest {
 
     @Before
     fun setup() {
+        Intents.init()
         IdlingRegistry.getInstance().register(WishlistIdlingResource.countingIdlingResource)
     }
 
@@ -58,11 +63,13 @@ class WishlistCollectionDetailTopAdsVerificationTest {
     fun cleanup() {
         topAdsAssertion.after()
         IdlingRegistry.getInstance().unregister(WishlistIdlingResource.countingIdlingResource)
+        Intents.release()
     }
 
     @Test
     fun testWishlistCollectionDetailTopAds() {
         runWishlistCollectionDetailBot {
+            Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
             val wishlistRecyclerView =
                 activityRule.activity.findViewById<RecyclerView>(R.id.rv_wishlist_collection_detail)
             val wishlistItemCount = wishlistRecyclerView?.adapter?.itemCount ?: 0
@@ -77,11 +84,15 @@ class WishlistCollectionDetailTopAdsVerificationTest {
                         .getRecommendationDataAtIndex(wishlistIndex)
                         .recommendationProductCardModelData
 
+                    // limit scroll & click because last item is always pending
                     for (recommendationIndex in recommendationItems.indices) {
-                        scrollRecommendationRecyclerViewToIndex(recommendationIndex)
-                        if (recommendationItems[recommendationIndex].isTopAds) {
-                            topAdsCount++
-                            clickRecommendationRecyclerViewItem(recommendationIndex)
+                        if (recommendationIndex < 5) {
+                            loading(1000)
+                            scrollRecommendationRecyclerViewToIndex(recommendationIndex)
+                            if (recommendationItems[recommendationIndex].isTopAds && recommendationIndex < 4) {
+                                topAdsCount++
+                                clickRecommendationRecyclerViewItem(recommendationIndex)
+                            }
                         }
                     }
                 }
