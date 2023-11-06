@@ -22,8 +22,8 @@ import com.tokopedia.tokochat.common.util.TokoChatCacheManager
 import com.tokopedia.tokochat.common.util.TokoChatCacheManagerImpl.Companion.TOKOCHAT_IMAGE_ATTACHMENT_MAP
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG
-import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSourceCategory
+import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
 import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.tokochat.domain.cache.TokoChatBubblesCache
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionPayload
@@ -669,7 +669,7 @@ class TokoChatViewModel @Inject constructor(
     }
 
     companion object {
-        const val DELAY_UPDATE_ORDER_STATE = 5000L
+        const val DELAY_UPDATE_ORDER_STATE = 15000L
         private const val DELAY_FETCH_IMAGE = 500L
         private const val ERROR_COMPRESSED_IMAGE_NULL = "Compressed image null"
         private const val ERROR_RENAMED_IMAGE_NULL = "Renamed image null"
