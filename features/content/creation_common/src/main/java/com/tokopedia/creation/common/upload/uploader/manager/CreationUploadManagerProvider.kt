@@ -14,7 +14,7 @@ class CreationUploadManagerProvider @Inject constructor(
 
     fun get(uploadData: CreationUploadData): CreationUploadManager {
         return when (uploadData) {
-            is CreationUploadData.Post -> postUploadManagerFactory.create()
+            is CreationUploadData.Post -> postUploadManagerFactory.create(uploadData)
             is CreationUploadData.Shorts -> shortsUploadManagerFactory.create(uploadData)
             is CreationUploadData.Stories -> storiesUploadManagerFactory.create(uploadData)
         }

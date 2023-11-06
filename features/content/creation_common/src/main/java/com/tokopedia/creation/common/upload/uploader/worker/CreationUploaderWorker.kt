@@ -67,7 +67,6 @@ class CreationUploaderWorker(
                     val uploadManager = uploadManagerProvider.get(data)
 
                     val uploadResult = uploadManager.execute(
-                        data,
                         object : CreationUploadManagerListener {
                             override suspend fun setupForegroundNotification(info: ForegroundInfo) {
                                 setForegroundAsync(info)

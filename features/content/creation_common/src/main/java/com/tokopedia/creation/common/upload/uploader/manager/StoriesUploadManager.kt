@@ -75,11 +75,8 @@ class StoriesUploadManager @AssistedInject constructor(
      */
 
     override suspend fun execute(
-        uploadData: CreationUploadData,
         listener: CreationUploadManagerListener
     ): Boolean {
-        if (uploadData !is CreationUploadData.Stories) return false
-
         setupInitialData(listener)
 
         return withContext(dispatchers.io) {

@@ -10,6 +10,7 @@ import com.tokopedia.createpost.common.view.util.FeedSellerAppReviewHelper
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.creation.common.upload.const.CreationUploadConst
 import com.tokopedia.creation.common.upload.model.CreationUploadData
+import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 
@@ -18,21 +19,19 @@ import dagger.assisted.AssistedInject
  */
 class PostUploadManager @AssistedInject constructor(
     @ApplicationContext private val appContext: Context,
+    @Assisted private val uploadData: CreationUploadData.Post,
     private val submitPostUseCase: SubmitPostUseCase,
     private val sellerAppReviewHelper: FeedSellerAppReviewHelper,
 ) : CreationUploadManager {
 
     @AssistedFactory
     interface Factory {
-        fun create(): PostUploadManager
+        fun create(uploadData: CreationUploadData.Post): PostUploadManager
     }
 
     override suspend fun execute(
-        uploadData: CreationUploadData,
         listener: CreationUploadManagerListener
     ): Boolean {
-        if (uploadData !is CreationUploadData.Post) return false
-
         return try {
             listener.setProgress(uploadData, CreationUploadConst.PROGRESS_INIT)
 

@@ -10,7 +10,6 @@ import com.tokopedia.creation.common.upload.model.CreationUploadResult
 interface CreationUploadManager {
 
     suspend fun execute(
-        uploadData: CreationUploadData,
         listener: CreationUploadManagerListener,
     ): Boolean
 }

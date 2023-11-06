@@ -1,15 +1,10 @@
 package com.tokopedia.creation.common.upload.uploader.manager
 
 import android.content.Context
-import androidx.work.ListenableWorker
-import androidx.work.OneTimeWorkRequest
-import androidx.work.workDataOf
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.const.CreationUploadConst
 import com.tokopedia.creation.common.upload.model.CreationUploadData
-import com.tokopedia.creation.common.upload.model.CreationUploadResult
 import com.tokopedia.creation.common.upload.uploader.notification.ShortsUploadNotificationManager
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.mediauploader.UploaderUseCase
@@ -84,10 +79,8 @@ class ShortsUploadManager @AssistedInject constructor(
      * else : loading
      */
     override suspend fun execute(
-        uploadData: CreationUploadData,
         listener: CreationUploadManagerListener
     ): Boolean {
-        if (uploadData !is CreationUploadData.Shorts) return false
 
         setupInitialData(listener)
 
