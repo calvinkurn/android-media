@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
-import android.util.Log
 import android.util.SparseIntArray
 import android.view.KeyEvent
 import android.view.View
@@ -80,6 +79,7 @@ import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_REQUEST_CODE
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -97,8 +97,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
@@ -130,6 +128,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APP
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.RQUEST_CODE_ACTIVATE_GOPAY
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.RQUEST_CODE_UPDATE_FINTECH_WIDGET
+import com.tokopedia.product.detail.common.ProductDetailPrefetch
 import com.tokopedia.product.detail.common.ProductEducationalHelper
 import com.tokopedia.product.detail.common.ProductTrackingCommon
 import com.tokopedia.product.detail.common.ProductTrackingConstant
@@ -169,6 +168,7 @@ import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCart
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
@@ -275,6 +275,7 @@ import com.tokopedia.product.info.util.ProductDetailInfoHelper
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailBottomSheetListener
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
+import com.tokopedia.product.util.processor.ProductDetailViewsBundler
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
@@ -318,6 +319,8 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.LENGTH_INDEFINITE
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
@@ -382,7 +385,8 @@ open class DynamicProductDetailFragment :
             query: String? = null,
             affiliateChannel: String? = null,
             campaignId: String? = null,
-            variantId: String? = null
+            variantId: String? = null,
+            prefetchCacheId: String? = null
         ) = DynamicProductDetailFragment().also {
             it.arguments = Bundle().apply {
                 productId?.let { pid -> putString(ProductDetailConstant.ARG_PRODUCT_ID, pid) }
@@ -454,6 +458,12 @@ open class DynamicProductDetailFragment :
                         variantId
                     )
                 }
+                if (prefetchCacheId != null) {
+                    putString(
+                        ProductDetailConstant.ARG_PREFETCH_CACHE_ID,
+                        prefetchCacheId
+                    )
+                }
                 putBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, isFromDeeplink)
                 query?.let { qry -> putString(ProductDetailConstant.ARG_QUERY_PARAMS, qry) }
             }
@@ -520,6 +530,7 @@ open class DynamicProductDetailFragment :
     private var verticalRecommendationTrackDataModel: ComponentTrackDataModel? = null
     private var campaignId: String = ""
     private var variantId: String = ""
+    private var prefetchCacheId: String = ""
 
     // Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
@@ -539,7 +550,7 @@ open class DynamicProductDetailFragment :
             playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
                 setListener(this@DynamicProductDetailFragment)
             },
-            affiliateCookieHelper.get(),
+            affiliateCookieHelper.get()
         )
     }
     private val adapter by lazy {
@@ -623,6 +634,7 @@ open class DynamicProductDetailFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (prefetchCacheId.isEmpty()) showLoading()
         initBtnAction()
 
         navToolbar = view.findViewById(R.id.pdp_navtoolbar)
@@ -641,6 +653,15 @@ open class DynamicProductDetailFragment :
         }
 
         setPDPDebugMode()
+    }
+
+    private fun getPrefetchData(): ProductDetailPrefetch.Data? {
+        val context = context ?: return null
+        val cacheManager = SaveInstanceCacheManager(context, prefetchCacheId)
+        return cacheManager.get(
+            ProductDetailPrefetch.Data::class.java.simpleName,
+            ProductDetailPrefetch.Data::class.java
+        )
     }
 
     private fun setPDPDebugMode() {
@@ -782,7 +803,8 @@ open class DynamicProductDetailFragment :
                     layoutId,
                     ChooseAddressUtils.getLocalizingAddressData(it),
                     urlQuery = urlQuery,
-                    extParam = extParam
+                    extParam = extParam,
+                    prefetchData = getPrefetchData()
                 )
             }
         }
@@ -810,6 +832,7 @@ open class DynamicProductDetailFragment :
             affiliateChannel = it.getString(ProductDetailConstant.ARG_CHANNEL, "")
             campaignId = it.getString(ProductDetailConstant.ARG_CAMPAIGN_ID, "")
             variantId = it.getString(ProductDetailConstant.ARG_VARIANT_ID, "")
+            prefetchCacheId = it.getString(ProductDetailConstant.ARG_PREFETCH_CACHE_ID, "")
         }
         activity?.let {
             sharedViewModel = ViewModelProvider(it).get(ProductDetailSharedViewModel::class.java)
@@ -854,9 +877,13 @@ open class DynamicProductDetailFragment :
     }
 
     private fun reloadFintechWidget() {
-        if (pdpUiUpdater == null || (pdpUiUpdater?.fintechWidgetMap == null &&
-                pdpUiUpdater?.fintechWidgetV2Map == null)
-        ) return
+        if (pdpUiUpdater == null || (
+            pdpUiUpdater?.fintechWidgetMap == null &&
+                pdpUiUpdater?.fintechWidgetV2Map == null
+            )
+        ) {
+            return
+        }
         if (pdpUiUpdater?.fintechWidgetMap?.isLoggedIn != viewModel.isUserSessionActive ||
             pdpUiUpdater?.fintechWidgetV2Map?.isLoggedIn != viewModel.isUserSessionActive
         ) {
@@ -1271,6 +1298,8 @@ open class DynamicProductDetailFragment :
      * ImpressionComponent
      */
     override fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel) {
+        if (viewModel.getDynamicProductInfoP1?.cacheState?.isPrefetch == true) return
+
         val purchaseProtectionUrl = when (componentTrackDataModel.componentName) {
             ProductDetailConstant.PRODUCT_PROTECTION -> getPurchaseProtectionUrl()
             else -> ""
@@ -2337,7 +2366,6 @@ open class DynamicProductDetailFragment :
 
     private fun trackingEventSuccessAddToWishlist(componentTrackDataModel: ComponentTrackDataModel) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
-            DynamicProductDetailTracking.Moengage.eventPDPWishlistAppsFyler(productInfo)
             DynamicProductDetailTracking.Click.eventPDPAddToWishlist(
                 productInfo,
                 componentTrackDataModel
@@ -2920,7 +2948,16 @@ open class DynamicProductDetailFragment :
                 pdpUiUpdater = PdpUiUpdater(DynamicProductDetailMapper.hashMapLayout(it.data))
                 viewModel.getDynamicProductInfoP1?.let { dataP1 ->
                     onSuccessGetDataP1(dataP1)
-                    ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(isSuccess = true)
+                    ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(
+                        isSuccess = true,
+                        cacheState = viewModel.getDynamicProductInfoP1?.cacheState,
+                        isCampaign = viewModel.getDynamicProductInfoP1?.isCampaign.orFalse()
+                    )
+                    ProductDetailServerLogger.logNewRelicP1Success(
+                        productId = productId,
+                        cacheState = viewModel.getDynamicProductInfoP1?.cacheState,
+                        isCampaign = viewModel.getDynamicProductInfoP1?.isCampaign
+                    )
                 }
             }, {
                 handleObserverP1Error(error = it)
@@ -2933,31 +2970,81 @@ open class DynamicProductDetailFragment :
     }
 
     private fun handleObserverP1Error(error: Throwable) {
-        ServerLogger.log(
-            Priority.P2,
-            "LOAD_PAGE_FAILED",
-            mapOf(
-                "type" to "pdp",
-                "desc" to error.message.orEmpty(),
-                "err" to Log.getStackTraceString(error)
-                    .take(ProductDetailConstant.LOG_MAX_LENGTH).trim()
-            )
-        )
+        ProductDetailServerLogger.logNewRelicP1Error(error = error)
         logException(error)
-        context?.let { ctx ->
-            val errorModel = ProductDetailErrorHelper.getErrorType(
-                ctx,
-                error,
-                isFromDeeplink,
-                deeplinkUrl
-            )
-            renderPageError(errorModel)
-            ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(
-                isSuccess = false,
-                errorMessage = errorModel.errorMessage,
-                errorCode = errorModel.errorCode
-            )
+        val ctx = context ?: return
+        val errorModel = ProductDetailErrorHelper.getErrorType(
+            context = ctx,
+            t = error,
+            fromDeeplink = isFromDeeplink,
+            deeplinkUrl = deeplinkUrl
+        )
+
+        if (isPdpCacheableError()) {
+            preparePageCacheableError(errorModel = errorModel)
+        } else {
+            preparePageError(errorModel)
         }
+    }
+
+    private fun preparePageError(errorModel: PageErrorDataModel) {
+        val pdpLayout = viewModel.getDynamicProductInfoP1
+
+        renderPageError(errorModel)
+        ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(
+            isSuccess = false,
+            errorMessage = errorModel.errorMessage,
+            errorCode = errorModel.errorCode,
+            cacheState = pdpLayout?.cacheState,
+            isCampaign = pdpLayout?.isCampaign.orFalse()
+        )
+    }
+
+    private fun isPdpCacheableError(): Boolean {
+        val cacheState = viewModel.getDynamicProductInfoP1?.cacheState ?: return false
+        // ensure toggle remote cacheable is active and data still from cache
+        return cacheState.remoteCacheableActive &&
+            (cacheState.isFromCache || cacheState.cacheFirstThenCloud)
+    }
+
+    private fun preparePageCacheableError(errorModel: PageErrorDataModel) {
+        val errorCode = errorModel.errorCode.toIntOrNull() ?: run {
+            preparePageError(errorModel)
+            return
+        }
+        val connectionError = errorCode == GlobalError.SERVER_ERROR ||
+            errorCode == GlobalError.NO_CONNECTION
+        val shouldShowToasterError = !errorModel.shouldShowTobacoError && connectionError
+
+        if (shouldShowToasterError) {
+            showToasterPageError(errorModel)
+        } else {
+            preparePageError(errorModel)
+        }
+    }
+
+    private fun showToasterPageError(errorModel: PageErrorDataModel) {
+        val view = binding?.root ?: return
+        val pdpLayout = viewModel.getDynamicProductInfoP1
+        binding?.swipeRefreshPdp?.isRefreshing = false
+
+        Toaster.build(
+            view = view,
+            text = "Wah, internet putus. Cek paket data atau WiFi-mu, ya.",
+            actionText = "Coba lagi",
+            duration = LENGTH_INDEFINITE,
+            type = TYPE_ERROR
+        ) {
+            onSwipeRefresh()
+        }.show()
+
+        ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(
+            isSuccess = false,
+            errorMessage = errorModel.errorMessage,
+            errorCode = errorModel.errorCode,
+            cacheState = pdpLayout?.cacheState,
+            isCampaign = pdpLayout?.isCampaign.orFalse()
+        )
     }
 
     private fun observeP2Login() {
@@ -2983,36 +3070,54 @@ open class DynamicProductDetailFragment :
             shareProductInstance?.updateAffiliate(it.shopInfo.statusInfo.shopStatus)
 
             trackProductView(getTradeinData().isEligible, boeData.boType)
-            viewModel.getDynamicProductInfoP1?.let { p1 ->
-                DynamicProductDetailTracking.Moengage.sendMoEngageOpenProduct(p1)
-                DynamicProductDetailTracking.Moengage.eventAppsFylerOpenProduct(p1)
 
-                DynamicProductDetailTracking.sendScreen(
-                    irisSessionId,
-                    p1.basic.shopID,
-                    p1.shopTypeString,
-                    p1.basic.productID
-                )
-
-                viewModel.hitAffiliateCookie(
-                    productInfo = p1,
-                    affiliateUuid = affiliateUniqueId,
-                    uuid = uuid,
-                    affiliateChannel = affiliateChannel
-                )
-
-                mStoriesWidgetManager.updateStories(listOf(p1.basic.shopID))
+            if (viewModel.getDynamicProductInfoP1?.isFromCache == false) {
+                doP2DataAfterCloud(p2Data = it)
             }
+
             onSuccessGetDataP2(it, boeData, ratesData, shipmentPlus)
-            checkAffiliateEligibility(it.shopInfo)
             getProductDetailActivity()?.stopMonitoringP2Data()
             ProductDetailServerLogger.logBreadCrumbSuccessGetDataP2(
                 isSuccess = it.shopInfo.shopCore.shopID.isNotEmpty()
             )
-            stickyLoginView?.loadContent()
+
             getRecyclerView()?.addOneTimeGlobalLayoutListener {
                 EmbraceMonitoring.stopMoments(ProductDetailConstant.PDP_RESULT_TRACE_P2_DATA)
             }
+        }
+    }
+
+    private fun doP2DataAfterCloud(p2Data: ProductInfoP2UiData) {
+        viewModel.getDynamicProductInfoP1?.let { p1 ->
+            DynamicProductDetailTracking.sendScreen(
+                irisSessionId,
+                p1.basic.shopID,
+                p1.shopTypeString,
+                p1.basic.productID
+            )
+
+            viewModel.hitAffiliateCookie(
+                productInfo = p1,
+                affiliateUuid = affiliateUniqueId,
+                uuid = uuid,
+                affiliateChannel = affiliateChannel
+            )
+
+            mStoriesWidgetManager.updateStories(listOf(p1.basic.shopID))
+
+            checkAffiliateEligibility(p2Data.shopInfo)
+
+            if (p2Data.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
+                DynamicProductDetailTracking.Impression.eventPurchaseProtectionAvailable(
+                    viewModel.userId,
+                    viewModel.getDynamicProductInfoP1,
+                    getPPTitleName()
+                )
+            }
+
+            DynamicProductDetailTracking.Branch.eventBranchItemView(p1, viewModel.userId)
+
+            stickyLoginView?.loadContent()
         }
     }
 
@@ -3384,13 +3489,32 @@ open class DynamicProductDetailFragment :
             )
         }
 
-        if (affiliateString.hasValue()) {
-            viewModel.hitAffiliateTracker(affiliateString ?: "", viewModel.deviceId)
+        if (viewModel.getDynamicProductInfoP1?.isFromCache == false) {
+            doP1DataAfterCloud()
         }
 
         setupProductVideoCoordinator()
         recommendationWidgetViewModel?.refresh()
-        submitInitialList(pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty())
+        submitInitialList()
+    }
+
+    private fun doP1DataAfterCloud() {
+        if (affiliateString.hasValue()) {
+            viewModel.hitAffiliateTracker(affiliateString ?: "", viewModel.deviceId)
+        }
+    }
+
+    private fun submitInitialList() {
+        if (isRemoteCacheableActive()) {
+            // when cache first then cloud is true, we want to keep refresh layout to UI
+            // prevent interaction loading state for several component
+            val submitInitialList = viewModel.getDynamicProductInfoP1?.cacheState?.cacheFirstThenCloud == false
+            if (submitInitialList) {
+                submitInitialList(pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty())
+            }
+        } else {
+            submitInitialList(pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty())
+        }
     }
 
     private fun setupProductVideoCoordinator() {
@@ -3468,18 +3592,6 @@ open class DynamicProductDetailFragment :
             viewModel.getUserLocationCache(),
             shipmentPlus
         )
-
-        if (it.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
-            DynamicProductDetailTracking.Impression.eventPurchaseProtectionAvailable(
-                viewModel.userId,
-                viewModel.getDynamicProductInfoP1,
-                getPPTitleName()
-            )
-        }
-
-        viewModel.getDynamicProductInfoP1?.run {
-            DynamicProductDetailTracking.Branch.eventBranchItemView(this, viewModel.userId)
-        }
 
         pdpUiUpdater?.updateDataP2(
             context = context,
@@ -3643,6 +3755,13 @@ open class DynamicProductDetailFragment :
         APlusContentTracking.trackImpressAPlusMedia(trackerData, trackingQueue)
     }
 
+    override fun getImpressionHolders(): MutableList<String> {
+        return viewModel.impressionHolders
+    }
+
+    override fun isRemoteCacheableActive(): Boolean = viewModel.getDynamicProductInfoP1
+        ?.cacheState?.remoteCacheableActive.orFalse()
+
     private fun goToAtcVariant(customCartRedirection: Map<String, CartTypeData>? = null) {
         SingleClick.doSomethingBeforeTime(interval = DEBOUNCE_CLICK) {
             context?.let { ctx ->
@@ -3700,10 +3819,7 @@ open class DynamicProductDetailFragment :
         } else {
             // ignore auto-select variant when first load pdp in thumbnail variant
             val selectedOptionIds = determineInitialOptionId(productId)
-            viewModel.processVariant(
-                data,
-                selectedOptionIds
-            )
+            viewModel.processVariant(data, selectedOptionIds)
         }
     }
 
@@ -4063,7 +4179,6 @@ open class DynamicProductDetailFragment :
                             ProductData.PLACEHOLDER_REFERRAL_CODE,
                             dataObj
                         )
-                    DynamicProductDetailTracking.Moengage.sendMoEngagePDPReferralCodeShareEvent()
                 }
                 executeProductShare(productData, affiliateData, imageGeneratorData)
             }
@@ -4299,6 +4414,9 @@ open class DynamicProductDetailFragment :
     }
 
     private fun trackProductView(isElligible: Boolean, boType: Int) {
+        if (viewModel.impressionHolders.contains(ProductDetailViewsBundler.KEY)) return
+        viewModel.impressionHolders.add(ProductDetailViewsBundler.KEY)
+
         DynamicProductDetailTracking.Impression.eventProductView(
             productInfo = viewModel.getDynamicProductInfoP1,
             shopInfo = viewModel.getShopInfo(),
@@ -5114,7 +5232,7 @@ open class DynamicProductDetailFragment :
                         ApplinkConst.TOPCHAT_ASKSELLER,
                         product.basic.shopID,
                         "",
-                        "product",
+                        ApplinkConst.Chat.Source.SOURCE_PDP,
                         shop.shopCore.name,
                         shop.shopAssets.avatar
                     )

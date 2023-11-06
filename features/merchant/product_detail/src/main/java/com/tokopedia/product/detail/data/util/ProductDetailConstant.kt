@@ -141,6 +141,7 @@ object ProductDetailConstant {
     const val ARG_CHANNEL = "ARG_CHANNEL"
     const val ARG_CAMPAIGN_ID = "ARG_CAMPAIGN_ID"
     const val ARG_VARIANT_ID = "ARG_VARIANT_ID"
+    const val ARG_PREFETCH_CACHE_ID = "ARG_PREFETCH_CACHE_ID"
 
     // Animation
     const val CART_MAX_COUNT = 99
@@ -183,7 +184,6 @@ object ProductDetailConstant {
     const val ERROR_TYPE_KEY = "error_type"
     const val EXTRAS_KEY = "extras"
     const val PDP_LOG_TAG = "BUYER_FLOW_PDP"
-
     const val DEFAULT_ATC_MAX_ORDER = 100
     const val DEFAULT_MIN_QTY = 1
 

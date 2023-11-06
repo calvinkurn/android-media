@@ -74,7 +74,7 @@ class AddOnViewModelTest: AddOnViewModelTestFixture() {
         } returns GetAddOnResponse()
 
         // When
-        viewModel.getAddOnAggregatedData(listOf("123"), listOf(), AddOnParam())
+        viewModel.getAddOnAggregatedData(listOf("123"), listOf(), listOf(), AddOnParam())
         val result = viewModel.aggregatedData.getOrAwaitValue()
 
         // Then
@@ -90,7 +90,7 @@ class AddOnViewModelTest: AddOnViewModelTestFixture() {
         } throws MessageErrorException(errorMessage)
 
         // When
-        viewModel.getAddOnAggregatedData(listOf("123"), listOf(), AddOnParam())
+        viewModel.getAddOnAggregatedData(listOf("123"), listOf(), listOf(), AddOnParam())
         val result = viewModel.aggregatedData.getOrAwaitValue()
 
         // Then

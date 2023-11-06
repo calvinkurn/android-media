@@ -26,6 +26,10 @@ class HomeMissionWidgetUseCase @Inject constructor(
                         GetMissionWidget.BANNER_LOCATION_PARAM,
                         homeChooseAddressRepository.getRemoteData()?.convertToLocationParams()
                     )
+                    putString(
+                        GetMissionWidget.PARAM,
+                        currentMissionWidgetListDataModel.widgetParam
+                    )
                 }
             )
             val resultList =

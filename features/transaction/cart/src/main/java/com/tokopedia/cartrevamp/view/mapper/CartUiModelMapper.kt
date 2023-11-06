@@ -424,6 +424,8 @@ object CartUiModelMapper {
             title = unavailabeSection.title
             subTitle = unavailabeSection.unavailableDescription
             productsCount = unavailabeSection.productsCount
+            showOutOfCoverageTitle = unavailabeSection.unavailableSectionCta.message
+            isShowOutOfCoverageAction = unavailabeSection.unavailableSectionCta.id != 0L
         }
     }
 
@@ -602,7 +604,8 @@ object CartUiModelMapper {
                 uniqueId = it.uniqueId,
                 status = it.status,
                 type = it.type,
-                price = it.price
+                price = it.price,
+                fixedQuantity = it.fixedQuantity
             )
             arrayListAddOnProduct.add(cartAddOnProductData)
         }

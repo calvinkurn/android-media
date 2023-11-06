@@ -1,8 +1,6 @@
 package com.scp.auth
 
 import android.app.Application
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import com.gojek.pin.AppInfo
@@ -33,9 +31,6 @@ import com.scp.verification.core.data.common.services.contract.ScpAnalyticsServi
 import com.scp.verification.core.domain.common.infrastructure.CVEventFieldName
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.KEY_SP_TIMESTAMP_AB_TEST
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.SHARED_PREFERENCE_AB_TEST_PLATFORM
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
@@ -45,8 +40,6 @@ import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import java.util.*
-import java.util.concurrent.TimeUnit
 
 object GotoSdk {
     @JvmField var LSDKINSTANCE: LSdkProvider? = null
@@ -78,7 +71,6 @@ object GotoSdk {
         component = DaggerScpAuthComponent.builder()
             .baseAppComponent(appComponent)
             .build()
-//        initializeAbTestVariant(application)
         LSDKINSTANCE = GotoLogin.getInstance(
             cvSdkProvider = getCvSdkProvider(application),
             gotoPinManager = getGotoPinSdkProvider(application),
@@ -92,7 +84,7 @@ object GotoSdk {
                         eventName: ScpAnalyticsEvent,
                         params: Map<String, Any?>
                     ) {
-                        AuthAnalyticsMapper.trackScreenLsdk(eventName.eventName, params)
+                        trackLsdk(eventName.eventName, params)
                     }
 
                     override fun trackError(
@@ -102,7 +94,7 @@ object GotoSdk {
                         if (eventName.eventName == LSdkEventName.LSDK_VERIFICATION_FAIL || eventName.eventName == LSdkEventName.LSDK_LOGIN_FAIL) {
                             ScpUtils.logError(eventName.eventName, params)
                         }
-                        AuthAnalyticsMapper.trackEventLsdk(eventName.eventName, params)
+                        trackLsdk(eventName.eventName, params)
                     }
 
                     override fun trackEvent(
@@ -112,7 +104,7 @@ object GotoSdk {
                         if (eventName.eventName == LSdkEventName.LSDK_LOGIN_SUCCESS) {
                             ScpUtils.updateUserSessionLoginMethod(application, params[CVEventFieldName.METHOD].toString())
                         }
-                        AuthAnalyticsMapper.trackEventLsdk(eventName.eventName, params)
+                        trackLsdk(eventName.eventName, params)
                     }
                 }
             )
@@ -132,19 +124,6 @@ object GotoSdk {
             LSDKINSTANCE?.getRefreshToken()?.isEmpty() == true
         ) {
             ScpUtils.saveTokens(accessToken = userSession.accessToken, refreshToken = EncoderDecoder.Decrypt(userSession.freshToken, userSession.refreshTokenIV))
-        }
-    }
-
-    private fun initializeAbTestVariant(application: Application) {
-        val sharedPreferences: SharedPreferences = application.getSharedPreferences(
-            SHARED_PREFERENCE_AB_TEST_PLATFORM,
-            Context.MODE_PRIVATE
-        )
-        val timestampAbTest = sharedPreferences.getLong(KEY_SP_TIMESTAMP_AB_TEST, 0)
-        RemoteConfigInstance.initAbTestPlatform(application)
-        val current = Date().time
-        if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
-            RemoteConfigInstance.getInstance().abTestPlatform.fetch(null)
         }
     }
 
@@ -195,6 +174,11 @@ object GotoSdk {
             )
         )
         return GOTOPINSDKINSTANCE!!
+    }
+
+    private fun trackLsdk(eventName: String, params: Map<String, Any?>) {
+        AuthAnalyticsMapper.trackScreenLsdk(eventName, params)
+        AuthAnalyticsMapper.trackEventLsdk(eventName, params)
     }
 
     private fun getDeviceName(): String {

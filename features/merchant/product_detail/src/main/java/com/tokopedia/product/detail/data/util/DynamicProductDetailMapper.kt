@@ -81,6 +81,7 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.asU
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
 import com.tokopedia.product.detail.data.model.review.ProductReviewImageListQuery
 import com.tokopedia.product.detail.data.model.review.ReviewImage
+import com.tokopedia.product.detail.data.model.social_proof.asUiModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.GLOBAL_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
@@ -134,7 +135,7 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(mapToProductDetailInfo(component = component))
                 }
                 ProductDetailConstant.MINI_SOCIAL_PROOF -> {
-                    listOfComponent.add(ProductMiniSocialProofDataModel(type = component.type, name = component.componentName))
+                    mapToSocialProof(component = component)?.let { listOfComponent.add(it) }
                 }
                 ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK -> {
                     listOfComponent.add(ProductMiniSocialProofStockDataModel(type = component.type, name = component.componentName))
@@ -550,7 +551,8 @@ object DynamicProductDetailMapper {
                 it.description,
                 it.videoURLAndroid,
                 it.isAutoplay,
-                it.variantOptionId
+                it.variantOptionId,
+                it.prefetch
             )
         }
     }
@@ -1018,5 +1020,19 @@ object DynamicProductDetailMapper {
             listPageName = RecommendationCarouselTrackingConst.List.PDP
         )
         return RecommendationWidgetModel(metadata = metadata, trackingModel = trackingModel)
+    }
+
+    private fun mapToSocialProof(component: Component): ProductMiniSocialProofDataModel? {
+        val data = component.componentData.firstOrNull() ?: return null
+
+        if (data.socialProof.isEmpty()) {
+            return null
+        }
+
+        return ProductMiniSocialProofDataModel(
+            type = component.type,
+            name = component.componentName,
+            items = data.socialProof.asUiModel()
+        )
     }
 }
