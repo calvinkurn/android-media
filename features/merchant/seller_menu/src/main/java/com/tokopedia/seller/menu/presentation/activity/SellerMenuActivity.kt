@@ -29,9 +29,13 @@ import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.shopadmin.common.util.AdminFeature
 import com.tokopedia.shopadmin.common.util.AdminPermissionMapper
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.webview.WebViewHelper
 import kotlinx.coroutines.flow.collectLatest
+import java.util.*
 import javax.inject.Inject
+import com.tokopedia.seller.menu.common.R as sellermenucommonR
 
 class SellerMenuActivity : BaseSellerMenuActivity() {
 
@@ -68,10 +72,12 @@ class SellerMenuActivity : BaseSellerMenuActivity() {
                 LaunchedEffect(key1 = false, block = {
                     viewModel.uiEvent.collectLatest { state ->
                         when (state) {
-                            is SellerMenuUIEvent.OnSuccessGetShopInfoUse -> {
+                            is SellerMenuUIEvent.OnSuccessGetShopInfo -> {
                                 shopAge = state.shopAge
                                 isNewSeller = state.isNewSeller
-                                viewModel.getAllSettingShopInfo(false)
+                                viewModel.getAllSettingShopInfo()
+                                viewModel.getProductCount()
+                                viewModel.getNotifications()
                             }
                             else -> {
                             }
@@ -82,7 +88,11 @@ class SellerMenuActivity : BaseSellerMenuActivity() {
                 SellerMenuScreen(
                     viewModel = viewModel,
                     onSuccessLoadInitialState = ::onSuccessLoadInitialState,
-                    onActionClick = ::onActionClick
+                    onActionClick = ::onActionClick,
+                    onRefresh = ::onRefresh,
+                    onReload = ::onReloading,
+                    onTickerClick = ::onTickerClick,
+                    onShowToaster = ::onShowToaster
                 )
             }
         }
@@ -97,6 +107,10 @@ class SellerMenuActivity : BaseSellerMenuActivity() {
 
     private fun onSuccessLoadInitialState() {
         viewModel.getShopAccountInfo()
+    }
+
+    private fun onRefresh() {
+        viewModel.onEvent(SellerMenuUIEvent.OnRefresh)
     }
 
     private fun onActionClick(actionClick: SellerMenuActionClick) {
@@ -188,6 +202,45 @@ class SellerMenuActivity : BaseSellerMenuActivity() {
         }
     }
 
+    private fun onReloading(isLoading: Boolean) {
+        if (isLoading) {
+            viewModel.onEvent(SellerMenuUIEvent.OnRefresh)
+        }
+    }
+
+    private fun onTickerClick(link: String) {
+        goToSlaWebView(link)
+    }
+
+    private fun goToSlaWebView(linkUrl: CharSequence) {
+        val link = linkUrl.toString()
+        if (WebViewHelper.isUrlValid(linkUrl.toString())) {
+            RouteManager.route(
+                this,
+                String.format(
+                    Locale.getDefault(),
+                    ALLOW_OVERRIDE_URL_FORMAT,
+                    ApplinkConst.WEBVIEW,
+                    false,
+                    link
+                )
+            )
+        } else {
+            RouteManager.route(this, link)
+        }
+    }
+
+    private fun onShowToaster(errorMessage: String) {
+        Toaster.build(
+            findViewById(android.R.id.content),
+            errorMessage,
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_ERROR,
+            getString(sellermenucommonR.string.setting_toaster_error_retry)
+        ) {
+            viewModel.onEvent(SellerMenuUIEvent.GetInitialMenu)
+        }.show()
+    }
     private fun goToInbox() {
         RouteManager.route(this, ApplinkConst.INBOX)
         sellerMenuTracker.sendEventClickInbox()
@@ -343,8 +396,12 @@ class SellerMenuActivity : BaseSellerMenuActivity() {
     }
 
     private fun goToSellerMigrationPage(@SellerMigrationFeatureName featureName: String, appLinks: ArrayList<String>) {
-        val intent = SellerMigrationActivity.createIntent(this, featureName,
-            SCREEN_NAME, appLinks)
+        val intent = SellerMigrationActivity.createIntent(
+            this,
+            featureName,
+            SCREEN_NAME,
+            appLinks
+        )
         startActivity(intent)
     }
 
@@ -354,7 +411,7 @@ class SellerMenuActivity : BaseSellerMenuActivity() {
             Pair(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2),
             Pair(BundleData.APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2),
             Pair(BundleData.MAX_MULTI_SELECT_ALLOWED, BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED),
-            Pair(BundleData.KEY_IS_OPEN_FROM, BundleData.VALUE_IS_OPEN_FROM_SHOP_PAGE),
+            Pair(BundleData.KEY_IS_OPEN_FROM, BundleData.VALUE_IS_OPEN_FROM_SHOP_PAGE)
         )
         return "${ApplinkConst.IMAGE_PICKER_V2}?${ImagePickerInstaQueryBuilder.generateQuery(queries)}"
     }
@@ -365,5 +422,7 @@ class SellerMenuActivity : BaseSellerMenuActivity() {
         private const val APPLINK_FORMAT = "%s?url=%s%s"
 
         private const val SCREEN_NAME = "MA - Akun Toko"
+
+        private const val ALLOW_OVERRIDE_URL_FORMAT = "%s?allow_override=%b&url=%s"
     }
 }

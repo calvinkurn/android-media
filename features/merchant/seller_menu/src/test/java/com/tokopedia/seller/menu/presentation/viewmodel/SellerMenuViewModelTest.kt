@@ -23,7 +23,7 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
 
         val actualResult = viewModel.uiEvent.value
 
-        assert(actualResult is SellerMenuUIEvent.OnSuccessGetShopInfoUse)
+        assert(actualResult is SellerMenuUIEvent.OnSuccessGetShopInfo)
     }
 
     @Test

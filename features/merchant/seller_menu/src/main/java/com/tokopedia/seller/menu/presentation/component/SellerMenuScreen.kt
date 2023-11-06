@@ -25,16 +25,26 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BadgedBox
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,6 +58,7 @@ import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.nest.components.NestDivider
@@ -64,9 +75,12 @@ import com.tokopedia.nest.components.loader.NestLoader
 import com.tokopedia.nest.components.loader.NestLoaderType
 import com.tokopedia.nest.components.loader.NestShimmerType
 import com.tokopedia.nest.components.ticker.NestTicker
+import com.tokopedia.nest.components.ticker.NestTickerData
+import com.tokopedia.nest.components.ticker.TickerType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
@@ -89,6 +103,7 @@ import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuSettingT
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuUIState
 import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import java.util.*
 import com.tokopedia.gm.common.R as gmcommonR
@@ -96,15 +111,29 @@ import com.tokopedia.seller.menu.R as sellermenuR
 import com.tokopedia.seller.menu.common.R as sellermenucommonR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
+private const val STATUS_INCUBATE_OS = 6
+private const val TICKER_TYPE_WARNING = "warning"
+private const val TICKER_TYPE_DANGER = "danger"
+
 // TODO: Add alpha to text
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SellerMenuScreen(
     viewModel: SellerMenuViewModel,
     onSuccessLoadInitialState: () -> Unit,
-    onActionClick: (SellerMenuActionClick) -> Unit
+    onRefresh: () -> Unit,
+    onActionClick: (SellerMenuActionClick) -> Unit,
+    onReload: (Boolean) -> Unit,
+    onTickerClick: (String) -> Unit,
+    onShowToaster: (String) -> Unit
 ) {
-
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+    val isRefreshing = viewModel.isRefreshing.collectAsStateWithLifecycle()
+    val isToasterAlreadyShown = viewModel.isToasterAlreadyShown.collectAsStateWithLifecycle()
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = isRefreshing.value,
+        onRefresh = onRefresh
+    )
 
     Scaffold(
         topBar = {
@@ -140,7 +169,30 @@ fun SellerMenuScreen(
             )
         },
         content = {
-            SellerMenuContent(uiState.value, onSuccessLoadInitialState, onActionClick, Modifier.padding(it))
+            Box(
+                modifier = Modifier
+                    .padding(it)
+                    .pullRefresh(pullRefreshState)
+            ) {
+                SellerMenuContent(
+                    uiState.value,
+                    onSuccessLoadInitialState,
+                    onActionClick,
+                    onReload,
+                    onTickerClick,
+                    onShowToaster = { message ->
+                        if (isToasterAlreadyShown.value != true) {
+                            onShowToaster(message)
+                        }
+                    }
+                )
+
+                PullRefreshIndicator(
+                    refreshing = isRefreshing.value,
+                    state = pullRefreshState,
+                    modifier = Modifier.align(Alignment.TopCenter)
+                )
+            }
         }
     )
 }
@@ -150,14 +202,25 @@ fun SellerMenuContent(
     uiState: SellerMenuUIState,
     onSuccessLoadInitialState: () -> Unit,
     onActionClick: (SellerMenuActionClick) -> Unit,
+    onReload: (Boolean) -> Unit,
+    onTickerClick: (String) -> Unit,
+    onShowToaster: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     when (uiState) {
         is SellerMenuUIState.OnSuccessGetMenuList -> {
-            onSuccessLoadInitialState()
-            SellerMenuSuccessState(uiState.visitableList, onActionClick, modifier)
+            if (uiState.isInitialValue) {
+                onSuccessLoadInitialState()
+            }
+            SellerMenuSuccessState(uiState.visitableList, onActionClick, onReload, onTickerClick, modifier)
         }
-        else -> SellerMenuSuccessState(listOf(), onActionClick, modifier)
+        is SellerMenuUIState.OnFailedGetMenuList -> {
+            uiState.throwable.message?.takeIf { it.isNotBlank() }?.let { errorMessage ->
+                onShowToaster(errorMessage)
+            }
+            SellerMenuSuccessState(uiState.visitableList, onActionClick, onReload, onTickerClick, modifier)
+        }
+        else -> SellerMenuSuccessState(listOf(), onActionClick, onReload, onTickerClick, modifier)
     }
 }
 
@@ -165,9 +228,10 @@ fun SellerMenuContent(
 fun SellerMenuSuccessState(
     items: List<SellerMenuComposeItem>,
     onActionClick: (SellerMenuActionClick) -> Unit,
+    onReload: (Boolean) -> Unit,
+    onTickerClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // TODO: add toolbar
     LazyColumn(modifier = modifier) {
         items(
             items,
@@ -175,6 +239,9 @@ fun SellerMenuSuccessState(
                 it.itemType
             },
             itemContent = {
+                var loading by rememberSaveable {
+                    mutableStateOf(false)
+                }
                 when (it) {
                     is SellerMenuSettingTitleUiModel -> {
                         SellerMenuTitleSection(
@@ -192,7 +259,9 @@ fun SellerMenuSuccessState(
                             iconType = it.iconUnifyType,
                             titleRes = it.titleRes,
                             tagRes = null,
-                            counter = null,
+                            counter = it.notificationCount.takeIf { count ->
+                                count > Int.ZERO
+                            },
                             onActionClick = {
                                 onActionClick(it.actionClick)
                             }
@@ -285,7 +354,15 @@ fun SellerMenuSuccessState(
                             partialResponseStatus = it.partialResponseStatus,
                             totalBalance = it.balanceValue,
                             userShopInfoWrapper = it.userShopInfoWrapper,
-                            onActionClick = onActionClick
+                            onActionClick = onActionClick,
+                            isLoading = loading,
+                            onReload = { isLoading ->
+                                loading = isLoading
+                                onReload(isLoading)
+                            },
+                            onClickText = { spannedRange ->
+                                onTickerClick(spannedRange.item)
+                            }
                         )
                     }
                     is SellerMenuFeatureUiModel -> {
@@ -294,13 +371,6 @@ fun SellerMenuSuccessState(
                 }
             }
         )
-    }
-}
-
-@Composable
-fun SellerMenuHeader() {
-    ConstraintLayout {
-        NestTicker(ticker = listOf())
     }
 }
 
@@ -474,10 +544,14 @@ fun SellerMenuShopInfo(
     partialResponseStatus: Pair<Boolean, Boolean>,
     totalBalance: String,
     userShopInfoWrapper: UserShopInfoWrapper,
-    onActionClick: (SellerMenuActionClick) -> Unit
+    onActionClick: (SellerMenuActionClick) -> Unit,
+    isLoading: Boolean,
+    onReload: (Boolean) -> Unit,
+    onClickText: ((spannedRange: AnnotatedString.Range<String>) -> Unit)? = null
 ) {
     ConstraintLayout {
         val (
+            ticker,
             startSpace,
             avatarImage,
             shopName,
@@ -488,8 +562,42 @@ fun SellerMenuShopInfo(
             shopScore,
             shopScoreSpace,
             shopStatus,
-            balance
+            balance,
+            errorLocalLoad
         ) = createRefs()
+
+        val statusUiModel = userShopInfoWrapper.userShopInfoUiModel?.statusInfoUiModel
+        val shouldShowTicker =
+            !statusUiModel?.statusTitle.isNullOrBlank() &&
+                !statusUiModel?.statusMessage.isNullOrBlank() &&
+                statusUiModel?.shopStatus.orZero() == STATUS_INCUBATE_OS
+
+        if (shouldShowTicker) {
+            val tickerType = when (statusUiModel?.tickerType) {
+                TICKER_TYPE_DANGER -> TickerType.ERROR
+                TICKER_TYPE_WARNING -> TickerType.WARNING
+                else -> TickerType.ANNOUNCEMENT
+            }
+            NestTicker(
+                ticker = listOf(
+                    NestTickerData(
+                        tickerTitle = statusUiModel?.statusTitle.orEmpty(),
+                        tickerType = tickerType,
+                        tickerDescription = HtmlLinkHelper(
+                            LocalContext.current,
+                            statusUiModel?.statusMessage.orEmpty()
+                        ).spannedString?.toAnnotatedString() ?: ""
+                    )
+                ),
+                modifier = Modifier
+                    .constrainAs(ticker) {
+                        top.linkTo(parent.top)
+                    }
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 6.dp),
+                onClickText = onClickText
+            )
+        }
 
         Spacer(
             modifier = Modifier
@@ -504,6 +612,11 @@ fun SellerMenuShopInfo(
             modifier = Modifier
                 .constrainAs(avatarImage) {
                     start.linkTo(startSpace.end)
+                    if (shouldShowTicker) {
+                        top.linkTo(ticker.top)
+                    } else {
+                        top.linkTo(parent.top)
+                    }
                     bottom.linkTo(shopScore.top)
                 }
         )
@@ -623,8 +736,15 @@ fun SellerMenuShopInfo(
             NestLocalLoad(
                 title = stringResource(id = sellermenuR.string.setting_error_message),
                 description = stringResource(id = sellermenuR.string.setting_error_description),
-                isLoading = false
+                isLoading = isLoading,
+                modifier = Modifier
+                    .constrainAs(errorLocalLoad) {
+                        top.linkTo(shopScore.bottom)
+                        start.linkTo(avatarImage.start)
+                        end.linkTo(parent.end)
+                    }
             ) {
+                onReload(it)
             }
         }
 
@@ -645,8 +765,15 @@ fun SellerMenuShopInfo(
             NestLocalLoad(
                 title = stringResource(id = sellermenuR.string.setting_error_message),
                 description = stringResource(id = sellermenuR.string.setting_error_description),
-                isLoading = false
+                isLoading = isLoading,
+                modifier = Modifier
+                    .constrainAs(errorLocalLoad) {
+                        top.linkTo(shopScore.bottom)
+                        start.linkTo(avatarImage.start)
+                        end.linkTo(parent.end)
+                    }
             ) {
+                onReload(it)
             }
         }
     }
@@ -1827,7 +1954,7 @@ fun SellerMenuFeatureCard(
                 .padding(8.dp)
         ) {
             val (featureImageRef, titleRef, descriptionRef) = createRefs()
-            
+
             NestImage(
                 source = ImageSource.Remote(iconUrl),
                 modifier = Modifier
@@ -1869,7 +1996,6 @@ fun SellerMenuFeatureCard(
                     }
                     .padding(top = 8.dp)
             )
-
         }
     }
 }

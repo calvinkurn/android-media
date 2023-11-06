@@ -2,8 +2,8 @@ package com.tokopedia.seller.menu.presentation.uimodel.compose
 
 sealed class SellerMenuUIEvent {
 
-    object GetInitialMenu: SellerMenuUIEvent()
-    object Idle: SellerMenuUIEvent()
-    data class OnSuccessGetShopInfoUse(val shopAge: Long, val isNewSeller: Boolean): SellerMenuUIEvent()
-
+    object GetInitialMenu : SellerMenuUIEvent()
+    object OnRefresh : SellerMenuUIEvent()
+    object Idle : SellerMenuUIEvent()
+    data class OnSuccessGetShopInfo(val shopAge: Long, val isNewSeller: Boolean) : SellerMenuUIEvent()
 }
