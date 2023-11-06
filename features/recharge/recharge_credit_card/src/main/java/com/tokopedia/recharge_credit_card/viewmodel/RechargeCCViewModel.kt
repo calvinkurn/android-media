@@ -16,7 +16,6 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -168,7 +167,11 @@ class RechargeCCViewModel @Inject constructor(
         launchCatchError(block = {
             val data = getDppoConsentUseCase.execute(categoryId)
             val uiData = RechargeCCDppoConsentUimodel(
-                description = data.persoData.items.getOrNull(Int.ZERO)?.title ?: ""
+                description = if (data.persoData.items.isNotEmpty()) {
+                    data.persoData.items[0].title
+                } else {
+                    ""
+                }
             )
             _dppoConsent.postValue(Success(uiData))
         }) {

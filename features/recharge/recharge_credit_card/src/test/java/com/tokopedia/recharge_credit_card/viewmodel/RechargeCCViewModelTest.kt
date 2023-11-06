@@ -530,6 +530,25 @@ class RechargeCCViewModelTest {
     }
 
     @Test
+    fun getDppoConsentRecharge_EmptyData() {
+        // given
+        val digitalDPPOConsent = DigitalDppoConsent(
+            DigiPersoRecommendationData(emptyList())
+        )
+
+        coEvery { dppoConsentUseCase.execute(any()) } returns digitalDPPOConsent
+
+        // when
+        rechargeCCViewModel.getDppoConsent(1)
+
+        // then
+        val actualData = rechargeCCViewModel.dppoConsent.value
+        Assert.assertNotNull(actualData)
+        Assert.assertTrue(actualData is Success)
+        Assert.assertTrue((actualData as Success).data.description == "")
+    }
+
+    @Test
     fun getDppoConsentRecharge_Fail() {
         // given
         val errorMessage = "Tokopedia"
