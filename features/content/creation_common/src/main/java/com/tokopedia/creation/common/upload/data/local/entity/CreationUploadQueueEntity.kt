@@ -1,5 +1,6 @@
 package com.tokopedia.creation.common.upload.data.local.entity
 
+import android.annotation.SuppressLint
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -13,10 +14,11 @@ const val CREATION_UPLOAD_QUEUE = "creation_upload_queue"
 @Entity(tableName = CREATION_UPLOAD_QUEUE)
 data class CreationUploadQueueEntity(
 
+    @SuppressLint("Invalid Data Type")
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "queue_id")
     @SerializedName("queue_id")
-    val queueId: Long = 0,
+    val queueId: Int = 0,
 
     @ColumnInfo(name = "creation_id")
     @SerializedName("creation_id")
