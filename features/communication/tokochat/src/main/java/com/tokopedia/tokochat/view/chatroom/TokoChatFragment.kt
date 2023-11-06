@@ -29,6 +29,7 @@ import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
@@ -890,30 +891,58 @@ open class TokoChatFragment @Inject constructor(
 
             callMenu.run {
                 val isCallIconDisabled = getOrderState() in
-                    listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED) ||
-                    getOrderState().isBlank()
+                    listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED)
+                val isCallHidden = getOrderState().isBlank()
 
-                if (isCallIconDisabled) {
-                    isEnabled = false
-                    isClickable = false
-                    setImage(IconUnify.CALL, unifyprinciplesR.color.Unify_NN300)
-                } else {
-                    isEnabled = true
-                    isClickable = true
-                    setImage(IconUnify.CALL)
-
-                    setOnClickListener {
-                        if (headerUiModel.phoneNumber.isNotEmpty()) {
-                            tokoChatAnalytics?.clickCallButtonFromChatRoom(
-                                getOrderState(),
-                                viewModel.tkpdOrderId,
-                                viewModel.source,
-                                TokoChatAnalyticsConstants.BUYER
-                            )
-                            showMaskingPhoneNumberBottomSheet(headerUiModel.phoneNumber)
-                        }
+                when {
+                    isCallHidden -> {
+                        /**
+                         * Order status type is empty
+                         */
+                        callMenu.hide()
+                    }
+                    isCallIconDisabled -> {
+                        /**
+                         * Order status type is either completed or cancelled
+                         */
+                        setCallIconDisabled(this)
+                    }
+                    else -> {
+                        /**
+                         * Order status type is not empty, completed, or cancelled
+                         */
+                        setCallIconEnabled(this, headerUiModel)
                     }
                 }
+            }
+        }
+    }
+
+    private fun setCallIconDisabled(iconUnify: IconUnify) {
+        iconUnify.show()
+        iconUnify.isEnabled = false
+        iconUnify.isClickable = false
+        iconUnify.setImage(IconUnify.CALL, unifyprinciplesR.color.Unify_NN300)
+    }
+
+    private fun setCallIconEnabled(
+        iconUnify: IconUnify,
+        headerUiModel: TokoChatHeaderUiModel
+    ) {
+        iconUnify.show()
+        iconUnify.isEnabled = true
+        iconUnify.isClickable = true
+        iconUnify.setImage(IconUnify.CALL)
+
+        iconUnify.setOnClickListener {
+            if (headerUiModel.phoneNumber.isNotEmpty()) {
+                tokoChatAnalytics?.clickCallButtonFromChatRoom(
+                    getOrderState(),
+                    viewModel.tkpdOrderId,
+                    viewModel.source,
+                    TokoChatAnalyticsConstants.BUYER
+                )
+                showMaskingPhoneNumberBottomSheet(headerUiModel.phoneNumber)
             }
         }
     }
