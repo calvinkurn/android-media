@@ -696,6 +696,33 @@ class CheckoutPageRevampRobot {
         }
     }
 
+    fun assertBmsmProduct(
+        activityRule: IntentsTestRule<RevampShipmentActivity>,
+        productIndex: Int,
+        bmsmTitle: String
+    ) {
+        val position = scrollRecyclerViewToShipmentCartItem(activityRule, productIndex)
+        if (position != RecyclerView.NO_POSITION) {
+            onView(ViewMatchers.withId(R.id.rv_checkout))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        object : ViewAction {
+                            override fun getConstraints(): Matcher<View>? = null
+
+                            override fun getDescription(): String = "Assert Bmsm Product UI"
+
+                            override fun perform(uiController: UiController?, view: View) {
+                                val layout = view.findViewById<Typography>(R.id.tv_checkout_bmgm_title)
+                                assertEquals(View.VISIBLE, layout.visibility)
+                                assertEquals(bmsmTitle, layout.text.toString())
+                            }
+                        }
+                    )
+                )
+        }
+    }
+
     fun assertEgold(activityRule: IntentsTestRule<RevampShipmentActivity>, text: String, isChecked: Boolean) {
         val position = scrollRecyclerViewToCrossSell(activityRule)
         if (position != RecyclerView.NO_POSITION) {
@@ -742,7 +769,7 @@ class CheckoutPageRevampRobot {
         activityRule: IntentsTestRule<RevampShipmentActivity>,
         itemTotalPrice: String,
         itemOriginalPrice: String?,
-        shippingTotalPrice: String,
+        shippingTotalPrice: String?,
         shippingOriginalPrice: String?,
         totalPrice: String
     ) {
@@ -788,14 +815,21 @@ class CheckoutPageRevampRobot {
                                     )
                                 }
 
-                                assertEquals(
-                                    View.VISIBLE,
-                                    view.findViewById<Typography>(R.id.tv_checkout_cost_shipping_value).visibility
-                                )
-                                assertEquals(
-                                    shippingTotalPrice,
-                                    view.findViewById<Typography>(R.id.tv_checkout_cost_shipping_value).text.toString()
-                                )
+                                if (shippingTotalPrice != null) {
+                                    assertEquals(
+                                        View.VISIBLE,
+                                        view.findViewById<Typography>(R.id.tv_checkout_cost_shipping_value).visibility
+                                    )
+                                    assertEquals(
+                                        shippingTotalPrice,
+                                        view.findViewById<Typography>(R.id.tv_checkout_cost_shipping_value).text.toString()
+                                    )
+                                } else {
+                                    assertEquals(
+                                        View.GONE,
+                                        view.findViewById<Typography>(R.id.tv_checkout_cost_shipping_value).visibility
+                                    )
+                                }
                                 if (shippingOriginalPrice != null) {
                                     assertEquals(
                                         View.VISIBLE,
