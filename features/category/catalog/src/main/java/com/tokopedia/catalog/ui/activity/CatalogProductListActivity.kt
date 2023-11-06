@@ -9,7 +9,9 @@ import com.tokopedia.catalog.R
 import com.tokopedia.catalog.ui.fragment.CatalogProductListFragment
 import com.tokopedia.catalog.ui.fragment.CatalogProductListImprovementFragment
 import com.tokopedia.core.analytics.AppScreen
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_IMPROVMENT_CATALOG_PRODUCT_LIST
 
 class CatalogProductListActivity : BaseSimpleActivity() {
     private var catalogId: String = ""
@@ -49,6 +51,7 @@ class CatalogProductListActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_catalog_product_list)
+        remoteConfig = FirebaseRemoteConfigImpl(this)
         catalogId = if (intent.hasExtra(EXTRA_CATALOG_ID)) {
             intent.getStringExtra(EXTRA_CATALOG_ID) ?: ""
         } else {
@@ -65,7 +68,7 @@ class CatalogProductListActivity : BaseSimpleActivity() {
 
     private fun prepareView(savedInstanceIsNull: Boolean) {
         if (savedInstanceIsNull) {
-            val fragment = if (true) {
+            val fragment = if (remoteConfig?.getBoolean(ENABLE_IMPROVMENT_CATALOG_PRODUCT_LIST).orFalse()) {
                 CatalogProductListImprovementFragment.newInstance(
                     catalogId,
                     catalogTitle,
