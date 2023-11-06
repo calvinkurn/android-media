@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.callback.SnapOnScrollCallback.Behavior.NOTIFY_ON_SCROLL_STATE_IDLE
 import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_CHANNEL_PRODUCTION_APPLINK
 import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_CHANNEL_STAGING_APPLINK
 import com.tokopedia.tokopedianow.common.listener.SnapPositionChangeListener
@@ -16,6 +18,7 @@ import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestBinding
 import com.tokopedia.tokopedianow.common.util.SnapHelperUtil.attachSnapHelperWithListener
 import com.tokopedia.tokopedianow.home.presentation.decoration.QuestCardItemDecoration
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.view.HomeQuestProgressBarView.HomeQuestProgressBarListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.adapter.HomeQuestCardAdapter
 import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestCardItemViewHolder.HomeQuestCardItemListener
 import com.tokopedia.url.Env
@@ -32,6 +35,8 @@ class HomeQuestWidgetViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_quest
+
+        private const val QUEST_CARD_FIRST_INDEX = 0
     }
 
     private val mAdapter: HomeQuestCardAdapter by lazy {
@@ -58,6 +63,7 @@ class HomeQuestWidgetViewHolder(
 
             attachSnapHelperWithListener(
                 snapHelper = PagerSnapHelper(),
+                behavior = NOTIFY_ON_SCROLL_STATE_IDLE,
                 listener = this@HomeQuestWidgetViewHolder
             )
         }
@@ -74,7 +80,15 @@ class HomeQuestWidgetViewHolder(
             root.addOnImpressionListener(element) {
                 listener?.onImpressQuestWidget()
             }
-            questProgressBar.bind(element)
+            rvQuestCards.scrollToPosition(QUEST_CARD_FIRST_INDEX)
+            setupProgressBar(element)
+        }
+    }
+
+    private fun setupProgressBar(element: HomeQuestWidgetUiModel) {
+        binding?.apply {
+            val listener = createProgressBarListener(element)
+            questProgressBar.bind(element, listener)
         }
     }
 
@@ -83,7 +97,31 @@ class HomeQuestWidgetViewHolder(
         RouteManager.route(itemView.context, appLink)
     }
 
+    private fun createProgressBarListener(element: HomeQuestWidgetUiModel): HomeQuestProgressBarListener {
+        return object : HomeQuestProgressBarListener {
+            override fun onClickProgressItem(index: Int, isSelected: Boolean) {
+                if(!isSelected) {
+                    smoothSnapToPosition(index)
+                }
+            }
+
+            override fun onAnimationFinished() {
+                val progressPosition = element.currentProgressPosition
+                smoothSnapToPosition(progressPosition)
+            }
+        }
+    }
+
+    private fun smoothSnapToPosition(index: Int) {
+        binding?.rvQuestCards?.smoothSnapToPosition(index)
+    }
+
+    private fun switchProgressItemColor(position: Int) {
+        binding?.questProgressBar?.switchItemColor(position)
+    }
+
     override fun onSnapPositionChange(position: Int) {
+        switchProgressItemColor(position)
         listener?.onImpressQuestCardSwiped()
     }
 

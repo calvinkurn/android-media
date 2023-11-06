@@ -997,7 +997,7 @@ class TokoNowHomeViewModel @Inject constructor(
             )
         } else {
             val questList = QuestMapper.mapQuestCardData(questListResponse.questWidgetList)
-            val currentQuestFinished = questList.filter { it.currentProgress == it.totalProgress }.size
+            val currentQuestFinished = questList.filter { it.isFinished() }.size
             val totalQuestTarget = questList.size
             if (currentQuestFinished == totalQuestTarget) {
                 homeLayoutItemList.mapQuestFinishedWidget(

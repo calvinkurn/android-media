@@ -113,6 +113,7 @@ object HomeLayoutMapper {
     const val DEFAULT_QUANTITY = 0
     private const val DEFAULT_PARENT_ID = "0"
     private const val SUCCESS_CODE = "200"
+    private const val DEFAULT_QUEST_PROGRESS = 0
 
     private val SUPPORTED_LAYOUT_TYPES = listOf(
         CATEGORY,
@@ -395,10 +396,17 @@ object HomeLayoutMapper {
         questList: List<HomeQuestCardItemUiModel>
     ) {
         updateItemById(id) {
+            val hasFinishedQuest = questList.lastOrNull { it.isFinished() } != null
+            val currentProgressPosition = if(hasFinishedQuest) {
+                questList.indexOfLast { it.isFinished() }
+            } else {
+                DEFAULT_QUEST_PROGRESS
+            }
             val quest = com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel(
                 id = id,
                 title = title,
-                questList = questList
+                questList = questList,
+                currentProgressPosition = currentProgressPosition
             )
             HomeLayoutItemUiModel(quest, HomeLayoutItemState.LOADED)
         }

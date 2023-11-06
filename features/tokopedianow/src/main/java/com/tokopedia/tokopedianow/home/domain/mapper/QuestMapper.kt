@@ -60,13 +60,15 @@ object QuestMapper {
 
     fun mapQuestCardData(questListResponse: List<QuestList>): List<HomeQuestCardItemUiModel> = questListResponse.map {
         val mapConfig = convertJsonStringToMap(it.config)
+        val currentProgress = it.task.firstOrNull()?.progress?.current.orZero()
+        val totalProgress = it.task.firstOrNull()?.progress?.target.orZero()
         HomeQuestCardItemUiModel(
             id = it.id,
             title = getValueFromConfig(mapConfig, BANNER_TITLE),
             description = getValueFromConfig(mapConfig, BANNER_DESCRIPTION),
             isLockedShown = it.questUser.status == STATUS_IDLE,
-            currentProgress = it.task.firstOrNull()?.progress?.current.orZero(),
-            totalProgress = it.task.firstOrNull()?.progress?.target.orZero()
+            currentProgress = currentProgress,
+            totalProgress = totalProgress
         )
     }
 
