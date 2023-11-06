@@ -56,7 +56,7 @@ class PlayShortsPostUploadActivity : BaseActivity() {
         val appLink = intent.getStringExtra(EXTRA_APP_LINK).orEmpty()
 
         if (GlobalConfig.isSellerApp()) {
-            if (isAppInstalled(CUSTOMER_APP_PACKAGE)) {
+            if (isAppInstalled(GlobalConfig.PACKAGE_CONSUMER_APP)) {
                 startActivity(
                     Intent(Intent.ACTION_VIEW).apply {
                         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -80,8 +80,6 @@ class PlayShortsPostUploadActivity : BaseActivity() {
         private const val EXTRA_AUTHOR_ID = "author_id"
         private const val EXTRA_AUTHOR_TYPE = "author_type"
         private const val EXTRA_APP_LINK = "app_link"
-
-        private const val CUSTOMER_APP_PACKAGE = "com.tokopedia.tkpd"
 
         fun getIntent(
             context: Context,
