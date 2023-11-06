@@ -244,7 +244,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     private fun setupMessageWithAnimation(messages: List<String>) {
         binding?.tvBmgmCartDiscount?.setMessages(messages)
 
-        sendMiniCartTrackingOnLastMessageChanged(messages.last())
+        sendMiniCartTrackingOnLastMessageChanged(messages.lastOrNull().orEmpty())
     }
 
     private fun saveCartDataToLocalStorage() {

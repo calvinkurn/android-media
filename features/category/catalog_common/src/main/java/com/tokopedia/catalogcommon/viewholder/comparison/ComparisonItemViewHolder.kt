@@ -24,17 +24,13 @@ class ComparisonItemViewHolder(
 
     private val binding: WidgetItemComparisonContentBinding? by viewBinding()
 
-    init {
-        binding?.cardProductAction?.setOnClickListener {
-            comparisonItemListener?.onComparisonSwitchButtonClicked(bindingAdapterPosition)
-        }
-
-    }
-
     fun bind(item: ComparisonUiModel.ComparisonContent, itemWidth: Int) {
         binding?.apply {
-            binding?.clProduct?.setOnClickListener {
+            clProduct.setOnClickListener {
                 comparisonItemListener?.onComparisonProductClick(item.id)
+            }
+            cardProductAction.setOnClickListener {
+                comparisonItemListener?.onComparisonSwitchButtonClicked(bindingAdapterPosition, item)
             }
             val specs = if (isDisplayingTopSpec) item.topComparisonSpecs else item.comparisonSpecs
             iuProduct.loadImage(item.imageUrl)

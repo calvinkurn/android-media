@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.producthighlight.DiscoveryOCSDataModel
 import com.tokopedia.discovery2.usecase.producthighlightusecase.ProductHighlightUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
@@ -273,9 +274,11 @@ class ProductHighlightViewModelTest {
             atcUseCase.createObservable(capture(slot)).toBlocking().single()
         } returns atcResponseSuccess
 
-        viewModel.onOCSClicked(dataItem, context)
+        viewModel.onOCSClicked(context, dataItem)
 
-        TestCase.assertEquals(atcResponseSuccess, viewModel.redirectToOCS.value)
+        val expectedValue = DiscoveryOCSDataModel(dataItem, atcResponseSuccess)
+
+        TestCase.assertEquals(expectedValue, viewModel.redirectToOCS.value)
         TestCase.assertEquals(null, viewModel.ocsErrorMessage.value)
     }
 
@@ -302,7 +305,7 @@ class ProductHighlightViewModelTest {
             atcUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseError
 
-        viewModel.onOCSClicked(dataItem, context)
+        viewModel.onOCSClicked(context, dataItem)
 
         TestCase.assertEquals(null, viewModel.redirectToOCS.value)
         TestCase.assertEquals(errorMessage, viewModel.ocsErrorMessage.value)
@@ -324,7 +327,7 @@ class ProductHighlightViewModelTest {
             atcUseCase.createObservable(any()).toBlocking().single()
         } returns null
 
-        viewModel.onOCSClicked(dataItem, context)
+        viewModel.onOCSClicked(context, dataItem)
 
         TestCase.assertEquals(null, viewModel.redirectToOCS.value)
         TestCase.assertEquals("Failed to request ATC", viewModel.ocsErrorMessage.value)
