@@ -115,6 +115,10 @@ class ShortsUploadManager @AssistedInject constructor(
                     snapshotHelper.deleteLocalFile()
                     updateChannelStatus(uploadData, PlayChannelStatusType.TranscodingFailed)
                 } catch (e: Exception) {
+                    return@withContext CreationUploadExecutionResult.Error(
+                        uploadData,
+                        throwable
+                    )
                 }
 
                 broadcastFail(uploadData)

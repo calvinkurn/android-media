@@ -113,6 +113,10 @@ class StoriesUploadManager @AssistedInject constructor(
                     snapshotHelper.deleteLocalFile()
                     updateStoryStatus(uploadData, StoriesStatus.TranscodingFailed)
                 } catch (e: Exception) {
+                    return@withContext CreationUploadExecutionResult.Error(
+                        uploadData,
+                        throwable
+                    )
                 }
 
                 broadcastFail(uploadData)
