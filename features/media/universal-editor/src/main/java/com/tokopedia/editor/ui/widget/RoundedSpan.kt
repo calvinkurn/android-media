@@ -163,7 +163,6 @@ class RoundedSpan(
 
             if (align == ALIGN_LEFT) {
                 pathTenPosY -= radius
-                pathTenPosX += bridgeBlendWidth
             }
             path.lineTo(pathTenPosX, pathTenPosY)
         }
