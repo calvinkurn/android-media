@@ -873,8 +873,12 @@ public interface ApplinkConst {
     }
 
     interface Stories {
-        String STORIES_TYPE_SHOP = "shop";
-        String STORIES_TYPE_USER = "user";
+
+        String STORIES_VIEWER_ARG_SOURCE = "source";
+        String STORIES_VIEWER_ARG_SOURCE_ID = "source_id";
+        String STORIES_VIEWER_TYPE_SHOP = "shop";
+        String STORIES_VIEWER_TYPE_USER = "user";
+        String STORIES_VIEWER_SOURCE_SHARELINK = "sharelink";
 
         String STORIES_VIEWER = "tokopedia://stories/{stories_type}/{author_id}";
         String STORIES_CREATION = "tokopedia://stories/creation";

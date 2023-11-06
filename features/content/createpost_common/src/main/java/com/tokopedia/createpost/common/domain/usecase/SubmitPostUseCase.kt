@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.common.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.createpost.common.domain.entity.request.MediaTag
 import com.tokopedia.createpost.common.domain.entity.request.SubmitPostMedium
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
@@ -27,7 +28,7 @@ import kotlin.collections.ArrayList
 @GqlQuery(SubmitPostUseCase.QUERY_NAME, SubmitPostUseCase.QUERY)
 open class SubmitPostUseCase @Inject constructor(
     private val uploadMultipleMediaUseCase: UploadMultipleMediaUseCase,
-    graphqlRepository: GraphqlRepository,
+    @ApplicationContext graphqlRepository: GraphqlRepository,
     private val saveMediaPostCacheUseCase: SaveMediaPostCacheUseCase,
     private val deleteMediaPostCacheUseCase: DeleteMediaPostCacheUseCase,
 ) : GraphqlUseCase<SubmitPostData>(graphqlRepository) {
@@ -74,8 +75,8 @@ open class SubmitPostUseCase @Inject constructor(
         setRequestParams(
             mapOf(
                 PARAM_INPUT to mapOf(
-                    PARAM_ACTION to if(id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
-                    PARAM_ID to if(id.isNullOrEmpty()) null else id,
+                    PARAM_ACTION to if (id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
+                    PARAM_ID to if (id.isNullOrEmpty()) null else id,
                     PARAM_AD_ID to null,
                     PARAM_TYPE to INPUT_TYPE_CONTENT,
                     PARAM_TOKEN to token,
@@ -128,8 +129,8 @@ open class SubmitPostUseCase @Inject constructor(
         setRequestParams(
             mapOf(
                 PARAM_INPUT to mapOf(
-                    PARAM_ACTION to if(id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
-                    PARAM_ID to if(id.isNullOrEmpty()) null else id,
+                    PARAM_ACTION to if (id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
+                    PARAM_ID to if (id.isNullOrEmpty()) null else id,
                     PARAM_AD_ID to null,
                     PARAM_TYPE to INPUT_TYPE_CONTENT,
                     PARAM_TOKEN to token,
@@ -164,7 +165,7 @@ open class SubmitPostUseCase @Inject constructor(
             position.add(it.posY.toDouble())
 
             val id = productItem.getOrNull(it.tagIndex)?.id
-            if(id != null) {
+            if (id != null) {
                 val tag = MediaTag(
                     type = TAGS_TYPE_PRODUCT,
                     content = id,
