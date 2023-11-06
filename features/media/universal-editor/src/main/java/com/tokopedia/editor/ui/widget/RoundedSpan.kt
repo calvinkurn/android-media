@@ -113,7 +113,7 @@ class RoundedSpan(
 
         val bridgeBlendWidth = radius * 2
 
-        val onTransitionSize = ((prevLeft - bridgeBlendWidth) <= rect.left)
+        val onTransitionSize = ((prevLeft - bridgeBlendWidth) <= rect.left && (prevRight + bridgeBlendWidth) >= rect.right)
 
         /**
          * For comment note number please refer to the path flow on
