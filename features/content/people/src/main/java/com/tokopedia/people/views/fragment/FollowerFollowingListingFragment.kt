@@ -17,6 +17,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentFollowerFollowingListingBinding
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
+import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_ACTIVE_TAB
+import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_FOLLOWING
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_DISPLAY_NAME
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_IS_FOLLOWERS
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWERS
@@ -126,6 +128,10 @@ class FollowerFollowingListingFragment @Inject constructor(
         } else {
             binding.tpFollow.getUnifyTabLayout().getTabAt(FOLLOWING_PAGE_POSITION)?.select()
         }
+
+        val activeTab = arguments?.getString(EXTRA_ACTIVE_TAB)
+        binding.viewPager.currentItem = if (activeTab == EXTRA_FOLLOWING) FOLLOWING_PAGE_POSITION
+        else FOLLOWERS_PAGE_POSITION
     }
 
     private fun setHeader() {

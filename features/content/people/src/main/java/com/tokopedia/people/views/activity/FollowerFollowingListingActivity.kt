@@ -32,7 +32,7 @@ class FollowerFollowingListingActivity : BaseSimpleActivity() {
         setResult(Activity.RESULT_OK, intent)
     }
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         return FollowerFollowingListingFragment.getFragment(
             supportFragmentManager,
             classLoader,
@@ -62,15 +62,10 @@ class FollowerFollowingListingActivity : BaseSimpleActivity() {
     }
 
     companion object {
-
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val intent = Intent(context, FollowerFollowingListingActivity::class.java)
             intent.putExtras(extras)
             return intent
-        }
-
-        fun getFollowerFollowingListing(context: Context, extras: Bundle): Intent {
-            return getCallingIntent(context, extras)
         }
     }
 }

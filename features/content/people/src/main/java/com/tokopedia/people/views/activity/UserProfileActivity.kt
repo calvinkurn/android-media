@@ -1,8 +1,6 @@
 package com.tokopedia.people.views.activity
 
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
@@ -30,7 +28,7 @@ class UserProfileActivity : BaseSimpleActivity() {
         setResult(Activity.RESULT_OK, intent)
     }
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         return UserProfileFragment.getFragment(
             supportFragmentManager,
             classLoader,
@@ -47,28 +45,42 @@ class UserProfileActivity : BaseSimpleActivity() {
     }
 
     private fun forDeeplink() {
-        bundle = intent.extras
-        if (intent.data != null) {
-            bundle = UriUtil.destructiveUriBundle(
-                ApplinkConstInternalGlobal.USER_PROFILE_LANDING,
-                intent.data,
-                bundle,
-            )
+        if (intent.data == null) {
+            finish()
+            return
         }
+        bundle = intent.extras
+        bundle = UriUtil.destructiveUriBundle(
+            ApplinkConstInternalGlobal.USER_PROFILE_LANDING,
+            intent.data,
+            bundle,
+        )
+        bundle?.putString(EXTRA_USERNAME, intent.data?.pathSegments?.first())
+        directToOtherPage(intent.data?.pathSegments)
+    }
 
-        bundle?.putString(EXTRA_USERNAME, intent.data?.pathSegments?.get(0))
+    private fun directToOtherPage(pathSegment: List<String>?) {
+        if (pathSegment == null || pathSegment.size == 1) return
+
+        when (pathSegment.last()) {
+            EXTRA_FOLLOWING, EXTRA_FOLLOWERS -> openFollowingFollowersPage(pathSegment.last())
+            else -> return
+        }
+    }
+
+    private fun openFollowingFollowersPage(activeTab: String) {
+        val bundle = Bundle()
+        bundle.putString(EXTRA_ACTIVE_TAB, activeTab)
+
+        startActivity(FollowerFollowingListingActivity.getCallingIntent(this, bundle))
+        finish()
     }
 
     companion object {
-        val EXTRA_USERNAME = "userName"
-        fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            val intent = Intent(context, UserProfileActivity::class.java)
-            intent.putExtras(extras)
-            return intent
-        }
+        const val EXTRA_USERNAME = "user_name"
+        const val EXTRA_FOLLOWING = "following"
+        const val EXTRA_FOLLOWERS = "followers"
 
-        fun getUserProfile(context: Context, extras: Bundle): Intent {
-            return getCallingIntent(context, extras)
-        }
+        const val EXTRA_ACTIVE_TAB = "active_tab"
     }
 }

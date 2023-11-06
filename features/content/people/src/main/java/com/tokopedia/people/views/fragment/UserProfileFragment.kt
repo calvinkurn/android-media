@@ -141,10 +141,6 @@ class UserProfileFragment @Inject constructor(
 
     private var mBlockDialog: DialogUnify? = null
 
-    private val dp8 by lazy(LazyThreadSafetyMode.NONE) {
-        8.dpToPx(mainBinding.root.resources.displayMetrics)
-    }
-
     private val viewModel: UserProfileViewModel by activityViewModels {
         viewModelFactoryCreator.create(
             this,
@@ -202,10 +198,6 @@ class UserProfileFragment @Inject constructor(
         initListener()
         setHeader()
         setupCoachMark()
-
-        if (arguments == null || requireArguments().getString(EXTRA_USERNAME).isNullOrBlank()) {
-            activity?.finish()
-        }
 
         mainBinding.appBarUserProfile.addOnOffsetChangedListener { _, verticalOffset ->
             binding.swipeRefreshLayout.isEnabled = verticalOffset == 0
