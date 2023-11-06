@@ -1,10 +1,14 @@
 package com.tokopedia.epharmacy.component.viewholder
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.component.model.EPharmacyOrderDetailHeaderDataModel
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -17,7 +21,9 @@ class EPharmacyOrderDetailHeaderViewHolder(
 
     private val title = view.findViewById<Typography>(R.id.ep_order_status_description)
     private val ticker = view.findViewById<Ticker>(R.id.ep_order_ticker)
-    private val invoiceNumber = view.findViewById<Typography>(R.id.ep_invoice_number)
+    private val invoiceNumberText = view.findViewById<Typography>(R.id.ep_invoice_number)
+    private val copyInvoiceNumber = view.findViewById<IconUnify>(R.id.ep_invoice_copy)
+    private val lihatInvoice = view.findViewById<Typography>(R.id.ep_lihat_invoice)
     private val purchaseDateValue = view.findViewById<Typography>(R.id.ep_purchase_date_value)
     private val validUntil = view.findViewById<Typography>(R.id.ep_time_valid_until)
     private val validUntilValue = view.findViewById<Typography>(R.id.ep_time_valid_until_value)
@@ -25,17 +31,36 @@ class EPharmacyOrderDetailHeaderViewHolder(
 
     companion object {
         val LAYOUT = R.layout.epharmacy_order_detail_header
+        const val CLIPBOARD_TAG = "Invoice Number"
     }
 
     override fun bind(data: EPharmacyOrderDetailHeaderDataModel) {
         setUpTicker(data.title, data.tickerMessage, data.tickerType.orZero())
-        setUpInvoiceData(data.invoiceTitle,data.chatDate)
+        setUpInvoiceData(data.invoiceNumber,data.chatDate)
+        setUpInvoiceClipBoard(data.invoiceNumber)
+        setUpInvoiceLink(data.invoiceLink)
         setUpValidity(data.validUntil)
         setupIndicatorColor(data.indicatorColor.orEmpty())
     }
 
+    private fun setUpInvoiceClipBoard(invoiceNumber: String?) {
+        copyInvoiceNumber.setOnClickListener {
+            (view.context?.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager)?.apply {
+                setPrimaryClip(
+                    ClipData.newPlainText(
+                        CLIPBOARD_TAG,
+                        invoiceNumber)
+                )
+            }
+        }
+    }
+
+    private fun setUpInvoiceLink(invoiceLink: String?) {
+        lihatInvoice.text = invoiceLink
+    }
+
     private fun setUpInvoiceData(invoiceTitle: String?, chatDate: String?) {
-        invoiceNumber.text = invoiceTitle
+        invoiceNumberText.text = invoiceTitle
         purchaseDateValue.text = chatDate
     }
 

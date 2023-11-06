@@ -8,7 +8,7 @@ data class EPharmacyOrderDetailHeaderDataModel(
     val title: String?,
     val tickerType: Int?,
     val tickerMessage: String?,
-    val invoiceTitle: String?,
+    val invoiceNumber: String?,
     val invoiceLink: String?,
     val chatDate: String?,
     val validUntil: String?,

@@ -197,7 +197,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
     }
 
     private fun onPrimaryButtonClick(appUrl: String?) {
-        RouteManager.route(context, appUrl)
+        redirectionAppLink(appUrl)
     }
 
     private fun onSecondaryButtonClick(secondaryButtonData: List<EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?>) {
@@ -205,10 +205,14 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
             secondaryButtonData,
             object : EPharmacySecondaryActionButtonBottomSheet.ActionButtonClickListener {
                 override fun onActionButtonClicked(isFromPrimaryButton: Boolean, button: EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?) {
-                    RouteManager.route(context, button?.appUrl)
+                    redirectionAppLink(button?.appUrl)
                 }
             }
         )
+    }
+
+    private fun redirectionAppLink(appLink: String?) {
+        RouteManager.route(context, appLink)
     }
 
     private fun showSecondaryActionButtonBottomSheet(secondaryActionButtons: List<EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?>, actionButtonClickListener: EPharmacySecondaryActionButtonBottomSheet.ActionButtonClickListener?) {

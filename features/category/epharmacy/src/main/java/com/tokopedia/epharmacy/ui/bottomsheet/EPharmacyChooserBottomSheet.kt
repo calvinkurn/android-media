@@ -35,6 +35,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.webview.ext.decode
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class EPharmacyChooserBottomSheet : BottomSheetUnify() {
@@ -117,7 +118,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     }
 
     private fun extractArguments() {
-        enableImageURL = arguments?.getString(ENABLER_IMAGE_URL).orEmpty()
+        enableImageURL = arguments?.getString(ENABLER_IMAGE_URL)?.decode().orEmpty()
         groupId = arguments?.getString(EPHARMACY_GROUP_ID).orEmpty()
         enablerName = arguments?.getString(EPHARMACY_ENABLER_NAME).orEmpty()
         price = arguments?.getString(EPHARMACY_CONS_PRICE).orEmpty()
@@ -138,6 +139,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                     chooserUpload.lblPAPTittleOptionBottomsheet.text = res.getString(R.string.epharmacy_upload_resep_dokter_chooser_title)
                     chooserUpload.lblPAPDescriptionOptionBottomsheet.text = res.getString(R.string.epharmacy_upload_resep_dokter_chooser_subtitle)
                     chooserUpload.stepIcon.loadImage(UPLOAD_CHOOSER_IMAGE_URL)
+                    chooserUpload.divider.hide()
                     chooserUpload.parent.setOnClickListener {
                         uploadResepAction()
                     }
