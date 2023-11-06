@@ -50,6 +50,7 @@ const val KEY_EVENT_GA = "event_ga"
 const val KEY_CLIENT_ID = "clientId"
 const val KEY_SCREEN = "screen"
 const val KEY_METRICS = "metrics"
+const val KEY_HITS_TIME = "hits_time"
 const val KEY = "key"
 const val VALUE = "value"
 
