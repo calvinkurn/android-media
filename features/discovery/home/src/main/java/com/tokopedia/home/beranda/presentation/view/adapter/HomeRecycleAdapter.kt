@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterF
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
+import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
 import com.tokopedia.home_component.viewholders.SpecialReleaseViewHolder
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 
@@ -49,12 +50,18 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
+        if(holder is BannerRevampViewHolder) {
+            holder.resumeIndicator()
+        }
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewDetachedFromWindow(holder)
         if(holder is BannerViewHolder){
             holder.onPause()
+        }
+        if(holder is BannerRevampViewHolder) {
+            holder.pauseIndicator()
         }
     }
 
