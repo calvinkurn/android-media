@@ -7,8 +7,20 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
-import com.tokopedia.seller.menu.common.view.uimodel.*
-import com.tokopedia.seller.menu.common.view.viewholder.*
+import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.IndentedSettingTitleUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SellerSettingsTitleUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SettingLoadingUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleMenuUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleUiModel
+import com.tokopedia.seller.menu.common.view.viewholder.DividerViewHolder
+import com.tokopedia.seller.menu.common.view.viewholder.IndentedSettingTitleViewHolder
+import com.tokopedia.seller.menu.common.view.viewholder.MenuItemsViewHolder
+import com.tokopedia.seller.menu.common.view.viewholder.SellerLoadingViewHolder
+import com.tokopedia.seller.menu.common.view.viewholder.SellerSettingsTitleViewHolder
+import com.tokopedia.seller.menu.common.view.viewholder.SettingTitleMenuViewHolder
+import com.tokopedia.seller.menu.common.view.viewholder.SettingTitleViewHolder
 import com.tokopedia.user.session.UserSessionInterface
 
 open class OtherMenuAdapterTypeFactory(
@@ -31,7 +43,6 @@ open class OtherMenuAdapterTypeFactory(
             SettingTitleMenuViewHolder.LAYOUT -> SettingTitleMenuViewHolder(parent)
             SellerSettingsTitleViewHolder.LAYOUT -> SellerSettingsTitleViewHolder(parent)
             LoadingViewholder.LAYOUT -> SellerLoadingViewHolder(parent)
-            ToggleMenuItemViewHolder.LAYOUT -> ToggleMenuItemViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -62,10 +73,6 @@ open class OtherMenuAdapterTypeFactory(
 
     override fun type(settingLoadingUiModel: SettingLoadingUiModel): Int {
         return LoadingViewholder.LAYOUT
-    }
-
-    override fun type(model: ToggleMenuItemUiModel): Int {
-        return ToggleMenuItemViewHolder.LAYOUT
     }
 }
 
