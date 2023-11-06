@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -268,11 +269,14 @@ class CatalogDetailPageFragment :
         }
         val anchorToPosition = widgetAdapter.findPositionWidget(anchorTo)
         val layoutManager = binding?.rvContent?.layoutManager as? LinearLayoutManager
-        widgetAdapter.changeNavigationTabActive(tabPosition)
         if (anchorToPosition >= Int.ZERO) {
             when (tabPosition) {
                 Int.ZERO -> {
-                    smoothScroller.targetPosition = anchorToPosition - POSITION_THREE_IN_WIDGET_LIST
+                    var newAnchorPosition = anchorToPosition - POSITION_THREE_IN_WIDGET_LIST
+                    if (newAnchorPosition == -1){
+                        newAnchorPosition = anchorToPosition
+                    }
+                    smoothScroller.targetPosition = newAnchorPosition
                     layoutManager?.startSmoothScroll(smoothScroller)
                 }
                 (widgetAdapter.findNavigationCount().dec()) -> {
@@ -284,6 +288,7 @@ class CatalogDetailPageFragment :
                     layoutManager?.startSmoothScroll(smoothScroller)
                 }
             }
+            widgetAdapter.changeNavigationTabActive(tabPosition)
             Handler(Looper.getMainLooper()).postDelayed({
                 selectNavigationFromScroll = true
             }, NAVIGATION_SCROLL_DURATION)

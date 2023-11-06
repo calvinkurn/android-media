@@ -28,6 +28,7 @@ import com.tokopedia.home_component.customview.bannerindicator.BannerIndicator
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicatorListener
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -47,6 +48,7 @@ class HeroBannerViewHolder(
         private const val RECTANGULAR_CARD_RADIUS = 30F
         private const val BANNER_PREMIUM_RATIO = "1:1.5"
         private const val BANNER_REGULAR_RATIO = "1:1"
+        private const val FIFTH_LAYOUT = 5
     }
 
     private val binding by viewBinding<WidgetItemBannerHeroBinding>()
@@ -116,6 +118,12 @@ class HeroBannerViewHolder(
         (binding?.carouselBanner?.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = BANNER_REGULAR_RATIO
     }
 
+    private fun WidgetItemBannerHeroBinding.renderFifthLayoutData(element: HeroBannerUiModel) {
+        tfTitleBanner.text = element.brandTitle
+        iuBrand.gone()
+        (binding?.carouselBanner?.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = BANNER_REGULAR_RATIO
+    }
+
     private fun ViewPager.setupCarouselBanner() {
         adapter = bannerAdapter
         addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -177,7 +185,10 @@ class HeroBannerViewHolder(
         brandImageCount = element.brandImageUrls.size
         brandImageUrl = element.brandImageUrls
         binding?.configViewsVisibility(element.isPremium)
-        if (element.isPremium) {
+
+        if (element.layoutVersion == FIFTH_LAYOUT){
+            binding?.renderFifthLayoutData(element)
+        }else if (element.isPremium) {
             binding?.renderPremiumBrandData(element)
         } else {
             binding?.renderRegularBrandData(element)
