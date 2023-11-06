@@ -223,7 +223,6 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
             addItemDecoration(RecommendationItemDecoration())
         }
         rvPdp = rv
-        showLoading()
     }
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {

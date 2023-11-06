@@ -88,4 +88,8 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
     fun hideCoachMark() {
         coachMark2.container?.hide()
     }
+
+    fun closeCoachmark() {
+        coachMark2.dismiss()
+    }
 }

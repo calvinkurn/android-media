@@ -54,7 +54,7 @@ class BalanceWidgetView : FrameLayout {
         this.itemContext = view.context
     }
 
-    fun bind(element: HomeBalanceModel, listener: HomeCategoryListener?, homeThematicUtil: HomeThematicUtil = HomeThematicUtil()) {
+    fun bind(element: HomeBalanceModel, listener: HomeCategoryListener?, homeThematicUtil: HomeThematicUtil) {
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_BALANCE_WIDGET_CUSTOMVIEW)
         this.listener = listener
         renderWidget(element, homeThematicUtil)
