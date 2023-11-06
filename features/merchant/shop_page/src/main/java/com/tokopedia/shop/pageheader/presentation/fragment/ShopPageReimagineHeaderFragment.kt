@@ -259,7 +259,6 @@ class ShopPageReimagineHeaderFragment :
         private const val VIEW_LOADING = 2
         private const val VIEW_ERROR = 3
         private const val VIEWPAGER_PAGE_LIMIT = 1
-        private const val SOURCE_SHOP = "shop"
         private const val CART_LOCAL_CACHE_NAME = "CART"
         private const val TOTAL_CART_CACHE_KEY = "CACHE_TOTAL_CART"
         private const val PATH_HOME = "home"
@@ -286,7 +285,6 @@ class ShopPageReimagineHeaderFragment :
         private const val DEFAULT_SHOWCASE_ID = "0"
         private const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
         private const val FEED_SHOP_FRAGMENT_SHOP_ID = "PARAM_SHOP_ID"
-        private const val FEED_SHOP_FRAGMENT_CREATE_POST_URL = "PARAM_CREATE_POST_URL"
         private const val ARGS_SHOP_ID_FOR_REVIEW_TAB = "ARGS_SHOP_ID"
         private const val DELAY_MINI_CART_RESUME = 1000L
         private const val IDR_CURRENCY_TO_RAW_STRING_REGEX = "[Rp, .]"
@@ -329,6 +327,7 @@ class ShopPageReimagineHeaderFragment :
     private var cartLocalCacheHandler: LocalCacheHandler? = null
     var shopPageTracking: ShopPageTrackingBuyer? = null
     var shopPageTrackingSGCPlay: ShopPageTrackingSGCPlayWidget? = null
+    var isShowFeed: Boolean = false
     private var shopId = ""
     private val shopName: String
         get() = shopPageHeaderDataModel?.shopName.orEmpty()
@@ -339,8 +338,6 @@ class ShopPageReimagineHeaderFragment :
     var variantId: String = ""
     private var affiliateData: ShopAffiliateData? = null
     var isFirstCreateShop: Boolean = false
-    var isShowFeed: Boolean = false
-    var createPostUrl: String = ""
     private var isTabClickByUser = false
     private var isFollowing: Boolean = false
     private var tabPosition = TAB_POSITION_HOME
@@ -685,11 +682,11 @@ class ShopPageReimagineHeaderFragment :
         }
 
         shopHeaderViewModel?.followShopData?.observe(owner) {
+            setFragmentTabContentWrapperFollowButtonLoading(false)
             when (it) {
                 is Success -> {
                     it.data.followShop?.let { followShop ->
                         onSuccessUpdateFollowStatus(followShop)
-                        setFragmentTabContentWrapperFollowButtonLoading(false)
                     }
                 }
 
@@ -1711,8 +1708,6 @@ class ShopPageReimagineHeaderFragment :
 
     private fun onSuccessGetShopPageP1Data(shopPageHeaderP1Data: ShopPageHeaderP1HeaderData) {
         this.shopPageHeaderP1Data = shopPageHeaderP1Data
-        isShowFeed = shopPageHeaderP1Data.isWhitelist
-        createPostUrl = shopPageHeaderP1Data.feedUrl
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
             shopId = this@ShopPageReimagineHeaderFragment.shopId
             isOfficial = shopPageHeaderP1Data.isOfficial
@@ -1986,13 +1981,17 @@ class ShopPageReimagineHeaderFragment :
     private fun setupTabContentWrapper(): List<ShopPageHeaderTabModel> {
         val listShopPageTabModel = mutableListOf<ShopPageHeaderTabModel>()
         shopPageHeaderDataModel?.listDynamicTabData?.forEach {
-            if (it.name == ShopPageHeaderTabName.FEED && shopPageHeaderP1Data?.isWhitelist != true) {
-                return@forEach
+            if (it.name == ShopPageHeaderTabName.FEED) {
+                isShowFeed = it.isActive == ShopPageConstant.ShopTabActiveStatus.ACTIVE
             }
             val tabContentWrapper = ShopPageHeaderFragmentTabContentWrapper.createInstance().apply {
                 setTabData(it)
                 shopPageHeaderP1Data?.let { headerData ->
-                    setShopPageHeaderP1Data(headerData, getIsEnableDirectPurchase(headerData))
+                    setShopPageHeaderP1Data(
+                        shopPageHeaderP1Data = headerData,
+                        isEnableDirectPurchase = getIsEnableDirectPurchase(headerData),
+                        isShouldShowFeed = isShowFeed
+                    )
                 }
                 shopHeaderViewModel?.productListData?.let { productListData ->
                     setInitialProductListData(productListData)
@@ -2163,7 +2162,7 @@ class ShopPageReimagineHeaderFragment :
                     ApplinkConst.TOPCHAT_ASKSELLER,
                     shopId,
                     "",
-                    SOURCE_SHOP,
+                    ApplinkConst.Chat.Source.SOURCE_SHOP,
                     shopPageHeaderDataModel?.shopName.orEmpty(),
                     shopPageHeaderDataModel?.avatar.orEmpty()
                 )

@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.annotation.DimenRes
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -37,6 +38,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
 
             val contentMarginTop =
                 productCardModel.layoutStrategy.getGridViewContentMarginTop(context, productCardModel)
+            val contentMarginBottom = 4.toDp()
             val contentHeight = productCardModel.getContentHeightGrid(context)
             val buttonSimilarProductHeight = productCardModel.getButtonSimilarProductHeight(context)
             val buttonPrimaryWishlistHeight = productCardModel.getButtonPrimaryWishlistHeight(context)
@@ -52,7 +54,8 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
                 contentHeight +
                 buttonSimilarProductHeight +
                 buttonPrimaryWishlistHeight +
-                commonFooterHeight
+                commonFooterHeight +
+                contentMarginBottom
             )
         }
 
