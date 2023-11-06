@@ -13,7 +13,8 @@ data class HeroBannerUiModel(
     val brandDescriptions: List<String> = emptyList(),
     val brandIconUrl: String = "",
     val brandImageUrls: List<String> = emptyList(),
-    val isPremium: Boolean = false
+    val isPremium: Boolean = false,
+    val layoutVersion: Int
 ) : BaseCatalogUiModel(idWidget, widgetType, widgetName, widgetBackgroundColor, widgetTextColor) {
 
     override fun type(typeFactory: CatalogAdapterFactory): Int {

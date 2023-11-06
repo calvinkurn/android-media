@@ -71,7 +71,7 @@ class CatalogDetailUiMapper @Inject constructor(
             !it.data?.style?.isHidden.orTrue()
         }?.map {
             when (it.type) {
-                WidgetTypes.CATALOG_HERO.type -> it.mapToHeroBanner(isDarkMode)
+                WidgetTypes.CATALOG_HERO.type -> it.mapToHeroBanner(isDarkMode, remoteModel.version)
                 WidgetTypes.CATALOG_FEATURE_TOP.type -> it.mapToTopFeature(remoteModel)
                 WidgetTypes.CATALOG_TRUSTMAKER.type -> it.mapToTrustMaker(isDarkMode)
                 WidgetTypes.CATALOG_CHARACTERISTIC.type -> it.mapToCharacteristic(isDarkMode)
@@ -79,7 +79,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_BANNER_DOUBLE.type -> it.mapToDoubleBannerImage(isDarkMode)
                 WidgetTypes.CATALOG_NAVIGATION.type -> it.mapToStickyNavigation(remoteModel)
                 WidgetTypes.CATALOG_SLIDER_IMAGE.type -> it.mapToSliderImageText(isDarkMode)
-                WidgetTypes.CATALOG_TEXT.type -> it.mapToTextDescription(isDarkMode)
+                WidgetTypes.CATALOG_TEXT.type -> it.mapToTextDescription(isDarkMode, remoteModel.version)
                 WidgetTypes.CATALOG_REVIEW_EXPERT.type -> it.mapToExpertReview(isDarkMode)
                 WidgetTypes.CATALOG_FEATURE_SUPPORT.type -> it.mapToSupportFeature(remoteModel)
                 WidgetTypes.CATALOG_ACCORDION.type -> it.mapToAccordion(isDarkMode)
@@ -166,7 +166,8 @@ class CatalogDetailUiMapper @Inject constructor(
     }
 
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToHeroBanner(
-        darkMode: Boolean
+        darkMode: Boolean,
+        layoutVersion: Int
     ) =
         HeroBannerUiModel(
             isPremium = data?.style?.isPremium.orFalse(),
@@ -178,8 +179,8 @@ class CatalogDetailUiMapper @Inject constructor(
                 heroSlide.subtitle
             }.orEmpty(),
             brandIconUrl = data?.hero?.brandLogoUrl.orEmpty(),
-            widgetTextColor = colorMapping(darkMode, DARK_COLOR_BANNER, LIGHT_COLOR_BANNER)
-
+            widgetTextColor = colorMapping(darkMode, DARK_COLOR_BANNER, LIGHT_COLOR_BANNER),
+            layoutVersion = layoutVersion
         )
 
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToTopFeature(
@@ -314,12 +315,17 @@ class CatalogDetailUiMapper @Inject constructor(
     }
 
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToTextDescription(
-        isDarkMode: Boolean
+        isDarkMode: Boolean, layoutVersion: Int
     ): TextDescriptionUiModel {
+        val title = if (layoutVersion == LAYOUT_VERSION_4_VALUE){
+            data?.text?.title.orEmpty()
+        } else {
+            "Deskripsi"
+        }
         return TextDescriptionUiModel(
             item = TextDescriptionUiModel.ItemTextDescriptionUiModel(
                 highlight = data?.text?.subtitle.orEmpty(),
-                title = data?.text?.title.orEmpty(),
+                title = title,
                 description = data?.text?.desc.orEmpty()
             ),
             isDarkMode = isDarkMode
