@@ -20,6 +20,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder.BaseRecommendationForYouViewHolder
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.BANNER_TYPE_HORIZONTAL
 import com.tokopedia.topads.sdk.widget.BANNER_TYPE_VERTICAL
@@ -58,11 +60,10 @@ class HomeRecommendationBannerTopAdsViewHolder(
     }
 
     private fun isHomeRecommendationNewQuery(): Boolean {
-//        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-//            RollenceKey.FOR_YOU_FEATURE_FLAG,
-//            ""
-//        ) == RollenceKey.FOR_YOU_FEATURE_FLAG
-        return true
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.FOR_YOU_FEATURE_FLAG,
+            ""
+        ) == RollenceKey.FOR_YOU_FEATURE_FLAG
     }
 
     private fun setImageTopAdsNewQuery(element: HomeRecommendationBannerTopAdsDataModel) {
