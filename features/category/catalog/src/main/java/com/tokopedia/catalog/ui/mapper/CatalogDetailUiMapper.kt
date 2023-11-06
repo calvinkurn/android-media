@@ -469,8 +469,8 @@ class CatalogDetailUiMapper @Inject constructor(
                     title = it.title,
                     author = it.author,
                     videoLink = it.url,
-                    textTitleColor = 0,
-                    textSubTitleColor = 0,
+                    textTitleColor = getTextColor(darkMode),
+                    textSubTitleColor = getTextColor(darkMode),
                 )
             }
         )
