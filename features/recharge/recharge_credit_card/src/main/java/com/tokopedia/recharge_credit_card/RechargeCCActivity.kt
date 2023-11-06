@@ -6,8 +6,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
@@ -15,7 +13,6 @@ import com.tokopedia.recharge_credit_card.di.DaggerRechargeCCComponent
 import com.tokopedia.recharge_credit_card.di.RechargeCCComponent
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import com.tokopedia.iconunify.R as iconunifyR
 
 /*
  * applink production = tokopedia://digital/form?category_id=26&menu_id=169&template=tagihancc
@@ -66,13 +63,6 @@ class RechargeCCActivity : BaseSimpleActivity(), HasComponent<RechargeCCComponen
 
         setSecureWindowFlag()
         component.inject(this)
-
-//        toolbarCreditCard?.addRightIcon(iconunifyR.drawable.iconunify_list_transaction)
-//        toolbarCreditCard?.rightIcons?.let {
-//            it[0].setOnClickListener {
-//                RouteManager.route(this, ApplinkConst.DIGITAL_ORDER)
-//            }
-//        }
     }
 
     override fun onResume() {
