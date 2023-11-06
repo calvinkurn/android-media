@@ -58,7 +58,7 @@ class TokoChatStateChatRoomTest : BaseTokoChatRoomTest() {
     @Test
     fun should_show_global_error_bottom_sheet() {
         // Given
-        tokoChatChannelUseCase.isConnected = false
+        tokoChatRoomUseCase.isConnected = false
 
         // When
         launchChatRoomActivity()

@@ -26,7 +26,7 @@ import com.tokopedia.tokochat.stub.common.TokoChatCacheManagerStub
 import com.tokopedia.tokochat.stub.di.TokoChatNetworkModuleStub.PORT_NUMBER
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub
-import com.tokopedia.tokochat.stub.domain.usecase.TokoChatChannelUseCaseStub
+import com.tokopedia.tokochat.stub.domain.usecase.TokoChatRoomUseCaseStub
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
@@ -60,7 +60,7 @@ abstract class BaseTokoChatTest {
     lateinit var tokochatRepository: TokoChatRepository
 
     @Inject
-    lateinit var tokoChatChannelUseCase: TokoChatChannelUseCaseStub
+    lateinit var tokoChatRoomUseCase: TokoChatRoomUseCaseStub
 
     @Inject
     @TokoChatQualifier

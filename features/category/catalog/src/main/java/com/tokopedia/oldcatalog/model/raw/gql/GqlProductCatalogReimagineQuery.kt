@@ -240,18 +240,6 @@ const val GQL_CATALOG_REIMAGINE_QUERY = """query catalogGetDetailModular(${'$'}c
             title
           }
         }
-        ... on CatalogCompCharacteristic {
-          characteristic {
-            iconUrl
-            desc
-          }
-          style {
-            isHidden
-          }
-          navInfo {
-            title
-          }
-        }
         ... on CatalogCompBannerSingle {
           singleBanner {
             imageUrl

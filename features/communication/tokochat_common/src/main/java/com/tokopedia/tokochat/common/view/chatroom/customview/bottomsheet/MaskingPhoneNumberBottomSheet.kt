@@ -14,6 +14,7 @@ import com.tokopedia.tokochat_common.databinding.TokochatMaskingPhoneNumberBotto
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
+import com.tokopedia.tokochat_common.R as tokochat_commonR
 
 class MaskingPhoneNumberBottomSheet : BottomSheetUnify() {
 
@@ -29,7 +30,7 @@ class MaskingPhoneNumberBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            com.tokopedia.tokochat_common.R.layout.tokochat_masking_phone_number_bottomsheet,
+            tokochat_commonR.layout.tokochat_masking_phone_number_bottomsheet,
             container,
             false
         )

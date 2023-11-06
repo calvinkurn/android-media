@@ -90,12 +90,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CarouselPlayWidgetViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderOvoViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder.PopularKeywordListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
+import com.tokopedia.home.beranda.presentation.view.helper.AccurateOffsetLinearLayoutManager
 import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
@@ -218,11 +219,6 @@ import com.tokopedia.unifycomponents.Toaster.build
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
-import com.tokopedia.usercomponents.stickylogin.common.helper.isRegisteredFromStickyLogin
-import com.tokopedia.usercomponents.stickylogin.common.helper.saveIsRegisteredFromStickyLogin
-import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
-import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.weaver.WeaveInterface
@@ -250,8 +246,7 @@ import com.tokopedia.wishlist_common.R as wishlist_commonR
 
 @OptIn(FlowPreview::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 @SuppressLint("SyntheticAccessor")
-open class
-HomeRevampFragment :
+open class HomeRevampFragment :
     BaseDaggerFragment(),
     OnRefreshListener,
     HomeCategoryListener,
@@ -269,11 +264,9 @@ HomeRevampFragment :
     HomePayLaterWidgetListener {
 
     companion object {
-        private const val className =
-            "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
+        private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
         private const val REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
-        private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
         private const val REQUEST_CODE_LOGIN = 131
         private const val REQUEST_CODE_LOGIN_WIDGET_LOGIN = 133
         private const val REQUEST_CODE_REVIEW = 999
@@ -297,8 +290,7 @@ HomeRevampFragment :
         private const val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
         private const val CLICK_TIME_INTERVAL: Long = 500
 
-        private const val PARAM_APPLINK_AUTOCOMPLETE =
-            "?navsource={source}&hint={hint}&first_install={first_install}"
+        private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
         private const val HOME_SOURCE = "home"
 
         private const val DELAY_TOASTER_RESET_PASSWORD = 5000
@@ -381,7 +373,6 @@ HomeRevampFragment :
     private lateinit var statusBarBackground: View
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var remoteConfigInstance: RemoteConfigInstance
-    private var stickyLoginView: StickyLoginView? = null
     private var homeRecyclerView: NestedRecyclerView? = null
     private var navToolbar: NavToolbar? = null
     private var thematicBackground: AppCompatImageView? = null
@@ -389,7 +380,7 @@ HomeRevampFragment :
     private var homeSnackbar: Snackbar? = null
     private var component: BerandaComponent? = null
     private var adapter: HomeRecycleAdapter? = null
-    private var layoutManager: LinearLayoutManager? = null
+    private var layoutManager: AccurateOffsetLinearLayoutManager? = null
     private var messageSnackbar: SnackbarRetry? = null
     private var activityStateListener: ActivityStateListener? = null
     private var mainParentStatusBarListener: MainParentStatusBarListener? = null
@@ -406,8 +397,7 @@ HomeRevampFragment :
     private var searchBarTransitionRange = 0
     private var lastSendScreenTimeMillis: Long = 0
     private var isLightThemeStatusBar = false
-    private val impressionScrollListeners: MutableMap<String, RecyclerView.OnScrollListener> =
-        HashMap()
+    private val impressionScrollListeners: MutableMap<String, RecyclerView.OnScrollListener> = HashMap()
     private var mLastClickTime = System.currentTimeMillis()
     private var pageLoadTimeCallback: PageLoadTimePerformanceInterface? = null
     private var isOnRecyclerViewLayoutAdded = false
@@ -453,8 +443,7 @@ HomeRevampFragment :
     }
 
     private fun createDaggerComponent() {
-        val enableAsyncDaggerCompInit =
-            getRemoteConfig().getBoolean(ENABLE_ASYNC_HOME_DAGGER, false)
+        val enableAsyncDaggerCompInit = getRemoteConfig().getBoolean(ENABLE_ASYNC_HOME_DAGGER, false)
         if (enableAsyncDaggerCompInit) {
             val homeDaggerWeave = object : WeaveInterface {
                 override fun execute(): Any {
@@ -471,8 +460,7 @@ HomeRevampFragment :
         super.onCreate(savedInstanceState)
         fragmentCreatedForFirstTime = true
         context?.run {
-            searchBarTransitionRange =
-                resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
+            searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
         }
         startToTransitionOffset = 1f.toDpInt()
     }
@@ -553,8 +541,7 @@ HomeRevampFragment :
     }
 
     protected open fun initBuilderComponent(): DaggerBerandaComponent.Builder {
-        return DaggerBerandaComponent.builder()
-            .baseAppComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
+        return DaggerBerandaComponent.builder().baseAppComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
     }
 
     private fun isUseNewPullRefresh(): Boolean =
@@ -563,14 +550,9 @@ HomeRevampFragment :
     private fun fetchRemoteConfig() {
         val firebaseRemoteConfig = FirebaseRemoteConfigImpl(activity)
         firebaseRemoteConfig.let {
-            showRecomendation =
-                it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false)
-            mShowTokopointNative =
-                it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, false)
-            isShowFirstInstallSearch = it.getBoolean(
-                ConstantKey.RemoteConfigKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH,
-                false
-            )
+            showRecomendation = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false)
+            mShowTokopointNative = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, false)
+            isShowFirstInstallSearch = it.getBoolean(ConstantKey.RemoteConfigKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
             showSeeAllCard = it.getBoolean(SEE_ALL_CARD, true)
         }
     }
@@ -610,9 +592,7 @@ HomeRevampFragment :
             getRemoteConfigController().fetchHomeRemoteConfig()
         }
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
-        context?.let {
-            HomeRollenceController.fetchHomeRollenceValue(it)
-        }
+        HomeRollenceController.fetchHomeRollenceValue()
 
         // show nav toolbar
         navToolbar?.visibility = View.VISIBLE
@@ -630,24 +610,18 @@ HomeRevampFragment :
 
                         override fun onSwitchToDarkToolbar() {
                             navToolbar?.hideShadow()
-                            if (HomeRollenceController.isUsingAtf2Variant()) {
-                                setupThematicStatusBarAndToolbar()
-                            } else {
-                                requestStatusBarLight()
-                            }
+                            setupThematicStatusBarAndToolbar()
                         }
 
                         override fun onSwitchToLightToolbar() {
                             requestStatusBarBasedOnUiMode()
-                            if (HomeRollenceController.isUsingAtf2Variant()) {
-                                navToolbar?.switchToolbarBasedOnUiMode()
-                            }
+                            navToolbar?.switchToolbarBasedOnUiMode()
                         }
 
                         override fun onYposChanged(yOffset: Int) {
                         }
                     },
-                    isBackgroundColorDefaultColor = HomeRollenceController.isUsingAtf2Variant()
+                    isBackgroundColorDefaultColor = true
                 )
             )
             activity?.let { context ->
@@ -813,7 +787,7 @@ HomeRevampFragment :
 
     private fun getSubscriptionBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForLayoutPosition(HOME_HEADER_POSITION)
-        (view as? HomeHeaderOvoViewHolder)?.let {
+        (view as? HomeHeaderViewHolder)?.let {
             val balanceWidgetSubscriptionView =
                 getBalanceWidgetViewSubscriptionOnly(it.itemView.findViewById(R.id.view_balance_widget))
             if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && (
@@ -845,10 +819,9 @@ HomeRevampFragment :
         homeRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                scrollPositionY += dy
-                handleThematicBackgroundScrollListener(recyclerView, scrollPositionY)
+                scrollPositionY = recyclerView.computeVerticalScrollOffset()
+                updateThematicVerticalPosition()
                 evaluateHomeComponentOnScroll(recyclerView)
-                setHomeBottomNavBasedOnScrolling()
             }
         })
         setupEmbraceBreadcrumbListener()
@@ -904,19 +877,13 @@ HomeRevampFragment :
         })
     }
 
-    private fun handleThematicBackgroundScrollListener(recyclerView: RecyclerView, dy: Int) {
-        val scrollThematic = scrollThematic@{ it: View ->
-            if ((
-                layoutManager?.findFirstCompletelyVisibleItemPosition()
-                    ?: 0
-                ) <= 0 && dy < 0
-            ) {
-                return@scrollThematic
-            }
-            it.translationY = -(dy.toFloat())
-        }
-        thematicBackground?.let { scrollThematic.invoke(it) }
-        thematicForeground?.let { scrollThematic.invoke(it) }
+    private val thematicScrollListener = scrollThematic@{ view: View ->
+        view.translationY = -(scrollPositionY.toFloat())
+    }
+
+    private fun updateThematicVerticalPosition() {
+        thematicBackground?.let { thematicScrollListener.invoke(it) }
+        thematicForeground?.let { thematicScrollListener.invoke(it) }
     }
 
     private fun trackEmbraceBreadcrumbPosition() {
@@ -953,43 +920,43 @@ HomeRevampFragment :
 
     private fun observeHomeThematic() {
         getHomeViewModel().thematicLiveData.observe(viewLifecycleOwner) { thematic ->
-            if (thematic.isShown) {
+            if(thematic.isShown) {
                 context?.let { ctx ->
-                    val thematicImageLoadListener = object : ImageHandler.ImageLoaderStateListener {
+                    val thematicImageLoadListener = object: ImageHandler.ImageLoaderStateListener {
                         override fun successLoad(view: ImageView) {
                             view.show()
-                            if (view == thematicBackground) {
+                            if(view == thematicBackground) {
                                 notifyHomeThematicChanges(thematic, true)
                             }
                         }
 
                         override fun failedLoad(view: ImageView) {
                             view.hide()
-                            if (view == thematicBackground) {
+                            if(view == thematicBackground) {
                                 notifyHomeThematicChanges(thematic, false)
                             }
                         }
                     }
 
-                    if (thematic.backgroundImageURL.isNotEmpty()) {
+                    if(thematic.backgroundImageURL.isNotEmpty()) {
                         thematicBackground?.run {
                             setLayoutHeight(thematic.getActualHeightPx(ctx))
                             loadImageWithoutPlaceholder(
                                 thematic.backgroundImageURL,
                                 "thematicBackground",
                                 listener = thematicImageLoadListener,
-                                skipErrorPlaceholder = true
+                                skipErrorPlaceholder = true,
                             )
                         }
                     }
 
-                    if (thematic.foregroundImageURL.isNotEmpty()) {
+                    if(thematic.foregroundImageURL.isNotEmpty()) {
                         thematicForeground?.run {
                             loadImageWithoutPlaceholder(
                                 thematic.foregroundImageURL,
                                 "thematicForeground",
                                 listener = thematicImageLoadListener,
-                                skipErrorPlaceholder = true
+                                skipErrorPlaceholder = true,
                             )
                         }
                     }
@@ -1075,11 +1042,6 @@ HomeRevampFragment :
         initRefreshLayout()
         subscribeHome()
         initEggTokenScrollListener()
-        initStickyLogin()
-
-        context?.let {
-            if (isRegisteredFromStickyLogin(it)) gotoNewUserZone()
-        }
 
         if (isSuccessReset()) showSuccessResetPasswordDialog()
     }
@@ -1103,36 +1065,6 @@ HomeRevampFragment :
         }
     }
 
-    private fun initStickyLogin() {
-        stickyLoginView = if (!HomeRollenceController.isUsingAtf2Variant()) {
-            view?.findViewById(R.id.sticky_login_text)
-        } else {
-            null
-        }
-        if (stickyLoginView == null) return
-        stickyLoginView?.page = StickyLoginConstant.Page.HOME
-        stickyLoginView?.lifecycleOwner = viewLifecycleOwner
-        stickyLoginView?.setStickyAction(object : StickyLoginAction {
-            override fun onClick() {
-                goToLogin(REQUEST_CODE_LOGIN_STICKY_LOGIN)
-            }
-
-            override fun onDismiss() {
-                floatingEggButtonFragment?.let {
-                    updateEggBottomMargin(it)
-                }
-            }
-
-            override fun onViewChange(isShowing: Boolean) {
-                floatingEggButtonFragment?.let {
-                    updateEggBottomMargin(it)
-                }
-            }
-        })
-
-        stickyLoginView?.hide()
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(KEY_IS_LIGHT_THEME_STATUS_BAR, isLightThemeStatusBar)
@@ -1147,7 +1079,6 @@ HomeRevampFragment :
 
     override fun onResume() {
         playWidgetOnVisibilityChanged(isViewResumed = true)
-        getUserIdFromViewModel()
         super.onResume()
         createAndCallSendScreen()
         adapter?.onResumeBanner()
@@ -1175,14 +1106,12 @@ HomeRevampFragment :
         context?.let { currentContext ->
             var isAddressChanged = false
             getHomeViewModel().getAddressData().toLocalCacheModel().let {
-                isAddressChanged =
-                    ChooseAddressUtils.isLocalizingAddressHasUpdated(currentContext, it)
+                isAddressChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(currentContext, it)
             }
 
             if (isAddressChanged) {
                 chooseAddressWidgetInitialized = false
-                val localChooseAddressData =
-                    ChooseAddressUtils.getLocalizingAddressData(currentContext)
+                val localChooseAddressData = ChooseAddressUtils.getLocalizingAddressData(currentContext)
                 val updatedChooseAddressData = HomeChooseAddressData(isActive = true)
                     .setLocalCacheModel(localChooseAddressData)
                 getHomeViewModel().updateChooseAddressData(updatedChooseAddressData)
@@ -1340,20 +1269,17 @@ HomeRevampFragment :
                     status === Result.Status.SUCCESS -> {
                         hideLoading()
                     }
-
                     status === Result.Status.ERROR -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
                         onPageLoadTimeEnd()
                         performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
-
                     status === Result.Status.ERROR_PAGINATION -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
                         performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
-
                     status === Result.Status.ERROR_ATF -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
@@ -1361,7 +1287,6 @@ HomeRevampFragment :
                         adapter?.resetAtfErrorState()
                         performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_PARTIALLY_ERROR)
                     }
-
                     status == Result.Status.ERROR_GENERAL -> {
                         val errorString = getErrorStringWithDefault(throwable)
                         showNetworkError(errorString)
@@ -1373,7 +1298,6 @@ HomeRevampFragment :
                         onPageLoadTimeEnd()
                         performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_ERROR)
                     }
-
                     status == Result.Status.ERROR_ATF_NEW -> {
                         if (getHomeViewModel().homeDataModel.list.size <= 1) {
                             val errorString = getErrorStringWithDefault(throwable)
@@ -1385,7 +1309,6 @@ HomeRevampFragment :
                             ) { onRefresh() }
                         }
                     }
-
                     else -> {
                         showLoading()
                     }
@@ -1512,17 +1435,15 @@ HomeRevampFragment :
                 visitableListCount = data.size,
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
-            val takeLimit: Int =
-                if ((layoutManager?.findLastVisibleItemPosition() ?: DEFAULT_BLOCK_SIZE) >= 0) {
-                    layoutManager?.findLastVisibleItemPosition() ?: DEFAULT_BLOCK_SIZE
-                } else {
-                    DEFAULT_BLOCK_SIZE
-                }
+            val takeLimit: Int = if ((layoutManager?.findLastVisibleItemPosition() ?: DEFAULT_BLOCK_SIZE) >= 0) {
+                layoutManager?.findLastVisibleItemPosition() ?: DEFAULT_BLOCK_SIZE
+            } else {
+                DEFAULT_BLOCK_SIZE
+            }
 
             performanceTrace?.setBlock(data.take(takeLimit))
 
-            adapter?.submitList(data) {
-            }
+            adapter?.submitList(data)
         }
     }
 
@@ -1550,10 +1471,10 @@ HomeRevampFragment :
     }
 
     private fun setupThematicStatusBarAndToolbar() {
-        if (getThematicUtil().isLightMode()) {
+        if(getThematicUtil().isLightMode()) {
             requestStatusBarDark()
             navToolbar?.switchToLightToolbar()
-        } else if (getThematicUtil().isDarkMode()) {
+        } else if(getThematicUtil().isDarkMode()) {
             requestStatusBarLight()
             navToolbar?.switchToDarkToolbar()
         } else {
@@ -1563,11 +1484,8 @@ HomeRevampFragment :
     }
 
     private fun requestStatusBarBasedOnUiMode() {
-        if (context?.isDarkMode() == true) {
-            requestStatusBarLight()
-        } else {
-            requestStatusBarDark()
-        }
+        if(context?.isDarkMode() == true) requestStatusBarLight()
+        else requestStatusBarDark()
     }
 
     private object FixedTheme {
@@ -1636,7 +1554,7 @@ HomeRevampFragment :
         if (!this::homePrefController.isInitialized) {
             initInjectorHome()
         }
-        layoutManager = LinearLayoutManager(context)
+        layoutManager = AccurateOffsetLinearLayoutManager(context, adapter)
         homeRecyclerView?.layoutManager = layoutManager
         setupPlayWidgetCoordinator()
         bannerCarouselCallback = BannerComponentCallback(context, this)
@@ -1679,7 +1597,7 @@ HomeRevampFragment :
             BestSellerWidgetCallback(context, this, getHomeViewModel()),
             SpecialReleaseRevampCallback(this),
             ShopFlashSaleWidgetCallback(this, getHomeViewModel()),
-            getThematicUtil()
+            getThematicUtil(),
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1769,15 +1687,12 @@ HomeRevampFragment :
             val bottomSheetDialogTokoCash = BottomSheetUnify()
             bottomSheetDialogTokoCash.run {
                 setTitle(getString(R.string.toko_cash_pending_title))
-                val pendingCashbackView =
-                    View.inflate(context, R.layout.home_pending_cashback_tokocash, null)
-                pendingCashbackView.findViewById<Typography>(R.id.body_bottom_sheet)?.text =
-                    String.format(
-                        getString(R.string.toko_cash_pending_body),
-                        cashBackData.amountText
-                    )
-                pendingCashbackView.findViewById<ImageView>(R.id.img_bottom_sheet)
-                    ?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_box))
+                val pendingCashbackView = View.inflate(context, R.layout.home_pending_cashback_tokocash, null)
+                pendingCashbackView.findViewById<Typography>(R.id.body_bottom_sheet)?.text = String.format(
+                    getString(R.string.toko_cash_pending_body),
+                    cashBackData.amountText
+                )
+                pendingCashbackView.findViewById<ImageView>(R.id.img_bottom_sheet)?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_box))
                 pendingCashbackView.findViewById<Typography>(R.id.button_opsi_bottom_sheet)?.run {
                     setOnClickListener {
                         goToOvo(appLinkActionButton)
@@ -1880,7 +1795,6 @@ HomeRevampFragment :
                     NetworkErrorHelper.showSnackbar(activity, message)
                 }
             }
-
             REQUEST_CODE_REVIEW -> {
                 adapter?.notifyDataSetChanged()
                 if (resultCode == Activity.RESULT_OK) {
@@ -1888,22 +1802,14 @@ HomeRevampFragment :
                     getHomeViewModel().onRemoveSuggestedReview()
                 }
             }
-
             REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET -> if (data != null) {
                 notifyPlayWidgetTotalView(data)
                 notifyPlayWidgetReminder(data)
             }
-
             REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME -> if (resultCode == Activity.RESULT_OK) {
                 val lastEvent = getHomeViewModel().playWidgetReminderEvent?.value
-                if (lastEvent != null) {
-                    getHomeViewModel().shouldUpdatePlayWidgetToggleReminder(
-                        lastEvent.first,
-                        lastEvent.second
-                    )
-                }
+                if (lastEvent != null) getHomeViewModel().shouldUpdatePlayWidgetToggleReminder(lastEvent.first, lastEvent.second)
             }
-
             PRODUCT_CARD_OPTIONS_REQUEST_CODE -> {
                 handleProductCardOptionsActivityResult(
                     requestCode,
@@ -1916,20 +1822,14 @@ HomeRevampFragment :
                     }
                 )
             }
-
             REQUEST_CODE_LOGIN -> {
                 activity?.let {
-                    val intentNewUser =
-                        RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
+                    val intentNewUser = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
                     val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
-                    intentHome.flags =
-                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     if (resultCode == Activity.RESULT_OK &&
                         getUserSession().isLoggedIn &&
-                        data?.extras?.getBoolean(
-                                ApplinkConstInternalGlobal.PARAM_IS_SMART_REGISTER,
-                                false
-                            ) == false
+                        data?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SMART_REGISTER, false) == false
                     ) {
                         it.startActivities(arrayOf(intentHome, intentNewUser))
                     } else {
@@ -1938,14 +1838,9 @@ HomeRevampFragment :
                     it.finish()
                 }
             }
-
-            REQUEST_CODE_LOGIN_STICKY_LOGIN,
             REQUEST_CODE_LOGIN_WIDGET_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    val isSuccessRegister = data.getBooleanExtra(
-                        ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER,
-                        false
-                    )
+                    val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
                     if (isSuccessRegister && getUserSession().isLoggedIn) {
                         gotoNewUserZonePage()
                     }
@@ -1967,7 +1862,6 @@ HomeRevampFragment :
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
-        stickyLoginView?.loadContent()
         loadEggData(isPageRefresh)
     }
 
@@ -2028,7 +1922,6 @@ HomeRevampFragment :
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
-        stickyLoginView?.loadContent()
         loadEggData()
     }
 
@@ -2057,16 +1950,12 @@ HomeRevampFragment :
     }
 
     private fun onPageLoadTimeEnd() {
-        stickyLoginView?.loadContent()
         pageLoadTimeCallback?.invalidate()
         loadEggData(isPageRefresh)
     }
 
     private fun remoteConfigIsNewBalanceWidget(): Boolean {
-        return remoteConfig.getBoolean(
-            ConstantKey.RemoteConfigKey.HOME_SHOW_NEW_BALANCE_WIDGET,
-            true
-        )
+        return remoteConfig.getBoolean(ConstantKey.RemoteConfigKey.HOME_SHOW_NEW_BALANCE_WIDGET, true)
     }
 
     private fun detectAndSendLocation() {
@@ -2161,8 +2050,7 @@ HomeRevampFragment :
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         activity?.let {
-            permissionCheckerHelper.get()
-                .onRequestPermissionsResult(it, requestCode, permissions, grantResults)
+            permissionCheckerHelper.get().onRequestPermissionsResult(it, requestCode, permissions, grantResults)
         }
     }
 
@@ -2311,10 +2199,7 @@ HomeRevampFragment :
 
     private fun openApplink(applink: String, trackingAttribution: String) {
         if (!TextUtils.isEmpty(applink)) {
-            RouteManager.route(
-                activity,
-                appendTrackerAttributionIfNeeded(applink, trackingAttribution)
-            )
+            RouteManager.route(activity, appendTrackerAttributionIfNeeded(applink, trackingAttribution))
         }
     }
 
@@ -2331,10 +2216,7 @@ HomeRevampFragment :
             e.printStackTrace()
             trackingAttribution.replace(" ".toRegex(), SPACE_CHAR)
         }
-        return if (applink.contains(QUERY_CHAR_1) || applink.contains(QUERY_CHAR_2) || applink.contains(
-                QUERY_CHAR_2
-            )
-        ) {
+        return if (applink.contains(QUERY_CHAR_1) || applink.contains(QUERY_CHAR_2) || applink.contains(QUERY_CHAR_2)) {
             "$applink&tracker_attribution=$newTrackingAttribution"
         } else {
             "$applink?tracker_attribution=$newTrackingAttribution"
@@ -2435,7 +2317,6 @@ HomeRevampFragment :
                     coachmarkSubscription?.hideCoachMark()
                 }
             }
-
             else -> {
                 // no-op
             }
@@ -2515,12 +2396,18 @@ HomeRevampFragment :
 
     override fun onScrollToHomeHeader() {
         homeRecyclerView?.scrollToPosition(Int.ZERO)
+        homeRecyclerView?.post {
+            updateThematicVerticalPosition()
+        }
     }
 
     override fun onScrollToRecommendationForYou() {
         val recommendationForYouIndex = getRecommendationForYouIndex()
         recommendationForYouIndex?.let {
             homeRecyclerView?.scrollToPosition(it)
+            homeRecyclerView?.post {
+                updateThematicVerticalPosition()
+            }
             goToJumperForYouTab(it)
         }
     }
@@ -2726,11 +2613,7 @@ HomeRevampFragment :
                 } else {
                     context?.let { context ->
                         view?.let { v ->
-                            AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(
-                                wishlistResult,
-                                context,
-                                v
-                            )
+                            AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistResult, context, v)
                         }
                     }
                 }
@@ -2814,8 +2697,7 @@ HomeRevampFragment :
 
     override val homeMainToolbarHeight: Int
         get() {
-            var height =
-                requireActivity().resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+            var height = requireActivity().resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
             context?.let { context ->
                 navToolbar?.let {
                     height = navToolbar?.height
@@ -2885,31 +2767,7 @@ HomeRevampFragment :
 
     private fun updateEggBottomMargin(floatingEggButtonFragment: FloatingEggButtonFragment) {
         val params = floatingEggButtonFragment.view?.layoutParams as FrameLayout.LayoutParams
-        if (stickyLoginView?.isShowing() == true) {
-            stickyLoginView?.height?.let {
-                params.setMargins(
-                    DEFAULT_MARGIN_VALUE,
-                    DEFAULT_MARGIN_VALUE,
-                    DEFAULT_MARGIN_VALUE,
-                    it
-                )
-            }
-            val positionEgg = IntArray(POSITION_ARRAY_CONTAINER_SIZE)
-            val eggHeight = floatingEggButtonFragment.egg.height
-            val stickyTopLocation =
-                stickyLoginView?.getLocation()?.get(POSITION_ARRAY_Y) ?: DEFAULT_MARGIN_VALUE
-            floatingEggButtonFragment.egg.getLocationOnScreen(positionEgg)
-            if (positionEgg[POSITION_ARRAY_Y] + eggHeight > stickyTopLocation) {
-                floatingEggButtonFragment.moveEgg(stickyTopLocation - eggHeight)
-            }
-        } else {
-            params.setMargins(
-                DEFAULT_MARGIN_VALUE,
-                DEFAULT_MARGIN_VALUE,
-                DEFAULT_MARGIN_VALUE,
-                DEFAULT_MARGIN_VALUE
-            )
-        }
+        params.setMargins(DEFAULT_MARGIN_VALUE, DEFAULT_MARGIN_VALUE, DEFAULT_MARGIN_VALUE, DEFAULT_MARGIN_VALUE)
     }
 
     override fun getWindowWidth(): Int {
@@ -2959,8 +2817,7 @@ HomeRevampFragment :
         }
         if (errorToaster == null || errorToaster?.isShown == false) {
             Toaster.toasterCustomBottomHeight = 56f.toDpInt()
-            errorToaster =
-                build(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener)
+            errorToaster = build(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener)
             if (activity?.isFinishing == false) {
                 errorToaster?.show()
             }
@@ -2983,7 +2840,7 @@ HomeRevampFragment :
     }
 
     private fun getRemoteConfigController(): HomeRemoteConfigController {
-        if (!this::homeRemoteConfigController.isInitialized) initInjectorHome()
+        if(!this::homeRemoteConfigController.isInitialized) initInjectorHome()
         return homeRemoteConfigController
     }
 
@@ -3008,10 +2865,9 @@ HomeRevampFragment :
      * Play Widget
      */
     private fun setupPlayWidgetCoordinator() {
-        playWidgetCoordinator =
-            PlayWidgetCoordinator(this, autoHandleLifecycleMethod = false).apply {
-                setListener(this@HomeRevampFragment)
-            }
+        playWidgetCoordinator = PlayWidgetCoordinator(this, autoHandleLifecycleMethod = false).apply {
+            setListener(this@HomeRevampFragment)
+        }
     }
 
     override fun onWidgetOpenAppLink(view: View, appLink: String) {
@@ -3090,13 +2946,6 @@ HomeRevampFragment :
             this?.encodeToUtf8() ?: ""
         } catch (throwable: Throwable) {
             ""
-        }
-    }
-
-    private fun gotoNewUserZone() {
-        context?.let {
-            if (isRegisteredFromStickyLogin(it)) saveIsRegisteredFromStickyLogin(it, false)
-            startActivity(RouteManager.getIntent(it, ApplinkConst.DISCOVERY_NEW_USER))
         }
     }
 
@@ -3226,7 +3075,7 @@ HomeRevampFragment :
     }
 
     private fun getThematicUtil(): HomeThematicUtil {
-        if (!::homeThematicUtil.isInitialized) initInjectorHome()
+        if(!::homeThematicUtil.isInitialized) initInjectorHome()
         return homeThematicUtil
     }
 }

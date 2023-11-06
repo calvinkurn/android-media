@@ -61,12 +61,12 @@
               "tickers": [],
               "buttons": [
                 {
-                  "Label": "Beri Ulasan",
-                  "variantColor": "main",
-                  "type": "filled",
-                  "actionType": "link",
-                  "appURL": "tokopedia://review",
-                  "webURL": "https://m.tokopedia.com/inbox-reputation"
+                    "Label": "Beli Lagi",
+                    "variantColor": "main",
+                    "type": "filled",
+                    "actionType": "gql-mp-atc",
+                    "appURL": "",
+                    "webURL": ""
                 }
               ],
               "dotMenus": [

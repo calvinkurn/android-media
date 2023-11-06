@@ -23,6 +23,7 @@ import com.tokopedia.tokochat.common.util.TokoChatCacheManagerImpl.Companion.TOK
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.SOURCE_TOKOFOOD
+import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
 import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.tokochat.domain.cache.TokoChatBubblesCache
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionPayload
@@ -36,6 +37,7 @@ import com.tokopedia.tokochat.domain.usecase.TokoChatGetImageUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetTokopediaOrderIdUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetTypingUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatMarkAsReadUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatMemberUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatOrderProgressUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatRegistrationChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatRoomUseCase
@@ -73,8 +75,10 @@ import java.util.*
 import javax.inject.Inject
 
 class TokoChatViewModel @Inject constructor(
+    private val groupBookingUseCase: TokoChatGroupBookingUseCase,
     private val chatRoomUseCase: TokoChatRoomUseCase,
     private val getChatHistoryUseCase: TokoChatGetChatHistoryUseCase,
+    private val memberUseCase: TokoChatMemberUseCase,
     private val markAsReadUseCase: TokoChatMarkAsReadUseCase,
     private val registrationChannelUseCase: TokoChatRegistrationChannelUseCase,
     private val sendMessageUseCase: TokoChatSendMessageUseCase,
@@ -211,9 +215,9 @@ class TokoChatViewModel @Inject constructor(
 
     fun initGroupBooking() {
         try {
-            chatRoomUseCase.initGroupBookingChat(
+            groupBookingUseCase.initGroupBookingChat(
                 orderId = gojekOrderId,
-                source = source
+                serviceType = groupBookingUseCase.getServiceType(source)
             )
         } catch (throwable: Throwable) {
             _error.value = Pair(throwable, ::initGroupBooking.name)
@@ -221,7 +225,7 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun getGroupBookingFlow(): SharedFlow<TokoChatResult<String>> {
-        return chatRoomUseCase.getGroupBookingFlow()
+        return groupBookingUseCase.groupBookingResultFlow
     }
 
     fun getGroupBookingChannel(channelId: String) {
@@ -361,7 +365,7 @@ class TokoChatViewModel @Inject constructor(
 
     fun getMemberLeft(): MutableLiveData<String>? {
         return try {
-            chatRoomUseCase.getMemberLeftLiveData()
+            memberUseCase.getMemberLeftLiveData()
         } catch (throwable: Throwable) {
             _error.value = Pair(throwable, ::getMemberLeft.name)
             MutableLiveData()
@@ -369,7 +373,7 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun resetMemberLeft() {
-        chatRoomUseCase.resetMemberLeftLiveData()
+        memberUseCase.resetMemberLeftLiveData()
     }
 
     /*
