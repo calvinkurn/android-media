@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_epharmacy.EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_UPLOAD_REQUEST_CODE
 import com.tokopedia.epharmacy.R
@@ -166,6 +167,9 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                 renderDuration(duration)
                 renderPrice(price)
                 renderNote(note)
+                knowMoreCta.setOnClickListener{
+                    RouteManager.route(context, "https://www.tokopedia.com/help/article/apa-itu-chat-dokter-di-tokopedia")
+                }
             }
         }
     }

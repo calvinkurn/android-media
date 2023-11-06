@@ -20,7 +20,7 @@ class EPharmacyConsultationOrderDetailUseCase @Inject constructor(graphqlReposit
     fun getEPharmacyOrderDetail(
         onSuccess: (EPharmacyDataModel, EPharmacyOrderDetailResponse.OrderButtonData?) -> Unit,
         onError: (Throwable) -> Unit,
-        tConsultationId: String,
+        tConsultationId: Long,
         orderUUId: String,
         waitingInvoice: Boolean
     ) {
@@ -30,7 +30,7 @@ class EPharmacyConsultationOrderDetailUseCase @Inject constructor(graphqlReposit
             this.setRequestParams(createRequestParams(tConsultationId, orderUUId, waitingInvoice))
             this.execute(
                 { result ->
-                    onSuccess(mapResponseToOrderDetail(result.getConsultationOrderDetail?.ePharmacyOrderData), result.getConsultationOrderDetail?.orderButtonData)
+                    onSuccess(mapResponseToOrderDetail(result.getConsultationOrderDetail?.ePharmacyOrderData), result.getConsultationOrderDetail?.ePharmacyOrderData?.orderButtonData)
                 },
                 { error ->
                     onError(error)
@@ -79,9 +79,9 @@ class EPharmacyConsultationOrderDetailUseCase @Inject constructor(graphqlReposit
         return EPharmacyDataModel(listOfComponents)
     }
 
-    private fun createRequestParams(tConsultationId: String, orderUUId: String, waitingInvoice: Boolean): Map<String, Any> {
+    private fun createRequestParams(tConsultationId: Long, orderUUId: String, waitingInvoice: Boolean): Map<String, Any> {
         return mapOf<String, Any>(
-            PARAM_TOKO_CONSULATAION_ID to tConsultationId,
+            PARAM_TOKO_CONSULTATION_ID to tConsultationId,
             PARAM_ORDER_UUID to orderUUId,
             PARAM_SOURCE to PARAM_SOURCE_ANDROID,
             PARAM_WAITING_INVOICE to waitingInvoice
@@ -89,10 +89,10 @@ class EPharmacyConsultationOrderDetailUseCase @Inject constructor(graphqlReposit
     }
 
     companion object {
-        const val PARAM_TOKO_CONSULATAION_ID = "toko_consultation_id"
+        const val PARAM_TOKO_CONSULTATION_ID = "toko_consultation_id"
         const val PARAM_ORDER_UUID = "order_uuid"
         const val PARAM_SOURCE = "source"
-        const val PARAM_WAITING_INVOICE = "waiting_voice"
+        const val PARAM_WAITING_INVOICE = "waiting_invoice"
         const val PARAM_SOURCE_ANDROID = "ANDROID"
     }
 }

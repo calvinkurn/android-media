@@ -8,33 +8,36 @@ object EPharmacyGetConsultationOrderDetailsQuery : GqlQueryInterface {
     override fun getOperationNameList() = listOf(OPERATION_NAME)
 
     override fun getQuery() = """
-            query $OPERATION_NAME(${'$'}toko_consultation_id: String!, ${'$'}order_uuid: String!, ${'$'}source: String!) {
-              getConsultationOrderDetail(toko_consultation_id: ${'$'}toko_consultation_id, order_uuid: ${'$'}toko_consultation_id, source: ${'$'}source) {
-                header {
-                  process_time
-                  error_code
-                  error_message
-                }
+            query $OPERATION_NAME(${'$'}toko_consultation_id: Int64!, ${'$'}order_uuid: String!, ${'$'}source: String!,  ${'$'}waiting_invoice: Boolean!) {
+              getConsultationOrderDetail(toko_consultation_id: ${'$'}toko_consultation_id, order_uuid: ${'$'}order_uuid, source: ${'$'}source, waiting_invoice: ${'$'}waiting_invoice) {
                 data {
                   order_id
                   invoice_number
+                  invoice_url
                   payment_method
                   payment_amount
                   payment_amount_str
                   item_price
                   item_price_str
+                  payment_date
+                  order_indicator_color
                   order_status
                   order_status_desc
+                  order_expired_date
                   ticker {
                     message
                     type
+                    type_int
+                    image
                   }
                   consultation_source {
                     id
+                    service_name
                     enabler_name
                     enabler_logo_url
                     pwa_link
                     price
+                    price_str
                     operating_schedule {
                       daily {
                         open_time
@@ -42,7 +45,6 @@ object EPharmacyGetConsultationOrderDetailsQuery : GqlQueryInterface {
                       }
                       close_days
                       duration
-                      is_closing_hour
                     }
                   }
                   consultation_data {
@@ -62,10 +64,27 @@ object EPharmacyGetConsultationOrderDetailsQuery : GqlQueryInterface {
                       id
                       type
                       document_url
+                      expiry_date
                     }
                     start_time
                     end_time
                     consultation_status
+                  }
+                  cta {
+                    label
+                    variant_color
+                    type
+                    action_type
+                    app_url
+                    web_url
+                  }
+                  tri_dots {
+                    label
+                    variant_color
+                    type
+                    action_type
+                    app_url
+                    web_url
                   }
                 }
               }

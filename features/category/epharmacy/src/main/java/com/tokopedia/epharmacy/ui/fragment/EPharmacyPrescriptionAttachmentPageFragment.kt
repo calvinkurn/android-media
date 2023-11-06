@@ -514,7 +514,6 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             model.epharmacyGroupId,
             model.prescriptionCTA,
             model.tokoConsultationId,
-            model.consultationData?.consultationStatus,
             model.price,
             model.operatingSchedule,
             model.note
@@ -556,14 +555,13 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         groupId: String?,
         prescriptionCTA: EG.PrescriptionCTA?,
         tokoConsultationId: String?,
-        consultationStatus: Int?,
         price: String?,
         operatingSchedule: EG.ConsultationSource.OperatingSchedule?,
         note: String?
     ) {
         when (prescriptionCTA?.actionType) {
             PrescriptionActionType.REDIRECT_PWA.type -> {
-                if(consultationStatus == EPharmacyConsultationStatus.ACTIVE.status){
+                if(prescriptionCTA.title.equals("Chat dokter sekarang")){
                     startMiniConsultation(enablerName, groupId)
                 }else {
                     startAttachmentChooser(chooserLogo, groupId, enablerName, price, operatingSchedule, note, true)

@@ -24,7 +24,7 @@ class EPharmacyOrderDetailViewModel @Inject constructor(
     private val _ePharmacyButtonData = MutableLiveData<EPharmacyOrderDetailResponse.OrderButtonData>()
     val ePharmacyButtonData: LiveData<EPharmacyOrderDetailResponse.OrderButtonData> = _ePharmacyButtonData
 
-    fun getEPharmacyOrderDetail(tConsultationId: String, orderUUId: String, waitingInvoice: Boolean) {
+    fun getEPharmacyOrderDetail(tConsultationId: Long, orderUUId: String, waitingInvoice: Boolean) {
         ePharmacyConsultationOrderDetailUseCase.cancelJobs()
         ePharmacyConsultationOrderDetailUseCase.getEPharmacyOrderDetail(
             ::onAvailableEPharmacyOrderDetail,
@@ -37,7 +37,7 @@ class EPharmacyOrderDetailViewModel @Inject constructor(
 
     private fun onAvailableEPharmacyOrderDetail(data: EPharmacyDataModel, orderButtonData: EPharmacyOrderDetailResponse.OrderButtonData?) {
         _ePharmacyOrderDetailData.postValue(Success(data))
-        _ePharmacyButtonData.value = orderButtonData
+        _ePharmacyButtonData.postValue(orderButtonData)
     }
 
     private fun onFailEPharmacyOrderDetail(throwable: Throwable) {

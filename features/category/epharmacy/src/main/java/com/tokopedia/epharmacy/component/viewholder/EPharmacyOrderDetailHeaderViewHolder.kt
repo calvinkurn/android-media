@@ -9,9 +9,12 @@ import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.component.model.EPharmacyOrderDetailHeaderDataModel
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 
@@ -73,8 +76,14 @@ class EPharmacyOrderDetailHeaderViewHolder(
 
     private fun setUpTicker(title: String?, tickerMessage: String?, tickerType: Int) {
         this.title.text = title
-        ticker.tickerTitle = tickerMessage
-        ticker.tickerType = tickerType
+        if(tickerMessage?.isNotBlank().orFalse()){
+            ticker.show()
+            ticker.tickerTitle = tickerMessage
+            ticker.tickerType = tickerType
+        }else {
+            ticker.hide()
+        }
+
     }
 
     private fun setupIndicatorColor(indicatorColor: String) {
