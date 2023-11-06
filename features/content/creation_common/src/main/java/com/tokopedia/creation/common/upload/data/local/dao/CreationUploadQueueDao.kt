@@ -13,7 +13,7 @@ import com.tokopedia.creation.common.upload.data.local.entity.CreationUploadQueu
 @Dao
 interface CreationUploadQueueDao {
 
-    @Query("SELECT * FROM $CREATION_UPLOAD_QUEUE ORDER BY timestamp DESC LIMIT 1")
+    @Query("SELECT * FROM $CREATION_UPLOAD_QUEUE ORDER BY timestamp ASC LIMIT 1")
     suspend fun getTopQueue(): CreationUploadQueueEntity?
 
     @Insert
