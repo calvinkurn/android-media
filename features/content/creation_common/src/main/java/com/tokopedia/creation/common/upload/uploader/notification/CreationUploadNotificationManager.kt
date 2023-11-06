@@ -105,7 +105,7 @@ abstract class CreationUploadNotificationManager(
 
                 notificationBuilder.setLargeIcon(bitmap)
             }
-            catch (e: Exception) {
+            catch (_: Exception) {
 
             }
         }
