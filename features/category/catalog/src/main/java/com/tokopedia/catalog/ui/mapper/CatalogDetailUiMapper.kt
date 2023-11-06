@@ -29,6 +29,7 @@ import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BlankUiModel
 import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
+import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
@@ -58,6 +59,7 @@ class CatalogDetailUiMapper @Inject constructor(
         private const val LAYOUT_VERSION_4_VALUE = 4
         private const val COMPARISON_COUNT = 2
         private const val TOP_COMPARISON_SPEC_COUNT = 5
+        private const val COLUMN_INFO_SPEC_COUNT = 6
         private const val INVALID_CATALOG_ID = "0"
     }
 
@@ -83,6 +85,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_ACCORDION.type -> it.mapToAccordion(isDarkMode)
                 WidgetTypes.CATALOG_COMPARISON.type -> it.mapToComparison(isDarkMode)
                 WidgetTypes.CATALOG_VIDEO.type -> it.mapToVideo(isDarkMode)
+                WidgetTypes.CATALOG_COLUMN_INFO.type -> it.mapToColumnInfo(isDarkMode)
                 else -> {
                     BlankUiModel()
                 }
@@ -461,7 +464,7 @@ class CatalogDetailUiMapper @Inject constructor(
 
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToVideo(
         darkMode: Boolean
-    ): BaseCatalogUiModel {
+    ): VideoUiModel {
         return VideoUiModel(
             content = data?.video.orEmpty().map {
                 VideoUiModel.ItemVideoUiModel(
@@ -473,6 +476,33 @@ class CatalogDetailUiMapper @Inject constructor(
                     textSubTitleColor = getTextColor(darkMode),
                 )
             }
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToColumnInfo(
+        darkMode: Boolean
+    ): ColumnedInfoUiModel {
+        val flattenDataRows = data?.infoColumn
+            .orEmpty()
+            .flatMap { it.row }
+        return ColumnedInfoUiModel(
+            sectionTitle = data?.section?.title.orEmpty(),
+            hasMoreData = flattenDataRows.size > COLUMN_INFO_SPEC_COUNT,
+            widgetContent = flattenDataRows
+                .take(COLUMN_INFO_SPEC_COUNT)
+                .map {
+                    Pair(it.key, it.value)
+                },
+            fullContent = data?.infoColumn
+                .orEmpty()
+                .map {
+                    ColumnedInfoUiModel.ColumnData(
+                        title = it.name,
+                        rowData = it.row.map { row ->
+                            Pair(row.key, row.value)
+                        }
+                    )
+                }
         )
     }
 
