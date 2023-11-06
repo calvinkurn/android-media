@@ -35,14 +35,17 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
         }
         viewModel?.shouldShowShimmer()?.let { shimmer.showWithCondition(it) }
         viewModel?.shouldShowError()?.let { carouselEmptyState.showWithCondition(it) }
+    }
 
+    private fun addChildComponent() {
         val items = viewModel?.components?.getComponentsItem()
 
-        val backgroundColor = if (items?.find { it.name == ComponentNames.ProductCardCarousel.componentName } != null) {
-            unifyprinciplesR.color.Unify_RN200_96
-        } else {
-            unifyprinciplesR.color.Unify_G200_96
-        }
+        val backgroundColor = arrayOf(
+            unifyprinciplesR.color.Unify_RN200_96,
+            unifyprinciplesR.color.Unify_G200_96,
+            unifyprinciplesR.color.Unify_B200_96,
+            unifyprinciplesR.color.Unify_Y200_96
+        ).random()
 
         container.setBackgroundColor(ContextCompat.getColor(itemView.context, backgroundColor))
 
@@ -59,6 +62,7 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                             )
                         )
                     }
+
                     ComponentNames.LihatSemua.componentName -> {
                         container.addView(
                             CustomViewCreator.getCustomViewObject(
@@ -69,11 +73,78 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                             )
                         )
                     }
-                    ComponentNames.MerchantVoucherGrid.componentName -> {
+
+                    ComponentNames.ProductCardSingle.componentName -> {
                         container.addView(
                             CustomViewCreator.getCustomViewObject(
                                 itemView.context,
-                                ComponentsList.MerchantVoucherGrid,
+                                ComponentsList.ProductCardSingle,
+                                item,
+                                fragment
+                            )
+                        )
+                    }
+
+                    ComponentNames.SingleBanner.componentName -> {
+                        container.addView(
+                            CustomViewCreator.getCustomViewObject(
+                                itemView.context,
+                                ComponentsList.SingleBanner,
+                                item,
+                                fragment
+                            )
+                        )
+                    }
+
+                    ComponentNames.DoubleBanner.componentName -> {
+                        container.addView(
+                            CustomViewCreator.getCustomViewObject(
+                                itemView.context,
+                                ComponentsList.DoubleBanner,
+                                item,
+                                fragment
+                            )
+                        )
+                    }
+
+                    ComponentNames.TripleBanner.componentName -> {
+                        container.addView(
+                            CustomViewCreator.getCustomViewObject(
+                                itemView.context,
+                                ComponentsList.TripleBanner,
+                                item,
+                                fragment
+                            )
+                        )
+                    }
+
+                    ComponentNames.QuadrupleBanner.componentName -> {
+                        container.addView(
+                            CustomViewCreator.getCustomViewObject(
+                                itemView.context,
+                                ComponentsList.QuadrupleBanner,
+                                item,
+                                fragment
+                            )
+                        )
+                    }
+
+                    ComponentNames.CalendarWidgetCarousel.componentName -> {
+                        container.addView(
+                            CustomViewCreator.getCustomViewObject(
+                                itemView.context,
+                                ComponentsList.CalendarWidgetCarousel,
+                                item,
+                                fragment
+                            )
+                        )
+                    }
+
+                    ComponentNames.ProductHighlight.componentName -> {
+                        container.addView(
+                            CustomViewCreator.getCustomViewObject(
+                                itemView.context,
+                                ComponentsList.ProductHighlight,
                                 item,
                                 fragment
                             )
@@ -95,6 +166,7 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
             viewModel?.getSyncPageLiveData()?.observe(it) { shouldSync ->
                 if (shouldSync) {
                     (fragment as DiscoveryFragment).reSync()
+                    addChildComponent()
                 }
             }
 

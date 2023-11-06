@@ -161,7 +161,7 @@ class DiscoveryPageDataMapper(
 
             ComponentNames.Section.componentName -> {
                 saveSectionPosition(component.pageEndPoint, component.sectionId, component.position)
-                listComponents.addAll(parseSectionComponent(component))
+                listComponents.add(component)
             }
 
             ComponentNames.QuickCoupon.componentName -> {
