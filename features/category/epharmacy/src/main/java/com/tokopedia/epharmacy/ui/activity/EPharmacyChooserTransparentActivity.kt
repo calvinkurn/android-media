@@ -42,7 +42,7 @@ class EPharmacyChooserTransparentActivity : BaseActivity() {
     }
 
     private fun extractParameters() {
-        enableImageURL = intent.data?.getQueryParameter(ENABLER_IMAGE_URL).orEmpty()
+        enableImageURL = intent.extras?.getString(ENABLER_IMAGE_URL).orEmpty()
         groupId = intent.data?.getQueryParameter(EPHARMACY_GROUP_ID).orEmpty()
         enablerName = intent.data?.getQueryParameter(EPHARMACY_ENABLER_NAME).orEmpty()
         price = intent.data?.getQueryParameter(EPHARMACY_CONS_PRICE).orEmpty()

@@ -26,7 +26,6 @@ data class EPharmacyAttachmentDataModel(
     val partnerConsultationId: String?,
     val tokoConsultationId: String?,
     var prescriptionImages: List<EG.PrescriptionImage?>?,
-    val prescriptionSource: List<String?>?,
     val consultationSource: EG.ConsultationSource?,
     val consultationData: EG.ConsultationData?,
     var productsIsExpanded: Boolean = false,

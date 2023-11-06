@@ -36,7 +36,6 @@ object EPharmacyMapper {
             group.consultationData?.partnerConsultationId,
             group.consultationData?.tokoConsultationId,
             group.prescriptionImages,
-            group.prescriptionSource,
             group.consultationSource,
             group.consultationData,
             false,

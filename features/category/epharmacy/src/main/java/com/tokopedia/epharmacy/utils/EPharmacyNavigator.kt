@@ -43,17 +43,6 @@ internal object EPharmacyNavigator {
         )
     }
 
-    internal fun createEPharmacyCheckoutAppLink(consultationResponse: EPharmacyInitiateConsultationResponse): String {
-        return UriUtil.buildUriAppendParam(
-            EPHARMACY_CHECKOUT_APPLINK,
-            mapOf(
-                EPHARMACY_GROUP_ID to consultationResponse.epharmacyGroupId,
-                EPHARMACY_ENABLER_ID to consultationResponse.getInitiateConsultation?.initiateConsultationData?.consultationSource?.id.toString(),
-                EPHARMACY_TOKO_CONSULTATION_ID to consultationResponse.getInitiateConsultation?.initiateConsultationData?.tokoConsultationId
-            )
-        )
-    }
-
     internal fun prescriptionAttachmentDoneRedirection(activity: Activity?, appLink: String?, requestCode: Int?, result: ArrayList<EPharmacyMiniConsultationResult>): Boolean {
         if (!appLink.isNullOrBlank() && appLink.contains(EPHARMACY_APP_CHECKOUT_APPLINK)) {
             if (requestCode == EPHARMACY_CHECKOUT_CONSULTATION_REQUEST_CODE) {
