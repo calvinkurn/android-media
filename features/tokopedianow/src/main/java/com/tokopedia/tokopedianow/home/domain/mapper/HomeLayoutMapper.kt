@@ -184,7 +184,8 @@ object HomeLayoutMapper {
         localCacheModel: LocalCacheModel,
         isLoggedIn: Boolean,
         hasBlockedAddToCart: Boolean,
-        tickerList: List<TickerData>
+        tickerList: List<TickerData>,
+        enableNewQuestWidget: Boolean
     ) {
         val headerUiModel = findHeaderUiModel()
         val warehouses = AddressMapper.mapToWarehousesData(localCacheModel)
@@ -199,7 +200,7 @@ object HomeLayoutMapper {
 
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
-                mapToHomeUiModel(layoutResponse, miniCartData, localCacheModel, hasBlockedAddToCart)?.let { item ->
+                mapToHomeUiModel(layoutResponse, miniCartData, localCacheModel, hasBlockedAddToCart, enableNewQuestWidget)?.let { item ->
                     add(item)
                 }
 
@@ -213,7 +214,8 @@ object HomeLayoutMapper {
         removeAbleWidgets: List<HomeRemoveAbleWidget>,
         miniCartData: MiniCartSimplifiedData?,
         localCacheModel: LocalCacheModel,
-        hasBlockedAddToCart: Boolean
+        hasBlockedAddToCart: Boolean,
+        enableNewQuestWidget: Boolean
     ) {
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
@@ -221,7 +223,8 @@ object HomeLayoutMapper {
                     layoutResponse,
                     miniCartData,
                     localCacheModel,
-                    hasBlockedAddToCart
+                    hasBlockedAddToCart,
+                    enableNewQuestWidget
                 )?.let { item ->
                     add(item)
                 }
@@ -982,7 +985,8 @@ object HomeLayoutMapper {
         response: HomeLayoutResponse,
         miniCartData: MiniCartSimplifiedData? = null,
         localCacheModel: LocalCacheModel,
-        hasBlockedAddToCart: Boolean
+        hasBlockedAddToCart: Boolean,
+        enableNewQuestWidget: Boolean
     ): HomeLayoutItemUiModel? {
         val serviceType = localCacheModel.service_type
         val warehouseId = localCacheModel.warehouse_id
@@ -1006,7 +1010,7 @@ object HomeLayoutMapper {
             CATEGORY -> mapToCategoryLayout(response, notLoadedState)
             BUNDLING_WIDGET -> mapToProductBundleLayout(response, notLoadedState)
             REPURCHASE_PRODUCT -> mapRepurchaseUiModel(response, notLoadedState)
-            MAIN_QUEST -> if (true) mapQuestWidgetUiModel(response, notLoadedState) else mapQuestUiModel(response, notLoadedState)
+            MAIN_QUEST -> if (enableNewQuestWidget) mapQuestWidgetUiModel(response, notLoadedState) else mapQuestUiModel(response, notLoadedState)
             SHARING_EDUCATION -> mapSharingEducationUiModel(response, notLoadedState, serviceType)
             SHARING_REFERRAL -> mapSharingReferralUiModel(response, notLoadedState, warehouseId)
             MEDIUM_PLAY_WIDGET -> mapToMediumPlayWidget(response, notLoadedState)

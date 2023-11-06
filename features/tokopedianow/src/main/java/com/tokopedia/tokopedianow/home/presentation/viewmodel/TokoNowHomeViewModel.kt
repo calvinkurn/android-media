@@ -23,8 +23,11 @@ import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.tokopedianow.buyercomm.domain.usecase.GetBuyerCommunicationUseCase
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_ENABLED
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ServiceType
@@ -163,6 +166,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val playWidgetTools: PlayWidgetTools,
     private val addressData: TokoNowLocalAddress,
     private val userSession: UserSessionInterface,
+    private val abTestPlatform: AbTestPlatform,
     private val dispatchers: CoroutineDispatchers,
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
@@ -311,7 +315,8 @@ class TokoNowHomeViewModel @Inject constructor(
                 localCacheModel = localCacheModel,
                 isLoggedIn = userSession.isLoggedIn,
                 hasBlockedAddToCart = hasBlockedAddToCart,
-                tickerList = tickerData?.tickerList.orEmpty()
+                tickerList = tickerData?.tickerList.orEmpty(),
+                enableNewQuestWidget = getEnableNewQuestWidget()
             )
 
             val data = HomeLayoutListUiModel(
@@ -355,7 +360,8 @@ class TokoNowHomeViewModel @Inject constructor(
                     removeAbleWidgets = removeAbleWidgets,
                     miniCartData = miniCartData,
                     localCacheModel = localCacheModel,
-                    hasBlockedAddToCart = hasBlockedAddToCart
+                    hasBlockedAddToCart = hasBlockedAddToCart,
+                    enableNewQuestWidget = getEnableNewQuestWidget()
                 )
 
                 getLayoutComponentData(localCacheModel)
@@ -1438,4 +1444,7 @@ class TokoNowHomeViewModel @Inject constructor(
             _atcQuantity.postValue(Success(data))
         }
     }
+
+    private fun getEnableNewQuestWidget() = abTestPlatform
+        .getString(RollenceKey.TOKOPEDIA_NOW_QUEST) == EXPERIMENT_ENABLED
 }
