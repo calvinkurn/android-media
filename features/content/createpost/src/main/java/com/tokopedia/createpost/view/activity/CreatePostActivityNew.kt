@@ -310,7 +310,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             lifecycleScope.launch {
                 val uploadData = CreationUploadData.buildForPost(
                     creationId = createPostViewModel.postId,
-                    coverUri = createPostViewModel.completeImageList.first().path,
+                    coverUri = createPostViewModel.completeImageList.firstOrNull()?.path.orEmpty(),
                     authorId = if (isTypeAffiliate(createPostViewModel.authorType) || isTypeBuyer(createPostViewModel.authorType)) {
                         userSession.userId
                     } else {
