@@ -14,28 +14,28 @@ data class GroupInfoResponse(
     ) {
         data class Data(
 
-                @field:SerializedName("name")
+            @field:SerializedName("name")
                 val groupName: String = "",
 
-                @field:SerializedName("daily_budget")
-                val daiyBudget: Float = 0.0F,
+            @field:SerializedName("daily_budget")
+                val dailyBudget: Float = 0.0F,
 
-                @field:SerializedName("shop_id")
+            @field:SerializedName("shop_id")
                 val shopId: String = "",
 
-                @field:SerializedName("id")
+            @field:SerializedName("id")
                 val groupId: String = "",
 
-                @field:SerializedName("status")
+            @field:SerializedName("status")
                 val status: String = "",
 
-                @field:SerializedName("ad_total")
+            @field:SerializedName("ad_total")
                 val groupTotal: String = "",
 
-                @field:SerializedName("bid_settings")
-                val bidSettings: List<TopadsGroupBidSetting>? = listOf(),
+            @field:SerializedName("bid_settings")
+                val bidSettings: List<TopadsGroupBidSetting> = listOf(),
 
-                @field:SerializedName("strategies")
+            @field:SerializedName("strategies")
                 val strategies: List<String> = listOf()
 
         )

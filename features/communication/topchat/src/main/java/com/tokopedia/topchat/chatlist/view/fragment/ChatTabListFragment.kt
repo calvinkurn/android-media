@@ -24,7 +24,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
@@ -110,7 +109,6 @@ class ChatTabListFragment constructor() :
         initChatCounterObserver()
         initToolTip()
         initBackground()
-        context?.let { UpdateShopActiveWorker.execute(it) }
     }
 
     private fun initBackground() {

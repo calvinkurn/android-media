@@ -183,6 +183,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     onClickUsePromoRecommendation,
                     onClickRecommendationPromo,
                     onImpressionPromo,
+                    onRecommendationAnimationEnd,
                     onClickClose
                 )
             )
@@ -248,6 +249,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         renderLoadingDialog(false)
+        removeObserveKeyboardVisibility()
         recyclerViewAdapter.clear()
         binding = null
         listener = null
@@ -453,6 +455,12 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 }
                 return@setOnApplyWindowInsetsListener ViewCompat.onApplyWindowInsets(view, insets)
             }
+        }
+    }
+
+    private fun removeObserveKeyboardVisibility() {
+        activity?.let {
+            ViewCompat.setOnApplyWindowInsetsListener(it.window.decorView, null)
         }
     }
 
@@ -1086,6 +1094,10 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private val onImpressionPromo = { item: PromoItem ->
         processAndSendImpressionOfPromoCardNewEvent(item)
+    }
+
+    private val onRecommendationAnimationEnd = {
+        viewModel.onRecommendationAnimationEnd()
     }
 
     private val onClickClose = {

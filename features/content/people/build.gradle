@@ -104,7 +104,7 @@ dependencies {
     implementation rootProject.ext.composeDependencies.composeConstraint
     implementation rootProject.ext.composeDependencies.composeActivity
 
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     //Below Hardcoded dependencies are very old. Will refactor it later (TECH DEBT)
     implementation 'com.google.android.material:material:1.4.0'
