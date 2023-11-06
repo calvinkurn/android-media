@@ -16,7 +16,6 @@ import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManag
 import com.tokopedia.creation.common.upload.di.worker.DaggerCreationUploadWorkerComponent
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadStatus
-import com.tokopedia.creation.common.upload.model.exception.NoUploadManagerException
 import com.tokopedia.creation.common.upload.model.exception.UnknownUploadTypeException
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadExecutionResult
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerListener
@@ -75,7 +74,7 @@ class CreationUploaderWorker(
                 try {
                     val data = queueRepository.getTopQueue() ?: break
 
-                    val uploadManager = uploadManagerProvider.get(data.uploadType)
+                    val uploadManager = uploadManagerProvider.get(data)
 
                     uploadManager.setupManager(
                         object : CreationUploadManagerListener {
@@ -111,8 +110,7 @@ class CreationUploaderWorker(
 
                     when (throwable) {
                         is JsonSyntaxException,
-                        is UnknownUploadTypeException,
-                        is NoUploadManagerException -> {
+                        is UnknownUploadTypeException -> {
                             queueRepository.deleteTopQueue()
                             continue
                         }
