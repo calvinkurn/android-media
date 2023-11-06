@@ -12,7 +12,7 @@
     <ViewStub
         android:id="@+id/channel_title"
         android:inflatedId="@+id/channel_title"
-        android:layout="@layout/view_stub_dc_title_revamp"
+        android:layout="@layout/view_stub_dc_title"
         android:layout_marginStart="@dimen/home_component_margin_default"
         android:layout_marginLeft="@dimen/home_component_margin_default"
         android:layout_width="match_parent"
