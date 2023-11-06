@@ -60,13 +60,7 @@ object ChatbotMessageViewHolderBinder {
     }
 
     private fun getHourTime(replyTime: String?): String {
-        return try {
-            replyTime?.let {
-                ChatTimeConverter.formatTime(replyTime.toLong() / BaseChatViewHolder.MILISECONDS)
-            } ?: ""
-        } catch (e: NumberFormatException) {
-            replyTime ?: ""
-        }
+        return ChatTimeConverter.getHourTime(replyTime)
     }
 
     fun bindChatReadStatus(element: MessageUiModel, messageView: CustomChatbotChatLayout?) {
