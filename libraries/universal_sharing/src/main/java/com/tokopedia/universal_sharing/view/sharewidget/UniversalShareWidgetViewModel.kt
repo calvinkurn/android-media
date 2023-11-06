@@ -3,27 +3,24 @@ package com.tokopedia.universal_sharing.view.sharewidget
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerError
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.universal_sharing.domain.usecase.ImageGeneratorUseCase
 import com.tokopedia.universal_sharing.domain.usecase.ImagePolicyUseCase
 import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
-import com.tokopedia.universal_sharing.model.ImagePolicy
 import com.tokopedia.universal_sharing.model.generateImageGeneratorParam
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.view.model.LinkShareWidgetProperties
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -45,9 +42,8 @@ class UniversalShareWidgetViewModel @Inject constructor(
         _linkProperties.value = linkProperties
     }
 
-    fun executeLinkRequest(linkerShareData: LinkerShareData, sourceId: String?, imageGeneratorParam: ImageGeneratorParamModel?) {
+    fun executeLinkRequest(linkerShareData: LinkerShareData, sourceId: String? = null, imageGeneratorParam: ImageGeneratorParamModel? = null) {
         viewModelScope.launch {
-
             // check if contextualImage is active or not
             if (sourceId != null && imageGeneratorParam != null) {
                 generateContextualImage(linkerShareData, sourceId, imageGeneratorParam)
@@ -55,7 +51,6 @@ class UniversalShareWidgetViewModel @Inject constructor(
             generateLink(linkerShareData)
         }
     }
-
 
     fun checkIsAffiliate(affiliatePDPInput: AffiliateInput) {
         viewModelScope.launch {
@@ -79,7 +74,6 @@ class UniversalShareWidgetViewModel @Inject constructor(
                     object : ShareCallback {
                         override fun urlCreated(linkerShareData: LinkerShareResult?) {
                             _linkerResult.value = LinkerResultWidget.Success(linkerShareData)
-
                         }
 
                         override fun onError(linkerError: LinkerError?) {
@@ -112,4 +106,3 @@ sealed class LinkerResultWidget {
     data class Success(val linkerShareResult: LinkerShareResult?) : LinkerResultWidget()
     data class Failed(val error: LinkerError?) : LinkerResultWidget()
 }
-
