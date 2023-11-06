@@ -9,11 +9,14 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowQuestProgressBarViewBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class HomeQuestProgressBarView @JvmOverloads constructor(
@@ -34,7 +37,11 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
         true
     )
 
-    private val defaultStrokeResId = unifyprinciplesR.color.Unify_NN200
+    private val defaultStrokeResId = if(context.isDarkMode()) {
+        unifyprinciplesR.color.Unify_NN100
+    } else {
+        R.color.tokopedianow_quest_progress_stroke_dms_color
+    }
     private val defaultColorResId = unifyprinciplesR.color.Unify_BN600
 
     private var progressAnimEnd = DEFAULT_PROGRESS
@@ -96,6 +103,8 @@ class HomeQuestProgressBarView @JvmOverloads constructor(
             viewProgress.layoutParams = viewProgress.layoutParams.apply {
                 width = DEFAULT_PROGRESS.toInt()
             }
+
+            viewBackground.setBackgroundColor(ContextCompat.getColor(context, defaultStrokeResId))
 
             for (i in 0 until questCount) {
                 val view = if (progressItems.getOrNull(i) == null) {
