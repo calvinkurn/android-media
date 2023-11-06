@@ -55,11 +55,13 @@ class PostUploadManager @AssistedInject constructor(
                 mediaWidth = viewModel.mediaWidth,
                 mediaHeight = viewModel.mediaHeight,
                 onSuccessUploadPerMedia = {
-                    uploadedMedia++
-                    updateProgress(
-                        uploadData,
-                        (uploadedMedia / viewModel.completeImageList.size.toDouble() * 100).toInt(),
-                    )
+                    if (viewModel.completeImageList.isNotEmpty()) {
+                        uploadedMedia++
+                        updateProgress(
+                            uploadData,
+                            (uploadedMedia / viewModel.completeImageList.size.toDouble() * 100).toInt()
+                        )
+                    }
                 }
             )
 
