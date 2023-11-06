@@ -7,12 +7,15 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
@@ -22,6 +25,7 @@ import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.saldoDetail.SaldoDepositFragment.Companion.REQUEST_WITHDRAW_CODE
 import com.tokopedia.saldodetails.saldoDetail.coachmark.SaldoCoachMarkListener
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import javax.inject.Inject
@@ -92,6 +96,17 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         setUpToolbar()
         initializeView()
         hideStatusBar()
+        showToaster()
+    }
+
+    private fun showToaster() {
+        val queryParam = UriUtil.uriQueryParamsToMap(intent.data.toString())
+        val toasterText = queryParam[TOASTER]
+        if (toasterText?.isNotEmpty() == true) {
+            val rootView = findViewById<RelativeLayout>(com.tokopedia.saldodetails.R.id.il_main_content)
+            val type = if (queryParam[TOASTER_ERROR] == "true") Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
+            Toaster.build(rootView, toasterText, Snackbar.LENGTH_SHORT, type).show()
+        }
     }
 
     private fun setUpToolbar() {
@@ -146,7 +161,8 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         private const val FLAG_APP_SALDO_AUTO_WITHDRAWAL = "app_flag_saldo_auto_withdrawal_v2"
         private val REQUEST_CODE_LOGIN = 1001
         private val TAG = "DEPOSIT_FRAGMENT"
-
+        private const val TOASTER = "toaster"
+        private const val TOASTER_ERROR = "toaster_error"
     }
 
     override fun startCoachMarkFlow(anchorView: View?) {
