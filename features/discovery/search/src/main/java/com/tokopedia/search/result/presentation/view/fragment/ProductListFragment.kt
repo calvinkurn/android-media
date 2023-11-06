@@ -54,6 +54,7 @@ import com.tokopedia.product.detail.common.ProductDetailPrefetch
 import com.tokopedia.product.detail.common.ProductDetailPrefetch.Data.Companion.CONTAINER_TYPE_PORTRAIT
 import com.tokopedia.product.detail.common.ProductDetailPrefetch.Data.Companion.CONTAINER_TYPE_SQUARE
 import com.tokopedia.productcard.ProductCardLifecycleObserver
+import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -870,7 +871,10 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun prefetchPdp(intent: Intent, item: ProductItemDataView) {
         val context = context ?: return
-        val integrity = item.labelGroupList?.find { it.position == LABEL_INTEGRITY }?.title ?: ""
+        val integrity = item.labelGroupList?.find {
+            it.position == LABEL_REIMAGINE_CREDIBILITY ||
+                it.position == LABEL_INTEGRITY
+        }?.title ?: ""
 
         val containerType = if (item.isPortrait) CONTAINER_TYPE_PORTRAIT
         else CONTAINER_TYPE_SQUARE

@@ -1298,6 +1298,8 @@ open class DynamicProductDetailFragment :
      * ImpressionComponent
      */
     override fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel) {
+        if (viewModel.getDynamicProductInfoP1?.cacheState?.isPrefetch == true) return
+
         val purchaseProtectionUrl = when (componentTrackDataModel.componentName) {
             ProductDetailConstant.PRODUCT_PROTECTION -> getPurchaseProtectionUrl()
             else -> ""
@@ -5236,7 +5238,7 @@ open class DynamicProductDetailFragment :
                         ApplinkConst.TOPCHAT_ASKSELLER,
                         product.basic.shopID,
                         "",
-                        "product",
+                        ApplinkConst.Chat.Source.SOURCE_PDP,
                         shop.shopCore.name,
                         shop.shopAssets.avatar
                     )

@@ -71,5 +71,6 @@ data class CacheState(
     // caching flow pdp, true = cache first then cloud, false = cache only or cloud only
     val cacheFirstThenCloud: Boolean = false,
 
+    // flag is the data is prefetch
     val isPrefetch: Boolean = false
 )
