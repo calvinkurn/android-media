@@ -201,15 +201,17 @@ public abstract class MainApplication extends CoreNetworkApplication {
 
     protected void setupAppScreenMode() {
         boolean isForceLightMode = checkForceLightMode();
+        if (isForceLightMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            return;
+        }
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         boolean isDarkMode = sharedPreferences.getBoolean(TkpdCache.Key.KEY_DARK_MODE, false);
-        int screenMode;
-        if (isDarkMode && !isForceLightMode) {
-            screenMode = AppCompatDelegate.MODE_NIGHT_YES;
-        } else {
-            screenMode = AppCompatDelegate.MODE_NIGHT_NO;
-        }
+        int defaultScreenMode = isDarkMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO;
+        int screenMode = sharedPreferences.getInt(TkpdCache.Key.KEY_DARK_MODE_CONFIG_SCREEN_MODE, defaultScreenMode);
+
         AppCompatDelegate.setDefaultNightMode(screenMode);
     }
 
