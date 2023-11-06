@@ -113,7 +113,10 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         (getRecyclerView()?.layoutManager as? CenterLayoutManager)?.let { layoutManager ->
             val lastVisibleItemPosition = IntArray(layoutManager.getSpanCount())
             layoutManager.findLastVisibleItemPositions(lastVisibleItemPosition)
-            val lastVisibleItemPositionSpan1 = lastVisibleItemPosition[1]
+            var lastVisibleItemPositionSpan1 = 0
+            if (lastVisibleItemPosition.size >= 1) {
+                lastVisibleItemPositionSpan1 = lastVisibleItemPosition[1]
+            }
             position = lastVisibleItemPositionSpan1
         }
         var visitablesForPerf = visitables
