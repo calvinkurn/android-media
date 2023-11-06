@@ -31,7 +31,8 @@ class PlayWidgetQueryParamBuilder {
             appendLine("${'$'}$PARAM_WIDGET_TYPE: String!,")
             appendLine("${'$'}$PARAM_AUTHOR_ID: String,")
             appendLine("${'$'}$PARAM_AUTHOR_TYPE: String,")
-            append("${'$'}$PARAM_IS_WIFI: Boolean")
+            append("${'$'}$PARAM_IS_WIFI: Boolean, ")
+            append("${'$'}$PARAM_IS_DYNAMIC_VIDEO: Boolean")
 
             when (widgetType) {
                 is PlayWidgetUseCase.WidgetType.PDPWidget -> {
