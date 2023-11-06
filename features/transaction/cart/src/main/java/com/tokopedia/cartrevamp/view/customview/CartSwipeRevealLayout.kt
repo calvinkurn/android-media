@@ -262,6 +262,11 @@ class CartSwipeRevealLayout : ViewGroup {
         }
     }
 
+    fun setSwipeListener(listener: SwipeListener) {
+        mSwipeListener = listener
+    }
+
+
     fun open(animation: Boolean) {
         mIsOpenBeforeInit = true
         mAborted = false
@@ -700,6 +705,10 @@ class CartSwipeRevealLayout : ViewGroup {
         val resources: Resources = context.resources
         val metrics: DisplayMetrics = resources.displayMetrics
         return (px / (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)).toInt()
+    }
+
+    fun isOpen(): Boolean {
+        return mState == STATE_OPEN
     }
 
     companion object {

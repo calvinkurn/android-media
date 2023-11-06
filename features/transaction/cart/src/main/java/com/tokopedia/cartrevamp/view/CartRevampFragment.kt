@@ -516,6 +516,7 @@ class CartRevampFragment :
         }
         initViewModel()
         initCoachMark()
+        binding?.rvCart?.setViewBinderHelper(binderHelper)
     }
 
     override fun getFragment(): Fragment {
@@ -709,11 +710,14 @@ class CartRevampFragment :
             binding?.vDisabledGoToCourierPageButton?.show()
             if (isClickable) {
                 binding?.vDisabledGoToCourierPageButton?.setOnClickListener {
-                    if (CartDataHelper.getAllAvailableCartItemData(viewModel.cartDataList.value)
-                            .isNotEmpty()
-                    ) {
-                        showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
+                    guardCartClick {
+                        if (CartDataHelper.getAllAvailableCartItemData(viewModel.cartDataList.value)
+                                .isNotEmpty()
+                        ) {
+                            showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
+                        }
                     }
+
                 }
             } else {
                 binding?.vDisabledGoToCourierPageButton?.setOnClickListener(null)
@@ -1691,7 +1695,7 @@ class CartRevampFragment :
                     bulkActionCoachMark?.dismissCoachMark()
                 }
 
-                binderHelper.closeAll()
+//                binderHelper.closeAll()
 
                 handleSelectedAmountVisibilityOnScroll(dy)
                 handlePromoButtonVisibilityOnScroll(dy)
@@ -2254,6 +2258,17 @@ class CartRevampFragment :
         }
     }
 
+    private var lastCartId: String = ""
+
+    override fun onSwipeOpened(id: String) {
+        lastCartId = id
+        disableSwipeRefresh()
+    }
+
+    override fun onSwipeClosed() {
+        enableSwipeRefresh()
+    }
+
     private fun isAtcExternalFlow(): Boolean {
         return getAtcProductId() != 0L
     }
@@ -2335,7 +2350,9 @@ class CartRevampFragment :
 
     private fun initViewListener() {
         binding?.apply {
-            goToCourierPageButton.setOnClickListener { checkGoToShipment("") }
+            goToCourierPageButton.setOnClickListener {
+                guardCartClick { checkGoToShipment("") }
+            }
         }
     }
 
@@ -2440,7 +2457,7 @@ class CartRevampFragment :
         }?.launchIn(lifecycleScope)
 
         binding?.topLayout?.textActionDelete?.setOnClickListener {
-            onGlobalDeleteClicked()
+            guardCartClick { onGlobalDeleteClicked() }
         }
     }
 
@@ -4681,12 +4698,16 @@ class CartRevampFragment :
                 }
             })
             bulkActionCoachMark?.simpleCloseIcon?.setOnClickListener {
-                bulkActionCoachMark?.dismissCoachMark()
-                hasShowBulkActionCoachMark = false
+                guardCartClick {
+                    bulkActionCoachMark?.dismissCoachMark()
+                    hasShowBulkActionCoachMark = false
+                }
             }
             bulkActionCoachMark?.stepCloseIcon?.setOnClickListener {
-                bulkActionCoachMark?.dismissCoachMark()
-                hasShowBulkActionCoachMark = false
+                guardCartClick {
+                    bulkActionCoachMark?.dismissCoachMark()
+                    hasShowBulkActionCoachMark = false
+                }
             }
             bulkActionCoachMark?.onFinishListener = {
                 hasShowBulkActionCoachMark = false
@@ -5425,5 +5446,14 @@ class CartRevampFragment :
             shopId,
             userSession.userId
         )
+    }
+
+    private inline fun guardCartClick(onClick: () -> Unit) {
+//        if (binderHelper.openCount > 0) {
+//            binderHelper.closeAll()
+//        }
+//        else {
+            onClick()
+//        }
     }
 }

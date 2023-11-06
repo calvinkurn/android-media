@@ -10,8 +10,6 @@ class ViewBinderHelper {
     )
     private val lockedSwipeSet = Collections.synchronizedSet(HashSet<String>())
 
-    @Volatile
-    private var openOnlyOne = false
     private val stateChangeLock = Any()
 
     fun bind(swipeLayout: CartSwipeRevealLayout, id: String) {
@@ -25,9 +23,7 @@ class ViewBinderHelper {
             CartSwipeRevealLayout.DragStateChangeListener {
             override fun onDragStateChanged(state: Int) {
                 mapStates[id] = state
-                if (openOnlyOne) {
-                    closeOthers(id, swipeLayout)
-                }
+                closeOthers(id, swipeLayout)
             }
         })
 
@@ -44,10 +40,6 @@ class ViewBinderHelper {
         }
 
         swipeLayout.setLockDrag(lockedSwipeSet.contains(id))
-    }
-
-    fun setOpenOnlyOne(openOnlyOne: Boolean) {
-        this.openOnlyOne = openOnlyOne
     }
 
     private fun closeOthers(id: String, swipeLayout: CartSwipeRevealLayout?) {
@@ -80,7 +72,17 @@ class ViewBinderHelper {
         }
     }
 
-    private val openCount: Int
+    fun closeLayout(id: String?) {
+        synchronized(stateChangeLock) {
+            mapStates[id] = CartSwipeRevealLayout.STATE_CLOSE
+            if (mapLayouts.containsKey(id)) {
+                val layout: CartSwipeRevealLayout? = mapLayouts[id]
+                layout?.close(true)
+            }
+        }
+    }
+
+    val openCount: Int
         get() {
             var total = 0
             for (state in mapStates.values) {
@@ -103,5 +105,17 @@ class ViewBinderHelper {
 
     fun lockSwipe(vararg id: String) {
         setLockSwipe(true, *id)
+    }
+
+    fun getOpenedLayout(): List<CartSwipeRevealLayout> {
+        val layouts = mutableListOf<CartSwipeRevealLayout>()
+        for (state in mapStates) {
+            if (state.value == CartSwipeRevealLayout.STATE_OPEN || state.value == CartSwipeRevealLayout.STATE_OPENING) {
+                mapLayouts[state.key]?.let {
+                    layouts.add(it)
+                }
+            }
+        }
+        return layouts
     }
 }

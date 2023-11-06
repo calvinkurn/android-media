@@ -81,10 +81,6 @@ class CartAdapter constructor(
     private var plusCoachMark: CoachMark2? = null
     private var mainCoachMark: CartMainCoachMarkUiModel = CartMainCoachMarkUiModel()
 
-    init {
-        binderHelper.setOpenOnlyOne(true)
-    }
-
     companion object {
         const val SELLER_CASHBACK_ACTION_INSERT = 1
         const val SELLER_CASHBACK_ACTION_UPDATE = 2
@@ -106,8 +102,7 @@ class CartAdapter constructor(
     }
 
     override fun getItemViewType(position: Int): Int {
-        val data = cartDataList[position]
-        return when (data) {
+        return when (cartDataList[position]) {
             is CartSelectedAmountHolderData -> CartSelectedAmountViewHolder.LAYOUT
             is CartGroupHolderData -> CartGroupViewHolder.LAYOUT
             is CartShopBottomHolderData -> CartShopBottomViewHolder.LAYOUT
@@ -155,7 +150,7 @@ class CartAdapter constructor(
                     parent,
                     false
                 )
-                return CartItemViewHolder(binding, cartItemActionListener, mainCoachMark)
+                return CartItemViewHolder(binding, cartItemActionListener, mainCoachMark, binderHelper)
             }
 
             CartShopBottomViewHolder.LAYOUT -> {
@@ -287,8 +282,7 @@ class CartAdapter constructor(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val viewType = getItemViewType(position)
-        when (viewType) {
+        when (getItemViewType(position)) {
             CartSelectedAmountViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartSelectedAmountHolderData
                 (holder as CartSelectedAmountViewHolder).bind(data)
@@ -301,7 +295,7 @@ class CartAdapter constructor(
 
             CartItemViewHolder.TYPE_VIEW_ITEM_CART -> {
                 val data = cartDataList[position] as CartItemHolderData
-                (holder as CartItemViewHolder).bindData(data, this, 1, binderHelper)
+                (holder as CartItemViewHolder).bindData(data, this, 1)
             }
 
             CartShopBottomViewHolder.LAYOUT -> {
@@ -400,27 +394,6 @@ class CartAdapter constructor(
             }
         }
     }
-
-    fun getCartGroupHolderDataAndIndexByCartString(
-        cartString: String,
-        isUnavailableGroup: Boolean
-    ): Pair<Int, List<Any>> {
-        val cartGroupList = arrayListOf<Any>()
-        var startingIndex = RecyclerView.NO_POSITION
-        for ((index, data) in cartDataList.withIndex()) {
-            if (data is CartGroupHolderData && data.cartString == cartString && data.isError == isUnavailableGroup) {
-                startingIndex = index
-                cartGroupList.add(data)
-            } else if (data is CartItemHolderData && startingIndex >= 0 && data.cartString == cartString) {
-                cartGroupList.add(data)
-            } else if (data is CartShopBottomHolderData && startingIndex >= 0 && data.shopData.cartString == cartString) {
-                cartGroupList.add(data)
-                break
-            }
-        }
-        return Pair(startingIndex, cartGroupList)
-    }
-    // TODO: remove
 
     fun getData(): ArrayList<Any> {
         return cartDataList
