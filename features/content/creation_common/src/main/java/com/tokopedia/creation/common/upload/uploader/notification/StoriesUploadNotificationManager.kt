@@ -7,6 +7,9 @@ import android.os.Build
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.createpost.common.TYPE_CONTENT_SHOP
 import com.tokopedia.creation.common.R
 import com.tokopedia.creation.common.upload.uploader.activity.PlayShortsPostUploadActivity
 import com.tokopedia.creation.common.upload.model.CreationUploadNotificationText
@@ -32,13 +35,16 @@ class StoriesUploadNotificationManager @Inject constructor(
     )
 
     override fun generateSuccessPendingIntent(): PendingIntent {
-        /** TODO JOE: for mocking purpose */
         val intent = PlayShortsPostUploadActivity.getIntent(
             context,
             channelId = uploadData?.creationId.orEmpty(),
             authorId = uploadData?.authorId.orEmpty(),
             authorType = uploadData?.authorType.orEmpty(),
-            appLink = "tokopedia://stories/shop/${uploadData?.authorId}"
+            appLink = UriUtil.buildUri(
+                ApplinkConst.Stories.STORIES_VIEWER,
+                if (uploadData?.authorType == TYPE_CONTENT_SHOP) ApplinkConst.Stories.STORIES_TYPE_SHOP else ApplinkConst.Stories.STORIES_TYPE_USER,
+                uploadData?.authorId.orEmpty()
+            )
         ).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
