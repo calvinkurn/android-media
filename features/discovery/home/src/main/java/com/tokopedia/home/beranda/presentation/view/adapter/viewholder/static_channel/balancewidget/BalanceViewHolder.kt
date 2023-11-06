@@ -17,7 +17,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.home.databinding.ItemBalanceWidgetAtf2Binding
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -198,10 +197,7 @@ class BalanceViewHolder(
         binding?.homeContainerBalance?.homeIvLogoBalance?.run {
             type = ImageUnify.TYPE_CIRCLE
             setImageDrawable(
-                ContextCompat.getDrawable(
-                    itemView.context,
-                    unifyprinciplesR.color.Unify_NN50
-                )
+                homeThematicUtil.getThematicDrawable(unifyprinciplesR.color.Unify_NN50)
             )
         }
     }
@@ -237,10 +233,8 @@ class BalanceViewHolder(
     }
 
     private fun renderTextColor(element: BalanceDrawerItemModel) {
-        val balanceTextColor = homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_NN950)
-        binding?.homeContainerBalance?.homeTvTitle?.setTextColor(
-            ContextCompat.getColor(itemView.context, balanceTextColor)
-        )
+        val balanceTextColor = homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN950)
+        binding?.homeContainerBalance?.homeTvTitle?.setTextColor(balanceTextColor)
         when (element.state) {
             BalanceDrawerItemModel.STATE_SUCCESS -> {
                 setSuccessFontSubtitle(element)
@@ -258,12 +252,9 @@ class BalanceViewHolder(
                 binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(typographyWeight)
 
                 binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
-                    ContextCompat.getColor(
-                        itemView.context,
-                        homeThematicUtil.asThematicColor(
-                            element.balanceSubTitleTextAttribute?.colourRef
-                                ?: unifyprinciplesR.color.Unify_GN500
-                        )
+                    homeThematicUtil.getThematicColor(
+                        element.balanceSubTitleTextAttribute?.colourRef
+                            ?: unifyprinciplesR.color.Unify_GN500
                     )
                 )
             }
@@ -272,31 +263,22 @@ class BalanceViewHolder(
                 binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(typographyWeight)
 
                 binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
-                    ContextCompat.getColor(
-                        itemView.context,
-                        homeThematicUtil.asThematicColor(
-                            element.balanceSubTitleTextAttribute?.colourRef
-                                ?: unifyprinciplesR.color.Unify_NN600
-                        )
+                    homeThematicUtil.getThematicColor(
+                        element.balanceSubTitleTextAttribute?.colourRef
+                            ?: unifyprinciplesR.color.Unify_NN600
                     )
                 )
             }
             TYPE_WALLET_APP_NOT_LINKED -> {
                 binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(Typography.BOLD)
                 binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
-                    ContextCompat.getColor(
-                        itemView.context,
-                        homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_GN500)
-                    )
+                    homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_GN500)
                 )
             }
             else -> {
                 binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(Typography.REGULAR)
                 binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
-                    ContextCompat.getColor(
-                        itemView.context,
-                        homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_NN600)
-                    )
+                    homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN600)
                 )
             }
         }
@@ -304,10 +286,7 @@ class BalanceViewHolder(
 
     private fun setErrorFontSubtitle() {
         binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
-            ContextCompat.getColor(
-                itemView.context,
-                homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_GN500)
-            )
+            homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_GN500)
         )
         binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(Typography.BOLD)
     }

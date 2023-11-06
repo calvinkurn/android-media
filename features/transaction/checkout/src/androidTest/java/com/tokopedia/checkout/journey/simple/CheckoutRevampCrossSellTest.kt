@@ -39,7 +39,7 @@ class CheckoutRevampCrossSellTest {
     }
 
     @Test
-    fun egold() {
+    fun egold_and_donasi() {
         interceptor.cartInterceptor.customSafResponsePath =
             SAF_EGOLD_DONASI_RESPONSE_PATH
         activityRule.launchActivity(null)
@@ -54,10 +54,16 @@ class CheckoutRevampCrossSellTest {
                 text = "Bulatkan dengan nabung emas. S&K berlaku (Rp5.000)",
                 isChecked = false
             )
+            assertEgoldShoppingSummary(activityRule, false, "")
+            assertDonasiShoppingSummary(activityRule, false, "")
+
+            // choose shipping
             clickChooseDuration(activityRule)
             waitForData()
             selectDurationOptionWithText("Reguler (Rp93.000)")
             waitForData()
+
+            // assert new egold value
             assertEgold(
                 activityRule,
                 text = "Bulatkan dengan nabung emas. S&K berlaku (Rp7.000)",
@@ -65,10 +71,27 @@ class CheckoutRevampCrossSellTest {
             )
             expandShoppingSummary(activityRule)
             assertEgoldShoppingSummary(activityRule, false, "")
+            assertDonasiShoppingSummary(activityRule, false, "")
+
             clickEgold(activityRule)
-            waitForData()
+            expandShoppingSummary(activityRule)
             assertEgoldShoppingSummary(activityRule, true, "Rp7.000")
-            waitForData()
+            assertDonasiShoppingSummary(activityRule, false, "")
+
+            clickDonasi(activityRule)
+            expandShoppingSummary(activityRule)
+            assertDonasiShoppingSummary(activityRule, true, "Rp5.000")
+            assertEgoldShoppingSummary(activityRule, true, "Rp7.000")
+            assertShoppingSummary(
+                activityRule,
+                itemTotalPrice = "Rp60.000",
+                itemOriginalPrice = null,
+                shippingTotalPrice = "Rp93.000",
+                shippingOriginalPrice = null,
+                totalPrice = "Rp168.000"
+            )
+            assertPlatformFee(activityRule, fee = "Rp3.000", originalFee = null)
+
             clickChoosePaymentButton(activityRule)
         }
     }
