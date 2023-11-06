@@ -6,7 +6,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.databinding.HomeRecommedationHeadlineAdsLayoutBinding
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.recommendation_widget_common.widget.entrypointcard.viewholder.BaseRecommendationForYouViewHolder
+import com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder.BaseRecommendationForYouViewHolder
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
@@ -16,7 +16,8 @@ class HomeRecommendationHeadlineTopAdsViewHolder(
     view: View,
     private val topAdsBannerClickListener: TopAdsBannerClickListener
 ) : BaseRecommendationForYouViewHolder<HomeRecommendationHeadlineTopAdsDataModel>(
-    view, HomeRecommendationHeadlineTopAdsDataModel::class.java
+    view,
+    HomeRecommendationHeadlineTopAdsDataModel::class.java
 ) {
     companion object {
         val LAYOUT = R.layout.home_recommedation_headline_ads_layout
@@ -45,7 +46,7 @@ class HomeRecommendationHeadlineTopAdsViewHolder(
     }
 
     private fun setDisplayHeadlineAds(
-        element: HomeRecommendationHeadlineTopAdsDataModel,
+        element: HomeRecommendationHeadlineTopAdsDataModel
     ) {
         if (!element.headlineAds.data.isNullOrEmpty()) {
             binding?.headlineAds?.displayAds(element.headlineAds, Int.ZERO)

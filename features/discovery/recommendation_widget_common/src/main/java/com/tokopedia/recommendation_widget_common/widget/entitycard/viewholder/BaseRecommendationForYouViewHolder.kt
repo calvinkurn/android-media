@@ -1,4 +1,4 @@
-package com.tokopedia.recommendation_widget_common.widget.entrypointcard.viewholder
+package com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable

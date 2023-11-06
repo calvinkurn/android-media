@@ -1,4 +1,4 @@
-package com.tokopedia.recommendation_widget_common.widget.entrypointcard.viewholder
+package com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -17,7 +17,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomEntityCardBinding
 import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
-import com.tokopedia.recommendation_widget_common.widget.entrypointcard.model.RecomEntityCardUiModel
+import com.tokopedia.recommendation_widget_common.widget.entitycard.model.RecomEntityCardUiModel
 
 class RecomEntityCardViewHolder(
     view: View,
@@ -52,6 +52,7 @@ class RecomEntityCardViewHolder(
             binding.entryPointCardSpace,
             SQUARE_IMAGE_RATIO
         )
+        setOnCardImpressionListener(element)
         setOnCardClickListener(element)
         setMinHeightEntryPointCard()
     }
@@ -77,6 +78,7 @@ class RecomEntityCardViewHolder(
                 setLabelIcon(labelState.iconUrl)
             }
             if (item != this) {
+                setOnCardImpressionListener(this)
                 setOnCardClickListener(this)
             }
             setMinHeightEntryPointCard()
@@ -85,7 +87,7 @@ class RecomEntityCardViewHolder(
 
     private fun setOnCardClickListener(element: RecomEntityCardUiModel) {
         itemView.setOnClickListener {
-            listener.onEntryPointCardClickListener(element, bindingAdapterPosition)
+            listener.onEntityCardClickListener(element, bindingAdapterPosition)
         }
     }
 
@@ -94,7 +96,7 @@ class RecomEntityCardViewHolder(
             element,
             object : ViewHintListener {
                 override fun onViewHint() {
-                    listener.onEntryPointCardImpressionListener(element, bindingAdapterPosition)
+                    listener.onEntityCardImpressionListener(element, bindingAdapterPosition)
                 }
             }
         )
@@ -193,7 +195,7 @@ class RecomEntityCardViewHolder(
     }
 
     interface Listener {
-        fun onEntryPointCardImpressionListener(item: RecomEntityCardUiModel, position: Int)
-        fun onEntryPointCardClickListener(item: RecomEntityCardUiModel, position: Int)
+        fun onEntityCardImpressionListener(item: RecomEntityCardUiModel, position: Int)
+        fun onEntityCardClickListener(item: RecomEntityCardUiModel, position: Int)
     }
 }

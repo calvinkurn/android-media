@@ -1,11 +1,12 @@
-package com.tokopedia.recommendation_widget_common.widget.entrypointcard.model
+package com.tokopedia.recommendation_widget_common.widget.entitycard.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.recommendation_widget_common.widget.entrypointcard.typefactory.RecomEntityCardTypeFactory
+import com.tokopedia.recommendation_widget_common.widget.entitycard.typefactory.RecomEntityCardTypeFactory
 
 data class RecomEntityCardUiModel(
     val id: String,
+    val layoutCard: String,
     val title: String,
     val subTitle: String,
     val imageUrl: String,

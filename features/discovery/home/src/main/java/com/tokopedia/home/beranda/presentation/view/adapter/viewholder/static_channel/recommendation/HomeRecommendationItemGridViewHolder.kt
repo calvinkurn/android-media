@@ -7,7 +7,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationLi
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.databinding.HomeFeedItemGridBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.recommendation_widget_common.widget.entrypointcard.viewholder.BaseRecommendationForYouViewHolder
+import com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder.BaseRecommendationForYouViewHolder
 
 /**
  * Created by Lukas on 2019-07-15
@@ -65,7 +65,7 @@ class HomeRecommendationItemGridViewHolder(
     }
 
     private fun setThreeDotsOnClickListener(
-        element: HomeRecommendationItemDataModel,
+        element: HomeRecommendationItemDataModel
     ) {
         binding.productCardView.setThreeDotsOnClickListener {
             listener.onProductThreeDotsClick(

@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.model.AdsBannerItemResponse
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.GetHomeRecommendationCardResponse
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.RecommendationCard
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
@@ -17,7 +16,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.play.widget.ui.model.PlayVideoWidgetUiModel
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.recommendation_widget_common.widget.entrypointcard.model.RecomEntityCardUiModel
+import com.tokopedia.recommendation_widget_common.widget.entitycard.model.RecomEntityCardUiModel
 import com.tokopedia.topads.sdk.domain.model.ImageShop
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import dagger.Lazy
@@ -81,7 +80,7 @@ class HomeRecommendationCardMapper @Inject constructor(
                 TYPE_VIDEO_CARD -> {
                     homeRecommendationTypeFactoryImplList.add(
                         HomeRecommendationPlayWidgetUiModel(
-                            //todo will adjust later
+                            // todo will adjust later
                             playVideoWidgetUiModel = PlayVideoWidgetUiModel("", "", "", "", "", "")
                         )
                     )
@@ -98,6 +97,7 @@ class HomeRecommendationCardMapper @Inject constructor(
     private fun mapToEntryPointRecommendationCard(recommendationCard: RecommendationCard): RecomEntityCardUiModel {
         return RecomEntityCardUiModel(
             id = recommendationCard.id,
+            layoutCard = RECOMMENDATION_CARD,
             title = recommendationCard.name,
             subTitle = recommendationCard.subtitle,
             imageUrl = recommendationCard.imageUrl,
@@ -214,6 +214,10 @@ class HomeRecommendationCardMapper @Inject constructor(
         private const val TYPE_BANNER_ADS = "banner_ads"
         private const val TYPE_RECOM_CARD = "recom_card"
         private const val TYPE_VIDEO_CARD = "video_card"
+
+        const val RECOMMENDATION_CARD = "recommendation card"
+        const val VIDEO_CARD = "video card"
+        const val BANNER_CARD = "banner card"
 
         const val TYPE_VERTICAL_BANNER_ADS = "banner_ads_vertical"
     }

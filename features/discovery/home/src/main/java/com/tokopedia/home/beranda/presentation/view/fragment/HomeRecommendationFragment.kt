@@ -58,7 +58,7 @@ import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.recommendation_widget_common.widget.entrypointcard.model.RecomEntityCardUiModel
+import com.tokopedia.recommendation_widget_common.widget.entitycard.model.RecomEntityCardUiModel
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
@@ -515,13 +515,15 @@ class HomeRecommendationFragment :
         )
     }
 
-    override fun onEntryPointCardImpressionListener(
+    override fun onEntityCardImpressionListener(
         item: RecomEntityCardUiModel,
         position: Int
     ) {
+        // todo add tracker
     }
 
-    override fun onEntryPointCardClickListener(item: RecomEntityCardUiModel, position: Int) {
+    override fun onEntityCardClickListener(item: RecomEntityCardUiModel, position: Int) {
+        // todo add tracker
         goToProductDetail(item.id, position)
     }
 

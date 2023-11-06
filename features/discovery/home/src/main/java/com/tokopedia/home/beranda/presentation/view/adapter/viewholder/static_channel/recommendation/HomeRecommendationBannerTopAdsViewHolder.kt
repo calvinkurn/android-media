@@ -19,9 +19,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageRounded
-import com.tokopedia.recommendation_widget_common.widget.entrypointcard.viewholder.BaseRecommendationForYouViewHolder
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.recommendation_widget_common.widget.entitycard.viewholder.BaseRecommendationForYouViewHolder
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.BANNER_TYPE_HORIZONTAL
 import com.tokopedia.topads.sdk.widget.BANNER_TYPE_VERTICAL
@@ -178,7 +176,7 @@ class HomeRecommendationBannerTopAdsViewHolder(
     }
 
     private fun setBannerTopAdsClickListener(
-        element: HomeRecommendationBannerTopAdsDataModel,
+        element: HomeRecommendationBannerTopAdsDataModel
     ) {
         binding?.homeRecomTopadsImageView?.setOnClickListener {
             TopAdsUrlHitter(itemView.context).hitClickUrl(
@@ -205,9 +203,9 @@ class HomeRecommendationBannerTopAdsViewHolder(
                     appCompatImageView.show()
                     binding?.homeRecomTopadsLoaderImage?.hide()
                 }, onError = {
-                    appCompatImageView.hide()
-                    binding?.homeRecomTopadsLoaderImage?.hide()
-                })
+                        appCompatImageView.hide()
+                        binding?.homeRecomTopadsLoaderImage?.hide()
+                    })
             }
         }
     }
