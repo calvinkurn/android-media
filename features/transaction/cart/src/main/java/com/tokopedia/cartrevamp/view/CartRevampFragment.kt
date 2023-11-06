@@ -1694,8 +1694,6 @@ class CartRevampFragment :
                     bulkActionCoachMark?.dismissCoachMark()
                 }
 
-//                binderHelper.closeAll()
-
                 handleSelectedAmountVisibilityOnScroll(dy)
                 handlePromoButtonVisibilityOnScroll(dy)
                 handleFloatingSelectedAmountVisibility(recyclerView)
