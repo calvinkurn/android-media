@@ -712,12 +712,11 @@ class CartRevampFragment :
                 binding?.vDisabledGoToCourierPageButton?.setOnClickListener {
                     guardCartClick {
                         if (CartDataHelper.getAllAvailableCartItemData(viewModel.cartDataList.value)
-                                .isNotEmpty()
+                            .isNotEmpty()
                         ) {
                             showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
                         }
                     }
-
                 }
             } else {
                 binding?.vDisabledGoToCourierPageButton?.setOnClickListener(null)
@@ -2245,9 +2244,11 @@ class CartRevampFragment :
 
         val firstVisibleItemData = adapterData[topItemPosition]
 
-        if (CartDataHelper.getAllAvailableCartItemData(adapterData).isNotEmpty() &&
-            CartDataHelper.hasSelectedCartItem(adapterData) &&
-            firstVisibleItemData !is CartSelectedAmountHolderData
+        if ((
+            CartDataHelper.getAllAvailableCartItemData(adapterData).isNotEmpty() &&
+                CartDataHelper.hasSelectedCartItem(adapterData) &&
+                firstVisibleItemData !is CartSelectedAmountHolderData
+            ) || binderHelper.openCount > 1
         ) {
             disableSwipeRefresh()
             setTopLayoutVisibility(true)
@@ -2262,11 +2263,11 @@ class CartRevampFragment :
 
     override fun onSwipeOpened(id: String) {
         lastCartId = id
-        disableSwipeRefresh()
+//        disableSwipeRefresh()
     }
 
     override fun onSwipeClosed() {
-        enableSwipeRefresh()
+//        enableSwipeRefresh()
     }
 
     private fun isAtcExternalFlow(): Boolean {
@@ -3500,10 +3501,10 @@ class CartRevampFragment :
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
                     newAddOnTitle = addOnProductDataResult.aggregatedData.title
                     newAddOnPrice = "(${
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            addOnProductDataResult.aggregatedData.price,
-                            false
-                        ).removeDecimalSuffix()
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        addOnProductDataResult.aggregatedData.price,
+                        false
+                    ).removeDecimalSuffix()
                     })"
                 }
 
@@ -4608,9 +4609,9 @@ class CartRevampFragment :
             override fun getSpanSize(position: Int): Int {
                 return if (position != RecyclerView.NO_POSITION) {
                     if (position < (
-                            cartAdapter?.itemCount
-                                ?: 0
-                            ) && cartAdapter?.getItemViewType(position) == CartRecommendationViewHolder.LAYOUT
+                        cartAdapter?.itemCount
+                            ?: 0
+                        ) && cartAdapter?.getItemViewType(position) == CartRecommendationViewHolder.LAYOUT
                     ) {
                         SPAN_SIZE_ONE
                     } else {
@@ -4664,9 +4665,9 @@ class CartRevampFragment :
             plusCoachMark?.dismissCoachMark()
             mainFlowCoachMark?.dismissCoachMark()
             if ((
-                    viewModel.cartModel.cartListData?.onboardingData?.size
-                        ?: 0
-                    ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
+                viewModel.cartModel.cartListData?.onboardingData?.size
+                    ?: 0
+                ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
             ) {
                 return
             }
@@ -5453,7 +5454,7 @@ class CartRevampFragment :
 //            binderHelper.closeAll()
 //        }
 //        else {
-            onClick()
+        onClick()
 //        }
     }
 }
