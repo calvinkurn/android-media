@@ -94,7 +94,7 @@ class CreationUploaderWorker(
                         }
                     )
 
-                    when (val result = uploadManager.execute(data, notificationId)) {
+                    when (val result = uploadManager.execute(notificationId)) {
                         is CreationUploadExecutionResult.Success -> {
                             queueRepository.delete(data.queueId)
                         }
