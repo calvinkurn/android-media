@@ -3179,7 +3179,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check stories creation appLink then should return tokopedia internal stories creation`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://stories/creation"
-        val appLink = UriUtil.buildUri(ApplinkConst.STORIES_CREATION)
+        val appLink = UriUtil.buildUri(ApplinkConst.Stories.STORIES_CREATION)
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 }
