@@ -2,6 +2,8 @@ package com.tokopedia.product.addedit.description.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.description.domain.model.GetYoutubeVideoSnippetResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -20,43 +22,36 @@ class GetYoutubeVideoSnippetUseCase @Inject constructor(
         const val ANDROID_CONSUMER_VALUE = "android consumer"
         const val ANDROID_SELLERAPP_VALUE = "android sellerapp"
 
-//        const val QUERY = """
-//            {
-//              GetYoutubeVideoSnippet(req: {
-//                VideoIDs: ${videoId},
-//                Source: {
-//                  Squad: ${squad},
-//                  Usecase: ${usecase}
-//                }
-//              }){
-//                Items{
-//                  ID
-//                  Snippet{
-//                    Title
-//                    Description
-//                    Thumbnails{
-//                      Default{
-//                        URL
-//                        Width
-//                        Height
-//                      }
-//                    }
-//                    PublishedAt
-//                    ChannelTitle
-//                  }
-//                  ContentDetails {
-//                    Dimension
-//                    Definition
-//                    LicensedContent
-//                    Projection
-//                    ContentRating{
-//                        YtRating
-//                    }
-//                  }
-//                }
-//              }
-//            }
-//        """
+        const val QUERY = """
+            query getYoutubeVideoSnippet(${'$'}videoId: [String], ${'$'}source: SourceType!) {
+              GetYoutubeVideoSnippet(req: {VideoIDs: ${'$'}videoId, Source: ${'$'}source}) {
+                Items {
+                  ID
+                  Snippet {
+                    Title
+                    Description
+                    Thumbnails {
+                      Default {
+                        URL
+                        Width
+                        Height
+                      }
+                    }
+                    PublishedAt
+                    ChannelTitle
+                  }
+                  ContentDetails {
+                    Dimension
+                    Definition
+                    LicensedContent
+                    Projection
+                    ContentRating {
+                      YtRating
+                    }
+                  }
+                }
+              }
+            }"""
 
         fun createParams(
             videoIds: List<String>,
@@ -75,7 +70,22 @@ class GetYoutubeVideoSnippetUseCase @Inject constructor(
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): GetYoutubeVideoSnippetResponse {
-        TODO("Not yet implemented")
+        val getYoutubeSnippet = GraphqlRequest(QUERY, GetYoutubeVideoSnippetResponse::class.java, params.parameters)
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.addRequest(getYoutubeSnippet)
+        val gqlResponse = graphqlUseCase.executeOnBackground()
+        val error = gqlResponse.getError(GetYoutubeVideoSnippetResponse::class.java) ?: listOf()
+        if (error == null || error.isEmpty()) {
+            return gqlResponse.run {
+                getData(GetYoutubeVideoSnippetResponse::class.java)
+            }
+        } else {
+            throw MessageErrorException(
+                error.mapNotNull {
+                    it.message
+                }.joinToString(separator = ", ")
+            )
+        }
     }
 
 
