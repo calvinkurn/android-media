@@ -167,7 +167,8 @@ class CartItemViewHolder constructor(
                         R.id.v_bundling_product_separator,
                         ConstraintSet.START,
                         ConstraintSet.PARENT_ID,
-                        ConstraintSet.START
+                        ConstraintSet.START,
+                        0
                     )
                     constraintSet.clear(R.id.v_bundling_product_separator, ConstraintSet.END)
                 } else {
@@ -188,7 +189,8 @@ class CartItemViewHolder constructor(
                         R.id.v_bundling_product_separator,
                         ConstraintSet.END,
                         R.id.checkbox_anchor,
-                        ConstraintSet.END
+                        ConstraintSet.END,
+                        MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.context.resources.displayMetrics)
                     )
                 }
                 constraintSet.connect(
