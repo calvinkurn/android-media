@@ -9,9 +9,7 @@ import com.tokopedia.catalog.R
 import com.tokopedia.catalog.ui.fragment.CatalogProductListFragment
 import com.tokopedia.catalog.ui.fragment.CatalogProductListImprovementFragment
 import com.tokopedia.core.analytics.AppScreen
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_IMPROVMENT_CATALOG_PRODUCT_LIST
 
 class CatalogProductListActivity : BaseSimpleActivity() {
     private var catalogId: String = ""
@@ -67,7 +65,7 @@ class CatalogProductListActivity : BaseSimpleActivity() {
 
     private fun prepareView(savedInstanceIsNull: Boolean) {
         if (savedInstanceIsNull) {
-            val fragment = if (remoteConfig?.getBoolean(ENABLE_IMPROVMENT_CATALOG_PRODUCT_LIST).orFalse()) {
+            val fragment = if (true) {
                 CatalogProductListImprovementFragment.newInstance(
                     catalogId,
                     catalogTitle,
