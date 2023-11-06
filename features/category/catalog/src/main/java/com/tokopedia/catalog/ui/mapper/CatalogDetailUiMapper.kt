@@ -68,7 +68,7 @@ class CatalogDetailUiMapper @Inject constructor(
             !it.data?.style?.isHidden.orTrue()
         }?.map {
             when (it.type) {
-                WidgetTypes.CATALOG_HERO.type -> it.mapToHeroBanner(isDarkMode)
+                WidgetTypes.CATALOG_HERO.type -> it.mapToHeroBanner(isDarkMode, remoteModel.version)
                 WidgetTypes.CATALOG_FEATURE_TOP.type -> it.mapToTopFeature(remoteModel)
                 WidgetTypes.CATALOG_TRUSTMAKER.type -> it.mapToTrustMaker(isDarkMode)
                 WidgetTypes.CATALOG_CHARACTERISTIC.type -> it.mapToCharacteristic(isDarkMode)
@@ -161,7 +161,8 @@ class CatalogDetailUiMapper @Inject constructor(
     }
 
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToHeroBanner(
-        darkMode: Boolean
+        darkMode: Boolean,
+        layoutVersion: Int
     ) =
         HeroBannerUiModel(
             isPremium = data?.style?.isPremium.orFalse(),
@@ -173,8 +174,8 @@ class CatalogDetailUiMapper @Inject constructor(
                 heroSlide.subtitle
             }.orEmpty(),
             brandIconUrl = data?.hero?.brandLogoUrl.orEmpty(),
-            widgetTextColor = colorMapping(darkMode, DARK_COLOR_BANNER, LIGHT_COLOR_BANNER)
-
+            widgetTextColor = colorMapping(darkMode, DARK_COLOR_BANNER, LIGHT_COLOR_BANNER),
+            layoutVersion = layoutVersion
         )
 
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToTopFeature(
