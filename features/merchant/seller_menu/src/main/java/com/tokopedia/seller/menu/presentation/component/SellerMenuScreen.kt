@@ -101,7 +101,7 @@ import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuProductU
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuSectionTitleUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuSettingTitleUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuUIState
-import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
+import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuComposeViewModel
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
@@ -119,7 +119,7 @@ private const val TICKER_TYPE_DANGER = "danger"
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SellerMenuScreen(
-    viewModel: SellerMenuViewModel,
+    viewModel: SellerMenuComposeViewModel,
     onSuccessLoadInitialState: () -> Unit,
     onRefresh: () -> Unit,
     onActionClick: (SellerMenuActionClick) -> Unit,

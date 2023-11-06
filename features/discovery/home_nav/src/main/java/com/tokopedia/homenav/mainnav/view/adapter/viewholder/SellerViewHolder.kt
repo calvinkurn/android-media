@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermenu.SellerMenuDeeplinkMapper
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HomeNavItemSellerBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
@@ -44,7 +45,7 @@ class SellerViewHolder(
         }
 
         if (profileSeller.hasShop) {
-            mainNavListener.onProfileSectionClicked(TrackingProfileSection.CLICK_SHOP_ACCOUNT, ApplinkConstInternalSellerapp.SELLER_MENU)
+            mainNavListener.onProfileSectionClicked(TrackingProfileSection.CLICK_SHOP_ACCOUNT, SellerMenuDeeplinkMapper.getInternalApplinkSellerMenu(context))
         } else {
             mainNavListener.onProfileSectionClicked(TrackingProfileSection.CLICK_SHOP_ACCOUNT, ApplinkConst.CREATE_SHOP)
         }

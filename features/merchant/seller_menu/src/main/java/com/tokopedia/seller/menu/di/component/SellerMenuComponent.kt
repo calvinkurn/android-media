@@ -5,8 +5,8 @@ import com.tokopedia.seller.menu.di.module.SellerMenuModule
 import com.tokopedia.seller.menu.di.module.SellerMenuUseCaseModule
 import com.tokopedia.seller.menu.di.module.ViewModelModule
 import com.tokopedia.seller.menu.di.scope.SellerMenuScope
+import com.tokopedia.seller.menu.presentation.activity.SellerMenuComposeActivity
 import com.tokopedia.seller.menu.presentation.activity.SellerMenuActivity
-import com.tokopedia.seller.menu.presentation.activity.SellerMenuActivityOld
 import com.tokopedia.seller.menu.presentation.activity.SellerSettingsActivity
 import com.tokopedia.seller.menu.presentation.fragment.SellerMenuFragment
 import com.tokopedia.seller.menu.presentation.fragment.SellerSettingsFragment
@@ -27,9 +27,9 @@ interface SellerMenuComponent {
 
     fun inject(fragment: SellerSettingsFragment)
 
-    fun inject(activity: SellerMenuActivity)
+    fun inject(activity: SellerMenuComposeActivity)
 
-    fun inject(activity: SellerMenuActivityOld)
+    fun inject(activity: SellerMenuActivity)
 
     fun inject(activity: SellerSettingsActivity)
 }

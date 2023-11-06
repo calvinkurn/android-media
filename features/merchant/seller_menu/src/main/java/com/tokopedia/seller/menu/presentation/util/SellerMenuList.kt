@@ -1,133 +1,153 @@
 package com.tokopedia.seller.menu.presentation.util
 
+import android.content.Context
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.constant.MenuItemType
+import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
+import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
-import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoUiModel
-import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuActionClick
-import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuComposeItem
-import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuDividerUiModel
-import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuFeatureUiModel
-import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuInfoLoadingUiModel
-import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuItemUiModel
-import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuOrderUiModel
-import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuProductUiModel
-import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuSectionTitleUiModel
-import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuSettingTitleUiModel
-import com.tokopedia.seller.menu.common.R as sellermenucommonR
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.seller.menu.presentation.uimodel.OrderSectionTitleUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.ProductSectionTitleUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.SectionTitleUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.SectionTitleUiModel.SectionTitleType.OTHER_SECTION_TITLE
+import com.tokopedia.seller.menu.presentation.uimodel.SellerFeatureUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoLoadingUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.ShopOrderUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.ShopProductUiModel
+import com.tokopedia.shopadmin.common.util.AdminFeature
+import com.tokopedia.shopadmin.common.util.AdminPermissionMapper
+import com.tokopedia.user.session.UserSessionInterface
 
 object SellerMenuList {
 
-    fun createInitialItems(): List<SellerMenuComposeItem> {
-        val menuList = mutableListOf<SellerMenuComposeItem>()
-        val buyerInfoMenu = createBuyerInfoMenu()
-        val otherInfoMenu = createOtherInfoMenu()
+    private const val APPLINK_FORMAT = "%s?url=%s%s"
 
-        menuList.add(SellerMenuInfoLoadingUiModel)
-        menuList.add(SellerMenuDividerUiModel(DividerType.THICK))
+    fun create(
+        context: Context,
+        userSession: UserSessionInterface,
+        mapper: AdminPermissionMapper
+    ): List<Visitable<*>> {
+        val isShopOwner = userSession.isShopOwner
+        val menuList = mutableListOf<Visitable<*>>()
+        val buyerInfoMenu = createBuyerInfoMenu(context, isShopOwner, mapper)
+        val helpAndOtherMenu = createOtherInfoMenu(context, isShopOwner, mapper)
+
+        menuList.add(ShopInfoLoadingUiModel)
         menuList.add(
-            SellerMenuSettingTitleUiModel(
-                titleRes = R.string.seller_menu_order_section,
-                ctaRes = R.string.seller_menu_order_cta,
-                dimenRes = unifyprinciplesR.dimen.spacing_lvl4,
-                actionClick = SellerMenuActionClick.ALL_ORDER
+            OrderSectionTitleUiModel(
+                context.getString(R.string.seller_menu_order_section),
+                context.getString(R.string.seller_menu_order_cta),
+                isShopOwner
             )
         )
-        menuList.add(SellerMenuOrderUiModel())
-        menuList.add(SellerMenuDividerUiModel(DividerType.THIN_PARTIAL))
-
+        menuList.add(ShopOrderUiModel(isShopOwner = isShopOwner))
+        menuList.add(DividerUiModel(DividerType.THIN_PARTIAL))
         menuList.add(
-            SellerMenuSettingTitleUiModel(
-                titleRes = R.string.seller_menu_product_section,
-                ctaRes = R.string.seller_menu_product_cta,
-                dimenRes = unifyprinciplesR.dimen.spacing_lvl4,
-                actionClick = SellerMenuActionClick.ADD_PRODUCT
+            ProductSectionTitleUiModel(
+                context.getString(R.string.seller_menu_product_section),
+                context.getString(R.string.seller_menu_product_cta),
+                isShopOwner
             )
         )
-        menuList.add(SellerMenuProductUiModel())
-        menuList.add(SellerMenuDividerUiModel(DividerType.THIN_PARTIAL))
-
+        menuList.add(ShopProductUiModel(isShopOwner = isShopOwner))
+        menuList.add(DividerUiModel(DividerType.THIN_PARTIAL))
         menuList.addAll(buyerInfoMenu)
-        menuList.addAll(otherInfoMenu)
-        menuList.add(SellerMenuDividerUiModel(DividerType.THICK))
-        menuList.add(SellerMenuFeatureUiModel)
+        menuList.addAll(helpAndOtherMenu)
+        menuList.add(DividerUiModel())
+        menuList.add(SellerFeatureUiModel(userSession))
 
         return menuList.toList()
     }
 
-    fun createUpdatedItems(
-        currentItems: List<SellerMenuComposeItem>,
-        shopInfoUiModel: ShopInfoUiModel
-    ) {
-        // TODO: Use this method instead
-        val updatedItems = currentItems.toMutableList()
-        updatedItems.indexOfFirst { it is SellerMenuInfoLoadingUiModel }.let { loadingIndex ->
-            updatedItems.removeAt(loadingIndex)
-        }
-    }
+    private fun createBuyerInfoMenu(context: Context, isShopOwner: Boolean, mapper: AdminPermissionMapper): List<Visitable<*>> {
+        val sectionTitle = context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_buyer_info)
 
-    private fun createBuyerInfoMenu(): List<SellerMenuComposeItem> {
         return listOf(
-            SellerMenuSettingTitleUiModel(
-                titleRes = sellermenucommonR.string.setting_menu_buyer_info,
-                ctaRes = null,
-                dimenRes = unifyprinciplesR.dimen.spacing_lvl4,
-                actionClick = SellerMenuActionClick.NONE
-            ),
+            SettingTitleUiModel(sectionTitle, com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4),
             SellerMenuItemUiModel(
-                titleRes = sellermenucommonR.string.setting_menu_review,
+                context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_review),
                 type = MenuItemType.REVIEW,
                 eventActionSuffix = SettingTrackingConstant.REVIEW,
-                iconUnifyType = IconUnify.STAR,
-                actionClick = SellerMenuActionClick.REVIEW
-            ),
+                iconUnify = IconUnify.STAR
+            ) {
+                checkAccessPermissionIfNotShopOwner(context, isShopOwner, mapper, AdminFeature.REVIEW)
+            },
             SellerMenuItemUiModel(
-                titleRes = sellermenucommonR.string.setting_menu_discussion,
+                context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_discussion),
                 type = MenuItemType.DISCUSSION,
                 eventActionSuffix = SettingTrackingConstant.DISCUSSION,
-                iconUnifyType = IconUnify.DISCUSSION,
-                actionClick = SellerMenuActionClick.DISCUSSION
-            ),
+                iconUnify = IconUnify.DISCUSSION
+            ) {
+                checkAccessPermissionIfNotShopOwner(context, isShopOwner, mapper, AdminFeature.DISCUSSION)
+            },
             SellerMenuItemUiModel(
-                titleRes = sellermenucommonR.string.setting_menu_complaint,
+                context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_complaint),
+                clickApplink = null,
                 type = MenuItemType.COMPLAIN,
                 eventActionSuffix = SettingTrackingConstant.COMPLAINT,
-                iconUnifyType = IconUnify.PRODUCT_INFO,
-                actionClick = SellerMenuActionClick.COMPLAINTS
+                iconUnify = IconUnify.PRODUCT_INFO
+            ) {
+                checkAccessPermissionIfNotShopOwner(context, isShopOwner, mapper, AdminFeature.COMPLAINT)
+            }
+        )
+    }
+
+    private fun createOtherInfoMenu(context: Context, isShopOwner: Boolean, mapper: AdminPermissionMapper): List<Visitable<*>> {
+        val titleText = context.getString(R.string.setting_menu_other_info)
+        val sectionTitle = SectionTitleUiModel(title = titleText, type = OTHER_SECTION_TITLE)
+        val sellerEduApplink = String.format(
+            APPLINK_FORMAT,
+            ApplinkConst.WEBVIEW,
+            SellerBaseUrl.SELLER_HOSTNAME,
+            SellerBaseUrl.SELLER_EDU
+        )
+
+        return listOf(
+            DividerUiModel(),
+            sectionTitle,
+            SellerMenuItemUiModel(
+                context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_seller_education_center),
+                type = MenuItemType.SELLER_EDU,
+                eventActionSuffix = SettingTrackingConstant.SELLER_CENTER,
+                iconUnify = IconUnify.SHOP_INFO
+            ) {
+                val intent = RouteManager.getIntent(context, sellerEduApplink)
+                context.startActivity(intent)
+            },
+            SellerMenuItemUiModel(
+                context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_tokopedia_care),
+                clickApplink = ApplinkConst.TOKOPEDIA_CARE_HELP,
+                type = MenuItemType.TOKOPEDIA_CARE,
+                eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE,
+                iconUnify = IconUnify.CALL_CENTER
+            ),
+            SellerMenuItemUiModel(
+                context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_setting),
+                clickApplink = ApplinkConstInternalSellerapp.SELLER_SETTINGS,
+                type = MenuItemType.SHOP_SETTINGS,
+                eventActionSuffix = SettingTrackingConstant.SETTINGS,
+                iconUnify = IconUnify.SETTING
             )
         )
     }
 
-    private fun createOtherInfoMenu(): List<SellerMenuComposeItem> {
-        return listOf(
-            SellerMenuDividerUiModel(DividerType.THICK),
-            SellerMenuSectionTitleUiModel(
-                titleRes = R.string.setting_menu_other_info
-            ),
-            SellerMenuItemUiModel(
-                titleRes = sellermenucommonR.string.setting_menu_seller_education_center,
-                type = MenuItemType.SELLER_EDU,
-                eventActionSuffix = SettingTrackingConstant.SELLER_CENTER,
-                iconUnifyType = IconUnify.SHOP_INFO,
-                actionClick = SellerMenuActionClick.SELLER_EDU
-            ),
-            SellerMenuItemUiModel(
-                titleRes = sellermenucommonR.string.setting_menu_tokopedia_care,
-                type = MenuItemType.TOKOPEDIA_CARE,
-                eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE,
-                iconUnifyType = IconUnify.CALL_CENTER,
-                actionClick = SellerMenuActionClick.TOKOPEDIA_CARE
-            ),
-            SellerMenuItemUiModel(
-                titleRes = sellermenucommonR.string.setting_menu_shop_setting,
-                type = MenuItemType.SHOP_SETTINGS,
-                eventActionSuffix = SettingTrackingConstant.SETTINGS,
-                iconUnifyType = IconUnify.SETTING,
-                actionClick = SellerMenuActionClick.SETTINGS
-            )
-        )
+    private fun checkAccessPermissionIfNotShopOwner(context: Context?, isShopOwner: Boolean, mapper: AdminPermissionMapper, @AdminFeature feature: String) {
+        if (context != null) {
+            val intent =
+                if (isShopOwner) {
+                    mapper.mapFeatureToDestination(context, feature)
+                } else {
+                    RouteManager.getIntent(context, ApplinkConstInternalSellerapp.ADMIN_AUTHORIZE, feature)
+                }
+            context.startActivity(intent)
+        }
     }
 }

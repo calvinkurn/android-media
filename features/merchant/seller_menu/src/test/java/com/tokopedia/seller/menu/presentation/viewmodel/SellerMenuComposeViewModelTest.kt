@@ -5,13 +5,13 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.seller.menu.domain.query.ShopScoreLevelResponse
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuUIEvent
 import com.tokopedia.seller.menu.presentation.uimodel.compose.SellerMenuUIState
-import com.tokopedia.seller.menu.presentation.util.SellerMenuList
+import com.tokopedia.seller.menu.presentation.util.SellerMenuComposeList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
+class SellerMenuComposeViewModelTest : SellerMenuComposeViewModelTestFixture() {
 
     @Test
     fun `when getShopAccountInfo success, should emit success event`() {
@@ -44,7 +44,7 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
         val actualResult = (viewModel.uiState.value as? SellerMenuUIState.OnSuccessGetMenuList)
 
         assert(actualResult?.isInitialValue == true)
-        assert(actualResult?.visitableList == SellerMenuList.createInitialItems())
+        assert(actualResult?.visitableList == SellerMenuComposeList.createInitialItems())
     }
 
     @Test
