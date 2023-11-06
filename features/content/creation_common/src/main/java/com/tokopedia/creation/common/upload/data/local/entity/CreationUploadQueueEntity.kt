@@ -15,30 +15,39 @@ data class CreationUploadQueueEntity(
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "queue_id")
-    val queueId: Int = 0,
+    @SerializedName("queue_id")
+    val queueId: Long = 0,
 
     @ColumnInfo(name = "creation_id")
+    @SerializedName("creation_id")
     val creationId: String = "",
 
     @ColumnInfo(name = "upload_type")
+    @SerializedName("upload_type")
     val uploadType: String = "",
 
     @ColumnInfo(name = "queue_status")
+    @SerializedName("queue_status")
     val queueStatus: String = "",
 
     @ColumnInfo(name = "timestamp")
+    @SerializedName("timestamp")
     val timestamp: Long = 0L,
 
     @ColumnInfo(name = "cover_uri")
+    @SerializedName("cover_uri")
     val coverUri: String = "",
 
     @ColumnInfo(name = "author_id")
+    @SerializedName("author_id")
     val authorId: String = "",
 
     @ColumnInfo(name = "author_type")
+    @SerializedName("author_type")
     val authorType: String = "",
 
     @ColumnInfo(name = "data")
+    @SerializedName("data")
     val data: String = "",
 ) {
 
