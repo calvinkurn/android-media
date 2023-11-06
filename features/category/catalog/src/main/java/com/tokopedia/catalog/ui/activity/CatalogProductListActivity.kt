@@ -9,9 +9,9 @@ import com.tokopedia.catalog.R
 import com.tokopedia.catalog.ui.fragment.CatalogProductListFragment
 import com.tokopedia.catalog.ui.fragment.CatalogProductListImprovementFragment
 import com.tokopedia.core.analytics.AppScreen
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_IMPROVMENT_CATALOG_PRODUCT_LIST
-import javax.inject.Inject
 
 class CatalogProductListActivity : BaseSimpleActivity() {
     private var catalogId: String = ""
@@ -19,8 +19,7 @@ class CatalogProductListActivity : BaseSimpleActivity() {
     private var productSortingStatus: String = ""
     private var catalogUrl: String = ""
 
-    @Inject
-    lateinit var remoteConfig: FirebaseRemoteConfigImpl
+    var remoteConfig: FirebaseRemoteConfigImpl? = null
 
     companion object {
         private const val CATALOG_DETAIL_TAG = "CATALOG_DETAIL_TAG"
@@ -68,7 +67,7 @@ class CatalogProductListActivity : BaseSimpleActivity() {
 
     private fun prepareView(savedInstanceIsNull: Boolean) {
         if (savedInstanceIsNull) {
-            val fragment =if (remoteConfig.getBoolean(ENABLE_IMPROVMENT_CATALOG_PRODUCT_LIST)){
+            val fragment = if (remoteConfig?.getBoolean(ENABLE_IMPROVMENT_CATALOG_PRODUCT_LIST).orFalse()) {
                 CatalogProductListImprovementFragment.newInstance(
                     catalogId,
                     catalogTitle,
