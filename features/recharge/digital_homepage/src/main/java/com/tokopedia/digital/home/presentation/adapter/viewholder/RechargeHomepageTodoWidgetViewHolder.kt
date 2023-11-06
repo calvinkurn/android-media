@@ -23,12 +23,11 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifycomponents.toDp
 
 class RechargeHomepageTodoWidgetViewHolder(
     val binding: ViewRechargeHomeListTodoWidgetBinding,
     val listener: RechargeHomepageItemListener,
-    val todoWidgetListener: RechargeHomepageTodoWidgetListener
+    val todoWidgetListener: RechargeHomepageTodoWidgetListener,
 ) : AbstractViewHolder<RechargeHomepageTodoWidgetModel>(binding.root) {
 
     companion object {
@@ -38,13 +37,36 @@ class RechargeHomepageTodoWidgetViewHolder(
         const val SPACE_DP = 8
         private const val BAYAR_SEKALIGUS_TYPE = "BAYAR_SEKALIGUS"
         private const val POSTPAIDREMINDER_TYPE = "POSTPAIDREMINDER"
-        private const val AUTOPAY_TYPE = "AUTOPAY"
+        private const val AUTOPAY_TYPE = "AUTOPAY_ACTIVATE"
     }
+
+    private val factory = RechargeHomepageTodoWidgetAdapterTypeFactory(todoWidgetListener, object : RechargeHomepageTodoWidgetCloseProcess {
+        override fun onCloseWidget(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>) {
+            removeItem(element)
+        }
+    })
+    private val baseAdapter = BaseAdapter(
+        factory
+    )
+
+    private val factory2 = RechargeHomepageTodoWidgetAdapterTypeFactory(todoWidgetListener, object : RechargeHomepageTodoWidgetCloseProcess {
+        override fun onCloseWidget(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>) {
+            removeItem2(element)
+        }
+    })
+    private val baseAdapter2 = BaseAdapter(
+        factory2
+    )
 
     override fun bind(element: RechargeHomepageTodoWidgetModel) {
         if (element.section.items.isNotEmpty()) {
             with(binding) {
-                titleTodoWidgetFirst.text = element.section.items.first().title
+                if (element.section.items.first().title.isEmpty()) {
+                    titleTodoWidgetFirst.hide()
+                } else {
+                    titleTodoWidgetFirst.show()
+                    titleTodoWidgetFirst.text = element.section.items.first().title
+                }
                 val stickyLayoutFirst = getStickyLayout(element.section.items.first().widgets)
                 if (stickyLayoutFirst != null) {
                     rvTodoWidgetFirst.apply {
@@ -75,11 +97,9 @@ class RechargeHomepageTodoWidgetViewHolder(
                 }
 
                 with(binding.rvTodoWidgetFirst) {
-                    val list = mapperTodoList(element.section.items.first().widgets)
-                    adapter = BaseAdapter(
-                        RechargeHomepageTodoWidgetAdapterTypeFactory(todoWidgetListener),
-                        list
-                    )
+                    show()
+                    baseAdapter.setVisitables(mapperTodoList(element.section.items.first().widgets).toList())
+                    adapter = baseAdapter
                     layoutManager =
                         LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
                     val displayMetrics = itemView.context.resources.displayMetrics
@@ -94,7 +114,12 @@ class RechargeHomepageTodoWidgetViewHolder(
 
 
                 if (element.section.items.size >= SIZE_MAX) {
-                    titleTodoWidgetSecond.text = element.section.items.second().title
+                    if (element.section.items.second().title.isEmpty()) {
+                        titleTodoWidgetSecond.hide()
+                    } else {
+                        titleTodoWidgetSecond.show()
+                        titleTodoWidgetSecond.text = element.section.items.first().title
+                    }
                     val stickyLayoutSecond = getStickyLayout(element.section.items.second().widgets)
                     if (stickyLayoutSecond != null) {
                         rvTodoWidgetSecond.apply {
@@ -125,10 +150,9 @@ class RechargeHomepageTodoWidgetViewHolder(
                         }
                     }
                     with(binding.rvTodoWidgetSecond) {
-                        adapter = BaseAdapter(
-                            RechargeHomepageTodoWidgetAdapterTypeFactory(todoWidgetListener),
-                            mapperTodoList(element.section.items.second().widgets)
-                        )
+                        show()
+                        baseAdapter2.setVisitables(mapperTodoList(element.section.items.second().widgets).toList())
+                        adapter = baseAdapter2
                         layoutManager = LinearLayoutManager(
                             itemView.context,
                             LinearLayoutManager.HORIZONTAL,
@@ -143,16 +167,37 @@ class RechargeHomepageTodoWidgetViewHolder(
                             )
                         )
                     }
+                } else {
+                    viewStickyLayoutSecond.root.hide()
+                    rvTodoWidgetSecond.hide()
+                    titleTodoWidgetSecond.hide()
                 }
             }
         } else {
+            with(binding) {
+                viewStickyLayoutSecond.root.hide()
+                rvTodoWidgetSecond.hide()
+                viewStickyLayoutFirst.root.hide()
+                rvTodoWidgetFirst.hide()
+                titleTodoWidgetFirst.hide()
+                titleTodoWidgetSecond.hide()
+            }
             listener.loadRechargeSectionData(element.section.id, element.section.name)
         }
     }
 
+    fun removeItem(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>) {
+        baseAdapter.removeElement(element)
+    }
+
+    fun removeItem2(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>) {
+        baseAdapter2.removeElement(element)
+    }
+
     class RechargeHomepageTodoWidgetPostReminderViewHolder(
         val binding: ViewRechargeHomeTodoWidgetPostReminderBinding,
-        val todoWidgetListener: RechargeHomepageTodoWidgetListener
+        val todoWidgetListener: RechargeHomepageTodoWidgetListener,
+        val closeItemListener: RechargeHomepageTodoWidgetCloseProcess
     ) : AbstractViewHolder<RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetPostReminderItemModel>(
         binding.root
     ) {
@@ -163,57 +208,62 @@ class RechargeHomepageTodoWidgetViewHolder(
         }
 
         override fun bind(element: RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetPostReminderItemModel) {
-            renderCommonTodoLayout(binding, element.widget)
+            renderCommonTodoLayout(binding, element)
         }
 
         fun renderCommonTodoLayout(
             binding: ViewRechargeHomeTodoWidgetPostReminderBinding,
-            widget: RechargeHomepageSections.Widgets
+            element: RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetPostReminderItemModel
         ) {
             with(binding) {
-                imgIconTodoWidget.loadImage(widget.iconUrl)
+                element.widget.let { widget ->
+                    imgIconTodoWidget.loadImage(widget.iconUrl)
 
-                if (widget.isCloseButton) {
-                    imgCloseTodoWidget.show()
-                } else {
-                    imgCloseTodoWidget.hide()
-                }
-
-                tgCategoryNameTodoWidget.text = widget.title
-                tgProductNameTodoWidget.text = widget.subtitle
-                tgFavoriteNumberTodoWidget.text = widget.label
-                tgPriceTodoWidget.text = widget.price
-
-                if (widget.button.isNotEmpty()) {
-                    btnMainTodoWidget.show()
-                    btnMainTodoWidget.text = widget.button
-                    btnMainTodoWidget.setOnClickListener {
-                        todoWidgetListener.onClickTodoWidget(widget.buttonAppLink)
+                    if (widget.isCloseButton) {
+                        imgCloseTodoWidget.show()
+                        imgCloseTodoWidget.setOnClickListener {
+                            closeItemListener.onCloseWidget(element)
+                        }
+                    } else {
+                        imgCloseTodoWidget.hide()
                     }
-                } else {
-                    btnMainTodoWidget.hide()
-                }
 
-                if (widget.optionButtons.isNotEmpty()) {
-                    iconThreeButtonTodoWidget.show()
-                    iconThreeButtonTodoWidget.setOnClickListener {
-                        todoWidgetListener.onClickThreeButton(widget.optionButtons)
+                    tgCategoryNameTodoWidget.text = widget.title
+                    tgProductNameTodoWidget.text = widget.subtitle
+                    tgFavoriteNumberTodoWidget.text = widget.label
+                    tgPriceTodoWidget.text = widget.price
+
+                    if (widget.button.isNotEmpty()) {
+                        btnMainTodoWidget.show()
+                        btnMainTodoWidget.text = widget.button
+                        btnMainTodoWidget.setOnClickListener {
+                            todoWidgetListener.onClickTodoWidget(widget.buttonAppLink)
+                        }
+                    } else {
+                        btnMainTodoWidget.hide()
                     }
-                } else {
-                    iconThreeButtonTodoWidget.hide()
-                }
 
-                if (widget.reason.isNotEmpty()) {
-                    tgInfoTodoWidget.show()
-                    viewInfoTodoWidget.show()
-                    tgInfoTodoWidget.text = widget.reason
-                } else {
-                    tgInfoTodoWidget.hide()
-                    viewInfoTodoWidget.hide()
-                }
+                    if (widget.optionButtons.isNotEmpty()) {
+                        iconThreeButtonTodoWidget.show()
+                        iconThreeButtonTodoWidget.setOnClickListener {
+                            todoWidgetListener.onClickThreeButton(widget.optionButtons)
+                        }
+                    } else {
+                        iconThreeButtonTodoWidget.hide()
+                    }
 
-                root.setOnClickListener {
-                    todoWidgetListener.onClickTodoWidget(widget.appLink)
+                    if (widget.reason.isNotEmpty()) {
+                        tgInfoTodoWidget.show()
+                        viewInfoTodoWidget.show()
+                        tgInfoTodoWidget.text = widget.reason
+                    } else {
+                        tgInfoTodoWidget.hide()
+                        viewInfoTodoWidget.hide()
+                    }
+
+                    root.setOnClickListener {
+                        todoWidgetListener.onClickTodoWidget(widget.appLink)
+                    }
                 }
             }
         }
@@ -221,7 +271,8 @@ class RechargeHomepageTodoWidgetViewHolder(
 
     class RechargeHomepageTodoWidgetAutoPayViewHolder(
         val binding: ViewRechargeHomeTodoWidgetAutopayBinding,
-        val todoWidgetListener: RechargeHomepageTodoWidgetListener
+        val todoWidgetListener: RechargeHomepageTodoWidgetListener,
+        val closeItemListener: RechargeHomepageTodoWidgetCloseProcess
     ) : AbstractViewHolder<RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayItemModel>(
         binding.root
     ) {
@@ -232,57 +283,62 @@ class RechargeHomepageTodoWidgetViewHolder(
         }
 
         override fun bind(element: RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayItemModel) {
-            renderCommonTodoLayout(binding, element.widget)
+            renderCommonTodoLayout(binding, element)
         }
 
         fun renderCommonTodoLayout(
             binding: ViewRechargeHomeTodoWidgetAutopayBinding,
-            widget: RechargeHomepageSections.Widgets
+            element: RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayItemModel
         ) {
             with(binding) {
-                imgIconTodoWidget.loadImage(widget.iconUrl)
+                element.widget.let { widget ->
+                    imgIconTodoWidget.loadImage(widget.iconUrl)
 
-                if (widget.isCloseButton) {
-                    imgCloseTodoWidget.show()
-                } else {
-                    imgCloseTodoWidget.hide()
-                }
-
-                tgCategoryNameTodoWidget.text = widget.title
-                tgProductNameTodoWidget.text = widget.subtitle
-                tgFavoriteNumberTodoWidget.text = widget.label
-                tgPriceTodoWidget.text = widget.price
-
-                if (widget.button.isNotEmpty()) {
-                    btnMainTodoWidget.show()
-                    btnMainTodoWidget.text = widget.button
-                    btnMainTodoWidget.setOnClickListener {
-                        todoWidgetListener.onClickTodoWidget(widget.buttonAppLink)
+                    if (widget.isCloseButton) {
+                        imgCloseTodoWidget.show()
+                        imgCloseTodoWidget.setOnClickListener {
+                            closeItemListener.onCloseWidget(element)
+                        }
+                    } else {
+                        imgCloseTodoWidget.hide()
                     }
-                } else {
-                    btnMainTodoWidget.hide()
-                }
 
-                if (widget.optionButtons.isNotEmpty()) {
-                    iconThreeButtonTodoWidget.show()
-                    iconThreeButtonTodoWidget.setOnClickListener {
-                        todoWidgetListener.onClickThreeButton(widget.optionButtons)
+                    tgCategoryNameTodoWidget.text = widget.title
+                    tgProductNameTodoWidget.text = widget.subtitle
+                    tgFavoriteNumberTodoWidget.text = widget.label
+                    tgPriceTodoWidget.text = widget.price
+
+                    if (widget.button.isNotEmpty()) {
+                        btnMainTodoWidget.show()
+                        btnMainTodoWidget.text = widget.button
+                        btnMainTodoWidget.setOnClickListener {
+                            todoWidgetListener.onClickTodoWidget(widget.buttonAppLink)
+                        }
+                    } else {
+                        btnMainTodoWidget.hide()
                     }
-                } else {
-                    iconThreeButtonTodoWidget.hide()
-                }
 
-                if (widget.reason.isNotEmpty()) {
-                    tgInfoTodoWidget.show()
-                    viewInfoTodoWidget.show()
-                    tgInfoTodoWidget.text = widget.reason
-                } else {
-                    tgInfoTodoWidget.hide()
-                    viewInfoTodoWidget.hide()
-                }
+                    if (widget.optionButtons.isNotEmpty()) {
+                        iconThreeButtonTodoWidget.show()
+                        iconThreeButtonTodoWidget.setOnClickListener {
+                            todoWidgetListener.onClickThreeButton(widget.optionButtons)
+                        }
+                    } else {
+                        iconThreeButtonTodoWidget.hide()
+                    }
 
-                root.setOnClickListener {
-                    todoWidgetListener.onClickTodoWidget(widget.appLink)
+                    if (widget.reason.isNotEmpty()) {
+                        tgInfoTodoWidget.show()
+                        viewInfoTodoWidget.show()
+                        tgInfoTodoWidget.text = widget.reason
+                    } else {
+                        tgInfoTodoWidget.hide()
+                        viewInfoTodoWidget.hide()
+                    }
+
+                    root.setOnClickListener {
+                        todoWidgetListener.onClickTodoWidget(widget.appLink)
+                    }
                 }
             }
         }
@@ -298,7 +354,7 @@ class RechargeHomepageTodoWidgetViewHolder(
         return this[SIZE_MAX - Int.ONE]
     }
 
-    private fun mapperTodoList(widgets: List<RechargeHomepageSections.Widgets>): List<Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>> {
+    private fun mapperTodoList(widgets: List<RechargeHomepageSections.Widgets>): MutableList<Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>> {
         val itemList = mutableListOf<Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>>()
         widgets.filter {
             it.type != BAYAR_SEKALIGUS_TYPE
@@ -319,11 +375,15 @@ class RechargeHomepageTodoWidgetViewHolder(
 
             itemList.add(item)
         }
-        return itemList.toList()
+        return itemList
     }
 
     interface RechargeHomepageTodoWidgetListener {
         fun onClickTodoWidget(applink: String)
         fun onClickThreeButton(optionButtons: List<RechargeHomepageSections.OptionButton>)
+    }
+
+    interface RechargeHomepageTodoWidgetCloseProcess {
+        fun onCloseWidget(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>)
     }
 }

@@ -129,7 +129,7 @@ data class RechargeHomepageSections(
         val attributes: Attributes = Attributes(),
         @SerializedName("widgets")
         @Expose
-        val widgets: List<Widgets> = listOf(),
+        val widgets: MutableList<Widgets> = mutableListOf<Widgets>(),
     )
 
     data class Widgets(

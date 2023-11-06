@@ -76,11 +76,20 @@ class RechargeHomepageViewModel @Inject constructor(
         if (calledSectionIds.contains(requestIDs.firstOrNull() ?: 0)) return
         calledSectionIds.add(requestIDs.firstOrNull() ?: 0)
 
+        val mapParamsWithSectionNames =
+            if (mapParams[PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_NAME] != "") {
+                mapParams.filter {
+                    it.key != PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS
+                }
+            } else {
+                mapParams
+            }
+
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
                 QueryRechargeHomepageSection(),
                 RechargeHomepageSections.Response::class.java,
-                mapParams
+                mapParamsWithSectionNames
             )
             val data = withContext(dispatcher.io) {
                 graphqlRepository.response(listOf(graphqlRequest))

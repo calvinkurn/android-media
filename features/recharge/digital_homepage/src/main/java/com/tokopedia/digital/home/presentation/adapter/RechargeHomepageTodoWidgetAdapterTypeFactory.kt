@@ -13,7 +13,8 @@ import com.tokopedia.digital.home.model.RechargeHomepageTodoWidgetModel
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageTodoWidgetViewHolder
 
 class RechargeHomepageTodoWidgetAdapterTypeFactory(
-    private val rechargeHomepageTodoWidgetListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetListener
+    private val rechargeHomepageTodoWidgetListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetListener,
+    private val closeItemListener: RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetCloseProcess,
 ) : BaseAdapterTypeFactory() {
 
     fun type(model : RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetPostReminderItemModel): Int {
@@ -32,7 +33,7 @@ class RechargeHomepageTodoWidgetAdapterTypeFactory(
                     parent as ViewGroup,
                     false
                 )
-                RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetPostReminderViewHolder(binding, rechargeHomepageTodoWidgetListener)
+                RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetPostReminderViewHolder(binding, rechargeHomepageTodoWidgetListener, closeItemListener)
             }
 
             RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetAutoPayViewHolder.LAYOUT -> {
@@ -41,7 +42,7 @@ class RechargeHomepageTodoWidgetAdapterTypeFactory(
                     parent as ViewGroup,
                     false
                 )
-                RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetAutoPayViewHolder(binding, rechargeHomepageTodoWidgetListener)
+                RechargeHomepageTodoWidgetViewHolder.RechargeHomepageTodoWidgetAutoPayViewHolder(binding, rechargeHomepageTodoWidgetListener, closeItemListener)
             }
 
             else -> super.createViewHolder(parent, type)
