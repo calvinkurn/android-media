@@ -11,7 +11,7 @@ enum class InputFieldType(
     val hasOperatorIcon: Boolean
 ) {
     Telco(
-        InputType.TYPE_CLASS_TEXT,
+        InputType.TYPE_CLASS_PHONE,
         View.AUTOFILL_HINT_PHONE,
         IconUnify.CONTACT,
         true

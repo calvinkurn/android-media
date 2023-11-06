@@ -291,7 +291,6 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
             inputFieldType = type
             clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.run {
                 editText.inputType = type.inputType
-
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                     editText.setAutofillHints(type.autoFillHintsType)
                 }

@@ -5,6 +5,14 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <EditText
+        android:id="@+id/expireDate"
+        android:layout_width="0.01dp"
+        android:layout_height="0.01dp"
+        android:autofillHints="creditCardExpirationDate"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
     <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/client_number_widget_input_field"
         android:layout_width="0dp"
@@ -12,11 +20,13 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:textColor="@color/Unify_NN950_44"
+        android:ems="10"
+        android:focusedByDefault="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/expireDate"
         app:unify_text_field_clearable="true"
-        app:unify_text_field_input_type="phone" />
+        app:unify_text_field_input_type="number"/>
 
     <com.tokopedia.unifycomponents.ChipsUnify
         android:id="@+id/client_number_widget_see_all"
