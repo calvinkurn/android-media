@@ -35,6 +35,7 @@ class BlocksPerformanceTrace(
     val traceName: String,
     scope: LifecycleCoroutineScope,
     val touchListenerActivity: TouchListenerActivity?,
+    val onPerformanceTraceCancelled: ((state: BlocksPerfState) -> Unit)? = null,
     onLaunchTimeFinished: ((summaryModel: BlocksSummaryModel, capturedBlocks: Set<String>) -> Unit)? = null
 ) {
     companion object {
@@ -267,6 +268,7 @@ class BlocksPerformanceTrace(
         )
         targetPerfMonitoring?.stopTrace()
 
+        onPerformanceTraceCancelled?.invoke(state)
         if (summaryModel.get().timeToInitialLayout != null) {
             PerformanceTraceDebugger.logTrace(
                 "Performance TTFL trace finished."

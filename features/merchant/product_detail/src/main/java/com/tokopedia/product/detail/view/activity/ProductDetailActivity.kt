@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.lifecycleScope
@@ -29,7 +28,6 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.fragment.ProductVideoDetailFragment
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -61,6 +59,12 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         private const val P1_PREFETCH_PERF_TRACE_NAME = "pdp_p1_prefetch_perf_trace"
         private const val P1_CACHE_PERF_TRACE_NAME = "pdp_p1_cache_perf_trace"
         private const val P1_NETWORK_PERF_TRACE_NAME = "pdp_p1_network_perf_trace"
+        private const val P1_PREFETCH_KEY = "prefetch"
+        private const val P1_CACHE_KEY = "cache"
+        private const val P1_NETWORK_KEY = "network"
+
+        private const val P1_state = "State"
+        private const val P1_blocks_count = "blocks_count"
 
         private const val AFFILIATE_HOST = "affiliate"
         private const val PARAM_CAMPAIGN_ID = "campaign_id"
@@ -364,24 +368,19 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         p1NetworkPerformanceMonitoring?.startTrace(P1_NETWORK_PERF_TRACE_NAME)
 
         blocksPerformanceTrace = BlocksPerformanceTrace(
-            this,
-            "perf_trace_pdp",
-            lifecycleScope,
-            this
-        ) { summaryModel, capturedBlocks ->
-            if (summaryModel.ttil() != 0L && p1NetworkDuration != 0L) {
-                Toaster.build(
-                    view = findViewById<View>(android.R.id.content).getRootView(),
-                    text = "PDP PERFORMANCE\n " +
-                        "TTIL=${summaryModel.ttil()}" +
-                        "\n P1 Prefetch=$prefetchDuration " +
-                        "\n P1 Cache=$cacheDuration " +
-                        "\n P1 Network=$p1NetworkDuration " +
-                        "\nTTIL Blocks:${summaryModel.timeToInitialLayout?.capturedBlocks}",
-                    duration = Toaster.LENGTH_INDEFINITE
-                ).show()
+            context = this,
+            traceName = "perf_trace_pdp",
+            scope = lifecycleScope,
+            touchListenerActivity = this,
+            onPerformanceTraceCancelled = { state ->
+                p1PrefetchPerformanceMonitoring?.putCustomAttribute(P1_state, state.name)
+                p1CachePerformanceMonitoring?.putCustomAttribute(P1_state, state.name)
+                p1NetworkPerformanceMonitoring?.putCustomAttribute(P1_state, state.name)
+                p1PrefetchPerformanceMonitoring?.stopTrace()
+                p1CachePerformanceMonitoring?.stopTrace()
+                p1NetworkPerformanceMonitoring?.stopTrace()
             }
-        }
+        ) { summaryModel, capturedBlocks -> }
 
         blocksPerformanceTrace?.onBlocksRendered = { summaryModel, capturedBlocks, elapsedTime, identifier ->
             recordP1PrefetchPerformance(capturedBlocks, identifier, elapsedTime)
@@ -391,38 +390,29 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     }
 
     private fun recordP1PrefetchPerformance(capturedBlocks: Set<String>, identifier: String, elapsedTime: Long) {
-        if (capturedBlocks.isNotEmpty() && identifier == "prefetch" && prefetchDuration == 0L) {
+        if (capturedBlocks.isNotEmpty() && identifier == P1_PREFETCH_KEY && prefetchDuration == 0L) {
             this.prefetchDuration = elapsedTime
-            p1PrefetchPerformanceMonitoring?.putPointMetric()
+            p1PrefetchPerformanceMonitoring?.putMetric(P1_blocks_count, capturedBlocks.size.toLong())
             p1PrefetchPerformanceMonitoring?.stopTrace()
+            p1PrefetchPerformanceMonitoring = null
         }
     }
 
     private fun recordP1CachePerformance(capturedBlocks: Set<String>, identifier: String, elapsedTime: Long) {
-        if (capturedBlocks.containsAll(
-                listOf(
-                        "product_content",
-                        "product_media",
-                        "social_proof_mini"
-                    )
-            ) && identifier == "cache" && cacheDuration == 0L
-        ) {
+        if (identifier == P1_CACHE_KEY && cacheDuration == 0L) {
             this.cacheDuration = elapsedTime
+            p1CachePerformanceMonitoring?.putMetric(P1_blocks_count, capturedBlocks.size.toLong())
             p1CachePerformanceMonitoring?.stopTrace()
+            p1CachePerformanceMonitoring = null
         }
     }
 
     private fun recordP1NetworkPerformance(capturedBlocks: Set<String>, identifier: String, elapsedTime: Long) {
-        if (capturedBlocks.containsAll(
-                listOf(
-                        "product_content",
-                        "product_media",
-                        "social_proof_mini"
-                    )
-            ) && identifier == "network" && p1NetworkDuration == 0L
-        ) {
+        if (identifier == P1_NETWORK_KEY && p1NetworkDuration == 0L) {
             this.p1NetworkDuration = elapsedTime
+            p1NetworkPerformanceMonitoring?.putMetric(P1_blocks_count, capturedBlocks.size.toLong())
             p1NetworkPerformanceMonitoring?.stopTrace()
+            p1NetworkPerformanceMonitoring = null
         }
     }
 
