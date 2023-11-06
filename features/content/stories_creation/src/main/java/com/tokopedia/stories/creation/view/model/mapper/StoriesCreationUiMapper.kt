@@ -35,7 +35,7 @@ class StoriesCreationUiMapper @Inject constructor(
         val config = mapConfig(response.data)
 
         return StoriesCreationConfiguration(
-            storiesId = config.draftStoryId,
+            storiesId = if (config.draftStoryId == "0") "" else config.draftStoryId,
             maxProductTag = config.maxProductTag,
             storyDuration = config.storyDuration,
             minVideoDuration = TimeUnit.SECONDS.toMillis(config.minVideoDuration).toInt(),
