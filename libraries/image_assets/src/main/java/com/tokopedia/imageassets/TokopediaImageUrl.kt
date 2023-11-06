@@ -155,7 +155,7 @@ object TokopediaImageUrl {
     const val HOURGLASS = "https://assets.tokopedia.net/asts/android/tokofood/tokofood_post_purchase_hourglass_lottie.json"
     const val IV_CATEGORY_EMPTY_STATE_URL = "https://images.tokopedia.net/img/android/tokofood/il_tokofood_category_empty_state.png"
     const val TEMPORARY_FINISH_URL = "https://images.tokopedia.net/img/android/tokofood/il_order_tracking_finish_temporary.png"
-    const val IV_MASKING_PHONE_NUMBER = "https://images.tokopedia.net/img/android/tokochat/iv_masking_phone_number.png"
+    const val IV_MASKING_PHONE_NUMBER = "https://images.tokopedia.net/img/communication/tokochat/masking_phone_number_gojek.png"
     const val IV_CHANGE_MERCHANT_URL = "https://images.tokopedia.net/img/android/tokofood/il_change_merchant.png"
     const val GO_FOOD_IMAGE_LIGHT = "https://images.tokopedia.net/img/powered_by_gofood_light.png"
     const val GO_FOOD_IMAGE_DARK = "https://images.tokopedia.net/img/powered_by_gofood_dark_new.png"
