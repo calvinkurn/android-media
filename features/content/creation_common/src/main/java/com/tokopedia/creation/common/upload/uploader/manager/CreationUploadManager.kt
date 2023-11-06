@@ -22,7 +22,6 @@ abstract class CreationUploadManager(
     }
 
     abstract suspend fun execute(
-        uploadData: CreationUploadData,
         notificationId: Int
     ): CreationUploadExecutionResult
 

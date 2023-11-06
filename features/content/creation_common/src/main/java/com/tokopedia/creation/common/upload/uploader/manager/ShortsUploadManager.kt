@@ -72,13 +72,8 @@ class ShortsUploadManager @AssistedInject constructor(
      *
      */
     override suspend fun execute(
-        uploadData: CreationUploadData,
         notificationId: Int,
     ): CreationUploadExecutionResult {
-        if (uploadData !is CreationUploadData.Shorts) return CreationUploadExecutionResult.Error(
-            uploadData,
-            Exception("ShortsUploadManager is not receiving CreationUploadData.Shorts data")
-        )
 
         setupInitialData()
 

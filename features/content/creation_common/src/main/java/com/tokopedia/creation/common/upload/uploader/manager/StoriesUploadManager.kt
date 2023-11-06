@@ -68,14 +68,8 @@ class StoriesUploadManager @AssistedInject constructor(
      */
 
     override suspend fun execute(
-        uploadData: CreationUploadData,
         notificationId: Int,
     ): CreationUploadExecutionResult {
-        if (uploadData !is CreationUploadData.Stories) return CreationUploadExecutionResult.Error(
-            uploadData,
-            Exception("StoriesUploadManager is not receiving CreationUploadData.Stories data")
-        )
-
         setupInitialData()
 
         withContext(dispatchers.main) {
