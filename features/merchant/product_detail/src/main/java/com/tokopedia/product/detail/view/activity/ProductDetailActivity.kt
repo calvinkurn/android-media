@@ -360,8 +360,8 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
 
     private fun initBlocksPLTMonitoring() {
         p1PrefetchPerformanceMonitoring?.startTrace(P1_PREFETCH_PERF_TRACE_NAME)
-        p1PrefetchPerformanceMonitoring?.startTrace(P1_CACHE_PERF_TRACE_NAME)
-        p1PrefetchPerformanceMonitoring?.startTrace(P1_NETWORK_PERF_TRACE_NAME)
+        p1CachePerformanceMonitoring?.startTrace(P1_CACHE_PERF_TRACE_NAME)
+        p1NetworkPerformanceMonitoring?.startTrace(P1_NETWORK_PERF_TRACE_NAME)
 
         blocksPerformanceTrace = BlocksPerformanceTrace(
             this,
@@ -391,9 +391,9 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     }
 
     private fun recordP1PrefetchPerformance(capturedBlocks: Set<String>, identifier: String, elapsedTime: Long) {
-        if (capturedBlocks.isNotEmpty() && identifier == "prefetch" && prefetchDuration == 0L
-        ) {
+        if (capturedBlocks.isNotEmpty() && identifier == "prefetch" && prefetchDuration == 0L) {
             this.prefetchDuration = elapsedTime
+            p1PrefetchPerformanceMonitoring?.putPointMetric()
             p1PrefetchPerformanceMonitoring?.stopTrace()
         }
     }
