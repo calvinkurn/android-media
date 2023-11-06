@@ -86,7 +86,6 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MA
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
-import com.tokopedia.tokopedianow.common.listener.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.listener.TokoNowRepurchaseProductListener
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
