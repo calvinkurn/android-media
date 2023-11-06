@@ -90,6 +90,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     }
 
     private var getBuyerOrderDetailDataJob: Job? = null
+    private var warrantyClaimButtonImpressed = false
 
     private val _finishOrderResult = MutableLiveData<Result<FinishOrderResponse.Data.FinishOrderBuyer>>()
     val finishOrderResult: LiveData<Result<FinishOrderResponse.Data.FinishOrderBuyer>>
@@ -102,7 +103,6 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private val _multiAtcResult = MutableLiveData<MultiATCState>()
     val multiAtcResult: LiveData<MultiATCState>
         get() = _multiAtcResult
-    private val impressedWarrantyClaimButton = arrayListOf<String>()
 
     private val scpRewardsMedalTouchPointWidgetUiState = MutableStateFlow<ScpRewardsMedalTouchPointWidgetUiState>(
         value = ScpRewardsMedalTouchPointWidgetUiState.HasData.Hidden
@@ -368,9 +368,9 @@ class BuyerOrderDetailViewModel @Inject constructor(
     fun impressProduct(product: ProductListUiModel.ProductUiModel) {
         if (
             product.button.key == BuyerOrderDetailActionButtonKey.WARRANTY_CLAIM &&
-            !impressedWarrantyClaimButton.contains(product.productId)
+            !warrantyClaimButtonImpressed
         ) {
-            impressedWarrantyClaimButton.add(product.productId)
+            warrantyClaimButtonImpressed = true
             BuyerOrderDetailTracker.eventImpressionWarrantyClaimButton(product.orderId)
         }
     }
@@ -378,9 +378,9 @@ class BuyerOrderDetailViewModel @Inject constructor(
     fun impressBmgmProduct(product: ProductBmgmSectionUiModel.ProductUiModel) {
         if (
             product.button?.key == BuyerOrderDetailActionButtonKey.WARRANTY_CLAIM &&
-            !impressedWarrantyClaimButton.contains(product.productId)
+            !warrantyClaimButtonImpressed
         ) {
-            impressedWarrantyClaimButton.add(product.productId)
+            warrantyClaimButtonImpressed = true
             BuyerOrderDetailTracker.eventImpressionWarrantyClaimButton(product.orderId)
         }
     }
@@ -438,7 +438,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
             productListUiState.value,
             singleAtcRequestStates,
             collapseProductList,
-            impressedWarrantyClaimButton
+            warrantyClaimButtonImpressed
         )
     }
 
