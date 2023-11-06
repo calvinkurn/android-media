@@ -10,16 +10,22 @@ import com.tokopedia.createpost.common.view.util.FeedSellerAppReviewHelper
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.creation.common.upload.const.CreationUploadConst
 import com.tokopedia.creation.common.upload.model.CreationUploadData
-import javax.inject.Inject
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 
 /**
  * Created By : Jonathan Darwin on September 21, 2023
  */
-class PostUploadManager @Inject constructor(
+class PostUploadManager @AssistedInject constructor(
     @ApplicationContext private val appContext: Context,
     private val submitPostUseCase: SubmitPostUseCase,
     private val sellerAppReviewHelper: FeedSellerAppReviewHelper,
 ) : CreationUploadManager {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(): PostUploadManager
+    }
 
     override suspend fun execute(
         uploadData: CreationUploadData,

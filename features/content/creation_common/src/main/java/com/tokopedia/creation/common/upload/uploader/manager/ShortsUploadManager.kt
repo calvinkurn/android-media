@@ -20,16 +20,19 @@ import com.tokopedia.play_common.domain.usecase.broadcaster.BroadcasterAddMedias
 import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.VideoSnapshotHelper
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.io.File
-import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on September 15, 2023
  */
-class ShortsUploadManager @Inject constructor(
+class ShortsUploadManager @AssistedInject constructor(
     @ApplicationContext private val appContext: Context,
+    @Assisted private val uploadData: CreationUploadData.Shorts,
     private val notificationManager: ShortsUploadNotificationManager,
     private val uploaderUseCase: UploaderUseCase,
     private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
@@ -38,9 +41,12 @@ class ShortsUploadManager @Inject constructor(
     private val snapshotHelper: VideoSnapshotHelper,
 ) : CreationUploadManager {
 
-    private var currentProgress = 0
+    @AssistedFactory
+    interface Factory {
+        fun create(uploadData: CreationUploadData.Shorts): ShortsUploadManager
+    }
 
-    private lateinit var uploadData: CreationUploadData.Shorts
+    private var currentProgress = 0
 
     private var mListener: CreationUploadManagerListener? = null
 
@@ -83,7 +89,7 @@ class ShortsUploadManager @Inject constructor(
     ): Boolean {
         if (uploadData !is CreationUploadData.Shorts) return false
 
-        setupInitialData(uploadData, listener)
+        setupInitialData(listener)
 
         return withContext(dispatchers.io) {
             try {
@@ -121,11 +127,9 @@ class ShortsUploadManager @Inject constructor(
     }
 
     private fun setupInitialData(
-        uploadData: CreationUploadData.Shorts,
         listener: CreationUploadManagerListener
     ) {
         this.currentProgress = 0
-        this.uploadData = uploadData
         this.mListener = listener
     }
 

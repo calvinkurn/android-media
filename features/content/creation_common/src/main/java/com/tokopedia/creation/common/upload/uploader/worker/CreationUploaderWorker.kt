@@ -65,7 +65,7 @@ class CreationUploaderWorker(
                 try {
                     val data = queueRepository.getTopQueue() ?: break
 
-                    val uploadManager = uploadManagerProvider.get(data.uploadType)
+                    val uploadManager = uploadManagerProvider.get(data)
 
                     val uploadResult = uploadManager.execute(
                         data,
