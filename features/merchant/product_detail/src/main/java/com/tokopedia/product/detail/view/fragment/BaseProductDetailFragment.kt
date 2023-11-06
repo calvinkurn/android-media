@@ -36,6 +36,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     companion object {
         private const val INSTANT_SMOOTH_SCROLL_MILLISECONDS_PER_INCH = 0.1f
+        private const val DEFAULT_BLOCK_LIMIT = 5
     }
 
     var productAdapter: ProductDetailAdapter? = null
@@ -112,7 +113,6 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         (getRecyclerView()?.layoutManager as? CenterLayoutManager)?.let { layoutManager ->
             val lastVisibleItemPosition = IntArray(layoutManager.getSpanCount())
             layoutManager.findLastVisibleItemPositions(lastVisibleItemPosition)
-            val lastVisibleItemPositionSpan0 = lastVisibleItemPosition[0]
             val lastVisibleItemPositionSpan1 = lastVisibleItemPosition[1]
             position = lastVisibleItemPositionSpan1
         }
@@ -123,17 +123,17 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
             )
         }
         val blockIdentifier = if (cacheState?.isFromCache == true) {
-            "cache"
+            ProductDetailActivity.P1_CACHE_KEY
         } else if (cacheState?.isPrefetch == true) {
-            "prefetch"
+            ProductDetailActivity.P1_PREFETCH_KEY
         } else {
-            "network"
+            ProductDetailActivity.P1_NETWORK_KEY
         }
 
         getProductDetailActivity()?.getBlocksPerformanceMonitoring()?.setBlock(
             visitablesForPerf,
             blockIdentifier,
-            5
+            DEFAULT_BLOCK_LIMIT
         )
     }
 

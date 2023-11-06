@@ -59,9 +59,10 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         private const val P1_PREFETCH_PERF_TRACE_NAME = "pdp_p1_prefetch_perf_trace"
         private const val P1_CACHE_PERF_TRACE_NAME = "pdp_p1_cache_perf_trace"
         private const val P1_NETWORK_PERF_TRACE_NAME = "pdp_p1_network_perf_trace"
-        private const val P1_PREFETCH_KEY = "prefetch"
-        private const val P1_CACHE_KEY = "cache"
-        private const val P1_NETWORK_KEY = "network"
+
+        const val P1_PREFETCH_KEY = "prefetch"
+        const val P1_CACHE_KEY = "cache"
+        const val P1_NETWORK_KEY = "network"
 
         private const val P1_state = "State"
         private const val P1_blocks_count = "blocks_count"
