@@ -22,6 +22,8 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
     companion object {
         private const val IMAGE_REVIEW_SIZE = 56
         private const val BUNDLE_KEY_REVIEW = "review"
+        private const val MAX_ATTACHMENT = 4
+        
         fun newInstance(review: ShopReview.Review): ReviewViewPagerItemFragment {
             return ReviewViewPagerItemFragment().apply {
                 arguments = Bundle().apply {
@@ -69,20 +71,29 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
             binding?.tpgCompletedReview?.text = getString(R.string.shop_info_placeholder_complete_review, review.likeDislike.totalLike)
             binding?.tpgReviewLikeCount?.text = getString(R.string.shop_info_placeholder_useful_review, review.likeDislike.likeStatus)
             
-            renderReviewImages(listOf())
+            renderAttachments(review.attachments)
         }
     }
 
-    private fun renderReviewImages(images: List<String>) {
-        images.forEach { imageUrl ->
-            val context = binding?.layoutImagesContainer?.context ?: return
-            val reviewImage = createReviewImage(context)
-            reviewImage.loadImage(imageUrl)
-            
-            binding?.layoutImagesContainer?.addView(reviewImage)
-        }
+    private fun renderAttachments(attachments: List<ShopReview.Review.Attachment>) {
+        attachments
+            .take(MAX_ATTACHMENT)
+            .forEachIndexed { index, attachment ->
+                val isLastItem = index == MAX_ATTACHMENT - 1
+                val context = binding?.layoutImagesContainer?.context ?: return
+
+                val attachmentImageView = if (isLastItem) {
+                    createAttachmentImageWithCta(context)
+                } else {
+                    createAttachmentImage(context)
+                }
+                
+                attachmentImageView.loadImage(attachment.thumbnailURL)
+
+                binding?.layoutImagesContainer?.addView(attachmentImageView)
+            }
     }
-    private fun createReviewImage(context: Context): ImageUnify {
+    private fun createAttachmentImage(context: Context): ImageUnify {
         val imageUnify = ImageUnify(context = context)
         val params = LayoutParams(IMAGE_REVIEW_SIZE.toPx(), IMAGE_REVIEW_SIZE.toPx())
         imageUnify.layoutParams = params
@@ -90,4 +101,11 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         return imageUnify
     }
     
+    private fun createAttachmentImageWithCta(context: Context): ImageUnify {
+        val imageUnify = ImageUnify(context = context)
+        val params = LayoutParams(IMAGE_REVIEW_SIZE.toPx(), IMAGE_REVIEW_SIZE.toPx())
+        imageUnify.layoutParams = params
+
+        return imageUnify
+    }
 }

@@ -16,6 +16,8 @@ data class ProductRevGetShopReviewReadingListResponse(
         data class ShopReviewList(
             @SerializedName("likeDislike")
             val likeDislike: LikeDislike,
+            @SerializedName("attachments")
+            val attachments: List<Attachment>,
             @SerializedName("rating")
             val rating: Int,
             @SerializedName("reviewID")
@@ -38,6 +40,14 @@ data class ProductRevGetShopReviewReadingListResponse(
                 val likeStatus: Int,
                 @SerializedName("totalLike")
                 val totalLike: Int
+            )
+            data class Attachment(
+                @SerializedName("attachmentID")
+                val attachmentId: String,
+                @SerializedName("thumbnailURL")
+                val thumbnailURL: String,
+                @SerializedName("fullsizeURL")
+                val fullSizeURL: String
             )
         }
     }

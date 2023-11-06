@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -175,8 +174,9 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             imgShop.loadImage(uiState.info.shopImageUrl)
             imgShopBadge.loadImage(uiState.info.shopBadgeUrl)
             tpgShopName.text = uiState.info.shopName
-            tpgShopUsp.text = ""
-            tpgLicensedPharmacy.isVisible = true
+            tpgLicensedPharmacy.isVisible = uiState.showEpharmacyInfo
+            tpgShopUsp.text = uiState.info.shopUsp.joinToString(separator = ", ") { it }
+            tpgShopUsp.isVisible = uiState.info.shopUsp.isNotEmpty()
         }
     }
     
@@ -246,7 +246,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private fun renderShopRatingAndReview(uiState: ShopInfoUiState) {
         renderRatingAndReviewSummary(uiState.rating, uiState.review)
         renderRating(uiState.rating)
-        renderReview(uiState.review)
+        renderTopReview(uiState.review)
     }
 
     private fun renderRatingAndReviewSummary(rating: ShopRating, review: ShopReview) {
@@ -271,9 +271,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
                 else -> ""
             }
 
-            val formattedRatingAndReviewText = "($ratingAndReviewText)"
-
-            binding?.tpgRatingAndReviewText?.text = formattedRatingAndReviewText
+            binding?.tpgRatingAndReviewText?.text = ratingAndReviewText
             binding?.tpgShopRating?.text = rating.ratingScore
         }
     }
@@ -309,7 +307,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         }
     }
     
-    private fun renderReview(review: ShopReview) {
+    private fun renderTopReview(review: ShopReview) {
         val showReview = review.totalReviews.isMoreThanZero()
         
         binding?.layoutReviewContainer?.isVisible = showReview
@@ -322,17 +320,21 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     
     private fun renderShopPerformance(uiState: ShopInfoUiState) {
         binding?.run {
-            labelProductSoldCount.text = uiState.shopPerformance.totalProductSoldCount
-            labelChatPerformance.text = uiState.shopPerformance.chatPerformance
-            labelOrderProcessTime.text = uiState.shopPerformance.orderProcessTime
+            labelProductSoldCount.text = uiState.shopPerformance.totalProductSoldCount.ifEmpty { "-" }
+            labelChatPerformance.text = uiState.shopPerformance.chatPerformance.ifEmpty { "-" }
+            labelOrderProcessTime.text = uiState.shopPerformance.orderProcessTime.ifEmpty { "-" }
         }
     }
 
     private fun renderShopNotes(uiState: ShopInfoUiState) {
         binding?.run {
-            tpgSectionTitleShopNotes.isVisible = uiState.shopNotes.isNotEmpty()
-            layoutShopNotesContainer.isVisible = uiState.shopNotes.isNotEmpty()
-            renderShopNoteList(uiState.shopNotes)
+            val hasShopNotes = uiState.shopNotes.isNotEmpty()
+            tpgSectionTitleShopNotes.isVisible = hasShopNotes
+            layoutShopNotesContainer.isVisible = hasShopNotes
+            
+            if (hasShopNotes) {
+                renderShopNoteList(uiState.shopNotes)
+            }
         }
     }
     

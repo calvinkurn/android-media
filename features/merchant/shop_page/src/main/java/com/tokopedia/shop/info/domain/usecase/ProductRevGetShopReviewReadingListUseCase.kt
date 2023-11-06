@@ -33,6 +33,11 @@ class ProductRevGetShopReviewReadingListUseCase @Inject constructor(
     list {
       reviewID
       rating
+      attachments {
+        attachmentID
+        thumbnailURL
+        fullsizeURL
+      }
       likeDislike {
         totalLike
         likeStatus

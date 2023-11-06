@@ -19,9 +19,20 @@ class ProductRevGetShopReviewReadingListMapper @Inject constructor(){
                         review.likeDislike.totalLike,
                         review.likeDislike.totalLike
                     ),
-                    review.avatar
+                    review.avatar,
+                    review.toAttachments()
                 )
             }
         )
+    }
+
+    private fun ProductRevGetShopReviewReadingListResponse.ProductRevGetShopReviewReadingList.ShopReviewList.toAttachments(): List<ShopReview.Review.Attachment> {
+        return attachments.map { attachment ->
+            ShopReview.Review.Attachment(
+                attachment.attachmentId,
+                attachment.thumbnailURL,
+                attachment.fullSizeURL
+            )
+        }
     }
 }
