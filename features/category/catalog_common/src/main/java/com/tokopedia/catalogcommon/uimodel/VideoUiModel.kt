@@ -26,11 +26,10 @@ data class VideoUiModel(
     }
 
     data class ItemVideoUiModel(
-        val banner: String,
+        val thumbnailUrl: String,
         val title: String,
-        val subTitle: String,
+        val author: String,
         val videoLink: String,
-        val textReviewColor: Int,
         val textTitleColor: Int,
         val textSubTitleColor: Int,
         val backgroundColor: Int = catalogcommonR.drawable.bg_rounded_border_light,

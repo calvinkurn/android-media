@@ -39,6 +39,7 @@ import com.tokopedia.catalogcommon.uimodel.SupportFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TextDescriptionUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
+import com.tokopedia.catalogcommon.uimodel.VideoUiModel
 import com.tokopedia.catalogcommon.util.colorMapping
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.kotlin.extensions.orFalse
@@ -81,6 +82,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_FEATURE_SUPPORT.type -> it.mapToSupportFeature(remoteModel)
                 WidgetTypes.CATALOG_ACCORDION.type -> it.mapToAccordion(isDarkMode)
                 WidgetTypes.CATALOG_COMPARISON.type -> it.mapToComparison(isDarkMode)
+                WidgetTypes.CATALOG_VIDEO.type -> it.mapToVideo(isDarkMode)
                 else -> {
                     BlankUiModel()
                 }
@@ -455,6 +457,23 @@ class CatalogDetailUiMapper @Inject constructor(
                 }.toMutableList()
             )
         }
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToVideo(
+        darkMode: Boolean
+    ): BaseCatalogUiModel {
+        return VideoUiModel(
+            content = data?.video.orEmpty().map {
+                VideoUiModel.ItemVideoUiModel(
+                    thumbnailUrl = it.thumbnail,
+                    title = it.title,
+                    author = it.author,
+                    videoLink = it.url,
+                    textTitleColor = 0,
+                    textSubTitleColor = 0,
+                )
+            }
+        )
     }
 
     private fun getTextColor(darkMode: Boolean): Int {

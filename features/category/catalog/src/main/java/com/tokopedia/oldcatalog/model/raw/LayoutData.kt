@@ -44,7 +44,9 @@ data class LayoutData(
     @SerializedName("basicInfo")
     val priceCta: BasicInfo = BasicInfo(),
     @SerializedName("searchOverride")
-    val searchOverride: List<SearchOverride> = listOf()
+    val searchOverride: List<SearchOverride> = listOf(),
+    @SerializedName("video")
+    val video: List<CatalogVideo> = listOf()
 ) {
 
     data class Style(
@@ -259,6 +261,15 @@ data class LayoutData(
     data class SearchOverride (
         @SerializedName("key"   ) var key   : String = "",
         @SerializedName("value" ) var value : String = ""
+    )
+
+    data class CatalogVideo (
+        @SerializedName("url") val url: String = "",
+        @SerializedName("type") val type: String = "",
+        @SerializedName("thumbnail") val thumbnail: String = "",
+        @SerializedName("author") val author: String = "",
+        @SerializedName("title") val title: String = "",
+        @SerializedName("videoId") val videoId: String = ""
     )
 }
 
