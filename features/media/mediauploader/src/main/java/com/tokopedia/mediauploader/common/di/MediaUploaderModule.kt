@@ -2,7 +2,7 @@ package com.tokopedia.mediauploader.common.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.mediauploader.GetSourcePolicyUseCase
+import com.tokopedia.mediauploader.common.GetSourcePolicyUseCase
 import com.tokopedia.mediauploader.common.data.store.datastore.AnalyticsCacheDataStore
 import com.tokopedia.mediauploader.common.data.store.datastore.AnalyticsCacheDataStoreImpl
 import com.tokopedia.mediauploader.video.internal.VideoCompressor

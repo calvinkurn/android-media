@@ -15,7 +15,15 @@ open class BaseParam(
     val file: File,
     val sourceId: String,
     val progress: ProgressUploader?,
-) : BaseUploaderParam
+) : BaseUploaderParam {
+    
+    companion object {
+        // only for logger
+        fun create(file: File, sourceId: String): BaseParam {
+            return BaseParam(file, sourceId, null)
+        }
+    }
+}
 
 // parameter builder for [UploaderUseCase]
 open class UseCaseParam(

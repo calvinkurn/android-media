@@ -11,21 +11,30 @@ import java.net.SocketTimeoutException
 
 const val ERROR_MAX_LENGTH = 1500
 
+fun BaseParam.trackStackTrace(e: Exception) {
+    val stackTrace = Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()
+
+    if (stackTrace.isNotEmpty()) {
+        UploaderLogger.commonWithoutReqIdError(this, stackTrace)
+    }
+}
+
 suspend inline fun request(
-    sourceId: String,
+    param: BaseParam,
     crossinline execute: suspend () -> UploadResult
 ): UploadResult {
     return try {
         execute()
     } catch (e: SocketTimeoutException) {
         Timber.d(e)
+        param.trackStackTrace(e)
         UploadResult.Error(TIMEOUT_ERROR)
     } catch (e: StreamResetException) {
         Timber.d(e)
+        param.trackStackTrace(e)
         UploadResult.Error(TIMEOUT_ERROR)
     } catch (e: Exception) {
-        val stackTrace = Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()
-        if (stackTrace.isNotEmpty()) UploaderLogger.commonWithoutReqIdError(sourceId, stackTrace)
+        param.trackStackTrace(e)
         UploadResult.Error(NETWORK_ERROR)
     }
 }

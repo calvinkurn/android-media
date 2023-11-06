@@ -69,7 +69,7 @@ class ImageUploaderManager @Inject constructor(
                 message = error,
                 requestId = requestId
             ).also {
-                UploaderLogger.commonError(base.sourceId, it)
+                UploaderLogger.commonError(base, it)
             }
         }
     }

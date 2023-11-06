@@ -4,8 +4,8 @@ package com.tokopedia.mediauploader
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.mediauploader.common.GetSourcePolicyUseCase
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
-import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.common.di.UploaderQualifier
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.ProgressUploader
@@ -38,14 +38,11 @@ class UploaderUseCase @Inject constructor(
             isSecure = imageParam.isSecure
         )
 
-        return request(baseParam.sourceId) {
+        return request(baseParam) {
             UploaderFactory(
                 video = videoUploaderManager,
                 image = imageUploaderManager
-            ).createUploader(useCaseParam).also {
-                // clear policy cache after upload succeed
-                sourcePolicyManager.dispose()
-            }
+            ).createUploader(useCaseParam)
         }
     }
 
@@ -74,16 +71,13 @@ class UploaderUseCase @Inject constructor(
     }
 
     /**
-     * A new fetcher of source policy.
-     *
-     * We put all policies request in only method and make it offline-first mode.
-     * So we don't have to request the same policy if users encounter internet issue.
+     * A centralized of source policy fetcher.
      */
-    private suspend fun getOrSetGlobalSourcePolicy(sourceId: String, file: File, isSecure: Boolean): SourcePolicy {
-        val param = GetSourcePolicyUseCase.Param(sourceId, file, isSecure)
-        return sourcePolicyManager.get() ?: sourcePolicyUseCase(param).also {
-            sourcePolicyManager.set(it)
-        }
+    private suspend fun getOrSetGlobalSourcePolicy(sourceId: String, file: File, isSecure: Boolean) {
+        val param = GetSourcePolicyUseCase.Param(file, sourceId, isSecure)
+        val policy = sourcePolicyUseCase(param)
+
+        sourcePolicyManager.set(policy)
     }
 
     // Public Method
@@ -138,7 +132,7 @@ class UploaderUseCase @Inject constructor(
     ) {
         try {
             val file = File(filePath)
-            videoUploaderManager.abortUpload(sourceId, file.name) {
+            videoUploaderManager.abortUpload(sourceId, file) {
                 abort()
             }
         } catch (ignored: Throwable) {}

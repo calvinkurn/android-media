@@ -2,6 +2,7 @@ package com.tokopedia.mediauploader.analytics
 
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.mediauploader.BaseParam
 import com.tokopedia.mediauploader.common.data.entity.UploaderTracker
 import com.tokopedia.mediauploader.common.state.UploadResult
 
@@ -12,23 +13,24 @@ object UploaderLogger {
         TagType.Compression to Pair("MEDIA_UPLOADER_COMPRESSOR", Priority.P2),
     )
 
-    fun commonWithoutReqIdError(sourceId: String, message: String) {
+    fun commonWithoutReqIdError(param: BaseParam, message: String) {
         val err = UploadResult.Error(message)
-        commonError(sourceId, err)
+        commonError(param, err)
     }
 
-    fun commonError(sourceId: String, message: String, reqId: String) {
+    fun commonError(param: BaseParam, message: String, reqId: String) {
         val err = UploadResult.Error(message, reqId)
-        commonError(sourceId, err)
+        commonError(param, err)
     }
 
-    fun commonError(sourceId: String, error: UploadResult.Error) {
+    fun commonError(param: BaseParam, error: UploadResult.Error) {
         if (error.message.isEmpty()) return
 
         serverLogger(
             type = TagType.Common,
             data = mapOf(
-                "sourceId" to sourceId,
+                "file" to param.file.path,
+                "sourceId" to param.sourceId,
                 "reqId" to error.requestId,
                 "message" to error.message
             )

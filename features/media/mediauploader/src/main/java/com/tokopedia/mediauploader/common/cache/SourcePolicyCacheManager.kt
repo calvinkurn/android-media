@@ -10,7 +10,6 @@ import javax.inject.Inject
 interface SourcePolicyManager {
     fun set(policy: SourcePolicy)
     fun get(): SourcePolicy?
-    fun dispose()
 }
 
 class SourcePolicyManagerImpl @Inject constructor(
@@ -24,17 +23,12 @@ class SourcePolicyManagerImpl @Inject constructor(
     override fun set(policy: SourcePolicy) {
         val content = gson.toJson(policy)
         putString(KEY_SOURCE_POLICY, content)
-
         applyEditor()
     }
 
     override fun get(): SourcePolicy? {
         val json = getString(KEY_SOURCE_POLICY)?: return null
         return gson.fromJson(json, SourcePolicy::class.java)
-    }
-
-    override fun dispose() {
-        clearCache()
     }
 
     companion object {

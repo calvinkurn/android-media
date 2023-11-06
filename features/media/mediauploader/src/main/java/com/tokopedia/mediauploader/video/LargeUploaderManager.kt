@@ -83,8 +83,8 @@ class LargeUploaderManager @Inject constructor(
             if (transcode != null) {
                 return transcode.also {
                     UploaderLogger.commonWithoutReqIdError(
-                        base.sourceId,
-                        "$TRANSCODING_FAILED # $mUploadId"
+                        param = base,
+                        message = "Fail to transcode (uploadId=$mUploadId; file=${base.file.name})"
                     )
                 }
             }
@@ -104,10 +104,7 @@ class LargeUploaderManager @Inject constructor(
                 message = UPLOAD_ABORT,
                 requestId = result?.requestId.toString()
             ).also {
-                UploaderLogger.commonError(
-                    sourceId = base.sourceId,
-                    error = it
-                )
+                UploaderLogger.commonError(base, it)
             }
         }
     }
@@ -150,7 +147,7 @@ class LargeUploaderManager @Inject constructor(
                         launch {
                             chunkUpload(
                                 sourceId,
-                                file.name,
+                                file,
                                 byteArrayToSend,
                                 policy.timeOut,
                                 part
@@ -167,8 +164,8 @@ class LargeUploaderManager @Inject constructor(
             }
         }
 
-    suspend fun abortUpload(sourceId: String, fileName: String, abort: suspend () -> Unit) {
-        val data = uploadStateManager.get(sourceId, fileName) ?: return
+    suspend fun abortUpload(sourceId: String, file: File, abort: suspend () -> Unit) {
+        val data = uploadStateManager.get(sourceId, file.name) ?: return
         if (data.uploadId.isEmpty()) error("Seems your session is expired, you cannot abort this upload.")
 
         val abortUseCase = abortUseCase(data.uploadId)
@@ -177,8 +174,8 @@ class LargeUploaderManager @Inject constructor(
             abort()
         } else {
             UploaderLogger.commonError(
-                sourceId = sourceId,
-                message = "Fail to abort upload",
+                param = BaseParam.create(file, sourceId),
+                message = "Fail to abort upload (uploadId=${data.uploadId}; file=${file.name})",
                 reqId = abortUseCase.requestId.toString()
             )
         }
@@ -241,7 +238,7 @@ class LargeUploaderManager @Inject constructor(
             )
         } else {
             UploaderLogger.commonError(
-                sourceId = param.sourceId,
+                param = param,
                 message = "Fail to init (file=$fileName)",
                 reqId = init.requestId.toString()
             )
@@ -252,7 +249,7 @@ class LargeUploaderManager @Inject constructor(
 
     private suspend fun chunkUpload(
         sourceId: String,
-        fileName: String,
+        file: File,
         byteArray: ByteArray,
         timeOut: Int,
         partNumber: Int,
@@ -263,25 +260,25 @@ class LargeUploaderManager @Inject constructor(
                 sourceId = sourceId,
                 uploadId = mUploadId,
                 partNumber = partNumber.toString(),
-                fileName = fileName,
+                fileName = file.name,
                 byteArray = byteArray,
                 timeOut = timeOut.toString()
             )
         )
 
         return if (uploader.isSuccess()) {
-            isChunkCorrect(sourceId, fileName, partNumber)
+            isChunkCorrect(sourceId, file, partNumber)
         } else {
             UploaderLogger.commonError(
-                sourceId = sourceId,
-                message = "Fail to upload (uploadId=$mUploadId; file=$fileName; part=$partNumber)",
+                param = BaseParam.create(file, sourceId),
+                message = "Fail to upload (uploadId=$mUploadId; file=${file.name}; part=$partNumber)",
                 reqId = uploader.requestId.toString()
             )
 
             if (maxRetryCount > 0) {
                 chunkUpload(
                     sourceId,
-                    fileName,
+                    file,
                     byteArray,
                     timeOut,
                     partNumber,
@@ -295,14 +292,14 @@ class LargeUploaderManager @Inject constructor(
 
     private suspend fun isChunkCorrect(
         sourceId: String,
-        fileName: String,
+        file: File,
         partNumber: Int
     ): Boolean {
         val checker = checkerUseCase(
             ChunkCheckerParam(
                 uploadId = mUploadId,
                 partNumber = partNumber.toString(),
-                fileName = fileName
+                fileName = file.name
             )
         )
 
@@ -310,11 +307,11 @@ class LargeUploaderManager @Inject constructor(
 
         if (isChuckSucceed) {
             partUploaded[partNumber] = true
-            uploadStateManager.setPartNumber(sourceId, fileName, partUploaded)
+            uploadStateManager.setPartNumber(sourceId, file.name, partUploaded)
         } else {
             UploaderLogger.commonError(
-                sourceId = sourceId,
-                message = "Fail to check chunk (uploadId=$mUploadId; file=$fileName; part=$partNumber)",
+                param = BaseParam.create(file, sourceId),
+                message = "Fail to check chunk (uploadId=$mUploadId; file=${file.name}; part=$partNumber)",
                 reqId = checker.requestId.toString()
             )
         }
