@@ -12,6 +12,7 @@ import com.tokopedia.creation.common.upload.model.dto.stories.StoriesAddMediaReq
 import com.tokopedia.creation.common.upload.model.dto.stories.StoriesUpdateStoryRequest
 import com.tokopedia.creation.common.upload.model.stories.StoriesStatus
 import com.tokopedia.creation.common.upload.uploader.notification.StoriesUploadNotificationManager
+import com.tokopedia.creation.common.upload.util.plus
 import com.tokopedia.creation.common.util.isMediaPotrait
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.ProgressType
@@ -109,21 +110,21 @@ class StoriesUploadManager @AssistedInject constructor(
                  * update story status to TranscodingFailed may error
                  * if no network connection
                  */
+
+                var loggedThrowable = throwable
+
                 try {
                     snapshotHelper.deleteLocalFile()
                     updateStoryStatus(uploadData, StoriesStatus.TranscodingFailed)
-                } catch (e: Exception) {
-                    return@withContext CreationUploadExecutionResult.Error(
-                        uploadData,
-                        throwable
-                    )
+                } catch (throwable: Throwable) {
+                    loggedThrowable += throwable
                 }
 
                 broadcastFail(uploadData)
 
                 CreationUploadExecutionResult.Error(
                     uploadData,
-                    throwable
+                    loggedThrowable
                 )
             }
         }

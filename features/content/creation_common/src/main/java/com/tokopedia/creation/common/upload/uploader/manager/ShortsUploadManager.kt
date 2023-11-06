@@ -7,6 +7,7 @@ import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadStatus
 import com.tokopedia.creation.common.upload.uploader.notification.ShortsUploadNotificationManager
+import com.tokopedia.creation.common.upload.util.plus
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.UploadResult
@@ -111,21 +112,21 @@ class ShortsUploadManager @AssistedInject constructor(
                  * updateChannelStatus to TranscodingFailed may error
                  * if no network connection
                  */
+
+                var loggedThrowable = throwable
+
                 try {
                     snapshotHelper.deleteLocalFile()
                     updateChannelStatus(uploadData, PlayChannelStatusType.TranscodingFailed)
-                } catch (e: Exception) {
-                    return@withContext CreationUploadExecutionResult.Error(
-                        uploadData,
-                        throwable
-                    )
+                } catch (throwable: Throwable) {
+                    loggedThrowable += throwable
                 }
 
                 broadcastFail(uploadData)
 
                 CreationUploadExecutionResult.Error(
                     uploadData,
-                    throwable
+                    loggedThrowable
                 )
             }
         }
