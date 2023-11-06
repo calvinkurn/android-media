@@ -167,7 +167,6 @@
 /features/recharge/recharge_credit_card                 @tokopedia/android-minionmark-dev
 /features/recharge/recharge_general                     @tokopedia/android-minionmark-dev
 /features/recharge/rechargeocr                          @tokopedia/android-minionmark-dev
-/features/recharge/smart_bills                          @tokopedia/android-minionmark-dev
 /features/recharge/voucher_game                         @tokopedia/android-minionmark-dev
 /features/recharge/recharge_pdp_emoney                  @tokopedia/android-minionmark-dev
 /features/recharge/digital_product_detail               @tokopedia/android-minionmark-dev
@@ -415,6 +414,7 @@
 /libraries/data_explorer/                               @tokopedia/android-core-dev
 /libraries/foldable                                     @tokopedia/android-miniondarth-dev
 /features/samples                                       @tokopedia/android-miniondarth-dev
+/libraries/gqlquery_ksp_processor                        @tokopedia/android-miniondarth-dev
 
 /config/detekt/                                         @tokopedia/android-gatekeeper-linter
 /buildconfig/                                           @tokopedia/android-core-dev
@@ -439,13 +439,15 @@
 /sellerapp/                                         	@tokopedia/android-minionstuart-dev
 /testapp/                                               @tokopedia/android-core-dev
 /build.gradle                                           @tokopedia/android-core-dev
+/gradlew                                                @tokopedia/android-core-dev
+/gradlew.bat                                            @tokopedia/android-core-dev
 /settings.gradle                                           @tokopedia/android-core-dev
 /buildproj.gradle                                       @tokopedia/android-core-dev
 /hansel.xml                                             @tokopedia/android-core-dev
 /gradle/                                                @tokopedia/android-core-dev
 /gradle.properties                                      @tokopedia/android-core-dev
 /wearosapp/                                        @tokopedia/android-core-dev
-
+/jacoco_task.gradle                                     @tokopedia/android-core-dev
 testing/joint/inactivephone_otp/                        @tokopedia/android-minionbob-dev
 /testing/joint/pdp_checkout/                            @tokopedia/android-minionbob-dev @tokopedia/android-minionstuart-dev
 /testing/joint/dg_transaction/                          @tokopedia/android-minionmark-dev

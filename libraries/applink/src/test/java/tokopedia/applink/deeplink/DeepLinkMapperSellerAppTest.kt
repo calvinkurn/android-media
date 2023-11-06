@@ -231,7 +231,8 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check seller search appLink then should return tokopedia internal seller search in sellerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-search"
+        setRemoteConfig(true)
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-search-compose"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.SELLER_SEARCH, expectedDeepLink)
     }
 
@@ -245,6 +246,32 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
     fun `check centralized promo appLink then should return tokopedia internal centralized promo in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/centralized-promo"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.CENTRALIZED_PROMO, expectedDeepLink)
+    }
+
+    @Test
+    fun `check centralized promo appLink and remote config true then should return tokopedia internal centralized promo in sellerapp`() {
+        setRemoteConfig(true)
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.CENTRALIZED_PROMO,
+            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_COMPOSE
+        )
+    }
+
+    @Test
+    fun `check centralized promo internal appLink and remote config true then should return tokopedia internal centralized promo compose in sellerapp`() {
+        setRemoteConfig(true)
+        assertEqualsDeepLinkMapper(
+            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
+            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_COMPOSE
+        )
+    }
+
+    @Test
+    fun `check centralized promo internal appLink and remote config false then should return tokopedia internal centralized promo compose in sellerapp`() {
+        setRemoteConfig(false)
+        assertEqualsDeepLinkMapper(
+            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
+            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
+        )
     }
 
     @Test

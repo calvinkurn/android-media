@@ -72,6 +72,7 @@ import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.banner.HomeBannerData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
+import com.tokopedia.home.beranda.helper.DeviceScreenHelper
 import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.play.widget.di.PlayWidgetModule
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
@@ -213,10 +214,10 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideGetHomeBalanceWidgetUseCase(graphqlRepository: GraphqlRepository): GetHomeBalanceWidgetUseCase {
+    fun provideGetHomeBalanceWidgetUseCase(graphqlRepository: GraphqlRepository, deviceScreenHelper: DeviceScreenHelper): GetHomeBalanceWidgetUseCase {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<GetHomeBalanceWidgetData>(graphqlRepository)
         useCase.setGraphqlQuery(GetHomeBalanceWidgetQuery())
-        return GetHomeBalanceWidgetUseCase(useCase)
+        return GetHomeBalanceWidgetUseCase(useCase, deviceScreenHelper)
     }
 
     @HomeScope
@@ -318,10 +319,14 @@ class HomeUseCaseModule {
 
     @HomeScope
     @Provides
-    fun provideGetHomeAtfUseCase(graphqlRepository: GraphqlRepository, homeRoomDataSource: HomeRoomDataSource): HomeAtfRepository {
+    fun provideGetHomeAtfUseCase(
+        graphqlRepository: GraphqlRepository,
+        homeRoomDataSource: HomeRoomDataSource,
+        deviceScreenHelper: DeviceScreenHelper
+    ): HomeAtfRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeAtfData>(graphqlRepository)
         useCase.setGraphqlQuery(AtfQuery())
-        return HomeAtfRepository(useCase, homeRoomDataSource)
+        return HomeAtfRepository(useCase, homeRoomDataSource, deviceScreenHelper)
     }
 
     @Provides

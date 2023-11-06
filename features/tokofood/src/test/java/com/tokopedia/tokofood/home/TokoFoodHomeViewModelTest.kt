@@ -442,7 +442,7 @@ class TokoFoodHomeViewModelTest : TokoFoodHomeViewModelTestFixture() {
 
     @Test
     fun `when getting homeLayout should throw homeLayout's exception and get the failed result`() {
-        onGetHomeLayoutData_thenReturn(Throwable())
+        onGetHomeLayoutData_thenReturn(Throwable(), createAddress())
 
         var actualResponse: Result<TokoFoodListUiModel>? = null
 

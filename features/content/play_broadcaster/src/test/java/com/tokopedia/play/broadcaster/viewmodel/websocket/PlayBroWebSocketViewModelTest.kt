@@ -321,7 +321,7 @@ class PlayBroWebSocketViewModelTest {
                 fakePlayWebSocket.fakeEmitMessage(mockChannelInteractiveString)
             }
 
-            Assertions.assertThat(events.first()).isInstanceOf(PlayBroadcastEvent.ShowInteractiveGameResultWidget::class.java)
+            Assertions.assertThat(events[1]).isInstanceOf(PlayBroadcastEvent.ShowInteractiveGameResultWidget::class.java) //first always init brodcast config
             Assertions.assertThat(events.last()).isInstanceOf(PlayBroadcastEvent.DismissGameResultCoachMark::class.java)
         }
     }

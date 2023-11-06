@@ -14,8 +14,7 @@
         app:layout_constraintBottom_toTopOf="@id/btn_penalty_filter_types"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:itemCount="2"
-        tools:listitem="@layout/item_penalty_filter_list_old"/>
+        tools:itemCount="2"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_penalty_filter_types"

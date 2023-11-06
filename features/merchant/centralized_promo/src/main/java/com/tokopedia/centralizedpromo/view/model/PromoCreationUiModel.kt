@@ -1,10 +1,13 @@
 package com.tokopedia.centralizedpromo.view.model
 
 import android.os.Parcelable
+import androidx.compose.runtime.Immutable
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.nest.principles.utils.ImpressionHolder
 import kotlinx.parcelize.Parcelize
 
+@Immutable
 data class PromoCreationListUiModel(
     val filterItems: List<FilterPromoUiModel>,
     override val items: List<PromoCreationUiModel>,
@@ -33,6 +36,8 @@ data class PromoCreationUiModel(
         const val PAGE_ID_SHOP_COUPON = "65"
     }
     override val impressHolder: ImpressHolder = ImpressHolder()
+
+    val impressHolderCompose: ImpressionHolder = ImpressionHolder()
 
     override fun type(typeFactory: CentralizedPromoAdapterTypeFactory): Int {
         return typeFactory.type(this)
