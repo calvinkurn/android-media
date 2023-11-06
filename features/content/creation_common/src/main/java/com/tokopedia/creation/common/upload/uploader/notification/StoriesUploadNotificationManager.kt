@@ -35,16 +35,26 @@ class StoriesUploadNotificationManager @Inject constructor(
     )
 
     override fun generateSuccessPendingIntent(): PendingIntent {
+        val uri = UriUtil.buildUri(
+            ApplinkConst.Stories.STORIES_VIEWER,
+            if (uploadData?.authorType == TYPE_CONTENT_SHOP) ApplinkConst.Stories.STORIES_VIEWER_TYPE_SHOP else ApplinkConst.Stories.STORIES_VIEWER_TYPE_USER,
+            uploadData?.authorId.orEmpty()
+        )
+
+        val uriWithParams = UriUtil.buildUriAppendParam(
+            uri,
+            mapOf(
+                ApplinkConst.Stories.STORIES_VIEWER_ARG_SOURCE to ApplinkConst.Stories.STORIES_VIEWER_SOURCE_SHARELINK,
+                ApplinkConst.Stories.STORIES_VIEWER_ARG_SOURCE_ID to uploadData?.creationId
+            )
+        )
+
         val intent = PlayShortsPostUploadActivity.getIntent(
             context,
             channelId = uploadData?.creationId.orEmpty(),
             authorId = uploadData?.authorId.orEmpty(),
             authorType = uploadData?.authorType.orEmpty(),
-            appLink = UriUtil.buildUri(
-                ApplinkConst.Stories.STORIES_VIEWER,
-                if (uploadData?.authorType == TYPE_CONTENT_SHOP) ApplinkConst.Stories.STORIES_TYPE_SHOP else ApplinkConst.Stories.STORIES_TYPE_USER,
-                uploadData?.authorId.orEmpty()
-            )
+            appLink = uriWithParams,
         ).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
