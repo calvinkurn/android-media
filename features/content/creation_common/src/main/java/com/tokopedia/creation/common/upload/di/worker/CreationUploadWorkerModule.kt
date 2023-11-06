@@ -9,9 +9,7 @@ import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.common.di.qualifier.SubmitPostCoroutineScope
 import com.tokopedia.creation.common.upload.di.CreationUploadDataModule
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videouploader.data.UploadVideoApi
@@ -35,15 +33,15 @@ import kotlinx.coroutines.CoroutineScope
 )
 class CreationUploadWorkerModule {
 
+    /** Need to use this because
+     * MediaUploaderModule is not using graphqlRepository
+     * from AppModule @ApplicationContext
+     * */
     @Provides
     fun provideGraphQLRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
 
-    @Provides
-    fun provideUpdateChannelUseCase(graphqlRepository: GraphqlRepository): UpdateChannelUseCase {
-        return UpdateChannelUseCase(graphqlRepository)
-    }
     @Provides
     fun provideCreatePostAnalytics(userSessionInterface: UserSessionInterface): CreatePostAnalytics {
         return CreatePostAnalytics(userSessionInterface)
@@ -62,11 +60,6 @@ class CreationUploadWorkerModule {
     ):
         UploadVideoUseCase<DefaultUploadVideoResponse> {
         return UploadVideoUseCase(uploadVideoApi, gson, DefaultUploadVideoResponse::class.java, generateVideoTokenUseCase)
-    }
-
-    @Provides
-    fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase {
-        return MultiRequestGraphqlUseCase(graphqlRepository)
     }
 
     @Provides

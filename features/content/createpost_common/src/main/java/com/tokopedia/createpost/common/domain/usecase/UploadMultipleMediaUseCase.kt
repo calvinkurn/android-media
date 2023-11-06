@@ -43,7 +43,7 @@ class UploadMultipleMediaUseCase @Inject constructor(
     @SubmitPostCoroutineScope private val scope: CoroutineScope,
     private val uploaderUseCase: UploaderUseCase,
     private val uploadVideoUseCase: UploadVideoUseCase<DefaultUploadVideoResponse>, /** Will be removed after video uploader migration is done soon */
-    graphqlRepository: GraphqlRepository,
+    @ApplicationContext graphqlRepository: GraphqlRepository,
 ) : GraphqlUseCase<List<SubmitPostMedium>>(graphqlRepository) {
 
     var postUpdateProgressManager: PostUpdateProgressManager? = null

@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.common.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.createpost.common.domain.entity.request.MediaTag
 import com.tokopedia.createpost.common.domain.entity.request.SubmitPostMedium
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
@@ -27,7 +28,7 @@ import kotlin.collections.ArrayList
 @GqlQuery(SubmitPostUseCase.QUERY_NAME, SubmitPostUseCase.QUERY)
 open class SubmitPostUseCase @Inject constructor(
     private val uploadMultipleMediaUseCase: UploadMultipleMediaUseCase,
-    graphqlRepository: GraphqlRepository,
+    @ApplicationContext graphqlRepository: GraphqlRepository,
     private val saveMediaPostCacheUseCase: SaveMediaPostCacheUseCase,
     private val deleteMediaPostCacheUseCase: DeleteMediaPostCacheUseCase,
 ) : GraphqlUseCase<SubmitPostData>(graphqlRepository) {
