@@ -302,7 +302,8 @@ class CartItemViewHolder constructor(
                         R.id.v_bundling_product_separator,
                         ConstraintSet.END,
                         R.id.checkbox_anchor,
-                        ConstraintSet.END
+                        ConstraintSet.END,
+                        MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                     )
                 }
                 constraintSet.connect(
@@ -543,6 +544,7 @@ class CartItemViewHolder constructor(
 
     private fun renderBundlingInfo(data: CartItemHolderData) {
         if (data.isBundlingItem && data.bundlingItemPosition == BUNDLING_ITEM_HEADER) {
+            binding.swipeLayoutBundling.show()
             binding.productBundlingInfo.show()
             if (data.isError) {
                 val productBundlingInfoParams =
@@ -559,6 +561,7 @@ class CartItemViewHolder constructor(
 
             renderBundlingInfoDetail(data)
         } else {
+            binding.swipeLayoutBundling.gone()
             binding.productBundlingInfo.gone()
             binding.checkboxBundle.gone()
         }
@@ -749,7 +752,7 @@ class CartItemViewHolder constructor(
                     connect(
                         R.id.v_bundling_product_separator,
                         ConstraintSet.TOP,
-                        if (data.isError) R.id.swipe_layout_bundling else R.id.checkbox_bundle,
+                        if (data.isError) R.id.swipe_layout_bundling else R.id.checkbox_anchor,
                         ConstraintSet.BOTTOM,
                         MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                     )
