@@ -233,7 +233,8 @@ class PaymentListingFragment : BaseDaggerFragment() {
             getCallbackUrl(callbackUrl, paymentListingUrl),
             addressId,
             generateAppVersionForPayment(),
-            bid
+            bid,
+            paymentRequest
         )
     }
 
