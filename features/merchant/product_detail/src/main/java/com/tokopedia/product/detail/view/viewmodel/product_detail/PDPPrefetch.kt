@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewmodel.product_detail
 
 import com.tokopedia.product.detail.common.ProductDetailPrefetch
+import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.CacheState
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -19,7 +20,10 @@ object PDPPrefetch {
     private const val SOCIAL_PROOF_ICON_STAR =
         "https://images.tokopedia.net/img/pdp/info/icon/star_filled.png"
 
-    fun toProductDetailDataModel(data: ProductDetailPrefetch.Data): ProductDetailDataModel {
+    fun toProductDetailDataModel(
+        productId: String,
+        data: ProductDetailPrefetch.Data
+    ): ProductDetailDataModel {
         val socialProofItems = mutableListOf<SocialProofUiModel>()
 
         if (data.integrity.isNotEmpty()) {
@@ -64,6 +68,9 @@ object PDPPrefetch {
 
         return ProductDetailDataModel(
             layoutData = DynamicProductInfoP1(
+                basic = BasicInfo(
+                    productID = productId
+                ),
                 data = ComponentData(
                     media = listOf(
                         Media(

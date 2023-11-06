@@ -516,7 +516,11 @@ class DynamicProductDetailViewModel @Inject constructor(
         prefetchData: ProductDetailPrefetch.Data? = null
     ) = launch(context = coroutineContext) {
         runCatching {
-            processPrefetch(prefetchData, refreshPage)
+            processPrefetch(
+                prefetchData,
+                productParams.productId ?: "",
+                refreshPage
+            )
             resetVariables(
                 shopDomain = productParams.shopDomain.orEmpty(),
                 forceRefresh = refreshPage,
@@ -548,10 +552,11 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     private fun processPrefetch(
         data: ProductDetailPrefetch.Data?,
+        productId: String,
         refreshPage: Boolean
     ) {
         if (data != null && !refreshPage) {
-            val prefetch = PDPPrefetch.toProductDetailDataModel(data)
+            val prefetch = PDPPrefetch.toProductDetailDataModel(productId, data)
             processPdpLayout(prefetch)
         }
     }
