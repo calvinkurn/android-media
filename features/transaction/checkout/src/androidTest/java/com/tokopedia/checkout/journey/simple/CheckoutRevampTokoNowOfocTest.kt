@@ -10,6 +10,7 @@ import com.tokopedia.checkout.RevampShipmentActivity
 import com.tokopedia.checkout.interceptor.CheckoutInterceptor
 import com.tokopedia.checkout.interceptor.RATES_SELLY_DEFAULT_RESPONSE_PATH
 import com.tokopedia.checkout.interceptor.SAF_TOKONOW_OFOC_MERGE_RESPONSE_PATH
+import com.tokopedia.checkout.interceptor.SAF_TOKONOW_OFOC_MERGE_WITH_POPUP_ACTION_RESPONSE_PATH
 import com.tokopedia.checkout.interceptor.SAF_TOKONOW_OFOC_SPLIT_RESPONSE_PATH
 import com.tokopedia.checkout.interceptor.SELLY_NO_PROMO_RESPONSE_PATH
 import com.tokopedia.checkout.interceptor.VALIDATE_USE_SELLY_2HR_RESPONSE
@@ -70,6 +71,63 @@ class CheckoutRevampTokoNowOfocTest {
             interceptor.logisticInterceptor.customSellyResponsePath = SELLY_NO_PROMO_RESPONSE_PATH
             interceptor.promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_SELLY_2HR_RESPONSE
             click2hrOption(activityRule)
+            waitForData()
+            assertHas2hrSelected(
+                activityRule,
+                titleSelly = "Terjadwal",
+                originalPriceSelly = "Rp15.000",
+                discountedPriceSelly = null,
+                etaSelly = "Tiba hari ini, 14:00 - 15:00",
+                title2hr = "2 Jam Tiba",
+                originalPrice2hr = "Rp23.000",
+                discountedPrice2hr = "Rp0"
+            )
+            assertShoppingSummary(
+                activityRule,
+                itemTotalPrice = "Rp135.000",
+                itemOriginalPrice = null,
+                shippingTotalPrice = "Rp15.000",
+                shippingOriginalPrice = "Rp38.000",
+                totalPrice = "Rp154.900"
+            )
+            assertPlatformFee(
+                activityRule,
+                fee = "Rp3.000",
+                originalFee = null
+            )
+            clickChoosePaymentButton(activityRule)
+        }
+    }
+
+    @Test
+    fun merge_change_to_split_with_popup() {
+        interceptor.cartInterceptor.customSafResponsePath = SAF_TOKONOW_OFOC_MERGE_WITH_POPUP_ACTION_RESPONSE_PATH
+        interceptor.logisticInterceptor.customRatesResponsePath = RATES_SELLY_DEFAULT_RESPONSE_PATH
+        interceptor.promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_SELLY_DEFAULT_RESPONSE
+        activityRule.launchActivity(null)
+        intending(anyIntent())
+            .respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        checkoutPageRevamp {
+            // Wait for page load
+            waitForData()
+            assertHasSellySelected(
+                activityRule,
+                titleSelly = "Terjadwal",
+                originalPriceSelly = "Rp15.000",
+                discountedPriceSelly = "Rp0",
+                etaSelly = "Tiba hari ini, 14:00 - 15:00",
+                title2hr = "2 Jam Tiba",
+                originalPrice2hr = "Rp23.000",
+                discountedPrice2hr = "Rp0"
+            )
+            waitForData()
+            interceptor.cartInterceptor.customSafResponsePath = SAF_TOKONOW_OFOC_SPLIT_RESPONSE_PATH
+            interceptor.logisticInterceptor.customSellyResponsePath = SELLY_NO_PROMO_RESPONSE_PATH
+            interceptor.promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_SELLY_2HR_RESPONSE
+            click2hrOption(activityRule)
+            waitForData()
+            clickPrimaryButtonDialogUnify()
             waitForData()
             assertHas2hrSelected(
                 activityRule,

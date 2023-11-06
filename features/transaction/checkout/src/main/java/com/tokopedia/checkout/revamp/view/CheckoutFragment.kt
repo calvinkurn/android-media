@@ -644,15 +644,17 @@ class CheckoutFragment :
 
     private fun showShipmentActionPopUpConfirmation(cartStringGroup: String, shipmentAction: ShipmentAction) {
         context?.let {
-            val dialogUnify = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+            val dialogUnify = DialogUnify(it, if (shipmentAction.popup.secondaryButton.isNotBlank()) DialogUnify.VERTICAL_ACTION else DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
             dialogUnify.setTitle(shipmentAction.popup.title)
             dialogUnify.setDescription(shipmentAction.popup.body)
             dialogUnify.setPrimaryCTAText(shipmentAction.popup.primaryButton)
             dialogUnify.setPrimaryCTAClickListener {
+                dialogUnify.dismiss()
                 viewModel.doShipmentAction(shipmentAction)
             }
             dialogUnify.setSecondaryCTAText(shipmentAction.popup.secondaryButton)
             dialogUnify.setSecondaryCTAClickListener {
+                dialogUnify.dismiss()
                 val index = viewModel.listData.value.indexOfFirst { item -> item is CheckoutOrderModel && item.cartStringGroup == cartStringGroup }
                 if (index > 0) {
                     adapter.notifyItemChanged(index)

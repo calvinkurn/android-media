@@ -39,6 +39,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
 import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.ScheduleDeliveryData
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction.ShipmentActionPopup
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentSubtotalAddOnData
@@ -111,7 +112,6 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import javax.inject.Inject
-import kotlin.collections.HashMap
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress as GroupAddressResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop as GroupShopResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShopV2 as GroupShopV2Response
@@ -1340,7 +1340,13 @@ class ShipmentMapper @Inject constructor() {
         return HashMap(
             shipmentAction.associateBy({ it.spId }, {
                 com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction(
-                    it.action
+                    action = it.action,
+                    popup = ShipmentActionPopup(
+                        title = it.popup.title,
+                        body = it.popup.body,
+                        primaryButton = it.popup.buttonOk,
+                        secondaryButton = it.popup.buttonCancel
+                    )
                 )
             })
         )

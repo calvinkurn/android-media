@@ -424,6 +424,12 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                   shipment_action {
                     sp_id
                     action
+                    popup {
+                      title
+                      body
+                      button_ok
+                      button_cancel
+                    }
                   }
                   dropshipper {
                     name

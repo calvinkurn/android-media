@@ -32,6 +32,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
+import com.tokopedia.dialog.R as dialogR
 import com.tokopedia.logisticcart.R as logisticcartR
 import com.tokopedia.promocheckout.common.R as promocheckoutcommonR
 
@@ -298,6 +299,10 @@ class CheckoutPageRevampRobot {
                     )
                 )
         }
+    }
+
+    fun clickPrimaryButtonDialogUnify() {
+        onView(ViewMatchers.withId(dialogR.id.dialog_btn_primary)).perform(ViewActions.click())
     }
 
     infix fun validateAnalytics(func: ResultRevampRobot.() -> Unit): ResultRevampRobot {
