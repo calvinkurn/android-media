@@ -58,6 +58,7 @@ import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.recommendation_widget_common.widget.entitycard.analytics.RecomEntityCardTracking
 import com.tokopedia.recommendation_widget_common.widget.entitycard.model.RecomEntityCardUiModel
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -519,11 +520,11 @@ class HomeRecommendationFragment :
         item: RecomEntityCardUiModel,
         position: Int
     ) {
-        // todo add tracker
+        // todo add tracker impression
     }
 
     override fun onEntityCardClickListener(item: RecomEntityCardUiModel, position: Int) {
-        // todo add tracker
+        RecomEntityCardTracking.sendClickEntityCardTracking(item, position, userSessionInterface.userId)
         goToProductDetail(item.id, position)
     }
 

@@ -45,7 +45,7 @@ object RecomEntityCardTracking : BaseTrackerConst() {
                     it.putString(Promotion.CREATIVE_NAME, "")
                     it.putString(Promotion.CREATIVE_SLOT, position.toString())
                     // todo need to confirm later
-                    it.putString(Promotion.ITEM_ID, recomEntityCardUiModel.id)
+                    it.putString(Promotion.ITEM_ID, "")
                     // todo need to confirm later
                     it.putString(
                         Promotion.ITEM_NAME,
