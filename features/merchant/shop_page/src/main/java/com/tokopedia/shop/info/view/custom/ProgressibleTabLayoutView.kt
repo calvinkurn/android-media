@@ -36,18 +36,29 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
         private const val DOT_INDICATOR_ACTIVE_HEIGHT = 5
         private const val DOT_INDICATOR_ACTIVE_WIDTH = 28
         private const val DOT_INDICATOR_MARGIN_START = 3
-        
+
         private const val ONE_HUNDRED = 100
     }
 
-    fun renderTabIndicator(config: Config, selectedIndex: Int, onTimerFinish: () -> Unit) {
-        //Remove current tab indicators
+    fun renderTabIndicator(
+        config: Config,
+        selectedTabIndicatorIndex: Int,
+        onTimerTick: () -> Unit,
+        onTimerFinish: () -> Unit
+    ) {
+        println("Timer. Executing renderTabIndicator")
+        cancelTimer()
+        println("Timer. cancelling timer")
+
+        // Remove current tab indicators
         removeAllViews()
 
-        for (currentIndex in 0..config.itemCount) {
-            val item = if (currentIndex == selectedIndex) {
+        for (currentIndex in 0 until config.itemCount) {
+            val item = if (currentIndex == selectedTabIndicatorIndex) {
+                println("Timer. Creating selected dot on $currentIndex")
                 createSelectedDot()
             } else {
+                println("Timer. Creating unselected index on $currentIndex")
                 createUnselectedDot()
             }
             addView(item)
@@ -56,8 +67,10 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
         setupCountDownTimer(
             totalDuration = config.totalDuration,
             intervalDuration = config.intervalDuration,
+            onTimerTick = onTimerTick,
             onTimerFinish = onTimerFinish
         )
+
         startTimer()
     }
 
@@ -75,30 +88,44 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
     private fun setupCountDownTimer(
         totalDuration: Long,
         intervalDuration: Long,
+        onTimerTick: () -> Unit,
         onTimerFinish: () -> Unit
     ) {
+        println("Timer. setupCountDownTimer")
         val progressBar = getSelectedTabIndicator()
 
+        println("Timer. setupCountDownTimer progressBar is $progressBar")
         countDownTimer = object : CountDownTimer(totalDuration, intervalDuration) {
             override fun onTick(millisUntilFinished: Long) {
                 val remainingProgressPercent = (millisUntilFinished.toFloat() / totalDuration.toFloat()) * ONE_HUNDRED.toFloat()
                 val progressPercent = ONE_HUNDRED.toFloat() - remainingProgressPercent
 
                 progressBar?.progress = progressPercent.toInt()
+
+                onTimerTick()
+
+                println("Timer. setupCountDownTimer onTick progress $progressPercent")
             }
 
             override fun onFinish() {
                 progressBar?.progress = ONE_HUNDRED
 
                 onTimerFinish()
+
+                println("Timer. setupCountDownTimer onFinish")
             }
         }
     }
 
-
     private fun startTimer() {
-        countDownTimer?.cancel()
+        println("Timer. startTimer")
+        cancelTimer()
         countDownTimer?.start()
+    }
+
+    private fun cancelTimer() {
+        println("Timer. cancelTimer")
+        countDownTimer?.cancel()
     }
 
     @SuppressLint("UnifyComponentUsage")
@@ -146,5 +173,4 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
 
         return imageView
     }
-
 }
