@@ -25,7 +25,7 @@ import javax.inject.Inject
  */
 class ContentCreationViewModel @Inject constructor(
     private val contentCreationConfigUseCase: ContentCreationConfigUseCase,
-    private val contentCreationConfigManager: ContentCreationRemoteConfigManager
+    private val contentCreationConfigManager: ContentCreationRemoteConfigManager,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -59,11 +59,13 @@ class ContentCreationViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                val formattedCreationConfig = if (creationConfig.isActive) {
-                    formatCreationConfig(creationConfig, widgetSource)
-                } else {
-                    val response = contentCreationConfigUseCase(Unit)
-                    formatCreationConfig(response, widgetSource)
+                val formattedCreationConfig = withContext(dispatchers.io) {
+                    if (creationConfig.isActive) {
+                        formatCreationConfig(creationConfig, widgetSource)
+                    } else {
+                        val response = contentCreationConfigUseCase(Unit)
+                        formatCreationConfig(response, widgetSource)
+                    }
                 }
 
                 _creationConfig.value = Success(formattedCreationConfig)
