@@ -124,11 +124,13 @@ public class MultiTouchListener implements View.OnTouchListener {
         gestureListener.onTouchEvent(event);
 
         if (gridGuidelineView == null) {
-            gridGuidelineView = ((View) view.getParent()).findViewById(DynamicTextCanvasLayout.VIEW_GRID_GUIDELINE_ID);
+            gridGuidelineView = ((View) ((View) view.getParent()).getParent())
+                    .findViewById(DynamicTextCanvasLayout.VIEW_GRID_GUIDELINE_ID);
         }
 
         if (deletionButtonView == null) {
-            deletionButtonView = ((View) view.getParent()).findViewById(DynamicTextCanvasLayout.VIEW_DELETION_BUTTON_ID);
+            deletionButtonView = ((View) ((View) view.getParent()).getParent())
+                    .findViewById(DynamicTextCanvasLayout.VIEW_DELETION_BUTTON_ID);
         }
 
         if (!isTranslateEnabled) return true;

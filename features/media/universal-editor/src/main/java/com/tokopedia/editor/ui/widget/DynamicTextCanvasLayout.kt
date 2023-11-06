@@ -11,6 +11,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.editor.R
 import com.tokopedia.editor.ui.gesture.api.MultiTouchListener
@@ -119,6 +120,15 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
 
     private fun addText(model: InputTextModel) {
         val layoutParams = defaultLayoutParamEditTextView(model.textAlign)
+        val layout = RelativeLayout(context)
+
+        layout.addView(addScalableText(model))
+
+        addView(layout, layoutParams)
+        layout.id.updateModel(model)
+    }
+
+    private fun addScalableText(model: InputTextModel): EditorEditTextView {
         val textView = EditorEditTextView(context)
 
         textView.setViewId()
@@ -137,9 +147,7 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
         })
 
         textView.setOnTouchListener(touchListener)
-        addView(textView, layoutParams)
-
-        textView.id.updateModel(model)
+        return textView
     }
 
     private fun createGridGuidelineView() {
