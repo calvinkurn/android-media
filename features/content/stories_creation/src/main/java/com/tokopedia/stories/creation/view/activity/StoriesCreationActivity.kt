@@ -2,7 +2,6 @@ package com.tokopedia.stories.creation.view.activity
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.material.Surface
 import androidx.compose.runtime.LaunchedEffect
@@ -22,7 +21,6 @@ import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.play_common.util.VideoSnapshotHelper
-import com.tokopedia.play_common.view.getBitmapFromUrl
 import com.tokopedia.stories.creation.di.DaggerStoriesCreationComponent
 import com.tokopedia.stories.creation.view.screen.StoriesCreationScreen
 import com.tokopedia.stories.creation.view.viewmodel.StoriesCreationViewModel
@@ -32,7 +30,6 @@ import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationErrorBotto
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationInfoBottomSheet
 import com.tokopedia.stories.creation.view.model.StoriesMedia
 import com.tokopedia.stories.creation.view.model.StoriesMediaCover
-import com.tokopedia.stories.creation.view.model.StoriesMediaType
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.activityResult.MediaPickerForResult
 import com.tokopedia.stories.creation.view.model.activityResult.MediaPickerIntentData
@@ -206,6 +203,9 @@ class StoriesCreationActivity : BaseActivity() {
                         }
                         is StoriesCreationUiEvent.ShowTooManyStoriesReminder -> {
                             showInfoBottomSheet()
+                        }
+                        is StoriesCreationUiEvent.StoriesUploadQueued -> {
+                            finish()
                         }
                     }
             }

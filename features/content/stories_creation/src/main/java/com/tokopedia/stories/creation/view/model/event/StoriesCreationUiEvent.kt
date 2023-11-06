@@ -10,4 +10,6 @@ sealed interface StoriesCreationUiEvent {
     data class ErrorPreparePage(val throwable: Throwable) : StoriesCreationUiEvent
 
     object ShowTooManyStoriesReminder : StoriesCreationUiEvent
+
+    object StoriesUploadQueued : StoriesCreationUiEvent
 }

@@ -2,12 +2,14 @@ package com.tokopedia.stories.creation.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.creation.common.upload.model.CreationUploadData
+import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepository
 import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
 import com.tokopedia.stories.creation.view.model.StoriesMedia
-import com.tokopedia.stories.creation.view.model.StoriesMediaType
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
 import com.tokopedia.stories.creation.view.model.exception.NotEligibleException
@@ -17,6 +19,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -24,6 +27,7 @@ import javax.inject.Inject
  */
 class StoriesCreationViewModel @Inject constructor(
     private val repo: StoriesCreationRepository,
+    private val creationUploader: CreationUploader,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(StoriesCreationUiState.Empty)
@@ -100,6 +104,23 @@ class StoriesCreationViewModel @Inject constructor(
     }
 
     private fun handleClickUpload() {
-        /** TODO JOE: handle this */
+        viewModelScope.launch {
+            val state = _uiState.value
+
+            val data = CreationUploadData.buildForStories(
+                creationId = state.config.storiesId,
+                mediaUriList = listOf(state.media.filePath),
+                mediaTypeList = listOf(state.media.type.code),
+                coverUri = "",
+                authorId = state.selectedAccount.id,
+                authorType = state.selectedAccount.type,
+                imageSourceId = state.config.imageSourceId,
+                videoSourceId = state.config.videoSourceId,
+            )
+
+            creationUploader.upload(data)
+
+            _uiEvent.emit(StoriesCreationUiEvent.StoriesUploadQueued)
+        }
     }
 }

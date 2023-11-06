@@ -34,6 +34,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
+import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.creation.common.util.RATIO_9_16
 import com.tokopedia.creation.common.util.isMediaRatioSame
 import com.tokopedia.iconunify.IconUnify
@@ -53,7 +54,6 @@ import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
 import com.tokopedia.stories.creation.R
 import com.tokopedia.stories.creation.view.model.StoriesMedia
 import com.tokopedia.stories.creation.view.model.StoriesMediaCover
-import com.tokopedia.stories.creation.view.model.StoriesMediaType
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.nest.components.R as nestcomponentsR
 
@@ -235,7 +235,7 @@ private fun StoriesCreationHeader(
 @Composable
 private fun StoriesCreationMediaCover(
     mediaFilePath: String,
-    mediaType: StoriesMediaType,
+    mediaType: ContentMediaType,
     onLoadMediaPreview: suspend (filePath: String) -> StoriesMediaCover,
     modifier: Modifier = Modifier,
 ) {
@@ -419,7 +419,7 @@ private fun StoriesCreationScreenPreview() {
             val uiState = StoriesCreationUiState.Empty.copy(
                 media = StoriesMedia(
                     filePath = "media_file_path",
-                    type = StoriesMediaType.Video,
+                    type = ContentMediaType.Video,
                 )
             )
 

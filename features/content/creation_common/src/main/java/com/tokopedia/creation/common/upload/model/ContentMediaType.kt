@@ -1,14 +1,17 @@
-package com.tokopedia.stories.creation.view.model
+package com.tokopedia.creation.common.upload.model
 
 import java.net.URLConnection
 
 /**
  * Created By : Jonathan Darwin on September 27, 2023
  */
-enum class StoriesMediaType(val value: String) {
-    Image("image"),
-    Video("video"),
-    Unknown("");
+enum class ContentMediaType(
+    val value: String,
+    val code: Int,
+) {
+    Image("image", 1),
+    Video("video", 2),
+    Unknown("", 0);
 
     val isImage: Boolean
         get() = this == Image
@@ -17,7 +20,10 @@ enum class StoriesMediaType(val value: String) {
         get() = this == Video
 
     companion object {
-        fun parse(path: String): StoriesMediaType {
+        fun parse(code: Int): ContentMediaType {
+            return values().find { it.code == code } ?: Unknown
+        }
+        fun parse(path: String): ContentMediaType {
             if (path.isEmpty()) return Unknown
 
             val fileNameMap = URLConnection.getFileNameMap()
