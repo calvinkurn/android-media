@@ -167,8 +167,7 @@ class CartItemViewHolder constructor(
                         R.id.v_bundling_product_separator,
                         ConstraintSet.START,
                         ConstraintSet.PARENT_ID,
-                        ConstraintSet.START,
-                        0
+                        ConstraintSet.START
                     )
                     constraintSet.clear(R.id.v_bundling_product_separator, ConstraintSet.END)
                 } else {
