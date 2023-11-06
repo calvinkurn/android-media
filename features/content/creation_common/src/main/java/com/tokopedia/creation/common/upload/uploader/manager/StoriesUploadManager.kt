@@ -13,22 +13,22 @@ import com.tokopedia.creation.common.upload.model.dto.stories.StoriesUpdateStory
 import com.tokopedia.creation.common.upload.model.stories.StoriesStatus
 import com.tokopedia.creation.common.upload.uploader.notification.StoriesUploadNotificationManager
 import com.tokopedia.creation.common.util.isMediaPotrait
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.play_common.const.PlayUploadSourceIdConst
 import com.tokopedia.play_common.util.VideoSnapshotHelper
-import kotlinx.coroutines.delay
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.withContext
 import java.io.File
-import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on September 15, 2023
  */
-class StoriesUploadManager @Inject constructor(
+class StoriesUploadManager @AssistedInject constructor(
     @ApplicationContext private val appContext: Context,
+    @Assisted private val uploadData: CreationUploadData.Stories,
     notificationManager: StoriesUploadNotificationManager,
     private val uploaderUseCase: UploaderUseCase,
     private val updateStoryUseCase: StoriesUpdateStoryUseCase,
@@ -37,7 +37,10 @@ class StoriesUploadManager @Inject constructor(
     private val snapshotHelper: VideoSnapshotHelper,
 ) : CreationUploadManager(notificationManager) {
 
-    private lateinit var uploadData: CreationUploadData.Stories
+    @AssistedFactory
+    interface Factory {
+        fun create(uploadData: CreationUploadData.Stories): StoriesUploadManager
+    }
 
     private var isUploadStoryMedia = false
 
@@ -65,15 +68,9 @@ class StoriesUploadManager @Inject constructor(
      */
 
     override suspend fun execute(
-        uploadData: CreationUploadData,
         notificationId: Int,
     ): CreationUploadExecutionResult {
-        if (uploadData !is CreationUploadData.Stories) return CreationUploadExecutionResult.Error(
-            uploadData,
-            Exception("StoriesUploadManager is not receiving CreationUploadData.Stories data")
-        )
-
-        setupInitialData(uploadData)
+        setupInitialData()
 
         withContext(dispatchers.main) {
             uploaderUseCase.trackProgress { progress, progressType ->
@@ -116,6 +113,10 @@ class StoriesUploadManager @Inject constructor(
                     snapshotHelper.deleteLocalFile()
                     updateStoryStatus(uploadData, StoriesStatus.TranscodingFailed)
                 } catch (e: Exception) {
+                    return@withContext CreationUploadExecutionResult.Error(
+                        uploadData,
+                        throwable
+                    )
                 }
 
                 broadcastFail(uploadData)
@@ -128,8 +129,7 @@ class StoriesUploadManager @Inject constructor(
         }
     }
 
-    private fun setupInitialData(uploadData: CreationUploadData.Stories) {
-        this.uploadData = uploadData
+    private fun setupInitialData() {
         this.isUploadStoryMedia = false
     }
 

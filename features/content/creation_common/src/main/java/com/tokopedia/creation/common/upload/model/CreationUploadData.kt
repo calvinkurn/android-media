@@ -39,7 +39,7 @@ sealed interface CreationUploadData {
     fun mapToJson(gson: Gson): String {
         return try {
             gson.toJson(mapToEntity(gson))
-        } catch (throwable: Throwable) {
+        } catch (_: Throwable) {
             ""
         }
     }

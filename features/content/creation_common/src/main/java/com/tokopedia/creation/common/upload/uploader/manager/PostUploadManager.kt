@@ -9,27 +9,28 @@ import com.tokopedia.createpost.common.domain.usecase.SubmitPostUseCase
 import com.tokopedia.createpost.common.view.util.FeedSellerAppReviewHelper
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.creation.common.upload.model.CreationUploadData
-import javax.inject.Inject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 
 /**
  * Created By : Jonathan Darwin on September 21, 2023
  */
-class PostUploadManager @Inject constructor(
+class PostUploadManager @AssistedInject constructor(
     @ApplicationContext private val appContext: Context,
+    @Assisted private val uploadData: CreationUploadData.Post,
     private val submitPostUseCase: SubmitPostUseCase,
     private val sellerAppReviewHelper: FeedSellerAppReviewHelper,
 ) : CreationUploadManager(null) {
 
+    @AssistedFactory
+    interface Factory {
+        fun create(uploadData: CreationUploadData.Post): PostUploadManager
+    }
+
     override suspend fun execute(
-        uploadData: CreationUploadData,
         notificationId: Int,
     ): CreationUploadExecutionResult {
-
-        if (uploadData !is CreationUploadData.Post) return CreationUploadExecutionResult.Error(
-            uploadData,
-            Exception("PostUploadManager is not receiving CreationUploadData.Post data")
-        )
-
         return try {
             broadcastInit(uploadData, notificationId)
 
