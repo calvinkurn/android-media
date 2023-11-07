@@ -15,9 +15,12 @@ import com.tokopedia.people.di.UserProfileScope
 import com.tokopedia.people.views.uimodel.FollowListUiModel
 import com.tokopedia.people.views.uimodel.FollowResultUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
+import com.tokopedia.people.views.uimodel.state.FollowFollowingLoadingUiState
+import com.tokopedia.people.views.uimodel.state.FollowFollowingLoadingUiState.LoadingState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @UserProfileScope
@@ -51,11 +54,19 @@ class FollowerFollowingViewModel @Inject constructor(
     val username: String
         get() = _profileInfo.value.username
 
+    private val _loadingState = MutableStateFlow(FollowFollowingLoadingUiState())
+    val loadingState: Flow<FollowFollowingLoadingUiState>
+        get() = _loadingState
+
     fun getProfile(userId: String) {
         viewModelScope.launchCatchError(block = {
+            _loadingState.update { FollowFollowingLoadingUiState(LoadingState.ShowLoading) }
+
             _profileInfo.value = repoProfile.getProfile(userId)
-        }, onError = {
-            // TODO show ui error page
+
+            _loadingState.update { FollowFollowingLoadingUiState(LoadingState.HideLoading) }
+        }, onError = { error ->
+            _loadingState.update { FollowFollowingLoadingUiState(LoadingState.Error(error)) }
         })
     }
 

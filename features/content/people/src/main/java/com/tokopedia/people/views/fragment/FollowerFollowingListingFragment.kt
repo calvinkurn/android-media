@@ -13,20 +13,25 @@ import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
+import com.tokopedia.people.databinding.UpFollowFollowingParentContentBinding
+import com.tokopedia.people.databinding.UpFollowFollowingParentShimmerBinding
 import com.tokopedia.people.databinding.UpFragmentFollowerFollowingListingBinding
 import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.people.views.activity.UserProfileActivity
 import com.tokopedia.people.views.uimodel.FollowListUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
+import com.tokopedia.people.views.uimodel.state.FollowFollowingLoadingUiState
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.getCustomText
 import com.tokopedia.unifycomponents.setCustomText
 import kotlinx.coroutines.flow.collectLatest
-import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.people.R as peopleR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -39,6 +44,12 @@ class FollowerFollowingListingFragment @Inject constructor(
     private var _binding: UpFragmentFollowerFollowingListingBinding? = null
     private val binding: UpFragmentFollowerFollowingListingBinding
         get() = _binding!!
+
+    private val bindingContent: UpFollowFollowingParentContentBinding
+        get() = binding.layoutFollowFollowingParentContent
+
+    private val bindingShimmer: UpFollowFollowingParentShimmerBinding
+        get() = binding.layoutFollowFollowingParentShimmer
 
     private val viewModel: FollowerFollowingViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[FollowerFollowingViewModel::class.java]
@@ -77,7 +88,7 @@ class FollowerFollowingListingFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding.viewPager.unregisterOnPageChangeCallback(onPageChangeCallback)
+        bindingContent.viewPager.unregisterOnPageChangeCallback(onPageChangeCallback)
         _binding = null
     }
 
@@ -91,7 +102,7 @@ class FollowerFollowingListingFragment @Inject constructor(
     ) {
         if (prevState == currState || currState == ProfileUiModel.Empty) return
 
-        binding.tpFollow.getUnifyTabLayout().setTabTextColors(
+        bindingContent.tpFollow.getUnifyTabLayout().setTabTextColors(
             MethodChecker.getColor(
                 activity,
                 unifyprinciplesR.color.Unify_NN600
@@ -125,16 +136,15 @@ class FollowerFollowingListingFragment @Inject constructor(
             )
         )
 
-        binding.viewPager.adapter =
-            ViewPagerAdapter(this, listOfPages.map(Pair<String, Fragment>::second))
+        bindingContent.viewPager.adapter = ViewPagerAdapter(this, listOfPages.map(Pair<String, Fragment>::second))
 
-        TabsUnifyMediator(binding.tpFollow, binding.viewPager) { tab, position ->
+        TabsUnifyMediator(bindingContent.tpFollow, bindingContent.viewPager) { tab, position ->
             tab.setCustomText(listOfPages[position].first)
         }
 
-        binding.viewPager.registerOnPageChangeCallback(onPageChangeCallback)
+        bindingContent.viewPager.registerOnPageChangeCallback(onPageChangeCallback)
 
-        binding.viewPager.setCurrentItem(
+        bindingContent.viewPager.setCurrentItem(
             if (selectedTab == UserProfileActivity.EXTRA_FOLLOWING) FOLLOWING_PAGE_POSITION
             else FOLLOWERS_PAGE_POSITION, false
         )
@@ -162,13 +172,46 @@ class FollowerFollowingListingFragment @Inject constructor(
             }
         }
         viewModel.followCount.observe(viewLifecycleOwner) {
-            Timber.d("data $it")
             updateFollowCount(it)
+        }
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.loadingState.withCache().collectLatest { (prevState, currState) ->
+                updateLoadingPage(prevState, currState)
+            }
+        }
+    }
+
+    private fun updateLoadingPage(
+        prevState: FollowFollowingLoadingUiState?,
+        currState: FollowFollowingLoadingUiState
+    ) {
+        if (prevState == currState) return
+
+        when (currState.state) {
+            is FollowFollowingLoadingUiState.LoadingState.Error -> {
+                bindingContent.root.hide()
+                bindingShimmer.root.hide()
+                binding.globalError.show()
+                binding.globalError.setType(GlobalError.SERVER_ERROR)
+                binding.globalError.setActionClickListener { viewModel.getProfile(userId) }
+            }
+
+            FollowFollowingLoadingUiState.LoadingState.HideLoading -> {
+                bindingContent.root.show()
+                binding.globalError.hide()
+                bindingShimmer.root.hide()
+            }
+
+            FollowFollowingLoadingUiState.LoadingState.ShowLoading -> {
+                bindingContent.root.hide()
+                binding.globalError.hide()
+                bindingShimmer.root.show()
+            }
         }
     }
 
     private fun updateFollowCount(followCount: FollowListUiModel.FollowCount) {
-        binding.tpFollow.getUnifyTabLayout().let { tabLayout ->
+        bindingContent.tpFollow.getUnifyTabLayout().let { tabLayout ->
             if (tabLayout.tabCount < DEFAULT_TAB_TOTAL) return@let
 
             tabLayout.getTabAt(FOLLOWERS_PAGE_POSITION)?.let { tab ->
