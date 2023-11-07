@@ -27,7 +27,9 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
         private const val BUNDLE_KEY_REVIEW = "review"
         private const val MAX_ATTACHMENT = 5
         private const val LEFT_MARGIN = 4
-        private const val ATTACHMENT_CORNER_RADIUS = 12 fun newInstance(review: ShopReview.Review): ReviewViewPagerItemFragment {
+        private const val ATTACHMENT_CORNER_RADIUS = 12
+
+        fun newInstance(review: ShopReview.Review): ReviewViewPagerItemFragment {
             return ReviewViewPagerItemFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(BUNDLE_KEY_REVIEW, review)
@@ -70,8 +72,8 @@ class ReviewViewPagerItemFragment : BaseDaggerFragment() {
                 binding?.tpgReviewerLabel?.text = review.reviewerLabel
             }
 
-            binding?.tpgCompletedReview?.text = getString(R.string.shop_info_placeholder_complete_review, review.likeDislike.totalLike)
-            binding?.tpgReviewLikeCount?.text = getString(R.string.shop_info_placeholder_useful_review, review.likeDislike.likeStatus)
+            binding?.tpgCompletedReview?.text = getString(R.string.shop_info_placeholder_complete_review, review.likeDislike.likeStatus)
+            binding?.tpgReviewLikeCount?.text = getString(R.string.shop_info_placeholder_useful_review, review.likeDislike.totalLike)
 
             renderAttachments(review.attachments)
         }
