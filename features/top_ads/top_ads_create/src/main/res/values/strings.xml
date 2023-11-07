@@ -228,10 +228,7 @@
     <string name="topads_ads_search_browse_bid_auto_subtitle">Diatur sistem TopAds</string>
     <string name="topads_ads_browse_bid_item_title">Iklan di Rekomendasi</string>
     <string name="topads_ads_browse_bid_tooltip_title">Iklan di Rekomendasi</string>
-    <string name="topads_ads_browse_bid_tooltip_description">Iklanmu akan tampil pada berbagai halaman strategis seperti di halaman home, keranjang, inbox dan detail produk.
-Sistem Tokopedia akan menampilkan iklan produkmu dengan kemampuan teknologi yang dapat menyesuaikan ketertarikan dan riwayat penjelajahan calon pembeli memungkinkan iklanmu menjangkau calon pembeli dengan lebih luas dan tepat.
-Tips:
-Semakin tinggi biaya iklanmu, maka semakin tinggi peluang iklanmu ditampilkan.</string>
+    <string name="topads_ads_browse_bid_tooltip_description">Iklanmu akan tampil pada berbagai halaman strategis seperti di halaman home, keranjang, inbox dan detail produk.\n\nSistem Tokopedia akan menampilkan iklan produkmu dengan kemampuan teknologi yang dapat menyesuaikan ketertarikan dan riwayat penjelajahan calon pembeli memungkinkan iklanmu menjangkau calon pembeli dengan lebih luas dan tepat.\n\nTips:\nSemakin tinggi biaya iklanmu, maka semakin tinggi peluang iklanmu ditampilkan.</string>
     <string name="topads_ads_browse_bid_title">Atur Iklan di Rekomendasi</string>
     <string name="topads_ads_chip_title_one">Sudah Diiklankan (%d)</string>
     <string name="topads_ads_chip_title_two">Belum Diiklankan (%d)</string>
