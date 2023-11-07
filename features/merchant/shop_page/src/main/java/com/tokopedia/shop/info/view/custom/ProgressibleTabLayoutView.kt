@@ -60,19 +60,15 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
         this.intervalDuration = config.intervalDuration
         this.onTimerFinish = onTimerFinish
 
-        println("Timer. Executing renderTabIndicator")
         cancelTimer()
-        println("Timer. cancelling timer")
 
         // Remove current tab indicators
         removeAllViews()
 
         for (currentIndex in 0 until config.itemCount) {
             val item = if (currentIndex == selectedTabIndicatorIndex) {
-                println("Timer. Creating selected dot on $currentIndex")
                 createSelectedDot(config.totalDuration)
             } else {
-                println("Timer. Creating unselected index on $currentIndex")
                 createUnselectedDot()
             }
             addView(item)
@@ -113,15 +109,11 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
                 previousProgressMillis = completedMillis
 
                 progressAnimator?.setIntValues(completedMillis.toInt())
-                println("Timer. setupCountDownTimer onTick completedMillis$completedMillis, millisUntilFinished $millisUntilFinished")
             }
 
             override fun onFinish() {
                 progressAnimator?.setIntValues(totalDuration.toInt())
-
                 onTimerFinish()
-
-                println("Timer. setupCountDownTimer onFinish")
             }
         }
 
@@ -137,7 +129,6 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
     }
 
     private fun cancelTimer() {
-        println("Timer. cancelTimer")
         countDownTimer?.cancel()
         progressAnimator?.cancel()
     }
@@ -189,13 +180,11 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
     }
 
     override fun onResume(owner: LifecycleOwner) {
-        println("Timer. onResume")
         super.onResume(owner)
         resumeTimer()
     }
 
     override fun onPause(owner: LifecycleOwner) {
-        println("Timer. onPause")
         super.onPause(owner)
         cancelTimer()
     }

@@ -63,7 +63,6 @@ class ShopReviewView @JvmOverloads constructor(
     ) {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                println("Timer. onPageSelected position $position")
                 super.onPageSelected(position)
 
                 val config = ProgressibleTabLayoutView.Config(
