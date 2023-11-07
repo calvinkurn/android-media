@@ -4,5 +4,5 @@
     android:id="@+id/pdp_shipment_local_load"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:unify_local_load_description="@string/variant_failed_load_description"
-    app:unify_local_load_title="@string/pdp_shipping_failed_label" />
+    app:unify_local_load_description="@string/pdp_shipment_failed_message"
+    app:unify_local_load_title="@string/pdp_shipment_failed_title" />
