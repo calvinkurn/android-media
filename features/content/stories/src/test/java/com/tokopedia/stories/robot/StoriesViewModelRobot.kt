@@ -219,6 +219,10 @@ internal class StoriesViewModelRobot(
         viewModel.submitAction(StoriesUiAction.UpdateStoryDuration(duration))
     }
 
+    fun buffering() {
+        viewModel.submitAction(StoriesUiAction.VideoBuffering)
+    }
+
     fun openProductBottomSheet() {
         entryPointTestCase(0)
         viewModel.submitAction(StoriesUiAction.OpenProduct)

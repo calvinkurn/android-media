@@ -1228,7 +1228,8 @@ class StoriesUnitTest {
         val newDuration = 10000
         val selectedGroup = 0
         val selectedDetail = 0
-        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail, duration = defaultDuration)
+        val expectedData =
+            mockInitialDataModel(selectedGroup, selectedDetail, duration = defaultDuration)
 
         coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
         coEvery { mockUserSession.userId } returns "123"
@@ -1244,6 +1245,32 @@ class StoriesUnitTest {
                     storiesDetailItem.content.duration.assertEqualTo(newDuration)
                 } else {
                     storiesDetailItem.content.duration.assertEqualTo(defaultDuration)
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `when buffering should change detail items to buffering`() {
+        val selectedGroup = 0
+        val selectedDetail = 0
+        val expectedData =
+            mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockUserSession.userId } returns "123"
+
+        getStoriesRobot().use { robot ->
+            val state = robot.recordStateAndEvents {
+                robot.entryPointTestCase(selectedGroup)
+                robot.buffering()
+            }
+
+            state.first.storiesMainData.groupItems[selectedGroup].detail.detailItems.forEachIndexed { index, storiesDetailItem ->
+                if (index == selectedDetail) {
+                    storiesDetailItem.event.assertEqualTo(StoriesDetailItemUiEvent.BUFFERING)
+                } else {
+                    storiesDetailItem.event.assertEqualTo(StoriesDetailItemUiEvent.PAUSE)
                 }
             }
         }
