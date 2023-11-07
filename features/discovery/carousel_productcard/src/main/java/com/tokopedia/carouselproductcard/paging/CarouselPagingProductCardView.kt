@@ -11,18 +11,14 @@ import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.carouselproductcard.databinding.CarouselPagingProductCardLayoutBinding
+import com.tokopedia.carouselproductcard.helper.CarouselPagingUtil
 import com.tokopedia.carouselproductcard.helper.StartPagerSnapHelper
 import com.tokopedia.carouselproductcard.paging.GroupPaginationOnScrollListener.PaginationListener
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlin.math.max
 
 
 class CarouselPagingProductCardView: ConstraintLayout {
-
-    companion object {
-        private const val REMAINING_SCREEN_SIZE_PERCENTAGE = 0.2
-    }
 
     private var binding: CarouselPagingProductCardLayoutBinding? = null
     private var groupPaginationOnScrollListener: GroupPaginationOnScrollListener? = null
@@ -30,9 +26,14 @@ class CarouselPagingProductCardView: ConstraintLayout {
     private var itemDecoration: ItemDecoration? = null
 
     private val config = AttributesConfig()
+    private val util = CarouselPagingUtil(
+        context,
+        config.itemWidthPercentage,
+        config.pagingPaddingHorizontal
+    )
 
     private val adapter: Adapter by lazy {
-        Adapter(TypeFactoryImpl(config.pagingPaddingHorizontal))
+        Adapter(TypeFactoryImpl(util))
     }
 
     private val snapHelper: StartPagerSnapHelper by lazy {
@@ -86,7 +87,7 @@ class CarouselPagingProductCardView: ConstraintLayout {
     private fun initRecyclerView() {
         binding?.carouselPagingProductCardRecyclerView?.run {
             updatePadding(
-                right = getRemainingScreenSize()
+                right = util.getRemainingScreenSize()
             )
 
             adapter = this@CarouselPagingProductCardView.adapter
@@ -153,8 +154,6 @@ class CarouselPagingProductCardView: ConstraintLayout {
 
         scrollToCurrentPage(visitableList, model)
     }
-
-    private fun getRemainingScreenSize() = (DeviceScreenInfo.getScreenWidth(context) * REMAINING_SCREEN_SIZE_PERCENTAGE).toInt()
 
     private fun RecyclerView.setupOnScrollListener(
         model: CarouselPagingModel,

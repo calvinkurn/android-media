@@ -19,6 +19,7 @@ class PlayPreference @Inject constructor(
         private const val A_DAY_IN_MILLIS: Long = 86400000
 
         private const val FOLLOW_POP_UP = "follow_pop_up_%1s_%2s"
+        private const val SWIPE_ON_BOARDING = "swipe_on_boarding"
     }
 
     private val sharedPref = context.getSharedPreferences(PLAY_PREFERENCE, Context.MODE_PRIVATE)
@@ -31,17 +32,28 @@ class PlayPreference @Inject constructor(
         get() = System.currentTimeMillis()
 
     private val generateUserId: String
-        get() = if(userSession.userId.isEmpty()) "0" else userSession.userId
+        get() = if (userSession.userId.isEmpty()) "0" else userSession.userId
 
-    //StreamerId = authorId/shopId
+    // StreamerId = authorId/shopId
     fun setFollowPopUp(streamerId: String) {
-        if(isFollowPopup(streamerId))
+        if (isFollowPopup(streamerId)) {
             sharedPref.edit().putLong(String.format(FOLLOW_POP_UP, generateUserId, streamerId), currentTime).apply()
+        }
     }
 
-    fun isFollowPopup(streamerId: String) : Boolean {
-        return if(!sharedPref.contains(String.format(FOLLOW_POP_UP, generateUserId, streamerId)))
+    fun isFollowPopup(streamerId: String): Boolean {
+        return if (!sharedPref.contains(String.format(FOLLOW_POP_UP, generateUserId, streamerId))) {
             true
-        else (currentTime - sharedPref.getLong(String.format(FOLLOW_POP_UP, generateUserId, streamerId), 0)) >= A_DAY_IN_MILLIS
+        } else {
+            (currentTime - sharedPref.getLong(String.format(FOLLOW_POP_UP, generateUserId, streamerId), 0)) >= A_DAY_IN_MILLIS
+        }
+    }
+
+    fun setOnBoardingHasShown() {
+        sharedPref.edit().putBoolean(SWIPE_ON_BOARDING, true).apply()
+    }
+
+    fun isOnBoardingHasBeenShown(): Boolean {
+        return sharedPref.getBoolean(SWIPE_ON_BOARDING, false)
     }
 }

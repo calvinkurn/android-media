@@ -162,6 +162,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   is_shipping_printed
                   is_broadcast_chat
                   shipment_logo
+                  is_affiliate
                 }
                 label_info {
                   flag_name

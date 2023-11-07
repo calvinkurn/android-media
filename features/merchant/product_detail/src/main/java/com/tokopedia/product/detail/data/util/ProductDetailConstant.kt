@@ -139,6 +139,7 @@ object ProductDetailConstant {
     const val ARG_CHANNEL = "ARG_CHANNEL"
     const val ARG_CAMPAIGN_ID = "ARG_CAMPAIGN_ID"
     const val ARG_VARIANT_ID = "ARG_VARIANT_ID"
+    const val ARG_PREFETCH_CACHE_ID = "ARG_PREFETCH_CACHE_ID"
 
     // Animation
     const val CART_MAX_COUNT = 99
