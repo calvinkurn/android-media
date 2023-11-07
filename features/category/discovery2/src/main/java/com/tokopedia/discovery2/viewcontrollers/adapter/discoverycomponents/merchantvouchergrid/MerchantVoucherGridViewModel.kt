@@ -36,10 +36,13 @@ class MerchantVoucherGridViewModel(
     private val _seeMore: MutableLiveData<Redirection> = MutableLiveData()
     private val _noMorePages: MutableLiveData<Unit> = MutableLiveData()
 
-    val shimmerComponent = ComponentsItem(
+    private val shimmerComponent = ComponentsItem(
         name = ComponentNames.Shimmer.componentName,
-        shimmerHeight = SHIMMER_COMPONENT_HEIGHT
+        shimmerHeight = SHIMMER_COMPONENT_HEIGHT,
+        shouldRefreshComponent = true
     )
+
+    private val layout: ArrayList<ComponentsItem> = arrayListOf(shimmerComponent, shimmerComponent)
 
     val couponList: LiveData<Result<ArrayList<ComponentsItem>>>
         get() = _couponList
@@ -58,7 +61,10 @@ class MerchantVoucherGridViewModel(
         get() = Dispatchers.IO + SupervisorJob()
 
     fun loadFirstPageCoupon() {
+        _couponList.value = Success(ArrayList(layout))
+
         isLoading = true
+
         launchCatchError(
             block = {
                 if (useCase?.loadFirstPageComponents(componentId = component.id, pageEndPoint = component.pageEndPoint) == true) {
@@ -66,7 +72,8 @@ class MerchantVoucherGridViewModel(
                     setVoucherList(
                         redirection = redirection,
                         onEventAfterVoucherListSet = {
-                            addSeeMore(redirection)
+                            _seeMore.postValue(redirection)
+                            _noMorePages.postValue(Unit)
                         }
                     )
                 }
@@ -90,8 +97,8 @@ class MerchantVoucherGridViewModel(
                 if (useCase?.getCarouselPaginatedData(componentId = component.id, pageEndPoint = component.pageEndPoint) == true) {
                     setVoucherList(
                         redirection = getComponentAdditionalInfo()?.redirection,
-                        onEventAfterVoucherListSet = { voucherList ->
-                            voucherList.removeShimmer()
+                        onEventAfterVoucherListSet = {
+                            _noMorePages.postValue(Unit)
                         }
                     )
                 }
@@ -108,44 +115,35 @@ class MerchantVoucherGridViewModel(
 
     private fun setVoucherList(
         redirection: Redirection?,
-        onEventAfterVoucherListSet: (voucherList: ArrayList<ComponentsItem>) -> Unit,
+        onEventAfterVoucherListSet: () -> Unit,
     ) {
-        getVoucherList()?.let { voucherList ->
+        component.getComponentsItem()?.let { voucherList ->
             if (voucherList.isNotEmpty()) {
                 if (hasNextPage() && redirection?.ctaText.isNullOrBlank()) {
-                    voucherList.addShimmer()
+                    layout.addVoucherList(voucherList)
+                    layout.addShimmer()
                 } else {
-                    onEventAfterVoucherListSet(voucherList)
+                    onEventAfterVoucherListSet.invoke()
+                    layout.addVoucherList(voucherList)
                 }
-                _couponList.postValue(Success(voucherList))
+                _couponList.postValue(Success(ArrayList(layout)))
             } else {
                 _couponList.postValue(Fail(Throwable(ERROR_MESSAGE_EMPTY_DATA)))
             }
         }
     }
 
-    private fun getVoucherList(): ArrayList<ComponentsItem>? {
-        component.getComponentsItem()?.let { list ->
-            return list as ArrayList<ComponentsItem>
-        }
-        return null
-    }
-
     private fun getComponentAdditionalInfo(): ComponentAdditionalInfo? = component.getComponentAdditionalInfo()
 
-    private fun addSeeMore(
-        redirection: Redirection?
+    private fun ArrayList<ComponentsItem>.addVoucherList(
+        voucherList: List<ComponentsItem>
     ) {
-        _seeMore.postValue(redirection)
+        layout.clear()
+        addAll(voucherList)
     }
 
     private fun ArrayList<ComponentsItem>.addShimmer() {
         add(shimmerComponent)
         add(shimmerComponent)
-    }
-
-    private fun ArrayList<ComponentsItem>.removeShimmer() {
-        remove(shimmerComponent)
-        remove(shimmerComponent)
     }
 }

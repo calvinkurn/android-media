@@ -61,27 +61,27 @@ class MerchantVoucherGridViewHolder(
         }
 
         if (UserSession(fragment.context).isLoggedIn) {
-            addShimmer()
             viewModel?.loadFirstPageCoupon()
         }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
-        lifecycleOwner?.let { lifeCycle ->
-            viewModel?.getSyncPageLiveData()?.observe(lifeCycle) { needReSync ->
-                if (needReSync) (fragment as? DiscoveryFragment)?.reSync()
-            }
-
+        lifecycleOwner?.let { lifecycleOwner ->
             viewModel?.apply {
-                couponList.observe(lifeCycle) { result ->
+                couponList.observe(lifecycleOwner) { result ->
                     when (result) {
                         is Success -> renderMerchantVouchers(result.data)
                         is Fail -> handleErrorState()
                     }
                 }
+
+                noMorePages.observe(lifecycleOwner) {
+                    (fragment as? DiscoveryFragment)?.onMerchantVoucherScrolledCallback = null
+                }
+
             }
 
-            viewModel?.seeMore?.observe(lifeCycle) { redirection ->
+            viewModel?.seeMore?.observe(lifecycleOwner) { redirection ->
                 renderSeeMoreButton(redirection)
             }
         }
@@ -103,19 +103,9 @@ class MerchantVoucherGridViewHolder(
         lifecycleOwner?.let { viewModel?.seeMore?.removeObservers(it) }
     }
 
-    private fun addShimmer() {
-        val shimmerComponent = ComponentsItem(
-            name = ComponentNames.Shimmer.componentName,
-            shimmerHeight = SHIMMER_HEIGHT
-        )
-
-        adapter.setDataList(arrayListOf(shimmerComponent, shimmerComponent))
-    }
-
     private fun renderMerchantVouchers(items: ArrayList<ComponentsItem>?) {
         recyclerView.show()
         adapter.setDataList(items)
-        adapter.notifyDataSetChanged()
     }
 
     private fun handleErrorState() {
@@ -125,10 +115,8 @@ class MerchantVoucherGridViewHolder(
 
     private fun handlePagination() {
         (fragment as? DiscoveryFragment)?.onMerchantVoucherScrolledCallback = {
-            val totalItemCount: Int = mLayoutManager.itemCount
             viewModel?.let { viewModel ->
                 if (!viewModel.isLoading && !it.canScrollVertically(SCROLL_DOWN_DIRECTION)) {
-                    viewModel.isLoading = true
                     viewModel.loadMore()
                 }
             }
