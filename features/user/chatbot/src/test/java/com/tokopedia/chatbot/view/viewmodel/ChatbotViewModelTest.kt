@@ -1359,6 +1359,17 @@ class ChatbotViewModelTest {
     }
 
     @Test
+    fun `cancelVideoUpload error`() {
+        coEvery {
+            uploaderUseCase.abortUpload("ABC", "123")
+        } throws Exception()
+
+        viewModel.cancelVideoUpload("123", "ABC")
+
+        assertNull(viewModel.mediaUploadJobs.value.get("123"))
+    }
+
+    @Test
     fun `tryUploadMedia success when shouldResetFailedUpload is true`() {
         runBlockingTest {
             val data: Pair<Boolean, List<VideoUploadData>> = Pair(
@@ -2355,6 +2366,52 @@ class ChatbotViewModelTest {
         }
     }
 
+    @Test
+    fun `sendDynamicAttachment108ForAcknowledgement success`() {
+        mockkObject(ChatbotSendableWebSocketParam)
+
+        every {
+            ChatbotSendableWebSocketParam.generateParamDynamicAttachment108ForAcknowledgement(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
+
+        every {
+            chatbotWebSocket.send(
+                ChatbotSendableWebSocketParam.generateParamDynamicAttachment108ForAcknowledgement(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
+            )
+        } just runs
+
+        viewModel.sendDynamicAttachment108ForAcknowledgement("", "", QuickReplyUiModel("", "", ""), "", 0, false)
+
+        verify {
+            chatbotWebSocket.send(
+                ChatbotSendableWebSocketParam.generateParamDynamicAttachment108ForAcknowledgement(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
+            )
+        }
+    }
+
     /**
      * Get Chat Unit Tests
      * */
@@ -3185,6 +3242,10 @@ class ChatbotViewModelTest {
         viewModel.applink.value?.let {
             assertTrue(it.isEmpty())
         }
+    }
+
+    @Test
+    fun `sendQuickReplyInvoice_typingBlocked`() {
     }
 
     private fun generateChatUiModelWithVideo(video: String, totalLength: Long): VideoUploadUiModel {
