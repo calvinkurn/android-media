@@ -24,6 +24,11 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
 
     private var countDownTimer: CountDownTimer? = null
     private var progressAnimator: ObjectAnimator? = null
+    private var previousTotalDuration: Long = 0
+    private var intervalDuration: Long = 0
+    private var previousProgressMillis: Long = 0
+    private var onTimerFinish: () -> Unit = {}
+    private var totalDuration: Long = 0
 
     init {
         orientation = HORIZONTAL
@@ -51,6 +56,11 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
     ) {
         lifecycle.addObserver(this)
 
+        this.previousTotalDuration = config.totalDuration
+        this.totalDuration = config.totalDuration
+        this.intervalDuration = config.intervalDuration
+        this.onTimerFinish = onTimerFinish
+
         println("Timer. Executing renderTabIndicator")
         cancelTimer()
         println("Timer. cancelling timer")
@@ -69,13 +79,12 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
             addView(item)
         }
 
-        setupCountDownTimer(
+        startTimer(
+            previousTotalDuration = previousTotalDuration,
             totalDuration = config.totalDuration,
             intervalDuration = config.intervalDuration,
             onTimerFinish = onTimerFinish
         )
-
-        startTimer()
     }
 
     private fun getSelectedTabIndicator(): ProgressBar? {
@@ -89,24 +98,34 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
         return null
     }
 
-    private fun setupCountDownTimer(
+    private fun startTimer(
+        previousTotalDuration: Long,
         totalDuration: Long,
         intervalDuration: Long,
         onTimerFinish: () -> Unit
     ) {
-        println("Timer. setupCountDownTimer")
+        println("Timer. startTimer with total duration $totalDuration")
         val progressBar = getSelectedTabIndicator()
+
+        if (previousTotalDuration == totalDuration) {
+            // Start mode
+            progressAnimator?.setIntValues(Int.ZERO)
+        } else {
+            // Resume mode
+            progressAnimator?.setIntValues(previousTotalDuration.toInt())
+        }
 
         progressAnimator = ObjectAnimator.ofInt(progressBar, "progress", 0)
         progressAnimator?.duration = totalDuration
+        progressAnimator?.start()
 
-        println("Timer. setupCountDownTimer progressBar is $progressBar")
         countDownTimer = object : CountDownTimer(totalDuration, intervalDuration) {
             override fun onTick(millisUntilFinished: Long) {
                 val completedMillis = totalDuration - millisUntilFinished
+                previousProgressMillis = completedMillis
 
                 progressAnimator?.setIntValues(completedMillis.toInt())
-                println("Timer. setupCountDownTimer onTick completed millis $completedMillis, millisuntilfinished $millisUntilFinished")
+                println("Timer. setupCountDownTimer onTick completedMillis$completedMillis, millisUntilFinished $millisUntilFinished")
             }
 
             override fun onFinish() {
@@ -117,14 +136,14 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
                 println("Timer. setupCountDownTimer onFinish")
             }
         }
+
+        countDownTimer?.start()
     }
 
-    private fun startTimer() {
-        println("Timer. startTimer")
-        cancelTimer()
-        countDownTimer?.start()
-        progressAnimator?.setIntValues(Int.ZERO)
-        progressAnimator?.start()
+    private fun resumeTimer() {
+        val remainingTime = totalDuration - previousProgressMillis
+        println("Timer. resumeTimer. Countdown from $remainingTime to 0")
+        startTimer(previousTotalDuration, remainingTime, intervalDuration, onTimerFinish)
     }
 
     private fun cancelTimer() {
@@ -182,24 +201,12 @@ class ProgressibleTabLayoutView @JvmOverloads constructor(
     override fun onResume(owner: LifecycleOwner) {
         println("Timer. onResume")
         super.onResume(owner)
-        startTimer()
+        resumeTimer()
     }
 
     override fun onPause(owner: LifecycleOwner) {
         println("Timer. onPause")
         super.onPause(owner)
-        cancelTimer()
-    }
-
-    override fun onStop(owner: LifecycleOwner) {
-        println("Timer. onStop")
-        super.onStop(owner)
-        cancelTimer()
-    }
-
-    override fun onDestroy(owner: LifecycleOwner) {
-        println("Timer. onDestroy")
-        super.onDestroy(owner)
         cancelTimer()
     }
 }
