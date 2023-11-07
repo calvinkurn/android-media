@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_POF_STATUS
@@ -17,7 +18,6 @@ import com.tokopedia.sellerorder.common.presenter.activities.SomPrintAwbActivity
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment
-import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.activity.PofActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.webview.KEY_TITLE
@@ -161,11 +161,14 @@ object SomNavigator {
 
     fun goToPofPage(fragment: Fragment, orderId: String, pofStatus: Int) {
         fragment.run {
-            val intent = Intent(fragment.context, PofActivity::class.java).apply {
-                putExtra(PARAM_ORDER_ID, orderId)
-                putExtra(PARAM_POF_STATUS, pofStatus)
-            }
-            startActivityForResult(intent, REQUEST_POF)
+            val appLink = UriUtil.buildUriAppendParam(
+                ApplinkConst.SELLER_PARTIAL_ORDER_FULFILLMENT,
+                mapOf(
+                    PARAM_ORDER_ID to orderId,
+                    PARAM_POF_STATUS to pofStatus.toString()
+                )
+            )
+            startActivityForResult(RouteManager.getIntent(context, appLink), REQUEST_POF)
         }
     }
 }

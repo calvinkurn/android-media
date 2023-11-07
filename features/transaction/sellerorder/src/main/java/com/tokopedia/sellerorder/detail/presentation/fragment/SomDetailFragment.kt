@@ -52,6 +52,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -154,9 +155,9 @@ import com.tokopedia.webview.KEY_URL
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.sellerorder.R as sellerorderR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.sellerorder.R as sellerorderR
 
 /**x
  * Created by fwidjaja on 2019-09-30.
@@ -1016,8 +1017,8 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
                         )
                         key.equals(KEY_POF, true) -> SomNavigator.goToPofPage(
                             this,
-                            orderId,
-                            detailResponse?.pofData?.pofStatus.orZero()
+                            detailResponse?.orderId.toZeroStringIfNull(),
+                            detailResponse?.pofData?.pofStatus ?: STATUS_INITIAL
                         )
                     }
                 }

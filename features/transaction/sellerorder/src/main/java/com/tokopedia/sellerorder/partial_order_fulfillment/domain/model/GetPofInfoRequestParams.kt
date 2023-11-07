@@ -15,6 +15,7 @@ data class GetPofInfoRequestParams(
     val delay: Long = 0,
     @SerializedName("cache_type")
     @Expose(serialize = false, deserialize = false)
+    @Transient
     val cacheType: CacheType = CacheType.ALWAYS_CLOUD
 ) {
     fun valid(): Boolean {

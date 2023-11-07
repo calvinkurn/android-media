@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.partial_order_fulfillment.presentation.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.ItemPofErrorStateBinding
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.adapter.PofAdapterTypeFactory
@@ -46,5 +47,6 @@ class PofErrorStateViewHolder(
                 GlobalError.SERVER_ERROR
             }
         )
+        binding.root.errorDescription.text = ErrorHandler.getErrorMessage(binding.root.context, throwable)
     }
 }

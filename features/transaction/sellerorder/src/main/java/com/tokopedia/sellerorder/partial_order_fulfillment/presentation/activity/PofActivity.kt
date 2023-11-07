@@ -6,27 +6,24 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_POF_STATUS
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.sellerorder.partial_order_fulfillment.di.DaggerPofComponent
 import com.tokopedia.sellerorder.partial_order_fulfillment.di.PofComponent
+import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofRequestInfoResponse.Data.InfoRequestPartialOrderFulfillment.Companion.STATUS_INITIAL
 import com.tokopedia.sellerorder.partial_order_fulfillment.presentation.bottomsheet.PofBottomSheet
 import timber.log.Timber
 import com.tokopedia.abstraction.R as abstractionR
 
 class PofActivity : BaseSimpleActivity(), HasComponent<PofComponent> {
 
-    private val orderId by lazyThreadSafetyNone {
-        intent.extras?.getString(PARAM_ORDER_ID).toLongOrZero()
-    }
-
-    private val pofStatus by lazyThreadSafetyNone {
-        intent.extras?.getString(PARAM_POF_STATUS).toIntOrZero()
-    }
+    private var orderId: Long = Long.ZERO
+    private var pofStatus: Int = STATUS_INITIAL
 
     private val daggerComponent by lazyThreadSafetyNone {
         DaggerPofComponent
@@ -43,6 +40,10 @@ class PofActivity : BaseSimpleActivity(), HasComponent<PofComponent> {
     }
 
     override fun getNewFragment(): Fragment? {
+        orderId = intent.extras?.getString(PARAM_ORDER_ID)?.toLongOrNull()
+            ?: intent.data?.getQueryParameter(PARAM_ORDER_ID).toLongOrZero()
+        pofStatus = intent.extras?.getString(ApplinkConstInternalOrder.PARAM_POF_STATUS)?.toIntOrNull()
+            ?: intent.data?.getQueryParameter(ApplinkConstInternalOrder.PARAM_POF_STATUS).toIntOrZero()
         return null
     }
 

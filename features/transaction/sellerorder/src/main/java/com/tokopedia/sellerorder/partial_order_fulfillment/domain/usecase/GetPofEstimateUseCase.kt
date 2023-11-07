@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofEstimateRequestParams
@@ -76,6 +77,10 @@ class GetPofEstimateUseCase @Inject constructor(
     private suspend fun sendRequest(
         params: GetPofEstimateRequestParams
     ): GetPofRequestEstimateResponse.Data {
-        return repository.request(graphqlQuery(), createGqlParams(params))
+        return repository.request(
+            graphqlQuery(),
+            createGqlParams(params),
+            GraphqlCacheStrategy.Builder(params.cacheType).build()
+        )
     }
 }
