@@ -20,7 +20,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BadgedBox
@@ -46,7 +48,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -80,6 +81,8 @@ import com.tokopedia.nest.components.ticker.TickerType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.nest.principles.utils.ImpressionHolder
+import com.tokopedia.nest.principles.utils.addImpression
 import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.constant.Constant
@@ -115,7 +118,6 @@ private const val STATUS_INCUBATE_OS = 6
 private const val TICKER_TYPE_WARNING = "warning"
 private const val TICKER_TYPE_DANGER = "danger"
 
-// TODO: Add alpha to text
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SellerMenuScreen(
@@ -125,7 +127,9 @@ fun SellerMenuScreen(
     onActionClick: (SellerMenuActionClick) -> Unit,
     onReload: (Boolean) -> Unit,
     onTickerClick: (String) -> Unit,
-    onShowToaster: (String) -> Unit
+    onShowToaster: (String) -> Unit,
+    onShopInfoImpressed: (ShopType?) -> Unit,
+    onShopScoreImpressed: () -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
     val isRefreshing = viewModel.isRefreshing.collectAsStateWithLifecycle()
@@ -181,10 +185,12 @@ fun SellerMenuScreen(
                     onReload,
                     onTickerClick,
                     onShowToaster = { message ->
-                        if (isToasterAlreadyShown.value != true) {
+                        if (!isToasterAlreadyShown.value) {
                             onShowToaster(message)
                         }
-                    }
+                    },
+                    onShopInfoImpressed = onShopInfoImpressed,
+                    onShopScoreImpressed = onShopScoreImpressed
                 )
 
                 PullRefreshIndicator(
@@ -205,6 +211,8 @@ fun SellerMenuContent(
     onReload: (Boolean) -> Unit,
     onTickerClick: (String) -> Unit,
     onShowToaster: (String) -> Unit,
+    onShopInfoImpressed: (ShopType?) -> Unit,
+    onShopScoreImpressed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     when (uiState) {
@@ -212,15 +220,41 @@ fun SellerMenuContent(
             if (uiState.isInitialValue) {
                 onSuccessLoadInitialState()
             }
-            SellerMenuSuccessState(uiState.visitableList, onActionClick, onReload, onTickerClick, modifier)
+            SellerMenuSuccessState(
+                uiState.visitableList,
+                onActionClick,
+                onReload,
+                onTickerClick,
+                onShopInfoImpressed,
+                onShopScoreImpressed,
+                modifier
+            )
         }
+
         is SellerMenuUIState.OnFailedGetMenuList -> {
             uiState.throwable.message?.takeIf { it.isNotBlank() }?.let { errorMessage ->
                 onShowToaster(errorMessage)
             }
-            SellerMenuSuccessState(uiState.visitableList, onActionClick, onReload, onTickerClick, modifier)
+            SellerMenuSuccessState(
+                uiState.visitableList,
+                onActionClick,
+                onReload,
+                onTickerClick,
+                onShopInfoImpressed,
+                onShopScoreImpressed,
+                modifier
+            )
         }
-        else -> SellerMenuSuccessState(listOf(), onActionClick, onReload, onTickerClick, modifier)
+
+        else -> SellerMenuSuccessState(
+            listOf(),
+            onActionClick,
+            onReload,
+            onTickerClick,
+            onShopInfoImpressed,
+            onShopScoreImpressed,
+            modifier
+        )
     }
 }
 
@@ -230,9 +264,15 @@ fun SellerMenuSuccessState(
     onActionClick: (SellerMenuActionClick) -> Unit,
     onReload: (Boolean) -> Unit,
     onTickerClick: (String) -> Unit,
+    onShopInfoImpressed: (ShopType?) -> Unit,
+    onShopScoreImpressed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(modifier = modifier) {
+    val lazyListState = rememberLazyListState()
+    LazyColumn(
+        modifier = modifier,
+        state = lazyListState
+    ) {
         items(
             items,
             contentType = {
@@ -254,6 +294,7 @@ fun SellerMenuSuccessState(
                             }
                         )
                     }
+
                     is SellerMenuItemUiModel -> {
                         SellerMenuItem(
                             iconType = it.iconUnifyType,
@@ -267,6 +308,7 @@ fun SellerMenuSuccessState(
                             }
                         )
                     }
+
                     is SellerMenuOrderUiModel -> {
                         SellerMenuOrderSection(
                             newOrderCount = it.newOrderCount,
@@ -274,6 +316,7 @@ fun SellerMenuSuccessState(
                             onActionClick = onActionClick
                         )
                     }
+
                     is SellerMenuProductUiModel -> {
                         SellerMenuProductSection(
                             productCount = stringResource(
@@ -285,6 +328,7 @@ fun SellerMenuSuccessState(
                             }
                         )
                     }
+
                     is SellerMenuDividerUiModel -> {
                         when (it.type) {
                             DividerType.THICK -> {
@@ -298,6 +342,7 @@ fun SellerMenuSuccessState(
                                         )
                                 )
                             }
+
                             DividerType.THIN_FULL -> {
                                 NestDivider(
                                     size = NestDividerSize.Small,
@@ -309,6 +354,7 @@ fun SellerMenuSuccessState(
                                         )
                                 )
                             }
+
                             DividerType.THIN_INDENTED -> {
                                 NestDivider(
                                     size = NestDividerSize.Small,
@@ -321,6 +367,7 @@ fun SellerMenuSuccessState(
                                         )
                                 )
                             }
+
                             else -> {
                                 NestDivider(
                                     size = NestDividerSize.Small,
@@ -336,14 +383,17 @@ fun SellerMenuSuccessState(
                             }
                         }
                     }
+
                     is SellerMenuSectionTitleUiModel -> {
                         SellerMenuTitleOtherSection(
                             title = stringResource(id = it.titleRes)
                         )
                     }
+
                     is SellerMenuInfoLoadingUiModel -> {
                         SellerMenuInfoLoading()
                     }
+
                     is SellerMenuInfoUiModel -> {
                         SellerMenuShopInfo(
                             imageUrl = it.shopAvatarUrl,
@@ -354,7 +404,10 @@ fun SellerMenuSuccessState(
                             partialResponseStatus = it.partialResponseStatus,
                             totalBalance = it.balanceValue,
                             userShopInfoWrapper = it.userShopInfoWrapper,
+                            shopScoreImpressionHolder = it.shopScoreImpressionHolder,
+                            lazyListState = lazyListState,
                             onActionClick = onActionClick,
+                            onShopScoreImpressed = onShopScoreImpressed,
                             isLoading = loading,
                             onReload = { isLoading ->
                                 loading = isLoading
@@ -362,9 +415,19 @@ fun SellerMenuSuccessState(
                             },
                             onClickText = { spannedRange ->
                                 onTickerClick(spannedRange.item)
-                            }
+                            },
+                            modifier = Modifier
+                                .addImpression(
+                                    uniqueIdentifier = it.shopName,
+                                    impressionState = it.impressHolder,
+                                    state = lazyListState,
+                                    onItemViewed = { _ ->
+                                        onShopInfoImpressed(it.userShopInfoWrapper.shopType)
+                                    }
+                                )
                         )
                     }
+
                     is SellerMenuFeatureUiModel -> {
                         SellerMenuFeatureSection(onActionClick = onActionClick)
                     }
@@ -536,6 +599,7 @@ fun SellerMenuInfoLoading() {
 
 @Composable
 fun SellerMenuShopInfo(
+    modifier: Modifier = Modifier,
     imageUrl: String,
     shopNameString: String,
     badgeUrl: String,
@@ -544,12 +608,17 @@ fun SellerMenuShopInfo(
     partialResponseStatus: Pair<Boolean, Boolean>,
     totalBalance: String,
     userShopInfoWrapper: UserShopInfoWrapper,
+    shopScoreImpressionHolder: ImpressionHolder,
+    lazyListState: LazyListState,
     onActionClick: (SellerMenuActionClick) -> Unit,
+    onShopScoreImpressed: () -> Unit,
     isLoading: Boolean,
     onReload: (Boolean) -> Unit,
     onClickText: ((spannedRange: AnnotatedString.Range<String>) -> Unit)? = null
 ) {
-    ConstraintLayout {
+    ConstraintLayout(
+        modifier = modifier
+    ) {
         val (
             ticker,
             startSpace,
@@ -557,6 +626,7 @@ fun SellerMenuShopInfo(
             shopName,
             shopBadge,
             avatarSpace,
+            endSpace,
             dot,
             shopFollowers,
             shopScore,
@@ -619,6 +689,9 @@ fun SellerMenuShopInfo(
                     }
                     bottom.linkTo(shopScore.top)
                 }
+                .clickable {
+                    onActionClick(SellerMenuActionClick.SHOP)
+                }
         )
 
         NestTypography(
@@ -635,6 +708,9 @@ fun SellerMenuShopInfo(
                     top.linkTo(avatarImage.top)
                     bottom.linkTo(shopBadge.top)
                 }
+                .clickable {
+                    onActionClick(SellerMenuActionClick.SHOP)
+                }
         )
 
         Spacer(
@@ -642,6 +718,14 @@ fun SellerMenuShopInfo(
                 .width(16.dp)
                 .constrainAs(avatarSpace) {
                     start.linkTo(avatarImage.end)
+                }
+        )
+
+        Spacer(
+            modifier = Modifier
+                .width(16.dp)
+                .constrainAs(endSpace) {
+                    end.linkTo(parent.end)
                 }
         )
 
@@ -681,7 +765,7 @@ fun SellerMenuShopInfo(
         )
 
         NestTypography(
-            text = followersCount,
+            text = "$followersCount ${stringResource(id = R.string.setting_followers)}",
             textStyle = NestTheme.typography.body3.copy(
                 color = NestTheme.colors.NN._950.copy(
                     alpha = 0.68f
@@ -693,6 +777,9 @@ fun SellerMenuShopInfo(
                     start.linkTo(dot.end)
                     top.linkTo(shopBadge.top)
                     bottom.linkTo(shopBadge.bottom)
+                }
+                .clickable {
+                    onActionClick(SellerMenuActionClick.SHOP_FAVORITES)
                 }
         )
 
@@ -710,10 +797,25 @@ fun SellerMenuShopInfo(
                 .constrainAs(shopScore) {
                     top.linkTo(shopScoreSpace.bottom)
                     start.linkTo(avatarImage.start)
+                    end.linkTo(endSpace.start)
                 }
-                .fillMaxWidth()
+                .padding(
+                    end = 8.dp,
+                    start = 16.dp
+                )
                 .wrapContentHeight(
                     align = Alignment.CenterVertically
+                )
+                .clickable {
+                    onActionClick(SellerMenuActionClick.SHOP_SCORE)
+                }
+                .addImpression(
+                    uniqueIdentifier = shopScoreString,
+                    impressionState = shopScoreImpressionHolder,
+                    state = lazyListState,
+                    onItemViewed = {
+                        onShopScoreImpressed()
+                    }
                 )
         )
 
@@ -726,9 +828,13 @@ fun SellerMenuShopInfo(
                     .constrainAs(shopStatus) {
                         top.linkTo(shopScore.bottom)
                         start.linkTo(avatarImage.start)
-                        end.linkTo(parent.end)
+                        end.linkTo(endSpace.start)
                     }
-                    .padding(end = 8.dp),
+                    .padding(
+                        top = 8.dp,
+                        end = 16.dp,
+                        start = 16.dp
+                    ),
                 onActionClick = onActionClick
             )
         } else {
@@ -741,7 +847,7 @@ fun SellerMenuShopInfo(
                     .constrainAs(errorLocalLoad) {
                         top.linkTo(shopScore.bottom)
                         start.linkTo(avatarImage.start)
-                        end.linkTo(parent.end)
+                        end.linkTo(endSpace.start)
                     }
             ) {
                 onReload(it)
@@ -752,10 +858,14 @@ fun SellerMenuShopInfo(
             SellerMenuBalanceSection(
                 balance = totalBalance,
                 modifier = Modifier
+                    .padding(
+                        end = 16.dp,
+                        start = 16.dp
+                    )
                     .constrainAs(balance) {
                         top.linkTo(shopStatus.bottom)
                         start.linkTo(avatarImage.start)
-                        end.linkTo(parent.end)
+                        end.linkTo(endSpace.start)
                     },
                 onClick = {
                     onActionClick(SellerMenuActionClick.BALANCE)
@@ -770,7 +880,7 @@ fun SellerMenuShopInfo(
                     .constrainAs(errorLocalLoad) {
                         top.linkTo(shopScore.bottom)
                         start.linkTo(avatarImage.start)
-                        end.linkTo(parent.end)
+                        end.linkTo(endSpace.start)
                     }
             ) {
                 onReload(it)
@@ -802,11 +912,13 @@ fun SellerMenuShopStatusInfo(
                         is RegularMerchant.Verified, is RegularMerchant.NeedUpgrade -> {
                             NestTheme.colors.GN._500
                         }
+
                         is RegularMerchant.Pending -> {
                             NestTheme.colors.NN._950.copy(
                                 alpha = 0.68f
                             )
                         }
+
                         else -> {
                             null
                         }
@@ -839,6 +951,7 @@ fun SellerMenuShopStatusInfo(
                 )
             }
         }
+
         is PowerMerchantStatus -> {
             (userShopInfoWrapper.shopType as? PowerMerchantStatus)?.let { pm ->
                 val periodType = userShopInfoWrapper.userShopInfoUiModel?.periodTypePmPro
@@ -858,14 +971,16 @@ fun SellerMenuShopStatusInfo(
                 )
             }
         }
+
         is PowerMerchantProStatus -> {
-            val gradeName = userShopInfoWrapper.userShopInfoUiModel?.pmProGradeName?.replaceFirstChar {
-                if (it.isLowerCase()) {
-                    it.titlecase(Locale.getDefault())
-                } else {
-                    it.toString()
+            val gradeName =
+                userShopInfoWrapper.userShopInfoUiModel?.pmProGradeName?.replaceFirstChar {
+                    if (it.isLowerCase()) {
+                        it.titlecase(Locale.getDefault())
+                    } else {
+                        it.toString()
+                    }
                 }
-            }
 
             val backgroundImageUrl: String
             val statusTextColor: Color
@@ -877,10 +992,12 @@ fun SellerMenuShopStatusInfo(
                         alpha = 0.68f
                     )
                 }
+
                 PowerMerchantProStatus.Expert -> {
                     backgroundImageUrl = PMProURL.BG_EXPERT
                     statusTextColor = NestTheme.colors.TN._500
                 }
+
                 PowerMerchantProStatus.Ultimate -> {
                     backgroundImageUrl = PMProURL.BG_ULTIMATE
                     statusTextColor = NestTheme.colors.YN._400
@@ -896,10 +1013,19 @@ fun SellerMenuShopStatusInfo(
                 pmProBadgeUrl = pmProBadgeUrl,
                 statusTextColor = statusTextColor,
                 modifier = modifier
+                    .clickable {
+                        onActionClick(SellerMenuActionClick.POWER_MERCHANT)
+                    }
             )
         }
+
         else -> {
-            SellerMenuStatusOS(modifier)
+            SellerMenuStatusOS(
+                modifier = modifier
+                    .clickable {
+                        onActionClick(SellerMenuActionClick.OFFICIAL_STORE)
+                    }
+            )
         }
     }
 }
@@ -926,12 +1052,16 @@ private fun getRmVerificationTextRes(shopType: ShopType?): Int? {
         is RegularMerchant.Verified -> {
             sellermenucommonR.string.setting_verifikasi
         }
+
         is RegularMerchant.Pending -> {
             sellermenucommonR.string.setting_verified
         }
+
         is RegularMerchant.NeedUpgrade -> {
             sellermenuR.string.setting_upgrade
-        } else -> {
+        }
+
+        else -> {
             null
         }
     }
@@ -1012,7 +1142,6 @@ fun SellerMenuBalanceSection(
     ConstraintLayout(
         modifier = modifier
             .height(40.dp)
-            .padding(horizontal = 16.dp)
             .fillMaxWidth()
     ) {
         val (balanceTitle, balanceValue) = createRefs()
@@ -1074,9 +1203,6 @@ fun SellerMenuTitleSection(
                 end = 16.dp
             )
             .fillMaxWidth()
-            .clickable {
-                onCtaClicked()
-            }
     ) {
         val (titleRef, ctaRef) = createRefs()
 
@@ -1110,6 +1236,9 @@ fun SellerMenuTitleSection(
                     .constrainAs(ctaRef) {
                         top.linkTo(parent.top)
                         end.linkTo(parent.end)
+                    }
+                    .clickable {
+                        onCtaClicked()
                     }
             )
         }
@@ -1149,6 +1278,7 @@ fun SellerMenuItem(
     ConstraintLayout(
         modifier = Modifier
             .height(44.dp)
+            .fillMaxWidth()
             .clickable {
                 onActionClick()
             }
@@ -1829,7 +1959,9 @@ fun SellerMenuFeatureSection(
     onActionClick: (SellerMenuActionClick) -> Unit
 ) {
     ConstraintLayout(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp)
     ) {
         val (titleRef, labelRef, statisticCardRef, promoCardRef, feedCardRef, financialCardRef) = createRefs()
 
@@ -1849,8 +1981,7 @@ fun SellerMenuFeatureSection(
                 .padding(
                     start = 16.dp,
                     top = 8.dp,
-                    end = 16.dp,
-                    bottom = 16.dp
+                    end = 16.dp
                 )
         )
 
@@ -1863,7 +1994,7 @@ fun SellerMenuFeatureSection(
                     top.linkTo(titleRef.top)
                     bottom.linkTo(titleRef.bottom)
                 }
-                .padding(start = 8.dp)
+                .padding(top = 8.dp)
         )
 
         SellerMenuFeatureCard(
@@ -1877,7 +2008,7 @@ fun SellerMenuFeatureSection(
                     end.linkTo(promoCardRef.start)
                     width = Dimension.fillToConstraints
                 }
-                .padding(start = 8.dp, top = 16.dp)
+                .padding(start = 16.dp, top = 16.dp)
                 .clickable {
                     onActionClick(SellerMenuActionClick.MIGRATION_STATISTIC)
                 }
@@ -1894,7 +2025,7 @@ fun SellerMenuFeatureSection(
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 }
-                .padding(start = 8.dp, top = 16.dp, end = 8.dp)
+                .padding(start = 8.dp, top = 16.dp, end = 16.dp)
                 .clickable {
                     onActionClick(SellerMenuActionClick.MIGRATION_PROMO)
                 }
@@ -1911,7 +2042,7 @@ fun SellerMenuFeatureSection(
                     end.linkTo(financialCardRef.start)
                     width = Dimension.fillToConstraints
                 }
-                .padding(start = 8.dp, top = 8.dp)
+                .padding(start = 16.dp, top = 8.dp)
                 .clickable {
                     onActionClick(SellerMenuActionClick.MIGRATION_FEED)
                 }
@@ -1928,7 +2059,7 @@ fun SellerMenuFeatureSection(
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 }
-                .padding(start = 8.dp, top = 8.dp, end = 8.dp)
+                .padding(start = 8.dp, top = 8.dp, end = 16.dp)
                 .clickable {
                     onActionClick(SellerMenuActionClick.MIGRATION_FINANCE)
                 }
@@ -1998,48 +2129,4 @@ fun SellerMenuFeatureCard(
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun preview() {
-    NestTheme {
-//        SellerMenuStatusPmPro(
-//            "Advanced",
-//            "",
-//            "",
-//            NestTheme.colors.NN._950.copy(
-//                alpha = 0.68f
-//            )
-//        )
-//        SellerMenuStatusPm(false, true)
-//        SellerMenuStatusRegular("Transaksi sejak berlangsung", "10/100")
-//        SellerMenuOrderSection(
-//            1,2
-//        )
-    }
-//    NestTheme {
-//        SellerMenuShopInfo(
-//            imageUrl = "",
-//            shopNameString = "Adeedast Naiki",
-//            badgeRes = com.tokopedia.gm.common.R.drawable.ic_power_merchant,
-//            shopScoreString = "100",
-//            followersCount = "10 Followers",
-//            userShopInfoWrapper = UserShopInfoWrapper(
-//                shopType = PowerMerchantStatus.Active
-//            ),
-//            partialResponseStatus = true to true,
-//            totalBalance = "Rp 100"
-//        )
-//    SellerMenuStatusRegular(
-//        rmStatsText = "Pesanan",
-//        rmTotalStatsText = "10/100",
-//        pmEligibleIcon = IconUnify.BADGE_PM_FILLED,
-//        ctaTextRes = sellermenucommonR.string.setting_verified,
-//        ctaColor = NestTheme.colors.NN._950
-//    )
-//    SellerMenuFeatureSection(Modifier)
-//    SellerMenuBalanceSection(balance = "Rp 200", modifier = Modifier)
-//
-//    }
 }

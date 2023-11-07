@@ -51,8 +51,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHolder.ShopInfoListener,
-        ShopInfoErrorViewHolder.ShopInfoErrorListener {
+class SellerMenuFragment :
+    Fragment(),
+    SettingTrackingListener,
+    ShopInfoViewHolder.ShopInfoListener,
+    ShopInfoErrorViewHolder.ShopInfoErrorListener {
 
     companion object {
         private const val SCREEN_NAME = "MA - Akun Toko"
@@ -80,13 +83,15 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private var shopAge = 0L
 
     private val adapter by lazy {
-        SellerMenuAdapter(SellerMenuAdapterTypeFactory(
+        SellerMenuAdapter(
+            SellerMenuAdapterTypeFactory(
                 this,
                 this,
                 this,
                 sellerMenuTracker,
                 userSession
-        ))
+            )
+        )
     }
 
     private var binding by autoClearedNullable<FragmentSellerMenuBinding>()
@@ -156,9 +161,9 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     }
 
     override fun onSaldoClicked() {
-        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false))
+        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false)) {
             RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
-        else {
+        } else {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, ApplinkConst.WebViewUrl.SALDO_DETAIL)
             context?.startActivity(intent)
         }
@@ -179,9 +184,9 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private fun initInjector() {
         DaggerSellerMenuComponent.builder()
-                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
 
     private fun setupSwipeRefresh() {
@@ -212,8 +217,12 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                     }
                     adapter.showShopInfoError()
                     ShopScoreReputationErrorLogger.logToCrashlytic(
-                            String.format(ShopScoreReputationErrorLogger.SHOP_INFO_PM_SETTING_INFO_ERROR,
-                                    ShopScoreReputationErrorLogger.SHOP_ACCOUNT), it.throwable)
+                        String.format(
+                            ShopScoreReputationErrorLogger.SHOP_INFO_PM_SETTING_INFO_ERROR,
+                            ShopScoreReputationErrorLogger.SHOP_ACCOUNT
+                        ),
+                        it.throwable
+                    )
                     swipeRefreshLayout?.isRefreshing = false
                 }
             }
@@ -238,7 +247,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
             when (it) {
                 is Success -> adapter.showProductSection(it.data)
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
             swipeRefreshLayout?.isRefreshing = false
@@ -256,7 +265,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                     })
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
             swipeRefreshLayout?.isRefreshing = false
@@ -276,7 +285,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                 val data = settingResponseState.data
                 if (data is SettingShopInfoUiModel) {
                     adapter.showShopInfo(data, shopScore, shopAge)
-                    sellerMenuTracker.sendEventViewShopAccount(data)
+                    sellerMenuTracker.sendEventViewShopAccount(data.shopStatusUiModel?.userShopInfoWrapper?.shopType)
                 }
             }
             is SettingLoading -> {
@@ -312,14 +321,16 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     }
 
     private fun View.showToasterError(errorMessage: String) {
-        Toaster.build(this,
-                errorMessage,
-                Snackbar.LENGTH_LONG,
-                Toaster.TYPE_ERROR,
-                resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_retry),
-                View.OnClickListener {
-                    retryFetchAfterError()
-                }).show()
+        Toaster.build(
+            this,
+            errorMessage,
+            Snackbar.LENGTH_LONG,
+            Toaster.TYPE_ERROR,
+            resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_retry),
+            View.OnClickListener {
+                retryFetchAfterError()
+            }
+        ).show()
     }
 
     private fun retryFetchAfterError() {
@@ -333,7 +344,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private fun setupScrollToShopSetting() {
         val isAnchorToShopSetting = activity?.intent?.getBooleanExtra(SellerMigrationConstants.SELLER_MIGRATION_KEY_AUTO_ANCHOR_ACCOUNT_SHOP, false)
-                ?: false
+            ?: false
         if (isAnchorToShopSetting) {
             val shopAccountData = adapter.data.firstOrNull { it is SellerFeatureUiModel }
             if (shopAccountData != null) {
@@ -370,5 +381,4 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
             RouteManager.route(it, SellerBaseUrl.getNewMembershipSchemeApplink())
         }
     }
-
 }

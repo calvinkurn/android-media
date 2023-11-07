@@ -20,6 +20,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
+import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.base.BaseSellerMenuActivity
 import com.tokopedia.seller.menu.presentation.component.SellerMenuScreen
@@ -67,8 +68,6 @@ class SellerMenuComposeActivity : BaseSellerMenuActivity() {
 
         viewModel.onEvent(SellerMenuUIEvent.GetInitialMenu)
 
-        // TODO: Add scroll from sellermigration
-
         setContent {
             NestTheme {
                 LaunchedEffect(key1 = false, block = {
@@ -94,7 +93,9 @@ class SellerMenuComposeActivity : BaseSellerMenuActivity() {
                     onRefresh = ::onRefresh,
                     onReload = ::onReloading,
                     onTickerClick = ::onTickerClick,
-                    onShowToaster = ::onShowToaster
+                    onShowToaster = ::onShowToaster,
+                    onShopInfoImpressed = ::onShopInfoImpressed,
+                    onShopScoreImpressed = ::onShopScoreImpressed
                 )
             }
         }
@@ -148,7 +149,7 @@ class SellerMenuComposeActivity : BaseSellerMenuActivity() {
             }
             SellerMenuActionClick.POWER_MERCHANT_INACTIVE -> {
                 goToPowerMerchantSubscribe(false)
-                sellerMenuTracker.sendEventClickShopSettingNew()
+                sellerMenuTracker.sendEventClickShopType()
             }
             SellerMenuActionClick.OFFICIAL_STORE -> {
                 sellerMenuTracker.sendEventClickShopSettingNew()
@@ -243,6 +244,15 @@ class SellerMenuComposeActivity : BaseSellerMenuActivity() {
             viewModel.onEvent(SellerMenuUIEvent.GetInitialMenu)
         }.show()
     }
+
+    private fun onShopInfoImpressed(shopType: ShopType?) {
+        sellerMenuTracker.sendEventViewShopAccount(shopType)
+    }
+
+    private fun onShopScoreImpressed() {
+        sellerMenuTracker.impressShopScoreEntryPoint(isNewSeller)
+    }
+
     private fun goToInbox() {
         RouteManager.route(this, ApplinkConst.INBOX)
         sellerMenuTracker.sendEventClickInbox()
