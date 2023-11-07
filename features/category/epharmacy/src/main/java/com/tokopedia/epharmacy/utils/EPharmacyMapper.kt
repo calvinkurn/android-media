@@ -1,5 +1,6 @@
 package com.tokopedia.epharmacy.utils
 
+import com.tokopedia.common_epharmacy.EPHARMACY_PPG_QTY_CHANGE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAccordionProductDataModel
@@ -11,6 +12,7 @@ import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsG
 object EPharmacyMapper {
 
     fun mapGroupsToAttachmentComponents(
+        source: String?,
         group: EGroup,
         orderNumber: Int,
         info: EGroup.ProductsInfo?,
@@ -42,8 +44,13 @@ object EPharmacyMapper {
             group.prescriptionCTA,
             getSubProductsModel(info),
             isLastIndex(group.shopInfo, shopIndex),
-            (isLastIndex(group.shopInfo, shopIndex) && isLastGroup).not()
-        )
+            (isLastIndex(group.shopInfo, shopIndex) && isLastGroup).not(),
+            isAccordionEnable = getIsProductExpanded(source)
+            )
+    }
+
+    private fun getIsProductExpanded(source: String?): Boolean {
+        return source == EPHARMACY_PPG_QTY_CHANGE
     }
 
     private fun getSubProductsModel(shopInfo: EProductInfo?): List<BaseEPharmacyDataModel> {
@@ -80,7 +87,10 @@ object EPharmacyMapper {
     }
 
     private fun getQuantityChangedModelProduct(product: EGroup.ProductsInfo.Product?): EGroup.ProductsInfo.Product.QtyComparison? {
-        return product?.qtyComparison.apply { product?.qtyComparison?.subTotal = product?.price.orZero() * product?.qtyComparison?.initialQty?.toDouble().orZero() }
+        return product?.qtyComparison.apply {
+            product?.qtyComparison?.productPrice = product?.price
+            product?.qtyComparison?.subTotal = product?.price.orZero() * product?.qtyComparison?.initialQty?.toDouble().orZero()
+        }
     }
 
     private fun getUniqueModelName(ePharmacyGroupId: String?, index: Int): String {

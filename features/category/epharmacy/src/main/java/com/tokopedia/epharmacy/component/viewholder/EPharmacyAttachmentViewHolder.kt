@@ -121,7 +121,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderQuantityChangedLayout() {
-        if(dataModel?.quantityChangedModel != null && ePharmacyListener is EPharmacyQuantityChangeFragment){
+        if(dataModel?.quantityChangedModel != null && dataModel?.isAccordionEnable.orFalse()){
             if(dataModel?.quantityChangedModel?.currentQty?.orZero().isZero()){
                 dataModel?.quantityChangedModel?.currentQty = dataModel?.quantityChangedModel?.recommendedQty.orZero()
             }
@@ -132,22 +132,21 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
                 dataModel?.quantityChangedModel?.initialQty.toString()
             )
             productQuantityType.text = itemView.context.getString(R.string.epharmacy_barang)
-            reCalculateSubTotal()
 
-            quantityChangedEditor.setValue(dataModel?.quantityChangedModel?.recommendedQty.orZero())
             quantityChangedEditor.maxValue = dataModel?.quantityChangedModel?.recommendedQty.orZero()
             quantityChangedEditor.minValue = MIN_VALUE_OF_PRODUCT_EDITOR
-
             quantityChangedEditor.setValueChangedListener { newValue, _, _ ->
                 if(newValue == MIN_VALUE_OF_PRODUCT_EDITOR){
-                    ePharmacyListener.onToast(Toaster.TYPE_ERROR,
+                    ePharmacyListener?.onToast(Toaster.TYPE_ERROR,
                         itemView.context.resources?.getString(epharmacyR.string.epharmacy_minimum_quantity_reached).orEmpty())
                     quantityChangedEditor.subtractButton.isEnabled = false
                 }
                 dataModel?.quantityChangedModel?.currentQty = newValue
                 reCalculateSubTotal()
-                ePharmacyListener.onQuantityChanged()
+                ePharmacyListener?.onQuantityChanged()
             }
+            quantityChangedEditor.setValue(dataModel?.quantityChangedModel?.currentQty.orZero())
+            reCalculateSubTotal()
         }else {
             quantityEditorLayout?.hide()
         }

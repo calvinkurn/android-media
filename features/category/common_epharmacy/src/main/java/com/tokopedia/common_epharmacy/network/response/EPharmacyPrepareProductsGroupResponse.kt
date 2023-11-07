@@ -224,12 +224,12 @@ data class EPharmacyPrepareProductsGroupResponse(
                         data class QtyComparison(
                             @SerializedName("initial_qty")
                             var initialQty: Int?,
-                            @SerializedName("recommended_qty")
+                            @SerializedName("recommend_qty")
                             val recommendedQty: Int?,
                             @SerializedName("current_qty")
                             var currentQty: Int = 0,
                             @SerializedName("price")
-                            val productPrice: Double?
+                            var productPrice: Double?
                         ) : Parcelable {
 
                             @IgnoredOnParcel
