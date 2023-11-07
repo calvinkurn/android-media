@@ -172,7 +172,7 @@ object EPharmacyUtils {
         )
     }
 
-    fun mapGroupsDataIntoDataModel(data: EPharmacyPrepareProductsGroupResponse): EPharmacyDataModel {
+    fun mapGroupsDataIntoDataModel(data: EPharmacyPrepareProductsGroupResponse, source: String?): EPharmacyDataModel {
         val listOfComponents = arrayListOf<BaseEPharmacyDataModel>()
         if (data.detailData?.groupsData?.attachmentPageTickerText?.isNotBlank() == true) {
             listOfComponents.add(
@@ -194,6 +194,7 @@ object EPharmacyUtils {
                         orderNumber++
                         listOfComponents.add(
                             getGroupComponent(
+                                source,
                                 group,
                                 orderNumber,
                                 info,
@@ -209,13 +210,14 @@ object EPharmacyUtils {
     }
 
     private fun getGroupComponent(
+        source: String?,
         group: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup,
         orderNumber: Int,
         info: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo?,
         shopIndex: Int,
         isLastGroup: Boolean
     ): BaseEPharmacyDataModel {
-        return EPharmacyMapper.mapGroupsToAttachmentComponents(group, orderNumber, info, shopIndex, isLastGroup)
+        return EPharmacyMapper.mapGroupsToAttachmentComponents(source, group, orderNumber, info, shopIndex, isLastGroup)
     }
 
     fun createCheckoutGeneralParams(ePharmacyCheckoutParams: EPharmacyCheckoutParams): CheckoutCartGeneralParams {
@@ -324,7 +326,7 @@ object EPharmacyUtils {
 enum class PrescriptionActionType(val type: String) {
     REDIRECT_PWA("REDIRECT_CONSULTATION_PWA"),
     REDIRECT_OPTION("SHOW_PRESCRIPTION_ATTACHMENT_OPTION"),
-    REDIRECT_OPTION_ONLY_CONSULT("SHOW_PRESCRIPTION_ATTACHMENT_OPTION_ONLY_CONSULT"),
+    REDIRECT_OPTION_ONLY_CONSULT("SHOW_PRESCRIPTION_CONSULTATION_OPTION"),
     REDIRECT_UPLOAD("REDIRECT_UPLOAD_PRESC_PAGE"),
     REDIRECT_PRESCRIPTION("REDIRECT_CONSULTATION_PRESCRIPTION"),
     REDIRECT_CHECK_PRESCRIPTION("REDIRECT_CEK_PRESCRIPTION_PAGE")

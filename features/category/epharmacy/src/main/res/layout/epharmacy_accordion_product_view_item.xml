@@ -149,7 +149,7 @@
         android:layout_marginTop="4dp"
         app:typographyType="display_2"
         app:typographyWeight="bold"
-        android:text="Rp75.00"
+        tools:text="Rp75.00"
         android:textColor="@color/Unify_NN950"
         tools:visibility="visible"
         />

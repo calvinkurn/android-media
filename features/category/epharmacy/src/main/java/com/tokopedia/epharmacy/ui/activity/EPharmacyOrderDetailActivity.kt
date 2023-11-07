@@ -44,10 +44,10 @@ class EPharmacyOrderDetailActivity : BaseSimpleActivity(), HasComponent<EPharmac
     private fun extractParameters() {
         val pathSegments = Uri.parse(intent.data?.path.orEmpty()).pathSegments
         tConsultationId = if (pathSegments.size > 1) pathSegments[1].toLongOrZero() else 0L
+        verticalId = if (pathSegments.size > 2) pathSegments[2].orEmpty() else String.EMPTY
 
         intent?.data?.let {
             waitingInvoice = it.getBooleanQueryParameter(EPHARMACY_WAITING_INVOICE, false).orFalse()
-            verticalId = it.getQueryParameter(EPHARMACY_VERTICAL_ID).orEmpty()
         }
     }
 

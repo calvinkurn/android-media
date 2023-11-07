@@ -561,11 +561,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     ) {
         when (prescriptionCTA?.actionType) {
             PrescriptionActionType.REDIRECT_PWA.type -> {
-                if(prescriptionCTA.title.equals("Chat dokter sekarang")){
-                    startMiniConsultation(enablerName, groupId)
-                }else {
-                    startAttachmentChooser(chooserLogo, groupId, enablerName, price, operatingSchedule, note, true)
-                }
+                redirectActionPWA(tokoConsultationId, chooserLogo, groupId, enablerName, price, operatingSchedule, note)
             }
             PrescriptionActionType.REDIRECT_UPLOAD.type -> {
                 startPhotoUpload(enablerName, groupId)
@@ -586,6 +582,22 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                     startPhotoUpload(enablerName, ePharmacyGroupId, EPHARMACY_CEK_RESEP_REQUEST_CODE)
                 }
             }
+        }
+    }
+
+    private fun redirectActionPWA(
+        tokoConsultationId: String?,
+        chooserLogo: String?,
+        groupId: String?,
+        enablerName: String?,
+        price: String?,
+        operatingSchedule: EG.ConsultationSource.OperatingSchedule?,
+        note: String?
+    ) {
+        if (tokoConsultationId.isNullOrBlank()){
+            startAttachmentChooser(chooserLogo, groupId, enablerName, price, operatingSchedule, note, true)
+        }else {
+            startMiniConsultation(enablerName, groupId)
         }
     }
 

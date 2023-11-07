@@ -52,8 +52,6 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
     private var ePharmacySecondaryButton: CardUnify? = null
     private var ePharmacyGlobalError: GlobalError? = null
 
-    // TODO get from backend
-    private var orderUUId = "9e7c7910-6cc9-4397-901e-55a21c7d7e98"
     private var tConsultationId = 0L
     private var waitingInvoice = false
     private var verticalId = String.EMPTY
@@ -131,7 +129,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
         addShimmer()
         ePharmacyOrderDetailViewModel?.getEPharmacyOrderDetail(
             tConsultationId,
-            if (waitingInvoice) verticalId else orderUUId,
+            verticalId,
             waitingInvoice
         )
     }
