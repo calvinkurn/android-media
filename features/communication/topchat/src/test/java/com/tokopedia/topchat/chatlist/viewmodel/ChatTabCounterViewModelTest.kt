@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chatlist.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.topchat.chatlist.domain.pojo.NotificationsPojo
-import com.tokopedia.topchat.chatlist.domain.usecase.GetChatNotificationUseCase
+import com.tokopedia.topchat.chatlist.domain.usecase.GetChatNotificationCounterUseCase
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatTabCounterViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
@@ -28,7 +28,7 @@ class ChatTabCounterViewModelTest {
     val coroutineTestRule = UnconfinedTestRule()
 
     @RelaxedMockK
-    lateinit var getChatNotification: GetChatNotificationUseCase
+    lateinit var getChatNotification: GetChatNotificationCounterUseCase
 
     private lateinit var viewModel: ChatTabCounterViewModel
 

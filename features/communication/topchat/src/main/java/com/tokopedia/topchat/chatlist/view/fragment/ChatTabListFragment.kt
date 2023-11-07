@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatlist.view.fragment
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -31,6 +34,7 @@ import com.tokopedia.topchat.chatlist.data.ChatListPreference
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.di.ActivityComponentFactory
 import com.tokopedia.topchat.chatlist.di.ChatListComponent
+import com.tokopedia.topchat.chatlist.view.TopChatListAction
 import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity
 import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity.Companion.BUYER_ANALYTICS_LABEL
 import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity.Companion.SELLER_ANALYTICS_LABEL
@@ -46,8 +50,11 @@ import com.tokopedia.topchat.chatlist.view.viewmodel.WebSocketViewModel
 import com.tokopedia.topchat.common.custom.ToolTipSearchPopupWindow
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ChatTabListFragment constructor() :
     BaseDaggerFragment(),
@@ -73,7 +80,7 @@ class ChatTabListFragment constructor() :
 
     private lateinit var viewModelProvider: ViewModelProvider
     private lateinit var webSocketViewModel: WebSocketViewModel
-    private lateinit var chatNotifCounterViewModel: ChatTabCounterViewModel
+    private lateinit var viewModel: ChatTabCounterViewModel
     private var searchToolTip: ToolTipSearchPopupWindow? = null
 
     private var coachMarkOnBoarding = CoachMarkBuilder().build()
@@ -104,11 +111,11 @@ class ChatTabListFragment constructor() :
         initViewPager()
         initTabLayout()
         initViewModel()
-        initData()
         initOnBoarding()
-        initChatCounterObserver()
+        initObservers()
         initToolTip()
         initBackground()
+        initData()
     }
 
     private fun initBackground() {
@@ -117,7 +124,7 @@ class ChatTabListFragment constructor() :
                 viewPager?.setBackgroundColor(
                     MethodChecker.getColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_Background
+                        unifyprinciplesR.color.Unify_Background
                     )
                 )
             }
@@ -145,7 +152,6 @@ class ChatTabListFragment constructor() :
 
     override fun onDestroy() {
         super.onDestroy()
-        stopLiveDataObserver()
         searchToolTip?.dismiss()
     }
 
@@ -219,18 +225,38 @@ class ChatTabListFragment constructor() :
         }
     }
 
-    private fun initChatCounterObserver() {
-        chatNotifCounterViewModel.chatNotifCounter.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    tabList[0].counter = result.data.notification.chat.unreadsSeller.toString()
-                    if (tabList.size > 1) {
-                        tabList[1].counter = result.data.notification.chat.unreadsUser.toString()
-                    }
-                    setNotificationCounterOnTab()
-                }
-                else -> {}
+    private fun initObservers() {
+        // Setup flow observer
+        viewModel.setupViewModelObserver()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                observeChatNotificationCounter()
             }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                observeError()
+            }
+        }
+    }
+
+    private suspend fun observeChatNotificationCounter() {
+        viewModel.chatListNotificationUiState.collectLatest { uiState ->
+            if (tabList.isNotEmpty()) {
+                tabList[0].counter = uiState.unreadSeller.toString()
+                if (tabList.size > 1) {
+                    tabList[1].counter = uiState.unreadBuyer.toString()
+                }
+                setNotificationCounterOnTab()
+            }
+        }
+    }
+
+    private suspend fun observeError() {
+        viewModel.errorUiState.collectLatest {
+            Log.d("ERROR-TAB", "${it.error}")
         }
     }
 
@@ -261,7 +287,7 @@ class ChatTabListFragment constructor() :
             tabLayout?.setBackgroundColor(
                 MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                    unifyprinciplesR.color.Unify_Background
                 )
             )
         }
@@ -297,7 +323,7 @@ class ChatTabListFragment constructor() :
 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 viewPager?.setCurrentItem(tab.position, true)
-                context?.let { chatNotifCounterViewModel.setLastVisitedTab(it, tab.position) }
+                context?.let { viewModel.setLastVisitedTab(it, tab.position) }
                 setTabViewColor(
                     tab.customView,
                     tab.position,
@@ -373,7 +399,7 @@ class ChatTabListFragment constructor() :
 
     private fun goToLastSeenTab() {
         context?.let {
-            chatNotifCounterViewModel.getLastVisitedTab(it).apply {
+            viewModel.getLastVisitedTab(it).apply {
                 if (this == -1) return@apply
                 viewPager?.setCurrentItem(this, false)
             }
@@ -441,7 +467,7 @@ class ChatTabListFragment constructor() :
     private fun initViewModel() {
         viewModelProvider = ViewModelProvider(this, viewModelFactory)
         webSocketViewModel = viewModelProvider.get(WebSocketViewModel::class.java)
-        chatNotifCounterViewModel = viewModelProvider.get(ChatTabCounterViewModel::class.java)
+        viewModel = viewModelProvider.get(ChatTabCounterViewModel::class.java)
     }
 
     private fun initWebsocketChatObserver() {
@@ -530,7 +556,7 @@ class ChatTabListFragment constructor() :
     }
 
     override fun loadNotificationCounter() {
-        chatNotifCounterViewModel.queryGetNotifCounter(userSession.shopId)
+        viewModel.processAction(TopChatListAction.RefreshCounter(userSession.shopId))
     }
 
     override fun showSearchOnBoardingTooltip() {
@@ -628,12 +654,6 @@ class ChatTabListFragment constructor() :
         chatListPref.coachMarkShown = true
     }
 
-    private fun stopLiveDataObserver() {
-        if (::chatNotifCounterViewModel.isInitialized) {
-            chatNotifCounterViewModel.chatNotifCounter.removeObservers(this)
-        }
-    }
-
     private fun stopWebsocketLiveDataObserver() {
         webSocketViewModel.itemChat.removeObservers(this)
     }
@@ -644,18 +664,16 @@ class ChatTabListFragment constructor() :
 
     companion object {
         val TAG_ONBOARDING = ChatTabListFragment::class.java.name + ".OnBoarding"
-        private const val LIMIT_NOTIFICATION = 99
-        private const val LIMIT_NOTIFICATION_STRING = "99+"
         private const val MAX_LENGTH_TITLE = 10
         private const val TITLE_LENGTH = 9
 
         // Text Color vals
-        private val SELECTED_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_GN500
-        private val UNSELECTED_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_NN600
+        private val SELECTED_TEXT_COLOR = unifyprinciplesR.color.Unify_GN500
+        private val UNSELECTED_TEXT_COLOR = unifyprinciplesR.color.Unify_NN600
 
         // Icon Color vals
-        private val SELECTED_ICON_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_GN500
-        private val UNSELECTED_ICON_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_NN500
+        private val SELECTED_ICON_COLOR = unifyprinciplesR.color.Unify_GN500
+        private val UNSELECTED_ICON_COLOR = unifyprinciplesR.color.Unify_NN500
 
         const val SELECTED_TAB_KEY = "selected_tab"
 
