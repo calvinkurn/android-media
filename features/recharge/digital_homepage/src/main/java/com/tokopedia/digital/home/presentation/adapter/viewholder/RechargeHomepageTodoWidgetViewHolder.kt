@@ -1,5 +1,6 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
+import android.view.ViewGroup
 import com.tokopedia.digital.home.R
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -267,6 +268,14 @@ class RechargeHomepageTodoWidgetViewHolder(
                 }
             }
         }
+
+        private fun setCardHeightMatchParent() {
+            with(binding) {
+                val layoutParams = todoWidgetMainCard.layoutParams
+                layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
+                todoWidgetMainCard.layoutParams = layoutParams
+            }
+        }
     }
 
     class RechargeHomepageTodoWidgetAutoPayViewHolder(
@@ -339,7 +348,17 @@ class RechargeHomepageTodoWidgetViewHolder(
                     root.setOnClickListener {
                         todoWidgetListener.onClickTodoWidget(widget.appLink)
                     }
+
+                    setCardHeightMatchParent()
                 }
+            }
+        }
+
+        private fun setCardHeightMatchParent() {
+            with(binding) {
+                val layoutParams = todoWidgetMainCard.layoutParams
+                layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
+                todoWidgetMainCard.layoutParams = layoutParams
             }
         }
     }
