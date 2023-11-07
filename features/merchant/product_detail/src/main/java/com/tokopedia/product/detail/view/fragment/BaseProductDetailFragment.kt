@@ -121,7 +121,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         }
         var visitablesForPerf = visitables
         if (!intialList) {
-            visitablesForPerf.take(
+            visitablesForPerf = visitablesForPerf.take(
                 position
             )
         }
